@@ -10,15 +10,15 @@ else:
 	from urllib import urlopen 
 
 def output_cve_id(type=None, name=None, version=None): 
-	"""Takes as input, a package name, package version. 
+	"""Take as input, a package name, package version. 
 	Queries cve-search' dataset for any reported 
 	vulnerabilities of the requested package. If 
 	vulnerability exists, outputs cve-id(s).
 	"""
 	if version:
-		url = 'https://cve.circl.lu/api/search/' + name + version
+		url = ('https://cve.circl.lu/api/search/{}/{}').format(name,version)
 	else:
-		url = 'https://cve.circl.lu/api/search/' + name
+		url = ('https://cve.circl.lu/api/search/{}').format(name)
 	
 	raw_data = urlopen(url).read()
 	data = json.loads(raw_data)

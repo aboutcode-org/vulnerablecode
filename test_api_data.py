@@ -2,7 +2,7 @@ import api_data as api
 
 from mock import Mock
 import pytest
-from urllib import urlopen
+from urllib.request import urlopen
 
 test_data = '''
 {	"data": [
@@ -16,7 +16,7 @@ test_data = '''
             },
             "cvss": 4.3,
             "cvss-time": "2007-02-20T14:55:00",
-            "id": CVE-2007-1004"
+            "id": "CVE-2007-1004",
             "impact": {
                 "availability": "NONE",
                 "confidentiality": "NONE",
@@ -31,7 +31,7 @@ test_data = '''
                 "http://www.securityfocus.com/bid/22601",
                 "http://xforce.iss.net/xforce/xfdb/32580"
             ],
-            "summary": "Mozilla Firefox might allow remote attackers to conduct spoofing and phishing attacks by writing to an about:blank tab and overlaying the location bar.",
+            "summary": "Mozilla Firefox might allow remote",
             "vulnerable_configuration": [
                 "cpe:2.3:a:mozilla:firefox:2.0:rc3"
             ],
@@ -41,10 +41,9 @@ test_data = '''
 '''
 
 def test_output_cve_id():
-	
-	##BUG##
-	api.urlopen = Mock()
-	api.urlopen.return_value = test_data
-	api.output_cve_id()
+    #BUG: 
+    api.urlopen.read = Mock()
+    api.urlopen.read.return_value = test_data
+    api.output_cve_id()
 
-	assert api.output_cve_id.data["data"]["item"] == "CVE-2007-1004"
+    assert api.output_cve_id(name="test") == "CVE-2007-1004"

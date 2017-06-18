@@ -10,23 +10,30 @@ def output_cve_id(type=None, name=None, version=None):
     vulnerabilities of the requested package. If
     vulnerability exists, outputs cve-id(s).
     """
+    id = []
+
     if not name:
-        return None
+        return 
 
     if version:
-        url = 'https://cve.circl.lu/api/search/{name}/{version}'
+        url = f'https://cve.circl.lu/api/search/{name}/{version}'
     else:
-        url = 'https://cve.circl.lu/api/search/{name}'
+        url = f'https://cve.circl.lu/api/search/{name}'
 
     raw_data = urlopen(url).read()
-
     data = json.loads(raw_data)
 
-    if data:
+    if data and name and not version:
         for item in data['data']:
-            return item['id']
-    else:
-        return None
+            id.append(item['id'])
+
+        return id
+
+    if data and version and name:
+        for item in data:
+            id.append(item['id'])          
+
+        return id
 
 if __name__ == '__main__':
     output_cve_id()

@@ -1,22 +1,26 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.http import HttpResponse
+
+from django.http import JsonResponse
+
 from django.shortcuts import render
 
 import vulncode_app.api_data as api
 
-def product(request, product):
+def package(request, name):
     """
     Queries the cve-search api with just
-    a product name.
+    a package name.
     """
-    data = api.output_cve_id(name=product)
-    return HttpResponse(data)
+    api.output_cve_id(name=name)
 
-def product_ver(request, product, ver):
+    return JsonResponse({'cve_id':api.ids,'summary':api.summary,'cvss':api.cvss})
+
+def package_version(request, name, version):
     """
-    Queries the cve-search api with a product
+    Queries the cve-search api with a package
     name and version.
     """
-    data = api.output_cve_id(name=product, version=ver)
-    return HttpResponse(data)
+    api.output_cve_id(name=name, version=version)
+
+    return JsonResponse({'cve_id':api.ids,'summary':api.summary,'cvss':api.cvss})

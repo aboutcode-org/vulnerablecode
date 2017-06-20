@@ -4,6 +4,6 @@ from . import views
 
 urlpatterns = [
 
-    url(r'(?P<product>[a-z]+)/(?P<ver>[0-9]+)', views.product_ver, name="product_ver"),
-    url(r'^(?P<product>[a-z]+)', views.product, name="product"),
+    url(r'(?P<name>[a-z]+)/(?P<version>[0-9]+)', views.package_version, name="package_version"),
+    url(r'^(?P<name>[a-z]+)', views.package, name="package"),
 ]

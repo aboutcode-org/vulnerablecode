@@ -60,10 +60,24 @@ test_data = """
 """
 
 
-def test_extract_fields():
+def test_extract_fields_data():
     fields_names = ['id', 'cvss', 'summary']
     data = json.loads(test_data)
-    raw_data = api.extract_fields(data=data, fields_names=fields_names)
+    extracted_data = api.extract_fields(data=data, fields_names=fields_names)
 
-    assert raw_data == [{'cvss': 4.3, 'id': 'CVE-2007-1004',
-                        'summary': 'Mozilla Firefox might allow remote'}]
+    assert extracted_data == [{'cvss': 4.3, 'id': 'CVE-2007-1004',
+                               'summary': 'Mozilla Firefox might allow remote'}]
+
+
+def test_extract_fields():
+    fields_names = []
+    data = json.loads(test_data)
+    extracted_data = api.extract_fields(data=data, fields_names=fields_names)
+
+    assert extracted_data == [{}]
+
+    fields_names = ['']
+    assert extracted_data == [{}]
+
+    fields_names = ['invalid_field']
+    assert extracted_data == [{}]

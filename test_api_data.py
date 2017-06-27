@@ -73,11 +73,12 @@ def test_extract_fields():
     fields_names = []
     data = json.loads(test_data)
     extracted_data = api.extract_fields(data=data, fields_names=fields_names)
-
     assert extracted_data == [{}]
 
     fields_names = ['']
-    assert extracted_data == [{}]
+    extracted_data = api.extract_fields(data=data, fields_names=fields_names)
+    assert extracted_data == [{'': None}]
 
     fields_names = ['invalid_field']
-    assert extracted_data == [{}]
+    extracted_data = api.extract_fields(data=data, fields_names=fields_names)
+    assert extracted_data == [{'invalid_field': None}]

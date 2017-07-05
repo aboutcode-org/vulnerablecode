@@ -1,4 +1,3 @@
 # VulnerableCode
 
-.. image:: https://travis-ci.org/nexB/vulnerablecode.svg?branch=develop
-   :target: https://travis-ci.org/nexB/vulnerablecode
+[![Build Status](https://travis-ci.org/nexB/vulnerablecode.svg?branch=develop)](https://travis-ci.org/nexB/vulnerablecode)

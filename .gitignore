@@ -71,6 +71,9 @@ target/
 
 # pyenv
 .python-version
+pyvenv.cfg
+bin/
+pip-selfcheck.json
 
 # celery beat schedule file
 celerybeat-schedule

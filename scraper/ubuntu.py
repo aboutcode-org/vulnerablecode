@@ -27,31 +27,35 @@ from urllib.request import urlopen
 
 
 def ubuntu_data():
-    cve_id = []
-    package_name = []
-    vulnerability_status = []
-
     url = urlopen("https://people.canonical.com/~ubuntu-security/cve/main.html")
-    soup = bs.BeautifulSoup(url, "lxml")
+    data = bs.BeautifulSoup(url, "lxml")
 
+    return data
+
+
+def extracted_data_ubuntu(data):
     """
     Scrape vulnerability status.
     Ubuntu provides a general vulnerability
     status of a package across all it's releases.
     """
-    for tag in soup.find_all('tr'):
+    cve_id = []
+    package_name = []
+    vulnerability_status = []
+
+    for tag in data.find_all('tr'):
         if re.match('<\w+\s\w+="(\w+)">', str(tag)):
             status = re.findall('<\w+\s\w+="(\w+)">', str(tag))
             vulnerability_status.append(status[0])
 
-    for tag in soup.find_all('a'):
+    for tag in data.find_all('a'):
         href = tag.get('href', None)
 
         if re.findall('^CVE.+', href):
             cve_id.append(href)
 
-        if re.match('\pkg+.*', href):
+        if re.match('pkg+.*', href):
             pkg = re.findall('pkg/(.+)\.html', href)
             package_name.append(pkg[0])
 
-    return cve_id, package_name, vulnerability_status
+    return cve_id, vulnerability_status, package_name

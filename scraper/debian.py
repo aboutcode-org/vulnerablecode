@@ -32,10 +32,13 @@ def debian_data():
     vulnerability_status = []
     links = []
 
-    # Return vulnerability data from Debian's dataset
     parent_url = urlopen("https://security-tracker.debian.org/tracker/")
-    soup = bs.BeautifulSoup(parent_url, "lxml")
+    data = bs.BeautifulSoup(parent_url, "lxml")
 
+    return data
+
+
+def extracted_data_debian(data):
     # Extract links of child datasets
     for tag in soup.find_all('a'):
         href = tag.get('href')
@@ -44,7 +47,7 @@ def debian_data():
             links.append(href)
 
     for child_links in range(6):
-        # Extracts package info from all the child datasets
+        # Extract package info from all the child datasets
         child_url = urlopen("https://security-tracker.debian.org"
                             + links[child_links + 2])
         soup = bs.BeautifulSoup(child_url, "lxml")

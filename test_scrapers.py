@@ -38,7 +38,7 @@ ubuntu_test_data = """
 <td class="DNE">DNE</td>
 <td class="DNE">DNE</td>
 <td class="DNE">DNE</td>
-<td style="font-size: small;"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-2439">Mitre</a>
+<td style=""><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-2439">Mitre</a>
 <a href="https://launchpad.net/bugs/cve/CVE-2002-2439">LP</a>
 <a href="http://security-tracker.debian.org/tracker/CVE-2002-2439">Debian</a></td></tr>
 """
@@ -56,16 +56,16 @@ def test_ubuntu_data():
     test_data = bs.BeautifulSoup(ubuntu_test_data, "lxml")
     extracted_data = ubuntu.extracted_data_ubuntu(test_data)
 
-    assert extracted_data == (['CVE-2002-2439'], ['High'], ['gcc-4.4'])
+    assert extracted_data == (['CVE-2002-2439'],
+                              ['High'],
+                              ['gcc-4.4'])
 
 
 def test_debian_data():
-    # Fix Me: The test data doesn't accurately depict the
-    # actual debian website on which, the code under testing
-    # is written
     from scraper import debian
-    test_data = bs.BeautifulSoup(debian_test_data, "lxml")
-    extracted_data = debian.extracted_data_debian(test_data)
+    # test_data = bs.BeautifulSoup(debian_test_data, "lxml")
+    extracted_data = debian.extracted_data_debian(debian_test_data)
 
-    assert extracted_data == (["not yet assigned"], ["CVE-2016-5416"],
-                              ["389-ds-base"])
+    assert extracted_data == (['CVE-2016-5416'],
+                              ['389-ds-base'],
+                              ['not yet assigned'])

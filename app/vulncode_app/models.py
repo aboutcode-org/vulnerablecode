@@ -38,13 +38,13 @@ class VulnerabilityReference(models.Model):
 
 
 class ImpactedPackage(models.Model):
-    vulnerability_id = models.ForeignKey('Vulnerability')
-    package_id = models.ForeignKey('Package')
+    vulnerability = models.ForeignKey('Vulnerability')
+    package = models.ForeignKey('Package')
 
 
 class ResolvedPackage(models.Model):
-    vulnerability_id = models.ForeignKey('Vulnerability')
-    package_id = models.ForeignKey('Package')
+    vulnerability = models.ForeignKey('Vulnerability')
+    package = models.ForeignKey('Package')
 
 
 class Package(models.Model):
@@ -54,6 +54,7 @@ class Package(models.Model):
 
 
 class PackageReference(models.Model):
+    package = models.ForeignKey('Package')
     repository = models.CharField(max_length=50,
                                   help_text="Repository URL eg:http://central.maven.org")
     platform = models.CharField(max_length=50,

@@ -69,7 +69,7 @@ def extract_cves_from_tracker(html):
             package_name.append(pkg)
 
     for tag in soup.find_all('td'):
-        if 'medium**' in tag or 'medium' in tag or 'low' in tag or 'low**' in tag or 'not yet assigned' in tag:
+        if 'medium' in tag or 'low' in tag or 'not yet assigned' in tag:
             vulnerability_status.append(tag.text)
         elif tag.find_all('span', {'class': 'red'}) and tag.text == 'high**' or tag.text == 'high':
             vulnerability_status.append(tag.text)

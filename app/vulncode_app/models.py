@@ -54,7 +54,11 @@ class Package(models.Model):
 
 
 class PackageReference(models.Model):
-    repository = models.CharField(max_length=50, help_text="Repository URL eg:http://central.maven.org")
-    platform = models.CharField(max_length=50, help_text="Platform eg:maven")
-    name = models.CharField(max_length=50, help_text="Package reference name eg:org.apache.commons.io")
-    version = models.CharField(max_length=50, help_text="Reference version")
+    repository = models.CharField(max_length=50,
+                                  help_text="Repository URL eg:http://central.maven.org")
+    platform = models.CharField(max_length=50,
+                                help_text="Platform eg:maven")
+    name = models.CharField(max_length=50,
+                            help_text="Package reference name eg:org.apache.commons.io")
+    version = models.CharField(max_length=50,
+                               help_text="Reference version")

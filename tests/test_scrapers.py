@@ -23,33 +23,36 @@
 
 import bs4 as bs
 
+from scraper import ubuntu
+from scraper import debian
+
+
 # Ubuntu test data
 ubuntu_test_data = """
-<tr class="High">
-<td class="cve"><a href="CVE-2002-2439">CVE-2002-2439</a></td>
-<td class="pkg"><a href="pkg/gcc-4.4.html">gcc-4.4</a></td>
-<td class="needs-triage">needs-triage*</td>
-<td class="needs-triage">needs-triage</td>
-<td class="DNE">DNE</td>
-<td class="DNE">DNE</td>
-<td class="DNE">DNE</td>
-<td class="DNE">DNE</td>
-<td class="DNE">DNE</td>
-<td style=""><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-2439">Mitre</a>
-<a href="https://launchpad.net/bugs/cve/CVE-2002-2439">LP</a>
-<a href="http://security-tracker.debian.org/tracker/CVE-2002-2439">Debian</a></td></tr>
+    <tr class="High">
+    <td class="cve"><a href="CVE-2002-2439">CVE-2002-2439</a></td>
+    <td class="pkg"><a href="pkg/gcc-4.4.html">gcc-4.4</a></td>
+    <td class="needs-triage">needs-triage*</td>
+    <td class="needs-triage">needs-triage</td>
+    <td class="DNE">DNE</td>
+    <td class="DNE">DNE</td>
+    <td class="DNE">DNE</td>
+    <td class="DNE">DNE</td>
+    <td class="DNE">DNE</td>
+    <td style=""><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-2439">Mitre</a>
+    <a href="https://launchpad.net/bugs/cve/CVE-2002-2439">LP</a>
+    <a href="http://security-tracker.debian.org/tracker/CVE-2002-2439">Debian</a></td></tr>
 """
 
 # Debian test data
 debian_test_data = """
-<tr><td><a href="/tracker/source-package/389-ds-base">389-ds-base</a>
-</td><td><a href="/tracker/CVE-2016-5416">CVE-2016-5416</a>
-</td><td>not yet assigned</td><td>?</td></tr>
+    <tr><td><a href="/tracker/source-package/389-ds-base">389-ds-base</a>
+    </td><td><a href="/tracker/CVE-2016-5416">CVE-2016-5416</a>
+    </td><td>not yet assigned</td><td>?</td></tr>
 """
 
 
 def test_ubuntu_data():
-    from scraper import ubuntu
     test_data = bs.BeautifulSoup(ubuntu_test_data, "lxml")
     extracted_data = ubuntu.extracted_data_ubuntu(test_data)
 
@@ -59,7 +62,6 @@ def test_ubuntu_data():
 
 
 def test_debian_data():
-    from scraper import debian
     extracted_data = debian.extracted_data_debian(debian_test_data)
 
     assert extracted_data == (['CVE-2016-5416'],

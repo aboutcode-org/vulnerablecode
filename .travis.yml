@@ -1,12 +1,18 @@
 language: python
 python: 3.6
 
-install: pip install pycodestyle
+install:
+  - pip install -r requirements.txt
+  - pip install pycodestyle
 
 before_script:
   - pycodestyle --exclude=migrations,settings.py --max-line-length=100 .
 
+script:
+  - python3.6 -m pytest -v tests/
+
 notifications:
+  email: false
   webhooks:
     urls:
       - https://webhooks.gitter.im/e/b119fa557626081e1f36

@@ -21,34 +21,28 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import bs4 as bs
 import re
 from urllib.request import urlopen
 
-
-def ubuntu_data():
-    url = urlopen("https://people.canonical.com/~ubuntu-security/cve/main.html")
-    data = bs.BeautifulSoup(url, "lxml")
-
-    return data
+import bs4
 
 
-def extracted_data_ubuntu(data):
-    """
-    Scrape vulnerability status.
-    Ubuntu provides a general vulnerability
-    status of a package across all it's releases.
-    """
+UBUNTU_ROOT_URL = 'https://people.canonical.com/~ubuntu-security/cve/main.html'
+
+
+def extract_cves(html):
+    soup = bs4.BeautifulSoup(html, 'lxml')
+
     cve_id = []
     package_name = []
     vulnerability_status = []
 
-    for tag in data.find_all('tr'):
+    for tag in soup.find_all('tr'):
         if re.match('<\w+\s\w+="(\w+)">', str(tag)):
             status = re.findall('<\w+\s\w+="(\w+)">', str(tag))
             vulnerability_status.append(status[0])
 
-    for tag in data.find_all('a'):
+    for tag in soup.find_all('a'):
         href = tag.get('href', None)
 
         if re.findall('^CVE.+', href):
@@ -59,3 +53,12 @@ def extracted_data_ubuntu(data):
             package_name.append(pkg[0])
 
     return cve_id, vulnerability_status, package_name
+
+
+def scrape_cves():
+    """
+    Runs the full scraping process of Ubuntu CVEs.
+    """
+    html = urlopen(UBUNTU_ROOT_URL).read()
+    cves = extract_cves(html)
+    return cves

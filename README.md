@@ -24,5 +24,16 @@ Tests
 -----
 
 ```
+pycodestyle --exclude=migrations,settings.py,lib --max-line-length=100 .
 python3.6 -m pytest -v tests/
+```
+
+Scrape
+------
+
+```
+from scraper import debian, ubuntu
+
+debian.scrape_cves()
+ubuntu.scrape_cves()
 ```

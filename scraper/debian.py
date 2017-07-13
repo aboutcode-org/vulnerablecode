@@ -21,47 +21,35 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import bs4 as bs
+import logging
 import re
 from urllib.request import urlopen
 
-
-def main_data():
-    parent_url = urlopen("https://security-tracker.debian.org/tracker/")
-    data = bs.BeautifulSoup(parent_url, "lxml")
-
-    return data
+import bs4
 
 
-def child_data(data):
-    links = []
-    child_data = ' '
-
-    # Extract links of child datasets
-    for tag in data.find_all('a'):
-        href = tag.get('href')
-
-        if re.findall('^/track+.*', href):
-            links.append(href)
-
-    for child_links in range(6):
-        # Extract package info from all the child datasets
-        child_url = urlopen("https://security-tracker.debian.org"
-                            + links[child_links + 2]).read()
-
-        child_data = child_data + str(child_url)
-
-    return child_data
+DEBIAN_ROOT_URL = 'https://security-tracker.debian.org'
 
 
-def extracted_data_debian(data):
+def extract_tracker_paths(html):
+    """
+    Return a list of tracker URL paths extracted from the given `html` input.
+    """
+    soup = bs4.BeautifulSoup(html, 'lxml')
+    tracker_links = soup.findAll('a', href=re.compile('^/track+.*'))
+    return [link.get('href') for link in tracker_links]
+
+
+def extract_cves_from_tracker(html):
+    """
+    Return all CVEs extracted from the given `html` input.
+    """
     cve_id = []
     package_name = []
     vulnerability_status = []
+    soup = bs4.BeautifulSoup(html, 'lxml')
 
-    data = bs.BeautifulSoup(data, "lxml")
-
-    for tag in data.find_all('a'):
+    for tag in soup.find_all('a'):
         href = tag.get('href')
 
         if re.search('/tracker/CVE-(.+)', href):
@@ -77,13 +65,30 @@ def extracted_data_debian(data):
             package_name.append(pkg[0])
 
         # if package name is empty, use the previous package name
-        if href == "/tracker/source-package/":
+        if href == '/tracker/source-package/':
             package_name.append(pkg)
 
-    for tag in data.find_all('td'):
-        if "medium**" in tag or "medium" in tag or "low" in tag or "low**" in tag or "not yet assigned" in tag:
+    for tag in soup.find_all('td'):
+        if 'medium**' in tag or 'medium' in tag or 'low' in tag or 'low**' in tag or 'not yet assigned' in tag:
             vulnerability_status.append(tag.text)
-        elif tag.find_all("span", {"class": "red"}) and tag.text == "high**" or tag.text == "high":
+        elif tag.find_all('span', {'class': 'red'}) and tag.text == 'high**' or tag.text == 'high':
             vulnerability_status.append(tag.text)
 
     return cve_id, package_name, vulnerability_status
+
+
+def scrape_cves():
+    """
+    Runs the full scraping process of Debian CVEs.
+    """
+    tracker_root_html = urlopen(f'{DEBIAN_ROOT_URL}/tracker/').read()
+    tracker_paths = extract_tracker_paths(tracker_root_html)
+
+    cves = []
+    for tracker_path in tracker_paths:
+        tracker_url = f'{DEBIAN_ROOT_URL}{tracker_path}/'
+        logging.info(f'Visiting: {tracker_url}')
+        html = urlopen(tracker_url).read()
+        cves.append(extract_cves_from_tracker(html))
+
+    return cves

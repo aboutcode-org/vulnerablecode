@@ -26,21 +26,19 @@ import re
 from urllib.request import urlopen
 
 
-def debian_data():
-    cve_id = []
-    package_name = []
-    vulnerability_status = []
-    links = []
-
+def main_data():
     parent_url = urlopen("https://security-tracker.debian.org/tracker/")
     data = bs.BeautifulSoup(parent_url, "lxml")
 
     return data
 
 
-def extracted_data_debian(data):
+def child_data(data):
+    links = []
+    child_data = ' '
+
     # Extract links of child datasets
-    for tag in soup.find_all('a'):
+    for tag in data.find_all('a'):
         href = tag.get('href')
 
         if re.findall('^/track+.*', href):
@@ -49,33 +47,43 @@ def extracted_data_debian(data):
     for child_links in range(6):
         # Extract package info from all the child datasets
         child_url = urlopen("https://security-tracker.debian.org"
-                            + links[child_links + 2])
-        soup = bs.BeautifulSoup(child_url, "lxml")
+                            + links[child_links + 2]).read()
 
-        for tag in soup.find_all('a'):
-            href = tag.get('href')
+        child_data = child_data + str(child_url)
 
-            if re.search('/tracker/CVE-(.+)', href):
-                id = re.findall('(?<=/tracker/).*', href)
-                cve_id.append(id[0])
+    return child_data
 
-            if re.search('^/tracker/TEMP-+.*', href):
-                id = re.findall('(?<=/tracker/).*', href)
-                cve_id.append(id[0])
 
-            if re.search('/tracker/source-package/(.+)', href):
-                pkg = re.findall('(?<=/tracker/source-package/).*', href)
-                package_name.append(pkg[0])
+def extracted_data_debian(data):
+    cve_id = []
+    package_name = []
+    vulnerability_status = []
 
-            # if package name is empty, use the previous package name
-            if href == "/tracker/source-package/":
-                package_name.append(pkg)
+    data = bs.BeautifulSoup(data, "lxml")
 
-        for tag in soup.find_all('td'):
+    for tag in data.find_all('a'):
+        href = tag.get('href')
 
-            if "medium**" in tag or "medium" in tag or "low" in tag or "low**" in tag or "not yet assigned" in tag:
-                vulnerability_status.append(tag.text)
-            elif tag.find_all("span", {"class": "red"}) and tag.text == "high**" or tag.text == "high":
-                vulnerability_status.append(tag.text)
+        if re.search('/tracker/CVE-(.+)', href):
+            id = re.findall('(?<=/tracker/).*', href)
+            cve_id.append(id[0])
+
+        if re.search('^/tracker/TEMP-+.*', href):
+            id = re.findall('(?<=/tracker/).*', href)
+            cve_id.append(id[0])
+
+        if re.search('/tracker/source-package/(.+)', href):
+            pkg = re.findall('(?<=/tracker/source-package/).*', href)
+            package_name.append(pkg[0])
+
+        # if package name is empty, use the previous package name
+        if href == "/tracker/source-package/":
+            package_name.append(pkg)
+
+    for tag in data.find_all('td'):
+        if "medium**" in tag or "medium" in tag or "low" in tag or "low**" in tag or "not yet assigned" in tag:
+            vulnerability_status.append(tag.text)
+        elif tag.find_all("span", {"class": "red"}) and tag.text == "high**" or tag.text == "high":
+            vulnerability_status.append(tag.text)
 
     return cve_id, package_name, vulnerability_status

@@ -22,9 +22,6 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import bs4 as bs
-from mock import Mock
-import pytest
-from urllib.request import urlopen
 
 # Ubuntu test data
 ubuntu_test_data = """
@@ -63,7 +60,6 @@ def test_ubuntu_data():
 
 def test_debian_data():
     from scraper import debian
-    # test_data = bs.BeautifulSoup(debian_test_data, "lxml")
     extracted_data = debian.extracted_data_debian(debian_test_data)
 
     assert extracted_data == (['CVE-2016-5416'],

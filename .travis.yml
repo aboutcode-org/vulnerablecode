@@ -1,0 +1,7 @@
+language: python
+python: 3.6
+
+install: pip install pycodestyle
+
+before_script:
+  - pycodestyle --exclude=migrations,settings.py --max-line-length=100 .

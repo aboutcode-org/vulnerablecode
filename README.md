@@ -24,5 +24,5 @@ Tests
 -----
 
 ```
-python3.6 -m pytest -v
+python3.6 -m pytest -v tests/
 ```

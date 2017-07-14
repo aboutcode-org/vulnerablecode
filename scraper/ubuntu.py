@@ -21,37 +21,44 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import bs4 as bs 
 import re
 from urllib.request import urlopen
 
+import bs4
 
-def ubuntu_data():
-	cve_id = []
-	package_name = []
-	vulnerability_status = []
-	
-	url = urlopen("https://people.canonical.com/~ubuntu-security/cve/main.html")
-	soup = bs.BeautifulSoup (url, "lxml")
-	
-	"""
-	Scrape vulnerability status.
-	Ubuntu provides a general vulnerability 
-	status of a package across all it's releases. 
-	"""
-	for tag in soup.find_all('tr'):
-		if re.match('<\w+\s\w+="(\w+)">', str(tag)):
-			status = re.findall('<\w+\s\w+="(\w+)">', str(tag))
-			vulnerability_status.append(status[0])
 
-	for tag in soup.find_all('a'):
-		href = tag.get ('href', None)
+UBUNTU_ROOT_URL = 'https://people.canonical.com/~ubuntu-security/cve/main.html'
 
-		if re.findall ('^CVE.+', href): 
-			cve_id.append(href)
-		
-		if re.match('\pkg+.*', href):
-			pkg = re.findall ('pkg/(.+)\.html', href)
-			package_name.append(pkg[0])
 
-	return cve_id, package_name, vulnerability_status
+def extract_cves(html):
+    soup = bs4.BeautifulSoup(html, 'lxml')
+
+    cve_id = []
+    package_name = []
+    vulnerability_status = []
+
+    for tag in soup.find_all('tr'):
+        if re.match('<\w+\s\w+="(\w+)">', str(tag)):
+            status = re.findall('<\w+\s\w+="(\w+)">', str(tag))
+            vulnerability_status.append(status[0])
+
+    for tag in soup.find_all('a'):
+        href = tag.get('href', None)
+
+        if re.findall('^CVE.+', href):
+            cve_id.append(href)
+
+        if re.match('pkg+.*', href):
+            pkg = re.findall('pkg/(.+)\.html', href)
+            package_name.append(pkg[0])
+
+    return cve_id, vulnerability_status, package_name
+
+
+def scrape_cves():
+    """
+    Runs the full scraping process of Ubuntu CVEs.
+    """
+    html = urlopen(UBUNTU_ROOT_URL).read()
+    cves = extract_cves(html)
+    return cves

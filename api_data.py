@@ -52,4 +52,4 @@ def extract_fields(data, fields_names):
     cve-search' api. Takes as input data, fields requested
     """
     return [{name: item.get(name) for name in fields_names}
-        for item in data]
+            for item in data]

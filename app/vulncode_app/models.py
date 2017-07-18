@@ -37,7 +37,7 @@ class Vulnerability(models.Model):
 
 class VulnerabilityReference(models.Model):
     """
-    Stores one or more remote web site references about a software
+    One or more remote web site references about a software
     vulnerability data on such as a CVE ID and its web page
     at the NVD, a bug id and similar references.
     """

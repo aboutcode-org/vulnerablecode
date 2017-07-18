@@ -26,11 +26,17 @@ from django.db import models
 
 
 class Vulnerability(models.Model):
+    """
+    Stores summary and cvss id of a vulnerability.
+    """
     summary = models.TextField(max_length=50, help_text="Summary of the vulnerability")
     cvss = models.FloatField(max_length=50, help_text="CVSS Score")
 
 
 class VulnerabilityReference(models.Model):
+    """
+    Stores reference data for a vulnerability. 
+    """
     vulnerability = models.ForeignKey('Vulnerability')
     source = models.CharField(max_length=50, help_text="Source's name eg:NVD")
     reference_id = models.CharField(max_length=50, help_text="Reference ID, eg:CVE-ID")
@@ -38,24 +44,36 @@ class VulnerabilityReference(models.Model):
 
 
 class ImpactedPackage(models.Model):
+    """
+    Links vulnerability to the package(s) impacted. 
+    """
     vulnerability = models.ForeignKey('Vulnerability')
     package = models.ForeignKey('Package')
 
 
 class ResolvedPackage(models.Model):
+    """
+    Links vulnerability to resolved package(s).    
+    """
     vulnerability = models.ForeignKey('Vulnerability')
     package = models.ForeignKey('Package')
 
 
 class Package(models.Model):
+    """
+    Stores data about a package. 
+    """
     platform = models.CharField(max_length=50, help_text="Package platform eg:maven")
     name = models.CharField(max_length=50, help_text="Package name")
     version = models.CharField(max_length=50, help_text="Pacakge version")
 
 
 class PackageReference(models.Model):
+    """
+    Stores package reference data.
+    """
     package = models.ForeignKey('Package')
-    repository = models.CharField(max_length=50,
+    repository = models.CharField(max_length=1024,
                                   help_text="Repository URL eg:http://central.maven.org")
     platform = models.CharField(max_length=50,
                                 help_text="Platform eg:maven")

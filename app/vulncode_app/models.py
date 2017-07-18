@@ -27,25 +27,35 @@ from django.db import models
 
 class Vulnerability(models.Model):
     """
-    Stores summary and cvss id of a vulnerability.
+    A software vulnerability with minimal information.
+    Identifiers are stored as VulnerabilityReference.
     """
-    summary = models.TextField(max_length=50, help_text="Summary of the vulnerability")
-    cvss = models.FloatField(max_length=50, help_text="CVSS Score")
+    summary = models.TextField(max_length=1024,
+                               help_text="Summary of the vulnerability")
+    cvss = models.FloatField(help_text="CVSS Score")
 
 
 class VulnerabilityReference(models.Model):
     """
-    Stores reference data for a vulnerability. 
+    Stores one or more remote web site references about a software
+    vulnerability data on such as a CVE ID and its web page
+    at the NVD, a bug id and similar references.
     """
     vulnerability = models.ForeignKey('Vulnerability')
-    source = models.CharField(max_length=50, help_text="Source's name eg:NVD")
-    reference_id = models.CharField(max_length=50, help_text="Reference ID, eg:CVE-ID")
-    url = models.URLField(max_length=1024, help_text="URL of Vulnerability data")
+    source = models.CharField(max_length=50,
+                              help_text="Source's name eg:NVD")
+    reference_id = models.CharField(max_length=50,
+                                    help_text="Reference ID, eg:CVE-ID")
+    url = models.URLField(max_length=1024,
+                          help_text="URL of Vulnerability data")
+
+    class Meta:
+        unique_together = ('vulnerability', 'source', 'reference_id')
 
 
 class ImpactedPackage(models.Model):
     """
-    Links vulnerability to the package(s) impacted. 
+    Relates a vulnerability to package(s) impacted by it.
     """
     vulnerability = models.ForeignKey('Vulnerability')
     package = models.ForeignKey('Package')
@@ -53,7 +63,8 @@ class ImpactedPackage(models.Model):
 
 class ResolvedPackage(models.Model):
     """
-    Links vulnerability to resolved package(s).    
+    Relates a vulnerability to package(s) that contain
+    a fix or resolution of this vulnerability.
     """
     vulnerability = models.ForeignKey('Vulnerability')
     package = models.ForeignKey('Package')
@@ -61,16 +72,22 @@ class ResolvedPackage(models.Model):
 
 class Package(models.Model):
     """
-    Stores data about a package. 
+    A software package with minimal identifying information.
+    Other identifiers are stored as PackageReference.
     """
-    platform = models.CharField(max_length=50, help_text="Package platform eg:maven")
+    platform = models.CharField(max_length=50,
+                                help_text="Package platform eg:maven")
     name = models.CharField(max_length=50, help_text="Package name")
     version = models.CharField(max_length=50, help_text="Pacakge version")
+
+    class Meta:
+        unique_together = ('platform', 'name', 'version')
 
 
 class PackageReference(models.Model):
     """
-    Stores package reference data.
+    One or more identifiers and references for a software package
+    in a package repository, such as a Debian, Maven or NPM repository.
     """
     package = models.ForeignKey('Package')
     repository = models.CharField(max_length=1024,

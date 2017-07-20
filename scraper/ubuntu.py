@@ -33,17 +33,9 @@ UBUNTU_ROOT_URL = 'https://people.canonical.com/~ubuntu-security/cve/main.html'
 def extract_cves(html):
     soup = bs4.BeautifulSoup(html, 'lxml')
 
-    count = 0
-
     cve_id = []
     package_name = []
     vulnerability_status = []
-
-    fields = [cve_id, vulnerability_status, package_name]
-
-    fieldss = ['cve_id', 'vulnerability_status', 'package_name']
-
-    cve = {}
 
     for tag in soup.find_all('tr'):
         if re.match('<\w+\s\w+="(\w+)">', str(tag)):

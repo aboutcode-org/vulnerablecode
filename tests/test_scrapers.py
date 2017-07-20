@@ -46,10 +46,11 @@ def test_ubuntu_extract_cves():
     """
 
     expected = (
-        ['CVE-2002-2439'],
-        ['High'],
-        ['gcc-4.4'],
+        [{'cve_id': 'CVE-2002-2439',
+          'package_name': 'gcc-4.4',
+          'vulnerability_status': 'High'}]
     )
+
     assert expected == ubuntu.extract_cves(test_input)
 
 
@@ -117,9 +118,9 @@ def test_debian_extract_cves_from_tracker():
     """
 
     expected = (
-        ['CVE-2016-5416'],
-        ['389-ds-base'],
-        ['not yet assigned'],
+        [{'cve_id': 'CVE-2016-5416',
+          'package_name': '389-ds-base',
+          'vulnerability_status': 'not yet assigned'}]
     )
 
     assert expected == debian.extract_cves_from_tracker(test_input)

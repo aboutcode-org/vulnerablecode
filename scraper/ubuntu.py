@@ -52,12 +52,7 @@ def extract_cves(html):
             pkg = re.findall('pkg/(.+)\.html', href)
             package_name.append(pkg[0])
 
-    return([{'cve_id': cve_id,
-             'package_name': name,
-             'vulnerability_status': status}
-           for cve_id, name, status in zip(cve_id,
-                                           package_name,
-                                           vulnerability_status)])
+    return cve_id, vulnerability_status, package_name
 
 
 def scrape_cves():

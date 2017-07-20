@@ -74,12 +74,7 @@ def extract_cves_from_tracker(html):
         elif tag.find_all('span', {'class': 'red'}) and tag.text == 'high**' or tag.text == 'high':
             vulnerability_status.append(tag.text)
 
-    return([{'cve_id': cve_id,
-             'package_name': name,
-             'vulnerability_status': status}
-             for cve_id, name, status in zip(cve_id,
-                                             package_name,
-                                             vulnerability_status)])
+    return cve_id, package_name, vulnerability_status
 
 
 def scrape_cves():

@@ -24,7 +24,7 @@ Tests
 -----
 
 ```
-pycodestyle --exclude=migrations,settings.py,lib --max-line-length=100 .
+pycodestyle --exclude=migrations,settings.py,lib,tests --max-line-length=100 .
 python3.6 -m pytest -v tests/
 ```
 

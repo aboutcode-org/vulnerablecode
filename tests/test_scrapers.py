@@ -21,36 +21,40 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+from os.path import join, dirname
+
 from scraper import ubuntu
 from scraper import debian
 
 
 def test_ubuntu_extract_cves():
-    test_input = """
-    <tr class="High">
-        <td class="cve"><a href="CVE-2002-2439">CVE-2002-2439</a></td>
-        <td class="pkg"><a href="pkg/gcc-4.4.html">gcc-4.4</a></td>
-        <td class="needs-triage">needs-triage*</td>
-        <td class="needs-triage">needs-triage</td>
-        <td class="DNE">DNE</td>
-        <td class="DNE">DNE</td>
-        <td class="DNE">DNE</td>
-        <td class="DNE">DNE</td>
-        <td class="DNE">DNE</td>
-        <td style="">
-            <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-2439">Mitre</a>
-            <a href="https://launchpad.net/bugs/cve/CVE-2002-2439">LP</a>
-            <a href="http://security-tracker.debian.org/tracker/CVE-2002-2439">Debian</a>
-        </td>
-    </tr>
-    """
+    ubuntu_testfile = join(dirname(__file__), 'ubuntu', 'main.html')
 
-    expected = (
-        ['CVE-2002-2439'],
-        ['High'],
-        ['gcc-4.4'],
-    )
-    assert expected == ubuntu.extract_cves(test_input)
+    with open(ubuntu_testfile) as f:
+        test_input = f.read()
+
+    cves = ubuntu.extract_cves(test_input)
+
+    expected = {
+        'cve_id': 'CVE-2002-2439',
+        'package_name': 'gcc-4.6',
+        'vulnerability_status': 'low'
+    }
+    assert expected == cves[0]
+
+    expected = {
+        'cve_id': 'CVE-2013-0157',
+        'package_name': 'util-linux',
+        'vulnerability_status': 'low',
+    }
+    assert expected == cves[50]
+
+    expected = {
+        'cve_id': 'CVE-2017-9986',
+        'package_name': 'linux-lts-xenial',
+        'vulnerability_status': 'medium',
+    }
+    assert expected == cves[-1]
 
 
 def test_debian_extract_tracker_paths():

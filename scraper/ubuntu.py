@@ -21,7 +21,6 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import re
 from urllib.request import urlopen
 
 import bs4
@@ -33,26 +32,19 @@ UBUNTU_ROOT_URL = 'https://people.canonical.com/~ubuntu-security/cve/main.html'
 def extract_cves(html):
     soup = bs4.BeautifulSoup(html, 'lxml')
 
-    cve_id = []
-    package_name = []
-    vulnerability_status = []
+    # Exclude the header row which has no class attribute
+    rows = soup.find_all('tr', attrs={'class': True})
 
-    for tag in soup.find_all('tr'):
-        if re.match('<\w+\s\w+="(\w+)">', str(tag)):
-            status = re.findall('<\w+\s\w+="(\w+)">', str(tag))
-            vulnerability_status.append(status[0])
+    cves = []
+    for row in rows:
+        columns = row.text.split()
+        cves.append({
+            'cve_id': columns[0],
+            'package_name': columns[1],
+            'vulnerability_status': row.get('class')[0],
+        })
 
-    for tag in soup.find_all('a'):
-        href = tag.get('href', None)
-
-        if re.findall('^CVE.+', href):
-            cve_id.append(href)
-
-        if re.match('pkg+.*', href):
-            pkg = re.findall('pkg/(.+)\.html', href)
-            package_name.append(pkg[0])
-
-    return cve_id, vulnerability_status, package_name
+    return cves
 
 
 def scrape_cves():

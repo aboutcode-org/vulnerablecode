@@ -22,59 +22,26 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import logging
-import re
 from urllib.request import urlopen
+import json
 
 import bs4
 
-
-DEBIAN_ROOT_URL = 'https://security-tracker.debian.org'
-
-
-def extract_tracker_paths(html):
-    """
-    Return a list of tracker URL paths extracted from the given `html` input.
-    """
-    soup = bs4.BeautifulSoup(html, 'lxml')
-    tracker_links = soup.findAll('a', href=re.compile('^/track+.*'))
-    return [link.get('href') for link in tracker_links]
+DEBIAN_ROOT_URL = "https://security-tracker.debian.org/tracker/data/json"
 
 
-def extract_cves_from_tracker(html):
+def debian_extract_data():
     """
     Return all CVEs extracted from the given `html` input.
     """
-    cve_id = []
-    package_name = []
-    vulnerability_status = []
-    soup = bs4.BeautifulSoup(html, 'lxml')
+    test_input = urlopen("https://security-tracker.debian.org/tracker/data/json").read()
 
-    for tag in soup.find_all('a'):
-        href = tag.get('href')
+    fields_names = ['status', 'urgency', 'fixed_version']
 
-        if re.search('/tracker/CVE-(.+)', href):
-            id = re.findall('(?<=/tracker/).*', href)
-            cve_id.append(id[0])
-
-        if re.search('^/tracker/TEMP-+.*', href):
-            id = re.findall('(?<=/tracker/).*', href)
-            cve_id.append(id[0])
-
-        if re.search('/tracker/source-package/(.+)', href):
-            pkg = re.findall('(?<=/tracker/source-package/).*', href)
-            package_name.append(pkg[0])
-
-        # if package name is empty, use the previous package name
-        if href == '/tracker/source-package/':
-            package_name.append(pkg)
-
-    for tag in soup.find_all('td'):
-        if 'medium' in tag or 'low' in tag or 'not yet assigned' in tag:
-            vulnerability_status.append(tag.text)
-        elif tag.find_all('span', {'class': 'red'}) and tag.text == 'high**' or tag.text == 'high':
-            vulnerability_status.append(tag.text)
-
-    return cve_id, package_name, vulnerability_status
+    return [{name: version_detail.get(name) for name in fields_names}
+            for package_name, vulnerabilities in data.items()
+            for vulnerability, details in vulnerabilities.items()
+            for distro, version_detail in details.get('releases', {'jessie'}).items()]
 
 
 def scrape_cves():

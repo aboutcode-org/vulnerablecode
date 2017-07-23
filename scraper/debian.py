@@ -24,24 +24,41 @@
 import logging
 from urllib.request import urlopen
 import json
-
-import bs4
+from collections import defaultdict
 
 DEBIAN_ROOT_URL = "https://security-tracker.debian.org/tracker/data/json"
 
 
 def debian_extract_data():
     """
-    Return all CVEs extracted from the given `html` input.
+    Return a dictionary of package names and vulnerability details.
     """
-    test_input = urlopen("https://security-tracker.debian.org/tracker/data/json").read()
+    raw_data = urlopen(DEBIAN_ROOT_URL).read()
+    data = json.loads(raw_data)
+
+    cves = []
+    package_names = []
 
     fields_names = ['status', 'urgency', 'fixed_version']
 
-    return [{name: version_detail.get(name) for name in fields_names}
-            for package_name, vulnerabilities in data.items()
-            for vulnerability, details in vulnerabilities.items()
-            for distro, version_detail in details.get('releases', {'jessie'}).items()]
+    for package_name, vulnerabilities in data.items():
+        package_names.append(package_name)
+        for vulnerability, details in vulnerabilities.items():
+            cves.append(vulnerability)
+
+    cve_data = [{name: version_detail.get(name) for name in fields_names}
+                for package_name, vulnerabilities in data.items()
+                for vulnerability, details in vulnerabilities.items()
+                for distro, version_detail in details.get('releases', {'jessie'}).items()]
+
+    package_data = {package_names[i]: cves[i] for i, j in enumerate(package_names)}
+
+    final_data = {}
+
+    for k, v in enumerate(package_data):
+        final_data.setdefault(v, []).append(cve_data[k])
+
+    return final_data
 
 
 def scrape_cves():

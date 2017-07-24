@@ -53,11 +53,11 @@ def extract_data(data):
     fields_names = ['status', 'urgency', 'fixed_version']
 
     for package_name, vulnerabilities in data.items():
-         package_names.append(package_name)
+        package_names.append(package_name)
         for vulnerability, details in vulnerabilities.items():
             cves.append(vulnerability)
-                for distro, version_detail in details.get('releases', {'jessie'}).items():
-                    for name in fields_names:
+            for distro, version_detail in details.get('releases', {'jessie'}).items():
+                for name in fields_names:
                         cve_data[name] = version_detail.get(name)
 
     for i, j in enumerate(package_names):

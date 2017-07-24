@@ -21,7 +21,6 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import logging
 from urllib.request import urlopen
 import json
 from collections import defaultdict
@@ -29,12 +28,21 @@ from collections import defaultdict
 DEBIAN_ROOT_URL = "https://security-tracker.debian.org/tracker/data/json"
 
 
-def debian_extract_data():
+def json_data():
     """
-    Return a dictionary of package names and vulnerability details.
+    Return JSON of Debian vulnerability data.
     """
     raw_data = urlopen(DEBIAN_ROOT_URL).read()
-    data = json.loads(raw_data)
+    json_data = json.loads(raw_data)
+
+    return json_data
+
+
+def extract_data(data):
+    """
+    Return a dictionary of package names and vulnerability details.
+    Accepts `JSON` as input.
+    """
 
     cves = []
     package_names = []
@@ -59,20 +67,3 @@ def debian_extract_data():
         final_data.setdefault(v, []).append(cve_data[k])
 
     return final_data
-
-
-def scrape_cves():
-    """
-    Runs the full scraping process of Debian CVEs.
-    """
-    tracker_root_html = urlopen(f'{DEBIAN_ROOT_URL}/tracker/').read()
-    tracker_paths = extract_tracker_paths(tracker_root_html)
-
-    cves = []
-    for tracker_path in tracker_paths:
-        tracker_url = f'{DEBIAN_ROOT_URL}{tracker_path}/'
-        logging.info(f'Visiting: {tracker_url}')
-        html = urlopen(tracker_url).read()
-        cves.append(extract_cves_from_tracker(html))
-
-    return cves

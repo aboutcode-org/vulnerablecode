@@ -67,26 +67,30 @@ def test_debian_extract_data():
     test_data = json.loads(test_input)
 
     expected = {
-                'git-repair': {
-                    "TEMP-0807341-84E914": {
-                                    "status": "open",
-                                    "urgency": "unimportant"}}
-                'mimetex': {
-                    "CVE-2009-1382": {
-                                    'fixed_version': '1.50-1.1',
-                                    'status': 'resolved',
-                                    'urgency': 'medium'},
-
-                    "CVE-2009-2459": {
-                                    'fixed_version': '1.50-1.1',
-                                    'status': 'resolved',
-                                    'urgency': 'medium'}}
-
-                'sysvinit': {
-                    "TEMP-0517018-A83CE6": {
-                            'fixed_version': '1.50-1.1',
-                            'status': 'resolved',
-                            'urgency': 'medium'}}
-                        }
+        'git-repair': {
+            'TEMP-0807341-84E914': {
+                'status': 'open',
+                'urgency': 'unimportant',
+            }
+        },
+        'mimetex': {
+            'CVE-2009-1382': {
+                'fixed_version': '1.50-1.1',
+                'status': 'resolved',
+                'urgency': 'medium',
+            },
+            'CVE-2009-2459': {
+                'fixed_version': '1.50-1.1',
+                'status': 'not-resolved',
+                'urgency': 'medium'
+            },
+        },
+        'sysvinit': {
+            'TEMP-0517018-A83CE6': {
+                'status': 'open',
+                'urgency': 'unimportant',
+            },
+        },
+    }
 
     assert expected == debian.extract_data(test_data)

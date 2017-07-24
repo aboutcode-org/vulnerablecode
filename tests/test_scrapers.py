@@ -22,6 +22,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 from os.path import join, dirname
+import json
 
 from scraper import ubuntu
 from scraper import debian
@@ -57,73 +58,35 @@ def test_ubuntu_extract_cves():
     assert expected == cves[-1]
 
 
-def test_debian_extract_tracker_paths():
-    test_input = """
-    <ul>
-        <li><a href="/tracker/status/release/unstable">Vulnerable packages in the unstable suite</a></li>
-        <li><a href="/tracker/status/release/testing">Vulnerable packages in the testing suite</a></li>
-        <li><a href="/tracker/status/release/stable">Vulnerable packages in the stable suite</a></li>
-        <li><a href="/tracker/status/release/stable-backports">Vulnerable packages in backports for stable</a></li>
-        <li><a href="/tracker/status/release/oldstable">Vulnerable packages in the oldstable suite</a></li>
-        <li><a href="/tracker/status/release/oldstable-backports">Vulnerable packages in backports for oldstable</a></li>
-        <li><a href="/tracker/status/release/oldoldstable">Vulnerable packages in the oldoldstable suite</a></li>
-        <li><a href="/tracker/status/release/oldoldstable-backports">Vulnerable packages in backports for oldoldstable</a></li>
-        <li><a href="/tracker/status/dtsa-candidates">Candidates for DTSAs</a></li>
-        <li><a href="/tracker/status/todo">TODO items</a></li>
-        <li><a href="/tracker/status/undetermined">Packages that may be vulnerable but need to be checked (undetermined issues)</a></li>
-        <li><a href="/tracker/status/unimportant">Packages that have open unimportant issues</a></li>
-        <li><a href="/tracker/status/itp">ITPs with potential security issues</a></li>
-        <li><a href="/tracker/status/unreported">Open vulnerabilities without filed Debian bugs</a></li>
-        <li><a href="/tracker/data/unknown-packages">Packages names not found in the archive</a></li>
-        <li><a href="/tracker/data/fake-names">Tracked issues without a CVE name</a></li>
-        <li><a href="/tracker/data/missing-epochs">Package versions which might lack an epoch</a></li>
-        <li><a href="/tracker/data/latently-vulnerable">Packages which are latently vulnerable in unstable</a></li>
-        <li><a href="/tracker/data/funny-versions">Packages with strange version numbers</a></li>
-        <li><a href="/tracker/data/releases">Covered Debian releases and architectures</a></li>
-        <li><a href="/tracker/data/json">All information in JSON format</a></li>
-    </ul>
-    """
+def test_debian_extract_data():
+    debian_test_file = join(dirname(__file__), 'test_data', 'debian.json')
 
-    expected = [
-        '/tracker/status/release/unstable',
-        '/tracker/status/release/testing',
-        '/tracker/status/release/stable',
-        '/tracker/status/release/stable-backports',
-        '/tracker/status/release/oldstable',
-        '/tracker/status/release/oldstable-backports',
-        '/tracker/status/release/oldoldstable',
-        '/tracker/status/release/oldoldstable-backports',
-        '/tracker/status/dtsa-candidates',
-        '/tracker/status/todo',
-        '/tracker/status/undetermined',
-        '/tracker/status/unimportant',
-        '/tracker/status/itp',
-        '/tracker/status/unreported',
-        '/tracker/data/unknown-packages',
-        '/tracker/data/fake-names',
-        '/tracker/data/missing-epochs',
-        '/tracker/data/latently-vulnerable',
-        '/tracker/data/funny-versions',
-        '/tracker/data/releases',
-        '/tracker/data/json',
-    ]
+    with open(debian_test_file) as f:
+        test_input = f.read()
 
-    assert expected == debian.extract_tracker_paths(test_input)
+    test_data = json.loads(test_input)
 
+    expected = {
+                'git-repair': {
+                    "TEMP-0807341-84E914": {
+                                    "status": "open",
+                                    "urgency": "unimportant"}}
+                'mimetex': {
+                    "CVE-2009-1382": {
+                                    'fixed_version': '1.50-1.1',
+                                    'status': 'resolved',
+                                    'urgency': 'medium'},
 
-def test_debian_extract_cves_from_tracker():
-    test_input = """
-    <tr>
-        <td><a href="/tracker/source-package/389-ds-base">389-ds-base</a></td>
-        <td><a href="/tracker/CVE-2016-5416">CVE-2016-5416</a></td>
-        <td>not yet assigned</td><td>?</td>
-    </tr>
-    """
+                    "CVE-2009-2459": {
+                                    'fixed_version': '1.50-1.1',
+                                    'status': 'resolved',
+                                    'urgency': 'medium'}}
 
-    expected = (
-        ['CVE-2016-5416'],
-        ['389-ds-base'],
-        ['not yet assigned'],
-    )
+                'sysvinit': {
+                    "TEMP-0517018-A83CE6": {
+                            'fixed_version': '1.50-1.1',
+                            'status': 'resolved',
+                            'urgency': 'medium'}}
+                        }
 
-    assert expected == debian.extract_cves_from_tracker(test_input)
+    assert expected == debian.extract_data(test_data)

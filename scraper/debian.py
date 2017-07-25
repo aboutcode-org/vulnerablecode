@@ -23,7 +23,6 @@
 
 from urllib.request import urlopen
 import json
-from collections import defaultdict
 
 DEBIAN_ROOT_URL = "https://security-tracker.debian.org/tracker/data/json"
 
@@ -32,8 +31,8 @@ def json_data():
     """
     Return JSON of Debian vulnerability data.
     """
-    raw_data = urlopen(DEBIAN_ROOT_URL).read()
-    json_data = json.loads(raw_data)
+    debian_data = urlopen(DEBIAN_ROOT_URL).read()
+    json_data = json.loads(debian_data)
 
     return json_data
 
@@ -43,27 +42,19 @@ def extract_data(data):
     Return a dictionary of package names and vulnerability details.
     Accepts `JSON` as input.
     """
-
-    cves = []
-    package_names = []
-    package_data = {}
-    cve_data = {}
-    final_data = {}
-
-    fields_names = ['status', 'urgency', 'fixed_version']
+    final_data = []
 
     for package_name, vulnerabilities in data.items():
-        package_names.append(package_name)
         for vulnerability, details in vulnerabilities.items():
-            cves.append(vulnerability)
-            for distro, version_detail in details.get('releases', {'jessie'}).items():
-                for name in fields_names:
-                        cve_data[name] = version_detail.get(name)
-
-    for i, j in enumerate(package_names):
-        package_data[package_names[i]] = [cves[i]]
-
-    for k, v in enumerate(package_data):
-        final_data.setdefault(k, []).append(cve_data[k])
+            for distro, version_detail in details.get('releases', {}).items():
+                if distro == 'jessie':
+                    final_data.append({
+                        "package_name": package_name,
+                        "vulnerability_id": vulnerability,
+                        "status": version_detail.get('status'),
+                        "Urgency": version_detail.get("urgency"),
+                        "Fixed_Version": version_detail.get("fixed_version")
+                            }
+                        )
 
     return final_data

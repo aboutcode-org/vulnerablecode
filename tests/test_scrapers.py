@@ -67,15 +67,15 @@ def test_debian_extract_data():
     test_data = json.loads(test_input)
 
     expected = [{
-                    'fixed_Version': '1.50-1.1',
+                    'fixed_version': '1.50-1.1',
                     'package_name': 'mimetex',
                     'status': 'resolved',
                     'urgency': 'medium',
-                    'vulnerability_id': 'CVE-2009-1382'
+                    'vulnerability_id': ''
                 },
 
                 {
-                    'fixed_Version': '1.50-1.1',
+                    'fixed_version': '1.50-1.1',
                     'package_name': 'mimetex',
                     'status': 'not-resolved',
                     'urgency': 'medium',
@@ -83,7 +83,7 @@ def test_debian_extract_data():
                 },
 
                 {
-                    'fixed_Version': None,
+                    'fixed_version': None,
                     'package_name': 'git-repair',
                     'status': 'open',
                     'urgency': 'unimportant',
@@ -91,10 +91,10 @@ def test_debian_extract_data():
                 },
 
                 {
-                    'fixed_Version': None,
+                    'fixed_version': None,
                     'package_name': 'sysvinit',
-                    'status': 'open',
-                    'urgency': 'unimportant',
+                    'status': None,
+                    'urgency': None,
                     'vulnerability_id': 'TEMP-0517018-A83CE6'
                 }]
 

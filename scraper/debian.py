@@ -23,6 +23,7 @@
 
 from urllib.request import urlopen
 import json
+import pprint
 
 DEBIAN_ROOT_URL = "https://security-tracker.debian.org/tracker/data/json"
 
@@ -32,7 +33,7 @@ def json_data():
     Return JSON of Debian vulnerability data.
     """
     debian_data = urlopen(DEBIAN_ROOT_URL).read()
-    json_data = json.loads(debian_data)
+    json_data = json.loads(test_input)
 
     return json_data
 
@@ -46,7 +47,11 @@ def extract_data(data):
 
     for package_name, vulnerabilities in data.items():
         for vulnerability, details in vulnerabilities.items():
-            release_data = details.get('releases').get('jessie', {})
+            release_data = details.get('releases').get('jessie')
+
+            if release_data is None:
+                continue
+
             final_data.append({
                 "package_name": package_name,
                 "vulnerability_id": vulnerability,

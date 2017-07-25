@@ -32,7 +32,7 @@ def json_data():
     Return JSON of Debian vulnerability data.
     """
     debian_data = urlopen(DEBIAN_ROOT_URL).read()
-    json_data = json.loads(test_input)
+    json_data = json.loads(debian_data)
 
     return json_data
 

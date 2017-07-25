@@ -21,43 +21,47 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from urllib.request import urlopen
 import json
+from urllib.request import urlopen
 
-DEBIAN_ROOT_URL = "https://security-tracker.debian.org/tracker/data/json"
+
+DEBIAN_TRACKER_URL = 'https://security-tracker.debian.org/tracker/data/json'
 
 
-def json_data():
+def json_data(url=DEBIAN_TRACKER_URL):
     """
-    Return JSON of Debian vulnerability data.
+    Return Debian vulnerabilities data fetched from `url`.
     """
-    debian_data = urlopen(DEBIAN_ROOT_URL).read()
-    json_data = json.loads(debian_data)
-
-    return json_data
+    debian_data = urlopen(url).read()
+    return json.loads(debian_data)
 
 
-def extract_data(data):
+def extract_data(debian_data, base_release='jessie'):
     """
-    Return a dictionary of package names and vulnerability details.
-    Accepts `JSON` as input.
+    Return a sequence of mappings for each existing combination of
+    package and vulnerability from a mapping of Debian vulnerabilities
+    data.
     """
-    final_data = []
+    package_vulns = []
 
-    for package_name, vulnerabilities in data.items():
+    for package_name, vulnerabilities in debian_data.items():
+        if not vulnerabilities or not package_name:
+            continue
+
         for vulnerability, details in vulnerabilities.items():
-            release_data = details.get('releases').get('jessie')
-
-            if release_data is None:
+            releases = details.get('releases')
+            if not releases:
                 continue
 
-            final_data.append({
-                "package_name": package_name,
-                "vulnerability_id": vulnerability,
-                "status": release_data.get("status"),
-                "urgency": release_data.get("urgency"),
-                "fixed_version": release_data.get("fixed_version")
-                    }
-                )
+            release = releases.get(base_release)
+            if not release:
+                continue
 
-    return final_data
+            package_vulns.append({
+                'package_name': package_name,
+                'vulnerability_id': vulnerability,
+                'status': release.get('status'),
+                'urgency': release.get('urgency'),
+                'fixed_version': release.get('fixed_version')
+            })
+    return package_vulns

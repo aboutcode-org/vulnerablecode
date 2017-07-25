@@ -71,7 +71,7 @@ def test_debian_extract_data():
                     'package_name': 'mimetex',
                     'status': 'resolved',
                     'urgency': 'medium',
-                    'vulnerability_id': ''
+                    'vulnerability_id': 'CVE-2009-2458'
                 },
 
                 {
@@ -88,14 +88,6 @@ def test_debian_extract_data():
                     'status': 'open',
                     'urgency': 'unimportant',
                     'vulnerability_id': 'TEMP-0807341-84E914'
-                },
-
-                {
-                    'fixed_version': None,
-                    'package_name': 'sysvinit',
-                    'status': None,
-                    'urgency': None,
-                    'vulnerability_id': 'TEMP-0517018-A83CE6'
                 }]
 
     assert expected == debian.extract_data(test_data)

@@ -46,14 +46,14 @@ def extract_data(data):
 
     for package_name, vulnerabilities in data.items():
         for vulnerability, details in vulnerabilities.items():
-            for distro, version_detail in details.get('releases', {}).items():
-                if distro == 'jessie':
+            for distro, version_detail in details.get("releases", {}).items():
+                if distro == "jessie":
                     final_data.append({
                         "package_name": package_name,
                         "vulnerability_id": vulnerability,
-                        "status": version_detail.get('status'),
-                        "Urgency": version_detail.get("urgency"),
-                        "Fixed_Version": version_detail.get("fixed_version")
+                        "status": version_detail.get("status"),
+                        "urgency": version_detail.get("urgency"),
+                        "fixed_Version": version_detail.get("fixed_version")
                             }
                         )
 

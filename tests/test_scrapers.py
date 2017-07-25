@@ -21,11 +21,12 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from os.path import join, dirname
 import json
+from os.path import dirname
+from os.path import join
 
-from scraper import ubuntu
 from scraper import debian
+from scraper import ubuntu
 
 
 def test_ubuntu_extract_cves():
@@ -62,32 +63,30 @@ def test_debian_extract_data():
     debian_test_file = join(dirname(__file__), 'test_data', 'debian.json')
 
     with open(debian_test_file) as f:
-        test_input = f.read()
+        test_data = json.loads(f.read())
 
-    test_data = json.loads(test_input)
-
-    expected = [{
-                    'fixed_version': '1.50-1.1',
-                    'package_name': 'mimetex',
-                    'status': 'resolved',
-                    'urgency': 'medium',
-                    'vulnerability_id': 'CVE-2009-2458'
-                },
-
-                {
-                    'fixed_version': '1.50-1.1',
-                    'package_name': 'mimetex',
-                    'status': 'not-resolved',
-                    'urgency': 'medium',
-                    'vulnerability_id': 'CVE-2009-2459'
-                },
-
-                {
-                    'fixed_version': None,
-                    'package_name': 'git-repair',
-                    'status': 'open',
-                    'urgency': 'unimportant',
-                    'vulnerability_id': 'TEMP-0807341-84E914'
-                }]
+    expected = [
+        {
+            'fixed_version': '1.50-1.1',
+            'package_name': 'mimetex',
+            'status': 'resolved',
+            'urgency': 'medium',
+            'vulnerability_id': 'CVE-2009-2458'
+        },
+        {
+            'fixed_version': '1.50-1.1',
+            'package_name': 'mimetex',
+            'status': 'not-resolved',
+            'urgency': 'medium',
+            'vulnerability_id': 'CVE-2009-2459'
+        },
+        {
+            'fixed_version': None,
+            'package_name': 'git-repair',
+            'status': 'open',
+            'urgency': 'unimportant',
+            'vulnerability_id': 'TEMP-0807341-84E914'
+        }
+    ]
 
     assert expected == debian.extract_data(test_data)

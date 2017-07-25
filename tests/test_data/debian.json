@@ -1,6 +1,6 @@
 {"mimetex": {
 
-"CVE-2009-1382": {
+"": {
 	"scope": "remote", 
 	"debianbug": 537254, 
 	"description": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX, when downloaded before 20090713, allow remote attackers to execute arbitrary code via a TeX file with long (1) picture, (2) circle, or (3) input tags.", 
@@ -84,10 +84,6 @@
 				{"status": "open",
 				 "repositories": {"stretch": "2.88dsf-59.9"}, 
 				 "urgency": "unimportant"}, 
-			"jessie": 
-				{"status": "open", 
-				"repositories": {"jessie": "2.88dsf-59"}, 
-			    "urgency": "unimportant"}, 
 
 			"buster": 	
 				{"status": "open", 

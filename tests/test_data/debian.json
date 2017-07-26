@@ -1,0 +1,105 @@
+{"mimetex": {
+
+"CVE-2009-2458": {
+	"scope": "remote", 
+	"debianbug": 537254, 
+	"description": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX, when downloaded before 20090713, allow remote attackers to execute arbitrary code via a TeX file with long (1) picture, (2) circle, or (3) input tags.", 
+	"releases": 
+		{"stretch": 
+			{"status": "resolved", 
+			 "repositories": {"stretch": "1.74-1"}, 
+			 "urgency": "medium", 
+			 "fixed_version": "1.50-1.1"}, 
+		"jessie": 
+			{"status": "resolved", 
+			"repositories": {"jessie": "1.74-1"}, 
+			"urgency": "medium", 
+			"fixed_version": "1.50-1.1"}, 
+		"buster": 
+			{"status": "resolved", 
+			"repositories": {"buster": "1.74-1"}, 
+			"urgency": "medium", 
+			"fixed_version": "1.50-1.1"}, 
+		"wheezy": 
+			{"status": "resolved", 
+			"repositories": {"wheezy": "1.73-2"}, 
+			"urgency": "medium", 
+			"fixed_version": "1.50-1.1"}, 
+		"sid": 
+			{"status": "resolved", 
+			"repositories": {"sid": "1.74-1"}, 
+			"urgency": "medium", 
+			"fixed_version": "1.50-1.1"}}}, 
+
+"CVE-2009-2459": 
+	{"scope": "un-remote", 
+	"debianbug": 537254, 
+	"description": "Multiple unspecified vulnerabilities in mimeTeX, when downloaded before 20090713, have unknown impact and attack vectors related to the (1) \\environ, (2) \\input, and (3) \\counter TeX directives.", 
+	"releases": 
+	{"stretch": 
+		{"status": "resolved", 
+		"repositories": {"stretch": "1.74-1"}, 
+		"urgency": "medium", 
+		"fixed_version": "1.50-1.1"}, 
+	"jessie": 
+		{"status": "not-resolved", 
+		"repositories": {"jessie": "1.74-1"}, 
+		"urgency": "medium", 
+		"fixed_version": "1.50-1.1"}, 
+	"buster": 
+		{"status": "resolved", 
+		"repositories": {"buster": "1.74-1"}, 
+		"urgency": "medium", 
+		"fixed_version": "1.50-1.1"}, 
+	"wheezy": 
+		{"status": "resolved", 
+		"repositories": {"wheezy": "1.73-2"},
+		"urgency": "medium", 
+		"fixed_version": "1.50-1.1"}, 
+	"sid": 
+		{"status": "resolved", 
+		"repositories": {"sid": "1.74-1"}, 
+		"urgency": "medium", 
+		"fixed_version": "1.50-1.1"}}}}, 
+
+"git-repair": {
+	"TEMP-0807341-84E914": 
+		{"debianbug": 807341, 
+		"releases": 
+			{"jessie": 
+				{"status": "open", 
+				 "repositories": {"jessie": "1.20140914"}, 
+				 "urgency": "unimportant"}, 
+			"sid": 
+				{"status": "resolved", 
+				"repositories": {"sid": "1.20151215-1"}, 
+		 		"urgency": "unimportant", 
+		 		"fixed_version": "1.20151215-1"}}}}, 
+
+"sysvinit": {
+	"TEMP-0517018-A83CE6": 
+		{"debianbug": 517018, 
+		"releases": 
+			{"stretch": 
+				{"status": "open",
+				 "repositories": {"stretch": "2.88dsf-59.9"}, 
+				 "urgency": "unimportant"}, 
+
+			"buster": 	
+				{"status": "open", 
+				"repositories": {"buster": "2.88dsf-59.9"}, 
+				"urgency": "unimportant"}, 
+
+			"wheezy": 
+				{"status": "open", 
+				"repositories": {"wheezy": "2.88dsf-41+deb7u1"}, 
+				"urgency": "unimportant"}, 
+
+			"sid": 		
+				{"status": "open", 
+				"repositories": {"sid": "2.88dsf-59.9"}, 
+				"urgency": "unimportant"}
+				}	
+			}
+		}
+	} 

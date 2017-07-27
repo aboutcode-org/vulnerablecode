@@ -3,7 +3,7 @@
 "CVE-2009-2458": {
 	"scope": "remote", 
 	"debianbug": 537254, 
-	"description": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX, when downloaded before 20090713, allow remote attackers to execute arbitrary code via a TeX file with long (1) picture, (2) circle, or (3) input tags.", 
+	"description": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX", 
 	"releases": 
 		{"stretch": 
 			{"status": "resolved", 
@@ -34,7 +34,7 @@
 "CVE-2009-2459": 
 	{"scope": "un-remote", 
 	"debianbug": 537254, 
-	"description": "Multiple unspecified vulnerabilities in mimeTeX, when downloaded before 20090713, have unknown impact and attack vectors related to the (1) \\environ, (2) \\input, and (3) \\counter TeX directives.", 
+	"description": "Multiple unspecified vulnerabilities in mimeTeX.", 
 	"releases": 
 	{"stretch": 
 		{"status": "resolved", 

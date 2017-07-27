@@ -24,7 +24,6 @@
 import json
 from urllib.request import urlopen
 
-
 DEBIAN_TRACKER_URL = 'https://security-tracker.debian.org/tracker/data/json'
 
 
@@ -60,6 +59,7 @@ def extract_data(debian_data, base_release='jessie'):
             package_vulns.append({
                 'package_name': package_name,
                 'vulnerability_id': vulnerability,
+                'description': details.get('description'),
                 'status': release.get('status'),
                 'urgency': release.get('urgency'),
                 'fixed_version': release.get('fixed_version')

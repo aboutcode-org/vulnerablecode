@@ -42,17 +42,9 @@ class TestDataDump(TestCase):
         with open("tests/test_data/debian.json") as f:
             test_data = json.loads(f.read())
 
-        extract_data = debian.extract_data(test_data)
+        debian_extract_data = debian.extract_data(test_data)
+        data_dump = debian_dump(debian_extract_data)
 
-        for data in extract_data:
-            vulnerability = Vulnerability(summary=data.get('description'))
-            vulnerability_reference = VulnerabilityReference(reference_id=data.get('vulnerability_id'))
-            package = Package(name=data.get('package_name'), version=data.get('fixed_version'))
-
-            vulnerability.save()
-            vulnerability_reference.save()
-            package.save()
-
-        self.assertEqual(getattr(vulnerability, 'summary'), None)
-        self.assertEqual(getattr(vulnerability_reference, 'reference_id'), "TEMP-0807341-84E914")
-        self.assertEqual(getattr(package, 'name'), "git-repair")
+        self.assertEqual(data_dump[0].summary, None)
+        self.assertEqual(data_dump[1].reference_id, "TEMP-0807341-84E914")
+        self.assertEqual(data_dump[2].name, "git-repair")

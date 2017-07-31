@@ -32,13 +32,17 @@ from scraper import debian
 from scraper import ubuntu
 
 
-def debian_dump():
-    """
-    Dump data scraped from Debian' security tracker.
-    """
+def data_debian_dump():
     json_data = debian.json_data()
     extract_data = debian.extract_data(json_data)
 
+    return extract_data
+
+
+def debian_dump(extract_data):
+    """
+    Dump data scraped from Debian' security tracker.
+    """
     for data in extract_data:
         vulnerability = Vulnerability(summary=data.get('description'))
         vulnerability_reference = VulnerabilityReference(reference_id=data.get('vulnerability_id'))
@@ -47,6 +51,8 @@ def debian_dump():
         vulnerability.save()
         vulnerability_reference.save()
         package.save()
+
+    return vulnerability, vulnerability_reference, package
 
 
 def ubuntu_dump():

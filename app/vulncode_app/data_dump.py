@@ -28,11 +28,13 @@ from vulncode_app.models import ResolvedPackage
 from vulncode_app.models import Package
 from vulncode_app.models import PackageReference
 
-from scraper import debian
-from scraper import ubuntu
+from scraper import debian, ubuntu
 
 
-def data_debian_dump():
+def debian_data():
+    """
+    Scrape debian' security tracker.
+    """
     json_data = debian.json_data()
     extract_data = debian.extract_data(json_data)
 
@@ -52,15 +54,21 @@ def debian_dump(extract_data):
         vulnerability_reference.save()
         package.save()
 
-    return vulnerability, vulnerability_reference, package
+        return vulnerability, vulnerability_reference, package
+
+
+def ubuntu_data():
+    """
+    Scrape Ubuntu' main security tracker.
+    """
+    data = ubuntu.scrape_cves()
+    return data
 
 
 def ubuntu_dump():
     """
     Dump data scraped from Ubuntu's security tracker.
     """
-    data = ubuntu.scrape_cves()
-
     for data in extract_data:
         vulnerability_reference = VulnerabilityReference(reference_id=data.get('cve_id'))
         package = ImpactedPackage(name=data.get('package_name'))

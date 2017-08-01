@@ -43,7 +43,7 @@ def debian_data():
 
 def debian_dump(extract_data):
     """
-    Dump data scraped from Debian' security tracker.
+    Save data scraped from Debian' security tracker.
     """
     for data in extract_data:
         vulnerability = Vulnerability(summary=data.get('description'))
@@ -53,8 +53,6 @@ def debian_dump(extract_data):
         vulnerability.save()
         vulnerability_reference.save()
         package.save()
-
-        return vulnerability, vulnerability_reference, package
 
 
 def ubuntu_data():

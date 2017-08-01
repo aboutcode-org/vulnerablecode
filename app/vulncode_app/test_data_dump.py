@@ -45,7 +45,11 @@ class TestDataDump(TestCase):
         extract_data = debian.extract_data(test_data)
         data_dump = debian_dump(extract_data)
 
-        self.assertEqual(data_dump[0].summary, extract_data[0].get('description'))
-        self.assertEqual(data_dump[1].reference_id, extract_data[0].get('vulnerability_id'))
-        self.assertEqual(data_dump[2].name, extract_data[0].get('package_name'))
-        self.assertEqual(data_dump[2].version, extract_data[0].get('fixed_version'))
+        for i in range(3):       
+        	self.assertEqual(3, len(Vulnerability.objects.all()))
+        	self.assertEqual(3, len(VulnerabilityReference.objects.all()))
+        	self.assertEqual(3, len(Package.objects.all()))
+        	self.assertEqual(extract_data[i].get('description'), Vulnerability.objects.get(pk=i+1).summary)
+        	self.assertEqual(extract_data[i].get('vulnerability_id'), VulnerabilityReference.objects.get(pk=i+1).reference_id)
+        	self.assertEqual(extract_data[i].get('package_name'), Package.objects.get(pk=i+1).name)
+        	self.assertEqual(extract_data[i].get('fixed_version'), Package.objects.get(pk=i+1).version)

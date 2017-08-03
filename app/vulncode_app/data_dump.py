@@ -31,45 +31,23 @@ from vulncode_app.models import PackageReference
 from scraper import debian, ubuntu
 
 
-def debian_data():
-    """
-    Scrape debian' security tracker.
-    """
-    json_data = debian.json_data()
-    extract_data = debian.extract_data(json_data)
-
-    return extract_data
-
-
 def debian_dump(extract_data):
     """
     Save data scraped from Debian' security tracker.
     """
     for data in extract_data:
-        vulnerability = Vulnerability(summary=data.get('description'))
-        vulnerability_reference = VulnerabilityReference(reference_id=data.get('vulnerability_id'))
-        package = Package(name=data.get('package_name'), version=data.get('fixed_version'))
-
-        vulnerability.save()
-        vulnerability_reference.save()
-        package.save()
+        vulnerability = Vulnerability.objects.create(summary=data.get('description'))
+        vulnerability_ref = VulnerabilityReference.objects.create(
+                                                  reference_id=data.get('vulnerability_id'))
+        package = Package.objects.create(name=data.get('package_name'),
+                                         version=data.get('fixed_version'))
 
 
-def ubuntu_data():
-    """
-    Scrape Ubuntu' main security tracker.
-    """
-    data = ubuntu.scrape_cves()
-    return data
-
-
-def ubuntu_dump():
+def ubuntu_dump(html):
     """
     Dump data scraped from Ubuntu's security tracker.
     """
-    for data in extract_data:
-        vulnerability_reference = VulnerabilityReference(reference_id=data.get('cve_id'))
-        package = ImpactedPackage(name=data.get('package_name'))
-
-        vulnerability_reference.save()
-        package.save()
+    for data in html:
+        vulnerability_reference = VulnerabilityReference.objects.create(
+                                                         reference_id=data.get('cve_id'))
+        package = Package.objects.create(name=data.get('package_name'))

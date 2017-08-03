@@ -30,7 +30,7 @@ from scraper import ubuntu
 
 
 def test_ubuntu_extract_cves():
-    ubuntu_testfile = join(dirname(__file__), 'ubuntu', 'main.html')
+    ubuntu_testfile = join(dirname(__file__), 'test_data', 'ubuntu_main.html')
 
     with open(ubuntu_testfile) as f:
         test_input = f.read()

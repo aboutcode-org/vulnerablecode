@@ -9,7 +9,8 @@ before_script:
   - pycodestyle --exclude=migrations,settings.py,lib,tests --max-line-length=100 .
 
 script:
-  - python3.6 -m pytest -v app/tests/
+  - cd app/
+  - python3.6 -m pytest -v tests/
 
 notifications:
   email: false

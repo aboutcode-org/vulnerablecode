@@ -23,7 +23,7 @@
 
 import json
 
-from api_data import extract_fields
+from vulncode_app.api_data import extract_fields
 
 
 test_data = """

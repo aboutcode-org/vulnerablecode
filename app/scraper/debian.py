@@ -65,3 +65,13 @@ def extract_data(debian_data, base_release='jessie'):
                 'fixed_version': release.get('fixed_version')
             })
     return package_vulns
+
+
+def debian_data():
+    """
+    Scrape debian' security tracker.
+    """
+    data = json_data()
+    extracted_data = extract_data(data)
+
+    return extracted_data

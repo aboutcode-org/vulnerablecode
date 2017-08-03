@@ -26,15 +26,21 @@ from django.db import models
 
 
 class Vulnerability(models.Model):
-    summary = models.TextField(max_length=50, help_text="Summary of the vulnerability")
-    cvss = models.FloatField(max_length=50, help_text="CVSS Score")
+    summary = models.TextField(max_length=50, help_text="Summary of the vulnerability", null=True)
+    cvss = models.FloatField(max_length=50, help_text="CVSS Score", null=True)
+
+    def __str__(self):
+        return self.summary
 
 
 class VulnerabilityReference(models.Model):
-    vulnerability = models.ForeignKey('Vulnerability')
-    source = models.CharField(max_length=50, help_text="Source's name eg:NVD")
-    reference_id = models.CharField(max_length=50, help_text="Reference ID, eg:CVE-ID")
-    url = models.URLField(max_length=1024, help_text="URL of Vulnerability data")
+    vulnerability = models.ForeignKey('Vulnerability', null=True)
+    source = models.CharField(max_length=50, help_text="Source's name eg:NVD", null=True)
+    reference_id = models.CharField(max_length=50, help_text="Reference ID, eg:CVE-ID", null=True)
+    url = models.URLField(max_length=1024, help_text="URL of Vulnerability data", null=True)
+
+    def __str__(self):
+        return self.reference_id
 
 
 class ImpactedPackage(models.Model):
@@ -48,18 +54,24 @@ class ResolvedPackage(models.Model):
 
 
 class Package(models.Model):
-    platform = models.CharField(max_length=50, help_text="Package platform eg:maven")
-    name = models.CharField(max_length=50, help_text="Package name")
-    version = models.CharField(max_length=50, help_text="Pacakge version")
+    platform = models.CharField(max_length=50, help_text="Package platform eg:maven", null=True)
+    name = models.CharField(max_length=50, help_text="Package name", null=True)
+    version = models.CharField(max_length=50, help_text="Pacakge version", null=True)
+
+    def __str__(self):
+        return self.name
 
 
 class PackageReference(models.Model):
-    package = models.ForeignKey('Package')
+    package = models.ForeignKey('Package', null=True)
     repository = models.CharField(max_length=50,
-                                  help_text="Repository URL eg:http://central.maven.org")
+                                  help_text="Repository URL eg:http://central.maven.org", null=True)
     platform = models.CharField(max_length=50,
-                                help_text="Platform eg:maven")
+                                help_text="Platform eg:maven", null=True)
     name = models.CharField(max_length=50,
-                            help_text="Package reference name eg:org.apache.commons.io")
+                            help_text="Package reference name eg:org.apache.commons.io", null=True)
     version = models.CharField(max_length=50,
-                               help_text="Reference version")
+                               help_text="Reference version", null=True)
+
+    def __str__(self):
+        return self.platform

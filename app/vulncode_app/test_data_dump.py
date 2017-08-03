@@ -27,16 +27,17 @@ from vulncode_app.models import Vulnerability
 from vulncode_app.models import VulnerabilityReference
 from vulncode_app.models import Package
 from vulncode_app.data_dump import debian_dump
+from vulncode_app.data_dump import ubuntu_dump
 
 import json
 
-from scraper import debian
+from scraper import debian, ubuntu
 
 
 class TestDataDump(TestCase):
-    def test_data_dump(self):
+    def test_debian_data_dump(self):
         """
-        Scrape data from Debian' main tracker, dump it
+        Scrape data from Debian' main tracker, save it
         in the database and verify entries.
         """
         with open("tests/test_data/debian.json") as f:
@@ -45,15 +46,55 @@ class TestDataDump(TestCase):
         extract_data = debian.extract_data(test_data)
         data_dump = debian_dump(extract_data)
 
-        for i in range(3):
-            self.assertEqual(3, len(Vulnerability.objects.all()))
-            self.assertEqual(3, len(VulnerabilityReference.objects.all()))
-            self.assertEqual(3, len(Package.objects.all()))
-            self.assertEqual(extract_data[i].get('description'),
-                             Vulnerability.objects.get(pk=i+1).summary)
-            self.assertEqual(extract_data[i].get('vulnerability_id'),
-                             VulnerabilityReference.objects.get(pk=i+1).reference_id)
-            self.assertEqual(extract_data[i].get('package_name'),
-                             Package.objects.get(pk=i+1).name)
-            self.assertEqual(extract_data[i].get('fixed_version'),
-                             Package.objects.get(pk=i+1).version)
+        self.assertEqual(3, Vulnerability.objects.count())
+        self.assertEqual(3, VulnerabilityReference.objects.count())
+        self.assertEqual(3, Package.objects.count())
+
+        vulnerability = Vulnerability.objects.get(pk=1)
+        self.assertEqual('Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX',
+                         vulnerability.summary)
+
+        vulnerability = Vulnerability.objects.get(pk=2)
+        self.assertEqual('Multiple unspecified vulnerabilities in mimeTeX.',
+                         vulnerability.summary)
+
+        vulnerability = Vulnerability.objects.get(pk=3)
+        self.assertEqual(None, vulnerability.summary)
+
+        vulnerability_reference = VulnerabilityReference.objects.get(pk=1)
+        self.assertEqual("CVE-2009-2458", vulnerability_reference.reference_id)
+
+        vulnerability_reference = VulnerabilityReference.objects.get(pk=2)
+        self.assertEqual("CVE-2009-2459", vulnerability_reference.reference_id)
+
+        vulnerability_reference = VulnerabilityReference.objects.get(pk=3)
+        self.assertEqual("TEMP-0807341-84E914", vulnerability_reference.reference_id)
+
+        package = Package.objects.get(pk=1)
+        self.assertEqual("mimetex", package.name)
+
+        package = Package.objects.get(pk=3)
+        self.assertEqual("git-repair", package.name)
+
+        package = Package.objects.get(pk=1)
+        self.assertEqual("1.50-1.1", package.version)
+
+        package = Package.objects.get(pk=3)
+        self.assertEqual(None, package.version)
+
+    def test_ubuntu_data_dump(self):
+        """
+        Scrape data from Ubuntu' main tracker, save it
+        in the database and verify entries.
+        """
+        with open("tests/test_data/ubuntu_main.html") as f:
+            test_data = f.read()
+
+        data = ubuntu.extract_cves(test_data)
+        data_dump = ubuntu_dump(data)
+
+        vuln_reference = VulnerabilityReference.objects.get(pk=1)
+        self.assertEqual("CVE-2002-2439", vuln_reference.reference_id)
+
+        package = Package.objects.get(pk=1)
+        self.assertEqual("gcc-4.6", package.name)

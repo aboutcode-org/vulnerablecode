@@ -50,37 +50,26 @@ class TestDataDump(TestCase):
         self.assertEqual(3, VulnerabilityReference.objects.count())
         self.assertEqual(3, Package.objects.count())
 
-        vulnerability = Vulnerability.objects.get(pk=1)
-        self.assertEqual('Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX',
-                         vulnerability.summary)
+        self.assertTrue(Vulnerability.objects.get(
+                        summary='Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX'))
 
-        vulnerability = Vulnerability.objects.get(pk=2)
-        self.assertEqual('Multiple unspecified vulnerabilities in mimeTeX.',
-                         vulnerability.summary)
+        self.assertTrue(Vulnerability.objects.get(
+                        summary='Multiple unspecified vulnerabilities in mimeTeX.'))
 
-        vulnerability = Vulnerability.objects.get(pk=3)
-        self.assertEqual(None, vulnerability.summary)
+        self.assertTrue(Vulnerability.objects.get(summary=None))
 
-        vulnerability_reference = VulnerabilityReference.objects.get(pk=1)
-        self.assertEqual("CVE-2009-2458", vulnerability_reference.reference_id)
+        self.assertTrue(VulnerabilityReference.objects.get(
+                        reference_id="CVE-2009-2458"))
 
-        vulnerability_reference = VulnerabilityReference.objects.get(pk=2)
-        self.assertEqual("CVE-2009-2459", vulnerability_reference.reference_id)
+        self.assertTrue(VulnerabilityReference.objects.get(
+                        reference_id="CVE-2009-2459"))
 
-        vulnerability_reference = VulnerabilityReference.objects.get(pk=3)
-        self.assertEqual("TEMP-0807341-84E914", vulnerability_reference.reference_id)
+        self.assertTrue(VulnerabilityReference.objects.get(
+                        reference_id="TEMP-0807341-84E914"))
 
-        package = Package.objects.get(pk=1)
-        self.assertEqual("mimetex", package.name)
-
-        package = Package.objects.get(pk=3)
-        self.assertEqual("git-repair", package.name)
-
-        package = Package.objects.get(pk=1)
-        self.assertEqual("1.50-1.1", package.version)
-
-        package = Package.objects.get(pk=3)
-        self.assertEqual(None, package.version)
+        self.assertEqual(Package.objects.filter(name="mimetex")[0].name, "mimetex")
+        self.assertTrue(Package.objects.get(name="git-repair"))
+        self.assertEqual(Package.objects.filter(version="1.50-1.1")[0].version, "1.50-1.1")
 
     def test_ubuntu_data_dump(self):
         """
@@ -93,8 +82,6 @@ class TestDataDump(TestCase):
         data = ubuntu.extract_cves(test_data)
         data_dump = ubuntu_dump(data)
 
-        vuln_reference = VulnerabilityReference.objects.get(pk=1)
-        self.assertEqual("CVE-2002-2439", vuln_reference.reference_id)
-
-        package = Package.objects.get(pk=1)
-        self.assertEqual("gcc-4.6", package.name)
+        self.assertEqual(VulnerabilityReference.objects.filter(
+                         reference_id="CVE-2002-2439")[0].reference_id, "CVE-2002-2439")
+        self.assertTrue(Package.objects.filter(name="gcc-4.6")[0].name, "gcc-4.6")

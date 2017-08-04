@@ -37,3 +37,21 @@ from scraper import debian, ubuntu
 debian.scrape_cves()
 ubuntu.scrape_cves()
 ```
+Saving data scraped from scrapers to the database
+-----
+
+```
+cd app/
+python3 manage.py makemigrations
+python3 manage.py migrate
+python3 manage.py shell
+
+>>>> from vulncode_app.models import Vulnerability
+>>>> from vulncode_app.models import VulnerabilityReference
+>>>> from vulncode_app.models import Package
+>>>> from vulncode_app.data_dump import debian_dump
+>>>> from scraper import debian 
+>>>> import json
+>>>> data = debian.debian_data()
+>>>> debian_dump(data)
+```

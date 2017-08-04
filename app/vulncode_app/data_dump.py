@@ -36,11 +36,13 @@ def debian_dump(extract_data):
     Save data scraped from Debian' security tracker.
     """
     for data in extract_data:
-        vulnerability = Vulnerability.objects.create(summary=data.get('description'))
+        vulnerability = Vulnerability.objects.create(summary=data.get('description', ''))
         vulnerability_ref = VulnerabilityReference.objects.create(
-                                                  reference_id=data.get('vulnerability_id'))
-        package = Package.objects.create(name=data.get('package_name'),
-                                         version=data.get('fixed_version'))
+                                                  vulnerability=vulnerability,
+                                                  reference_id=data.get('vulnerability_id', '')
+                                                )
+        package = Package.objects.create(name=data.get('package_name', ''),
+                                         version=data.get('fixed_version', ''))
 
 
 def ubuntu_dump(html):
@@ -49,5 +51,7 @@ def ubuntu_dump(html):
     """
     for data in html:
         vulnerability_reference = VulnerabilityReference.objects.create(
-                                                         reference_id=data.get('cve_id'))
+                                        vulnerability=Vulnerability.objects.create(summary=''),
+                                        reference_id=data.get('cve_id')
+                                    )
         package = Package.objects.create(name=data.get('package_name'))

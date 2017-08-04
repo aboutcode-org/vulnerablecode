@@ -33,63 +33,53 @@ from vulncode_app.models import PackageReference
 
 class TestVulnerability(TestCase):
     def test_vulnerability(self):
-        summary_create = Vulnerability.objects.create(summary="Affected package xyz")
-        summary_get = Vulnerability.objects.get(pk=1)
+        summary_create = Vulnerability.objects.create(
+                                                summary="Affected package xyz",
+                                                cvss="7.8"
+                                            )
 
-        cvss_create = Vulnerability.objects.create(cvss="7.8")
-        cvss_get = Vulnerability.objects.get(pk=2)
-
-        self.assertEqual("Affected package xyz", summary_get.summary)
-        self.assertEqual(7.8, cvss_get.cvss)
+        self.assertTrue(Vulnerability.objects.get(summary="Affected package xyz"))
+        self.assertTrue(Vulnerability.objects.get(cvss="7.8"))
 
 
 class TestVulnerabilityReference(TestCase):
     def test_vulnerability_reference(self):
-        reference_id_create = VulnerabilityReference.objects.create(reference_id="CVE-2017-8564")
-        reference_id_get = VulnerabilityReference.objects.get(pk=1)
+        data_create = VulnerabilityReference.objects.create(
+                                        vulnerability=Vulnerability.objects.create(summary="XYZ"),
+                                        reference_id="CVE-2017-8564",
+                                        source="NVD",
+                                        url="http://mitre.com"
+                                    )
 
-        source_create = VulnerabilityReference.objects.create(source="NVD")
-        source_get = VulnerabilityReference.objects.get(pk=2)
-
-        url_create = VulnerabilityReference.objects.create(url="http://mitre.com")
-        url_get = VulnerabilityReference.objects.get(pk=3)
-
-        self.assertEqual(reference_id_get.reference_id, "CVE-2017-8564")
-        self.assertEqual(source_get.source, "NVD")
-        self.assertEqual(url_get.url, "http://mitre.com")
+        self.assertTrue(VulnerabilityReference.objects.get(reference_id="CVE-2017-8564"))
+        self.assertTrue(VulnerabilityReference.objects.get(source="NVD"))
+        self.assertTrue(VulnerabilityReference.objects.get(url="http://mitre.com"))
 
 
 class TestPackage(TestCase):
     def test_package(self):
-        name_create = Package.objects.create(name="Firefox")
-        name_get = Package.objects.get(pk=1)
+        data_create = Package.objects.create(
+                                        name="Firefox",
+                                        platform="Maven",
+                                        version="1.5.4"
+                                    )
 
-        platform_create = Package.objects.create(platform="Maven")
-        platform_get = Package.objects.get(pk=2)
-
-        version_create = Package.objects.create(version="1.5.4")
-        version_get = Package.objects.get(pk=3)
-
-        self.assertEqual(name_get.name, "Firefox")
-        self.assertEqual(platform_get.platform, "Maven")
-        self.assertEqual(version_get.version, "1.5.4")
+        self.assertTrue(Package.objects.get(name="Firefox"))
+        self.assertTrue(Package.objects.get(platform="Maven"))
+        self.assertTrue(Package.objects.get(version="1.5.4"))
 
 
 class TestPackageReference(TestCase):
     def test_package_reference(self):
-        platform_create = PackageReference.objects.create(platform="Maven")
-        platform_get = PackageReference.objects.get(pk=1)
+        data_create = PackageReference.objects.create(
+                                            package=Package.objects.create(name="Iceweasel"),
+                                            platform="Maven",
+                                            repository="http://central.maven.org",
+                                            name="org.apache.commons.io",
+                                            version="7.6.5"
+                                        )
 
-        repository_create = PackageReference.objects.create(repository="http://central.maven.org")
-        repository_get = PackageReference.objects.get(pk=2)
-
-        name_create = PackageReference.objects.create(name="org.apache.commons.io")
-        name_get = PackageReference.objects.get(pk=3)
-
-        version_create = PackageReference.objects.create(version="7.6.5")
-        version_get = PackageReference.objects.get(pk=4)
-
-        self.assertEqual(platform_get.platform, "Maven")
-        self.assertEqual(repository_get.repository, "http://central.maven.org")
-        self.assertEqual(name_get.name, "org.apache.commons.io")
-        self.assertEqual(version_get.version, "7.6.5")
+        self.assertTrue(PackageReference.objects.get(platform="Maven"))
+        self.assertTrue(PackageReference.objects.get(repository="http://central.maven.org"))
+        self.assertTrue(PackageReference.objects.get(name="org.apache.commons.io"))
+        self.assertTrue(PackageReference.objects.get(version="7.6.5"))

@@ -85,10 +85,10 @@ def test_debian_extract_data():
         {
             'package_name': 'git-repair',
             'vulnerability_id': 'TEMP-0807341-84E914',
-            'description': None,
+            'description': '',
             'status': 'open',
             'urgency': 'unimportant',
-            'fixed_version': None
+            'fixed_version': ''
         }
     ]
 

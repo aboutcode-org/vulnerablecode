@@ -8,6 +8,8 @@ install:
 before_script:
   - pycodestyle --exclude=migrations,settings.py,lib,tests --max-line-length=100 .
   - cd app/
+  - python3 manage.py makemigrations
+  - python3 manage.py migrate
 
 script:
   - python3.6 -m pytest -v tests/

@@ -11,6 +11,7 @@ before_script:
 
 script:
   - python3.6 -m pytest -v tests/
+  - python3.6 manage.py test
 
 notifications:
   email: false

@@ -56,8 +56,6 @@ class TestDataDump(TestCase):
         self.assertTrue(Vulnerability.objects.get(
                         summary='Multiple unspecified vulnerabilities in mimeTeX.'))
 
-        self.assertTrue(Vulnerability.objects.get(summary=None))
-
         self.assertTrue(VulnerabilityReference.objects.get(
                         reference_id="CVE-2009-2458"))
 

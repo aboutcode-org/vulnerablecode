@@ -26,7 +26,7 @@ from django.db import models
 
 
 class Vulnerability(models.Model):
-    summary = models.TextField(max_length=50, help_text="Summary of the vulnerability", blank=True)
+    summary = models.CharField(max_length=50, help_text="Summary of the vulnerability", blank=True)
     cvss = models.FloatField(max_length=50, help_text="CVSS Score", null=True)
 
     def __str__(self):
@@ -37,7 +37,7 @@ class VulnerabilityReference(models.Model):
     vulnerability = models.ForeignKey('Vulnerability')
     source = models.CharField(max_length=50, help_text="Source's name eg:NVD", blank=True)
     reference_id = models.CharField(max_length=50, help_text="Reference ID, eg:CVE-ID", blank=True)
-    url = models.URLField(max_length=1024, help_text="URL of Vulnerability data", null=True)
+    url = models.URLField(max_length=1024, help_text="URL of Vulnerability data", blank=True)
 
 
 class ImpactedPackage(models.Model):
@@ -53,7 +53,7 @@ class ResolvedPackage(models.Model):
 class Package(models.Model):
     platform = models.CharField(max_length=50, help_text="Package platform eg:maven", blank=True)
     name = models.CharField(max_length=50, help_text="Package name", blank=True)
-    version = models.CharField(max_length=50, help_text="Pacakge version", blank=True)
+    version = models.CharField(max_length=50, help_text="Package version", blank=True)
 
     def __str__(self):
         return self.name

@@ -23,7 +23,6 @@
 
 import json
 from urllib.request import urlopen
-import pprint
 
 DEBIAN_TRACKER_URL = 'https://security-tracker.debian.org/tracker/data/json'
 

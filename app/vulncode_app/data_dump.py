@@ -23,10 +23,7 @@
 
 from vulncode_app.models import Vulnerability
 from vulncode_app.models import VulnerabilityReference
-from vulncode_app.models import ImpactedPackage
-from vulncode_app.models import ResolvedPackage
 from vulncode_app.models import Package
-from vulncode_app.models import PackageReference
 
 from scraper import debian, ubuntu
 
@@ -37,12 +34,14 @@ def debian_dump(extract_data):
     """
     for data in extract_data:
         vulnerability = Vulnerability.objects.create(summary=data.get('description', ''))
-        vulnerability_ref = VulnerabilityReference.objects.create(
-                                                  vulnerability=vulnerability,
-                                                  reference_id=data.get('vulnerability_id', '')
-                                                )
-        package = Package.objects.create(name=data.get('package_name', ''),
-                                         version=data.get('fixed_version', ''))
+        VulnerabilityReference.objects.create(
+                                        vulnerability=vulnerability,
+                                        reference_id=data.get('vulnerability_id', '')
+                                    )
+        Package.objects.create(
+                            name=data.get('package_name', ''),
+                            version=data.get('fixed_version', '')
+                        )
 
 
 def ubuntu_dump(html):
@@ -50,7 +49,7 @@ def ubuntu_dump(html):
     Dump data scraped from Ubuntu's security tracker.
     """
     for data in html:
-        vulnerability_reference = VulnerabilityReference.objects.create(
+        VulnerabilityReference.objects.create(
                                         vulnerability=Vulnerability.objects.create(summary=''),
                                         reference_id=data.get('cve_id')
                                     )

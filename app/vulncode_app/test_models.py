@@ -25,18 +25,16 @@ from django.test import TestCase
 
 from vulncode_app.models import Vulnerability
 from vulncode_app.models import VulnerabilityReference
-from vulncode_app.models import ImpactedPackage
-from vulncode_app.models import ResolvedPackage
 from vulncode_app.models import Package
 from vulncode_app.models import PackageReference
 
 
 class TestVulnerability(TestCase):
     def test_vulnerability(self):
-        summary_create = Vulnerability.objects.create(
-                                                summary="Affected package xyz",
-                                                cvss="7.8"
-                                            )
+        Vulnerability.objects.create(
+                                    summary="Affected package xyz",
+                                    cvss="7.8"
+                                )
 
         self.assertTrue(Vulnerability.objects.get(summary="Affected package xyz"))
         self.assertTrue(Vulnerability.objects.get(cvss="7.8"))
@@ -44,7 +42,7 @@ class TestVulnerability(TestCase):
 
 class TestVulnerabilityReference(TestCase):
     def test_vulnerability_reference(self):
-        data_create = VulnerabilityReference.objects.create(
+        VulnerabilityReference.objects.create(
                                         vulnerability=Vulnerability.objects.create(summary="XYZ"),
                                         reference_id="CVE-2017-8564",
                                         source="NVD",
@@ -58,11 +56,11 @@ class TestVulnerabilityReference(TestCase):
 
 class TestPackage(TestCase):
     def test_package(self):
-        data_create = Package.objects.create(
-                                        name="Firefox",
-                                        platform="Maven",
-                                        version="1.5.4"
-                                    )
+        Package.objects.create(
+                            name="Firefox",
+                            platform="Maven",
+                            version="1.5.4"
+                        )
 
         self.assertTrue(Package.objects.get(name="Firefox"))
         self.assertTrue(Package.objects.get(platform="Maven"))
@@ -71,13 +69,13 @@ class TestPackage(TestCase):
 
 class TestPackageReference(TestCase):
     def test_package_reference(self):
-        data_create = PackageReference.objects.create(
-                                            package=Package.objects.create(name="Iceweasel"),
-                                            platform="Maven",
-                                            repository="http://central.maven.org",
-                                            name="org.apache.commons.io",
-                                            version="7.6.5"
-                                        )
+        PackageReference.objects.create(
+                                        package=Package.objects.create(name="Iceweasel"),
+                                        platform="Maven",
+                                        repository="http://central.maven.org",
+                                        name="org.apache.commons.io",
+                                        version="7.6.5"
+                                    )
 
         self.assertTrue(PackageReference.objects.get(platform="Maven"))
         self.assertTrue(PackageReference.objects.get(repository="http://central.maven.org"))

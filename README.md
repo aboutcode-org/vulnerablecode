@@ -24,8 +24,14 @@ Tests
 -----
 
 ```
-pycodestyle --exclude=migrations,settings.py,lib --max-line-length=100 .
+pycodestyle --exclude=migrations,settings.py,lib,tests --max-line-length=100 .
+cd app/
 python3.6 -m pytest -v tests/
+```
+For Django based tests
+```
+cd app/
+python3 manage.py test
 ```
 
 Scrape

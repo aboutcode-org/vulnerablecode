@@ -78,9 +78,6 @@ class Package(models.Model):
     name = models.CharField(max_length=50, help_text="Package name", blank=True)
     version = models.CharField(max_length=50, help_text="Package version", blank=True)
 
-    class Meta:
-        unique_together = ('platform', 'name', 'version')
-
     def __str__(self):
         return self.name
 

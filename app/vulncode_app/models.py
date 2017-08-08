@@ -29,8 +29,8 @@ class Vulnerability(models.Model):
     A software vulnerability with minimal information.
     Identifiers are stored as VulnerabilityReference.
     """
-    summary = models.CharField(max_length=50, help_text="Summary of the vulnerability", blank=True)
-    cvss = models.FloatField(max_length=50, help_text="CVSS Score", null=True)
+    summary = models.CharField(max_length=50, help_text='Summary of the vulnerability', blank=True)
+    cvss = models.FloatField(max_length=50, help_text='CVSS Score', null=True)
 
     def __str__(self):
         return self.summary
@@ -43,9 +43,9 @@ class VulnerabilityReference(models.Model):
     at the NVD, a bug id and similar references.
     """
     vulnerability = models.ForeignKey('Vulnerability')
-    source = models.CharField(max_length=50, help_text="Source's name eg:NVD", blank=True)
-    reference_id = models.CharField(max_length=50, help_text="Reference ID, eg:CVE-ID", blank=True)
-    url = models.URLField(max_length=1024, help_text="URL of Vulnerability data", blank=True)
+    source = models.CharField(max_length=50, help_text='Source(s) name eg:NVD', blank=True)
+    reference_id = models.CharField(max_length=50, help_text='Reference ID, eg:CVE-ID', blank=True)
+    url = models.URLField(max_length=1024, help_text='URL of Vulnerability data', blank=True)
 
     class Meta:
         unique_together = ('vulnerability', 'source', 'reference_id')
@@ -73,9 +73,9 @@ class Package(models.Model):
     A software package with minimal identifying information.
     Other identifiers are stored as PackageReference.
     """
-    platform = models.CharField(max_length=50, help_text="Package platform eg:maven", blank=True)
-    name = models.CharField(max_length=50, help_text="Package name", blank=True)
-    version = models.CharField(max_length=50, help_text="Package version", blank=True)
+    platform = models.CharField(max_length=50, help_text='Package platform eg:maven', blank=True)
+    name = models.CharField(max_length=50, help_text='Package name', blank=True)
+    version = models.CharField(max_length=50, help_text='Package version', blank=True)
 
     def __str__(self):
         return self.name
@@ -89,22 +89,22 @@ class PackageReference(models.Model):
     package = models.ForeignKey('Package')
     repository = models.CharField(
         max_length=50,
-        help_text="Repository URL eg:http://central.maven.org",
+        help_text='Repository URL eg:http://central.maven.org',
         blank=True,
     )
     platform = models.CharField(
         max_length=50,
-        help_text="Platform eg:maven",
+        help_text='Platform eg:maven',
         blank=True,
     )
     name = models.CharField(
         max_length=50,
-        help_text="Package reference name eg:org.apache.commons.io",
+        help_text='Package reference name eg:org.apache.commons.io',
         blank=True,
     )
     version = models.CharField(
         max_length=50,
-        help_text="Reference version",
+        help_text='Reference version',
         blank=True,
     )
 

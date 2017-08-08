@@ -21,47 +21,41 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import json
-from urllib.request import urlopen
+from vulncode_app.models import Vulnerability
+from vulncode_app.models import VulnerabilityReference
+from vulncode_app.models import Package
 
 
-DEBIAN_TRACKER_URL = 'https://security-tracker.debian.org/tracker/data/json'
-
-
-def json_data(url=DEBIAN_TRACKER_URL):
+def debian_dump(extract_data):
     """
-    Return Debian vulnerabilities data fetched from `url`.
+    Save data scraped from Debian' security tracker.
     """
-    debian_data = urlopen(url).read()
-    return json.loads(debian_data)
+    for data in extract_data:
+        vulnerability = Vulnerability.objects.create(
+            summary=data.get('description', ''),
+        )
+        VulnerabilityReference.objects.create(
+            vulnerability=vulnerability,
+            reference_id=data.get('vulnerability_id', ''),
+        )
+        Package.objects.create(
+            name=data.get('package_name', ''),
+            version=data.get('fixed_version', ''),
+        )
 
 
-def extract_data(debian_data, base_release='jessie'):
+def ubuntu_dump(html):
     """
-    Return a sequence of mappings for each existing combination of
-    package and vulnerability from a mapping of Debian vulnerabilities
-    data.
+    Dump data scraped from Ubuntu's security tracker.
     """
-    package_vulns = []
-
-    for package_name, vulnerabilities in debian_data.items():
-        if not vulnerabilities or not package_name:
-            continue
-
-        for vulnerability, details in vulnerabilities.items():
-            releases = details.get('releases')
-            if not releases:
-                continue
-
-            release = releases.get(base_release)
-            if not release:
-                continue
-
-            package_vulns.append({
-                'package_name': package_name,
-                'vulnerability_id': vulnerability,
-                'status': release.get('status'),
-                'urgency': release.get('urgency'),
-                'fixed_version': release.get('fixed_version')
-            })
-    return package_vulns
+    for data in html:
+        vulnerability = Vulnerability.objects.create(
+            summary='',
+        )
+        VulnerabilityReference.objects.create(
+            vulnerability=vulnerability,
+            reference_id=data.get('cve_id'),
+        )
+        Package.objects.create(
+            name=data.get('package_name'),
+        )

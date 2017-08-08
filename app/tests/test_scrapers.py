@@ -30,7 +30,7 @@ from scraper import ubuntu
 
 
 def test_ubuntu_extract_cves():
-    ubuntu_testfile = join(dirname(__file__), 'ubuntu', 'main.html')
+    ubuntu_testfile = join(dirname(__file__), 'test_data', 'ubuntu_main.html')
 
     with open(ubuntu_testfile) as f:
         test_input = f.read()
@@ -59,7 +59,7 @@ def test_ubuntu_extract_cves():
     assert expected == cves[-1]
 
 
-def test_debian_extract_data():
+def test_debian_extract_vulnerabilities():
     debian_test_file = join(dirname(__file__), 'test_data', 'debian.json')
 
     with open(debian_test_file) as f:
@@ -71,22 +71,25 @@ def test_debian_extract_data():
             'package_name': 'mimetex',
             'status': 'resolved',
             'urgency': 'medium',
-            'vulnerability_id': 'CVE-2009-2458'
+            'vulnerability_id': 'CVE-2009-2458',
+            'description': 'Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX'
         },
         {
             'fixed_version': '1.50-1.1',
             'package_name': 'mimetex',
             'status': 'not-resolved',
             'urgency': 'medium',
-            'vulnerability_id': 'CVE-2009-2459'
+            'vulnerability_id': 'CVE-2009-2459',
+            'description': 'Multiple unspecified vulnerabilities in mimeTeX.'
         },
         {
-            'fixed_version': None,
             'package_name': 'git-repair',
+            'vulnerability_id': 'TEMP-0807341-84E914',
+            'description': '',
             'status': 'open',
             'urgency': 'unimportant',
-            'vulnerability_id': 'TEMP-0807341-84E914'
+            'fixed_version': ''
         }
     ]
 
-    assert expected == debian.extract_data(test_data)
+    assert expected == debian.extract_vulnerabilities(test_data)

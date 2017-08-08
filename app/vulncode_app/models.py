@@ -21,7 +21,6 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from __future__ import unicode_literals
 from django.db import models
 
 
@@ -89,15 +88,25 @@ class PackageReference(models.Model):
     """
     package = models.ForeignKey('Package')
     repository = models.CharField(
-                        max_length=50,
-                        help_text="Repository URL eg:http://central.maven.org", blank=True
-                    )
-    platform = models.CharField(max_length=50,
-                                help_text="Platform eg:maven", blank=True)
-    name = models.CharField(max_length=50,
-                            help_text="Package reference name eg:org.apache.commons.io", blank=True)
-    version = models.CharField(max_length=50,
-                               help_text="Reference version", blank=True)
+        max_length=50,
+        help_text="Repository URL eg:http://central.maven.org",
+        blank=True,
+    )
+    platform = models.CharField(
+        max_length=50,
+        help_text="Platform eg:maven",
+        blank=True,
+    )
+    name = models.CharField(
+        max_length=50,
+        help_text="Package reference name eg:org.apache.commons.io",
+        blank=True,
+    )
+    version = models.CharField(
+        max_length=50,
+        help_text="Reference version",
+        blank=True,
+    )
 
     def __str__(self):
         return self.platform

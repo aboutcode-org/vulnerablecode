@@ -40,7 +40,7 @@ class TestDataDump(TestCase):
         Scrape data from Debian' main tracker, save it
         in the database and verify entries.
         """
-        with open("tests/test_data/debian.json") as f:
+        with open('tests/test_data/debian.json') as f:
             test_data = json.loads(f.read())
 
         extract_data = debian.extract_vulnerabilities(test_data)
@@ -56,27 +56,27 @@ class TestDataDump(TestCase):
         self.assertTrue(Vulnerability.objects.get(
                         summary='Multiple unspecified vulnerabilities in mimeTeX.'))
 
-        self.assertTrue(VulnerabilityReference.objects.get(reference_id="CVE-2009-2458"))
+        self.assertTrue(VulnerabilityReference.objects.get(reference_id='CVE-2009-2458'))
 
-        self.assertTrue(VulnerabilityReference.objects.get(reference_id="CVE-2009-2459"))
+        self.assertTrue(VulnerabilityReference.objects.get(reference_id='CVE-2009-2459'))
 
-        self.assertTrue(VulnerabilityReference.objects.get(reference_id="TEMP-0807341-84E914"))
+        self.assertTrue(VulnerabilityReference.objects.get(reference_id='TEMP-0807341-84E914'))
 
-        self.assertEqual(Package.objects.filter(name="mimetex")[0].name, "mimetex")
-        self.assertTrue(Package.objects.get(name="git-repair"))
-        self.assertEqual(Package.objects.filter(version="1.50-1.1")[0].version, "1.50-1.1")
+        self.assertEqual(Package.objects.filter(name='mimetex')[0].name, 'mimetex')
+        self.assertTrue(Package.objects.get(name='git-repair'))
+        self.assertEqual(Package.objects.filter(version='1.50-1.1')[0].version, '1.50-1.1')
 
     def test_ubuntu_data_dump(self):
         """
         Scrape data from Ubuntu' main tracker, save it
         in the database and verify entries.
         """
-        with open("tests/test_data/ubuntu_main.html") as f:
+        with open('tests/test_data/ubuntu_main.html') as f:
             test_data = f.read()
 
         data = ubuntu.extract_cves(test_data)
         ubuntu_dump(data)
 
-        reference = VulnerabilityReference.objects.filter(reference_id="CVE-2002-2439")[0]
-        self.assertEqual(reference.reference_id, "CVE-2002-2439")
-        self.assertTrue(Package.objects.filter(name="gcc-4.6")[0].name, "gcc-4.6")
+        reference = VulnerabilityReference.objects.filter(reference_id='CVE-2002-2439')[0]
+        self.assertEqual(reference.reference_id, 'CVE-2002-2439')
+        self.assertTrue(Package.objects.filter(name='gcc-4.6')[0].name, 'gcc-4.6')

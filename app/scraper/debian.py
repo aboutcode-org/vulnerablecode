@@ -22,31 +22,47 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import json
+from urllib.request import urlopen
 
-from django.http import HttpResponse
-
-from vulncode_app import api_data
+DEBIAN_TRACKER_URL = 'https://security-tracker.debian.org/tracker/data/json'
 
 
-def package(request, name):
+def extract_vulnerabilities(debian_data, base_release='jessie'):
     """
-    Queries the cve-search api with just
-    a package name.
+    Return a sequence of mappings for each existing combination of
+    package and vulnerability from a mapping of Debian vulnerabilities
+    data.
     """
-    raw_data = api_data.data_cve_circl(name=name)
-    fields_names = ['id', 'summary', 'cvss']
-    extracted_data = api_data.extract_fields(raw_data, fields_names)
+    package_vulnerabilities = []
 
-    return HttpResponse(json.dumps(extracted_data))
+    for package_name, vulnerabilities in debian_data.items():
+        if not vulnerabilities or not package_name:
+            continue
+
+        for vulnerability, details in vulnerabilities.items():
+            releases = details.get('releases')
+            if not releases:
+                continue
+
+            release = releases.get(base_release)
+            if not release:
+                continue
+
+            package_vulnerabilities.append({
+                'package_name': package_name,
+                'vulnerability_id': vulnerability,
+                'description': details.get('description', ''),
+                'status': release.get('status', ''),
+                'urgency': release.get('urgency', ''),
+                'fixed_version': release.get('fixed_version', '')
+            })
+
+    return package_vulnerabilities
 
 
-def package_version(request, name, version):
+def scrape_vulnerabilities():
     """
-    Queries the cve-search api with a package
-    name and version.
+    Scrape debian' security tracker.
     """
-    raw_data = api_data.data_cve_circl(name=name, version=version)
-    fields_names = ['id', 'summary', 'cvss']
-    extracted_data = api_data.extract_fields(raw_data, fields_names, version=True)
-
-    return HttpResponse(json.dumps(extracted_data))
+    json_content = urlopen(DEBIAN_TRACKER_URL).read()
+    return extract_vulnerabilities(json.loads(json_content))

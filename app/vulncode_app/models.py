@@ -21,7 +21,6 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from __future__ import unicode_literals
 from django.db import models
 
 
@@ -30,9 +29,11 @@ class Vulnerability(models.Model):
     A software vulnerability with minimal information.
     Identifiers are stored as VulnerabilityReference.
     """
-    summary = models.TextField(max_length=1024,
-                               help_text="Summary of the vulnerability")
-    cvss = models.FloatField(help_text="CVSS Score")
+    summary = models.CharField(max_length=50, help_text='Summary of the vulnerability', blank=True)
+    cvss = models.FloatField(max_length=50, help_text='CVSS Score', null=True)
+
+    def __str__(self):
+        return self.summary
 
 
 class VulnerabilityReference(models.Model):
@@ -42,12 +43,9 @@ class VulnerabilityReference(models.Model):
     at the NVD, a bug id and similar references.
     """
     vulnerability = models.ForeignKey('Vulnerability')
-    source = models.CharField(max_length=50,
-                              help_text="Source's name eg:NVD")
-    reference_id = models.CharField(max_length=50,
-                                    help_text="Reference ID, eg:CVE-ID")
-    url = models.URLField(max_length=1024,
-                          help_text="URL of Vulnerability data")
+    source = models.CharField(max_length=50, help_text='Source(s) name eg:NVD', blank=True)
+    reference_id = models.CharField(max_length=50, help_text='Reference ID, eg:CVE-ID', blank=True)
+    url = models.URLField(max_length=1024, help_text='URL of Vulnerability data', blank=True)
 
     class Meta:
         unique_together = ('vulnerability', 'source', 'reference_id')
@@ -75,13 +73,12 @@ class Package(models.Model):
     A software package with minimal identifying information.
     Other identifiers are stored as PackageReference.
     """
-    platform = models.CharField(max_length=50,
-                                help_text="Package platform eg:maven")
-    name = models.CharField(max_length=50, help_text="Package name")
-    version = models.CharField(max_length=50, help_text="Pacakge version")
+    platform = models.CharField(max_length=50, help_text='Package platform eg:maven', blank=True)
+    name = models.CharField(max_length=50, help_text='Package name', blank=True)
+    version = models.CharField(max_length=50, help_text='Package version', blank=True)
 
-    class Meta:
-        unique_together = ('platform', 'name', 'version')
+    def __str__(self):
+        return self.name
 
 
 class PackageReference(models.Model):
@@ -90,11 +87,26 @@ class PackageReference(models.Model):
     in a package repository, such as a Debian, Maven or NPM repository.
     """
     package = models.ForeignKey('Package')
-    repository = models.CharField(max_length=1024,
-                                  help_text="Repository URL eg:http://central.maven.org")
-    platform = models.CharField(max_length=50,
-                                help_text="Platform eg:maven")
-    name = models.CharField(max_length=50,
-                            help_text="Package reference name eg:org.apache.commons.io")
-    version = models.CharField(max_length=50,
-                               help_text="Reference version")
+    repository = models.CharField(
+        max_length=50,
+        help_text='Repository URL eg:http://central.maven.org',
+        blank=True,
+    )
+    platform = models.CharField(
+        max_length=50,
+        help_text='Platform eg:maven',
+        blank=True,
+    )
+    name = models.CharField(
+        max_length=50,
+        help_text='Package reference name eg:org.apache.commons.io',
+        blank=True,
+    )
+    version = models.CharField(
+        max_length=50,
+        help_text='Reference version',
+        blank=True,
+    )
+
+    def __str__(self):
+        return self.platform

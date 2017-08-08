@@ -28,7 +28,6 @@ from django.http import HttpResponse
 from vulncode_app import api_data
 
 
-
 def package(request, name):
     """
     Queries the cve-search api with just

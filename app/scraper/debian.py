@@ -27,21 +27,13 @@ from urllib.request import urlopen
 DEBIAN_TRACKER_URL = 'https://security-tracker.debian.org/tracker/data/json'
 
 
-def json_data(url=DEBIAN_TRACKER_URL):
-    """
-    Return Debian vulnerabilities data fetched from `url`.
-    """
-    debian_data = urlopen(url).read()
-    return json.loads(debian_data)
-
-
-def extract_data(debian_data, base_release='jessie'):
+def extract_vulnerabilities(debian_data, base_release='jessie'):
     """
     Return a sequence of mappings for each existing combination of
     package and vulnerability from a mapping of Debian vulnerabilities
     data.
     """
-    package_vulns = []
+    package_vulnerabilities = []
 
     for package_name, vulnerabilities in debian_data.items():
         if not vulnerabilities or not package_name:
@@ -56,7 +48,7 @@ def extract_data(debian_data, base_release='jessie'):
             if not release:
                 continue
 
-            package_vulns.append({
+            package_vulnerabilities.append({
                 'package_name': package_name,
                 'vulnerability_id': vulnerability,
                 'description': details.get('description', ''),
@@ -64,14 +56,13 @@ def extract_data(debian_data, base_release='jessie'):
                 'urgency': release.get('urgency', ''),
                 'fixed_version': release.get('fixed_version', '')
             })
-    return package_vulns
+
+    return package_vulnerabilities
 
 
-def debian_data():
+def scrape_vulnerabilities():
     """
     Scrape debian' security tracker.
     """
-    data = json_data()
-    extracted_data = extract_data(data)
-
-    return extracted_data
+    json_content = urlopen(DEBIAN_TRACKER_URL).read()
+    return extract_vulnerabilities(json.loads(json_content))

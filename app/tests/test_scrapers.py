@@ -59,7 +59,7 @@ def test_ubuntu_extract_cves():
     assert expected == cves[-1]
 
 
-def test_debian_extract_data():
+def test_debian_extract_vulnerabilities():
     debian_test_file = join(dirname(__file__), 'test_data', 'debian.json')
 
     with open(debian_test_file) as f:
@@ -92,4 +92,4 @@ def test_debian_extract_data():
         }
     ]
 
-    assert expected == debian.extract_data(test_data)
+    assert expected == debian.extract_vulnerabilities(test_data)

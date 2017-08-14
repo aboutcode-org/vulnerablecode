@@ -21,22 +21,26 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from django.conf.urls import url
-from rest_framework.urlpatterns import format_suffix_patterns
-from vulncode_app import views
+from rest_framework import serializers
+
+from vulncode_app.models import Vulnerability
+from vulncode_app.models import VulnerabilityReference
+from vulncode_app.models import Package
 
 
-urlpatterns = [
-    url(r'^cve-search/(?P<name>[a-z]+)/(?P<version>[0-9]+)',
-        views.package_version,
-        name='package_version'),
+class VulnerabilitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vulnerability
+        exclude = ('id', 'cvss')
 
-    url(r'^cve-search/(?P<name>[a-z]+)',
-        views.package,
-        name='package'),
 
-    url(r'^data/(?P<pkg_name>[a-z]+)',
-        views.VulnerabilityData.as_view()),
-]
+class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VulnerabilityReference
+        exclude = ('id', 'source', 'url', 'vulnerability')
 
-urlpatterns = format_suffix_patterns(urlpatterns)
+
+class PackageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Package
+        fields = ('name', 'version')

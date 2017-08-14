@@ -24,7 +24,6 @@
 import json
 
 from django.http import HttpResponse
-from drf_multiple_model.views import MultipleModelAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status

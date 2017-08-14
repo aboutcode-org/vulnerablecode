@@ -1,6 +1,7 @@
 beautifulsoup4==4.6.0
 lxml==3.8.0
 django==1.11.4
+djangorestframework==3.6
 
 # Tests
 pytest==3.1.3

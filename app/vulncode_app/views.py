@@ -28,38 +28,23 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from vulncode_app.serializers import VulnerabilitySerializer
-from vulncode_app.serializers import PackageSerializer
-from vulncode_app.serializers import VulnerabilityReferenceSerializer
-from vulncode_app.models import Vulnerability
+from vulncode_app.serializers import ImpactedPackageSerializer
+from vulncode_app.models import ImpactedPackage
 from vulncode_app.models import Package
-from vulncode_app.models import VulnerabilityReference
 from vulncode_app import api_data
 
 
 class VulnerabilityData(APIView):
     def get(self, request, pkg_name):
-        vulnerability_data = []
-        reference_data = []
+        vulnerability = []
+        response = []
+        pk = Package.objects.filter(name=pkg_name)
 
-        pk = Package.objects.filter(name=pkg_name).values('id')
+        for i, v in enumerate(pk):
+            vulnerability.append(ImpactedPackage.objects.filter(pk=v.id))
+            response += ImpactedPackageSerializer(vulnerability[i], many=True).data
 
-        for index in range(len(pk)):
-            vulnerability_data.append(
-                                VulnerabilitySerializer(
-                                    Vulnerability.objects.filter(pk=pk[index]['id']),
-                                    many=True).data
-                                )
-            reference_data.append(
-                            VulnerabilityReferenceSerializer(
-                                VulnerabilityReference.objects.filter(pk=pk[index]['id']),
-                                many=True).data
-                            )
-
-        package_data = PackageSerializer(Package.objects.filter(name=pkg_name), many=True)
-        data = [*vulnerability_data, *package_data.data, *reference_data]
-
-        return Response(data)
+        return Response(response)
 
 
 def package(request, name):

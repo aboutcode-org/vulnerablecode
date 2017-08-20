@@ -26,21 +26,40 @@ from rest_framework import serializers
 from vulncode_app.models import Vulnerability
 from vulncode_app.models import VulnerabilityReference
 from vulncode_app.models import Package
+from vulncode_app.models import PackageReference
+from vulncode_app.models import ImpactedPackage
 
 
-class VulnerabilitySerializer(serializers.ModelSerializer):
+class PackageReferenceSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Vulnerability
-        exclude = ('id', 'cvss')
+        model = PackageReference
+        fields = ('name', 'version')
 
 
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = VulnerabilityReference
-        exclude = ('id', 'source', 'url', 'vulnerability')
+        fields = ('reference_id',)
+
+
+class VulnerabilitySerializer(serializers.ModelSerializer):
+    reference = VulnerabilityReferenceSerializer(source='vulnerabilityreference_set', many=True)
+
+    class Meta:
+        model = Vulnerability
+        fields = ('summary', 'reference')
 
 
 class PackageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Package
         fields = ('name', 'version')
+
+
+class ImpactedPackageSerializer(serializers.ModelSerializer):
+    package = PackageSerializer()
+    vulnerability = VulnerabilitySerializer()
+
+    class Meta:
+        model = ImpactedPackage
+        fields = ('package', 'vulnerability')

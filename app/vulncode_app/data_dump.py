@@ -23,6 +23,7 @@
 
 from vulncode_app.models import Vulnerability
 from vulncode_app.models import VulnerabilityReference
+from vulncode_app.models import ImpactedPackage
 from vulncode_app.models import Package
 
 
@@ -38,9 +39,14 @@ def debian_dump(extract_data):
             vulnerability=vulnerability,
             reference_id=data.get('vulnerability_id', ''),
         )
-        Package.objects.create(
+        package = Package.objects.create(
             name=data.get('package_name', ''),
             version=data.get('fixed_version', ''),
+        )
+
+        impacted_package = ImpactedPackage.objects.create(
+            vulnerability=vulnerability,
+            package=package
         )
 
 
@@ -56,6 +62,10 @@ def ubuntu_dump(html):
             vulnerability=vulnerability,
             reference_id=data.get('cve_id'),
         )
-        Package.objects.create(
+        package = Package.objects.create(
             name=data.get('package_name'),
+        )
+        ImpactedPackage.objects.create(
+            vulnerability=vulnerability,
+            package=package
         )

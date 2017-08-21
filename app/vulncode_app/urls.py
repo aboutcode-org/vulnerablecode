@@ -35,7 +35,7 @@ urlpatterns = [
         views.package,
         name='package'),
 
-    url(r'^data/(?P<pkg_name>[a-z]+)',
+    url(r'^data/(?P<package_name>[a-z]+)',
         views.VulnerabilityData.as_view()),
 ]
 

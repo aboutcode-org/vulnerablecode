@@ -35,14 +35,30 @@ from vulncode_app import api_data
 
 
 class VulnerabilityData(APIView):
-    def get(self, request, pkg_name):
+    def get(self, request, package_name):
         vulnerability = []
-        response = []
-        pk = Package.objects.filter(name=pkg_name)
+        extract = []
+        summary = []
+        reference_id = []
+        version = []
+
+        pk = Package.objects.filter(name=package_name)
 
         for i, v in enumerate(pk):
             vulnerability.append(ImpactedPackage.objects.filter(pk=v.id))
-            response += ImpactedPackageSerializer(vulnerability[i], many=True).data
+            extract += ImpactedPackageSerializer(vulnerability[i], many=True).data
+            summary.append(extract[i]['vulnerability']['summary'])
+            reference_id.append(extract[i]['vulnerability']['reference'][0]['reference_id'])
+            version.append(extract[i]['package']['version'])
+
+        response = {
+            'name': package_name,
+            'version': set(version),
+            'vulnerabilities': {
+                'summary': set(summary),
+                'reference_id': set(reference_id)
+            }
+        }
 
         return Response(response)
 

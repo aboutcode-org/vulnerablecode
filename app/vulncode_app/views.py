@@ -38,26 +38,23 @@ class VulnerabilityData(APIView):
     def get(self, request, package_name):
         vulnerability = []
         extract = []
-        summary = []
-        reference_id = []
-        version = []
+        data = []
 
         pk = Package.objects.filter(name=package_name)
 
         for i, v in enumerate(pk):
             vulnerability.append(ImpactedPackage.objects.filter(pk=v.id))
             extract += ImpactedPackageSerializer(vulnerability[i], many=True).data
-            summary.append(extract[i]['vulnerability']['summary'])
-            reference_id.append(extract[i]['vulnerability']['reference'][0]['reference_id'])
-            version.append(extract[i]['package']['version'])
+
+            data.append({
+                'summary': extract[i]['vulnerability']['summary'],
+                'reference_id': extract[i]['vulnerability']['reference'][0]['reference_id'],
+                'version': extract[i]['package']['version']
+            })
 
         response = {
             'name': package_name,
-            'version': set(version),
-            'vulnerabilities': {
-                'summary': set(summary),
-                'reference_id': set(reference_id)
-            }
+            'vulnerabilities': data
         }
 
         return Response(response)

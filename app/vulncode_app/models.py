@@ -50,13 +50,16 @@ class VulnerabilityReference(models.Model):
     class Meta:
         unique_together = ('vulnerability', 'source', 'reference_id')
 
+    def __str__(self):
+        return self.source
+
 
 class ImpactedPackage(models.Model):
     """
     Relates a vulnerability to package(s) impacted by it.
     """
     vulnerability = models.ForeignKey('Vulnerability')
-    package = models.ForeignKey('Package')
+    package_fk = models.ForeignKey('Package')
 
 
 class ResolvedPackage(models.Model):
@@ -73,6 +76,7 @@ class Package(models.Model):
     A software package with minimal identifying information.
     Other identifiers are stored as PackageReference.
     """
+    impacted_package = models.ManyToManyField('ImpactedPackage')
     platform = models.CharField(max_length=50, help_text='Package platform eg:maven', blank=True)
     name = models.CharField(max_length=50, help_text='Package name', blank=True)
     version = models.CharField(max_length=50, help_text='Package version', blank=True)

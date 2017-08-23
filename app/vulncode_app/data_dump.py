@@ -43,13 +43,16 @@ def debian_dump(extract_data):
             name=data.get('package_name', ''),
             version=data.get('fixed_version', ''),
         )
-
         impacted_package = ImpactedPackage.objects.create(
             vulnerability=vulnerability,
-            package=package
+            package_fk=package
         )
+        package.impacted_package.add(
+            impacted_package
+        )
+        package.save()
 
-
+            
 def ubuntu_dump(html):
     """
     Dump data scraped from Ubuntu's security tracker.

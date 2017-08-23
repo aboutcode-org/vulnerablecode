@@ -28,34 +28,15 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from vulncode_app.serializers import ImpactedPackageSerializer
-from vulncode_app.models import ImpactedPackage
+from vulncode_app.serializers import PackageSerializer
 from vulncode_app.models import Package
 from vulncode_app import api_data
 
 
 class VulnerabilityData(APIView):
     def get(self, request, package_name):
-        vulnerability = []
-        extract = []
-        data = []
-
         pk = Package.objects.filter(name=package_name)
-
-        for i, v in enumerate(pk):
-            vulnerability.append(ImpactedPackage.objects.filter(pk=v.id))
-            extract += ImpactedPackageSerializer(vulnerability[i], many=True).data
-
-            data.append({
-                'summary': extract[i]['vulnerability']['summary'],
-                'reference_id': extract[i]['vulnerability']['reference'][0]['reference_id'],
-                'version': extract[i]['package']['version']
-            })
-
-        response = {
-            'name': package_name,
-            'vulnerabilities': data
-        }
+        response = PackageSerializer(pk, many=True).data
 
         return Response(response)
 

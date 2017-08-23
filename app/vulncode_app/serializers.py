@@ -50,16 +50,17 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
         fields = ('summary', 'reference')
 
 
-class PackageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Package
-        fields = ('name', 'version')
-
-
 class ImpactedPackageSerializer(serializers.ModelSerializer):
-    package = PackageSerializer()
     vulnerability = VulnerabilitySerializer()
 
     class Meta:
         model = ImpactedPackage
-        fields = ('package', 'vulnerability')
+        fields = ('vulnerability',)
+
+
+class PackageSerializer(serializers.ModelSerializer):
+    vulnerability = ImpactedPackageSerializer(source='impactedpackage_set', many=True)
+
+    class Meta:
+        model = Package
+        fields = ('name', 'version', 'vulnerability')

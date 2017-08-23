@@ -23,7 +23,6 @@
 
 import json
 
-from drf_multiple_model.views import MultipleModelAPIView
 from django.test import TestCase
 from rest_framework.response import Response
 

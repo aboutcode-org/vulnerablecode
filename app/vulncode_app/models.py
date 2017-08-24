@@ -59,7 +59,10 @@ class ImpactedPackage(models.Model):
     Relates a vulnerability to package(s) impacted by it.
     """
     vulnerability = models.ForeignKey('Vulnerability')
-    package_fk = models.ForeignKey('Package')
+    package = models.ForeignKey('Package')
+
+    class Meta:
+        unique_together = ('vulnerability', 'package')
 
 
 class ResolvedPackage(models.Model):
@@ -76,7 +79,6 @@ class Package(models.Model):
     A software package with minimal identifying information.
     Other identifiers are stored as PackageReference.
     """
-    impacted_package = models.ManyToManyField('ImpactedPackage')
     platform = models.CharField(max_length=50, help_text='Package platform eg:maven', blank=True)
     name = models.CharField(max_length=50, help_text='Package name', blank=True)
     version = models.CharField(max_length=50, help_text='Package version', blank=True)

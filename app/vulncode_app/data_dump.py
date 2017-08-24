@@ -23,8 +23,8 @@
 
 from vulncode_app.models import ImpactedPackage
 from vulncode_app.models import Package
-from vulncode_app.models import VulnerabilityReference
 from vulncode_app.models import Vulnerability
+from vulncode_app.models import VulnerabilityReference
 
 
 def debian_dump(extract_data):
@@ -45,12 +45,8 @@ def debian_dump(extract_data):
         )
         impacted_package = ImpactedPackage.objects.create(
             vulnerability=vulnerability,
-            package_fk=package
+            package=package
         )
-        package.impacted_package.add(
-            impacted_package
-        )
-        package.save()
 
 
 def ubuntu_dump(html):
@@ -70,5 +66,5 @@ def ubuntu_dump(html):
         )
         ImpactedPackage.objects.create(
             vulnerability=vulnerability,
-            package_fk=package
+            package=package
         )

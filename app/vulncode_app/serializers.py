@@ -26,14 +26,14 @@ from rest_framework import serializers
 from vulncode_app.models import ImpactedPackage
 from vulncode_app.models import Package
 from vulncode_app.models import PackageReference
-from vulncode_app.models import VulnerabilityReference
 from vulncode_app.models import Vulnerability
+from vulncode_app.models import VulnerabilityReference
 
 
 class PackageReferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = PackageReference
-        fields = ('name', 'version', 'repository', 'paltform', )
+        fields = ('name', 'version', 'repository', 'platform', )
 
 
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):

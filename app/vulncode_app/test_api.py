@@ -25,6 +25,10 @@ import json
 
 from django.test import TestCase
 from rest_framework.response import Response
+from collections import OrderedDict
+
+from vulncode_app.models import Package
+from vulncode_app.serializers import PackageSerializer
 
 from vulncode_app.data_dump import debian_dump
 from vulncode_app.data_dump import ubuntu_dump
@@ -33,7 +37,7 @@ from scraper import debian
 from scraper import ubuntu
 
 
-class TestSerializers(TestCase):
+class TestResponse(TestCase):
     def test_debian_response(self):
         with open('tests/test_data/debian.json') as f:
             test_data = json.loads(f.read())
@@ -42,21 +46,36 @@ class TestSerializers(TestCase):
         debian_dump(extract_data)
         response = self.client.get('/vulncode_app/data/mimetex', format='json')
 
-        expected = {
-                "name": "mimetex",
-                "vulnerabilities": [
-                    {
-                       "summary": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX",
+        expected = [
+            {
+              "name": "mimetex",
+              "version": "1.50-1.1",
+              "vulnerabilities": [{
+                "vulnerability": {
+                  "summary": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX",
+                  "reference": [
+                     {
                        "reference_id": "CVE-2009-2458",
-                       "version": "1.50-1.1"
-                    },
-                    {
-                       "summary": "Multiple unspecified vulnerabilities in mimeTeX.",
+                       "source": "",
+                       "url": ""
+                     }
+                     ]}}]
+            },
+            {
+              "name": "mimetex",
+              "version": "1.50-1.1",
+              "vulnerabilities": [{
+                "vulnerability": {
+                  "summary": "Multiple unspecified vulnerabilities in mimeTeX.",
+                  "reference": [
+                     {
                        "reference_id": "CVE-2009-2459",
-                       "version": "1.50-1.1"
-                    }
-                ]
+                       "source": "",
+                       "url": ""
+                     }
+                     ]}}]
             }
+          ]
 
         self.assertEqual(expected, response.data)
 
@@ -68,15 +87,70 @@ class TestSerializers(TestCase):
         ubuntu_dump(extract_data)
         response = self.client.get('/vulncode_app/data/automake', format='json')
 
-        expected = {
-               "name": "automake",
-               "vulnerabilities": [
+        expected = [
+            {
+              "name": "automake",
+              "version": "",
+              "vulnerabilities": [
+               {
+                 "vulnerability": {
+                   "summary": "",
+                   "reference": [
                     {
-                       "summary": "",
-                       "reference_id": "CVE-2012-3386",
-                       "version": ""
-                    }
-                ]
+                        "reference_id": "CVE-2012-3386",
+                        "source": "",
+                        "url": ""
+                    }]}}]
             }
+        ]
 
         self.assertEqual(expected, response.data)
+
+
+class TestSerializers(TestCase):
+    def test_serializers(self):
+        with open('tests/test_data/debian.json') as f:
+            test_data = json.loads(f.read())
+        extract_data = debian.extract_vulnerabilities(test_data)
+        debian_dump(extract_data)
+
+        pk = Package.objects.filter(name="mimetex")
+        response = PackageSerializer(pk, many=True).data
+
+        expected = [OrderedDict([
+                       ('name', 'mimetex'),
+                       ('version', '1.50-1.1'),
+                       ('vulnerabilities',
+                        [OrderedDict([
+                            ('vulnerability',
+                             OrderedDict([
+                               (
+                                 'summary',
+                                 'Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX'
+                               ),
+                               ('reference',
+                                [OrderedDict([
+                                 ('reference_id', 'CVE-2009-2458'),
+                                 ('source', ''),
+                                 ('url', '')
+                                 ])])]))])])]),
+
+                    OrderedDict([
+                     ('name', 'mimetex'),
+                     ('version', '1.50-1.1'),
+                     ('vulnerabilities',
+                      [OrderedDict([
+                        ('vulnerability',
+                         OrderedDict([
+                           (
+                            'summary',
+                            'Multiple unspecified vulnerabilities in mimeTeX.'
+                           ),
+                           ('reference',
+                            [OrderedDict([
+                             ('reference_id', 'CVE-2009-2459'),
+                             ('source', ''),
+                             ('url', '')
+                             ])])]))])])])]
+
+        self.assertEqual(expected, response)

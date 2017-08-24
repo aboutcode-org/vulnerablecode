@@ -23,23 +23,23 @@
 
 from rest_framework import serializers
 
-from vulncode_app.models import Vulnerability
-from vulncode_app.models import VulnerabilityReference
+from vulncode_app.models import ImpactedPackage
 from vulncode_app.models import Package
 from vulncode_app.models import PackageReference
-from vulncode_app.models import ImpactedPackage
+from vulncode_app.models import VulnerabilityReference
+from vulncode_app.models import Vulnerability
 
 
 class PackageReferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = PackageReference
-        fields = ('name', 'version')
+        fields = ('name', 'version', 'repository', 'paltform', )
 
 
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = VulnerabilityReference
-        fields = ('reference_id',)
+        fields = ('reference_id', 'source', 'url')
 
 
 class VulnerabilitySerializer(serializers.ModelSerializer):
@@ -59,8 +59,8 @@ class ImpactedPackageSerializer(serializers.ModelSerializer):
 
 
 class PackageSerializer(serializers.ModelSerializer):
-    vulnerability = ImpactedPackageSerializer(source='impactedpackage_set', many=True)
+    vulnerabilities = ImpactedPackageSerializer(source='impactedpackage_set', many=True)
 
     class Meta:
         model = Package
-        fields = ('name', 'version', 'vulnerability')
+        fields = ('name', 'version', 'vulnerabilities')

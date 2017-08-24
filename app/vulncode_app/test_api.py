@@ -23,9 +23,10 @@
 
 import json
 
+from collections import OrderedDict
+
 from django.test import TestCase
 from rest_framework.response import Response
-from collections import OrderedDict
 
 from vulncode_app.models import Package
 from vulncode_app.serializers import PackageSerializer

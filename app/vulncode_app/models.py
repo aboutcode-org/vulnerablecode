@@ -48,7 +48,7 @@ class VulnerabilityReference(models.Model):
     url = models.URLField(max_length=1024, help_text='URL of Vulnerability data', blank=True)
 
     class Meta:
-        unique_together = ('vulnerability', 'source', 'reference_id')
+        unique_together = ('vulnerability', 'source', 'reference_id', 'url')
 
     def __str__(self):
         return self.source

@@ -101,11 +101,19 @@ class TestResponse(TestCase):
                         "reference_id": "CVE-2012-3386",
                         "source": "",
                         "url": ""
-                    }]}}]
+                    }
+                     ]}}]
             }
         ]
 
         self.assertEqual(expected, response.data)
+
+    def test_blank_response(self):
+        response_invalid = self.client.get('/vulncode_app/data/', format='json')
+        response_blank = self.client.get('/vulncode_app/data/abbpcc', format='json')
+
+        self.assertEqual(404, response_invalid.status_code)
+        self.assertEqual([], response_blank.data)
 
 
 class TestSerializers(TestCase):

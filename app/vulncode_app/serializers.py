@@ -33,7 +33,7 @@ from vulncode_app.models import VulnerabilityReference
 class PackageReferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = PackageReference
-        fields = ('name', 'version', 'repository', 'platform', )
+        fields = ('name', 'version', 'repository', 'platform')
 
 
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):

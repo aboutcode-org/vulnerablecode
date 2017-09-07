@@ -22,6 +22,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 from django.conf.urls import url
+
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from vulncode_app import views
@@ -31,11 +32,9 @@ urlpatterns = [
     url(r'^cve-search/(?P<name>[a-z]+)/(?P<version>[0-9]+)',
         views.package_version,
         name='package_version'),
-
     url(r'^cve-search/(?P<name>[a-z]+)',
         views.package,
         name='package'),
-
     url(r'^data/(?P<package_name>[a-z]+)',
         views.VulnerabilityData.as_view()),
 ]

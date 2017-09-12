@@ -33,7 +33,7 @@ python3.6 -m pytest -v tests/
 For Django based tests
 ```
 cd app/
-./manage.py test
+./manage.py test vulncode_app/tests
 ```
 
 Scrape and save to the database
@@ -53,4 +53,18 @@ ubuntu_cves = ubuntu.scrape_cves()
 
 debian_dump(debian_vulnerabilities)
 ubuntu_dump(ubuntu_cves)
+```
+
+API
+----
+Start the server
+
+```
+cd app/
+./manage.py runserver
+```
+
+In your browser use
+```
+localhost:8000/vulncode_app/api/<package name>
 ```

@@ -12,7 +12,7 @@ before_script:
 
 script:
   - python3.6 -m pytest -v tests/
-  - python3.6 manage.py test
+  - python3.6 manage.py test vulncode_app/tests
 
 notifications:
   email: false

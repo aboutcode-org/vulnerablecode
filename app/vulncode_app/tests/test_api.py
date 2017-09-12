@@ -40,7 +40,7 @@ class TestResponse(TestCase):
 
         extract_data = debian.extract_vulnerabilities(test_data)
         debian_dump(extract_data)
-        response = self.client.get('/vulncode_app/data/mimetex', format='json')
+        response = self.client.get('/vulncode_app/api/mimetex', format='json')
 
         expected = [{
             "name": "mimetex",
@@ -78,7 +78,7 @@ class TestResponse(TestCase):
 
         extract_data = ubuntu.extract_cves(test_data)
         ubuntu_dump(extract_data)
-        response = self.client.get('/vulncode_app/data/automake', format='json')
+        response = self.client.get('/vulncode_app/api/automake', format='json')
 
         expected = [{
             "name": "automake",
@@ -98,8 +98,8 @@ class TestResponse(TestCase):
         self.assertEqual(expected, response.data)
 
     def test_blank_response(self):
-        response_invalid = self.client.get('/vulncode_app/data/', format='json')
-        response_blank = self.client.get('/vulncode_app/data/abbpcc', format='json')
+        response_invalid = self.client.get('/vulncode_app/api/', format='json')
+        response_blank = self.client.get('/vulncode_app/api/abbpcc', format='json')
 
         self.assertEqual(404, response_invalid.status_code)
         self.assertEqual([], response_blank.data)

@@ -25,12 +25,12 @@ import json
 
 from django.test import TestCase
 
-from vulncode_app.models import Package
-from vulncode_app.serializers import PackageSerializer
-from vulncode_app.data_dump import debian_dump
-from vulncode_app.data_dump import ubuntu_dump
-from scraper import debian
-from scraper import ubuntu
+from vulnerabilities.models import Package
+from vulnerabilities.serializers import PackageSerializer
+from vulnerabilities.data_dump import debian_dump
+from vulnerabilities.data_dump import ubuntu_dump
+from vulnerabilities.scraper import debian
+from vulnerabilities.scraper import ubuntu
 
 
 class TestResponse(TestCase):
@@ -40,7 +40,7 @@ class TestResponse(TestCase):
 
         extract_data = debian.extract_vulnerabilities(test_data)
         debian_dump(extract_data)
-        response = self.client.get('/vulncode_app/api/mimetex', format='json')
+        response = self.client.get('/vulnerabilities/api/mimetex', format='json')
 
         expected = [{
             "name": "mimetex",
@@ -78,7 +78,7 @@ class TestResponse(TestCase):
 
         extract_data = ubuntu.extract_cves(test_data)
         ubuntu_dump(extract_data)
-        response = self.client.get('/vulncode_app/api/automake', format='json')
+        response = self.client.get('/vulnerabilities/api/automake', format='json')
 
         expected = [{
             "name": "automake",
@@ -98,8 +98,8 @@ class TestResponse(TestCase):
         self.assertEqual(expected, response.data)
 
     def test_blank_response(self):
-        response_invalid = self.client.get('/vulncode_app/api/', format='json')
-        response_blank = self.client.get('/vulncode_app/api/abbpcc', format='json')
+        response_invalid = self.client.get('/vulnerabilities/api/', format='json')
+        response_blank = self.client.get('/vulnerabilities/api/abbpcc', format='json')
 
         self.assertEqual(404, response_invalid.status_code)
         self.assertEqual([], response_blank.data)

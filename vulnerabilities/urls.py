@@ -21,44 +21,22 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import json
+from django.conf.urls import url
 
-from django.http import HttpResponse
+from rest_framework.urlpatterns import format_suffix_patterns
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-
-from vulncode_app.models import Package
-from vulncode_app.serializers import PackageSerializer
-from vulncode_app import api_data
+from vulnerabilities import views
 
 
-class VulnerabilityData(APIView):
-    def get(self, request, package_name):
-        package = Package.objects.filter(name=package_name)
-        response = PackageSerializer(package, many=True).data
-        return Response(response)
+urlpatterns = [
+    url(r'^cve-search/(?P<name>[a-z]+)/(?P<version>[0-9]+)',
+        views.package_version,
+        name='package_version'),
+    url(r'^cve-search/(?P<name>[a-z]+)',
+        views.package,
+        name='package'),
+    url(r'^api/(?P<package_name>[a-z]+)',
+        views.VulnerabilityData.as_view()),
+]
 
-
-def package(request, name):
-    """
-    Queries the cve-search api with just
-    a package name.
-    """
-    raw_data = api_data.data_cve_circl(name=name)
-    fields_names = ['id', 'summary', 'cvss']
-    extracted_data = api_data.extract_fields(raw_data, fields_names)
-
-    return HttpResponse(json.dumps(extracted_data))
-
-
-def package_version(request, name, version):
-    """
-    Queries the cve-search api with a package
-    name and version.
-    """
-    raw_data = api_data.data_cve_circl(name=name, version=version)
-    fields_names = ['id', 'summary', 'cvss']
-    extracted_data = api_data.extract_fields(raw_data, fields_names, version=True)
-
-    return HttpResponse(json.dumps(extracted_data))
+urlpatterns = format_suffix_patterns(urlpatterns)

@@ -3,22 +3,14 @@ python: 3.6
 
 install:
   - pip install -r requirements.txt
-  - pip install pycodestyle
 
 before_script:
   - pycodestyle --exclude=migrations,settings.py,lib,tests --max-line-length=100 .
-  - cd app/
-  - python3 manage.py migrate
+  - ./manage.py migrate
 
 script:
-  - python3.6 -m pytest -v tests/
-  - python3.6 manage.py test vulncode_app/tests
+  - python3.6 -m pytest -v vulnerabilities/tests/test_scrapers.py vulnerabilities/tests/test_api_data.py
+  - ./manage.py test vulnerabilities/tests
 
 notifications:
   email: false
-  webhooks:
-    urls:
-      - https://webhooks.gitter.im/e/b119fa557626081e1f36
-    on_success: change  # options: [always|never|change] default: always
-    on_failure: always  # options: [always|never|change] default: always
-    on_start: never     # options: [always|never|change] default: always

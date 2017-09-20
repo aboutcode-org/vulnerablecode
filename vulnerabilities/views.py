@@ -21,46 +21,44 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from rest_framework import serializers
+import json
 
-from vulncode_app.models import ImpactedPackage
-from vulncode_app.models import Package
-from vulncode_app.models import PackageReference
-from vulncode_app.models import Vulnerability
-from vulncode_app.models import VulnerabilityReference
+from django.http import HttpResponse
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
-class PackageReferenceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PackageReference
-        fields = ('repository', 'platform', 'name', 'version')
+from vulnerabilities.models import Package
+from vulnerabilities.serializers import PackageSerializer
+from vulnerabilities import api_data
 
 
-class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = VulnerabilityReference
-        fields = ('source', 'reference_id', 'url')
+class VulnerabilityData(APIView):
+    def get(self, request, package_name):
+        package = Package.objects.filter(name=package_name)
+        response = PackageSerializer(package, many=True).data
+        return Response(response)
 
 
-class VulnerabilitySerializer(serializers.ModelSerializer):
-    reference = VulnerabilityReferenceSerializer(source='vulnerabilityreference_set', many=True)
+def package(request, name):
+    """
+    Queries the cve-search api with just
+    a package name.
+    """
+    raw_data = api_data.data_cve_circl(name=name)
+    fields_names = ['id', 'summary', 'cvss']
+    extracted_data = api_data.extract_fields(raw_data, fields_names)
 
-    class Meta:
-        model = Vulnerability
-        fields = ('summary', 'reference')
-
-
-class ImpactedPackageSerializer(serializers.ModelSerializer):
-    vulnerability = VulnerabilitySerializer()
-
-    class Meta:
-        model = ImpactedPackage
-        fields = ('vulnerability',)
+    return HttpResponse(json.dumps(extracted_data))
 
 
-class PackageSerializer(serializers.ModelSerializer):
-    vulnerabilities = ImpactedPackageSerializer(source='impactedpackage_set', many=True)
+def package_version(request, name, version):
+    """
+    Queries the cve-search api with a package
+    name and version.
+    """
+    raw_data = api_data.data_cve_circl(name=name, version=version)
+    fields_names = ['id', 'summary', 'cvss']
+    extracted_data = api_data.extract_fields(raw_data, fields_names, version=True)
 
-    class Meta:
-        model = Package
-        fields = ('name', 'version', 'vulnerabilities')
+    return HttpResponse(json.dumps(extracted_data))

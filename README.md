@@ -18,7 +18,7 @@ Activate a virtualenv, install dependencies, and run the database migrations:
 python3.6 -m venv .
 source bin/activate
 pip install -r requirements.txt
-app/manage.py migrate
+./manage.py migrate
 ```
 
 Tests
@@ -26,45 +26,44 @@ Tests
 
 ```
 pycodestyle --exclude=migrations,settings.py,lib,tests --max-line-length=100 .
-cd app/
-python3.6 -m pytest -v tests/
+python3.6 -m pytest -v vulnerabilities/tests/test_scrapers.py vulnerabilities/tests/test_api_data.py 
 ```
 
 For Django based tests
 ```
-cd app/
-./manage.py test vulncode_app/tests
+./manage.py test vulnerabilities/tests
 ```
 
 Scrape and save to the database
 -------------------------------
 
 ```
-cd app/
 ./manage.py shell
 ```
 
 ```
-from scraper import debian, ubuntu
-from vulncode_app.data_dump import debian_dump, ubuntu_dump
+from vulnerabilities.scraper import debian, ubuntu
+from vulnerabilities.data_dump import debian_dump, ubuntu_dump
+
+# May be needed on macOS
+# import ssl; ssl._create_default_https_context = ssl._create_unverified_context
+
+ubuntu_cves = ubuntu.scrape_cves()
+ubuntu_dump(ubuntu_cves)
 
 debian_vulnerabilities = debian.scrape_vulnerabilities()
-ubuntu_cves = ubuntu.scrape_cves()
-
 debian_dump(debian_vulnerabilities)
-ubuntu_dump(ubuntu_cves)
 ```
 
 API
 ----
-Start the server
+Start the webserver
 
 ```
-cd app/
 ./manage.py runserver
 ```
 
-In your browser use
+In your browser access:
 ```
-localhost:8000/vulncode_app/api/<package name>
+http://127.0.0.1:8000/vulnerabilities/api/<package_name>
 ```

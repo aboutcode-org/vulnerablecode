@@ -21,22 +21,46 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from django.conf.urls import url
+from rest_framework import serializers
 
-from rest_framework.urlpatterns import format_suffix_patterns
+from vulnerabilities.models import ImpactedPackage
+from vulnerabilities.models import Package
+from vulnerabilities.models import PackageReference
+from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityReference
 
-from vulncode_app import views
+
+class PackageReferenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PackageReference
+        fields = ('repository', 'platform', 'name', 'version')
 
 
-urlpatterns = [
-    url(r'^cve-search/(?P<name>[a-z]+)/(?P<version>[0-9]+)',
-        views.package_version,
-        name='package_version'),
-    url(r'^cve-search/(?P<name>[a-z]+)',
-        views.package,
-        name='package'),
-    url(r'^api/(?P<package_name>[a-z]+)',
-        views.VulnerabilityData.as_view()),
-]
+class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VulnerabilityReference
+        fields = ('source', 'reference_id', 'url')
 
-urlpatterns = format_suffix_patterns(urlpatterns)
+
+class VulnerabilitySerializer(serializers.ModelSerializer):
+    reference = VulnerabilityReferenceSerializer(source='vulnerabilityreference_set', many=True)
+
+    class Meta:
+        model = Vulnerability
+        fields = ('summary', 'reference')
+
+
+class ImpactedPackageSerializer(serializers.ModelSerializer):
+    vulnerability = VulnerabilitySerializer()
+
+    class Meta:
+        model = ImpactedPackage
+        fields = ('vulnerability',)
+
+
+class PackageSerializer(serializers.ModelSerializer):
+    vulnerabilities = ImpactedPackageSerializer(source='impactedpackage_set', many=True)
+
+    class Meta:
+        model = Package
+        fields = ('name', 'version', 'vulnerabilities')

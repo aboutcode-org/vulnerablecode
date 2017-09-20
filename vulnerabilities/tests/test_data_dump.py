@@ -25,13 +25,13 @@ import json
 
 from django.test import TestCase
 
-from vulncode_app.models import Vulnerability
-from vulncode_app.models import VulnerabilityReference
-from vulncode_app.models import Package
-from vulncode_app.data_dump import debian_dump
-from vulncode_app.data_dump import ubuntu_dump
-from scraper import debian
-from scraper import ubuntu
+from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityReference
+from vulnerabilities.models import Package
+from vulnerabilities.data_dump import debian_dump
+from vulnerabilities.data_dump import ubuntu_dump
+from vulnerabilities.scraper import debian
+from vulnerabilities.scraper import ubuntu
 
 
 class TestDataDump(TestCase):

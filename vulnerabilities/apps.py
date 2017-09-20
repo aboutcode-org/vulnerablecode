@@ -4,5 +4,5 @@ from __future__ import unicode_literals
 from django.apps import AppConfig
 
 
-class VulncodeAppConfig(AppConfig):
-    name = 'vulncode_app'
+class VulnerabilitiesAppConfig(AppConfig):
+    name = 'vulnerabilities'

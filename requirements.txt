@@ -12,3 +12,5 @@ pycodestyle==2.3.1
 # Deployment
 gunicorn==19.7.1
 whitenoise==3.3.0
+dj_database_url==0.4.2
+psycopg2==2.7.3.1

@@ -18,6 +18,7 @@ Activate a virtualenv, install dependencies, and run the database migrations:
 python3.6 -m venv .
 source bin/activate
 pip install -r requirements.txt
+DJANGO_DEV=1 >> .env
 ./manage.py migrate
 ```
 
@@ -88,4 +89,6 @@ https://devcenter.heroku.com/articles/deploying-python#how-to-keep-build-artifac
 
 7. Migrate the database: `heroku run python manage.py migrate`
 
-8. To check the logs: `heroku logs --tail`
+8. Load the data referring to chapter "Scrape and save to the database" above.
+
+9. To check the logs: `heroku logs --tail`

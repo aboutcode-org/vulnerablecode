@@ -22,6 +22,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import json
+import os
 
 from django.test import TestCase
 
@@ -34,13 +35,17 @@ from vulnerabilities.scraper import debian
 from vulnerabilities.scraper import ubuntu
 
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
+
+
 class TestDataDump(TestCase):
     def test_debian_data_dump(self):
         """
         Scrape data from Debian' main tracker, save it
         in the database and verify entries.
         """
-        with open('tests/test_data/debian.json') as f:
+        with open(os.path.join(TEST_DATA, 'debian.json')) as f:
             test_data = json.loads(f.read())
 
         extract_data = debian.extract_vulnerabilities(test_data)
@@ -71,7 +76,7 @@ class TestDataDump(TestCase):
         Scrape data from Ubuntu' main tracker, save it
         in the database and verify entries.
         """
-        with open('tests/test_data/ubuntu_main.html') as f:
+        with open(os.path.join(TEST_DATA, 'ubuntu_main.html')) as f:
             test_data = f.read()
 
         data = ubuntu.extract_cves(test_data)

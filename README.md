@@ -67,3 +67,19 @@ In your browser access:
 ```
 http://127.0.0.1:8000/vulnerabilities/api/<package_name>
 ```
+
+Deployment on Heroku
+--------------------
+
+See https://devcenter.heroku.com/articles/django-app-configuration#creating-a-new-django-project
+https://devcenter.heroku.com/articles/deploying-python#how-to-keep-build-artifacts-out-of-git
+
+1. Create an Heroku account
+
+2. Download and install the Heroku CLI https://devcenter.heroku.com/articles/heroku-cli#download-and-install
+
+3. Run a local webserver: `heroku local web`
+
+4 Login: `heroku login`
+
+5 Deploy: `git push heroku <branch>:master`

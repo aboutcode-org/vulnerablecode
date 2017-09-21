@@ -22,6 +22,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import json
+import os
 
 from django.test import TestCase
 
@@ -33,14 +34,18 @@ from vulnerabilities.scraper import debian
 from vulnerabilities.scraper import ubuntu
 
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
+
+
 class TestResponse(TestCase):
     def test_debian_response(self):
-        with open('tests/test_data/debian.json') as f:
+        with open(os.path.join(TEST_DATA, 'debian.json')) as f:
             test_data = json.loads(f.read())
 
         extract_data = debian.extract_vulnerabilities(test_data)
         debian_dump(extract_data)
-        response = self.client.get('/vulnerabilities/api/mimetex', format='json')
+        response = self.client.get('/api/mimetex', format='json')
 
         expected = [{
             "name": "mimetex",
@@ -73,12 +78,12 @@ class TestResponse(TestCase):
         self.assertEqual(expected, response.data)
 
     def test_ubuntu_response(self):
-        with open('tests/test_data/ubuntu_main.html') as f:
+        with open(os.path.join(TEST_DATA, 'ubuntu_main.html')) as f:
             test_data = f.read()
 
         extract_data = ubuntu.extract_cves(test_data)
         ubuntu_dump(extract_data)
-        response = self.client.get('/vulnerabilities/api/automake', format='json')
+        response = self.client.get('/api/automake', format='json')
 
         expected = [{
             "name": "automake",
@@ -98,8 +103,8 @@ class TestResponse(TestCase):
         self.assertEqual(expected, response.data)
 
     def test_blank_response(self):
-        response_invalid = self.client.get('/vulnerabilities/api/', format='json')
-        response_blank = self.client.get('/vulnerabilities/api/abbpcc', format='json')
+        response_invalid = self.client.get('/api/', format='json')
+        response_blank = self.client.get('/api/abbpcc', format='json')
 
         self.assertEqual(404, response_invalid.status_code)
         self.assertEqual([], response_blank.data)
@@ -107,7 +112,7 @@ class TestResponse(TestCase):
 
 class TestSerializers(TestCase):
     def test_serializers(self):
-        with open('tests/test_data/debian.json') as f:
+        with open(os.path.join(TEST_DATA, 'debian.json')) as f:
             test_data = json.loads(f.read())
         extract_data = debian.extract_vulnerabilities(test_data)
         debian_dump(extract_data)

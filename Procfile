@@ -1,1 +1,1 @@
-web: gunicorn vunerablecode.wsgi --log-file -
+web: gunicorn vulnerablecode.wsgi --log-file -

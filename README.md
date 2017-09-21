@@ -80,6 +80,12 @@ https://devcenter.heroku.com/articles/deploying-python#how-to-keep-build-artifac
 
 3. Run a local webserver: `heroku local web`
 
-4 Login: `heroku login`
+4. Login: `heroku login`
 
-5 Deploy: `git push heroku <branch>:master`
+5. Create Heroku app: `heroku create`
+
+6. Deploy: `git push heroku <branch>:master`
+
+7. Migrate the database: `heroku run python manage.py migrate`
+
+8. To check the logs: `heroku logs --tail`

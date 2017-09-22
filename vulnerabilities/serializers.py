@@ -32,13 +32,22 @@ from vulnerabilities.models import VulnerabilityReference
 class PackageReferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = PackageReference
-        fields = ('repository', 'platform', 'name', 'version')
+        fields = [
+            'repository',
+            'platform',
+            'name',
+            'version',
+        ]
 
 
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = VulnerabilityReference
-        fields = ('source', 'reference_id', 'url')
+        fields = [
+            'source',
+            'reference_id',
+            'url',
+        ]
 
 
 class VulnerabilitySerializer(serializers.ModelSerializer):
@@ -46,12 +55,23 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Vulnerability
-        fields = ('summary', 'references')
+        fields = [
+            'summary',
+            'cvss',
+            'references',
+        ]
 
 
 class PackageSerializer(serializers.ModelSerializer):
     vulnerabilities = VulnerabilitySerializer(many=True)
+    references = PackageReferenceSerializer(source='packagereference_set', many=True)
 
     class Meta:
         model = Package
-        fields = ('name', 'version', 'platform', 'vulnerabilities')
+        fields = [
+            'name',
+            'version',
+            'platform',
+            'vulnerabilities',
+            'references',
+        ]

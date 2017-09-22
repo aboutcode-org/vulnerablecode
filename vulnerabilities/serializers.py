@@ -23,7 +23,6 @@
 
 from rest_framework import serializers
 
-from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageReference
 from vulnerabilities.models import Vulnerability
@@ -50,16 +49,8 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
         fields = ('summary', 'references')
 
 
-class ImpactedPackageSerializer(serializers.ModelSerializer):
-    vulnerability = VulnerabilitySerializer()
-
-    class Meta:
-        model = ImpactedPackage
-        fields = ('vulnerability',)
-
-
 class PackageSerializer(serializers.ModelSerializer):
-    vulnerabilities = ImpactedPackageSerializer(source='impactedpackage_set', many=True)
+    vulnerabilities = VulnerabilitySerializer(many=True)
 
     class Meta:
         model = Package

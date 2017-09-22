@@ -53,24 +53,28 @@ class TestResponse(TestCase):
             "platform": "",
             "vulnerabilities": [{
                 "summary": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX",
+                "cvss": None,
                 "references": [{
                     "reference_id": "CVE-2009-2458",
                     "source": "",
                     "url": "",
                 }]
-            }]
+            }],
+            "references": [],
         }, {
             "name": "mimetex",
             "version": "1.50-1.1",
             "platform": "",
             "vulnerabilities": [{
                 "summary": "Multiple unspecified vulnerabilities in mimeTeX.",
+                "cvss": None,
                 "references": [{
                     "reference_id": "CVE-2009-2459",
                     "source": "",
                     "url": "",
                 }]
-            }]
+            }],
+            "references": [],
         }]
 
         self.assertEqual(expected, response.data)
@@ -89,12 +93,14 @@ class TestResponse(TestCase):
             "platform": "",
             "vulnerabilities": [{
                 "summary": "",
+                "cvss": None,
                 "references": [{
                     "reference_id": "CVE-2012-3386",
                     "source": "",
                     "url": "",
                 }]
-            }]
+            }],
+            "references": [],
         }]
 
         self.assertEqual(expected, response.data)
@@ -124,12 +130,14 @@ class TestSerializers(TestCase):
                 "platform": "",
                 "vulnerabilities": [{
                     "summary": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX",
+                    "cvss": None,
                     "references": [{
                         "reference_id": "CVE-2009-2458",
                         "source": "",
                         "url": "",
                     }]
-                }]
+                }],
+                "references": [],
             },
             {
                 "name": "mimetex",
@@ -137,12 +145,14 @@ class TestSerializers(TestCase):
                 "platform": "",
                 "vulnerabilities": [{
                     "summary": "Multiple unspecified vulnerabilities in mimeTeX.",
+                    "cvss": None,
                     "references": [{
                         "reference_id": "CVE-2009-2459",
                         "source": "",
                         "url": "",
                     }]
-                }]
+                }],
+                "references": [],
             }
         ]
 

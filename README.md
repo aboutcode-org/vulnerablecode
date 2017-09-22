@@ -19,7 +19,7 @@ python3.6 -m venv .
 source bin/activate
 pip install -r requirements.txt
 DJANGO_DEV=1 >> .env
-./manage.py migrate
+DJANGO_DEV=1 ./manage.py migrate
 ```
 
 Tests
@@ -32,14 +32,14 @@ python3.6 -m pytest -v vulnerabilities/tests/test_scrapers.py vulnerabilities/te
 
 For Django based tests
 ```
-./manage.py test vulnerabilities/tests
+DJANGO_DEV=1 ./manage.py test vulnerabilities/tests
 ```
 
 Scrape and save to the database
 -------------------------------
 
 ```
-./manage.py shell
+DJANGO_DEV=1 ./manage.py shell
 ```
 
 ```
@@ -61,7 +61,7 @@ API
 Start the webserver
 
 ```
-./manage.py runserver
+DJANGO_DEV=1 ./manage.py runserver
 ```
 
 In your browser access:

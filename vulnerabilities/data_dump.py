@@ -21,9 +21,10 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from vulncode_app.models import Vulnerability
-from vulncode_app.models import VulnerabilityReference
-from vulncode_app.models import Package
+from vulnerabilities.models import ImpactedPackage
+from vulnerabilities.models import Package
+from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityReference
 
 
 def debian_dump(extract_data):
@@ -38,9 +39,13 @@ def debian_dump(extract_data):
             vulnerability=vulnerability,
             reference_id=data.get('vulnerability_id', ''),
         )
-        Package.objects.create(
+        package = Package.objects.create(
             name=data.get('package_name', ''),
             version=data.get('fixed_version', ''),
+        )
+        ImpactedPackage.objects.create(
+            vulnerability=vulnerability,
+            package=package
         )
 
 
@@ -56,6 +61,10 @@ def ubuntu_dump(html):
             vulnerability=vulnerability,
             reference_id=data.get('cve_id'),
         )
-        Package.objects.create(
+        package = Package.objects.create(
             name=data.get('package_name'),
+        )
+        ImpactedPackage.objects.create(
+            vulnerability=vulnerability,
+            package=package
         )

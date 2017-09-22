@@ -48,7 +48,10 @@ class VulnerabilityReference(models.Model):
     url = models.URLField(max_length=1024, help_text='URL of Vulnerability data', blank=True)
 
     class Meta:
-        unique_together = ('vulnerability', 'source', 'reference_id')
+        unique_together = ('vulnerability', 'source', 'reference_id', 'url')
+
+    def __str__(self):
+        return self.source
 
 
 class ImpactedPackage(models.Model):
@@ -57,6 +60,9 @@ class ImpactedPackage(models.Model):
     """
     vulnerability = models.ForeignKey('Vulnerability')
     package = models.ForeignKey('Package')
+
+    class Meta:
+        unique_together = ('vulnerability', 'package')
 
 
 class ResolvedPackage(models.Model):
@@ -76,6 +82,7 @@ class Package(models.Model):
     platform = models.CharField(max_length=50, help_text='Package platform eg:maven', blank=True)
     name = models.CharField(max_length=50, help_text='Package name', blank=True)
     version = models.CharField(max_length=50, help_text='Package version', blank=True)
+    vulnerabilities = models.ManyToManyField(to='Vulnerability', through='ImpactedPackage')
 
     def __str__(self):
         return self.name

@@ -25,8 +25,8 @@ import json
 from os.path import dirname
 from os.path import join
 
-from scraper import debian
-from scraper import ubuntu
+from vulnerabilities.scraper import debian
+from vulnerabilities.scraper import ubuntu
 
 
 def test_ubuntu_extract_cves():

@@ -22,16 +22,21 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import json
+import os
 
 from django.test import TestCase
 
-from vulncode_app.models import Vulnerability
-from vulncode_app.models import VulnerabilityReference
-from vulncode_app.models import Package
-from vulncode_app.data_dump import debian_dump
-from vulncode_app.data_dump import ubuntu_dump
-from scraper import debian
-from scraper import ubuntu
+from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityReference
+from vulnerabilities.models import Package
+from vulnerabilities.data_dump import debian_dump
+from vulnerabilities.data_dump import ubuntu_dump
+from vulnerabilities.scraper import debian
+from vulnerabilities.scraper import ubuntu
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
 
 
 class TestDataDump(TestCase):
@@ -40,7 +45,7 @@ class TestDataDump(TestCase):
         Scrape data from Debian' main tracker, save it
         in the database and verify entries.
         """
-        with open('tests/test_data/debian.json') as f:
+        with open(os.path.join(TEST_DATA, 'debian.json')) as f:
             test_data = json.loads(f.read())
 
         extract_data = debian.extract_vulnerabilities(test_data)
@@ -71,7 +76,7 @@ class TestDataDump(TestCase):
         Scrape data from Ubuntu' main tracker, save it
         in the database and verify entries.
         """
-        with open('tests/test_data/ubuntu_main.html') as f:
+        with open(os.path.join(TEST_DATA, 'ubuntu_main.html')) as f:
             test_data = f.read()
 
         data = ubuntu.extract_cves(test_data)

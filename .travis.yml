@@ -3,16 +3,14 @@ python: 3.6
 
 install:
   - pip install -r requirements.txt
-  - pip install pycodestyle
 
 before_script:
   - pycodestyle --exclude=migrations,settings.py,lib,tests --max-line-length=100 .
-  - cd app/
-  - python3 manage.py migrate
+  - ./manage.py migrate
 
 script:
-  - python3.6 -m pytest -v tests/
-  - python3.6 manage.py test
+  - python3.6 -m pytest -v vulnerabilities/tests/test_scrapers.py vulnerabilities/tests/test_api_data.py
+  - ./manage.py test vulnerabilities/tests
 
 notifications:
   email: false

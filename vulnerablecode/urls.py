@@ -17,5 +17,5 @@ Including another URLconf
 from django.conf.urls import url, include
 
 urlpatterns = [
-    url(r'^vulncode_app/', include('vulncode_app.urls')),
+    url(r'^vulnerabilities/', include('vulnerabilities.urls')),
 ]

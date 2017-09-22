@@ -25,7 +25,19 @@ import json
 
 from django.http import HttpResponse
 
-from vulncode_app import api_data
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from vulnerabilities.models import Package
+from vulnerabilities.serializers import PackageSerializer
+from vulnerabilities import api_data
+
+
+class VulnerabilityData(APIView):
+    def get(self, request, package_name):
+        package = Package.objects.filter(name=package_name)
+        response = PackageSerializer(package, many=True).data
+        return Response(response)
 
 
 def package(request, name):

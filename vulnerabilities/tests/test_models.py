@@ -23,10 +23,10 @@
 
 from django.test import TestCase
 
-from vulncode_app.models import Vulnerability
-from vulncode_app.models import VulnerabilityReference
-from vulncode_app.models import Package
-from vulncode_app.models import PackageReference
+from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityReference
+from vulnerabilities.models import Package
+from vulnerabilities.models import PackageReference
 
 
 class TestVulnerability(TestCase):

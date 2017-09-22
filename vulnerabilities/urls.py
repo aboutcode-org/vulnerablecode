@@ -23,10 +23,20 @@
 
 from django.conf.urls import url
 
-from . import views
+from rest_framework.urlpatterns import format_suffix_patterns
+
+from vulnerabilities import views
 
 
 urlpatterns = [
-    url(r'(?P<name>[a-z]+)/(?P<version>[0-9]+)', views.package_version, name='package_version'),
-    url(r'^(?P<name>[a-z]+)', views.package, name='package'),
+    url(r'^cve-search/(?P<name>[a-z]+)/(?P<version>[0-9]+)',
+        views.package_version,
+        name='package_version'),
+    url(r'^cve-search/(?P<name>[a-z]+)',
+        views.package,
+        name='package'),
+    url(r'^api/(?P<package_name>.+)',
+        views.VulnerabilityData.as_view()),
 ]
+
+urlpatterns = format_suffix_patterns(urlpatterns)

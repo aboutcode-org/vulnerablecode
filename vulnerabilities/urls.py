@@ -35,7 +35,7 @@ urlpatterns = [
     url(r'^cve-search/(?P<name>[a-z]+)',
         views.package,
         name='package'),
-    url(r'^api/(?P<package_name>[a-z]+)',
+    url(r'^api/(?P<package_name>.+)',
         views.VulnerabilityData.as_view()),
 ]
 

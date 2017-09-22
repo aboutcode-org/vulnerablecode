@@ -82,6 +82,7 @@ class Package(models.Model):
     platform = models.CharField(max_length=50, help_text='Package platform eg:maven', blank=True)
     name = models.CharField(max_length=50, help_text='Package name', blank=True)
     version = models.CharField(max_length=50, help_text='Package version', blank=True)
+    vulnerabilities = models.ManyToManyField(to='Vulnerability', through='ImpactedPackage')
 
     def __str__(self):
         return self.name

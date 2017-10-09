@@ -66,7 +66,8 @@ DJANGO_DEV=1 ./manage.py runserver
 
 In your browser access:
 ```
-http://127.0.0.1:8000/vulnerabilities/api/<package_name>
+http://127.0.0.1:8000/api/
+http://127.0.0.1:8000/api/packages/?name=<package_name>
 ```
 
 Deployment on Heroku

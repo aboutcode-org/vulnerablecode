@@ -22,6 +22,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 from rest_framework import serializers
+from rest_framework import viewsets
 
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageReference
@@ -75,3 +76,9 @@ class PackageSerializer(serializers.ModelSerializer):
             'vulnerabilities',
             'references',
         ]
+
+
+class PackageViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Package.objects.all()
+    serializer_class = PackageSerializer
+    filter_fields = ('name', 'version', 'platform')

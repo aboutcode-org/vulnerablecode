@@ -4,6 +4,7 @@ beautifulsoup4==4.6.0
 lxml==4.0.0
 django==1.11.6
 djangorestframework==3.7.0
+django-filter==1.0.4
 
 # Tests
 pytest==3.2.3

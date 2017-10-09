@@ -27,7 +27,7 @@ import os
 from django.test import TestCase
 
 from vulnerabilities.models import Package
-from vulnerabilities.serializers import PackageSerializer
+from vulnerabilities.api import PackageSerializer
 from vulnerabilities.data_dump import debian_dump
 from vulnerabilities.data_dump import ubuntu_dump
 from vulnerabilities.scraper import debian
@@ -45,7 +45,7 @@ class TestResponse(TestCase):
 
         extract_data = debian.extract_vulnerabilities(test_data)
         debian_dump(extract_data)
-        response = self.client.get('/api/mimetex', format='json')
+        response = self.client.get('/api/packages/?name=mimetex', format='json')
 
         expected = [{
             "name": "mimetex",
@@ -77,7 +77,7 @@ class TestResponse(TestCase):
             "references": [],
         }]
 
-        self.assertEqual(expected, response.data)
+        self.assertEqual(expected, response.data.get('results'))
 
     def test_ubuntu_response(self):
         with open(os.path.join(TEST_DATA, 'ubuntu_main.html')) as f:
@@ -85,7 +85,7 @@ class TestResponse(TestCase):
 
         extract_data = ubuntu.extract_cves(test_data)
         ubuntu_dump(extract_data)
-        response = self.client.get('/api/automake', format='json')
+        response = self.client.get('/api/packages/?name=automake', format='json')
 
         expected = [{
             "name": "automake",
@@ -103,14 +103,7 @@ class TestResponse(TestCase):
             "references": [],
         }]
 
-        self.assertEqual(expected, response.data)
-
-    def test_blank_response(self):
-        response_invalid = self.client.get('/api/', format='json')
-        response_blank = self.client.get('/api/abbpcc', format='json')
-
-        self.assertEqual(404, response_invalid.status_code)
-        self.assertEqual([], response_blank.data)
+        self.assertEqual(expected, response.data.get('results'))
 
 
 class TestSerializers(TestCase):

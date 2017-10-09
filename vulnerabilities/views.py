@@ -25,19 +25,7 @@ import json
 
 from django.http import HttpResponse
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-
-from vulnerabilities.models import Package
-from vulnerabilities.serializers import PackageSerializer
 from vulnerabilities import api_data
-
-
-class VulnerabilityData(APIView):
-    def get(self, request, package_name):
-        package = Package.objects.filter(name=package_name)
-        response = PackageSerializer(package, many=True).data
-        return Response(response)
 
 
 def package(request, name):
@@ -59,6 +47,6 @@ def package_version(request, name, version):
     """
     raw_data = api_data.data_cve_circl(name=name, version=version)
     fields_names = ['id', 'summary', 'cvss']
-    extracted_data = api_data.extract_fields(raw_data, fields_names, version=True)
+    extracted_data = api_data.extract_fields(raw_data, fields_names)
 
     return HttpResponse(json.dumps(extracted_data))

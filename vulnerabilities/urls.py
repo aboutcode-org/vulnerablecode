@@ -35,8 +35,6 @@ urlpatterns = [
     url(r'^cve-search/(?P<name>[a-z]+)',
         views.package,
         name='package'),
-    url(r'^api/(?P<package_name>.+)',
-        views.VulnerabilityData.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

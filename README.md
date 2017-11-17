@@ -27,7 +27,7 @@ Tests
 
 ```
 pycodestyle --exclude=migrations,settings.py,lib,tests --max-line-length=100 .
-python3.6 -m pytest -v vulnerabilities/tests/test_scrapers.py vulnerabilities/tests/test_api_data.py 
+python3.6 -m pytest -v vulnerabilities/tests/test_scrapers.py vulnerabilities/tests/test_api_data.py
 ```
 
 For Django based tests
@@ -66,7 +66,8 @@ DJANGO_DEV=1 ./manage.py runserver
 
 In your browser access:
 ```
-http://127.0.0.1:8000/vulnerabilities/api/<package_name>
+http://127.0.0.1:8000/api/
+http://127.0.0.1:8000/api/packages/?name=<package_name>
 ```
 
 Deployment on Heroku

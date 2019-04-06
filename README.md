@@ -17,7 +17,7 @@ System requirements
 - Get Python 3.6+ installed first and pip (pip is included in the
   Python.org downloads since Python 2.7.9)
 
-- Install PostgreSQL 11.2 of later. (11.2 preferred)
+- Install PostgreSQL 9 of later. (11.2 preferred)
   On Debian distros use: `sudo apt-get install postgresql`
 
 - Install extra utilities if needed: `sudo apt-get install wget build-essential redis-server`
@@ -35,8 +35,8 @@ Configure a local test database
 Activate a virtualenv, install dependencies, and run the database migrations:
 
 ```
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv .
+source bin/activate
 pip install -r requirements.txt
 python manage.py migrate
 ```

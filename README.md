@@ -12,14 +12,33 @@ Clone the source code:
 git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
 ```
 
+System requirements
+
+- Get Python 3.6+ installed first and pip (pip is included in the
+  Python.org downloads since Python 2.7.9)
+
+- Install PostgreSQL 11.2 of later. (11.2 preferred)
+  On Debian distros use: `sudo apt-get install postgresql`
+
+- Install extra utilities if needed: `sudo apt-get install wget build-essential redis-server`
+
+
+Configure a local test database
+
+- Create a local test `vulnerablecode` database user. Use `vulnerablecode` as password when prompted
+  (otherwise use any password and update your settings locally).
+  `sudo -u postgres createuser --no-createrole --no-superuser --login --inherit --createdb --pwprompt vulnerablecode`
+
+- Create a local test `vulnerablecode` database.
+  `createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode --password --host=localhost --port=5432 vulnerablecode`
+
 Activate a virtualenv, install dependencies, and run the database migrations:
 
 ```
-python3.6 -m venv .
-source bin/activate
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
-DJANGO_DEV=1 >> .env
-DJANGO_DEV=1 ./manage.py migrate
+python manage.py migrate
 ```
 
 Tests
@@ -32,14 +51,14 @@ python3.6 -m pytest -v vulnerabilities/tests/test_scrapers.py vulnerabilities/te
 
 For Django based tests
 ```
-DJANGO_DEV=1 ./manage.py test vulnerabilities/tests
+python manage.py test vulnerabilities/tests
 ```
 
 Scrape and save to the database
 -------------------------------
 
 ```
-DJANGO_DEV=1 ./manage.py shell
+python manage.py shell
 ```
 
 ```
@@ -61,7 +80,7 @@ API
 Start the webserver
 
 ```
-DJANGO_DEV=1 ./manage.py runserver
+python manage.py runserver
 ```
 
 In your browser access:

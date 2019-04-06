@@ -1,6 +1,9 @@
 language: python
 python: 3.6
 
+services:
+  - postgresql
+
 install:
   - pip install -r requirements.txt
 
@@ -9,6 +12,7 @@ env:
 
 before_script:
   - pycodestyle --exclude=migrations,settings.py,lib,tests --max-line-length=100 .
+  - psql -c "CREATE DATABASE vulnerablecode;" -U postgres
   - ./manage.py migrate
 
 script:

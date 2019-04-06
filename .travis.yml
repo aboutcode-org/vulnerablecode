@@ -7,9 +7,6 @@ services:
 install:
   - pip install -r requirements.txt
 
-env:
-  - DJANGO_DEV=1
-
 before_script:
   - pycodestyle --exclude=migrations,settings.py,lib,tests --max-line-length=100 .
   - psql -c "CREATE DATABASE vulnerablecode;" -U postgres

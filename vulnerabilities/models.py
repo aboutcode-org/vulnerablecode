@@ -29,8 +29,8 @@ class Vulnerability(models.Model):
     A software vulnerability with minimal information.
     Identifiers are stored as VulnerabilityReference.
     """
-    summary = models.CharField(max_length=50, help_text='Summary of the vulnerability', blank=True)
-    cvss = models.FloatField(max_length=50, help_text='CVSS Score', null=True)
+    summary = models.CharField(max_length=100, help_text='Summary of the vulnerability', blank=True)
+    cvss = models.FloatField(max_length=100, help_text='CVSS Score', null=True)
 
     def __str__(self):
         return self.summary
@@ -42,36 +42,20 @@ class VulnerabilityReference(models.Model):
     vulnerability data on such as a CVE ID and its web page
     at the NVD, a bug id and similar references.
     """
-    vulnerability = models.ForeignKey('Vulnerability')
-    source = models.CharField(max_length=50, help_text='Source(s) name eg:NVD', blank=True)
-    reference_id = models.CharField(max_length=50, help_text='Reference ID, eg:CVE-ID', blank=True)
-    url = models.URLField(max_length=1024, help_text='URL of Vulnerability data', blank=True)
+    vulnerability = models.ForeignKey(
+        Vulnerability, on_delete=models.CASCADE)
+    source = models.CharField(
+        max_length=50, help_text='Source(s) name eg:NVD', blank=True)
+    reference_id = models.CharField(
+        max_length=50, help_text='Reference ID, eg:CVE-ID', blank=True)
+    url = models.URLField(
+        max_length=1024, help_text='URL of Vulnerability data', blank=True)
 
     class Meta:
         unique_together = ('vulnerability', 'source', 'reference_id', 'url')
 
     def __str__(self):
         return self.source
-
-
-class ImpactedPackage(models.Model):
-    """
-    Relates a vulnerability to package(s) impacted by it.
-    """
-    vulnerability = models.ForeignKey('Vulnerability')
-    package = models.ForeignKey('Package')
-
-    class Meta:
-        unique_together = ('vulnerability', 'package')
-
-
-class ResolvedPackage(models.Model):
-    """
-    Relates a vulnerability to package(s) that contain
-    a fix or resolution of this vulnerability.
-    """
-    vulnerability = models.ForeignKey('Vulnerability')
-    package = models.ForeignKey('Package')
 
 
 class Package(models.Model):
@@ -88,12 +72,32 @@ class Package(models.Model):
         return self.name
 
 
+class ImpactedPackage(models.Model):
+    """
+    Relates a vulnerability to package(s) impacted by it.
+    """
+    vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
+    package = models.ForeignKey(Package, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('vulnerability', 'package')
+
+
+class ResolvedPackage(models.Model):
+    """
+    Relates a vulnerability to package(s) that contain
+    a fix or resolution of this vulnerability.
+    """
+    vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
+    package = models.ForeignKey(Package, on_delete=models.CASCADE)
+
+
 class PackageReference(models.Model):
     """
     One or more identifiers and references for a software package
     in a package repository, such as a Debian, Maven or NPM repository.
     """
-    package = models.ForeignKey('Package')
+    package = models.ForeignKey(Package, on_delete=models.CASCADE)
     repository = models.CharField(
         max_length=50,
         help_text='Repository URL eg:http://central.maven.org',

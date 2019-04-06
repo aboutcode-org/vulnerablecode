@@ -29,8 +29,8 @@ class Vulnerability(models.Model):
     A software vulnerability with minimal information.
     Identifiers are stored as VulnerabilityReference.
     """
-    summary = models.CharField(max_length=50, help_text='Summary of the vulnerability', blank=True)
-    cvss = models.FloatField(max_length=50, help_text='CVSS Score', null=True)
+    summary = models.CharField(max_length=100, help_text='Summary of the vulnerability', blank=True)
+    cvss = models.FloatField(max_length=100, help_text='CVSS Score', null=True)
 
     def __str__(self):
         return self.summary

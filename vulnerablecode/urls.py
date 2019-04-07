@@ -21,7 +21,8 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from django.conf.urls import url, include
+from django.contrib import admin
+from django.urls import include, re_path
 
 from rest_framework.routers import DefaultRouter
 
@@ -33,6 +34,7 @@ api_router.register(r'packages', PackageViewSet)
 
 
 urlpatterns = [
-    url(r'^vulnerabilities/', include('vulnerabilities.urls')),
-    url(r'^api/', include(api_router.urls)),
+    re_path(r'^admin/', admin.site.urls),
+    re_path(r'^vulnerabilities/', include('vulnerabilities.urls')),
+    re_path(r'^api/', include(api_router.urls))
 ]

@@ -22,7 +22,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 from django.contrib import admin
-from django.urls import include, re_path
+from django.urls import include, path, re_path
 
 from rest_framework.routers import DefaultRouter
 
@@ -34,7 +34,7 @@ api_router.register(r'packages', PackageViewSet)
 
 
 urlpatterns = [
-    re_path(r'^admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     re_path(r'^vulnerabilities/', include('vulnerabilities.urls')),
     re_path(r'^api/', include(api_router.urls))
 ]

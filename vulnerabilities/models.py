@@ -99,7 +99,7 @@ class PackageReference(models.Model):
     """
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
     repository = models.CharField(
-        max_length=50,
+        max_length=100,
         help_text='Repository URL eg:http://central.maven.org',
         blank=True,
     )

@@ -26,11 +26,16 @@ import os
 
 from django.test import TestCase
 
-from vulnerabilities.models import Vulnerability
-from vulnerabilities.models import VulnerabilityReference
-from vulnerabilities.models import Package
+from vulnerabilities.data_dump import archlinux_dump
 from vulnerabilities.data_dump import debian_dump
 from vulnerabilities.data_dump import ubuntu_dump
+from vulnerabilities.models import ImpactedPackage
+from vulnerabilities.models import Package
+from vulnerabilities.models import PackageReference
+from vulnerabilities.models import ResolvedPackage
+from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityReference
+from vulnerabilities.scraper import archlinux
 from vulnerabilities.scraper import debian
 from vulnerabilities.scraper import ubuntu
 
@@ -85,3 +90,30 @@ class TestDataDump(TestCase):
         reference = VulnerabilityReference.objects.filter(reference_id='CVE-2002-2439')[0]
         self.assertEqual(reference.reference_id, 'CVE-2002-2439')
         self.assertTrue(Package.objects.filter(name='gcc-4.6')[0].name, 'gcc-4.6')
+
+    def test_archlinux_data_dump(self):
+        """
+        Scrape data from Archlinux' main tracker, save it
+        in the database and verify entries.
+        """
+        with open(os.path.join(TEST_DATA, 'archlinux.json')) as f:
+            test_data = json.loads(f.read())
+
+        archlinux_dump(test_data)
+
+        self.assertEqual(1, Vulnerability.objects.count())
+        self.assertEqual(14, VulnerabilityReference.objects.count())
+        self.assertEqual(8, Package.objects.count())
+        self.assertEqual(8, PackageReference.objects.count())
+        self.assertEqual(4, ImpactedPackage.objects.count())
+        self.assertEqual(4, ResolvedPackage.objects.count())
+
+        self.assertTrue(Vulnerability.objects.get(summary='multiple issues'))
+
+        self.assertTrue(VulnerabilityReference.objects.get(reference_id='CVE-2018-11360'))
+
+        self.assertTrue(VulnerabilityReference.objects.get(reference_id='ASA-201805-24'))
+
+        self.assertTrue(VulnerabilityReference.objects.get(reference_id='AVG-708'))
+
+        self.assertEqual(Package.objects.filter(name='wireshark-cli')[0].name, 'wireshark-cli')

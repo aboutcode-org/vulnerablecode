@@ -23,6 +23,8 @@
 
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import Package
+from vulnerabilities.models import PackageReference
+from vulnerabilities.models import ResolvedPackage
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 
@@ -68,3 +70,59 @@ def ubuntu_dump(html):
             vulnerability=vulnerability,
             package=package
         )
+
+
+def archlinux_dump(extract_data):
+    """
+    Save data scraped from archlinux' security tracker.
+    """
+    for item in extract_data:
+        cves = item['issues']
+        group = item['name']
+
+        advisories = set(item['advisories'])
+        vulnerabilities = cves + list(advisories)
+        vulnerabilities.append(group)
+        packages_name = item['packages']
+
+        affected_version = item['affected']
+        fixed_version = item['fixed']
+        if not fixed_version:
+            fixed_version = 'None'
+
+        vulnerability = Vulnerability.objects.create(
+            summary=item['type'],
+        )
+
+        for vulnerability_id in vulnerabilities:
+            VulnerabilityReference.objects.create(
+                vulnerability=vulnerability,
+                reference_id=vulnerability_id,
+                url='https://security.archlinux.org/{}'.format(vulnerability_id)
+            )
+
+        for package_name in packages_name:
+            package_affected = Package.objects.create(
+                name=package_name,
+                version=affected_version
+            )
+            ImpactedPackage.objects.create(
+                vulnerability=vulnerability,
+                package=package_affected
+            )
+            PackageReference.objects.create(
+                package=package_affected,
+                repository='https://security.archlinux.org/package/{}'.format(package_name)
+            )
+            package_fixed = Package.objects.create(
+                name=package_name,
+                version=fixed_version
+            )
+            ResolvedPackage.objects.create(
+                vulnerability=vulnerability,
+                package=package_fixed
+            )
+            PackageReference.objects.create(
+                package=package_fixed,
+                repository='https://security.archlinux.org/package/{}'.format(package_name)
+            )

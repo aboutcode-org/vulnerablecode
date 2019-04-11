@@ -62,8 +62,8 @@ python manage.py shell
 ```
 
 ```
-from vulnerabilities.scraper import debian, ubuntu
-from vulnerabilities.data_dump import debian_dump, ubuntu_dump
+from vulnerabilities.scraper import archlinux, debian, ubuntu
+from vulnerabilities.data_dump import archlinux_dump, debian_dump, ubuntu_dump
 
 # May be needed on macOS
 # import ssl; ssl._create_default_https_context = ssl._create_unverified_context
@@ -73,6 +73,9 @@ ubuntu_dump(ubuntu_cves)
 
 debian_vulnerabilities = debian.scrape_vulnerabilities()
 debian_dump(debian_vulnerabilities)
+
+archlinux_vulnerabilities = archlinux.scrape_vulnerabilities()
+archlinux_dump(archlinux_vulnerabilities)
 ```
 
 API

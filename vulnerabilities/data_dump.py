@@ -45,7 +45,7 @@ def debian_dump(extract_data):
             name=data.get('package_name', ''),
             version=data.get('fixed_version', ''),
         )
-        ImpactedPackage.objects.create(
+        ResolvedPackage.objects.create(
             vulnerability=vulnerability,
             package=package
         )

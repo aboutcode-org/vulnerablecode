@@ -37,15 +37,15 @@ def debian_dump(extract_data):
         vulnerability = Vulnerability.objects.update_or_create(
             summary=data.get('description', ''),
         )
-        VulnerabilityReference.objects.update_or_create(
+        VulnerabilityReference.objects.create(
             vulnerability=vulnerability,
             reference_id=data.get('vulnerability_id', '')
         )
-        package = Package.objects.update_or_create(
+        package = Package.objects.create(
             name=data.get('package_name', ''),
             version=data.get('fixed_version', ''),
         )
-        ImpactedPackage.objects.update_or_create(
+        ImpactedPackage.objects.create(
             vulnerability=vulnerability,
             package=package
         )
@@ -56,17 +56,17 @@ def ubuntu_dump(html):
     Dump data scraped from Ubuntu's security tracker.
     """
     for data in html:
-        vulnerability = Vulnerability.objects.update_or_create(
+        vulnerability = Vulnerability.objects.create(
             summary='',
         )
-        VulnerabilityReference.objects.update_or_create(
+        VulnerabilityReference.objects.create(
             vulnerability=vulnerability,
             reference_id=data.get('cve_id')
         )
-        package = Package.objects.update_or_create(
+        package = Package.objects.create(
             name=data.get('package_name'),
         )
-        ImpactedPackage.objects.update_or_create(
+        ImpactedPackage.objects.create(
             vulnerability=vulnerability,
             package=package
         )
@@ -90,39 +90,39 @@ def archlinux_dump(extract_data):
         if not fixed_version:
             fixed_version = 'None'
 
-        vulnerability = Vulnerability.objects.update_or_create(
+        vulnerability = Vulnerability.objects.create(
             summary=item['type'],
         )
 
         for vulnerability_id in vulnerabilities:
-            VulnerabilityReference.objects.update_or_create(
+            VulnerabilityReference.objects.create(
                 vulnerability=vulnerability,
                 reference_id=vulnerability_id,
                 url='https://security.archlinux.org/{}'.format(vulnerability_id)
             )
 
         for package_name in packages_name:
-            package_affected = Package.objects.update_or_create(
+            package_affected = Package.objects.create(
                 name=package_name,
                 version=affected_version
             )
-            ImpactedPackage.objects.update_or_create(
+            ImpactedPackage.objects.create(
                 vulnerability=vulnerability,
                 package=package_affected
             )
-            PackageReference.objects.update_or_create(
+            PackageReference.objects.create(
                 package=package_affected,
                 repository='https://security.archlinux.org/package/{}'.format(package_name)
             )
-            package_fixed = Package.objects.update_or_create(
+            package_fixed = Package.objects.create(
                 name=package_name,
                 version=fixed_version
             )
-            ResolvedPackage.objects.update_or_create(
+            ResolvedPackage.objects.create(
                 vulnerability=vulnerability,
                 package=package_fixed
             )
-            PackageReference.objects.update_or_create(
+            PackageReference.objects.create(
                 package=package_fixed,
                 repository='https://security.archlinux.org/package/{}'.format(package_name)
             )

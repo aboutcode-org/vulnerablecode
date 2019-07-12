@@ -31,11 +31,11 @@
 			"urgency": "medium", 
 			"fixed_version": "1.50-1.1"}}}, 
 
-"CVE-2009-2459": 
-	{"scope": "un-remote", 
-	"debianbug": 537254, 
-	"description": "Multiple unspecified vulnerabilities in mimeTeX.", 
-	"releases": 
+"CVE-2009-2459":
+	{"scope": "un-remote",
+	"debianbug": 537254,
+	"description": "Multiple unspecified vulnerabilities in mimeTeX.",
+	"releases":
 	{"stretch": 
 		{"status": "resolved", 
 		"repositories": {"stretch": "1.74-1"}, 
@@ -102,4 +102,5 @@
 				}	
 			}
 		}
-	} 
+	}
+

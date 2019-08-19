@@ -2,7 +2,7 @@ setuptools==36.5.0
 
 beautifulsoup4==4.7.1
 lxml==4.3.3
-django==2.2
+django==2.2.4
 djangorestframework==3.9.2
 django-filter==2.1.0
 

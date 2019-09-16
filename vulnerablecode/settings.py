@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
+DEV_MODE = os.environ.get('DJANGO_DEV', False)
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -19,7 +21,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'hhismo6l@1uj)nr6@o7$b2u68w5*_o^liji+=uzq=954-f$8_1'
+if not DEV_MODE:
+    SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -27,7 +30,6 @@ DEBUG = False
 ALLOWED_HOSTS = [
     '.herokuapp.com',
 ]
-
 
 # Application definition
 
@@ -159,5 +161,5 @@ REST_FRAMEWORK = {
 
 
 # Set `DJANGO_DEV=1` in env to enable dev mode
-if os.environ.get('DJANGO_DEV', False):
+if DEV_MODE:
     from vulnerablecode.dev import *

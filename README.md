@@ -41,8 +41,14 @@ Activate a virtualenv, install dependencies, and run the database migrations:
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-python manage.py migrate
+DJANGO_DEV=1 python manage.py migrate
 ```
+
+The environment variable `DJANGO_DEV` is used to load settings suitable for development, defined in `vulnerablecode/dev.py`. If you don't want to type
+it every time use `export DJANGO_DEV=1` instead.
+
+When not running in development mode, an environment variable named `SECRET_KEY` needs to be set. The recommended way to generate this key is to use
+the code Django includes for this purpose: `SECRET_KEY=$(python -c "from django.core.management import utils; print(utils.get_random_secret_key())")`.
 
 ## Tests
 
@@ -53,13 +59,13 @@ python -m pytest -v vulnerabilities/tests/test_scrapers.py vulnerabilities/tests
 
 For Django based tests
 ```
-python manage.py test vulnerabilities/tests
+DJANGO_DEV=1 python manage.py test vulnerabilities/tests
 ```
 
 ## Data import
 
 ```
-python manage.py shell
+DJANGO_DEV=1 python manage.py shell
 ```
 
 ```
@@ -109,10 +115,12 @@ https://devcenter.heroku.com/articles/deploying-python#how-to-keep-build-artifac
 
 5. Create Heroku app: `heroku create`
 
-6. Deploy: `git push heroku <branch>:master`
+6. Generate a secret key and pass it as an environment variable: `heroku config:set SECRET_KEY=$(python -c "from django.core.management import utils; print(utils.get_random_secret_key())")`
 
-7. Migrate the database: `heroku run python manage.py migrate`
+7. Deploy: `git push heroku <branch>:master`
 
-8. Load the data referring to chapter "Data import" above.
+8. Migrate the database: `heroku run python manage.py migrate`
 
-9. To check the logs: `heroku logs --tail`
+9. Load the data referring to chapter "Data import" above.
+
+10. To check the logs: `heroku logs --tail`

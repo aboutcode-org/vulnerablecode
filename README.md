@@ -2,9 +2,7 @@
 
 [![Build Status](https://travis-ci.org/nexB/vulnerablecode.svg?branch=develop)](https://travis-ci.org/nexB/vulnerablecode)
 
-Setup
------
-VulnerableCode requires Python 3.6+, get the latest version at https://www.python.org/
+## Setup
 
 Clone the source code:
 
@@ -12,41 +10,45 @@ Clone the source code:
 git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
 ```
 
-System requirements
+### System requirements
 
-- Get Python 3.6+ installed first and pip (pip is included in the
-  Python.org downloads since Python 2.7.9)
+- Python 3.6+
 
-- Install PostgreSQL 9 of later. (11.2 preferred)
-  On Debian distros use: `sudo apt-get install postgresql`
+- PostgreSQL 9+ or [Docker](https://hub.docker.com/search/?type=edition&offering=community)
 
-- Install extra utilities if needed: `sudo apt-get install wget build-essential redis-server`
+- Compiler toolchain and development files for Python and PostgreSQL
 
+On Debian-based distros, these can be installed with `sudo apt install python3-venv python3-dev postgresql libpq-dev build-essential`. Leave out `postgresql` if you want to run it in Docker.
 
-Configure a local test database
+### Database configuration
 
-- Create a local test `vulnerablecode` database user. Use `vulnerablecode` as password when prompted
-  (otherwise use any password and update your settings locally).
+Either run PostgreSQL in Docker:
+`docker run --name pg-vulnerablecode -e POSTGRES_USER=vulnerablecode -e POSTGRES_PASSWORD=vulnerablecode -e POSTGRES_DB=vulnerablecode -p 5432:5432 postgres`
+
+Or without:
+
+- Create a user named `vulnerablecode`. Use `vulnerablecode` as password when prompted:
   `sudo -u postgres createuser --no-createrole --no-superuser --login --inherit --createdb --pwprompt vulnerablecode`
 
-- Create a local test `vulnerablecode` database.
+- Create a databased named `vulnerablecode`:
   `createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode --password --host=localhost --port=5432 vulnerablecode`
+
+### Application dependencies
 
 Activate a virtualenv, install dependencies, and run the database migrations:
 
 ```
-python3 -m venv .
-source bin/activate
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 python manage.py migrate
 ```
 
-Tests
------
+## Tests
 
 ```
-pycodestyle --exclude=migrations,settings.py,lib,tests --max-line-length=100 .
-python3.6 -m pytest -v vulnerabilities/tests/test_scrapers.py vulnerabilities/tests/test_api_data.py
+pycodestyle --exclude=migrations,settings.py,venv,tests --max-line-length=100 .
+python -m pytest -v vulnerabilities/tests/test_scrapers.py vulnerabilities/tests/test_api_data.py
 ```
 
 For Django based tests
@@ -54,8 +56,7 @@ For Django based tests
 python manage.py test vulnerabilities/tests
 ```
 
-Scrape and save to the database
--------------------------------
+## Data import
 
 ```
 python manage.py shell
@@ -78,22 +79,22 @@ archlinux_vulnerabilities = archlinux.scrape_vulnerabilities()
 archlinux_dump(archlinux_vulnerabilities)
 ```
 
-API
-----
+## API
+
 Start the webserver
 
 ```
-python manage.py runserver
+DJANGO_DEV=1 python manage.py runserver
 ```
 
 In your browser access:
+
 ```
 http://127.0.0.1:8000/api/
 http://127.0.0.1:8000/api/packages/?name=<package_name>
 ```
 
-Deployment on Heroku
---------------------
+## Deployment on Heroku
 
 See https://devcenter.heroku.com/articles/django-app-configuration#creating-a-new-django-project
 https://devcenter.heroku.com/articles/deploying-python#how-to-keep-build-artifacts-out-of-git
@@ -112,6 +113,6 @@ https://devcenter.heroku.com/articles/deploying-python#how-to-keep-build-artifac
 
 7. Migrate the database: `heroku run python manage.py migrate`
 
-8. Load the data referring to chapter "Scrape and save to the database" above.
+8. Load the data referring to chapter "Data import" above.
 
 9. To check the logs: `heroku logs --tail`

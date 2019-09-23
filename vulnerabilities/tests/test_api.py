@@ -55,7 +55,7 @@ class TestResponse(TestCase):
                 "summary": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX",
                 "cvss": None,
                 "references": [{
-                    "reference_id": "CVE-2009-2458",
+                    "reference_id": "CVE-2009-1382",
                     "source": "",
                     "url": "",
                 }]
@@ -66,7 +66,7 @@ class TestResponse(TestCase):
             "version": "1.50-1.1",
             "platform": "",
             "vulnerabilities": [{
-                "summary": "Multiple unspecified vulnerabilities in mimeTeX.",
+                "summary": "Multiple unspecified vulnerabilities in mimeTeX",
                 "cvss": None,
                 "references": [{
                     "reference_id": "CVE-2009-2459",
@@ -125,7 +125,7 @@ class TestSerializers(TestCase):
                     "summary": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX",
                     "cvss": None,
                     "references": [{
-                        "reference_id": "CVE-2009-2458",
+                        "reference_id": "CVE-2009-1382",
                         "source": "",
                         "url": "",
                     }]
@@ -137,7 +137,7 @@ class TestSerializers(TestCase):
                 "version": "1.50-1.1",
                 "platform": "",
                 "vulnerabilities": [{
-                    "summary": "Multiple unspecified vulnerabilities in mimeTeX.",
+                    "summary": "Multiple unspecified vulnerabilities in mimeTeX",
                     "cvss": None,
                     "references": [{
                         "reference_id": "CVE-2009-2459",

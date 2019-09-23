@@ -51,7 +51,7 @@ class TestDataDump(TestCase):
         in the database and verify entries.
         """
         with open(os.path.join(TEST_DATA, 'debian.json')) as f:
-            test_data = json.loads(f.read())
+            test_data = json.load(f)
 
         extract_data = debian.extract_vulnerabilities(test_data)
         debian_dump(extract_data)
@@ -64,17 +64,12 @@ class TestDataDump(TestCase):
                         summary='Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX'))
 
         self.assertTrue(Vulnerability.objects.get(
-                        summary='Multiple unspecified vulnerabilities in mimeTeX.'))
+                        summary='Multiple unspecified vulnerabilities in mimeTeX'))
 
-        self.assertTrue(VulnerabilityReference.objects.get(reference_id='CVE-2009-2458'))
-
+        self.assertTrue(VulnerabilityReference.objects.get(reference_id='CVE-2009-1382'))
         self.assertTrue(VulnerabilityReference.objects.get(reference_id='CVE-2009-2459'))
-
-        self.assertTrue(VulnerabilityReference.objects.get(reference_id='TEMP-0807341-84E914'))
-
-        self.assertEqual(Package.objects.filter(name='mimetex')[0].name, 'mimetex')
-        self.assertTrue(Package.objects.get(name='git-repair'))
-        self.assertEqual(Package.objects.filter(version='1.50-1.1')[0].version, '1.50-1.1')
+        self.assertTrue(VulnerabilityReference.objects.get(reference_id='CVE-2014-8242'))
+        self.assertTrue(Package.objects.get(name='librsync'))
 
     def test_ubuntu_data_dump(self):
         """

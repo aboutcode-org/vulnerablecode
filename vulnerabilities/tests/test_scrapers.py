@@ -72,6 +72,7 @@ def test_debian_extract_vulnerabilities():
             'description': 'librsync before 1.0.0 uses a truncated MD4 checksum to match blocks',
             'status': 'open',
             'urgency': 'low',
+            'version': '0.9.7-10',
             'fixed_version': ''
         },
         {
@@ -80,6 +81,7 @@ def test_debian_extract_vulnerabilities():
             'description': 'Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX',
             'status': 'resolved',
             'urgency': 'medium',
+            'version': '1.74-1',
             'fixed_version': '1.50-1.1'
         },
         {
@@ -88,6 +90,7 @@ def test_debian_extract_vulnerabilities():
             'description': 'Multiple unspecified vulnerabilities in mimeTeX',
             'status': 'resolved',
             'urgency': 'medium',
+            'version': '1.74-1',
             'fixed_version': '1.50-1.1'
         }
     ]

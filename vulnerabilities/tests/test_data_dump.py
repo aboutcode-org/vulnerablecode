@@ -83,12 +83,36 @@ to match blocks'))
         """
         Check that all packages from the test data are stored in the database
         """
-        # There are three rows in Package because currently the models allow duplicates
+        # There are five rows in Package because currently the models allow duplicates
         # (see issue #28).
-        self.assertEqual(3, Package.objects.count())
+        self.assertEqual(5, Package.objects.count())
 
         self.assertTrue(Package.objects.filter(name='mimetex'))
         self.assertTrue(Package.objects.get(name='librsync'))
+
+    def test_ImpactedPackage(self):
+        """
+        Check that all impacted packages from the test data are stored in the database
+        """
+        impacted_pkgs = ImpactedPackage.objects.all()
+        impacted_pkg = impacted_pkgs[0]
+
+        self.assertEqual(1, len(impacted_pkgs))
+        self.assertEqual('librsync', impacted_pkg.package.name)
+        self.assertEqual('0.9.7-10', impacted_pkg.package.version)
+
+    def test_ResolvedPackage(self):
+        """
+        Check that all resolved packages from the test data are stored in the database
+        """
+        resolved_pkgs = ResolvedPackage.objects.all()
+        resolved_pkg = resolved_pkgs[0]
+        versions = [rp.package.version for rp in resolved_pkgs]
+
+        self.assertEqual(4, len(resolved_pkgs))
+        self.assertEqual('mimetex', resolved_pkg.package.name)
+        self.assertIn('1.50-1.1', versions)
+        self.assertIn('1.74-1', versions)
 
 
 class TestUbuntuDataDump(TestCase):

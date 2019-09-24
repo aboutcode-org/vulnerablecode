@@ -48,6 +48,10 @@ def extract_vulnerabilities(debian_data, base_release='jessie'):
             if not release:
                 continue
 
+            status = release.get('status')
+            if status not in ('open', 'resolved'):
+                continue
+
             # the latest version of this package in base_release
             version = release.get('repositories', {}).get(base_release, '')
 
@@ -55,7 +59,7 @@ def extract_vulnerabilities(debian_data, base_release='jessie'):
                 'package_name': package_name,
                 'vulnerability_id': vulnerability,
                 'description': details.get('description', ''),
-                'status': release.get('status', ''),
+                'status': status,
                 'urgency': release.get('urgency', ''),
                 'version': version,
                 'fixed_version': release.get('fixed_version', '')

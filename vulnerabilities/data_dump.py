@@ -41,14 +41,35 @@ def debian_dump(extract_data):
             vulnerability=vulnerability,
             reference_id=data.get('vulnerability_id', ''),
         )
+
+        pkg_name = data.get('package_name', '')
         package = Package.objects.create(
-            name=data.get('package_name', ''),
-            version=data.get('fixed_version', ''),
+            name=pkg_name,
+            version=data.get('version', ''),
         )
-        ImpactedPackage.objects.create(
-            vulnerability=vulnerability,
-            package=package
-        )
+
+        if data['status'] == 'open':
+            ImpactedPackage.objects.create(
+                vulnerability=vulnerability,
+                package=package
+            )
+        else:
+            ResolvedPackage.objects.create(
+                vulnerability=vulnerability,
+                package=package
+            )
+
+            fixed_version = data.get('fixed_version')
+            if fixed_version:
+                package = Package.objects.create(
+                    name=pkg_name,
+                    version=fixed_version,
+                )
+
+                ResolvedPackage.objects.create(
+                    vulnerability=vulnerability,
+                    package=package
+                )
 
 
 def ubuntu_dump(html):

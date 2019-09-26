@@ -63,32 +63,35 @@ def test_debian_extract_vulnerabilities():
     debian_test_file = join(dirname(__file__), 'test_data', 'debian.json')
 
     with open(debian_test_file) as f:
-        test_data = json.loads(f.read())
+        test_data = json.load(f)
 
     expected = [
         {
-            'fixed_version': '1.50-1.1',
+            'package_name': 'librsync',
+            'vulnerability_id': 'CVE-2014-8242',
+            'description': 'librsync before 1.0.0 uses a truncated MD4 checksum to match blocks',
+            'status': 'open',
+            'urgency': 'low',
+            'version': '0.9.7-10',
+            'fixed_version': ''
+        },
+        {
             'package_name': 'mimetex',
+            'vulnerability_id': 'CVE-2009-1382',
+            'description': 'Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX',
             'status': 'resolved',
             'urgency': 'medium',
-            'vulnerability_id': 'CVE-2009-2458',
-            'description': 'Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX'
+            'version': '1.74-1',
+            'fixed_version': '1.50-1.1'
         },
         {
-            'fixed_version': '1.50-1.1',
             'package_name': 'mimetex',
-            'status': 'not-resolved',
-            'urgency': 'medium',
             'vulnerability_id': 'CVE-2009-2459',
-            'description': 'Multiple unspecified vulnerabilities in mimeTeX.'
-        },
-        {
-            'package_name': 'git-repair',
-            'vulnerability_id': 'TEMP-0807341-84E914',
-            'description': '',
-            'status': 'open',
-            'urgency': 'unimportant',
-            'fixed_version': ''
+            'description': 'Multiple unspecified vulnerabilities in mimeTeX',
+            'status': 'resolved',
+            'urgency': 'medium',
+            'version': '1.74-1',
+            'fixed_version': '1.50-1.1'
         }
     ]
 

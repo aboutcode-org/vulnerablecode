@@ -31,17 +31,17 @@ from django.test import TestCase
 class ImportCommandTest(TestCase):
     def test_list_sources(self):
         buf = StringIO()
-        
+
         call_command('import', '--list', stdout=buf)
-        
+
         out = buf.getvalue()
         self.assertIn('debian', out)
         self.assertIn('ubuntu', out)
         self.assertIn('archlinux', out)
 
     def test_missing_sources(self):
-        with self.assertRaises(CommandError) as cm: 
-           call_command('import', stdout=StringIO())
+        with self.assertRaises(CommandError) as cm:
+            call_command('import', stdout=StringIO())
 
         err = str(cm.exception)
         self.assertIn('Please provide at least one data source', err)

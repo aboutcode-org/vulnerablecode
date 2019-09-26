@@ -41,43 +41,20 @@ TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
 class TestResponse(TestCase):
     def test_debian_response(self):
         with open(os.path.join(TEST_DATA, 'debian.json')) as f:
-            test_data = json.loads(f.read())
+            test_data = json.load(f)
 
         extract_data = debian.extract_vulnerabilities(test_data)
         debian_dump(extract_data)
-        response = self.client.get('/api/packages/?name=mimetex', format='json')
+        response = self.client.get('/api/packages/?name=mimetex', format='json').data
 
-        expected = [{
-            "name": "mimetex",
-            "version": "1.50-1.1",
-            "platform": "",
-            "vulnerabilities": [{
-                "summary": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX",
-                "cvss": None,
-                "references": [{
-                    "reference_id": "CVE-2009-2458",
-                    "source": "",
-                    "url": "",
-                }]
-            }],
-            "references": [],
-        }, {
-            "name": "mimetex",
-            "version": "1.50-1.1",
-            "platform": "",
-            "vulnerabilities": [{
-                "summary": "Multiple unspecified vulnerabilities in mimeTeX.",
-                "cvss": None,
-                "references": [{
-                    "reference_id": "CVE-2009-2459",
-                    "source": "",
-                    "url": "",
-                }]
-            }],
-            "references": [],
-        }]
+        self.assertEqual(4, response['count'])
 
-        self.assertEqual(expected, response.data.get('results'))
+        first_result = response['results'][0]
+        self.assertEqual('mimetex', first_result['name'])
+
+        versions = {r['version'] for r in response['results']}
+        self.assertIn('1.50-1.1', versions)
+        self.assertIn('1.74-1', versions)
 
     def test_ubuntu_response(self):
         with open(os.path.join(TEST_DATA, 'ubuntu_main.html')) as f:
@@ -109,44 +86,18 @@ class TestResponse(TestCase):
 class TestSerializers(TestCase):
     def test_serializers(self):
         with open(os.path.join(TEST_DATA, 'debian.json')) as f:
-            test_data = json.loads(f.read())
+            test_data = json.load(f)
         extract_data = debian.extract_vulnerabilities(test_data)
         debian_dump(extract_data)
 
         pk = Package.objects.filter(name="mimetex")
         response = PackageSerializer(pk, many=True).data
 
-        expected = [
-            {
-                "name": "mimetex",
-                "version": "1.50-1.1",
-                "platform": "",
-                "vulnerabilities": [{
-                    "summary": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX",
-                    "cvss": None,
-                    "references": [{
-                        "reference_id": "CVE-2009-2458",
-                        "source": "",
-                        "url": "",
-                    }]
-                }],
-                "references": [],
-            },
-            {
-                "name": "mimetex",
-                "version": "1.50-1.1",
-                "platform": "",
-                "vulnerabilities": [{
-                    "summary": "Multiple unspecified vulnerabilities in mimeTeX.",
-                    "cvss": None,
-                    "references": [{
-                        "reference_id": "CVE-2009-2459",
-                        "source": "",
-                        "url": "",
-                    }]
-                }],
-                "references": [],
-            }
-        ]
+        self.assertEqual(4, len(response))
 
-        self.assertEqual(expected, response)
+        first_result = response[0]
+        self.assertEqual('mimetex', first_result['name'])
+
+        versions = {r['version'] for r in response}
+        self.assertIn('1.50-1.1', versions)
+        self.assertIn('1.74-1', versions)

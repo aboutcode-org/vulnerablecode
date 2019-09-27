@@ -29,7 +29,7 @@ from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 
 
-def debian_dump(extract_data):
+def debian_dump(extract_data, base_release='jessie'):
     """
     Save data scraped from Debian' security tracker.
     """
@@ -45,7 +45,10 @@ def debian_dump(extract_data):
         pkg_name = data.get('package_name', '')
         package = Package.objects.create(
             name=pkg_name,
+            type='deb',
+            namespace='debian',
             version=data.get('version', ''),
+            qualifiers=f'distro={base_release}',
         )
 
         if data['status'] == 'open':
@@ -63,7 +66,10 @@ def debian_dump(extract_data):
             if fixed_version:
                 package = Package.objects.create(
                     name=pkg_name,
+                    type='deb',
+                    namespace='debian',
                     version=fixed_version,
+                    qualifiers=f'distro={base_release}',
                 )
 
                 ResolvedPackage.objects.create(
@@ -86,6 +92,8 @@ def ubuntu_dump(html):
         )
         package = Package.objects.create(
             name=data.get('package_name'),
+            type='deb',
+            namespace='ubuntu'
         )
         ImpactedPackage.objects.create(
             vulnerability=vulnerability,
@@ -119,12 +127,14 @@ def archlinux_dump(extract_data):
             VulnerabilityReference.objects.create(
                 vulnerability=vulnerability,
                 reference_id=vulnerability_id,
-                url='https://security.archlinux.org/{}'.format(vulnerability_id)
+                url=f'https://security.archlinux.org/{vulnerability_id}',
             )
 
         for package_name in packages_name:
             package_affected = Package.objects.create(
                 name=package_name,
+                type='pacman',
+                namespace='archlinux',
                 version=affected_version
             )
             ImpactedPackage.objects.create(
@@ -133,10 +143,12 @@ def archlinux_dump(extract_data):
             )
             PackageReference.objects.create(
                 package=package_affected,
-                repository='https://security.archlinux.org/package/{}'.format(package_name)
+                repository=f'https://security.archlinux.org/package/{package_name}',
             )
             package_fixed = Package.objects.create(
                 name=package_name,
+                type='pacman',
+                namespace='archlinux',
                 version=fixed_version
             )
             ResolvedPackage.objects.create(
@@ -145,5 +157,5 @@ def archlinux_dump(extract_data):
             )
             PackageReference.objects.create(
                 package=package_fixed,
-                repository='https://security.archlinux.org/package/{}'.format(package_name)
+                repository=f'https://security.archlinux.org/package/{package_name}',
             )

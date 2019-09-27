@@ -72,7 +72,6 @@ class PackageSerializer(serializers.ModelSerializer):
         fields = [
             'name',
             'version',
-            'platform',
             'vulnerabilities',
             'references',
         ]
@@ -81,4 +80,4 @@ class PackageSerializer(serializers.ModelSerializer):
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
-    filter_fields = ('name', 'version', 'platform')
+    filter_fields = ('name', 'version')

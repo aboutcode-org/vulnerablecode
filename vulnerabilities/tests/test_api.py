@@ -64,23 +64,14 @@ class TestResponse(TestCase):
         ubuntu_dump(extract_data)
         response = self.client.get('/api/packages/?name=automake', format='json')
 
-        expected = [{
-            "name": "automake",
-            "version": "",
-            "platform": "",
-            "vulnerabilities": [{
-                "summary": "",
-                "cvss": None,
-                "references": [{
-                    "reference_id": "CVE-2012-3386",
-                    "source": "",
-                    "url": "",
-                }]
-            }],
-            "references": [],
-        }]
+        result = response.data.get('results')[0]
+        self.assertEqual('automake', result['name'])
+        self.assertEqual(None, result['version'])
+        self.assertEqual(1, len(result['vulnerabilities']))
 
-        self.assertEqual(expected, response.data.get('results'))
+        vuln = result['vulnerabilities'][0]
+        self.assertEqual(1, len(vuln['references']))
+        self.assertEqual('CVE-2012-3386', vuln['references'][0]['reference_id'])
 
 
 class TestSerializers(TestCase):

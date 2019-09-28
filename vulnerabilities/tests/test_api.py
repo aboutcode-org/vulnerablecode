@@ -47,7 +47,7 @@ class TestResponse(TestCase):
         debian_dump(extract_data)
         response = self.client.get('/api/packages/?name=mimetex', format='json').data
 
-        self.assertEqual(4, response['count'])
+        self.assertEqual(2, response['count'])
 
         first_result = response['results'][0]
         self.assertEqual('mimetex', first_result['name'])
@@ -69,7 +69,7 @@ class TestResponse(TestCase):
             "version": "",
             "platform": "",
             "vulnerabilities": [{
-                "summary": "",
+                "summary": "CVE-2012-3386 vulnerability",
                 "cvss": None,
                 "references": [{
                     "reference_id": "CVE-2012-3386",
@@ -93,7 +93,7 @@ class TestSerializers(TestCase):
         pk = Package.objects.filter(name="mimetex")
         response = PackageSerializer(pk, many=True).data
 
-        self.assertEqual(4, len(response))
+        self.assertEqual(2, len(response))
 
         first_result = response[0]
         self.assertEqual('mimetex', first_result['name'])

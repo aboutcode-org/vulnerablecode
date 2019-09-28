@@ -51,8 +51,8 @@ class TestDebianDataDump(TestCase):
         with open(os.path.join(TEST_DATA, 'debian.json')) as f:
             test_data = json.load(f)
 
-        extract_data = debian.extract_vulnerabilities(test_data)
-        debian_dump(extract_data)
+        self.extract_data = debian.extract_vulnerabilities(test_data)
+        debian_dump(self.extract_data)
 
     def test_Vulnerability(self):
         """
@@ -83,9 +83,7 @@ to match blocks'))
         """
         Check that all packages from the test data are stored in the database
         """
-        # There are five rows in Package because currently the models allow duplicates
-        # (see issue #28).
-        self.assertEqual(5, Package.objects.count())
+        self.assertEqual(3, Package.objects.count())
 
         self.assertTrue(Package.objects.filter(name='mimetex'))
         self.assertTrue(Package.objects.get(name='librsync'))
@@ -114,6 +112,24 @@ to match blocks'))
         self.assertIn('1.50-1.1', versions)
         self.assertIn('1.74-1', versions)
 
+    def test_debian_data_dump_twice(self):
+        """
+        Scrape data from Debian' main tracker, save it
+        in the database and verify entries.
+        """
+        debian_dump(self.extract_data)
+
+        self.assertEqual(3, Vulnerability.objects.count())
+        self.assertEqual(3, VulnerabilityReference.objects.count())
+        self.assertEqual(3, Package.objects.count())
+
+        # Dumping the data twice doesn't create new objects.
+        debian_dump(self.extract_data)
+
+        self.assertEqual(3, Vulnerability.objects.count())
+        self.assertEqual(3, VulnerabilityReference.objects.count())
+        self.assertEqual(3, Package.objects.count())
+
 
 class TestUbuntuDataDump(TestCase):
     @classmethod
@@ -121,8 +137,8 @@ class TestUbuntuDataDump(TestCase):
         with open(os.path.join(TEST_DATA, 'ubuntu_main.html')) as f:
             test_data = f.read()
 
-        data = ubuntu.extract_cves(test_data)
-        ubuntu_dump(data)
+        self.data = ubuntu.extract_cves(test_data)
+        ubuntu_dump(self.data)
 
     def test_data_dump(self):
         """
@@ -132,15 +148,32 @@ class TestUbuntuDataDump(TestCase):
         self.assertEqual(reference.reference_id, 'CVE-2002-2439')
         self.assertTrue(Package.objects.filter(name='gcc-4.6')[0].name, 'gcc-4.6')
 
+    def test_ubuntu_data_dump_twice(self):
+        """
+        Scrape data from Ubuntu twice from main tracker, save it
+        in the database and verify single time entry.
+        """
+        ubuntu_dump(self.data)
+        count = Package.objects.all().count()
+        reference = VulnerabilityReference.objects.filter(
+            reference_id='CVE-2002-2439')
+        self.assertEqual(reference[0].reference_id, 'CVE-2002-2439')
+        self.assertTrue(Package.objects.filter(name='gcc-4.6')[0].name,
+                        'gcc-4.6')
+
+        # Dumping the data twice doesn't create new objects.
+        ubuntu_dump(self.data)
+        self.assertEqual(count, Package.objects.all().count())
+
 
 class TestArchLinuxDataDump(TestCase):
 
     @classmethod
     def setUpTestData(self):
         with open(os.path.join(TEST_DATA, 'archlinux.json')) as f:
-            test_data = json.load(f)
+            self.test_data = json.load(f)
 
-        archlinux_dump(test_data)
+        archlinux_dump(self.test_data)
 
     def test_Vulnerability(self):
         """
@@ -190,3 +223,25 @@ class TestArchLinuxDataDump(TestCase):
 
         self.assertEqual(4, len(resolved_pkgs))
         self.assertEqual('2.6.1-1', resolved_pkg.package.version)
+
+    def test_archlinux_data_dump_twice(self):
+        """
+        Scrape data from Archlinux' main tracker twice, save it
+        in the database and verify no multiple entries.
+        """
+        archlinux_dump(self.test_data)
+        self.assertEqual(1, Vulnerability.objects.count())
+        self.assertEqual(14, VulnerabilityReference.objects.count())
+        self.assertEqual(8, Package.objects.count())
+        self.assertEqual(8, PackageReference.objects.count())
+        self.assertEqual(4, ImpactedPackage.objects.count())
+        self.assertEqual(4, ResolvedPackage.objects.count())
+
+        # Dumping the data twice doesn't create new objects.
+        archlinux_dump(self.test_data)
+        self.assertEqual(1, Vulnerability.objects.count())
+        self.assertEqual(14, VulnerabilityReference.objects.count())
+        self.assertEqual(8, Package.objects.count())
+        self.assertEqual(8, PackageReference.objects.count())
+        self.assertEqual(4, ImpactedPackage.objects.count())
+        self.assertEqual(4, ResolvedPackage.objects.count())

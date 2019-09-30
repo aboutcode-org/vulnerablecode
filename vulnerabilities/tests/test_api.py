@@ -26,10 +26,10 @@ import os
 
 from django.test import TestCase
 
-from vulnerabilities.models import Package
 from vulnerabilities.api import PackageSerializer
 from vulnerabilities.data_dump import debian_dump
 from vulnerabilities.data_dump import ubuntu_dump
+from vulnerabilities.models import Package
 from vulnerabilities.scraper import debian
 from vulnerabilities.scraper import ubuntu
 
@@ -38,24 +38,37 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
 
 
-class TestResponse(TestCase):
-    def test_debian_response(self):
+class TestDebianResponse(TestCase):
+    @classmethod
+    def setUpTestData(cls):
         with open(os.path.join(TEST_DATA, 'debian.json')) as f:
             test_data = json.load(f)
 
         extract_data = debian.extract_vulnerabilities(test_data)
         debian_dump(extract_data)
-        response = self.client.get('/api/packages/?name=mimetex', format='json').data
 
-        self.assertEqual(4, response['count'])
+    def setUp(self):
+        self.response = self.client.get('/api/packages/?name=mimetex', format='json').data
 
-        first_result = response['results'][0]
+    def test_count(self):
+        self.assertEqual(4, self.response['count'])
+
+    def test_name(self):
+        first_result = self.response['results'][0]
         self.assertEqual('mimetex', first_result['name'])
 
-        versions = {r['version'] for r in response['results']}
+    def test_version(self):
+        versions = {r['version'] for r in self.response['results']}
         self.assertIn('1.50-1.1', versions)
         self.assertIn('1.74-1', versions)
 
+    def test_packageurl(self):
+        purls = {r['package_url'] for r in self.response['results']}
+        self.assertIn('pkg:deb/debian/mimetex@1.50-1.1?distro=jessie', purls)
+        self.assertIn('pkg:deb/debian/mimetex@1.74-1?distro=jessie', purls)
+
+
+class TestUbuntuResponse(TestCase):
     def test_ubuntu_response(self):
         with open(os.path.join(TEST_DATA, 'ubuntu_main.html')) as f:
             test_data = f.read()
@@ -75,12 +88,15 @@ class TestResponse(TestCase):
 
 
 class TestSerializers(TestCase):
-    def test_serializers(self):
+    @classmethod
+    def setUpTestData(cls):
         with open(os.path.join(TEST_DATA, 'debian.json')) as f:
             test_data = json.load(f)
+
         extract_data = debian.extract_vulnerabilities(test_data)
         debian_dump(extract_data)
 
+    def test_package_serializer(self):
         pk = Package.objects.filter(name="mimetex")
         response = PackageSerializer(pk, many=True).data
 
@@ -92,3 +108,7 @@ class TestSerializers(TestCase):
         versions = {r['version'] for r in response}
         self.assertIn('1.50-1.1', versions)
         self.assertIn('1.74-1', versions)
+
+        purls = {r['package_url'] for r in response}
+        self.assertIn('pkg:deb/debian/mimetex@1.50-1.1?distro=jessie', purls)
+        self.assertIn('pkg:deb/debian/mimetex@1.74-1?distro=jessie', purls)

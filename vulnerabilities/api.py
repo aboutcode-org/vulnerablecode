@@ -72,6 +72,7 @@ class PackageSerializer(serializers.ModelSerializer):
         fields = [
             'name',
             'version',
+            'package_url',
             'vulnerabilities',
             'references',
         ]

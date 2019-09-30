@@ -45,9 +45,8 @@ TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
 
 
 class TestDebianDataDump(TestCase):
-
     @classmethod
-    def setUpTestData(self):
+    def setUpTestData(cls):
         with open(os.path.join(TEST_DATA, 'debian.json')) as f:
             test_data = json.load(f)
 
@@ -122,7 +121,7 @@ to match blocks'))
 
 class TestUbuntuDataDump(TestCase):
     @classmethod
-    def setUpTestData(self):
+    def setUpTestData(cls):
         with open(os.path.join(TEST_DATA, 'ubuntu_main.html')) as f:
             test_data = f.read()
 
@@ -144,9 +143,8 @@ class TestUbuntuDataDump(TestCase):
 
 
 class TestArchLinuxDataDump(TestCase):
-
     @classmethod
-    def setUpTestData(self):
+    def setUpTestData(cls):
         with open(os.path.join(TEST_DATA, 'archlinux.json')) as f:
             test_data = json.load(f)
 

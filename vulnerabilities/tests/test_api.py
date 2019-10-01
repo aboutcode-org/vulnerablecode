@@ -47,25 +47,63 @@ class TestDebianResponse(TestCase):
         extract_data = debian.extract_vulnerabilities(test_data)
         debian_dump(extract_data)
 
-    def setUp(self):
-        self.response = self.client.get('/api/packages/?name=mimetex', format='json').data
+        Package.objects.create(
+            name='mimetex',
+            version='1.50-1.1',
+            type='deb',
+            namespace='ubuntu'
+        )
 
-    def test_count(self):
-        self.assertEqual(4, self.response['count'])
+    def test_query_by_name(self):
+        response = self.client.get('/api/packages/?name=mimetex', format='json').data
 
-    def test_name(self):
-        first_result = self.response['results'][0]
+        self.assertEqual(5, response['count'])
+
+        first_result = response['results'][0]
         self.assertEqual('mimetex', first_result['name'])
 
-    def test_version(self):
-        versions = {r['version'] for r in self.response['results']}
+        versions = {r['version'] for r in response['results']}
         self.assertIn('1.50-1.1', versions)
         self.assertIn('1.74-1', versions)
 
-    def test_packageurl(self):
-        purls = {r['package_url'] for r in self.response['results']}
+        purls = {r['package_url'] for r in response['results']}
         self.assertIn('pkg:deb/debian/mimetex@1.50-1.1?distro=jessie', purls)
         self.assertIn('pkg:deb/debian/mimetex@1.74-1?distro=jessie', purls)
+
+    def test_query_by_invalid_package_url(self):
+        url = '/api/packages/?package_url=invalid_purl'
+        response = self.client.get(url, format='json')
+
+        self.assertEqual(400, response.status_code)
+        self.assertIn('error', response.data)
+        error = response.data['error']
+        self.assertIn('invalid_purl', error)
+
+    def test_query_by_package_url(self):
+        url = '/api/packages/?package_url=pkg:deb/debian/mimetex@1.50-1.1?distro=jessie'
+        response = self.client.get(url, format='json').data
+
+        self.assertEqual(2, response['count'])
+
+        first_result = response['results'][0]
+        self.assertEqual('mimetex', first_result['name'])
+
+        versions = {r['version'] for r in response['results']}
+        self.assertIn('1.50-1.1', versions)
+        self.assertNotIn('1.74-1', versions)
+
+    def test_query_by_package_url_without_namespace(self):
+        url = '/api/packages/?package_url=pkg:deb/mimetex@1.50-1.1'
+        response = self.client.get(url, format='json').data
+
+        self.assertEqual(3, response['count'])
+
+        first_result = response['results'][0]
+        self.assertEqual('mimetex', first_result['name'])
+
+        purls = {r['package_url'] for r in response['results']}
+        self.assertIn('pkg:deb/debian/mimetex@1.50-1.1?distro=jessie', purls)
+        self.assertIn('pkg:deb/ubuntu/mimetex@1.50-1.1', purls)
 
 
 class TestUbuntuResponse(TestCase):

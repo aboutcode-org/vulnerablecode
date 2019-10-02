@@ -58,12 +58,10 @@ class TestPackage(TestCase):
     def test_package(self):
         Package.objects.create(
             name="Firefox",
-            platform="Maven",
             version="1.5.4"
         )
 
         self.assertTrue(Package.objects.get(name="Firefox"))
-        self.assertTrue(Package.objects.get(platform="Maven"))
         self.assertTrue(Package.objects.get(version="1.5.4"))
 
 

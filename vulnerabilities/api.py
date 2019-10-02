@@ -22,7 +22,11 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 from rest_framework import serializers
+from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.response import Response
+
+from packageurl import PackageURL
 
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageReference
@@ -72,7 +76,7 @@ class PackageSerializer(serializers.ModelSerializer):
         fields = [
             'name',
             'version',
-            'platform',
+            'package_url',
             'vulnerabilities',
             'references',
         ]
@@ -81,4 +85,27 @@ class PackageSerializer(serializers.ModelSerializer):
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
-    filter_fields = ('name', 'version', 'platform')
+    filter_fields = ('name', 'version')
+
+    def filter_queryset(self, qs):
+        purl = self.request.query_params.get('package_url')
+        if not purl:
+            return super().filter_queryset(qs)
+
+        try:
+            purl = PackageURL.from_string(purl)
+        except ValueError as ve:
+            raise serializers.ValidationError(
+                detail={'error': f'"{purl}" is not a valid Package URL: {ve}'},
+            )
+
+        # Remove "qualifiers" here because it is stored as one string in the model.
+        # For example, a row in the database could have the "qualifiers" column
+        # stored as "foo=bar&spam=eggs". If an API request contains a PURL with
+        # "spam=eggs&foo=bar", the DB query would not include that row.
+        attrs = {k: v for k, v in purl.to_dict().items() if v and k != 'qualifiers'}
+
+        # TODO
+        # Since we are filtering on all the Package URL fields except "qualifiers",
+        # we'll eventually need database indices on them.
+        return self.queryset.filter(**attrs)

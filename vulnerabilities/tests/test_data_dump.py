@@ -45,9 +45,8 @@ TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
 
 
 class TestDebianDataDump(TestCase):
-
     @classmethod
-    def setUpTestData(self):
+    def setUpTestData(cls):
         with open(os.path.join(TEST_DATA, 'debian.json')) as f:
             test_data = json.load(f)
 
@@ -88,7 +87,12 @@ to match blocks'))
         self.assertEqual(5, Package.objects.count())
 
         self.assertTrue(Package.objects.filter(name='mimetex'))
-        self.assertTrue(Package.objects.get(name='librsync'))
+
+        pkg = Package.objects.get(name='librsync')
+        self.assertEqual('0.9.7-10', pkg.version)
+        self.assertEqual('deb', pkg.type)
+        self.assertEqual('debian', pkg.namespace)
+        self.assertIn('distro=jessie', pkg.qualifiers)
 
     def test_ImpactedPackage(self):
         """
@@ -117,7 +121,7 @@ to match blocks'))
 
 class TestUbuntuDataDump(TestCase):
     @classmethod
-    def setUpTestData(self):
+    def setUpTestData(cls):
         with open(os.path.join(TEST_DATA, 'ubuntu_main.html')) as f:
             test_data = f.read()
 
@@ -130,13 +134,17 @@ class TestUbuntuDataDump(TestCase):
         """
         reference = VulnerabilityReference.objects.filter(reference_id='CVE-2002-2439')[0]
         self.assertEqual(reference.reference_id, 'CVE-2002-2439')
-        self.assertTrue(Package.objects.filter(name='gcc-4.6')[0].name, 'gcc-4.6')
+        pkgs = Package.objects.filter(name='gcc-4.6')
+        self.assertTrue(pkgs)
+
+        pkg = pkgs[0]
+        self.assertEqual('deb', pkg.type)
+        self.assertEqual('ubuntu', pkg.namespace)
 
 
 class TestArchLinuxDataDump(TestCase):
-
     @classmethod
-    def setUpTestData(self):
+    def setUpTestData(cls):
         with open(os.path.join(TEST_DATA, 'archlinux.json')) as f:
             test_data = json.load(f)
 
@@ -163,7 +171,12 @@ class TestArchLinuxDataDump(TestCase):
         Check that all packages from the test data are stored in the database
         """
         self.assertEqual(8, Package.objects.count())
-        self.assertTrue(Package.objects.filter(name='wireshark-cli'))
+        pkgs = Package.objects.filter(name='wireshark-cli')
+        self.assertTrue(pkgs)
+
+        for pkg in pkgs:
+            self.assertEqual('pacman', pkg.type)
+            self.assertEqual('archlinux', pkg.namespace)
 
     def test_PackageReference(self):
         """

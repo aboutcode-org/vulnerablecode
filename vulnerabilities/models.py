@@ -23,6 +23,8 @@
 
 from django.db import models
 
+from packageurl.contrib.django_models import PackageURLMixin
+
 
 class Vulnerability(models.Model):
     """
@@ -58,14 +60,11 @@ class VulnerabilityReference(models.Model):
         return self.source
 
 
-class Package(models.Model):
+class Package(PackageURLMixin):
     """
     A software package with minimal identifying information.
     Other identifiers are stored as PackageReference.
     """
-    platform = models.CharField(max_length=50, help_text='Package platform eg:maven', blank=True)
-    name = models.CharField(max_length=50, help_text='Package name', blank=True)
-    version = models.CharField(max_length=50, help_text='Package version', blank=True)
     vulnerabilities = models.ManyToManyField(to='Vulnerability', through='ImpactedPackage')
 
     def __str__(self):

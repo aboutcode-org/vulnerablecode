@@ -5,6 +5,7 @@ lxml==4.3.3
 django==2.2.4
 djangorestframework==3.9.2
 django-filter==2.1.0
+semantic-version==2.8.2
 
 # Tests
 pytest==3.2.3

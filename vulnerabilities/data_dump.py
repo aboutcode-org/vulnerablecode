@@ -119,7 +119,8 @@ def archlinux_dump(extract_data):
             VulnerabilityReference.objects.create(
                 vulnerability=vulnerability,
                 reference_id=vulnerability_id,
-                url='https://security.archlinux.org/{}'.format(vulnerability_id)
+                url='https://security.archlinux.org/{}'.format(
+                    vulnerability_id)
             )
 
         for package_name in packages_name:
@@ -133,7 +134,8 @@ def archlinux_dump(extract_data):
             )
             PackageReference.objects.create(
                 package=package_affected,
-                repository='https://security.archlinux.org/package/{}'.format(package_name)
+                repository='https://security.archlinux.org/package/{}'.format(
+                    package_name)
             )
             package_fixed = Package.objects.create(
                 name=package_name,
@@ -145,7 +147,8 @@ def archlinux_dump(extract_data):
             )
             PackageReference.objects.create(
                 package=package_fixed,
-                repository='https://security.archlinux.org/package/{}'.format(package_name)
+                repository='https://security.archlinux.org/package/{}'.format(
+                    package_name)
             )
 
 
@@ -159,22 +162,22 @@ def npm_dump(extract_data):
             reference_id=data.get('vulnerability_id'),
         )
 
-        affected_versions = data.get('affected_version',[])
+        affected_versions = data.get('affected_version', [])
         for version in affected_versions:
             package_affected = Package.objects.create(
-                name = data.get('package_name'),
-                version = version,
+                name=data.get('package_name'),
+                version=version,
             )
             ImpactedPackage.objects.create(
                 vulnerability=vulnerability,
                 package=package_affected
             )
 
-        fixed_versions = data.get('fixed_version',[])
+        fixed_versions = data.get('fixed_version', [])
         for version in fixed_versions:
             package_fixed = Package.objects.create(
-                name = data.get('package_name'),
-                version = version
+                name=data.get('package_name'),
+                version=version
             )
             ResolvedPackage.objects.create(
                 vulnerability=vulnerability,

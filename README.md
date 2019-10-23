@@ -68,6 +68,37 @@ DJANGO_DEV=1 python manage.py test vulnerabilities/tests
 DJANGO_DEV=1 python manage.py import --all
 ```
 
+If you want to run the import periodically, you can use a systemd timer:
+
+```
+$ cat ~/.config/systemd/user/vulnerablecode.service
+
+[Unit]
+Description=Update vulnerability database
+
+[Service]
+Type=oneshot
+Environment="DJANGO_DEV=1"
+ExecStart=/path/to/venv/bin/python /path/to/vulnerablecode/manage.py import --all
+
+$ cat ~/.config/systemd/user/vulnerablecode.timer
+
+[Unit]
+Description=Periodically update vulnerability database
+
+[Timer]
+OnCalendar=daily
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Start it with
+
+```
+systemctl --user daemon-reload && systemctl --user start vulnerablecode.timer
+```
+
 ## API
 
 Start the webserver

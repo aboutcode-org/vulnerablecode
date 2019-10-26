@@ -138,3 +138,13 @@ https://devcenter.heroku.com/articles/deploying-python#how-to-keep-build-artifac
 9. Load the data referring to chapter "Data import" above.
 
 10. To check the logs: `heroku logs --tail`
+
+### Periodic Data Import
+
+Note: Running jobs with Heroku Scheduler might incur costs. If you haven't already, you need to add a credit card in your account (https://dashboard.heroku.com/account/billing).
+
+1. Install the Scheduler add-on: `heroku addons:create scheduler:standard`
+
+2. Open the Scheduler dashboard: `heroku addons:open scheduler`
+
+3. Click on "Create job" and enter `python manage.py import --all` under "Run Command"

@@ -68,6 +68,37 @@ DJANGO_DEV=1 python manage.py test vulnerabilities/tests
 DJANGO_DEV=1 python manage.py import --all
 ```
 
+If you want to run the import periodically, you can use a systemd timer:
+
+```
+$ cat ~/.config/systemd/user/vulnerablecode.service
+
+[Unit]
+Description=Update vulnerability database
+
+[Service]
+Type=oneshot
+Environment="DJANGO_DEV=1"
+ExecStart=/path/to/venv/bin/python /path/to/vulnerablecode/manage.py import --all
+
+$ cat ~/.config/systemd/user/vulnerablecode.timer
+
+[Unit]
+Description=Periodically update vulnerability database
+
+[Timer]
+OnCalendar=daily
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Start it with
+
+```
+systemctl --user daemon-reload && systemctl --user start vulnerablecode.timer
+```
+
 ## API
 
 Start the webserver
@@ -107,3 +138,13 @@ https://devcenter.heroku.com/articles/deploying-python#how-to-keep-build-artifac
 9. Load the data referring to chapter "Data import" above.
 
 10. To check the logs: `heroku logs --tail`
+
+### Periodic Data Import
+
+Note: Running jobs with Heroku Scheduler might incur costs. If you haven't already, you need to add a credit card in your account (https://dashboard.heroku.com/account/billing).
+
+1. Install the Scheduler add-on: `heroku addons:create scheduler:standard`
+
+2. Open the Scheduler dashboard: `heroku addons:open scheduler`
+
+3. Click on "Create job" and enter `python manage.py import --all` under "Run Command"

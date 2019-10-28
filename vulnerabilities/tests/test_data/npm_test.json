@@ -1,0 +1,40 @@
+{
+    "objects": [
+        {
+            "id": 12,
+            "created": "2015-10-17T19:41:46.382Z",
+            "updated": "2019-06-24T14:13:54.355Z",
+            "deleted": null,
+            "title": "Rosetta-Flash JSONP Vulnerability",
+            "found_by": {
+                "name": "Michele Spagnuolo"
+            },
+            "reported_by": {
+                "name": "Michele Spagnuolo"
+            },
+            "module_name": "hapi",
+            "cves": [
+                "CVE-2014-4671"
+            ],
+            "vulnerable_versions": "< 6.1.0",
+            "patched_versions": ">= 6.1.0",
+            "overview": "This description taken from the pull request provided by Patrick Kettner.\n\n\n\nVersions 6.1.0 and earlier of hapi are vulnerable to a rosetta-flash attack, which can be used by attackers to send data across domains and break the browser same-origin-policy.\n\n\n",
+            "recommendation": "- Update hapi to version 6.1.1 or later.\n\nAlternatively, a solution previously implemented by Google, Facebook, and Github is to prepend callbacks with an empty inline comment. This will cause the flash parser to break on invalid inputs and prevent the issue, and how the issue has been resolved internally in hapi.",
+            "references": "- [PR #1766 - prepend jsonp callbacks with a comment to prevent the rosetta-flash vulnerability](https://github.com/spumko/hapi/pull/1766)\n\n- [Background from Michele Spagnuolo](http://miki.it/blog/2014/7/8/abusing-jsonp-with-rosetta-flash/)\n\nThanks to [Patrick Kettner](https://github.com/patrickkettner) for submitting a pull request to address this in hapi.",
+            "access": "public",
+            "severity": "moderate",
+            "cwe": "CWE-538",
+            "metadata": {
+                "module_type": "Network.Library",
+                "exploitability": 3,
+                "affected_components": ""
+            },
+            "url": "https://npmjs.com/advisories/12"
+        }
+    ],
+    "total": 1179,
+    "urls": {
+        "next": "/-/npm/v1/security/advisories?page=2",
+        "prev": "/-/npm/v1/security/advisories?page=0"
+    }
+}

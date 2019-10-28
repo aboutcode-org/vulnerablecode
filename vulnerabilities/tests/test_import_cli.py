@@ -35,6 +35,7 @@ class ImportCommandTest(TestCase):
         call_command('import', '--list', stdout=buf)
 
         out = buf.getvalue()
+        self.assertIn('npm', out)
         self.assertIn('debian', out)
         self.assertIn('ubuntu', out)
         self.assertIn('archlinux', out)

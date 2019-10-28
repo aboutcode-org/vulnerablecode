@@ -159,3 +159,36 @@ def archlinux_dump(extract_data):
                 package=package_fixed,
                 repository=f'https://security.archlinux.org/package/{package_name}',
             )
+
+
+def npm_dump(extract_data):
+    for data in extract_data:
+        vulnerability = Vulnerability.objects.create(
+            summary=data.get('summary'),
+        )
+        VulnerabilityReference.objects.create(
+            vulnerability=vulnerability,
+            reference_id=data.get('vulnerability_id'),
+        )
+
+        affected_versions = data.get('affected_version',[])
+        for version in affected_versions:
+            package_affected = Package.objects.create(
+                name = data.get('package_name'),
+                version = version,
+            )
+            ImpactedPackage.objects.create(
+                vulnerability=vulnerability,
+                package=package_affected
+            )
+
+        fixed_versions = data.get('fixed_version',[])
+        for version in fixed_versions:
+            package_fixed = Package.objects.create(
+                name = data.get('package_name'),
+                version = version
+            )
+            ResolvedPackage.objects.create(
+                vulnerability=vulnerability,
+                package=package_fixed
+            )

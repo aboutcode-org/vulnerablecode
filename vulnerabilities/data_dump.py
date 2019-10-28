@@ -128,11 +128,16 @@ def archlinux_dump(extract_data):
                 vulnerability=vulnerability,
                 reference_id=vulnerability_id,
 <<<<<<< HEAD
+<<<<<<< HEAD
                 url=f'https://security.archlinux.org/{vulnerability_id}',
 =======
                 url='https://security.archlinux.org/{}'.format(
                     vulnerability_id)
 >>>>>>> fixed styling issue
+=======
+                url='https://security.archlinux.org/{}'.format(
+                    vulnerability_id)
+>>>>>>> b143b7638e35e5599d23ac82415f551fe8d56d30
             )
 
         for package_name in packages_name:

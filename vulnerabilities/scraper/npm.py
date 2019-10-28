@@ -27,15 +27,14 @@ import semantic_version
 from urllib.request import urlopen
 
 NPM_URL = 'https://registry.npmjs.org{}'
-PAGE = '/-/npm/v1/security/advisories?page=1'
+PAGE = '/-/npm/v1/security/advisories?page=0'
 
 
 def remove_spaces(x):
     """
     Remove Multiple Space, spaces after relational operator
-    and remove v charecter in front of version string (ex v1.2.3) 
+    and remove v charecter in front of version string (ex v1.2.3)
     """
-
     x = re.sub(r' +', ' ', x)
     x = re.sub(r'< +', '<', x)
     x = re.sub(r'> +', '>', x)
@@ -52,7 +51,6 @@ def get_all_version(package_name):
     """
     Returns all available for a module
     """
-    
     package_url = NPM_URL.format('/'+package_name)
     response = urlopen(package_url).read()
     data = json.loads(response)

@@ -148,12 +148,7 @@ def archlinux_dump(extract_data):
             )
             PackageReference.objects.create(
                 package=package_affected,
-<<<<<<< HEAD
                 repository=f'https://security.archlinux.org/package/{package_name}',
-=======
-                repository='https://security.archlinux.org/package/{}'.format(
-                    package_name)
->>>>>>> fixed styling issue
             )
             package_fixed = Package.objects.create(
                 name=package_name,
@@ -167,12 +162,7 @@ def archlinux_dump(extract_data):
             )
             PackageReference.objects.create(
                 package=package_fixed,
-<<<<<<< HEAD
                 repository=f'https://security.archlinux.org/package/{package_name}',
-=======
-                repository='https://security.archlinux.org/package/{}'.format(
-                    package_name)
->>>>>>> fixed styling issue
             )
 
 

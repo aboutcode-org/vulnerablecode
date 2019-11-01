@@ -47,30 +47,27 @@ def remove_spaces(x):
     return x
 
 
-def get_all_version(package_name):
+def get_all_versions(package_name):
     """
-    Returns all available for a module
+    Returns all versions available for a module
     """
-    package_url = NPM_URL.format('/'+package_name)
-    response = urlopen(package_url).read()
-    data = json.loads(response)
-    versions = data.get('versions', {})
-    all_version = [obj for obj in versions]
-    return all_version
+    package_url = NPM_URL.format(f'/{package_name}')
+    data = json.load(urlopen(package_url))
+    return [v for v in data.get('versions', {})]
 
 
-def extract_version(package_name, aff_version_range, fixed_version_range):
+def extract_versions(package_name, aff_version_range, fixed_version_range):
     """
-    Seperate list of Affected version and fixed version from all version
-    using the range specified
+    Seperate list of affected versions and fixed versions from all versions
+    using the ranges specified
     """
-
+    # FIXME This skips unfixed vulnerabilities
     if aff_version_range == '' or fixed_version_range == '':
         return ([], [])
 
     aff_spec = semantic_version.NpmSpec(remove_spaces(aff_version_range))
     fix_spec = semantic_version.NpmSpec(remove_spaces(fixed_version_range))
-    all_ver = get_all_version(package_name)
+    all_ver = get_all_versions(package_name)
     aff_ver = []
     fix_ver = []
     for ver in all_ver:
@@ -86,23 +83,17 @@ def extract_version(package_name, aff_version_range, fixed_version_range):
 
 def extract_data(JSON):
     """
-    Extract module name, summary, vulnerability id,severity
+    Extract package name, summary, CVE IDs, severity and
+    fixed & affected versions
     """
     package_vulnerabilities = []
     for obj in JSON.get('objects', []):
         if 'module_name' not in obj:
             continue
+
         package_name = obj['module_name']
-        summary = obj.get('overview', '')
-        severity = obj.get('severity', '')
 
-        vulnerability_id = obj.get('cves', [])
-        if len(vulnerability_id) > 0:
-            vulnerability_id = vulnerability_id[0]
-        else:
-            vulnerability_id = ''
-
-        affected_version, fixed_version = extract_version(
+        affected_versions, fixed_versions = extract_versions(
             package_name,
             obj.get('vulnerable_versions', ''),
             obj.get('patched_versions', '')
@@ -110,11 +101,12 @@ def extract_data(JSON):
 
         package_vulnerabilities.append({
             'package_name': package_name,
-            'summary': summary,
-            'vulnerability_id': vulnerability_id,
-            'fixed_version': fixed_version,
-            'affected_version': affected_version,
-            'severity': severity
+            'summary': obj.get('overview', ''),
+            'cve_ids': obj.get('cves', []),
+            'fixed_versions': fixed_versions,
+            'affected_versions': affected_versions,
+            'severity': obj.get('severity', ''),
+            'advisory': obj.get('url', ''),
         })
     return package_vulnerabilities
 
@@ -123,16 +115,13 @@ def scrape_vulnerabilities():
     """
     Extract JSON From NPM registry
     """
-    cururl = NPM_URL.format(PAGE)
-    response = urlopen(cururl).read()
+    nextpage = PAGE
     package_vulnerabilities = []
-    while True:
-        data = json.loads(response)
-        package_vulnerabilities = package_vulnerabilities + extract_data(data)
-        next_page = data.get('urls', {}).get('next', False)
-        if next_page:
-            cururl = NPM_URL.format(next_page)
-            response = urlopen(cururl).read()
-        else:
-            break
+
+    while nextpage:
+        cururl = NPM_URL.format(nextpage)
+        response = json.load(urlopen(cururl))
+        package_vulnerabilities = package_vulnerabilities.extend(extract_data(data))
+        next_page = data.get('urls', {}).get('next')
+
     return package_vulnerabilities

@@ -6,6 +6,7 @@ django==2.2.4
 djangorestframework==3.9.2
 django-filter==2.1.0
 packageurl-python==0.8.7
+semantic-version==2.8.2
 
 # Tests
 pytest==3.2.3

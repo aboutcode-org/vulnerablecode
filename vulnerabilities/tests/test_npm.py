@@ -21,11 +21,14 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-
-from django.test import TestCase
-from vulnerabilities.scraper.npm import remove_spaces, get_all_version, extract_data
 import os
 import json
+
+from django.test import TestCase
+
+from vulnerabilities.scraper.npm import extract_data
+from vulnerabilities.scraper.npm import get_all_versions
+from vulnerabilities.scraper.npm import remove_spaces
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
@@ -39,20 +42,20 @@ class NPMScrapperTest(TestCase):
         res = remove_spaces(">=    v1.2.1     ||    <= V2.1.1")
         self.assertEqual(res, '>=1.2.1 || <=2.1.1')
 
-    def test_get_all_version(self):
-        x = get_all_version('electron')
+    def test_get_all_versions(self):
+        x = get_all_versions('electron')
         expected = ['0.1.2', '2.0.0', '3.0.0',
                     '4.0.0', '5.0.0', '6.0.0', '7.0.0']
         self.assertTrue(set(expected) <= set(x))
 
     def test_extract_data(self):
         with open(os.path.join(TEST_DATA, 'npm_test.json')) as f:
-            test_data = json.loads(f.read())
+            test_data = json.load(f)
 
         expected = {
             'package_name': 'hapi',
-            'vulnerability_id': 'CVE-2014-4671',
-            'fixed_version': [
+            'cve_ids': ['CVE-2014-4671'],
+            'fixed_versions': [
                 '6.1.0', '6.2.0', '6.2.1', '6.2.2', '6.3.0', '6.4.0',
                 '6.5.0', '6.5.1', '6.6.0', '6.7.0', '6.7.1', '6.8.0',
                 '6.8.1', '6.9.0', '6.10.0', '6.11.0', '6.11.1', '7.0.0',
@@ -78,7 +81,7 @@ class NPMScrapperTest(TestCase):
                 '17.6.1', '17.6.2', '17.6.3', '16.6.4', '17.6.4', '16.6.5',
                 '17.7.0', '16.7.0', '17.8.0', '17.8.1', '18.0.0', '17.8.2',
                 '17.8.3', '18.0.1', '17.8.4', '18.1.0', '17.8.5'],
-            'affected_version': [
+            'affected_versions': [
                 '0.0.1', '0.0.2', '0.0.3', '0.0.4', '0.0.5', '0.0.6', '0.1.0',
                 '0.1.1', '0.1.2', '0.1.3', '0.2.0', '0.2.1', '0.3.0', '0.4.0',
                 '0.4.1', '0.4.2', '0.4.3', '0.4.4', '0.5.0', '0.5.1', '0.6.0',
@@ -103,11 +106,11 @@ class NPMScrapperTest(TestCase):
         }
         got = extract_data(test_data)[0]
         # Check if expected affected version and fixed version is subset of what we get from online
-        self.assertTrue(set(expected['fixed_version'])
-                        <= set(got['fixed_version']))
-        self.assertTrue(set(expected['affected_version']) <= set(
-            got['affected_version']))
+        self.assertTrue(set(expected['fixed_versions'])
+                        <= set(got['fixed_versions']))
+        self.assertTrue(set(expected['affected_versions']) <= set(
+            got['affected_versions']))
 
         self.assertEqual(expected['package_name'], got['package_name'])
         self.assertEqual(expected['severity'], got['severity'])
-        self.assertEqual(expected['vulnerability_id'], got['vulnerability_id'])
+        self.assertEqual(expected['cve_ids'], got['cve_ids'])

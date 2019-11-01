@@ -121,8 +121,7 @@ class TestUbuntuResponse(TestCase):
         self.assertEqual(1, len(result['vulnerabilities']))
 
         vuln = result['vulnerabilities'][0]
-        self.assertEqual(1, len(vuln['references']))
-        self.assertEqual('CVE-2012-3386', vuln['references'][0]['reference_id'])
+        self.assertEqual(0, len(vuln['references']))
 
 
 class TestSerializers(TestCase):

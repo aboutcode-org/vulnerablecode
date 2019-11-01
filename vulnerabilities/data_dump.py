@@ -34,15 +34,11 @@ def debian_dump(extract_data, base_release='jessie'):
     Save data scraped from Debian' security tracker.
     """
     for data in extract_data:
-        vulnerability = Vulnerability.objects.create(
-            summary=data.get('description', ''),
-        )
-        VulnerabilityReference.objects.create(
-            vulnerability=vulnerability,
-            reference_id=data.get('vulnerability_id', ''),
+        vulnerability, _ = Vulnerability.objects.get_or_create(
+            cve_id=data['cve_id'],
         )
 
-        pkg_name = data.get('package_name', '')
+        pkg_name = data['package_name']
         package = Package.objects.create(
             name=pkg_name,
             type='deb',
@@ -83,15 +79,11 @@ def ubuntu_dump(html):
     Dump data scraped from Ubuntu's security tracker.
     """
     for data in html:
-        vulnerability = Vulnerability.objects.create(
-            summary='',
-        )
-        VulnerabilityReference.objects.create(
-            vulnerability=vulnerability,
-            reference_id=data.get('cve_id'),
+        vulnerability, _ = Vulnerability.objects.get_or_create(
+            cve_id=data['cve_id'],
         )
         package = Package.objects.create(
-            name=data.get('package_name'),
+            name=data['package_name'],
             type='deb',
             namespace='ubuntu'
         )
@@ -105,90 +97,96 @@ def archlinux_dump(extract_data):
     """
     Save data scraped from archlinux' security tracker.
     """
-    for item in extract_data:
-        cves = item['issues']
-        group = item['name']
+    base_url = 'https://security.archlinux.org'
 
-        advisories = set(item['advisories'])
-        vulnerabilities = cves + list(advisories)
-        vulnerabilities.append(group)
-        packages_name = item['packages']
+    for avg in extract_data:
+        affected_packages = []
+        fixed_packages = []
 
-        affected_version = item['affected']
-        fixed_version = item['fixed']
-        if not fixed_version:
-            fixed_version = 'None'
+        for package_name in avg['packages']:
+            ap, _ = Package.objects.get_or_create(
+                name=package_name,
+                type='pacman',
+                namespace='archlinux',
+                version=avg['affected'],
+            )
+            affected_packages.append(ap)
 
-        vulnerability = Vulnerability.objects.create(
-            summary=item['type'],
-        )
+            fp, _ = Package.objects.get_or_create(
+                name=package_name,
+                type='pacman',
+                namespace='archlinux',
+                version=avg['fixed'],
+            )
+            fixed_packages.append(fp)
 
-        for vulnerability_id in vulnerabilities:
+        for cve_id in avg['issues']:
+            vulnerability, _ = Vulnerability.objects.get_or_create(
+                cve_id=cve_id,
+            )
             VulnerabilityReference.objects.create(
                 vulnerability=vulnerability,
-                reference_id=vulnerability_id,
-                url=f'https://security.archlinux.org/{vulnerability_id}',
+                url=f'{base_url}/{cve_id}',
+            )
+            avg_name = avg['name']
+            VulnerabilityReference.objects.create(
+                vulnerability=vulnerability,
+                reference_id=avg_name,
+                url=f'{base_url}/{avg_name}',
             )
 
-        for package_name in packages_name:
-            package_affected = Package.objects.create(
-                name=package_name,
-                type='pacman',
-                namespace='archlinux',
-                version=affected_version
-            )
-            ImpactedPackage.objects.create(
-                vulnerability=vulnerability,
-                package=package_affected
-            )
-            PackageReference.objects.create(
-                package=package_affected,
-                repository=f'https://security.archlinux.org/package/{package_name}',
-            )
-            package_fixed = Package.objects.create(
-                name=package_name,
-                type='pacman',
-                namespace='archlinux',
-                version=fixed_version
-            )
-            ResolvedPackage.objects.create(
-                vulnerability=vulnerability,
-                package=package_fixed
-            )
-            PackageReference.objects.create(
-                package=package_fixed,
-                repository=f'https://security.archlinux.org/package/{package_name}',
-            )
+            for asa in avg['advisories']:
+                VulnerabilityReference.objects.create(
+                    vulnerability=vulnerability,
+                    reference_id=asa,
+                    url=f'{base_url}/{asa}',
+                )
+
+            for ap in affected_packages:
+                ImpactedPackage.objects.get_or_create(
+                        vulnerability=vulnerability,
+                        package=ap,
+                )
+
+            for fp in fixed_packages:
+                ResolvedPackage.objects.get_or_create(
+                        vulnerability=vulnerability,
+                        package=fp,
+                )
 
 
 def npm_dump(extract_data):
     for data in extract_data:
-        vulnerability = Vulnerability.objects.create(
-            summary=data.get('summary'),
-        )
-        VulnerabilityReference.objects.create(
-            vulnerability=vulnerability,
-            reference_id=data.get('vulnerability_id'),
-        )
+        package_name = data['package_name']
+        advisory = data['advisory']
 
-        affected_versions = data.get('affected_version', [])
-        for version in affected_versions:
-            package_affected = Package.objects.create(
-                name=data.get('package_name'),
-                version=version,
-            )
-            ImpactedPackage.objects.create(
-                vulnerability=vulnerability,
-                package=package_affected
+        for cve_id in data['cve_ids']:
+            vulnerability, _ = Vulnerability.objects.get_or_create(
+                cve_id=cve_id,
             )
 
-        fixed_versions = data.get('fixed_version', [])
-        for version in fixed_versions:
-            package_fixed = Package.objects.create(
-                name=data.get('package_name'),
-                version=version
-            )
-            ResolvedPackage.objects.create(
-                vulnerability=vulnerability,
-                package=package_fixed
-            )
+            if advisory:
+                VulnerabilityReference.objects.create(
+                    vulnerability=vulnerability,
+                    url=advisory,
+                )
+
+            for version in data['affected_versions']:
+                package_affected = Package.objects.create(
+                    name=package_name,
+                    version=version,
+                )
+                ImpactedPackage.objects.create(
+                    vulnerability=vulnerability,
+                    package=package_affected
+                )
+
+            for version in data['fixed_versions']:
+                package_fixed = Package.objects.create(
+                    name=package_name,
+                    version=version
+                )
+                ResolvedPackage.objects.create(
+                    vulnerability=vulnerability,
+                    package=package_fixed
+                )

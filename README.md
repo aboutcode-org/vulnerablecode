@@ -59,7 +59,7 @@ python -m pytest -v vulnerabilities/tests/test_scrapers.py vulnerabilities/tests
 
 For Django based tests
 ```
-DJANGO_DEV=1 python manage.py test vulnerabilities/tests
+DJANGO_DEV=1 python manage.py test vulnerabilities.tests
 ```
 
 ## Data import

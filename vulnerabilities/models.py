@@ -29,8 +29,9 @@ from packageurl.contrib.django_models import PackageURLMixin
 class Vulnerability(models.Model):
     """
     A software vulnerability with minimal information.
-    Identifiers are stored as VulnerabilityReference.
+    Identifiers other than CVE ID are stored as VulnerabilityReference.
     """
+    cve_id = models.CharField(max_length=50, help_text='CVE ID', unique=True, null=True)
     summary = models.TextField(help_text='Summary of the vulnerability', blank=True)
     cvss = models.FloatField(max_length=100, help_text='CVSS Score', null=True)
 
@@ -40,16 +41,15 @@ class Vulnerability(models.Model):
 
 class VulnerabilityReference(models.Model):
     """
-    One or more remote web site references about a software
-    vulnerability data on such as a CVE ID and its web page
-    at the NVD, a bug id and similar references.
+    A reference to a vulnerability such as a security advisory from
+    a Linux distribution or language package manager.
     """
     vulnerability = models.ForeignKey(
         Vulnerability, on_delete=models.CASCADE)
     source = models.CharField(
         max_length=50, help_text='Source(s) name eg:NVD', blank=True)
     reference_id = models.CharField(
-        max_length=50, help_text='Reference ID, eg:CVE-ID', blank=True)
+        max_length=50, help_text='Reference ID, eg:DSA-4465-1', blank=True)
     url = models.URLField(
         max_length=1024, help_text='URL of Vulnerability data', blank=True)
 

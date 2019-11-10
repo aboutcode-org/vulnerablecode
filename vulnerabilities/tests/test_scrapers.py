@@ -68,7 +68,7 @@ def test_debian_extract_vulnerabilities():
     expected = [
         {
             'package_name': 'librsync',
-            'vulnerability_id': 'CVE-2014-8242',
+            'cve_id': 'CVE-2014-8242',
             'description': 'librsync before 1.0.0 uses a truncated MD4 checksum to match blocks',
             'status': 'open',
             'urgency': 'low',
@@ -77,7 +77,7 @@ def test_debian_extract_vulnerabilities():
         },
         {
             'package_name': 'mimetex',
-            'vulnerability_id': 'CVE-2009-1382',
+            'cve_id': 'CVE-2009-1382',
             'description': 'Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX',
             'status': 'resolved',
             'urgency': 'medium',
@@ -86,7 +86,7 @@ def test_debian_extract_vulnerabilities():
         },
         {
             'package_name': 'mimetex',
-            'vulnerability_id': 'CVE-2009-2459',
+            'cve_id': 'CVE-2009-2459',
             'description': 'Multiple unspecified vulnerabilities in mimeTeX',
             'status': 'resolved',
             'urgency': 'medium',

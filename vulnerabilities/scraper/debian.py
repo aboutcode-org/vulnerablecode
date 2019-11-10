@@ -39,7 +39,7 @@ def extract_vulnerabilities(debian_data, base_release='jessie'):
         if not vulnerabilities or not package_name:
             continue
 
-        for vulnerability, details in vulnerabilities.items():
+        for cve_id, details in vulnerabilities.items():
             releases = details.get('releases')
             if not releases:
                 continue
@@ -57,7 +57,7 @@ def extract_vulnerabilities(debian_data, base_release='jessie'):
 
             package_vulnerabilities.append({
                 'package_name': package_name,
-                'vulnerability_id': vulnerability,
+                'cve_id': cve_id,
                 'description': details.get('description', ''),
                 'status': status,
                 'urgency': release.get('urgency', ''),

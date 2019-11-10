@@ -59,24 +59,15 @@ class TestDebianDataDump(TestCase):
         """
         self.assertEqual(3, Vulnerability.objects.count())
 
-        self.assertTrue(Vulnerability.objects.get(
-                        summary='Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX'))
-
-        self.assertTrue(Vulnerability.objects.get(
-                        summary='Multiple unspecified vulnerabilities in mimeTeX'))
-
-        self.assertTrue(Vulnerability.objects.get(
-                        summary='librsync before 1.0.0 uses a truncated MD4 checksum \
-to match blocks'))
+        self.assertTrue(Vulnerability.objects.filter(cve_id='CVE-2009-1382'))
+        self.assertTrue(Vulnerability.objects.filter(cve_id='CVE-2009-2459'))
+        self.assertTrue(Vulnerability.objects.filter(cve_id='CVE-2014-8242'))
 
     def test_VulnerabilityReference(self):
         """
-        Check that all vulnerability references from the test data are stored in the database
+        Check that no vulnerability references were found in the test data
         """
-        self.assertEqual(3, VulnerabilityReference.objects.count())
-        self.assertTrue(VulnerabilityReference.objects.get(reference_id='CVE-2009-1382'))
-        self.assertTrue(VulnerabilityReference.objects.get(reference_id='CVE-2009-2459'))
-        self.assertTrue(VulnerabilityReference.objects.get(reference_id='CVE-2014-8242'))
+        self.assertEqual(0, VulnerabilityReference.objects.count())
 
     def test_Package(self):
         """
@@ -99,22 +90,22 @@ to match blocks'))
         Check that all impacted packages from the test data are stored in the database
         """
         impacted_pkgs = ImpactedPackage.objects.all()
-        impacted_pkg = impacted_pkgs[0]
 
-        self.assertEqual(1, len(impacted_pkgs))
-        self.assertEqual('librsync', impacted_pkg.package.name)
-        self.assertEqual('0.9.7-10', impacted_pkg.package.version)
+        self.assertEqual(1, impacted_pkgs.count())
+
+        ip = impacted_pkgs[0]
+        self.assertEqual('librsync', ip.package.name)
+        self.assertEqual('0.9.7-10', ip.package.version)
 
     def test_ResolvedPackage(self):
         """
         Check that all resolved packages from the test data are stored in the database
         """
         resolved_pkgs = ResolvedPackage.objects.all()
-        resolved_pkg = resolved_pkgs[0]
         versions = [rp.package.version for rp in resolved_pkgs]
 
-        self.assertEqual(4, len(resolved_pkgs))
-        self.assertEqual('mimetex', resolved_pkg.package.name)
+        self.assertEqual(4, resolved_pkgs.count())
+        self.assertEqual('mimetex', resolved_pkgs[0].package.name)
         self.assertIn('1.50-1.1', versions)
         self.assertIn('1.74-1', versions)
 
@@ -132,8 +123,7 @@ class TestUbuntuDataDump(TestCase):
         """
         Check basic data import
         """
-        reference = VulnerabilityReference.objects.filter(reference_id='CVE-2002-2439')[0]
-        self.assertEqual(reference.reference_id, 'CVE-2002-2439')
+        self.assertTrue(Vulnerability.objects.filter(cve_id='CVE-2002-2439'))
         pkgs = Package.objects.filter(name='gcc-4.6')
         self.assertTrue(pkgs)
 
@@ -143,6 +133,11 @@ class TestUbuntuDataDump(TestCase):
 
 
 class TestArchLinuxDataDump(TestCase):
+
+    CVE_IDS = ('CVE-2018-11362', 'CVE-2018-11361', 'CVE-2018-11360',
+               'CVE-2018-11359', 'CVE-2018-11358', 'CVE-2018-11357',
+               'CVE-2018-11356', 'CVE-2018-11355', 'CVE-2018-11354')
+
     @classmethod
     def setUpTestData(cls):
         with open(os.path.join(TEST_DATA, 'archlinux.json')) as f:
@@ -154,52 +149,81 @@ class TestArchLinuxDataDump(TestCase):
         """
         Check that all vulnerabilities from the test data are stored in the database
         """
-        self.assertEqual(1, Vulnerability.objects.count())
-        self.assertTrue(Vulnerability.objects.get(summary='multiple issues'))
+        self.assertEqual(len(self.CVE_IDS), Vulnerability.objects.count())
+
+        for cve_id in self.CVE_IDS:
+            self.assertTrue(Vulnerability.objects.filter(cve_id=cve_id))
 
     def test_VulnerabilityReference(self):
         """
         Check that all vulnerability references from the test data are stored in the database
         """
-        self.assertEqual(14, VulnerabilityReference.objects.count())
-        self.assertTrue(VulnerabilityReference.objects.get(reference_id='CVE-2018-11360'))
-        self.assertTrue(VulnerabilityReference.objects.get(reference_id='ASA-201805-24'))
-        self.assertTrue(VulnerabilityReference.objects.get(reference_id='AVG-708'))
+        for ref in ('ASA-201805-22', 'ASA-201805-23', 'ASA-201805-24', 'ASA-201805-25', 'AVG-708'):
+            self.assertEqual(
+                    len(self.CVE_IDS),
+                    VulnerabilityReference.objects.filter(reference_id=ref).count()
+            )
+
+        for ref in self.CVE_IDS:
+            url = f'https://security.archlinux.org/{ref}'
+            self.assertEqual(1, VulnerabilityReference.objects.filter(url=url).count())
 
     def test_Package(self):
         """
         Check that all packages from the test data are stored in the database
         """
         self.assertEqual(8, Package.objects.count())
-        pkgs = Package.objects.filter(name='wireshark-cli')
-        self.assertTrue(pkgs)
 
-        for pkg in pkgs:
+        for pkg in ('wireshark-common', 'wireshark-gtk', 'wireshark-cli', 'wireshark-qt'):
+            for ver in ('2.6.0-1', '2.6.1-1'):
+                self.assertTrue(Package.objects.filter(name=pkg, version=ver))
+
+        for pkg in Package.objects.filter(name='wireshark-cli'):
             self.assertEqual('pacman', pkg.type)
             self.assertEqual('archlinux', pkg.namespace)
 
     def test_PackageReference(self):
         """
-        Check that all package references from the test data are stored in the database
+        Check that no package references were found in the test data
         """
-        self.assertEqual(8, PackageReference.objects.count())
+        self.assertEqual(0, PackageReference.objects.count())
 
     def test_ImpactedPackage(self):
         """
-        Check that all impacted packages from the test data are stored in the database
+        Check there is one ImpactedPackage for the number of packages
+        with the affected version number, times the number of vulnerabilities
         """
-        impacted_pkgs = ImpactedPackage.objects.all()
-        impacted_pkg = impacted_pkgs[0]
+        packages = Package.objects.filter(version='2.6.0-1')
+        vulnerabilities = Vulnerability.objects.all()
 
-        self.assertEqual(4, len(impacted_pkgs))
-        self.assertEqual('2.6.0-1', impacted_pkg.package.version)
+        impacted_pkgs_count = ImpactedPackage.objects.count()
+        expected_count = packages.count() * vulnerabilities.count()
+
+        self.assertEqual(expected_count, impacted_pkgs_count)
+
+        for pkg in packages:
+            for vuln in vulnerabilities:
+                self.assertTrue(ImpactedPackage.objects.filter(
+                    package=pkg,
+                    vulnerability=vuln,
+                ))
 
     def test_ResolvedPackage(self):
         """
-        Check that all resolved packages from the test data are stored in the database
+        Check there is one ResolvedPackage for the number of packages
+        with the fixed version number, times the number of vulnerabilities
         """
-        resolved_pkgs = ResolvedPackage.objects.all()
-        resolved_pkg = resolved_pkgs[0]
+        packages = Package.objects.filter(version='2.6.1-1')
+        vulnerabilities = Vulnerability.objects.all()
 
-        self.assertEqual(4, len(resolved_pkgs))
-        self.assertEqual('2.6.1-1', resolved_pkg.package.version)
+        resolved_pkgs_count = ResolvedPackage.objects.count()
+        expected_count = packages.count() * vulnerabilities.count()
+
+        self.assertEqual(expected_count, resolved_pkgs_count)
+
+        for pkg in packages:
+            for vuln in vulnerabilities:
+                self.assertTrue(ResolvedPackage.objects.filter(
+                    package=pkg,
+                    vulnerability=vuln,
+                ))

@@ -16,4 +16,4 @@ pycodestyle==2.5.0
 gunicorn==19.7.1
 whitenoise==3.3.1
 dj_database_url==0.4.2
-psycopg2==2.7.3.1
+psycopg2==2.8.4

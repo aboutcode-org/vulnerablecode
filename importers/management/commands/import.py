@@ -21,10 +21,14 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
+from django.core.management.base import CommandError
 
-from vulnerabilities import data_dump as dd
-from vulnerabilities.scraper import debian, ubuntu, archlinux, npm
+from importers import data_dump as dd
+from importers import archlinux
+from importers import debian
+from importers import npm
+from importers import ubuntu
 
 IMPORTERS = {
     'npm': lambda: dd.npm_dump(npm.scrape_vulnerabilities()),

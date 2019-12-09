@@ -26,9 +26,9 @@ import json
 
 from django.test import TestCase
 
-from vulnerabilities.scraper.npm import extract_data
-from vulnerabilities.scraper.npm import get_all_versions
-from vulnerabilities.scraper.npm import remove_spaces
+from importers.npm import extract_data
+from importers.npm import get_all_versions
+from importers.npm import remove_spaces
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/')

@@ -27,11 +27,11 @@ import os
 from django.test import TestCase
 
 from core.models import Package
+from importers.data_dump import debian_dump
+from importers.data_dump import ubuntu_dump
+from importers import debian
+from importers import ubuntu
 from vulnerabilities.api import PackageSerializer
-from vulnerabilities.data_dump import debian_dump
-from vulnerabilities.data_dump import ubuntu_dump
-from vulnerabilities.scraper import debian
-from vulnerabilities.scraper import ubuntu
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))

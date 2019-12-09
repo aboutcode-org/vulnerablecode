@@ -32,13 +32,12 @@ from core.models import PackageReference
 from core.models import ResolvedPackage
 from core.models import Vulnerability
 from core.models import VulnerabilityReference
-from vulnerabilities.data_dump import archlinux_dump
-from vulnerabilities.data_dump import debian_dump
-from vulnerabilities.data_dump import ubuntu_dump
-from vulnerabilities.scraper import archlinux
-from vulnerabilities.scraper import debian
-from vulnerabilities.scraper import ubuntu
-
+from importers.data_dump import archlinux_dump
+from importers.data_dump import debian_dump
+from importers.data_dump import ubuntu_dump
+from importers import archlinux
+from importers import debian
+from importers import ubuntu
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/')

@@ -28,10 +28,10 @@ from rest_framework.response import Response
 
 from packageurl import PackageURL
 
-from vulnerabilities.models import Package
-from vulnerabilities.models import PackageReference
-from vulnerabilities.models import Vulnerability
-from vulnerabilities.models import VulnerabilityReference
+from core.models import Package
+from core.models import PackageReference
+from core.models import Vulnerability
+from core.models import VulnerabilityReference
 
 
 class PackageReferenceSerializer(serializers.ModelSerializer):

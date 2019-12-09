@@ -21,12 +21,12 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from vulnerabilities.models import ImpactedPackage
-from vulnerabilities.models import Package
-from vulnerabilities.models import PackageReference
-from vulnerabilities.models import ResolvedPackage
-from vulnerabilities.models import Vulnerability
-from vulnerabilities.models import VulnerabilityReference
+from core.models import ImpactedPackage
+from core.models import Package
+from core.models import PackageReference
+from core.models import ResolvedPackage
+from core.models import Vulnerability
+from core.models import VulnerabilityReference
 
 
 def debian_dump(extract_data, base_release='jessie'):

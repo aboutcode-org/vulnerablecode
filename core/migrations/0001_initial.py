@@ -46,8 +46,8 @@ class Migration(migrations.Migration):
             name='ResolvedPackage',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('package', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='vulnerabilities.Package')),
-                ('vulnerability', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='vulnerabilities.Vulnerability')),
+                ('package', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.Package')),
+                ('vulnerability', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.Vulnerability')),
             ],
         ),
         migrations.CreateModel(
@@ -58,23 +58,23 @@ class Migration(migrations.Migration):
                 ('platform', models.CharField(blank=True, help_text='Platform eg:maven', max_length=50)),
                 ('name', models.CharField(blank=True, help_text='Package reference name eg:org.apache.commons.io', max_length=50)),
                 ('version', models.CharField(blank=True, help_text='Reference version', max_length=50)),
-                ('package', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='vulnerabilities.Package')),
+                ('package', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.Package')),
             ],
         ),
         migrations.AddField(
             model_name='package',
             name='vulnerabilities',
-            field=models.ManyToManyField(through='vulnerabilities.ImpactedPackage', to='vulnerabilities.Vulnerability'),
+            field=models.ManyToManyField(through='core.ImpactedPackage', to='core.Vulnerability'),
         ),
         migrations.AddField(
             model_name='impactedpackage',
             name='package',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='vulnerabilities.Package'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.Package'),
         ),
         migrations.AddField(
             model_name='impactedpackage',
             name='vulnerability',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='vulnerabilities.Vulnerability'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.Vulnerability'),
         ),
         migrations.CreateModel(
             name='VulnerabilityReference',
@@ -83,7 +83,7 @@ class Migration(migrations.Migration):
                 ('source', models.CharField(blank=True, help_text='Source(s) name eg:NVD', max_length=50)),
                 ('reference_id', models.CharField(blank=True, help_text='Reference ID, eg:DSA-4465-1', max_length=50)),
                 ('url', models.URLField(blank=True, help_text='URL of Vulnerability data', max_length=1024)),
-                ('vulnerability', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='vulnerabilities.Vulnerability')),
+                ('vulnerability', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.Vulnerability')),
             ],
             options={
                 'unique_together': {('vulnerability', 'source', 'reference_id', 'url')},

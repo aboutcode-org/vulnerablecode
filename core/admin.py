@@ -23,7 +23,7 @@
 
 from django.contrib import admin
 
-from vulnerabilities.models import (
+from core.models import (
     ImpactedPackage,
     Package,
     PackageReference,

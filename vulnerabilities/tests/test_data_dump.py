@@ -26,15 +26,15 @@ import os
 
 from django.test import TestCase
 
+from core.models import ImpactedPackage
+from core.models import Package
+from core.models import PackageReference
+from core.models import ResolvedPackage
+from core.models import Vulnerability
+from core.models import VulnerabilityReference
 from vulnerabilities.data_dump import archlinux_dump
 from vulnerabilities.data_dump import debian_dump
 from vulnerabilities.data_dump import ubuntu_dump
-from vulnerabilities.models import ImpactedPackage
-from vulnerabilities.models import Package
-from vulnerabilities.models import PackageReference
-from vulnerabilities.models import ResolvedPackage
-from vulnerabilities.models import Vulnerability
-from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.scraper import archlinux
 from vulnerabilities.scraper import debian
 from vulnerabilities.scraper import ubuntu

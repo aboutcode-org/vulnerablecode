@@ -120,7 +120,7 @@ def scrape_vulnerabilities():
     while nextpage:
         cururl = NPM_URL.format(nextpage)
         response = json.load(urlopen(cururl))
-        package_vulnerabilities = package_vulnerabilities.extend(extract_data(response))
+        package_vulnerabilities.extend(extract_data(response))
         next_page = response.get('urls', {}).get('next')
 
     return package_vulnerabilities

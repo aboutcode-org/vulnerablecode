@@ -25,7 +25,14 @@ import json
 
 from django.http import HttpResponse
 
-from vulnerabilities import api_data
+from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.serializers import ValidationError
+
+from packageurl import PackageURL
+
+from api import api_data
+from api.serializers import PackageSerializer
+from core import models
 
 
 def package(request, name):
@@ -50,3 +57,33 @@ def package_version(request, name, version):
     extracted_data = api_data.extract_fields(raw_data, fields_names)
 
     return HttpResponse(json.dumps(extracted_data))
+
+
+class PackageViewSet(ReadOnlyModelViewSet):
+    queryset = models.Package.objects.all()
+    serializer_class = PackageSerializer
+    filter_fields = ('name', 'version')
+
+    def filter_queryset(self, qs):
+        purl = self.request.query_params.get('package_url')
+        if not purl:
+            return super().filter_queryset(qs)
+
+        try:
+            purl = PackageURL.from_string(purl)
+        except ValueError as ve:
+            raise ValidationError(
+                detail={'error': f'"{purl}" is not a valid Package URL: {ve}'},
+            )
+
+        # Remove "qualifiers" here because it is stored as one string in the model.
+        # For example, a row in the database could have the "qualifiers" column
+        # stored as "foo=bar&spam=eggs". If an API request contains a PURL with
+        # "spam=eggs&foo=bar", the DB query would not include that row.
+        attrs = {k: v for k, v in purl.to_dict().items() if v and k != 'qualifiers'}
+
+        # TODO
+        # Since we are filtering on all the Package URL fields except "qualifiers",
+        # we'll eventually need database indices on them.
+        return self.queryset.filter(**attrs)
+

@@ -23,7 +23,7 @@
 
 import json
 
-from vulnerabilities.api_data import extract_fields
+from api.api_data import extract_fields
 
 
 test_data = """

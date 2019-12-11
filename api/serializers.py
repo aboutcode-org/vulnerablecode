@@ -21,10 +21,7 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from rest_framework import serializers
-from rest_framework import status
-from rest_framework import viewsets
-from rest_framework.response import Response
+from rest_framework.serializers import ModelSerializer
 
 from packageurl import PackageURL
 
@@ -34,7 +31,7 @@ from core.models import Vulnerability
 from core.models import VulnerabilityReference
 
 
-class PackageReferenceSerializer(serializers.ModelSerializer):
+class PackageReferenceSerializer(ModelSerializer):
     class Meta:
         model = PackageReference
         fields = [
@@ -45,7 +42,7 @@ class PackageReferenceSerializer(serializers.ModelSerializer):
         ]
 
 
-class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
+class VulnerabilityReferenceSerializer(ModelSerializer):
     class Meta:
         model = VulnerabilityReference
         fields = [
@@ -55,7 +52,7 @@ class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
         ]
 
 
-class VulnerabilitySerializer(serializers.ModelSerializer):
+class VulnerabilitySerializer(ModelSerializer):
     references = VulnerabilityReferenceSerializer(source='vulnerabilityreference_set', many=True)
 
     class Meta:
@@ -67,7 +64,7 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
         ]
 
 
-class PackageSerializer(serializers.ModelSerializer):
+class PackageSerializer(ModelSerializer):
     vulnerabilities = VulnerabilitySerializer(many=True)
     references = PackageReferenceSerializer(source='packagereference_set', many=True)
 
@@ -80,32 +77,3 @@ class PackageSerializer(serializers.ModelSerializer):
             'vulnerabilities',
             'references',
         ]
-
-
-class PackageViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Package.objects.all()
-    serializer_class = PackageSerializer
-    filter_fields = ('name', 'version')
-
-    def filter_queryset(self, qs):
-        purl = self.request.query_params.get('package_url')
-        if not purl:
-            return super().filter_queryset(qs)
-
-        try:
-            purl = PackageURL.from_string(purl)
-        except ValueError as ve:
-            raise serializers.ValidationError(
-                detail={'error': f'"{purl}" is not a valid Package URL: {ve}'},
-            )
-
-        # Remove "qualifiers" here because it is stored as one string in the model.
-        # For example, a row in the database could have the "qualifiers" column
-        # stored as "foo=bar&spam=eggs". If an API request contains a PURL with
-        # "spam=eggs&foo=bar", the DB query would not include that row.
-        attrs = {k: v for k, v in purl.to_dict().items() if v and k != 'qualifiers'}
-
-        # TODO
-        # Since we are filtering on all the Package URL fields except "qualifiers",
-        # we'll eventually need database indices on them.
-        return self.queryset.filter(**attrs)

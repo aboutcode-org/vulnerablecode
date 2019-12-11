@@ -26,7 +26,7 @@ from django.urls import include, path, re_path
 
 from rest_framework.routers import DefaultRouter
 
-from vulnerabilities.api import PackageViewSet
+from api.views import PackageViewSet
 
 
 api_router = DefaultRouter()
@@ -35,6 +35,6 @@ api_router.register(r'packages', PackageViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r'^vulnerabilities/', include('vulnerabilities.urls')),
+    re_path(r'^vulnerabilities/', include('api.urls')),
     re_path(r'^api/', include(api_router.urls))
 ]

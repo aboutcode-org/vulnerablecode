@@ -23,7 +23,7 @@
 
 import json
 
-from api.api_data import extract_fields
+from api.cve_search import extract_fields
 
 
 test_data = """

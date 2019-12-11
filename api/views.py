@@ -30,7 +30,7 @@ from rest_framework.serializers import ValidationError
 
 from packageurl import PackageURL
 
-from api import api_data
+from api import cve_search
 from api.serializers import PackageSerializer
 from core import models
 
@@ -40,9 +40,9 @@ def package(request, name):
     Queries the cve-search api with just
     a package name.
     """
-    raw_data = api_data.data_cve_circl(name=name)
+    raw_data = cve_search.data_cve_circl(name=name)
     fields_names = ['id', 'summary', 'cvss']
-    extracted_data = api_data.extract_fields(raw_data, fields_names)
+    extracted_data = cve_search.extract_fields(raw_data, fields_names)
 
     return HttpResponse(json.dumps(extracted_data))
 
@@ -52,9 +52,9 @@ def package_version(request, name, version):
     Queries the cve-search api with a package
     name and version.
     """
-    raw_data = api_data.data_cve_circl(name=name, version=version)
+    raw_data = cve_search.data_cve_circl(name=name, version=version)
     fields_names = ['id', 'summary', 'cvss']
-    extracted_data = api_data.extract_fields(raw_data, fields_names)
+    extracted_data = cve_search.extract_fields(raw_data, fields_names)
 
     return HttpResponse(json.dumps(extracted_data))
 
@@ -86,4 +86,3 @@ class PackageViewSet(ReadOnlyModelViewSet):
         # Since we are filtering on all the Package URL fields except "qualifiers",
         # we'll eventually need database indices on them.
         return self.queryset.filter(**attrs)
-

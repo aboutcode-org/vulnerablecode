@@ -39,14 +39,11 @@ TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
 
 
 class TestDebianResponse(TestCase):
+    fixtures = ['debian.json']
+
     @classmethod
     def setUpTestData(cls):
-        with open(os.path.join(TEST_DATA, 'debian.json')) as f:
-            test_data = json.load(f)
-
-        extract_data = debian.extract_vulnerabilities(test_data)
-        debian_dump(extract_data)
-
+        # create one non-debian package called "mimetex" to verify filtering
         Package.objects.create(
             name='mimetex',
             version='1.50-1.1',
@@ -107,12 +104,9 @@ class TestDebianResponse(TestCase):
 
 
 class TestUbuntuResponse(TestCase):
-    def test_ubuntu_response(self):
-        with open(os.path.join(TEST_DATA, 'ubuntu_main.html')) as f:
-            test_data = f.read()
+    fixtures = ['ubuntu.json']
 
-        extract_data = ubuntu.extract_cves(test_data)
-        ubuntu_dump(extract_data)
+    def test_ubuntu_response(self):
         response = self.client.get('/api/packages/?name=automake', format='json')
 
         result = response.data.get('results')[0]
@@ -125,13 +119,7 @@ class TestUbuntuResponse(TestCase):
 
 
 class TestSerializers(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        with open(os.path.join(TEST_DATA, 'debian.json')) as f:
-            test_data = json.load(f)
-
-        extract_data = debian.extract_vulnerabilities(test_data)
-        debian_dump(extract_data)
+    fixtures = ['debian.json']
 
     def test_package_serializer(self):
         pk = Package.objects.filter(name="mimetex")

@@ -1,0 +1,129 @@
+[
+{
+  "model": "core.vulnerability",
+  "pk": 1,
+  "fields": {
+    "cve_id": "CVE-2014-8242",
+    "summary": "",
+    "cvss": null
+  }
+},
+{
+  "model": "core.vulnerability",
+  "pk": 2,
+  "fields": {
+    "cve_id": "CVE-2009-1382",
+    "summary": "",
+    "cvss": null
+  }
+},
+{
+  "model": "core.vulnerability",
+  "pk": 3,
+  "fields": {
+    "cve_id": "CVE-2009-2459",
+    "summary": "",
+    "cvss": null
+  }
+},
+{
+  "model": "core.package",
+  "pk": 1,
+  "fields": {
+    "type": "deb",
+    "namespace": "debian",
+    "name": "librsync",
+    "version": "0.9.7-10",
+    "qualifiers": "distro=jessie",
+    "subpath": null
+  }
+},
+{
+  "model": "core.package",
+  "pk": 2,
+  "fields": {
+    "type": "deb",
+    "namespace": "debian",
+    "name": "mimetex",
+    "version": "1.74-1",
+    "qualifiers": "distro=jessie",
+    "subpath": null
+  }
+},
+{
+  "model": "core.package",
+  "pk": 3,
+  "fields": {
+    "type": "deb",
+    "namespace": "debian",
+    "name": "mimetex",
+    "version": "1.50-1.1",
+    "qualifiers": "distro=jessie",
+    "subpath": null
+  }
+},
+{
+  "model": "core.package",
+  "pk": 4,
+  "fields": {
+    "type": "deb",
+    "namespace": "debian",
+    "name": "mimetex",
+    "version": "1.74-1",
+    "qualifiers": "distro=jessie",
+    "subpath": null
+  }
+},
+{
+  "model": "core.package",
+  "pk": 5,
+  "fields": {
+    "type": "deb",
+    "namespace": "debian",
+    "name": "mimetex",
+    "version": "1.50-1.1",
+    "qualifiers": "distro=jessie",
+    "subpath": null
+  }
+},
+{
+  "model": "core.impactedpackage",
+  "pk": 1,
+  "fields": {
+    "vulnerability": 1,
+    "package": 1
+  }
+},
+{
+  "model": "core.resolvedpackage",
+  "pk": 1,
+  "fields": {
+    "vulnerability": 2,
+    "package": 2
+  }
+},
+{
+  "model": "core.resolvedpackage",
+  "pk": 2,
+  "fields": {
+    "vulnerability": 2,
+    "package": 3
+  }
+},
+{
+  "model": "core.resolvedpackage",
+  "pk": 3,
+  "fields": {
+    "vulnerability": 3,
+    "package": 4
+  }
+},
+{
+  "model": "core.resolvedpackage",
+  "pk": 4,
+  "fields": {
+    "vulnerability": 3,
+    "package": 5
+  }
+}
+]

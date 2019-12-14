@@ -4,16 +4,17 @@ beautifulsoup4==4.7.1
 lxml==4.3.3
 django==2.2.8
 djangorestframework==3.9.2
-django-filter==2.1.0
+django-filter==2.2.0
 packageurl-python==0.8.7
 semantic-version==2.8.2
 
 # Tests
-pytest==3.2.3
+pytest==5.3.2  
+pytest-django==3.7.0
 pycodestyle==2.5.0
 
 # Deployment
 gunicorn==19.7.1
-whitenoise==3.3.1
+whitenoise==5.0.1
 dj_database_url==0.4.2
 psycopg2==2.8.4

@@ -21,7 +21,7 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from django.test import TestCase
+import pytest
 
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
@@ -29,53 +29,49 @@ from vulnerabilities.models import Package
 from vulnerabilities.models import PackageReference
 
 
-class TestVulnerability(TestCase):
-    def test_vulnerability(self):
-        Vulnerability.objects.create(
-            summary="Affected package xyz",
-            cvss="7.8"
-        )
+def test_vulnerability(db):
+    Vulnerability.objects.create(
+        summary="Affected package xyz",
+        cvss="7.8"
+    )
 
-        self.assertTrue(Vulnerability.objects.get(summary="Affected package xyz"))
-        self.assertTrue(Vulnerability.objects.get(cvss="7.8"))
-
-
-class TestVulnerabilityReference(TestCase):
-    def test_vulnerability_reference(self):
-        VulnerabilityReference.objects.create(
-            vulnerability=Vulnerability.objects.create(summary="XYZ"),
-            reference_id="CVE-2017-8564",
-            source="NVD",
-            url="http://mitre.com"
-        )
-
-        self.assertTrue(VulnerabilityReference.objects.get(reference_id="CVE-2017-8564"))
-        self.assertTrue(VulnerabilityReference.objects.get(source="NVD"))
-        self.assertTrue(VulnerabilityReference.objects.get(url="http://mitre.com"))
+    assert Vulnerability.objects.get(summary="Affected package xyz")
+    assert Vulnerability.objects.get(cvss="7.8")
 
 
-class TestPackage(TestCase):
-    def test_package(self):
-        Package.objects.create(
-            name="Firefox",
-            version="1.5.4"
-        )
+def test_vulnerability_reference(db):
+    VulnerabilityReference.objects.create(
+        vulnerability=Vulnerability.objects.create(summary="XYZ"),
+        reference_id="CVE-2017-8564",
+        source="NVD",
+        url="http://mitre.com"
+    )
 
-        self.assertTrue(Package.objects.get(name="Firefox"))
-        self.assertTrue(Package.objects.get(version="1.5.4"))
+    assert VulnerabilityReference.objects.get(reference_id="CVE-2017-8564")
+    assert VulnerabilityReference.objects.get(source="NVD")
+    assert VulnerabilityReference.objects.get(url="http://mitre.com")
 
 
-class TestPackageReference(TestCase):
-    def test_package_reference(self):
-        PackageReference.objects.create(
-            package=Package.objects.create(name="Iceweasel"),
-            platform="Maven",
-            repository="http://central.maven.org",
-            name="org.apache.commons.io",
-            version="7.6.5"
-        )
+def test_package(db):
+    Package.objects.create(
+        name="Firefox",
+        version="1.5.4"
+    )
 
-        self.assertTrue(PackageReference.objects.get(platform="Maven"))
-        self.assertTrue(PackageReference.objects.get(repository="http://central.maven.org"))
-        self.assertTrue(PackageReference.objects.get(name="org.apache.commons.io"))
-        self.assertTrue(PackageReference.objects.get(version="7.6.5"))
+    assert Package.objects.get(name="Firefox")
+    assert Package.objects.get(version="1.5.4")
+
+
+def test_package_reference(db):
+    PackageReference.objects.create(
+        package=Package.objects.create(name="Iceweasel"),
+        platform="Maven",
+        repository="http://central.maven.org",
+        name="org.apache.commons.io",
+        version="7.6.5"
+    )
+
+    assert PackageReference.objects.get(platform="Maven")
+    assert PackageReference.objects.get(repository="http://central.maven.org")
+    assert PackageReference.objects.get(name="org.apache.commons.io")
+    assert PackageReference.objects.get(version="7.6.5")

@@ -1,4 +1,3 @@
-#
 # Copyright (c) 2017 nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
@@ -21,37 +20,40 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+
+import pytest
 from io import StringIO
 
 from django.core.management import call_command
 from django.core.management.base import CommandError
-from django.test import TestCase
 
 
-class ImportCommandTest(TestCase):
-    def test_list_sources(self):
-        buf = StringIO()
+def test_list_sources():
 
-        call_command('import', '--list', stdout=buf)
+    buf = StringIO()
+    call_command('import', '--list', stdout=buf)
+    out = buf.getvalue()
+    assert 'npm' in out
+    assert 'debian' in out
+    assert 'ubuntu' in out
+    assert 'archlinux' in out
 
-        out = buf.getvalue()
-        self.assertIn('npm', out)
-        self.assertIn('debian', out)
-        self.assertIn('ubuntu', out)
-        self.assertIn('archlinux', out)
 
-    def test_missing_sources(self):
-        with self.assertRaises(CommandError) as cm:
-            call_command('import', stdout=StringIO())
+def test_missing_sources():
 
-        err = str(cm.exception)
-        self.assertIn('Please provide at least one data source', err)
+    with pytest.raises(CommandError) as cm:
+        call_command('import', stdout=StringIO())
 
-    def test_unknown_sources(self):
-        with self.assertRaises(CommandError) as cm:
-            call_command('import', 'debian', 'foo', 'bar', stdout=StringIO())
+    err = str(cm)
+    assert 'Please provide at least one data source' in err
 
-        err = str(cm.exception)
-        self.assertIn('bar', err)
-        self.assertIn('foo', err)
-        self.assertNotIn('debian', err)
+
+def test_unknown_sources():
+
+    with pytest.raises(CommandError) as cm:
+        call_command('import', 'debian', 'foo', 'bar', stdout=StringIO())
+
+    err = str(cm)
+    assert 'bar' in err
+    assert 'foo' in err
+    assert 'debian' not in err

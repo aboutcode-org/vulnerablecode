@@ -54,12 +54,7 @@ the code Django includes for this purpose: `SECRET_KEY=$(python -c "from django.
 
 ```
 pycodestyle --exclude=migrations,settings.py,venv --max-line-length=100 .
-python -m pytest -v vulnerabilities/tests/test_scrapers.py vulnerabilities/tests/test_api_data.py
-```
-
-For Django based tests
-```
-DJANGO_DEV=1 python manage.py test vulnerabilities.tests
+DJANGO_DEV=1 pytest 
 ```
 
 ## Data import

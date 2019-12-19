@@ -85,7 +85,7 @@ class PackageSerializer(serializers.ModelSerializer):
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
-    filter_fields = ('name', 'version')
+    filterset_fields = ('name', 'version')
 
     def filter_queryset(self, qs):
         purl = self.request.query_params.get('package_url')

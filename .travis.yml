@@ -16,6 +16,7 @@ before_script:
   - ./manage.py migrate
 
 script:
+  - ./manage.py collectstatic
   - pytest
 
 notifications:

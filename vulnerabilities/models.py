@@ -38,6 +38,9 @@ class Vulnerability(models.Model):
     def __str__(self):
         return self.summary
 
+    class Meta:
+        verbose_name_plural = 'Vulnerabilities'
+
 
 class VulnerabilityReference(models.Model):
     """

@@ -58,25 +58,22 @@ def get_all_versions(package_name):
 
 def extract_versions(package_name, aff_version_range, fixed_version_range):
     """
-    Seperate list of affected versions and fixed versions from all versions
-    using the ranges specified
+    Seperate list of affected versions and unaffected versions from all versions
+    using the ranges specified.
     """
-    # FIXME This skips unfixed vulnerabilities
-    if aff_version_range == '' or fixed_version_range == '':
-        return ([], [])
-
     aff_spec = semantic_version.NpmSpec(remove_spaces(aff_version_range))
     fix_spec = semantic_version.NpmSpec(remove_spaces(fixed_version_range))
     all_ver = get_all_versions(package_name)
     aff_ver = []
     fix_ver = []
+    # Unaffected version is that version which  is in the fixed_version_range
+    # or which is absent in the aff_version_range
     for ver in all_ver:
         cur_version = semantic_version.Version(ver)
-        if cur_version in aff_spec:
-            aff_ver.append(ver)
+        if cur_version in fix_spec or cur_version not in aff_spec:
+            fix_ver.append(ver)
         else:
-            if cur_version in fix_spec:
-                fix_ver.append(ver)
+            aff_ver.append(ver)
 
     return (aff_ver, fix_ver)
 

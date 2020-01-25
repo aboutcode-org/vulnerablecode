@@ -144,14 +144,14 @@ def archlinux_dump(extract_data):
 
             for ap in affected_packages:
                 ImpactedPackage.objects.get_or_create(
-                        vulnerability=vulnerability,
-                        package=ap,
+                    vulnerability=vulnerability,
+                    package=ap,
                 )
 
             for fp in fixed_packages:
                 ResolvedPackage.objects.get_or_create(
-                        vulnerability=vulnerability,
-                        package=fp,
+                    vulnerability=vulnerability,
+                    package=fp,
                 )
 
 
@@ -190,3 +190,39 @@ def npm_dump(extract_data):
                     vulnerability=vulnerability,
                     package=package_fixed
                 )
+
+
+def ruby_dump(extract_data):
+    for package_data in extract_data:
+
+        vulnerability, _ = Vulnerability.objects.get_or_create(
+            cve_id=package_data['cve_id'],
+            summary=package_data['summary'],
+        )
+
+        VulnerabilityReference.objects.get_or_create(
+            vulnerability=vulnerability,
+            url=package_data['advisory']
+        )
+
+        for version in package_data['affected_versions']:
+            affected_package = Package.objects.create(
+                name=package_data['package_name'],
+                type='gem',
+                version=version
+            )
+            ImpactedPackage.objects.create(
+                vulnerability=vulnerability,
+                package=affected_package
+            )
+
+        for version in package_data['fixed_versions']:
+            unaffected_package = Package.objects.create(
+                name=package_data['package_name'],
+                type='gem',
+                version=version
+            )
+            ResolvedPackage.objects.create(
+                vulnerability=vulnerability,
+                package=unaffected_package
+            )

@@ -24,13 +24,14 @@
 from django.core.management.base import BaseCommand, CommandError
 
 from vulnerabilities import data_dump as dd
-from vulnerabilities.scraper import debian, ubuntu, archlinux, npm
+from vulnerabilities.scraper import debian, ubuntu, archlinux, npm, ruby
 
 IMPORTERS = {
+    'ruby': lambda: dd.ruby_dump(ruby.import_vulnerabilities()),
     'npm': lambda: dd.npm_dump(npm.scrape_vulnerabilities()),
     'debian': lambda: dd.debian_dump(debian.scrape_vulnerabilities()),
     'ubuntu': lambda: dd.ubuntu_dump(ubuntu.scrape_cves()),
-    'archlinux': lambda: dd.archlinux_dump(archlinux.scrape_vulnerabilities()),
+    'archlinux': lambda: dd.archlinux_dump(archlinux.scrape_vulnerabilities())
 }
 
 
@@ -38,7 +39,10 @@ class Command(BaseCommand):
     help = 'Import vulnerability data'
 
     def add_arguments(self, parser):
-        parser.add_argument('--list', action='store_true', help='List available data sources')
+        parser.add_argument(
+            '--list',
+            action='store_true',
+            help='List available data sources')
 
         parser.add_argument('--all', action='store_true',
                             help='Import data from all available sources')
@@ -69,7 +73,8 @@ class Command(BaseCommand):
             raise CommandError(f'Unknown data sources: {unknown}')
 
     def list_sources(self):
-        self.stdout.write('Vulnerability data can be imported from the following sources:')
+        self.stdout.write(
+            'Vulnerability data can be imported from the following sources:')
         self.stdout.write(', '.join(IMPORTERS.keys()))
 
     def import_data(self, sources):

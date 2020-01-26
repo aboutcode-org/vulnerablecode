@@ -196,8 +196,7 @@ def ruby_dump(extract_data):
     for package_data in extract_data:
 
         vulnerability, _ = Vulnerability.objects.get_or_create(
-            cve_id=package_data['cve_id'],
-            summary=package_data['summary'],
+            cve_id=package_data['cve_id']
         )
 
         VulnerabilityReference.objects.get_or_create(

@@ -38,7 +38,6 @@ def get_patched_range(spec_list):
 
 
 def import_vulnerabilities():
-    ids = set()
     vulnerability_package_dicts = []
     for vulnerability in rubygem_advisories(RUBYSEC_DB_URL):
 
@@ -48,13 +47,8 @@ def import_vulnerabilities():
         if not package_name:
             continue
 
-        summary = vulnerability.get('description', '')
-
         if 'cve' in vulnerability:
             vulnerability_id = 'CVE-{}'.format(vulnerability['cve'])
-            if vulnerability_id in ids:
-                continue
-            ids.add(vulnerability_id)
         else:
             continue
 
@@ -75,7 +69,6 @@ def import_vulnerabilities():
         affected_versions = all_versions - unaffected_versions
         vulnerability_package_dicts.append({
             'package_name': package_name,
-            'summary': summary,
             'cve_id': vulnerability_id,
             'fixed_versions': unaffected_versions,
             'affected_versions': affected_versions,

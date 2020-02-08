@@ -25,8 +25,8 @@ import os
 import json
 import pytest
 
-from vulnerabilities.scraper.npm import extract_data
-from vulnerabilities.scraper.npm import get_all_versions
+from vulnerabilities.importers.npm import extract_data
+from vulnerabilities.importers.npm import get_all_versions
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/')

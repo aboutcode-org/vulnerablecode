@@ -60,6 +60,7 @@ def import_vulnerabilities():
             cve_id = advisory.get('cve')
             vuln_id = advisory['id']
             vuln_version_ranges = advisory['specs']
+            affected_versions = set()
             for vuln_version_range in vuln_version_ranges:
                 version_range = RangeSpecifier(vuln_version_range)
                 affected_versions = set()

@@ -21,112 +21,114 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import json
 import os
-import pytest
 
-from django.test import Client
+from django.test import TestCase
 
 from vulnerabilities.api import PackageSerializer
-from vulnerabilities.data_dump import debian_dump
-from vulnerabilities.data_dump import ubuntu_dump
 from vulnerabilities.models import Package
-from vulnerabilities.scraper import debian
-from vulnerabilities.scraper import ubuntu
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
 
 
-def test_debian_query_by_name(setDebianData):
+class TestDebianResponse(TestCase):
+    fixtures = ['debian.json']
 
-    client = Client()
-    response = client.get('/api/packages/?name=mimetex', format='json').data
-    assert 4 == response['count']
-    first_result = response['results'][0]
-    assert 'mimetex' == first_result['name']
-    versions = {r['version'] for r in response['results']}
-    assert '1.50-1.1' in versions
-    assert '1.74-1' in versions
-
-    purls = {r['package_url'] for r in response['results']}
-    assert 'pkg:deb/debian/mimetex@1.50-1.1?distro=jessie' in purls
-    assert 'pkg:deb/debian/mimetex@1.74-1?distro=jessie' in purls
-
-
-def test_debian_query_by_invalid_package_url(setDebianData):
-    client = Client()
-    url = '/api/packages/?package_url=invalid_purl'
-    response = client.get(url, format='json')
-
-    assert 400 == response.status_code
-    assert 'error' in response.data
-    error = response.data['error']
-    assert 'invalid_purl' in error
-
-
-def test_debian_query_by_package_url(setDebianData):
-    client = Client()
-    url = '/api/packages/?package_url=pkg:deb/debian/mimetex@1.50-1.1?distro=jessie'
-    response = client.get(url, format='json').data
-
-    assert 2 == response['count']
-
-    first_result = response['results'][0]
-    assert 'mimetex' == first_result['name']
-    versions = {r['version'] for r in response['results']}
-    assert '1.50-1.1' in versions
-    assert '1.74-1' not in versions
-
-
-def test_debian_query_by_package_url_without_namespace(setDebianData):
-
-    Package.objects.create(
+    @classmethod
+    def setUpTestData(cls):
+        # create one non-debian package called "mimetex" to verify filtering
+        Package.objects.create(
             name='mimetex',
             version='1.50-1.1',
             type='deb',
             namespace='ubuntu'
         )
-    client = Client()
-    url = '/api/packages/?package_url=pkg:deb/mimetex@1.50-1.1'
-    response = client.get(url, format='json').data
 
-    assert 3 == response['count']
+    def test_query_by_name(self):
+        response = self.client.get('/api/packages/?name=mimetex', format='json').data
 
-    first_result = response['results'][0]
-    assert 'mimetex' == first_result['name']
+        self.assertEqual(5, response['count'])
 
-    purls = {r['package_url'] for r in response['results']}
-    assert 'pkg:deb/debian/mimetex@1.50-1.1?distro=jessie' in purls
-    assert 'pkg:deb/ubuntu/mimetex@1.50-1.1' in purls
+        first_result = response['results'][0]
+        self.assertEqual('mimetex', first_result['name'])
+
+        versions = {r['version'] for r in response['results']}
+        self.assertIn('1.50-1.1', versions)
+        self.assertIn('1.74-1', versions)
+
+        purls = {r['package_url'] for r in response['results']}
+        self.assertIn('pkg:deb/debian/mimetex@1.50-1.1?distro=jessie', purls)
+        self.assertIn('pkg:deb/debian/mimetex@1.74-1?distro=jessie', purls)
+
+    def test_query_by_invalid_package_url(self):
+        url = '/api/packages/?package_url=invalid_purl'
+        response = self.client.get(url, format='json')
+
+        self.assertEqual(400, response.status_code)
+        self.assertIn('error', response.data)
+        error = response.data['error']
+        self.assertIn('invalid_purl', error)
+
+    def test_query_by_package_url(self):
+        url = '/api/packages/?package_url=pkg:deb/debian/mimetex@1.50-1.1?distro=jessie'
+        response = self.client.get(url, format='json').data
+
+        self.assertEqual(2, response['count'])
+
+        first_result = response['results'][0]
+        self.assertEqual('mimetex', first_result['name'])
+
+        versions = {r['version'] for r in response['results']}
+        self.assertIn('1.50-1.1', versions)
+        self.assertNotIn('1.74-1', versions)
+
+    def test_query_by_package_url_without_namespace(self):
+        url = '/api/packages/?package_url=pkg:deb/mimetex@1.50-1.1'
+        response = self.client.get(url, format='json').data
+
+        self.assertEqual(3, response['count'])
+
+        first_result = response['results'][0]
+        self.assertEqual('mimetex', first_result['name'])
+
+        purls = {r['package_url'] for r in response['results']}
+        self.assertIn('pkg:deb/debian/mimetex@1.50-1.1?distro=jessie', purls)
+        self.assertIn('pkg:deb/ubuntu/mimetex@1.50-1.1', purls)
 
 
-def test_debian_package_serializer(setDebianData):
-    client = Client()
-    pk = Package.objects.filter(name="mimetex")
-    response = PackageSerializer(pk, many=True).data
-    print(response)
-    assert 4 == len(response)
+class TestUbuntuResponse(TestCase):
+    fixtures = ['ubuntu.json']
 
-    first_result = response[0]
-    assert 'mimetex' == first_result['name']
+    def test_ubuntu_response(self):
+        response = self.client.get('/api/packages/?name=automake', format='json')
 
-    versions = {r['version'] for r in response}
-    assert '1.50-1.1' in versions
-    assert '1.74-1' in versions
+        result = response.data.get('results')[0]
+        self.assertEqual('automake', result['name'])
+        self.assertEqual(None, result['version'])
+        self.assertEqual(1, len(result['vulnerabilities']))
 
-    purls = {r['package_url'] for r in response}
-    assert 'pkg:deb/debian/mimetex@1.50-1.1?distro=jessie' in purls
-    assert 'pkg:deb/debian/mimetex@1.74-1?distro=jessie' in purls
+        vuln = result['vulnerabilities'][0]
+        self.assertEqual(0, len(vuln['references']))
 
 
-def test_ubuntu_response(setUbuntuData):
-    client = Client()
-    response = client.get('/api/packages/?name=automake', format='json')
-    result = response.data.get('results')[0]
-    assert 'automake' == result['name']
-    assert result['version'] is None
-    assert 1 == len(result['vulnerabilities'])
-    vuln = result['vulnerabilities'][0]
-    assert 0 == len(vuln['references'])
+class TestSerializers(TestCase):
+    fixtures = ['debian.json']
+
+    def test_package_serializer(self):
+        pk = Package.objects.filter(name="mimetex")
+        response = PackageSerializer(pk, many=True).data
+
+        self.assertEqual(4, len(response))
+
+        first_result = response[0]
+        self.assertEqual('mimetex', first_result['name'])
+
+        versions = {r['version'] for r in response}
+        self.assertIn('1.50-1.1', versions)
+        self.assertIn('1.74-1', versions)
+
+        purls = {r['package_url'] for r in response}
+        self.assertIn('pkg:deb/debian/mimetex@1.50-1.1?distro=jessie', purls)
+        self.assertIn('pkg:deb/debian/mimetex@1.74-1?distro=jessie', purls)

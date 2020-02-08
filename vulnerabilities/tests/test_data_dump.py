@@ -27,7 +27,6 @@ import pytest
 
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import Package
-from vulnerabilities.models import PackageReference
 from vulnerabilities.models import ResolvedPackage
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
@@ -151,13 +150,6 @@ def test_arch_Package(setArchLinuxData):
     for pkg in Package.objects.filter(name='wireshark-cli'):
         assert 'pacman' == pkg.type
         assert 'archlinux' == pkg.namespace
-
-
-def test_arch_PackageReference(setArchLinuxData):
-    """
-    Check that no package references were found in the test data
-    """
-    assert 0 == PackageReference.objects.count()
 
 
 def test_arch_ImpactedPackage(setArchLinuxData):

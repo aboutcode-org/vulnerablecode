@@ -21,22 +21,13 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from django.core.management.base import BaseCommand, CommandError
+from datetime import datetime
 
-from vulnerabilities import data_dump as dd
-from vulnerabilities.scraper import (
-        debian, ubuntu, archlinux, npm, ruby, rust, safety_db, alpine_linux)
+from django.core.management.base import BaseCommand
+from django.core.management.base import CommandError
 
-IMPORTERS = {
-    'alpinelinux': lambda: dd.alpine_linux_dump(alpine_linux.import_vulnerabilities()),
-    'safetydb': lambda: dd.safetydb_dump(safety_db.import_vulnerabilities()),
-    'rust': lambda: dd.rust_dump(rust.import_vulnerabilities()),
-    'ruby': lambda: dd.ruby_dump(ruby.import_vulnerabilities()),
-    'npm': lambda: dd.npm_dump(npm.scrape_vulnerabilities()),
-    'debian': lambda: dd.debian_dump(debian.scrape_vulnerabilities()),
-    'ubuntu': lambda: dd.ubuntu_dump(ubuntu.scrape_cves()),
-    'archlinux': lambda: dd.archlinux_dump(archlinux.scrape_vulnerabilities())
-}
+from vulnerabilities.models import Importer
+from vulnerabilities.import_runner import ImportRunner
 
 
 class Command(BaseCommand):
@@ -46,11 +37,17 @@ class Command(BaseCommand):
         parser.add_argument(
             '--list',
             action='store_true',
-            help='List available data sources')
-
+            help='List available data sources',
+        )
         parser.add_argument('--all', action='store_true',
                             help='Import data from all available sources')
 
+        parser.add_argument(
+            '--cutoff-date',
+            type=datetime.fromisoformat,
+            help='ISO8601 formatted timestamp denoting the maximum age of vulnerability information to import. '
+                 'Defaults to the last time the importer was run.',
+        )
         parser.add_argument('sources', nargs='*',
                             help='Data sources from which to import')
 
@@ -60,7 +57,7 @@ class Command(BaseCommand):
             return
 
         if options['all']:
-            self.import_data(IMPORTERS.keys())
+            self._import_data(Importer.objects.all(), options['cutoff_date'])
             return
 
         sources = options['sources']
@@ -68,21 +65,34 @@ class Command(BaseCommand):
             raise CommandError(
                 'Please provide at least one data source to import from or use "--all".')
 
-        self.validate_sources(sources)
-        self.import_data(sources)
-
-    def validate_sources(self, sources):
-        unknown = ', '.join([s for s in sources if s not in IMPORTERS.keys()])
-        if unknown:
-            raise CommandError(f'Unknown data sources: {unknown}')
+        self.import_data(sources, options['cutoff_date'])
 
     def list_sources(self):
+        importers = Importer.objects.all()
+
         self.stdout.write(
             'Vulnerability data can be imported from the following sources:')
-        self.stdout.write(', '.join(IMPORTERS.keys()))
+        self.stdout.write(', '.join([i.name for i in importers]))
 
-    def import_data(self, sources):
-        for src in sources:
-            self.stdout.write(f'Importing data from {src}')
-            IMPORTERS[src]()
-            self.stdout.write(self.style.SUCCESS(f'Successfully imported data from {src}'))
+    def import_data(self, names, cutoff_date):
+        importers = []
+        unknown_importers = set()
+
+        # make sure all arguments are valid before running any importers
+        for name in names:
+            try:
+                importers.append(Importer.objects.get(name=name))
+            except Importer.DoesNotExist:
+                unknown_importers.add(name)
+
+        if unknown_importers:
+            unknown_importers = ', '.join(unknown_importers)
+            raise CommandError(f'Unknown data sources: {unknown_importers}')
+
+        self._import_data(importers, cutoff_date)
+
+    def _import_data(self, importers, cutoff_date):
+        for importer in importers:
+            self.stdout.write(f'Importing data from {importer.name}')
+            ImportRunner(importer).run(cutoff_date=cutoff_date)
+            self.stdout.write(self.style.SUCCESS(f'Successfully imported data from {importer.name}'))

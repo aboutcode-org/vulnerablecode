@@ -20,23 +20,38 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-
-import pytest
 from io import StringIO
 
 from django.core.management import call_command
 from django.core.management.base import CommandError
+from django.test import TestCase
+import pytest
+
+from vulnerabilities.models import Importer
 
 
-def test_list_sources():
+class TestListSources(TestCase):
+    
+    @classmethod
+    def setUpTestData(cls):
+        for name in ('npm', 'debian', 'ubuntu', 'archlinux'):
 
-    buf = StringIO()
-    call_command('import', '--list', stdout=buf)
-    out = buf.getvalue()
-    assert 'npm' in out
-    assert 'debian' in out
-    assert 'ubuntu' in out
-    assert 'archlinux' in out
+            Importer.objects.create(
+                name=name,
+                license='fakelicense',
+                last_run=None,
+                data_source='fakesource',
+                data_source_cfg={},
+            )
+    
+    def test_list_sources(self):
+        buf = StringIO()
+        call_command('import', '--list', stdout=buf)
+        out = buf.getvalue()
+        assert 'npm' in out
+        assert 'debian' in out
+        assert 'ubuntu' in out
+        assert 'archlinux' in out
 
 
 def test_missing_sources():
@@ -48,12 +63,24 @@ def test_missing_sources():
     assert 'Please provide at least one data source' in err
 
 
-def test_unknown_sources():
+class TestUnknownSources(TestCase):
+    
+    @classmethod
+    def setUpTestData(cls):
+        Importer.objects.create(
+            name='debian',
+            license='fakelicense',
+            last_run=None,
+            data_source='fakesource',
+            data_source_cfg={},
+        )
 
-    with pytest.raises(CommandError) as cm:
-        call_command('import', 'debian', 'foo', 'bar', stdout=StringIO())
+    def test_error_message_includes_unknown_sources(self):
 
-    err = str(cm)
-    assert 'bar' in err
-    assert 'foo' in err
-    assert 'debian' not in err
+        with pytest.raises(CommandError) as cm:
+            call_command('import', 'debian', 'foo', 'bar', stdout=StringIO())
+
+        err = str(cm)
+        assert 'bar' in err
+        assert 'foo' in err
+        assert 'debian' not in err

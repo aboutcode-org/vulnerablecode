@@ -22,8 +22,8 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import pytest
-from vulnerabilities.scraper.rust import rust_crate_advisories
-from vulnerabilities.scraper.rust import load_advisory
+from vulnerabilities.importers.rust import rust_crate_advisories
+from vulnerabilities.importers.rust import load_advisory
 
 RUSTSEC_DB_URL = 'https://github.com/RustSec/advisory-db/archive/master.zip'
 

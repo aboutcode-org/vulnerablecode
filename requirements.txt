@@ -31,3 +31,4 @@ tqdm==4.41.1
 wcwidth==0.1.7
 whitenoise==5.0.1
 zipp==0.6.0
+pytoml==0.1.21

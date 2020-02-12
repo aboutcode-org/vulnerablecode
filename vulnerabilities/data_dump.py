@@ -244,7 +244,7 @@ def rust_dump(extract_data):
         for version in package_data['affected_versions']:
             affected_package = Package.objects.create(
                 name=package_data['package_name'],
-                type='crate',
+                type='cargo',
                 version=version
             )
             ImpactedPackage.objects.create(
@@ -255,7 +255,7 @@ def rust_dump(extract_data):
         for version in package_data['fixed_versions']:
             unaffected_package = Package.objects.create(
                 name=package_data['package_name'],
-                type='crate',
+                type='cargo',
                 version=version
             )
             ResolvedPackage.objects.create(

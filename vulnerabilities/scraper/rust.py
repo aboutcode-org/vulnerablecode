@@ -1,11 +1,13 @@
+from io import BytesIO
 import json
+
+from dephell_specifier import RangeSpecifier
 import pytoml as toml
 from urllib.request import urlopen
 import urllib.request
 from urllib.error import HTTPError
-from io import BytesIO
 from zipfile import ZipFile
-from dephell_specifier import RangeSpecifier
+
 
 RUSTSEC_DB_URL = 'https://github.com/RustSec/advisory-db/archive/master.zip'
 
@@ -19,10 +21,11 @@ def rust_crate_advisories(url, prefix='advisory-db-master/crates/'):
 
 
 def all_versions_of_crate(crate):
-    info_url = "https://crates.io//api/v1/crates/{}".format(crate)
-    info = json.load(urlopen(info_url))
-    for version_info in info['versions']:
-        yield version_info['num']
+    info_url = "https://crates.io/api/v1/crates/{}".format(crate)
+    with urlopen(info_url) as info:
+        info = json.load(info)
+        for version_info in info['versions']:
+            yield version_info['num']
 
 
 def import_vulnerabilities():

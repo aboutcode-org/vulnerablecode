@@ -225,3 +225,40 @@ def ruby_dump(extract_data):
                 vulnerability=vulnerability,
                 package=unaffected_package
             )
+
+
+def rust_dump(extract_data):
+
+    for package_data in extract_data:
+
+        vulnerability, _ = Vulnerability.objects.get_or_create(
+            summary=package_data['description']
+        )
+
+        VulnerabilityReference.objects.get_or_create(
+            vulnerability=vulnerability,
+            url=package_data['advisory'],
+            reference_id=package_data['vuln_id']
+        )
+
+        for version in package_data['affected_versions']:
+            affected_package = Package.objects.create(
+                name=package_data['package_name'],
+                type='cargo',
+                version=version
+            )
+            ImpactedPackage.objects.create(
+                vulnerability=vulnerability,
+                package=affected_package
+            )
+
+        for version in package_data['fixed_versions']:
+            unaffected_package = Package.objects.create(
+                name=package_data['package_name'],
+                type='cargo',
+                version=version
+            )
+            ResolvedPackage.objects.create(
+                vulnerability=vulnerability,
+                package=unaffected_package
+            )

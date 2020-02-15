@@ -24,9 +24,10 @@
 from django.core.management.base import BaseCommand, CommandError
 
 from vulnerabilities import data_dump as dd
-from vulnerabilities.scraper import debian, ubuntu, archlinux, npm, ruby
+from vulnerabilities.scraper import debian, ubuntu, archlinux, npm, ruby, rust
 
 IMPORTERS = {
+    'rust': lambda: dd.rust_dump(rust.import_vulnerabilities()),
     'ruby': lambda: dd.ruby_dump(ruby.import_vulnerabilities()),
     'npm': lambda: dd.npm_dump(npm.scrape_vulnerabilities()),
     'debian': lambda: dd.debian_dump(debian.scrape_vulnerabilities()),

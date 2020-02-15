@@ -52,7 +52,8 @@ def get_all_versions(package_name):
     Returns all versions available for a module
     """
     package_url = NPM_URL.format(f'/{package_name}')
-    data = json.load(urlopen(package_url))
+    with urlopen(package_url) as response:
+        data = json.load(response)
     return [v for v in data.get('versions', {})]
 
 

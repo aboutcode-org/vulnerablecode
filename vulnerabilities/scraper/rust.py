@@ -40,7 +40,6 @@ def import_vulnerabilities():
 
         if advisory['advisory'].get('patched_versions'):
             patched_version_range_list = advisory['advisory']['patched_versions']
-            
             # FIXME: Make distinction between unaffected and patched packages
             # Check https://github.com/nexB/vulnerablecode/issues/144
             unaffected_version_range_list += patched_version_range_list

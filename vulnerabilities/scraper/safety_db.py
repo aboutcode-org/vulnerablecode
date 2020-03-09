@@ -15,13 +15,15 @@ def get_data_file():
 
 def get_all_versions_of_package(package_name):
     url = "https://pypi.org/pypi/{}/json".format(package_name)
+    releases = set()
     try:
         with urlopen(url) as response:
             json_file = json.load(response)
     except HTTPError:  # PyPi does not have data about this package, we skip these
-        return set()
+        return releases
     for release in json_file['releases']:
-        yield release
+        releases.add(release)
+    return releases
 
 
 def import_vulnerabilities():
@@ -36,7 +38,7 @@ def import_vulnerabilities():
             continue
         for advisory in data[package]:
             description = advisory['advisory']
-            cve_id = advisory['cve'] if advisory['cve'] else None
+            cve_id = advisory.get('cve')
             vuln_id = advisory['id']
             vuln_version_ranges = advisory['specs']
             for vuln_version_range in vuln_version_ranges:

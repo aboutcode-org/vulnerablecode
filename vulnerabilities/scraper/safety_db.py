@@ -30,13 +30,12 @@ def import_vulnerabilities():
     vulnerability_package_dicts = []
     data = get_data_file()
     cves = set()
-    for package in data:
-        package_name = package
+    for package_name in data:
         all_package_versions = set(get_all_versions_of_package(package_name))
         if len(all_package_versions) == 0:
             # PyPi does not have data about this package, we skip these
             continue
-        for advisory in data[package]:
+        for advisory in data[package_name]:
             description = advisory['advisory']
             cve_id = advisory.get('cve')
             vuln_id = advisory['id']

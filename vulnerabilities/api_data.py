@@ -32,13 +32,9 @@ def data_cve_circl(name, version=None):
     Take as input, a package name, type, package version and
     query cve-search' dataset for any reported vulnerabilities
     """
-    url = f'https://cve.circl.lu/api/search/{name}'
 
-    if version:
-        url += f'/{version}'
-
-    raw_data = urlopen(url).read()
-    data = json.loads(raw_data)
+    # raw_data = urlopen(url).read()
+    data = json.loads({})
 
     if version:
         return data

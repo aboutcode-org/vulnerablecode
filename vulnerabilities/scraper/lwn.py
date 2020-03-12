@@ -75,7 +75,7 @@ def scrape_vulnerabilities():
 	packagesVulns = {}
 	dists = dists[:5]
 	for dist in dists:
-		distUrl = base_url+"Alerts/"+dist+"?n=10"
+		distUrl = base_url+"Alerts/"+dist+"?n=100"
 		distContent = rq.get(distUrl).content
 		distSoup = bs(distContent,"html.parser")
 		articleSoup = distSoup.find('div',{'class':'ArticleText'})
@@ -107,6 +107,6 @@ def scrape_vulnerabilities():
 			distUrl = distUrl+"&offset="+str(curr_offset)
 			distSoup = bs(distContent,"html.parser")
 			articleSoup = distSoup.find('div',{'class':'ArticleText'})
-			break
+
 
 	return packagesVulns

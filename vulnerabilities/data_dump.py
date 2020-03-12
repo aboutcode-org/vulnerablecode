@@ -27,7 +27,6 @@ from vulnerabilities.models import PackageReference
 from vulnerabilities.models import ResolvedPackage
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
-import json
 
 def debian_dump(extract_data, base_release='jessie'):
     """

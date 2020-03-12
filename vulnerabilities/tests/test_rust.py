@@ -26,6 +26,7 @@ from vulnerabilities.scraper.rust import load_advisory
 
 RUSTSEC_DB_URL = 'https://github.com/RustSec/advisory-db/archive/master.zip'
 
+
 def test_extract_data():
     for advisory in rust_crate_advisories(RUSTSEC_DB_URL):
         loaded_advisory = load_advisory(advisory)

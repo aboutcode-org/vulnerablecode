@@ -29,84 +29,90 @@ import re
 base_url = "https://lwn.net/"
 
 
-def extractPackageData(advisoryLink,dist,advisoryId):
+def extractPackageData(advisoryLink, dist, advisoryId):
 
-	content = rq.get(advisoryLink).content
-	soup = bs(content,"html.parser")
-	text = soup.find('div',{'class':'ArticleText'}).get_text()
-	phrases = text.split('\n')
-	cves = []
-	references = []
-	summary = ""
-	for i in range(len(phrases)):
-		words = phrases[i].split()
-		if phrases[i].startswith('Subject:'):
-			summary = phrases[i+1].strip()
-		for word in words:
-			if word.startswith('CVE-') and word != 'CVE-ID':
-				cves.append(word)
-			elif word.startswith('https://') or word.startswith('http://'):
-				references.append(word)
+    content = rq.get(advisoryLink).content
+    soup = bs(content, "html.parser")
+    text = soup.find('div', {'class': 'ArticleText'}).get_text()
+    phrases = text.split('\n')
+    cves = []
+    references = []
+    summary = ""
+    for i in range(len(phrases)):
+        words = phrases[i].split()
+        if phrases[i].startswith('Subject:'):
+            summary = phrases[i + 1].strip()
+        for word in words:
+            if word.startswith('CVE-') and word != 'CVE-ID':
+                cves.append(word)
+            elif word.startswith('https://') or word.startswith('http://'):
+                references.append(word)
 
-	cves = list(set(cves))
+    cves = list(set(cves))
 
-	dist = re.sub(r'\W+', '', dist).replace('_','').lower()
+    dist = re.sub(r'\W+', '', dist).replace('_', '').lower()
 
-	return {'cve_ids':cves,'references':references,'summary':summary,'advisory_id':advisoryId,'distributor':dist,'advisory_link':advisoryLink}
+    return {
+        'cve_ids': cves,
+        'references': references,
+        'summary': summary,
+        'advisory_id': advisoryId,
+        'distributor': dist,
+        'advisory_link': advisoryLink}
+
 
 def getDistributors():
-	url = base_url+"Alerts/"
-	content = rq.get(url).content
-	soup = bs(content,"html.parser")
-	dists = []
-	distsLinks = []
-	tables = soup.find_all('table',{'cellspacing':"4",})
+    url = base_url + "Alerts/"
+    content = rq.get(url).content
+    soup = bs(content, "html.parser")
+    dists = []
+    distsLinks = []
+    tables = soup.find_all('table', {'cellspacing': "4", })
 
-	for table in tables:
-		distsLinks += table.find_all('a')
+    for table in tables:
+        distsLinks += table.find_all('a')
 
-	for a in distsLinks:
-		dists.append(a['href'])
+    for a in distsLinks:
+        dists.append(a['href'])
 
-	return dists
+    return dists
+
 
 def scrape_vulnerabilities():
-	dists = getDistributors()
-	packagesVulns = {}
-	dists = dists[:5]
-	for dist in dists:
-		distUrl = base_url+"Alerts/"+dist+"?n=100"
-		distContent = rq.get(distUrl).content
-		distSoup = bs(distContent,"html.parser")
-		articleSoup = distSoup.find('div',{'class':'ArticleText'})
-		text = articleSoup.get_text()
-		total = int(text[text.find("(")+1:text.find(")")].split()[0])
-		curr_offset = 0
-		while curr_offset < total:
+    dists = getDistributors()
+    packagesVulns = {}
+    for dist in dists:
+        distUrl = base_url + "Alerts/" + dist + "?n=100"
+        distContent = rq.get(distUrl).content
+        distSoup = bs(distContent, "html.parser")
+        articleSoup = distSoup.find('div', {'class': 'ArticleText'})
+        text = articleSoup.get_text()
+        total = int(text[text.find("(") + 1:text.find(")")].split()[0])
+        curr_offset = 0
+        while curr_offset < total:
 
-			table = articleSoup.find('table',{'cellpadding':4})
+            table = articleSoup.find('table', {'cellpadding': 4})
 
-			data = table.find_all('tr')
-			data = data[1:]
-			for row in data:
-				rowElements = row.find_all('td')
-				aTag = rowElements[0].find('a')
-				advisoryLink = base_url[:-1]+aTag['href']
-				advisoryId = aTag.get_text()
-				package_names = rowElements[1].get_text().split(',')
-				date = rowElements[2].get_text()
-				for package_name in package_names:
-					extracted_data = extractPackageData(advisoryLink,dist,advisoryId)
-					if packagesVulns.get(package_name):
-						packagesVulns[package_name].append(extracted_data)
-					else:
-						packagesVulns[package_name] = [extracted_data]
+            data = table.find_all('tr')
+            data = data[1:]
+            for row in data:
+                rowElements = row.find_all('td')
+                aTag = rowElements[0].find('a')
+                advisoryLink = base_url[:-1] + aTag['href']
+                advisoryId = aTag.get_text()
+                package_names = rowElements[1].get_text().split(',')
+                date = rowElements[2].get_text()
+                for package_name in package_names:
+                    extracted_data = extractPackageData(
+                        advisoryLink, dist, advisoryId)
+                    if packagesVulns.get(package_name):
+                        packagesVulns[package_name].append(extracted_data)
+                    else:
+                        packagesVulns[package_name] = [extracted_data]
 
+            curr_offset += 100
+            distUrl = distUrl + "&offset=" + str(curr_offset)
+            distSoup = bs(distContent, "html.parser")
+            articleSoup = distSoup.find('div', {'class': 'ArticleText'})
 
-			curr_offset += 100
-			distUrl = distUrl+"&offset="+str(curr_offset)
-			distSoup = bs(distContent,"html.parser")
-			articleSoup = distSoup.find('div',{'class':'ArticleText'})
-
-
-	return packagesVulns
+    return packagesVulns

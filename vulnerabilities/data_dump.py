@@ -28,6 +28,7 @@ from vulnerabilities.models import ResolvedPackage
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 
+
 def debian_dump(extract_data, base_release='jessie'):
     """
     Save data scraped from Debian' security tracker.
@@ -261,6 +262,7 @@ def rust_dump(extract_data):
                 vulnerability=vulnerability,
                 package=unaffected_package
             )
+
 
 def lwn_dump(extract_data):
     for package_name in extract_data:

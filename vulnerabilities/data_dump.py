@@ -27,7 +27,7 @@ from vulnerabilities.models import PackageReference
 from vulnerabilities.models import ResolvedPackage
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
-
+import json
 
 def debian_dump(extract_data, base_release='jessie'):
     """
@@ -262,3 +262,30 @@ def rust_dump(extract_data):
                 vulnerability=vulnerability,
                 package=unaffected_package
             )
+
+def lwn_dump(extract_data):
+    for package_name in extract_data:
+        for vuln in extract_data[package_name]:
+            ap, _ = Package.objects.get_or_create(
+                name=package_name,
+                namespace=vuln['distributor'],
+            )
+
+            vulnerability = Vulnerability.objects.create(
+                summary=vuln['summary'],
+            )
+
+            VulnerabilityReference.objects.create(
+                vulnerability=vulnerability,
+                url=vuln['advisory_link'],
+                reference_id=vuln['advisory_id']
+            )
+            for cve in vuln['cve_ids']:
+                vulnerability, _ = Vulnerability.objects.get_or_create(
+                    cve_id=cve,
+                )
+                VulnerabilityReference.objects.create(
+                    vulnerability=vulnerability,
+                    url=vuln['advisory_link'],
+                    reference_id=vuln['advisory_id']
+                )

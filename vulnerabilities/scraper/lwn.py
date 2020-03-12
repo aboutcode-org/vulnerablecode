@@ -22,7 +22,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 from bs4 import BeautifulSoup as bs
-import requests as rq
+from urllib.request import urlopen
 import re
 
 
@@ -31,7 +31,7 @@ base_url = "https://lwn.net/"
 
 def extractPackageData(advisoryLink, dist, advisoryId):
 
-    content = rq.get(advisoryLink).content
+    content = urlopen(advisoryLink).read()
     soup = bs(content, "html.parser")
     text = soup.find('div', {'class': 'ArticleText'}).get_text()
     phrases = text.split('\n')
@@ -63,7 +63,7 @@ def extractPackageData(advisoryLink, dist, advisoryId):
 
 def getDistributors():
     url = base_url + "Alerts/"
-    content = rq.get(url).content
+    content = urlopen(url).read()
     soup = bs(content, "html.parser")
     dists = []
     distsLinks = []
@@ -83,7 +83,7 @@ def scrape_vulnerabilities():
     packagesVulns = {}
     for dist in dists:
         distUrl = base_url + "Alerts/" + dist + "?n=100"
-        distContent = rq.get(distUrl).content
+        distContent = urlopen(distUrl).read()
         distSoup = bs(distContent, "html.parser")
         articleSoup = distSoup.find('div', {'class': 'ArticleText'})
         text = articleSoup.get_text()

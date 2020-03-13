@@ -31,6 +31,7 @@ from itertools import count
 NPM_URL = 'https://registry.npmjs.org{}'
 PAGE = '/-/npm/v1/security/advisories?'
 
+
 def get_all_versions(package_name):
     """
     Returns all versions available for a module
@@ -42,8 +43,9 @@ def get_all_versions(package_name):
             data = json.load(response)
     except HTTPError:
         return []
-        #NPM registry has no data regarding this package, we skip these
+        # NPM registry has no data regarding this package, we skip these
     return [v for v in data.get('versions', {})]
+
 
 def extract_versions(package_name, aff_version_range, fixed_version_range):
     """
@@ -53,9 +55,9 @@ def extract_versions(package_name, aff_version_range, fixed_version_range):
     aff_spec = RangeSpecifier(aff_version_range)
     fix_spec = RangeSpecifier(fixed_version_range)
     all_ver = get_all_versions(package_name)
-    if all_ver == [] :
-        #NPM registry has no data regarding this package, we skip these
-        return ([],[])
+    if all_ver == []:
+        # NPM registry has no data regarding this package, we skip these
+        return ([], [])
     aff_ver = []
     fix_ver = []
     # Unaffected version is that version which  is in the fixed_version_range
@@ -85,9 +87,9 @@ def extract_data(JSON):
             obj.get('vulnerable_versions', ''),
             obj.get('patched_versions', '')
         )
-        if affected_versions == [] and fixed_versions == [] :
+        if affected_versions == [] and fixed_versions == []:
             continue
-            #NPM registry has no data regarding this package finally we skip these
+            # NPM registry has no data regarding this package finally we skip these
 
         package_vulnerabilities.append({
             'package_name': package_name,
@@ -113,7 +115,7 @@ def scrape_vulnerabilities():
             response = json.load(urlopen(cururl))
             package_vulnerabilities.extend(extract_data(response))
 
-        except HTTPError: 
+        except HTTPError:
             break
-        
+
     return package_vulnerabilities

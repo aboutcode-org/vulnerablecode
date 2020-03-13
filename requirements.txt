@@ -23,7 +23,6 @@ pytest-mock==1.13.0
 pytz==2019.3
 PyYAML==5.3
 saneyaml==0.4
-semantic-version==2.8.2
 six==1.13.0
 soupsieve==1.9.5
 sqlparse==0.3.0

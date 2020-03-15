@@ -25,12 +25,10 @@ import json
 from dephell_specifier import RangeSpecifier
 from urllib.request import urlopen
 from urllib.error import HTTPError
-from itertools import count
 
 
 NPM_URL = 'https://registry.npmjs.org{}'
-PAGE = '/-/npm/v1/security/advisories?'
-
+PAGE = '/-/npm/v1/security/advisories?page=0'
 
 def get_all_versions(package_name):
     """
@@ -41,8 +39,11 @@ def get_all_versions(package_name):
     try:
         with urlopen(package_url) as response:
             data = json.load(response)
-    except HTTPError:
-        return []
+    except HTTPError as e:
+        if e.code == 404 :
+            return []
+        else:
+            raise
         # NPM registry has no data regarding this package, we skip these
     return [v for v in data.get('versions', {})]
 
@@ -87,7 +88,7 @@ def extract_data(JSON):
             obj.get('vulnerable_versions', ''),
             obj.get('patched_versions', '')
         )
-        if affected_versions == [] and fixed_versions == []:
+        if affected_versions == fixed_versions == [] :
             continue
             # NPM registry has no data regarding this package finally we skip these
 
@@ -108,14 +109,18 @@ def scrape_vulnerabilities():
     Extract JSON From NPM registry
     """
     package_vulnerabilities = []
-    for page_num in count():
-
+    nextpage = PAGE
+    while nextpage:
         try:
-            cururl = NPM_URL.format(PAGE) + 'page=' + str(page_num)
+            cururl = NPM_URL.format(nextpage)  
             response = json.load(urlopen(cururl))
             package_vulnerabilities.extend(extract_data(response))
+            nextpage = response.get('urls', {}).get('next') 
 
-        except HTTPError:
-            break
+        except HTTPError as error:
+            if error.code == 404 :
+                break
+            else :
+                raise
 
     return package_vulnerabilities

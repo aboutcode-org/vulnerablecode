@@ -30,6 +30,7 @@ from urllib.error import HTTPError
 NPM_URL = 'https://registry.npmjs.org{}'
 PAGE = '/-/npm/v1/security/advisories?page=0'
 
+
 def get_all_versions(package_name):
     """
     Returns all versions available for a module
@@ -40,7 +41,7 @@ def get_all_versions(package_name):
         with urlopen(package_url) as response:
             data = json.load(response)
     except HTTPError as e:
-        if e.code == 404 :
+        if e.code == 404:
             return []
         else:
             raise
@@ -88,7 +89,7 @@ def extract_data(JSON):
             obj.get('vulnerable_versions', ''),
             obj.get('patched_versions', '')
         )
-        if affected_versions == fixed_versions == [] :
+        if affected_versions == fixed_versions == []:
             continue
             # NPM registry has no data regarding this package finally we skip these
 
@@ -112,15 +113,15 @@ def scrape_vulnerabilities():
     nextpage = PAGE
     while nextpage:
         try:
-            cururl = NPM_URL.format(nextpage)  
+            cururl = NPM_URL.format(nextpage)
             response = json.load(urlopen(cururl))
             package_vulnerabilities.extend(extract_data(response))
-            nextpage = response.get('urls', {}).get('next') 
+            nextpage = response.get('urls', {}).get('next')
 
         except HTTPError as error:
-            if error.code == 404 :
+            if error.code == 404:
                 break
-            else :
+            else:
                 raise
 
     return package_vulnerabilities

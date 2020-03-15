@@ -57,7 +57,7 @@ def extract_versions(package_name, aff_version_range, fixed_version_range):
     aff_spec = RangeSpecifier(aff_version_range)
     fix_spec = RangeSpecifier(fixed_version_range)
     all_ver = get_all_versions(package_name)
-    if all_ver == []:
+    if not all_ver:
         # NPM registry has no data regarding this package, we skip these
         return ([], [])
     aff_ver = []
@@ -89,7 +89,7 @@ def extract_data(JSON):
             obj.get('vulnerable_versions', ''),
             obj.get('patched_versions', '')
         )
-        if affected_versions == fixed_versions == []:
+        if not affected_versions and not fixed_versions:
             continue
             # NPM registry has no data regarding this package finally we skip these
 

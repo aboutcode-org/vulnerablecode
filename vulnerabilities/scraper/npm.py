@@ -22,38 +22,30 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import json
-import re
-import semantic_version
+from dephell_specifier import RangeSpecifier
 from urllib.request import urlopen
+from urllib.error import HTTPError
+
 
 NPM_URL = 'https://registry.npmjs.org{}'
 PAGE = '/-/npm/v1/security/advisories?page=0'
-
-
-def remove_spaces(x):
-    """
-    Remove Multiple Space, spaces after relational operator
-    and remove v charecter in front of version string (ex v1.2.3)
-    """
-    x = re.sub(r' +', ' ', x)
-    x = re.sub(r'< +', '<', x)
-    x = re.sub(r'> +', '>', x)
-    x = re.sub(r'<= +', '<=', x)
-    x = re.sub(r'>= +', '>=', x)
-    x = re.sub(r'>=[vV]', '>=', x)
-    x = re.sub(r'<=[vV]', '<=', x)
-    x = re.sub(r'>[vV]', '>', x)
-    x = re.sub(r'<[vV]', '<', x)
-    return x
 
 
 def get_all_versions(package_name):
     """
     Returns all versions available for a module
     """
+    package_name = package_name.strip()
     package_url = NPM_URL.format(f'/{package_name}')
-    with urlopen(package_url) as response:
-        data = json.load(response)
+    try:
+        with urlopen(package_url) as response:
+            data = json.load(response)
+    except HTTPError as e:
+        if e.code == 404:
+            return []
+        else:
+            raise
+        # NPM registry has no data regarding this package, we skip these
     return [v for v in data.get('versions', {})]
 
 
@@ -62,20 +54,21 @@ def extract_versions(package_name, aff_version_range, fixed_version_range):
     Seperate list of affected versions and unaffected versions from all versions
     using the ranges specified.
     """
-    aff_spec = semantic_version.NpmSpec(remove_spaces(aff_version_range))
-    fix_spec = semantic_version.NpmSpec(remove_spaces(fixed_version_range))
+    aff_spec = RangeSpecifier(aff_version_range)
+    fix_spec = RangeSpecifier(fixed_version_range)
     all_ver = get_all_versions(package_name)
+    if not all_ver:
+        # NPM registry has no data regarding this package, we skip these
+        return ([], [])
     aff_ver = []
     fix_ver = []
     # Unaffected version is that version which  is in the fixed_version_range
     # or which is absent in the aff_version_range
     for ver in all_ver:
-        cur_version = semantic_version.Version(ver)
-        if cur_version in fix_spec or cur_version not in aff_spec:
+        if ver in fix_spec or ver not in aff_spec:
             fix_ver.append(ver)
         else:
             aff_ver.append(ver)
-
     return (aff_ver, fix_ver)
 
 
@@ -96,6 +89,9 @@ def extract_data(JSON):
             obj.get('vulnerable_versions', ''),
             obj.get('patched_versions', '')
         )
+        if not affected_versions and not fixed_versions:
+            continue
+            # NPM registry has no data regarding this package finally we skip these
 
         package_vulnerabilities.append({
             'package_name': package_name,
@@ -113,12 +109,19 @@ def scrape_vulnerabilities():
     """
     Extract JSON From NPM registry
     """
-    nextpage = PAGE
     package_vulnerabilities = []
+    nextpage = PAGE
     while nextpage:
-        cururl = NPM_URL.format(nextpage)
-        response = json.load(urlopen(cururl))
-        package_vulnerabilities.extend(extract_data(response))
-        next_page = response.get('urls', {}).get('next')
+        try:
+            cururl = NPM_URL.format(nextpage)
+            response = json.load(urlopen(cururl))
+            package_vulnerabilities.extend(extract_data(response))
+            nextpage = response.get('urls', {}).get('next')
+
+        except HTTPError as error:
+            if error.code == 404:
+                break
+            else:
+                raise
 
     return package_vulnerabilities

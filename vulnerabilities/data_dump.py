@@ -174,6 +174,7 @@ def npm_dump(extract_data):
             for version in data['affected_versions']:
                 package_affected = Package.objects.create(
                     name=package_name,
+                    type='npm',
                     version=version,
                 )
                 ImpactedPackage.objects.create(

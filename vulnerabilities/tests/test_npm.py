@@ -27,18 +27,9 @@ import json
 
 from vulnerabilities.scraper.npm import extract_data
 from vulnerabilities.scraper.npm import get_all_versions
-from vulnerabilities.scraper.npm import remove_spaces
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
-
-
-def test_remove_space():
-    res = remove_spaces(">=    1.2.1     ||    <= 2.1.1")
-    assert res == '>=1.2.1 || <=2.1.1'
-
-    res = remove_spaces(">=    v1.2.1     ||    <= V2.1.1")
-    assert res == '>=1.2.1 || <=2.1.1'
 
 
 def test_get_all_versions():

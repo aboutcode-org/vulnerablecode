@@ -23,7 +23,7 @@
 
 import os
 import json
-
+import pytest
 
 from vulnerabilities.scraper.npm import extract_data
 from vulnerabilities.scraper.npm import get_all_versions
@@ -32,6 +32,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
 
 
+@pytest.mark.webtest
 def test_get_all_versions():
     x = get_all_versions('electron')
     expected = ['0.1.2', '2.0.0', '3.0.0',
@@ -39,6 +40,7 @@ def test_get_all_versions():
     assert set(expected) <= set(x)
 
 
+@pytest.mark.webtest
 def test_extract_data():
     with open(os.path.join(TEST_DATA, 'npm_test.json')) as f:
         test_data = json.load(f)

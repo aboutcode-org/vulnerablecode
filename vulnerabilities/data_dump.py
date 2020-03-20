@@ -185,6 +185,7 @@ def npm_dump(extract_data):
             for version in data['fixed_versions']:
                 package_fixed = Package.objects.create(
                     name=package_name,
+                    type='npm',
                     version=version
                 )
                 ResolvedPackage.objects.create(

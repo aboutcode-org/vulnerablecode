@@ -21,12 +21,14 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import pytest
 from vulnerabilities.scraper.rust import rust_crate_advisories
 from vulnerabilities.scraper.rust import load_advisory
 
 RUSTSEC_DB_URL = 'https://github.com/RustSec/advisory-db/archive/master.zip'
 
 
+@pytest.mark.webtest
 def test_extract_data():
     for advisory in rust_crate_advisories(RUSTSEC_DB_URL):
         loaded_advisory = load_advisory(advisory)

@@ -305,6 +305,7 @@ def alpine_linux_dump(data_dicts):
     for package_data in data_dicts:
         unaffected_package = Package.objects.create(
             name=package_data['package_name'],
+            type='alpine',
             version=package_data['fixed_version']
         )
 

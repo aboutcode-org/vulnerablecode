@@ -78,6 +78,7 @@ def import_vulnerabilities():
     vulnerability_package_dicts = []
     for vulnerability in rubygem_advisories(RUBYSEC_DB_URL):
         package = load_vulnerability_package(vulnerability)
-        vulnerability_package_dicts.append(package)
+        if package:
+            vulnerability_package_dicts.append(package)
 
     return vulnerability_package_dicts

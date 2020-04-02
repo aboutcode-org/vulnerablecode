@@ -22,9 +22,12 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import json
+import xxhash
 from dephell_specifier import RangeSpecifier
 from urllib.request import urlopen
 from urllib.error import HTTPError
+
+from vulnerabilities.models import AdvisoryHashes
 
 
 NPM_URL = 'https://registry.npmjs.org{}'
@@ -93,7 +96,7 @@ def extract_data(JSON):
             continue
             # NPM registry has no data regarding this package finally we skip these
 
-        package_vulnerabilities.append({
+        package_vulnerability = {
             'package_name': package_name,
             'summary': obj.get('overview', ''),
             'cve_ids': obj.get('cves', []),
@@ -101,7 +104,18 @@ def extract_data(JSON):
             'affected_versions': affected_versions,
             'severity': obj.get('severity', ''),
             'advisory': obj.get('url', ''),
-        })
+        }
+
+        pkg_vuln_hash = xxhash.xxh32(json.dumps(
+            package_vulnerability, sort_keys=True)).intdigest()
+        hash_query = AdvisoryHashes.objects.filter(hash=pkg_vuln_hash)
+        if hash_query:
+            # In the past we already had this same data, so much work
+            # for nothing
+            continue
+        package_vulnerabilities.append(package_vulnerability)
+        AdvisoryHashes.objects.create(hash=pkg_vuln_hash)
+
     return package_vulnerabilities
 
 
@@ -115,7 +129,15 @@ def scrape_vulnerabilities():
         try:
             cururl = NPM_URL.format(nextpage)
             response = json.load(urlopen(cururl))
-            package_vulnerabilities.extend(extract_data(response))
+            resp_hash = xxhash.xxh32(json.dumps(
+                response, sort_keys=True)).intdigest()
+            hash_query = AdvisoryHashes.objects.filter(hash=resp_hash)
+
+            if not hash_query:
+
+                package_vulnerabilities.extend(extract_data(response))
+                AdvisoryHashes.objects.create(hash=resp_hash)
+
             nextpage = response.get('urls', {}).get('next')
 
         except HTTPError as error:

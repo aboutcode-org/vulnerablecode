@@ -41,7 +41,7 @@ def test_get_all_versions():
 
 
 @pytest.mark.webtest
-def test_extract_data():
+def test_extract_data(db):
     with open(os.path.join(TEST_DATA, 'npm_test.json')) as f:
         test_data = json.load(f)
 

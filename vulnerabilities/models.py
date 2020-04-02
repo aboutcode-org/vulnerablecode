@@ -31,8 +31,10 @@ class Vulnerability(models.Model):
     A software vulnerability with minimal information.
     Identifiers other than CVE ID are stored as VulnerabilityReference.
     """
-    cve_id = models.CharField(max_length=50, help_text='CVE ID', unique=True, null=True)
-    summary = models.TextField(help_text='Summary of the vulnerability', blank=True)
+    cve_id = models.CharField(
+        max_length=50, help_text='CVE ID', unique=True, null=True)
+    summary = models.TextField(
+        help_text='Summary of the vulnerability', blank=True)
     cvss = models.FloatField(max_length=100, help_text='CVSS Score', null=True)
 
     def __str__(self):
@@ -68,7 +70,8 @@ class Package(PackageURLMixin):
     A software package with minimal identifying information.
     Other identifiers are stored as PackageReference.
     """
-    vulnerabilities = models.ManyToManyField(to='Vulnerability', through='ImpactedPackage')
+    vulnerabilities = models.ManyToManyField(
+        to='Vulnerability', through='ImpactedPackage')
 
     def __str__(self):
         return self.name
@@ -123,3 +126,7 @@ class PackageReference(models.Model):
 
     def __str__(self):
         return self.platform
+
+
+class AdvisoryHashes(models.Model):
+    hash = models.BigIntegerField(primary_key=True, unique=True)

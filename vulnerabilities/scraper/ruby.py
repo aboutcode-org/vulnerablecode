@@ -1,18 +1,29 @@
-import os
+import saneyaml
 import urllib.request
 from urllib.error import HTTPError
 from zipfile import ZipFile
 from io import BytesIO
-import saneyaml
 from dephell_specifier import RangeSpecifier
 from urllib.request import urlopen
+from xxhash import xxh32
+
+from vulnerabilities.models import AdvisoryHashes
 
 RUBYSEC_DB_URL = 'https://github.com/rubysec/ruby-advisory-db/archive/master.zip'
 
 
 def rubygem_advisories(url, prefix='ruby-advisory-db-master/gems/'):
+    hash_of_zip = xxh32()
     with urlopen(url) as response:
-        with ZipFile(BytesIO(response.read())) as zf:
+        with BytesIO(response.read()) as zfbytes:
+            chunk = zfbytes.read()
+            hash_of_zip.update(chunk)
+            hash_of_zip = hash_of_zip.intdigest()
+            hash_query = AdvisoryHashes.objects.filter(hash=hash_of_zip)
+            if hash_query:
+                return []
+            AdvisoryHashes.objects.create(hash=hash_of_zip)
+            zf = ZipFile(zfbytes)
             for path in zf.namelist():
                 if path.startswith(prefix) and path.endswith('.yml'):
                     yield saneyaml.load(zf.open(path))
@@ -67,11 +78,20 @@ def import_vulnerabilities():
                         break
 
         affected_versions = all_versions - unaffected_versions
-        vulnerability_package_dicts.append({
+        vuln_pkg_dict = {
             'package_name': package_name,
             'cve_id': vulnerability_id,
             'fixed_versions': unaffected_versions,
             'affected_versions': affected_versions,
             'advisory': advisory_url
-        })
+        }
+        pkg_vuln_hash = xxhash.xxh32(json.dumps(
+            vuln_pkg_dict, sort_keys=True)).intdigest()
+        hash_query = AdvisoryHashes.objects.filter(hash=pkg_vuln_hash)
+
+        if hash_query:
+            continue
+
+        AdvisoryHashes.objects.create(hash=pkg_vuln_hash)
+        vulnerability_package_dicts.append(vuln_pkg_dict)
     return vulnerability_package_dicts

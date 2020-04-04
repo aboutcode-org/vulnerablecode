@@ -1,4 +1,3 @@
-import os
 import urllib.request
 from urllib.error import HTTPError
 from zipfile import ZipFile

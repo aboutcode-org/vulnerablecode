@@ -268,7 +268,6 @@ def rust_dump(extract_data):
 
 def safetydb_dump(extract_data):
     for package_data in extract_data:
-        print(package_data['cve_id'])
         for cve_id in package_data['cve_id']:
             vulnerability, _ = Vulnerability.objects.get_or_create(
                 summary=package_data['description'],

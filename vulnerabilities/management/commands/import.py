@@ -27,7 +27,7 @@ from vulnerabilities import data_dump as dd
 from vulnerabilities.scraper import debian, ubuntu, archlinux, npm, ruby, rust, safety_db
 
 IMPORTERS = {
-    'safetydb': lambda: safety_db.import_vulnerabilities(),
+    'safetydb': lambda: dd.safetydb_dump(safety_db.import_vulnerabilities()),
     'rust': lambda: dd.rust_dump(rust.import_vulnerabilities()),
     'ruby': lambda: dd.ruby_dump(ruby.import_vulnerabilities()),
     'npm': lambda: dd.npm_dump(npm.scrape_vulnerabilities()),

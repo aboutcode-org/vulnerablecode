@@ -47,14 +47,16 @@ def import_vulnerabilities():
                     if version in version_range:
                         affected_versions.add(version)
             unaffected_versions = all_package_versions - affected_versions
-            if cve_id not in cves:
+            if cve_id:
+                cve_ids = cve_id.split(',')
+                cve_ids = list(filter(lambda x: x not in cves ,cve_ids))
                 # This data has duplicates hence the check
                 vulnerability_package_dicts.append({
                     'package_name': package_name,
                     'vuln_id': vuln_id,
                     'affected_versions': affected_versions,
                     'unaffected_versions': unaffected_versions,
-                    'cve_id': cve_id,
+                    'cve_id': cve_ids,
                     'description': description
                 })
                 cves.add(cve_id)

@@ -24,8 +24,7 @@
 import pytest
 from vulnerabilities.scraper.ruby import rubygem_advisories
 from vulnerabilities.scraper.ruby import load_vulnerability_package
-
-RUBYSEC_DB_URL = 'https://github.com/rubysec/ruby-advisory-db/archive/master.zip'
+from vulnerabilities.scraper.ruby import RUBYSEC_DB_URL
 
 
 @pytest.mark.webtest

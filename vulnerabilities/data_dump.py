@@ -309,20 +309,22 @@ def alpine_linux_dump(data_dicts):
             version=package_data['fixed_version']
         )
 
-        for vulnerability in package_data['vuln_ids']:
-
-            if not vulnerability.startswith('CVE'):
-                # this links a non CVE to Vulnerability object of the
-                # previous CVE
-                VulnerabilityReference.objects.get_or_create(
-                    vulnerability=vulnerability_obj,
-                    reference_id=vulnerability
+        for vuln_groups in package_data['vuln_ids']:
+            if vuln_groups[0].startswith('CVE'):
+                vulnerability_obj, _ = Vulnerability.objects.get_or_create(
+                    cve_id=vuln_groups[0]
                 )
+                if len(vuln_groups) == 2:
+                    # TODO: Deal with  vulnerabilities without cves
+                    VulnerabilityReference.objects.get_or_create(
+                        vulnerability=vulnerability_obj,
+                        reference_id=vuln_groups[1]
+                    )
+
+            else:
+
                 continue
 
-            vulnerability_obj, _ = Vulnerability.objects.get_or_create(
-                cve_id=vulnerability
-            )
             ResolvedPackage.objects.create(
                 vulnerability=vulnerability_obj,
                 package=unaffected_package

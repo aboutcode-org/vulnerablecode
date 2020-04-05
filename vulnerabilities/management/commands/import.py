@@ -28,7 +28,7 @@ from vulnerabilities.scraper import (
         debian, ubuntu, archlinux, npm, ruby, rust, safety_db, alpine_linux)
 
 IMPORTERS = {
-    'alpinelinux': lambda: alpine_linux.import_vulnerabilities(),
+    'alpinelinux': lambda: dd.alpine_linux_dump(alpine_linux.import_vulnerabilities()),
     'safetydb': lambda: safety_db.import_vulnerabilities(),
     'rust': lambda: dd.rust_dump(rust.import_vulnerabilities()),
     'ruby': lambda: dd.ruby_dump(ruby.import_vulnerabilities()),

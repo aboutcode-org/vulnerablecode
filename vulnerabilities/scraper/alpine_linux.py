@@ -4,7 +4,8 @@ from urllib.request import urlopen
 from io import BytesIO
 from zipfile import ZipFile
 
-ALPINE_DB_URL = 'https://github.com/alpinelinux/alpine-secdb/archive/master.zip'
+ALPINE_DB_URL = 'https://gitlab.alpinelinux.org/alpine/infra/alpine-secdb/-/\
+archive/master/alpine-secdb-master.zip'
 
 
 def alpine_advisories(url):
@@ -25,13 +26,12 @@ def import_vulnerabilities():
                 # the split  function to above list
                 all_cves = list(map(lambda x: x.split(), fixed_cves))
                 # it becomes   [['CVE-2016-9932','XSA-200'], ['CVE-2016-9815'],['CVE-????-?????']]
-                all_cves = list(itertools.chain.from_iterable(all_cves))
-                # this basically flattens the list, our eg now becomes
-                # ['CVE-2016-9932','XSA-200', 'CVE-2016-9815','CVE-????-?????']
-                all_cves = list(
-                    filter(lambda x: 'CVE-????-?????' not in x, all_cves))
+                for index, vuln_grp in enumerate(all_cves):
+                    all_cves[index] = list(
+                        filter(lambda x: 'CVE-????-?????' not in x, vuln_grp))
+                all_cves = [i for i in all_cves if i and len(i) <= 2]
                 # this data consists lots of 'CVE-????-?????' to denote vulnerabilities
-                # with unassigned  CVE ids , we filter out these
+                # with unassigned  CVE ids , we filter out these as well as other garbage data
                 vulnerability_package_dicts.append(
                     {
                         'package_name': package_name,

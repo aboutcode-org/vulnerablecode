@@ -300,3 +300,33 @@ def safetydb_dump(extract_data):
                 vulnerability=vulnerability,
                 package=unaffected_package
             )
+
+
+def alpine_linux_dump(data_dicts):
+    for package_data in data_dicts:
+        unaffected_package = Package.objects.create(
+            name=package_data['package_name'],
+            type='alpine',
+            version=package_data['fixed_version']
+        )
+
+        for vuln_groups in package_data['vuln_ids']:
+            if vuln_groups[0].startswith('CVE'):
+                vulnerability_obj, _ = Vulnerability.objects.get_or_create(
+                    cve_id=vuln_groups[0]
+                )
+                if len(vuln_groups) == 2:
+                    # TODO: Deal with  vulnerabilities without cves
+                    VulnerabilityReference.objects.get_or_create(
+                        vulnerability=vulnerability_obj,
+                        reference_id=vuln_groups[1]
+                    )
+
+            else:
+
+                continue
+
+            ResolvedPackage.objects.create(
+                vulnerability=vulnerability_obj,
+                package=unaffected_package
+            )

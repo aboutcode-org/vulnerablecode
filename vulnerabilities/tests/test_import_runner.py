@@ -33,10 +33,12 @@ from vulnerabilities.data_source import PackageURL
 from vulnerabilities.import_runner import ImportRunner
 
 
-@dataclasses.dataclass
 class MockDataSource(DataSource):
-    added_advs: Optional[Sequence[Advisory]] = dataclasses.field(default_factory=list)
-    updated_advs: Optional[Sequence[Advisory]] = dataclasses.field(default_factory=list)
+
+    def __init__(self, *args, **kwargs):
+        self.added_advs = kwargs.pop('added_advs', [])
+        self.updated_advs = kwargs.pop('updated_advs', [])
+        super().__init__(*args, **kwargs)
 
     def added_advisories(self):
         return self._yield_advisories(self.added_advs[:])
@@ -46,7 +48,7 @@ class MockDataSource(DataSource):
 
     def _yield_advisories(self, advisories):
         while advisories:
-            batch, advisories = advisories[:self.batch_size], advisories[self.batch_size:]
+            batch, advisories = advisories[:self.config.batch_size], advisories[self.config.batch_size:]
             yield batch
 
 
@@ -79,7 +81,7 @@ ADVISORIES = [
 def make_import_runner(added_advs=None, updated_advs=None):
     added_advs = added_advs or []
     updated_advs = updated_advs or []
-    importer = MockImporter(data_source=MockDataSource(added_advs=added_advs, updated_advs=updated_advs, batch_size=2))
+    importer = MockImporter(data_source=MockDataSource(2, added_advs=added_advs, updated_advs=updated_advs))
     return ImportRunner(importer)
 
 

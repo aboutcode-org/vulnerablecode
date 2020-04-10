@@ -63,6 +63,8 @@ class ImportRunner:
         """
         Create a data source for the given importer and store the data retrieved in the database.
 
+        cutoff_date - optional timestamp of the oldest data to include in the import
+
         NB: Data sources provide two kinds of records; vulnerabilities and packages. Vulnerabilities are potentially
         shared across many packages, from the same data source and from different data sources. For example, a
         vulnerability in the Linux kernel is mentioned by advisories from all Linux distributions that package this
@@ -71,9 +73,9 @@ class ImportRunner:
         logger.debug(f'Starting import for {self.importer.name}.')
         data_source = self.importer.make_data_source(cutoff_date=cutoff_date, batch_size=self.batch_size)
 
-        with data_source as ds:
-            _process_new_advisories(ds)
-            _process_updated_advisories(ds)
+        with data_source:
+            _process_new_advisories(data_source)
+            _process_updated_advisories(data_source)
 
         self.importer.last_run = datetime.datetime.utcnow()
         self.importer.save()

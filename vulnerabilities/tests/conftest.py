@@ -59,3 +59,13 @@ def setArchLinuxData(db):
         test_data = json.load(f)
 
     archlinux_dump(test_data)
+
+
+@pytest.fixture
+def no_mkdir(monkeypatch):
+    monkeypatch.delattr('os.mkdir')
+
+
+@pytest.fixture
+def no_rmtree(monkeypatch):
+    monkeypatch.delattr('shutil.rmtree')

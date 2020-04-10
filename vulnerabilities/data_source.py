@@ -20,58 +20,22 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import dataclasses
+import os
+import shutil
+import tempfile
 from datetime import datetime
+from pathlib import Path
 from typing import Any
 from typing import ContextManager
+from typing import List
 from typing import Mapping
 from typing import Optional
 from typing import Sequence
-import dataclasses
+from typing import Set
 
+import pygit2
 from packageurl import PackageURL
-
-
-@dataclasses.dataclass
-class DataSource(ContextManager):
-    """
-    This class defines how importers consume advisories from a data source.
-
-    It makes a distinction between newly added records since the last run and modified records. This allows the import
-    logic to pick appropriate database operations.
-    """
-    batch_size: int
-    cutoff_date: Optional[datetime] = None
-    config: Optional[Mapping[str, Any]] = dataclasses.field(default_factory=dict)
-
-    def __enter__(self):
-        """
-        Subclasses acquire per-run resources, such as network connections, file downloads, etc. here.
-        """
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """
-        Subclasses release per-run resources acquired in __enter__() here.
-        """
-        pass
-
-    def added_advisories(self):
-        """
-        Subclasses yield batch_size sized batches of Advisory objects that have been added to the data source
-        since self.cutoff_date.
-        """
-        raise StopIteration
-
-    def updated_advisories(self):
-        """
-        Subclasses yield batch_size sized batches of Advisory objects that have been modified since
-        self.cutoff_date.
-
-        NOTE: Data sources that do not enable detection of changes to existing records vs added records must only
-              implement this method, not new_records(). The ImportRunner relies on this contract to decide between
-              insert and update operations.
-        """
-        raise StopIteration
 
 
 @dataclasses.dataclass
@@ -91,9 +55,292 @@ class Advisory:
     cve_id: Optional[str] = None
 
     @property
-    def impacted_purls(self):
+    def impacted_purls(self) -> Set[str]:
         return {str(p) for p in self.impacted_package_urls}
 
     @property
-    def resolved_purls(self):
+    def resolved_purls(self) -> Set[str]:
         return {str(p) for p in self.resolved_package_urls}
+
+
+class InvalidConfigurationError(Exception):
+    pass
+
+
+@dataclasses.dataclass
+class DataSourceConfiguration:
+    batch_size: int
+
+
+class DataSource(ContextManager):
+    """
+    This class defines how importers consume advisories from a data source.
+
+    It makes a distinction between newly added records since the last run and modified records. This allows the import
+    logic to pick appropriate database operations.
+    """
+
+    CONFIG_CLASS = DataSourceConfiguration
+
+    def __init__(
+            self,
+            batch_size: int,
+            last_run_date: Optional[datetime] = None,
+            cutoff_date: Optional[datetime] = None,
+            config: Optional[Mapping[str, Any]] = None,
+    ):
+        """
+        Create a DataSource instance.
+
+        :param batch_size: Maximum number of records to return from added_advisories() and updated_advisories()
+        :param last_run_date: Optional timestamp when this data source was last inspected
+        :param cutoff_date: Optional timestamp, records older than this will be ignored
+        :param config: Optional dictionary with subclass-specific configuration
+        """
+        config = config or {}
+        try:
+            self.config = self.__class__.CONFIG_CLASS(batch_size, **config)
+            # These really should be declared in DataSourceConfiguration above but that would prevent DataSource
+            # subclasses from declaring mandatory parameters (i.e. positional arguments)
+            setattr(self.config, 'last_run_date', last_run_date)
+            setattr(self.config, 'cutoff_date', cutoff_date)
+        except Exception as e:
+            raise InvalidConfigurationError(str(e))
+
+        self.validate_configuration()
+
+    def __enter__(self):
+        """
+        Subclasses acquire per-run resources, such as network connections, file downloads, etc. here.
+        """
+        pass
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """
+        Subclasses release per-run resources acquired in __enter__() here.
+        """
+        pass
+
+    def validate_configuration(self) -> None:
+        """
+        Subclasses can perform more complex validation than what is handled by data classes and their type annotations.
+
+        This method is called in the constructor. It should raise InvalidConfigurationError with a human-readable
+        message.
+        """
+        pass
+
+    def added_advisories(self) -> Set[Advisory]:
+        """
+        Subclasses yield batch_size sized batches of Advisory objects that have been added to the data source
+        since self.cutoff_date.
+        """
+        raise StopIteration
+
+    def updated_advisories(self) -> Set[Advisory]:
+        """
+        Subclasses yield batch_size sized batches of Advisory objects that have been modified since
+        self.cutoff_date.
+
+        NOTE: Data sources that do not enable detection of changes to existing records vs added records must only
+              implement this method, not added_advisories(). The ImportRunner relies on this contract to decide between
+              insert and update operations.
+        """
+        raise StopIteration
+
+    def error(self, msg: str) -> None:
+        """
+        Helper method for raising InvalidConfigurationError with the class name in the message.
+        """
+        raise InvalidConfigurationError(f'{type(self).__name__}: {msg}')
+
+
+@dataclasses.dataclass
+class GitDataSourceConfiguration(DataSourceConfiguration):
+    repository_url: str
+    branch: Optional[str] = None
+    create_working_directory: bool = True
+    remove_working_directory: bool = True
+    working_directory: Optional[str] = None
+
+
+class GitDataSource(DataSource):
+    CONFIG_CLASS = GitDataSourceConfiguration
+
+    def validate_configuration(self) -> None:
+
+        if not self.config.create_working_directory and self.config.working_directory is None:
+            self.error('"create_working_directory" is not set but "working_directory" is set to the default, which '
+                       'calls tempfile.mkdtemp()')
+
+        if not self.config.create_working_directory and not os.path.exists(self.config.working_directory):
+            self.error('"working_directory" does not contain an existing directory and "create_working_directory" is '
+                       'not set')
+
+        if not self.config.remove_working_directory and self.config.working_directory is None:
+            self.error('"remove_working_directory" is not set and "working_directory" is set to the default, which '
+                       'calls tempfile.mkdtemp()')
+
+    def __enter__(self):
+        self._ensure_working_directory()
+        self._ensure_repository()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.config.remove_working_directory:
+            shutil.rmtree(self.config.working_directory)
+
+    def added_advisories(self) -> Set[Advisory]:
+        raise NotImplementedError
+
+    def updated_advisories(self) -> Set[Advisory]:
+        raise NotImplementedError
+
+    def added_files(
+            self,
+            subdir: str = None,
+            recursive: bool = False,
+            file_ext: Optional[str] = None
+    ) -> Set[str]:
+
+        if subdir is None:
+            working_dir = self.config.working_directory
+        else:
+            working_dir = os.path.join(self.config.working_directory, subdir)
+
+        path = Path(working_dir)
+
+        if self.config.last_run_date is None and self.config.cutoff_date is None:
+            if recursive:
+                glob = '**/*'
+            else:
+                glob = '*'
+
+            if file_ext:
+                glob = f'{glob}.{file_ext}'
+
+            return {str(p.relative_to(working_dir)) for p in path.glob(glob) if p.is_file()}
+
+        return self._collect_files(pygit2.GIT_DELTA_ADDED, subdir, recursive, file_ext)
+
+    def updated_files(
+            self,
+            subdir: str = None,
+            recursive: bool = False,
+            file_ext: str = None
+    ) -> Set[str]:
+
+        if self.config.last_run_date is None and self.config.cutoff_date is None:
+            return set()
+
+        return self._collect_files(pygit2.GIT_DELTA_MODIFIED, subdir, recursive, file_ext)
+
+    # TODO Just filtering on the two status values for "added" and "modified" is too simplistic.
+    # TODO This does not cover file renames, copies & deletions.
+    def _collect_files(
+            self,
+            delta_status: int,
+            subdir: Optional[str],
+            recursive: bool,
+            file_ext: Optional[str],
+    ) -> Set[str]:
+
+        last_run = 0 if self.config.last_run_date is None else int(self.config.last_run_date.timestamp())
+        cutoff = 0 if self.config.cutoff_date is None else int(self.config.cutoff_date.timestamp())
+        cutoff = max(last_run, cutoff)
+
+        previous_commit = None
+        files = set()
+
+        for commit in self._repo.walk(self._repo.head.target, pygit2.GIT_SORT_TIME):
+            if commit.commit_time < cutoff:
+                break
+
+            if previous_commit is None:
+                previous_commit = commit
+                continue
+
+            deltas = commit.tree.diff_to_tree(previous_commit.tree).deltas
+            for d in deltas:
+                path = d.new_file.path
+
+                if d.status == delta_status and not d.is_binary and _include_file(path, subdir, recursive, file_ext):
+                    files.add(path)
+
+            previous_commit = commit
+
+        return files
+
+    def _ensure_working_directory(self) -> None:
+        if self.config.working_directory is None:
+            self.config.working_directory = tempfile.mkdtemp()
+        elif self.config.create_working_directory and not os.path.exists(self.config.working_directory):
+            os.mkdir(self.config.working_directory)
+
+    def _ensure_repository(self) -> None:
+        repodir = pygit2.discover_repository(self.config.working_directory)
+        if repodir is None:
+            self._clone_repository()
+            return
+
+        self._repo = pygit2.Repository(repodir)
+
+        if self.config.branch is None:
+            self.config.branch = self._repo.head.shorthand
+        branch = self._repo.branches[self.config.branch]
+
+        if not branch.is_checked_out():
+            self._repo.checkout(branch)
+
+        remote = self._find_or_add_remote()
+        self._update_from_remote(remote, branch)
+
+    def _clone_repository(self) -> None:
+        kwargs = {}
+        if getattr(self, 'branch', False):
+            kwargs['checkout_branch'] = self.config.branch
+
+        self._repo = pygit2.clone_repository(self.config.repository_url, self.config.working_directory, **kwargs)
+
+    def _find_or_add_remote(self):
+        remote = None
+        for r in self._repo.remotes:
+            if r.url == self.config.repository_url:
+                remote = r
+                break
+
+        if remote is None:
+            remote = self._repo.remotes.create('added_by_vulnerablecode', self.config.repository_url)
+
+        return remote
+
+    def _update_from_remote(self, remote, branch) -> None:
+        progress = remote.fetch()
+        if progress.received_objects == 0:
+            return
+
+        remote_branch = self._repo.branches[f'{remote.name}/{self.config.branch}']
+        branch.set_target(remote_branch.target)
+        self._repo.checkout(branch, strategy=pygit2.GIT_CHECKOUT_FORCE)
+
+
+def _include_file(
+        path: str,
+        subdir: Optional[str] = None,
+        recursive: bool = False,
+        file_ext: Optional[str] = None,
+) -> bool:
+    match = True
+
+    if subdir:
+        if not subdir.endswith(os.path.sep):
+            subdir = f'{subdir}{os.path.sep}'
+
+        match = match and path.startswith(subdir)
+
+    if not recursive:
+        match = match and (os.path.sep not in path[len(subdir or ''):])
+
+    if file_ext:
+        match = match and path.endswith(f'.{file_ext}')
+
+    return match

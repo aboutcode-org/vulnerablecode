@@ -114,14 +114,15 @@ class Importer(models.Model):
         help_text='Implementation-specific configuration for the data source',
     )
 
-    def make_data_source(self, cutoff_date=None, batch_size=None) -> DataSource:
+    def make_data_source(self, batch_size, cutoff_date=None) -> DataSource:
         """
         Return a configured and ready to use instance of this importers data source implementation.
 
-        cutoff_date - timestamp of the oldest data to include in the import (default: self.last_run)
         batch_size - max. number of records to return on each iteration
+        cutoff_date - optional timestamp of the oldest data to include in the import
         """
-        cd = cutoff_date or self.last_run
         importers_module = importlib.import_module('vulnerabilities.importers')
         klass = getattr(importers_module, self.data_source)
-        return klass(cutoff_date=cd, batch_size=batch_size, config=self.data_source_cfg)
+        ds = klass(batch_size, last_run_date=self.last_run, cutoff_date=cutoff_date, config=self.data_source_cfg)
+        ds.apply_config()
+        return ds

@@ -1,5 +1,6 @@
 # Data Imported from https://github.com/pyupio/safety-db
 import json
+from schema import Regex, Or, Schema, SchemaError
 from urllib.error import HTTPError
 from urllib.request import urlopen
 from dephell_specifier import RangeSpecifier
@@ -11,6 +12,24 @@ def get_data_file():
     with urlopen(URL) as file:
         json_file = json.load(file)
     return json_file
+
+
+def validate_schema(advisory_dict):
+
+    scheme = {
+        str:
+            [
+                {
+                    "advisory": str,
+                    "cve": Or(None, Regex(r"CVE-\d+-\d+")),
+                    "id": Regex(r"^pyup.io-\d"),
+                    "specs": list,
+                    "v": str
+                }
+            ]
+    }
+
+    Schema(scheme).validate(advisory_dict)
 
 
 def get_all_versions_of_package(package_name):
@@ -29,6 +48,7 @@ def get_all_versions_of_package(package_name):
 def import_vulnerabilities():
     vulnerability_package_dicts = []
     data = get_data_file()
+    validate_schema(data)
     cves = set()
     for package_name in data:
         all_package_versions = set(get_all_versions_of_package(package_name))

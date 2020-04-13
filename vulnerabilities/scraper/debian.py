@@ -23,6 +23,7 @@
 
 import json
 from urllib.request import urlopen
+from schema import Regex, Or, Schema, Optional
 
 DEBIAN_TRACKER_URL = 'https://security-tracker.debian.org/tracker/data/json'
 
@@ -33,8 +34,10 @@ def extract_vulnerabilities(debian_data, base_release='jessie'):
     package and vulnerability from a mapping of Debian vulnerabilities
     data.
     """
-    package_vulnerabilities = []
 
+    validate_schema(debian_data)
+
+    package_vulnerabilities = []
     for package_name, vulnerabilities in debian_data.items():
         if not vulnerabilities or not package_name:
             continue
@@ -66,6 +69,41 @@ def extract_vulnerabilities(debian_data, base_release='jessie'):
             })
 
     return package_vulnerabilities
+
+
+def validate_schema(advisory_dict):
+
+    deb_versions = ['bullseye', 'buster', 'buster-security', 'sid',
+                    'stretch', 'stretch-security', 'jessie', 'jessie-security']
+    scheme = {
+        str:
+            {
+                Or(Regex(r"CVE-\d+-\d+"), Regex(r"TEMP-.+-.+")):
+                {
+                    'releases':
+                    {
+                        Or(*deb_versions):
+                        {
+                            'repositories':
+                            {
+                                Or(*deb_versions): str
+                            },
+                            'status': str,
+                            'urgency': str,
+                            Optional('fixed_version'): str,
+                            Optional(str): object,
+                        }
+
+                    },
+                    Optional('description'): str,
+                    Optional('debianbug'): int,
+                    Optional(str): object,
+                }
+            }
+
+    }
+
+    Schema(scheme).validate(advisory_dict)
 
 
 def scrape_vulnerabilities():

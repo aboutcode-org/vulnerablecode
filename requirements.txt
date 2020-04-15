@@ -26,9 +26,9 @@ saneyaml==0.4
 six==1.13.0
 soupsieve==1.9.5
 sqlparse==0.3.0
-tqdm==4.41.1
 wcwidth==0.1.7
 whitenoise==5.0.1
 zipp==0.6.0
 pytoml==0.1.21
 schema==0.7.1
+requests==2.23.0

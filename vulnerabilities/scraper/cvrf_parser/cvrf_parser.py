@@ -1,6 +1,7 @@
 from argparse import Namespace
 from lxml import etree
 
+
 class CVRF_Syntax(object):
     # CVRF Elements and Namespaces.
     CVRF_ARGS = [

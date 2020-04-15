@@ -51,6 +51,5 @@ def import_vulnerabilities():
                     "version": pkg_version,
                 }
             )
-            print(vulnerability_dicts[0])
 
     return vulnerability_dicts

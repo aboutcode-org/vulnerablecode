@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog PUBLIC "-//OASIS//DTD Entity Resolution XML Catalog V1.0//EN" "http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd">
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+  <uri name="http://www.icasi.org/CVRF/schema/common/1.1/common.xsd" uri="common/1.1/common.xsd"/>
+  <uri name="http://www.icasi.org/CVRF/schema/cvrf/1.1/cvrf.xsd" uri="cvrf/1.1/cvrf.xsd"/>
+  <uri name="http://www.icasi.org/CVRF/schema/vuln/1.1/vuln.xsd" uri="vuln/1.1/vuln.xsd"/>
+  <uri name="http://www.icasi.org/CVRF/schema/prod/1.1/prod.xsd" uri="prod/1.1/prod.xsd"/>
+
+  <!-- non-cvrf schema dependencies -->
+  <uri name="http://www.w3.org/2001/03/xml.xsd" uri="w3.org/xml.xsd"/>
+  <uri name="http://dublincore.org/schemas/xmls/qdc/2008/02/11/dc.xsd" uri="dublincore/dc.xsd"/>
+  <uri name="http://scap.nist.gov/schema/scap-core/1.0/scap-core_0.9.xsd" uri="scap/scap-core_0.9.xsd"/>
+  <uri name="http://scap.nist.gov/schema/cpe/2.0/cpe-language_2.2a.xsd" uri="scap/cpe-language_2.2a.xsd"/>
+  <uri name="http://scap.nist.gov/schema/cvss-v2/1.0/cvss-v2_0.9.xsd" uri="scap/cvss-v2_0.9.xsd"/>
+</catalog>

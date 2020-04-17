@@ -4,38 +4,9 @@ from lxml import etree
 
 class CVRF_Syntax(object):
     # CVRF Elements and Namespaces.
-    CVRF_ARGS = [
-        "all",
-        "DocumentTitle",
-        "DocumentType",
-        "DocumentPublisher",
-        "DocumentTracking",
-        "DocumentNotes",
-        "DocumentDistribution",
-        "AggregateSeverity",
-        "DocumentReferences",
-        "Acknowledgments",
-    ]
 
     cvrf_versions = ["1.1", "1.2"]
-    output_formats = ["csv", "html", "txt"]
-    related_product_tags = [
-        "all",
-        "ProductID",
-        "Status",
-        "CVE",
-        "Title",
-        "BaseScore",
-        "Vector",
-        "TemporalScore",
-        "Note",
-        "FullProductName",
-        "Branch",
-        "Revision",
-        "Remediation",
-        "Acknowledgment",
-        "Threat",
-    ]
+   
 
     VULN_ARGS = [
         "all",
@@ -55,15 +26,6 @@ class CVRF_Syntax(object):
         "References",
         "Acknowledgments",
         "Vulnerability",
-    ]
-
-    PROD_ARGS = [
-        "all",
-        "Branch",
-        "FullProductName",
-        "Relationship",
-        "ProductGroups",
-        "ProductID",
     ]
 
     def __init__(self, cvrf_version):

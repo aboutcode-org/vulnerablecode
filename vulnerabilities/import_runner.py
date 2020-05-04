@@ -192,7 +192,7 @@ def _bulk_insert_packages(
 
 def _bulk_insert_impacted_and_resolved_packages(
     batch: Sequence[Advisory],
-    vulnerabilitites: Set[models.Vulnerability],
+    vulnerabilities: Set[models.Vulnerability],
     impacted_packages: Mapping[str, models.Package],
     resolved_packages: Mapping[str, models.Package],
 ) -> None:
@@ -201,8 +201,8 @@ def _bulk_insert_impacted_and_resolved_packages(
     resolved_refs: List[models.ResolvedPackage] = []
 
     for advisory in batch:
-        vuln = _advisory_to_vulnerability(advisory, vulnerabilitites)
-        vulnerabilitites.remove(vuln)  # minor optimization
+        vuln = _advisory_to_vulnerability(advisory, vulnerabilities)
+        vulnerabilities.remove(vuln)  # minor optimization
 
         for impacted_purl in advisory.impacted_purls:
             ip = models.ImpactedPackage(

@@ -124,5 +124,4 @@ class Importer(models.Model):
         importers_module = importlib.import_module('vulnerabilities.importers')
         klass = getattr(importers_module, self.data_source)
         ds = klass(batch_size, last_run_date=self.last_run, cutoff_date=cutoff_date, config=self.data_source_cfg)
-        ds.apply_config()
         return ds

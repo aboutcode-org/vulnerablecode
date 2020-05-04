@@ -26,9 +26,8 @@ import shutil
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Tuple
 from typing import ContextManager
-from typing import List
 from typing import Mapping
 from typing import Optional
 from typing import Sequence
@@ -195,13 +194,20 @@ class GitDataSource(DataSource):
     def updated_advisories(self) -> Set[Advisory]:
         raise NotImplementedError
 
-    def added_files(
+    def file_changes(
             self,
             subdir: str = None,
             recursive: bool = False,
-            file_ext: Optional[str] = None
-    ) -> Set[str]:
+            file_ext: Optional[str] = None,
+    ) -> Tuple[Set[str], Set[str]]:
+        """
+        Returns all added and modified files since last_run_date or cutoff_date (whichever is more recent).
 
+        :param subdir: filter by files in this directory
+        :param recursive: whether to include files in subdirectories
+        :param file_ext: filter files by this extension
+        :return: The first set are added files, the second one modified files
+        """
         if subdir is None:
             working_dir = self.config.working_directory
         else:
@@ -218,7 +224,16 @@ class GitDataSource(DataSource):
             if file_ext:
                 glob = f'{glob}.{file_ext}'
 
-            return {str(p.relative_to(working_dir)) for p in path.glob(glob) if p.is_file()}
+            return {str(p.relative_to(working_dir)) for p in path.glob(glob) if p.is_file()}, set()
+
+        return self._collect_file_changes(subdir=subdir, recursive=recursive, file_ext=file_ext)
+
+    def added_files(
+            self,
+            subdir: str = None,
+            recursive: bool = False,
+            file_ext: Optional[str] = None
+    ) -> Set[str]:
 
         return self._collect_files(pygit2.GIT_DELTA_ADDED, subdir, recursive, file_ext)
 
@@ -234,41 +249,51 @@ class GitDataSource(DataSource):
 
         return self._collect_files(pygit2.GIT_DELTA_MODIFIED, subdir, recursive, file_ext)
 
-    # TODO Just filtering on the two status values for "added" and "modified" is too simplistic.
-    # TODO This does not cover file renames, copies & deletions.
-    def _collect_files(
+    def _collect_file_changes(
             self,
-            delta_status: int,
             subdir: Optional[str],
             recursive: bool,
             file_ext: Optional[str],
-    ) -> Set[str]:
+    ) -> Tuple[Set[str], Set[str]]:
 
         last_run = 0 if self.config.last_run_date is None else int(self.config.last_run_date.timestamp())
         cutoff = 0 if self.config.cutoff_date is None else int(self.config.cutoff_date.timestamp())
         cutoff = max(last_run, cutoff)
 
         previous_commit = None
-        files = set()
+        added_files, updated_files = set(), set()
 
         for commit in self._repo.walk(self._repo.head.target, pygit2.GIT_SORT_TIME):
-            if commit.commit_time < cutoff:
+            commit_time = commit.commit_time + commit.commit_time_offset  # convert to UTC
+
+            if commit_time < cutoff:
                 break
 
             if previous_commit is None:
                 previous_commit = commit
                 continue
 
-            deltas = commit.tree.diff_to_tree(previous_commit.tree).deltas
-            for d in deltas:
-                path = d.new_file.path
+            for d in commit.tree.diff_to_tree(previous_commit.tree).deltas:
+                if not _include_file(d.new_file.path, subdir, recursive, file_ext) or d.is_binary:
+                    continue
 
-                if d.status == delta_status and not d.is_binary and _include_file(path, subdir, recursive, file_ext):
-                    files.add(path)
+                # TODO
+                # Just filtering on the two status values for "added" and "modified" is too simplistic.
+                # This does not cover file renames, copies & deletions.
+                if d.status == pygit2.GIT_DELTA_ADDED:
+                    print(f'path: {d.new_file.path} commit.id: {commit.id} commit_time: {commit_time}')
+                    print(f'commit.message: {commit.message}')
+                    added_files.add(d.new_file.path)
+                if d.status == pygit2.GIT_DELTA_MODIFIED:
+                    updated_files.add(d.new_file.path)
 
             previous_commit = commit
 
-        return files
+        # Any file that has been added and then updated inside the window of the git history we looked at, should be
+        # considered "added", not "updated", since it does not exist in the database yet.
+        updated_files = updated_files - added_files
+
+        return added_files, updated_files
 
     def _ensure_working_directory(self) -> None:
         if self.config.working_directory is None:

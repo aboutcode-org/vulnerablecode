@@ -275,12 +275,14 @@ class GitDataSourceTest(TestCase):
         ds._update_from_remote = MagicMock()
         return ds
 
-    def test_added_files_returns_all_when_last_run_date_and_cutoff_date_is_None(self):
+    def test_file_changes_last_run_date_and_cutoff_date_is_None(self):
 
         ds = self.mk_ds(last_run_date=None, cutoff_date=None)
 
         with ds:
-            added_files = ds.added_files(subdir='rust', recursive=True, file_ext='toml')
+            added_files, updated_files = ds.file_changes(subdir='rust', recursive=True, file_ext='toml')
+
+        assert len(updated_files) == 0
 
         assert set(added_files) == {
             'cargo/CVE-2019-16760.toml',
@@ -290,53 +292,39 @@ class GitDataSourceTest(TestCase):
             'std/CVE-2019-12083.toml',
         }
 
-    def test_updated_files_returns_none_when_last_run_date_and_cutoff_date_is_None(self):
-
-        ds = self.mk_ds(last_run_date=None, cutoff_date=None)
-
-        with ds:
-            updated_files = ds.updated_files(recursive=True, file_ext='toml')
-
-        assert len(updated_files) == 0
-
-    def test_added_files_returns_none_when_cutoff_date_is_now(self):
+    def test_file_changes_cutoff_date_is_now(self):
 
         ds = self.mk_ds(last_run_date=None, cutoff_date=datetime.datetime.now())
 
         with ds:
-            added_files = ds.added_files(subdir='cargo', recursive=True, file_ext='toml')
+            added_files, updated_files = ds.file_changes(subdir='cargo', recursive=True, file_ext='toml')
 
         assert len(added_files) == 0
-
-    def test_updated_files_returns_none_when_cutoff_date_is_now(self):
-
-        ds = self.mk_ds(last_run_date=None, cutoff_date=datetime.datetime.now())
-
-        with ds:
-            updated_files = ds.updated_files(recursive=True, file_ext='toml')
-
         assert len(updated_files) == 0
 
-    def test_added_files_include_new_advisories(self):
+    def test_file_changes_include_new_advisories(self):
 
         last_run_date = datetime.datetime(year=2020, month=3, day=29)
         cutoff_date = last_run_date - datetime.timedelta(weeks=52 * 3)
         ds = self.mk_ds(last_run_date=last_run_date, cutoff_date=cutoff_date)
 
         with ds:
-            added_files = ds.added_files(subdir='crates', recursive=True, file_ext='toml')
+            added_files, updated_files = ds.file_changes(subdir='crates', recursive=True, file_ext='toml')
 
+        assert len(added_files) >= 2
         assert 'crates/bitvec/RUSTSEC-2020-0007.toml' in added_files
         assert 'crates/hyper/RUSTSEC-2020-0008.toml' in added_files
+        assert len(updated_files) == 0
 
-    def test_updated_files_includes_fixed_advisory(self):
-
-        last_run_date = datetime.datetime(year=2020, month=3, day=29)
-        cutoff_date = last_run_date - datetime.timedelta(weeks=52 * 3)
-        ds = self.mk_ds(last_run_date=last_run_date, cutoff_date=cutoff_date)
+    def test_file_changes_include_fixed_advisories(self):
+        # pick a date that includes commit 9889ed0831b4fb4beb7675de361926d2e9a99c20
+        # ("Fix patched version for RUSTSEC-2020-0008")
+        last_run_date = datetime.datetime(year=2020, month=3, day=31, hour=19, tzinfo=datetime.timezone.utc)
+        ds = self.mk_ds(last_run_date=last_run_date, cutoff_date=None)
 
         with ds:
-            updated_files = ds.updated_files(subdir='crates', recursive=True, file_ext='toml')
+            added_files, updated_files = ds.file_changes(subdir='crates', recursive=True, file_ext='toml')
 
+        assert len(added_files) == 0
         assert len(updated_files) == 1
         assert 'crates/hyper/RUSTSEC-2020-0008.toml' in updated_files

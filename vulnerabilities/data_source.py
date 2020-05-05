@@ -26,12 +26,13 @@ import shutil
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Tuple
+from typing import Any
 from typing import ContextManager
 from typing import Mapping
 from typing import Optional
 from typing import Sequence
 from typing import Set
+from typing import Tuple
 
 import pygit2
 from packageurl import PackageURL
@@ -206,7 +207,7 @@ class GitDataSource(DataSource):
         :param subdir: filter by files in this directory
         :param recursive: whether to include files in subdirectories
         :param file_ext: filter files by this extension
-        :return: The first set are added files, the second one modified files
+        :return: The first set contains (absolute paths to) added files, the second one modified files
         """
         if subdir is None:
             working_dir = self.config.working_directory
@@ -224,7 +225,7 @@ class GitDataSource(DataSource):
             if file_ext:
                 glob = f'{glob}.{file_ext}'
 
-            return {str(p.relative_to(working_dir)) for p in path.glob(glob) if p.is_file()}, set()
+            return {str(p) for p in path.glob(glob) if p.is_file()}, set()
 
         return self._collect_file_changes(subdir=subdir, recursive=recursive, file_ext=file_ext)
 
@@ -277,15 +278,14 @@ class GitDataSource(DataSource):
                 if not _include_file(d.new_file.path, subdir, recursive, file_ext) or d.is_binary:
                     continue
 
+                abspath = os.path.join(self.config.working_directory, d.new_file.path)
                 # TODO
                 # Just filtering on the two status values for "added" and "modified" is too simplistic.
                 # This does not cover file renames, copies & deletions.
                 if d.status == pygit2.GIT_DELTA_ADDED:
-                    print(f'path: {d.new_file.path} commit.id: {commit.id} commit_time: {commit_time}')
-                    print(f'commit.message: {commit.message}')
-                    added_files.add(d.new_file.path)
+                    added_files.add(abspath)
                 if d.status == pygit2.GIT_DELTA_MODIFIED:
-                    updated_files.add(d.new_file.path)
+                    updated_files.add(abspath)
 
             previous_commit = commit
 

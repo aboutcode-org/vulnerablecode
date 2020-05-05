@@ -6,7 +6,6 @@ class CVRF_Syntax(object):
     # CVRF Elements and Namespaces.
 
     cvrf_versions = ["1.1", "1.2"]
-   
 
     VULN_ARGS = [
         "all",

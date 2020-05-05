@@ -23,8 +23,27 @@
 
 import json
 from urllib.request import urlopen
-
+from schema import Regex, Schema, Or
 ARCHLINUX_TRACKER_URL = 'https://security.archlinux.org/json'
+
+
+def validate_schema(advisory_dict):
+    scheme = {
+
+        'advisories': list,
+        'affected': str,
+        'fixed': Or(None, str),
+        'issues': [Regex(r'CVE-\d+-\d+')],
+        'name': str,
+        'packages': [str],
+        'status': str,
+        'ticket': object,
+        'type': str,
+        'severity': str,
+
+    }
+
+    Schema(scheme).validate(advisory_dict)
 
 
 def scrape_vulnerabilities():
@@ -33,4 +52,7 @@ def scrape_vulnerabilities():
     """
     json_content = urlopen(ARCHLINUX_TRACKER_URL).read()
     arch_data = json.loads(json_content)
+    for advisory in arch_data:
+        validate_schema(advisory)
+
     return arch_data

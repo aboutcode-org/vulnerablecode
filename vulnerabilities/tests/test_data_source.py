@@ -25,7 +25,8 @@ import shutil
 import tempfile
 import zipfile
 from unittest import TestCase
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
 import pygit2
 import pytest
@@ -285,11 +286,13 @@ class GitDataSourceTest(TestCase):
         assert len(updated_files) == 0
 
         assert set(added_files) == {
-            'cargo/CVE-2019-16760.toml',
-            'rustdoc/CVE-2018-1000622.toml',
-            'std/CVE-2018-1000657.toml',
-            'std/CVE-2018-1000810.toml',
-            'std/CVE-2019-12083.toml',
+            os.path.join(self.repodir, f) for f in {
+                'rust/cargo/CVE-2019-16760.toml',
+                'rust/rustdoc/CVE-2018-1000622.toml',
+                'rust/std/CVE-2018-1000657.toml',
+                'rust/std/CVE-2018-1000810.toml',
+                'rust/std/CVE-2019-12083.toml',
+            }
         }
 
     def test_file_changes_cutoff_date_is_now(self):
@@ -312,8 +315,8 @@ class GitDataSourceTest(TestCase):
             added_files, updated_files = ds.file_changes(subdir='crates', recursive=True, file_ext='toml')
 
         assert len(added_files) >= 2
-        assert 'crates/bitvec/RUSTSEC-2020-0007.toml' in added_files
-        assert 'crates/hyper/RUSTSEC-2020-0008.toml' in added_files
+        assert os.path.join(self.repodir, 'crates/bitvec/RUSTSEC-2020-0007.toml') in added_files
+        assert os.path.join(self.repodir, 'crates/hyper/RUSTSEC-2020-0008.toml') in added_files
         assert len(updated_files) == 0
 
     def test_file_changes_include_fixed_advisories(self):
@@ -327,4 +330,4 @@ class GitDataSourceTest(TestCase):
 
         assert len(added_files) == 0
         assert len(updated_files) == 1
-        assert 'crates/hyper/RUSTSEC-2020-0008.toml' in updated_files
+        assert os.path.join(self.repodir, 'crates/hyper/RUSTSEC-2020-0008.toml') in updated_files

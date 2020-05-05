@@ -62,6 +62,16 @@ class Advisory:
     def resolved_purls(self) -> Set[str]:
         return {str(p) for p in self.resolved_package_urls}
 
+    def __hash__(self):
+        s = '{}{}{}{}{}'.format(
+            self.summary,
+            ''.join(self.impacted_purls),
+            ''.join(self.resolved_purls),
+            ''.join(self.references),
+            self.cve_id,
+        )
+        return hash(s)
+
 
 class InvalidConfigurationError(Exception):
     pass

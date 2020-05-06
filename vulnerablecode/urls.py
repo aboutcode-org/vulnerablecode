@@ -35,6 +35,5 @@ api_router.register(r'packages', PackageViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r'^vulnerabilities/', include('vulnerabilities.urls')),
     re_path(r'^api/', include(api_router.urls))
 ]

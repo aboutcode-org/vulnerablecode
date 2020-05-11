@@ -42,7 +42,8 @@ class Migration(migrations.Migration):
                 ('subpath', models.CharField(blank=True, help_text='Extra subpath within a package, relative to the package root.', max_length=200, null=True)),
             ],
             options={
-                'abstract': False,
+                  'unique_together': {('name', 'namespace', 'type', 'version')},
+                  'abstract': False,
             },
         ),
         migrations.CreateModel(

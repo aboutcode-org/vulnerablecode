@@ -20,4 +20,36 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from vulnerabilities.importers.rust import RustDataSource
+from django.db import migrations
+
+
+def add_rust_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+
+    Importer.objects.create(
+        name='rust',
+        license='https://creativecommons.org/publicdomain/zero/1.0/',
+        last_run=None,
+        data_source='RustDataSource',
+        data_source_cfg={
+            'repository_url': 'https://github.com/RustSec/advisory-db',
+        },
+    )
+
+
+def remove_rust_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+    qs = Importer.objects.filter(name='rust')
+    if qs:
+        qs[0].delete()
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('vulnerabilities', '0001_initial'),
+    ]
+
+    operations = [
+        migrations.RunPython(add_rust_importer, remove_rust_importer),
+    ]

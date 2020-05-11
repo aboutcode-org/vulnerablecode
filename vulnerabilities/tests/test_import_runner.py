@@ -23,8 +23,6 @@
 import dataclasses
 from copy import deepcopy
 from datetime import datetime
-from typing import Optional
-from typing import Sequence
 
 from vulnerabilities import models
 from vulnerabilities.data_source import Advisory
@@ -60,7 +58,7 @@ class MockImporter:
     license: str = 'license to test'
     saved: bool = False
 
-    def make_data_source(self, **_):
+    def make_data_source(self, *_, **__):
         return self.data_source
 
     def save(self):
@@ -71,7 +69,7 @@ ADVISORIES = [
     Advisory(
         cve_id='MOCK-CVE-2020-1337',
         summary='vulnerability description here',
-        references=['https://example.com/with/more/info/MOCK-CVE-2020-1337'],
+        reference_urls=['https://example.com/with/more/info/MOCK-CVE-2020-1337'],
         impacted_package_urls=[PackageURL(name='mock-webserver', type='pypi', version='1.2.33')],
         resolved_package_urls=[PackageURL(name='mock-webserver', type='pypi', version='1.2.34')],
     )
@@ -82,7 +80,7 @@ def make_import_runner(added_advs=None, updated_advs=None):
     added_advs = added_advs or []
     updated_advs = updated_advs or []
     importer = MockImporter(data_source=MockDataSource(2, added_advs=added_advs, updated_advs=updated_advs))
-    return ImportRunner(importer)
+    return ImportRunner(importer, 5)
 
 
 def test_ImportRunner_new_package_and_new_vulnerability(db):

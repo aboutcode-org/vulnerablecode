@@ -23,14 +23,14 @@
 
 import datetime
 import logging
-from typing import List, Union
-from typing import Mapping
+from typing import Dict
+from typing import List
 from typing import Sequence
 from typing import Set
 from typing import Tuple
+from typing import Union
 
-from django.db import IntegrityError
-from django.db import transaction
+import packageurl
 
 from vulnerabilities import models
 from vulnerabilities.data_source import Advisory
@@ -55,11 +55,11 @@ class ImportRunner:
           (the data source should know this instead).
         - All update and select operations must use indexed columns.
     """
-    def __init__(self, importer, batch_size=None):
+    def __init__(self, importer: models.Importer, batch_size: int):
         self.importer = importer
         self.batch_size = batch_size
 
-    def run(self, cutoff_date=None) -> None:
+    def run(self, cutoff_date: datetime.datetime = None) -> None:
         """
         Create a data source for the given importer and store the data retrieved in the database.
 
@@ -71,19 +71,19 @@ class ImportRunner:
         kernel version.
         """
         logger.debug(f'Starting import for {self.importer.name}.')
-        data_source = self.importer.make_data_source(cutoff_date=cutoff_date, batch_size=self.batch_size)
+        data_source = self.importer.make_data_source(self.batch_size, cutoff_date=cutoff_date)
 
         with data_source:
-            _process_new_advisories(data_source)
+            _process_added_advisories(data_source)
             _process_updated_advisories(data_source)
 
-        self.importer.last_run = datetime.datetime.utcnow()
+        self.importer.last_run = datetime.datetime.now(tz=datetime.timezone.utc)
         self.importer.save()
 
         logger.debug(f'Successfully finished import for {self.importer.name}.')
 
 
-def _process_new_advisories(data_source):
+def _process_added_advisories(data_source):
     for batch in data_source.added_advisories():
         impacted, resolved = _collect_purls(batch)
         impacted, resolved = _bulk_insert_packages(impacted, resolved)
@@ -101,7 +101,10 @@ def _process_updated_advisories(data_source):
         for advisory in batch:
             vuln, _ = _get_or_create_vulnerability(advisory)
 
-            for url in advisory.references:
+            for id_ in advisory.reference_ids:
+                models.VulnerabilityReference.objects.get_or_create(vulnerability=vuln, reference_id=id_)
+
+            for url in advisory.reference_urls:
                 models.VulnerabilityReference.objects.get_or_create(vulnerability=vuln, url=url)
 
             for ipkg_url in advisory.impacted_package_urls:
@@ -152,7 +155,7 @@ def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:
     if created:
         dirty = False
         if p.qualifiers:
-            pkg.qualifiers = p.qualifiers
+            pkg.qualifiers = packageurl.normalize_qualifiers(p.qualifiers, encode=True)
             dirty = True
         if p.subpath:
             pkg.subpath = p.subpath
@@ -169,7 +172,7 @@ def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:
 def _bulk_insert_packages(
         impacted: Set[str],
         resolved: Set[str]
-) -> Tuple[Mapping[str, models.Package], Mapping[str, models.Package]]:
+) -> Tuple[Dict[str, models.Package], Dict[str, models.Package]]:
 
     packages = [_package_url_to_package(p) for p in impacted.union(resolved)]
     packages = models.Package.objects.bulk_create(packages)
@@ -193,8 +196,8 @@ def _bulk_insert_packages(
 def _bulk_insert_impacted_and_resolved_packages(
     batch: Sequence[Advisory],
     vulnerabilities: Set[models.Vulnerability],
-    impacted_packages: Mapping[str, models.Package],
-    resolved_packages: Mapping[str, models.Package],
+    impacted_packages: Dict[str, models.Package],
+    resolved_packages: Dict[str, models.Package],
 ) -> None:
 
     impacted_refs: List[models.ImpactedPackage] = []
@@ -205,16 +208,30 @@ def _bulk_insert_impacted_and_resolved_packages(
         vulnerabilities.remove(vuln)  # minor optimization
 
         for impacted_purl in advisory.impacted_purls:
+            # TODO Figure out when/how it happens that a package is missing form the dict and fix it
+            p = impacted_packages.get(impacted_purl)
+            if not p:
+                p = _package_url_to_package(impacted_purl)
+                p.save()
+                impacted_packages[impacted_purl] = p
+
             ip = models.ImpactedPackage(
                 vulnerability=vuln,
-                package=impacted_packages[impacted_purl]
+                package=p,
             )
             impacted_refs.append(ip)
 
         for resolved_purl in advisory.resolved_purls:
+            # TODO Figure out when/how it happens that a package is missing form the dict and fix it
+            p = resolved_packages.get(resolved_purl)
+            if not p:
+                p = _package_url_to_package(resolved_purl)
+                p.save()
+                resolved_packages[resolved_purl] = p
+
             ip = models.ResolvedPackage(
                 vulnerability=vuln,
-                package=resolved_packages[str(resolved_purl)]
+                package=p,
             )
             resolved_refs.append(ip)
 
@@ -222,7 +239,6 @@ def _bulk_insert_impacted_and_resolved_packages(
     models.ResolvedPackage.objects.bulk_create(resolved_refs)
 
 
-@transaction.atomic
 def _insert_vulnerabilities_and_references(batch: Sequence[Advisory]) -> Set[models.Vulnerability]:
     """
     TODO Consider refactoring to use bulk_create() and avoid get_or_create() when possible.
@@ -244,13 +260,11 @@ def _insert_vulnerabilities_and_references(batch: Sequence[Advisory]) -> Set[mod
 
         vulnerabilities.add(vuln)
 
-        for url in advisory.references:
-            try:
-                models.VulnerabilityReference.objects.create(vulnerability=vuln, url=url)
-            except IntegrityError:
-                # This vulnerability reference already exists, nothing to do.
-                # TODO Find a more efficient way to do this rather than trying and ignoring any errors.
-                pass
+        for id_ in advisory.reference_ids:
+            models.VulnerabilityReference.objects.get_or_create(vulnerability=vuln, reference_id=id_)
+
+        for url in advisory.reference_urls:
+            models.VulnerabilityReference.objects.get_or_create(vulnerability=vuln, url=url)
 
     return vulnerabilities
 
@@ -301,6 +315,6 @@ def _package_url_to_package(purl: Union[PackageURL, str]) -> models.Package:
         type=purl.type,
         version=purl.version,
         namespace=purl.namespace,
-        qualifiers=purl.qualifiers,
+        qualifiers=packageurl.normalize_qualifiers(purl.qualifiers, encode=True),
         subpath=purl.subpath,
     )

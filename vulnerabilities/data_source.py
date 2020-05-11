@@ -51,7 +51,8 @@ class Advisory:
     summary: str
     impacted_package_urls: Sequence[PackageURL]
     resolved_package_urls: Sequence[PackageURL] = dataclasses.field(default_factory=list)
-    references: Sequence[str] = dataclasses.field(default_factory=list)
+    reference_urls: Sequence[str] = dataclasses.field(default_factory=list)
+    reference_ids: Sequence[str] = dataclasses.field(default_factory=list)
     cve_id: Optional[str] = None
 
     @property
@@ -67,7 +68,7 @@ class Advisory:
             self.summary,
             ''.join(self.impacted_purls),
             ''.join(self.resolved_purls),
-            ''.join(self.references),
+            ''.join(self.reference_urls),
             self.cve_id,
         )
         return hash(s)
@@ -120,15 +121,9 @@ class DataSource(ContextManager):
         self.validate_configuration()
 
     def __enter__(self):
-        """
-        Subclasses acquire per-run resources, such as network connections, file downloads, etc. here.
-        """
         pass
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        """
-        Subclasses release per-run resources acquired in __enter__() here.
-        """
         pass
 
     def validate_configuration(self) -> None:
@@ -142,14 +137,14 @@ class DataSource(ContextManager):
 
     def added_advisories(self) -> Set[Advisory]:
         """
-        Subclasses yield batch_size sized batches of Advisory objects that have been added to the data source
-        since self.cutoff_date.
+        Subclasses yield batch_size sized batches of Advisory objects that have been added to the data source since the
+        last run or self.cutoff_date.
         """
         raise StopIteration
 
     def updated_advisories(self) -> Set[Advisory]:
         """
-        Subclasses yield batch_size sized batches of Advisory objects that have been modified since
+        Subclasses yield batch_size sized batches of Advisory objects that have been modified since the last run or
         self.cutoff_date.
 
         NOTE: Data sources that do not enable detection of changes to existing records vs added records must only
@@ -239,27 +234,6 @@ class GitDataSource(DataSource):
 
         return self._collect_file_changes(subdir=subdir, recursive=recursive, file_ext=file_ext)
 
-    def added_files(
-            self,
-            subdir: str = None,
-            recursive: bool = False,
-            file_ext: Optional[str] = None
-    ) -> Set[str]:
-
-        return self._collect_files(pygit2.GIT_DELTA_ADDED, subdir, recursive, file_ext)
-
-    def updated_files(
-            self,
-            subdir: str = None,
-            recursive: bool = False,
-            file_ext: str = None
-    ) -> Set[str]:
-
-        if self.config.last_run_date is None and self.config.cutoff_date is None:
-            return set()
-
-        return self._collect_files(pygit2.GIT_DELTA_MODIFIED, subdir, recursive, file_ext)
-
     def _collect_file_changes(
             self,
             subdir: Optional[str],
@@ -294,7 +268,7 @@ class GitDataSource(DataSource):
                 # This does not cover file renames, copies & deletions.
                 if d.status == pygit2.GIT_DELTA_ADDED:
                     added_files.add(abspath)
-                if d.status == pygit2.GIT_DELTA_MODIFIED:
+                elif d.status == pygit2.GIT_DELTA_MODIFIED:
                     updated_files.add(abspath)
 
             previous_commit = commit

@@ -22,6 +22,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import importlib
+from datetime import datetime
 
 from django.db import models
 import django.contrib.postgres.fields as pgfields
@@ -41,7 +42,7 @@ class Vulnerability(models.Model):
     cvss = models.FloatField(max_length=100, help_text='CVSS Score', null=True)
 
     def __str__(self):
-        return self.summary
+        return self.cve_id or self.summary
 
     class Meta:
         verbose_name_plural = 'Vulnerabilities'
@@ -64,7 +65,7 @@ class VulnerabilityReference(models.Model):
         unique_together = ('vulnerability', 'source', 'reference_id', 'url')
 
     def __str__(self):
-        return self.source
+        return f'{self.source} {self.reference_id} {self.url}'
 
 
 class Package(PackageURLMixin):
@@ -72,6 +73,9 @@ class Package(PackageURLMixin):
     A software package with links to relevant vulnerabilities.
     """
     vulnerabilities = models.ManyToManyField(to='Vulnerability', through='ImpactedPackage')
+
+    class Meta:
+        unique_together = ('name', 'namespace', 'type', 'version')
 
     def __str__(self):
         return self.package_url
@@ -114,7 +118,7 @@ class Importer(models.Model):
         help_text='Implementation-specific configuration for the data source',
     )
 
-    def make_data_source(self, batch_size, cutoff_date=None) -> DataSource:
+    def make_data_source(self, batch_size: int, cutoff_date: datetime = None) -> DataSource:
         """
         Return a configured and ready to use instance of this importers data source implementation.
 
@@ -125,3 +129,6 @@ class Importer(models.Model):
         klass = getattr(importers_module, self.data_source)
         ds = klass(batch_size, last_run_date=self.last_run, cutoff_date=cutoff_date, config=self.data_source_cfg)
         return ds
+
+    def __str__(self):
+        return self.name

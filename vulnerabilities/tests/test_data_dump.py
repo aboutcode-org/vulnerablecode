@@ -35,65 +35,65 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
 
 
-# def test_debian_Vulnerability(setDebianData):
-#     """
-#     Check that all vulnerabilities from the test data are stored in the database
-#     """
-#     assert 3 == Vulnerability.objects.count()
-#
-#     assert Vulnerability.objects.filter(cve_id='CVE-2009-1382')
-#     assert Vulnerability.objects.filter(cve_id='CVE-2009-2459')
-#     assert Vulnerability.objects.filter(cve_id='CVE-2014-8242')
-#
-#
-# def test_debian_VulnerabilityReference(setDebianData):
-#     """
-#     Check that no vulnerability references were found in the test data
-#     """
-#     assert 0 == VulnerabilityReference.objects.count()
-#
-#
-# def test_debian_Package(setDebianData):
-#     """
-#     Check that all packages from the test data are stored in the database
-#     """
-#     # There are five rows in Package because currently the models allow duplicates
-#     # (see issue #28).
-#     assert 5 == Package.objects.count()
-#
-#     assert Package.objects.filter(name='mimetex')
-#
-#     pkg = Package.objects.get(name='librsync')
-#     assert '0.9.7-10' == pkg.version
-#     assert 'deb' == pkg.type
-#     assert 'debian' == pkg.namespace
-#     assert 'distro=jessie' in pkg.qualifiers
-#
-#
-# def test_debian_ImpactedPackage(setDebianData):
-#     """
-#     Check that all impacted packages from the test data are stored in the database
-#     """
-#     impacted_pkgs = ImpactedPackage.objects.all()
-#
-#     assert 1 == impacted_pkgs.count()
-#
-#     ip = impacted_pkgs[0]
-#     assert 'librsync' == ip.package.name
-#     assert '0.9.7-10' == ip.package.version
-#
-#
-# def test_debian_ResolvedPackage(setDebianData):
-#     """
-#     Check that all resolved packages from the test data are stored in the database
-#     """
-#     resolved_pkgs = ResolvedPackage.objects.all()
-#     versions = [rp.package.version for rp in resolved_pkgs]
-#
-#     assert 4 == resolved_pkgs.count()
-#     assert 'mimetex' == resolved_pkgs[0].package.name
-#     assert '1.50-1.1' in versions
-#     assert '1.74-1' in versions
+def test_debian_Vulnerability(setDebianData):
+    """
+    Check that all vulnerabilities from the test data are stored in the database
+    """
+    assert 3 == Vulnerability.objects.count()
+
+    assert Vulnerability.objects.filter(cve_id='CVE-2009-1382')
+    assert Vulnerability.objects.filter(cve_id='CVE-2009-2459')
+    assert Vulnerability.objects.filter(cve_id='CVE-2014-8242')
+
+
+def test_debian_VulnerabilityReference(setDebianData):
+    """
+    Check that no vulnerability references were found in the test data
+    """
+    assert 0 == VulnerabilityReference.objects.count()
+
+
+def test_debian_Package(setDebianData):
+    """
+    Check that all packages from the test data are stored in the database
+    """
+    # There are five rows in Package because currently the models allow duplicates
+    # (see issue #28).
+    assert 5 == Package.objects.count()
+
+    assert Package.objects.filter(name='mimetex')
+
+    pkg = Package.objects.get(name='librsync')
+    assert '0.9.7-10' == pkg.version
+    assert 'deb' == pkg.type
+    assert 'debian' == pkg.namespace
+    assert 'distro=jessie' in pkg.qualifiers
+
+
+def test_debian_ImpactedPackage(setDebianData):
+    """
+    Check that all impacted packages from the test data are stored in the database
+    """
+    impacted_pkgs = ImpactedPackage.objects.all()
+
+    assert 1 == impacted_pkgs.count()
+
+    ip = impacted_pkgs[0]
+    assert 'librsync' == ip.package.name
+    assert '0.9.7-10' == ip.package.version
+
+
+def test_debian_ResolvedPackage(setDebianData):
+    """
+    Check that all resolved packages from the test data are stored in the database
+    """
+    resolved_pkgs = ResolvedPackage.objects.all()
+    versions = [rp.package.version for rp in resolved_pkgs]
+
+    assert 4 == resolved_pkgs.count()
+    assert 'mimetex' == resolved_pkgs[0].package.name
+    assert '1.50-1.1' in versions
+    assert '1.74-1' in versions
 
 
 def test_ubuntu_data_dump(setUbuntuData):

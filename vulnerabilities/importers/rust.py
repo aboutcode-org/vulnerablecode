@@ -21,17 +21,15 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import json
-from io import BytesIO
 from itertools import chain
 from typing import Optional
 from typing import Set
 from typing import Tuple
 from urllib.request import urlopen
-from zipfile import ZipFile
 
+import pytoml as toml
 from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
-import pytoml as toml
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
@@ -107,17 +105,6 @@ class RustDataSource(GitDataSource):
             reference_ids=[advisory['id']],
             cve_id=cve_id,
         )
-
-
-RUSTSEC_DB_URL = 'https://github.com/RustSec/advisory-db/archive/master.zip'
-
-
-def rust_crate_advisories(url, prefix='advisory-db-master/crates/'):
-    with urlopen(url) as response:
-        with ZipFile(BytesIO(response.read())) as zf:
-            for path in zf.namelist():
-                if path.startswith(prefix) and path.endswith('.toml'):
-                    yield toml.load(zf.open(path))
 
 
 def categorize_versions(

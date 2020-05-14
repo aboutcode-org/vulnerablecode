@@ -21,6 +21,7 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 from typing import Any
+from typing import Generator
 from typing import Iterable
 from typing import List
 from typing import Mapping
@@ -73,9 +74,6 @@ class AlpineDataSource(GitDataSource):
 
         if not getattr(self, '_added_files', None):
             self._added_files, self._updated_files = self.file_changes(recursive=True, file_ext='yaml')
-
-    def added_advisories(self) -> Set[Advisory]:
-        return set()
 
     def updated_advisories(self) -> Set[Advisory]:
         files = self._updated_files.union(self._added_files)

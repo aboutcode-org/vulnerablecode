@@ -56,19 +56,11 @@ class Advisory:
     reference_ids: Sequence[str] = dataclasses.field(default_factory=list)
     cve_id: Optional[str] = None
 
-    @property
-    def impacted_purls(self) -> Iterable[str]:
-        return {str(p) for p in self.impacted_package_urls}
-
-    @property
-    def resolved_purls(self) -> Iterable[str]:
-        return {str(p) for p in self.resolved_package_urls}
-
     def __hash__(self):
         s = '{}{}{}{}{}'.format(
             self.summary,
-            ''.join(self.impacted_purls),
-            ''.join(self.resolved_purls),
+            ''.join({str(p) for p in self.impacted_package_urls}),
+            ''.join({str(p) for p in self.resolved_package_urls}),
             ''.join(self.reference_urls),
             self.cve_id,
         )
@@ -141,7 +133,7 @@ class DataSource(ContextManager):
         Subclasses yield batch_size sized batches of Advisory objects that have been added to the data source since the
         last run or self.cutoff_date.
         """
-        raise StopIteration
+        return set()
 
     def updated_advisories(self) -> Set[Advisory]:
         """
@@ -152,7 +144,7 @@ class DataSource(ContextManager):
               implement this method, not added_advisories(). The ImportRunner relies on this contract to decide between
               insert and update operations.
         """
-        raise StopIteration
+        return set()
 
     def error(self, msg: str) -> None:
         """
@@ -194,12 +186,6 @@ class GitDataSource(DataSource):
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.config.remove_working_directory:
             shutil.rmtree(self.config.working_directory)
-
-    def added_advisories(self) -> Set[Advisory]:
-        raise NotImplementedError
-
-    def updated_advisories(self) -> Set[Advisory]:
-        raise NotImplementedError
 
     def file_changes(
             self,

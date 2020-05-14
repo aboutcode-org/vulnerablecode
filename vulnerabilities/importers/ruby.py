@@ -2,7 +2,7 @@ import urllib.request
 from urllib.error import HTTPError
 from zipfile import ZipFile
 from io import BytesIO
-import saneyaml
+import yaml
 from dephell_specifier import RangeSpecifier
 from urllib.request import urlopen
 
@@ -14,14 +14,14 @@ def rubygem_advisories(url, prefix='ruby-advisory-db-master/gems/'):
         with ZipFile(BytesIO(response.read())) as zf:
             for path in zf.namelist():
                 if path.startswith(prefix) and path.endswith('.yml'):
-                    yield saneyaml.load(zf.open(path))
+                    yield yaml.safe_load(zf.open(path))
 
 
 def get_all_versions_of_package(package_name):
     url_to_load = 'https://rubygems.org/api/v1/versions/' + package_name + '.yaml'
     try:
         page = urllib.request.urlopen(url_to_load)
-        package_history = saneyaml.load(page)
+        package_history = yaml.safe_load(page)
     except HTTPError:
         return []
     for version in package_history:

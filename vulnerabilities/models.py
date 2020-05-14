@@ -75,7 +75,7 @@ class Package(PackageURLMixin):
     vulnerabilities = models.ManyToManyField(to='Vulnerability', through='ImpactedPackage')
 
     class Meta:
-        unique_together = ('name', 'namespace', 'type', 'version')
+        unique_together = ('name', 'namespace', 'type', 'version', 'qualifiers', 'subpath')
 
     def __str__(self):
         return self.package_url

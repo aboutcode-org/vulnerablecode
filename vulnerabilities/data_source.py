@@ -28,6 +28,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 from typing import ContextManager
+from typing import Iterable
 from typing import Mapping
 from typing import Optional
 from typing import Sequence
@@ -49,18 +50,18 @@ class Advisory:
         "package_urls" and the latter as "purls".
     """
     summary: str
-    impacted_package_urls: Sequence[PackageURL]
-    resolved_package_urls: Sequence[PackageURL] = dataclasses.field(default_factory=list)
+    impacted_package_urls: Iterable[PackageURL]
+    resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
     reference_urls: Sequence[str] = dataclasses.field(default_factory=list)
     reference_ids: Sequence[str] = dataclasses.field(default_factory=list)
     cve_id: Optional[str] = None
 
     @property
-    def impacted_purls(self) -> Set[str]:
+    def impacted_purls(self) -> Iterable[str]:
         return {str(p) for p in self.impacted_package_urls}
 
     @property
-    def resolved_purls(self) -> Set[str]:
+    def resolved_purls(self) -> Iterable[str]:
         return {str(p) for p in self.resolved_package_urls}
 
     def __hash__(self):

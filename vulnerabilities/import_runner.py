@@ -131,12 +131,13 @@ def _process_updated_advisories(data_source):
 
 
 def _get_or_create_vulnerability(advisory: Advisory) -> Tuple[models.Vulnerability, bool]:
-    query_kwargs = {}
-
     if advisory.cve_id:
-        query_kwargs['cve_id'] = advisory.cve_id
-    else:
+        query_kwargs = {'cve_id': advisory.cve_id}
+    elif advisory.summary:
         query_kwargs = {'summary': advisory.summary}
+    else:
+        return models.Vulnerability.objects.create(), True
+
     vuln, created = models.Vulnerability.objects.get_or_create(**query_kwargs)
 
     if not created and vuln.summary != advisory.summary:
@@ -147,23 +148,22 @@ def _get_or_create_vulnerability(advisory: Advisory) -> Tuple[models.Vulnerabili
 
 
 def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:
-    query_kwargs = {'name': p.name, 'version': p.version, 'type': p.type}
+    query_kwargs = {
+        'name': packageurl.normalize_name(p.name, p.type, encode=True),
+        'version': packageurl.normalize_version(p.version, encode=True),
+        'type': packageurl.normalize_type(p.type, encode=True),
+    }
+
     if p.namespace:
-        query_kwargs['namespace'] = p.namespace
+        query_kwargs['namespace'] = packageurl.normalize_namespace(p.namespace, p.type, encode=True)
 
-    pkg, created = models.Package.objects.get_or_create(**query_kwargs)
-    if created:
-        dirty = False
-        if p.qualifiers:
-            pkg.qualifiers = packageurl.normalize_qualifiers(p.qualifiers, encode=True)
-            dirty = True
-        if p.subpath:
-            pkg.subpath = p.subpath
-            dirty = True
-        if dirty:
-            pkg.save()
+    if p.qualifiers:
+        query_kwargs['qualifiers'] = packageurl.normalize_qualifiers(p.qualifiers, encode=True)
 
-    return pkg, created
+    if p.subpath:
+        query_kwargs['subpath'] = packageurl.normalize_subpath(p.subpath, encode=True)
+
+    return models.Package.objects.get_or_create(**query_kwargs)
 
 
 # FIXME
@@ -208,7 +208,7 @@ def _bulk_insert_impacted_and_resolved_packages(
         vulnerabilities.remove(vuln)  # minor optimization
 
         for impacted_purl in advisory.impacted_purls:
-            # TODO Figure out when/how it happens that a package is missing form the dict and fix it
+            # TODO Figure out when/how it happens that a package is missing from the dict and fix it
             p = impacted_packages.get(impacted_purl)
             if not p:
                 p = _package_url_to_package(impacted_purl)
@@ -222,7 +222,7 @@ def _bulk_insert_impacted_and_resolved_packages(
             impacted_refs.append(ip)
 
         for resolved_purl in advisory.resolved_purls:
-            # TODO Figure out when/how it happens that a package is missing form the dict and fix it
+            # TODO Figure out when/how it happens that a package is missing from the dict and fix it
             p = resolved_packages.get(resolved_purl)
             if not p:
                 p = _package_url_to_package(resolved_purl)
@@ -250,7 +250,7 @@ def _insert_vulnerabilities_and_references(batch: Sequence[Advisory]) -> Set[mod
 
         if advisory.cve_id:
             vuln, created = models.Vulnerability.objects.get_or_create(cve_id=advisory.cve_id)
-            if created:
+            if created and vuln.summary:
                 vuln.summary = advisory.summary
                 vuln.save()
         else:

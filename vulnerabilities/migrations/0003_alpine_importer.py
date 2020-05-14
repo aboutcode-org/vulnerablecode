@@ -20,5 +20,36 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from vulnerabilities.importers.alpine_linux import AlpineDataSource
-from vulnerabilities.importers.rust import RustDataSource
+from django.db import migrations
+
+
+def add_alpine_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+
+    Importer.objects.create(
+        name='alpine',
+        license='',
+        last_run=None,
+        data_source='AlpineDataSource',
+        data_source_cfg={
+            'repository_url': 'https://gitlab.alpinelinux.org/alpine/infra/alpine-secdb',
+        },
+    )
+
+
+def remove_alpine_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+    qs = Importer.objects.filter(name='alpine')
+    if qs:
+        qs[0].delete()
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('vulnerabilities', '0002_rust_importer'),
+    ]
+
+    operations = [
+        migrations.RunPython(add_alpine_importer, remove_alpine_importer),
+    ]

@@ -1,26 +1,45 @@
-import itertools
-import saneyaml
-from schema import Regex, Or, Schema
-from urllib.request import urlopen
-from io import BytesIO
-from zipfile import ZipFile
+#
+# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# http://nexb.com and https://github.com/nexB/vulnerablecode/
+# The VulnerableCode software is licensed under the Apache License version 2.0.
+# Data generated with VulnerableCode require an acknowledgment.
+#
+# You may not use this software except in compliance with the License.
+# You may obtain a copy of the License at: http://apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software distributed
+# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+# CONDITIONS OF ANY KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations under the License.
+#
+# When you publish or redistribute any data created with VulnerableCode or any VulnerableCode
+# derivative work, you must accompany this data with the following acknowledgment:
+#
+#  Generated with VulnerableCode and provided on an "AS IS" BASIS, WITHOUT WARRANTIES
+#  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
+#  VulnerableCode should be considered or used as legal advice. Consult an Attorney
+#  for any legal advice.
+#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
+#  Visit https://github.com/nexB/vulnerablecode/ for support and download.
+from typing import Any
+from typing import Iterable
+from typing import List
+from typing import Mapping
+from typing import Set
 
-ALPINE_DB_URL = "https://gitlab.alpinelinux.org/alpine/infra/alpine-secdb/-/\
-archive/master/alpine-secdb-master.zip"
+import yaml
+from packageurl import PackageURL
+from schema import Or
+from schema import Regex
+from schema import Schema
 
-
-def alpine_advisories(url):
-    with urlopen(url) as response:
-        with ZipFile(BytesIO(response.read())) as zf:
-            for path in zf.namelist():
-                if path.endswith("main.yaml"):
-                    yield saneyaml.load(zf.open(path))
+from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import GitDataSource
 
 
 def validate_schema(advisory_dict):
     scheme = {
         "distroversion": Regex(r"v\d.\d*"),
-        "reponame": "main",
+        "reponame": str,
         "archs": list,
         "packages": [
             {
@@ -47,29 +66,81 @@ def validate_schema(advisory_dict):
     Schema(scheme).validate(advisory_dict)
 
 
-def import_vulnerabilities():
-    vulnerability_package_dicts = []
-    for vulnerability in alpine_advisories(ALPINE_DB_URL):
-        validate_schema(vulnerability)
-        for pkg_details in vulnerability["packages"]:
-            package_name = pkg_details["pkg"]["name"]
-            for version, fixed_cves in pkg_details["pkg"]["secfixes"].items():
-                # ['CVE-2016-9932  XSA-200', 'CVE-2016-9815','CVE-????-?????'] after mapping
-                # the split  function to above list
-                all_cves = list(map(lambda x: x.split(), fixed_cves))
-                # it becomes   [['CVE-2016-9932','XSA-200'], ['CVE-2016-9815'],['CVE-????-?????']]
-                for index, vuln_grp in enumerate(all_cves):
-                    all_cves[index] = list(
-                        filter(lambda x: "CVE-????-?????" not in x, vuln_grp)
-                    )
-                all_cves = [i for i in all_cves if i and len(i) <= 2]
-                # this data consists lots of 'CVE-????-?????' to denote vulnerabilities
-                # with unassigned  CVE ids , we filter out these as well as other garbage data
-                vulnerability_package_dicts.append(
-                    {
-                        "package_name": package_name,
-                        "vuln_ids": all_cves,
-                        "fixed_version": version,
-                    }
+class AlpineDataSource(GitDataSource):
+
+    def __enter__(self):
+        super(AlpineDataSource, self).__enter__()
+
+        if not getattr(self, '_added_files', None):
+            self._added_files, self._updated_files = self.file_changes(recursive=True, file_ext='yaml')
+
+    def added_advisories(self) -> Set[Advisory]:
+        return set()
+
+    def updated_advisories(self) -> Set[Advisory]:
+        files = self._updated_files.union(self._added_files)
+        advisories = []
+        for f in files:
+            advisories.extend(self._process_file(f))
+
+        while advisories:
+            batch, advisories = advisories[:self.config.batch_size], advisories[self.config.batch_size:]
+            yield set(batch)
+
+    def _process_file(self, path) -> List[Advisory]:
+        advisories = []
+
+        with open(path) as f:
+            record = yaml.safe_load(f)
+            validate_schema(record)
+
+            if record['packages'] is None:
+                return advisories
+
+            for p in record['packages']:
+                advisories.extend(self._load_advisories(
+                    p['pkg'],
+                    record['distroversion'],
+                    record['reponame'],
+                    record['archs'],
+                ))
+
+        return advisories
+
+    def _load_advisories(
+            self,
+            pkg_infos: Mapping[str, Any],
+            distroversion: str,
+            reponame: str,
+            archs: Iterable[str],
+    ) -> List[Advisory]:
+
+        advisories = []
+
+        for version, fixed_vulns in pkg_infos['secfixes'].items():
+
+            if fixed_vulns is None:
+                continue
+
+            resolved_purls = {
+                PackageURL(
+                    name=pkg_infos['name'],
+                    type='alpine',
+                    version=version,
+                    qualifiers={'arch': arch, 'distroversion': distroversion, 'reponame': reponame},
                 )
-    return vulnerability_package_dicts
+                for arch in archs
+            }
+
+            for vuln_ids in fixed_vulns:
+                vuln_ids = vuln_ids.split()
+
+                advisories.append(Advisory(
+                    summary='',
+                    impacted_package_urls=[],
+                    resolved_package_urls=resolved_purls,
+                    reference_ids=vuln_ids[1:],
+                    cve_id=vuln_ids[0] if vuln_ids[0] != 'CVE-????-?????' else None,
+                ))
+
+        return advisories

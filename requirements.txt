@@ -27,8 +27,7 @@ pytest-django==3.7.0
 pytest-mock==1.13.0
 pytoml==0.1.21
 pytz==2019.3
-PyYAML==5.3
-saneyaml==0.4
+PyYAML==5.3.1
 schema==0.7.1
 six==1.13.0
 soupsieve==1.9.5

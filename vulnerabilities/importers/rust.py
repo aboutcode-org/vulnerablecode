@@ -101,8 +101,8 @@ class RustDataSource(GitDataSource):
 
         return Advisory(
             summary=advisory.get('description', ''),
-            impacted_package_urls=[PackageURL(type='cargo', name=crate_name, version=v) for v in affected],
-            resolved_package_urls=[PackageURL(type='cargo', name=crate_name, version=v) for v in unaffected],
+            impacted_package_urls={PackageURL(type='cargo', name=crate_name, version=v) for v in affected},
+            resolved_package_urls={PackageURL(type='cargo', name=crate_name, version=v) for v in unaffected},
             reference_urls=[reference_url] if reference_url else [],
             reference_ids=[advisory['id']],
             cve_id=cve_id,

@@ -5,15 +5,6 @@
       "debianbug": 776246,
       "description": "librsync before 1.0.0 uses a truncated MD4 checksum to match blocks",
       "releases": {
-        "stretch": {
-          "status": "open",
-          "nodsa_reason": "",
-          "repositories": {
-            "stretch": "0.9.7-10"
-          },
-          "nodsa": "Minor issue, too instrusive to backport",
-          "urgency": "low"
-        },
         "jessie": {
           "status": "open",
           "nodsa_reason": "",
@@ -21,22 +12,6 @@
             "jessie": "0.9.7-10"
           },
           "nodsa": "Minor issue, too instrusive to backport",
-          "urgency": "low"
-        },
-        "sid": {
-          "status": "resolved",
-          "repositories": {
-            "sid": "2.0.2-1"
-          },
-          "fixed_version": "2.0.2-1",
-          "urgency": "low"
-        },
-        "bullseye": {
-          "status": "resolved",
-          "repositories": {
-            "bullseye": "2.0.2-1"
-          },
-          "fixed_version": "2.0.2-1",
           "urgency": "low"
         },
         "buster": {
@@ -65,30 +40,6 @@
           "fixed_version": "1.50-1.1",
           "urgency": "medium"
         },
-        "jessie": {
-          "status": "resolved",
-          "repositories": {
-            "jessie": "1.74-1"
-          },
-          "fixed_version": "1.50-1.1",
-          "urgency": "medium"
-        },
-        "sid": {
-          "status": "resolved",
-          "repositories": {
-            "sid": "1.76-1"
-          },
-          "fixed_version": "1.50-1.1",
-          "urgency": "medium"
-        },
-        "bullseye": {
-          "status": "resolved",
-          "repositories": {
-            "bullseye": "1.76-1"
-          },
-          "fixed_version": "1.50-1.1",
-          "urgency": "medium"
-        },
         "buster": {
           "status": "resolved",
           "repositories": {
@@ -108,30 +59,6 @@
           "status": "resolved",
           "repositories": {
             "stretch": "1.74-1"
-          },
-          "fixed_version": "1.50-1.1",
-          "urgency": "medium"
-        },
-        "jessie": {
-          "status": "resolved",
-          "repositories": {
-            "jessie": "1.74-1"
-          },
-          "fixed_version": "1.50-1.1",
-          "urgency": "medium"
-        },
-        "sid": {
-          "status": "resolved",
-          "repositories": {
-            "sid": "1.76-1"
-          },
-          "fixed_version": "1.50-1.1",
-          "urgency": "medium"
-        },
-        "bullseye": {
-          "status": "resolved",
-          "repositories": {
-            "bullseye": "1.76-1"
           },
           "fixed_version": "1.50-1.1",
           "urgency": "medium"

@@ -20,55 +20,23 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-
+import dataclasses
 import json
+from typing import Any
+from typing import List
+from typing import Mapping
+from typing import Set
 from urllib.request import urlopen
-from schema import Regex, Or, Schema, Optional
 
-DEBIAN_TRACKER_URL = 'https://security-tracker.debian.org/tracker/data/json'
+from packageurl import PackageURL
+from schema import Optional
+from schema import Or
+from schema import Regex
+from schema import Schema
 
-
-def extract_vulnerabilities(debian_data, base_release='jessie'):
-    """
-    Return a sequence of mappings for each existing combination of
-    package and vulnerability from a mapping of Debian vulnerabilities
-    data.
-    """
-
-    validate_schema(debian_data)
-
-    package_vulnerabilities = []
-    for package_name, vulnerabilities in debian_data.items():
-        if not vulnerabilities or not package_name:
-            continue
-
-        for cve_id, details in vulnerabilities.items():
-            releases = details.get('releases')
-            if not releases:
-                continue
-
-            release = releases.get(base_release)
-            if not release:
-                continue
-
-            status = release.get('status')
-            if status not in ('open', 'resolved'):
-                continue
-
-            # the latest version of this package in base_release
-            version = release.get('repositories', {}).get(base_release, '')
-
-            package_vulnerabilities.append({
-                'package_name': package_name,
-                'cve_id': cve_id,
-                'description': details.get('description', ''),
-                'status': status,
-                'urgency': release.get('urgency', ''),
-                'version': version,
-                'fixed_version': release.get('fixed_version', '')
-            })
-
-    return package_vulnerabilities
+from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import DataSource
+from vulnerabilities.data_source import DataSourceConfiguration
 
 
 def validate_schema(advisory_dict):
@@ -106,9 +74,75 @@ def validate_schema(advisory_dict):
     Schema(scheme).validate(advisory_dict)
 
 
-def scrape_vulnerabilities():
-    """
-    Scrape debian' security tracker.
-    """
-    json_content = urlopen(DEBIAN_TRACKER_URL).read()
-    return extract_vulnerabilities(json.loads(json_content))
+@dataclasses.dataclass
+class DebianConfiguration(DataSourceConfiguration):
+    debian_tracker_url: str
+
+
+class DebianDataSource(DataSource):
+
+    CONFIG_CLASS = DebianConfiguration
+
+    def __enter__(self):
+        self._api_response = self._fetch()
+        validate_schema(self._api_response)
+
+    def updated_advisories(self) -> Set[Advisory]:
+        advisories = []
+
+        for pkg_name, records in self._api_response.items():
+            advisories.extend(self._parse(pkg_name, records))
+
+        while advisories:
+            batch, advisories = advisories[:self.config.batch_size], advisories[self.config.batch_size:]
+            yield set(batch)
+
+    def _fetch(self) -> Mapping[str, Any]:
+        return json.load(urlopen(self.config.debian_tracker_url))
+
+    def _parse(self, pkg_name: str, records: Mapping[str, Any]) -> List[Advisory]:
+        advisories = []
+
+        for cve_id, record in records.items():
+            impacted_purls, resolved_purls = set(), set()
+
+            for release_name, release_record in record['releases'].items():
+                if not release_record.get('repositories', {}).get(release_name):
+                    continue
+
+                purl = PackageURL(
+                    name=pkg_name,
+                    type='deb',
+                    namespace='debian',
+                    version=release_record['repositories'][release_name],
+                    qualifiers={'distro': release_name},
+                )
+
+                if release_record.get('status', '') == 'resolved':
+                    resolved_purls.add(purl)
+                else:
+                    impacted_purls.add(purl)
+
+                if 'fixed_version' in release_record:
+                    resolved_purls.add(PackageURL(
+                        name=pkg_name,
+                        type='deb',
+                        namespace='debian',
+                        version=release_record['fixed_version'],
+                        qualifiers={'distro': release_name},
+                    ))
+
+            reference_urls = []
+            debianbug = record.get('debianbug')
+            if debianbug:
+                reference_urls.append(f'https://bugs.debian.org/cgi-bin/bugreport.cgi?bug={debianbug}')
+
+            advisories.append(Advisory(
+                cve_id=cve_id,
+                summary=record.get('description', ''),
+                impacted_package_urls=impacted_purls,
+                resolved_package_urls=resolved_purls,
+                reference_urls=reference_urls,
+            ))
+
+        return advisories

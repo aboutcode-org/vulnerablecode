@@ -21,11 +21,9 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import json
 from os.path import dirname
 from os.path import join
 
-from vulnerabilities.importers import debian
 from vulnerabilities.importers import ubuntu
 
 
@@ -57,42 +55,3 @@ def test_ubuntu_extract_cves():
         'vulnerability_status': 'medium',
     }
     assert expected == cves[-1]
-
-
-def test_debian_extract_vulnerabilities():
-    debian_test_file = join(dirname(__file__), 'test_data', 'debian.json')
-
-    with open(debian_test_file) as f:
-        test_data = json.load(f)
-
-    expected = [
-        {
-            'package_name': 'librsync',
-            'cve_id': 'CVE-2014-8242',
-            'description': 'librsync before 1.0.0 uses a truncated MD4 checksum to match blocks',
-            'status': 'open',
-            'urgency': 'low',
-            'version': '0.9.7-10',
-            'fixed_version': ''
-        },
-        {
-            'package_name': 'mimetex',
-            'cve_id': 'CVE-2009-1382',
-            'description': 'Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX',
-            'status': 'resolved',
-            'urgency': 'medium',
-            'version': '1.74-1',
-            'fixed_version': '1.50-1.1'
-        },
-        {
-            'package_name': 'mimetex',
-            'cve_id': 'CVE-2009-2459',
-            'description': 'Multiple unspecified vulnerabilities in mimeTeX',
-            'status': 'resolved',
-            'urgency': 'medium',
-            'version': '1.74-1',
-            'fixed_version': '1.50-1.1'
-        }
-    ]
-
-    assert expected == debian.extract_vulnerabilities(test_data)

@@ -28,51 +28,6 @@ from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 
 
-def debian_dump(extract_data, base_release='jessie'):
-    """
-    Save data scraped from Debian' security tracker.
-    """
-    for data in extract_data:
-        vulnerability, _ = Vulnerability.objects.get_or_create(
-            cve_id=data['cve_id'],
-        )
-
-        pkg_name = data['package_name']
-        package = Package.objects.create(
-            name=pkg_name,
-            type='deb',
-            namespace='debian',
-            version=data.get('version', ''),
-            qualifiers=f'distro={base_release}',
-        )
-
-        if data['status'] == 'open':
-            ImpactedPackage.objects.create(
-                vulnerability=vulnerability,
-                package=package
-            )
-        else:
-            ResolvedPackage.objects.create(
-                vulnerability=vulnerability,
-                package=package
-            )
-
-            fixed_version = data.get('fixed_version')
-            if fixed_version:
-                package = Package.objects.create(
-                    name=pkg_name,
-                    type='deb',
-                    namespace='debian',
-                    version=fixed_version,
-                    qualifiers=f'distro={base_release}',
-                )
-
-                ResolvedPackage.objects.create(
-                    vulnerability=vulnerability,
-                    package=package
-                )
-
-
 def ubuntu_dump(html):
     """
     Dump data scraped from Ubuntu's security tracker.

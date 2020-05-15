@@ -73,21 +73,17 @@ class AlpineImportTest(TestCase):
         assert models.ResolvedPackage.objects.count() == 8
         assert models.ImpactedPackage.objects.count() == 0
 
-        packages = models.Package.objects.all()
-        assert len(packages) == 5
+        assert models.Package.objects.count() == 5
 
-        self.assert_for_package(packages, 'cacti', '1.2.8-r0', cve_ids={'CVE-2019-17358'}, arch='armv7')
-        self.assert_for_package(packages, 'cacti', '1.2.8-r0', cve_ids={'CVE-2019-17358'}, arch='x86_64')
-        self.assert_for_package(packages, 'xen', '4.12.1-r0', vuln_ref='XSA-295', arch='x86_64')
-
-        self.assert_for_package(packages, 'ansible','2.8.6-r0',
+        self.assert_for_package('cacti', '1.2.8-r0', cve_ids={'CVE-2019-17358'}, arch='armv7')
+        self.assert_for_package('cacti', '1.2.8-r0', cve_ids={'CVE-2019-17358'}, arch='x86_64')
+        self.assert_for_package('xen', '4.12.1-r0', vuln_ref='XSA-295', arch='x86_64')
+        self.assert_for_package('ansible', '2.9.3-r0', cve_ids={'CVE-2019-14904', 'CVE-2019-14905'}, arch='x86_64')
+        self.assert_for_package('ansible','2.8.6-r0',
                                 cve_ids={'CVE-2019-14846', 'CVE-2019-14856', 'CVE-2019-14858'}, arch='x86_64')
 
-        self.assert_for_package(packages, 'ansible', '2.9.3-r0', cve_ids={'CVE-2019-14904', 'CVE-2019-14905'},
-                                arch='x86_64')
-
-    def assert_for_package(self, packages, name, version, cve_ids=None, vuln_ref=None, arch=None):
-        qs = packages.filter(name=name, version=version)
+    def assert_for_package(self, name, version, cve_ids=None, vuln_ref=None, arch=None):
+        qs = models.Package.objects.filter(name=name, version=version)
         assert qs
 
         if arch:

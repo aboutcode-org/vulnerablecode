@@ -1,17 +1,47 @@
+#
+# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# http://nexb.com and https://github.com/nexB/vulnerablecode/
+# The VulnerableCode software is licensed under the Apache License version 2.0.
+# Data generated with VulnerableCode require an acknowledgment.
+#
+# You may not use this software except in compliance with the License.
+# You may obtain a copy of the License at: http://apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software distributed
+# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+# CONDITIONS OF ANY KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations under the License.
+#
+# When you publish or redistribute any data created with VulnerableCode or any VulnerableCode
+# derivative work, you must accompany this data with the following acknowledgment:
+#
+#  Generated with VulnerableCode and provided on an "AS IS" BASIS, WITHOUT WARRANTIES
+#  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
+#  VulnerableCode should be considered or used as legal advice. Consult an Attorney
+#  for any legal advice.
+#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
+#  Visit https://github.com/nexB/vulnerablecode/ for support and download.
+#
 # Data Imported from https://github.com/pyupio/safety-db
+#
+import dataclasses
 import json
-from schema import Regex, Or, Schema, SchemaError
+from typing import Any
+from typing import Iterable
+from typing import Mapping
+from typing import Set
+from typing import Tuple
 from urllib.error import HTTPError
 from urllib.request import urlopen
+
 from dephell_specifier import RangeSpecifier
+from packageurl import PackageURL
+from schema import Or
+from schema import Regex
+from schema import Schema
 
-URL = 'https://raw.githubusercontent.com/pyupio/safety-db/master/data/insecure_full.json'
-
-
-def get_data_file():
-    with urlopen(URL) as file:
-        json_file = json.load(file)
-    return json_file
+from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import DataSource
+from vulnerabilities.data_source import DataSourceConfiguration
 
 
 def validate_schema(advisory_dict):
@@ -32,53 +62,110 @@ def validate_schema(advisory_dict):
     Schema(scheme).validate(advisory_dict)
 
 
-def get_all_versions_of_package(package_name):
-    url = "https://pypi.org/pypi/{}/json".format(package_name)
-    releases = set()
-    try:
-        with urlopen(url) as response:
-            json_file = json.load(response)
-    except HTTPError:  # PyPi does not have data about this package, we skip these
-        return releases
-    for release in json_file['releases']:
-        releases.add(release)
-    return releases
+class VersionAPI:
+    def __init__(self, cache=None):
+        self.cache = cache or {}
+
+    def get(self, package_name):
+        if package_name not in self.cache:
+            url = "https://pypi.org/pypi/{}/json".format(package_name)
+            releases = set()
+            try:
+                with urlopen(url) as response:
+                    json_file = json.load(response)
+                    releases = set(json_file['releases'])
+            except HTTPError:  # PyPi does not have data about this package
+                pass
+
+            self.cache[package_name] = releases
+
+        return self.cache[package_name]
 
 
-def import_vulnerabilities():
-    vulnerability_package_dicts = []
-    data = get_data_file()
-    validate_schema(data)
-    cves = set()
-    for package_name in data:
-        all_package_versions = set(get_all_versions_of_package(package_name))
-        if len(all_package_versions) == 0:
-            # PyPi does not have data about this package, we skip these
-            continue
-        for advisory in data[package_name]:
-            description = advisory['advisory']
-            cve_id = advisory.get('cve')
-            vuln_id = advisory['id']
-            vuln_version_ranges = advisory['specs']
-            affected_versions = set()
-            for vuln_version_range in vuln_version_ranges:
-                version_range = RangeSpecifier(vuln_version_range)
-                affected_versions = set()
-                for version in all_package_versions:
-                    if version in version_range:
-                        affected_versions.add(version)
-            unaffected_versions = all_package_versions - affected_versions
-            if cve_id:
-                cve_ids = cve_id.split(',')
-                cve_ids = list(filter(lambda x: x not in cves, cve_ids))
-                # This data has duplicates hence the check
-                vulnerability_package_dicts.append({
-                    'package_name': package_name,
-                    'vuln_id': vuln_id,
-                    'affected_versions': affected_versions,
-                    'unaffected_versions': unaffected_versions,
-                    'cve_id': cve_ids,
-                    'description': description
-                })
-                cves.add(cve_id)
-    return vulnerability_package_dicts
+@dataclasses.dataclass
+class SafetyDbConfiguration(DataSourceConfiguration):
+    url: str
+
+
+class SafetyDbDataSource(DataSource):
+
+    CONFIG_CLASS = SafetyDbConfiguration
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._versions = VersionAPI()
+
+    def __enter__(self):
+        self._api_response = self._fetch()
+        validate_schema(self._api_response)
+
+    @property
+    def versions(self):  # quick hack to make it patchable
+        return self._versions
+
+    def _fetch(self) -> Mapping[str, Any]:
+        with urlopen(self.config.url) as response:
+            return json.load(response)
+
+    def updated_advisories(self) -> Set[Advisory]:
+        advisories = []
+
+        for package_name in self._api_response:
+            all_package_versions = self.versions.get(package_name)
+            if len(all_package_versions) == 0:
+                # PyPi does not have data about this package, we skip these
+                continue
+
+            for advisory in self._api_response[package_name]:
+
+                impacted_purls, resolved_purls = categorize_versions(
+                    package_name, all_package_versions, advisory['specs'])
+
+                cve_ids = advisory.get('cve') or ['']
+                if len(cve_ids[0]):  # meaning if cve_ids is not [''] but either ['CVE-123'] or ['CVE-123, CVE-124']
+                    cve_ids = [s.strip() for s in cve_ids.split(',')]
+
+                for cve_id in cve_ids:
+                    advisories.append(Advisory(
+                        cve_id=cve_id,
+                        summary=advisory['advisory'],
+                        reference_ids=[advisory['id']],
+                        impacted_package_urls=impacted_purls,
+                        resolved_package_urls=resolved_purls,
+                    ))
+
+        while advisories:
+            batch, advisories = advisories[:self.config.batch_size], advisories[self.config.batch_size:]
+            yield set(batch)
+
+
+def categorize_versions(
+        package_name: str,
+        all_versions: Set[str],
+        version_specs: Iterable[str],
+) -> Tuple[Set[PackageURL], Set[PackageURL]]:
+    """
+    :return: impacted, resolved purls
+    """
+    impacted_versions, impacted_purls = set(), set()
+    ranges = [RangeSpecifier(s) for s in version_specs]
+
+    for version in all_versions:
+        if any([version in r for r in ranges]):
+            impacted_versions.add(version)
+
+            impacted_purls.add(PackageURL(
+                name=package_name,
+                type='pypi',
+                version=version,
+            ))
+
+    resolved_purls = set()
+    for version in all_versions - impacted_versions:
+        resolved_purls.add(PackageURL(
+            name=package_name,
+            type='pypi',
+            version=version
+        ))
+
+    return impacted_purls, resolved_purls

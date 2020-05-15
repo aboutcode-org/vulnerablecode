@@ -25,10 +25,8 @@ import datetime
 import logging
 from typing import Dict
 from typing import List
-from typing import Sequence
 from typing import Set
 from typing import Tuple
-from typing import Union
 
 import packageurl
 
@@ -148,9 +146,15 @@ def _get_or_create_vulnerability(advisory: Advisory) -> Tuple[models.Vulnerabili
 
 
 def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:
+    version = packageurl.normalize_version(p.version, encode=True)
+
+    # FIXME terrible hack, remove after https://github.com/package-url/packageurl-python/pull/30 was merged
+    if len(version) > 50:
+        version = version[:50]
+
     query_kwargs = {
         'name': packageurl.normalize_name(p.name, p.type, encode=True),
-        'version': packageurl.normalize_version(p.version, encode=True),
+        'version': version,
         'type': packageurl.normalize_type(p.type, encode=True),
     }
 

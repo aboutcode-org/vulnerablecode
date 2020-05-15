@@ -21,26 +21,15 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import pytest
 import os
-import json
 
-from vulnerabilities.data_dump import debian_dump
+import pytest
+
 from vulnerabilities.data_dump import ubuntu_dump
-from vulnerabilities.importers import debian
 from vulnerabilities.importers import ubuntu
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
-
-
-@pytest.fixture
-def setDebianData(db):
-    with open(os.path.join(TEST_DATA, 'debian.json')) as f:
-        test_data = json.load(f)
-
-    extract_data = debian.extract_vulnerabilities(test_data)
-    debian_dump(extract_data)
 
 
 @pytest.fixture

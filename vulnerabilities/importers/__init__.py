@@ -22,4 +22,5 @@
 
 from vulnerabilities.importers.archlinux import ArchlinuxDataSource
 from vulnerabilities.importers.alpine_linux import AlpineDataSource
+from vulnerabilities.importers.debian import DebianDataSource
 from vulnerabilities.importers.rust import RustDataSource

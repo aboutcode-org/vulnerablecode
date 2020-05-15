@@ -20,11 +20,18 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-
+import dataclasses
 import json
+from typing import Iterable
+from typing import List
+from typing import Mapping
+from typing import Set
 from urllib.request import urlopen
+
+from packageurl import PackageURL
 from schema import Regex, Schema, Or
-ARCHLINUX_TRACKER_URL = 'https://security.archlinux.org/json'
+
+from vulnerabilities.data_source import DataSource, DataSourceConfiguration, Advisory
 
 
 def validate_schema(advisory_dict):
@@ -46,13 +53,61 @@ def validate_schema(advisory_dict):
     Schema(scheme).validate(advisory_dict)
 
 
-def scrape_vulnerabilities():
-    """
-    Fetch and return data scraped from archlinux security tracker.
-    """
-    json_content = urlopen(ARCHLINUX_TRACKER_URL).read()
-    arch_data = json.loads(json_content)
-    for advisory in arch_data:
-        validate_schema(advisory)
+@dataclasses.dataclass
+class ArchlinuxConfiguration(DataSourceConfiguration):
+    archlinux_tracker_url: str
 
-    return arch_data
+
+class ArchlinuxDataSource(DataSource):
+
+    CONFIG_CLASS = ArchlinuxConfiguration
+
+    def __enter__(self):
+        self._api_response = self._fetch()
+
+        for record in self._api_response:
+            validate_schema(record)
+
+    def updated_advisories(self) -> Set[Advisory]:
+        advisories = []
+
+        for record in self._api_response:
+            advisories.extend(self._parse(record))
+
+        while advisories:
+            batch, advisories = advisories[:self.config.batch_size], advisories[self.config.batch_size:]
+            yield set(batch)
+
+    def _fetch(self) -> Iterable[Mapping]:
+        return json.load(urlopen(self.config.archlinux_tracker_url))
+
+    def _parse(self, record) -> List[Advisory]:
+        advisories = []
+
+        for cve_id in record['issues']:
+            impacted_purls, resolved_purls = set(), set()
+            for name in record['packages']:
+                impacted_purls.add(PackageURL(
+                    name=name,
+                    type='pacman',
+                    namespace='archlinux',
+                    version=record['affected'],
+                ))
+
+                if record['fixed']:
+                    resolved_purls.add(PackageURL(
+                        name=name,
+                        type='pacman',
+                        namespace='archlinux',
+                        version=record['fixed'],
+                    ))
+
+            advisories.append(Advisory(
+                cve_id=cve_id,
+                summary='',
+                impacted_package_urls=impacted_purls,
+                resolved_package_urls=resolved_purls,
+                reference_urls=[f'https://security.archlinux.org/{a}' for a in record['advisories']],
+            ))
+
+        return advisories

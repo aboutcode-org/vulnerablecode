@@ -1,5 +1,39 @@
 [
   {
+    "name": "AVG-1146",
+    "packages": [
+      "squid"
+    ],
+    "status": "Vulnerable",
+    "severity": "Critical",
+    "type": "multiple issues",
+    "affected": "4.10-2",
+    "fixed": null,
+    "ticket": null,
+    "issues": [
+      "CVE-2020-11945",
+      "CVE-2019-12521",
+      "CVE-2019-12519"
+    ],
+    "advisories": []
+  },
+  {
+    "name": "AVG-1157",
+    "packages": [
+      "openconnect"
+    ],
+    "status": "Vulnerable",
+    "severity": "High",
+    "type": "arbitrary code execution",
+    "affected": "1:8.05-1",
+    "fixed": null,
+    "ticket": null,
+    "issues": [
+      "CVE-2020-12823"
+    ],
+    "advisories": []
+  },
+  {
     "name": "AVG-708",
     "packages": [
       "wireshark-common",
@@ -15,18 +49,9 @@
     "ticket": null,
     "issues": [
       "CVE-2018-11362",
-      "CVE-2018-11361",
-      "CVE-2018-11360",
-      "CVE-2018-11359",
-      "CVE-2018-11358",
-      "CVE-2018-11357",
-      "CVE-2018-11356",
-      "CVE-2018-11355",
-      "CVE-2018-11354"
+      "CVE-2018-11361"
     ],
     "advisories": [
-      "ASA-201805-25",
-      "ASA-201805-24",
       "ASA-201805-22",
       "ASA-201805-23"
     ]

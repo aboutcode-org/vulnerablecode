@@ -1,4 +1,3 @@
-#
 # Copyright (c) 2017 nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
@@ -21,42 +20,36 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import pytest
-import os
-import json
-
-from vulnerabilities.data_dump import debian_dump
-from vulnerabilities.data_dump import ubuntu_dump
-from vulnerabilities.importers import debian
-from vulnerabilities.importers import ubuntu
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
+from django.db import migrations
 
 
-@pytest.fixture
-def setDebianData(db):
-    with open(os.path.join(TEST_DATA, 'debian.json')) as f:
-        test_data = json.load(f)
+def add_archlinux_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
 
-    extract_data = debian.extract_vulnerabilities(test_data)
-    debian_dump(extract_data)
-
-
-@pytest.fixture
-def setUbuntuData(db):
-    with open(os.path.join(TEST_DATA, 'ubuntu_main.html')) as f:
-        test_data = f.read()
-
-    data = ubuntu.extract_cves(test_data)
-    ubuntu_dump(data)
+    Importer.objects.create(
+        name='archlinux',
+        license='',
+        last_run=None,
+        data_source='ArchlinuxDataSource',
+        data_source_cfg={
+            'archlinux_tracker_url': 'https://security.archlinux.org/json',
+        },
+    )
 
 
-@pytest.fixture
-def no_mkdir(monkeypatch):
-    monkeypatch.delattr('os.mkdir')
+def remove_archlinux_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+    qs = Importer.objects.filter(name='archlinux')
+    if qs:
+        qs[0].delete()
 
 
-@pytest.fixture
-def no_rmtree(monkeypatch):
-    monkeypatch.delattr('shutil.rmtree')
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('vulnerabilities', '0003_alpine_importer'),
+    ]
+
+    operations = [
+        migrations.RunPython(add_archlinux_importer, remove_archlinux_importer),
+    ]

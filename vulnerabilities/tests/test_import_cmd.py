@@ -35,6 +35,7 @@ class TestListSources(TestCase):
     @classmethod
     def setUpTestData(cls):
         for name in ('npm', 'debian', 'ubuntu', 'archlinux'):
+            name += '_import_cmd_test'
 
             Importer.objects.create(
                 name=name,
@@ -68,7 +69,7 @@ class TestUnknownSources(TestCase):
     @classmethod
     def setUpTestData(cls):
         Importer.objects.create(
-            name='debian',
+            name='debian_import_cmd_test',
             license='fakelicense',
             last_run=None,
             data_source='fakesource',
@@ -78,9 +79,9 @@ class TestUnknownSources(TestCase):
     def test_error_message_includes_unknown_sources(self):
 
         with pytest.raises(CommandError) as cm:
-            call_command('import', 'debian', 'foo', 'bar', stdout=StringIO())
+            call_command('import', 'debian_import_cmd_test', 'foo', 'bar', stdout=StringIO())
 
         err = str(cm)
         assert 'bar' in err
         assert 'foo' in err
-        assert 'debian' not in err
+        assert 'debian_import_cmd_test' not in err

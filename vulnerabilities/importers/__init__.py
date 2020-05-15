@@ -20,5 +20,6 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+from vulnerabilities.importers.archlinux import ArchlinuxDataSource
 from vulnerabilities.importers.alpine_linux import AlpineDataSource
 from vulnerabilities.importers.rust import RustDataSource

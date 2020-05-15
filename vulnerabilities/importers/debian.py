@@ -98,7 +98,8 @@ class DebianDataSource(DataSource):
             yield set(batch)
 
     def _fetch(self) -> Mapping[str, Any]:
-        return json.load(urlopen(self.config.debian_tracker_url))
+        with urlopen(self.config.debian_tracker_url) as response:
+            return json.load(response)
 
     def _parse(self, pkg_name: str, records: Mapping[str, Any]) -> List[Advisory]:
         advisories = []

@@ -79,7 +79,8 @@ class ArchlinuxDataSource(DataSource):
             yield set(batch)
 
     def _fetch(self) -> Iterable[Mapping]:
-        return json.load(urlopen(self.config.archlinux_tracker_url))
+        with urlopen(self.config.archlinux_tracker_url) as response:
+            return json.load(response)
 
     def _parse(self, record) -> List[Advisory]:
         advisories = []

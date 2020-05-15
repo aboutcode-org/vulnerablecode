@@ -1,0 +1,108 @@
+<oval_definitions
+    xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+    xmlns:ind-def="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent"
+    xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5"
+    xmlns:unix-def="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix"
+    xmlns:linux-def="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd   http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd   http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd   http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd   http://oval.mitre.org/XMLSchema/oval-definitions-5#macos linux-definitions-schema.xsd">
+
+    <generator>
+        <oval:product_name>Canonical CVE OVAL Generator</oval:product_name>
+        <oval:product_version>1.1</oval:product_version>
+        <oval:schema_version>5.11.1</oval:schema_version>
+        <oval:timestamp>2020-05-11T04:53:34</oval:timestamp>
+    </generator>
+
+<definitions>
+        <definition class="vulnerability" id="oval:com.ubuntu.bionic:def:201687030000000" version="1">
+            <metadata>
+                <title>CVE-2016-8703 on Ubuntu 18.04 LTS (bionic) - medium.</title>
+                <description>Heap-based buffer overflow in the bm_readbody_bmp function in bitmap_io.c in potrace before 1.13 allows remote attackers to have unspecified impact via a crafted BMP image, a different vulnerability than CVE-2016-8698, CVE-2016-8699, CVE-2016-8700, CVE-2016-8701, and CVE-2016-8702.</description>
+                <affected family="unix">
+                    <platform>Ubuntu 18.04 LTS</platform>
+                </affected>
+                <reference source="CVE" ref_id="CVE-2016-8703" ref_url="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8703" />
+                <advisory>
+                    <severity>Medium</severity>
+                    <rights>Copyright (C) 2017 Canonical Ltd.</rights>
+                    <public_date>2017-01-31 22:59:00 UTC</public_date>
+                    <discovered_by>Agostino Sarubbo</discovered_by>
+                    <ref>http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8703.html</ref>
+                    <ref>https://blogs.gentoo.org/ago/2016/08/08/potrace-multiplesix-heap-based-buffer-overflow-in-bm_readbody_bmp-bitmap_io-c/</ref>
+                </advisory>
+            </metadata>
+            <oval:notes>
+                <oval:note>tyhicks&gt; inkscape in xenial and earlier embeds libpotrace (LP: #1156664) mdeslaur&gt; potrace in inkscape works on bitmaps already loaded, not mdeslaur&gt; arbitrary images. Marking as not-affected for inkscape.</oval:note>
+            </oval:notes>
+            <criteria>
+                <extend_definition definition_ref="oval:com.ubuntu.bionic:def:100" comment="Ubuntu 18.04 LTS (bionic) is installed." applicability_check="true" />
+                <criterion test_ref="oval:com.ubuntu.bionic:tst:201686860000000" comment="potrace package in bionic, is related to the CVE in some way and has been fixed (note: '1.14-2')." />
+            </criteria>
+        </definition>
+        <definition class="vulnerability" id="oval:com.ubuntu.bionic:def:201688600000000" version="1">
+            <metadata>
+                <title>CVE-2016-8860 on Ubuntu 18.04 LTS (bionic) - medium.</title>
+                <description>Tor before 0.2.8.9 and 0.2.9.x before 0.2.9.4-alpha had internal functions that were entitled to expect that buf_t data had NUL termination, but the implementation of or/buffers.c did not ensure that NUL termination was present, which allows remote attackers to cause a denial of service (client, hidden service, relay, or authority crash) via crafted data.</description>
+                <affected family="unix">
+                    <platform>Ubuntu 18.04 LTS</platform>
+                </affected>
+                <reference source="CVE" ref_id="CVE-2016-8860" ref_url="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8860" />
+                <advisory>
+                    <severity>Medium</severity>
+                    <rights>Copyright (C) 2017 Canonical Ltd.</rights>
+                    <public_date>2017-01-04 20:59:00 UTC</public_date>
+                    <ref>http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8860.html</ref>
+                    <ref>https://trac.torproject.org/projects/tor/ticket/20384</ref>
+                    <ref>https://blog.torproject.org/blog/tor-0289-released-important-fixes</ref>
+                    <ref>https://github.com/torproject/tor/commit/3cea86eb2fbb65949673eb4ba8ebb695c87a57ce</ref>
+                    <ref>http://www.openwall.com/lists/oss-security/2016/10/18/11</ref>
+                </advisory>
+            </metadata>
+            <criteria>
+                <extend_definition definition_ref="oval:com.ubuntu.bionic:def:100" comment="Ubuntu 18.04 LTS (bionic) is installed." applicability_check="true" />
+                <criterion test_ref="oval:com.ubuntu.bionic:tst:201688600000000" comment="tor package in bionic, is related to the CVE in some way and has been fixed (note: '0.2.8.9-1ubuntu1')." />
+            </criteria>
+        </definition>
+</definitions>
+
+<tests>
+    <linux-def:dpkginfo_test id="oval:com.ubuntu.bionic:tst:201686860000000" version="1" check_existence="at_least_one_exists" check="at least one" comment="Does the 'potrace' package exist and is the version less than '1.14-2'?">
+        <linux-def:object object_ref="oval:com.ubuntu.bionic:obj:201686860000000"/>
+        <linux-def:state state_ref="oval:com.ubuntu.bionic:ste:201686860000000" />
+    </linux-def:dpkginfo_test>
+    <linux-def:dpkginfo_test id="oval:com.ubuntu.bionic:tst:201688600000000" version="1" check_existence="at_least_one_exists" check="at least one" comment="Does the 'tor' package exist and is the version less than '0.2.8.9-1ubuntu1'?">
+        <linux-def:object object_ref="oval:com.ubuntu.bionic:obj:2017115650000000"/>
+        <linux-def:state state_ref="oval:com.ubuntu.bionic:ste:201688600000000" />
+    </linux-def:dpkginfo_test>
+</tests>
+
+<objects>
+    <linux-def:dpkginfo_object id="oval:com.ubuntu.bionic:obj:2017115650000000" version="1" comment="The 'tor' package binaries.">
+        <linux-def:name var_ref="oval:com.ubuntu.bionic:var:2017115650000000" var_check="at least one" />
+    </linux-def:dpkginfo_object>
+    <linux-def:dpkginfo_object id="oval:com.ubuntu.bionic:obj:201686860000000" version="1" comment="The 'potrace' package binaries.">
+        <linux-def:name var_ref="oval:com.ubuntu.bionic:var:201686860000000" var_check="at least one" />
+    </linux-def:dpkginfo_object>
+</objects>
+
+<states>
+    <linux-def:dpkginfo_state id="oval:com.ubuntu.bionic:ste:201686860000000" version="1" comment="The package version is less than '1.14-2'.">
+        <linux-def:evr datatype="debian_evr_string" operation="less than">1.14-2</linux-def:evr>
+    </linux-def:dpkginfo_state>
+    <linux-def:dpkginfo_state id="oval:com.ubuntu.bionic:ste:201688600000000" version="1" comment="The package version is less than '0.2.8.9-1ubuntu1'.">
+        <linux-def:evr datatype="debian_evr_string" operation="less than">0.2.8.9-1ubuntu1</linux-def:evr>
+    </linux-def:dpkginfo_state>
+</states>
+
+<variables>
+    <constant_variable id="oval:com.ubuntu.bionic:var:2017115650000000" version="1" datatype="string" comment="'tor' package binaries">
+            <value>tor</value>
+            <value>tor-geoipdb</value>
+    </constant_variable>
+    <constant_variable id="oval:com.ubuntu.bionic:var:201686860000000" version="1" datatype="string" comment="'potrace' package binaries">
+            <value>libpotrace0</value>
+            <value>potrace</value>
+    </constant_variable>
+</variables>
+
+</oval_definitions>

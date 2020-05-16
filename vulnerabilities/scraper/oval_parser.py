@@ -139,14 +139,10 @@ class UbuntuOvalParser(OvalExtractor):
             if 'test_ref' in child.attrib:
                 criteria_refs.append(child.get('test_ref'))
 
-        # FIXME  complexity of this can be reduced to O(1) by using a dictionary which maps
-        # oval_ids to their element. A simple improvement could be instead of iterating over all
-        # tests, we could simply use OvalDocument.getElementById method
         matching_tests = []
-        for test in self.all_tests:
-            for ref in criteria_refs:
-                if test.getId() == ref and len(test.element) == 2:
-                    matching_tests.append(test)
+        for ref in criteria_refs:
+            if len(self.oval_document.getElementByID(ref).element) == 2:
+                matching_tests.append(self.oval_document.getElementByID(ref))
 
         return matching_tests
 

@@ -1,20 +1,19 @@
-import xml.etree.ElementTree as ET
-from dephell_specifier import RangeSpecifier
-
-from vulnerabilities.scraper.lib_oval import (
-    OvalDefinition, OvalDocument, OvalTest, OvalObject, OvalState)
 from typing import List
 from typing import Dict
 from typing import Tuple
 from typing import Set
+import xml.etree.ElementTree as ET
+
+from dephell_specifier import RangeSpecifier
+
+from vulnerabilities.scraper.lib_oval import (
+    OvalDefinition, OvalDocument, OvalTest, OvalObject, OvalState)
 
 
 class OvalExtractor:
 
     def __init__(self, translations: Dict, oval_document: ET.ElementTree):
-        """
-        oval_document = it is an Etree parsed xml document
-        """
+
         self.translations = translations
         self.oval_document = OvalDocument(oval_document)
         self.all_definitions = self.oval_document.getDefinitions()
@@ -22,7 +21,8 @@ class OvalExtractor:
 
     def get_data(self) -> List[Dict]:
         """
-        Returns  a list of dictionaries
+        This is the orchestration method, it returns a list of dictionaries,
+        where each dictionary represents data from an OvalDefinition
         """
         oval_data = []
         for definition in self.all_definitions:
@@ -32,6 +32,9 @@ class OvalExtractor:
             ).getDescription()
             definition_data['vuln_id'] = self.get_vuln_id_from_definition(
                 definition)
+            definition_data['reference_urls'] = self.get_urls_from_definition(
+                definition
+            )
             matching_tests = self.get_tests_of_definition(definition)
             if not matching_tests:
                 continue
@@ -51,7 +54,7 @@ class OvalExtractor:
 
     def get_tests_of_definition(self, definition: OvalDefinition) -> List[OvalTest]:
         """
-        returns a list of all valid tests of the passed definition
+        returns a list of all valid tests of the passed OvalDefinition
         """
         pass
 
@@ -63,13 +66,15 @@ class OvalExtractor:
 
     def get_pkgs_from_obj(self, obj: OvalObject) -> List[str]:
         """
-        returns a list of all related packages
+        returns a list of all related packages nested within
+        an OvalObject
         """
         pass
 
     def get_versionsrngs_from_state(self, state: OvalState) -> RangeSpecifier:
         """
-        returns a list of all related version ranges
+        returns a list of all related version ranges within a
+        state
         """
         pass
 
@@ -97,7 +102,7 @@ class UbuntuOvalParser(OvalExtractor):
                 criteria_refs.append(child.get('test_ref'))
 
         # FIXME  complexity of this can be reduced to O(1) by using a dictionary which maps
-        # oval_ids to their element. A simple imporvement could be instead of iterating over all
+        # oval_ids to their element. A simple improvement could be instead of iterating over all
         # tests, we could simply use OvalDocument.getElementById method
         matching_tests = []
         for test in self.all_tests:

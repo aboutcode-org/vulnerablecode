@@ -99,33 +99,6 @@ class TestUbuntuOvalParser(unittest.TestCase):
 
         assert self.parsed_oval.get_versionsrngs_from_state(state_1) == exp_range_1
         assert self.parsed_oval.get_versionsrngs_from_state(state_2) == exp_range_2
-
-    def test_get_data(self):
-
-        expected_data = [
-            {
-                "test_data": [
-                    {
-                        "package_list": ["libpotrace0", "potrace"],
-                        "version_ranges": RangeSpecifier("<1.14-2"),
-                    }
-                ],
-                "description": "Heap-based buffer overflow in the bm_readbody_bmp function in bitmap_io.c in potrace before 1.13 allows remote attackers to have unspecified impact via a crafted BMP image, a different vulnerability than CVE-2016-8698, CVE-2016-8699, CVE-2016-8700, CVE-2016-8701, and CVE-2016-8702.",
-                "vuln_id": "CVE-2016-8703",
-            },
-            {
-                "test_data": [
-                    {
-                        "package_list": ["tor", "tor-geoipdb"],
-                        "version_ranges": RangeSpecifier("<0.2.8.9-1ubuntu1"),
-                    }
-                ],
-                "description": "Tor before 0.2.8.9 and 0.2.9.x before 0.2.9.4-alpha had internal functions that were entitled to expect that buf_t data had NUL termination, but the implementation of or/buffers.c did not ensure that NUL termination was present, which allows remote attackers to cause a denial of service (client, hidden service, relay, or authority crash) via crafted data.",
-                "vuln_id": "CVE-2016-8860",
-            },
-        ]
-
-        assert expected_data == self.parsed_oval.get_data()
     
     def test_get_urls_from_definition(self):
 
@@ -144,4 +117,48 @@ class TestUbuntuOvalParser(unittest.TestCase):
                      'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8860',
                     }
 
-        assert def2_urls == self.parsed_oval.get_urls_from_definition(self.definition_2)            
+        assert def2_urls == self.parsed_oval.get_urls_from_definition(self.definition_2)       
+
+    def test_get_data(self):
+
+        expected_data = [
+            {
+                "test_data": [
+                    {
+                        "package_list": ["libpotrace0", "potrace"],
+                        "version_ranges": RangeSpecifier("<1.14-2"),
+                    }
+                ],
+                "description": "Heap-based buffer overflow in the bm_readbody_bmp function in bitmap_io.c in potrace before 1.13 allows remote attackers to have unspecified impact via a crafted BMP image, a different vulnerability than CVE-2016-8698, CVE-2016-8699, CVE-2016-8700, CVE-2016-8701, and CVE-2016-8702.",
+                "vuln_id": "CVE-2016-8703",
+                "reference_urls":{
+                                  'http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8703.html',
+                                  'https://blogs.gentoo.org/ago/2016/08/08/potrace-multiplesix-heap-based-buffer-overflow-in-bm_readbody_bmp-bitmap_io-c/',
+                                  'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8703'
+                                }
+
+            },
+            {
+                "test_data": [
+                    {
+                        "package_list": ["tor", "tor-geoipdb"],
+                        "version_ranges": RangeSpecifier("<0.2.8.9-1ubuntu1"),
+                    }
+                ],
+                "description": "Tor before 0.2.8.9 and 0.2.9.x before 0.2.9.4-alpha had internal functions that were entitled to expect that buf_t data had NUL termination, but the implementation of or/buffers.c did not ensure that NUL termination was present, which allows remote attackers to cause a denial of service (client, hidden service, relay, or authority crash) via crafted data.",
+                "vuln_id": "CVE-2016-8860",
+                "reference_urls":{
+                     'http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8860.html',
+                     'https://trac.torproject.org/projects/tor/ticket/20384',
+                     'https://blog.torproject.org/blog/tor-0289-released-important-fixes',
+                     'https://github.com/torproject/tor/commit/3cea86eb2fbb65949673eb4ba8ebb695c87a57ce',
+                     'http://www.openwall.com/lists/oss-security/2016/10/18/11',
+                     'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8860',
+                    }
+
+            },
+        ]
+
+        assert expected_data == self.parsed_oval.get_data()
+    
+         

@@ -1,22 +1,26 @@
 import xml.etree.ElementTree as ET
 from dephell_specifier import RangeSpecifier
 
-from vulnerabilities.scraper import lib_oval
+from vulnerabilities.scraper.lib_oval import (
+    OvalDefinition, OvalDocument, OvalTest, OvalObject, OvalState)
+from typing import List
+from typing import Dict
+from typing import Tuple
+from typing import Set
 
 
 class OvalExtractor:
 
-    def __init__(self, translations, oval_document):
+    def __init__(self, translations: Dict, oval_document: ET.ElementTree):
         """
-        translations : it is a dict
         oval_document = it is an Etree parsed xml document
         """
         self.translations = translations
-        self.oval_document = lib_oval.OvalDocument(oval_document)
+        self.oval_document = OvalDocument(oval_document)
         self.all_definitions = self.oval_document.getDefinitions()
         self.all_tests = self.oval_document.getTests()
 
-    def get_data(self):
+    def get_data(self) -> List[Dict]:
         """
         Returns  a list of dictionaries
         """
@@ -45,39 +49,32 @@ class OvalExtractor:
 
         return oval_data
 
-    def get_tests_of_definition(self, definition):
+    def get_tests_of_definition(self, definition: OvalDefinition) -> List[OvalTest]:
         """
-        definition : type(definition) == OvalDefinition
         returns a list of all valid tests of the passed definition
         """
         pass
 
-    def get_object_state_of_test(self, test):
+    def get_object_state_of_test(self, test: OvalTest) -> Tuple[OvalObject, OvalState]:
         """
-        type(test) == OvalTest
         returns a tuple of (OvalObject,OvalState) of an OvalTest
         """
         pass
 
-    def get_states_of_test(self, test):
+    def get_pkgs_from_obj(self, obj: OvalObject) -> List[str]:
         """
-        test : type(test) == OvalTest
-        returns a list of all related states of the passed test
-        """
-        pass
-
-    def get_pkgs_from_obj(self, obj):
-        """
-        obj : type(obj) == OvalObject
         returns a list of all related packages
         """
         pass
 
-    def get_versionsrngs_from_state(self, state):
+    def get_versionsrngs_from_state(self, state: OvalState) -> RangeSpecifier:
         """
-        state : type(state) == OvalState
-        returns a list of all  related version ranges
+        returns a list of all related version ranges
         """
+        pass
+
+    @staticmethod
+    def get_urls_from_definition(definition: OvalDefinition) -> Set[str]:
         pass
 
     @staticmethod
@@ -90,7 +87,7 @@ class OvalExtractor:
 
 class UbuntuOvalParser(OvalExtractor):
 
-    def get_tests_of_definition(self, definition):
+    def get_tests_of_definition(self, definition: OvalDefinition) -> List[OvalTest]:
 
         criteria_refs = []
 
@@ -110,7 +107,7 @@ class UbuntuOvalParser(OvalExtractor):
 
         return matching_tests
 
-    def get_object_state_of_test(self, test):
+    def get_object_state_of_test(self, test: OvalTest) -> Tuple[OvalObject, OvalState]:
 
         obj, state = list(test.element)[0].get(
             'object_ref'), list(test.element)[1].get('state_ref')
@@ -119,7 +116,7 @@ class UbuntuOvalParser(OvalExtractor):
 
         return (obj, state)
 
-    def get_pkgs_from_obj(self, obj):
+    def get_pkgs_from_obj(self, obj: OvalObject) -> List[str]:
 
         pkg_list = []
 
@@ -134,7 +131,7 @@ class UbuntuOvalParser(OvalExtractor):
 
         return pkg_list
 
-    def get_versionsrngs_from_state(self, state):
+    def get_versionsrngs_from_state(self, state: OvalState) -> RangeSpecifier:
 
         for var in state.element:
             if var.get('operation'):
@@ -143,3 +140,18 @@ class UbuntuOvalParser(OvalExtractor):
                 version = var.text
                 version_range = operand + version
                 return RangeSpecifier(version_range)
+
+    @staticmethod
+    def get_urls_from_definition(definition: OvalDefinition) -> Set[str]:
+        all_urls = set()
+        definition_metadata = definition.getMetadata().element
+        for child in definition_metadata:
+            if child.tag.endswith('reference'):
+                all_urls.add(child.get('ref_url'))
+            if child.tag.endswith('advisory'):
+                for grandchild in child:
+                    if grandchild.tag.endswith('ref'):
+                        all_urls.add(grandchild.text)
+                break
+
+        return all_urls

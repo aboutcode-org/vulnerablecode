@@ -2,12 +2,50 @@ from typing import List
 from typing import Dict
 from typing import Tuple
 from typing import Set
+from typing import Optional
 import xml.etree.ElementTree as ET
 
 from dephell_specifier import RangeSpecifier
 
 from vulnerabilities.scraper.lib_oval import (
-    OvalDefinition, OvalDocument, OvalTest, OvalObject, OvalState)
+    OvalDefinition, OvalDocument, OvalTest, OvalObject, OvalState, OvalElement)
+
+
+class PerformantOvalDocument(OvalDocument):
+
+    def __init__(self, tree):
+        super().__init__(tree)
+        self.id_to_definition = {
+            el.getId(): el for el in self.getDefinitions()}
+        self.id_to_test = {el.getId(): el for el in self.getTests()}
+        self.id_to_object = {el.getId(): el for el in self.getObjects()}
+        self.id_to_state = {el.getId(): el for el in self.getStates()}
+        self.id_to_variable = {el.getId(): el for el in self.getVariables()}
+
+    def getElementByID(self, oval_id: str) -> OvalElement:
+        if not oval_id:
+            return None
+
+        root = self.getDocumentRoot()
+        if not root:
+            return None
+        try:
+            oval_type = OvalElement.getElementTypeFromOvalID(oval_id)
+        except Exception:
+            return None
+
+        if oval_type == OvalDefinition.DEFINITION:
+            return self.id_to_definition[oval_id]
+        elif oval_type == OvalDefinition.TEST:
+            return self.id_to_test[oval_id]
+        elif oval_type == OvalDefinition.OBJECT:
+            return self.id_to_object[oval_id]
+        elif oval_type == OvalDefinition.STATE:
+            return self.id_to_state[oval_id]
+        elif oval_type == OvalDefinition.VARIABLE:
+            return self.id_to_variable[oval_id]
+        else:
+            return None
 
 
 class OvalExtractor:
@@ -15,7 +53,7 @@ class OvalExtractor:
     def __init__(self, translations: Dict, oval_document: ET.ElementTree):
 
         self.translations = translations
-        self.oval_document = OvalDocument(oval_document)
+        self.oval_document = PerformantOvalDocument(oval_document)
         self.all_definitions = self.oval_document.getDefinitions()
         self.all_tests = self.oval_document.getTests()
 

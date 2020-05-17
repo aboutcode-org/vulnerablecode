@@ -2,7 +2,6 @@ from typing import List
 from typing import Dict
 from typing import Tuple
 from typing import Set
-from typing import Optional
 import xml.etree.ElementTree as ET
 
 from dephell_specifier import RangeSpecifier
@@ -20,7 +19,9 @@ class PerformantOvalDocument(OvalDocument):
         self.id_to_test = {el.getId(): el for el in self.getTests()}
         self.id_to_object = {el.getId(): el for el in self.getObjects()}
         self.id_to_state = {el.getId(): el for el in self.getStates()}
-        self.id_to_variable = {el.getId(): el for el in self.getVariables()}
+        if self.getVariables():
+            self.id_to_variable = {
+                el.getId(): el for el in self.getVariables()}
 
     def getElementByID(self, oval_id: str) -> OvalElement:
         if not oval_id:
@@ -67,7 +68,7 @@ class OvalExtractor:
 
             definition_data = {'test_data': []}
             definition_data['description'] = definition.getMetadata(
-            ).getDescription()
+            ).getDescription()  # this could use some data cleaning
             definition_data['vuln_id'] = self.get_vuln_id_from_definition(
                 definition)
             definition_data['reference_urls'] = self.get_urls_from_definition(
@@ -191,6 +192,59 @@ class UbuntuOvalParser(OvalExtractor):
                 for grandchild in child:
                     if grandchild.tag.endswith('ref'):
                         all_urls.add(grandchild.text)
+                break
+
+        return all_urls
+
+
+class SUSEOvalParser(UbuntuOvalParser):
+
+    def get_tests_of_definition(self, definition: OvalDefinition) -> List[OvalTest]:
+
+        criteria_refs = []
+
+        for child in definition.element.iter():
+
+            if 'test_ref' in child.attrib:
+                criteria_refs.append(child.get('test_ref'))
+
+        matching_tests = []
+        for ref in criteria_refs:
+            test = self.oval_document.getElementByID(ref)
+            _, state = self.get_object_state_of_test(test)
+            is_signature_test = False
+            is_suse_version_test = False
+            for child in state.element:
+                # This is to avoid signature tests, such as the one below
+                # <signature_keyid operation="equals">b88b2fd43dbdc284</signature_keyid>
+                if child.tag.endswith("signature_keyid"):
+                    is_signature_test = True
+                    break
+            # This is to avoid SUSE OS version tests, such as
+            # <rpminfo_state id="oval:org.opensuse.security:ste:2009061809" version="1"
+            # xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            #       <version operation="equals">15</version>
+            # </rpminfo_state>
+                if child.get('operation') == "equals":
+                    is_suse_version_test = True
+                    break
+            if not is_suse_version_test and not is_signature_test:
+                matching_tests.append(test)
+
+        return matching_tests
+
+    @staticmethod
+    def get_urls_from_definition(definition: OvalDefinition) -> Set[str]:
+
+        all_urls = set()
+        definition_metadata = definition.getMetadata().element
+        for child in definition_metadata:
+            if child.tag.endswith('reference'):
+                all_urls.add(child.get('ref_url'))
+            if child.tag.endswith('advisory'):
+                for grandchild in child:
+                    if grandchild.get('href'):
+                        all_urls.add(grandchild.get('href'))
                 break
 
         return all_urls

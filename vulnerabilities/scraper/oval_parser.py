@@ -22,7 +22,7 @@ class PerformantOvalDocument(OvalDocument):
         self.id_to_state = {el.getId(): el for el in self.getStates()}
         self.id_to_variable = {el.getId(): el for el in self.getVariables()}
 
-    def getElementByID(self, oval_id: str) -> OvalElement:
+    def getElementByID(self, oval_id: str) -> Optional[OvalElement]:
         if not oval_id:
             return None
 
@@ -65,6 +65,9 @@ class OvalExtractor:
         oval_data = []
         for definition in self.all_definitions:
 
+            matching_tests = self.get_tests_of_definition(definition)
+            if not matching_tests:
+                continue
             definition_data = {'test_data': []}
             definition_data['description'] = definition.getMetadata(
             ).getDescription()
@@ -73,9 +76,6 @@ class OvalExtractor:
             definition_data['reference_urls'] = self.get_urls_from_definition(
                 definition
             )
-            matching_tests = self.get_tests_of_definition(definition)
-            if not matching_tests:
-                continue
             for test in matching_tests:
                 test_obj, test_state = self.get_object_state_of_test(test)
                 if not test_obj or not test_state:

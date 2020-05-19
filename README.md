@@ -53,7 +53,7 @@ the code Django includes for this purpose: `SECRET_KEY=$(python -c "from django.
 ## Tests
 
 ```
-pycodestyle --exclude=migrations,settings.py,venv --max-line-length=100 .
+pycodestyle --exclude=migrations,settings.py,venv,lib_oval.py,test_ubuntu.py --max-line-length=100 .
 DJANGO_DEV=1 pytest 
 ```
 To skip tests which require internet connection:

@@ -11,7 +11,7 @@ env:
   - SECRET_KEY="i1bn=oly)w*2yl-5yc&f!vvgt)p)fh3_2$r#spa!*sw36f5ov7"
 
 before_script:
-  - pycodestyle --exclude=migrations,settings.py,venv,lib_oval.py,test_ubuntu.py --max-line-length=100 .
+  - pycodestyle --exclude=migrations,settings.py,venv,lib_oval.py,test_ubuntu.py,test_suse.py --max-line-length=100 .
   - psql -c "CREATE DATABASE vulnerablecode;" -U postgres
   - ./manage.py migrate
 

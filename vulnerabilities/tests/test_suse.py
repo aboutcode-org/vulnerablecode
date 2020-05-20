@@ -5,21 +5,20 @@ import xml.etree.ElementTree as ET
 from dephell_specifier import RangeSpecifier
 
 
-from vulnerabilities.scraper.oval_parser import SUSEOvalParser
+from vulnerabilities.scraper.oval_parser import OvalParser
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")
 
 
-class TestUbuntuOvalParser(unittest.TestCase):
+class TestSUSEOvalParser(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         xml_doc = ET.parse(os.path.join(TEST_DATA, "suse_oval_data.xml"))
-        translator = {"less than": "<","equals":"=="}
-        # "equals" key is for just testing . In actual practice(check the last test for more info)
-        #  all the elements which require "equals" are ignored(they are not useful) 
-        cls.parsed_oval = SUSEOvalParser(translator, xml_doc)
+        translator = {"less than": "<"}
+        #  all the elements which require "equals" are ignored(because they are not useful) 
+        cls.parsed_oval = OvalParser(translator, xml_doc)
 
     def setUp(self):
         self.definition_1 = self.parsed_oval.all_definitions[0]
@@ -104,9 +103,10 @@ class TestUbuntuOvalParser(unittest.TestCase):
         state_1 = self.parsed_oval.oval_document.getStates()[0]
         state_2 = self.parsed_oval.oval_document.getStates()[1]
 
-        exp_range_1 = RangeSpecifier("==15.1")
+        exp_range_1 = None
         exp_range_2 = RangeSpecifier("<0:1.2.11-lp151.3.6")
-
+        #In a full run we wont get exp_range1 because we won't obtain 
+        #it's state due to filters to  avoid such tests in  the first place
         assert self.parsed_oval.get_versionsrngs_from_state(state_1) == exp_range_1
         assert self.parsed_oval.get_versionsrngs_from_state(state_2) == exp_range_2
     

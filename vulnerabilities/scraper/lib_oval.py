@@ -8,7 +8,6 @@
 # * Neither the name of the Center for Internet Security, Inc. (CIS) nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER, CIS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER, CIS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """Library to simplify working with the OVAL XML structure
 
 
@@ -160,8 +159,14 @@ class OvalDocument(object):
             gen.setSchemaVersion("5.10.1")
             root.append(gen.get_element())
             return        
-        
+
         self.tree = tree
+        self.id_to_definition = { el.getId(): el for el in self.getDefinitions()} if self.getDefinitions() else {}
+        self.id_to_test = {el.getId(): el for el in self.getTests()} if self.getTests() else {}
+        self.id_to_object = {el.getId(): el for el in self.getObjects()} if self.getObjects() else {}
+        self.id_to_state = {el.getId(): el for el in self.getStates()} if self.getStates() else {}
+        self.id_to_variable = {el.getId(): el for el in self.getVariables()} if self.getVariables() else {}
+
         
         
     def parseFromFile(self, filename):
@@ -438,28 +443,17 @@ class OvalDocument(object):
             return None
         
         if oval_type == OvalDefinition.DEFINITION:
-            elist = self.getDefinitions()
+            return self.id_to_definition[ovalid]
         elif oval_type == OvalDefinition.TEST:
-            elist = self.getTests()
+            return self.id_to_test[ovalid]
         elif oval_type == OvalDefinition.OBJECT:
-            elist = self.getObjects()
+            return self.id_to_object[ovalid]
         elif oval_type == OvalDefinition.STATE:
-            elist = self.getStates()
+            return self.id_to_state[ovalid]
         elif oval_type == OvalDefinition.VARIABLE:
-            elist = self.getVariables()
+            return self.id_to_variable[ovalid]
         else:
             return None
-            
-        if not elist:
-            return None
-        
-        for element in elist:
-            defid = element.getId()
-            if defid and defid == ovalid:
-                return element
-            
-                    
-        
     
     def addElement(self, element, replace=True):
         """
@@ -512,6 +506,7 @@ class OvalDocument(object):
                 root.append(parent)
                 
             parent.append(element.getElement())
+            self.id_to_definition[ovalid] = element
             return True
         
         elif oval_type == OvalDefinition.TEST:
@@ -521,6 +516,7 @@ class OvalDocument(object):
                 root.append(parent)
                 
             parent.append(element.getElement())
+            self.id_to_test[ovalid] = element
             return True
         
         elif oval_type == OvalDefinition.OBJECT:
@@ -530,6 +526,7 @@ class OvalDocument(object):
                 root.append(parent)
                 
             parent.append(element.getElement())
+            self.id_to_object[ovalid] = element
             return True
         
         elif oval_type == OvalDefinition.STATE:
@@ -539,6 +536,7 @@ class OvalDocument(object):
                 root.append(parent)
                 
             parent.append(element.getElement())
+            self.id_to_state[ovalid] = element
             return True
         
         elif oval_type == OvalDefinition.VARIABLE:
@@ -546,7 +544,8 @@ class OvalDocument(object):
             if parent is None:
                 parent = Element("{" + OvalDocument.NS_DEFAULT.get("def") + "}variables")
                 root.append(parent)
-                
+            
+            self.id_to_variable[ovalid] = element
             parent.append(element.getElement())
             return True
         

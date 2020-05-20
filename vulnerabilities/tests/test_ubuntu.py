@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 from dephell_specifier import RangeSpecifier
 
 
-from vulnerabilities.scraper.oval_parser import UbuntuOvalParser
+from vulnerabilities.scraper.oval_parser import OvalParser
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -17,7 +17,7 @@ class TestUbuntuOvalParser(unittest.TestCase):
     def setUpClass(cls):
         xml_doc = ET.parse(os.path.join(TEST_DATA, "ubuntu_oval_data.xml"))
         translator = {"less than": "<"}
-        cls.parsed_oval = UbuntuOvalParser(translator, xml_doc)
+        cls.parsed_oval = OvalParser(translator, xml_doc)
 
     def setUp(self):
         self.definition_1 = self.parsed_oval.all_definitions[0]

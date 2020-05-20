@@ -1,8 +1,8 @@
+from typing import Optional
 from typing import List
 from typing import Dict
 from typing import Tuple
 from typing import Set
-from typing import Optional
 import xml.etree.ElementTree as ET
 
 from dephell_specifier import RangeSpecifier
@@ -11,7 +11,7 @@ from vulnerabilities.scraper.lib_oval import (
     OvalDefinition, OvalDocument, OvalTest, OvalObject, OvalState, OvalElement)
 
 
-class OvalExtractor:
+class OvalParser:
 
     def __init__(self, translations: Dict, oval_document: ET.ElementTree):
 
@@ -33,7 +33,7 @@ class OvalExtractor:
                 continue
             definition_data = {'test_data': []}
             definition_data['description'] = definition.getMetadata(
-            ).getDescription()
+            ).getDescription()  # this could use some data cleaning
             definition_data['vuln_id'] = self.get_vuln_id_from_definition(
                 definition)
             definition_data['reference_urls'] = self.get_urls_from_definition(
@@ -57,43 +57,6 @@ class OvalExtractor:
         """
         returns a list of all valid tests of the passed OvalDefinition
         """
-        pass
-
-    def get_object_state_of_test(self, test: OvalTest) -> Tuple[OvalObject, OvalState]:
-        """
-        returns a tuple of (OvalObject,OvalState) of an OvalTest
-        """
-        pass
-
-    def get_pkgs_from_obj(self, obj: OvalObject) -> List[str]:
-        """
-        returns a list of all related packages nested within
-        an OvalObject
-        """
-        pass
-
-    def get_versionsrngs_from_state(self, state: OvalState) -> RangeSpecifier:
-        """
-        returns a list of all related version ranges within a
-        state
-        """
-        pass
-
-    @staticmethod
-    def get_urls_from_definition(definition: OvalDefinition) -> Set[str]:
-        pass
-
-    @staticmethod
-    def get_vuln_id_from_definition(definition):
-
-        for child in definition.element.iter():
-            if child.get('ref_id'):
-                return child.get('ref_id')
-
-
-class UbuntuOvalParser(OvalExtractor):
-
-    def get_tests_of_definition(self, definition: OvalDefinition) -> List[OvalTest]:
 
         criteria_refs = []
 
@@ -104,21 +67,35 @@ class UbuntuOvalParser(OvalExtractor):
 
         matching_tests = []
         for ref in criteria_refs:
-            if len(self.oval_document.getElementByID(ref).element) == 2:
-                matching_tests.append(self.oval_document.getElementByID(ref))
+            oval_test = self.oval_document.getElementByID(ref)
+            if len(oval_test.element) == 2:
+                _, state = self.get_object_state_of_test(oval_test)
+                valid_test = True
+                for child in state.element:
+                    if child.get('operation') not in self.translations:
+                        valid_test = False
+                        break
+                if valid_test:
+                    matching_tests.append(
+                        self.oval_document.getElementByID(ref))
 
         return matching_tests
 
     def get_object_state_of_test(self, test: OvalTest) -> Tuple[OvalObject, OvalState]:
-
+        """
+        returns a tuple of (OvalObject,OvalState) of an OvalTest
+        """
         obj, state = list(test.element)[0].get(
             'object_ref'), list(test.element)[1].get('state_ref')
         obj = self.oval_document.getElementByID(obj)
         state = self.oval_document.getElementByID(state)
-
         return (obj, state)
 
     def get_pkgs_from_obj(self, obj: OvalObject) -> List[str]:
+        """
+        returns a list of all related packages nested within
+        an OvalObject
+        """
 
         pkg_list = []
 
@@ -133,11 +110,14 @@ class UbuntuOvalParser(OvalExtractor):
 
         return pkg_list
 
-    def get_versionsrngs_from_state(self, state: OvalState) -> RangeSpecifier:
-
+    def get_versionsrngs_from_state(self, state: OvalState) -> Optional[RangeSpecifier]:
+        """
+        returns  all related version ranges within a state
+        """
         for var in state.element:
             if var.get('operation'):
-
+                if var.get('operation') not in self.translations:
+                    continue
                 operand = self.translations[var.get('operation')]
                 version = var.text
                 version_range = operand + version
@@ -154,6 +134,14 @@ class UbuntuOvalParser(OvalExtractor):
                 for grandchild in child:
                     if grandchild.tag.endswith('ref'):
                         all_urls.add(grandchild.text)
+                    if grandchild.get('href'):
+                        all_urls.add(grandchild.get('href'))
                 break
 
         return all_urls
+
+    @staticmethod
+    def get_vuln_id_from_definition(definition):
+        for child in definition.element.iter():
+            if child.get('ref_id'):
+                return child.get('ref_id')

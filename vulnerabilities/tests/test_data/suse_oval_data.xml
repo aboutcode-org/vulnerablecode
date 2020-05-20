@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <oval_definitions
+            xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd"
+            xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5"
+            xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <generator>
+            <oval:product_name>Marcus Updateinfo to OVAL Converter</oval:product_name>
+            <oval:schema_version>5.5</oval:schema_version>
+            <oval:timestamp>2020-05-17T04:49:08</oval:timestamp>
+        </generator>
+    <definitions>
+    <definition id="oval:org.opensuse.security:def:20094112" version="1" class="vulnerability">
+    <metadata>
+    <title>CVE-2009-4112</title>
+        <affected family="unix">
+                <platform>openSUSE Leap 15.1</platform>
+        </affected>
+        <reference ref_id="CVE-2009-4112" ref_url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-4112" source="CVE"/>
+        <description>
+        Cacti 0.8.7e and earlier allows remote authenticated administrators to gain privileges by modifying the "Data Input Method" for the "Linux - Get Memory Usage" setting to contain arbitrary commands.
+        </description>
+    <advisory from="security@suse.de">
+    <severity>Low</severity>
+    <cve href="https://www.suse.com/security/cve/CVE-2009-4112.html">CVE-2009-4112</cve>
+    <bugzilla href="https://bugzilla.suse.com/1122535">SUSE bug 1122535</bugzilla>
+    <bugzilla href="https://bugzilla.suse.com/558664">SUSE bug 558664</bugzilla>
+    </advisory>
+    </metadata>
+            <criteria operator="AND">
+                <criterion test_ref="oval:org.opensuse.security:tst:2009265831" comment="openSUSE Leap 15.1 is installed"/>
+            <criteria operator="OR">
+                <criteria operator="AND">
+            <criterion test_ref="oval:org.opensuse.security:tst:2009281999" comment="cacti-1.2.11-lp151.3.6 is installed"/>
+            <criterion test_ref="oval:org.opensuse.security:tst:2009152167" comment="cacti is signed with openSUSE key"/>
+            </criteria>
+                <criteria operator="AND">
+            <criterion test_ref="oval:org.opensuse.security:tst:2009282000" comment="cacti-spine-1.2.11-lp151.3.6 is installed"/>
+            <criterion test_ref="oval:org.opensuse.security:tst:2009153174" comment="cacti-spine is signed with openSUSE key"/>
+            </criteria>
+            </criteria>
+            </criteria>
+    </definition>
+    <definition id="oval:org.opensuse.security:def:20112767" version="1" class="vulnerability">
+    <metadata>
+    <title>CVE-2011-2767</title>
+        <affected family="unix">
+                <platform>openSUSE Leap 15.1</platform>
+        </affected>
+        <reference ref_id="CVE-2011-2767" ref_url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-2767" source="CVE"/>
+        <description>
+        mod_perl 2.0 through 2.0.10 allows attackers to execute arbitrary Perl code by placing it in a user-owned .htaccess file, because (contrary to the documentation) there is no configuration option that permits Perl code for the administrator's control of HTTP request processing without also permitting unprivileged users to run Perl code in the context of the user account that runs Apache HTTP Server processes.
+        </description>
+    <advisory from="security@suse.de">
+    <severity>Moderate</severity>
+    <cve href="https://www.suse.com/security/cve/CVE-2011-2767.html">CVE-2011-2767</cve>
+    <bugzilla href="https://bugzilla.suse.com/1156944">SUSE bug 1156944</bugzilla>
+    </advisory>
+    </metadata>
+            <criteria operator="AND">
+                <criterion test_ref="oval:org.opensuse.security:tst:2009265831" comment="openSUSE Leap 15.1 is installed"/>
+            <criteria operator="OR">
+                <criteria operator="AND">
+            <criterion test_ref="oval:org.opensuse.security:tst:2009271113" comment="apache2-mod_perl-2.0.11-lp151.3.3 is installed"/>
+            <criterion test_ref="oval:org.opensuse.security:tst:2009151816" comment="apache2-mod_perl is signed with openSUSE key"/>
+            </criteria>
+                <criteria operator="AND">
+            <criterion test_ref="oval:org.opensuse.security:tst:2009271114" comment="apache2-mod_perl-devel-2.0.11-lp151.3.3 is installed"/>
+            <criterion test_ref="oval:org.opensuse.security:tst:2009271141" comment="apache2-mod_perl-devel is signed with openSUSE key"/>
+            </criteria>
+            </criteria>
+            </criteria>
+    </definition>
+    </definitions>
+
+    <tests>
+        <rpminfo_test id="oval:org.opensuse.security:tst:2009265831" version="1" comment="openSUSE-release is ==15.1" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <object object_ref="oval:org.opensuse.security:obj:2009031246"/>
+            <state state_ref="oval:org.opensuse.security:ste:2009068342"/>
+        </rpminfo_test>
+
+        <rpminfo_test id="oval:org.opensuse.security:tst:2009281999" version="1" comment="cacti is &lt;1.2.11-lp151.3.6" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <object object_ref="oval:org.opensuse.security:obj:2009031297"/>
+            <state state_ref="oval:org.opensuse.security:ste:2009072069"/>
+        </rpminfo_test>
+
+        <rpminfo_test id="oval:org.opensuse.security:tst:2009152167" version="1" comment="cacti is signed with openSUSE key" check="all" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <object object_ref="oval:org.opensuse.security:obj:2009031297"/>
+            <state state_ref="oval:org.opensuse.security:ste:2009051526"/>
+        </rpminfo_test>
+
+        <rpminfo_test id="oval:org.opensuse.security:tst:2009282000" version="1" comment="cacti-spine is &lt;1.2.11-lp151.3.6" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <object object_ref="oval:org.opensuse.security:obj:2009037882"/>
+            <state state_ref="oval:org.opensuse.security:ste:2009072069"/>
+        </rpminfo_test>
+
+        <rpminfo_test id="oval:org.opensuse.security:tst:2009153174" version="1" comment="cacti-spine is signed with openSUSE key" check="all" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <object object_ref="oval:org.opensuse.security:obj:2009037882"/>
+            <state state_ref="oval:org.opensuse.security:ste:2009051526"/>
+        </rpminfo_test>
+
+        <rpminfo_test id="oval:org.opensuse.security:tst:2009271113" version="1" comment="apache2-mod_perl is &lt;2.0.11-lp151.3.3" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <object object_ref="oval:org.opensuse.security:obj:2009040947"/>
+            <state state_ref="oval:org.opensuse.security:ste:2009070552"/>
+        </rpminfo_test>
+
+        <rpminfo_test id="oval:org.opensuse.security:tst:2009151816" version="1" comment="apache2-mod_perl is signed with openSUSE key" check="all" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <object object_ref="oval:org.opensuse.security:obj:2009040947"/>
+            <state state_ref="oval:org.opensuse.security:ste:2009051526"/>
+        </rpminfo_test>
+
+        <rpminfo_test id="oval:org.opensuse.security:tst:2009271114" version="1" comment="apache2-mod_perl-devel is &lt;2.0.11-lp151.3.3" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <object object_ref="oval:org.opensuse.security:obj:2009041273"/>
+            <state state_ref="oval:org.opensuse.security:ste:2009070552"/>
+        </rpminfo_test>
+
+        <rpminfo_test id="oval:org.opensuse.security:tst:2009271141" version="1" comment="apache2-mod_perl-devel is signed with openSUSE key" check="all" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <object object_ref="oval:org.opensuse.security:obj:2009041273"/>
+            <state state_ref="oval:org.opensuse.security:ste:2009051526"/>
+        </rpminfo_test>
+    </tests>
+    <objects>
+        <rpminfo_object id="oval:org.opensuse.security:obj:2009031246" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <name>openSUSE-release</name>
+        </rpminfo_object>
+
+        <rpminfo_object id="oval:org.opensuse.security:obj:2009031297" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <name>cacti</name>
+        </rpminfo_object>
+
+        <rpminfo_object id="oval:org.opensuse.security:obj:2009037882" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <name>cacti-spine</name>
+        </rpminfo_object>
+
+        <rpminfo_object id="oval:org.opensuse.security:obj:2009040947" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <name>apache2-mod_perl</name>
+        </rpminfo_object>
+
+        <rpminfo_object id="oval:org.opensuse.security:obj:2009041273" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <name>apache2-mod_perl-devel</name>
+        </rpminfo_object>
+    </objects>
+    <states>
+        <rpminfo_state id="oval:org.opensuse.security:ste:2009068342" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <version operation="equals">15.1</version>
+        </rpminfo_state>
+
+        <rpminfo_state id="oval:org.opensuse.security:ste:2009072069" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <evr datatype="evr_string" operation="less than">0:1.2.11-lp151.3.6</evr>
+        </rpminfo_state>
+
+        <rpminfo_state id="oval:org.opensuse.security:ste:2009051526" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <signature_keyid operation="equals">b88b2fd43dbdc284</signature_keyid>
+        </rpminfo_state>
+
+        <rpminfo_state id="oval:org.opensuse.security:ste:2009070552" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <evr datatype="evr_string" operation="less than">0:2.0.11-lp151.3.3</evr>
+        </rpminfo_state>
+    </states>
+
+
+</oval_definitions>

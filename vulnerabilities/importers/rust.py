@@ -22,9 +22,10 @@
 
 import json
 from itertools import chain
-from typing import Optional
+from typing import Optional, Mapping
 from typing import Set
 from typing import Tuple
+from urllib.error import HTTPError
 from urllib.request import urlopen
 
 import pytoml as toml
@@ -50,7 +51,7 @@ class RustDataSource(GitDataSource):
     @property
     def crates_api(self):
         if not hasattr(self, '_crates_api'):
-            setattr(self, '_crates_api', CratesAPI())
+            setattr(self, '_crates_api', VersionAPI())
         return self._crates_api
 
     def added_advisories(self) -> Set[Advisory]:
@@ -80,7 +81,7 @@ class RustDataSource(GitDataSource):
 
         crate_name = advisory['package']
         reference_url = advisory.get('url', '')
-        all_versions = self.crates_api.all_versions_of_crate(crate_name)
+        all_versions = self.crates_api.get(crate_name)
 
         affected_ranges = {RangeSpecifier(r) for r
                            in chain.from_iterable(record.get('affected', {}).get('functions', {}).values())}
@@ -143,21 +144,27 @@ def categorize_versions(
     return unaffected, affected
 
 
-class CratesAPI:
-    def __init__(self, cache=None):
-        self.versions_cache = cache or {}
+class VersionAPI:
+    def __init__(self, cache: Mapping[str, Set[str]] = None):
+        self.cache = cache or {}
 
-    def all_versions_of_crate(self, crate: str) -> Set[str]:
-        if crate in self.versions_cache:
-            return self.versions_cache[crate]
+    def get(self, package_name: str) -> Set[str]:
+        package_name = package_name.strip()
 
-        versions = set()
-        info_url = "https://crates.io/api/v1/crates/{}".format(crate)
+        if package_name not in self.cache:
+            releases = set()
 
-        with urlopen(info_url) as info:
-            info = json.load(info)
-            for version_info in info['versions']:
-                versions.add(version_info['num'])
+            try:
+                with urlopen(f'https://crates.io/api/v1/crates/{package_name}') as response:
+                    response = json.load(response)
+                    for version_info in response['versions']:
+                        releases.add(version_info['num'])
+            except HTTPError as e:
+                if e.code == 404:
+                    pass
+                else:
+                    raise
 
-        self.versions_cache[crate] = versions
-        return versions
+            self.cache[package_name] = releases
+
+        return self.cache[package_name]

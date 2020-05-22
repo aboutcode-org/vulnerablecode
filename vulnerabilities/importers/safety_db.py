@@ -62,26 +62,6 @@ def validate_schema(advisory_dict):
     Schema(scheme).validate(advisory_dict)
 
 
-class VersionAPI:
-    def __init__(self, cache=None):
-        self.cache = cache or {}
-
-    def get(self, package_name):
-        if package_name not in self.cache:
-            url = "https://pypi.org/pypi/{}/json".format(package_name)
-            releases = set()
-            try:
-                with urlopen(url) as response:
-                    json_file = json.load(response)
-                    releases = set(json_file['releases'])
-            except HTTPError:  # PyPi does not have data about this package
-                pass
-
-            self.cache[package_name] = releases
-
-        return self.cache[package_name]
-
-
 @dataclasses.dataclass
 class SafetyDbConfiguration(DataSourceConfiguration):
     url: str
@@ -134,9 +114,7 @@ class SafetyDbDataSource(DataSource):
                         resolved_package_urls=resolved_purls,
                     ))
 
-        while advisories:
-            batch, advisories = advisories[:self.config.batch_size], advisories[self.config.batch_size:]
-            yield set(batch)
+        return self.batch_advisories(advisories)
 
 
 def categorize_versions(
@@ -169,3 +147,28 @@ def categorize_versions(
         ))
 
     return impacted_purls, resolved_purls
+
+
+class VersionAPI:
+    def __init__(self, cache: Mapping[str, Set[str]] = None):
+        self.cache = cache or {}
+
+    def get(self, package_name: str) -> Set[str]:
+        package_name = package_name.strip()
+
+        if package_name not in self.cache:
+            releases = set()
+            try:
+                with urlopen(f'https://pypi.org/pypi/{package_name}/json') as response:
+                    json_file = json.load(response)
+                    releases = set(json_file['releases'])
+            except HTTPError as e:
+                if e.code == 404:
+                    # PyPi does not have data about this package
+                    pass
+                else:
+                    raise
+
+            self.cache[package_name] = releases
+
+        return self.cache[package_name]

@@ -80,9 +80,7 @@ class AlpineDataSource(GitDataSource):
         for f in files:
             advisories.extend(self._process_file(f))
 
-        while advisories:
-            batch, advisories = advisories[:self.config.batch_size], advisories[self.config.batch_size:]
-            yield set(batch)
+        return self.batch_advisories(advisories)
 
     def _process_file(self, path) -> List[Advisory]:
         advisories = []

@@ -29,6 +29,7 @@ from pathlib import Path
 from typing import Any
 from typing import ContextManager
 from typing import Iterable
+from typing import List
 from typing import Mapping
 from typing import Optional
 from typing import Sequence
@@ -119,6 +120,19 @@ class DataSource(ContextManager):
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
 
+    @property
+    def cutoff_timestamp(self) -> int:
+        """
+        :return: An integer Unix timestamp of the last time this data source was queried or the cutoff date passed in
+        the constructor, whichever is more recent.
+        """
+        if not hasattr(self, '_cutoff_timestamp'):
+            last_run = 0 if self.config.last_run_date is None else int(self.config.last_run_date.timestamp())
+            cutoff = 0 if self.config.cutoff_date is None else int(self.config.cutoff_date.timestamp())
+            setattr(self, '_cutoff_timestamp', max(last_run, cutoff))
+
+        return self._cutoff_timestamp
+
     def validate_configuration(self) -> None:
         """
         Subclasses can perform more complex validation than what is handled by data classes and their type annotations.
@@ -151,6 +165,16 @@ class DataSource(ContextManager):
         Helper method for raising InvalidConfigurationError with the class name in the message.
         """
         raise InvalidConfigurationError(f'{type(self).__name__}: {msg}')
+
+    def batch_advisories(self, advisories: List[Advisory]) -> Set[Advisory]:
+        """
+        Yield batches of the passed in list of advisories.
+        """
+        advisories = advisories[:]  # copy the passed in list as we are mutating it in the loop below
+
+        while advisories:
+            batch, advisories = advisories[:self.config.batch_size], advisories[self.config.batch_size:]
+            yield set(batch)
 
 
 @dataclasses.dataclass
@@ -228,17 +252,13 @@ class GitDataSource(DataSource):
             file_ext: Optional[str],
     ) -> Tuple[Set[str], Set[str]]:
 
-        last_run = 0 if self.config.last_run_date is None else int(self.config.last_run_date.timestamp())
-        cutoff = 0 if self.config.cutoff_date is None else int(self.config.cutoff_date.timestamp())
-        cutoff = max(last_run, cutoff)
-
         previous_commit = None
         added_files, updated_files = set(), set()
 
         for commit in self._repo.walk(self._repo.head.target, pygit2.GIT_SORT_TIME):
             commit_time = commit.commit_time + commit.commit_time_offset  # convert to UTC
 
-            if commit_time < cutoff:
+            if commit_time < self.cutoff_timestamp:
                 break
 
             if previous_commit is None:

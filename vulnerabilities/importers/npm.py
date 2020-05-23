@@ -98,9 +98,15 @@ class NpmDataSource(DataSource):
         for record in records:
             package_name = record['module_name']
             all_versions = self.versions.get(package_name)
-            aff_range, fixed_range = record.get('vulnerable_versions', ''), record.get('patched_versions', '')
+            aff_range = record.get('vulnerable_versions', '')
+            fixed_range = record.get('patched_versions', '')
 
-            impacted_versions, resolved_versions = categorize_versions(all_versions, aff_range, fixed_range)
+            impacted_versions, resolved_versions = categorize_versions(
+                all_versions,
+                aff_range,
+                fixed_range
+            )
+
             impacted_purls = _versions_to_purls(package_name, impacted_versions)
             resolved_purls = _versions_to_purls(package_name, resolved_versions)
 
@@ -183,58 +189,3 @@ class VersionAPI:
             self.cache[package_name] = releases
 
         return self.cache[package_name]
-
-
-# def extract_data(JSON):
-#     """
-#     Extract package name, summary, CVE IDs, severity and
-#     fixed & affected versions
-#     """
-#     package_vulnerabilities = []
-#     for obj in JSON.get('objects', []):
-#         if 'module_name' not in obj:
-#             continue
-#
-#         package_name = obj['module_name']
-#
-#         affected_versions, fixed_versions = extract_versions(
-#             package_name,
-#             obj.get('vulnerable_versions', ''),
-#             obj.get('patched_versions', '')
-#         )
-#         if not affected_versions and not fixed_versions:
-#             continue
-#             # NPM registry has no data regarding this package finally we skip these
-#
-#         package_vulnerabilities.append({
-#             'package_name': package_name,
-#             'summary': obj.get('overview', ''),
-#             'cve_ids': obj.get('cves', []),
-#             'fixed_versions': fixed_versions,
-#             'affected_versions': affected_versions,
-#             'severity': obj.get('severity', ''),
-#             'advisory': obj.get('url', ''),
-#         })
-#     return package_vulnerabilities
-#
-#
-# def scrape_vulnerabilities():
-#     """
-#     Extract JSON From NPM registry
-#     """
-#     package_vulnerabilities = []
-#     nextpage = PAGE
-#     while nextpage:
-#         try:
-#             cururl = NPM_URL.format(nextpage)
-#             response = json.load(urlopen(cururl))
-#             package_vulnerabilities.extend(extract_data(response))
-#             nextpage = response.get('urls', {}).get('next')
-#
-#         except HTTPError as error:
-#             if error.code == 404:
-#                 break
-#             else:
-#                 raise
-#
-#     return package_vulnerabilities

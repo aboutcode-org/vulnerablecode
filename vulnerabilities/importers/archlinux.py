@@ -74,9 +74,7 @@ class ArchlinuxDataSource(DataSource):
         for record in self._api_response:
             advisories.extend(self._parse(record))
 
-        while advisories:
-            batch, advisories = advisories[:self.config.batch_size], advisories[self.config.batch_size:]
-            yield set(batch)
+        return self.batch_advisories(advisories)
 
     def _fetch(self) -> Iterable[Mapping]:
         with urlopen(self.config.archlinux_tracker_url) as response:
@@ -103,12 +101,14 @@ class ArchlinuxDataSource(DataSource):
                         version=record['fixed'],
                     ))
 
+            reference_urls = [f'https://security.archlinux.org/{a}' for a in record['advisories']]
+
             advisories.append(Advisory(
                 cve_id=cve_id,
                 summary='',
                 impacted_package_urls=impacted_purls,
                 resolved_package_urls=resolved_purls,
-                reference_urls=[f'https://security.archlinux.org/{a}' for a in record['advisories']],
+                reference_urls=reference_urls,
             ))
 
         return advisories

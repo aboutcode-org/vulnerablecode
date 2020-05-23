@@ -43,7 +43,7 @@ class RustDataSource(GitDataSource):
 
         if not getattr(self, '_added_files', None):
             self._added_files, self._updated_files = self.file_changes(
-                subdir='crates',  # TODO Consider importing the advisories for cargo, rustdoc and std as well.
+                subdir='crates',  # TODO Consider importing the advisories for cargo, etc as well.
                 recursive=True,
                 file_ext='toml',
             )
@@ -84,12 +84,19 @@ class RustDataSource(GitDataSource):
         all_versions = self.crates_api.get(crate_name)
 
         affected_ranges = {RangeSpecifier(r) for r
-                           in chain.from_iterable(record.get('affected', {}).get('functions', {}).values())}
+                           in chain.from_iterable(
+                record.get('affected', {}).get('functions', {}).values())}
 
-        unaffected_ranges = {RangeSpecifier(r) for r in record.get('versions', {}).get('unaffected', [])}
-        resolved_ranges = {RangeSpecifier(r) for r in record.get('versions', {}).get('patched', [])}
+        unaffected_ranges = {RangeSpecifier(r) for r
+                             in record.get('versions', {}).get('unaffected', [])}
+        resolved_ranges = {RangeSpecifier(r) for r
+                           in record.get('versions', {}).get('patched', [])}
 
-        unaffected, affected = categorize_versions(all_versions, unaffected_ranges, affected_ranges, resolved_ranges)
+        unaffected, affected = categorize_versions(
+            all_versions, unaffected_ranges, affected_ranges, resolved_ranges)
+
+        impacted_purls = {PackageURL(type='cargo', name=crate_name, version=v) for v in affected}
+        resolved_purls = {PackageURL(type='cargo', name=crate_name, version=v) for v in unaffected}
 
         cve_id = None
         if 'aliases' in advisory:
@@ -100,8 +107,8 @@ class RustDataSource(GitDataSource):
 
         return Advisory(
             summary=advisory.get('description', ''),
-            impacted_package_urls={PackageURL(type='cargo', name=crate_name, version=v) for v in affected},
-            resolved_package_urls={PackageURL(type='cargo', name=crate_name, version=v) for v in unaffected},
+            impacted_package_urls=impacted_purls,
+            resolved_package_urls=resolved_purls,
             reference_urls=[reference_url] if reference_url else [],
             reference_ids=[advisory['id']],
             cve_id=cve_id,
@@ -132,8 +139,8 @@ def categorize_versions(
         elif resolved_versions and all([version in av for av in resolved_versions]):
             unaffected.add(version)
 
-    # If some versions were not classified above, one or more of the given ranges might be empty, so the remaining
-    # versions default to either affected or unaffected.
+    # If some versions were not classified above, one or more of the given ranges might be empty, so
+    # the remaining versions default to either affected or unaffected.
     uncategorized_versions = all_versions - unaffected.union(affected)
     if uncategorized_versions:
         if not affected_versions:

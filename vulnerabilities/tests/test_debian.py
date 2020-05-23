@@ -58,7 +58,10 @@ class DebianImportTest(TestCase):
     def test_import(self):
         runner = ImportRunner(self.importer, 5)
 
-        with patch('vulnerabilities.importers.DebianDataSource._fetch', return_value=self.mock_response):
+        with patch(
+                'vulnerabilities.importers.DebianDataSource._fetch',
+                return_value=self.mock_response
+        ):
             runner.run()
 
         assert models.Vulnerability.objects.count() == 3
@@ -75,7 +78,12 @@ class DebianImportTest(TestCase):
         self.assert_for_package('mimetex', '1.76-1', 'buster')
 
     def assert_for_package(self, name, version, release, cve_ids=None):
-        qs = models.Package.objects.filter(name=name, version=version, type='deb', namespace='debian')
+        qs = models.Package.objects.filter(
+            name=name,
+            version=version,
+            type='deb',
+            namespace='debian',
+        )
         qs = qs.filter(qualifiers__contains=release)
         assert qs
 

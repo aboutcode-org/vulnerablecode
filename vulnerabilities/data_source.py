@@ -44,11 +44,12 @@ from packageurl import PackageURL
 class Advisory:
     """
     This data class expresses the contract between data sources and the import runner.
-    Data sources are expected to be usable as context managers and generators, yielding batches of Advisory sequences.
+    Data sources are expected to be usable as context managers and generators, yielding batches of
+    Advisory sequences.
 
-    NB: There are two representations for package URLs that are commonly used by code consuming this data class;
-        PackageURL objects and strings. As a convention, the former is referred to in variable names, etc. as
-        "package_urls" and the latter as "purls".
+    NB: There are two representations for package URLs that are commonly used by code consuming this
+        data class; PackageURL objects and strings. As a convention, the former is referred to in
+        variable names, etc. as "package_urls" and the latter as "purls".
     """
     summary: str
     impacted_package_urls: Iterable[PackageURL]
@@ -81,8 +82,8 @@ class DataSource(ContextManager):
     """
     This class defines how importers consume advisories from a data source.
 
-    It makes a distinction between newly added records since the last run and modified records. This allows the import
-    logic to pick appropriate database operations.
+    It makes a distinction between newly added records since the last run and modified records. This
+    allows the import logic to pick appropriate database operations.
     """
 
     CONFIG_CLASS = DataSourceConfiguration
@@ -97,7 +98,8 @@ class DataSource(ContextManager):
         """
         Create a DataSource instance.
 
-        :param batch_size: Maximum number of records to return from added_advisories() and updated_advisories()
+        :param batch_size: Maximum number of records to return from added_advisories() and
+               updated_advisories()
         :param last_run_date: Optional timestamp when this data source was last inspected
         :param cutoff_date: Optional timestamp, records older than this will be ignored
         :param config: Optional dictionary with subclass-specific configuration
@@ -105,8 +107,9 @@ class DataSource(ContextManager):
         config = config or {}
         try:
             self.config = self.__class__.CONFIG_CLASS(batch_size, **config)
-            # These really should be declared in DataSourceConfiguration above but that would prevent DataSource
-            # subclasses from declaring mandatory parameters (i.e. positional arguments)
+            # These really should be declared in DataSourceConfiguration above but that would
+            # prevent DataSource subclasses from declaring mandatory parameters (i.e. positional
+            # arguments)
             setattr(self.config, 'last_run_date', last_run_date)
             setattr(self.config, 'cutoff_date', cutoff_date)
         except Exception as e:
@@ -123,40 +126,47 @@ class DataSource(ContextManager):
     @property
     def cutoff_timestamp(self) -> int:
         """
-        :return: An integer Unix timestamp of the last time this data source was queried or the cutoff date passed in
-        the constructor, whichever is more recent.
+        :return: An integer Unix timestamp of the last time this data source was queried or the
+        cutoff date passed in the constructor, whichever is more recent.
         """
         if not hasattr(self, '_cutoff_timestamp'):
-            last_run = 0 if self.config.last_run_date is None else int(self.config.last_run_date.timestamp())
-            cutoff = 0 if self.config.cutoff_date is None else int(self.config.cutoff_date.timestamp())
+            last_run = 0
+            if self.config.last_run_date is not None:
+                last_run = int(self.config.last_run_date.timestamp())
+
+            cutoff = 0
+            if self.config.cutoff_date is not None:
+                cutoff = int(self.config.cutoff_date.timestamp())
+
             setattr(self, '_cutoff_timestamp', max(last_run, cutoff))
 
         return self._cutoff_timestamp
 
     def validate_configuration(self) -> None:
         """
-        Subclasses can perform more complex validation than what is handled by data classes and their type annotations.
+        Subclasses can perform more complex validation than what is handled by data classes and
+        their type annotations.
 
-        This method is called in the constructor. It should raise InvalidConfigurationError with a human-readable
-        message.
+        This method is called in the constructor. It should raise InvalidConfigurationError with a
+        human-readable message.
         """
         pass
 
     def added_advisories(self) -> Set[Advisory]:
         """
-        Subclasses yield batch_size sized batches of Advisory objects that have been added to the data source since the
-        last run or self.cutoff_date.
+        Subclasses yield batch_size sized batches of Advisory objects that have been added to the
+        data source since the last run or self.cutoff_date.
         """
         return set()
 
     def updated_advisories(self) -> Set[Advisory]:
         """
-        Subclasses yield batch_size sized batches of Advisory objects that have been modified since the last run or
-        self.cutoff_date.
+        Subclasses yield batch_size sized batches of Advisory objects that have been modified since
+        the last run or self.cutoff_date.
 
-        NOTE: Data sources that do not enable detection of changes to existing records vs added records must only
-              implement this method, not added_advisories(). The ImportRunner relies on this contract to decide between
-              insert and update operations.
+        NOTE: Data sources that do not enable detection of changes to existing records vs added
+              records must only implement this method, not added_advisories(). The ImportRunner
+              relies on this contract to decide between insert and update operations.
         """
         return set()
 
@@ -170,11 +180,11 @@ class DataSource(ContextManager):
         """
         Yield batches of the passed in list of advisories.
         """
-        advisories = advisories[:]  # copy the passed in list as we are mutating it in the loop below
+        advisories = advisories[:]  # copy the list as we are mutating it in the loop below
 
         while advisories:
-            batch, advisories = advisories[:self.config.batch_size], advisories[self.config.batch_size:]
-            yield set(batch)
+            b, advisories = advisories[:self.config.batch_size], advisories[self.config.batch_size:]
+            yield set(b)
 
 
 @dataclasses.dataclass
@@ -192,16 +202,17 @@ class GitDataSource(DataSource):
     def validate_configuration(self) -> None:
 
         if not self.config.create_working_directory and self.config.working_directory is None:
-            self.error('"create_working_directory" is not set but "working_directory" is set to the default, which '
-                       'calls tempfile.mkdtemp()')
+            self.error('"create_working_directory" is not set but "working_directory" is set to '
+                       'the default, which calls tempfile.mkdtemp()')
 
-        if not self.config.create_working_directory and not os.path.exists(self.config.working_directory):
-            self.error('"working_directory" does not contain an existing directory and "create_working_directory" is '
-                       'not set')
+        if not self.config.create_working_directory and \
+                not os.path.exists(self.config.working_directory):
+            self.error('"working_directory" does not contain an existing directory and'
+                       '"create_working_directory" is not set')
 
         if not self.config.remove_working_directory and self.config.working_directory is None:
-            self.error('"remove_working_directory" is not set and "working_directory" is set to the default, which '
-                       'calls tempfile.mkdtemp()')
+            self.error('"remove_working_directory" is not set and "working_directory" is set to '
+                       'the default, which calls tempfile.mkdtemp()')
 
     def __enter__(self):
         self._ensure_working_directory()
@@ -218,12 +229,14 @@ class GitDataSource(DataSource):
             file_ext: Optional[str] = None,
     ) -> Tuple[Set[str], Set[str]]:
         """
-        Returns all added and modified files since last_run_date or cutoff_date (whichever is more recent).
+        Returns all added and modified files since last_run_date or cutoff_date (whichever is more
+        recent).
 
         :param subdir: filter by files in this directory
         :param recursive: whether to include files in subdirectories
         :param file_ext: filter files by this extension
-        :return: The first set contains (absolute paths to) added files, the second one modified files
+        :return: The first set contains (absolute paths to) added files, the second one modified
+                 files
         """
         if subdir is None:
             working_dir = self.config.working_directory
@@ -271,8 +284,8 @@ class GitDataSource(DataSource):
 
                 abspath = os.path.join(self.config.working_directory, d.new_file.path)
                 # TODO
-                # Just filtering on the two status values for "added" and "modified" is too simplistic.
-                # This does not cover file renames, copies & deletions.
+                # Just filtering on the two status values for "added" and "modified" is too
+                # simplistic. This does not cover file renames, copies & deletions.
                 if d.status == pygit2.GIT_DELTA_ADDED:
                     added_files.add(abspath)
                 elif d.status == pygit2.GIT_DELTA_MODIFIED:
@@ -280,8 +293,9 @@ class GitDataSource(DataSource):
 
             previous_commit = commit
 
-        # Any file that has been added and then updated inside the window of the git history we looked at, should be
-        # considered "added", not "updated", since it does not exist in the database yet.
+        # Any file that has been added and then updated inside the window of the git history we
+        # looked at, should be considered "added", not "updated", since it does not exist in the
+        # database yet.
         updated_files = updated_files - added_files
 
         return added_files, updated_files
@@ -289,7 +303,8 @@ class GitDataSource(DataSource):
     def _ensure_working_directory(self) -> None:
         if self.config.working_directory is None:
             self.config.working_directory = tempfile.mkdtemp()
-        elif self.config.create_working_directory and not os.path.exists(self.config.working_directory):
+        elif self.config.create_working_directory and \
+                not os.path.exists(self.config.working_directory):
             os.mkdir(self.config.working_directory)
 
     def _ensure_repository(self) -> None:
@@ -315,7 +330,11 @@ class GitDataSource(DataSource):
         if getattr(self, 'branch', False):
             kwargs['checkout_branch'] = self.config.branch
 
-        self._repo = pygit2.clone_repository(self.config.repository_url, self.config.working_directory, **kwargs)
+        self._repo = pygit2.clone_repository(
+            self.config.repository_url,
+            self.config.working_directory,
+            **kwargs
+        )
 
     def _find_or_add_remote(self):
         remote = None
@@ -325,7 +344,8 @@ class GitDataSource(DataSource):
                 break
 
         if remote is None:
-            remote = self._repo.remotes.create('added_by_vulnerablecode', self.config.repository_url)
+            remote = self._repo.remotes.create(
+                'added_by_vulnerablecode', self.config.repository_url)
 
         return remote
 

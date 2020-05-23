@@ -46,8 +46,8 @@ class MockDataSource(DataSource):
 
     def _yield_advisories(self, advisories):
         while advisories:
-            batch, advisories = advisories[:self.config.batch_size], advisories[self.config.batch_size:]
-            yield batch
+            b, advisories = advisories[:self.config.batch_size], advisories[self.config.batch_size:]
+            yield b
 
 
 @dataclasses.dataclass
@@ -79,7 +79,10 @@ ADVISORIES = [
 def make_import_runner(added_advs=None, updated_advs=None):
     added_advs = added_advs or []
     updated_advs = updated_advs or []
-    importer = MockImporter(data_source=MockDataSource(2, added_advs=added_advs, updated_advs=updated_advs))
+
+    importer = MockImporter(
+        data_source=MockDataSource(2, added_advs=added_advs, updated_advs=updated_advs))
+
     return ImportRunner(importer, 5)
 
 
@@ -117,8 +120,8 @@ def test_ImportRunner_new_package_and_new_vulnerability(db):
 
 def test_ImportRunner_existing_package_and_new_vulnerability(db):
     """
-    Both versions of the package mentioned in the imported advisory are already in the database. Only the vulnerability
-    itself is new.
+    Both versions of the package mentioned in the imported advisory are already in the database.
+    Only the vulnerability itself is new.
     """
     models.Package.objects.create(name='mock-webserver', type='pypi', version='1.2.33')
     models.Package.objects.create(name='mock-webserver', type='pypi', version='1.2.34')
@@ -149,10 +152,11 @@ def test_ImportRunner_existing_package_and_new_vulnerability(db):
 
 def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db):
     """
-    Another version of a package existing in the database is added to the impacted packages of a vulnerability that
-    also already existed in the database.
+    Another version of a package existing in the database is added to the impacted packages of a
+    vulnerability that also already existed in the database.
     """
-    vuln = models.Vulnerability.objects.create(cve_id='MOCK-CVE-2020-1337', summary='vulnerability description here')
+    vuln = models.Vulnerability.objects.create(
+        cve_id='MOCK-CVE-2020-1337', summary='vulnerability description here')
 
     models.VulnerabilityReference.objects.create(
         vulnerability=vuln,
@@ -168,7 +172,8 @@ def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db)
     )
 
     advisories = deepcopy(ADVISORIES)
-    advisories[0].impacted_package_urls.append(PackageURL(name='mock-webserver', type='pypi', version='1.2.33a'))
+    advisories[0].impacted_package_urls.append(
+        PackageURL(name='mock-webserver', type='pypi', version='1.2.33a'))
     runner = make_import_runner(updated_advs=advisories)
 
     runner.run()
@@ -194,20 +199,23 @@ def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db)
 
 def test_ImportRunner_assumed_fixed_package_is_updated_as_impacted(db):
     """
-    A version of a package existing in the database that was assumed to be fixed was found to still be affected by
-    a vulnerability that also already existed in the database (i.e. the previously stored data was corrected).
+    A version of a package existing in the database that was assumed to be fixed was found to still
+    be affected by a vulnerability that also already existed in the database (i.e. the previously
+    stored data was corrected).
     """
-    # FIXME This case is not supported due to cascading deletes. When the ResolvedPackage is deleted, the referenced
-    # FIXME Package and Vulnerability are also deleted.
+    # FIXME This case is not supported due to cascading deletes. When the ResolvedPackage is
+    # FIXME deleted, the referenced Package and Vulnerability are also deleted.
     #
-    # vuln = models.Vulnerability.objects.create(cve_id='MOCK-CVE-2020-1337', summary='vulnerability description here')
+    # vuln = models.Vulnerability.objects.create(
+    #     cve_id='MOCK-CVE-2020-1337', summary='vulnerability description here')
     #
     # models.VulnerabilityReference.objects.create(
     #     vulnerability=vuln,
     #     url='https://example.com/with/more/info/MOCK-CVE-2020-1337'
     # )
     #
-    # misclassified_package = models.Package.objects.create(name='mock-webserver', type='pypi', version='1.2.33')
+    # misclassified_package = models.Package.objects.create(
+    #     name='mock-webserver', type='pypi', version='1.2.33')
     #
     # models.ResolvedPackage.objects.create(
     #     vulnerability=vuln,
@@ -215,7 +223,8 @@ def test_ImportRunner_assumed_fixed_package_is_updated_as_impacted(db):
     # )
     # models.ResolvedPackage.objects.create(
     #     vulnerability=vuln,
-    #     package=models.Package.objects.create(name='mock-webserver', type='pypi', version='1.2.34'),
+    #     package=models.Package.objects.create(
+    #         name='mock-webserver', type='pypi', version='1.2.34'),
     # )
     #
     # runner = make_import_runner(updated_advs=ADVISORIES)
@@ -239,7 +248,8 @@ def test_ImportRunner_fixed_package_version_is_added(db):
     """
     A new version of a package was published that fixes a previously unresolved vulnerability.
     """
-    vuln = models.Vulnerability.objects.create(cve_id='MOCK-CVE-2020-1337', summary='vulnerability description here')
+    vuln = models.Vulnerability.objects.create(
+        cve_id='MOCK-CVE-2020-1337', summary='vulnerability description here')
 
     models.VulnerabilityReference.objects.create(
         vulnerability=vuln,
@@ -275,9 +285,11 @@ def test_ImportRunner_fixed_package_version_is_added(db):
 
 def test_ImportRunner_updated_vulnerability(db):
     """
-    An existing vulnerability is updated with more information; a more detailed summary and a new reference.
+    An existing vulnerability is updated with more information; a more detailed summary and a new
+    reference.
     """
-    vuln = models.Vulnerability.objects.create(cve_id='MOCK-CVE-2020-1337', summary='temporary description')
+    vuln = models.Vulnerability.objects.create(
+        cve_id='MOCK-CVE-2020-1337', summary='temporary description')
 
     models.ImpactedPackage.objects.create(
         vulnerability=vuln,

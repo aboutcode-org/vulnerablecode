@@ -66,7 +66,10 @@ class NpmImportTest(TestCase):
     def test_import(self):
         runner = ImportRunner(self.importer, 5)
 
-        with patch('vulnerabilities.importers.NpmDataSource._fetch', return_value=self.mock_response):
+        with patch(
+                'vulnerabilities.importers.NpmDataSource._fetch',
+                return_value=self.mock_response
+        ):
             runner.run()
 
         assert models.Vulnerability.objects.count() == 3
@@ -81,7 +84,14 @@ class NpmImportTest(TestCase):
         self.assert_for_package('kerberos', {'0.5.8'}, {'1.2'}, '1514')
         self.assert_for_package('subtext', {'4.1.1', '7.0.0'}, {'3.7', '6.1.3', '7.0.5'}, '1476')
 
-    def assert_for_package(self, package_name, impacted_versions, resolved_versions, vuln_id, cve_id=None):
+    def assert_for_package(
+            self,
+            package_name,
+            impacted_versions,
+            resolved_versions,
+            vuln_id,
+            cve_id=None,
+    ):
         vuln = None
 
         for version in impacted_versions:
@@ -105,7 +115,8 @@ def test_categorize_versions_simple_ranges():
     impacted_ranges = '<3.5.0'
     resolved_ranges = '>=3.5.0'
 
-    impacted_versions, resolved_versions = categorize_versions(all_versions, impacted_ranges, resolved_ranges)
+    impacted_versions, resolved_versions = categorize_versions(
+        all_versions, impacted_ranges, resolved_ranges)
 
     assert impacted_versions == {'3.4'}
     assert resolved_versions == {'3.8'}
@@ -116,7 +127,8 @@ def test_categorize_versions_complex_ranges():
     impacted_ranges = '>=4.1.0 <6.1.3 || >= 7.0.0 <7.0.3'
     resolved_ranges = '>=6.1.3 <7.0.0 || >=7.0.3'
 
-    impacted_versions, resolved_versions = categorize_versions(all_versions, impacted_ranges, resolved_ranges)
+    impacted_versions, resolved_versions = categorize_versions(
+        all_versions, impacted_ranges, resolved_ranges)
 
     assert impacted_versions == {'4.1.1', '7.0.0'}
     assert resolved_versions == {'3.7', '6.1.3', '7.0.5'}

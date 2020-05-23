@@ -67,7 +67,10 @@ class SafetyDbImportTest(TestCase):
     def test_import(self):
         runner = ImportRunner(self.importer, 5)
 
-        with patch('vulnerabilities.importers.SafetyDbDataSource._fetch', return_value=self.mock_response):
+        with patch(
+                'vulnerabilities.importers.SafetyDbDataSource._fetch',
+                return_value=self.mock_response
+        ):
             runner.run()
 
         assert models.Vulnerability.objects.count() == 9
@@ -125,20 +128,37 @@ class SafetyDbImportTest(TestCase):
             cve_ids={'CVE-2020-9444', 'CVE-2020-10935'},
         )
 
-    def assert_by_vulnerability(self, vuln_ref, pkg_name, impacted_versions, resolved_versions, cve_ids=None):
-        impacted_pkgs = set(models.Package.objects.filter(name=pkg_name, version__in=impacted_versions))
+    def assert_by_vulnerability(
+            self,
+            vuln_ref,
+            pkg_name,
+            impacted_versions,
+            resolved_versions,
+            cve_ids=None,
+    ):
+        impacted_pkgs = set(models.Package.objects.filter(
+            name=pkg_name, version__in=impacted_versions))
+
         assert len(impacted_pkgs) == len(impacted_versions)
 
-        resolved_pkgs = set(models.Package.objects.filter(name=pkg_name, version__in=resolved_versions))
+        resolved_pkgs = set(models.Package.objects.filter(
+            name=pkg_name, version__in=resolved_versions))
+
         assert len(resolved_pkgs) == len(resolved_versions)
 
         vuln_count = 1 if cve_ids is None else len(cve_ids)
-        vulns = {r.vulnerability for r in models.VulnerabilityReference.objects.filter(reference_id=vuln_ref)}
+
+        vulns = {r.vulnerability for r in
+                 models.VulnerabilityReference.objects.filter(reference_id=vuln_ref)}
+
         assert len(vulns) == vuln_count
 
         for vuln in vulns:
-            assert {ip.package for ip in models.ImpactedPackage.objects.filter(vulnerability=vuln)} == impacted_pkgs
-            assert {rp.package for rp in models.ResolvedPackage.objects.filter(vulnerability=vuln)} == resolved_pkgs
+            assert {ip.package for ip in
+                    models.ImpactedPackage.objects.filter(vulnerability=vuln)} == impacted_pkgs
+
+            assert {rp.package for rp in
+                    models.ResolvedPackage.objects.filter(vulnerability=vuln)} == resolved_pkgs
 
         if cve_ids:
             assert {v.cve_id for v in vulns} == cve_ids

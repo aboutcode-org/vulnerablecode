@@ -12,7 +12,7 @@ git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
 
 ### System requirements
 
-- Python 3.6+
+- Python 3.8+
 
 - PostgreSQL 9+ or [Docker](https://hub.docker.com/search/?type=edition&offering=community)
 

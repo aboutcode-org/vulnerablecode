@@ -1,40 +1,104 @@
 {
-    "objects": [
-        {
-            "id": 12,
-            "created": "2015-10-17T19:41:46.382Z",
-            "updated": "2019-06-24T14:13:54.355Z",
-            "deleted": null,
-            "title": "Rosetta-Flash JSONP Vulnerability",
-            "found_by": {
-                "name": "Michele Spagnuolo"
-            },
-            "reported_by": {
-                "name": "Michele Spagnuolo"
-            },
-            "module_name": "hapi",
-            "cves": [
-                "CVE-2014-4671"
-            ],
-            "vulnerable_versions": "< 6.1.0",
-            "patched_versions": ">= 6.1.0",
-            "overview": "This description taken from the pull request provided by Patrick Kettner.\n\n\n\nVersions 6.1.0 and earlier of hapi are vulnerable to a rosetta-flash attack, which can be used by attackers to send data across domains and break the browser same-origin-policy.\n\n\n",
-            "recommendation": "- Update hapi to version 6.1.1 or later.\n\nAlternatively, a solution previously implemented by Google, Facebook, and Github is to prepend callbacks with an empty inline comment. This will cause the flash parser to break on invalid inputs and prevent the issue, and how the issue has been resolved internally in hapi.",
-            "references": "- [PR #1766 - prepend jsonp callbacks with a comment to prevent the rosetta-flash vulnerability](https://github.com/spumko/hapi/pull/1766)\n\n- [Background from Michele Spagnuolo](http://miki.it/blog/2014/7/8/abusing-jsonp-with-rosetta-flash/)\n\nThanks to [Patrick Kettner](https://github.com/patrickkettner) for submitting a pull request to address this in hapi.",
-            "access": "public",
-            "severity": "moderate",
-            "cwe": "CWE-538",
-            "metadata": {
-                "module_type": "Network.Library",
-                "exploitability": 3,
-                "affected_components": ""
-            },
-            "url": "https://npmjs.com/advisories/12"
-        }
-    ],
-    "total": 1179,
-    "urls": {
-        "next": "/-/npm/v1/security/advisories?page=2",
-        "prev": "/-/npm/v1/security/advisories?page=0"
+  "objects": [
+    {
+      "id": 1518,
+      "created": "2020-04-30T18:19:09.542Z",
+      "updated": "2020-04-30T18:19:09.542Z",
+      "deleted": null,
+      "title": "Cross-Site Scripting",
+      "found_by": {
+        "link": "",
+        "name": "Masato Kinugawa",
+        "email": ""
+      },
+      "reported_by": {
+        "link": "",
+        "name": "Masato Kinugawa",
+        "email": ""
+      },
+      "module_name": "jquery",
+      "cves": [
+        "CVE-2020-11022"
+      ],
+      "vulnerable_versions": "<3.5.0",
+      "patched_versions": ">=3.5.0",
+      "overview": "Versions of `jquery` prior to 3.5.0 are vulnerable to Cross-Site Scripting. Passing HTML from untrusted sources - even after sanitizing it - to one of jQuery's DOM manipulation methods (i.e. .html(), .append(), and others) may execute arbitrary JavaScript in a victim's browser.",
+      "recommendation": "Upgrade to version 3.5.0 or later.",
+      "references": "- [GitHub Advisory](https://github.com/advisories/GHSA-gxr4-xjj5-5px2)",
+      "access": "public",
+      "severity": "moderate",
+      "cwe": "CWE-79",
+      "metadata": {
+        "module_type": "",
+        "exploitability": 3,
+        "affected_components": ""
+      }
+    },
+    {
+      "id": 1514,
+      "created": "2020-04-14T21:44:49.820Z",
+      "updated": "2020-04-14T21:44:49.820Z",
+      "deleted": null,
+      "title": "DLL Injection",
+      "found_by": {
+        "link": "",
+        "name": "Dan Shallom, OP Innovate Ltd",
+        "email": ""
+      },
+      "reported_by": {
+        "link": "",
+        "name": "Dan Shallom, OP Innovate Ltd",
+        "email": ""
+      },
+      "module_name": "kerberos",
+      "cves": [],
+      "vulnerable_versions": "<1.0.0",
+      "patched_versions": ">=1.0.0",
+      "overview": "Version of `kerberos` prior to 1.0.0 are vulnerable to DLL Injection. The package loads DLLs without specifying a full path. This may allow attackers to create a file with the same name in a folder that precedes the intended file in the DLL path search. Doing so would allow attackers to execute arbitrary code in the machine.",
+      "recommendation": "Upgrade to version 1.0.0 or later.",
+      "references": "",
+      "access": "public",
+      "severity": "high",
+      "cwe": "CWE-114",
+      "metadata": {
+        "module_type": "",
+        "exploitability": 4,
+        "affected_components": ""
+      }
+    },
+    {
+      "id": 1476,
+      "created": "2020-02-17T13:39:01.39",
+      "updated": "2020-02-18T18:00:29.843",
+      "deleted": null,
+      "title": "Denial of Service",
+      "found_by": {
+        "link": "",
+        "name": "Eran Hammer",
+        "email": ""
+      },
+      "reported_by": {
+        "link": "",
+        "name": "Eran Hammer",
+        "email": ""
+      },
+      "module_name": "@hapi/subtext",
+      "cves": [],
+      "vulnerable_versions": ">=4.1.0 <6.1.3 || >= 7.0.0 <7.0.3",
+      "patched_versions": ">=6.1.3 <7.0.0 || >=7.0.3",
+      "overview": "Versions of `@hapi/subtext` prior to 6.1.3 or 7.0.3 are vulnerable to Denial of Service. The Content-Encoding HTTP header parser has a vulnerability which will cause the function to throw a system error if the header contains some invalid values. Because hapi rethrows system errors (as opposed to catching expected application errors), the error is thrown all the way up the stack. If no unhandled exception handler is available, the application will exist, allowing an attacker to shut down services.",
+      "recommendation": "Upgrade to version 6.1.3 or 7.0.3",
+      "references": "",
+      "access": "public",
+      "severity": "high",
+      "cwe": "CWE-400",
+      "metadata": {
+        "module_type": "",
+        "exploitability": 6,
+        "affected_components": ""
+      }
     }
+  ],
+  "total": 3,
+  "urls": {}
 }

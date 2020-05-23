@@ -21,38 +21,37 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import json
-from urllib.request import urlopen
-from schema import Regex, Schema, Or
-ARCHLINUX_TRACKER_URL = 'https://security.archlinux.org/json'
+from os.path import dirname
+from os.path import join
+
+from vulnerabilities.importers import ubuntu
 
 
-def validate_schema(advisory_dict):
-    scheme = {
+def test_ubuntu_extract_cves():
+    ubuntu_testfile = join(dirname(__file__), 'test_data', 'ubuntu_main.html')
 
-        'advisories': list,
-        'affected': str,
-        'fixed': Or(None, str),
-        'issues': [Regex(r'CVE-\d+-\d+')],
-        'name': str,
-        'packages': [str],
-        'status': str,
-        'ticket': object,
-        'type': str,
-        'severity': str,
+    with open(ubuntu_testfile) as f:
+        test_input = f.read()
 
+    cves = ubuntu.extract_cves(test_input)
+
+    expected = {
+        'cve_id': 'CVE-2002-2439',
+        'package_name': 'gcc-4.6',
+        'vulnerability_status': 'low'
     }
+    assert expected == cves[0]
 
-    Schema(scheme).validate(advisory_dict)
+    expected = {
+        'cve_id': 'CVE-2013-0157',
+        'package_name': 'util-linux',
+        'vulnerability_status': 'low',
+    }
+    assert expected == cves[50]
 
-
-def scrape_vulnerabilities():
-    """
-    Fetch and return data scraped from archlinux security tracker.
-    """
-    json_content = urlopen(ARCHLINUX_TRACKER_URL).read()
-    arch_data = json.loads(json_content)
-    for advisory in arch_data:
-        validate_schema(advisory)
-
-    return arch_data
+    expected = {
+        'cve_id': 'CVE-2017-9986',
+        'package_name': 'linux-lts-xenial',
+        'vulnerability_status': 'medium',
+    }
+    assert expected == cves[-1]

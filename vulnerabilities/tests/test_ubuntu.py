@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 from dephell_specifier import RangeSpecifier
 
 
-from vulnerabilities.scraper.oval_parser import OvalParser
+from vulnerabilities.importers.oval_parser import OvalParser
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -161,4 +161,3 @@ class TestUbuntuOvalParser(unittest.TestCase):
 
         assert expected_data == self.parsed_oval.get_data()
     
-         

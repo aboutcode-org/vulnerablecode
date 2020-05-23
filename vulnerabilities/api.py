@@ -22,27 +22,13 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 from rest_framework import serializers
-from rest_framework import status
 from rest_framework import viewsets
-from rest_framework.response import Response
 
 from packageurl import PackageURL
 
 from vulnerabilities.models import Package
-from vulnerabilities.models import PackageReference
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
-
-
-class PackageReferenceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PackageReference
-        fields = [
-            'repository',
-            'platform',
-            'name',
-            'version',
-        ]
 
 
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
@@ -69,7 +55,6 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
 
 class PackageSerializer(serializers.ModelSerializer):
     vulnerabilities = VulnerabilitySerializer(many=True)
-    references = PackageReferenceSerializer(source='packagereference_set', many=True)
 
     class Meta:
         model = Package
@@ -78,7 +63,6 @@ class PackageSerializer(serializers.ModelSerializer):
             'version',
             'package_url',
             'vulnerabilities',
-            'references',
         ]
 
 

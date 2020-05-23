@@ -1,4 +1,3 @@
-#
 # Copyright (c) 2017 nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
@@ -21,28 +20,9 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import os
-
-from vulnerabilities.models import Package
-from vulnerabilities.models import Vulnerability
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
-
-
-def test_ubuntu_data_dump(setUbuntuData):
-    """
-    Check basic data import
-    """
-    assert Vulnerability.objects.filter(cve_id='CVE-2002-2439')
-    pkgs = Package.objects.filter(name='gcc-4.6')
-    assert pkgs
-
-    pkg = pkgs[0]
-    assert 'deb' == pkg.type
-    assert 'ubuntu' == pkg.namespace
-
-
-CVE_IDS = ('CVE-2018-11362', 'CVE-2018-11361', 'CVE-2018-11360',
-           'CVE-2018-11359', 'CVE-2018-11358', 'CVE-2018-11357',
-           'CVE-2018-11356', 'CVE-2018-11355', 'CVE-2018-11354')
+from vulnerabilities.importers.alpine_linux import AlpineDataSource
+from vulnerabilities.importers.archlinux import ArchlinuxDataSource
+from vulnerabilities.importers.debian import DebianDataSource
+from vulnerabilities.importers.npm import NpmDataSource
+from vulnerabilities.importers.rust import RustDataSource
+from vulnerabilities.importers.safety_db import SafetyDbDataSource

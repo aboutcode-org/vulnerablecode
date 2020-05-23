@@ -20,40 +20,36 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-
-import pytest
-from io import StringIO
-
-from django.core.management import call_command
-from django.core.management.base import CommandError
+from django.db import migrations
 
 
-def test_list_sources():
+def add_debian_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
 
-    buf = StringIO()
-    call_command('import', '--list', stdout=buf)
-    out = buf.getvalue()
-    assert 'npm' in out
-    assert 'debian' in out
-    assert 'ubuntu' in out
-    assert 'archlinux' in out
-
-
-def test_missing_sources():
-
-    with pytest.raises(CommandError) as cm:
-        call_command('import', stdout=StringIO())
-
-    err = str(cm)
-    assert 'Please provide at least one data source' in err
+    Importer.objects.create(
+        name='debian',
+        license='MIT',
+        last_run=None,
+        data_source='DebianDataSource',
+        data_source_cfg={
+            'debian_tracker_url': 'https://security-tracker.debian.org/tracker/data/json',
+        },
+    )
 
 
-def test_unknown_sources():
+def remove_debian_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+    qs = Importer.objects.filter(name='debian')
+    if qs:
+        qs[0].delete()
 
-    with pytest.raises(CommandError) as cm:
-        call_command('import', 'debian', 'foo', 'bar', stdout=StringIO())
 
-    err = str(cm)
-    assert 'bar' in err
-    assert 'foo' in err
-    assert 'debian' not in err
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('vulnerabilities', '0004_archlinux_importer'),
+    ]
+
+    operations = [
+        migrations.RunPython(add_debian_importer, remove_debian_importer),
+    ]

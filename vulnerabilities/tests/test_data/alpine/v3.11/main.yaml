@@ -1,0 +1,24 @@
+---
+distroversion: v3.11
+reponame: main
+archs:
+  - x86_64
+urlprefix: http://dl-cdn.alpinelinux.org/alpine
+apkurl: "{{urlprefix}}/{{distroversion}}/{{reponame}}/{{arch}}/{{pkg.name}}-{{pkg.ver}}.apk"
+packages:
+  - pkg:
+      name: ansible
+      secfixes:
+        2.9.3-r0:
+          - CVE-2019-14904
+          - CVE-2019-14905
+        2.8.6-r0:
+          - CVE-2019-14846
+          - CVE-2019-14856
+          - CVE-2019-14858
+  - pkg:
+      name: xen
+      secfixes:
+        4.12.1-r0:
+          - CVE-????-?????  XSA-295
+

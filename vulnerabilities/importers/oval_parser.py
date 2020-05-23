@@ -7,8 +7,8 @@ import xml.etree.ElementTree as ET
 
 from dephell_specifier import RangeSpecifier
 
-from vulnerabilities.scraper.lib_oval import (
-    OvalDefinition, OvalDocument, OvalTest, OvalObject, OvalState, OvalElement)
+from vulnerabilities.importers.lib_oval import (
+    OvalDefinition, OvalDocument, OvalTest, OvalObject, OvalState)
 
 
 class OvalParser:

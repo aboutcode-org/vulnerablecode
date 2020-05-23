@@ -49,7 +49,7 @@ class TestDebianResponse(TestCase):
     def test_query_by_name(self):
         response = self.client.get('/api/packages/?name=mimetex', format='json').data
 
-        self.assertEqual(5, response['count'])
+        self.assertEqual(3, response['count'])
 
         first_result = response['results'][0]
         self.assertEqual('mimetex', first_result['name'])
@@ -75,7 +75,7 @@ class TestDebianResponse(TestCase):
         url = '/api/packages/?package_url=pkg:deb/debian/mimetex@1.50-1.1?distro=jessie'
         response = self.client.get(url, format='json').data
 
-        self.assertEqual(2, response['count'])
+        self.assertEqual(1, response['count'])
 
         first_result = response['results'][0]
         self.assertEqual('mimetex', first_result['name'])
@@ -88,7 +88,7 @@ class TestDebianResponse(TestCase):
         url = '/api/packages/?package_url=pkg:deb/mimetex@1.50-1.1'
         response = self.client.get(url, format='json').data
 
-        self.assertEqual(3, response['count'])
+        self.assertEqual(2, response['count'])
 
         first_result = response['results'][0]
         self.assertEqual('mimetex', first_result['name'])
@@ -120,7 +120,7 @@ class TestSerializers(TestCase):
         pk = Package.objects.filter(name="mimetex")
         response = PackageSerializer(pk, many=True).data
 
-        self.assertEqual(4, len(response))
+        self.assertEqual(2, len(response))
 
         first_result = response[0]
         self.assertEqual('mimetex', first_result['name'])

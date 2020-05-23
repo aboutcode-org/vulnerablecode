@@ -22,106 +22,219 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import json
-from dephell_specifier import RangeSpecifier
-from urllib.request import urlopen
+from typing import Any
+from typing import List
+from typing import Mapping
+from typing import Set
+from typing import Tuple
 from urllib.error import HTTPError
+from urllib.parse import quote
+from urllib.request import urlopen
 
+from dateutil.parser import parse
+from dephell_specifier import RangeSpecifier
+from packageurl import PackageURL
+
+from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import DataSource
 
 NPM_URL = 'https://registry.npmjs.org{}'
-PAGE = '/-/npm/v1/security/advisories?page=0'
+PAGE = '/-/npm/v1/security/advisories?perPage=100&page=0'
 
 
-def get_all_versions(package_name):
-    """
-    Returns all versions available for a module
-    """
-    package_name = package_name.strip()
-    package_url = NPM_URL.format(f'/{package_name}')
-    try:
-        with urlopen(package_url) as response:
-            data = json.load(response)
-    except HTTPError as e:
-        if e.code == 404:
-            return []
-        else:
-            raise
-        # NPM registry has no data regarding this package, we skip these
-    return [v for v in data.get('versions', {})]
+class NpmDataSource(DataSource):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._api_response = None
+        self._versions = VersionAPI()
+        self._added_records, self._updated_records = [], []
+        self._added_advisories, self._updated_advisories = [], []
+
+    def __enter__(self):
+        self._api_response = self._fetch()
+        self._categorize_records()
+
+    @property
+    def versions(self):  # quick hack to make it patchable
+        return self._versions
+
+    def _fetch(self) -> Mapping[str, Any]:
+        data = None
+        nextpage = PAGE
+        while nextpage:
+            try:
+                with urlopen(NPM_URL.format(nextpage)) as response:
+                    response = json.load(response)
+
+                    if data is None:
+                        data = response
+                    else:
+                        data['objects'].extend(response.get('objects', []))
+
+                nextpage = response.get('urls', {}).get('next')
+
+            except HTTPError as error:
+                if error.code == 404:
+                    return data
+                else:
+                    raise
+
+        return data
+
+    def _categorize_records(self) -> None:
+        for advisory in self._api_response['objects']:
+            created = parse(advisory['created']).timestamp()
+            updated = parse(advisory['updated']).timestamp()
+
+            if created > self.cutoff_timestamp:
+                self._added_records.append(advisory)
+            elif updated > self.cutoff_timestamp:
+                self._updated_records.append(advisory)
+
+    def _parse(self, records: List[Mapping[str, Any]]) -> List[Advisory]:
+        advisories = []
+
+        for record in records:
+            package_name = record['module_name']
+            all_versions = self.versions.get(package_name)
+            aff_range, fixed_range = record.get('vulnerable_versions', ''), record.get('patched_versions', '')
+
+            impacted_versions, resolved_versions = categorize_versions(all_versions, aff_range, fixed_range)
+            impacted_purls = _versions_to_purls(package_name, impacted_versions)
+            resolved_purls = _versions_to_purls(package_name, resolved_versions)
+
+            for cve_id in record.get('cves') or ['']:
+                advisories.append(Advisory(
+                    summary=record.get('overview', ''),
+                    cve_id=cve_id,
+                    impacted_package_urls=impacted_purls,
+                    resolved_package_urls=resolved_purls,
+                    reference_urls=[NPM_URL.format(f'/-/npm/v1/advisories/{record["id"]}')],
+                ))
+
+        return advisories
+
+    def added_advisories(self) -> Set[Advisory]:
+        return self.batch_advisories(self._parse(self._added_records))
+
+    def updated_advisories(self) -> Set[Advisory]:
+        return self.batch_advisories(self._parse(self._updated_records))
 
 
-def extract_versions(package_name, aff_version_range, fixed_version_range):
+def _versions_to_purls(package_name, versions):
+    purls = {f'pkg:npm/{quote(package_name)}@{v}' for v in versions}
+    return {PackageURL.from_string(s) for s in purls}
+
+
+def categorize_versions(
+        all_versions: Set[str],
+        aff_version_range: str,
+        fixed_version_range: str,
+) -> Tuple[Set[str], Set[str]]:
     """
     Seperate list of affected versions and unaffected versions from all versions
     using the ranges specified.
+
+    :return: impacted, resolved versions
     """
+    if not all_versions:
+        # NPM registry has no data regarding this package, we skip these
+        return set(), set()
+
     aff_spec = RangeSpecifier(aff_version_range)
     fix_spec = RangeSpecifier(fixed_version_range)
-    all_ver = get_all_versions(package_name)
-    if not all_ver:
-        # NPM registry has no data regarding this package, we skip these
-        return ([], [])
-    aff_ver = []
-    fix_ver = []
-    # Unaffected version is that version which  is in the fixed_version_range
+    aff_ver, fix_ver = set(), set()
+
+    # Unaffected version is that version which is in the fixed_version_range
     # or which is absent in the aff_version_range
-    for ver in all_ver:
+    for ver in all_versions:
         if ver in fix_spec or ver not in aff_spec:
-            fix_ver.append(ver)
+            fix_ver.add(ver)
         else:
-            aff_ver.append(ver)
-    return (aff_ver, fix_ver)
+            aff_ver.add(ver)
+
+    return aff_ver, fix_ver
 
 
-def extract_data(JSON):
-    """
-    Extract package name, summary, CVE IDs, severity and
-    fixed & affected versions
-    """
-    package_vulnerabilities = []
-    for obj in JSON.get('objects', []):
-        if 'module_name' not in obj:
-            continue
+class VersionAPI:
+    def __init__(self, cache: Mapping[str, Set[str]] = None):
+        self.cache = cache or {}
 
-        package_name = obj['module_name']
+    def get(self, package_name: str) -> Set[str]:
+        """
+        Returns all versions available for a module
+        """
+        package_name = package_name.strip()
 
-        affected_versions, fixed_versions = extract_versions(
-            package_name,
-            obj.get('vulnerable_versions', ''),
-            obj.get('patched_versions', '')
-        )
-        if not affected_versions and not fixed_versions:
-            continue
-            # NPM registry has no data regarding this package finally we skip these
+        if package_name not in self.cache:
+            releases = set()
+            try:
+                with urlopen(f'https://registry.npmjs.org/{package_name}') as response:
+                    data = json.load(response)
+                    releases = {v for v in data.get('versions', {})}
+            except HTTPError as e:
+                if e.code == 404:
+                    # NPM registry has no data regarding this package, we skip these
+                    pass
+                else:
+                    raise
 
-        package_vulnerabilities.append({
-            'package_name': package_name,
-            'summary': obj.get('overview', ''),
-            'cve_ids': obj.get('cves', []),
-            'fixed_versions': fixed_versions,
-            'affected_versions': affected_versions,
-            'severity': obj.get('severity', ''),
-            'advisory': obj.get('url', ''),
-        })
-    return package_vulnerabilities
+            self.cache[package_name] = releases
+
+        return self.cache[package_name]
 
 
-def scrape_vulnerabilities():
-    """
-    Extract JSON From NPM registry
-    """
-    package_vulnerabilities = []
-    nextpage = PAGE
-    while nextpage:
-        try:
-            cururl = NPM_URL.format(nextpage)
-            response = json.load(urlopen(cururl))
-            package_vulnerabilities.extend(extract_data(response))
-            nextpage = response.get('urls', {}).get('next')
-
-        except HTTPError as error:
-            if error.code == 404:
-                break
-            else:
-                raise
-
-    return package_vulnerabilities
+# def extract_data(JSON):
+#     """
+#     Extract package name, summary, CVE IDs, severity and
+#     fixed & affected versions
+#     """
+#     package_vulnerabilities = []
+#     for obj in JSON.get('objects', []):
+#         if 'module_name' not in obj:
+#             continue
+#
+#         package_name = obj['module_name']
+#
+#         affected_versions, fixed_versions = extract_versions(
+#             package_name,
+#             obj.get('vulnerable_versions', ''),
+#             obj.get('patched_versions', '')
+#         )
+#         if not affected_versions and not fixed_versions:
+#             continue
+#             # NPM registry has no data regarding this package finally we skip these
+#
+#         package_vulnerabilities.append({
+#             'package_name': package_name,
+#             'summary': obj.get('overview', ''),
+#             'cve_ids': obj.get('cves', []),
+#             'fixed_versions': fixed_versions,
+#             'affected_versions': affected_versions,
+#             'severity': obj.get('severity', ''),
+#             'advisory': obj.get('url', ''),
+#         })
+#     return package_vulnerabilities
+#
+#
+# def scrape_vulnerabilities():
+#     """
+#     Extract JSON From NPM registry
+#     """
+#     package_vulnerabilities = []
+#     nextpage = PAGE
+#     while nextpage:
+#         try:
+#             cururl = NPM_URL.format(nextpage)
+#             response = json.load(urlopen(cururl))
+#             package_vulnerabilities.extend(extract_data(response))
+#             nextpage = response.get('urls', {}).get('next')
+#
+#         except HTTPError as error:
+#             if error.code == 404:
+#                 break
+#             else:
+#                 raise
+#
+#     return package_vulnerabilities

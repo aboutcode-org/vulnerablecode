@@ -29,6 +29,7 @@ from typing import Set
 from typing import Tuple
 
 import packageurl
+from django.db import DataError
 
 from vulnerabilities import models
 from vulnerabilities.data_source import Advisory, DataSource
@@ -83,12 +84,18 @@ class ImportRunner:
 
 def _process_added_advisories(data_source: DataSource) -> None:
     for batch in data_source.added_advisories():
-        impacted, resolved = _collect_package_urls(batch)
-        impacted, resolved = _bulk_insert_packages(impacted, resolved)
+        try:
+            impacted, resolved = _collect_package_urls(batch)
+            impacted, resolved = _bulk_insert_packages(impacted, resolved)
 
-        vulnerabilities = _insert_vulnerabilities_and_references(batch)
+            vulnerabilities = _insert_vulnerabilities_and_references(batch)
 
-        _bulk_insert_impacted_and_resolved_packages(batch, vulnerabilities, impacted, resolved)
+            _bulk_insert_impacted_and_resolved_packages(batch, vulnerabilities, impacted, resolved)
+        except (DataError, RuntimeError) as e:
+            # FIXME This exception might happen when the max. length of a VARCHAR column is exceeded.
+            # Skipping an entire batch because one version number might be too long is obviously a terrible way to
+            # handle this case.
+            logger.exception(e)
 
 
 def _process_updated_advisories(data_source: DataSource) -> None:
@@ -147,10 +154,6 @@ def _get_or_create_vulnerability(advisory: Advisory) -> Tuple[models.Vulnerabili
 
 def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:
     version = packageurl.normalize_version(p.version, encode=True)
-
-    # FIXME terrible hack, remove after https://github.com/package-url/packageurl-python/pull/30 was merged
-    if len(version) > 50:
-        version = version[:50]
 
     query_kwargs = {
         'name': packageurl.normalize_name(p.name, p.type, encode=True),

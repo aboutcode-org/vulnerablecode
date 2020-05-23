@@ -20,90 +20,103 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-
-import os
 import json
-import pytest
+import os
+from unittest.mock import patch
 
-from vulnerabilities.importers.npm import extract_data
-from vulnerabilities.importers.npm import get_all_versions
+from django.test import TestCase
+
+from vulnerabilities import models
+from vulnerabilities.import_runner import ImportRunner
+from vulnerabilities.importers.npm import VersionAPI
+from vulnerabilities.importers.npm import categorize_versions
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
 
 
-@pytest.mark.webtest
-def test_get_all_versions():
-    x = get_all_versions('electron')
-    expected = ['0.1.2', '2.0.0', '3.0.0',
-                '4.0.0', '5.0.0', '6.0.0', '7.0.0']
-    assert set(expected) <= set(x)
+MOCK_VERSION_API = VersionAPI(cache={
+    'jquery': {'3.4', '3.8'},
+    'kerberos': {'0.5.8', '1.2'},
+    '@hapi/subtext': {'3.7', '4.1.1', '6.1.3', '7.0.0', '7.0.5'},
+})
 
 
-@pytest.mark.webtest
-def test_extract_data():
-    with open(os.path.join(TEST_DATA, 'npm_test.json')) as f:
-        test_data = json.load(f)
+@patch('vulnerabilities.importers.NpmDataSource.versions', new=MOCK_VERSION_API)
+class NpmImportTest(TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        fixture_path = os.path.join(TEST_DATA, 'npm_test.json')
+        with open(fixture_path) as f:
+            cls.mock_response = json.load(f)
 
-    expected = {
-        'package_name': 'hapi',
-        'cve_ids': ['CVE-2014-4671'],
-        'fixed_versions': [
-            '6.1.0', '6.2.0', '6.2.1', '6.2.2', '6.3.0', '6.4.0',
-            '6.5.0', '6.5.1', '6.6.0', '6.7.0', '6.7.1', '6.8.0',
-            '6.8.1', '6.9.0', '6.10.0', '6.11.0', '6.11.1', '7.0.0',
-            '7.0.1', '7.1.0', '7.1.1', '7.2.0', '7.3.0', '7.4.0',
-            '7.5.0', '7.5.1', '7.5.2', '8.0.0', '7.5.3', '8.1.0',
-            '8.2.0', '8.3.0', '8.3.1', '8.4.0', '8.5.0', '8.5.1',
-            '8.5.2', '8.5.3', '8.6.0', '8.6.1', '8.8.0', '8.8.1',
-            '9.0.0', '9.0.1', '9.0.2', '9.0.3', '9.0.4', '9.1.0',
-            '9.2.0', '9.3.0', '9.3.1', '10.0.0', '10.0.1', '10.1.0',
-            '10.2.1', '10.4.0', '10.4.1', '10.5.0', '11.0.0', '11.0.1',
-            '11.0.2', '11.0.3', '11.0.4', '11.0.5', '11.1.0', '11.1.1',
-            '11.1.2', '11.1.3', '11.1.4', '12.0.0', '12.0.1', '12.1.0',
-            '9.5.1', '13.0.0', '13.1.0', '13.2.0', '13.2.1', '13.2.2',
-            '13.3.0', '13.4.0', '13.4.1', '13.4.2', '13.5.0', '14.0.0',
-            '13.5.3', '14.1.0', '14.2.0', '15.0.1', '15.0.2', '15.0.3',
-            '15.1.0', '15.1.1', '15.2.0', '16.0.0', '16.0.1', '16.0.2',
-            '16.0.3', '16.1.0', '16.1.1', '16.2.0', '16.3.0', '16.3.1',
-            '16.4.0', '16.4.1', '16.4.2', '16.4.3', '16.5.0', '16.5.1',
-            '16.5.2', '16.6.0', '16.6.1', '16.6.2', '17.0.0', '17.0.1',
-            '17.0.2', '17.1.0', '17.1.1', '17.2.0', '17.2.1', '16.6.3',
-            '17.2.2', '17.2.3', '17.3.0', '17.3.1', '17.4.0', '17.5.0',
-            '17.5.1', '17.5.2', '17.5.3', '17.5.4', '17.5.5', '17.6.0',
-            '17.6.1', '17.6.2', '17.6.3', '16.6.4', '17.6.4', '16.6.5',
-            '17.7.0', '16.7.0', '17.8.0', '17.8.1', '18.0.0', '17.8.2',
-            '17.8.3', '18.0.1', '17.8.4', '18.1.0', '17.8.5'],
-        'affected_versions': [
-            '0.0.1', '0.0.2', '0.0.3', '0.0.4', '0.0.5', '0.0.6', '0.1.0',
-            '0.1.1', '0.1.2', '0.1.3', '0.2.0', '0.2.1', '0.3.0', '0.4.0',
-            '0.4.1', '0.4.2', '0.4.3', '0.4.4', '0.5.0', '0.5.1', '0.6.0',
-            '0.6.1', '0.5.2', '0.7.0', '0.7.1', '0.8.0', '0.8.1', '0.8.2',
-            '0.8.3', '0.8.4', '0.9.0', '0.9.1', '0.9.2', '0.10.0', '0.10.1',
-            '0.11.0', '0.11.1', '0.11.2', '0.11.3', '0.12.0', '0.13.0',
-            '0.13.1', '0.13.2', '0.11.4', '0.13.3', '0.14.0', '0.14.1',
-            '0.14.2', '0.15.0', '0.15.1', '0.15.2', '0.15.3', '0.15.4',
-            '0.15.5', '0.15.6', '0.15.7', '0.15.8', '0.15.9', '0.16.0',
-            '1.0.0', '1.0.1', '1.0.2', '1.0.3', '1.1.0', '1.2.0', '1.3.0',
-            '1.4.0', '1.5.0', '1.6.0', '1.6.1', '1.6.2', '1.7.0', '1.7.1',
-            '1.7.2', '1.7.3', '1.8.0', '1.8.1', '1.8.2', '1.8.3', '1.9.0',
-            '1.9.1', '1.9.2', '1.9.3', '1.9.4', '1.9.5', '1.9.6', '1.9.7',
-            '1.10.0', '1.11.0', '1.11.1', '1.12.0', '1.13.0', '1.14.0',
-            '1.15.0', '1.16.0', '1.16.1', '1.17.0', '1.18.0', '1.19.0',
-            '1.19.1', '1.19.2', '1.19.3', '1.19.4', '1.19.5', '1.20.0',
-            '2.0.0', '2.1.0', '2.1.1', '2.1.2', '2.2.0', '2.3.0', '2.4.0',
-            '2.5.0', '2.6.0', '3.0.0', '3.0.1', '3.0.2', '3.1.0', '4.0.0',
-            '4.0.1', '4.0.2', '4.0.3', '4.1.0', '4.1.1', '4.1.2', '4.1.3',
-            '4.1.4', '5.0.0', '5.1.0', '6.0.0', '6.0.1', '6.0.2'],
-        'severity': 'moderate'
-    }
-    got = extract_data(test_data)[0]
-    # Check if expected affected version and fixed version is subset of what we get from online
-    assert set(expected['affected_versions']) <= set(
-        got['affected_versions'])
-    assert set(expected['fixed_versions']) <= set(
-        got['fixed_versions'])
+        cls.importer = models.Importer.objects.create(
+            name='npm_unittests',
+            license='',
+            last_run=None,
+            data_source='NpmDataSource',
+            data_source_cfg={},
+        )
 
-    assert expected['package_name'] == got['package_name']
-    assert expected['severity'] == got['severity']
-    assert expected['cve_ids'] == got['cve_ids']
+    @classmethod
+    def tearDownClass(cls) -> None:
+        # Make sure no requests for unexpected package names have been made during the tests.
+        assert len(MOCK_VERSION_API.cache) == 3, MOCK_VERSION_API.cache
+
+    def test_import(self):
+        runner = ImportRunner(self.importer, 5)
+
+        with patch('vulnerabilities.importers.NpmDataSource._fetch', return_value=self.mock_response):
+            runner.run()
+
+        assert models.Vulnerability.objects.count() == 3
+        assert models.VulnerabilityReference.objects.count() == 3
+        assert models.ResolvedPackage.objects.count() == 5
+        assert models.ImpactedPackage.objects.count() == 4
+
+        expected_package_count = sum([len(v) for v in MOCK_VERSION_API.cache.values()])
+        assert models.Package.objects.count() == expected_package_count
+
+        self.assert_for_package('jquery', {'3.4'}, {'3.8'}, '1518', cve_id='CVE-2020-11022')
+        self.assert_for_package('kerberos', {'0.5.8'}, {'1.2'}, '1514')
+        self.assert_for_package('subtext', {'4.1.1', '7.0.0'}, {'3.7', '6.1.3', '7.0.5'}, '1476')
+
+    def assert_for_package(self, package_name, impacted_versions, resolved_versions, vuln_id, cve_id=None):
+        vuln = None
+
+        for version in impacted_versions:
+            pkg = models.Package.objects.get(name=package_name, version=version)
+
+            assert pkg.vulnerabilities.count() == 1
+            vuln = pkg.vulnerabilities.first()
+            if cve_id:
+                assert vuln.cve_id == cve_id
+
+            ref_url = f'https://registry.npmjs.org/-/npm/v1/advisories/{vuln_id}'
+            assert models.VulnerabilityReference.objects.get(url=ref_url, vulnerability=vuln)
+
+        for version in resolved_versions:
+            pkg = models.Package.objects.get(name=package_name, version=version)
+            assert models.ResolvedPackage.objects.filter(package=pkg, vulnerability=vuln)
+
+
+def test_categorize_versions_simple_ranges():
+    all_versions = {'3.4', '3.8'}
+    impacted_ranges = '<3.5.0'
+    resolved_ranges = '>=3.5.0'
+
+    impacted_versions, resolved_versions = categorize_versions(all_versions, impacted_ranges, resolved_ranges)
+
+    assert impacted_versions == {'3.4'}
+    assert resolved_versions == {'3.8'}
+
+
+def test_categorize_versions_complex_ranges():
+    all_versions = {'3.7', '4.1.1', '6.1.3', '7.0.0', '7.0.5'}
+    impacted_ranges = '>=4.1.0 <6.1.3 || >= 7.0.0 <7.0.3'
+    resolved_ranges = '>=6.1.3 <7.0.0 || >=7.0.3'
+
+    impacted_versions, resolved_versions = categorize_versions(all_versions, impacted_ranges, resolved_ranges)
+
+    assert impacted_versions == {'4.1.1', '7.0.0'}
+    assert resolved_versions == {'3.7', '6.1.3', '7.0.5'}

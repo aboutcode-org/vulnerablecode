@@ -40,7 +40,8 @@ MOCK_UPDATED_FILES = {os.path.join(TEST_DATA, 'alpine', p) for p in {
 }}
 
 
-@patch('vulnerabilities.importers.AlpineDataSource.file_changes', return_value=(MOCK_ADDED_FILES, MOCK_UPDATED_FILES))
+@patch('vulnerabilities.importers.AlpineDataSource.file_changes',
+       return_value=(MOCK_ADDED_FILES, MOCK_UPDATED_FILES))
 @patch('vulnerabilities.importers.AlpineDataSource._ensure_repository')
 class AlpineImportTest(TestCase):
 
@@ -78,9 +79,19 @@ class AlpineImportTest(TestCase):
         self.assert_for_package('cacti', '1.2.8-r0', cve_ids={'CVE-2019-17358'}, arch='armv7')
         self.assert_for_package('cacti', '1.2.8-r0', cve_ids={'CVE-2019-17358'}, arch='x86_64')
         self.assert_for_package('xen', '4.12.1-r0', vuln_ref='XSA-295', arch='x86_64')
-        self.assert_for_package('ansible', '2.9.3-r0', cve_ids={'CVE-2019-14904', 'CVE-2019-14905'}, arch='x86_64')
-        self.assert_for_package('ansible','2.8.6-r0',
-                                cve_ids={'CVE-2019-14846', 'CVE-2019-14856', 'CVE-2019-14858'}, arch='x86_64')
+
+        self.assert_for_package(
+            'ansible',
+            '2.9.3-r0',
+            cve_ids={'CVE-2019-14904', 'CVE-2019-14905'},
+            arch='x86_64'
+        )
+        self.assert_for_package(
+            'ansible',
+            '2.8.6-r0',
+            cve_ids={'CVE-2019-14846', 'CVE-2019-14856', 'CVE-2019-14858'},
+            arch='x86_64'
+        )
 
     def assert_for_package(self, name, version, cve_ids=None, vuln_ref=None, arch=None):
         qs = models.Package.objects.filter(name=name, version=version)
@@ -107,7 +118,8 @@ class AlpineImportTest(TestCase):
 
             for vuln in vulns:
                 vuln_refs.update(
-                    {v.reference_id for v in models.VulnerabilityReference.objects.filter(vulnerability=vuln)}
+                    {v.reference_id for v in
+                     models.VulnerabilityReference.objects.filter(vulnerability=vuln)}
                 )
 
             assert vuln_ref in vuln_refs

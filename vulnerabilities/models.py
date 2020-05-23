@@ -50,7 +50,8 @@ class Vulnerability(models.Model):
 
 class VulnerabilityReference(models.Model):
     """
-    A reference to a vulnerability such as a security advisory from a Linux distribution or language package manager.
+    A reference to a vulnerability such as a security advisory from a Linux distribution or language
+    package manager.
     """
     vulnerability = models.ForeignKey(
         Vulnerability, on_delete=models.CASCADE)
@@ -102,15 +103,22 @@ class ResolvedPackage(models.Model):
 
 class Importer(models.Model):
     """
-    Metadata and pointer to the implementation for a source of vulnerability data (aka security advisories)
+    Metadata and pointer to the implementation for a source of vulnerability data (aka security
+    advisories)
     """
     name = models.CharField(max_length=100, unique=True, help_text='Name of the importer')
-    license = models.CharField(max_length=100, blank=True, help_text='License of the vulnerability data')
+
+    license = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text='License of the vulnerability data',
+    )
+
     last_run = models.DateTimeField(null=True, help_text='UTC Timestamp of the last run')
 
     data_source = models.CharField(
         max_length=100,
-        help_text='Class name of the data source implementation importable from vulnerabilities.importers',
+        help_text='Name of the data source implementation importable from vulnerabilities.importers'
     )
     data_source_cfg = pgfields.JSONField(
         null=False,
@@ -127,7 +135,14 @@ class Importer(models.Model):
         """
         importers_module = importlib.import_module('vulnerabilities.importers')
         klass = getattr(importers_module, self.data_source)
-        ds = klass(batch_size, last_run_date=self.last_run, cutoff_date=cutoff_date, config=self.data_source_cfg)
+
+        ds = klass(
+            batch_size,
+            last_run_date=self.last_run,
+            cutoff_date=cutoff_date,
+            config=self.data_source_cfg,
+        )
+
         return ds
 
     def __str__(self):

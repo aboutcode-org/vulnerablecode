@@ -31,7 +31,7 @@ from vulnerabilities.models import Importer
 
 
 class TestListSources(TestCase):
-    
+
     @classmethod
     def setUpTestData(cls):
         for name in ('npm', 'debian', 'ubuntu', 'archlinux'):
@@ -44,7 +44,7 @@ class TestListSources(TestCase):
                 data_source='fakesource',
                 data_source_cfg={},
             )
-    
+
     def test_list_sources(self):
         buf = StringIO()
         call_command('import', '--list', stdout=buf)
@@ -65,7 +65,7 @@ def test_missing_sources():
 
 
 class TestUnknownSources(TestCase):
-    
+
     @classmethod
     def setUpTestData(cls):
         Importer.objects.create(

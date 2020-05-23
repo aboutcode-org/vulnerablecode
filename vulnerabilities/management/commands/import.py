@@ -45,7 +45,8 @@ class Command(BaseCommand):
         parser.add_argument(
             '--cutoff-date',
             type=datetime.fromisoformat,
-            help='ISO8601 formatted timestamp denoting the maximum age of vulnerability information to import.',
+            help='ISO8601 formatted timestamp denoting the maximum age of vulnerability '
+                 'information to import.',
         )
         parser.add_argument('sources', nargs='*',
                             help='Data sources from which to import')
@@ -95,4 +96,6 @@ class Command(BaseCommand):
             self.stdout.write(f'Importing data from {importer.name}')
             # TODO add cmdline param for batch_size
             ImportRunner(importer, 10).run(cutoff_date=cutoff_date)
-            self.stdout.write(self.style.SUCCESS(f'Successfully imported data from {importer.name}'))
+
+            self.stdout.write(
+                self.style.SUCCESS(f'Successfully imported data from {importer.name}'))

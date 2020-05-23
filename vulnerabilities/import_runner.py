@@ -41,8 +41,8 @@ logger = logging.getLogger(__name__)
 class ImportRunner:
     """
     The ImportRunner is responsible for inserting and updating data about vulnerabilities and
-    affected/unaffected/fixed packages in the database. The two main goals for the implementation are correctness and
-    efficiency.
+    affected/unaffected/fixed packages in the database. The two main goals for the implementation
+    are correctness and efficiency.
 
     Correctness:
         - There must be no duplicates in the database (should be enforced by the schema).
@@ -64,10 +64,10 @@ class ImportRunner:
 
         cutoff_date - optional timestamp of the oldest data to include in the import
 
-        NB: Data sources provide two kinds of records; vulnerabilities and packages. Vulnerabilities are potentially
-        shared across many packages, from the same data source and from different data sources. For example, a
-        vulnerability in the Linux kernel is mentioned by advisories from all Linux distributions that package this
-        kernel version.
+        NB: Data sources provide two kinds of records; vulnerabilities and packages. Vulnerabilities
+        are potentially shared across many packages, from the same data source and from different
+        data sources. For example, a vulnerability in the Linux kernel is mentioned by advisories
+        from all Linux distributions that package this kernel version.
         """
         logger.debug(f'Starting import for {self.importer.name}.')
         data_source = self.importer.make_data_source(self.batch_size, cutoff_date=cutoff_date)
@@ -92,9 +92,9 @@ def _process_added_advisories(data_source: DataSource) -> None:
 
             _bulk_insert_impacted_and_resolved_packages(batch, vulnerabilities, impacted, resolved)
         except (DataError, RuntimeError) as e:
-            # FIXME This exception might happen when the max. length of a VARCHAR column is exceeded.
-            # Skipping an entire batch because one version number might be too long is obviously a terrible way to
-            # handle this case.
+            # FIXME This exception might happen when the max. length of a DB column is exceeded.
+            # Skipping an entire batch because one version number might be too long is obviously a
+            # terrible way to handle this case.
             logger.exception(e)
 
 
@@ -107,7 +107,8 @@ def _process_updated_advisories(data_source: DataSource) -> None:
             vuln, _ = _get_or_create_vulnerability(advisory)
 
             for id_ in advisory.reference_ids:
-                models.VulnerabilityReference.objects.get_or_create(vulnerability=vuln, reference_id=id_)
+                models.VulnerabilityReference.objects.get_or_create(
+                    vulnerability=vuln, reference_id=id_)
 
             for url in advisory.reference_urls:
                 models.VulnerabilityReference.objects.get_or_create(vulnerability=vuln, url=url)
@@ -117,22 +118,26 @@ def _process_updated_advisories(data_source: DataSource) -> None:
 
                 # FIXME Does not work yet due to cascading deletes.
                 # if not created:
-                #     qs = models.ResolvedPackage.objects.filter(vulnerability_id=vuln.id, package_id=pkg.id)
+                #     qs = models.ResolvedPackage.objects.filter(
+                #         vulnerability_id=vuln.id, package_id=pkg.id)
                 #     if qs:
                 #         qs[0].delete()
 
-                models.ImpactedPackage.objects.get_or_create(vulnerability_id=vuln.id, package_id=pkg.id)
+                models.ImpactedPackage.objects.get_or_create(
+                    vulnerability_id=vuln.id, package_id=pkg.id)
 
             for rpkg_url in advisory.resolved_package_urls:
                 pkg, created = _get_or_create_package(rpkg_url)
 
                 # FIXME Does not work yet due to cascading deletes.
                 # if not created:
-                #     qs = models.ImpactedPackage.objects.filter(vulnerability_id=vuln.id, package_id=pkg.id)
+                #     qs = models.ImpactedPackage.objects.filter(
+                #         vulnerability_id=vuln.id, package_id=pkg.id)
                 #     if qs:
                 #         qs[0].delete()
 
-                models.ResolvedPackage.objects.get_or_create(vulnerability_id=vuln.id, package_id=pkg.id)
+                models.ResolvedPackage.objects.get_or_create(
+                    vulnerability_id=vuln.id, package_id=pkg.id)
 
 
 def _get_or_create_vulnerability(advisory: Advisory) -> Tuple[models.Vulnerability, bool]:
@@ -257,13 +262,15 @@ def _insert_vulnerabilities_and_references(batch: Set[Advisory]) -> Set[models.V
                 vuln.save()
         else:
             # FIXME
-            # There is no way to check whether a vulnerability without a CVE ID already exists in the database.
+            # There is no way to check whether a vulnerability without a CVE ID already exists in
+            # the database.
             vuln = models.Vulnerability.objects.create(summary=advisory.summary)
 
         vulnerabilities.add(vuln)
 
         for id_ in advisory.reference_ids:
-            models.VulnerabilityReference.objects.get_or_create(vulnerability=vuln, reference_id=id_)
+            models.VulnerabilityReference.objects.get_or_create(
+                vulnerability=vuln, reference_id=id_)
 
         for url in advisory.reference_urls:
             models.VulnerabilityReference.objects.get_or_create(vulnerability=vuln, url=url)

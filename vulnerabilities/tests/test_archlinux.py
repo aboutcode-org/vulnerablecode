@@ -58,7 +58,10 @@ class ArchlinuxImportTest(TestCase):
     def test_import(self):
         runner = ImportRunner(self.importer, 5)
 
-        with patch('vulnerabilities.importers.ArchlinuxDataSource._fetch', return_value=self.mock_response):
+        with patch(
+                'vulnerabilities.importers.ArchlinuxDataSource._fetch',
+                return_value=self.mock_response
+        ):
             runner.run()
 
         assert models.Vulnerability.objects.count() == 6
@@ -67,19 +70,44 @@ class ArchlinuxImportTest(TestCase):
         assert models.ResolvedPackage.objects.count() == 8
         assert models.Package.objects.count() == 10
 
-        self.assert_for_package('squid', '4.10-2', cve_ids={'CVE-2020-11945', 'CVE-2019-12521', 'CVE-2019-12519'})
+        self.assert_for_package(
+            'squid',
+            '4.10-2',
+            cve_ids={'CVE-2020-11945', 'CVE-2019-12521', 'CVE-2019-12519'},
+        )
         self.assert_for_package('openconnect', '1:8.05-1', cve_ids={'CVE-2020-12823'})
-        self.assert_for_package('wireshark-common', '2.6.0-1', cve_ids={'CVE-2018-11362', 'CVE-2018-11361'})
-        self.assert_for_package('wireshark-gtk', '2.6.0-1', cve_ids={'CVE-2018-11362', 'CVE-2018-11361'})
-        self.assert_for_package('wireshark-cli', '2.6.0-1', cve_ids={'CVE-2018-11362', 'CVE-2018-11361'})
-        self.assert_for_package('wireshark-qt', '2.6.0-1', cve_ids={'CVE-2018-11362', 'CVE-2018-11361'})
+        self.assert_for_package(
+            'wireshark-common',
+            '2.6.0-1',
+            cve_ids={'CVE-2018-11362', 'CVE-2018-11361'},
+        )
+        self.assert_for_package(
+            'wireshark-gtk',
+            '2.6.0-1',
+            cve_ids={'CVE-2018-11362', 'CVE-2018-11361'},
+        )
+        self.assert_for_package(
+            'wireshark-cli',
+            '2.6.0-1',
+            cve_ids={'CVE-2018-11362', 'CVE-2018-11361'},
+        )
+        self.assert_for_package(
+            'wireshark-qt',
+            '2.6.0-1',
+            cve_ids={'CVE-2018-11362', 'CVE-2018-11361'},
+        )
         self.assert_for_package('wireshark-common', '2.6.1-1')
         self.assert_for_package('wireshark-gtk', '2.6.1-1')
         self.assert_for_package('wireshark-cli', '2.6.1-1')
         self.assert_for_package('wireshark-qt', '2.6.1-1')
 
     def assert_for_package(self, name, version, cve_ids=None):
-        qs = models.Package.objects.filter(name=name, version=version, type='pacman', namespace='archlinux')
+        qs = models.Package.objects.filter(
+            name=name,
+            version=version,
+            type='pacman',
+            namespace='archlinux',
+        )
         assert qs
 
         if cve_ids:

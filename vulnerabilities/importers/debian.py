@@ -93,9 +93,7 @@ class DebianDataSource(DataSource):
         for pkg_name, records in self._api_response.items():
             advisories.extend(self._parse(pkg_name, records))
 
-        while advisories:
-            batch, advisories = advisories[:self.config.batch_size], advisories[self.config.batch_size:]
-            yield set(batch)
+        return self.batch_advisories(advisories)
 
     def _fetch(self) -> Mapping[str, Any]:
         with urlopen(self.config.debian_tracker_url) as response:
@@ -136,7 +134,8 @@ class DebianDataSource(DataSource):
             reference_urls = []
             debianbug = record.get('debianbug')
             if debianbug:
-                reference_urls.append(f'https://bugs.debian.org/cgi-bin/bugreport.cgi?bug={debianbug}')
+                bug_url = f'https://bugs.debian.org/cgi-bin/bugreport.cgi?bug={debianbug}'
+                reference_urls.append(bug_url)
 
             advisories.append(Advisory(
                 cve_id=cve_id,

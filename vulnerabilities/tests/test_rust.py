@@ -167,14 +167,16 @@ class RustImportTest(TestCase):
                 'vulnerabilities.importers.RustDataSource.crates_api',
                 new=VersionAPI(cache=self.crates_api_cache)
         ):
-            runner.run(cutoff_date=datetime.datetime(year=2020, month=3, day=18, tzinfo=datetime.timezone.utc))
+            runner.run(cutoff_date=datetime.datetime(
+                year=2020, month=3, day=18, tzinfo=datetime.timezone.utc))
 
         self.assert_for_package('bitvec', 'RUSTSEC-2020-0007')
         self.assert_for_package('bumpalo', 'RUSTSEC-2020-0006')
         self.assert_for_package('flatbuffers', 'RUSTSEC-2019-0028')
         self.assert_for_package('hyper', 'RUSTSEC-2020-0008')
 
-        # There is no data for cbox, because the advisory contains neither affected nor patched or unaffected versions.
+        # There is no data for cbox, because the advisory contains neither affected nor patched or
+        # unaffected versions.
         assert models.Package.objects.filter(name='cbox').count() == 0
 
     def assert_for_package(self, package, advisory_id):

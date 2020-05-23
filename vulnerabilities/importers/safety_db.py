@@ -102,7 +102,9 @@ class SafetyDbDataSource(DataSource):
                     package_name, all_package_versions, advisory['specs'])
 
                 cve_ids = advisory.get('cve') or ['']
-                if len(cve_ids[0]):  # meaning if cve_ids is not [''] but either ['CVE-123'] or ['CVE-123, CVE-124']
+
+                # meaning if cve_ids is not [''] but either ['CVE-123'] or ['CVE-123, CVE-124']
+                if len(cve_ids[0]):
                     cve_ids = [s.strip() for s in cve_ids.split(',')]
 
                 for cve_id in cve_ids:

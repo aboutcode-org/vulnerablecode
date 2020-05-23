@@ -72,7 +72,8 @@ class AlpineDataSource(GitDataSource):
         super(AlpineDataSource, self).__enter__()
 
         if not getattr(self, '_added_files', None):
-            self._added_files, self._updated_files = self.file_changes(recursive=True, file_ext='yaml')
+            self._added_files, self._updated_files = self.file_changes(
+                recursive=True, file_ext='yaml')
 
     def updated_advisories(self) -> Set[Advisory]:
         files = self._updated_files.union(self._added_files)

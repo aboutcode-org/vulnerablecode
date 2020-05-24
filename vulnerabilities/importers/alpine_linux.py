@@ -53,9 +53,14 @@ def validate_schema(advisory_dict):
                                     Regex(r"XSA-\d{3}"),
                                     Regex(r"ZBX-\d{4}"),
                                     Regex(r"wnpa-sec-\d{4}-\d{2}"),
+
+
                                 )
                             ],
                             "",
+                            # FIXME: Remove the None when below issue gets fixed
+                            # https://gitlab.alpinelinux.org/alpine/infra/alpine-secdb/-/issues/1
+                            None
                         ),
                     },
                 }
@@ -88,10 +93,10 @@ class AlpineDataSource(GitDataSource):
 
         with open(path) as f:
             record = yaml.safe_load(f)
-            validate_schema(record)
 
             if record['packages'] is None:
                 return advisories
+            validate_schema(record)
 
             for p in record['packages']:
                 advisories.extend(self._load_advisories(
@@ -123,7 +128,8 @@ class AlpineDataSource(GitDataSource):
                     name=pkg_infos['name'],
                     type='alpine',
                     version=version,
-                    qualifiers={'arch': arch, 'distroversion': distroversion, 'reponame': reponame},
+                    qualifiers={
+                        'arch': arch, 'distroversion': distroversion, 'reponame': reponame},
                 )
                 for arch in archs
             }

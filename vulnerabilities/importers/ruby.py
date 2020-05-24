@@ -1,76 +1,126 @@
-import urllib.request
-from urllib.error import HTTPError
-from zipfile import ZipFile
-from io import BytesIO
-import yaml
+from json import JSONDecodeError
+from typing import Set
+from typing import List
+
 from dephell_specifier import RangeSpecifier
-from urllib.request import urlopen
+from dephell_specifier.range_specifier import InvalidSpecifier
+from packageurl import PackageURL
+import requests
+import yaml
 
-RUBYSEC_DB_URL = 'https://github.com/rubysec/ruby-advisory-db/archive/master.zip'
-
-
-def rubygem_advisories(url, prefix='ruby-advisory-db-master/gems/'):
-    with urlopen(url) as response:
-        with ZipFile(BytesIO(response.read())) as zf:
-            for path in zf.namelist():
-                if path.startswith(prefix) and path.endswith('.yml'):
-                    yield yaml.safe_load(zf.open(path))
+from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import GitDataSource
 
 
-def get_all_versions_of_package(package_name):
-    url_to_load = 'https://rubygems.org/api/v1/versions/' + package_name + '.yaml'
-    try:
-        page = urllib.request.urlopen(url_to_load)
-        package_history = yaml.safe_load(page)
-    except HTTPError:
-        return []
-    for version in package_history:
-        yield version['number']
 
+class rubyDataSource(GitDataSource):
 
-def get_patched_range(spec_list):
-    spec_list = [string.replace(' ', '') for string in spec_list]
-    for spec in spec_list:
-        if 'rc' in spec:
-            continue
-        yield RangeSpecifier(spec)
+    def __enter__(self):
+        super(rubyDataSource, self).__enter__()
 
+        if not getattr(self, '_added_files', None):
+            self._added_files, self._updated_files = self.file_changes(
+                recursive=True, file_ext='yml', subdir='./gems')
 
-def import_vulnerabilities():
-    vulnerability_package_dicts = []
-    for vulnerability in rubygem_advisories(RUBYSEC_DB_URL):
+        self.pkg_manager_api = rubyAPI()
+    def updated_advisories(self) -> Set[Advisory]:
+        print("called")
+        files = self._updated_files.union(self._added_files)
+        advisories = []
+        for f in files:  
+            if self._process_file(f) : 
+                advisories.append(self._process_file(f))
+            print(advisories[-1])
+        return self.batch_advisories(advisories)
+    
 
-        package_name = vulnerability.get(
+    def _process_file(self, path) -> List[Advisory]:
+        advisories = []
+
+        with open(path) as f:
+            record = yaml.safe_load(f)
+            package_name = record.get(
             'gem')
 
-        if not package_name:
-            continue
+            if not package_name:
+                return
 
-        if 'cve' in vulnerability:
-            vulnerability_id = 'CVE-{}'.format(vulnerability['cve'])
-        else:
-            continue
+            if 'cve' in record:
+                cve_id = 'CVE-{}'.format(record['cve'])
+            else:
+                return
+            
+            patched_version_ranges =  record.get('patched_versions', [])
+            # this case happens when the advisory contain 'patched_versions' field
+            # and it has value None(i.e it is empty :( )
+            if not patched_version_ranges:
+                return
+            affected_versions = self.pkg_manager_api.get_all_version_of_package(package_name)
+            patched_versions = set()
+            for version_range in  patched_version_ranges:
+                try:
+                    spec = RangeSpecifier(version_range)
+                    patched_versions.update(set(filter(lambda x: x in spec,affected_versions)))
+                    affected_versions -= patched_versions
+                    if not affected_versions:
+                        break 
+                except InvalidSpecifier:
+                    continue
+                
+            
+            impacted_purls = {
+                PackageURL(
+                    name=package_name,
+                    type='gem',
+                    version=version,
+                    ) for version in affected_versions}
+            
+            resolved_purls = {
+                PackageURL(
+                    name=package_name,
+                    type='gem',
+                    version=version,
+                    ) for version in patched_versions}
+            
+            return Advisory(
+                summary=record.get('description',''),
+                impacted_package_urls=impacted_purls,
+                resolved_package_urls=resolved_purls,
+                reference_urls=record.get('url',''), 
+                cve_id=cve_id
+            )
+        return advisories
 
-        advisory_url = vulnerability.get('url')
-        patched_version_ranges = list(
-            get_patched_range(
-                vulnerability.get('patched_versions', [])))
-        all_versions = set(get_all_versions_of_package(package_name))
-        unaffected_versions = set()
 
-        if patched_version_ranges:
-            for version in all_versions:
-                for spec in patched_version_ranges:
-                    if version in spec:
-                        unaffected_versions.add(version)
-                        break
+class rubyAPI : 
 
-        affected_versions = all_versions - unaffected_versions
-        vulnerability_package_dicts.append({
-            'package_name': package_name,
-            'cve_id': vulnerability_id,
-            'fixed_versions': unaffected_versions,
-            'affected_versions': affected_versions,
-            'advisory': advisory_url
-        })
-    return vulnerability_package_dicts
+    base_endpt = 'https://rubygems.org/api/v1/versions/{}.json'
+    def __init__(self):
+        self.client  = requests.Session()
+    
+    def call_api(self, pkg_name) -> List:
+        end_pt = self.base_endpt.format(pkg_name)
+        try:
+            resp = self.client.get(end_pt)
+            return resp.json()
+        #this covers 404 alright
+        except JSONDecodeError:
+            return []
+        
+    
+    def get_all_version_of_package(self, pkg_name) -> Set[str]:
+        all_versions = set()
+        json_resp = self.call_api(pkg_name)
+        for release in json_resp:
+            all_versions.add(release['number'])
+        return all_versions
+
+
+        
+        
+
+        
+
+
+
+    

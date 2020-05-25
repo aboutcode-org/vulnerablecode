@@ -21,8 +21,6 @@ class rubyDataSource(GitDataSource):
             self._added_files, self._updated_files = self.file_changes(
                 recursive=True, file_ext='yml', subdir='./gems')
 
-        self.pkg_manager_api = rubyAPI()
-
     def updated_advisories(self) -> Set[Advisory]:
         files = self._updated_files.union(self._added_files)
         advisories = []
@@ -32,8 +30,6 @@ class rubyDataSource(GitDataSource):
         return self.batch_advisories(advisories)
 
     def _process_file(self, path) -> List[Advisory]:
-        advisories = []
-
         with open(path) as f:
             record = yaml.safe_load(f)
             package_name = record.get(
@@ -47,24 +43,20 @@ class rubyDataSource(GitDataSource):
             else:
                 return
 
-            patched_version_ranges = record.get('patched_versions', [])
-            # this case happens when the advisory contain 'patched_versions' field
-            # and it has value None(i.e it is empty :( )
-            if not patched_version_ranges:
-                return
-            affected_versions = self.pkg_manager_api.get_all_version_of_package(
+            safe_version_ranges = record.get('patched_versions', [])
+            # this case happens when the advisory contain only 'patched_versions' field
+            # and it has value None(i.e it is empty :( ).
+            if not safe_version_ranges:
+                safe_version_ranges = []
+            safe_version_ranges += record.get('unaffected_versions', [])
+            safe_version_ranges = [i for i in safe_version_ranges if i]
+
+            if not getattr(self, 'pkg_manager_api', None):
+                self.pkg_manager_api = rubyAPI()
+            all_vers = self.pkg_manager_api.get_all_version_of_package(
                 package_name)
-            patched_versions = set()
-            for version_range in patched_version_ranges:
-                try:
-                    spec = RangeSpecifier(version_range)
-                    patched_versions.update(
-                        set(filter(lambda x: x in spec, affected_versions)))
-                    affected_versions -= patched_versions
-                    if not affected_versions:
-                        break
-                except InvalidSpecifier:
-                    continue
+            safe_versions, affected_versions = self.categorize_versions(
+                all_vers, safe_version_ranges)
 
             impacted_purls = {
                 PackageURL(
@@ -78,7 +70,7 @@ class rubyDataSource(GitDataSource):
                     name=package_name,
                     type='gem',
                     version=version,
-                ) for version in patched_versions}
+                ) for version in safe_versions}
 
             return Advisory(
                 summary=record.get('description', ''),
@@ -87,7 +79,26 @@ class rubyDataSource(GitDataSource):
                 reference_urls=record.get('url', ''),
                 cve_id=cve_id
             )
-        return advisories
+
+    @staticmethod
+    def categorize_versions(all_versions, unaffected_version_ranges):
+
+        for id, elem in enumerate(unaffected_version_ranges):
+            try:
+                unaffected_version_ranges[id] = RangeSpecifier(
+                    elem.replace(' ', ''))
+            except InvalidSpecifier:
+                continue
+
+        safe_versions = set()
+        for i in all_versions:
+            for ver_rng in unaffected_version_ranges:
+
+                if i in ver_rng:
+
+                    safe_versions.add(i)
+
+        return (safe_versions, all_versions-safe_versions)
 
 
 class rubyAPI:

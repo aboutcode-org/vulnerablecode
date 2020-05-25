@@ -25,11 +25,12 @@ class rubyDataSource(GitDataSource):
         files = self._updated_files.union(self._added_files)
         advisories = []
         for f in files:
-            if self._process_file(f):
-                advisories.append(self._process_file(f))
+            processed_data = self.process_file(f)
+            if processed_data:
+                advisories.append(processed_data)
         return self.batch_advisories(advisories)
 
-    def _process_file(self, path) -> List[Advisory]:
+    def process_file(self, path) -> List[Advisory]:
         with open(path) as f:
             record = yaml.safe_load(f)
             package_name = record.get(

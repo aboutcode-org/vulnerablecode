@@ -97,7 +97,7 @@ class rubyDataSourceTest(TestCase):
         found_advisories = set()
 
         for p in MOCK_ADDED_FILES:
-            found_advisories.add(self.data_src._process_file(p))
+            found_advisories.add(self.data_src.process_file(p))
         assert found_advisories == expected_advisories
 
     def test_categorize_versions(self):

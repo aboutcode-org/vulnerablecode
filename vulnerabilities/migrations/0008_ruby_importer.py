@@ -17,7 +17,7 @@ def add_ruby_importer(apps, _):
 
 def remove_ruby_importer(apps, _):
     Importer = apps.get_model('vulnerabilities', 'Importer')
-    qs = Importer.objects.filter(name='rubyy')
+    qs = Importer.objects.filter(name='ruby')
     if qs:
         qs[0].delete()
 

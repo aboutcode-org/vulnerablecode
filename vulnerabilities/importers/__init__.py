@@ -26,4 +26,4 @@ from vulnerabilities.importers.debian import DebianDataSource
 from vulnerabilities.importers.npm import NpmDataSource
 from vulnerabilities.importers.rust import RustDataSource
 from vulnerabilities.importers.safety_db import SafetyDbDataSource
-from vulnerabilities.importers.ruby import rubyDataSource
+from vulnerabilities.importers.ruby import RubyDataSource

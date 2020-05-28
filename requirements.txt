@@ -51,3 +51,4 @@ traitlets==4.3.3
 wcwidth==0.1.7
 whitenoise==5.0.1
 zipp==0.6.0
+requests==2.23.0

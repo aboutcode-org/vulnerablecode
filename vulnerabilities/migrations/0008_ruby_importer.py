@@ -20,10 +20,36 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from vulnerabilities.importers.alpine_linux import AlpineDataSource
-from vulnerabilities.importers.archlinux import ArchlinuxDataSource
-from vulnerabilities.importers.debian import DebianDataSource
-from vulnerabilities.importers.npm import NpmDataSource
-from vulnerabilities.importers.rust import RustDataSource
-from vulnerabilities.importers.safety_db import SafetyDbDataSource
-from vulnerabilities.importers.ruby import RubyDataSource
+from django.db import migrations
+
+
+def add_ruby_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+
+    Importer.objects.create(
+        name='ruby',
+        license='',
+        last_run=None,
+        data_source='RubyDataSource',
+        data_source_cfg={
+            'repository_url': 'https://github.com/rubysec/ruby-advisory-db.git',
+        },
+    )
+
+
+def remove_ruby_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+    qs = Importer.objects.filter(name='ruby')
+    if qs:
+        qs[0].delete()
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('vulnerabilities', '0007_npm_importer'),
+    ]
+
+    operations = [
+        migrations.RunPython(add_ruby_importer, remove_ruby_importer),
+    ]

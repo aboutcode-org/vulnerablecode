@@ -212,7 +212,6 @@ def _bulk_insert_impacted_and_resolved_packages(
 
     for advisory in batch:
         vuln = _advisory_to_vulnerability(advisory, vulnerabilities)
-        vulnerabilities.remove(vuln)  # minor optimization
 
         for impacted_purl in advisory.impacted_package_urls:
             # TODO Figure out when/how it happens that a package is missing from the dict and fix it

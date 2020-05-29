@@ -20,11 +20,34 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from vulnerabilities.importers.alpine_linux import AlpineDataSource
-from vulnerabilities.importers.archlinux import ArchlinuxDataSource
-from vulnerabilities.importers.debian import DebianDataSource
-from vulnerabilities.importers.npm import NpmDataSource
-from vulnerabilities.importers.rust import RustDataSource
-from vulnerabilities.importers.safety_db import SafetyDbDataSource
-from vulnerabilities.importers.ruby import RubyDataSource
-from vulnerabilities.importers.ubuntu import UbuntuDataSource
+from django.db import migrations
+
+
+def add_ubuntu_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+
+    Importer.objects.create(
+        name='ubuntu',
+        license='',
+        last_run=None,
+        data_source='UbuntuDataSource',
+        data_source_cfg={'releases':['bionic','trusty','focal','eoan','xenial']},
+    )
+
+
+def remove_ubuntu_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+    qs = Importer.objects.filter(name='ubuntu')
+    if qs:
+        qs[0].delete()
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('vulnerabilities', '0008_ruby_importer'),
+    ]
+
+    operations = [
+        migrations.RunPython(add_ubuntu_importer, remove_ubuntu_importer),
+    ]

@@ -1,12 +1,16 @@
 import os
 import unittest
+from unittest.mock import patch
 import xml.etree.ElementTree as ET
+from collections import OrderedDict
+import asyncio
 
 from dephell_specifier import RangeSpecifier
-
+from packageurl import PackageURL
 
 from vulnerabilities.importers.oval_parser import OvalParser
-
+from vulnerabilities.importers.ubuntu import UbuntuDataSource
+from vulnerabilities.data_source import Advisory
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")
@@ -84,8 +88,8 @@ class TestUbuntuOvalParser(unittest.TestCase):
         pkg_set1 = set(self.parsed_oval.get_pkgs_from_obj(obj_t2))
         pkg_set2 = set(self.parsed_oval.get_pkgs_from_obj(obj_t1))
 
-        assert pkg_set1 == {"potrace", "libpotrace0"}
-        assert pkg_set2 == {"tor", "tor-geoipdb"}
+        assert pkg_set1 == {"potrace"}
+        assert pkg_set2 == {"tor"}
 
     def test_get_versionsrngs_from_state(self):
 
@@ -99,7 +103,7 @@ class TestUbuntuOvalParser(unittest.TestCase):
 
         assert self.parsed_oval.get_versionsrngs_from_state(state_1) == exp_range_1
         assert self.parsed_oval.get_versionsrngs_from_state(state_2) == exp_range_2
-    
+
     def test_get_urls_from_definition(self):
 
         def1_urls = {'http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8703.html',
@@ -107,7 +111,7 @@ class TestUbuntuOvalParser(unittest.TestCase):
                      'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8703'
                     }
 
-        assert def1_urls == self.parsed_oval.get_urls_from_definition(self.definition_1)            
+        assert def1_urls == self.parsed_oval.get_urls_from_definition(self.definition_1)
 
         def2_urls = {'http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8860.html',
                      'https://trac.torproject.org/projects/tor/ticket/20384',
@@ -117,7 +121,7 @@ class TestUbuntuOvalParser(unittest.TestCase):
                      'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8860',
                     }
 
-        assert def2_urls == self.parsed_oval.get_urls_from_definition(self.definition_2)       
+        assert def2_urls == self.parsed_oval.get_urls_from_definition(self.definition_2)
 
     def test_get_data(self):
 
@@ -125,7 +129,7 @@ class TestUbuntuOvalParser(unittest.TestCase):
             {
                 "test_data": [
                     {
-                        "package_list": ["libpotrace0", "potrace"],
+                        "package_list": ["potrace"],
                         "version_ranges": RangeSpecifier("<1.14-2"),
                     }
                 ],
@@ -141,7 +145,7 @@ class TestUbuntuOvalParser(unittest.TestCase):
             {
                 "test_data": [
                     {
-                        "package_list": ["tor", "tor-geoipdb"],
+                        "package_list": ["tor"],
                         "version_ranges": RangeSpecifier("<0.2.8.9-1ubuntu1"),
                     }
                 ],
@@ -160,4 +164,107 @@ class TestUbuntuOvalParser(unittest.TestCase):
         ]
 
         assert expected_data == self.parsed_oval.get_data()
-    
+
+#This is horrible, there must be a better way
+async def mock(a,b):
+    pass
+
+class TestUbuntuDataSource(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        pass
+
+    @patch(
+        'vulnerabilities.importers.ubuntu.VersionAPI.get',
+        return_value={
+            '0.3.0',
+            '0.2.0',
+            '2.14-2'})
+    @patch('vulnerabilities.importers.ubuntu.VersionAPI.load_api',new=mock)
+    def test_get_data_from_xml_doc(self, mock_write):
+
+        data_source_cfg = {
+            'releases': 'eg-ubuntu'}
+        ubuntu_data_src = UbuntuDataSource(
+            batch_size=1, config=data_source_cfg)
+        expected_data = {
+            Advisory(
+                summary=('Tor before 0.2.8.9 and 0.2.9.x before 0.2.9.4-alpha had '
+                'internal functions that were entitled to expect that buf_t data had '
+                'NUL termination, but the implementation of or/buffers.c did not '
+                'ensure that NUL termination was present, which allows remote '
+                'attackers to cause a denial of service (client, hidden '
+                'service, relay, or authority crash) via crafted data.'),
+                impacted_package_urls={
+                    PackageURL(
+                        type='deb',
+                        namespace=None,
+                        name='tor',
+                        version='0.2.0',
+                        qualifiers=OrderedDict(),
+                        subpath=None)},
+                resolved_package_urls={
+                    PackageURL(
+                        type='deb',
+                        namespace=None,
+                        name='tor',
+                        version='0.3.0',
+                        qualifiers=OrderedDict(),
+                        subpath=None),
+                    PackageURL(
+                        type='deb',
+                        namespace=None,
+                        name='tor',
+                        version='2.14-2',
+                        qualifiers=OrderedDict(),
+                        subpath=None)},
+                reference_urls={
+                    'http://www.openwall.com/lists/oss-security/2016/10/18/11',
+                    'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8860',
+                    'http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8860.html',
+                    'https://github.com/torproject/tor/commit/3cea86eb2fbb65949673eb4ba8ebb695c87a57ce',
+                    'https://blog.torproject.org/blog/tor-0289-released-important-fixes',
+                    'https://trac.torproject.org/projects/tor/ticket/20384'},
+                reference_ids=[],
+                cve_id='CVE-2016-8860'),
+            Advisory(
+                summary=('Heap-based buffer overflow in the bm_readbody_bmp function'
+                ' in bitmap_io.c in potrace before 1.13 allows remote attackers to '
+                'have unspecified impact via a crafted BMP image, a different '
+                'vulnerability than CVE-2016-8698, CVE-2016-8699, '
+                'CVE-2016-8700, CVE-2016-8701, and CVE-2016-8702.'),
+                impacted_package_urls={
+                    PackageURL(
+                        type='deb',
+                        namespace=None,
+                        name='potrace',
+                        version='0.3.0',
+                        qualifiers=OrderedDict(),
+                        subpath=None),
+                    PackageURL(
+                        type='deb',
+                        namespace=None,
+                        name='potrace',
+                        version='0.2.0',
+                        qualifiers=OrderedDict(),
+                        subpath=None)},
+                resolved_package_urls={
+                    PackageURL(
+                        type='deb',
+                        namespace=None,
+                        name='potrace',
+                        version='2.14-2',
+                        qualifiers=OrderedDict(),
+                        subpath=None)},
+                reference_urls={
+                    'http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8703.html',
+                    'https://blogs.gentoo.org/ago/2016/08/08/potrace-multiplesix-heap-based-buffer-overflow-in-bm_readbody_bmp-bitmap_io-c/',
+                    'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8703'},
+                reference_ids=[],
+                cve_id='CVE-2016-8703')}
+
+        xml_doc = ET.parse(os.path.join(TEST_DATA, "ubuntu_oval_data.xml"))
+        data = set(ubuntu_data_src.get_data_from_xml_doc(xml_doc))
+
+        assert expected_data == data

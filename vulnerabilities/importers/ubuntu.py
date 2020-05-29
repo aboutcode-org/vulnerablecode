@@ -41,49 +41,49 @@ from vulnerabilities.data_source import DataSource, DataSourceConfiguration, Adv
 from vulnerabilities.importers import oval_parser
 
 
-
 @dataclasses.dataclass
 class UbuntuConfiguration(DataSourceConfiguration):
     releases: list
 
+
 class UbuntuDataSource(DataSource):
 
     CONFIG_CLASS = UbuntuConfiguration
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        #we could avoid setting translations, and have it
-        #set by default in the OvalParser, but we don't yet know
-        #whether all OVAL providers use the same format
-        self.translations = {'less than':'<'}
+        # we could avoid setting translations, and have it
+        # set by default in the OvalParser, but we don't yet know
+        # whether all OVAL providers use the same format
+        self.translations = {'less than': '<'}
         self._versions = VersionAPI()
 
-    def _fetch(self) :
+    def _fetch(self):
         base_url = 'https://people.canonical.com/~ubuntu-security/oval/'
         file_name = 'com.ubuntu.{}.cve.oval.xml.bz2'
-        releases =  self.config.releases
+        releases = self.config.releases
         for release in releases:
             resp = requests.get(base_url + file_name.format(release))
             extracted = bz2.decompress(resp.content)
             yield ET.ElementTree(ET.fromstring(extracted.decode('utf-8')))
 
-    def added_advisories(self) -> List[Advisory] : 
+    def added_advisories(self) -> List[Advisory]:
         advisories = []
         for oval_file in self._fetch():
             advisories.extend(self.get_data_from_xml_doc(oval_file))
-        return advisories       
+        return advisories
 
-    @staticmethod    
-    def _collect_pkgs(parsed_oval_data) -> Set : 
+    @staticmethod
+    def _collect_pkgs(parsed_oval_data) -> Set:
         all_pkgs = set()
-        for definition_data in  parsed_oval_data:
+        for definition_data in parsed_oval_data:
             for test_data in definition_data['test_data']:
                 for package in test_data['package_list']:
                     all_pkgs.add(package)
 
         return all_pkgs
 
-
-    def get_data_from_xml_doc(self, xml_doc) -> List[Advisory] :
+    def get_data_from_xml_doc(self, xml_doc) -> List[Advisory]:
         all_adv = []
         oval_doc = oval_parser.OvalParser(self.translations, xml_doc)
         raw_data = oval_doc.get_data()
@@ -91,39 +91,51 @@ class UbuntuDataSource(DataSource):
 
         asyncio.run(self._versions.load_api(all_pkgs))
 
-        for definition_data in raw_data: #definition_data -> Advisory
+        for definition_data in raw_data:  # definition_data -> Advisory
             vuln_id = definition_data['vuln_id']
             description = definition_data['description']
             affected_purls = set()
             safe_purls = set()
             urls = definition_data['reference_urls']
-            for test_data in definition_data['test_data'] : 
+            for test_data in definition_data['test_data']:
                 for package in test_data['package_list']:
                     pkg_name = package
                     aff_ver_range = test_data['version_ranges']
                     all_versions = self._versions.get(package)
-                    #This filter is to filter out long versions.
-                    #50 is limit because that's what db permits atm
-                    all_versions = set(filter(lambda x : len(x)<50,all_versions))
+                    # This filter is to filter out long versions.
+                    # 50 is limit because that's what db permits atm
+                    all_versions = set(
+                        filter(
+                            lambda x: len(x) < 50,
+                            all_versions))
                     if not all_versions:
                         continue
-                    affected_versions = set(filter(lambda x: x in aff_ver_range,all_versions))
+                    affected_versions = set(
+                        filter(
+                            lambda x: x in aff_ver_range,
+                            all_versions))
                     safe_versions = all_versions - affected_versions
 
                     for version in affected_versions:
-                        #should we add a qualifier like 'distro:ubuntu'?
-                        pkg_url = PackageURL(name=pkg_name,type='deb',version=version)
+                        # should we add a qualifier like 'distro:ubuntu'?
+                        pkg_url = PackageURL(
+                            name=pkg_name, type='deb', version=version)
                         affected_purls.add(pkg_url)
 
                     for version in safe_versions:
-                        #should we add a qualifier like 'distro:ubuntu'?
-                        pkg_url = PackageURL(name=pkg_name,type='deb',version=version)
+                        # should we add a qualifier like 'distro:ubuntu'?
+                        pkg_url = PackageURL(
+                            name=pkg_name, type='deb', version=version)
                         safe_purls.add(pkg_url)
 
-            all_adv.append(Advisory(summary=description,impacted_package_urls=affected_purls,
-                            resolved_package_urls=safe_purls,cve_id=vuln_id,reference_urls=urls))
+            all_adv.append(
+                Advisory(
+                    summary=description,
+                    impacted_package_urls=affected_purls,
+                    resolved_package_urls=safe_purls,
+                    cve_id=vuln_id,
+                    reference_urls=urls))
         return all_adv
-
 
 
 class VersionAPI:
@@ -135,25 +147,26 @@ class VersionAPI:
 
     async def load_api(self, pkg_set):
         async with ClientSession() as session:
-            await asyncio.gather(*[self.set_api(pkg, session) for pkg in pkg_set if pkg not in self.cache])
+            await asyncio.gather(*[self.set_api(pkg, session)
+                                   for pkg in pkg_set if pkg not in self.cache])
 
-    async def set_api(self, pkg, session): 
+    async def set_api(self, pkg, session):
         url = ('https://api.launchpad.net/1.0/ubuntu/+archive/'
-            'primary?ws.op=getPublishedSources&'
-            'source_name={}&exact_match=true'.format(pkg))
+               'primary?ws.op=getPublishedSources&'
+               'source_name={}&exact_match=true'.format(pkg))
         try:
             all_versions = set()
             while(True):
                 response = await session.request(method='GET', url=url)
                 response.raise_for_status()
                 resp_json = await response.json()
-                if resp_json['entries'] == [] : 
+                if resp_json['entries'] == []:
                     self.cache[pkg] = {}
                     break
                 for release in resp_json['entries']:
                     all_versions.add(release['source_package_version'])
-                if resp_json.get('next_collection_link') :
-                    url =  resp_json['next_collection_link']
+                if resp_json.get('next_collection_link'):
+                    url = resp_json['next_collection_link']
                 else:
                     break
             self.cache[pkg] = all_versions

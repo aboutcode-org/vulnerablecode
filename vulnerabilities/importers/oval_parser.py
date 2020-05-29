@@ -126,8 +126,8 @@ class OvalParser:
             if var.get('var_ref'):
                 var_elem = self.oval_document.getElementByID(
                     var.get('var_ref'))
-                comment  = var_elem.element.get('comment')
-                pkg_name = re.match("'.+'", comment).group().replace("'","")
+                comment = var_elem.element.get('comment')
+                pkg_name = re.match("'.+'", comment).group().replace("'", "")
                 pkg_list.append(pkg_name)
             else:
                 pkg_list.append(var.text)

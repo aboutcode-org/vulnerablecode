@@ -61,9 +61,9 @@ class Advisory:
     def __hash__(self):
         s = '{}{}{}{}{}'.format(
             self.summary,
-            ''.join({str(p) for p in self.impacted_package_urls}),
-            ''.join({str(p) for p in self.resolved_package_urls}),
-            ''.join(self.reference_urls),
+            ''.join(sorted([str(p) for p in self.impacted_package_urls])),
+            ''.join(sorted([str(p) for p in self.resolved_package_urls])),
+            ''.join(sorted(self.reference_urls)),
             self.cve_id,
         )
         return hash(s)

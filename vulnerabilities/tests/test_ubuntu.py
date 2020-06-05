@@ -8,7 +8,7 @@ import asyncio
 from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
 
-from vulnerabilities.importers.oval_parser import OvalParser
+from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.importers.ubuntu import UbuntuDataSource
 from vulnerabilities.data_source import Advisory
 
@@ -265,6 +265,6 @@ class TestUbuntuDataSource(unittest.TestCase):
                 cve_id='CVE-2016-8703')}
 
         xml_doc = ET.parse(os.path.join(TEST_DATA, "ubuntu_oval_data.xml"))
-        data = set(ubuntu_data_src.get_data_from_xml_doc(xml_doc))
+        data = set(ubuntu_data_src.get_data_from_xml_doc(xml_doc,{"type":"deb"}))
 
         assert expected_data == data

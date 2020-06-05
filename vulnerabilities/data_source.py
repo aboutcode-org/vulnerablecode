@@ -35,9 +35,12 @@ from typing import Optional
 from typing import Sequence
 from typing import Set
 from typing import Tuple
+import xml.etree.ElementTree as ET
 
 import pygit2
 from packageurl import PackageURL
+
+from vulnerabilities.oval_parser import OvalParser
 
 
 @dataclasses.dataclass
@@ -257,7 +260,8 @@ class GitDataSource(DataSource):
 
             return {str(p) for p in path.glob(glob) if p.is_file()}, set()
 
-        return self._collect_file_changes(subdir=subdir, recursive=recursive, file_ext=file_ext)
+        return self._collect_file_changes(
+            subdir=subdir, recursive=recursive, file_ext=file_ext)
 
     def _collect_file_changes(
             self,
@@ -269,7 +273,8 @@ class GitDataSource(DataSource):
         previous_commit = None
         added_files, updated_files = set(), set()
 
-        for commit in self._repo.walk(self._repo.head.target, pygit2.GIT_SORT_TIME):
+        for commit in self._repo.walk(
+                self._repo.head.target, pygit2.GIT_SORT_TIME):
             commit_time = commit.commit_time + commit.commit_time_offset  # convert to UTC
 
             if commit_time < self.cutoff_timestamp:
@@ -280,13 +285,16 @@ class GitDataSource(DataSource):
                 continue
 
             for d in commit.tree.diff_to_tree(previous_commit.tree).deltas:
-                if not _include_file(d.new_file.path, subdir, recursive, file_ext) or d.is_binary:
+                if not _include_file(
+                        d.new_file.path, subdir, recursive, file_ext) or d.is_binary:
                     continue
 
-                abspath = os.path.join(self.config.working_directory, d.new_file.path)
+                abspath = os.path.join(
+                    self.config.working_directory, d.new_file.path)
                 # TODO
                 # Just filtering on the two status values for "added" and "modified" is too
-                # simplistic. This does not cover file renames, copies & deletions.
+                # simplistic. This does not cover file renames, copies &
+                # deletions.
                 if d.status == pygit2.GIT_DELTA_ADDED:
                     added_files.add(abspath)
                 elif d.status == pygit2.GIT_DELTA_MODIFIED:
@@ -381,3 +389,103 @@ def _include_file(
         match = match and path.endswith(f'.{file_ext}')
 
     return match
+
+
+class OvalDataSource(DataSource):
+
+    @staticmethod
+    def create_purl(pkg_name: str, pkg_version: str, pkg_data: Mapping):
+        """
+        Note: pkg_data must include 'type' of package
+        """
+        return PackageURL(name=pkg_name, version=pkg_version, **pkg_data)
+
+    @staticmethod
+    def _collect_pkgs(parsed_oval_data: Mapping) -> Set:
+        """
+        Helper method, used for loading the API. It expects data from
+        OvalParser.get_data() .
+        """
+        all_pkgs = set()
+        for definition_data in parsed_oval_data:
+            for test_data in definition_data['test_data']:
+                for package in test_data['package_list']:
+                    all_pkgs.add(package)
+
+        return all_pkgs
+
+    def _fetch() -> Tuple[Mapping, Iterable[ET.ElementTree]]:
+        """
+        This method  contains logic to fetch OVAL files and yield them into
+        a tuple of file's metadata and it's ET.ElementTree.
+        Subclasses must implement this method.
+        """
+        raise NotImplementedError
+
+    def added_advisories(self) -> List[Advisory]:
+        advisories = []
+        for metadata, oval_file in self._fetch():
+            advisories.extend(self.get_data_from_xml_doc(oval_file, metadata))
+        return advisories
+
+    def set_api(self, all_pkgs: Iterable[str]):
+        """
+        This method loads the self.pkg_manager_api with the specified packages. It fetches
+        and caches the data about these packages exposes them through
+        self.pkg_manager_api.get(<package_name>)
+        """
+        raise NotImplementedError
+
+    def get_data_from_xml_doc(self, xml_doc: ET.ElementTree, pkg_metadata={}) -> List[Advisory]:
+        """
+        The orchestration method of the OvalDataSource. Breaks an OVAL xml
+        ElementTree into a list of Advisory.
+        """
+        all_adv = []
+        oval_doc = OvalParser(self.translations, xml_doc)
+        raw_data = oval_doc.get_data()
+        all_pkgs = self._collect_pkgs(raw_data)
+        self.set_api(all_pkgs)
+        for definition_data in raw_data:  # definition_data -> Advisory
+            vuln_id = definition_data['vuln_id']
+            description = definition_data['description']
+            affected_purls = set()
+            safe_purls = set()
+            urls = definition_data['reference_urls']
+            for test_data in definition_data['test_data']:
+                for package in test_data['package_list']:
+                    pkg_name = package
+                    aff_ver_range = test_data['version_ranges']
+                    all_versions = self.pkg_manager_api.get(package)
+                    # This filter is to filter out long versions.
+                    # 50 is limit because that's what db permits atm
+                    all_versions = set(
+                        filter(
+                            lambda x: len(x) < 50,
+                            all_versions))
+                    if not all_versions:
+                        continue
+                    affected_versions = set(
+                        filter(
+                            lambda x: x in aff_ver_range,
+                            all_versions))
+                    safe_versions = all_versions - affected_versions
+
+                    for version in affected_versions:
+                        pkg_url = self.create_purl(
+                            pkg_name=pkg_name, pkg_version=version, pkg_data=pkg_metadata)
+                        affected_purls.add(pkg_url)
+
+                    for version in safe_versions:
+                        pkg_url = self.create_purl(
+                            pkg_name=pkg_name, pkg_version=version, pkg_data=pkg_metadata)
+                        safe_purls.add(pkg_url)
+
+            all_adv.append(
+                Advisory(
+                    summary=description,
+                    impacted_package_urls=affected_purls,
+                    resolved_package_urls=safe_purls,
+                    cve_id=vuln_id,
+                    reference_urls=urls))
+        return all_adv

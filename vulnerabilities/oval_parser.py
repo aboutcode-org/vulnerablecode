@@ -30,7 +30,7 @@ import xml.etree.ElementTree as ET
 
 from dephell_specifier import RangeSpecifier
 
-from vulnerabilities.importers.lib_oval import (
+from vulnerabilities.lib_oval import (
     OvalDefinition, OvalDocument, OvalTest, OvalObject, OvalState)
 
 

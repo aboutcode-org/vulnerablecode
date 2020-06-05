@@ -8,7 +8,7 @@ contextlib2==0.5.5
 decorator==4.4.2
 dephell-specifier==0.2.1
 dj-database-url==0.4.2
-Django==3.0.3
+Django==3.0.7
 django-filter==2.2.0
 djangorestframework==3.11.0
 gunicorn==19.7.1

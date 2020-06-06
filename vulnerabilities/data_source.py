@@ -75,7 +75,7 @@ class InvalidConfigurationError(Exception):
 
 @dataclasses.dataclass
 class DataSourceConfiguration:
-    batch_size: int
+    pass
 
 
 class DataSource(ContextManager):
@@ -105,8 +105,9 @@ class DataSource(ContextManager):
         :param config: Optional dictionary with subclass-specific configuration
         """
         config = config or {}
+        self.batch_size = batch_size
         try:
-            self.config = self.__class__.CONFIG_CLASS(batch_size, **config)
+            self.config = self.__class__.CONFIG_CLASS(**config)
             # These really should be declared in DataSourceConfiguration above but that would
             # prevent DataSource subclasses from declaring mandatory parameters (i.e. positional
             # arguments)
@@ -183,7 +184,7 @@ class DataSource(ContextManager):
         advisories = advisories[:]  # copy the list as we are mutating it in the loop below
 
         while advisories:
-            b, advisories = advisories[:self.config.batch_size], advisories[self.config.batch_size:]
+            b, advisories = advisories[:self.batch_size], advisories[self.batch_size:]
             yield set(b)
 
 

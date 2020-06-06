@@ -43,6 +43,7 @@ from vulnerabilities.data_source import OvalDataSource, DataSourceConfiguration,
 @dataclasses.dataclass
 class UbuntuConfiguration(DataSourceConfiguration):
     releases: list
+    etags: dict
 
 
 class UbuntuDataSource(OvalDataSource):
@@ -62,14 +63,31 @@ class UbuntuDataSource(OvalDataSource):
         file_name = 'com.ubuntu.{}.cve.oval.xml.bz2'
         releases = self.config.releases
         for release in releases:
-            print("getting ", release)
-            resp = requests.get(base_url + file_name.format(release))
+            file_url = base_url + file_name.format(release)
+            if not self.create_etag(file_url):
+                continue
+            resp = requests.get(file_url)
             extracted = bz2.decompress(resp.content)
-            print("done ")
-            yield ({'type': 'deb'}, ET.ElementTree(ET.fromstring(extracted.decode('utf-8'))))
+            yield (
+                    {'type': 'deb', 'namespace': 'ubuntu'},
+                    ET.ElementTree(ET.fromstring(extracted.decode('utf-8')))
+                  )
 
     def set_api(self, packages):
         asyncio.run(self.pkg_manager_api.load_api(packages))
+
+    def create_etag(self, url):
+
+        etag = requests.head(url).headers.get('ETag')
+        if not etag:
+            # Kind of inaccurate to return True since etag is
+            # not created
+            return True
+        elif url in self.config.etags:
+            if self.config.etags[url] == etag:
+                return False
+        self.config.etags[url] = etag
+        return True
 
 
 class VersionAPI:
@@ -80,13 +98,13 @@ class VersionAPI:
         return self.cache[package_name]
 
     async def load_api(self, pkg_set):
-        # This is debatable
-        timeout = ClientTimeout(total=None)
-        async with ClientSession(raise_for_status=True, timeout=timeout) as session:
+        async with ClientSession(raise_for_status=True) as session:
             await asyncio.gather(*[self.set_api(pkg, session)
                                    for pkg in pkg_set if pkg not in self.cache])
 
     async def set_api(self, pkg, session):
+        if pkg in self.cache:
+            return
         url = ('https://api.launchpad.net/1.0/ubuntu/+archive/'
                'primary?ws.op=getPublishedSources&'
                'source_name={}&exact_match=true'.format(pkg))
@@ -105,5 +123,5 @@ class VersionAPI:
                 else:
                     break
             self.cache[pkg] = all_versions
-        except ClientResponseError:
+        except (ClientResponseError, asyncio.exceptions.TimeoutError):
             self.cache[pkg] = {}

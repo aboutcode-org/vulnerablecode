@@ -1,6 +1,7 @@
 import os
 import unittest
 from unittest.mock import patch
+from unittest.mock import MagicMock
 import xml.etree.ElementTree as ET
 from collections import OrderedDict
 import asyncio
@@ -15,6 +16,9 @@ from vulnerabilities.data_source import Advisory
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")
 
+class MockResponse:
+
+    headers = {"ETag":"0x1234"}
 
 class TestUbuntuOvalParser(unittest.TestCase):
     @classmethod
@@ -165,7 +169,7 @@ class TestUbuntuOvalParser(unittest.TestCase):
 
         assert expected_data == self.parsed_oval.get_data()
 
-#This is horrible, there must be a better way
+#This is horrible, there might be a better way
 async def mock(a,b):
     pass
 
@@ -176,7 +180,10 @@ class TestUbuntuDataSource(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        pass
+        data_source_cfg = {
+        'releases': 'eg-ubuntu',"etags":{}}
+        cls.ubuntu_data_src = UbuntuDataSource(
+            batch_size=1, config=data_source_cfg)
 
     @patch(
         'vulnerabilities.importers.ubuntu.VersionAPI.get',
@@ -186,11 +193,6 @@ class TestUbuntuDataSource(unittest.TestCase):
             '2.14-2'})
     @patch('vulnerabilities.importers.ubuntu.VersionAPI.load_api',new=mock)
     def test_get_data_from_xml_doc(self, mock_write):
-
-        data_source_cfg = {
-            'releases': 'eg-ubuntu',"etags":{}}
-        ubuntu_data_src = UbuntuDataSource(
-            batch_size=1, config=data_source_cfg)
         expected_data = {
             Advisory(
                 summary=('Tor before 0.2.8.9 and 0.2.9.x before 0.2.9.4-alpha had '
@@ -268,8 +270,19 @@ class TestUbuntuDataSource(unittest.TestCase):
                 cve_id='CVE-2016-8703')}
 
         xml_doc = ET.parse(os.path.join(TEST_DATA, "ubuntu_oval_data.xml"))
-        # Dirty quick patch to deal with batch_advisories
+        # Dirty quick patch to mock batch_advisories
         with patch('vulnerabilities.importers.ubuntu.UbuntuDataSource.batch_advisories',
          new=return_adv):
-            data = {i for i in ubuntu_data_src.get_data_from_xml_doc(xml_doc,{"type":"deb"})}
+            data = {i for i in self.ubuntu_data_src.get_data_from_xml_doc(xml_doc,{"type":"deb"})}
         assert expected_data == data
+
+    def test_create_etag(self):
+        
+        assert self.ubuntu_data_src.config.etags == {}
+        with patch('vulnerabilities.importers.ubuntu.requests.head', return_value=MockResponse()):
+            assert True == self.ubuntu_data_src.create_etag("https://example.org")
+            assert self.ubuntu_data_src.config.etags == {"https://example.org":"0x1234"}
+            assert False == self.ubuntu_data_src.create_etag("https://example.org")
+        
+
+

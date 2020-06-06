@@ -392,10 +392,15 @@ def _include_file(
 
 
 class OvalDataSource(DataSource):
-
+    """
+    All data sources which collect data from OVAL files must inherit from this
+    `OvalDataSource` class. Subclasses must implement the methods `_fetch` and `set_api`.
+    """
     @staticmethod
-    def create_purl(pkg_name: str, pkg_version: str, pkg_data: Mapping):
+    def create_purl(pkg_name: str, pkg_version: str, pkg_data: Mapping) -> PackageURL:
         """
+        Helper method for creating different purls for subclasses without them reimplementing
+        get_data_from_xml_doc  method
         Note: pkg_data must include 'type' of package
         """
         return PackageURL(name=pkg_name, version=pkg_version, **pkg_data)
@@ -404,7 +409,7 @@ class OvalDataSource(DataSource):
     def _collect_pkgs(parsed_oval_data: Mapping) -> Set:
         """
         Helper method, used for loading the API. It expects data from
-        OvalParser.get_data() .
+        OvalParser.get_data().
         """
         all_pkgs = set()
         for definition_data in parsed_oval_data:
@@ -419,27 +424,42 @@ class OvalDataSource(DataSource):
         This method  contains logic to fetch OVAL files and yield them into
         a tuple of file's metadata and it's ET.ElementTree.
         Subclasses must implement this method.
+
+        Note: Mapping MUST INCLUDE "type" key. Example values of Mapping
+              {"type":"deb","qualifiers":{"distro":"buster"} }
+
         """
         raise NotImplementedError
 
-    def added_advisories(self) -> List[Advisory]:
+    def updated_advisories(self) -> List[Advisory]:
+        """
+        Note: metadata MUST INCLUDE "type" key, implement _fetch accordingly.
+        """
         advisories = []
         for metadata, oval_file in self._fetch():
             advisories.extend(self.get_data_from_xml_doc(oval_file, metadata))
-        return advisories
+        return self.batch_advisories(advisories)
 
     def set_api(self, all_pkgs: Iterable[str]):
         """
         This method loads the self.pkg_manager_api with the specified packages. It fetches
-        and caches the data about these packages exposes them through
-        self.pkg_manager_api.get(<package_name>)
+        and caches all the versions of these packages and exposes them through
+        self.pkg_manager_api.get(<package_name>). Example
+
+        >>> self.set_api(['electron'])
+        Assume 'electron' has only versions 1.0.0 and 1.2.0
+        >>> assert  self.pkg_manager_api.get('electron') == {'1.0.0','1.2.0'}
+
         """
         raise NotImplementedError
 
     def get_data_from_xml_doc(self, xml_doc: ET.ElementTree, pkg_metadata={}) -> List[Advisory]:
         """
-        The orchestration method of the OvalDataSource. Breaks an OVAL xml
-        ElementTree into a list of Advisory.
+        The orchestration method of the OvalDataSource. This method breaks an OVAL xml
+        ElementTree into a list of `Advisory`.
+
+        Note: pkg_metadata MUST INCLUDE "type" key. Example value of pkg_metadata,
+              {"type":"deb","qualifiers":{"distro":"buster"} }
         """
         all_adv = []
         oval_doc = OvalParser(self.translations, xml_doc)
@@ -447,18 +467,22 @@ class OvalDataSource(DataSource):
         all_pkgs = self._collect_pkgs(raw_data)
         self.set_api(all_pkgs)
         for definition_data in raw_data:  # definition_data -> Advisory
+
+            # These fields are definition level, i.e common for all
+            # elements connected/linked to an OvalDefinition
             vuln_id = definition_data['vuln_id']
             description = definition_data['description']
             affected_purls = set()
             safe_purls = set()
             urls = definition_data['reference_urls']
+
             for test_data in definition_data['test_data']:
                 for package in test_data['package_list']:
                     pkg_name = package
                     aff_ver_range = test_data['version_ranges']
                     all_versions = self.pkg_manager_api.get(package)
-                    # This filter is to filter out long versions.
-                    # 50 is limit because that's what db permits atm
+                    # This filter is for filtering out long versions.
+                    # 50 is limit because that's what db permits atm.
                     all_versions = set(
                         filter(
                             lambda x: len(x) < 50,
@@ -488,4 +512,4 @@ class OvalDataSource(DataSource):
                     resolved_package_urls=safe_purls,
                     cve_id=vuln_id,
                     reference_urls=urls))
-        return self.batch_advisories(all_adv)
+        return all_adv

@@ -31,13 +31,12 @@ from typing import Set
 import xml.etree.ElementTree as ET
 
 
-from aiohttp import ClientSession, ClientTimeout
+from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientResponseError
 import requests
-from packageurl import PackageURL
 
 
-from vulnerabilities.data_source import OvalDataSource, DataSourceConfiguration, Advisory
+from vulnerabilities.data_source import OvalDataSource, DataSourceConfiguration
 
 
 @dataclasses.dataclass
@@ -69,9 +68,14 @@ class UbuntuDataSource(OvalDataSource):
             resp = requests.get(file_url)
             extracted = bz2.decompress(resp.content)
             yield (
-                    {'type': 'deb', 'namespace': 'ubuntu'},
-                    ET.ElementTree(ET.fromstring(extracted.decode('utf-8')))
-                  )
+                {'type': 'deb', 'namespace': 'ubuntu'},
+                ET.ElementTree(ET.fromstring(extracted.decode('utf-8')))
+            )
+        # In case every file is latest, _fetch won't yield anything(due to checking for new etags),
+        # this would return None to added_advisories
+        # which will cause error, hence this
+        # function return an empty list
+        return []
 
     def set_api(self, packages):
         asyncio.run(self.pkg_manager_api.load_api(packages))

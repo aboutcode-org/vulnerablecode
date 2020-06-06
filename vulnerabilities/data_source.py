@@ -488,4 +488,4 @@ class OvalDataSource(DataSource):
                     resolved_package_urls=safe_purls,
                     cve_id=vuln_id,
                     reference_urls=urls))
-        return all_adv
+        return self.batch_advisories(all_adv)

@@ -64,7 +64,7 @@ class RustDataSource(GitDataSource):
         files = [f for f in files if not f.endswith('-0000.toml')]  # skip temporary files
 
         while files:
-            batch, files = files[:self.config.batch_size], files[self.config.batch_size:]
+            batch, files = files[:self.batch_size], files[self.batch_size:]
 
             advisories = set()
 

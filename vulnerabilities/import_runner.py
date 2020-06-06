@@ -21,6 +21,7 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import dataclasses
 import datetime
 import logging
 from typing import Dict
@@ -77,6 +78,7 @@ class ImportRunner:
             _process_updated_advisories(data_source)
 
         self.importer.last_run = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.importer.data_source_cfg = dataclasses.asdict(data_source.config)
         self.importer.save()
 
         logger.debug(f'Successfully finished import for {self.importer.name}.')

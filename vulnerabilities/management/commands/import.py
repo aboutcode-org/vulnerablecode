@@ -100,7 +100,7 @@ class Command(BaseCommand):
     def _import_data(self, importers, cutoff_date):
         for importer in importers:
             self.stdout.write(f'Importing data from {importer.name}')
-            batch_size = getattr(self, 'batch_size', 10)
+            batch_size = int(getattr(self, 'batch_size', 10))
             ImportRunner(importer, batch_size).run(cutoff_date=cutoff_date)
             self.stdout.write(
                 self.style.SUCCESS(f'Successfully imported data from {importer.name}'))

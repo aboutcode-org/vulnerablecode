@@ -31,7 +31,8 @@ def add_ubuntu_importer(apps, _):
         license='',
         last_run=None,
         data_source='UbuntuDataSource',
-        data_source_cfg={'releases':['bionic','trusty','focal','eoan','xenial']},
+        data_source_cfg={'releases':['bionic','trusty','focal','eoan','xenial'],
+        'etags':{}},
     )
 
 

@@ -169,6 +169,9 @@ class TestUbuntuOvalParser(unittest.TestCase):
 async def mock(a,b):
     pass
 
+def return_adv(_,a):
+    return a
+
 class TestUbuntuDataSource(unittest.TestCase):
 
     @classmethod
@@ -185,7 +188,7 @@ class TestUbuntuDataSource(unittest.TestCase):
     def test_get_data_from_xml_doc(self, mock_write):
 
         data_source_cfg = {
-            'releases': 'eg-ubuntu'}
+            'releases': 'eg-ubuntu',"etags":{}}
         ubuntu_data_src = UbuntuDataSource(
             batch_size=1, config=data_source_cfg)
         expected_data = {
@@ -265,6 +268,8 @@ class TestUbuntuDataSource(unittest.TestCase):
                 cve_id='CVE-2016-8703')}
 
         xml_doc = ET.parse(os.path.join(TEST_DATA, "ubuntu_oval_data.xml"))
-        data = set(ubuntu_data_src.get_data_from_xml_doc(xml_doc,{"type":"deb"}))
-
+        # Dirty quick patch to deal with batch_advisories
+        with patch('vulnerabilities.importers.ubuntu.UbuntuDataSource.batch_advisories',
+         new=return_adv):
+            data = {i for i in ubuntu_data_src.get_data_from_xml_doc(xml_doc,{"type":"deb"})}
         assert expected_data == data

@@ -1,0 +1,21 @@
+---
+- name: SLES
+  version: 11
+  packages:
+    MozillaFirefox:
+      fixed:
+        3.0.10-1.1.1:
+          - CVE-2009-1313
+    MozillaFirefox-branding-SLED:
+      fixed:
+        3.5-1.1.5:
+          - CVE-2009-1313
+    MozillaFirefox-translations:
+      fixed:
+        3.0.10-1.1.1:
+          - CVE-2009-1313
+    NetworkManager:
+      fixed:
+        0.7.0.r4359-15.9.2:
+          - CVE-2009-0365
+          - CVE-2009-0578

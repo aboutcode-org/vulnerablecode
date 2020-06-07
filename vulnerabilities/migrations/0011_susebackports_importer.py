@@ -20,14 +20,37 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+from django.db import migrations
 
-from vulnerabilities.importers.alpine_linux import AlpineDataSource
-from vulnerabilities.importers.archlinux import ArchlinuxDataSource
-from vulnerabilities.importers.debian import DebianDataSource
-from vulnerabilities.importers.npm import NpmDataSource
-from vulnerabilities.importers.rust import RustDataSource
-from vulnerabilities.importers.safety_db import SafetyDbDataSource
-from vulnerabilities.importers.ruby import RubyDataSource
-from vulnerabilities.importers.ubuntu import UbuntuDataSource
-from vulnerabilities.importers.retiredotnet import RetireDotnetDataSource
-from vulnerabilities.importers.suse_backports import SUSEBackportsDataSource
+
+def add_suse_backports_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+
+    Importer.objects.create(
+        name='suse_backports',
+        license='',
+        last_run=None,
+        data_source='SUSEBackportsDataSource',
+        data_source_cfg={
+            'url':'http://ftp.suse.com/pub/projects/security/yaml/',
+            'etags':{},
+        },
+    )
+
+
+def remove_suse_backports_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+    qs = Importer.objects.filter(name='suse_backports')
+    if qs:
+        qs[0].delete()
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('vulnerabilities', '0010_retiredotnet_importer'),
+    ]
+
+    operations = [
+        migrations.RunPython(add_suse_backports_importer, remove_suse_backports_importer),
+    ]

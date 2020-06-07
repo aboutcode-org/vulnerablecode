@@ -60,7 +60,7 @@ class TestSUSEBackportsDataSource(TestCase):
                 resolved_package_urls=[
                     PackageURL(
                         type='rpm',
-                        namespace=None,
+                        namespace='opensuse',
                         name='MozillaFirefox',
                         version='3.0.10-1.1.1',
                         qualifiers=OrderedDict(),
@@ -74,7 +74,7 @@ class TestSUSEBackportsDataSource(TestCase):
                 resolved_package_urls=[
                         PackageURL(
                             type='rpm',
-                            namespace=None,
+                            namespace='opensuse',
                             name='MozillaFirefox-branding-SLED',
                             version='3.5-1.1.5',
                             qualifiers=OrderedDict(),
@@ -88,7 +88,7 @@ class TestSUSEBackportsDataSource(TestCase):
                 resolved_package_urls=[
                     PackageURL(
                         type='rpm',
-                        namespace=None,
+                        namespace='opensuse',
                         name='MozillaFirefox-translations',
                         version='3.0.10-1.1.1',
                         qualifiers=OrderedDict(),
@@ -102,7 +102,7 @@ class TestSUSEBackportsDataSource(TestCase):
                 resolved_package_urls=[
                     PackageURL(
                         type='rpm',
-                        namespace=None,
+                        namespace='opensuse',
                         name='NetworkManager',
                         version='0.7.0.r4359-15.9.2',
                         qualifiers=OrderedDict(),
@@ -116,7 +116,7 @@ class TestSUSEBackportsDataSource(TestCase):
                 resolved_package_urls=[
                     PackageURL(
                         type='rpm',
-                        namespace=None,
+                        namespace='opensuse',
                         name='NetworkManager',
                         version='0.7.0.r4359-15.9.2',
                         qualifiers=OrderedDict(),

@@ -90,7 +90,7 @@ class SUSEBackportsDataSource(DataSource):
                     for vuln in yaml_file[0]['packages'][pkg]['fixed'][version]:
                         # yaml_file specific data can be added
                         purl = [PackageURL(
-                            name=pkg, type="rpm", version=version)]
+                            name=pkg, type="rpm", version=version, namespace='opensuse')]
                         advisories.append(
                             Advisory(cve_id=vuln,
                                      resolved_package_urls=purl,

@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 from dephell_specifier import RangeSpecifier
 
 
-from vulnerabilities.importers.oval_parser import OvalParser
+from vulnerabilities.oval_parser import OvalParser
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))

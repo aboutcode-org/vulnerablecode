@@ -21,36 +21,37 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from urllib.request import urlopen
+from os.path import dirname
+from os.path import join
 
-import bs4
-
-
-UBUNTU_ROOT_URL = 'https://people.canonical.com/~ubuntu-security/cve/main.html'
+from vulnerabilities.importers import ubuntu
 
 
-def extract_cves(html):
-    soup = bs4.BeautifulSoup(html, 'lxml')
+def test_ubuntu_extract_cves():
+    ubuntu_testfile = join(dirname(__file__), 'test_data', 'ubuntu_main.html')
 
-    # Exclude the header row which has no class attribute
-    rows = soup.find_all('tr', attrs={'class': True})
+    with open(ubuntu_testfile) as f:
+        test_input = f.read()
 
-    cves = []
-    for row in rows:
-        columns = row.text.split()
-        cves.append({
-            'cve_id': columns[0],
-            'package_name': columns[1],
-            'vulnerability_status': row.get('class')[0],
-        })
+    cves = ubuntu.extract_cves(test_input)
 
-    return cves
+    expected = {
+        'cve_id': 'CVE-2002-2439',
+        'package_name': 'gcc-4.6',
+        'vulnerability_status': 'low'
+    }
+    assert expected == cves[0]
 
+    expected = {
+        'cve_id': 'CVE-2013-0157',
+        'package_name': 'util-linux',
+        'vulnerability_status': 'low',
+    }
+    assert expected == cves[50]
 
-def scrape_cves():
-    """
-    Runs the full scraping process of Ubuntu CVEs.
-    """
-    html = urlopen(UBUNTU_ROOT_URL).read()
-    cves = extract_cves(html)
-    return cves
+    expected = {
+        'cve_id': 'CVE-2017-9986',
+        'package_name': 'linux-lts-xenial',
+        'vulnerability_status': 'medium',
+    }
+    assert expected == cves[-1]

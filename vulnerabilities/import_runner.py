@@ -258,7 +258,7 @@ def _insert_vulnerabilities_and_references(batch: Set[Advisory]) -> Set[models.V
 
         if advisory.cve_id:
             vuln, created = models.Vulnerability.objects.get_or_create(cve_id=advisory.cve_id)
-            if created and vuln.summary:
+            if created and advisory.summary:
                 vuln.summary = advisory.summary
                 vuln.save()
         else:

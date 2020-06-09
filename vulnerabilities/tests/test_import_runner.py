@@ -29,6 +29,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import PackageURL
 from vulnerabilities.import_runner import ImportRunner
+from vulnerabilities.import_runner import _insert_vulnerabilities_and_references
 
 
 class MockDataSource(DataSource):
@@ -197,12 +198,12 @@ def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db)
     assert impacted_package.vulnerability.cve_id == 'MOCK-CVE-2020-1337'
 
 
-def test_ImportRunner_assumed_fixed_package_is_updated_as_impacted(db):
-    """
-    A version of a package existing in the database that was assumed to be fixed was found to still
-    be affected by a vulnerability that also already existed in the database (i.e. the previously
-    stored data was corrected).
-    """
+# def test_ImportRunner_assumed_fixed_package_is_updated_as_impacted(db):
+#     """
+#     A version of a package existing in the database that was assumed to be fixed was found to
+#     still be affected by a vulnerability that also already existed in the database (i.e. the
+#     previously stored data was corrected).
+#     """
     # FIXME This case is not supported due to cascading deletes. When the ResolvedPackage is
     # FIXME deleted, the referenced Package and Vulnerability are also deleted.
     #
@@ -317,3 +318,16 @@ def test_ImportRunner_updated_vulnerability(db):
     vuln_refs = models.VulnerabilityReference.objects.filter(vulnerability=vuln)
     assert vuln_refs.count() == 1
     assert vuln_refs[0].url == 'https://example.com/with/more/info/MOCK-CVE-2020-1337'
+
+
+def test_insert_vulnerabilities_and_references_stores_summary(db):
+    advisory = Advisory(
+        summary='vulnerability description here',
+        cve_id='MOCK-CVE-2020-1337',
+        impacted_package_urls=[PackageURL(name='mock-webserver', type='pypi', version='1.2.33a')],
+    )
+
+    _insert_vulnerabilities_and_references({advisory})
+
+    vuln = models.Vulnerability.objects.get(cve_id=advisory.cve_id)
+    assert vuln.summary == advisory.summary

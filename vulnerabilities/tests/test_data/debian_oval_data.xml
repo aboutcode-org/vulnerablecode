@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval_definitions xmlns:ind-def="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:linux-def="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix-def="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd">
+    <generator>
+        <oval:product_name>Debian</oval:product_name>
+        <oval:schema_version>5.11.2</oval:schema_version>
+        <oval:timestamp>2020-06-08T23:31:02.188-04:00</oval:timestamp>
+    </generator>
+    <definitions>
+        <definition class="vulnerability" id="oval:org.debian:def:20011593" version="1">
+        <metadata>
+            <title>CVE-2001-1593</title>
+            <affected family="unix">
+            <platform>Debian GNU/Linux 7</platform>
+            <product>a2ps</product>
+            </affected>
+            <description>security update</description>
+            <debian>
+            <date>2014-03-31</date>
+            <moreinfo>
+    DSA-2892
+    Several vulnerabilities have been found in a2ps, an &lt;q&gt;Anything to
+    PostScript&lt;/q&gt; converter and pretty-printer. The Common Vulnerabilities and
+    Exposures project identifies the following problems:
+    The spy_user function which is called when a2ps is invoked with the
+        --debug flag insecurely used temporary files.
+    Brian M. Carlson reported that a2ps's fixps script does not invoke
+        gs with the -dSAFER option. Consequently executing fixps on a
+        malicious PostScript file could result in files being deleted or
+        arbitrary commands being executed with the privileges of the user
+        running fixps.
+    </moreinfo>
+            </debian>
+        </metadata>
+        <criteria comment="Release section" operator="AND">
+            <criterion comment="Debian 7 is installed" test_ref="oval:org.debian.oval:tst:1"/>
+            <criteria comment="Architecture section" operator="OR">
+            <criteria comment="Architecture independent section" operator="AND">
+                <criterion comment="all architecture" test_ref="oval:org.debian.oval:tst:2"/>
+                <criterion comment="a2ps DPKG is earlier than 1:4.14-1.1+deb7u1" test_ref="oval:org.debian.oval:tst:3"/>
+            </criteria>
+            </criteria>
+        </criteria>
+        </definition>
+        <definition class="vulnerability" id="oval:org.debian:def:20022443" version="1">
+        <metadata>
+            <title>CVE-2002-2443</title>
+            <affected family="unix">
+            <platform>Debian GNU/Linux 7</platform>
+            <product>krb5</product>
+            </affected>
+            <description>denial of service</description>
+            <debian>
+            <date>2013-05-29</date>
+            <moreinfo>
+    DSA-2701
+    It was discovered that the kpasswd service running on UDP port 464
+    could respond to response packets, creating a packet loop and a denial
+    of service condition.
+    </moreinfo>
+            </debian>
+        </metadata>
+        <criteria comment="Release section" operator="AND">
+            <criterion comment="Debian 7 is installed" test_ref="oval:org.debian.oval:tst:1"/>
+            <criteria comment="Architecture section" operator="OR">
+            <criteria comment="Architecture independent section" operator="AND">
+                <criterion comment="all architecture" test_ref="oval:org.debian.oval:tst:2"/>
+                <criterion comment="krb5 DPKG is earlier than 1.10.1+dfsg-5+deb7u1" test_ref="oval:org.debian.oval:tst:4"/>
+            </criteria>
+            </criteria>
+        </criteria>
+        </definition>
+    </definitions>
+
+    <tests>
+        <textfilecontent54_test check="all" check_existence="at_least_one_exists" comment="Debian GNU/Linux 7 is installed" id="oval:org.debian.oval:tst:1" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent">
+        <object object_ref="oval:org.debian.oval:obj:1"/>
+        <state state_ref="oval:org.debian.oval:ste:1"/>
+        </textfilecontent54_test>
+
+        <uname_test check="all" check_existence="at_least_one_exists" comment="Installed architecture is all" id="oval:org.debian.oval:tst:2" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix">
+            <object object_ref="oval:org.debian.oval:obj:2"/>
+            </uname_test>
+            <dpkginfo_test check="all" check_existence="at_least_one_exists" comment="a2ps is earlier than 1:4.14-1.1+deb7u1" id="oval:org.debian.oval:tst:3" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+            <object object_ref="oval:org.debian.oval:obj:3"/>
+            <state state_ref="oval:org.debian.oval:ste:2"/>
+            </dpkginfo_test>
+        
+            <dpkginfo_test check="all" check_existence="at_least_one_exists" comment="krb5 is earlier than 1.10.1+dfsg-5+deb7u1" id="oval:org.debian.oval:tst:4" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+      <object object_ref="oval:org.debian.oval:obj:4"/>
+      <state state_ref="oval:org.debian.oval:ste:3"/>
+    </dpkginfo_test>
+
+    </tests>
+
+    <objects>
+
+    <textfilecontent54_object id="oval:org.debian.oval:obj:1" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent">
+      <path>/etc</path>
+      <filename>debian_version</filename>
+      <pattern operation="pattern match">(\d+)\.\d</pattern>
+      <instance datatype="int">1</instance>
+    </textfilecontent54_object>
+
+    <uname_object id="oval:org.debian.oval:obj:2" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix"/>
+        <dpkginfo_object id="oval:org.debian.oval:obj:3" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+        <name>a2ps</name>
+    </dpkginfo_object>
+       <dpkginfo_object id="oval:org.debian.oval:obj:4" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+      <name>krb5</name>
+    </dpkginfo_object>
+
+
+    </objects>
+
+    <states>
+        <textfilecontent54_state id="oval:org.debian.oval:ste:1" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent">
+        <subexpression operation="equals">7</subexpression>
+        </textfilecontent54_state>
+        <dpkginfo_state id="oval:org.debian.oval:ste:2" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+        <evr datatype="debian_evr_string" operation="less than">0:1:4.14-1.1+deb7u1</evr>
+        </dpkginfo_state>
+          <dpkginfo_state id="oval:org.debian.oval:ste:3" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+      <evr datatype="debian_evr_string" operation="less than">0:1.10.1+dfsg-5+deb7u1</evr>
+    </dpkginfo_state>
+    </states>
+      
+
+</oval_definitions>

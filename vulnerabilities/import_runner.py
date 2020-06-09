@@ -160,7 +160,7 @@ def _get_or_create_vulnerability(advisory: Advisory) -> Tuple[models.Vulnerabili
 
 
 def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:
-    version = packageurl.normalize_version(p.version, encode=True)
+    version = p.version
 
     query_kwargs = {
         'name': packageurl.normalize_name(p.name, p.type, encode=True),

@@ -479,6 +479,8 @@ class OvalDataSource(DataSource):
             for test_data in definition_data['test_data']:
                 for package in test_data['package_list']:
                     pkg_name = package
+                    if package and len(pkg_name) >= 50:
+                        continue
                     aff_ver_range = test_data['version_ranges']
                     all_versions = self.pkg_manager_api.get(package)
                     # This filter is for filtering out long versions.

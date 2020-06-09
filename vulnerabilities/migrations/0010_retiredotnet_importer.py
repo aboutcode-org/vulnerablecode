@@ -20,13 +20,36 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+from django.db import migrations
 
-from vulnerabilities.importers.alpine_linux import AlpineDataSource
-from vulnerabilities.importers.archlinux import ArchlinuxDataSource
-from vulnerabilities.importers.debian import DebianDataSource
-from vulnerabilities.importers.npm import NpmDataSource
-from vulnerabilities.importers.rust import RustDataSource
-from vulnerabilities.importers.safety_db import SafetyDbDataSource
-from vulnerabilities.importers.ruby import RubyDataSource
-from vulnerabilities.importers.ubuntu import UbuntuDataSource
-from vulnerabilities.importers.retiredotnet import RetireDotnetDataSource
+
+def add_retiredotnet_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+
+    Importer.objects.create(
+        name='retiredotnet',
+        license='MIT',
+        last_run=None,
+        data_source='RetireDotnetDataSource',
+        data_source_cfg={
+            'repository_url': 'https://github.com/RetireNet/Packages.git',
+        },
+    )
+
+
+def remove_retiredotnet_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+    qs = Importer.objects.filter(name='RetireDotnet')
+    if qs:
+        qs[0].delete()
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('vulnerabilities', '0009_ubuntu_importer'),
+    ]
+
+    operations = [
+        migrations.RunPython(add_retiredotnet_importer, remove_retiredotnet_importer),
+    ]

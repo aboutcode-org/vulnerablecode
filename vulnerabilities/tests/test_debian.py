@@ -84,7 +84,7 @@ class DebianImportTest(TestCase):
             type='deb',
             namespace='debian',
         )
-        qs = qs.filter(qualifiers__contains=release)
+        qs = qs.filter(qualifiers__distro=release)
         assert qs
 
         if cve_ids:

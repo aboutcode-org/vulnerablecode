@@ -26,8 +26,10 @@ from datetime import datetime
 
 from django.db import models
 import django.contrib.postgres.fields as pgfields
+from django.utils.translation import ugettext_lazy as _
 
 from packageurl.contrib.django_models import PackageURLMixin
+from packageurl import PackageURL
 
 from vulnerabilities.data_source import DataSource
 
@@ -77,6 +79,33 @@ class Package(PackageURLMixin):
 
     class Meta:
         unique_together = ('name', 'namespace', 'type', 'version', 'qualifiers', 'subpath')
+    # Remove the `qualifers` and `set_package_url` overrides after
+    # https://github.com/package-url/packageurl-python/pull/35 gets merged
+    qualifiers = pgfields.JSONField(
+        default=dict,
+        help_text=_(
+            'Extra qualifying data for a package such as the name of an OS, '
+            'architecture, distro, etc.'
+        ),
+        null=True
+    )
+
+    def set_package_url(self, package_url):
+        """
+        Set each field values to the values of the provided `package_url` string
+        or PackageURL object. Existing values are overwritten including setting
+        values to None for provided empty values.
+        """
+        if not isinstance(package_url, PackageURL):
+            package_url = PackageURL.from_string(package_url)
+
+        for field_name, value in package_url.to_dict().items():
+            model_field = self._meta.get_field(field_name)
+
+            if value and len(value) > model_field.max_length:
+                raise ValidationError(_('Value too long for field "{}".'.format(field_name)))
+
+            setattr(self, field_name, value or None)
 
     def __str__(self):
         return self.package_url

@@ -98,7 +98,7 @@ class AlpineImportTest(TestCase):
         assert qs
 
         if arch:
-            pkg = qs.get(qualifiers__contains=arch)
+            pkg = qs.get(qualifiers__arch=arch)
         else:
             pkg = qs[0]
 

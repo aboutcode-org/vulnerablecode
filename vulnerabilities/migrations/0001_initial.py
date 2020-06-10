@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                 ('type', models.CharField(blank=True, help_text='A short code to identify the type of this package. For example: gem for a Rubygem, docker for a container, pypi for a Python Wheel or Egg, maven for a Maven Jar, deb for a Debian package, etc.', max_length=16, null=True)),
                 ('namespace', models.CharField(blank=True, help_text='Package name prefix, such as Maven groupid, Docker image owner, GitHub user or organization, etc.', max_length=255, null=True)),
                 ('name', models.CharField(blank=True, help_text='Name of the package.', max_length=100, null=True)),
-                ('version', models.CharField(blank=True, help_text='Version of the package.', max_length=50, null=True)),
+                ('version', models.CharField(blank=True, help_text='Version of the package.', max_length=100, null=True)),
                 ('qualifiers', models.CharField(blank=True, help_text='Extra qualifying data for a package such as the name of an OS, architecture, distro, etc.', max_length=1024, null=True)),
                 ('subpath', models.CharField(blank=True, help_text='Extra subpath within a package, relative to the package root.', max_length=200, null=True)),
             ],

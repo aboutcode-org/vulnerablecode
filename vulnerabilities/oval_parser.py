@@ -57,6 +57,10 @@ class OvalParser:
             definition_data = {'test_data': []}
             definition_data['description'] = definition.getMetadata(
             ).getDescription()  # this could use some data cleaning
+
+            if not definition_data['description']:
+                definition_data['description'] = ''
+
             definition_data['vuln_id'] = self.get_vuln_id_from_definition(
                 definition)
             definition_data['reference_urls'] = self.get_urls_from_definition(
@@ -166,6 +170,9 @@ class OvalParser:
 
     @staticmethod
     def get_vuln_id_from_definition(definition):
+        # SUSE and Ubuntu OVAL files will get cves via this loop
         for child in definition.element.iter():
             if child.get('ref_id'):
                 return child.get('ref_id')
+        # Debian OVAL files will get cves via this
+        return definition.getMetadata().getTitle()

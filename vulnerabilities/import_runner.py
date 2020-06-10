@@ -172,7 +172,7 @@ def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:
         query_kwargs['namespace'] = packageurl.normalize_namespace(p.namespace, p.type, encode=True)
 
     if p.qualifiers:
-        query_kwargs['qualifiers'] = packageurl.normalize_qualifiers(p.qualifiers, encode=True)
+        query_kwargs['qualifiers'] = packageurl.normalize_qualifiers(p.qualifiers, encode=False)
 
     if p.subpath:
         query_kwargs['subpath'] = packageurl.normalize_subpath(p.subpath, encode=True)

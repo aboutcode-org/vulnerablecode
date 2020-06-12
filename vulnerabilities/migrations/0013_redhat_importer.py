@@ -20,16 +20,33 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+from django.db import migrations
 
-from vulnerabilities.importers.alpine_linux import AlpineDataSource
-from vulnerabilities.importers.archlinux import ArchlinuxDataSource
-from vulnerabilities.importers.debian import DebianDataSource
-from vulnerabilities.importers.npm import NpmDataSource
-from vulnerabilities.importers.rust import RustDataSource
-from vulnerabilities.importers.safety_db import SafetyDbDataSource
-from vulnerabilities.importers.ruby import RubyDataSource
-from vulnerabilities.importers.ubuntu import UbuntuDataSource
-from vulnerabilities.importers.retiredotnet import RetireDotnetDataSource
-from vulnerabilities.importers.suse_backports import SUSEBackportsDataSource
-from vulnerabilities.importers.debian_oval import DebianOvalDataSource
-from vulnerabilities.importers.redhat import RedhatDataSource
+
+def add_redhat_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+
+    Importer.objects.create(
+        name='redhat',
+        license='',
+        last_run=None,
+        data_source='RedhatDataSource',
+    )
+
+
+def remove_redhat_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+    qs = Importer.objects.filter(name='redhat')
+    if qs:
+        qs[0].delete()
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('vulnerabilities', '0012_debian_oval_importer'),
+    ]
+
+    operations = [
+        migrations.RunPython(add_redhat_importer, remove_redhat_importer),
+    ]

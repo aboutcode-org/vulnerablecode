@@ -56,8 +56,8 @@ class GitHubAPIDataSource(DataSource):
         super().__init__(*args, **kwargs)
         try:
             self.gh_token = os.environ["GH_TOKEN"]
-        except KeyError as e:
-            raise GitHubTokenMissingError("Envirnomental variable GH_TOKEN is missing")
+        except KeyError:
+            raise GitHubTokenError("Envirnomental variable GH_TOKEN is missing")
 
     def __enter__(self):
         self.advisories = self.fetch()
@@ -136,6 +136,23 @@ class GitHubAPIDataSource(DataSource):
         elif ecosystem == "COMPOSER":
             self.version_api = ComposerVersionAPI()
 
+    @staticmethod
+    def process_name(ecosystem, pkg_name):
+
+        if ecosystem == "MAVEN":
+
+            artifact_comps = pkg_name.split(":")
+            if len(artifact_comps) != 2:
+                return
+            ns, name = artifact_comps
+            return ns, name
+
+        if ecosystem == "NUGET":
+            return None, pkg_name
+
+        if ecosystem == "COMPOSER":
+            raise NotImplementedError
+
     def process_response(self) -> List[Advisory]:
         adv_list = []
         for ecosystem in self.advisories:
@@ -143,18 +160,16 @@ class GitHubAPIDataSource(DataSource):
             pkg_type = ecosystem.lower()
             for resp_page in self.advisories[ecosystem]:
                 for adv in resp_page["data"]["securityVulnerabilities"]["edges"]:
-                    artifact = adv["node"]["package"]["name"]
-                    artifact_comps = artifact.split(":")
+                    name = adv["node"]["package"]["name"]
 
-                    if len(artifact_comps) != 2:
+                    if self.process_name(ecosystem, name):
+                        ns, pkg_name = self.process_name(ecosystem, name)
+                    else:
                         continue
-
-                    ns, pkg_name = artifact_comps
                     aff_range = adv["node"]["vulnerableVersionRange"]
-                    # print(pkg_name,aff_range)
-                    self.version_api.load_to_api(artifact)
+                    self.version_api.load_to_api(name)
                     aff_vers, unaff_vers = self.categorize_versions(
-                        aff_range, self.version_api.get(artifact)
+                        aff_range, self.version_api.get(name)
                     )
 
                     affected_purls = {
@@ -190,7 +205,7 @@ class GitHubAPIDataSource(DataSource):
                                 reference_ids=ref_ids,
                             )
                         )
-                        print(adv_list[-1])
+                        # print(adv_list[-1])
         return adv_list
 
     @staticmethod
@@ -252,7 +267,41 @@ class MavenVersionAPI:
 
 class NugetVersionAPI:
     def __init__(self):
-        raise NotImplementedError
+        self.cache = {}
+
+    def get(self, pkg_name):
+        return self.cache.get(pkg_name.lower(), set())
+
+    def load_to_api(self, pkg_name: str):
+        if pkg_name in self.cache:
+            return
+        endpoint = self.nuget_url(pkg_name)
+        try:
+            resp = requests.get(endpoint).json()
+        # pkg_name=Microsoft.NETCore.UniversalWindowsPlatform triggers
+        # JSONDecodeError.
+        except (json.decoder.JSONDecodeError, KeyError):
+            self.cache[pkg_name.lower()] = set()
+            return
+
+        self.cache[pkg_name.lower()] = self.extract_versions(resp)
+
+    @staticmethod
+    def nuget_url(pkg_name):
+        base_url = "https://api.nuget.org/v3/registration5-semver1/{}/index.json"
+        return base_url.format(pkg_name.lower())
+
+    @staticmethod
+    def extract_versions(json_resp):
+        all_versions = set()
+        try:
+            for entry in json_resp["items"][0]["items"]:
+                all_versions.add(entry["catalogEntry"]["version"])
+        # json response for YamlDotNet.Signed triggers this exception
+        except KeyError:
+            return all_versions
+
+        return all_versions
 
 
 class ComposerVersionAPI:

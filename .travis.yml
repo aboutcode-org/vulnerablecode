@@ -8,7 +8,9 @@ install:
   - pip install -r requirements.txt
 
 env:
+  global:
   - SECRET_KEY="i1bn=oly)w*2yl-5yc&f!vvgt)p)fh3_2$r#spa!*sw36f5ov7"
+  - GH_TOKEN="dummygithubtoken"
 
 before_script:
   - pycodestyle --exclude=migrations,settings.py,venv,lib_oval.py,test_ubuntu.py,test_suse.py,test_data_source.py --max-line-length=100 .

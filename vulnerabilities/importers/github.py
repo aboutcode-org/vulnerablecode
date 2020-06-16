@@ -151,7 +151,8 @@ class GitHubAPIDataSource(DataSource):
             return None, pkg_name
 
         if ecosystem == "COMPOSER":
-            raise NotImplementedError
+            vendor, name = pkg_name.split("/")
+            return vendor, name
 
     def process_response(self) -> List[Advisory]:
         adv_list = []
@@ -306,4 +307,35 @@ class NugetVersionAPI:
 
 class ComposerVersionAPI:
     def __init__(self):
-        raise NotImplementedError
+        self.cache = {}
+
+    def get(self, pkg_name):
+        return self.cache.get(pkg_name.lower(), set())
+
+    def load_to_api(self, pkg_name):
+        if pkg_name in self.cache:
+            return
+        endpoint = self.composer_url(pkg_name)
+        json_resp = requests.get(endpoint).json()
+        self.cache[pkg_name] = self.extract_versions(json_resp, pkg_name)
+
+    @staticmethod
+    def composer_url(pkg_name):
+        vendor, name = pkg_name.split("/")
+        return f"https://repo.packagist.org/p/{vendor}/{name}.json"
+
+    @staticmethod
+    def extract_versions(json_resp, pkg_name):
+        all_versions = json_resp["packages"][pkg_name].keys()
+        # This filter ensures, that all_versions contains only released versions
+        all_versions = set(filter(lambda x: "dev" not in x, all_versions))
+        # more_versions ensures that we have a version with and without version tag for
+        # each version present in all_versions
+        more_versions = set()
+        for version in all_versions:
+            if version.startswith("v"):
+                more_versions.add(version[1:])
+            else:
+                more_versions.add("v" + version)
+
+        return all_versions.union(more_versions)

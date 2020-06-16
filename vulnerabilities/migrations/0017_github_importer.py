@@ -32,7 +32,7 @@ def add_github_importer(apps, _):
         last_run=None,
         data_source='GitHubAPIDataSource',
         data_source_cfg={'endpoint':'https://api.github.com/graphql',
-        'ecosystems':['MAVEN','NUGET']
+        'ecosystems':['MAVEN','NUGET','COMPOSER']
 },
     )
 

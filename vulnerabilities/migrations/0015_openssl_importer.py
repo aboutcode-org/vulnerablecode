@@ -20,18 +20,36 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+from django.db import migrations
 
-from vulnerabilities.importers.alpine_linux import AlpineDataSource
-from vulnerabilities.importers.archlinux import ArchlinuxDataSource
-from vulnerabilities.importers.debian import DebianDataSource
-from vulnerabilities.importers.npm import NpmDataSource
-from vulnerabilities.importers.rust import RustDataSource
-from vulnerabilities.importers.safety_db import SafetyDbDataSource
-from vulnerabilities.importers.ruby import RubyDataSource
-from vulnerabilities.importers.ubuntu import UbuntuDataSource
-from vulnerabilities.importers.retiredotnet import RetireDotnetDataSource
-from vulnerabilities.importers.suse_backports import SUSEBackportsDataSource
-from vulnerabilities.importers.debian_oval import DebianOvalDataSource
-from vulnerabilities.importers.redhat import RedhatDataSource
-from vulnerabilities.importers.gentoo import GentooDataSource
-from vulnerabilities.importers.openssl import OpenSSLDataSource
+
+def add_openssl_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+
+    Importer.objects.create(
+        name='openssl',
+        license='',
+        last_run=None,
+        data_source='OpenSSLDataSource',
+        data_source_cfg={
+            'repository_url': 'https://github.com/openssl/openssl',
+        },
+    )
+
+
+def remove_openssl_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+    qs = Importer.objects.filter(name='openssl')
+    if qs:
+        qs[0].delete()
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('vulnerabilities', '0014_gentoo_importer'),
+    ]
+
+    operations = [
+        migrations.RunPython(add_openssl_importer, remove_openssl_importer),
+    ]

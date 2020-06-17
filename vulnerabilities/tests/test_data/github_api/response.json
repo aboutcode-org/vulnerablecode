@@ -1,0 +1,118 @@
+{"MAVEN":[{
+  "data": {
+    "securityVulnerabilities": {
+      "edges": [
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-qcxh-w3j9-58qr"
+                },
+                {
+                  "type": "CVE",
+                  "value": "CVE-2019-0199"
+                }
+              ],
+              "summary": "Denial of Service in Tomcat"
+            },
+            "package": {
+              "name": "org.apache.tomcat.embed:tomcat-embed-core"
+            },
+            "vulnerableVersionRange": ">= 8.0.0, < 8.5.38"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-qcxh-w3j9-58qr"
+                },
+                {
+                  "type": "CVE",
+                  "value": "CVE-2019-0199"
+                }
+              ],
+              "summary": "Denial of Service in Tomcat"
+            },
+            "package": {
+              "name": "org.apache.tomcat.embed:tomcat-embed-core"
+            },
+            "vulnerableVersionRange": ">= 9.0.0, < 9.0.16"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-c9hw-wf7x-jp9j"
+                },
+                {
+                  "type": "CVE",
+                  "value": "CVE-2020-1938"
+                }
+              ],
+              "summary": "Improper Input Validation in Tomcat"
+            },
+            "package": {
+              "name": "org.apache.tomcat.embed:tomcat-embed-core"
+            },
+            "vulnerableVersionRange": ">= 7.0.0, < 7.0.100"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-c9hw-wf7x-jp9j"
+                },
+                {
+                  "type": "CVE",
+                  "value": "CVE-2020-1938"
+                }
+              ],
+              "summary": "Improper Input Validation in Tomcat"
+            },
+            "package": {
+              "name": "org.apache.tomcat.embed:tomcat-embed-core"
+            },
+            "vulnerableVersionRange": ">= 8.0.0, < 8.5.51"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-c9hw-wf7x-jp9j"
+                },
+                {
+                  "type": "CVE",
+                  "value": "CVE-2020-1938"
+                }
+              ],
+              "summary": "Improper Input Validation in Tomcat"
+            },
+            "package": {
+              "name": "org.apache.tomcat.embed:tomcat-embed-core"
+            },
+            "vulnerableVersionRange": ">= 9.0.0, < 9.0.31"
+          }
+        }
+      ],
+      "pageInfo": {
+        "hasNextPage": true,
+        "endCursor": "Y3Vyc29yOnYyOpK5MjAyMC0wNi0xNVQyMTo0MDowOSswNTozMM0Nmw=="
+      }
+    }
+  }
+}]
+}

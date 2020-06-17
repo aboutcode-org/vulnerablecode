@@ -27,6 +27,8 @@ import json
 from typing import Set
 from typing import Tuple
 from typing import List
+from typing import Mapping
+from typing import Optional
 import xml.etree.ElementTree as ET
 
 import requests
@@ -36,6 +38,37 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
+
+
+# set of all possible values of first '%s' = {'MAVEN','COMPOSER', 'NUGET'}
+# second '%s' is interesting, it will have the value '' for the first request,
+# since we don't have any value for endCursor at the beginning
+# for all the subsequent requests it will have value 'after: "{endCursor}"'
+query = """
+        query MyQuery {
+        securityVulnerabilities(first: 100, ecosystem: %s, %s) {
+            edges {
+            node {
+                advisory {
+                identifiers {
+                    type
+                    value
+                }
+                summary
+                }
+                package {
+                name
+                }
+                vulnerableVersionRange
+            }
+            }
+            pageInfo {
+            hasNextPage
+            endCursor
+            }
+        }
+        }
+        """
 
 
 class GitHubTokenError(Exception):
@@ -65,36 +98,8 @@ class GitHubAPIDataSource(DataSource):
     def updated_advisories(self) -> Set[Advisory]:
         return self.batch_advisories(self.process_response())
 
-    def fetch(self):
-        # set of all possible values of first '%s' = {'MAVEN','COMPOSER', 'NUGET'}
-        # second '%s' is interesting, it will have the value '' for the first request,
-        # since we don't have any value for endCursor at the beginning
-        # for all the subsequent requests it will have value 'after: "{endCursor}"'
-        query = """
-        query MyQuery {
-        securityVulnerabilities(first: 100, ecosystem: %s, %s) {
-            edges {
-            node {
-                advisory {
-                identifiers {
-                    type
-                    value
-                }
-                summary
-                }
-                package {
-                name
-                }
-                vulnerableVersionRange
-            }
-            }
-            pageInfo {
-            hasNextPage
-            endCursor
-            }
-        }
-        }
-        """
+    def fetch(self) -> Mapping[str, List[Mapping]]:
+
         headers = {"Authorization": "token " + self.gh_token}
         api_data = {}
         for ecosystem in self.config.ecosystems:
@@ -122,10 +127,9 @@ class GitHubAPIDataSource(DataSource):
                     "hasNextPage"
                 ]:
                     break
-
         return api_data
 
-    def set_version_api(self, ecosystem):
+    def set_version_api(self, ecosystem: str) -> None:
 
         if ecosystem == "MAVEN":
             self.version_api = MavenVersionAPI()
@@ -137,7 +141,9 @@ class GitHubAPIDataSource(DataSource):
             self.version_api = ComposerVersionAPI()
 
     @staticmethod
-    def process_name(ecosystem, pkg_name):
+    def process_name(
+        ecosystem: str, pkg_name: str
+    ) -> Optional[Tuple[Optional[str], str]]:
 
         if ecosystem == "MAVEN":
 
@@ -206,7 +212,6 @@ class GitHubAPIDataSource(DataSource):
                                 reference_ids=ref_ids,
                             )
                         )
-                        # print(adv_list[-1])
         return adv_list
 
     @staticmethod
@@ -227,7 +232,7 @@ class MavenVersionAPI:
     def get(self, pkg_name: str) -> Set[str]:
         return self.cache.get(pkg_name, set())
 
-    def load_to_api(self, pkg_name: str):
+    def load_to_api(self, pkg_name: str) -> None:
 
         if pkg_name in self.cache:
             return
@@ -270,10 +275,10 @@ class NugetVersionAPI:
     def __init__(self):
         self.cache = {}
 
-    def get(self, pkg_name):
+    def get(self, pkg_name: str) -> Set[str]:
         return self.cache.get(pkg_name.lower(), set())
 
-    def load_to_api(self, pkg_name: str):
+    def load_to_api(self, pkg_name: str) -> None:
         if pkg_name in self.cache:
             return
         endpoint = self.nuget_url(pkg_name)
@@ -281,19 +286,19 @@ class NugetVersionAPI:
             resp = requests.get(endpoint).json()
         # pkg_name=Microsoft.NETCore.UniversalWindowsPlatform triggers
         # JSONDecodeError.
-        except (json.decoder.JSONDecodeError, KeyError):
+        except json.decoder.JSONDecodeError:
             self.cache[pkg_name.lower()] = set()
             return
 
         self.cache[pkg_name.lower()] = self.extract_versions(resp)
 
     @staticmethod
-    def nuget_url(pkg_name):
+    def nuget_url(pkg_name: str) -> str:
         base_url = "https://api.nuget.org/v3/registration5-semver1/{}/index.json"
         return base_url.format(pkg_name.lower())
 
     @staticmethod
-    def extract_versions(json_resp):
+    def extract_versions(json_resp: dict) -> Set[str]:
         all_versions = set()
         try:
             for entry in json_resp["items"][0]["items"]:
@@ -309,10 +314,10 @@ class ComposerVersionAPI:
     def __init__(self):
         self.cache = {}
 
-    def get(self, pkg_name):
+    def get(self, pkg_name: str) -> Set[str]:
         return self.cache.get(pkg_name.lower(), set())
 
-    def load_to_api(self, pkg_name):
+    def load_to_api(self, pkg_name: str) -> None:
         if pkg_name in self.cache:
             return
         endpoint = self.composer_url(pkg_name)
@@ -320,22 +325,17 @@ class ComposerVersionAPI:
         self.cache[pkg_name] = self.extract_versions(json_resp, pkg_name)
 
     @staticmethod
-    def composer_url(pkg_name):
+    def composer_url(pkg_name: str) -> str:
         vendor, name = pkg_name.split("/")
         return f"https://repo.packagist.org/p/{vendor}/{name}.json"
 
     @staticmethod
-    def extract_versions(json_resp, pkg_name):
+    def extract_versions(json_resp: dict, pkg_name: str) -> Set[str]:
         all_versions = json_resp["packages"][pkg_name].keys()
         # This filter ensures, that all_versions contains only released versions
         all_versions = set(filter(lambda x: "dev" not in x, all_versions))
-        # more_versions ensures that we have a version with and without version tag for
-        # each version present in all_versions
-        more_versions = set()
-        for version in all_versions:
-            if version.startswith("v"):
-                more_versions.add(version[1:])
-            else:
-                more_versions.add("v" + version)
+        # See https://github.com/composer/composer/blob/44a4429978d1b3c6223277b875762b2930e83e8c/doc/articles/versions.md#tags  # nopep8
+        # for explanation of removing 'v'
+        all_versions = set(map(lambda x: x.replace("v", ""), all_versions))
 
-        return all_versions.union(more_versions)
+        return all_versions

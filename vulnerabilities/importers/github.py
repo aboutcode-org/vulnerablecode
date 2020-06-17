@@ -1,4 +1,4 @@
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c)  nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -44,8 +44,8 @@ from vulnerabilities.data_source import DataSourceConfiguration
 # second '%s' is interesting, it will have the value '' for the first request,
 # since we don't have any value for endCursor at the beginning
 # for all the subsequent requests it will have value 'after: "{endCursor}""
-query = '''
-        query MyQuery {
+query = """
+        query{
         securityVulnerabilities(first: 100, ecosystem: %s, %s) {
             edges {
             node {
@@ -68,7 +68,7 @@ query = '''
             }
         }
         }
-        '''
+        """
 
 
 class GitHubTokenError(Exception):
@@ -88,9 +88,9 @@ class GitHubAPIDataSource(DataSource):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         try:
-            self.gh_token = os.environ['GH_TOKEN']
+            self.gh_token = os.environ["GH_TOKEN"]
         except KeyError:
-            raise GitHubTokenError('Envirnomental variable GH_TOKEN is missing')
+            raise GitHubTokenError("Envirnomental variable GH_TOKEN is missing")
 
     def __enter__(self):
         self.advisories = self.fetch()
@@ -99,66 +99,53 @@ class GitHubAPIDataSource(DataSource):
         return self.batch_advisories(self.process_response())
 
     def fetch(self) -> Mapping[str, List[Mapping]]:
-
-        headers = {'Authorization': 'token ' + self.gh_token}
+        headers = {"Authorization": "token " + self.gh_token}
         api_data = {}
         for ecosystem in self.config.ecosystems:
 
             api_data[ecosystem] = []
-            end_cursor_exp = ''
+            end_cursor_exp = ""
 
             while True:
 
-                query_json = {'query': query % (ecosystem, end_cursor_exp)}
-                resp = requests.post(
-                    self.config.endpoint, headers=headers, json=query_json
-                ).json()
+                query_json = {"query": query % (ecosystem, end_cursor_exp)}
+                resp = requests.post(self.config.endpoint, headers=headers, json=query_json).json()
 
-                if resp.get('message') == 'Bad credentials':
-                    raise GitHubTokenError('Invalid GitHub token')
+                if resp.get("message") == "Bad credentials":
+                    raise GitHubTokenError("Invalid GitHub token")
 
-                end_cursor = resp['data']['securityVulnerabilities']['pageInfo'][
-                    'endCursor'
-                ]
-                end_cursor_exp = 'after: {}'.format('"{}"'.format(end_cursor))
+                end_cursor = resp["data"]["securityVulnerabilities"]["pageInfo"]["endCursor"]
+                end_cursor_exp = "after: {}".format('"{}"'.format(end_cursor))
                 api_data[ecosystem].append(resp)
-                print(resp)
 
-                if not resp['data']['securityVulnerabilities']['pageInfo'][
-                    'hasNextPage'
-                ]:
+                if not resp["data"]["securityVulnerabilities"]["pageInfo"]["hasNextPage"]:
                     break
         return api_data
 
     def set_version_api(self, ecosystem: str) -> None:
-
-        if ecosystem == 'MAVEN':
-            self.version_api = MavenVersionAPI()
-
-        elif ecosystem == 'NUGET':
-            self.version_api = NugetVersionAPI()
-
-        elif ecosystem == 'COMPOSER':
-            self.version_api = ComposerVersionAPI()
+        versioners = {
+            "MAVEN": MavenVersionAPI,
+            "NUGET": NugetVersionAPI,
+            "COMPOSER": ComposerVersionAPI,
+        }
+        versioner = versioners.get(ecosystem)
+        if versioner:
+            self.version_api = versioner()
 
     @staticmethod
-    def process_name(
-        ecosystem: str, pkg_name: str
-    ) -> Optional[Tuple[Optional[str], str]]:
-
-        if ecosystem == 'MAVEN':
-
-            artifact_comps = pkg_name.split(':')
+    def process_name(ecosystem: str, pkg_name: str) -> Optional[Tuple[Optional[str], str]]:
+        if ecosystem == "MAVEN":
+            artifact_comps = pkg_name.split(":")
             if len(artifact_comps) != 2:
                 return
             ns, name = artifact_comps
             return ns, name
 
-        if ecosystem == 'NUGET':
+        if ecosystem == "NUGET":
             return None, pkg_name
 
-        if ecosystem == 'COMPOSER':
-            vendor, name = pkg_name.split('/')
+        if ecosystem == "COMPOSER":
+            vendor, name = pkg_name.split("/")
             return vendor, name
 
     def process_response(self) -> List[Advisory]:
@@ -167,42 +154,38 @@ class GitHubAPIDataSource(DataSource):
             self.set_version_api(ecosystem)
             pkg_type = ecosystem.lower()
             for resp_page in self.advisories[ecosystem]:
-                for adv in resp_page['data']['securityVulnerabilities']['edges']:
-                    name = adv['node']['package']['name']
+                for adv in resp_page["data"]["securityVulnerabilities"]["edges"]:
+                    name = adv["node"]["package"]["name"]
 
                     if self.process_name(ecosystem, name):
                         ns, pkg_name = self.process_name(ecosystem, name)
                     else:
                         continue
-                    aff_range = adv['node']['vulnerableVersionRange']
+                    aff_range = adv["node"]["vulnerableVersionRange"]
                     self.version_api.load_to_api(name)
                     aff_vers, unaff_vers = self.categorize_versions(
                         aff_range, self.version_api.get(name)
                     )
 
                     affected_purls = {
-                        PackageURL(
-                            name=pkg_name, namespace=ns, version=version, type=pkg_type
-                        )
+                        PackageURL(name=pkg_name, namespace=ns, version=version, type=pkg_type)
                         for version in aff_vers
                     }
 
                     unaffected_purls = {
-                        PackageURL(
-                            name=pkg_name, namespace=ns, version=version, type=pkg_type
-                        )
+                        PackageURL(name=pkg_name, namespace=ns, version=version, type=pkg_type)
                         for version in unaff_vers
                     }
 
                     cve_ids = set()
                     ref_ids = set()
-                    vuln_desc = adv['node']['advisory']['summary']
+                    vuln_desc = adv["node"]["advisory"]["summary"]
 
-                    for vuln in adv['node']['advisory']['identifiers']:
-                        if vuln['type'] == 'CVE':
-                            cve_ids.add(vuln['value'])
+                    for vuln in adv["node"]["advisory"]["identifiers"]:
+                        if vuln["type"] == "CVE":
+                            cve_ids.add(vuln["value"])
                         else:
-                            ref_ids.add(vuln['value'])
+                            ref_ids.add(vuln["value"])
                     for cve_id in cve_ids:
                         adv_list.append(
                             Advisory(
@@ -216,13 +199,9 @@ class GitHubAPIDataSource(DataSource):
         return adv_list
 
     @staticmethod
-    def categorize_versions(
-        version_range: str, all_versions: Set[str]
-    ) -> Tuple[Set[str], Set[str]]:
+    def categorize_versions(version_range: str, all_versions: Set[str]) -> Tuple[Set[str], Set[str]]:  # nopep8
         version_range = RangeSpecifier(version_range)
-        affected_versions = {
-            version for version in all_versions if version in version_range
-        }
+        affected_versions = {version for version in all_versions if version in version_range}
         return (affected_versions, all_versions - affected_versions)
 
 
@@ -234,39 +213,34 @@ class MavenVersionAPI:
         return self.cache.get(pkg_name, set())
 
     def load_to_api(self, pkg_name: str) -> None:
-
         if pkg_name in self.cache:
             return
 
-        artifact_comps = pkg_name.split(':')
+        artifact_comps = pkg_name.split(":")
         endpoint = self.artifact_url(artifact_comps)
         resp = requests.get(endpoint).content
 
         try:
-
-            xml_resp = ET.ElementTree(ET.fromstring(resp.decode('utf-8')))
+            xml_resp = ET.ElementTree(ET.fromstring(resp.decode("utf-8")))
             self.cache[pkg_name] = self.extract_versions(xml_resp)
-
         except ET.ParseError:
             self.cache[pkg_name] = set()
 
     @staticmethod
     def artifact_url(artifact_comps: List[str]) -> str:
-
-        base_url = 'https://repo.maven.apache.org/maven2/{}'
+        base_url = "https://repo.maven.apache.org/maven2/{}"
         group_id, artifact_id = artifact_comps
-        group_url = group_id.replace('.', '/')
-        suffix = group_url + '/' + artifact_id + '/' + 'maven-metadata.xml'
+        group_url = group_id.replace(".", "/")
+        suffix = group_url + "/" + artifact_id + "/" + "maven-metadata.xml"
         endpoint = base_url.format(suffix)
 
         return endpoint
 
     @staticmethod
     def extract_versions(xml_response: ET.ElementTree) -> Set[str]:
-
         all_versions = set()
         for child in xml_response.getroot().iter():
-            if child.tag == 'version':
+            if child.tag == "version":
                 all_versions.add(child.text)
 
         return all_versions
@@ -295,18 +269,19 @@ class NugetVersionAPI:
 
     @staticmethod
     def nuget_url(pkg_name: str) -> str:
-        base_url = 'https://api.nuget.org/v3/registration5-semver1/{}/index.json'
+        base_url = "https://api.nuget.org/v3/registration5-semver1/{}/index.json"
         return base_url.format(pkg_name.lower())
 
     @staticmethod
-    def extract_versions(json_resp: dict) -> Set[str]:
+    def extract_versions(resp: dict) -> Set[str]:
         all_versions = set()
+
         try:
-            for entry in json_resp['items'][0]['items']:
-                all_versions.add(entry['catalogEntry']['version'])
+            for entry in resp["items"][0]["items"]:
+                all_versions.add(entry["catalogEntry"]["version"])
         # json response for YamlDotNet.Signed triggers this exception
         except KeyError:
-            return all_versions
+            pass
 
         return all_versions
 
@@ -321,22 +296,23 @@ class ComposerVersionAPI:
     def load_to_api(self, pkg_name: str) -> None:
         if pkg_name in self.cache:
             return
+
         endpoint = self.composer_url(pkg_name)
         json_resp = requests.get(endpoint).json()
         self.cache[pkg_name] = self.extract_versions(json_resp, pkg_name)
 
     @staticmethod
     def composer_url(pkg_name: str) -> str:
-        vendor, name = pkg_name.split('/')
-        return f'https://repo.packagist.org/p/{vendor}/{name}.json'
+        vendor, name = pkg_name.split("/")
+        return f"https://repo.packagist.org/p/{vendor}/{name}.json"
 
     @staticmethod
-    def extract_versions(json_resp: dict, pkg_name: str) -> Set[str]:
-        all_versions = json_resp['packages'][pkg_name].keys()
+    def extract_versions(resp: dict, pkg_name: str) -> Set[str]:
+        all_versions = resp["packages"][pkg_name].keys()
         # This filter ensures, that all_versions contains only released versions
-        all_versions = set(filter(lambda x: 'dev' not in x, all_versions))
+        all_versions = set(filter(lambda x: "dev" not in x, all_versions))
         # See https://github.com/composer/composer/blob/44a4429978d1b3c6223277b875762b2930e83e8c/doc/articles/versions.md#tags  # nopep8
         # for explanation of removing 'v'
-        all_versions = set(map(lambda x: x.replace('v', ''), all_versions))
+        all_versions = set(map(lambda x: x.replace("v", ""), all_versions))
 
         return all_versions

@@ -69,7 +69,7 @@ class OpenSSLDataSource(DataSource):
                                             + commit_hash)
                     if info.tag == 'description':
                         # Description
-                        summary = re.sub('\s+', ' ', info.text).strip()
+                        summary = re.sub(r'\s+', ' ', info.text).strip()
 
                 safe_purls = {PackageURL(name=pkg_name,
                                          type=pkg_type,

@@ -43,12 +43,18 @@ class TestOpenSSL(unittest.TestCase):
         data = load_test_data()
         expected_data = [
             Advisory(
-                summary='Server or client applications that call the SSL_check_chain() function during or'
-                        ' after a TLS 1.3 handshake may crash due to a NULL pointer dereference as a'
-                        ' result of incorrect handling of the "signature_algorithms_cert" TLS extension.'
-                        ' The crash occurs if an invalid or unrecognised signature algorithm is received'
-                        ' from the peer. This could be exploited by a malicious peer in a Denial of'
-                        ' Service attack. OpenSSL version 1.1.1d, 1.1.1e, and 1.1.1f are affected by this issue. '
+                summary='Server or client applications that call the SSL_check_chain() '
+                        'function during or'
+                        ' after a TLS 1.3 handshake may crash due to a NULL pointer '
+                        'dereference as a'
+                        ' result of incorrect handling of the "signature_algorithms_cert" '
+                        'TLS extension.'
+                        ' The crash occurs if an invalid or unrecognised signature algorithm'
+                        ' is received'
+                        ' from the peer. This could be exploited by a malicious peer in '
+                        'a Denial of'
+                        ' Service attack. OpenSSL version 1.1.1d, 1.1.1e, and 1.1.1f are '
+                        'affected by this issue. '
                         'This issue did not affect OpenSSL versions prior to 1.1.1d.',
                 impacted_package_urls={
                     PackageURL(
@@ -86,12 +92,18 @@ class TestOpenSSL(unittest.TestCase):
                 reference_ids=[],
                 cve_id='CVE-2020-1967'),
             Advisory(
-                summary='There is an overflow bug in the x64_64 Montgomery squaring procedure used in '
-                        'exponentiation with 512-bit moduli. No EC algorithms are affected. Analysis '
-                        'suggests that attacks against 2-prime RSA1024, 3-prime RSA1536, and DSA1024 as a '
-                        'result of this defect would be very difficult to perform and are not believed '
-                        'likely. Attacks against DH512 are considered just feasible. However, for an '
-                        'attack the target would have to re-use the DH512 private key, which is not '
+                summary='There is an overflow bug in the x64_64 Montgomery squaring procedure '
+                        'used in '
+                        'exponentiation with 512-bit moduli. No EC algorithms are affected. '
+                        'Analysis '
+                        'suggests that attacks against 2-prime RSA1024, 3-prime RSA1536, and '
+                        'DSA1024 as a '
+                        'result of this defect would be very difficult to perform and are not '
+                        'believed '
+                        'likely. Attacks against DH512 are considered just feasible. However, '
+                        'for an '
+                        'attack the target would have to re-use the DH512 private key, which '
+                        'is not '
                         'recommended anyway. Also applications directly using the low level API '
                         'BN_mod_exp may be affected if they use BN_FLG_CONSTTIME.',
                 impacted_package_urls={PackageURL(type='openssl', namespace=None, name='openssl',

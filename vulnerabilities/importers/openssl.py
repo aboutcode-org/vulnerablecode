@@ -1,4 +1,4 @@
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -43,7 +43,7 @@ class OpenSSLDataSource(DataSource):
 
     @staticmethod
     def to_advisories(xml_response: str) -> Set[Advisory]:
-        advisories = list()
+        advisories = []
         pkg_name = "openssl"
         pkg_type = "openssl"
         root = ET.fromstring(xml_response)
@@ -57,14 +57,16 @@ class OpenSSLDataSource(DataSource):
                 for info in element:
                     if info.tag == 'cve':
                         cve_id = 'CVE-' + info.attrib.get('name')
+
                     if info.tag == 'affects':
                         # Vulnerable package versions
                         vuln_pkg_versions.append(info.attrib.get('version'))
+
                     if info.tag == 'fixed':
                         # Fixed package versions
                         safe_pkg_versions.append(info.attrib.get('version'))
                         if len(info) > 0:
-                            commit_hash = info[0].attrib.get('hash')
+                            commit_hash = info[0].attrib['hash']
                             ref_urls.append("https://github.com/openssl/openssl/commit/"
                                             + commit_hash)
                     if info.tag == 'description':

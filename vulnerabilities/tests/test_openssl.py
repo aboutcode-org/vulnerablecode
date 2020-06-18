@@ -1,4 +1,4 @@
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -202,19 +202,4 @@ class TestOpenSSL(unittest.TestCase):
         found_data.sort(key=lambda x: x.cve_id)
         expected_data.sort(key=lambda x: x.cve_id)
 
-        # Check first advisory
-        assert found_data[0].cve_id == expected_data[0].cve_id
-        assert found_data[0].summary == expected_data[0].summary
-        assert found_data[0].resolved_package_urls == expected_data[0].resolved_package_urls
-        assert found_data[0].impacted_package_urls == expected_data[0].impacted_package_urls
-        assert found_data[0].reference_urls == expected_data[0].reference_urls
-        assert found_data[0].cve_id == expected_data[0].cve_id
-        # Check second advisory
-        assert found_data[1].cve_id == expected_data[1].cve_id
-        assert found_data[1].summary == expected_data[1].summary
-        assert found_data[1].resolved_package_urls == expected_data[1].resolved_package_urls
-        assert found_data[1].impacted_package_urls == expected_data[1].impacted_package_urls
-        assert found_data[1].reference_urls == expected_data[1].reference_urls
-        assert found_data[1].cve_id == expected_data[1].cve_id
-
-        self.assertCountEqual(found_data, expected_data)
+        assert found_data == expected_data

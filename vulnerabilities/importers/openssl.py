@@ -35,14 +35,14 @@ class OpenSSLDataSource(DataSource):
     def updated_advisories(self) -> Set[Advisory]:
         raw_data = self.fetch()
         advisories = self.to_advisories(raw_data)
-        return advisories
+        return self.batch_advisories(advisories)
 
     def fetch(self):
         return requests.get("https://www.openssl.org/news/vulnerabilities.xml").content
 
     @staticmethod
     def to_advisories(xml_response: str) -> Set[Advisory]:
-        advisories = set()
+        advisories = list()
         pkg_name = "openssl"
         pkg_type = "openssl"
         root = ET.fromstring(xml_response)
@@ -55,7 +55,7 @@ class OpenSSLDataSource(DataSource):
                 ref_urls = []
                 for info in element:
                     if info.tag == 'cve':
-                        cve_id = info.attrib.get('name')
+                        cve_id = 'CVE-' + info.attrib.get('name')
                     if info.tag == 'affects':
                         # Vulnerable package versions
                         vuln_pkg_versions.append(info.attrib.get('version'))
@@ -64,7 +64,8 @@ class OpenSSLDataSource(DataSource):
                         safe_pkg_versions.append(info.attrib.get('version'))
                         if len(info) > 0:
                             commit_hash = info[0].attrib.get('hash')
-                            ref_urls.append("https://github.com/openssl/openssl/commit" + commit_hash)
+                            ref_urls.append("https://github.com/openssl/openssl/commit/"
+                                            + commit_hash)
                     if info.tag == 'description':
                         # Description
                         summary = info.text
@@ -78,8 +79,11 @@ class OpenSSLDataSource(DataSource):
                                          version=version)
                               for version in vuln_pkg_versions}
 
-                advisory = Advisory(cve_id=cve_id, summary=summary, impacted_package_urls=vuln_purls,
-                                    resolved_package_urls=safe_purls, reference_urls=ref_urls)
-                advisories.add(advisory)
+                advisory = Advisory(cve_id=cve_id,
+                                    summary=summary,
+                                    impacted_package_urls=vuln_purls,
+                                    resolved_package_urls=safe_purls,
+                                    reference_urls=ref_urls)
+                advisories.append(advisory)
 
         return advisories

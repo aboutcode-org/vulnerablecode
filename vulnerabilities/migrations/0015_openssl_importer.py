@@ -31,9 +31,6 @@ def add_openssl_importer(apps, _):
         license='',
         last_run=None,
         data_source='OpenSSLDataSource',
-        data_source_cfg={
-            'repository_url': 'https://github.com/openssl/openssl',
-        },
     )
 
 

@@ -24,6 +24,7 @@ from typing import Set
 
 from packageurl import PackageURL
 import requests
+import re
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
@@ -68,7 +69,7 @@ class OpenSSLDataSource(DataSource):
                                             + commit_hash)
                     if info.tag == 'description':
                         # Description
-                        summary = info.text
+                        summary = re.sub('\s+', ' ', info.text).strip()
 
                 safe_purls = {PackageURL(name=pkg_name,
                                          type=pkg_type,

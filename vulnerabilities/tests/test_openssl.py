@@ -43,15 +43,21 @@ class TestOpenSSL(unittest.TestCase):
         data = load_test_data()
         expected_data = [
             Advisory(
-                summary='\n      Server or client applications that call the SSL_check_chain() function during or'
-                        '\n      after a TLS 1.3 handshake may crash due to a NULL pointer dereference as a'
-                        '\n      result of incorrect handling of the "signature_algorithms_cert" TLS extension.'
-                        '\n      The crash occurs if an invalid or unrecognised signature algorithm is received'
-                        '\n      from the peer. This could be exploited by a malicious peer in a Denial of'
-                        '\n      Service attack. OpenSSL version 1.1.1d, 1.1.1e, and 1.1.1f are affected by this issue.  This'
-                        '\n      issue did not affect OpenSSL versions prior to 1.1.1d.'
-                        '\n    ',
-                impacted_package_urls=[
+                summary='Server or client applications that call the SSL_check_chain() function during or'
+                        ' after a TLS 1.3 handshake may crash due to a NULL pointer dereference as a'
+                        ' result of incorrect handling of the "signature_algorithms_cert" TLS extension.'
+                        ' The crash occurs if an invalid or unrecognised signature algorithm is received'
+                        ' from the peer. This could be exploited by a malicious peer in a Denial of'
+                        ' Service attack. OpenSSL version 1.1.1d, 1.1.1e, and 1.1.1f are affected by this issue. '
+                        'This issue did not affect OpenSSL versions prior to 1.1.1d.',
+                impacted_package_urls={
+                    PackageURL(
+                        type='openssl',
+                        namespace=None,
+                        name='openssl',
+                        version='1.1.1f',
+                        qualifiers=OrderedDict(),
+                        subpath=None),
                     PackageURL(
                         type='openssl',
                         namespace=None,
@@ -65,36 +71,29 @@ class TestOpenSSL(unittest.TestCase):
                         name='openssl',
                         version='1.1.1e',
                         qualifiers=OrderedDict(),
-                        subpath=None),
-                    PackageURL(
-                        type='openssl',
-                        namespace=None,
-                        name='openssl',
-                        version='1.1.1f',
-                        qualifiers=OrderedDict(),
-                        subpath=None)],
-                resolved_package_urls=[
+                        subpath=None)},
+                resolved_package_urls={
                     PackageURL(
                         type='openssl',
                         namespace=None,
                         name='openssl',
                         version='1.1.1g',
                         qualifiers=OrderedDict(),
-                        subpath=None)],
+                        subpath=None)},
                 reference_urls=[
                     'https://github.com/openssl/openssl/commit/' +
                     'eb563247aef3e83dda7679c43f9649270462e5b1'],
                 reference_ids=[],
                 cve_id='CVE-2020-1967'),
             Advisory(
-                summary='\n     There is an overflow bug in the x64_64 Montgomery squaring procedure used in'
-                        '\n      exponentiation with 512-bit moduli. No EC algorithms are affected. Analysis'
-                        '\n      suggests that attacks against 2-prime RSA1024, 3-prime RSA1536, and DSA1024 as a'
-                        '\n      result of this defect would be very difficult to perform and are not believed'
-                        '\n      likely. Attacks against DH512 are considered just feasible. However, for an'
-                        '\n      attack the target would have to re-use the DH512 private key, which is not'
-                        '\n      recommended anyway. Also applications directly using the low level API'
-                        '\n      BN_mod_exp may be affected if they use BN_FLG_CONSTTIME.\n    ',
+                summary='There is an overflow bug in the x64_64 Montgomery squaring procedure used in '
+                        'exponentiation with 512-bit moduli. No EC algorithms are affected. Analysis '
+                        'suggests that attacks against 2-prime RSA1024, 3-prime RSA1536, and DSA1024 as a '
+                        'result of this defect would be very difficult to perform and are not believed '
+                        'likely. Attacks against DH512 are considered just feasible. However, for an '
+                        'attack the target would have to re-use the DH512 private key, which is not '
+                        'recommended anyway. Also applications directly using the low level API '
+                        'BN_mod_exp may be affected if they use BN_FLG_CONSTTIME.',
                 impacted_package_urls={PackageURL(type='openssl', namespace=None, name='openssl',
                                                   version='1.0.2g',
                                                   qualifiers=OrderedDict(), subpath=None),
@@ -186,4 +185,24 @@ class TestOpenSSL(unittest.TestCase):
                 cve_id='CVE-2019-1551')
         ]
         found_data = OpenSSLDataSource.to_advisories(data)
-        assert expected_data == found_data
+
+        # Sort them by CVE-ID
+        found_data.sort(key=lambda x: x.cve_id)
+        expected_data.sort(key=lambda x: x.cve_id)
+
+        # Check first advisory
+        assert found_data[0].cve_id == expected_data[0].cve_id
+        assert found_data[0].summary == expected_data[0].summary
+        assert found_data[0].resolved_package_urls == expected_data[0].resolved_package_urls
+        assert found_data[0].impacted_package_urls == expected_data[0].impacted_package_urls
+        assert found_data[0].reference_urls == expected_data[0].reference_urls
+        assert found_data[0].cve_id == expected_data[0].cve_id
+        # Check second advisory
+        assert found_data[1].cve_id == expected_data[1].cve_id
+        assert found_data[1].summary == expected_data[1].summary
+        assert found_data[1].resolved_package_urls == expected_data[1].resolved_package_urls
+        assert found_data[1].impacted_package_urls == expected_data[1].impacted_package_urls
+        assert found_data[1].reference_urls == expected_data[1].reference_urls
+        assert found_data[1].cve_id == expected_data[1].cve_id
+
+        self.assertCountEqual(found_data, expected_data)

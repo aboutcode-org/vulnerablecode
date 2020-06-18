@@ -55,6 +55,7 @@ class OpenSSLDataSource(DataSource):
                 vuln_pkg_versions = []
                 ref_urls = []
                 for info in element:
+
                     if info.tag == 'cve':
                         cve_id = 'CVE-' + info.attrib.get('name')
 
@@ -65,7 +66,8 @@ class OpenSSLDataSource(DataSource):
                     if info.tag == 'fixed':
                         # Fixed package versions
                         safe_pkg_versions.append(info.attrib.get('version'))
-                        if len(info) > 0:
+
+                        if info:
                             commit_hash = info[0].attrib['hash']
                             ref_urls.append("https://github.com/openssl/openssl/commit/"
                                             + commit_hash)

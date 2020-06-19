@@ -38,6 +38,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Reference
+from vulnerabilities.package_managers import NpmVersionAPI
 
 NPM_URL = 'https://registry.npmjs.org{}'
 
@@ -130,31 +131,3 @@ def categorize_versions(
             aff_ver.add(ver)
 
     return aff_ver, fix_ver
-
-
-class VersionAPI:
-    def __init__(self, cache: Mapping[str, Set[str]] = None):
-        self.cache = cache or {}
-
-    def get(self, package_name: str) -> Set[str]:
-        """
-        Returns all versions available for a module
-        """
-        package_name = package_name.strip()
-
-        if package_name not in self.cache:
-            releases = set()
-            try:
-                with urlopen(f"https://registry.npmjs.org/{package_name}") as response:
-                    data = json.load(response)
-                    releases = {v for v in data.get("versions", {})}
-            except HTTPError as e:
-                if e.code == 404:
-                    # NPM registry has no data regarding this package, we skip these
-                    pass
-                else:
-                    raise
-
-            self.cache[package_name] = releases
-
-        return self.cache[package_name]

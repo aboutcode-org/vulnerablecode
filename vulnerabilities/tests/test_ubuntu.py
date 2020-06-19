@@ -187,12 +187,12 @@ class TestUbuntuDataSource(unittest.TestCase):
             batch_size=1, config=data_source_cfg)
 
     @patch(
-        'vulnerabilities.importers.ubuntu.VersionAPI.get',
+        'vulnerabilities.importers.ubuntu.LaunchpadVersionAPI.get',
         return_value={
             '0.3.0',
             '0.2.0',
             '2.14-2'})
-    @patch('vulnerabilities.importers.ubuntu.VersionAPI.load_api',new=mock)
+    @patch('vulnerabilities.importers.ubuntu.LaunchpadVersionAPI.load_api',new=mock)
     def test_get_data_from_xml_doc(self, mock_write):
         expected_data = {
             Advisory(

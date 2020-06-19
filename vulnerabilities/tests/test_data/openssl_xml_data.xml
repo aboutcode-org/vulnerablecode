@@ -1,0 +1,77 @@
+<security updated="20200421">
+  <issue public="20200421">
+    <impact severity="High"/>
+    <cve name="2020-1967"/>
+    <affects base="1.1.1" version="1.1.1d"/>
+    <affects base="1.1.1" version="1.1.1e"/>
+    <affects base="1.1.1" version="1.1.1f"/>
+    <fixed base="1.1.1" version="1.1.1g" date="20200421">
+      <git hash="eb563247aef3e83dda7679c43f9649270462e5b1"/>
+    </fixed>
+    <problemtype>NULL pointer dereference</problemtype>
+    <title>Segmentation fault in SSL_check_chain</title>
+    <description>
+      Server or client applications that call the SSL_check_chain() function during or
+      after a TLS 1.3 handshake may crash due to a NULL pointer dereference as a
+      result of incorrect handling of the "signature_algorithms_cert" TLS extension.
+      The crash occurs if an invalid or unrecognised signature algorithm is received
+      from the peer. This could be exploited by a malicious peer in a Denial of
+      Service attack. OpenSSL version 1.1.1d, 1.1.1e, and 1.1.1f are affected by this issue.  This
+      issue did not affect OpenSSL versions prior to 1.1.1d.
+    </description>
+    <advisory url="/news/secadv/20200421.txt"/>
+    <reported source="Bernd Edlinger"/>
+  </issue>
+  <issue public="20191206">
+    <impact severity="Low"/>
+    <cve name="2019-1551"/>
+    <affects base="1.1.1" version="1.1.1"/>
+    <affects base="1.1.1" version="1.1.1a"/>
+    <affects base="1.1.1" version="1.1.1b"/>
+    <affects base="1.1.1" version="1.1.1c"/>
+    <affects base="1.1.1" version="1.1.1d"/>
+    <affects base="1.0.2" version="1.0.2"/>
+    <affects base="1.0.2" version="1.0.2a"/>
+    <affects base="1.0.2" version="1.0.2b"/>
+    <affects base="1.0.2" version="1.0.2c"/>
+    <affects base="1.0.2" version="1.0.2d"/>
+    <affects base="1.0.2" version="1.0.2e"/>
+    <affects base="1.0.2" version="1.0.2f"/>
+    <affects base="1.0.2" version="1.0.2g"/>
+    <affects base="1.0.2" version="1.0.2h"/>
+    <affects base="1.0.2" version="1.0.2i"/>
+    <affects base="1.0.2" version="1.0.2j"/>
+    <affects base="1.0.2" version="1.0.2k"/>
+    <affects base="1.0.2" version="1.0.2l"/>
+    <affects base="1.0.2" version="1.0.2m"/>
+    <affects base="1.0.2" version="1.0.2n"/>
+    <affects base="1.0.2" version="1.0.2o"/>
+    <affects base="1.0.2" version="1.0.2p"/>
+    <affects base="1.0.2" version="1.0.2q"/>
+    <affects base="1.0.2" version="1.0.2r"/>
+    <affects base="1.0.2" version="1.0.2s"/>
+    <affects base="1.0.2" version="1.0.2t"/>
+    <fixed base="1.1.1" version="1.1.1e" date="20191206">
+      <git hash="419102400a2811582a7a3d4a4e317d72e5ce0a8f"/>
+    </fixed>
+    <fixed base="1.0.2" version="1.0.2u" date="20191220">
+      <git hash="f1c5eea8a817075d31e43f5876993c6710238c98"/>
+    </fixed>
+    <problemtype>Integer overflow bug</problemtype>
+    <title>rsaz_512_sqr overflow bug on x86_64</title>
+    <description>
+      There is an overflow bug in the x64_64 Montgomery squaring procedure used in
+      exponentiation with 512-bit moduli. No EC algorithms are affected. Analysis
+      suggests that attacks against 2-prime RSA1024, 3-prime RSA1536, and DSA1024 as a
+      result of this defect would be very difficult to perform and are not believed
+      likely. Attacks against DH512 are considered just feasible. However, for an
+      attack the target would have to re-use the DH512 private key, which is not
+      recommended anyway. Also applications directly using the low level API
+      BN_mod_exp may be affected if they use BN_FLG_CONSTTIME.
+    </description>
+    <advisory url="/news/secadv/20191206.txt"/>
+    <reported source="OSS-Fuzz and Guido Vranken"/>
+  </issue>
+</security>
+
+

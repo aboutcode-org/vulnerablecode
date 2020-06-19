@@ -28,13 +28,13 @@ from django.test import TestCase
 
 from vulnerabilities import models
 from vulnerabilities.import_runner import ImportRunner
-from vulnerabilities.importers.safety_db import VersionAPI
+from vulnerabilities.importers.safety_db import PypiVersionAPI
 from vulnerabilities.importers.safety_db import categorize_versions
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
 
-MOCK_VERSION_API = VersionAPI(cache={
+MOCK_VERSION_API = PypiVersionAPI(cache={
     'ampache': {'2.0', '5.2.1'},
     'django': {'1.8', '1.4.19', '1.4.22', '1.5.1', '1.6.9', '1.8.14'},
     'zulip': {'2.0', '2.1.1', '2.1.2', '2.1.3'},

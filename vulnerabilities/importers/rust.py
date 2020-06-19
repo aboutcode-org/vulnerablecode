@@ -34,6 +34,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
+from vulnerabilities.package_managers import CratesVersionAPI
 
 
 class RustDataSource(GitDataSource):
@@ -51,7 +52,7 @@ class RustDataSource(GitDataSource):
     @property
     def crates_api(self):
         if not hasattr(self, '_crates_api'):
-            setattr(self, '_crates_api', VersionAPI())
+            setattr(self, '_crates_api', CratesVersionAPI())
         return self._crates_api
 
     def added_advisories(self) -> Set[Advisory]:
@@ -149,29 +150,3 @@ def categorize_versions(
             unaffected.update(uncategorized_versions)
 
     return unaffected, affected
-
-
-class VersionAPI:
-    def __init__(self, cache: Mapping[str, Set[str]] = None):
-        self.cache = cache or {}
-
-    def get(self, package_name: str) -> Set[str]:
-        package_name = package_name.strip()
-
-        if package_name not in self.cache:
-            releases = set()
-
-            try:
-                with urlopen(f'https://crates.io/api/v1/crates/{package_name}') as response:
-                    response = json.load(response)
-                    for version_info in response['versions']:
-                        releases.add(version_info['num'])
-            except HTTPError as e:
-                if e.code == 404:
-                    pass
-                else:
-                    raise
-
-            self.cache[package_name] = releases
-
-        return self.cache[package_name]

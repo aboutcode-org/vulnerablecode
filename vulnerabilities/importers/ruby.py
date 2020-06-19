@@ -32,6 +32,7 @@ import yaml
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
+from vulnerabilities.package_managers import RubyVersionAPI
 
 
 class RubyDataSource(GitDataSource):
@@ -84,7 +85,7 @@ class RubyDataSource(GitDataSource):
             safe_version_ranges = [i for i in safe_version_ranges if i]
 
             if not getattr(self, 'pkg_manager_api', None):
-                self.pkg_manager_api = rubyAPI()
+                self.pkg_manager_api = RubyVersionAPI()
             all_vers = self.pkg_manager_api.get_all_version_of_package(
                 package_name)
             safe_versions, affected_versions = self.categorize_versions(
@@ -131,32 +132,3 @@ class RubyDataSource(GitDataSource):
                     safe_versions.add(i)
 
         return (safe_versions, all_versions-safe_versions)
-
-
-class rubyAPI:
-
-    base_endpt = 'https://rubygems.org/api/v1/versions/{}.json'
-
-    def __init__(self):
-        self.client = requests.Session()
-        self.cache = {}
-
-    def call_api(self, pkg_name) -> List:
-        end_pt = self.base_endpt.format(pkg_name)
-        try:
-            resp = self.client.get(end_pt)
-            return resp.json()
-        # this covers 404 alright
-        except JSONDecodeError:
-            return []
-
-    def get_all_version_of_package(self, pkg_name) -> Set[str]:
-        all_versions = set()
-        if self.cache.get(pkg_name):
-            return self.cache.get(pkg_name)
-
-        json_resp = self.call_api(pkg_name)
-        for release in json_resp:
-            all_versions.add(release['number'])
-        self.cache[pkg_name] = all_versions
-        return all_versions

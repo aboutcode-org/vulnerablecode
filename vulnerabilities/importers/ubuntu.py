@@ -30,13 +30,12 @@ from typing import Mapping
 from typing import Set
 import xml.etree.ElementTree as ET
 
-
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientResponseError
 import requests
 
-
 from vulnerabilities.data_source import OvalDataSource, DataSourceConfiguration
+from vulnerabilities.package_managers import LaunchpadVersionAPI
 
 
 @dataclasses.dataclass
@@ -55,7 +54,7 @@ class UbuntuDataSource(OvalDataSource):
         # set by default in the OvalParser, but we don't yet know
         # whether all OVAL providers use the same format
         self.translations = {'less than': '<'}
-        self.pkg_manager_api = VersionAPI()
+        self.pkg_manager_api = LaunchpadVersionAPI()
 
     def _fetch(self):
         base_url = 'https://people.canonical.com/~ubuntu-security/oval/'
@@ -92,40 +91,3 @@ class UbuntuDataSource(OvalDataSource):
                 return False
         self.config.etags[url] = etag
         return True
-
-
-class VersionAPI:
-    def __init__(self, cache: Mapping[str, Set[str]] = None):
-        self.cache = cache or {}
-
-    def get(self, package_name: str) -> Set[str]:
-        return self.cache[package_name]
-
-    async def load_api(self, pkg_set):
-        async with ClientSession(raise_for_status=True) as session:
-            await asyncio.gather(*[self.set_api(pkg, session)
-                                   for pkg in pkg_set if pkg not in self.cache])
-
-    async def set_api(self, pkg, session):
-        if pkg in self.cache:
-            return
-        url = ('https://api.launchpad.net/1.0/ubuntu/+archive/'
-               'primary?ws.op=getPublishedSources&'
-               'source_name={}&exact_match=true'.format(pkg))
-        try:
-            all_versions = set()
-            while True:
-                response = await session.request(method='GET', url=url)
-                resp_json = await response.json()
-                if resp_json['entries'] == []:
-                    self.cache[pkg] = {}
-                    break
-                for release in resp_json['entries']:
-                    all_versions.add(release['source_package_version'])
-                if resp_json.get('next_collection_link'):
-                    url = resp_json['next_collection_link']
-                else:
-                    break
-            self.cache[pkg] = all_versions
-        except (ClientResponseError, asyncio.exceptions.TimeoutError):
-            self.cache[pkg] = {}

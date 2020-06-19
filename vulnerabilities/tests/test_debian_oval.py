@@ -36,12 +36,12 @@ class TestDebianOvalDataSource(unittest.TestCase):
             batch_size=1, config=data_source_cfg)
 
     @patch(
-        'vulnerabilities.importers.debian_oval.VersionAPI.get',
+        'vulnerabilities.importers.debian_oval.DebianVersionAPI.get',
         return_value={
             '0:1.11.1+dfsg-5+deb7u1',
             '0:0.11.1+dfsg-5+deb7u1',
             '2.3.9'})
-    @patch('vulnerabilities.importers.debian_oval.VersionAPI.load_api', new=mock)
+    @patch('vulnerabilities.importers.debian_oval.DebianVersionAPI.load_api', new=mock)
     def test_get_data_from_xml_doc(self, mock_write):
         expected_data = {
             Advisory(

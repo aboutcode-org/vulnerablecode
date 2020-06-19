@@ -45,7 +45,7 @@ class OpenSSLDataSource(DataSource):
     def to_advisories(xml_response: str) -> Set[Advisory]:
         advisories = []
         pkg_name = "openssl"
-        pkg_type = "openssl"
+        pkg_type = "generic"
         root = ET.fromstring(xml_response)
         for element in root:
             if element.tag == "issue":

@@ -43,6 +43,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
+from vulnerabilities.package_managers import PypiVersionAPI
 
 
 def validate_schema(advisory_dict):
@@ -73,7 +74,7 @@ class SafetyDbDataSource(DataSource):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._versions = VersionAPI()
+        self._versions = PypiVersionAPI()
 
     def __enter__(self):
         self._api_response = self._fetch()
@@ -144,28 +145,3 @@ def categorize_versions(
         resolved_purls.add(PackageURL(name=package_name, type="pypi", version=version))
 
     return impacted_purls, resolved_purls
-
-
-class VersionAPI:
-    def __init__(self, cache: Mapping[str, Set[str]] = None):
-        self.cache = cache or {}
-
-    def get(self, package_name: str) -> Set[str]:
-        package_name = package_name.strip()
-
-        if package_name not in self.cache:
-            releases = set()
-            try:
-                with urlopen(f"https://pypi.org/pypi/{package_name}/json") as response:
-                    json_file = json.load(response)
-                    releases = set(json_file["releases"])
-            except HTTPError as e:
-                if e.code == 404:
-                    # PyPi does not have data about this package
-                    pass
-                else:
-                    raise
-
-            self.cache[package_name] = releases
-
-        return self.cache[package_name]

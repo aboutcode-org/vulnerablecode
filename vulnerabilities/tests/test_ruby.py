@@ -51,10 +51,8 @@ class RubyDataSourceTest(TestCase):
         }
         cls.data_src = RubyDataSource(1, config=data_source_cfg)
 
-    @patch(
-        "vulnerabilities.importers.ruby.rubyAPI.get_all_version_of_package",
-        return_value={"1.0.0", "1.8.0", "2.0.3"},
-    )
+    @patch('vulnerabilities.importers.ruby.RubyVersionAPI.get_all_version_of_package',
+           return_value={'1.0.0', '1.8.0', '2.0.3'})
     def test_process_file(self, mock_write):
         expected_advisories = {
             Advisory(

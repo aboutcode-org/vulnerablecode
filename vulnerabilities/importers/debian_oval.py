@@ -29,13 +29,12 @@ from typing import Mapping
 from typing import Set
 import xml.etree.ElementTree as ET
 
-
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientResponseError, ServerDisconnectedError
 import requests
 
-
 from vulnerabilities.data_source import OvalDataSource, DataSourceConfiguration
+from vulnerabilities.package_managers import DebianVersionAPI
 
 
 @dataclasses.dataclass
@@ -54,7 +53,7 @@ class DebianOvalDataSource(OvalDataSource):
         # set by default in the OvalParser, but we don't yet know
         # whether all OVAL providers use the same format
         self.translations = {'less than': '<'}
-        self.pkg_manager_api = VersionAPI()
+        self.pkg_manager_api = DebianVersionAPI()
 
     def _fetch(self):
         base_url = 'https://www.debian.org/security/oval/'
@@ -85,42 +84,3 @@ class DebianOvalDataSource(OvalDataSource):
                 return False
         self.config.etags[url] = etag
         return True
-
-
-class VersionAPI:
-    def __init__(self, cache: Mapping[str, Set[str]] = None):
-        self.cache = cache or {}
-
-    def get(self, package_name: str) -> Set[str]:
-        return self.cache[package_name]
-
-    async def load_api(self, pkg_set):
-        # Need to set the headers, because the Debian API upgrades
-        # the connection to HTTP 2.0
-        async with ClientSession(
-            raise_for_status=True,
-            headers={'Connection': 'keep-alive'}
-        ) as session:
-            await asyncio.gather(*[self.set_api(pkg, session)
-                                   for pkg in pkg_set if pkg not in self.cache])
-
-    async def set_api(self, pkg, session, retry_count=5):
-        if pkg in self.cache:
-            return
-        url = ('https://sources.debian.org/api/src/{}'.format(pkg))
-        try:
-            all_versions = set()
-            response = await session.request(method='GET', url=url)
-            resp_json = await response.json()
-
-            if resp_json.get('error') or not resp_json.get('versions'):
-                self.cache[pkg] = {}
-                return
-            for release in resp_json['versions']:
-                all_versions.add(release['version'])
-
-            self.cache[pkg] = all_versions
-        # TODO : Handle ServerDisconnectedError by using some sort of
-        # retry mechanism
-        except (ClientResponseError, asyncio.exceptions.TimeoutError, ServerDisconnectedError):
-            self.cache[pkg] = {}

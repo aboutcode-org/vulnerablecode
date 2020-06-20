@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c)  nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -24,21 +24,6 @@
 import os
 
 import pytest
-
-from vulnerabilities.data_dump import ubuntu_dump
-from vulnerabilities.importers import ubuntu
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
-
-
-@pytest.fixture
-def setUbuntuData(db):
-    with open(os.path.join(TEST_DATA, 'ubuntu_main.html')) as f:
-        test_data = f.read()
-
-    data = ubuntu.extract_cves(test_data)
-    ubuntu_dump(data)
 
 
 @pytest.fixture

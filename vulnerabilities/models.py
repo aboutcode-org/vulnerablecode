@@ -33,6 +33,53 @@ from packageurl import PackageURL
 
 from vulnerabilities.data_source import DataSource
 
+class Importer(models.Model):
+    """
+    Metadata and pointer to the implementation for a source of vulnerability data (aka security
+    advisories)
+    """
+    name = models.CharField(max_length=100, unique=True, help_text='Name of the importer')
+
+    license = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text='License of the vulnerability data',
+    )
+
+    last_run = models.DateTimeField(null=True, help_text='UTC Timestamp of the last run')
+
+    data_source = models.CharField(
+        max_length=100,
+        help_text='Name of the data source implementation importable from vulnerabilities.importers'
+    )
+    data_source_cfg = pgfields.JSONField(
+        null=False,
+        default=dict,
+        help_text='Implementation-specific configuration for the data source',
+    )
+
+    def make_data_source(self, batch_size: int, cutoff_date: datetime = None) -> DataSource:
+        """
+        Return a configured and ready to use instance of this importers data source implementation.
+
+        batch_size - max. number of records to return on each iteration
+        cutoff_date - optional timestamp of the oldest data to include in the import
+        """
+        importers_module = importlib.import_module('vulnerabilities.importers')
+        klass = getattr(importers_module, self.data_source)
+
+        ds = klass(
+            batch_size,
+            last_run_date=self.last_run,
+            cutoff_date=cutoff_date,
+            config=self.data_source_cfg,
+        )
+
+        return ds
+
+    def __str__(self):
+        return self.name
+
 
 class Vulnerability(models.Model):
     """
@@ -63,9 +110,9 @@ class VulnerabilityReference(models.Model):
     package manager.
     """
     vulnerability = models.ForeignKey(
-        Vulnerability, on_delete=models.CASCADE, required=True)    
+        Vulnerability, on_delete=models.CASCADE)    
     source = models.ForeignKey(
-        Importer, on_delete=models.CASCADE, required=True)
+        Importer, on_delete=models.CASCADE)
     urls = pgfields.JSONField()
     summary = models.TextField()
 
@@ -73,9 +120,9 @@ class VulnerabilityReference(models.Model):
         unique_together = ('vulnerability', 'source')
 
 class VulnerabilityScore(models.Model):
-  vulnerability_reference = models.ForeignKey(VulnerabilityReference, on_delete=models.CASCADE, required=True)
+  vulnerability_reference = models.ForeignKey(VulnerabilityReference, on_delete=models.CASCADE)
   type = models.CharField(max_length=50, help_text='Vulnerability score type', blank=True)
-  score = models.CharField()
+  score = models.CharField(max_length=50)
 
 class Package(PackageURLMixin):
     """
@@ -127,54 +174,7 @@ class Vulnerability_Package_Relation(models.Model):
     is_vulnerable = models.BooleanField()
 # } till this point we have a consensus in this model
 
-    version_range = models.CharField()
+    version_range = models.CharField(max_length=50)
 
     class Meta:
         unique_together = ('vulnerability', 'package')
-
-class Importer(models.Model):
-    """
-    Metadata and pointer to the implementation for a source of vulnerability data (aka security
-    advisories)
-    """
-    name = models.CharField(max_length=100, unique=True, help_text='Name of the importer')
-
-    license = models.CharField(
-        max_length=100,
-        blank=True,
-        help_text='License of the vulnerability data',
-    )
-
-    last_run = models.DateTimeField(null=True, help_text='UTC Timestamp of the last run')
-
-    data_source = models.CharField(
-        max_length=100,
-        help_text='Name of the data source implementation importable from vulnerabilities.importers'
-    )
-    data_source_cfg = pgfields.JSONField(
-        null=False,
-        default=dict,
-        help_text='Implementation-specific configuration for the data source',
-    )
-
-    def make_data_source(self, batch_size: int, cutoff_date: datetime = None) -> DataSource:
-        """
-        Return a configured and ready to use instance of this importers data source implementation.
-
-        batch_size - max. number of records to return on each iteration
-        cutoff_date - optional timestamp of the oldest data to include in the import
-        """
-        importers_module = importlib.import_module('vulnerabilities.importers')
-        klass = getattr(importers_module, self.data_source)
-
-        ds = klass(
-            batch_size,
-            last_run_date=self.last_run,
-            cutoff_date=cutoff_date,
-            config=self.data_source_cfg,
-        )
-
-        return ds
-
-    def __str__(self):
-        return self.name

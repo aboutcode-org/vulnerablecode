@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'vulnerabilities',
     'rest_framework',
     'django_filters',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [

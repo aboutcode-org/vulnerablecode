@@ -24,10 +24,9 @@
 from django.contrib import admin
 
 from vulnerabilities.models import (
-    ImpactedPackage,
+    Vulnerability_Package_Relation,
     Importer,
     Package,
-    ResolvedPackage,
     Vulnerability,
     VulnerabilityReference,
 )
@@ -48,13 +47,8 @@ class PackageAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(ImpactedPackage)
+@admin.register(Vulnerability_Package_Relation)
 class ImpactedPackageAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(ResolvedPackage)
-class ResolvedPackageAdmin(admin.ModelAdmin):
     pass
 
 

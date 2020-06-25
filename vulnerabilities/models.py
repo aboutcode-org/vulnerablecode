@@ -39,9 +39,16 @@ class Vulnerability(models.Model):
     A software vulnerability with minimal information. Identifiers other than CVE ID are stored as
     VulnerabilityReference.
     """
-    cve_id = models.CharField(max_length=50, help_text='CVE ID', unique=True, null=True)
-    summary = models.TextField(help_text='Summary of the vulnerability', blank=True)
-    cvss = models.FloatField(max_length=100, help_text='CVSS Score', null=True)
+    vuln_id = models.CharField(max_length=50, help_text='eg CVE ID, RUST SEC ID', unique=True, null=True)
+    reference_ids = pgfields.JSONField() 
+
+    # Whatever goes into vuln_id is a vulnerability identifier 
+    # which is undivisible i.e atomic vulnerability id. All CVEs fit into this.
+    
+    # reference_ids are usually but not limited to `advisory` ids like USN-4399-1
+    # https://usn.ubuntu.com/4399-1/.     
+    # Contents of reference_ids are a name/id given to collection of 
+    # other small vulnerbilties. For example USN-4399-1 refers to CVE-2020-8618, CVE-2020-8619
 
     def __str__(self):
         return self.cve_id or self.summary
@@ -56,26 +63,25 @@ class VulnerabilityReference(models.Model):
     package manager.
     """
     vulnerability = models.ForeignKey(
-        Vulnerability, on_delete=models.CASCADE)
-    source = models.CharField(
-        max_length=50, help_text='Source(s) name eg:NVD', blank=True)
-    reference_id = models.CharField(
-        max_length=50, help_text='Reference ID, eg:DSA-4465-1', blank=True)
-    url = models.URLField(
-        max_length=1024, help_text='URL of Vulnerability data', blank=True)
+        Vulnerability, on_delete=models.CASCADE, required=True)    
+    source = models.ForeignKey(
+        Importer, on_delete=models.CASCADE, required=True)
+    urls = pgfields.JSONField()
+    summary = models.TextField()
 
     class Meta:
-        unique_together = ('vulnerability', 'source', 'reference_id', 'url')
+        unique_together = ('vulnerability', 'source')
 
-    def __str__(self):
-        return f'{self.source} {self.reference_id} {self.url}'
-
+class VulnerabilityScore(models.Model):
+  vulnerability_reference = models.ForeignKey(VulnerabilityReference, on_delete=models.CASCADE, required=True)
+  type = models.CharField(max_length=50, help_text='Vulnerability score type', blank=True)
+  score = models.CharField()
 
 class Package(PackageURLMixin):
     """
     A software package with links to relevant vulnerabilities.
     """
-    vulnerabilities = models.ManyToManyField(to='Vulnerability', through='ImpactedPackage')
+    vulnerabilities = models.ManyToManyField(to='Vulnerability', through='Vulnerability_Package_Relation')
 
     class Meta:
         unique_together = ('name', 'namespace', 'type', 'version', 'qualifiers', 'subpath')
@@ -111,24 +117,20 @@ class Package(PackageURLMixin):
         return self.package_url
 
 
-class ImpactedPackage(models.Model):
+class Vulnerability_Package_Relation(models.Model):
     """
     Relates a vulnerability to package(s) impacted by it.
     """
+# {
     vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
+    is_vulnerable = models.BooleanField()
+# } till this point we have a consensus in this model
+
+    version_range = models.CharField()
 
     class Meta:
         unique_together = ('vulnerability', 'package')
-
-
-class ResolvedPackage(models.Model):
-    """
-    Relates a vulnerability to package(s) that contain a fix or resolution of this vulnerability.
-    """
-    vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
-    package = models.ForeignKey(Package, on_delete=models.CASCADE)
-
 
 class Importer(models.Model):
     """

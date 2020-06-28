@@ -435,10 +435,8 @@ class OvalDataSource(DataSource):
         """
         Note: metadata MUST INCLUDE "type" key, implement _fetch accordingly.
         """
-        advisories = []
         for metadata, oval_file in self._fetch():
-            advisories.extend(self.get_data_from_xml_doc(oval_file, metadata))
-        return self.batch_advisories(advisories)
+            yield self.get_data_from_xml_doc(oval_file, metadata)
 
     def set_api(self, all_pkgs: Iterable[str]):
         """

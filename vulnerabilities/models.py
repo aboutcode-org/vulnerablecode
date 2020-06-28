@@ -75,7 +75,7 @@ class Package(PackageURLMixin):
     """
     A software package with links to relevant vulnerabilities.
     """
-    vulnerabilities = models.ManyToManyField(to='Vulnerability', through='ImpactedPackage')
+    vulnerabilities = models.ManyToManyField(to='Vulnerability', through='Vulnerability_Package_Relation')
 
     class Meta:
         unique_together = ('name', 'namespace', 'type', 'version', 'qualifiers', 'subpath')
@@ -110,24 +110,12 @@ class Package(PackageURLMixin):
     def __str__(self):
         return self.package_url
 
+class Vulnerability_Package_Relation(models.Model):
 
-class ImpactedPackage(models.Model):
-    """
-    Relates a vulnerability to package(s) impacted by it.
-    """
-    vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = ('vulnerability', 'package')
-
-
-class ResolvedPackage(models.Model):
-    """
-    Relates a vulnerability to package(s) that contain a fix or resolution of this vulnerability.
-    """
     vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
-    package = models.ForeignKey(Package, on_delete=models.CASCADE)
+    is_vulnerable = models.BooleanField()
+
 
 
 class Importer(models.Model):

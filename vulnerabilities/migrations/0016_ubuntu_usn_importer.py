@@ -1,4 +1,4 @@
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -20,19 +20,33 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+from django.db import migrations
+def  add_ubuntu_usn_importer(apps, _) :
 
-from vulnerabilities.importers.alpine_linux import AlpineDataSource
-from vulnerabilities.importers.archlinux import ArchlinuxDataSource
-from vulnerabilities.importers.debian import DebianDataSource
-from vulnerabilities.importers.npm import NpmDataSource
-from vulnerabilities.importers.rust import RustDataSource
-from vulnerabilities.importers.safety_db import SafetyDbDataSource
-from vulnerabilities.importers.ruby import RubyDataSource
-from vulnerabilities.importers.ubuntu import UbuntuDataSource
-from vulnerabilities.importers.retiredotnet import RetireDotnetDataSource
-from vulnerabilities.importers.suse_backports import SUSEBackportsDataSource
-from vulnerabilities.importers.debian_oval import DebianOvalDataSource
-from vulnerabilities.importers.redhat import RedhatDataSource
-from vulnerabilities.importers.gentoo import GentooDataSource
-from vulnerabilities.importers.openssl import OpenSSLDataSource
-from vulnerabilities.importers.ubuntu_usn import UbuntuUSNDataSource
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+    Importer.objects.create(
+    name='ubuntu_usn',
+    license='',
+    last_run=None,
+    data_source='UbuntuUSNDataSource',
+    data_source_cfg={'etags':{},'db_url':'https://usn.ubuntu.com/usn-db/database-all.json.bz2'}
+    )	
+
+def  remove_ubuntu_usn_importer(apps, _):
+    Importer = apps.get_model('vulnerabilities', 'Importer')
+    qs = Importer.objects.filter(name='ubuntu_usn')
+    if qs:
+        qs[0].delete()
+
+class  Migration(migrations.Migration):
+    dependencies = [
+
+    ('vulnerabilities', '0015_openssl_importer'),
+
+        ]
+
+    operations = [
+
+    migrations.RunPython(add_ubuntu_usn_importer, remove_ubuntu_usn_importer),
+
+    ]

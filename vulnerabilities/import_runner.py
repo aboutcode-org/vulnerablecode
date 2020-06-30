@@ -152,7 +152,7 @@ def _get_or_create_vulnerability(advisory: Advisory) -> Tuple[models.Vulnerabili
 
     vuln, created = models.Vulnerability.objects.get_or_create(**query_kwargs)
 
-    if not created and vuln.summary != advisory.summary:
+    if advisory.summary and vuln.summary != advisory.summary:
         vuln.summary = advisory.summary
         vuln.save()
 

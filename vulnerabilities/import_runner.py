@@ -61,46 +61,6 @@ class ImportRunner:
     def __init__(self, importer: models.Importer, batch_size: int):
         self.importer = importer
         self.batch_size = batch_size
-        self._bulk_create_vuln_pkg_refs = []
-        self._bulk_update_vuln_pkg_refs = []
-        self._bulk_create_vuln_refs = []
-    
-    def __del__(self):
-        models.Vulnerability_Package_Relation.objects.bulk_create(self._bulk_create_vuln_pkg_refs, ignore_conflicts=True)
-        models.Vulnerability_Package_Relation.objects.bulk_update(self._bulk_update_vuln_pkg_refs,['is_vulnerable'])
-        models.VulnerabilityReference.objects.bulk_create(self._bulk_create_vuln_refs, ignore_conflicts=True)
-
-    # TODO: Currently the implementation may contain duplicate model instances in `_bulk_create_vuln_refs` and `_bulk_create_vuln_pkg_refs`
-    #       to make this work , `ignore_conflicts=True` is used. Find some way to remove duplicates of model instances(before writing them db)
-    #       and remove the   `ignore_conflicts=True` flag.
-    @property  
-    def bulk_create_vuln_pkg_refs(self):
-
-        if len(self._bulk_create_vuln_pkg_refs) >= self.batch_size : 
-            models.Vulnerability_Package_Relation.objects.bulk_create(self._bulk_create_vuln_pkg_refs, ignore_conflicts=True)
-            self._bulk_create_vuln_pkg_refs = []
-        
-        return self._bulk_create_vuln_pkg_refs
-
-    
-    @property
-    def bulk_update_vuln_pkg_refs(self):
-
-        if len(self._bulk_update_vuln_pkg_refs) >= self.batch_size : 
-            models.Vulnerability_Package_Relation.objects.bulk_update(self._bulk_update_vuln_pkg_refs,['is_vulnerable'])
-            self._bulk_update_vuln_pkg_refs = []
-        
-        return self._bulk_update_vuln_pkg_refs
-    
-    @property
-    def bulk_create_vuln_refs(self):
-
-        if len(self._bulk_create_vuln_refs) >= self.batch_size : 
-            models.VulnerabilityReference.objects.bulk_create(self._bulk_create_vuln_refs, ignore_conflicts=True)
-            self._bulk_create_vuln_refs = []
-        
-        return self._bulk_create_vuln_refs
-
 
     def run(self, cutoff_date: datetime.datetime = None) -> None:
         """
@@ -117,7 +77,7 @@ class ImportRunner:
         data_source = self.importer.make_data_source(self.batch_size, cutoff_date=cutoff_date)
         with data_source:
             _process_added_advisories(data_source)
-            self._process_updated_advisories(data_source)
+            _process_updated_advisories(data_source)
         self.importer.last_run = datetime.datetime.now(tz=datetime.timezone.utc)
         self.importer.data_source_cfg = dataclasses.asdict(data_source.config)
         self.importer.save()
@@ -125,83 +85,89 @@ class ImportRunner:
         logger.debug(f'Successfully finished import for {self.importer.name}.')
     
 
-    def _process_updated_advisories(self,data_source: DataSource) -> None:
-        """
-        TODO: Break this method into smaller functions
-        """
-    
-        for batch in data_source.updated_advisories():
-            for advisory in batch:
-                vuln, vuln_created = _get_or_create_vulnerability(advisory)
+def _process_updated_advisories(data_source: DataSource) -> None:
+    """
+    TODO: Break this method into smaller functions
+    """
+    for batch in data_source.updated_advisories():
+        for advisory in batch:
 
-                if vuln_created:
-                    # This means vulnerability didn't previously exist in the db, so bulk create 
-                    # is used without any hesitation
-                    for id_ in set(advisory.reference_ids):
-                        self.bulk_create_vuln_refs.append(models.VulnerabilityReference(vulnerability=vuln, reference_id=id_))
-                    
-                    for url in set(advisory.reference_urls):
-                        self.bulk_create_vuln_refs.append(models.VulnerabilityReference(vulnerability=vuln, url=url))
-                    
-                else:
-                    vuln_refs_qs = models.VulnerabilityReference.objects.filter(vulnerability=vuln)
-                    # This is to avoid making additional SELECT queries, and do further filtering in python
-                    # Check https://stackoverflow.com/a/5989530
-                    vuln_ids = {ref.reference_id for ref in vuln_refs_qs}
-                    vuln_urls = {ref.url for ref in vuln_refs_qs}
+            bulk_create_vuln_refs = []
+            bulk_update_vuln_pkg_refs = []
+            bulk_create_vuln_pkg_refs = []
 
-                    for id_ in advisory.reference_ids:
-                        if id_ not in vuln_ids :
-                        # Delete the item because it will allow the duplicates pass to through if they are not
-                        # present in vuln_ids
-                            vuln_ids.add(id_)
-                            self.bulk_create_vuln_refs.append(models.VulnerabilityReference(vulnerability=vuln, reference_id=id_))
-                    
-                    for url in advisory.reference_urls:
-                        # Delete the item because it will allow the duplicates pass to through if they are not
-                        # present in vuln_urls
-                        if url not in vuln_urls:
-                            vuln_urls.add(url)
-                            self.bulk_create_vuln_refs.append(models.VulnerabilityReference(vulnerability=vuln, url=url))
+            vuln, vuln_created = _get_or_create_vulnerability(advisory)
 
-
+            if vuln_created:
+                # This means vulnerability didn't previously exist in the db, so bulk create 
+                # is used without any hesitation
+                for id_ in set(advisory.reference_ids):
+                    bulk_create_vuln_refs.append(models.VulnerabilityReference(vulnerability=vuln, reference_id=id_))
                 
+                for url in set(advisory.reference_urls):
+                    bulk_create_vuln_refs.append(models.VulnerabilityReference(vulnerability=vuln, url=url))
+                
+            else:
+                vuln_refs_qs = models.VulnerabilityReference.objects.filter(vulnerability=vuln)
+                # This is to avoid making additional SELECT queries, and do further filtering in python
+                # Check https://stackoverflow.com/a/5989530
+                vuln_ids = {ref.reference_id for ref in vuln_refs_qs}
+                vuln_urls = {ref.url for ref in vuln_refs_qs}
 
-                for ipurl in advisory.impacted_package_urls : 
-                    pkg, pkg_created = _get_or_create_package(ipurl)
-                    vuln_pkgs_ref = models.Vulnerability_Package_Relation(package=pkg,vulnerability=vuln,is_vulnerable=True)
+                for id_ in advisory.reference_ids:
+                    if id_ not in vuln_ids :
+                    # Delete the item because it will allow the duplicates pass to through if they are not
+                    # present in vuln_ids
+                        vuln_ids.add(id_)
+                        bulk_create_vuln_refs.append(models.VulnerabilityReference(vulnerability=vuln, reference_id=id_))
+                
+                for url in advisory.reference_urls:
+                    # Delete the item because it will allow the duplicates pass to through if they are not
+                    # present in vuln_urls
+                    if url not in vuln_urls:
+                        vuln_urls.add(url)
+                        bulk_create_vuln_refs.append(models.VulnerabilityReference(vulnerability=vuln, url=url))
 
-                    if pkg_created or vuln_created : 
-                        self.bulk_create_vuln_pkg_refs.append(vuln_pkgs_ref)
+            models.VulnerabilityReference.objects.bulk_create(bulk_create_vuln_refs)
 
-                    else:  
-                        qs = models.Vulnerability_Package_Relation.objects.filter(package=pkg,vulnerability=vuln)
-                        if qs:
-                            if not qs[0].is_vulnerable: 
-                                qs[0].is_vulnerable = True
-                                self.bulk_update_vuln_pkg_refs.append(qs[0])
+            for ipurl in advisory.impacted_package_urls : 
+                pkg, pkg_created = _get_or_create_package(ipurl)
+                vuln_pkgs_ref = models.Vulnerability_Package_Relation(package=pkg,vulnerability=vuln,is_vulnerable=True)
 
-                        else:
-                            self.bulk_create_vuln_pkg_refs.append(vuln_pkgs_ref)
+                if pkg_created or vuln_created : 
+                    bulk_create_vuln_pkg_refs.append(vuln_pkgs_ref)
 
-                for rpurl in advisory.resolved_package_urls : 
-                    pkg, pkg_created = _get_or_create_package(rpurl)
-                    vuln_pkgs_ref = models.Vulnerability_Package_Relation(package=pkg,vulnerability=vuln,is_vulnerable=False)
+                else:  
+                    qs = models.Vulnerability_Package_Relation.objects.filter(package=pkg,vulnerability=vuln)
+                    if qs:
+                        if not qs[0].is_vulnerable: 
+                            qs[0].is_vulnerable = True
+                            bulk_update_vuln_pkg_refs.append(qs[0])
 
-                    if pkg_created or vuln_created : 
-                        # For a  `Vulnerability_Package_Relation` tp exist it needs both, the package and
-                        # vulnerability to already exist in the db.
-                        self.bulk_create_vuln_pkg_refs.append(vuln_pkgs_ref)
+                    else:
+                        bulk_create_vuln_pkg_refs.append(vuln_pkgs_ref)
 
-                    else:  
-                        qs = models.Vulnerability_Package_Relation.objects.filter(package=pkg,vulnerability=vuln)
-                        if qs:
-                            if qs[0].is_vulnerable : 
-                                qs[0].is_vulnerable = False 
-                                self.bulk_update_vuln_pkg_refs.append(qs[0])
+            for rpurl in advisory.resolved_package_urls : 
+                pkg, pkg_created = _get_or_create_package(rpurl)
+                vuln_pkgs_ref = models.Vulnerability_Package_Relation(package=pkg,vulnerability=vuln,is_vulnerable=False)
 
-                        else:
-                            self.bulk_create_vuln_pkg_refs.append(vuln_pkgs_ref)
+                if pkg_created or vuln_created : 
+                    # For a  `Vulnerability_Package_Relation` tp exist it needs both, the package and
+                    # vulnerability to already exist in the db.
+                    bulk_create_vuln_pkg_refs.append(vuln_pkgs_ref)
+
+                else:  
+                    qs = models.Vulnerability_Package_Relation.objects.filter(package=pkg,vulnerability=vuln)
+                    if qs:
+                        if qs[0].is_vulnerable : 
+                            qs[0].is_vulnerable = False 
+                            bulk_update_vuln_pkg_refs.append(qs[0])
+
+                    else:
+                        bulk_create_vuln_pkg_refs.append(vuln_pkgs_ref)
+
+            models.Vulnerability_Package_Relation.objects.bulk_update(bulk_update_vuln_pkg_refs, ['is_vulnerable'])
+            models.Vulnerability_Package_Relation.objects.bulk_create(bulk_create_vuln_pkg_refs)
             
 def _process_added_advisories(data_source: DataSource) -> None:
     for batch in data_source.added_advisories():

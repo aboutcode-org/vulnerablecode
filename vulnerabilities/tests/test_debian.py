@@ -66,8 +66,9 @@ class DebianImportTest(TestCase):
 
         assert models.Vulnerability.objects.count() == 3
         assert models.VulnerabilityReference.objects.count() == 3
-        assert models.ImpactedPackage.objects.count() == 2
-        assert models.ResolvedPackage.objects.count() == 8
+        assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=True).count() == 2
+        assert models.PackageRelatedVulnerability.objects.filter(
+            is_vulnerable=False).count() == 8
         assert models.Package.objects.count() == 6
 
         self.assert_for_package('librsync', '0.9.7-10', 'jessie', cve_ids={'CVE-2014-8242'})

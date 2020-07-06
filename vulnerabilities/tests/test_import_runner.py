@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -105,11 +105,10 @@ def test_ImportRunner_new_package_and_new_vulnerability(db):
 
     assert models.Vulnerability.objects.count() == 1
     assert models.VulnerabilityReference.objects.count() == 1
-    assert models.ImpactedPackage.objects.count() == 1
-    assert models.ResolvedPackage.objects.count() == 1
+    assert models.PackageRelatedVulnerability.objects.count() == 2
 
     assert impacted_package.vulnerabilities.count() == 1
-    assert resolved_package.vulnerabilities.count() == 0
+    assert resolved_package.vulnerabilities.count() == 1
 
     vuln = impacted_package.vulnerabilities.first()
     assert vuln.cve_id == 'MOCK-CVE-2020-1337'
@@ -136,13 +135,13 @@ def test_ImportRunner_existing_package_and_new_vulnerability(db):
 
     assert models.Vulnerability.objects.count() == 1
     assert models.VulnerabilityReference.objects.count() == 1
-    assert models.ImpactedPackage.objects.count() == 1
-    assert models.ResolvedPackage.objects.count() == 1
 
-    resolved_package = models.ResolvedPackage.objects.first()
+    assert models.PackageRelatedVulnerability.objects.count() == 2
+
+    resolved_package = models.PackageRelatedVulnerability.objects.filter(is_vulnerable=False)[0]
     assert resolved_package.package.version == '1.2.34'
 
-    impacted_package = models.ImpactedPackage.objects.first()
+    impacted_package = models.PackageRelatedVulnerability.objects.filter(is_vulnerable=True)[0]
     vuln = impacted_package.vulnerability
     assert vuln.cve_id == 'MOCK-CVE-2020-1337'
 
@@ -163,13 +162,15 @@ def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db)
         vulnerability=vuln,
         url='https://example.com/with/more/info/MOCK-CVE-2020-1337'
     )
-    models.ImpactedPackage.objects.create(
+    models.PackageRelatedVulnerability.objects.create(
         vulnerability=vuln,
         package=models.Package.objects.create(name='mock-webserver', type='pypi', version='1.2.33'),
+        is_vulnerable=True
     )
-    models.ResolvedPackage.objects.create(
+    models.PackageRelatedVulnerability.objects.create(
         vulnerability=vuln,
         package=models.Package.objects.create(name='mock-webserver', type='pypi', version='1.2.34'),
+        is_vulnerable=False
     )
 
     advisories = deepcopy(ADVISORIES)
@@ -185,14 +186,14 @@ def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db)
     assert models.Package.objects.all().count() == 3
     assert models.Vulnerability.objects.count() == 1
     assert models.VulnerabilityReference.objects.count() == 1
-    assert models.ImpactedPackage.objects.count() == 2
-    assert models.ResolvedPackage.objects.count() == 1
+    assert models.PackageRelatedVulnerability.objects.count() == 3
 
     qs = models.Package.objects.filter(name='mock-webserver', version='1.2.33a')
     assert len(qs) == 1
     added_package = qs[0]
 
-    qs = models.ImpactedPackage.objects.filter(package=added_package)
+    qs = models.PackageRelatedVulnerability.objects.filter(
+        package=added_package, is_vulnerable=True)
     assert len(qs) == 1
     impacted_package = qs[0]
     assert impacted_package.vulnerability.cve_id == 'MOCK-CVE-2020-1337'
@@ -256,9 +257,10 @@ def test_ImportRunner_fixed_package_version_is_added(db):
         vulnerability=vuln,
         url='https://example.com/with/more/info/MOCK-CVE-2020-1337'
     )
-    models.ImpactedPackage.objects.create(
+    models.PackageRelatedVulnerability.objects.create(
         vulnerability=vuln,
         package=models.Package.objects.create(name='mock-webserver', type='pypi', version='1.2.33'),
+        is_vulnerable=True,
     )
 
     runner = make_import_runner(updated_advs=ADVISORIES)
@@ -271,14 +273,14 @@ def test_ImportRunner_fixed_package_version_is_added(db):
     assert models.Package.objects.all().count() == 2
     assert models.Vulnerability.objects.count() == 1
     assert models.VulnerabilityReference.objects.count() == 1
-    assert models.ImpactedPackage.objects.count() == 1
-    assert models.ResolvedPackage.objects.count() == 1
+    assert models.PackageRelatedVulnerability.objects.count() == 2
 
     qs = models.Package.objects.filter(name='mock-webserver', version='1.2.34')
     assert len(qs) == 1
     added_package = qs[0]
 
-    qs = models.ResolvedPackage.objects.filter(package=added_package)
+    qs = models.PackageRelatedVulnerability.objects.filter(
+        package=added_package, is_vulnerable=False)
     assert len(qs) == 1
     resolved_package = qs[0]
     assert resolved_package.vulnerability.cve_id == 'MOCK-CVE-2020-1337'
@@ -292,13 +294,15 @@ def test_ImportRunner_updated_vulnerability(db):
     vuln = models.Vulnerability.objects.create(
         cve_id='MOCK-CVE-2020-1337', summary='temporary description')
 
-    models.ImpactedPackage.objects.create(
+    models.PackageRelatedVulnerability.objects.create(
         vulnerability=vuln,
         package=models.Package.objects.create(name='mock-webserver', type='pypi', version='1.2.33'),
+        is_vulnerable=True
     )
-    models.ResolvedPackage.objects.create(
+    models.PackageRelatedVulnerability.objects.create(
         vulnerability=vuln,
         package=models.Package.objects.create(name='mock-webserver', type='pypi', version='1.2.34'),
+        is_vulnerable=False
     )
 
     runner = make_import_runner(updated_advs=ADVISORIES)
@@ -309,8 +313,7 @@ def test_ImportRunner_updated_vulnerability(db):
     assert runner.importer.saved
 
     assert models.Package.objects.all().count() == 2
-    assert models.ImpactedPackage.objects.count() == 1
-    assert models.ResolvedPackage.objects.count() == 1
+    assert models.PackageRelatedVulnerability.objects.count() == 2
 
     vuln = models.Vulnerability.objects.first()
     assert vuln.summary == 'vulnerability description here'

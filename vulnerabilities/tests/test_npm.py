@@ -74,8 +74,11 @@ class NpmImportTest(TestCase):
 
         assert models.Vulnerability.objects.count() == 3
         assert models.VulnerabilityReference.objects.count() == 3
-        assert models.ResolvedPackage.objects.count() == 5
-        assert models.ImpactedPackage.objects.count() == 4
+        assert models.PackageRelatedVulnerability.objects.filter(
+            is_vulnerable=False).count() == 5
+
+        assert models.PackageRelatedVulnerability.objects.filter(
+            is_vulnerable=True).count() == 4
 
         expected_package_count = sum([len(v) for v in MOCK_VERSION_API.cache.values()])
         assert models.Package.objects.count() == expected_package_count
@@ -107,7 +110,8 @@ class NpmImportTest(TestCase):
 
         for version in resolved_versions:
             pkg = models.Package.objects.get(name=package_name, version=version)
-            assert models.ResolvedPackage.objects.filter(package=pkg, vulnerability=vuln)
+            assert models.PackageRelatedVulnerability.objects.filter(
+                package=pkg, vulnerability=vuln, is_vulnerable=False)
 
 
 def test_categorize_versions_simple_ranges():

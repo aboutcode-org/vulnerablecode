@@ -27,6 +27,17 @@ from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
 
 from vulnerabilities.api import PackageViewSet
+from vulnerabilities.views import PackageSearchView
+from vulnerabilities.views import PackageUpdate
+from vulnerabilities.views import PackageCreate
+from vulnerabilities.views import VulnerabilityDetails
+from vulnerabilities.views import VulnerabilitySearchView
+from vulnerabilities.views import VulnerabilityCreate
+from vulnerabilities.views import ResolvedPackageDelete
+from vulnerabilities.views import ImpactedPackageDelete
+from vulnerabilities.views import ImpactedPackageCreate
+from vulnerabilities.views import ResolvedPackageCreate
+from vulnerabilities.views import HomePage
 
 
 api_router = DefaultRouter()
@@ -35,5 +46,16 @@ api_router.register(r'packages', PackageViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r'^api/', include(api_router.urls))
+    re_path(r'^api/', include(api_router.urls)),
+    path('packages/search', PackageSearchView.as_view(), name="package_search"),
+    path('packages/<int:pk>', PackageUpdate.as_view(), name="package_view"),
+    path('vulnerabilities/<int:pk>', VulnerabilityDetails.as_view(), name="vulnerability_view"),
+    path('vulnerabilities/search', VulnerabilitySearchView.as_view(), name="vulnerability_search"),
+    path('vulnerabilities/create', VulnerabilityCreate.as_view(), name="vulnerability_create"),
+    path('packages/create', PackageCreate.as_view(), name="package_create"),
+    path('relations/resolved/<int:pid>/<int:vid>', ResolvedPackageDelete.as_view(), name="resolved_package_delete"),
+    path('relations/impacted/<int:pid>/<int:vid>', ImpactedPackageDelete.as_view(), name="impacted_package_delete"),
+    path('relations/impacted/<int:pid>/create', ImpactedPackageCreate.as_view(), name="impacted_package_create"),
+    path('relations/resolved/<int:pid>/create', ResolvedPackageCreate.as_view(), name="resolved_package_create"),
+    path('', HomePage.as_view(), name="home")
 ]

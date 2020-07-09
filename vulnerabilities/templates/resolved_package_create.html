@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Select/<a href = "{% url 'vulnerability_create' %}"> or Create and then select </a> a vulnerability
+{% endblock %}
+{% block content %}
+{% load widget_tweaks %}
+<div class="columns has-background-info-light">
+<div class="column is-one-third">
+  </div>
+  <div class="column">
+  <form method="post">
+      {% csrf_token %}
+      <div class="field is-horizontal">
+      {% for field in form %}
+      <div class="field">
+        <div class="control">
+          {{ field|add_class:"input is-rounded"}}
+        </div>
+      </div>
+      {% endfor %}
+     <button class="button is-success", type="submit">
+       Create
+     </button>
+    </div>
+   </form>
+  </div>
+</div>
+
+{% endblock %}
+
+
+
+
+

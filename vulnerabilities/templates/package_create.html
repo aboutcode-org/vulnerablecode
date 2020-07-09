@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Create a new  Package
+{% endblock %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="columns">
+  <div class="column is-one-third"></div>
+  <div class="column  is-one-third has-text-centered  ">
+    <form method="post" class="card has-background-success-light">
+        {% csrf_token %}
+        <header class="card-header">
+          <p class="card-header-title is-centered">
+            Package Details 
+          </p>
+        </header>
+        {% for field in form %}
+        <div class="field">
+          <div class="control">
+            {% render_field field class="input is-primary" placeholder=field.label %}
+          </div>
+        </div>
+        {% endfor %}
+      <button class="button is-success", type="submit">
+        Create
+      </button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

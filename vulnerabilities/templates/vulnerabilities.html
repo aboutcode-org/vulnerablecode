@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Explore Vulnerabilities
+{% endblock %}
+{% block content %}
+
+<div class="columns">
+    <div class="column is-one-third mx-6">
+    </div>
+     <form action="{% url 'vulnerability_search' %}" method="get">
+      {% load widget_tweaks %}
+      <div class="field is-horizontal">
+        {{form.vuln_id|add_class:"input"}}
+        <button class="button is-success", type="submit">
+          Search
+        </button>
+      </div>
+      </form>
+</div>
+
+{% if vulnerabilities %}
+    <section class="section is-medium  has-text-centered">
+      <div class="container ">
+        <h1 class="title" id="results">Results of your query</h1>
+        <h3 class="subtitle" id="results">Total {{vulnerabilities|length}} results</h3>
+      </div>
+    </section>
+
+    <section class="section has-background-dark">
+        <div class="content is-medium">
+          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+          <tr>
+              <th>Vulnerabilities</th>
+              <th>Patched packages</th>
+              <th>Vulnerable packages</th>
+          </tr>
+          {% for vulnerability in  vulnerabilities %}
+              <tr>
+                  <td><a href="{% url 'vulnerability_view' vulnerability.pk %}">{{vulnerability.cve_id}}</a></td>
+                  <td>{{vulnerability.resolvedpackage_set.all|length}}</td>
+                  <td>{{vulnerability.impactedpackage_set.all|length}}</td>
+              </tr>
+          {% endfor %}
+          </table>
+        </div>
+    </section>
+
+{% endif %}
+
+{% endblock %}

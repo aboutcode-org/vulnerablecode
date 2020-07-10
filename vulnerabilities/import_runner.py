@@ -24,7 +24,6 @@
 import dataclasses
 import datetime
 import logging
-from itertools import chain
 from typing import Dict
 from typing import List
 from typing import Set
@@ -114,13 +113,11 @@ class ImportRunner:
         from all Linux distributions that package this kernel version.
         """
         logger.debug(f'Starting import for {self.importer.name}.')
-        data_source = self.importer.make_data_source(
-            self.batch_size, cutoff_date=cutoff_date)
+        data_source = self.importer.make_data_source(self.batch_size, cutoff_date=cutoff_date)
         with data_source:
             _process_added_advisories(data_source)
             _process_updated_advisories(data_source)
-        self.importer.last_run = datetime.datetime.now(
-            tz=datetime.timezone.utc)
+        self.importer.last_run = datetime.datetime.now(tz=datetime.timezone.utc)
         self.importer.data_source_cfg = dataclasses.asdict(data_source.config)
         self.importer.save()
 
@@ -170,8 +167,7 @@ def _process_added_advisories(data_source: DataSource) -> None:
 
             vulnerabilities = _insert_vulnerabilities_and_references(batch)
 
-            _bulk_insert_impacted_and_resolved_packages(
-                batch, vulnerabilities, impacted, resolved)
+            _bulk_insert_impacted_and_resolved_packages(batch, vulnerabilities, impacted, resolved)
         except (DataError, RuntimeError) as e:
             # FIXME This exception might happen when the max. length of a DB column is exceeded.
             # Skipping an entire batch because one version number might be too long is obviously a

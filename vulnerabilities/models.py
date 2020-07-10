@@ -39,8 +39,10 @@ class Vulnerability(models.Model):
     A software vulnerability with minimal information. Identifiers other than CVE ID are stored as
     VulnerabilityReference.
     """
-    cve_id = models.CharField(max_length=50, help_text='CVE ID', unique=True, null=True)
-    summary = models.TextField(help_text='Summary of the vulnerability', blank=True)
+    cve_id = models.CharField(
+        max_length=50, help_text='CVE ID', unique=True, null=True)
+    summary = models.TextField(
+        help_text='Summary of the vulnerability', blank=True)
     cvss = models.FloatField(max_length=100, help_text='CVSS Score', null=True)
 
     def __str__(self):
@@ -75,10 +77,12 @@ class Package(PackageURLMixin):
     """
     A software package with links to relevant vulnerabilities.
     """
-    vulnerabilities = models.ManyToManyField(to='Vulnerability', through='ImpactedPackage')
+    vulnerabilities = models.ManyToManyField(
+        to='Vulnerability', through='ImpactedPackage')
 
     class Meta:
-        unique_together = ('name', 'namespace', 'type', 'version', 'qualifiers', 'subpath')
+        unique_together = ('name', 'namespace', 'type',
+                           'version', 'qualifiers', 'subpath')
     # Remove the `qualifers` and `set_package_url` overrides after
     # https://github.com/package-url/packageurl-python/pull/35 gets merged
     qualifiers = pgfields.JSONField(
@@ -103,7 +107,8 @@ class Package(PackageURLMixin):
             model_field = self._meta.get_field(field_name)
 
             if value and len(value) > model_field.max_length:
-                raise ValidationError(_('Value too long for field "{}".'.format(field_name)))
+                raise ValidationError(
+                    _('Value too long for field "{}".'.format(field_name)))
 
             setattr(self, field_name, value or None)
 
@@ -135,7 +140,8 @@ class Importer(models.Model):
     Metadata and pointer to the implementation for a source of vulnerability data (aka security
     advisories)
     """
-    name = models.CharField(max_length=100, unique=True, help_text='Name of the importer')
+    name = models.CharField(max_length=100, unique=True,
+                            help_text='Name of the importer')
 
     license = models.CharField(
         max_length=100,
@@ -143,7 +149,8 @@ class Importer(models.Model):
         help_text='License of the vulnerability data',
     )
 
-    last_run = models.DateTimeField(null=True, help_text='UTC Timestamp of the last run')
+    last_run = models.DateTimeField(
+        null=True, help_text='UTC Timestamp of the last run')
 
     data_source = models.CharField(
         max_length=100,
@@ -176,3 +183,8 @@ class Importer(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ImportProblem(models.Model):
+
+    conflicting_model = pgfields.JSONField()

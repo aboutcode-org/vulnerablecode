@@ -38,6 +38,7 @@ from vulnerabilities.views import ImpactedPackageDelete
 from vulnerabilities.views import ImpactedPackageCreate
 from vulnerabilities.views import ResolvedPackageCreate
 from vulnerabilities.views import HomePage
+from vulnerabilities.views import VulnerabilityReferenceCreate
 
 
 api_router = DefaultRouter()
@@ -57,5 +58,6 @@ urlpatterns = [
     path('relations/impacted/<int:pid>/<int:vid>', ImpactedPackageDelete.as_view(), name="impacted_package_delete"),
     path('relations/impacted/<int:pid>/create', ImpactedPackageCreate.as_view(), name="impacted_package_create"),
     path('relations/resolved/<int:pid>/create', ResolvedPackageCreate.as_view(), name="resolved_package_create"),
+    path('relations/reference/<int:vid>/create', VulnerabilityReferenceCreate.as_view(), name="vulnerability_reference_create"),
     path('', HomePage.as_view(), name="home")
 ]

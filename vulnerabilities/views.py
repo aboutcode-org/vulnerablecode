@@ -199,3 +199,17 @@ class ResolvedPackageCreate(CreateView):
 
     def get_success_url(self):
         return reverse('package_view', kwargs={'pk': self.kwargs['pid']})
+
+class VulnerabilityReferenceCreate(CreateView):
+
+    template_name = 'vulnerability_reference_create.html'
+    model = VulnerabilityReference
+    fields = ['reference_id','url']
+
+    def form_valid(self, form):
+        form.instance.vulnerability =  Vulnerability.objects.get(id=self.kwargs['vid'])
+        return super(VulnerabilityReferenceCreate, self).form_valid(form)
+    
+    def get_success_url(self):
+        return reverse('vulnerability_view', kwargs={'pk': self.kwargs['vid']})
+

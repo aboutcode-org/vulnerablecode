@@ -1,4 +1,4 @@
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -17,9 +17,10 @@
 #  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
 #  VulnerableCode should be considered or used as legal advice. Consult an Attorney
 #  for any legal advice.
-#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
+#  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+from unittest.mock import patch
 from io import StringIO
 
 from django.core.management import call_command
@@ -47,7 +48,8 @@ class TestListSources(TestCase):
 
     def test_list_sources(self):
         buf = StringIO()
-        call_command('import', '--list', stdout=buf)
+        with patch('vulnerabilities.importer_yielder.load_importers'):
+            call_command('import', '--list', stdout=buf)
         out = buf.getvalue()
         assert 'npm' in out
         assert 'debian' in out

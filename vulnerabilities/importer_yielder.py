@@ -151,8 +151,7 @@ IMPORTER_REGISTRY = [
 ]
 
 
-def get_importers():
-    all_importers = []
+def load_importers():
 
     for importer in IMPORTER_REGISTRY:
         imp, created = Importer.objects.get_or_create(
@@ -166,7 +165,3 @@ def get_importers():
             imp.data_source_cfg = importer['data_source_cfg']
             imp.last_run = importer['last_run']
             imp.save()
-
-        all_importers.append(imp)
-
-    return all_importers

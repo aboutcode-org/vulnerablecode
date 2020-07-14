@@ -28,7 +28,7 @@ from django.core.management.base import CommandError
 
 from vulnerabilities.models import Importer
 from vulnerabilities.import_runner import ImportRunner
-from vulnerabilities.importer_yielder import get_importers
+from vulnerabilities.importer_yielder import load_importers
 
 
 class Command(BaseCommand):
@@ -56,6 +56,8 @@ class Command(BaseCommand):
             '--batch_size', help='The batch size to be used for bulk inserting data')
 
     def handle(self, *args, **options):
+        # load_importers() seeds the DB with Importers
+        load_importers()
         if options['list']:
             self.list_sources()
             return
@@ -75,7 +77,7 @@ class Command(BaseCommand):
         self.import_data(sources, options['cutoff_date'])
 
     def list_sources(self):
-        importers = get_importers()
+        importers = Importer.objects.all()
         self.stdout.write(
             'Vulnerability data can be imported from the following sources:')
         self.stdout.write(', '.join([i.name for i in importers]))
@@ -83,7 +85,6 @@ class Command(BaseCommand):
     def import_data(self, names, cutoff_date):
         importers = []
         unknown_importers = set()
-
         # make sure all arguments are valid before running any importers
         for name in names:
             try:

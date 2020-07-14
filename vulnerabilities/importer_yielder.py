@@ -148,6 +148,17 @@ IMPORTER_REGISTRY = [
         'data_source': 'OpenSSLDataSource',
         'data_source_cfg': {},
     },
+    {
+        'name': 'ubuntu_usn',
+        'license': '',
+        'last_run': None,
+        'data_source': 'UbuntuUSNDataSource',
+        'data_source_cfg': {
+            'etags': {},
+            'db_url': 'https://usn.ubuntu.com/usn-db/database-all.json.bz2'
+        },
+    }
+
 ]
 
 

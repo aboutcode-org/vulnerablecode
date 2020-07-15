@@ -3,14 +3,16 @@
 Explore/Curate Vulnerable packages
 {% endblock %}
 {% block content %}
+{% load widget_tweaks %}
 
 <section class="columns  has-text-centered">  
     <div class = "column is-one-quarter">
     </div>
     <form action="{% url 'package_search' %}" method="get">
       <div class="field is-horizontal">
-        {% load widget_tweaks %}
-      {{form.name|add_class:"input"}} {{form.namespace|add_class:"input"}} {{form.type|add_class:"input"}} {{form.version|add_class:"input"}}
+        {% for field in  form %}
+        {{ field|add_class:"input is-rounded" }}
+        {% endfor %}
       <button class="button is-success" , type="submit">
         Search
       </button>
@@ -19,6 +21,7 @@ Explore/Curate Vulnerable packages
 </section>
 
 {% if packages %}
+
 <section class="section is-medium  has-text-centered">
   <div class="container">
     <h1 class="title">Results of your query</h1>
@@ -28,9 +31,7 @@ Explore/Curate Vulnerable packages
 
 <section class="section has-background-dark">
   <div class="content is-medium">
-    <table
-      class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-    >
+    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
       <tr>
         <th>Packages</th>
         <th>Patched Vulnerabilities</th>
@@ -47,8 +48,5 @@ Explore/Curate Vulnerable packages
   </div>
 </section>
 
-{% endif %} {% endblock %} {% block javascript %}
-
-<script></script>
-
+{% endif %}
 {% endblock %}

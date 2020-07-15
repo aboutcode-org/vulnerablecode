@@ -1,9 +1,7 @@
-
-
 <!DOCTYPE html class="has-navbar-fixed-top">
 {% load static %}
 <head>
-    <title>VulnerableCode</title>
+    <title>Login</title>
     <style>
         .Site {
       display: flex;
@@ -16,7 +14,7 @@
         }
     </style>
 </head>
-<link rel="stylesheet" href="{% static "css/bulma.css" %}"/>
+<link rel="stylesheet" href="{% static 'css/bulma.css' %}"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -90,10 +88,9 @@
           </h1>
         </div>
     </section>
-
-
     {% block content %}
     {% endblock %}
+
     </main>
     <footer class="footer">
       <div class="content has-text-centered">
@@ -105,6 +102,5 @@
     </footer>
 </body>
 {% block javascript %}
-
 {% endblock %}
 </html>

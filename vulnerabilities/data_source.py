@@ -44,6 +44,16 @@ from vulnerabilities.oval_parser import OvalParser
 
 
 @dataclasses.dataclass
+class VulnerabilityReferenceUnit:
+
+    url : str = ''
+    reference_id : str = ''
+
+    def __post_init__(self) : 
+        if not any([self.url, self.reference_id]):
+            raise TypeError
+
+@dataclasses.dataclass
 class Advisory:
     """
     This data class expresses the contract between data sources and the import runner.
@@ -57,8 +67,7 @@ class Advisory:
     summary: str
     impacted_package_urls: Iterable[PackageURL]
     resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
-    reference_urls: Sequence[str] = dataclasses.field(default_factory=list)
-    reference_ids: Sequence[str] = dataclasses.field(default_factory=list)
+    vuln_references = Sequence[VulnerabilityReferenceUnit] = dataclasses.field(default_factory=list)
     cve_id: Optional[str] = None
 
     def __hash__(self):

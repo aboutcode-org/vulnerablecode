@@ -28,6 +28,7 @@ import re
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
+from vulnerabilities.data_source import VulnerabilityReferenceUnit
 
 import xml.etree.ElementTree as ET
 
@@ -69,8 +70,8 @@ class OpenSSLDataSource(DataSource):
 
                         if info:
                             commit_hash = info[0].attrib['hash']
-                            ref_urls.append("https://github.com/openssl/openssl/commit/"
-                                            + commit_hash)
+                            ref_urls.append(VulnerabilityReferenceUnit(url="https://github.com/openssl/openssl/commit/"
+                                            + commit_hash))
                     if info.tag == 'description':
                         # Description
                         summary = re.sub(r'\s+', ' ', info.text).strip()
@@ -88,7 +89,7 @@ class OpenSSLDataSource(DataSource):
                                     summary=summary,
                                     impacted_package_urls=vuln_purls,
                                     resolved_package_urls=safe_purls,
-                                    reference_urls=ref_urls)
+                                    vuln_references=ref_urls)
                 advisories.append(advisory)
 
         return advisories

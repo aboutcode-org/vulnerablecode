@@ -34,6 +34,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
+from vulnerabilities.data_source import VulnerabilityReferenceUnit
 
 
 class RustDataSource(GitDataSource):
@@ -79,8 +80,13 @@ class RustDataSource(GitDataSource):
             record = toml.load(f)
             advisory = record.get('advisory', {})
 
+        references = []
         crate_name = advisory['package']
-        reference_url = advisory.get('url', '')
+        if advisory.get('url'):
+            references.append(VulnerabilityReferenceUnit(
+                url=advisory['url']
+            ))
+
         all_versions = self.crates_api.get(crate_name)
 
         affected_ranges = {RangeSpecifier(r) for r
@@ -104,14 +110,20 @@ class RustDataSource(GitDataSource):
                 if alias.startswith('CVE-'):
                     cve_id = alias
                     break
+        
+
+        references.append(VulnerabilityReferenceUnit(
+                reference_id=advisory['id'],
+                url='https://rustsec.org/advisories/{}.html'.format(advisory['id'])
+            )
+        )
 
         return Advisory(
             summary=advisory.get('description', ''),
             impacted_package_urls=impacted_purls,
             resolved_package_urls=resolved_purls,
-            reference_urls=[reference_url] if reference_url else [],
-            reference_ids=[advisory['id']],
             cve_id=cve_id,
+            vuln_references=references
         )
 
 

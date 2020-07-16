@@ -42,6 +42,7 @@ from schema import Schema
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
+from vulnerabilities.data_source import VulnerabilityReferenceUnit
 
 
 def validate_schema(advisory_dict):
@@ -107,11 +108,15 @@ class SafetyDbDataSource(DataSource):
                 if len(cve_ids[0]):
                     cve_ids = [s.strip() for s in cve_ids.split(',')]
 
+                reference = [VulnerabilityReferenceUnit(
+                    reference_id=advisory['id']
+                )]
+            
                 for cve_id in cve_ids:
                     advisories.append(Advisory(
                         cve_id=cve_id,
                         summary=advisory['advisory'],
-                        reference_ids=[advisory['id']],
+                        vuln_references=reference,
                         impacted_package_urls=impacted_purls,
                         resolved_package_urls=resolved_purls,
                     ))

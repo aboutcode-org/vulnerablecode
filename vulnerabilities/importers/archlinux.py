@@ -31,7 +31,7 @@ from urllib.request import urlopen
 from packageurl import PackageURL
 from schema import Regex, Schema, Or
 
-from vulnerabilities.data_source import DataSource, DataSourceConfiguration, Advisory
+from vulnerabilities.data_source import DataSource, DataSourceConfiguration, Advisory,VulnerabilityReferenceUnit
 
 
 def validate_schema(advisory_dict):
@@ -101,14 +101,25 @@ class ArchlinuxDataSource(DataSource):
                         version=record['fixed'],
                     ))
 
-            reference_urls = [f'https://security.archlinux.org/{a}' for a in record['advisories']]
-
+            vuln_references = []
+            vuln_references.append(VulnerabilityReferenceUnit(
+                reference_id=record['name'],
+                url='https://security.archlinux.org/{}'.format(record['name']))
+                )
+             
+            for ref in record['advisories']:
+                vuln_references.append(VulnerabilityReferenceUnit(
+                    reference_id=ref,
+                    url='https://security.archlinux.org/{}'.format(record['name'])))
+            print(vuln_references)
+            
+ 
             advisories.append(Advisory(
                 cve_id=cve_id,
                 summary='',
                 impacted_package_urls=impacted_purls,
                 resolved_package_urls=resolved_purls,
-                reference_urls=reference_urls,
+                vuln_references=vuln_references
             ))
 
         return advisories

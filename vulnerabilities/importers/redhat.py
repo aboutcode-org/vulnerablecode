@@ -27,7 +27,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
-
+from vulnerabilities.data_source import VulnerabilityReferenceUnit
 
 class RedhatDataSource(DataSource):
     CONFIG_CLASS = DataSourceConfiguration
@@ -71,12 +71,29 @@ def to_advisory(advisory_data):
             if rpm_to_purl(rpm):
                 affected_purls.append(rpm_to_purl(rpm))
 
+    references = []
+    if advisory_data.get('bugzilla'):
+        bugzilla =  advisory_data.get('bugzilla')
+        references.append(VulnerabilityReferenceUnit(
+            url='https://bugzilla.redhat.com/show_bug.cgi?id={}'.format(bugzilla),
+            reference_id=bugzilla
+        ))
+
+    for rhsa in advisory_data['advisories']:
+        references.append(VulnerabilityReferenceUnit(
+            url='https://access.redhat.com/errata/{}'.format(rhsa),
+            reference_id=rhsa,
+        ))
+
+    references.append(VulnerabilityReferenceUnit(
+        url=advisory_data['resource_url']
+    ))
+
     return Advisory(
         summary=advisory_data['bugzilla_description'],
         cve_id=advisory_data['CVE'],
-        reference_ids=advisory_data['advisories'],
         impacted_package_urls=affected_purls,
-        reference_urls=[advisory_data['resource_url']],
+        vuln_references=references,
     )
 
 

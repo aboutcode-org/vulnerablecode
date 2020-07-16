@@ -38,21 +38,20 @@ from vulnerabilities.data_source import VulnerabilityReferenceUnit
 
 
 class RustDataSource(GitDataSource):
-
     def __enter__(self):
         super(RustDataSource, self).__enter__()
 
-        if not getattr(self, '_added_files', None):
+        if not getattr(self, "_added_files", None):
             self._added_files, self._updated_files = self.file_changes(
-                subdir='crates',  # TODO Consider importing the advisories for cargo, etc as well.
+                subdir="crates",  # TODO Consider importing the advisories for cargo, etc as well.
                 recursive=True,
-                file_ext='toml',
+                file_ext="toml",
             )
 
     @property
     def crates_api(self):
-        if not hasattr(self, '_crates_api'):
-            setattr(self, '_crates_api', VersionAPI())
+        if not hasattr(self, "_crates_api"):
+            setattr(self, "_crates_api", VersionAPI())
         return self._crates_api
 
     def added_advisories(self) -> Set[Advisory]:
@@ -62,10 +61,10 @@ class RustDataSource(GitDataSource):
         return self._load_advisories(self._updated_files)
 
     def _load_advisories(self, files) -> Set[Advisory]:
-        files = [f for f in files if not f.endswith('-0000.toml')]  # skip temporary files
+        files = [f for f in files if not f.endswith("-0000.toml")]  # skip temporary files
 
         while files:
-            batch, files = files[:self.batch_size], files[self.batch_size:]
+            batch, files = files[: self.batch_size], files[self.batch_size:]
 
             advisories = set()
 
@@ -78,60 +77,60 @@ class RustDataSource(GitDataSource):
     def _load_advisory(self, path: str) -> Optional[Advisory]:
         with open(path) as f:
             record = toml.load(f)
-            advisory = record.get('advisory', {})
+            advisory = record.get("advisory", {})
 
         references = []
-        crate_name = advisory['package']
-        if advisory.get('url'):
-            references.append(VulnerabilityReferenceUnit(
-                url=advisory['url']
-            ))
+        crate_name = advisory["package"]
+        if advisory.get("url"):
+            references.append(VulnerabilityReferenceUnit(url=advisory["url"]))
 
         all_versions = self.crates_api.get(crate_name)
 
-        affected_ranges = {RangeSpecifier(r) for r
-                           in chain.from_iterable(
-                record.get('affected', {}).get('functions', {}).values())}
+        affected_ranges = {
+            RangeSpecifier(r)
+            for r in chain.from_iterable(record.get("affected", {}).get("functions", {}).values())
+        }
 
-        unaffected_ranges = {RangeSpecifier(r) for r
-                             in record.get('versions', {}).get('unaffected', [])}
-        resolved_ranges = {RangeSpecifier(r) for r
-                           in record.get('versions', {}).get('patched', [])}
+        unaffected_ranges = {
+            RangeSpecifier(r) for r in record.get("versions", {}).get("unaffected", [])
+        }
+        resolved_ranges = {RangeSpecifier(r) for r in record.get("versions", {}).get("patched", [])}
 
         unaffected, affected = categorize_versions(
-            all_versions, unaffected_ranges, affected_ranges, resolved_ranges)
+            all_versions, unaffected_ranges, affected_ranges, resolved_ranges
+        )
 
-        impacted_purls = {PackageURL(type='cargo', name=crate_name, version=v) for v in affected}
-        resolved_purls = {PackageURL(type='cargo', name=crate_name, version=v) for v in unaffected}
+        impacted_purls = {PackageURL(type="cargo", name=crate_name, version=v) for v in affected}
+        resolved_purls = {PackageURL(type="cargo", name=crate_name, version=v) for v in unaffected}
 
         cve_id = None
-        if 'aliases' in advisory:
-            for alias in advisory['aliases']:
-                if alias.startswith('CVE-'):
+        if "aliases" in advisory:
+            for alias in advisory["aliases"]:
+                if alias.startswith("CVE-"):
                     cve_id = alias
                     break
-        
 
-        references.append(VulnerabilityReferenceUnit(
-                reference_id=advisory['id'],
-                url='https://rustsec.org/advisories/{}.html'.format(advisory['id'])
+        references.append(
+            VulnerabilityReferenceUnit(
+                reference_id=advisory["id"],
+                url="https://rustsec.org/advisories/{}.html".format(advisory["id"]),
             )
         )
 
         return Advisory(
-            summary=advisory.get('description', ''),
+            summary=advisory.get("description", ""),
             impacted_package_urls=impacted_purls,
             resolved_package_urls=resolved_purls,
             cve_id=cve_id,
-            vuln_references=references
+            vuln_references=references,
         )
 
 
 def categorize_versions(
-        all_versions: Set[str],
-        unaffected_versions: Set[RangeSpecifier],
-        affected_versions: Set[RangeSpecifier],
-        resolved_versions: Set[RangeSpecifier],
+    all_versions: Set[str],
+    unaffected_versions: Set[RangeSpecifier],
+    affected_versions: Set[RangeSpecifier],
+    resolved_versions: Set[RangeSpecifier],
 ) -> Tuple[Set[str], Set[str]]:
     """
     Categorize all versions of a crate according to the given version ranges.
@@ -174,10 +173,10 @@ class VersionAPI:
             releases = set()
 
             try:
-                with urlopen(f'https://crates.io/api/v1/crates/{package_name}') as response:
+                with urlopen(f"https://crates.io/api/v1/crates/{package_name}") as response:
                     response = json.load(response)
-                    for version_info in response['versions']:
-                        releases.add(version_info['num'])
+                    for version_info in response["versions"]:
+                        releases.add(version_info["num"])
             except HTTPError as e:
                 if e.code == 404:
                     pass

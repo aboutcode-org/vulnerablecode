@@ -89,9 +89,10 @@ class TestGentooDataSource(unittest.TestCase):
 
         exp_data = [
             Advisory(
-                summary=('A command injection vulnerability in '
-                         'Subversion may allow remote\n    '
-                         'attackers to execute arbitrary code.\n  '),
+                summary=(
+                    'A command injection vulnerability in '
+                    'Subversion may allow remote\n    '
+                    'attackers to execute arbitrary code.\n  '),
                 impacted_package_urls={
                     PackageURL(
                         type='ebuild',
@@ -108,7 +109,10 @@ class TestGentooDataSource(unittest.TestCase):
                         version='1.9.7',
                         qualifiers=OrderedDict(),
                         subpath=None)},
-                vuln_references=[VulnerabilityReferenceUnit(url='https://security.gentoo.org/glsa/201709-09',reference_id='GLSA-201709-09')],
+                vuln_references=[
+                    VulnerabilityReferenceUnit(
+                        url='https://security.gentoo.org/glsa/201709-09',
+                        reference_id='GLSA-201709-09')],
                 cve_id='CVE-2017-9800')]
 
         found_data = self.data_src.process_file(TEST_DATA)

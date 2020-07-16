@@ -46,12 +46,13 @@ from vulnerabilities.oval_parser import OvalParser
 @dataclasses.dataclass
 class VulnerabilityReferenceUnit:
 
-    url : str = ''
-    reference_id : str = ''
+    url: str = ''
+    reference_id: str = ''
 
-    def __post_init__(self) : 
+    def __post_init__(self):
         if not any([self.url, self.reference_id]):
             raise TypeError
+
 
 @dataclasses.dataclass
 class Advisory:
@@ -67,7 +68,7 @@ class Advisory:
     summary: str
     impacted_package_urls: Iterable[PackageURL]
     resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
-    vuln_references : List[VulnerabilityReferenceUnit] = dataclasses.field(default_factory=list)
+    vuln_references: List[VulnerabilityReferenceUnit] = dataclasses.field(default_factory=list)
     cve_id: Optional[str] = None
 
     def __hash__(self):
@@ -480,8 +481,9 @@ class OvalDataSource(DataSource):
             description = definition_data['description']
             affected_purls = set()
             safe_purls = set()
-            references = [VulnerabilityReferenceUnit(url=url) for url in definition_data['reference_urls']]
- 
+            references = [VulnerabilityReferenceUnit(url=url)
+                          for url in definition_data['reference_urls']]
+
             for test_data in definition_data['test_data']:
                 for package in test_data['package_list']:
                     pkg_name = package

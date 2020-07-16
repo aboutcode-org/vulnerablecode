@@ -48,16 +48,15 @@ from vulnerabilities.data_source import VulnerabilityReferenceUnit
 def validate_schema(advisory_dict):
 
     scheme = {
-        str:
-            [
-                {
-                    "advisory": str,
-                    "cve": Or(None, Regex(r"CVE-\d+-\d+")),
-                    "id": Regex(r"^pyup.io-\d"),
-                    "specs": list,
-                    "v": str
-                }
-            ]
+        str: [
+            {
+                "advisory": str,
+                "cve": Or(None, Regex(r"CVE-\d+-\d+")),
+                "id": Regex(r"^pyup.io-\d"),
+                "specs": list,
+                "v": str,
+            }
+        ]
     }
 
     Schema(scheme).validate(advisory_dict)
@@ -100,34 +99,33 @@ class SafetyDbDataSource(DataSource):
             for advisory in self._api_response[package_name]:
 
                 impacted_purls, resolved_purls = categorize_versions(
-                    package_name, all_package_versions, advisory['specs'])
+                    package_name, all_package_versions, advisory["specs"]
+                )
 
-                cve_ids = advisory.get('cve') or ['']
+                cve_ids = advisory.get("cve") or [""]
 
                 # meaning if cve_ids is not [''] but either ['CVE-123'] or ['CVE-123, CVE-124']
                 if len(cve_ids[0]):
-                    cve_ids = [s.strip() for s in cve_ids.split(',')]
+                    cve_ids = [s.strip() for s in cve_ids.split(",")]
 
-                reference = [VulnerabilityReferenceUnit(
-                    reference_id=advisory['id']
-                )]
-            
+                reference = [VulnerabilityReferenceUnit(reference_id=advisory["id"])]
+
                 for cve_id in cve_ids:
-                    advisories.append(Advisory(
-                        cve_id=cve_id,
-                        summary=advisory['advisory'],
-                        vuln_references=reference,
-                        impacted_package_urls=impacted_purls,
-                        resolved_package_urls=resolved_purls,
-                    ))
+                    advisories.append(
+                        Advisory(
+                            cve_id=cve_id,
+                            summary=advisory["advisory"],
+                            vuln_references=reference,
+                            impacted_package_urls=impacted_purls,
+                            resolved_package_urls=resolved_purls,
+                        )
+                    )
 
         return self.batch_advisories(advisories)
 
 
 def categorize_versions(
-        package_name: str,
-        all_versions: Set[str],
-        version_specs: Iterable[str],
+    package_name: str, all_versions: Set[str], version_specs: Iterable[str],
 ) -> Tuple[Set[PackageURL], Set[PackageURL]]:
     """
     :return: impacted, resolved purls
@@ -139,19 +137,11 @@ def categorize_versions(
         if any([version in r for r in ranges]):
             impacted_versions.add(version)
 
-            impacted_purls.add(PackageURL(
-                name=package_name,
-                type='pypi',
-                version=version,
-            ))
+            impacted_purls.add(PackageURL(name=package_name, type="pypi", version=version,))
 
     resolved_purls = set()
     for version in all_versions - impacted_versions:
-        resolved_purls.add(PackageURL(
-            name=package_name,
-            type='pypi',
-            version=version
-        ))
+        resolved_purls.add(PackageURL(name=package_name, type="pypi", version=version))
 
     return impacted_purls, resolved_purls
 
@@ -166,9 +156,9 @@ class VersionAPI:
         if package_name not in self.cache:
             releases = set()
             try:
-                with urlopen(f'https://pypi.org/pypi/{package_name}/json') as response:
+                with urlopen(f"https://pypi.org/pypi/{package_name}/json") as response:
                     json_file = json.load(response)
-                    releases = set(json_file['releases'])
+                    releases = set(json_file["releases"])
             except HTTPError as e:
                 if e.code == 404:
                     # PyPi does not have data about this package

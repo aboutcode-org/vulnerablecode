@@ -71,11 +71,20 @@ ADVISORIES = [
     Advisory(
         cve_id='MOCK-CVE-2020-1337',
         summary='vulnerability description here',
-        vuln_references=[VulnerabilityReferenceUnit(url='https://example.com/with/more/info/MOCK-CVE-2020-1337')],
-        impacted_package_urls=[PackageURL(name='mock-webserver', type='pypi', version='1.2.33')],
-        resolved_package_urls=[PackageURL(name='mock-webserver', type='pypi', version='1.2.34')],
-    )
-]
+        vuln_references=[
+            VulnerabilityReferenceUnit(
+                url='https://example.com/with/more/info/MOCK-CVE-2020-1337')],
+        impacted_package_urls=[
+            PackageURL(
+                name='mock-webserver',
+                type='pypi',
+                version='1.2.33')],
+        resolved_package_urls=[
+            PackageURL(
+                name='mock-webserver',
+                type='pypi',
+                version='1.2.34')],
+    )]
 
 
 def make_import_runner(added_advs=None, updated_advs=None):

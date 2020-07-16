@@ -29,6 +29,7 @@ from packageurl import PackageURL
 
 import vulnerabilities.importers.redhat as redhat
 from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import VulnerabilityReferenceUnit
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/', 'redhat.json')
@@ -74,11 +75,7 @@ class TestRedhat(unittest.TestCase):
                         qualifiers=OrderedDict(),
                         subpath=None)],
                 resolved_package_urls=[],
-                reference_urls=[
-                    'https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-9401.json'],
-                reference_ids=[
-                    'RHSA-2017:1931',
-                    'RHSA-2017:0725'],
+                vuln_references=sorted([VulnerabilityReferenceUnit(url='https://bugzilla.redhat.com/show_bug.cgi?id=1396383', reference_id='1396383'), VulnerabilityReferenceUnit(url='https://access.redhat.com/errata/RHSA-2017:1931', reference_id='RHSA-2017:1931'), VulnerabilityReferenceUnit(url='https://access.redhat.com/errata/RHSA-2017:0725', reference_id='RHSA-2017:0725'), VulnerabilityReferenceUnit(url='https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-9401.json', reference_id='')], key=lambda x: x.url),
                 cve_id='CVE-2016-9401'),
             Advisory(
                 summary=('CVE-2016-10200 kernel: l2tp: Race condition '
@@ -106,26 +103,20 @@ class TestRedhat(unittest.TestCase):
                         qualifiers=OrderedDict(),
                         subpath=None)],
                 resolved_package_urls=[],
-                reference_urls=[
-                    'https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-10200.json'],
-                reference_ids=[
-                    'RHSA-2017:1842',
-                    'RHSA-2017:2437',
-                    'RHSA-2017:2077',
-                    'RHSA-2017:2444'],
+                vuln_references=sorted([VulnerabilityReferenceUnit(url='https://bugzilla.redhat.com/show_bug.cgi?id=1430347', reference_id='1430347'), VulnerabilityReferenceUnit(url='https://access.redhat.com/errata/RHSA-2017:1842', reference_id='RHSA-2017:1842'), VulnerabilityReferenceUnit(url='https://access.redhat.com/errata/RHSA-2017:2437', reference_id='RHSA-2017:2437'), VulnerabilityReferenceUnit(url='https://access.redhat.com/errata/RHSA-2017:2077', reference_id='RHSA-2017:2077'), VulnerabilityReferenceUnit(url='https://access.redhat.com/errata/RHSA-2017:2444', reference_id='RHSA-2017:2444'), VulnerabilityReferenceUnit(url='https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-10200.json', reference_id='')],key=lambda x:x.url),
                 cve_id='CVE-2016-10200'),
             Advisory(
                 summary=('CVE-2017-12168 Kernel: kvm: ARM64: '
                          'assert failure when accessing PMCCNTR register'),
                 impacted_package_urls=[],
                 resolved_package_urls=[],
-                reference_urls=[
-                    'https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2017-12168.json'],
-                reference_ids=[],
+                vuln_references=sorted([VulnerabilityReferenceUnit(url='https://bugzilla.redhat.com/show_bug.cgi?id=1492984', reference_id='1492984'), VulnerabilityReferenceUnit(url='https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2017-12168.json', reference_id='')], key=lambda x:x.url),
                 cve_id='CVE-2017-12168'),
         }
 
         found_data = set()
         for adv in data:
-            found_data.add(redhat.to_advisory(adv))
+            adv = redhat.to_advisory(adv)
+            adv.vuln_references = sorted(adv.vuln_references, key=lambda x : x.url) 
+            found_data.add(adv)
         assert expected_data == found_data

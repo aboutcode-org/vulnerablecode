@@ -63,9 +63,8 @@ class ArchlinuxImportTest(TestCase):
                 return_value=self.mock_response
         ):
             runner.run()
-
         assert models.Vulnerability.objects.count() == 6
-        assert models.VulnerabilityReference.objects.count() == 4
+        assert models.VulnerabilityReference.objects.count() == 10
         assert models.PackageRelatedVulnerability.objects.filter(
             is_vulnerable=True).count() == 12
         assert models.PackageRelatedVulnerability.objects.filter(

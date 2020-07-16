@@ -65,8 +65,6 @@ class TestSUSEBackportsDataSource(TestCase):
                         version='3.0.10-1.1.1',
                         qualifiers=OrderedDict(),
                         subpath=None)],
-                reference_urls=[],
-                reference_ids=[],
                 cve_id='CVE-2009-1313'),
             Advisory(
                 summary='',
@@ -79,8 +77,6 @@ class TestSUSEBackportsDataSource(TestCase):
                             version='3.5-1.1.5',
                             qualifiers=OrderedDict(),
                             subpath=None)],
-                reference_urls=[],
-                reference_ids=[],
                 cve_id='CVE-2009-1313'),
             Advisory(
                 summary='',
@@ -93,8 +89,6 @@ class TestSUSEBackportsDataSource(TestCase):
                         version='3.0.10-1.1.1',
                         qualifiers=OrderedDict(),
                         subpath=None)],
-                reference_urls=[],
-                reference_ids=[],
                 cve_id='CVE-2009-1313'),
             Advisory(
                 summary='',
@@ -107,8 +101,6 @@ class TestSUSEBackportsDataSource(TestCase):
                         version='0.7.0.r4359-15.9.2',
                         qualifiers=OrderedDict(),
                         subpath=None)],
-                reference_urls=[],
-                reference_ids=[],
                 cve_id='CVE-2009-0365'),
             Advisory(
                 summary='',
@@ -121,8 +113,6 @@ class TestSUSEBackportsDataSource(TestCase):
                         version='0.7.0.r4359-15.9.2',
                         qualifiers=OrderedDict(),
                         subpath=None)],
-                reference_urls=[],
-                reference_ids=[],
                 cve_id='CVE-2009-0578'),
         ]
 

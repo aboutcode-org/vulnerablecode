@@ -28,6 +28,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.importers.retiredotnet import RetireDotnetDataSource
 from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import VulnerabilityReferenceUnit
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -114,8 +115,7 @@ class TestRetireDotnetDataSource(TestCase):
                     version='1.1.5',
                     qualifiers=OrderedDict(),
                     subpath=None)},
-            reference_urls=['https://github.com/aspnet/Announcements/issues/359'],
-            reference_ids=[],
+            vuln_references=[VulnerabilityReferenceUnit(url='https://github.com/aspnet/Announcements/issues/359', reference_id='')],
             cve_id='CVE-2019-0982')
 
         found_data = self.data_src.process_file(path)

@@ -29,7 +29,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import Advisory
-
+from vulnerabilities.data_source import VulnerabilityReferenceUnit
 
 @dataclasses.dataclass
 class USNDBConfiguration:
@@ -63,7 +63,7 @@ class UbuntuUSNDataSource(DataSource):
     def to_advisories(usn_db):
         advisories = []
         for usn in usn_db:
-            usnid_data = get_usn_references(usn_db[usn]['id'])
+            reference = get_usn_references(usn_db[usn]['id'])
             for release in usn_db[usn]['releases']:
                 pkg_dict = usn_db[usn]['releases'][release]
                 safe_purls = get_purls(pkg_dict)
@@ -80,16 +80,14 @@ class UbuntuUSNDataSource(DataSource):
                     impacted_package_urls=[],
                     resolved_package_urls=safe_purls,
                     summary='',
-                    reference_urls=usnid_data['reference_url'],
-                    reference_ids=[usnid_data['reference_id']]))
+                    vuln_references=[reference]))
 
         return advisories
 
 
 def get_usn_references(usn_id):
-    return {'reference_id': 'USN-' + usn_id,
-            'reference_url': ['https://usn.ubuntu.com/{}/'.format(usn_id)]
-            }
+    return VulnerabilityReferenceUnit(reference_id='USN-' + usn_id,
+            url='https://usn.ubuntu.com/{}/'.format(usn_id))
 
 
 def fetch(url):

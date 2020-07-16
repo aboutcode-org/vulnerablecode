@@ -28,6 +28,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import VulnerabilityReferenceUnit
 
 
 class GentooDataSource(GitDataSource):
@@ -51,6 +52,8 @@ class GentooDataSource(GitDataSource):
         xml_data = {}
         xml_root = ET.parse(file).getroot()
         glsa = "GLSA-" + xml_root.attrib["id"]
+        vuln_reference = [VulnerabilityReferenceUnit(reference_id=glsa ,url="https://security.gentoo.org/glsa/{}".format(xml_root.attrib["id"]))]
+
         for child in xml_root:
             if child.tag == "references":
                 xml_data["cves"] = self.cves_from_reference(child)
@@ -73,7 +76,7 @@ class GentooDataSource(GitDataSource):
                 summary=xml_data["description"],
                 impacted_package_urls=xml_data["affected_purls"],
                 resolved_package_urls=xml_data["unaffected_purls"],
-                reference_ids=[glsa],
+                vuln_references=vuln_reference
             )
             advisory_list.append(advisory)
         return advisory_list

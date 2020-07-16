@@ -52,7 +52,12 @@ class GentooDataSource(GitDataSource):
         xml_data = {}
         xml_root = ET.parse(file).getroot()
         glsa = "GLSA-" + xml_root.attrib["id"]
-        vuln_reference = [VulnerabilityReferenceUnit(reference_id=glsa ,url="https://security.gentoo.org/glsa/{}".format(xml_root.attrib["id"]))]
+        vuln_reference = [
+            VulnerabilityReferenceUnit(
+                reference_id=glsa,
+                url="https://security.gentoo.org/glsa/{}".format(xml_root.attrib["id"]),
+            )
+        ]
 
         for child in xml_root:
             if child.tag == "references":
@@ -76,7 +81,7 @@ class GentooDataSource(GitDataSource):
                 summary=xml_data["description"],
                 impacted_package_urls=xml_data["affected_purls"],
                 resolved_package_urls=xml_data["unaffected_purls"],
-                vuln_references=vuln_reference
+                vuln_references=vuln_reference,
             )
             advisory_list.append(advisory)
         return advisory_list
@@ -99,11 +104,8 @@ class GentooDataSource(GitDataSource):
 
         for pkg in affected_elem:
             for info in pkg:
-                pkg_ns, pkg_name, = pkg.attrib["name"].split('/')
-                purl = PackageURL(
-                    type="ebuild", name=pkg_name, version=info.text,
-                    namespace=pkg_ns
-                )
+                pkg_ns, pkg_name, = pkg.attrib["name"].split("/")
+                purl = PackageURL(type="ebuild", name=pkg_name, version=info.text, namespace=pkg_ns)
 
                 if info.attrib.get("range"):
                     if len(info.attrib.get("range")) > 2:

@@ -31,23 +31,26 @@ from urllib.request import urlopen
 from packageurl import PackageURL
 from schema import Regex, Schema, Or
 
-from vulnerabilities.data_source import DataSource, DataSourceConfiguration, Advisory,VulnerabilityReferenceUnit
+from vulnerabilities.data_source import (
+    DataSource,
+    DataSourceConfiguration,
+    Advisory,
+    VulnerabilityReferenceUnit,
+)
 
 
 def validate_schema(advisory_dict):
     scheme = {
-
-        'advisories': list,
-        'affected': str,
-        'fixed': Or(None, str),
-        'issues': [Regex(r'CVE-\d+-\d+')],
-        'name': str,
-        'packages': [str],
-        'status': str,
-        'ticket': object,
-        'type': str,
-        'severity': str,
-
+        "advisories": list,
+        "affected": str,
+        "fixed": Or(None, str),
+        "issues": [Regex(r"CVE-\d+-\d+")],
+        "name": str,
+        "packages": [str],
+        "status": str,
+        "ticket": object,
+        "type": str,
+        "severity": str,
     }
 
     Schema(scheme).validate(advisory_dict)
@@ -83,43 +86,50 @@ class ArchlinuxDataSource(DataSource):
     def _parse(self, record) -> List[Advisory]:
         advisories = []
 
-        for cve_id in record['issues']:
+        for cve_id in record["issues"]:
             impacted_purls, resolved_purls = set(), set()
-            for name in record['packages']:
-                impacted_purls.add(PackageURL(
-                    name=name,
-                    type='pacman',
-                    namespace='archlinux',
-                    version=record['affected'],
-                ))
+            for name in record["packages"]:
+                impacted_purls.add(
+                    PackageURL(
+                        name=name, type="pacman", namespace="archlinux", version=record["affected"],
+                    )
+                )
 
-                if record['fixed']:
-                    resolved_purls.add(PackageURL(
-                        name=name,
-                        type='pacman',
-                        namespace='archlinux',
-                        version=record['fixed'],
-                    ))
+                if record["fixed"]:
+                    resolved_purls.add(
+                        PackageURL(
+                            name=name,
+                            type="pacman",
+                            namespace="archlinux",
+                            version=record["fixed"],
+                        )
+                    )
 
             vuln_references = []
-            vuln_references.append(VulnerabilityReferenceUnit(
-                reference_id=record['name'],
-                url='https://security.archlinux.org/{}'.format(record['name']))
+            vuln_references.append(
+                VulnerabilityReferenceUnit(
+                    reference_id=record["name"],
+                    url="https://security.archlinux.org/{}".format(record["name"]),
                 )
-             
-            for ref in record['advisories']:
-                vuln_references.append(VulnerabilityReferenceUnit(
-                    reference_id=ref,
-                    url='https://security.archlinux.org/{}'.format(record['name'])))
+            )
+
+            for ref in record["advisories"]:
+                vuln_references.append(
+                    VulnerabilityReferenceUnit(
+                        reference_id=ref,
+                        url="https://security.archlinux.org/{}".format(record["name"]),
+                    )
+                )
             print(vuln_references)
-            
- 
-            advisories.append(Advisory(
-                cve_id=cve_id,
-                summary='',
-                impacted_package_urls=impacted_purls,
-                resolved_package_urls=resolved_purls,
-                vuln_references=vuln_references
-            ))
+
+            advisories.append(
+                Advisory(
+                    cve_id=cve_id,
+                    summary="",
+                    impacted_package_urls=impacted_purls,
+                    resolved_package_urls=resolved_purls,
+                    vuln_references=vuln_references,
+                )
+            )
 
         return advisories

@@ -31,6 +31,7 @@ from packageurl import PackageURL
 from vulnerabilities.importers.ruby import RubyDataSource
 from vulnerabilities.data_source import GitDataSourceConfiguration
 from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import VulnerabilityReferenceUnit
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -82,8 +83,7 @@ class RubyDataSourceTest(TestCase):
                         version='2.0.3',
                         qualifiers=OrderedDict(),
                         subpath=None)},
-                reference_urls=['https://github.com/sinatra/sinatra/pull/1379'],
-                reference_ids=[],
+                vuln_references=[VulnerabilityReferenceUnit(url='https://github.com/sinatra/sinatra/pull/1379')],
                 cve_id='CVE-2018-7212'),
             Advisory(
                 summary=('Sinatra before 2.0.2 has XSS via the 400 Bad Request '
@@ -111,8 +111,7 @@ class RubyDataSourceTest(TestCase):
                         version='2.0.3',
                         qualifiers=OrderedDict(),
                         subpath=None)},
-                reference_urls=['https://github.com/sinatra/sinatra/issues/1428'],
-                reference_ids=[],
+                vuln_references=[VulnerabilityReferenceUnit(url='https://github.com/sinatra/sinatra/issues/1428')],
                 cve_id='CVE-2018-11627'),
             None}
 

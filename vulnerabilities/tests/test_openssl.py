@@ -28,6 +28,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.importers.openssl import OpenSSLDataSource
 from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import VulnerabilityReferenceUnit
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/', 'openssl_xml_data.xml')
@@ -86,10 +87,9 @@ class TestOpenSSL(unittest.TestCase):
                         version='1.1.1g',
                         qualifiers=OrderedDict(),
                         subpath=None)},
-                reference_urls=[
-                    'https://github.com/openssl/openssl/commit/' +
-                    'eb563247aef3e83dda7679c43f9649270462e5b1'],
-                reference_ids=[],
+                vuln_references=[VulnerabilityReferenceUnit(
+                    url='https://github.com/openssl/openssl/commit/' +
+                    'eb563247aef3e83dda7679c43f9649270462e5b1')],
                 cve_id='CVE-2020-1967'),
             Advisory(
                 summary='There is an overflow bug in the x64_64 Montgomery squaring procedure '
@@ -189,11 +189,12 @@ class TestOpenSSL(unittest.TestCase):
                                qualifiers=OrderedDict(), subpath=None),
                     PackageURL(type='generic', namespace=None, name='openssl', version='1.0.2u',
                                qualifiers=OrderedDict(), subpath=None)},
-                reference_urls=['https://github.com/openssl/openssl/commit/' +
-                                '419102400a2811582a7a3d4a4e317d72e5ce0a8f',
-                                'https://github.com/openssl/openssl/commit/' +
-                                'f1c5eea8a817075d31e43f5876993c6710238c98'],
-                reference_ids=[],
+                vuln_references=[VulnerabilityReferenceUnit(
+                                url='https://github.com/openssl/openssl/commit/' +
+                                '419102400a2811582a7a3d4a4e317d72e5ce0a8f'),
+                                VulnerabilityReferenceUnit(
+                                url='https://github.com/openssl/openssl/commit/' +
+                                'f1c5eea8a817075d31e43f5876993c6710238c98')],
                 cve_id='CVE-2019-1551')
         ]
         found_data = OpenSSLDataSource.to_advisories(data)

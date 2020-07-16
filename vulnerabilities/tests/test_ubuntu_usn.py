@@ -31,6 +31,7 @@ from unittest.mock import patch
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import VulnerabilityReferenceUnit
 import vulnerabilities.importers.ubuntu_usn as ubuntu_usn
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -49,10 +50,10 @@ class TestUbuntuUSNDataSource(TestCase):
     def test_get_usn_references(self):
 
         eg_usn = '435-1'
-        expected_references = {
-            'reference_id': 'USN-435-1',
-            'reference_url': ['https://usn.ubuntu.com/435-1/'],
-        }
+        expected_references = VulnerabilityReferenceUnit(
+            reference_id='USN-435-1',
+            url='https://usn.ubuntu.com/435-1/'
+        )
 
         found_references = ubuntu_usn.get_usn_references(eg_usn)
         assert found_references == expected_references
@@ -153,8 +154,9 @@ class TestUbuntuUSNDataSource(TestCase):
                         subpath=None,
                     ),
                 },
-                reference_urls=['https://usn.ubuntu.com/763-1/'],
-                reference_ids=['USN-763-1'],
+                vuln_references=[VulnerabilityReferenceUnit(
+                    url='https://usn.ubuntu.com/763-1/',
+                    reference_id='USN-763-1')],
                 cve_id='CVE-2009-0698',
             ),
             Advisory(
@@ -178,10 +180,12 @@ class TestUbuntuUSNDataSource(TestCase):
                         subpath=None,
                     ),
                 },
-                reference_urls=['https://usn.ubuntu.com/763-1/'],
-                reference_ids=['USN-763-1'],
+                vuln_references = [VulnerabilityReferenceUnit(
+                    url='https://usn.ubuntu.com/763-1/',
+                    reference_id='USN-763-1')
+                    ],
                 cve_id='CVE-2009-1274',
-            ),
+            ),  
         }
         found_advisories = set(self.data_src.to_advisories(self.db))
 

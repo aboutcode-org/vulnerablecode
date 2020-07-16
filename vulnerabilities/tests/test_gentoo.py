@@ -30,6 +30,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.importers.gentoo import GentooDataSource
 from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import VulnerabilityReferenceUnit
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/gentoo/glsa-201709-09.xml")
@@ -107,8 +108,7 @@ class TestGentooDataSource(unittest.TestCase):
                         version='1.9.7',
                         qualifiers=OrderedDict(),
                         subpath=None)},
-                reference_urls=[],
-                reference_ids=['GLSA-201709-09'],
+                vuln_references=[VulnerabilityReferenceUnit(url='https://security.gentoo.org/glsa/201709-09',reference_id='GLSA-201709-09')],
                 cve_id='CVE-2017-9800')]
 
         found_data = self.data_src.process_file(TEST_DATA)

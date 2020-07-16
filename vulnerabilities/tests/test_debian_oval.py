@@ -70,8 +70,6 @@ class TestDebianOvalDataSource(unittest.TestCase):
                         version='2.3.9',
                         qualifiers=OrderedDict([('distro', 'wheezy')]),
                         subpath=None)},
-                reference_urls=set(),
-                reference_ids=[],
                 cve_id='CVE-2002-2443'
             ),
             Advisory(
@@ -98,8 +96,6 @@ class TestDebianOvalDataSource(unittest.TestCase):
                                version='0:1.11.1+dfsg-5+deb7u1',
                                qualifiers=OrderedDict([('distro', 'wheezy')]),
                                subpath=None)},
-                reference_urls=set(),
-                reference_ids=[],
                 cve_id='CVE-2001-1593')
 
         }

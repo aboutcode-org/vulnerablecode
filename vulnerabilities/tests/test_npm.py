@@ -22,7 +22,10 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 import json
 import os
+import shutil
+import tempfile
 from unittest.mock import patch
+import zipfile
 
 from django.test import TestCase
 
@@ -42,34 +45,43 @@ MOCK_VERSION_API = VersionAPI(cache={
 })
 
 
-@patch('vulnerabilities.importers.NpmDataSource.versions', new=MOCK_VERSION_API)
+@patch('vulnerabilities.importers.NpmDataSource._update_from_remote')
 class NpmImportTest(TestCase):
+
+    tempdir = None
+
     @classmethod
     def setUpClass(cls) -> None:
-        fixture_path = os.path.join(TEST_DATA, 'npm_test.json')
-        with open(fixture_path) as f:
-            cls.mock_response = json.load(f)
+        cls.tempdir = tempfile.mkdtemp()
+        zip_path = os.path.join(TEST_DATA, 'npm.zip')
+
+        with zipfile.ZipFile(zip_path, "r") as zip_ref:
+            zip_ref.extractall(cls.tempdir)
 
         cls.importer = models.Importer.objects.create(
             name='npm_unittests',
             license='',
             last_run=None,
             data_source='NpmDataSource',
-            data_source_cfg={},
+            data_source_cfg={
+                'repository_url' : 'https://example.git',
+                'working_directory': os.path.join(cls.tempdir, 'npm_test'),
+                'create_working_directory': False,
+                'remove_working_directory': False
+                }
         )
 
     @classmethod
     def tearDownClass(cls) -> None:
         # Make sure no requests for unexpected package names have been made during the tests.
+        shutil.rmtree(cls.tempdir)
         assert len(MOCK_VERSION_API.cache) == 3, MOCK_VERSION_API.cache
 
-    def test_import(self):
+    def test_import(self, _):
         runner = ImportRunner(self.importer, 5)
 
-        with patch(
-                'vulnerabilities.importers.NpmDataSource._fetch',
-                return_value=self.mock_response
-        ):
+
+        with patch('vulnerabilities.importers.NpmDataSource.versions', new=MOCK_VERSION_API):
             runner.run()
 
         assert models.Vulnerability.objects.count() == 3

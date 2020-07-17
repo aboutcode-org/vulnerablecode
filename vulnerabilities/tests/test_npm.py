@@ -64,11 +64,11 @@ class NpmImportTest(TestCase):
             last_run=None,
             data_source='NpmDataSource',
             data_source_cfg={
-                'repository_url' : 'https://example.git',
+                'repository_url': 'https://example.git',
                 'working_directory': os.path.join(cls.tempdir, 'npm_test'),
                 'create_working_directory': False,
                 'remove_working_directory': False
-                }
+            }
         )
 
     @classmethod
@@ -79,7 +79,6 @@ class NpmImportTest(TestCase):
 
     def test_import(self, _):
         runner = ImportRunner(self.importer, 5)
-
 
         with patch('vulnerabilities.importers.NpmDataSource.versions', new=MOCK_VERSION_API):
             runner.run()

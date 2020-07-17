@@ -49,8 +49,6 @@ class NpmDataSource(GitDataSource):
         if not getattr(self, '_added_files', None):
             self._added_files, self._updated_files = self.file_changes(
                 recursive=True, file_ext='json', subdir='./vuln/npm')
-            
-
 
     def updated_advisories(self) -> Set[Advisory]:
         files = self._updated_files.union(self._added_files)
@@ -71,7 +69,7 @@ class NpmDataSource(GitDataSource):
         with open(file) as f:
             record = json.load(f)
         print(record)
-        advisories = []        
+        advisories = []
         package_name = record['module_name']
         all_versions = self.versions.get(package_name)
         aff_range = record.get('vulnerable_versions', '')
@@ -97,9 +95,11 @@ class NpmDataSource(GitDataSource):
 
         return advisories
 
+
 def _versions_to_purls(package_name, versions):
     purls = {f'pkg:npm/{quote(package_name)}@{v}' for v in versions}
     return {PackageURL.from_string(s) for s in purls}
+
 
 def categorize_versions(
         all_versions: Set[str],

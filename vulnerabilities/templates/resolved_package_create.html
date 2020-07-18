@@ -5,27 +5,31 @@ Select/<a href = "{% url 'vulnerability_create' %}"> or Create and then select <
 {% endblock %}
 {% block content %}
 {% load widget_tweaks %}
-<div class="columns has-background-info-light">
-<div class="column is-one-third">
-  </div>
-  <div class="column">
-  <form method="post">
-      {% csrf_token %}
-      <div class="field is-horizontal">
-      {% for field in form %}
-      <div class="field">
-        <div class="control">
-          {{ field|add_class:"input is-rounded"}}
+<div class="columns">
+  <div class="column is-one-third"></div>
+  <div class="column  is-one-third has-text-centered  ">
+    <form method="post" class="card has-background-success-light">
+      <header class="card-header">
+        <p class="card-header-title is-centered">
+          Vulnerability ID 
+        </p>
+      </header>
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="field">
+          <div class="select">
+            {% render_field field class="is-primary" %}
+          </div>
         </div>
-      </div>
-      {% endfor %}
-     <button class="button is-success", type="submit">
-       Create
-     </button>
-    </div>
-   </form>
+        {% endfor %}
+      <button class="button is-success", type="submit">
+        Create
+      </button>
+    </form>
   </div>
 </div>
+
+
 
 {% endblock %}
 

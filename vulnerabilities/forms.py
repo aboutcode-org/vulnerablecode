@@ -39,7 +39,7 @@ def get_package_namespaces():
 class PackageForm(forms.Form):
 
     type = forms.ChoiceField(choices=get_package_types())
-    namespace = forms.ChoiceField(choices=get_package_namespaces())
+    namespace = forms.ChoiceField(choices=get_package_namespaces(), required=False)
     name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'package name'}))
     version = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'package version'}),required=False)
 

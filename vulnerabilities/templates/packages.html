@@ -11,7 +11,7 @@ Explore/Curate Vulnerable packages
     <form action="{% url 'package_search' %}" method="get">
       <div class="field is-horizontal">
         {% for field in  form %}
-        {{ field|add_class:"input is-rounded" }}
+        {{ field|add_class:"input" }}
         {% endfor %}
       <button class="button is-success" , type="submit">
         Search

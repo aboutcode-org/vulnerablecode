@@ -17,7 +17,7 @@ Select/<a href = "{% url 'vulnerability_create' %}"> or Create and then select <
         {% csrf_token %}
         {% for field in form %}
         <div class="field">
-          <div class="select">
+          <div class="selectpicker">
             {% render_field field class="is-primary" %}
           </div>
         </div>
@@ -28,10 +28,18 @@ Select/<a href = "{% url 'vulnerability_create' %}"> or Create and then select <
     </form>
   </div>
 </div>
-
-
-
 {% endblock %}
+
+{% block javascript %}
+<script>
+$(document).ready(function() {
+
+        $('select').selectize();
+
+});
+</script>
+{% endblock %}
+
 
 
 

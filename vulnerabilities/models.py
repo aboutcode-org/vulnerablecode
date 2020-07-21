@@ -48,7 +48,7 @@ class Vulnerability(models.Model):
     @property
     def vulnerable_to(self):
         return self.packagerelatedvulnerability_set.filter(is_vulnerable=True)
-    
+
     @property
     def resolved_to(self):
         return self.packagerelatedvulnerability_set.filter(is_vulnerable=False)
@@ -91,7 +91,7 @@ class Package(PackageURLMixin):
     @property
     def vulnerable_to(self):
         return self.packagerelatedvulnerability_set.filter(is_vulnerable=True)
-    
+
     @property
     def resolved_to(self):
         return self.packagerelatedvulnerability_set.filter(is_vulnerable=False)

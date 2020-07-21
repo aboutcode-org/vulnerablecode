@@ -26,12 +26,15 @@ from vulnerabilities.models import Package
 
 
 def get_package_types():
-    pkg_types = [(i.type, i.type) for i in Package.objects.distinct("type").all()]
+    pkg_types = [(i.type, i.type)
+                 for i in Package.objects.distinct("type").all()]
     pkg_types.append((None, 'package type'))
     return pkg_types
 
+
 def get_package_namespaces():
-    pkg_namespaces = [(i.namespace, i.namespace) for i in Package.objects.distinct("namespace").all() if i.namespace]
+    pkg_namespaces = [(i.namespace, i.namespace)
+                      for i in Package.objects.distinct("namespace").all() if i.namespace]
     pkg_namespaces.append((None, 'package namespace'))
     return pkg_namespaces
 
@@ -39,10 +42,15 @@ def get_package_namespaces():
 class PackageForm(forms.Form):
 
     type = forms.ChoiceField(choices=get_package_types())
-    namespace = forms.ChoiceField(choices=get_package_namespaces(), required=False)
-    name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'package name'}))
-    version = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'package version'}),required=False)
+    namespace = forms.ChoiceField(
+        choices=get_package_namespaces(), required=False)
+    name = forms.CharField(widget=forms.TextInput(
+        attrs={'placeholder': 'package name'}))
+    version = forms.CharField(widget=forms.TextInput(
+        attrs={'placeholder': 'package version'}), required=False)
+
 
 class VulnerabilitySearchForm(forms.Form):
 
-    vuln_id = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'vulnerability id'}))
+    vuln_id = forms.CharField(widget=forms.TextInput(
+        attrs={'placeholder': 'vulnerability id'}))

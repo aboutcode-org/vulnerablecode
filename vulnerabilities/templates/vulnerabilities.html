@@ -6,8 +6,8 @@ Explore Vulnerabilities
 {% block content %}
 
 <div class="columns">
-    <div class="column is-one-third mx-6">
-    </div>
+    <div class="column is-one-third is-offset-one-third">
+ 
      <form action="{% url 'vulnerability_search' %}" method="get">
       {% load widget_tweaks %}
       <div class="field is-horizontal">
@@ -17,6 +17,7 @@ Explore Vulnerabilities
         </button>
       </div>
       </form>
+       </div>
 </div>
 
 {% if vulnerabilities %}
@@ -38,8 +39,8 @@ Explore Vulnerabilities
           {% for vulnerability in  vulnerabilities %}
               <tr>
                   <td><a href="{% url 'vulnerability_view' vulnerability.pk %}">{{vulnerability.cve_id}}</a></td>
-                  <td>{{vulnerability.resolvedpackage_set.all|length}}</td>
-                  <td>{{vulnerability.impactedpackage_set.all|length}}</td>
+                  <td>{{vulnerability.resolved_to.all|length}}</td>
+                  <td>{{vulnerability.vulnerable_to.all|length}}</td>
               </tr>
           {% endfor %}
           </table>

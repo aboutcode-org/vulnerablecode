@@ -6,9 +6,8 @@ Explore/Curate Vulnerable packages
 {% load widget_tweaks %}
 
 <section class="columns  has-text-centered">  
-    <div class = "column is-one-quarter">
-    </div>
-    <form action="{% url 'package_search' %}" method="get">
+    <div class = "column is-three-fifths is-offset-one-fifth">
+        <form action="{% url 'package_search' %}" method="get">
       <div class="field is-horizontal">
         {% for field in  form %}
         {{ field|add_class:"input" }}
@@ -18,6 +17,8 @@ Explore/Curate Vulnerable packages
       </button>
     </form>
   </div>
+  </div>
+
 </section>
 
 {% if packages %}
@@ -40,8 +41,8 @@ Explore/Curate Vulnerable packages
       {% for package in packages %}
       <tr>
         <td><a href="{% url 'package_view' package.pk %}">{{package}}</a></td>
-        <td>{{package.resolvedpackage_set.all|length}}</td>
-        <td>{{package.impactedpackage_set.all|length}}</td>
+        <td>{{package.resolved_to.all|length}}</td>
+        <td>{{package.vulnerable_to.all|length}}</td>
       </tr>
       {% endfor %}
     </table>

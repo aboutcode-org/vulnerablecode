@@ -36,3 +36,4 @@ from vulnerabilities.importers.redhat import RedhatDataSource
 from vulnerabilities.importers.gentoo import GentooDataSource
 from vulnerabilities.importers.openssl import OpenSSLDataSource
 from vulnerabilities.importers.ubuntu_usn import UbuntuUSNDataSource
+from vulnerabilities.importers.github import GitHubAPIDataSource

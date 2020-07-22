@@ -157,6 +157,17 @@ IMPORTER_REGISTRY = [
             'etags': {},
             'db_url': 'https://usn.ubuntu.com/usn-db/database-all.json.bz2'
         },
+    },
+
+    {
+        'name': 'github',
+        'license': '',
+        'last_run': None,
+        'data_source': 'GitHubAPIDataSource',
+        'data_source_cfg': {
+            'endpoint': 'https://api.github.com/graphql',
+            'ecosystems': ['MAVEN', 'NUGET', 'COMPOSER']
+        }
     }
 
 ]

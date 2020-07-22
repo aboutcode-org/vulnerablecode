@@ -90,7 +90,7 @@ class GitHubAPIDataSource(DataSource):
         try:
             self.gh_token = os.environ["GH_TOKEN"]
         except KeyError:
-            raise GitHubTokenError("Envirnomental variable GH_TOKEN is missing")
+            raise GitHubTokenError("Environment variable GH_TOKEN is missing")
 
     def __enter__(self):
         self.advisories = self.fetch()
@@ -110,7 +110,7 @@ class GitHubAPIDataSource(DataSource):
 
                 query_json = {"query": query % (ecosystem, end_cursor_exp)}
                 resp = requests.post(self.config.endpoint, headers=headers, json=query_json).json()
-
+                print(resp)
                 if resp.get("message") == "Bad credentials":
                     raise GitHubTokenError("Invalid GitHub token")
 

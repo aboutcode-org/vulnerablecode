@@ -28,15 +28,53 @@ from typing import Dict
 from typing import List
 from typing import Set
 from typing import Tuple
+from typing import Optional
+from typing import Sequence
 
 import packageurl
 from django.db import DataError
+from django.core import serializers
 
 from vulnerabilities import models
 from vulnerabilities.data_source import Advisory, DataSource
 from vulnerabilities.data_source import PackageURL
 
 logger = logging.getLogger(__name__)
+
+# These _inserter classes are used to instantiate model objects.
+# Frozen dataclass  store args required to store instantiate
+# model objects, this way model objects can be hashed indirectly which
+# is required in this implementation.
+
+
+@dataclasses.dataclass(frozen=True)
+class VulnerabilityReferenceInserter:
+    vulnerability: models.Vulnerability
+    reference_id: Optional[str] = ''
+    url:  Optional[str] = ''
+
+    def __post_init__(self):
+        if not any([self.reference_id, self.url]):
+            raise TypeError(
+                "VulnerabilityReferenceInserter expects either reference_id or url")
+
+    def to_model_object(self):
+        return models.VulnerabilityReference(**dataclasses.asdict(self))
+
+# These _inserter classes are used to instantiate model objects.
+# Frozen dataclass  store args required to store instantiate
+# model objects, this way model objects can be hashed indirectly which
+# is required in this implementation.
+
+
+@dataclasses.dataclass(frozen=True)
+class PackageRelatedVulnerabilityInserter:
+    vulnerability: models.Vulnerability
+    is_vulnerable: bool
+    package: models.Package
+
+    def to_model_object(self):
+        return models.PackageRelatedVulnerability(**dataclasses.asdict(self))
 
 
 class ImportRunner:
@@ -55,6 +93,7 @@ class ImportRunner:
           (the data source should know this instead).
         - All update and select operations must use indexed columns.
     """
+
     def __init__(self, importer: models.Importer, batch_size: int):
         self.importer = importer
         self.batch_size = batch_size
@@ -72,16 +111,39 @@ class ImportRunner:
         """
         logger.debug(f'Starting import for {self.importer.name}.')
         data_source = self.importer.make_data_source(self.batch_size, cutoff_date=cutoff_date)
-
         with data_source:
             _process_added_advisories(data_source)
             _process_updated_advisories(data_source)
-
         self.importer.last_run = datetime.datetime.now(tz=datetime.timezone.utc)
         self.importer.data_source_cfg = dataclasses.asdict(data_source.config)
         self.importer.save()
 
         logger.debug(f'Successfully finished import for {self.importer.name}.')
+
+
+def _process_updated_advisories(data_source: DataSource) -> None:
+    bulk_create_vuln_refs = set()
+    bulk_create_vuln_pkg_refs = set()
+    for batch in data_source.updated_advisories():
+        for advisory in batch:
+            vuln, vuln_created, references = _create_vulnerability_and_references(
+                advisory)
+            bulk_create_vuln_refs.update(references)
+            inew_refs = _create_pkg_vuln_refs(
+                vuln, vuln_created, advisory.impacted_package_urls, is_vulnerable=True)
+            rnew_refs = _create_pkg_vuln_refs(
+                vuln, vuln_created, advisory.resolved_package_urls, is_vulnerable=False)
+            bulk_create_vuln_pkg_refs.update(inew_refs.union(rnew_refs))
+
+    # FIXME: _create_pkg_vuln_refs handles conflicts between the data we encounter via
+    # updated_advisories() and the data which already exists in the DB. It is not designed
+    # to handle the conflicting data present within the entries of updated_advisories() itself.
+    # This can be done by filtering bulk_create_vuln_pkg_refs for pairs (vulnerability, package)
+    # occurring more than once. Also update the constraints in the models after this is fixed.
+    models.VulnerabilityReference.objects.bulk_create(
+        [i.to_model_object() for i in bulk_create_vuln_refs])
+    models.PackageRelatedVulnerability.objects.bulk_create(
+        [i.to_model_object() for i in bulk_create_vuln_pkg_refs])
 
 
 def _process_added_advisories(data_source: DataSource) -> None:
@@ -92,7 +154,8 @@ def _process_added_advisories(data_source: DataSource) -> None:
 
             vulnerabilities = _insert_vulnerabilities_and_references(batch)
 
-            _bulk_insert_impacted_and_resolved_packages(batch, vulnerabilities, impacted, resolved)
+            _bulk_insert_impacted_and_resolved_packages(
+                batch, vulnerabilities, impacted, resolved)
         except (DataError, RuntimeError) as e:
             # FIXME This exception might happen when the max. length of a DB column is exceeded.
             # Skipping an entire batch because one version number might be too long is obviously a
@@ -100,46 +163,80 @@ def _process_added_advisories(data_source: DataSource) -> None:
             logger.exception(e)
 
 
-def _process_updated_advisories(data_source: DataSource) -> None:
-    """
-    TODO: Make efficient; Current implementation needs way too many DB queries.
-    """
-    for batch in data_source.updated_advisories():
-        for advisory in batch:
-            vuln, _ = _get_or_create_vulnerability(advisory)
+def _create_vulnerability_and_references(advisory: Advisory):
+    vuln, vuln_created = _get_or_create_vulnerability(advisory)
+    vuln_references = set()
 
-            for id_ in advisory.reference_ids:
-                models.VulnerabilityReference.objects.get_or_create(
-                    vulnerability=vuln, reference_id=id_)
+    if vuln_created:
+        # This means vulnerability didn't previously exist in the DB, so add
+        # the references to bulk create queue  without any hesitation
+        for id_ in advisory.reference_ids:
+            vuln_references.add(VulnerabilityReferenceInserter(vulnerability=vuln, reference_id=id_))  # nopep8
 
-            for url in advisory.reference_urls:
-                models.VulnerabilityReference.objects.get_or_create(vulnerability=vuln, url=url)
+        for url in advisory.reference_urls:
+            vuln_references.add(VulnerabilityReferenceInserter(vulnerability=vuln, url=url))
 
-            for ipkg_url in advisory.impacted_package_urls:
-                pkg, created = _get_or_create_package(ipkg_url)
+    else:
+        vuln_refs_qs = models.VulnerabilityReference.objects.filter(vulnerability=vuln)
+        vuln_ids = {ref.reference_id for ref in vuln_refs_qs}
+        vuln_urls = {ref.url for ref in vuln_refs_qs}
 
-                # FIXME Does not work yet due to cascading deletes.
-                # if not created:
-                #     qs = models.ResolvedPackage.objects.filter(
-                #         vulnerability_id=vuln.id, package_id=pkg.id)
-                #     if qs:
-                #         qs[0].delete()
+        for id_ in advisory.reference_ids:
+            # Add the item preventing duplicates pass to through.
+            if id_ not in vuln_ids:
+                vuln_ids.add(id_)
+                vuln_references.add(VulnerabilityReferenceInserter(
+                    vulnerability=vuln, reference_id=id_))
 
-                models.ImpactedPackage.objects.get_or_create(
-                    vulnerability_id=vuln.id, package_id=pkg.id)
+        for url in advisory.reference_urls:
+            # Add the item preventing duplicates pass to through.
+            if url not in vuln_urls:
+                vuln_urls.add(url)
+                vuln_references.add(VulnerabilityReferenceInserter(
+                    vulnerability=vuln, url=url))
 
-            for rpkg_url in advisory.resolved_package_urls:
-                pkg, created = _get_or_create_package(rpkg_url)
+    return vuln, vuln_created, vuln_references
 
-                # FIXME Does not work yet due to cascading deletes.
-                # if not created:
-                #     qs = models.ImpactedPackage.objects.filter(
-                #         vulnerability_id=vuln.id, package_id=pkg.id)
-                #     if qs:
-                #         qs[0].delete()
 
-                models.ResolvedPackage.objects.get_or_create(
-                    vulnerability_id=vuln.id, package_id=pkg.id)
+def _create_pkg_vuln_refs(vuln: models.Vulnerability, vuln_created: bool, purls: Sequence[PackageURL], is_vulnerable: bool):  # nopep8
+    new_refs = set()
+    for purl in purls:
+        pkg, pkg_created = _get_or_create_package(purl)
+        vuln_pkg_ref = PackageRelatedVulnerabilityInserter(
+                            package=pkg, vulnerability=vuln, is_vulnerable=is_vulnerable)
+
+        if pkg_created or vuln_created:
+            new_refs.add(vuln_pkg_ref)
+
+        else:
+            existing_pkg_vuln_refs = models.PackageRelatedVulnerability.objects.filter(
+                package=pkg, vulnerability=vuln)
+            if not existing_pkg_vuln_refs:
+                new_refs.add(vuln_pkg_ref)
+            else:
+                # Note: PackageRelatedVulnerability has constraints
+                # unique_together = ('package', 'vulnerability', 'is_vulnerable')
+                vuln_impact = {i.is_vulnerable for i in existing_pkg_vuln_refs}
+                # is_vulnerable is a boolean which indicates the relationship of
+                # a vulnerability's impact on a package. vuln_impact is a set of
+                # all such booleans for a pair of (vulnerability, package). In cases
+                # where  vuln_impact == {True, False}, we know that conflicting relationships
+                # of (vulnerability, package) ALREADY EXIST in the DB.
+                # The other check `is_vulnerable not in vuln_impact` is used to know whether the
+                # data we just found is not conflicting with the data already existing in DB.
+                # In any of the above two cases we move the entries involved in ImportProblem
+                if vuln_impact == {True, False} or is_vulnerable not in vuln_impact:
+                    conflicts = existing_pkg_vuln_refs[:]
+                    conflicts.append(vuln_pkg_ref.to_model_object())
+                    handle_conflicts(conflicts)
+                    existing_pkg_vuln_refs.delete()
+
+    return new_refs
+
+
+def handle_conflicts(conflicts):
+    conflicts = serializers.serialize('json', [i for i in conflicts])
+    models.ImportProblem.objects.create(conflicting_model=conflicts)
 
 
 def _get_or_create_vulnerability(advisory: Advisory) -> Tuple[models.Vulnerability, bool]:
@@ -169,13 +266,16 @@ def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:
     }
 
     if p.namespace:
-        query_kwargs['namespace'] = packageurl.normalize_namespace(p.namespace, p.type, encode=True)
+        query_kwargs['namespace'] = packageurl.normalize_namespace(
+            p.namespace, p.type, encode=True)
 
     if p.qualifiers:
-        query_kwargs['qualifiers'] = packageurl.normalize_qualifiers(p.qualifiers, encode=False)
+        query_kwargs['qualifiers'] = packageurl.normalize_qualifiers(
+            p.qualifiers, encode=False)
 
     if p.subpath:
-        query_kwargs['subpath'] = packageurl.normalize_subpath(p.subpath, encode=True)
+        query_kwargs['subpath'] = packageurl.normalize_subpath(
+            p.subpath, encode=True)
 
     return models.Package.objects.get_or_create(**query_kwargs)
 
@@ -209,8 +309,7 @@ def _bulk_insert_impacted_and_resolved_packages(
     resolved_packages: Dict[PackageURL, models.Package],
 ) -> None:
 
-    impacted_refs: List[models.ImpactedPackage] = []
-    resolved_refs: List[models.ResolvedPackage] = []
+    refs: List[models.ImpactedPackage] = []
 
     for advisory in batch:
         vuln = _advisory_to_vulnerability(advisory, vulnerabilities)
@@ -223,11 +322,12 @@ def _bulk_insert_impacted_and_resolved_packages(
                 p.save()
                 impacted_packages[impacted_purl] = p
 
-            ip = models.ImpactedPackage(
+            ip = models.PackageRelatedVulnerability(
                 vulnerability=vuln,
                 package=p,
+                is_vulnerable=True
             )
-            impacted_refs.append(ip)
+            refs.append(ip)
 
         for resolved_purl in advisory.resolved_package_urls:
             # TODO Figure out when/how it happens that a package is missing from the dict and fix it
@@ -237,14 +337,14 @@ def _bulk_insert_impacted_and_resolved_packages(
                 p.save()
                 resolved_packages[resolved_purl] = p
 
-            ip = models.ResolvedPackage(
+            ip = models.PackageRelatedVulnerability(
                 vulnerability=vuln,
                 package=p,
+                is_vulnerable=False
             )
-            resolved_refs.append(ip)
+            refs.append(ip)
 
-    models.ImpactedPackage.objects.bulk_create(impacted_refs)
-    models.ResolvedPackage.objects.bulk_create(resolved_refs)
+    models.PackageRelatedVulnerability.objects.bulk_create(refs)
 
 
 def _insert_vulnerabilities_and_references(batch: Set[Advisory]) -> Set[models.Vulnerability]:
@@ -257,7 +357,8 @@ def _insert_vulnerabilities_and_references(batch: Set[Advisory]) -> Set[models.V
         vuln: models.Vulnerability
 
         if advisory.cve_id:
-            vuln, created = models.Vulnerability.objects.get_or_create(cve_id=advisory.cve_id)
+            vuln, created = models.Vulnerability.objects.get_or_create(
+                cve_id=advisory.cve_id)
             if created and advisory.summary:
                 vuln.summary = advisory.summary
                 vuln.save()
@@ -265,7 +366,8 @@ def _insert_vulnerabilities_and_references(batch: Set[Advisory]) -> Set[models.V
             # FIXME
             # There is no way to check whether a vulnerability without a CVE ID already exists in
             # the database.
-            vuln = models.Vulnerability.objects.create(summary=advisory.summary)
+            vuln = models.Vulnerability.objects.create(
+                summary=advisory.summary)
 
         vulnerabilities.add(vuln)
 
@@ -274,7 +376,8 @@ def _insert_vulnerabilities_and_references(batch: Set[Advisory]) -> Set[models.V
                 vulnerability=vuln, reference_id=id_)
 
         for url in advisory.reference_urls:
-            models.VulnerabilityReference.objects.get_or_create(vulnerability=vuln, url=url)
+            models.VulnerabilityReference.objects.get_or_create(
+                vulnerability=vuln, url=url)
 
     return vulnerabilities
 

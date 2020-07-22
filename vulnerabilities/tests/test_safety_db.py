@@ -75,8 +75,10 @@ class SafetyDbImportTest(TestCase):
 
         assert models.Vulnerability.objects.count() == 9
         assert models.VulnerabilityReference.objects.count() == 9
-        assert models.ResolvedPackage.objects.count() == 18
-        assert models.ImpactedPackage.objects.count() == 18
+        assert models.PackageRelatedVulnerability.objects.filter(
+            is_vulnerable=False).count() == 18
+        assert models.PackageRelatedVulnerability.objects.filter(
+            is_vulnerable=True).count() == 18
 
         expected_package_count = sum([len(v) for v in MOCK_VERSION_API.cache.values()])
         assert models.Package.objects.count() == expected_package_count
@@ -155,10 +157,14 @@ class SafetyDbImportTest(TestCase):
 
         for vuln in vulns:
             assert {ip.package for ip in
-                    models.ImpactedPackage.objects.filter(vulnerability=vuln)} == impacted_pkgs
+                    models.PackageRelatedVulnerability.objects.filter(
+                        vulnerability=vuln, is_vulnerable=True)
+                    } == impacted_pkgs
 
             assert {rp.package for rp in
-                    models.ResolvedPackage.objects.filter(vulnerability=vuln)} == resolved_pkgs
+                    models.PackageRelatedVulnerability.objects.filter(
+                        vulnerability=vuln, is_vulnerable=False)
+                    } == resolved_pkgs
 
         if cve_ids:
             assert {v.cve_id for v in vulns} == cve_ids

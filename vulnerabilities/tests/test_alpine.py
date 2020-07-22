@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c)  nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -71,8 +71,9 @@ class AlpineImportTest(TestCase):
 
         assert models.Vulnerability.objects.count() == 7
         assert models.VulnerabilityReference.objects.count() == 1
-        assert models.ResolvedPackage.objects.count() == 8
-        assert models.ImpactedPackage.objects.count() == 0
+        assert models.PackageRelatedVulnerability.objects.filter(
+            is_vulnerable=False).count() == 8
+        assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=True).count() == 0
 
         assert models.Package.objects.count() == 5
 
@@ -102,7 +103,7 @@ class AlpineImportTest(TestCase):
         else:
             pkg = qs[0]
 
-        qs = models.ResolvedPackage.objects.filter(package=pkg)
+        qs = models.PackageRelatedVulnerability.objects.filter(package=pkg)
         assert qs
 
         if cve_ids is None and vuln_ref is None:

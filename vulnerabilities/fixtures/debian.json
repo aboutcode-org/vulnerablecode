@@ -63,43 +63,48 @@
   }
 },
 {
-  "model": "vulnerabilities.impactedpackage",
+  "model": "vulnerabilities.packagerelatedvulnerability",
   "pk": 1,
   "fields": {
     "vulnerability": 1,
-    "package": 1
+    "package": 1,
+    "is_vulnerable": true
   }
 },
 {
-  "model": "vulnerabilities.resolvedpackage",
+  "model": "vulnerabilities.packagerelatedvulnerability",
   "pk": 1,
   "fields": {
     "vulnerability": 2,
-    "package": 2
+    "package": 2,
+    "is_vulnerable": false
   }
 },
 {
-  "model": "vulnerabilities.resolvedpackage",
+  "model": "vulnerabilities.packagerelatedvulnerability",
   "pk": 2,
   "fields": {
     "vulnerability": 2,
-    "package": 3
+    "package": 3,
+    "is_vulnerable": false
   }
 },
 {
-  "model": "vulnerabilities.resolvedpackage",
+  "model": "vulnerabilities.packagerelatedvulnerability",
   "pk": 3,
   "fields": {
     "vulnerability": 3,
-    "package": 2
+    "package": 2,
+    "is_vulnerable": false
   }
 },
 {
-  "model": "vulnerabilities.resolvedpackage",
+  "model": "vulnerabilities.packagerelatedvulnerability",
   "pk": 4,
   "fields": {
     "vulnerability": 3,
-    "package": 3
+    "package": 3,
+    "is_vulnerable": false
   }
 }
 ]

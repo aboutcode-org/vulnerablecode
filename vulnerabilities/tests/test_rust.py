@@ -191,8 +191,13 @@ class RustImportTest(TestCase):
         assert qs.count() == 1
         vuln = qs[0].vulnerability
 
-        assert models.ResolvedPackage.objects.filter(package=unaffected_pkg, vulnerability=vuln)
-        assert models.ResolvedPackage.objects.filter(package=resolved_pkg, vulnerability=vuln)
-        assert models.ImpactedPackage.objects.filter(package=impacted_pkg, vulnerability=vuln)
+        assert models.PackageRelatedVulnerability.objects.filter(
+            package=unaffected_pkg, vulnerability=vuln, is_vulnerable=False)
+
+        assert models.PackageRelatedVulnerability.objects.filter(
+            package=resolved_pkg, vulnerability=vuln, is_vulnerable=False)
+
+        assert models.PackageRelatedVulnerability.objects.filter(
+            package=impacted_pkg, vulnerability=vuln, is_vulnerable=True)
 
     importer = None

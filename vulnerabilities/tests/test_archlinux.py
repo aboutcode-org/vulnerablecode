@@ -66,8 +66,10 @@ class ArchlinuxImportTest(TestCase):
 
         assert models.Vulnerability.objects.count() == 6
         assert models.VulnerabilityReference.objects.count() == 4
-        assert models.ImpactedPackage.objects.count() == 12
-        assert models.ResolvedPackage.objects.count() == 8
+        assert models.PackageRelatedVulnerability.objects.filter(
+            is_vulnerable=True).count() == 12
+        assert models.PackageRelatedVulnerability.objects.filter(
+            is_vulnerable=False).count() == 8
         assert models.Package.objects.count() == 10
 
         self.assert_for_package(

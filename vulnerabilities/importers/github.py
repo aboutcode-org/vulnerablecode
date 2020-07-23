@@ -38,6 +38,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
+from vulnerabilities.data_source import VulnerabilityReferenceUnit
 
 
 # set of all possible values of first '%s' = {'MAVEN','COMPOSER', 'NUGET'}
@@ -167,24 +168,33 @@ class GitHubAPIDataSource(DataSource):
                     )
 
                     affected_purls = {
-                        PackageURL(name=pkg_name, namespace=ns, version=version, type=pkg_type)
+                        PackageURL(name=pkg_name, namespace=ns,
+                                   version=version, type=pkg_type)
                         for version in aff_vers
                     }
 
                     unaffected_purls = {
-                        PackageURL(name=pkg_name, namespace=ns, version=version, type=pkg_type)
+                        PackageURL(name=pkg_name, namespace=ns,
+                                   version=version, type=pkg_type)
                         for version in unaff_vers
                     }
 
                     cve_ids = set()
-                    ref_ids = set()
+                    vuln_references = []
                     vuln_desc = adv["node"]["advisory"]["summary"]
 
                     for vuln in adv["node"]["advisory"]["identifiers"]:
                         if vuln["type"] == "CVE":
                             cve_ids.add(vuln["value"])
-                        else:
-                            ref_ids.add(vuln["value"])
+
+                        elif vuln["type"] == "GHSA":
+                            ghsa = vuln['value']
+                            vuln_references.append(VulnerabilityReferenceUnit(
+                                reference_id=ghsa,
+                                url="https://github.com/advisories/{}".format(
+                                    ghsa)
+                            ))
+
                     for cve_id in cve_ids:
                         adv_list.append(
                             Advisory(
@@ -192,7 +202,7 @@ class GitHubAPIDataSource(DataSource):
                                 summary=vuln_desc,
                                 impacted_package_urls=affected_purls,
                                 resolved_package_urls=unaffected_purls,
-                                reference_ids=ref_ids,
+                                vuln_references=vuln_references,
                             )
                         )
         return adv_list
@@ -200,7 +210,8 @@ class GitHubAPIDataSource(DataSource):
     @staticmethod
     def categorize_versions(version_range: str, all_versions: Set[str]) -> Tuple[Set[str], Set[str]]:  # nopep8
         version_range = RangeSpecifier(version_range)
-        affected_versions = {version for version in all_versions if version in version_range}
+        affected_versions = {
+            version for version in all_versions if version in version_range}
         return (affected_versions, all_versions - affected_versions)
 
 

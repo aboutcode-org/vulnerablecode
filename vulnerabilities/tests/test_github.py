@@ -32,13 +32,14 @@ from collections import OrderedDict
 from requests.models import Response
 from packageurl import PackageURL
 
+from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import VulnerabilityReferenceUnit
 from vulnerabilities.importers.github import GitHubAPIDataSource
 from vulnerabilities.importers.github import MavenVersionAPI
 from vulnerabilities.importers.github import ComposerVersionAPI
 from vulnerabilities.importers.github import NugetVersionAPI
 from vulnerabilities.importers.github import GitHubTokenError
 from vulnerabilities.importers.github import query
-from vulnerabilities.data_source import Advisory
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data')
@@ -186,8 +187,9 @@ class TestGitHubAPIDataSource(unittest.TestCase):
                         subpath=None,
                     ),
                 },
-                reference_urls=[],
-                reference_ids={'GHSA-qcxh-w3j9-58qr'},
+                vuln_references=[VulnerabilityReferenceUnit(
+                    url='https://github.com/advisories/GHSA-qcxh-w3j9-58qr',
+                    reference_id='GHSA-qcxh-w3j9-58qr')],
                 cve_id='CVE-2019-0199',
             ),
             Advisory(
@@ -212,8 +214,9 @@ class TestGitHubAPIDataSource(unittest.TestCase):
                         subpath=None,
                     )
                 },
-                reference_urls=[],
-                reference_ids={'GHSA-qcxh-w3j9-58qr'},
+                vuln_references=[VulnerabilityReferenceUnit(
+                    url='https://github.com/advisories/GHSA-qcxh-w3j9-58qr',
+                    reference_id='GHSA-qcxh-w3j9-58qr')],
                 cve_id='CVE-2019-0199',
             ),
             Advisory(
@@ -237,8 +240,9 @@ class TestGitHubAPIDataSource(unittest.TestCase):
                         subpath=None,
                     ),
                 },
-                reference_urls=[],
-                reference_ids={'GHSA-c9hw-wf7x-jp9j'},
+                vuln_references=[VulnerabilityReferenceUnit(
+                    url='https://github.com/advisories/GHSA-c9hw-wf7x-jp9j',
+                    reference_id='GHSA-c9hw-wf7x-jp9j')],
                 cve_id='CVE-2020-1938',
             ),
             Advisory(
@@ -262,8 +266,9 @@ class TestGitHubAPIDataSource(unittest.TestCase):
                         subpath=None,
                     ),
                 },
-                reference_urls=[],
-                reference_ids={'GHSA-c9hw-wf7x-jp9j'},
+                vuln_references=[VulnerabilityReferenceUnit(
+                    url='https://github.com/advisories/GHSA-c9hw-wf7x-jp9j',
+                    reference_id='GHSA-c9hw-wf7x-jp9j')],
                 cve_id='CVE-2020-1938',
             ),
             Advisory(
@@ -288,8 +293,9 @@ class TestGitHubAPIDataSource(unittest.TestCase):
                         subpath=None,
                     )
                 },
-                reference_urls=[],
-                reference_ids={'GHSA-c9hw-wf7x-jp9j'},
+                vuln_references=[VulnerabilityReferenceUnit(
+                    url='https://github.com/advisories/GHSA-c9hw-wf7x-jp9j',
+                    reference_id='GHSA-c9hw-wf7x-jp9j')],
                 cve_id='CVE-2020-1938',
             ),
         ]
@@ -433,7 +439,8 @@ class TestMavenVersionAPI(unittest.TestCase):
 
     def test_extract_versions(self):
         expected_versions = {'1.2.2', '1.2.3', '1.3.0'}
-        assert expected_versions == self.version_api.extract_versions(self.response)
+        assert expected_versions == self.version_api.extract_versions(
+            self.response)
 
     def test_load_to_api(self):
 

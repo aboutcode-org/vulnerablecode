@@ -75,7 +75,9 @@ IMPORTER_REGISTRY = [
         'license': '',
         'last_run': None,
         'data_source': 'NpmDataSource',
-        'data_source_cfg': {},
+        'data_source_cfg': {
+            'repository_url': 'https://github.com/nodejs/security-wg.git'
+        },
     },
     {
         'name': 'ruby',

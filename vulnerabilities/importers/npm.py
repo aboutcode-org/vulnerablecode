@@ -36,96 +36,64 @@ from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
+from vulnerabilities.data_source import GitDataSource
 
 NPM_URL = 'https://registry.npmjs.org{}'
-PAGE = '/-/npm/v1/security/advisories?perPage=100&page=0'
 
 
-class NpmDataSource(DataSource):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._api_response = None
-        self._versions = VersionAPI()
-        self._added_records, self._updated_records = [], []
-        self._added_advisories, self._updated_advisories = [], []
+class NpmDataSource(GitDataSource):
 
     def __enter__(self):
-        self._api_response = self._fetch()
-        self._categorize_records()
+        super(NpmDataSource, self).__enter__()
+        self._versions = VersionAPI()
+        if not getattr(self, '_added_files', None):
+            self._added_files, self._updated_files = self.file_changes(
+                recursive=True, file_ext='json', subdir='./vuln/npm')
+
+    def updated_advisories(self) -> Set[Advisory]:
+        files = self._updated_files.union(self._added_files)
+        advisories = []
+        for f in files:
+            processed_data = self.process_file(f)
+            if processed_data:
+                advisories.extend(processed_data)
+        print(advisories)
+        return self.batch_advisories(advisories)
 
     @property
     def versions(self):  # quick hack to make it patchable
         return self._versions
 
-    def _fetch(self) -> Mapping[str, Any]:
-        data = None
-        nextpage = PAGE
-        while nextpage:
-            try:
-                with urlopen(NPM_URL.format(nextpage)) as response:
-                    response = json.load(response)
-
-                    if data is None:
-                        data = response
-                    else:
-                        data['objects'].extend(response.get('objects', []))
-
-                nextpage = response.get('urls', {}).get('next')
-
-            except HTTPError as error:
-                if error.code == 404:
-                    return data
-                else:
-                    raise
-
-        return data
-
-    def _categorize_records(self) -> None:
-        for advisory in self._api_response['objects']:
-            created = parse(advisory['created']).timestamp()
-            updated = parse(advisory['updated']).timestamp()
-
-            if created > self.cutoff_timestamp:
-                self._added_records.append(advisory)
-            elif updated > self.cutoff_timestamp:
-                self._updated_records.append(advisory)
-
-    def _parse(self, records: List[Mapping[str, Any]]) -> List[Advisory]:
+    def process_file(self, file) -> List[Advisory]:
+        print(file)
+        with open(file) as f:
+            record = json.load(f)
+        print(record)
         advisories = []
+        package_name = record['module_name']
+        all_versions = self.versions.get(package_name)
+        aff_range = record.get('vulnerable_versions', '')
+        fixed_range = record.get('patched_versions', '')
 
-        for record in records:
-            package_name = record['module_name']
-            all_versions = self.versions.get(package_name)
-            aff_range = record.get('vulnerable_versions', '')
-            fixed_range = record.get('patched_versions', '')
+        impacted_versions, resolved_versions = categorize_versions(
+            all_versions,
+            aff_range,
+            fixed_range
+        )
 
-            impacted_versions, resolved_versions = categorize_versions(
-                all_versions,
-                aff_range,
-                fixed_range
-            )
+        impacted_purls = _versions_to_purls(package_name, impacted_versions)
+        resolved_purls = _versions_to_purls(package_name, resolved_versions)
 
-            impacted_purls = _versions_to_purls(package_name, impacted_versions)
-            resolved_purls = _versions_to_purls(package_name, resolved_versions)
-
-            for cve_id in record.get('cves') or ['']:
-                advisories.append(Advisory(
-                    summary=record.get('overview', ''),
-                    cve_id=cve_id,
-                    impacted_package_urls=impacted_purls,
-                    resolved_package_urls=resolved_purls,
-                    reference_urls=[NPM_URL.format(f'/-/npm/v1/advisories/{record["id"]}')],
-                ))
+        for cve_id in record.get('cves') or ['']:
+            advisories.append(Advisory(
+                summary=record.get('overview', ''),
+                cve_id=cve_id,
+                impacted_package_urls=impacted_purls,
+                resolved_package_urls=resolved_purls,
+                reference_urls=[NPM_URL.format(f'/-/npm/v1/advisories/{record["id"]}')],
+            ))
 
         return advisories
-
-    def added_advisories(self) -> Set[Advisory]:
-        return self.batch_advisories(self._parse(self._added_records))
-
-    def updated_advisories(self) -> Set[Advisory]:
-        return self.batch_advisories(self._parse(self._updated_records))
 
 
 def _versions_to_purls(package_name, versions):

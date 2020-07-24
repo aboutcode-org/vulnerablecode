@@ -5,8 +5,8 @@
 </head>
 <link rel="stylesheet" href="{% static 'css/bulma.min.css' %}"/>
 <link rel="stylesheet" href="{% static 'css/custom.css' %}"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.1/css/selectize.min.css"/>
+<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}"/>
+<link rel="stylesheet" href="{% static 'css/selectize.css' %}"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <body class="Site has-background-light">
     <nav class="navbar is-dark is-fixed-top" role="navigation" aria-label="main navigation">
@@ -91,9 +91,9 @@
       </div>
     </footer>
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js">
+<script src="{% static 'js/jquery.min.js' %}"">
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"></script>
+<script src="{% static 'js/selectize.min.js' %}"></script>
 {% block javascript %}
 {% endblock %}
 </html>

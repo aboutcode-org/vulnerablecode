@@ -224,7 +224,7 @@ class MavenVersionAPI(VersionAPI):
 
     @staticmethod
     def artifact_url(artifact_comps: List[str]) -> str:
-        base_url = "https://repo.maven.apache.org/maven2/{}"
+        base_url = "https://repo1.maven.org/maven2/{}"
         group_id, artifact_id = artifact_comps
         group_url = group_id.replace(".", "/")
         suffix = group_url + "/" + artifact_id + "/" + "maven-metadata.xml"
@@ -292,10 +292,8 @@ class ComposerVersionAPI(VersionAPI):
     @staticmethod
     def extract_versions(resp: dict, pkg_name: str) -> Set[str]:
         all_versions = resp["packages"][pkg_name].keys()
-        # This filter ensures, that all_versions contains only released versions
-        all_versions = set(filter(lambda x: "dev" not in x, all_versions))
+        all_versions = {version.replace("v", "") for version in all_versions if "dev" not in version}  # nopep8
+        # This if statement ensures, that all_versions contains only released versions
         # See https://github.com/composer/composer/blob/44a4429978d1b3c6223277b875762b2930e83e8c/doc/articles/versions.md#tags  # nopep8
         # for explanation of removing 'v'
-        all_versions = set(map(lambda x: x.replace("v", ""), all_versions))
-
         return all_versions

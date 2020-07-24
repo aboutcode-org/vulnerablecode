@@ -148,9 +148,9 @@ class TestMavenVersionAPI(TestCase):
         url1 = self.version_api.artifact_url(eg_comps1)
         url2 = self.version_api.artifact_url(eg_comps2)
 
-        assert "https://repo.maven.apache.org/maven2/org/apache/kafka/maven-metadata.xml" == url1
+        assert "https://repo1.maven.org/maven2/org/apache/kafka/maven-metadata.xml" == url1
         assert (
-            "https://repo.maven.apache.org/maven2"
+            "https://repo1.maven.org/maven2"
             "/apple/msft/windows/mac/oss/exfat-ntfs/maven-metadata.xml" == url2
         )
 

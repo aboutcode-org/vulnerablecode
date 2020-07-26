@@ -34,7 +34,7 @@ from schema import Schema
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 
 
 def validate_schema(advisory_dict):
@@ -135,7 +135,7 @@ class AlpineDataSource(GitDataSource):
                     if reference_id.startswith("XSA"):
                         xsa_id = reference_id.split("-")[-1]
                         references.append(
-                            VulnerabilityReferenceUnit(
+                            Reference(
                                 reference_id=reference_id,
                                 url="https://xenbits.xen.org/xsa/advisory-{}.html".format(xsa_id),
                             )
@@ -143,7 +143,7 @@ class AlpineDataSource(GitDataSource):
 
                     elif reference_id.startswith("ZBX"):
                         references.append(
-                            VulnerabilityReferenceUnit(
+                            Reference(
                                 reference_id=reference_id,
                                 url="https://support.zabbix.com/browse/{}".format(reference_id),
                             )
@@ -151,7 +151,7 @@ class AlpineDataSource(GitDataSource):
 
                     elif reference_id.startswith("wnpa-sec"):
                         references.append(
-                            VulnerabilityReferenceUnit(
+                            Reference(
                                 reference_id=reference_id,
                                 url="https://www.wireshark.org/security/{}.html".format(
                                     reference_id

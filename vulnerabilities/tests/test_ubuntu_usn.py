@@ -31,7 +31,7 @@ from unittest.mock import patch
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 import vulnerabilities.importers.ubuntu_usn as ubuntu_usn
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -50,7 +50,7 @@ class TestUbuntuUSNDataSource(TestCase):
     def test_get_usn_references(self):
 
         eg_usn = "435-1"
-        expected_references = VulnerabilityReferenceUnit(
+        expected_references = Reference(
             reference_id="USN-435-1", url="https://usn.ubuntu.com/435-1/"
         )
 
@@ -154,7 +154,7 @@ class TestUbuntuUSNDataSource(TestCase):
                     ),
                 },
                 vuln_references=[
-                    VulnerabilityReferenceUnit(
+                    Reference(
                         url="https://usn.ubuntu.com/763-1/", reference_id="USN-763-1"
                     )
                 ],
@@ -182,7 +182,7 @@ class TestUbuntuUSNDataSource(TestCase):
                     ),
                 },
                 vuln_references=[
-                    VulnerabilityReferenceUnit(
+                    Reference(
                         url="https://usn.ubuntu.com/763-1/", reference_id="USN-763-1"
                     )
                 ],

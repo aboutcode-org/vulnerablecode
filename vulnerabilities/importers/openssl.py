@@ -28,7 +28,7 @@ import re
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 
 import xml.etree.ElementTree as ET
 
@@ -71,7 +71,7 @@ class OpenSSLDataSource(DataSource):
                         if info:
                             commit_hash = info[0].attrib["hash"]
                             ref_urls.append(
-                                VulnerabilityReferenceUnit(
+                                Reference(
                                     url="https://github.com/openssl/openssl/commit/" + commit_hash
                                 )
                             )

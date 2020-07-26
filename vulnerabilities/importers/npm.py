@@ -37,7 +37,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 
 NPM_URL = 'https://registry.npmjs.org{}'
 
@@ -68,36 +68,34 @@ class NpmDataSource(GitDataSource):
         with open(file) as f:
             record = json.load(f)
         advisories = []
+        package_name = record["module_name"]
+        all_versions = self.versions.get(package_name)
+        aff_range = record.get("vulnerable_versions", "")
+        fixed_range = record.get("patched_versions", "")
 
-        for record in records:
-            package_name = record["module_name"]
-            all_versions = self.versions.get(package_name)
-            aff_range = record.get("vulnerable_versions", "")
-            fixed_range = record.get("patched_versions", "")
+        impacted_versions, resolved_versions = categorize_versions(
+            all_versions, aff_range, fixed_range
+        )
 
-            impacted_versions, resolved_versions = categorize_versions(
-                all_versions, aff_range, fixed_range
+        impacted_purls = _versions_to_purls(package_name, impacted_versions)
+        resolved_purls = _versions_to_purls(package_name, resolved_versions)
+        vuln_reference = [
+            Reference(
+                url=NPM_URL.format(f'/-/npm/v1/advisories/{record["id"]}'),
+                reference_id=record["id"],
             )
+        ]
 
-            impacted_purls = _versions_to_purls(package_name, impacted_versions)
-            resolved_purls = _versions_to_purls(package_name, resolved_versions)
-            vuln_reference = [
-                VulnerabilityReferenceUnit(
-                    url=NPM_URL.format(f'/-/npm/v1/advisories/{record["id"]}'),
-                    reference_id=record["id"],
+        for cve_id in record.get("cves") or [""]:
+            advisories.append(
+                Advisory(
+                    summary=record.get("overview", ""),
+                    cve_id=cve_id,
+                    impacted_package_urls=impacted_purls,
+                    resolved_package_urls=resolved_purls,
+                    vuln_references=vuln_reference,
                 )
-            ]
-
-            for cve_id in record.get("cves") or [""]:
-                advisories.append(
-                    Advisory(
-                        summary=record.get("overview", ""),
-                        cve_id=cve_id,
-                        impacted_package_urls=impacted_purls,
-                        resolved_package_urls=resolved_purls,
-                        vuln_references=vuln_reference,
-                    )
-                )
+            )
         return advisories
 
 

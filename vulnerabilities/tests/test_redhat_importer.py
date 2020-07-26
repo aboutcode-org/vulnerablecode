@@ -29,7 +29,7 @@ from packageurl import PackageURL
 
 import vulnerabilities.importers.redhat as redhat
 from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/", "redhat.json")
@@ -80,19 +80,19 @@ class TestRedhat(unittest.TestCase):
                 resolved_package_urls=[],
                 vuln_references=sorted(
                     [
-                        VulnerabilityReferenceUnit(
+                        Reference(
                             url="https://bugzilla.redhat.com/show_bug.cgi?id=1396383",
                             reference_id="1396383",
                         ),
-                        VulnerabilityReferenceUnit(
+                        Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:1931",
                             reference_id="RHSA-2017:1931",
                         ),
-                        VulnerabilityReferenceUnit(
+                        Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:0725",
                             reference_id="RHSA-2017:0725",
                         ),
-                        VulnerabilityReferenceUnit(
+                        Reference(
                             url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-9401.json",  # nopep8
                             reference_id="",
                         ),
@@ -135,27 +135,27 @@ class TestRedhat(unittest.TestCase):
                 resolved_package_urls=[],
                 vuln_references=sorted(
                     [
-                        VulnerabilityReferenceUnit(
+                        Reference(
                             url="https://bugzilla.redhat.com/show_bug.cgi?id=1430347",
                             reference_id="1430347",
                         ),
-                        VulnerabilityReferenceUnit(
+                        Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:1842",
                             reference_id="RHSA-2017:1842",
                         ),
-                        VulnerabilityReferenceUnit(
+                        Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:2437",
                             reference_id="RHSA-2017:2437",
                         ),
-                        VulnerabilityReferenceUnit(
+                        Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:2077",
                             reference_id="RHSA-2017:2077",
                         ),
-                        VulnerabilityReferenceUnit(
+                        Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:2444",
                             reference_id="RHSA-2017:2444",
                         ),
-                        VulnerabilityReferenceUnit(
+                        Reference(
                             url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-10200.json",  # nopep8
                             reference_id="",
                         ),
@@ -173,11 +173,11 @@ class TestRedhat(unittest.TestCase):
                 resolved_package_urls=[],
                 vuln_references=sorted(
                     [
-                        VulnerabilityReferenceUnit(
+                        Reference(
                             url="https://bugzilla.redhat.com/show_bug.cgi?id=1492984",
                             reference_id="1492984",
                         ),
-                        VulnerabilityReferenceUnit(
+                        Reference(
                             url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2017-12168.json",  # nopep8
                             reference_id="",
                         ),

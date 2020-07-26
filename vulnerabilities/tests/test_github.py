@@ -33,7 +33,7 @@ from requests.models import Response
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 from vulnerabilities.importers.github import GitHubAPIDataSource
 from vulnerabilities.importers.github import MavenVersionAPI
 from vulnerabilities.importers.github import ComposerVersionAPI
@@ -187,7 +187,7 @@ class TestGitHubAPIDataSource(unittest.TestCase):
                         subpath=None,
                     ),
                 },
-                vuln_references=[VulnerabilityReferenceUnit(
+                vuln_references=[Reference(
                     url='https://github.com/advisories/GHSA-qcxh-w3j9-58qr',
                     reference_id='GHSA-qcxh-w3j9-58qr')],
                 cve_id='CVE-2019-0199',
@@ -214,7 +214,7 @@ class TestGitHubAPIDataSource(unittest.TestCase):
                         subpath=None,
                     )
                 },
-                vuln_references=[VulnerabilityReferenceUnit(
+                vuln_references=[Reference(
                     url='https://github.com/advisories/GHSA-qcxh-w3j9-58qr',
                     reference_id='GHSA-qcxh-w3j9-58qr')],
                 cve_id='CVE-2019-0199',
@@ -240,7 +240,7 @@ class TestGitHubAPIDataSource(unittest.TestCase):
                         subpath=None,
                     ),
                 },
-                vuln_references=[VulnerabilityReferenceUnit(
+                vuln_references=[Reference(
                     url='https://github.com/advisories/GHSA-c9hw-wf7x-jp9j',
                     reference_id='GHSA-c9hw-wf7x-jp9j')],
                 cve_id='CVE-2020-1938',
@@ -266,7 +266,7 @@ class TestGitHubAPIDataSource(unittest.TestCase):
                         subpath=None,
                     ),
                 },
-                vuln_references=[VulnerabilityReferenceUnit(
+                vuln_references=[Reference(
                     url='https://github.com/advisories/GHSA-c9hw-wf7x-jp9j',
                     reference_id='GHSA-c9hw-wf7x-jp9j')],
                 cve_id='CVE-2020-1938',
@@ -293,7 +293,7 @@ class TestGitHubAPIDataSource(unittest.TestCase):
                         subpath=None,
                     )
                 },
-                vuln_references=[VulnerabilityReferenceUnit(
+                vuln_references=[Reference(
                     url='https://github.com/advisories/GHSA-c9hw-wf7x-jp9j',
                     reference_id='GHSA-c9hw-wf7x-jp9j')],
                 cve_id='CVE-2020-1938',

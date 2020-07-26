@@ -44,7 +44,7 @@ from vulnerabilities.oval_parser import OvalParser
 
 
 @dataclasses.dataclass
-class VulnerabilityReferenceUnit:
+class Reference:
 
     url: str = ''
     reference_id: str = ''
@@ -68,7 +68,7 @@ class Advisory:
     summary: str
     impacted_package_urls: Iterable[PackageURL]
     resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
-    vuln_references: List[VulnerabilityReferenceUnit] = dataclasses.field(default_factory=list)
+    vuln_references: List[Reference] = dataclasses.field(default_factory=list)
     cve_id: Optional[str] = None
 
     def __hash__(self):
@@ -481,7 +481,7 @@ class OvalDataSource(DataSource):
             description = definition_data['description']
             affected_purls = set()
             safe_purls = set()
-            references = [VulnerabilityReferenceUnit(url=url)
+            references = [Reference(url=url)
                           for url in definition_data['reference_urls']]
 
             for test_data in definition_data['test_data']:

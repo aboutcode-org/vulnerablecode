@@ -38,7 +38,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 
 
 # set of all possible values of first '%s' = {'MAVEN','COMPOSER', 'NUGET'}
@@ -189,7 +189,7 @@ class GitHubAPIDataSource(DataSource):
 
                         elif vuln["type"] == "GHSA":
                             ghsa = vuln['value']
-                            vuln_references.append(VulnerabilityReferenceUnit(
+                            vuln_references.append(Reference(
                                 reference_id=ghsa,
                                 url="https://github.com/advisories/{}".format(
                                     ghsa)

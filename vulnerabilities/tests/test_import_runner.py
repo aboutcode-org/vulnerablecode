@@ -28,7 +28,7 @@ from vulnerabilities import models
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import PackageURL
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.import_runner import _insert_vulnerabilities_and_references
 
@@ -72,7 +72,7 @@ ADVISORIES = [
         cve_id='MOCK-CVE-2020-1337',
         summary='vulnerability description here',
         vuln_references=[
-            VulnerabilityReferenceUnit(
+            Reference(
                 url='https://example.com/with/more/info/MOCK-CVE-2020-1337')],
         impacted_package_urls=[
             PackageURL(

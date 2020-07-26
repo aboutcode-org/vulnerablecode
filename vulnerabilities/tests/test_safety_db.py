@@ -30,7 +30,7 @@ from vulnerabilities import models
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.importers.safety_db import VersionAPI
 from vulnerabilities.importers.safety_db import categorize_versions
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/')

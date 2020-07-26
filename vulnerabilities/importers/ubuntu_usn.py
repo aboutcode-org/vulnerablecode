@@ -29,7 +29,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 
 
 @dataclasses.dataclass
@@ -90,7 +90,7 @@ class UbuntuUSNDataSource(DataSource):
 
 
 def get_usn_references(usn_id):
-    return VulnerabilityReferenceUnit(
+    return Reference(
         reference_id="USN-" + usn_id, url="https://usn.ubuntu.com/{}/".format(usn_id)
     )
 

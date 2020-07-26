@@ -28,7 +28,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.importers.retiredotnet import RetireDotnetDataSource
 from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -128,7 +128,7 @@ class TestRetireDotnetDataSource(TestCase):
                 ),
             },
             vuln_references=[
-                VulnerabilityReferenceUnit(
+                Reference(
                     url="https://github.com/aspnet/Announcements/issues/359", reference_id=""
                 )
             ],

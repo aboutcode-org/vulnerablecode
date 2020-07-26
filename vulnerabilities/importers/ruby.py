@@ -32,7 +32,7 @@ import yaml
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 
 
 class RubyDataSource(GitDataSource):
@@ -108,7 +108,7 @@ class RubyDataSource(GitDataSource):
             references = []
             if record.get('url'):
                 references.append(
-                    VulnerabilityReferenceUnit(url=record.get('url'))
+                    Reference(url=record.get('url'))
                 )
 
             return Advisory(

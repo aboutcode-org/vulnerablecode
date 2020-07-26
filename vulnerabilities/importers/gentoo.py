@@ -28,7 +28,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 
 
 class GentooDataSource(GitDataSource):
@@ -53,7 +53,7 @@ class GentooDataSource(GitDataSource):
         xml_root = ET.parse(file).getroot()
         glsa = "GLSA-" + xml_root.attrib["id"]
         vuln_reference = [
-            VulnerabilityReferenceUnit(
+            Reference(
                 reference_id=glsa,
                 url="https://security.gentoo.org/glsa/{}".format(xml_root.attrib["id"]),
             )

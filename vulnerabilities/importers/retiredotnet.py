@@ -30,7 +30,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import GitDataSourceConfiguration
 from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 
 
 class RetireDotnetDataSource(GitDataSource):
@@ -91,7 +91,7 @@ class RetireDotnetDataSource(GitDataSource):
                     version=pkg['fix'],
                     type='nuget'))
 
-            vuln_reference = [VulnerabilityReferenceUnit(
+            vuln_reference = [Reference(
                 url=json_doc['link'],
             )]
 

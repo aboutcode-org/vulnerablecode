@@ -34,7 +34,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 
 
 class RustDataSource(GitDataSource):
@@ -82,7 +82,7 @@ class RustDataSource(GitDataSource):
         references = []
         crate_name = advisory["package"]
         if advisory.get("url"):
-            references.append(VulnerabilityReferenceUnit(url=advisory["url"]))
+            references.append(Reference(url=advisory["url"]))
 
         all_versions = self.crates_api.get(crate_name)
 
@@ -111,7 +111,7 @@ class RustDataSource(GitDataSource):
                     break
 
         references.append(
-            VulnerabilityReferenceUnit(
+            Reference(
                 reference_id=advisory["id"],
                 url="https://rustsec.org/advisories/{}.html".format(advisory["id"]),
             )

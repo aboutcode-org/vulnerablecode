@@ -12,7 +12,7 @@ from packageurl import PackageURL
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.importers.ubuntu import UbuntuDataSource
 from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")
@@ -226,12 +226,12 @@ class TestUbuntuDataSource(unittest.TestCase):
                         qualifiers=OrderedDict(),
                         subpath=None)},
                 vuln_references=sorted([
-                    VulnerabilityReferenceUnit(url='http://www.openwall.com/lists/oss-security/2016/10/18/11'),
-                    VulnerabilityReferenceUnit(url='https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8860'),
-                    VulnerabilityReferenceUnit(url='http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8860.html'),
-                    VulnerabilityReferenceUnit(url='https://github.com/torproject/tor/commit/3cea86eb2fbb65949673eb4ba8ebb695c87a57ce'),
-                    VulnerabilityReferenceUnit(url='https://blog.torproject.org/blog/tor-0289-released-important-fixes'),
-                    VulnerabilityReferenceUnit(url='https://trac.torproject.org/projects/tor/ticket/20384')],key=lambda x : x.url),
+                    Reference(url='http://www.openwall.com/lists/oss-security/2016/10/18/11'),
+                    Reference(url='https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8860'),
+                    Reference(url='http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8860.html'),
+                    Reference(url='https://github.com/torproject/tor/commit/3cea86eb2fbb65949673eb4ba8ebb695c87a57ce'),
+                    Reference(url='https://blog.torproject.org/blog/tor-0289-released-important-fixes'),
+                    Reference(url='https://trac.torproject.org/projects/tor/ticket/20384')],key=lambda x : x.url),
                 cve_id='CVE-2016-8860'),
             Advisory(
                 summary=('Heap-based buffer overflow in the bm_readbody_bmp function'
@@ -263,9 +263,9 @@ class TestUbuntuDataSource(unittest.TestCase):
                         qualifiers=OrderedDict(),
                         subpath=None)},
                 vuln_references=sorted([
-                    VulnerabilityReferenceUnit(url='http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8703.html'),
-                    VulnerabilityReferenceUnit(url='https://blogs.gentoo.org/ago/2016/08/08/potrace-multiplesix-heap-based-buffer-overflow-in-bm_readbody_bmp-bitmap_io-c/'),
-                    VulnerabilityReferenceUnit(url='https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8703')],key=lambda x: x.url),
+                    Reference(url='http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8703.html'),
+                    Reference(url='https://blogs.gentoo.org/ago/2016/08/08/potrace-multiplesix-heap-based-buffer-overflow-in-bm_readbody_bmp-bitmap_io-c/'),
+                    Reference(url='https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8703')],key=lambda x: x.url),
                 cve_id='CVE-2016-8703')}
 
         xml_doc = ET.parse(os.path.join(TEST_DATA, "ubuntu_oval_data.xml"))

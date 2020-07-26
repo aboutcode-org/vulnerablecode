@@ -31,7 +31,7 @@ from packageurl import PackageURL
 from vulnerabilities.importers.ruby import RubyDataSource
 from vulnerabilities.data_source import GitDataSourceConfiguration
 from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -93,7 +93,7 @@ class RubyDataSourceTest(TestCase):
                     ),
                 },
                 vuln_references=[
-                    VulnerabilityReferenceUnit(url="https://github.com/sinatra/sinatra/pull/1379")
+                    Reference(url="https://github.com/sinatra/sinatra/pull/1379")
                 ],
                 cve_id="CVE-2018-7212",
             ),
@@ -131,7 +131,7 @@ class RubyDataSourceTest(TestCase):
                     )
                 },
                 vuln_references=[
-                    VulnerabilityReferenceUnit(url="https://github.com/sinatra/sinatra/issues/1428")
+                    Reference(url="https://github.com/sinatra/sinatra/issues/1428")
                 ],
                 cve_id="CVE-2018-11627",
             ),

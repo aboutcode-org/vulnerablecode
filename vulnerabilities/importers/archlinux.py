@@ -34,7 +34,7 @@ from schema import Regex, Schema, Or
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
-from vulnerabilities.data_source import VulnerabilityReferenceUnit
+from vulnerabilities.data_source import Reference
 
 
 def validate_schema(advisory_dict):
@@ -105,7 +105,7 @@ class ArchlinuxDataSource(DataSource):
 
             vuln_references = []
             vuln_references.append(
-                VulnerabilityReferenceUnit(
+                Reference(
                     reference_id=record["name"],
                     url="https://security.archlinux.org/{}".format(record["name"]),
                 )
@@ -113,7 +113,7 @@ class ArchlinuxDataSource(DataSource):
 
             for ref in record["advisories"]:
                 vuln_references.append(
-                    VulnerabilityReferenceUnit(
+                    Reference(
                         reference_id=ref,
                         url="https://security.archlinux.org/{}".format(ref),
                     )

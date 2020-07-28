@@ -25,7 +25,7 @@ from vulnerabilities.models import Importer
 IMPORTER_REGISTRY = [
     {
         'name': 'rust',
-        'license': 'https://creativecommons.org/publicdomain/zero/1.0/',
+        'license': 'cc0-1.0',
         'last_run': None,
         'data_source': 'RustDataSource',
         'data_source_cfg': {
@@ -45,7 +45,7 @@ IMPORTER_REGISTRY = [
     },
     {
         'name': 'archlinux',
-        'license': '',
+        'license': 'mit',
         'last_run': None,
         'data_source': 'ArchlinuxDataSource',
         'data_source_cfg': {
@@ -54,7 +54,7 @@ IMPORTER_REGISTRY = [
     },
     {
         'name': 'debian',
-        'license': 'MIT',
+        'license': 'mit',
         'last_run': None,
         'data_source': 'DebianDataSource',
         'data_source_cfg': {
@@ -63,7 +63,7 @@ IMPORTER_REGISTRY = [
     },
     {
         'name': 'safetydb',
-        'license': '',
+        'license': 'cc-by-nc-4.0',
         'last_run': None,
         'data_source': 'SafetyDbDataSource',
         'data_source_cfg': {
@@ -72,7 +72,7 @@ IMPORTER_REGISTRY = [
     },
     {
         'name': 'npm',
-        'license': '',
+        'license': 'mit',
         'last_run': None,
         'data_source': 'NpmDataSource',
         'data_source_cfg': {
@@ -90,7 +90,7 @@ IMPORTER_REGISTRY = [
     },
     {
         'name': 'ubuntu',
-        'license': '',
+        'license': 'gpl-2.0',
         'last_run': None,
         'data_source': 'UbuntuDataSource',
         'data_source_cfg': {
@@ -100,7 +100,7 @@ IMPORTER_REGISTRY = [
     },
     {
         'name': 'retiredotnet',
-        'license': 'MIT',
+        'license': 'mit',
         'last_run': None,
         'data_source': 'RetireDotnetDataSource',
         'data_source_cfg': {
@@ -129,7 +129,7 @@ IMPORTER_REGISTRY = [
     },
     {
         'name': 'redhat',
-        'license': '',
+        'license': 'cc-by-4.0',
         'last_run': None,
         'data_source': 'RedhatDataSource',
         'data_source_cfg': {},
@@ -152,7 +152,7 @@ IMPORTER_REGISTRY = [
     },
     {
         'name': 'ubuntu_usn',
-        'license': '',
+        'license': 'gpl-2.0',
         'last_run': None,
         'data_source': 'UbuntuUSNDataSource',
         'data_source_cfg': {

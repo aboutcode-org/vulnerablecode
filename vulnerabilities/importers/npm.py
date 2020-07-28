@@ -57,7 +57,6 @@ class NpmDataSource(GitDataSource):
             processed_data = self.process_file(f)
             if processed_data:
                 advisories.extend(processed_data)
-        print(advisories)
         return self.batch_advisories(advisories)
 
     @property
@@ -65,10 +64,8 @@ class NpmDataSource(GitDataSource):
         return self._versions
 
     def process_file(self, file) -> List[Advisory]:
-        print(file)
         with open(file) as f:
             record = json.load(f)
-        print(record)
         advisories = []
         package_name = record['module_name']
         all_versions = self.versions.get(package_name)

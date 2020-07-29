@@ -33,6 +33,7 @@ from typing import Set
 from typing import Tuple
 from urllib.error import HTTPError
 from urllib.request import urlopen
+import requests
 
 from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
@@ -67,6 +68,7 @@ def validate_schema(advisory_dict):
 @dataclasses.dataclass
 class SafetyDbConfiguration(DataSourceConfiguration):
     url: str
+    etags: dict
 
 
 class SafetyDbDataSource(DataSource):
@@ -90,8 +92,11 @@ class SafetyDbDataSource(DataSource):
         asyncio.run(self._versions.load_api(packages))
 
     def _fetch(self) -> Mapping[str, Any]:
-        with urlopen(self.config.url) as response:
-            return json.load(response)
+        if self.create_etag(self.config.url):
+            with urlopen(self.config.url) as response:
+                return json.load(response)
+
+        return []
 
     def collect_packages(self):
         return {pkg for pkg in self._api_response}
@@ -131,6 +136,18 @@ class SafetyDbDataSource(DataSource):
                     )
 
         return self.batch_advisories(advisories)
+
+    def create_etag(self, url):
+        etag = requests.head(url).headers.get('ETag')
+        if not etag:
+            # Kind of inaccurate to return True since etag is
+            # not created
+            return True
+        elif url in self.config.etags:
+            if self.config.etags[url] == etag:
+                return False
+        self.config.etags[url] = etag
+        return True
 
 
 def categorize_versions(

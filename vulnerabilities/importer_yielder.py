@@ -67,7 +67,8 @@ IMPORTER_REGISTRY = [
         'last_run': None,
         'data_source': 'SafetyDbDataSource',
         'data_source_cfg': {
-            'url': 'https://raw.githubusercontent.com/pyupio/safety-db/master/data/insecure_full.json'  # nopep8
+            'url': 'https://raw.githubusercontent.com/pyupio/safety-db/master/data/insecure_full.json',  # nopep8
+            'etags': {}
         },
     },
     {

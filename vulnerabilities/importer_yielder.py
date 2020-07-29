@@ -149,7 +149,9 @@ IMPORTER_REGISTRY = [
         'license': '',
         'last_run': None,
         'data_source': 'OpenSSLDataSource',
-        'data_source_cfg': {},
+        'data_source_cfg': {
+            'etags': {}
+        },
     },
     {
         'name': 'ubuntu_usn',

@@ -47,7 +47,7 @@ class NpmDataSource(GitDataSource):
 
     def __enter__(self):
         super(NpmDataSource, self).__enter__()
-        self._versions = VersionAPI()
+        self._versions = NpmVersionAPI()
         if not getattr(self, '_added_files', None):
             self._added_files, self._updated_files = self.file_changes(
                 recursive=True, file_ext='json', subdir='./vuln/npm')

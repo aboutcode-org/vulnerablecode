@@ -102,26 +102,21 @@ class PypiVersionAPI(VersionAPI):
 
 
 class CratesVersionAPI(VersionAPI):
-    def get(self, package_name: str) -> Set[str]:
-        package_name = package_name.strip()
+    async def load_api(self, pkg_set):
+        async with ClientSession(raise_for_status=True) as session:
+            await asyncio.gather(
+                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
+            )
 
-        if package_name not in self.cache:
-            releases = set()
+    async def fetch(self, pkg, session):
+        url = f"https://crates.io/api/v1/crates/{pkg}"
+        response = await session.request(method="GET", url=url)
+        response = await response.json()
+        versions = set()
+        for version_info in response["versions"]:
+            versions.add(version_info["num"])
 
-            try:
-                with urlopen(f"https://crates.io/api/v1/crates/{package_name}") as response:
-                    response = json.load(response)
-                    for version_info in response["versions"]:
-                        releases.add(version_info["num"])
-            except HTTPError as e:
-                if e.code == 404:
-                    pass
-                else:
-                    raise
-
-            self.cache[package_name] = releases
-
-        return self.cache[package_name]
+        self.cache[pkg] = versions
 
 
 class RubyVersionAPI(VersionAPI):
@@ -292,7 +287,9 @@ class ComposerVersionAPI(VersionAPI):
     @staticmethod
     def extract_versions(resp: dict, pkg_name: str) -> Set[str]:
         all_versions = resp["packages"][pkg_name].keys()
-        all_versions = {version.replace("v", "") for version in all_versions if "dev" not in version}  # nopep8
+        all_versions = {
+            version.replace("v", "") for version in all_versions if "dev" not in version
+        }  # nopep8
         # This if statement ensures, that all_versions contains only released versions
         # See https://github.com/composer/composer/blob/44a4429978d1b3c6223277b875762b2930e83e8c/doc/articles/versions.md#tags  # nopep8
         # for explanation of removing 'v'

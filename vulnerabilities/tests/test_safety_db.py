@@ -57,6 +57,7 @@ class SafetyDbImportTest(TestCase):
             data_source='SafetyDbDataSource',
             data_source_cfg={
                 'url': 'https://example.com',
+                'etags': {}
             },
         )
 

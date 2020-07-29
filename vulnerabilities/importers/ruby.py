@@ -1,4 +1,4 @@
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -17,17 +17,16 @@
 #  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
 #  VulnerableCode should be considered or used as legal advice. Consult an Attorney
 #  for any legal advice.
-#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
+#  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from json import JSONDecodeError
+import asyncio
 from typing import Set
 from typing import List
 
 from dephell_specifier import RangeSpecifier
 from dephell_specifier.range_specifier import InvalidSpecifier
 from packageurl import PackageURL
-import requests
 import yaml
 
 from vulnerabilities.data_source import Advisory
@@ -37,13 +36,19 @@ from vulnerabilities.package_managers import RubyVersionAPI
 
 
 class RubyDataSource(GitDataSource):
-
     def __enter__(self):
         super(RubyDataSource, self).__enter__()
 
-        if not getattr(self, '_added_files', None):
+        if not getattr(self, "_added_files", None):
             self._added_files, self._updated_files = self.file_changes(
-                recursive=True, file_ext='yml', subdir='./gems')
+                recursive=True, file_ext="yml", subdir="./gems"
+            )
+
+        self.pkg_manager_api = RubyVersionAPI()
+        self.set_api(self.collect_packages())
+
+    def set_api(self, packages):
+        asyncio.run(self.pkg_manager_api.load_api(packages))
 
     def updated_advisories(self) -> Set[Advisory]:
         files = self._updated_files
@@ -63,70 +68,78 @@ class RubyDataSource(GitDataSource):
                 advisories.append(processed_data)
         return self.batch_advisories(advisories)
 
+    def collect_packages(self):
+        packages = set()
+        files = self._updated_files.union(self._added_files)
+        for f in files:
+            data = load_yaml(f)
+            if data.get("gem"):
+                packages.add(data["gem"])
+
+        return packages
+
     def process_file(self, path) -> List[Advisory]:
-        with open(path) as f:
-            record = yaml.safe_load(f)
-            package_name = record.get(
-                'gem')
+        record = load_yaml(path)
+        package_name = record.get(
+            'gem')
 
-            if not package_name:
-                return
+        if not package_name:
+            return
 
-            if 'cve' in record:
-                cve_id = 'CVE-{}'.format(record['cve'])
-            else:
-                return
+        if 'cve' in record:
+            cve_id = 'CVE-{}'.format(record['cve'])
+        else:
+            return
 
-            safe_version_ranges = record.get('patched_versions', [])
-            # this case happens when the advisory contain only 'patched_versions' field
-            # and it has value None(i.e it is empty :( ).
-            if not safe_version_ranges:
-                safe_version_ranges = []
-            safe_version_ranges += record.get('unaffected_versions', [])
-            safe_version_ranges = [i for i in safe_version_ranges if i]
+        safe_version_ranges = record.get('patched_versions', [])
+        # this case happens when the advisory contain only 'patched_versions' field
+        # and it has value None(i.e it is empty :( ).
+        if not safe_version_ranges:
+            safe_version_ranges = []
+        safe_version_ranges += record.get('unaffected_versions', [])
+        safe_version_ranges = [i for i in safe_version_ranges if i]
 
-            if not getattr(self, 'pkg_manager_api', None):
-                self.pkg_manager_api = RubyVersionAPI()
-            all_vers = self.pkg_manager_api.get_all_version_of_package(
-                package_name)
-            safe_versions, affected_versions = self.categorize_versions(
-                all_vers, safe_version_ranges)
+        if not getattr(self, 'pkg_manager_api', None):
+            self.pkg_manager_api = RubyVersionAPI()
+        all_vers = self.pkg_manager_api.get(
+            package_name)
+        safe_versions, affected_versions = self.categorize_versions(
+            all_vers, safe_version_ranges)
 
-            impacted_purls = {
-                PackageURL(
-                    name=package_name,
-                    type='gem',
-                    version=version,
-                ) for version in affected_versions}
+        impacted_purls = {
+            PackageURL(
+                name=package_name,
+                type='gem',
+                version=version,
+            ) for version in affected_versions}
 
-            resolved_purls = {
-                PackageURL(
-                    name=package_name,
-                    type='gem',
-                    version=version,
-                ) for version in safe_versions}
+        resolved_purls = {
+            PackageURL(
+                name=package_name,
+                type='gem',
+                version=version,
+            ) for version in safe_versions}
 
-            references = []
-            if record.get('url'):
-                references.append(
-                    Reference(url=record.get('url'))
-                )
-
-            return Advisory(
-                summary=record.get('description', ''),
-                impacted_package_urls=impacted_purls,
-                resolved_package_urls=resolved_purls,
-                vuln_references=references,
-                cve_id=cve_id
+        references = []
+        if record.get('url'):
+            references.append(
+                Reference(url=record.get('url'))
             )
+
+        return Advisory(
+            summary=record.get('description', ''),
+            impacted_package_urls=impacted_purls,
+            resolved_package_urls=resolved_purls,
+            vuln_references=references,
+            cve_id=cve_id
+        )
 
     @staticmethod
     def categorize_versions(all_versions, unaffected_version_ranges):
 
         for id, elem in enumerate(unaffected_version_ranges):
             try:
-                unaffected_version_ranges[id] = RangeSpecifier(
-                    elem.replace(' ', ''))
+                unaffected_version_ranges[id] = RangeSpecifier(elem.replace(" ", ""))
             except InvalidSpecifier:
                 continue
 
@@ -138,4 +151,9 @@ class RubyDataSource(GitDataSource):
 
                     safe_versions.add(i)
 
-        return (safe_versions, all_versions-safe_versions)
+        return (safe_versions, all_versions - safe_versions)
+
+
+def load_yaml(path):
+    with open(path) as f:
+        return yaml.safe_load(f)

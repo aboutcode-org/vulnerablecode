@@ -21,6 +21,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
+from json import JSONDecodeError
 from typing import Mapping
 from typing import Set
 from typing import List
@@ -120,28 +121,24 @@ class CratesVersionAPI(VersionAPI):
 
 
 class RubyVersionAPI(VersionAPI):
+    async def load_api(self, pkg_set):
+        async with ClientSession(raise_for_status=True) as session:
+            await asyncio.gather(
+                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
+            )
 
-    base_endpt = "https://rubygems.org/api/v1/versions/{}.json"
-
-    def call_api(self, pkg_name) -> List:
-        end_pt = self.base_endpt.format(pkg_name)
+    async def fetch(self, pkg, session):
+        url = f"https://rubygems.org/api/v1/versions/{pkg}.json"
+        versions = set()
         try:
-            resp = requests.get(end_pt)
-            return resp.json()
-        # this covers 404 alright
-        except JSONDecodeError:
-            return []
+            response = await session.request(method="GET", url=url)
+            response = await response.json()
+            for release in response:
+                versions.add(release["number"])
+        except (ClientResponseError, JSONDecodeError):
+            pass
 
-    def get_all_version_of_package(self, pkg_name) -> Set[str]:
-        all_versions = set()
-        if self.cache.get(pkg_name):
-            return self.cache.get(pkg_name)
-
-        json_resp = self.call_api(pkg_name)
-        for release in json_resp:
-            all_versions.add(release["number"])
-        self.cache[pkg_name] = all_versions
-        return all_versions
+        self.cache[pkg] = versions
 
 
 class NpmVersionAPI(VersionAPI):

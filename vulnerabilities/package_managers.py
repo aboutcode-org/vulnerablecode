@@ -141,28 +141,24 @@ class RubyVersionAPI(VersionAPI):
 
 
 class NpmVersionAPI(VersionAPI):
-    def get(self, package_name: str) -> Set[str]:
-        """
-        Returns all versions available for a module
-        """
-        package_name = package_name.strip()
+    async def load_api(self, pkg_set):
+        async with ClientSession(raise_for_status=True) as session:
+            await asyncio.gather(
+                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
+            )
 
-        if package_name not in self.cache:
-            releases = set()
-            try:
-                with urlopen(f"https://registry.npmjs.org/{package_name}") as response:
-                    data = json.load(response)
-                    releases = {v for v in data.get("versions", {})}
-            except HTTPError as e:
-                if e.code == 404:
-                    # NPM registry has no data regarding this package, we skip these
-                    pass
-                else:
-                    raise
+    async def fetch(self, pkg, session):
+        url = f"https://registry.npmjs.org/{pkg}"
+        versions = set()
+        try:
+            response = await session.request(method="GET", url=url)
+            response = await response.json()
+            versions = {v for v in response.get("versions", [])}
 
-            self.cache[package_name] = releases
+        except ClientResponseError:
+            pass
 
-        return self.cache[package_name]
+        self.cache[pkg] = versions
 
 
 class DebianVersionAPI(VersionAPI):

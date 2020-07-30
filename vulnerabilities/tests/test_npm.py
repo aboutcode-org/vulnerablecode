@@ -81,7 +81,8 @@ class NpmImportTest(TestCase):
         runner = ImportRunner(self.importer, 5)
 
         with patch('vulnerabilities.importers.NpmDataSource.versions', new=MOCK_VERSION_API):
-            runner.run()
+            with patch('vulnerabilities.importers.NpmDataSource.set_api'):
+                runner.run()
 
         assert models.Vulnerability.objects.count() == 3
         assert models.VulnerabilityReference.objects.count() == 3

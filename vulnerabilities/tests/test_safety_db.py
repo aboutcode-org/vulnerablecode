@@ -68,11 +68,9 @@ class SafetyDbImportTest(TestCase):
     def test_import(self):
         runner = ImportRunner(self.importer, 5)
 
-        with patch(
-                'vulnerabilities.importers.SafetyDbDataSource._fetch',
-                return_value=self.mock_response
-        ):
-            runner.run()
+        with patch('vulnerabilities.importers.SafetyDbDataSource._fetch', return_value=self.mock_response):  # nopep8
+            with patch('vulnerabilities.importers.SafetyDbDataSource.set_api'):
+                runner.run()
 
         assert models.Vulnerability.objects.count() == 9
         assert models.VulnerabilityReference.objects.count() == 9

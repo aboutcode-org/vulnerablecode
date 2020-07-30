@@ -32,6 +32,7 @@ from vulnerabilities.importers.ruby import RubyDataSource
 from vulnerabilities.data_source import GitDataSourceConfiguration
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
+from vulnerabilities.package_managers import RubyVersionAPI
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -50,8 +51,9 @@ class RubyDataSourceTest(TestCase):
             "repository_url": "https://github.com/rubysec/ruby-advisory-db.git",
         }
         cls.data_src = RubyDataSource(1, config=data_source_cfg)
+        cls.data_src.pkg_manager_api = RubyVersionAPI()
 
-    @patch('vulnerabilities.importers.ruby.RubyVersionAPI.get_all_version_of_package',
+    @patch('vulnerabilities.package_managers.RubyVersionAPI.get',
            return_value={'1.0.0', '1.8.0', '2.0.3'})
     def test_process_file(self, mock_write):
         expected_advisories = {

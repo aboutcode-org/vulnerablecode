@@ -33,10 +33,6 @@ import requests
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientResponseError
 
-# TODO : 1) Declare a proper blueprint for all VersionAPI classes
-#  2) Use async in every VersionAPI class. This will greatly speed up
-#  the import process.
-
 
 class VersionAPI:
     def __init__(self, cache: Mapping[str, Set[str]] = None):

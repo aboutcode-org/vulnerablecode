@@ -20,7 +20,7 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-
+import asyncio
 import os
 import dataclasses
 import json
@@ -98,6 +98,9 @@ class GitHubAPIDataSource(DataSource):
     def __enter__(self):
         self.advisories = self.fetch()
 
+    def set_api(self, packages):
+        asyncio.run(self.version_api.load_api(packages))
+
     def updated_advisories(self) -> Set[Advisory]:
         return self.batch_advisories(self.process_response())
 
@@ -133,6 +136,7 @@ class GitHubAPIDataSource(DataSource):
         versioner = versioners.get(ecosystem)
         if versioner:
             self.version_api = versioner()
+            self.set_api(self.collect_packages(ecosystem))
 
     @staticmethod
     def process_name(ecosystem: str, pkg_name: str) -> Optional[Tuple[Optional[str], str]]:
@@ -150,6 +154,13 @@ class GitHubAPIDataSource(DataSource):
             vendor, name = pkg_name.split("/")
             return vendor, name
 
+    def collect_packages(self, ecosystem):
+        packages = set()
+        for page in self.advisories[ecosystem]:
+            for adv in page["data"]["securityVulnerabilities"]["edges"]:
+                packages.add(adv["node"]["package"]["name"])
+        return packages
+
     def process_response(self) -> List[Advisory]:
         adv_list = []
         for ecosystem in self.advisories:
@@ -164,11 +175,9 @@ class GitHubAPIDataSource(DataSource):
                     else:
                         continue
                     aff_range = adv["node"]["vulnerableVersionRange"]
-                    self.version_api.load_to_api(name)
                     aff_vers, unaff_vers = self.categorize_versions(
                         aff_range, self.version_api.get(name)
                     )
-
                     affected_purls = {
                         PackageURL(name=pkg_name, namespace=ns,
                                    version=version, type=pkg_type)

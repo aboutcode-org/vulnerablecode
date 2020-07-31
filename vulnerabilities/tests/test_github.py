@@ -130,16 +130,18 @@ class TestGitHubAPIDataSource(TestCase):
 
     def test_set_version_api(self):
 
-        assert getattr(self.data_src, 'version_api', None) is None
+        with patch('vulnerabilities.importers.github.GitHubAPIDataSource.set_api'):
+            with patch('vulnerabilities.importers.github.GitHubAPIDataSource.collect_packages'):
+                assert getattr(self.data_src, 'version_api', None) is None
 
-        self.data_src.set_version_api('MAVEN')
-        assert isinstance(self.data_src.version_api, MavenVersionAPI)
+                self.data_src.set_version_api('MAVEN')
+                assert isinstance(self.data_src.version_api, MavenVersionAPI)
 
-        self.data_src.set_version_api('NUGET')
-        assert isinstance(self.data_src.version_api, NugetVersionAPI)
+                self.data_src.set_version_api('NUGET')
+                assert isinstance(self.data_src.version_api, NugetVersionAPI)
 
-        self.data_src.set_version_api('COMPOSER')
-        assert isinstance(self.data_src.version_api, ComposerVersionAPI)
+                self.data_src.set_version_api('COMPOSER')
+                assert isinstance(self.data_src.version_api, ComposerVersionAPI)
 
     def test_process_name(self):
 
@@ -302,10 +304,8 @@ class TestGitHubAPIDataSource(TestCase):
 
         mock_version_api = MagicMock()
         mock_version_api.get = lambda x: {'1.2.0', '9.0.2'}
-        with patch(
-            'vulnerabilities.importers.github.MavenVersionAPI',
-            return_value=mock_version_api,
-        ):
-            found_result = self.data_src.process_response()
+        with patch('vulnerabilities.importers.github.MavenVersionAPI', return_value=mock_version_api):  # nopep8
+            with patch('vulnerabilities.importers.github.GitHubAPIDataSource.set_api'):
+                found_result = self.data_src.process_response()
 
         assert expected_result == found_result

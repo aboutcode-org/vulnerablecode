@@ -20,12 +20,14 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import asyncio
 import os
 import json
 from unittest import TestCase
 from unittest.mock import patch
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, AsyncMock
 import xml.etree.ElementTree as ET
+from aiohttp import test_utils
 
 from vulnerabilities.package_managers import ComposerVersionAPI
 from vulnerabilities.package_managers import MavenVersionAPI
@@ -33,6 +35,23 @@ from vulnerabilities.package_managers import NugetVersionAPI
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")
+
+
+class MockClientSession:
+    def __init__(self, return_val):
+        self.return_val = return_val
+
+    async def request(self, *args, **kwargs):
+        mock_response = AsyncMock()
+        mock_response.json = self.json
+        mock_response.read = self.read
+        return mock_response
+
+    async def json(self):
+        return self.return_val
+
+    async def read(self):
+        return self.return_val
 
 
 class TestComposerVersionAPI(TestCase):
@@ -121,16 +140,11 @@ class TestComposerVersionAPI(TestCase):
         found_versions = self.version_api.extract_versions(self.response, "typo3/cms-core")
         assert found_versions == self.expected_versions
 
-    def test_load_to_api(self):
+    def test_fetch(self):
 
         assert self.version_api.get("typo3/cms-core") == set()
-
-        mock_response = MagicMock()
-        mock_response.json = lambda: self.response
-
-        with patch("vulnerabilities.package_managers.requests.get", return_value=mock_response):
-            self.version_api.load_to_api("typo3/cms-core")
-
+        client_session = MockClientSession(self.response)
+        asyncio.run(self.version_api.fetch("typo3/cms-core", client_session))
         assert self.version_api.get("typo3/cms-core") == self.expected_versions
 
 
@@ -140,6 +154,9 @@ class TestMavenVersionAPI(TestCase):
         cls.version_api = MavenVersionAPI()
         with open(os.path.join(TEST_DATA, "maven_api", "maven-metadata.xml")) as f:
             cls.response = ET.parse(f)
+
+        with open(os.path.join(TEST_DATA, "maven_api", "maven-metadata.xml"), "rb") as f:
+            cls.content = f.read()
 
     def test_artifact_url(self):
         eg_comps1 = ["org.apache", "kafka"]
@@ -158,17 +175,11 @@ class TestMavenVersionAPI(TestCase):
         expected_versions = {"1.2.2", "1.2.3", "1.3.0"}
         assert expected_versions == self.version_api.extract_versions(self.response)
 
-    def test_load_to_api(self):
-
+    def test_fetch(self):
         assert self.version_api.get("org.apache:kafka") == set()
-
-        mock_response = MagicMock()
-        mock_response.content = ET.tostring(self.response.getroot())
         expected = {"1.2.3", "1.3.0", "1.2.2"}
-
-        with patch("vulnerabilities.package_managers.requests.get", return_value=mock_response):
-            self.version_api.load_to_api("org.apache:kafka")
-
+        client_session = MockClientSession(self.content)
+        asyncio.run(self.version_api.fetch("org.apache:kafka", client_session))
         assert self.version_api.get("org.apache:kafka") == expected
 
 
@@ -206,14 +217,21 @@ class TestNugetVersionAPI(TestCase):
         found_versions = self.version_api.extract_versions(self.response)
         assert self.expected_versions == found_versions
 
-    def test_load_to_api(self):
+    def test_fetch(self):
 
         assert self.version_api.get("Exfat.Ntfs") == set()
-
-        mock_response = MagicMock()
-        mock_response.json = lambda: self.response
-
-        with patch("vulnerabilities.package_managers.requests.get", return_value=mock_response):
-            self.version_api.load_to_api("Exfat.Ntfs")
-
+        client_session = MockClientSession(self.response)
+        asyncio.run(self.version_api.fetch("Exfat.Ntfs", client_session))
         assert self.version_api.get("Exfat.Ntfs") == self.expected_versions
+
+    # def test_load_to_api(self):
+
+    #     assert self.version_api.get("Exfat.Ntfs") == set()
+
+    #     mock_response = MagicMock()
+    #     mock_response.json = lambda: self.response
+
+    #     with patch("vulnerabilities.package_managers.requests.get", return_value=mock_response):
+    #         self.version_api.load_to_api("Exfat.Ntfs")
+
+    #     assert self.version_api.get("Exfat.Ntfs") == self.expected_versions

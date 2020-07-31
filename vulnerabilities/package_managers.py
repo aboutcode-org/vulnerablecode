@@ -195,24 +195,42 @@ class DebianVersionAPI(VersionAPI):
 
 
 class MavenVersionAPI(VersionAPI):
-    def load_to_api(self, pkg_name: str) -> None:
-        if pkg_name in self.cache:
+    async def load_api(self, pkg_set):
+        async with ClientSession(raise_for_status=True) as session:
+            await asyncio.gather(
+                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
+            )
+
+    async def fetch(self, pkg, session) -> None:
+        artifact_comps = pkg.split(":")
+        endpoint = self.artifact_url(artifact_comps)
+        try:
+            resp = await session.request(method="GET", url=endpoint)
+            resp = await resp.read()
+
+        except ClientResponseError:
+            self.cache[pkg] = set()
             return
 
-        artifact_comps = pkg_name.split(":")
-        endpoint = self.artifact_url(artifact_comps)
-        resp = requests.get(endpoint).content
-
-        try:
-            xml_resp = ET.ElementTree(ET.fromstring(resp.decode("utf-8")))
-            self.cache[pkg_name] = self.extract_versions(xml_resp)
-        except ET.ParseError:
-            self.cache[pkg_name] = set()
+        xml_resp = ET.ElementTree(ET.fromstring(resp.decode("utf-8")))
+        self.cache[pkg] = self.extract_versions(xml_resp)
 
     @staticmethod
     def artifact_url(artifact_comps: List[str]) -> str:
         base_url = "https://repo1.maven.org/maven2/{}"
-        group_id, artifact_id = artifact_comps
+        try:
+            group_id, artifact_id = artifact_comps
+        except ValueError:
+            if len(artifact_comps) == 1:
+                group_id = artifact_comps[0]
+                artifact_id = artifact_comps[0].split(".")[-1]
+
+            elif len(artifact_comps) == 3:
+                group_id, artifact_id = list(dict.fromkeys(artifact_comps))
+
+            else:
+                raise
+
         group_url = group_id.replace(".", "/")
         suffix = group_url + "/" + artifact_id + "/" + "maven-metadata.xml"
         endpoint = base_url.format(suffix)
@@ -230,24 +248,23 @@ class MavenVersionAPI(VersionAPI):
 
 
 class NugetVersionAPI(VersionAPI):
-    def load_to_api(self, pkg_name: str) -> None:
-        if pkg_name in self.cache:
-            return
-        endpoint = self.nuget_url(pkg_name)
-        try:
-            resp = requests.get(endpoint).json()
-        # pkg_name=Microsoft.NETCore.UniversalWindowsPlatform triggers
-        # JSONDecodeError.
-        except json.decoder.JSONDecodeError:
-            self.cache[pkg_name] = set()
-            return
+    async def load_api(self, pkg_set):
+        async with ClientSession(raise_for_status=True) as session:
+            await asyncio.gather(
+                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
+            )
 
-        self.cache[pkg_name] = self.extract_versions(resp)
+    async def fetch(self, pkg, session) -> None:
+        endpoint = self.nuget_url(pkg)
+        resp = await session.request(method="GET", url=endpoint)
+        resp = await resp.json()
+        self.cache[pkg] = self.extract_versions(resp)
 
     @staticmethod
     def nuget_url(pkg_name: str) -> str:
+        pkg_name = pkg_name.lower().strip()
         base_url = "https://api.nuget.org/v3/registration5-semver1/{}/index.json"
-        return base_url.format(pkg_name.lower())
+        return base_url.format(pkg_name)
 
     @staticmethod
     def extract_versions(resp: dict) -> Set[str]:
@@ -263,13 +280,17 @@ class NugetVersionAPI(VersionAPI):
 
 
 class ComposerVersionAPI(VersionAPI):
-    def load_to_api(self, pkg_name: str) -> None:
-        if pkg_name in self.cache:
-            return
+    async def load_api(self, pkg_set):
+        async with ClientSession(raise_for_status=True) as session:
+            await asyncio.gather(
+                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
+            )
 
-        endpoint = self.composer_url(pkg_name)
-        json_resp = requests.get(endpoint).json()
-        self.cache[pkg_name] = self.extract_versions(json_resp, pkg_name)
+    async def fetch(self, pkg, session) -> None:
+        endpoint = self.composer_url(pkg)
+        resp = await session.request(method="GET", url=endpoint)
+        resp = await resp.json()
+        self.cache[pkg] = self.extract_versions(resp, pkg)
 
     @staticmethod
     def composer_url(pkg_name: str) -> str:

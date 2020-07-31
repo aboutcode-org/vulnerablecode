@@ -76,7 +76,7 @@ class SafetyDbDataSource(DataSource):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._api_response = self._fetch()
-        # validate_schema(self._api_response)
+        validate_schema(self._api_response)
 
     def __enter__(self):
         self._versions = PypiVersionAPI()

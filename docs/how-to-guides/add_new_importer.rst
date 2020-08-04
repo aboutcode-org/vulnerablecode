@@ -72,61 +72,18 @@ Steps to build an Importer:
    <hr>
 
 * **Register an Importer:**
-  To do this you need to write a migration script, so that whenever a user runs ``./manage.py migrate`` your ``Importer`` will get registered in their DB.
+To do this go to ``vulnerabilites/importer_yielder.py``, in the ``IMPORTER_REGISTRY`` 
+list add a dictionary with following data 
 
-  - To do this go to ``vulnerabilities/migrations`` , note the name of last migration(the one with highest numerical prefix) , let's call it ``last_migration``.
-   
-  **Example:** Suppose contents of ``vulnerabilities/migrations`` are
-
-  ::
-
-       -0001_initial.py
-       -0002_debian_importer.py
-       -0003_suse_importer.py
-
-
-
-  Then ``last_migration`` will be equal to ``0003_suse_importer``.
-   
-  - Create a ``ABCD_<your-importer-name>_importer.py`` file in the same directory, where ABCD is numerical prefix of ``last_migration`` + 1.
-   
-  - Copy the following to this newly created file.
-   
 .. code:: python
 
-    from django.db import migrations
-    def  add_<your_importer_name>_importer(apps, _) :
-    
-        Importer = apps.get_model('vulnerabilities', 'Importer')
-        Importer.objects.create(
-        name=<your_importer_name>,
-        license='',
-        last_run=None,
-        data_source=<your_data_source_name>,
-        data_source_cfg={<your_data_source_configuration>}
-        ) 
-    
-    def  remove_<your_importer_name>_importer(apps, _):
-        Importer = apps.get_model('vulnerabilities', 'Importer')
-        qs = Importer.objects.filter(name=<your_importer_name>)
-        if qs:
-            qs[0].delete()
-    
-    class  Migration(migrations.Migration):
-        dependencies = [
-    
-        ('vulnerabilities', '<last_migration>'),
-    
-            ]
-    
-    
-    
-        operations = [
-    
-        migrations.RunPython(add_<your_importer_name>_importer, remove_<your_importer_name>_importer),
-    
-        ]
-
+    {
+        'name': <your_importer_name> ,
+        'license': '',
+        'last_run': None,
+        'data_source': <your_data_source_name>,
+        'data_source_cfg': {},
+    }
   
 **Don't forget to replace <your_importer_name> and <your_data_source_name> with appropriate strings** For this example let's consider `<your_data_source_name> = "ExampleDataSource"` . If you know the license of the data you are importing, assign the license field equal to the license of the data in the  ``add_<your_importer_name>_importer`` method of the migration script.
 

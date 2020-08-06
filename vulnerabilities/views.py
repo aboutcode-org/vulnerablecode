@@ -34,74 +34,75 @@ from vulnerabilities import models
 
 
 class PackageSearchView(View):
-    template_name = 'packages.html'
+    template_name = "packages.html"
 
     def get(self, request):
-        context = {'form': forms.PackageForm()}
+        context = {"form": forms.PackageForm()}
 
         if request.GET:
             packages = self.request_to_queryset(request)
-            context['packages'] = packages
+            context["packages"] = packages
 
         return render(request, self.template_name, context)
 
     @staticmethod
     def request_to_queryset(request):
         query = {}
-        if len(request.GET['name']):
-            query['name'] = request.GET['name']
+        if len(request.GET["name"]):
+            query["name"] = request.GET["name"]
 
-        if request.GET['type'] and request.GET['type'] != '*':
-            query['type'] = request.GET['type']
+        if request.GET["type"] and request.GET["type"] != "*":
+            query["type"] = request.GET["type"]
 
-        if len(request.GET['version']):
-            query['version'] = request.GET['version']
+        if len(request.GET["version"]):
+            query["version"] = request.GET["version"]
 
         return models.Package.objects.all().filter(**query)
 
 
 class VulnerabilitySearchView(View):
 
-    template_name = 'vulnerabilities.html'
+    template_name = "vulnerabilities.html"
 
     def get(self, request):
-        context = {'form': forms.VulnerabilitySearchForm()}
+        context = {"form": forms.VulnerabilitySearchForm()}
 
         if request.GET:
             vulnerabilities = self.request_to_queryset(request)
-            context['vulnerabilities'] = vulnerabilities
+            context["vulnerabilities"] = vulnerabilities
 
         return render(request, self.template_name, context)
 
     @staticmethod
     def request_to_queryset(request):
 
-        if request.GET['vuln_id']:
-            vuln_id = request.GET['vuln_id']
+        if request.GET["vuln_id"]:
+            vuln_id = request.GET["vuln_id"]
             return models.Vulnerability.objects.filter(cve_id__contains=vuln_id).select_related()
 
 
 class PackageUpdate(UpdateView):
 
-    template_name = 'package_update.html'
+    template_name = "package_update.html"
     model = models.Package
-    fields = ['name', 'type', 'version', 'namespace']
+    fields = ["name", "type", "version", "namespace"]
 
     def get_context_data(self, **kwargs):
         context = super(PackageUpdate, self).get_context_data(**kwargs)
-        resolved_vuln, unresolved_vuln = self._package_vulnerabilities(
-            self.kwargs['pk'])
-        context['resolved_vuln'] = resolved_vuln
-        context['impacted_vuln'] = unresolved_vuln
+        resolved_vuln, unresolved_vuln = self._package_vulnerabilities(self.kwargs["pk"])
+        context["resolved_vuln"] = resolved_vuln
+        context["impacted_vuln"] = unresolved_vuln
 
         return context
 
     def _package_vulnerabilities(self, package_pk):
 
         ip = models.PackageRelatedVulnerability.objects.filter(
-            package_id=package_pk, is_vulnerable=True).select_related()
+            package_id=package_pk, is_vulnerable=True
+        ).select_related()
         rp = models.PackageRelatedVulnerability.objects.filter(
-            package_id=package_pk, is_vulnerable=False).select_related()
+            package_id=package_pk, is_vulnerable=False
+        ).select_related()
 
         resolved_vuln = [i.vulnerability for i in rp]
         unresolved_vuln = [i.vulnerability for i in ip]
@@ -109,129 +110,92 @@ class PackageUpdate(UpdateView):
         return resolved_vuln, unresolved_vuln
 
     def get_success_url(self):
-        return ''
+        return ""
 
 
 class VulnerabilityDetails(ListView):
-    template_name = 'vulnerability.html'
+    template_name = "vulnerability.html"
     model = models.VulnerabilityReference
 
     def get_context_data(self, **kwargs):
         context = super(VulnerabilityDetails, self).get_context_data(**kwargs)
-        context['vulnerability'] = models.Vulnerability.objects.get(
-            id=self.kwargs['pk'])
+        context["vulnerability"] = models.Vulnerability.objects.get(id=self.kwargs["pk"])
         return context
 
     def get_queryset(self):
-        return models.VulnerabilityReference.objects.filter(vulnerability_id=self.kwargs['pk'])
+        return models.VulnerabilityReference.objects.filter(vulnerability_id=self.kwargs["pk"])
 
 
 class VulnerabilityCreate(CreateView):
 
-    template_name = 'vulnerability_create.html'
+    template_name = "vulnerability_create.html"
     model = models.Vulnerability
-    fields = ['cve_id', 'summary']
+    fields = ["cve_id", "summary"]
 
     def get_success_url(self):
 
-        return reverse('vulnerability_view', kwargs={'pk': self.object.id})
+        return reverse("vulnerability_view", kwargs={"pk": self.object.id})
 
 
 class PackageCreate(CreateView):
 
-    template_name = 'package_create.html'
+    template_name = "package_create.html"
     model = models.Package
-    fields = ['name', 'namespace', 'type', 'version']
+    fields = ["name", "namespace", "type", "version"]
 
     def get_success_url(self):
-        return reverse('package_view', kwargs={'pk': self.object.id})
-
-# TODO : Squash ImpactedPackageDelete  ResolvedPackageDelete into one
-# 'PackageRelatedVulnerablityDelete' view
+        return reverse("package_view", kwargs={"pk": self.object.id})
 
 
-class ResolvedPackageDelete(DeleteView):
-
+class PackageRelatedVulnerablityDelete(DeleteView):
     model = models.PackageRelatedVulnerability
 
     def get_object(self):
-        package_id = self.kwargs.get('pid')
-        vulnerability_id = self.kwargs.get('vid')
+        package_id = self.kwargs.get("pid")
+        vulnerability_id = self.kwargs.get("vid")
         return models.PackageRelatedVulnerability.objects.get(
-            package_id=package_id, vulnerability_id=vulnerability_id, is_vulnerable=False)
+            package_id=package_id, vulnerability_id=vulnerability_id
+        )
 
     def get_success_url(self):
-        return reverse('package_view', kwargs={'pk': self.kwargs.get('pid')})
-
-
-class ImpactedPackageDelete(DeleteView):
-
-    model = models.PackageRelatedVulnerability
-
-    def get_object(self):
-        package_id = self.kwargs.get('pid')
-        vulnerability_id = self.kwargs.get('vid')
-        return models.PackageRelatedVulnerability.objects.get(
-            package_id=package_id, vulnerability_id=vulnerability_id, is_vulnerable=True)
-
-    def get_success_url(self):
-        return reverse('package_view', kwargs={'pk': self.kwargs.get('pid')})
+        return reverse("package_view", kwargs={"pk": self.kwargs.get("pid")})
 
 
 class HomePage(View):
 
-    template_name = 'index.html'
+    template_name = "index.html"
 
     def get(self, request):
         return render(request, self.template_name)
 
-# TODO : Squash ImpactedPackageCreate  ResolvedPackageCreate into one
-# 'PackageRelatedVulnerablityCreate' view
 
+class PackageRelatedVulnerablityCreate(CreateView):
 
-class ImpactedPackageCreate(CreateView):
-
-    template_name = 'impacted_package_create.html'
+    template_name = "impacted_package_create.html"
     model = models.PackageRelatedVulnerability
-    fields = ['vulnerability']
+    fields = ["vulnerability"]
 
     def form_valid(self, form):
 
-        package = models.Package.objects.get(id=self.kwargs['pid'])
+        is_vulnerable = "impacted" in self.request.headers["Referer"]
+        package = models.Package.objects.get(id=self.kwargs["pid"])
         form.instance.package = package
-        form.instance.is_vulnerable = True
-        return super(ImpactedPackageCreate, self).form_valid(form)
+        form.instance.is_vulnerable = is_vulnerable
+        return super(PackageRelatedVulnerablityCreate, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('package_view', kwargs={'pk': self.kwargs['pid']})
-
-
-class ResolvedPackageCreate(CreateView):
-
-    template_name = 'resolved_package_create.html'
-    model = models.PackageRelatedVulnerability
-    fields = ['vulnerability']
-
-    def form_valid(self, form):
-        package = models.Package.objects.get(id=self.kwargs['pid'])
-        form.instance.package = package
-        form.instance.is_vulnerable = False
-        return super(ResolvedPackageCreate, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse('package_view', kwargs={'pk': self.kwargs['pid']})
+        return reverse("package_view", kwargs={"pk": self.kwargs["pid"]})
 
 
 class VulnerabilityReferenceCreate(CreateView):
 
-    template_name = 'vulnerability_reference_create.html'
+    template_name = "vulnerability_reference_create.html"
     model = models.VulnerabilityReference
-    fields = ['reference_id', 'url']
+    fields = ["reference_id", "url"]
 
     def form_valid(self, form):
-        form.instance.vulnerability = models.Vulnerability.objects.get(
-            id=self.kwargs['vid'])
+        form.instance.vulnerability = models.Vulnerability.objects.get(id=self.kwargs["vid"])
         return super(VulnerabilityReferenceCreate, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('vulnerability_view', kwargs={'pk': self.kwargs['vid']})
+        return reverse("vulnerability_view", kwargs={"pk": self.kwargs["vid"]})

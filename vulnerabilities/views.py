@@ -171,7 +171,7 @@ class HomePage(View):
 
 class PackageRelatedVulnerablityCreate(CreateView):
 
-    template_name = "impacted_package_create.html"
+    template_name = "packagerelatedvulnerability_create.html"
     model = models.PackageRelatedVulnerability
     fields = ["vulnerability"]
 

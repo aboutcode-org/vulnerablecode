@@ -110,7 +110,7 @@ class PackageUpdate(UpdateView):
         return resolved_vuln, unresolved_vuln
 
     def get_success_url(self):
-        return reverse('package_view', kwargs={'pk': self.kwargs["pk"]})
+        return reverse("package_view", kwargs={"pk": self.kwargs["pk"]})
 
 
 class VulnerabilityDetails(ListView):
@@ -174,6 +174,13 @@ class PackageRelatedVulnerablityCreate(CreateView):
     template_name = "packagerelatedvulnerability_create.html"
     model = models.PackageRelatedVulnerability
     fields = ["vulnerability"]
+
+    def get_form(self, *args, **kwargs):
+        form = super(PackageRelatedVulnerablityCreate, self).get_form(*args, **kwargs)
+        form.fields["vulnerability"].queryset = models.Vulnerability.objects.exclude(
+            package__pk=self.kwargs["pid"]
+        )
+        return form
 
     def form_valid(self, form):
 

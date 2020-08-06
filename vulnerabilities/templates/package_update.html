@@ -7,22 +7,22 @@ Curate : {{object}}
 {% endblock %}
 
 {% block content %}
-<div class="columns is-5 is-variable">
+<div class="columns is-5 is-variable mx-6 mb-6">
   <div class="column is-half has-text-centered has-background-success-light">
      <form method="post" class="card has-background-success-light">
-      <header class="card-header">
+      <header class="card-header mb-3">
         <p class="card-header-title">
           Package Details 
         </p>
       </header>
         {% csrf_token %}
         {% for field in form %}
-        <div class="field">
+        <div class="field px-3">
             <label class="label">{{field.label}}</label>
             {% render_field field class="input is-primary" %}
         </div>
         {% endfor %}
-      <button class="button is-success", type="submit">
+      <button class="button is-success mb-3", type="submit">
         Update
       </button>
     </form>
@@ -32,34 +32,29 @@ Curate : {{object}}
     <div class="columns is-variable is-5 is-multiline">
         <div class="column is-full">
         <div class="card has-background-danger-light">
-        <header class="card-header">
+        <header class="card-header mb-3">
             <p class="card-header-title">Vulnerable To</p>
         </header>
-        <div class="tags" id="unresolved_tags">
+        <div class="tags mx-3">
             {% for vulnerability in impacted_vuln %}
                 <span class="tag is-danger is-medium">
                   <a href="{% url 'vulnerability_view' vulnerability.pk %}" class="has-text-white">{{vulnerability}}</a>
-                </span>
+                
+                  <form method="POST" action="{% url 'impacted_package_delete' object.pk vulnerability.pk %}"">
+                    {% csrf_token %}<button class="delete is-small" type="submit"></button>
+                  </form>
+              </span>
             {% endfor %}
         </div>
 
-        <div class="field is-grouped">
-            <p class="control">
-                
-                <a class="button is-success is-small" href = "{% url 'impacted_package_create' object.pk %}">
+        <div class="field is-centered">
+            <p class="control pb-3">
+                <a class="button is-success" href = "{% url 'impacted_package_create' object.pk %}">
                     <span>Add</span>
                     <span class="icon is-small">
                         <i class="fa fa-plus"></i>
                     </span>
                 </a>
-            </p>
-            <p class="control">
-                <button class="button is-danger is-small id="rm-resolved" onclick="HandleRemoveButtonsOnImpacted()">
-                    <span>Remove</span>
-                    <span class="icon is-small">
-                        <i class="fa fa-minus"></i>
-                    </span>
-                </button>
             </p>
         </div>
 
@@ -68,33 +63,29 @@ Curate : {{object}}
 
     <div class="column is-full">
         <div class="card has-background-danger-light">
-        <header class="card-header">
+        <header class="card-header mb-3">
              <p class="card-header-title">Safe To</p>
         </header>
-               <div class="tags" id="resolved_tags">
+               <div class="tags mx-3">
             {% for vulnerability in resolved_vuln %}
             <span class="tag is-primary is-medium">
               <a href="{% url 'vulnerability_view' vulnerability.pk %}" class="has-text-white">{{vulnerability}}</a>
+            
+            <form method="POST" action="{% url 'resolved_package_delete' object.pk vulnerability.pk %}">
+              {% csrf_token %}<button class="delete is-small" type="submit"></button>
+            </form>
             </span>
             {% endfor %}
         </div>
 
-        <div class="field is-grouped">
-            <p class="control">
-                <a class="button is-success is-small" href= "{% url 'resolved_package_create' object.pk %}" >
+        <div class="field is-centered">
+            <p class="control pb-3">
+                <a class="button is-success" href= "{% url 'resolved_package_create' object.pk %}" >
                     <span>Add</span>
                     <span class="icon is-small">
                         <i class="fa fa-plus"></i>
                     </span>
                 </a>
-            </p>
-            <p class="control">
-                <button class="button is-danger is-small id="rm-resolved" onclick="HandleRemoveButtonsOnResolved()">
-                    <span>Remove</span>
-                    <span class="icon is-small">
-                        <i class="fa fa-minus"></i>
-                    </span>
-                </button>
             </p>
         </div>
     </div>
@@ -103,93 +94,4 @@ Curate : {{object}}
   </div>
 
 </div>
-
 {% endblock %}
-
-{% block javascript %}
-<script>
-    var remove_toggled = false ;
-    var remove_vuln_toggled = false ;
-    function  HandleRemoveButtonsOnResolved()
-    {
-        if (remove_toggled)
-        {
-            var delete_buttons = document.getElementsByClassName('delete is-small')
-            for(var i = delete_buttons.length-1 ; i>=0 ; i--)
-            {
-                delete_buttons[i].remove();
-            }
-            remove_toggled = false;
-
-        }
-        else
-        {
-            var tags = document.getElementsByClassName('tag is-primary is-medium')
-            for(var i = 0 ; i<tags.length ; i++)
-            {
-                let vuln_pk = extract_pk(tags[i].children[0].attributes['href'].nodeValue) ;
-                // Do this in a cleaner way
-
-                url = "../relations/resolved/" + {{object.pk}} + "/" + vuln_pk
-                let btnHTML = `
-                <form method="POST" action=${url}>
-                {% csrf_token %}<button class="delete is-small" type="submit"></button>
-                </form>
-                `
-
-                tags[i].innerHTML += btnHTML;
-            }
-            remove_toggled = true ;
-        }
-
-    }
-    function  HandleRemoveButtonsOnImpacted()
-    {
-        if (remove_vuln_toggled)
-        {
-            var delete_buttons = document.getElementsByClassName('delete is-small')
-            for(var i = delete_buttons.length-1 ; i>=0 ; i--)
-            {
-                delete_buttons[i].remove();
-            }
-            remove_vuln_toggled = false;
-
-        }
-        else
-        {
-            var tags = document.getElementsByClassName('tag is-danger is-medium')
-            for(var i = 0 ; i<tags.length ; i++)
-            {
-                let vuln_pk = extract_pk(tags[i].children[0].attributes['href'].nodeValue) ;
-                // Do this in a cleaner way
-
-                url = "../relations/impacted/" + {{object.pk}} + "/" + vuln_pk
-                let btnHTML = `
-                <form method="POST" action=${url}>
-                {% csrf_token %}<button class="delete is-small" type="submit"></button>
-                </form>
-                `
-
-                tags[i].innerHTML += btnHTML;
-            }
-            remove_vuln_toggled = true ;
-        }
-
-    }
-
-
-
-    function extract_pk(url)
-    {
-        let splitted_url = url.split('/')
-        // eg value of url = "/vulnerabilities/5909"
-
-        return splitted_url[splitted_url.length -1]
-    }
-
-</script>
-{% endblock %}
-
-
-
-

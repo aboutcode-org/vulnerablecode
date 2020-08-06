@@ -10,22 +10,22 @@ Create a new  Package
 {% block content %}
 <div class="columns">
   <div class="column is-one-third"></div>
-  <div class="column  is-one-third has-text-centered  ">
+  <div class="column is-one-third has-text-centered  ">
     <form method="post" class="card has-background-success-light">
         {% csrf_token %}
-        <header class="card-header">
+        <header class="card-header mb-3">
           <p class="card-header-title is-centered">
             Package Details 
           </p>
         </header>
         {% for field in form %}
-        <div class="field">
+        <div class="field mx-3">
           <div class="control">
             {% render_field field class="input is-primary" placeholder=field.label %}
           </div>
         </div>
         {% endfor %}
-      <button class="button is-success", type="submit">
+      <button class="button is-success mb-3", type="submit">
         Create
       </button>
     </form>

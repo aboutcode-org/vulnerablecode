@@ -110,7 +110,7 @@ class PackageUpdate(UpdateView):
         return resolved_vuln, unresolved_vuln
 
     def get_success_url(self):
-        return ""
+        return reverse('package_view', kwargs={'pk': self.kwargs["pk"]})
 
 
 class VulnerabilityDetails(ListView):

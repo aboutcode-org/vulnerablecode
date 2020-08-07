@@ -191,9 +191,7 @@ def _create_vulnerability_and_references(advisory: Advisory):
         # This means vulnerability didn't previously exist in the DB, so add
         # the references to bulk create queue  without any hesitation
         for id_ in advisory.reference_ids:
-            vuln_references.add(
-                VulnerabilityReferenceInserter(vulnerability=vuln, reference_id=id_)
-            )  # nopep8
+            vuln_references.add(VulnerabilityReferenceInserter(vulnerability=vuln, reference_id=id_))  # nopep8
 
         for url in advisory.reference_urls:
             vuln_references.add(VulnerabilityReferenceInserter(vulnerability=vuln, url=url))
@@ -220,9 +218,7 @@ def _create_vulnerability_and_references(advisory: Advisory):
     return vuln, vuln_created, vuln_references
 
 
-def _create_pkg_vuln_refs(
-    vuln: models.Vulnerability, vuln_created: bool, purls: Sequence[PackageURL], is_vulnerable: bool
-):  # nopep8
+def _create_pkg_vuln_refs(vuln: models.Vulnerability, vuln_created: bool, purls: Sequence[PackageURL], is_vulnerable: bool):  # nopep8
     new_refs = set()
     for purl in purls:
         pkg, pkg_created = _get_or_create_package(purl)
@@ -238,22 +234,14 @@ def _create_pkg_vuln_refs(
                 package=pkg, vulnerability=vuln
             )
             if not existing_pkg_vuln_refs:
+                # Both the package and vulnerability existed, but there was no
+                # relationship between them
                 new_refs.add(vuln_pkg_ref)
             else:
-                # Note: PackageRelatedVulnerability has constraints
-                # unique_together = ('package', 'vulnerability', 'is_vulnerable')
-                vuln_impact = {i.is_vulnerable for i in existing_pkg_vuln_refs}
-                # is_vulnerable is a boolean which indicates the relationship of
-                # a vulnerability's impact on a package. vuln_impact is a set of
-                # all such booleans for a pair of (vulnerability, package). In cases
-                # where  vuln_impact == {True, False}, we know that conflicting relationships
-                # of (vulnerability, package) ALREADY EXIST in the DB.
-                # The other check `is_vulnerable not in vuln_impact` is used to know whether the
-                # data we just found is not conflicting with the data already existing in DB.
-                # In any of the above two cases we move the entries involved in ImportProblem
-                if vuln_impact == {True, False} or is_vulnerable not in vuln_impact:
-                    conflicts = existing_pkg_vuln_refs[:]
-                    conflicts.append(vuln_pkg_ref.to_model_object())
+                # Due to constrainsts unique_together = ('vulnerability', 'package') on
+                # PackageRelatedVulnerability, len(existing_pkg_vuln_refs) == 1
+                if is_vulnerable != existing_pkg_vuln_refs[0].is_vulnerable:
+                    conflicts = [vuln_pkg_ref.to_model_object(), existing_pkg_vuln_refs[0]]
                     handle_conflicts(conflicts)
                     existing_pkg_vuln_refs.delete()
 

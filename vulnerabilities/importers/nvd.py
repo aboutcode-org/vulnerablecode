@@ -20,18 +20,18 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import dataclasses
 import gzip
 import json
-import dataclasses
 from dateutil import parser as dateparser
 from datetime import date
 
 import requests
 
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
+from vulnerabilities.data_source import Reference
 
 
 @dataclasses.dataclass
@@ -47,11 +47,14 @@ class NVDDataSource(DataSource):
     CONFIG_CLASS = NVDDataSourceConfiguration
 
     def updated_advisories(self):
-        years = [1]
         current_year = date.today().year
         # NVD json feeds start from 2002.
         for year in range(2002, current_year + 1):
             download_url = BASE_URL.format(year)
+            # Etags are like hashes of web responses. We maintain
+            # (url, etag) mappings in the DB. `create_etag`  creates
+            # (url, etag) pair. If a (url, etag) already exists then the code
+            # skips processing the response further to avoid duplicate work
             if self.create_etag(download_url):
                 data = self.fetch(download_url)
                 yield self.to_advisories(data)

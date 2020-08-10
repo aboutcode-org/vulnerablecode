@@ -12,6 +12,7 @@ from packageurl import PackageURL
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.importers.ubuntu import UbuntuDataSource
 from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import Reference
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")
@@ -224,14 +225,13 @@ class TestUbuntuDataSource(unittest.TestCase):
                         version='2.14-2',
                         qualifiers=OrderedDict(),
                         subpath=None)},
-                reference_urls={
-                    'http://www.openwall.com/lists/oss-security/2016/10/18/11',
-                    'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8860',
-                    'http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8860.html',
-                    'https://github.com/torproject/tor/commit/3cea86eb2fbb65949673eb4ba8ebb695c87a57ce',
-                    'https://blog.torproject.org/blog/tor-0289-released-important-fixes',
-                    'https://trac.torproject.org/projects/tor/ticket/20384'},
-                reference_ids=[],
+                vuln_references=sorted([
+                    Reference(url='http://www.openwall.com/lists/oss-security/2016/10/18/11'),
+                    Reference(url='https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8860'),
+                    Reference(url='http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8860.html'),
+                    Reference(url='https://github.com/torproject/tor/commit/3cea86eb2fbb65949673eb4ba8ebb695c87a57ce'),
+                    Reference(url='https://blog.torproject.org/blog/tor-0289-released-important-fixes'),
+                    Reference(url='https://trac.torproject.org/projects/tor/ticket/20384')],key=lambda x : x.url),
                 cve_id='CVE-2016-8860'),
             Advisory(
                 summary=('Heap-based buffer overflow in the bm_readbody_bmp function'
@@ -262,11 +262,10 @@ class TestUbuntuDataSource(unittest.TestCase):
                         version='2.14-2',
                         qualifiers=OrderedDict(),
                         subpath=None)},
-                reference_urls={
-                    'http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8703.html',
-                    'https://blogs.gentoo.org/ago/2016/08/08/potrace-multiplesix-heap-based-buffer-overflow-in-bm_readbody_bmp-bitmap_io-c/',
-                    'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8703'},
-                reference_ids=[],
+                vuln_references=sorted([
+                    Reference(url='http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8703.html'),
+                    Reference(url='https://blogs.gentoo.org/ago/2016/08/08/potrace-multiplesix-heap-based-buffer-overflow-in-bm_readbody_bmp-bitmap_io-c/'),
+                    Reference(url='https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8703')],key=lambda x: x.url),
                 cve_id='CVE-2016-8703')}
 
         xml_doc = ET.parse(os.path.join(TEST_DATA, "ubuntu_oval_data.xml"))
@@ -274,6 +273,8 @@ class TestUbuntuDataSource(unittest.TestCase):
         with patch('vulnerabilities.importers.ubuntu.UbuntuDataSource.batch_advisories',
          new=return_adv):
             data = {i for i in self.ubuntu_data_src.get_data_from_xml_doc(xml_doc,{"type":"deb"})}
+        for adv in data : 
+            adv.vuln_references = sorted(adv.vuln_references, key=lambda x : x.url)
         assert expected_data == data
 
     def test_create_etag(self):

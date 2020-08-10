@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -18,7 +18,7 @@
 #  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
 #  VulnerableCode should be considered or used as legal advice. Consult an Attorney
 #  for any legal advice.
-#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
+#  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import dataclasses
@@ -51,7 +51,7 @@ logger = logging.getLogger(__name__)
 class VulnerabilityReferenceInserter:
     vulnerability: models.Vulnerability
     reference_id: Optional[str] = ''
-    url:  Optional[str] = ''
+    url: Optional[str] = ''
 
     def __post_init__(self):
         if not any([self.reference_id, self.url]):
@@ -165,37 +165,60 @@ def _process_added_advisories(data_source: DataSource) -> None:
 
 def _create_vulnerability_and_references(advisory: Advisory):
     vuln, vuln_created = _get_or_create_vulnerability(advisory)
-    vuln_references = set()
+    new_vuln_references = set()
 
     if vuln_created:
         # This means vulnerability didn't previously exist in the DB, so add
         # the references to bulk create queue  without any hesitation
-        for id_ in advisory.reference_ids:
-            vuln_references.add(VulnerabilityReferenceInserter(vulnerability=vuln, reference_id=id_))  # nopep8
-
-        for url in advisory.reference_urls:
-            vuln_references.add(VulnerabilityReferenceInserter(vulnerability=vuln, url=url))
+        for ref in advisory.vuln_references:
+            new_vuln_references.add(
+                VulnerabilityReferenceInserter(
+                    vulnerability=vuln,
+                    **dataclasses.asdict(ref)))
 
     else:
-        vuln_refs_qs = models.VulnerabilityReference.objects.filter(vulnerability=vuln)
-        vuln_ids = {ref.reference_id for ref in vuln_refs_qs}
-        vuln_urls = {ref.url for ref in vuln_refs_qs}
+        # build indexes of existing references to either update or create new ones
+        # and avoid creating duplicates
 
-        for id_ in advisory.reference_ids:
-            # Add the item preventing duplicates pass to through.
-            if id_ not in vuln_ids:
-                vuln_ids.add(id_)
-                vuln_references.add(VulnerabilityReferenceInserter(
-                    vulnerability=vuln, reference_id=id_))
+        existing_vuln_references = models.VulnerabilityReference.objects.filter(vulnerability=vuln)
+        refs_by_id_url = {
+            (ref.id, ref.url): ref for ref in existing_vuln_references if ref.id and ref.url}
+        refs_by_id = {ref.id: ref for ref in existing_vuln_references if ref.id}
+        refs_by_url = {ref.url: ref for ref in existing_vuln_references if ref.url}
 
-        for url in advisory.reference_urls:
-            # Add the item preventing duplicates pass to through.
-            if url not in vuln_urls:
-                vuln_urls.add(url)
-                vuln_references.add(VulnerabilityReferenceInserter(
-                    vulnerability=vuln, url=url))
+        for adv_ref in advisory.vuln_references:
+            if adv_ref.reference_id and adv_ref.url:
+                existing_ref = refs_by_id_url.get((adv_ref.reference_id, adv_ref.url))
 
-    return vuln, vuln_created, vuln_references
+            elif adv_ref.reference_id:
+                existing_ref = refs_by_id.get(adv_ref.reference_id)
+
+            elif adv_ref.url:
+                existing_ref = refs_by_url.get(adv_ref.url)
+
+            if existing_ref:
+                # update ref as needed
+                if not adv_ref.reference_id or not adv_ref.url:
+                    continue
+
+                if adv_ref.reference_id and not existing_ref.reference_id:
+                    existing_ref.reference_id = adv_ref.reference_id
+
+                if adv_ref.url and not existing_ref.url:
+                    existing_ref.url = adv_ref.url
+
+                existing_ref.save()
+
+            else:
+                new_vuln_references.add(
+                    VulnerabilityReferenceInserter(
+                        vulnerability=vuln,
+                        reference_id=adv_ref.reference_id,
+                        url=adv_ref.url,
+                    )
+                )
+
+    return vuln, vuln_created, new_vuln_references
 
 
 def _create_pkg_vuln_refs(vuln: models.Vulnerability, vuln_created: bool, purls: Sequence[PackageURL], is_vulnerable: bool):  # nopep8
@@ -203,7 +226,7 @@ def _create_pkg_vuln_refs(vuln: models.Vulnerability, vuln_created: bool, purls:
     for purl in purls:
         pkg, pkg_created = _get_or_create_package(purl)
         vuln_pkg_ref = PackageRelatedVulnerabilityInserter(
-                            package=pkg, vulnerability=vuln, is_vulnerable=is_vulnerable)
+            package=pkg, vulnerability=vuln, is_vulnerable=is_vulnerable)
 
         if pkg_created or vuln_created:
             new_refs.add(vuln_pkg_ref)
@@ -371,13 +394,12 @@ def _insert_vulnerabilities_and_references(batch: Set[Advisory]) -> Set[models.V
 
         vulnerabilities.add(vuln)
 
-        for id_ in advisory.reference_ids:
-            models.VulnerabilityReference.objects.get_or_create(
-                vulnerability=vuln, reference_id=id_)
+        # TODO:  Refactor this method to be atleast as efficient as
+        # one used by _process_updated_advisories
 
-        for url in advisory.reference_urls:
+        for ref in advisory.vuln_references:
             models.VulnerabilityReference.objects.get_or_create(
-                vulnerability=vuln, url=url)
+                vulnerability=vuln, reference_id=ref.reference_id, url=ref.url)
 
     return vulnerabilities
 

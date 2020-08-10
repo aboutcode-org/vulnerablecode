@@ -44,6 +44,17 @@ from vulnerabilities.oval_parser import OvalParser
 
 
 @dataclasses.dataclass
+class Reference:
+
+    url: str = ''
+    reference_id: str = ''
+
+    def __post_init__(self):
+        if not any([self.url, self.reference_id]):
+            raise TypeError
+
+
+@dataclasses.dataclass
 class Advisory:
     """
     This data class expresses the contract between data sources and the import runner.
@@ -57,16 +68,14 @@ class Advisory:
     summary: str
     impacted_package_urls: Iterable[PackageURL]
     resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
-    reference_urls: Sequence[str] = dataclasses.field(default_factory=list)
-    reference_ids: Sequence[str] = dataclasses.field(default_factory=list)
+    vuln_references: List[Reference] = dataclasses.field(default_factory=list)
     cve_id: Optional[str] = None
 
     def __hash__(self):
-        s = '{}{}{}{}{}'.format(
+        s = '{}{}{}{}'.format(
             self.summary,
             ''.join(sorted([str(p) for p in self.impacted_package_urls])),
             ''.join(sorted([str(p) for p in self.resolved_package_urls])),
-            ''.join(sorted(self.reference_urls)),
             self.cve_id,
         )
         return hash(s)
@@ -472,7 +481,8 @@ class OvalDataSource(DataSource):
             description = definition_data['description']
             affected_purls = set()
             safe_purls = set()
-            urls = definition_data['reference_urls']
+            references = [Reference(url=url)
+                          for url in definition_data['reference_urls']]
 
             for test_data in definition_data['test_data']:
                 for package in test_data['package_list']:
@@ -511,5 +521,5 @@ class OvalDataSource(DataSource):
                     impacted_package_urls=affected_purls,
                     resolved_package_urls=safe_purls,
                     cve_id=vuln_id,
-                    reference_urls=urls))
+                    vuln_references=references))
         return all_adv

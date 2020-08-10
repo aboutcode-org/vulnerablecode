@@ -27,6 +27,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
+from vulnerabilities.data_source import Reference
 
 
 class RedhatDataSource(DataSource):
@@ -66,17 +67,35 @@ def fetch():
 def to_advisory(advisory_data):
 
     affected_purls = []
-    if advisory_data.get('affected_packages'):
-        for rpm in advisory_data['affected_packages']:
+    if advisory_data.get("affected_packages"):
+        for rpm in advisory_data["affected_packages"]:
             if rpm_to_purl(rpm):
                 affected_purls.append(rpm_to_purl(rpm))
 
+    references = []
+    if advisory_data.get("bugzilla"):
+        bugzilla = advisory_data.get("bugzilla")
+        references.append(
+            Reference(
+                url="https://bugzilla.redhat.com/show_bug.cgi?id={}".format(bugzilla),
+                reference_id=bugzilla,
+            )
+        )
+
+    for rhsa in advisory_data["advisories"]:
+        references.append(
+            Reference(
+                url="https://access.redhat.com/errata/{}".format(rhsa), reference_id=rhsa,
+            )
+        )
+
+    references.append(Reference(url=advisory_data["resource_url"]))
+
     return Advisory(
-        summary=advisory_data['bugzilla_description'],
-        cve_id=advisory_data['CVE'],
-        reference_ids=advisory_data['advisories'],
+        summary=advisory_data["bugzilla_description"],
+        cve_id=advisory_data["CVE"],
         impacted_package_urls=affected_purls,
-        reference_urls=[advisory_data['resource_url']],
+        vuln_references=references,
     )
 
 
@@ -84,11 +103,11 @@ def rpm_to_purl(rpm_string):
 
     # Red Hat uses `-:0` instead of just `-` to separate
     # package name and version
-    components = rpm_string.split('-0:')
+    components = rpm_string.split("-0:")
     if len(components) != 2:
         return
 
     name, version = components
 
     if version[0].isdigit():
-        return PackageURL(name=name, type='rpm', version=version, namespace="redhat")
+        return PackageURL(name=name, type="rpm", version=version, namespace="redhat")

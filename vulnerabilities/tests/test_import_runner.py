@@ -28,6 +28,7 @@ from vulnerabilities import models
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import PackageURL
+from vulnerabilities.data_source import Reference
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.import_runner import _insert_vulnerabilities_and_references
 
@@ -70,11 +71,20 @@ ADVISORIES = [
     Advisory(
         cve_id='MOCK-CVE-2020-1337',
         summary='vulnerability description here',
-        reference_urls=['https://example.com/with/more/info/MOCK-CVE-2020-1337'],
-        impacted_package_urls=[PackageURL(name='mock-webserver', type='pypi', version='1.2.33')],
-        resolved_package_urls=[PackageURL(name='mock-webserver', type='pypi', version='1.2.34')],
-    )
-]
+        vuln_references=[
+            Reference(
+                url='https://example.com/with/more/info/MOCK-CVE-2020-1337')],
+        impacted_package_urls=[
+            PackageURL(
+                name='mock-webserver',
+                type='pypi',
+                version='1.2.33')],
+        resolved_package_urls=[
+            PackageURL(
+                name='mock-webserver',
+                type='pypi',
+                version='1.2.34')],
+    )]
 
 
 def make_import_runner(added_advs=None, updated_advs=None):

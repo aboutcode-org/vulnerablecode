@@ -29,9 +29,10 @@ from packageurl import PackageURL
 
 import vulnerabilities.importers.redhat as redhat
 from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import Reference
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, 'test_data/', 'redhat.json')
+TEST_DATA = os.path.join(BASE_DIR, "test_data/", "redhat.json")
 
 
 def load_test_data():
@@ -40,92 +41,156 @@ def load_test_data():
 
 
 class TestRedhat(unittest.TestCase):
-
     def test_rpm_to_purl(self):
 
         assert redhat.rpm_to_purl("foobar") is None
         assert redhat.rpm_to_purl("foo-bar-devel-0:sys76") is None
         assert redhat.rpm_to_purl("kernel-0:2.6.32-754.el6") == PackageURL(
-            type='rpm',
-            namespace='redhat',
-            name='kernel',
-            version='2.6.32-754.el6',
+            type="rpm",
+            namespace="redhat",
+            name="kernel",
+            version="2.6.32-754.el6",
             qualifiers=OrderedDict(),
-            subpath=None)
+            subpath=None,
+        )
 
     def test_to_advisory(self):
         data = load_test_data()
         expected_data = {
             Advisory(
-                summary='CVE-2016-9401 bash: popd controlled free',
+                summary="CVE-2016-9401 bash: popd controlled free",
                 impacted_package_urls=[
                     PackageURL(
-                        type='rpm',
-                        namespace='redhat',
-                        name='bash',
-                        version='4.2.46-28.el7',
+                        type="rpm",
+                        namespace="redhat",
+                        name="bash",
+                        version="4.2.46-28.el7",
                         qualifiers=OrderedDict(),
-                        subpath=None),
+                        subpath=None,
+                    ),
                     PackageURL(
-                        type='rpm',
-                        namespace='redhat',
-                        name='bash',
-                        version='4.1.2-48.el6',
+                        type="rpm",
+                        namespace="redhat",
+                        name="bash",
+                        version="4.1.2-48.el6",
                         qualifiers=OrderedDict(),
-                        subpath=None)],
+                        subpath=None,
+                    ),
+                ],
                 resolved_package_urls=[],
-                reference_urls=[
-                    'https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-9401.json'],
-                reference_ids=[
-                    'RHSA-2017:1931',
-                    'RHSA-2017:0725'],
-                cve_id='CVE-2016-9401'),
+                vuln_references=sorted(
+                    [
+                        Reference(
+                            url="https://bugzilla.redhat.com/show_bug.cgi?id=1396383",
+                            reference_id="1396383",
+                        ),
+                        Reference(
+                            url="https://access.redhat.com/errata/RHSA-2017:1931",
+                            reference_id="RHSA-2017:1931",
+                        ),
+                        Reference(
+                            url="https://access.redhat.com/errata/RHSA-2017:0725",
+                            reference_id="RHSA-2017:0725",
+                        ),
+                        Reference(
+                            url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-9401.json",  # nopep8
+                            reference_id="",
+                        ),
+                    ],
+                    key=lambda x: x.url,
+                ),
+                cve_id="CVE-2016-9401",
+            ),
             Advisory(
-                summary=('CVE-2016-10200 kernel: l2tp: Race condition '
-                         'in the L2TPv3 IP encapsulation feature'),
+                summary=(
+                    "CVE-2016-10200 kernel: l2tp: Race condition "
+                    "in the L2TPv3 IP encapsulation feature"
+                ),
                 impacted_package_urls=[
                     PackageURL(
-                        type='rpm',
-                        namespace='redhat',
-                        name='kernel-rt',
-                        version='3.10.0-693.rt56.617.el7',
+                        type="rpm",
+                        namespace="redhat",
+                        name="kernel-rt",
+                        version="3.10.0-693.rt56.617.el7",
                         qualifiers=OrderedDict(),
-                        subpath=None),
+                        subpath=None,
+                    ),
                     PackageURL(
-                        type='rpm',
-                        namespace='redhat',
-                        name='kernel',
-                        version='3.10.0-693.el7',
+                        type="rpm",
+                        namespace="redhat",
+                        name="kernel",
+                        version="3.10.0-693.el7",
                         qualifiers=OrderedDict(),
-                        subpath=None),
+                        subpath=None,
+                    ),
                     PackageURL(
-                        type='rpm',
-                        namespace='redhat',
-                        name='kernel',
-                        version='3.10.0-514.28.1.el7',
+                        type="rpm",
+                        namespace="redhat",
+                        name="kernel",
+                        version="3.10.0-514.28.1.el7",
                         qualifiers=OrderedDict(),
-                        subpath=None)],
+                        subpath=None,
+                    ),
+                ],
                 resolved_package_urls=[],
-                reference_urls=[
-                    'https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-10200.json'],
-                reference_ids=[
-                    'RHSA-2017:1842',
-                    'RHSA-2017:2437',
-                    'RHSA-2017:2077',
-                    'RHSA-2017:2444'],
-                cve_id='CVE-2016-10200'),
+                vuln_references=sorted(
+                    [
+                        Reference(
+                            url="https://bugzilla.redhat.com/show_bug.cgi?id=1430347",
+                            reference_id="1430347",
+                        ),
+                        Reference(
+                            url="https://access.redhat.com/errata/RHSA-2017:1842",
+                            reference_id="RHSA-2017:1842",
+                        ),
+                        Reference(
+                            url="https://access.redhat.com/errata/RHSA-2017:2437",
+                            reference_id="RHSA-2017:2437",
+                        ),
+                        Reference(
+                            url="https://access.redhat.com/errata/RHSA-2017:2077",
+                            reference_id="RHSA-2017:2077",
+                        ),
+                        Reference(
+                            url="https://access.redhat.com/errata/RHSA-2017:2444",
+                            reference_id="RHSA-2017:2444",
+                        ),
+                        Reference(
+                            url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-10200.json",  # nopep8
+                            reference_id="",
+                        ),
+                    ],
+                    key=lambda x: x.url,
+                ),
+                cve_id="CVE-2016-10200",
+            ),
             Advisory(
-                summary=('CVE-2017-12168 Kernel: kvm: ARM64: '
-                         'assert failure when accessing PMCCNTR register'),
+                summary=(
+                    "CVE-2017-12168 Kernel: kvm: ARM64: "
+                    "assert failure when accessing PMCCNTR register"
+                ),
                 impacted_package_urls=[],
                 resolved_package_urls=[],
-                reference_urls=[
-                    'https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2017-12168.json'],
-                reference_ids=[],
-                cve_id='CVE-2017-12168'),
+                vuln_references=sorted(
+                    [
+                        Reference(
+                            url="https://bugzilla.redhat.com/show_bug.cgi?id=1492984",
+                            reference_id="1492984",
+                        ),
+                        Reference(
+                            url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2017-12168.json",  # nopep8
+                            reference_id="",
+                        ),
+                    ],
+                    key=lambda x: x.url,
+                ),
+                cve_id="CVE-2017-12168",
+            ),
         }
 
         found_data = set()
         for adv in data:
-            found_data.add(redhat.to_advisory(adv))
+            adv = redhat.to_advisory(adv)
+            adv.vuln_references = sorted(adv.vuln_references, key=lambda x: x.url)
+            found_data.add(adv)
         assert expected_data == found_data

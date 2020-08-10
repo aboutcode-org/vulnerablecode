@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -18,7 +18,7 @@
 #  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
 #  VulnerableCode should be considered or used as legal advice. Consult an Attorney
 #  for any legal advice.
-#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
+#  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 import dataclasses
 import json
@@ -31,23 +31,24 @@ from urllib.request import urlopen
 from packageurl import PackageURL
 from schema import Regex, Schema, Or
 
-from vulnerabilities.data_source import DataSource, DataSourceConfiguration, Advisory
+from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import DataSource
+from vulnerabilities.data_source import DataSourceConfiguration
+from vulnerabilities.data_source import Reference
 
 
 def validate_schema(advisory_dict):
     scheme = {
-
-        'advisories': list,
-        'affected': str,
-        'fixed': Or(None, str),
-        'issues': [Regex(r'CVE-\d+-\d+')],
-        'name': str,
-        'packages': [str],
-        'status': str,
-        'ticket': object,
-        'type': str,
-        'severity': str,
-
+        "advisories": list,
+        "affected": str,
+        "fixed": Or(None, str),
+        "issues": [Regex(r"CVE-\d+-\d+")],
+        "name": str,
+        "packages": [str],
+        "status": str,
+        "ticket": object,
+        "type": str,
+        "severity": str,
     }
 
     Schema(scheme).validate(advisory_dict)
@@ -83,32 +84,49 @@ class ArchlinuxDataSource(DataSource):
     def _parse(self, record) -> List[Advisory]:
         advisories = []
 
-        for cve_id in record['issues']:
+        for cve_id in record["issues"]:
             impacted_purls, resolved_purls = set(), set()
-            for name in record['packages']:
-                impacted_purls.add(PackageURL(
-                    name=name,
-                    type='pacman',
-                    namespace='archlinux',
-                    version=record['affected'],
-                ))
+            for name in record["packages"]:
+                impacted_purls.add(
+                    PackageURL(
+                        name=name, type="pacman", namespace="archlinux", version=record["affected"],
+                    )
+                )
 
-                if record['fixed']:
-                    resolved_purls.add(PackageURL(
-                        name=name,
-                        type='pacman',
-                        namespace='archlinux',
-                        version=record['fixed'],
-                    ))
+                if record["fixed"]:
+                    resolved_purls.add(
+                        PackageURL(
+                            name=name,
+                            type="pacman",
+                            namespace="archlinux",
+                            version=record["fixed"],
+                        )
+                    )
 
-            reference_urls = [f'https://security.archlinux.org/{a}' for a in record['advisories']]
+            vuln_references = []
+            vuln_references.append(
+                Reference(
+                    reference_id=record["name"],
+                    url="https://security.archlinux.org/{}".format(record["name"]),
+                )
+            )
 
-            advisories.append(Advisory(
-                cve_id=cve_id,
-                summary='',
-                impacted_package_urls=impacted_purls,
-                resolved_package_urls=resolved_purls,
-                reference_urls=reference_urls,
-            ))
+            for ref in record["advisories"]:
+                vuln_references.append(
+                    Reference(
+                        reference_id=ref,
+                        url="https://security.archlinux.org/{}".format(ref),
+                    )
+                )
+
+            advisories.append(
+                Advisory(
+                    cve_id=cve_id,
+                    summary="",
+                    impacted_package_urls=impacted_purls,
+                    resolved_package_urls=resolved_purls,
+                    vuln_references=vuln_references,
+                )
+            )
 
         return advisories

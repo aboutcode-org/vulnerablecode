@@ -32,6 +32,7 @@ import yaml
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
+from vulnerabilities.data_source import Reference
 
 
 class RubyDataSource(GitDataSource):
@@ -104,11 +105,17 @@ class RubyDataSource(GitDataSource):
                     version=version,
                 ) for version in safe_versions}
 
+            references = []
+            if record.get('url'):
+                references.append(
+                    Reference(url=record.get('url'))
+                )
+
             return Advisory(
                 summary=record.get('description', ''),
                 impacted_package_urls=impacted_purls,
                 resolved_package_urls=resolved_purls,
-                reference_urls=[record.get('url', '')],
+                vuln_references=references,
                 cve_id=cve_id
             )
 

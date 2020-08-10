@@ -28,6 +28,7 @@ import re
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
+from vulnerabilities.data_source import Reference
 
 import xml.etree.ElementTree as ET
 
@@ -49,46 +50,51 @@ class OpenSSLDataSource(DataSource):
         root = ET.fromstring(xml_response)
         for element in root:
             if element.tag == "issue":
-                cve_id = ''
-                summary = ''
+                cve_id = ""
+                summary = ""
                 safe_pkg_versions = []
                 vuln_pkg_versions = []
                 ref_urls = []
                 for info in element:
 
-                    if info.tag == 'cve':
-                        cve_id = 'CVE-' + info.attrib.get('name')
+                    if info.tag == "cve":
+                        cve_id = "CVE-" + info.attrib.get("name")
 
-                    if info.tag == 'affects':
+                    if info.tag == "affects":
                         # Vulnerable package versions
-                        vuln_pkg_versions.append(info.attrib.get('version'))
+                        vuln_pkg_versions.append(info.attrib.get("version"))
 
-                    if info.tag == 'fixed':
+                    if info.tag == "fixed":
                         # Fixed package versions
-                        safe_pkg_versions.append(info.attrib.get('version'))
+                        safe_pkg_versions.append(info.attrib.get("version"))
 
                         if info:
-                            commit_hash = info[0].attrib['hash']
-                            ref_urls.append("https://github.com/openssl/openssl/commit/"
-                                            + commit_hash)
-                    if info.tag == 'description':
+                            commit_hash = info[0].attrib["hash"]
+                            ref_urls.append(
+                                Reference(
+                                    url="https://github.com/openssl/openssl/commit/" + commit_hash
+                                )
+                            )
+                    if info.tag == "description":
                         # Description
-                        summary = re.sub(r'\s+', ' ', info.text).strip()
+                        summary = re.sub(r"\s+", " ", info.text).strip()
 
-                safe_purls = {PackageURL(name=pkg_name,
-                                         type=pkg_type,
-                                         version=version)
-                              for version in safe_pkg_versions}
-                vuln_purls = {PackageURL(name=pkg_name,
-                                         type=pkg_type,
-                                         version=version)
-                              for version in vuln_pkg_versions}
+                safe_purls = {
+                    PackageURL(name=pkg_name, type=pkg_type, version=version)
+                    for version in safe_pkg_versions
+                }
+                vuln_purls = {
+                    PackageURL(name=pkg_name, type=pkg_type, version=version)
+                    for version in vuln_pkg_versions
+                }
 
-                advisory = Advisory(cve_id=cve_id,
-                                    summary=summary,
-                                    impacted_package_urls=vuln_purls,
-                                    resolved_package_urls=safe_purls,
-                                    reference_urls=ref_urls)
+                advisory = Advisory(
+                    cve_id=cve_id,
+                    summary=summary,
+                    impacted_package_urls=vuln_purls,
+                    resolved_package_urls=safe_purls,
+                    vuln_references=ref_urls,
+                )
                 advisories.append(advisory)
 
         return advisories

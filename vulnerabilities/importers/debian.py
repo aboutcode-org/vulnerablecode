@@ -37,6 +37,7 @@ from schema import Schema
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
+from vulnerabilities.data_source import Reference
 
 
 def validate_schema(advisory_dict):
@@ -131,18 +132,21 @@ class DebianDataSource(DataSource):
                         qualifiers={'distro': release_name},
                     ))
 
-            reference_urls = []
+            references = []
             debianbug = record.get('debianbug')
             if debianbug:
                 bug_url = f'https://bugs.debian.org/cgi-bin/bugreport.cgi?bug={debianbug}'
-                reference_urls.append(bug_url)
+                references.append(Reference(
+                    url=bug_url,
+                    reference_id=debianbug
+                ))
 
             advisories.append(Advisory(
                 cve_id=cve_id,
                 summary=record.get('description', ''),
                 impacted_package_urls=impacted_purls,
                 resolved_package_urls=resolved_purls,
-                reference_urls=reference_urls,
+                vuln_references=references,
             ))
 
         return advisories

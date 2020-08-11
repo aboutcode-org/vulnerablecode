@@ -21,6 +21,7 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import asyncio
 import json
 from typing import Any
 from typing import List
@@ -38,18 +39,21 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Reference
+from vulnerabilities.package_managers import NpmVersionAPI
 
-NPM_URL = 'https://registry.npmjs.org{}'
+NPM_URL = "https://registry.npmjs.org{}"
 
 
 class NpmDataSource(GitDataSource):
-
     def __enter__(self):
         super(NpmDataSource, self).__enter__()
-        self._versions = VersionAPI()
-        if not getattr(self, '_added_files', None):
+        if not getattr(self, "_added_files", None):
             self._added_files, self._updated_files = self.file_changes(
-                recursive=True, file_ext='json', subdir='./vuln/npm')
+                recursive=True, file_ext="json", subdir="./vuln/npm"
+            )
+
+        self._versions = NpmVersionAPI()
+        self.set_api(self.collect_packages())
 
     def updated_advisories(self) -> Set[Advisory]:
         files = self._updated_files.union(self._added_files)
@@ -60,15 +64,27 @@ class NpmDataSource(GitDataSource):
                 advisories.extend(processed_data)
         return self.batch_advisories(advisories)
 
+    def set_api(self, packages):
+        asyncio.run(self._versions.load_api(packages))
+
+    def collect_packages(self):
+        packages = set()
+        files = self._updated_files.union(self._added_files)
+        for f in files:
+            data = load_json(f)
+            packages.add(data["module_name"].strip())
+
+        return packages
+
     @property
     def versions(self):  # quick hack to make it patchable
         return self._versions
 
     def process_file(self, file) -> List[Advisory]:
-        with open(file) as f:
-            record = json.load(f)
+
+        record = load_json(file)
         advisories = []
-        package_name = record["module_name"]
+        package_name = record["module_name"].strip()
         all_versions = self.versions.get(package_name)
         aff_range = record.get("vulnerable_versions", "")
         fixed_range = record.get("patched_versions", "")
@@ -132,29 +148,6 @@ def categorize_versions(
     return aff_ver, fix_ver
 
 
-class VersionAPI:
-    def __init__(self, cache: Mapping[str, Set[str]] = None):
-        self.cache = cache or {}
-
-    def get(self, package_name: str) -> Set[str]:
-        """
-        Returns all versions available for a module
-        """
-        package_name = package_name.strip()
-
-        if package_name not in self.cache:
-            releases = set()
-            try:
-                with urlopen(f"https://registry.npmjs.org/{package_name}") as response:
-                    data = json.load(response)
-                    releases = {v for v in data.get("versions", {})}
-            except HTTPError as e:
-                if e.code == 404:
-                    # NPM registry has no data regarding this package, we skip these
-                    pass
-                else:
-                    raise
-
-            self.cache[package_name] = releases
-
-        return self.cache[package_name]
+def load_json(path):
+    with open(path) as f:
+        return json.load(f)

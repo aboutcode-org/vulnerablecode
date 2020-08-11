@@ -28,14 +28,14 @@ from django.test import TestCase
 
 from vulnerabilities import models
 from vulnerabilities.import_runner import ImportRunner
-from vulnerabilities.importers.safety_db import VersionAPI
+from vulnerabilities.importers.safety_db import PypiVersionAPI
 from vulnerabilities.importers.safety_db import categorize_versions
 from vulnerabilities.data_source import Reference
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
 
-MOCK_VERSION_API = VersionAPI(cache={
+MOCK_VERSION_API = PypiVersionAPI(cache={
     'ampache': {'2.0', '5.2.1'},
     'django': {'1.8', '1.4.19', '1.4.22', '1.5.1', '1.6.9', '1.8.14'},
     'zulip': {'2.0', '2.1.1', '2.1.2', '2.1.3'},
@@ -68,11 +68,9 @@ class SafetyDbImportTest(TestCase):
     def test_import(self):
         runner = ImportRunner(self.importer, 5)
 
-        with patch(
-                'vulnerabilities.importers.SafetyDbDataSource._fetch',
-                return_value=self.mock_response
-        ):
-            runner.run()
+        with patch('vulnerabilities.importers.SafetyDbDataSource._fetch', return_value=self.mock_response):  # nopep8
+            with patch('vulnerabilities.importers.SafetyDbDataSource.set_api'):
+                runner.run()
 
         assert models.Vulnerability.objects.count() == 9
         assert models.VulnerabilityReference.objects.count() == 9

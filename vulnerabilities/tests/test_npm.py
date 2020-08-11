@@ -31,14 +31,14 @@ from django.test import TestCase
 
 from vulnerabilities import models
 from vulnerabilities.import_runner import ImportRunner
-from vulnerabilities.importers.npm import VersionAPI
+from vulnerabilities.package_managers import NpmVersionAPI
 from vulnerabilities.importers.npm import categorize_versions
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
 
 
-MOCK_VERSION_API = VersionAPI(cache={
+MOCK_VERSION_API = NpmVersionAPI(cache={
     'jquery': {'3.4', '3.8'},
     'kerberos': {'0.5.8', '1.2'},
     '@hapi/subtext': {'3.7', '4.1.1', '6.1.3', '7.0.0', '7.0.5'},
@@ -81,7 +81,8 @@ class NpmImportTest(TestCase):
         runner = ImportRunner(self.importer, 5)
 
         with patch('vulnerabilities.importers.NpmDataSource.versions', new=MOCK_VERSION_API):
-            runner.run()
+            with patch('vulnerabilities.importers.NpmDataSource.set_api'):
+                runner.run()
 
         assert models.Vulnerability.objects.count() == 3
         assert models.VulnerabilityReference.objects.count() == 3

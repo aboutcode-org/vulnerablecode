@@ -20,6 +20,7 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import asyncio
 import json
 from itertools import chain
 from typing import Optional, Mapping
@@ -35,6 +36,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Reference
+from vulnerabilities.package_managers import CratesVersionAPI
 
 
 class RustDataSource(GitDataSource):
@@ -51,8 +53,11 @@ class RustDataSource(GitDataSource):
     @property
     def crates_api(self):
         if not hasattr(self, "_crates_api"):
-            setattr(self, "_crates_api", VersionAPI())
+            setattr(self, "_crates_api", CratesVersionAPI())
         return self._crates_api
+
+    def set_api(self, packages):
+        asyncio.run(self.crates_api.load_api(packages))
 
     def added_advisories(self) -> Set[Advisory]:
         return self._load_advisories(self._added_files)
@@ -62,6 +67,8 @@ class RustDataSource(GitDataSource):
 
     def _load_advisories(self, files) -> Set[Advisory]:
         files = [f for f in files if not f.endswith("-0000.toml")]  # skip temporary files
+        packages = self.collect_packages(files)
+        self.set_api(packages)
 
         while files:
             batch, files = files[: self.batch_size], files[self.batch_size:]
@@ -74,13 +81,19 @@ class RustDataSource(GitDataSource):
                     advisories.add(advisory)
             yield advisories
 
-    def _load_advisory(self, path: str) -> Optional[Advisory]:
-        with open(path) as f:
-            record = toml.load(f)
-            advisory = record.get("advisory", {})
+    def collect_packages(self, paths):
+        packages = set()
+        for path in paths:
+            record = load_toml(path)
+            packages.add(record["advisory"]["package"])
 
-        references = []
+        return packages
+
+    def _load_advisory(self, path: str) -> Optional[Advisory]:
+        record = load_toml(path)
+        advisory = record.get("advisory", {})
         crate_name = advisory["package"]
+        references = []
         if advisory.get("url"):
             references.append(Reference(url=advisory["url"]))
 
@@ -162,27 +175,6 @@ def categorize_versions(
     return unaffected, affected
 
 
-class VersionAPI:
-    def __init__(self, cache: Mapping[str, Set[str]] = None):
-        self.cache = cache or {}
-
-    def get(self, package_name: str) -> Set[str]:
-        package_name = package_name.strip()
-
-        if package_name not in self.cache:
-            releases = set()
-
-            try:
-                with urlopen(f"https://crates.io/api/v1/crates/{package_name}") as response:
-                    response = json.load(response)
-                    for version_info in response["versions"]:
-                        releases.add(version_info["num"])
-            except HTTPError as e:
-                if e.code == 404:
-                    pass
-                else:
-                    raise
-
-            self.cache[package_name] = releases
-
-        return self.cache[package_name]
+def load_toml(path):
+    with open(path) as f:
+        return toml.load(f)

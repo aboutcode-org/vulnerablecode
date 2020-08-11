@@ -32,8 +32,8 @@ from django.test import TestCase
 
 from vulnerabilities import models
 from vulnerabilities.importers.rust import categorize_versions
-from vulnerabilities.importers.rust import VersionAPI
 from vulnerabilities.import_runner import ImportRunner
+from vulnerabilities.package_managers import CratesVersionAPI
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
@@ -165,7 +165,7 @@ class RustImportTest(TestCase):
 
         with patch(
                 'vulnerabilities.importers.RustDataSource.crates_api',
-                new=VersionAPI(cache=self.crates_api_cache)
+                new=CratesVersionAPI(cache=self.crates_api_cache)
         ):
             runner.run(cutoff_date=datetime.datetime(
                 year=2020, month=3, day=18, tzinfo=datetime.timezone.utc))

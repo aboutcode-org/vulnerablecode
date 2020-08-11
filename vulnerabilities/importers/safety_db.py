@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c)  nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -18,11 +18,12 @@
 #  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
 #  VulnerableCode should be considered or used as legal advice. Consult an Attorney
 #  for any legal advice.
-#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
+#  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 #
 # Data Imported from https://github.com/pyupio/safety-db
-#
+
+import asyncio
 import dataclasses
 import json
 from typing import Any
@@ -43,6 +44,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
+from vulnerabilities.package_managers import PypiVersionAPI
 
 
 def validate_schema(advisory_dict):
@@ -73,19 +75,26 @@ class SafetyDbDataSource(DataSource):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._versions = VersionAPI()
-
-    def __enter__(self):
         self._api_response = self._fetch()
         validate_schema(self._api_response)
+
+    def __enter__(self):
+        self._versions = PypiVersionAPI()
+        self.set_api(self.collect_packages())
 
     @property
     def versions(self):  # quick hack to make it patchable
         return self._versions
 
+    def set_api(self, packages):
+        asyncio.run(self._versions.load_api(packages))
+
     def _fetch(self) -> Mapping[str, Any]:
         with urlopen(self.config.url) as response:
             return json.load(response)
+
+    def collect_packages(self):
+        return {pkg for pkg in self._api_response}
 
     def updated_advisories(self) -> Set[Advisory]:
         advisories = []
@@ -144,28 +153,3 @@ def categorize_versions(
         resolved_purls.add(PackageURL(name=package_name, type="pypi", version=version))
 
     return impacted_purls, resolved_purls
-
-
-class VersionAPI:
-    def __init__(self, cache: Mapping[str, Set[str]] = None):
-        self.cache = cache or {}
-
-    def get(self, package_name: str) -> Set[str]:
-        package_name = package_name.strip()
-
-        if package_name not in self.cache:
-            releases = set()
-            try:
-                with urlopen(f"https://pypi.org/pypi/{package_name}/json") as response:
-                    json_file = json.load(response)
-                    releases = set(json_file["releases"])
-            except HTTPError as e:
-                if e.code == 404:
-                    # PyPi does not have data about this package
-                    pass
-                else:
-                    raise
-
-            self.cache[package_name] = releases
-
-        return self.cache[package_name]

@@ -1,0 +1,12 @@
+about_resource: fontawesome-webfont.woff
+version: 4.7.0
+download_url: https://github.com/FortAwesome/Font-Awesome/blob/v4.7.0/fonts/fontawesome-webfont.woff?raw=true
+
+name: fontawesome-webfont.woff 
+homepage_url: https://github.com/FortAwesome/Font-Awesome
+owner: FortAwesome
+author: Dave Gandy
+notes: Fonts provided by Font Awesome.
+
+license: MIT
+license_file: fontawesome.LICENSE

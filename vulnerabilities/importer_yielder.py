@@ -67,7 +67,8 @@ IMPORTER_REGISTRY = [
         'last_run': None,
         'data_source': 'SafetyDbDataSource',
         'data_source_cfg': {
-            'url': 'https://raw.githubusercontent.com/pyupio/safety-db/master/data/insecure_full.json'  # nopep8
+            'url': 'https://raw.githubusercontent.com/pyupio/safety-db/master/data/insecure_full.json',  # nopep8
+            'etags': {}
         },
     },
     {
@@ -148,7 +149,9 @@ IMPORTER_REGISTRY = [
         'license': '',
         'last_run': None,
         'data_source': 'OpenSSLDataSource',
-        'data_source_cfg': {},
+        'data_source_cfg': {
+            'etags': {}
+        },
     },
     {
         'name': 'ubuntu_usn',

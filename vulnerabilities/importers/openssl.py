@@ -20,27 +20,58 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import dataclasses
+import re
 from typing import Set
+import xml.etree.ElementTree as ET
 
 from packageurl import PackageURL
 import requests
-import re
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import Reference
+from vulnerabilities.data_source import DataSourceConfiguration
 
-import xml.etree.ElementTree as ET
+
+@dataclasses.dataclass
+class OpenSSLDataSourceConfiguration(DataSourceConfiguration):
+    etags: dict
 
 
 class OpenSSLDataSource(DataSource):
+    CONFIG_CLASS = OpenSSLDataSourceConfiguration
+
+    url = "https://www.openssl.org/news/vulnerabilities.xml"
+
     def updated_advisories(self) -> Set[Advisory]:
-        raw_data = self.fetch()
-        advisories = self.to_advisories(raw_data)
-        return self.batch_advisories(advisories)
+        # Etags are like hashes of web responses. We maintain
+        # (url, etag) mappings in the DB. `create_etag`  creates
+        # (url, etag) pair. If a (url, etag) already exists then the code
+        # skips processing the response further to avoid duplicate work
+        if self.create_etag(self.url):
+            raw_data = self.fetch()
+            advisories = self.to_advisories(raw_data)
+            return self.batch_advisories(advisories)
+
+        return []
+
+    def create_etag(self, url):
+        etag = requests.head(url).headers.get("ETag")
+        if not etag:
+            # Kind of inaccurate to return True since etag is
+            # not created
+            return True
+
+        elif url in self.config.etags:
+            if self.config.etags[url] == etag:
+                return False
+
+        self.config.etags[url] = etag
+        return True
 
     def fetch(self):
-        return requests.get("https://www.openssl.org/news/vulnerabilities.xml").content
+        return requests.get(self.url).content
 
     @staticmethod
     def to_advisories(xml_response: str) -> Set[Advisory]:
@@ -58,7 +89,11 @@ class OpenSSLDataSource(DataSource):
                 for info in element:
 
                     if info.tag == "cve":
-                        cve_id = "CVE-" + info.attrib.get("name")
+                        if info.attrib.get("name"):
+                            cve_id = "CVE-" + info.attrib.get("name")
+
+                        else:
+                            continue
 
                     if info.tag == "affects":
                         # Vulnerable package versions

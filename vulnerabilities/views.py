@@ -20,6 +20,8 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+from urllib.parse import urlencode
+
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.urls import reverse
@@ -42,7 +44,12 @@ class PackageSearchView(View):
 
         if request.GET:
             packages = self.request_to_queryset(request)
+            page_no = int(request.GET.get("page", 1))
+            packages = Paginator(packages, 50).get_page(page_no)
             context["packages"] = packages
+            context["searched_for"] = urlencode(
+                {param: request.GET[param] for param in request.GET if param != "page"}
+                )
 
         return render(request, self.template_name, context)
 
@@ -51,9 +58,6 @@ class PackageSearchView(View):
         query = {}
         if len(request.GET["name"]):
             query["name"] = request.GET["name"]
-
-        if request.GET["type"] and request.GET["type"] != "*":
-            query["type"] = request.GET["type"]
 
         if len(request.GET["version"]):
             query["version"] = request.GET["version"]
@@ -67,7 +71,6 @@ class VulnerabilitySearchView(View):
 
     def get(self, request):
         context = {"form": forms.VulnerabilitySearchForm()}
-        print(request.GET)
         if request.GET:
             vulnerabilities = self.request_to_queryset(request)
             pages = Paginator(vulnerabilities, 50)

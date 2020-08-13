@@ -49,6 +49,16 @@ Explore/Curate Vulnerable packages
       {% endfor %}
     </table>
   </div>
+  
+  <div class="is-field is-horizontal">
+    {% if packages.has_previous %}
+      <a class="button" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">Previous Page</a>
+    {% endif %}
+  
+    {% if packages.has_next %}
+      <a class="button" href="?{{ searched_for }}&page={{ packages.next_page_number}}">Next Page</a>
+    {% endif %}
+  </div>
 </section>
 
 {% endif %}

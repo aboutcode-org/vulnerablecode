@@ -8,7 +8,7 @@ owner: Jeremy Thomas
 author: Jeremy Thomas
 notes: This is the minified version of Bulma CSS framework.
 
-license: MIT
+license: mit
 license_file: bulma.css.LICENSE
 
 copyright: Code copyright 2020 Jeremy Thomas. Code released under the MIT license.

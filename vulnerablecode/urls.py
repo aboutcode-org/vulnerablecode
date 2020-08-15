@@ -33,40 +33,49 @@ from vulnerabilities.views import PackageCreate
 from vulnerabilities.views import VulnerabilityDetails
 from vulnerabilities.views import VulnerabilitySearchView
 from vulnerabilities.views import VulnerabilityCreate
-# from vulnerabilities.views import ResolvedPackageDelete
-# from vulnerabilities.views import ImpactedPackageDelete
 from vulnerabilities.views import PackageRelatedVulnerablityDelete
 from vulnerabilities.views import PackageRelatedVulnerablityCreate
-# from vulnerabilities.views import ResolvedPackageCreate
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import VulnerabilityReferenceCreate
 
 
 api_router = DefaultRouter()
-api_router.register(r'packages', PackageViewSet)
+api_router.register(r"packages", PackageViewSet)
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    re_path(r'^api/', include(api_router.urls)),
-    path('packages/search', PackageSearchView.as_view(), name='package_search'),
-    path('packages/<int:pk>', PackageUpdate.as_view(), name='package_view'),
-    path('vulnerabilities/<int:pk>',
-         VulnerabilityDetails.as_view(), name='vulnerability_view'),
-    path('vulnerabilities/search', VulnerabilitySearchView.as_view(),
-         name='vulnerability_search'),
-    path('vulnerabilities/create', VulnerabilityCreate.as_view(),
-         name='vulnerability_create'),
-    path('packages/create', PackageCreate.as_view(), name='package_create'),
-    path('relations/resolved/<int:pid>/<int:vid>',
-         PackageRelatedVulnerablityDelete.as_view(), name='resolved_package_delete'),
-    path('relations/impacted/<int:pid>/<int:vid>',
-         PackageRelatedVulnerablityDelete.as_view(), name='impacted_package_delete'),
-    path('relations/impacted/<int:pid>/create',
-         PackageRelatedVulnerablityCreate.as_view(), name='impacted_package_create'),
-    path('relations/resolved/<int:pid>/create',
-         PackageRelatedVulnerablityCreate.as_view(), name='resolved_package_create'),
-    path('relations/reference/<int:vid>/create',
-         VulnerabilityReferenceCreate.as_view(), name='vulnerability_reference_create'),
-    path('', HomePage.as_view(), name='home')
+    path("admin/", admin.site.urls),
+    re_path(r"^api/", include(api_router.urls)),
+    path("packages/search", PackageSearchView.as_view(), name="package_search"),
+    path("packages/<int:pk>", PackageUpdate.as_view(), name="package_view"),
+    path("vulnerabilities/<int:pk>", VulnerabilityDetails.as_view(), name="vulnerability_view"),
+    path("vulnerabilities/search", VulnerabilitySearchView.as_view(), name="vulnerability_search"),
+    path("vulnerabilities/create", VulnerabilityCreate.as_view(), name="vulnerability_create"),
+    path("packages/create", PackageCreate.as_view(), name="package_create"),
+    path(
+        "relations/resolved/<int:pid>/<int:vid>",
+        PackageRelatedVulnerablityDelete.as_view(),
+        name="resolved_package_delete",
+    ),
+    path(
+        "relations/impacted/<int:pid>/<int:vid>",
+        PackageRelatedVulnerablityDelete.as_view(),
+        name="impacted_package_delete",
+    ),
+    path(
+        "relations/impacted/<int:pid>/create",
+        PackageRelatedVulnerablityCreate.as_view(),
+        name="impacted_package_create",
+    ),
+    path(
+        "relations/resolved/<int:pid>/create",
+        PackageRelatedVulnerablityCreate.as_view(),
+        name="resolved_package_create",
+    ),
+    path(
+        "relations/reference/<int:vid>/create",
+        VulnerabilityReferenceCreate.as_view(),
+        name="vulnerability_reference_create",
+    ),
+    path("", HomePage.as_view(), name="home"),
 ]

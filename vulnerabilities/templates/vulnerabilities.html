@@ -12,7 +12,7 @@ Explore Vulnerabilities
      <form action="{% url 'vulnerability_search' %}" method="get">
       {% load widget_tweaks %}
       <div class="field is-horizontal">
-        {{form.vuln_id|add_class:"input"}}
+        {{form.cve_id|add_class:"input"}}
         <button class="button is-success", type="submit">
           Search
         </button>

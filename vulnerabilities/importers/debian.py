@@ -43,34 +43,33 @@ from vulnerabilities.data_source import Reference
 
 def validate_schema(advisory_dict):
 
-    deb_versions = ['bullseye', 'buster', 'buster-security', 'sid',
-                    'stretch', 'stretch-security', 'jessie', 'jessie-security']
+    deb_versions = [
+        "bullseye",
+        "buster",
+        "buster-security",
+        "sid",
+        "stretch",
+        "stretch-security",
+        "jessie",
+        "jessie-security",
+    ]
     scheme = {
-        str:
-            {
-                Or(Regex(r"CVE-\d+-\d+"), Regex(r"TEMP-.+-.+")):
-                {
-                    'releases':
-                    {
-                        Or(*deb_versions):
-                        {
-                            'repositories':
-                            {
-                                Or(*deb_versions): str
-                            },
-                            'status': str,
-                            'urgency': str,
-                            Optional('fixed_version'): str,
-                            Optional(str): object,
-                        }
-
-                    },
-                    Optional('description'): str,
-                    Optional('debianbug'): int,
-                    Optional(str): object,
-                }
+        str: {
+            Or(Regex(r"CVE-\d+-\d+"), Regex(r"TEMP-.+-.+")): {
+                "releases": {
+                    Or(*deb_versions): {
+                        "repositories": {Or(*deb_versions): str},
+                        "status": str,
+                        "urgency": str,
+                        Optional("fixed_version"): str,
+                        Optional(str): object,
+                    }
+                },
+                Optional("description"): str,
+                Optional("debianbug"): int,
+                Optional(str): object,
             }
-
+        }
     }
 
     Schema(scheme).validate(advisory_dict)
@@ -110,52 +109,56 @@ class DebianDataSource(DataSource):
         for cve_id, record in records.items():
             impacted_purls, resolved_purls = set(), set()
 
-            for release_name, release_record in record['releases'].items():
-                if not release_record.get('repositories', {}).get(release_name):
+            for release_name, release_record in record["releases"].items():
+                if not release_record.get("repositories", {}).get(release_name):
                     continue
 
                 purl = PackageURL(
                     name=pkg_name,
-                    type='deb',
-                    namespace='debian',
-                    version=release_record['repositories'][release_name],
-                    qualifiers={'distro': release_name},
+                    type="deb",
+                    namespace="debian",
+                    version=release_record["repositories"][release_name],
+                    qualifiers={"distro": release_name},
                 )
 
-                if release_record.get('status', '') == 'resolved':
+                if release_record.get("status", "") == "resolved":
                     resolved_purls.add(purl)
                 else:
                     impacted_purls.add(purl)
 
-                if 'fixed_version' in release_record:
-                    resolved_purls.add(PackageURL(
-                        name=pkg_name,
-                        type='deb',
-                        namespace='debian',
-                        version=release_record['fixed_version'],
-                        qualifiers={'distro': release_name},
-                    ))
+                if "fixed_version" in release_record:
+                    resolved_purls.add(
+                        PackageURL(
+                            name=pkg_name,
+                            type="deb",
+                            namespace="debian",
+                            version=release_record["fixed_version"],
+                            qualifiers={"distro": release_name},
+                        )
+                    )
 
             references = []
-            debianbug = record.get('debianbug')
+            debianbug = record.get("debianbug")
             if debianbug:
-                bug_url = f'https://bugs.debian.org/cgi-bin/bugreport.cgi?bug={debianbug}'
-                references.append(Reference(
-                    url=bug_url,
-                    reference_id=debianbug
-                ))
+                bug_url = f"https://bugs.debian.org/cgi-bin/bugreport.cgi?bug={debianbug}"
+                references.append(Reference(url=bug_url, reference_id=debianbug))
 
-            advisories.append(Advisory(
-                cve_id=cve_id,
-                summary=record.get('description', ''),
-                impacted_package_urls=impacted_purls,
-                resolved_package_urls=resolved_purls,
-                vuln_references=references,
-            ))
+            advisories.append(
+                Advisory(
+                    cve_id=cve_id,
+                    summary=record.get("description", ""),
+                    impacted_package_urls=impacted_purls,
+                    resolved_package_urls=resolved_purls,
+                    vuln_references=references,
+                )
+            )
 
         return advisories
 
     def response_is_new(self):
-        date_str = requests.head(self.config.debian_tracker_url).headers.get('last-modified')
+        date_str = requests.head(self.config.debian_tracker_url).headers.get("last-modified")
         last_modified_date = dateparser.parse(date_str)
-        return self.config.last_run_date < last_modified_date
+        if self.config.last_run_date:
+            return self.config.last_run_date < last_modified_date
+
+        return True

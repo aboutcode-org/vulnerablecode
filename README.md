@@ -1,6 +1,42 @@
-# VulnerableCode
+
+<div align="center">
+<h1>VulnerableCode</h1>
 
 [![Build Status](https://travis-ci.org/nexB/vulnerablecode.svg?branch=develop)](https://travis-ci.org/nexB/vulnerablecode)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-360/)
+![stability-wip](https://img.shields.io/badge/stability-work_in_progress-lightgrey.svg)
+[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/aboutcode-org/vulnerablecode)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+
+![zz_comp](https://user-images.githubusercontent.com/28975399/89056138-2c8a8300-d379-11ea-882e-f28f38789cdc.png)
+</div>
+
+
+
+## The What
+
+VulnerableCode is a FOSS database of vulnerabilities and the FOSS packages they impact. It is made by the FOSS community to improve and secure the open source software ecosystem.
+
+## The Why
+
+The existing solutions are commercial proprietary vulnerability databases, which in itself does not make sense because the data is about FOSS.
+
+National Vulnerability Database which is the primary data source for all things security, is not particulary catered to address FOSS security issues, because:
+
+ 1. It predates explosion of FOSS software usage
+ 2. It's data format reflects commercial vendor-centric point of view, this is due to the usage of [CPE](https://nvd.nist.gov/products/cpe) to map vulnerabilities and the packages. 
+ 3. CPEs are just not designed to map FOSS to vulnerabilities owing to their vendor-product centric semantics. This makes it really hard to answer the fundamental question "Is package foo vulnerable to vulnerability bar?"
+
+## The How
+
+VulnerableCode independently aggregates many software vulnerability data sources that can easily be recreated in a decentralized fashion. These data sources include security advisories published by distros, package managers etc. Due to this the data obtained is not generalized to apply for other ecosystems. This increases the accuracy as the same version of a package across different distros may or may not be vulnerable to some vulnerability.
+
+The packages are identified using [PURL](https://github.com/package-url/purl-spec) rather than CPEs. This makes it really easy to answer questions like "Is package foo vulnerable to vulnerability bar ? ". 
+
+The web interface enables community curation of data by enabling addition of new packages, vulnerabilities and modifying the relationships between them as shown in GIF. Along with the web interface the API allows seamless consumption of the data.
+
+We also plan to mine for vulnerabilities which didn't receive any exposure due to various reasons like but not limited to the complicated procedure to receive CVE ID or not able to classify a bug as a security compromise. Check VulnerableCode at [Open Source Summit 2020](https://ossna2020.sched.com/event/c46p/why-is-there-no-free-software-vulnerability-database-philippe-ombredanne-aboutcodeorg-and-nexb-inc-michael-herzog-nexb-inc)
 
 ## Setup
 
@@ -111,38 +147,3 @@ In your browser access:
 http://127.0.0.1:8000/api/
 http://127.0.0.1:8000/api/packages/?name=<package_name>
 ```
-
-## Deployment on Heroku
-
-See https://devcenter.heroku.com/articles/django-app-configuration#creating-a-new-django-project
-https://devcenter.heroku.com/articles/deploying-python#how-to-keep-build-artifacts-out-of-git
-
-1. Create an Heroku account
-
-2. Download and install the Heroku CLI https://devcenter.heroku.com/articles/heroku-cli#download-and-install
-
-3. Run a local webserver: `heroku local web`
-
-4. Login: `heroku login`
-
-5. Create Heroku app: `heroku create`
-
-6. Generate a secret key and pass it as an environment variable: `heroku config:set SECRET_KEY=$(python -c "from django.core.management import utils; print(utils.get_random_secret_key())")`
-
-7. Deploy: `git push heroku <branch>:master`
-
-8. Migrate the database: `heroku run python manage.py migrate`
-
-9. Load the data referring to chapter "Data import" above.
-
-10. To check the logs: `heroku logs --tail`
-
-### Periodic Data Import
-
-Note: Running jobs with Heroku Scheduler might incur costs. If you haven't already, you need to add a credit card in your account (https://dashboard.heroku.com/account/billing).
-
-1. Install the Scheduler add-on: `heroku addons:create scheduler:standard`
-
-2. Open the Scheduler dashboard: `heroku addons:open scheduler`
-
-3. Click on "Create job" and enter `python manage.py import --all` under "Run Command"

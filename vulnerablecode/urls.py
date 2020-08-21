@@ -48,7 +48,7 @@ api_router = DefaultRouter)
 api_router.register(r"packages", PackageViewSet)
 # `DefaultRouter` requires `basename` when registering viewsets which don't
 # define a queryset.
-api_router.register(r"vulnerabilities", VulnerabilityView, basename="vulnerability")
+api_router.register(r"vulnerabilities", VulnerabilityViewSet, basename="vulnerability")
 
 
 urlpatterns = [

@@ -22,7 +22,9 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import os
+from random import choices
 from unittest.mock import MagicMock
+from urllib.parse import quote
 
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -42,6 +44,35 @@ class TestDebianResponse(TestCase):
     def setUpTestData(cls):
         # create one non-debian package called "mimetex" to verify filtering
         Package.objects.create(name="mimetex", version="1.50-1.1", type="deb", namespace="ubuntu")
+
+    def test_query_qualifier_filtering(self):
+
+        # packages to check filtering with single/multiple and unordered qualifier filtering
+        pk_multi_qf = Package.objects.create(
+            name="vlc", version="1.50-1.1", type="deb", qualifiers={"foo": "bar", "tar": "ball"}
+        )
+        pk_single_qf = Package.objects.create(
+            name="vlc", version="1.50-1.1", type="deb", qualifiers={"foo": "bar"}
+        )
+
+        # check filtering when qualifiers are not normalized
+        test_purl = quote("pkg:deb/vlc@1.50-1.1?foo=bar&tar=ball")
+        response = self.client.get(f"/api/packages?purl={test_purl}", format="json").data
+
+        self.assertEqual(1, response["count"])
+        self.assertEqual(pk_multi_qf.qualifiers, response["results"][0]["qualifiers"])
+
+        test_purl = quote("pkg:deb/vlc@1.50-1.1?tar=ball&foo=bar")
+        response = self.client.get(f"/api/packages?purl={test_purl}", format="json").data
+
+        self.assertEqual(1, response["count"])
+        self.assertEqual(pk_multi_qf.qualifiers, response["results"][0]["qualifiers"])
+
+        # check filtering when there is intersection of qualifiers between packages
+        test_purl = quote("pkg:deb/vlc@1.50-1.1?foo=bar")
+        response = self.client.get(f"/api/packages?purl={test_purl}", format="json").data
+
+        self.assertEqual(1, response["count"])
 
     def test_query_by_name(self):
         response = self.client.get("/api/packages?name=mimetex", format="json").data
@@ -107,6 +138,37 @@ class TestUbuntuResponse(TestCase):
         self.assertEqual(1, len(result["unresolved_vulnerabilities"]))
 
         vuln = result["unresolved_vulnerabilities"][0]
+
+    def test_vulnerability_package_relations(self):
+
+        test_pkgs = choices(Package.objects.all(), k=5)
+        for test_pkg in test_pkgs:
+
+            pkg_response = self.client.get(f"/api/packages/{test_pkg.id}", format="json").data
+            resolved_vulns = {
+                vuln["vulnerability_id"] for vuln in pkg_response["resolved_vulnerabilities"]
+            }
+            unresolved_vulns = {
+                vuln["vulnerability_id"] for vuln in pkg_response["unresolved_vulnerabilities"]
+            }
+
+            for vuln in resolved_vulns:
+                vuln_resp = self.client.get(
+                    f"/api/vulnerabilities?vulnerability_id={vuln}", format="json"
+                ).data
+                resolved_purls = {
+                    package["purl"] for package in vuln_resp["results"][0]["resolved_packages"]
+                }
+                self.assertIn(test_pkg.package_url, resolved_purls)
+
+            for vuln in unresolved_vulns:
+                vuln_resp = self.client.get(
+                    f"/api/vulnerabilities?vulnerability_id={vuln}", format="json"
+                ).data
+                unresolved_purls = {
+                    package["purl"] for package in vuln_resp["results"][0]["unresolved_packages"]
+                }
+                self.assertIn(test_pkg.package_url, unresolved_purls)
 
 
 class TestSerializers(TestCase):

@@ -21,11 +21,12 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+from urllib.parse import unquote
+
 from django.urls import reverse
+from packageurl import PackageURL
 from rest_framework import serializers
 from rest_framework import viewsets
-
-from packageurl import PackageURL
 
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
@@ -139,7 +140,10 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
     def filter_queryset(self, qs):
         purl = self.request.query_params.get("purl")
-        if not purl:
+        if purl:
+            purl = unquote(purl)
+
+        else:
             return super().filter_queryset(qs)
 
         try:
@@ -153,7 +157,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         return self.queryset.filter(**attrs)
 
 
-class VulnerabilityView(viewsets.ReadOnlyModelViewSet):
+class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = VulnerabilitySerializer
     paginate_by = 50
 
@@ -166,7 +170,7 @@ class VulnerabilityView(viewsets.ReadOnlyModelViewSet):
         return Vulnerability.objects.all()
 
     def get_serializer_context(self):
-        context = super(VulnerabilityView, self).get_serializer_context()
+        context = super(VulnerabilityViewSet, self).get_serializer_context()
         # Passing this context allows construction of absolute urls.
         context.update({"request": self.request})
         return context

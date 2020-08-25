@@ -24,6 +24,7 @@
 from urllib.parse import unquote
 
 from django.urls import reverse
+from django_filters import rest_framework as filters
 from packageurl import PackageURL
 from rest_framework import serializers
 from rest_framework import viewsets
@@ -133,21 +134,18 @@ class PackageSerializer(serializers.ModelSerializer):
         ]
 
 
-class PackageViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Package.objects.all()
-    serializer_class = PackageSerializer
-    filterset_fields = ("name", "version", "namespace", "type", "subpath")
+class PackageFilterSet(filters.FilterSet):
+    purl = filters.CharFilter(method="filter_purl")
 
-    def filter_queryset(self, qs):
-        purl = self.request.query_params.get("purl")
-        if purl:
-            purl = unquote(purl)
+    class Meta:
+        model = Package
+        fields = ["name", "type", "version", "subpath", "purl"]
 
-        else:
-            return super().filter_queryset(qs)
-
+    def filter_purl(self, queryset, name, value):
+        purl = unquote(value)
         try:
             purl = PackageURL.from_string(purl)
+
         except ValueError as ve:
             raise serializers.ValidationError(
                 detail={"error": f'"{purl}" is not a valid Package URL: {ve}'},
@@ -155,6 +153,13 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
         attrs = {k: v for k, v in purl.to_dict().items() if v}
         return self.queryset.filter(**attrs)
+
+
+class PackageViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Package.objects.all()
+    serializer_class = PackageSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = PackageFilterSet
 
 
 class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):

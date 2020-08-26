@@ -1,0 +1,93 @@
+<!DOCTYPE html class="has-navbar-fixed-top">
+{% load static %}
+<head>
+    <title>VulnerableCode</title>
+</head>
+<link rel="stylesheet" href="{% static 'css/bulma.css' %}"/>
+<link rel="stylesheet" href="{% static 'css/custom.css' %}"/>
+<link rel="stylesheet" href="{% static 'css/font-awesome.css' %}"/>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<body class="Site has-background-light">
+    <nav class="navbar is-dark is-fixed-top" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="https://github.com/nexB/vulnerablecode">
+            VulnerableCode Logo
+            </a>
+        </div>
+        <div  class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="{% url 'home' %}">
+                Home
+                </a>
+                <a class="navbar-item">
+                Documentation
+                </a>
+                <div class="navbar-item has-dropdown is-hoverable">
+
+                    <a class="navbar-link">
+                    Vulnerabilities
+                    </a>
+                    <div class="navbar-dropdown">
+                        <a class ="navbar-item" href = "{% url 'vulnerability_search' %}" >
+                        Explore
+                        </a>
+                        <a class ="navbar-item" href = "{% url 'vulnerability_create' %}">
+                        Create
+                        </a>
+                    </div>
+                </div>
+
+                <div class="navbar-item has-dropdown is-hoverable">
+
+                    <a class="navbar-link">
+                    Packages
+                    </a>
+                    <div class="navbar-dropdown">
+                        <a class ="navbar-item" href = "{% url 'package_search' %}" >
+                        Explore
+                        </a>
+                        <a class ="navbar-item" href = "{% url 'package_create' %}" >
+                        Create
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a class="button is-info">
+                        <strong>Sign up</strong>
+                        </a>
+                        <a class="button is-light">
+                        Log in
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <main class="Site-content">
+
+    <section class="section is-medium  has-text-centered">
+        <div class="container ">
+            {% block title %}
+            {% endblock %}
+        </div>
+    </section>
+    {% block content %}
+    {% endblock %}
+
+    </main>
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          <strong>VulnerableCode</strong> by <a href="https://github.com/nexB"> nexB Inc. and others</a>. The source code is licensed
+          <a href="https://github.com/nexB/vulnerablecode/blob/develop/LICENSE">Apache 2.0</a>
+        </p>
+      </div>
+    </footer>
+</body>
+{% block javascript %}
+{% endblock %}
+</html>

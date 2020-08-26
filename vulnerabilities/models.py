@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -18,7 +18,7 @@
 #  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
 #  VulnerableCode should be considered or used as legal advice. Consult an Attorney
 #  for any legal advice.
-#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
+#  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import importlib
@@ -39,11 +39,10 @@ class Vulnerability(models.Model):
     A software vulnerability with minimal information. Identifiers other than CVE ID are stored as
     VulnerabilityReference.
     """
-    cve_id = models.CharField(
-        max_length=50, help_text='CVE ID', unique=True, null=True)
-    summary = models.TextField(
-        help_text='Summary of the vulnerability', blank=True)
-    cvss = models.FloatField(max_length=100, help_text='CVSS Score', null=True)
+
+    cve_id = models.CharField(max_length=50, help_text="CVE ID", unique=True, null=True)
+    summary = models.TextField(help_text="Summary of the vulnerability", blank=True)
+    cvss = models.FloatField(max_length=100, help_text="CVSS Score", null=True)
 
     @property
     def vulnerable_to(self):
@@ -57,7 +56,7 @@ class Vulnerability(models.Model):
         return self.cve_id or self.summary
 
     class Meta:
-        verbose_name_plural = 'Vulnerabilities'
+        verbose_name_plural = "Vulnerabilities"
 
 
 class VulnerabilityReference(models.Model):
@@ -65,28 +64,29 @@ class VulnerabilityReference(models.Model):
     A reference to a vulnerability such as a security advisory from a Linux distribution or language
     package manager.
     """
-    vulnerability = models.ForeignKey(
-        Vulnerability, on_delete=models.CASCADE)
-    source = models.CharField(
-        max_length=50, help_text='Source(s) name eg:NVD', blank=True)
+
+    vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
+    source = models.CharField(max_length=50, help_text="Source(s) name eg:NVD", blank=True)
     reference_id = models.CharField(
-        max_length=50, help_text='Reference ID, eg:DSA-4465-1', blank=True)
-    url = models.URLField(
-        max_length=1024, help_text='URL of Vulnerability data', blank=True)
+        max_length=50, help_text="Reference ID, eg:DSA-4465-1", blank=True
+    )
+    url = models.URLField(max_length=1024, help_text="URL of Vulnerability data", blank=True)
 
     class Meta:
-        unique_together = ('vulnerability', 'source', 'reference_id', 'url')
+        unique_together = ("vulnerability", "source", "reference_id", "url")
 
     def __str__(self):
-        return f'{self.source} {self.reference_id} {self.url}'
+        return f"{self.source} {self.reference_id} {self.url}"
 
 
 class Package(PackageURLMixin):
     """
     A software package with links to relevant vulnerabilities.
     """
+
     vulnerabilities = models.ManyToManyField(
-        to='Vulnerability', through='PackageRelatedVulnerability')
+        to="Vulnerability", through="PackageRelatedVulnerability"
+    )
 
     @property
     def vulnerable_to(self):
@@ -97,17 +97,17 @@ class Package(PackageURLMixin):
         return self.packagerelatedvulnerability_set.filter(is_vulnerable=False)
 
     class Meta:
-        unique_together = ('name', 'namespace', 'type',
-                           'version', 'qualifiers', 'subpath')
+        unique_together = ("name", "namespace", "type", "version", "qualifiers", "subpath")
+
     # Remove the `qualifers` and `set_package_url` overrides after
     # https://github.com/package-url/packageurl-python/pull/35 gets merged
     qualifiers = pgfields.JSONField(
         default=dict,
         help_text=_(
-            'Extra qualifying data for a package such as the name of an OS, '
-            'architecture, distro, etc.'
+            "Extra qualifying data for a package such as the name of an OS, "
+            "architecture, distro, etc."
         ),
-        null=True
+        null=True,
     )
 
     def set_package_url(self, package_url):
@@ -123,8 +123,7 @@ class Package(PackageURLMixin):
             model_field = self._meta.get_field(field_name)
 
             if value and len(value) > model_field.max_length:
-                raise ValidationError(
-                    _('Value too long for field "{}".'.format(field_name)))
+                raise ValidationError(_('Value too long for field "{}".'.format(field_name)))
 
             setattr(self, field_name, value or None)
 
@@ -142,7 +141,7 @@ class PackageRelatedVulnerability(models.Model):
         # Technically 'is_vulnerable' doesn't belong here. The idea is to
         # later filter out for a pairs of ('package', 'vulnerability') which have both
         # values of 'is_vulnerable' and ping the data providers to  resolve such entries.
-        unique_together = ('package', 'vulnerability', 'is_vulnerable')
+        unique_together = ("package", "vulnerability", "is_vulnerable")
 
 
 class ImportProblem(models.Model):
@@ -155,26 +154,23 @@ class Importer(models.Model):
     Metadata and pointer to the implementation for a source of vulnerability data (aka security
     advisories)
     """
-    name = models.CharField(max_length=100, unique=True,
-                            help_text='Name of the importer')
+
+    name = models.CharField(max_length=100, unique=True, help_text="Name of the importer")
 
     license = models.CharField(
-        max_length=100,
-        blank=True,
-        help_text='License of the vulnerability data',
+        max_length=100, blank=True, help_text="License of the vulnerability data",
     )
 
-    last_run = models.DateTimeField(
-        null=True, help_text='UTC Timestamp of the last run')
+    last_run = models.DateTimeField(null=True, help_text="UTC Timestamp of the last run")
 
     data_source = models.CharField(
         max_length=100,
-        help_text='Name of the data source implementation importable from vulnerabilities.importers'
+        help_text="Name of the data source implementation importable from vulnerabilities.importers",  # nopep8
     )
     data_source_cfg = pgfields.JSONField(
         null=False,
         default=dict,
-        help_text='Implementation-specific configuration for the data source',
+        help_text="Implementation-specific configuration for the data source",
     )
 
     def make_data_source(self, batch_size: int, cutoff_date: datetime = None) -> DataSource:
@@ -184,7 +180,7 @@ class Importer(models.Model):
         batch_size - max. number of records to return on each iteration
         cutoff_date - optional timestamp of the oldest data to include in the import
         """
-        importers_module = importlib.import_module('vulnerabilities.importers')
+        importers_module = importlib.import_module("vulnerabilities.importers")
         klass = getattr(importers_module, self.data_source)
 
         ds = klass(

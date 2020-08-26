@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'vulnerabilities',
     'rest_framework',
     'django_filters',
+    'widget_tweaks'
 ]
 
 MIDDLEWARE = [
@@ -65,7 +66,7 @@ ROOT_URLCONF = 'vulnerablecode.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'debug': False,

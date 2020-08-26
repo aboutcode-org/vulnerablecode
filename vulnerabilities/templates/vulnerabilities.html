@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}
+<h1 class="title">
+Explore Vulnerabilities
+</h1>
+{% endblock %}
+{% block content %}
+
+<div class="columns">
+    <div class="column is-one-third is-offset-one-third">
+ 
+     <form action="{% url 'vulnerability_search' %}" method="get">
+      {% load widget_tweaks %}
+      <div class="field is-horizontal">
+        {{form.cve_id|add_class:"input"}}
+        <button class="button is-success", type="submit">
+          Search
+        </button>
+      </div>
+      </form>
+       </div>
+</div>
+
+{% if vulnerabilities %}
+    <section class="section is-medium has-text-centered">
+      <div class="container">
+        <h1 class="title" id="results">Results of your query "{{searched_for}}"</h1>
+        <h3 class="subtitle" id="results">Total {{vulnerabilities|length}} results</h3>
+      </div>
+    </section>
+
+    <section class="section has-background-dark">
+      
+        <div class="content is-large">
+          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+          <tr>
+              <th>Vulnerabilities</th>
+              <th>Patched packages</th>
+              <th>Vulnerable packages</th>
+          </tr>
+          {% for vulnerability in  vulnerabilities %}
+              <tr>
+                  <td><a href="{% url 'vulnerability_view' vulnerability.pk %}">{{vulnerability.cve_id}}</a></td>
+                  <td>{{vulnerability.resolved_to.all|length}}</td>
+                  <td>{{vulnerability.vulnerable_to.all|length}}</td>
+              </tr>
+          {% endfor %}
+          </table>
+        </div>
+
+        <div class="is-field is-horizontal">
+          {% if vulnerabilities.has_previous %}
+            <a class="button" href="?vuln_id={{ searched_for }}&page={{ vulnerabilities.previous_page_number }}">Previous Page</a>
+          {% endif %}
+
+          {% if vulnerabilities.has_next %}
+            <a class="button" href="?vuln_id={{ searched_for }}&page={{ vulnerabilities.next_page_number}}">Next Page</a>
+          {% endif %}
+        </div>
+
+    </section>
+
+{% endif %}
+
+{% endblock %}

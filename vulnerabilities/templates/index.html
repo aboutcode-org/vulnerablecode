@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<h1 class="title">
+Welcome to VulnerableCode!
+</h1>
+{% endblock %}
+
+{% block content %}
+<div class = "hero is-large has-text-centered is-light">
+<a class="button is-medium has-background-info-light"  href="{% url 'vulnerability_search' %}"> Search Vulnerabilities</a>
+<a class="button is-medium has-background-info-light" href="{% url 'package_search' %}"> Search Packages</a>
+</div>
+{% endblock %}

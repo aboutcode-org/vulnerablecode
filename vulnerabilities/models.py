@@ -45,6 +45,14 @@ class Vulnerability(models.Model):
         help_text='Summary of the vulnerability', blank=True)
     cvss = models.FloatField(max_length=100, help_text='CVSS Score', null=True)
 
+    @property
+    def vulnerable_to(self):
+        return self.packagerelatedvulnerability_set.filter(is_vulnerable=True)
+
+    @property
+    def resolved_to(self):
+        return self.packagerelatedvulnerability_set.filter(is_vulnerable=False)
+
     def __str__(self):
         return self.cve_id or self.summary
 
@@ -79,6 +87,14 @@ class Package(PackageURLMixin):
     """
     vulnerabilities = models.ManyToManyField(
         to='Vulnerability', through='PackageRelatedVulnerability')
+
+    @property
+    def vulnerable_to(self):
+        return self.packagerelatedvulnerability_set.filter(is_vulnerable=True)
+
+    @property
+    def resolved_to(self):
+        return self.packagerelatedvulnerability_set.filter(is_vulnerable=False)
 
     class Meta:
         unique_together = ('name', 'namespace', 'type',

@@ -1,0 +1,65 @@
+{% extends 'base.html' %} 
+{% block title %} 
+<h1 class="title">
+Explore/Curate Vulnerable packages
+</h1>
+{% endblock %}
+{% block content %}
+{% load widget_tweaks %}
+
+<section class="columns  has-text-centered">  
+    <div class = "column is-three-fifths is-offset-one-fifth">
+        <form action="{% url 'package_search' %}" method="get">
+      <div class="field is-horizontal">
+        {% for field in  form %}
+        {{ field|add_class:"input" }}
+        {% endfor %}
+      <button class="button is-success" , type="submit">
+        Search
+      </button>
+    </form>
+  </div>
+  </div>
+
+</section>
+
+{% if packages %}
+
+<section class="section is-medium  has-text-centered">
+  <div class="container">
+    <h1 class="title">Results of your query</h1>
+    <h3 class="subtitle">Total Results {{packages|length}}</h3>
+  </div>
+</section>
+
+<section class="section has-background-dark">
+  <div class="content is-medium">
+    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+      <tr>
+        <th>Packages</th>
+        <th>Patched Vulnerabilities</th>
+        <th>Vulnerabilities</th>
+      </tr>
+      {% for package in packages %}
+      <tr>
+        <td><a href="{% url 'package_view' package.pk %}">{{package}}</a></td>
+        <td>{{package.resolved_to.all|length}}</td>
+        <td>{{package.vulnerable_to.all|length}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  
+  <div class="is-field is-horizontal">
+    {% if packages.has_previous %}
+      <a class="button" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">Previous Page</a>
+    {% endif %}
+  
+    {% if packages.has_next %}
+      <a class="button" href="?{{ searched_for }}&page={{ packages.next_page_number}}">Next Page</a>
+    {% endif %}
+  </div>
+</section>
+
+{% endif %}
+{% endblock %}

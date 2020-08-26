@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}
+<h1 class="title">
+Curate : {{object}}
+</h1>
+{% endblock %}
+
+{% block content %}
+<div class="columns is-5 is-variable mx-6 mb-6">
+  <div class="column is-half has-text-centered has-background-success-light">
+     <form method="post" class="card has-background-success-light">
+      <header class="card-header mb-3">
+        <p class="card-header-title">
+          Package Details 
+        </p>
+      </header>
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="field px-3">
+            <label class="label">{{field.label}}</label>
+            {% render_field field class="input is-primary" %}
+        </div>
+        {% endfor %}
+      <button class="button is-success mb-3", type="submit">
+        Update
+      </button>
+    </form>
+  </div>
+
+  <div class="column is-half has-text-centered has-background-danger-light">
+    <div class="columns is-variable is-5 is-multiline">
+        <div class="column is-full">
+        <div class="card has-background-danger-light">
+        <header class="card-header mb-3">
+            <p class="card-header-title">Vulnerable To</p>
+        </header>
+        <div class="tags mx-3">
+            {% for vulnerability in impacted_vuln %}
+                <span class="tag is-danger is-medium">
+                  <a href="{% url 'vulnerability_view' vulnerability.pk %}" class="has-text-white">{{vulnerability}}</a>
+                
+                  <form method="POST" action="{% url 'impacted_package_delete' object.pk vulnerability.pk %}"">
+                    {% csrf_token %}<button class="delete is-small" type="submit"></button>
+                  </form>
+              </span>
+            {% endfor %}
+        </div>
+
+        <div class="field is-centered">
+            <p class="control pb-3">
+                <a class="button is-success" href = "{% url 'impacted_package_create' object.pk %}">
+                    <span>Add</span>
+                    <span class="icon is-small">
+                        <i class="fa fa-plus"></i>
+                    </span>
+                </a>
+            </p>
+        </div>
+
+    </div>
+    </div>
+
+    <div class="column is-full">
+        <div class="card has-background-danger-light">
+        <header class="card-header mb-3">
+             <p class="card-header-title">Safe To</p>
+        </header>
+               <div class="tags mx-3">
+            {% for vulnerability in resolved_vuln %}
+            <span class="tag is-primary is-medium">
+              <a href="{% url 'vulnerability_view' vulnerability.pk %}" class="has-text-white">{{vulnerability}}</a>
+            
+            <form method="POST" action="{% url 'resolved_package_delete' object.pk vulnerability.pk %}">
+              {% csrf_token %}<button class="delete is-small" type="submit"></button>
+            </form>
+            </span>
+            {% endfor %}
+        </div>
+
+        <div class="field is-centered">
+            <p class="control pb-3">
+                <a class="button is-success" href= "{% url 'resolved_package_create' object.pk %}" >
+                    <span>Add</span>
+                    <span class="icon is-small">
+                        <i class="fa fa-plus"></i>
+                    </span>
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+  </div>
+
+</div>
+{% endblock %}

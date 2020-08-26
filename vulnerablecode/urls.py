@@ -27,15 +27,15 @@ from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
 
 from vulnerabilities.api import PackageViewSet
+from vulnerabilities.views import HomePage
 from vulnerabilities.views import PackageSearchView
 from vulnerabilities.views import PackageUpdate
 from vulnerabilities.views import PackageCreate
+from vulnerabilities.views import PackageRelatedVulnerablityDelete
+from vulnerabilities.views import PackageRelatedVulnerablityCreate
 from vulnerabilities.views import VulnerabilityDetails
 from vulnerabilities.views import VulnerabilitySearchView
 from vulnerabilities.views import VulnerabilityCreate
-from vulnerabilities.views import PackageRelatedVulnerablityDelete
-from vulnerabilities.views import PackageRelatedVulnerablityCreate
-from vulnerabilities.views import HomePage
 from vulnerabilities.views import VulnerabilityReferenceCreate
 
 

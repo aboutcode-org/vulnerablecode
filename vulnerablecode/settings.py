@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'vulnerabilities',
     'rest_framework',
     'django_filters',
-    'widget_tweaks'
+    'widget_tweaks',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [

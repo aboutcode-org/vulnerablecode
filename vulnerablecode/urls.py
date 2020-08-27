@@ -22,11 +22,14 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 from django.contrib import admin
-from django.urls import include, path, re_path
-
+from django.urls import include, path
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 from rest_framework.routers import DefaultRouter
 
 from vulnerabilities.api import PackageViewSet
+from vulnerabilities.api import VulnerabilityViewSet
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import PackageSearchView
 from vulnerabilities.views import PackageUpdate
@@ -38,13 +41,13 @@ from vulnerabilities.views import VulnerabilitySearchView
 from vulnerabilities.views import VulnerabilityCreate
 from vulnerabilities.views import VulnerabilityReferenceCreate
 
+schema_view = get_schema_view(
+    openapi.Info(title="VulnerableCode API", default_version="v1"),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
 
 api_router = DefaultRouter()
-api_router.register(r"packages", PackageViewSet)
-from vulnerabilities.api import VulnerabilityView
-
-
-api_router = DefaultRouter)
 api_router.register(r"packages", PackageViewSet)
 # `DefaultRouter` requires `basename` when registering viewsets which don't
 # define a queryset.
@@ -53,7 +56,6 @@ api_router.register(r"vulnerabilities", VulnerabilityViewSet, basename="vulnerab
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include(api_router.urls)),
     path("packages/search", PackageSearchView.as_view(), name="package_search"),
     path("packages/<int:pk>", PackageUpdate.as_view(), name="package_view"),
     path("vulnerabilities/<int:pk>", VulnerabilityDetails.as_view(), name="vulnerability_view"),
@@ -86,4 +88,6 @@ urlpatterns = [
         name="vulnerability_reference_create",
     ),
     path("", HomePage.as_view(), name="home"),
+    path(r"api/", include(api_router.urls)),
+    path(r"api/docs", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
 ]

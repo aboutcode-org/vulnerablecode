@@ -57,25 +57,25 @@ class TestDebianResponse(TestCase):
 
         # check filtering when qualifiers are not normalized
         test_purl = quote("pkg:deb/vlc@1.50-1.1?foo=bar&tar=ball")
-        response = self.client.get(f"/api/packages?purl={test_purl}", format="json").data
+        response = self.client.get(f"/api/packages/?purl={test_purl}", format="json").data
 
         self.assertEqual(1, response["count"])
         self.assertEqual(pk_multi_qf.qualifiers, response["results"][0]["qualifiers"])
 
         test_purl = quote("pkg:deb/vlc@1.50-1.1?tar=ball&foo=bar")
-        response = self.client.get(f"/api/packages?purl={test_purl}", format="json").data
+        response = self.client.get(f"/api/packages/?purl={test_purl}", format="json").data
 
         self.assertEqual(1, response["count"])
         self.assertEqual(pk_multi_qf.qualifiers, response["results"][0]["qualifiers"])
 
         # check filtering when there is intersection of qualifiers between packages
         test_purl = quote("pkg:deb/vlc@1.50-1.1?foo=bar")
-        response = self.client.get(f"/api/packages?purl={test_purl}", format="json").data
+        response = self.client.get(f"/api/packages/?purl={test_purl}", format="json").data
 
         self.assertEqual(1, response["count"])
 
     def test_query_by_name(self):
-        response = self.client.get("/api/packages?name=mimetex", format="json").data
+        response = self.client.get("/api/packages/?name=mimetex", format="json").data
 
         self.assertEqual(3, response["count"])
 
@@ -91,7 +91,7 @@ class TestDebianResponse(TestCase):
         self.assertIn("pkg:deb/debian/mimetex@1.74-1?distro=jessie", purls)
 
     def test_query_by_invalid_package_url(self):
-        url = "/api/packages?purl=invalid_purl"
+        url = "/api/packages/?purl=invalid_purl"
         response = self.client.get(url, format="json")
 
         self.assertEqual(400, response.status_code)
@@ -100,7 +100,7 @@ class TestDebianResponse(TestCase):
         self.assertIn("invalid_purl", error)
 
     def test_query_by_package_url(self):
-        url = "/api/packages?purl=pkg:deb/debian/mimetex@1.50-1.1?distro=jessie"
+        url = "/api/packages/?purl=pkg:deb/debian/mimetex@1.50-1.1?distro=jessie"
         response = self.client.get(url, format="json").data
 
         self.assertEqual(1, response["count"])
@@ -113,7 +113,7 @@ class TestDebianResponse(TestCase):
         self.assertNotIn("1.74-1", versions)
 
     def test_query_by_package_url_without_namespace(self):
-        url = "/api/packages?purl=pkg:deb/mimetex@1.50-1.1"
+        url = "/api/packages/?purl=pkg:deb/mimetex@1.50-1.1"
         response = self.client.get(url, format="json").data
 
         self.assertEqual(2, response["count"])
@@ -130,7 +130,7 @@ class TestUbuntuResponse(TestCase):
     fixtures = ["ubuntu.json"]
 
     def test_ubuntu_response(self):
-        response = self.client.get("/api/packages?name=automake", format="json")
+        response = self.client.get("/api/packages/?name=automake", format="json")
 
         result = response.data.get("results")[0]
         self.assertEqual("automake", result["name"])
@@ -144,7 +144,7 @@ class TestUbuntuResponse(TestCase):
         test_pkgs = choices(Package.objects.all(), k=5)
         for test_pkg in test_pkgs:
 
-            pkg_response = self.client.get(f"/api/packages/{test_pkg.id}", format="json").data
+            pkg_response = self.client.get(f"/api/packages/{test_pkg.id}/", format="json").data
             resolved_vulns = {
                 vuln["vulnerability_id"] for vuln in pkg_response["resolved_vulnerabilities"]
             }
@@ -154,7 +154,7 @@ class TestUbuntuResponse(TestCase):
 
             for vuln in resolved_vulns:
                 vuln_resp = self.client.get(
-                    f"/api/vulnerabilities?vulnerability_id={vuln}", format="json"
+                    f"/api/vulnerabilities/?vulnerability_id={vuln}", format="json"
                 ).data
                 resolved_purls = {
                     package["purl"] for package in vuln_resp["results"][0]["resolved_packages"]
@@ -163,7 +163,7 @@ class TestUbuntuResponse(TestCase):
 
             for vuln in unresolved_vulns:
                 vuln_resp = self.client.get(
-                    f"/api/vulnerabilities?vulnerability_id={vuln}", format="json"
+                    f"/api/vulnerabilities/?vulnerability_id={vuln}", format="json"
                 ).data
                 unresolved_purls = {
                     package["purl"] for package in vuln_resp["results"][0]["unresolved_packages"]

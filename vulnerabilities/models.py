@@ -46,11 +46,15 @@ class Vulnerability(models.Model):
 
     @property
     def vulnerable_to(self):
-        return self.packagerelatedvulnerability_set.filter(is_vulnerable=True)
+        return self.package_set.filter(
+            packagerelatedvulnerability__is_vulnerable=True,
+        )
 
     @property
     def resolved_to(self):
-        return self.packagerelatedvulnerability_set.filter(is_vulnerable=False)
+        return self.package_set.filter(
+            packagerelatedvulnerability__is_vulnerable=False,
+        )
 
     def __str__(self):
         return self.cve_id or self.summary
@@ -90,11 +94,15 @@ class Package(PackageURLMixin):
 
     @property
     def vulnerable_to(self):
-        return self.packagerelatedvulnerability_set.filter(is_vulnerable=True)
+        return self.vulnerabilities.filter(
+            packagerelatedvulnerability__is_vulnerable=True,
+        )
 
     @property
     def resolved_to(self):
-        return self.packagerelatedvulnerability_set.filter(is_vulnerable=False)
+        return self.vulnerabilities.filter(
+            packagerelatedvulnerability__is_vulnerable=False,
+        )
 
     class Meta:
         unique_together = ("name", "namespace", "type", "version", "qualifiers", "subpath")

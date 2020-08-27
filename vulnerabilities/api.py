@@ -60,7 +60,7 @@ class HyperLinkedVulnerabilitySerializer(serializers.HyperlinkedModelSerializer)
         fields = ["url", "vulnerability_id"]
 
 
-class VulnerabilitySerializer(serializers.ModelSerializer):
+class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
     resolved_packages = HyperLinkedPackageSerializer(
         many=True, source="resolved_to", read_only=True
@@ -74,7 +74,7 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class PackageSerializer(serializers.ModelSerializer):
+class PackageSerializer(serializers.HyperlinkedModelSerializer):
     unresolved_vulnerabilities = HyperLinkedVulnerabilitySerializer(
         many=True, source="vulnerable_to", read_only=True
     )
@@ -86,6 +86,7 @@ class PackageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Package
         fields = [
+            "url",
             "type",
             "namespace",
             "name",

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -18,13 +18,16 @@
 #  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
 #  VulnerableCode should be considered or used as legal advice. Consult an Attorney
 #  for any legal advice.
-#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
+#  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+from urllib.parse import unquote
+
+from django.urls import reverse
+from django_filters import rest_framework as filters
+from packageurl import PackageURL
 from rest_framework import serializers
 from rest_framework import viewsets
-
-from packageurl import PackageURL
 
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
@@ -35,61 +38,106 @@ class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = VulnerabilityReference
         fields = [
-            'source',
-            'reference_id',
-            'url',
+            "source",
+            "reference_id",
+            "url",
         ]
 
 
-class VulnerabilitySerializer(serializers.ModelSerializer):
-    references = VulnerabilityReferenceSerializer(source='vulnerabilityreference_set', many=True)
+class HyperLinkedPackageSerializer(serializers.HyperlinkedModelSerializer):
+    purl = serializers.CharField(source="package_url")
+
+    class Meta:
+        model = Package
+        fields = ["url", "purl"]
+
+
+class HyperLinkedVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
+    vulnerability_id = serializers.CharField(source="cve_id")
 
     class Meta:
         model = Vulnerability
-        fields = [
-            'summary',
-            'cvss',
-            'references',
-        ]
+        fields = ["url", "vulnerability_id"]
 
 
-class PackageSerializer(serializers.ModelSerializer):
-    vulnerabilities = VulnerabilitySerializer(many=True)
+class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
+    references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
+    resolved_packages = HyperLinkedPackageSerializer(
+        many=True, source="resolved_to", read_only=True
+    )
+    unresolved_packages = HyperLinkedPackageSerializer(
+        many=True, source="vulnerable_to", read_only=True
+    )
+
+    class Meta:
+        model = Vulnerability
+        fields = "__all__"
+
+
+class PackageSerializer(serializers.HyperlinkedModelSerializer):
+    unresolved_vulnerabilities = HyperLinkedVulnerabilitySerializer(
+        many=True, source="vulnerable_to", read_only=True
+    )
+    resolved_vulnerabilities = HyperLinkedVulnerabilitySerializer(
+        many=True, source="resolved_to", read_only=True
+    )
+    purl = serializers.CharField(source="package_url")
 
     class Meta:
         model = Package
         fields = [
-            'name',
-            'version',
-            'package_url',
-            'vulnerabilities',
+            "url",
+            "type",
+            "namespace",
+            "name",
+            "version",
+            "qualifiers",
+            "subpath",
+            "purl",
+            "resolved_vulnerabilities",
+            "unresolved_vulnerabilities",
         ]
+
+
+class PackageFilterSet(filters.FilterSet):
+    purl = filters.CharFilter(method="filter_purl")
+
+    class Meta:
+        model = Package
+        fields = ["name", "type", "version", "subpath", "purl"]
+
+    def filter_purl(self, queryset, name, value):
+        purl = unquote(value)
+        try:
+            purl = PackageURL.from_string(purl)
+
+        except ValueError as ve:
+            raise serializers.ValidationError(
+                detail={"error": f'"{purl}" is not a valid Package URL: {ve}'},
+            )
+
+        attrs = {k: v for k, v in purl.to_dict().items() if v}
+        return self.queryset.filter(**attrs)
 
 
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
-    filterset_fields = ('name', 'version')
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = PackageFilterSet
 
-    def filter_queryset(self, qs):
-        purl = self.request.query_params.get('package_url')
-        if not purl:
-            return super().filter_queryset(qs)
 
-        try:
-            purl = PackageURL.from_string(purl)
-        except ValueError as ve:
-            raise serializers.ValidationError(
-                detail={'error': f'"{purl}" is not a valid Package URL: {ve}'},
-            )
+class VulnerabilityFilterSet(filters.FilterSet):
+    vulnerability_id = filters.CharFilter(field_name="cve_id")
 
-        # Remove "qualifiers" here because it is stored as one string in the model.
-        # For example, a row in the database could have the "qualifiers" column
-        # stored as "foo=bar&spam=eggs". If an API request contains a PURL with
-        # "spam=eggs&foo=bar", the DB query would not include that row.
-        attrs = {k: v for k, v in purl.to_dict().items() if v and k != 'qualifiers'}
+    class Meta:
+        model = Vulnerability
+        fields = ["vulnerability_id"]
 
-        # TODO
-        # Since we are filtering on all the Package URL fields except "qualifiers",
-        # we'll eventually need database indices on them.
-        return self.queryset.filter(**attrs)
+
+class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Vulnerability.objects.all()
+    serializer_class = VulnerabilitySerializer
+    paginate_by = 50
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = VulnerabilityFilterSet

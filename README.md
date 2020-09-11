@@ -144,6 +144,6 @@ DJANGO_DEV=1 python manage.py runserver
 In your browser access:
 
 ```
-http://127.0.0.1:8000/api/
-http://127.0.0.1:8000/api/packages/?name=<package_name>
+http://127.0.0.1:8000/api/docs
 ```
+For full documentation about API endpoints.

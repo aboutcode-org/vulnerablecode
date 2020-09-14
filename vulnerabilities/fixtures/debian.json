@@ -35,7 +35,7 @@
     "name": "librsync",
     "version": "0.9.7-10",
     "qualifiers": {"distro":"jessie"},
-    "subpath": null
+    "subpath": ""
   }
 },
 {
@@ -47,7 +47,7 @@
     "name": "mimetex",
     "version": "1.74-1",
     "qualifiers": {"distro":"jessie"},
-    "subpath": null
+    "subpath": ""
   }
 },
 {
@@ -59,7 +59,7 @@
     "name": "mimetex",
     "version": "1.50-1.1",
     "qualifiers": {"distro":"jessie"},
-    "subpath": null
+    "subpath": ""
   }
 },
 {

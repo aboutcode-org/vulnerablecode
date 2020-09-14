@@ -126,18 +126,8 @@ class TestDebianResponse(TestCase):
         self.assertIn("pkg:deb/ubuntu/mimetex@1.50-1.1", purls)
 
 
-class TestUbuntuResponse(TestCase):
-    fixtures = ["ubuntu.json"]
-
-    def test_ubuntu_response(self):
-        response = self.client.get("/api/packages/?name=automake", format="json")
-
-        result = response.data.get("results")[0]
-        self.assertEqual("automake", result["name"])
-        self.assertEqual(None, result["version"])
-        self.assertEqual(1, len(result["unresolved_vulnerabilities"]))
-
-        vuln = result["unresolved_vulnerabilities"][0]
+class APIResponseRelations(TestCase):
+    fixtures = ["openssl.json"]
 
     def test_vulnerability_package_relations(self):
 
@@ -156,6 +146,10 @@ class TestUbuntuResponse(TestCase):
                 vuln_resp = self.client.get(
                     f"/api/vulnerabilities/?vulnerability_id={vuln}", format="json"
                 ).data
+
+                if not vuln_resp["results"]:
+                    continue
+
                 resolved_purls = {
                     package["purl"] for package in vuln_resp["results"][0]["resolved_packages"]
                 }
@@ -165,6 +159,10 @@ class TestUbuntuResponse(TestCase):
                 vuln_resp = self.client.get(
                     f"/api/vulnerabilities/?vulnerability_id={vuln}", format="json"
                 ).data
+
+                if not vuln_resp["results"]:
+                    continue
+
                 unresolved_purls = {
                     package["purl"] for package in vuln_resp["results"][0]["unresolved_packages"]
                 }

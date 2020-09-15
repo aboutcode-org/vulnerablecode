@@ -130,7 +130,8 @@ def vuln_ref_exists(vulnerability, url, reference_id):
 
 def get_vuln_pkg_refs(vulnerability, package):
     return models.PackageRelatedVulnerability.objects.filter(
-        vulnerability=vulnerability, package=package,
+        vulnerability=vulnerability,
+        package=package,
     )
 
 
@@ -146,11 +147,14 @@ def process_advisories(data_source: DataSource) -> None:
             vuln, vuln_created = _get_or_create_vulnerability(advisory)
             for vuln_ref in advisory.vuln_references:
                 ref = VulnerabilityReferenceInserter(
-                    vulnerability=vuln, url=vuln_ref.url, reference_id=vuln_ref.reference_id,
+                    vulnerability=vuln,
+                    url=vuln_ref.url,
+                    reference_id=vuln_ref.reference_id,
                 )
 
                 if vuln_created or not vuln_ref_exists(vuln, vuln_ref.url, vuln_ref.reference_id):
-                    # ref cant exist if vuln is just created so insert it
+                    # A vulnerability reference can't exist if the vulnerability is just created so
+                    # insert it
                     bulk_create_vuln_refs.add(ref)
 
             for purl in chain(advisory.impacted_package_urls, advisory.resolved_package_urls):
@@ -162,16 +166,17 @@ def process_advisories(data_source: DataSource) -> None:
 
                 if vuln_created or pkg_created:
                     bulk_create_vuln_pkg_refs.add(pkg_vuln_ref)
-                    # insert all references of vuln + pkg
+                    # A vulnerability-package relationship does not exist already if either the
+                    # vulnerability or the package is just created.
 
                 else:
-                    # insert only if it is new vuln-pkg references
+                    # insert only if it there is no existing vulnerability-package relationship.
                     existing_ref = get_vuln_pkg_refs(vuln, pkg)
                     if not existing_ref:
                         bulk_create_vuln_pkg_refs.add(pkg_vuln_ref)
 
                     else:
-                        # This handles conflicts between existing datq and obtained data
+                        # This handles conflicts between existing data and obtained data
                         if existing_ref[0].is_vulnerable != pkg_vuln_ref.is_vulnerable:
                             handle_conflicts([existing_ref[0], pkg_vuln_ref.to_model_object()])
                             existing_ref.delete()
@@ -190,15 +195,30 @@ def process_advisories(data_source: DataSource) -> None:
     handle_conflicts([i.to_model_object() for i in conflicts])
 
 
-def find_conflicting_relations(relations):
+def find_conflicting_relations(
+    relations: Set[Set[PackageRelatedVulnerabilityInserter]],
+) -> Set[PackageRelatedVulnerabilityInserter]:
+
+    # Chop off `is_vulnerable` flag from PackageRelatedVulnerabilityInserter and create a list of
+    # tuples of format (rel.package, rel.vulnerability)
 
     relation_tuples = [(rel.package, rel.vulnerability) for rel in relations]
     relation_counter = Counter(relation_tuples).most_common()
+
+    # If a (rel.package, rel.vulnerability) occurs twice then that means the
+    # PackageRelatedVulnerabilityInserter objects
+    # (rel.package, rel.vulnerability, is_vulnerable=True) and
+    # (rel.package, rel.vulnerability, is_vulnerable=False) both existed which is conflicting data.
+    # We detect and return these conflicts.
+
     conflicts = set()
     for rel, count in relation_counter:
         if count < 2:
+            # All the subsequent entries from here on would have count == 1 which is of no interest
+            # since conflicts exist in pairs with `is_vulnerable=True` and `is_vulnerable=False`.
             break
 
+        # `rel` is of format (pkg, vuln)
         conflicts.add(
             PackageRelatedVulnerabilityInserter(
                 vulnerability=rel[1], package=rel[0], is_vulnerable=True
@@ -219,7 +239,9 @@ def handle_conflicts(conflicts):
     models.ImportProblem.objects.create(conflicting_model=conflicts)
 
 
-def _get_or_create_vulnerability(advisory: Advisory,) -> Tuple[models.Vulnerability, bool]:
+def _get_or_create_vulnerability(
+    advisory: Advisory,
+) -> Tuple[models.Vulnerability, bool]:
     if advisory.cve_id:
         query_kwargs = {"cve_id": advisory.cve_id}
     elif advisory.summary:

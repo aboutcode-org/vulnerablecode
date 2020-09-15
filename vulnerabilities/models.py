@@ -146,10 +146,7 @@ class PackageRelatedVulnerability(models.Model):
     is_vulnerable = models.BooleanField()
 
     class Meta:
-        # Technically 'is_vulnerable' doesn't belong here. The idea is to
-        # later filter out for a pairs of ('package', 'vulnerability') which have both
-        # values of 'is_vulnerable' and ping the data providers to  resolve such entries.
-        unique_together = ("package", "vulnerability", "is_vulnerable")
+        unique_together = ("package", "vulnerability")
 
 
 class ImportProblem(models.Model):

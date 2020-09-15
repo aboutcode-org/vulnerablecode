@@ -92,10 +92,6 @@ the code Django includes for this purpose: `SECRET_KEY=$(python -c "from django.
 pycodestyle --exclude=migrations,settings.py,venv,lib_oval.py,test_ubuntu.py,test_suse.py,test_data_source.py --max-line-length=100 .
 DJANGO_DEV=1 pytest 
 ```
-To skip tests which require internet connection:
-```
-DJANGO_DEV=1 pytest  -m "not webtest"
-```
 ## Data import
 
 ```

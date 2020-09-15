@@ -30,7 +30,7 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import PackageURL
 from vulnerabilities.data_source import Reference
 from vulnerabilities.import_runner import ImportRunner
-from vulnerabilities.import_runner import _insert_vulnerabilities_and_references
+# from vulnerabilities.import_runner import _insert_vulnerabilities_and_references
 
 
 class MockDataSource(DataSource):
@@ -331,16 +331,3 @@ def test_ImportRunner_updated_vulnerability(db):
     vuln_refs = models.VulnerabilityReference.objects.filter(vulnerability=vuln)
     assert vuln_refs.count() == 1
     assert vuln_refs[0].url == 'https://example.com/with/more/info/MOCK-CVE-2020-1337'
-
-
-def test_insert_vulnerabilities_and_references_stores_summary(db):
-    advisory = Advisory(
-        summary='vulnerability description here',
-        cve_id='MOCK-CVE-2020-1337',
-        impacted_package_urls=[PackageURL(name='mock-webserver', type='pypi', version='1.2.33a')],
-    )
-
-    _insert_vulnerabilities_and_references({advisory})
-
-    vuln = models.Vulnerability.objects.get(cve_id=advisory.cve_id)
-    assert vuln.summary == advisory.summary

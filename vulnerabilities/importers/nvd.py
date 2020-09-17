@@ -49,7 +49,7 @@ class NVDDataSource(DataSource):
     def updated_advisories(self):
         current_year = date.today().year
         # NVD json feeds start from 2002.
-        for year in range(2002, current_year + 1):
+        for year in range(2002, current_year+1):
             download_url = BASE_URL.format(year)
             # Etags are like hashes of web responses. We maintain
             # (url, etag) mappings in the DB. `create_etag`  creates
@@ -74,7 +74,8 @@ class NVDDataSource(DataSource):
                 continue
 
             cve_id = cve_item["cve"]["CVE_data_meta"]["ID"]
-            references = self.extract_references(cve_item)
+            ref_urls = self.extract_reference_urls(cve_item)
+            references = [Reference(url=url) for url in ref_urls]
             summary = self.extract_summary(cve_item)
             yield Advisory(
                 cve_id=cve_id, summary=summary, vuln_references=references, impacted_package_urls=[]
@@ -88,31 +89,18 @@ class NVDDataSource(DataSource):
         summaries = [desc["value"] for desc in cve_item["cve"]["description"]["description_data"]]
         return max(summaries, key=len)
 
-    def extract_references(self, cve_item):
-        refs = []
+    def extract_reference_urls(self, cve_item):
+        urls = set()
         for reference in cve_item["cve"]["references"]["reference_data"]:
-            ref_id = self.find_ref_id(reference)
             ref_url = reference["url"]
 
-            # Skip references which exceed db constraints
-            if ref_id and len(ref_id) > 50:
+            if not ref_url:
                 continue
 
-            refs.append(Reference(url=ref_url, reference_id=ref_id))
+            if ref_url.startswith("http") or ref_url.startswith("ftp"):
+                urls.add(ref_url)
 
-        return refs
-
-    @staticmethod
-    def find_ref_id(reference):
-        if "https://" in reference["name"] or "http://" in reference["name"]:
-            if "bugzilla" in reference["url"]:
-                _, _, bugzilla_id = reference["url"].partition("?id=")
-                return bugzilla_id
-
-            return ""
-
-        else:
-            return reference["name"]
+        return urls
 
     def is_outdated(self, cve_item):
         cve_last_modified_date = cve_item["lastModifiedDate"]

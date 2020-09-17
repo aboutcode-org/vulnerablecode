@@ -87,38 +87,6 @@ class TestNVDDataSource(TestCase):
         found_summary = NVDDataSource.extract_summary(cve_item)
         assert found_summary == expected_summary
 
-    def test_find_ref_id_when_has_refid(self):
-
-        reference = {
-            "url": "http://www.securityfocus.com/bid/12577",
-            "name": "12577",
-            "refsource": "BID",
-            "tags": [],
-        }
-
-        assert NVDDataSource.find_ref_id(reference) == "12577"
-
-    def test_find_ref_id_when_no_refid(self):
-
-        reference = {
-            "url": "http://www.securityfocus.com/bid/12577",
-            "name": "http://www.securityfocus.com/bid/12577",
-            "refsource": "BID",
-            "tags": [],
-        }
-
-        assert NVDDataSource.find_ref_id(reference) == ""
-
-    def test_find_ref_id_when_has_bugzilla(self):
-
-        reference = {
-            "url": "https://bugzilla.mozilla.org/show_bug.cgi?id=12309",
-            "name": "https://bugzilla.mozilla.org/show_bug.cgi?id=12309",
-            "refsource": "BID",
-            "tags": [],
-        }
-        assert NVDDataSource.find_ref_id(reference) == "12309"
-
     def test_is_outdated(self):
         cve_item = self.nvd_data["CVE_Items"][0]
         assert self.data_src.is_outdated(cve_item) is False
@@ -136,46 +104,24 @@ class TestNVDDataSource(TestCase):
         assert self.data_src.is_outdated(cve_item) is False
         self.data_src.config.last_run_date = None  # cleanup
 
-    def test_extract_references(self):
-
-        expected_refs = sorted(
-            [
-                Reference(url="http://ia.cr/2007/474", reference_id="2007"),
-                Reference(url="http://shattered.io/", reference_id=""),
-                Reference(
-                    url="http://www.cwi.nl/news/2017/cwi-and-google-announce-first-collision-industry-security-standard-sha-1",  # nopep8
-                    reference_id="",
-                ),
-                Reference(
-                    url="https://arstechnica.com/security/2017/02/at-deaths-door-for-years-widely-used-sha1-function-is-now-dead/",  # nopep8
-                    reference_id="",
-                ),
-                Reference(
-                    url="https://security.googleblog.com/2015/12/an-update-on-sha-1-certificates-in.html",  # nopep8
-                    reference_id="",
-                ),
-                Reference(
-                    url="https://security.googleblog.com/2017/02/announcing-first-sha1-collision.html",  # nopep8
-                    reference_id="",
-                ),
-                Reference(url="https://sites.google.com/site/itstheshappening", reference_id="",),
-                Reference(
-                    url="https://www.schneier.com/blog/archives/2005/02/sha1_broken.html",
-                    reference_id="",
-                ),
-                Reference(
-                    url="https://www.schneier.com/blog/archives/2005/08/new_cryptanalyt.html",
-                    reference_id="",
-                ),
-            ],
-            key=lambda x: x.url,
-        )
-
+    def test_extract_reference_urls(self):
         cve_item = self.nvd_data["CVE_Items"][1]
-        found_refs = self.data_src.extract_references(cve_item)
-        found_refs.sort(key=lambda x: x.url)
+        expected_urls = {
+            "http://ia.cr/2007/474",
+            "http://shattered.io/",
+            "http://www.cwi.nl/news/2017/cwi-and-google-announce-first-collision-industry-security-standard-sha-1",  # nopep8
+            "http://www.securityfocus.com/bid/12577",
+            "https://arstechnica.com/security/2017/02/at-deaths-door-for-years-widely-used-sha1-function-is-now-dead/",  # nopep8
+            "https://security.googleblog.com/2015/12/an-update-on-sha-1-certificates-in.html",
+            "https://security.googleblog.com/2017/02/announcing-first-sha1-collision.html",
+            "https://sites.google.com/site/itstheshappening",
+            "https://www.schneier.com/blog/archives/2005/02/sha1_broken.html",
+            "https://www.schneier.com/blog/archives/2005/08/new_cryptanalyt.html",
+        }
 
-        assert found_refs == expected_refs
+        found_urls = self.data_src.extract_reference_urls(cve_item)
+
+        assert found_urls == expected_urls
 
     def test_to_advisories(self):
 
@@ -193,11 +139,9 @@ class TestNVDDataSource(TestCase):
                     [
                         Reference(
                             url="http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",  # nopep8
-                            reference_id="",
                         ),
                         Reference(
                             url="http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",  # nopep8
-                            reference_id="",
                         ),
                     ],
                     key=lambda x: x.url,

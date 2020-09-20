@@ -94,7 +94,7 @@ DATABASES = {
 	'NAME': 'vulnerablecode',
         'USER': 'vulnerablecode',
         'PASSWORD': 'vulnerablecode',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }

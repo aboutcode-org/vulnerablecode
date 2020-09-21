@@ -12,7 +12,7 @@ Explore Vulnerabilities
      <form action="{% url 'vulnerability_search' %}" method="get">
       {% load widget_tweaks %}
       <div class="field is-horizontal">
-        {{form.cve_id|add_class:"input"}}
+        {{form.vuln_id|add_class:"input"}}
         <button class="button is-success", type="submit">
           Search
         </button>
@@ -25,7 +25,7 @@ Explore Vulnerabilities
     <section class="section is-medium has-text-centered">
       <div class="container">
         <h1 class="title" id="results">Results of your query "{{searched_for}}"</h1>
-        <h3 class="subtitle" id="results">Total {{vulnerabilities|length}} results</h3>
+        <h3 class="subtitle" id="results">Total {{result_size}} results</h3>
       </div>
     </section>
 

@@ -4,7 +4,7 @@ services:
   web:
     environment:
         - DJANGO_DEV=1
-        - DB_HOST=db
+        - VC_DB_HOST=db
     build: .
     command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     container_name: "vulnerablecode"

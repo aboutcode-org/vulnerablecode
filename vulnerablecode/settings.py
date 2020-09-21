@@ -94,7 +94,7 @@ DATABASES = {
 	'NAME': 'vulnerablecode',
         'USER': 'vulnerablecode',
         'PASSWORD': 'vulnerablecode',
-        'HOST': 'db',
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
         'PORT': '5432',
     }
 }

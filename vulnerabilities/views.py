@@ -75,17 +75,18 @@ class VulnerabilitySearchView(View):
         if request.GET:
             vulnerabilities = self.request_to_queryset(request)
             pages = Paginator(vulnerabilities, 50)
+            result_size = pages.count
             vulnerabilities = pages.get_page(int(self.request.GET.get("page", 1)))
             context["vulnerabilities"] = vulnerabilities
-            context["searched_for"] = request.GET.get("cve_id")
+            context["searched_for"] = request.GET.get("vuln_id")
+            context["result_size"] = result_size
 
         return render(request, self.template_name, context)
 
     @staticmethod
     def request_to_queryset(request):
-        if request.GET["cve_id"]:
-            cve_id = request.GET["cve_id"]
-            return models.Vulnerability.objects.filter(cve_id__contains=cve_id)
+        vuln_id = request.GET["vuln_id"]
+        return models.Vulnerability.objects.filter(cve_id__contains=vuln_id)
 
 
 class PackageUpdate(UpdateView):

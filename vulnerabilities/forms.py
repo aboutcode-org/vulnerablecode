@@ -53,4 +53,4 @@ class PackageForm(forms.Form):
 
 class CVEForm(forms.Form):
 
-    cve_id = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "vulnerability id"}))
+    vuln_id = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "vulnerability id"}))

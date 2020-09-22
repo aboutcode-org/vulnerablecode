@@ -48,7 +48,7 @@ cd vulnerablecode
 ```
 
 ### Using Docker Compose
-The easiest way to set up VulnerableCode is by using the docker containers.
+An easy way to set up VulnerableCode is with docker containers and docker compose.
 For this you need to have the following installed.
 - Docker Engine. Find instructions to install it here
 - Docker Compose. Find instructions to install it here

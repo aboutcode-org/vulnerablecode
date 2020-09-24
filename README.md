@@ -38,40 +38,45 @@ The web interface enables community curation of data by enabling addition of new
 
 We also plan to mine for vulnerabilities which didn't receive any exposure due to various reasons like but not limited to the complicated procedure to receive CVE ID or not able to classify a bug as a security compromise. Check VulnerableCode at [Open Source Summit 2020](https://ossna2020.sched.com/event/c46p/why-is-there-no-free-software-vulnerability-database-philippe-ombredanne-aboutcodeorg-and-nexb-inc-michael-herzog-nexb-inc)
 
-## Setup
+## Setting up VulnerableCode
 
 Clone the source code:
 
 ```
-git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
+git clone https://github.com/nexB/vulnerablecode.git
+cd vulnerablecode
 ```
 
-### System requirements
+### Using Docker Compose
+An easy way to set up VulnerableCode is with docker containers and docker compose.
+For this you need to have the following installed.
+- Docker Engine. Find instructions to install it here
+- Docker Compose. Find instructions to install it here
+
+Use `sudo docker-compose up` to start VulnerableCode.
+Access VulnerableCode at http://localhost:8000/ or at http://127.0.0.1:8000/ .
+
+Use `sudo docker-compose exec web bash` to access the VulnerableCode container. From here you can access `manage.py` and run management commands to import data as specified below.
+
+### Without Docker Compose
+**System requirements**
 
 - Python 3.8+
-
-- PostgreSQL 9+ or [Docker](https://hub.docker.com/search/?type=edition&offering=community)
-
+- PostgreSQL 9+
 - Compiler toolchain and development files for Python and PostgreSQL
 
-On Debian-based distros, these can be installed with `sudo apt install python3-venv python3-dev postgresql libpq-dev build-essential`. Leave out `postgresql` if you want to run it in Docker.
+On Debian-based distros, these can be installed with `sudo apt install python3-venv python3-dev postgresql libpq-dev build-essential`.
 
-### Database configuration
-
-Either run PostgreSQL in Docker:
-`docker run --name pg-vulnerablecode -e POSTGRES_USER=vulnerablecode -e POSTGRES_PASSWORD=vulnerablecode -e POSTGRES_DB=vulnerablecode -p 5432:5432 postgres`
-
-Or without:
-
+**Database configuration**
 - Create a user named `vulnerablecode`. Use `vulnerablecode` as password when prompted:
   `sudo -u postgres createuser --no-createrole --no-superuser --login --inherit --createdb --pwprompt vulnerablecode`
 
 - Create a databased named `vulnerablecode`:
   `createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode --password --host=localhost --port=5432 vulnerablecode`
 
-### Application dependencies
+**Application dependencies**
 
-Activate a virtualenv, install dependencies, and run the database migrations:
+Create a virtualenv, install dependencies, and run the database migrations:
 
 ```
 python3 -m venv venv
@@ -132,13 +137,10 @@ systemctl --user daemon-reload && systemctl --user start vulnerablecode.timer
 ## API
 
 Start the webserver
-
 ```
 DJANGO_DEV=1 python manage.py runserver
 ```
-
 In your browser access:
-
 ```
 http://127.0.0.1:8000/api/docs
 ```

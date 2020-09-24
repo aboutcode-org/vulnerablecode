@@ -136,6 +136,15 @@ IMPORTER_REGISTRY = [
         'data_source_cfg': {},
     },
     {
+        'name': 'nvd',
+        'license': '',
+        'last_run': None,
+        'data_source': 'NVDDataSource',
+        'data_source_cfg': {
+            'etags': {},
+        },
+    },
+    {
         'name': 'gentoo',
         'license': '',
         'last_run': None,

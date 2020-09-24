@@ -154,5 +154,6 @@ class TestNVDDataSource(TestCase):
         found_advisories = list(self.data_src.to_advisories(self.nvd_data))
         # Only 1 advisory because other advisory is hardware related
         assert len(found_advisories) == 1
+        found_advisories[0].vuln_references = sorted(found_advisories[0].vuln_references, key=lambda x: x.url)  # nopep8
 
         assert expected_advisories == found_advisories

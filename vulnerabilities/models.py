@@ -45,7 +45,7 @@ class Vulnerability(models.Model):
     def save(self, *args, **kwargs):
         if not self.identifier:
             # Replace `str(datetime.now())` with our custom identifier TBD.
-            self.identifier = str(datetime.now())
+            self.identifier = "VULCODE-" + str(datetime.now())
 
         super().save(*args, **kwargs)
 

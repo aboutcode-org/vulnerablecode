@@ -38,8 +38,8 @@ class Vulnerability(models.Model):
     A software vulnerability with minimal information. Identifiers other than CVE ID are stored as
     VulnerabilityReference.
     """
-    identifier = models.CharField(max_length=50, help_text="CVE_ID or VC_ID", unique=True, null=True)
-    vc_identifier = models.CharField(max_length=50, help_text="empty if no  CVE else VC id", unique=True, null=True)
+    identifier = models.CharField(max_length=50, help_text="CVE_ID or VC_ID", unique=True, null=True)  # nopep8
+    vc_identifier = models.CharField(max_length=50, help_text="empty if no  CVE else VC id", unique=True, null=True)  # nopep8
     summary = models.TextField(help_text="Summary of the vulnerability", blank=True)
 
     def save(self, *args, **kwargs):

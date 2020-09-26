@@ -80,8 +80,7 @@ class RubyDataSource(GitDataSource):
 
     def process_file(self, path) -> List[Advisory]:
         record = load_yaml(path)
-        package_name = record.get(
-            'gem')
+        package_name = record.get('gem')
 
         if not package_name:
             return
@@ -131,7 +130,7 @@ class RubyDataSource(GitDataSource):
             impacted_package_urls=impacted_purls,
             resolved_package_urls=resolved_purls,
             vuln_references=references,
-            cve_id=cve_id
+            identifier=cve_id
         )
 
     @staticmethod

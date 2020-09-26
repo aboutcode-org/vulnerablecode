@@ -81,7 +81,7 @@ class SUSEBackportsDataSource(DataSource):
                         purl = [PackageURL(
                             name=pkg, type="rpm", version=version, namespace='opensuse')]
                         advisories.append(
-                            Advisory(cve_id=vuln,
+                            Advisory(identifier=vuln,
                                      resolved_package_urls=purl,
                                      summary='',
                                      impacted_package_urls=[])

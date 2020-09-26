@@ -222,9 +222,8 @@ def handle_conflicts(conflicts):
 def _get_or_create_vulnerability(
     advisory: Advisory,
 ) -> Tuple[models.Vulnerability, bool]:
-
-    if advisory.cve_id:
-        query_kwargs = {"cve_id": advisory.cve_id}
+    if advisory.identifier:
+        query_kwargs = {"identifier": advisory.identifier}
     elif advisory.summary:
         query_kwargs = {"summary": advisory.summary}
     else:

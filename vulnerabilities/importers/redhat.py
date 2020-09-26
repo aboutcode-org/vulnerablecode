@@ -138,7 +138,7 @@ def to_advisory(advisory_data):
 
     return Advisory(
         summary=advisory_data["bugzilla_description"],
-        cve_id=advisory_data["CVE"],
+        identifier=advisory_data["CVE"],
         impacted_package_urls=affected_purls,
         vuln_references=references,
     )

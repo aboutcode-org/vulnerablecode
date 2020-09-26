@@ -90,7 +90,7 @@ class TestOpenSSL(unittest.TestCase):
                 vuln_references=[Reference(
                     url='https://github.com/openssl/openssl/commit/' +
                     'eb563247aef3e83dda7679c43f9649270462e5b1')],
-                cve_id='CVE-2020-1967'),
+                identifier='CVE-2020-1967'),
             Advisory(
                 summary='There is an overflow bug in the x64_64 Montgomery squaring procedure '
                         'used in '
@@ -195,12 +195,12 @@ class TestOpenSSL(unittest.TestCase):
                                 Reference(
                                 url='https://github.com/openssl/openssl/commit/' +
                                 'f1c5eea8a817075d31e43f5876993c6710238c98')],
-                cve_id='CVE-2019-1551')
+                identifier='CVE-2019-1551')
         ]
         found_data = OpenSSLDataSource.to_advisories(data)
 
         # Sort them by CVE-ID
-        found_data.sort(key=lambda x: x.cve_id)
-        expected_data.sort(key=lambda x: x.cve_id)
+        found_data.sort(key=lambda x: x.identifier)
+        expected_data.sort(key=lambda x: x.identifier)
 
         assert found_data == expected_data

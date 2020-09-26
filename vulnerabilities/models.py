@@ -38,9 +38,16 @@ class Vulnerability(models.Model):
     A software vulnerability with minimal information. Identifiers other than CVE ID are stored as
     VulnerabilityReference.
     """
-
-    cve_id = models.CharField(max_length=50, help_text="CVE ID", unique=True, null=True)
+    identifier = models.CharField(max_length=50, help_text="CVE_ID or VC_ID", unique=True, null=True)
+    vc_identifier = models.CharField(max_length=50, help_text="empty if no  CVE else VC id", unique=True, null=True)
     summary = models.TextField(help_text="Summary of the vulnerability", blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.identifier:
+            # Replace `str(datetime.now())` with our custom identifier TBD.
+            self.identifier = str(datetime.now())
+
+        super().save(*args, **kwargs)
 
     @property
     def vulnerable_to(self):
@@ -55,7 +62,7 @@ class Vulnerability(models.Model):
         )
 
     def __str__(self):
-        return self.cve_id or self.summary
+        return self.identifier or self.summary
 
     class Meta:
         verbose_name_plural = "Vulnerabilities"

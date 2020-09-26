@@ -47,7 +47,8 @@ class Migration(migrations.Migration):
             name='Vulnerability',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('cve_id', models.CharField(help_text='CVE ID', max_length=50, null=True, unique=True)),
+                ('identifier', models.CharField(help_text='CVE_ID or VC_ID', max_length=50, null=True, unique=True)),
+                ('vc_identifier', models.CharField(help_text='empty if no  CVE else VC id', max_length=50, null=True, unique=True)),
                 ('summary', models.TextField(blank=True, help_text='Summary of the vulnerability')),
             ],
             options={

@@ -229,7 +229,7 @@ class GitHubAPIDataSource(DataSource):
                     for cve_id in cve_ids:
                         adv_list.append(
                             Advisory(
-                                cve_id=cve_id,
+                                identifier=cve_id,
                                 summary=vuln_desc,
                                 impacted_package_urls=affected_purls,
                                 resolved_package_urls=unaffected_purls,

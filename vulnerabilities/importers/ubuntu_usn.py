@@ -79,7 +79,7 @@ class UbuntuUSNDataSource(DataSource):
 
                 advisories.append(
                     Advisory(
-                        cve_id=cve,
+                        identifier=cve,
                         impacted_package_urls=[],
                         resolved_package_urls=safe_purls,
                         summary="",

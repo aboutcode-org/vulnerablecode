@@ -65,7 +65,7 @@ class TestSUSEBackportsDataSource(TestCase):
                         version='3.0.10-1.1.1',
                         qualifiers=OrderedDict(),
                         subpath=None)],
-                cve_id='CVE-2009-1313'),
+                identifier='CVE-2009-1313'),
             Advisory(
                 summary='',
                 impacted_package_urls=[],
@@ -77,7 +77,7 @@ class TestSUSEBackportsDataSource(TestCase):
                             version='3.5-1.1.5',
                             qualifiers=OrderedDict(),
                             subpath=None)],
-                cve_id='CVE-2009-1313'),
+                identifier='CVE-2009-1313'),
             Advisory(
                 summary='',
                 impacted_package_urls=[],
@@ -89,7 +89,7 @@ class TestSUSEBackportsDataSource(TestCase):
                         version='3.0.10-1.1.1',
                         qualifiers=OrderedDict(),
                         subpath=None)],
-                cve_id='CVE-2009-1313'),
+                identifier='CVE-2009-1313'),
             Advisory(
                 summary='',
                 impacted_package_urls=[],
@@ -101,7 +101,7 @@ class TestSUSEBackportsDataSource(TestCase):
                         version='0.7.0.r4359-15.9.2',
                         qualifiers=OrderedDict(),
                         subpath=None)],
-                cve_id='CVE-2009-0365'),
+                identifier='CVE-2009-0365'),
             Advisory(
                 summary='',
                 impacted_package_urls=[],
@@ -113,7 +113,7 @@ class TestSUSEBackportsDataSource(TestCase):
                         version='0.7.0.r4359-15.9.2',
                         qualifiers=OrderedDict(),
                         subpath=None)],
-                cve_id='CVE-2009-0578'),
+                identifier='CVE-2009-0578'),
         ]
 
         found_data = self.data_src.process_file(

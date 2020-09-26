@@ -3,7 +3,7 @@
   "model": "vulnerabilities.vulnerability",
   "pk": 1,
   "fields": {
-    "cve_id": "CVE-2014-8242",
+    "identifier": "CVE-2014-8242",
     "summary": ""
     
   }
@@ -12,7 +12,7 @@
   "model": "vulnerabilities.vulnerability",
   "pk": 2,
   "fields": {
-    "cve_id": "CVE-2009-1382",
+    "identifier": "CVE-2009-1382",
     "summary": ""
     
   }
@@ -21,7 +21,7 @@
   "model": "vulnerabilities.vulnerability",
   "pk": 3,
   "fields": {
-    "cve_id": "CVE-2009-2459",
+    "identifier": "CVE-2009-2459",
     "summary": ""
     
   }

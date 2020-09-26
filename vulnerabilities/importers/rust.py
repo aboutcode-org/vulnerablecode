@@ -135,7 +135,7 @@ class RustDataSource(GitDataSource):
             summary=advisory.get("description", ""),
             impacted_package_urls=impacted_purls,
             resolved_package_urls=resolved_purls,
-            cve_id=cve_id,
+            identifier=cve_id,
             vuln_references=references,
         )
 

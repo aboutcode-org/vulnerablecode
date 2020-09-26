@@ -95,7 +95,7 @@ class RubyDataSourceTest(TestCase):
                 vuln_references=[
                     Reference(url="https://github.com/sinatra/sinatra/pull/1379")
                 ],
-                cve_id="CVE-2018-7212",
+                identifier="CVE-2018-7212",
             ),
             Advisory(
                 summary=(
@@ -133,7 +133,7 @@ class RubyDataSourceTest(TestCase):
                 vuln_references=[
                     Reference(url="https://github.com/sinatra/sinatra/issues/1428")
                 ],
-                cve_id="CVE-2018-11627",
+                identifier="CVE-2018-11627",
             ),
             None,
         }

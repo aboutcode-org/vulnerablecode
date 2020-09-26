@@ -125,7 +125,7 @@ class SafetyDbDataSource(DataSource):
                 for cve_id in cve_ids:
                     advisories.append(
                         Advisory(
-                            cve_id=cve_id,
+                            identifier=cve_id,
                             summary=advisory["advisory"],
                             vuln_references=reference,
                             impacted_package_urls=impacted_purls,

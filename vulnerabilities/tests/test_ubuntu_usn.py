@@ -158,7 +158,7 @@ class TestUbuntuUSNDataSource(TestCase):
                         url="https://usn.ubuntu.com/763-1/", reference_id="USN-763-1"
                     )
                 ],
-                cve_id="CVE-2009-0698",
+                identifier="CVE-2009-0698",
             ),
             Advisory(
                 summary="",
@@ -186,7 +186,7 @@ class TestUbuntuUSNDataSource(TestCase):
                         url="https://usn.ubuntu.com/763-1/", reference_id="USN-763-1"
                     )
                 ],
-                cve_id="CVE-2009-1274",
+                identifier="CVE-2009-1274",
             ),
         }
         found_advisories = set(self.data_src.to_advisories(self.db))

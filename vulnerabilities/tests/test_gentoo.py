@@ -113,7 +113,7 @@ class TestGentooDataSource(unittest.TestCase):
                     Reference(
                         url='https://security.gentoo.org/glsa/201709-09',
                         reference_id='GLSA-201709-09')],
-                cve_id='CVE-2017-9800')]
+                identifier='CVE-2017-9800')]
 
         found_data = self.data_src.process_file(TEST_DATA)
         assert exp_data == found_data

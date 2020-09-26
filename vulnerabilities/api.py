@@ -63,7 +63,7 @@ class HyperLinkedPackageSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class HyperLinkedVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
-    vulnerability_id = serializers.CharField(source="cve_id")
+    vulnerability_id = serializers.CharField(source="identifier")
 
     class Meta:
         model = Vulnerability
@@ -177,7 +177,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class VulnerabilityFilterSet(filters.FilterSet):
-    vulnerability_id = filters.CharFilter(field_name="cve_id")
+    vulnerability_id = filters.CharFilter(field_name="identifier")
 
     class Meta:
         model = Vulnerability

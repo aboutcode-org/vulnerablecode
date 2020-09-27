@@ -30,14 +30,14 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import PackageURL
 from vulnerabilities.data_source import Reference
 from vulnerabilities.import_runner import ImportRunner
+
 # from vulnerabilities.import_runner import _insert_vulnerabilities_and_references
 
 
 class MockDataSource(DataSource):
-
     def __init__(self, *args, **kwargs):
-        self.added_advs = kwargs.pop('added_advs', [])
-        self.updated_advs = kwargs.pop('updated_advs', [])
+        self.added_advs = kwargs.pop("added_advs", [])
+        self.updated_advs = kwargs.pop("updated_advs", [])
         super().__init__(*args, **kwargs)
 
     def added_advisories(self):
@@ -48,7 +48,7 @@ class MockDataSource(DataSource):
 
     def _yield_advisories(self, advisories):
         while advisories:
-            b, advisories = advisories[:self.batch_size], advisories[self.batch_size:]
+            b, advisories = advisories[: self.batch_size], advisories[self.batch_size:]
             yield b
 
 
@@ -56,8 +56,8 @@ class MockDataSource(DataSource):
 class MockImporter:
     data_source: MockDataSource
     last_run: datetime = None
-    name: str = 'mock_importer'
-    license: str = 'license to test'
+    name: str = "mock_importer"
+    license: str = "license to test"
     saved: bool = False
 
     def make_data_source(self, *_, **__):
@@ -69,22 +69,20 @@ class MockImporter:
 
 ADVISORIES = [
     Advisory(
-        identifier='MOCK-CVE-2020-1337',
-        summary='vulnerability description here',
-        vuln_references=[
-            Reference(
-                url='https://example.com/with/more/info/MOCK-CVE-2020-1337')],
-        impacted_package_urls=[
-            PackageURL(
-                name='mock-webserver',
-                type='pypi',
-                version='1.2.33')],
-        resolved_package_urls=[
-            PackageURL(
-                name='mock-webserver',
-                type='pypi',
-                version='1.2.34')],
-    )]
+        identifier="MOCK-CVE-2020-1337",
+        summary="vulnerability description here",
+        vuln_references=[Reference(url="https://example.com/with/more/info/MOCK-CVE-2020-1337")],
+        impacted_package_urls=[PackageURL(name="mock-webserver", type="pypi", version="1.2.33")],
+        resolved_package_urls=[PackageURL(name="mock-webserver", type="pypi", version="1.2.34")],
+    ),
+    Advisory(
+        identifier="",
+        summary="vulnerability description here",
+        vuln_references=[Reference(url="https://example.com/with/more/info/MOCK-VC")],
+        impacted_package_urls=[PackageURL(name="type", type="pypi", version="1.2.33")],
+        resolved_package_urls=[PackageURL(name="metaclass", type="pypi", version="1.2.34")],
+    ),
+]
 
 
 def make_import_runner(added_advs=None, updated_advs=None):
@@ -92,7 +90,8 @@ def make_import_runner(added_advs=None, updated_advs=None):
     updated_advs = updated_advs or []
 
     importer = MockImporter(
-        data_source=MockDataSource(2, added_advs=added_advs, updated_advs=updated_advs))
+        data_source=MockDataSource(2, added_advs=added_advs, updated_advs=updated_advs)
+    )
 
     return ImportRunner(importer, 5)
 
@@ -100,15 +99,15 @@ def make_import_runner(added_advs=None, updated_advs=None):
 def test_ImportRunner_new_package_and_new_vulnerability(db):
     runner = make_import_runner(added_advs=ADVISORIES)
 
-    runner.run()
+    runner.run(create_vulcodes=False)
 
     assert runner.importer.last_run is not None
     assert runner.importer.saved
 
     assert models.Package.objects.all().count() == 2
-    packages = models.Package.objects.filter(name='mock-webserver')
+    packages = models.Package.objects.filter(name="mock-webserver")
 
-    if packages[0].version == '1.2.33':
+    if packages[0].version == "1.2.33":
         impacted_package, resolved_package = packages[0], packages[1]
     else:
         impacted_package, resolved_package = packages[1], packages[0]
@@ -121,11 +120,11 @@ def test_ImportRunner_new_package_and_new_vulnerability(db):
     assert resolved_package.vulnerabilities.count() == 1
 
     vuln = impacted_package.vulnerabilities.first()
-    assert vuln.identifier == 'MOCK-CVE-2020-1337'
+    assert vuln.identifier == "MOCK-CVE-2020-1337"
 
     vuln_refs = models.VulnerabilityReference.objects.filter(vulnerability=vuln)
     assert vuln_refs.count() == 1
-    assert vuln_refs[0].url == 'https://example.com/with/more/info/MOCK-CVE-2020-1337'
+    assert vuln_refs[0].url == "https://example.com/with/more/info/MOCK-CVE-2020-1337"
 
 
 def test_ImportRunner_existing_package_and_new_vulnerability(db):
@@ -133,12 +132,12 @@ def test_ImportRunner_existing_package_and_new_vulnerability(db):
     Both versions of the package mentioned in the imported advisory are already in the database.
     Only the vulnerability itself is new.
     """
-    models.Package.objects.create(name='mock-webserver', type='pypi', version='1.2.33')
-    models.Package.objects.create(name='mock-webserver', type='pypi', version='1.2.34')
+    models.Package.objects.create(name="mock-webserver", type="pypi", version="1.2.33")
+    models.Package.objects.create(name="mock-webserver", type="pypi", version="1.2.34")
 
     runner = make_import_runner(added_advs=ADVISORIES)
 
-    runner.run()
+    runner.run(create_vulcodes=False)
 
     assert runner.importer.last_run is not None
     assert runner.importer.saved
@@ -149,15 +148,15 @@ def test_ImportRunner_existing_package_and_new_vulnerability(db):
     assert models.PackageRelatedVulnerability.objects.count() == 2
 
     resolved_package = models.PackageRelatedVulnerability.objects.filter(is_vulnerable=False)[0]
-    assert resolved_package.package.version == '1.2.34'
+    assert resolved_package.package.version == "1.2.34"
 
     impacted_package = models.PackageRelatedVulnerability.objects.filter(is_vulnerable=True)[0]
     vuln = impacted_package.vulnerability
-    assert vuln.identifier == 'MOCK-CVE-2020-1337'
+    assert vuln.identifier == "MOCK-CVE-2020-1337"
 
     vuln_refs = models.VulnerabilityReference.objects.filter(vulnerability=vuln)
     assert vuln_refs.count() == 1
-    assert vuln_refs[0].url == 'https://example.com/with/more/info/MOCK-CVE-2020-1337'
+    assert vuln_refs[0].url == "https://example.com/with/more/info/MOCK-CVE-2020-1337"
 
 
 def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db):
@@ -166,29 +165,30 @@ def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db)
     vulnerability that also already existed in the database.
     """
     vuln = models.Vulnerability.objects.create(
-        identifier='MOCK-CVE-2020-1337', summary='vulnerability description here')
+        identifier="MOCK-CVE-2020-1337", summary="vulnerability description here"
+    )
 
     models.VulnerabilityReference.objects.create(
-        vulnerability=vuln,
-        url='https://example.com/with/more/info/MOCK-CVE-2020-1337'
+        vulnerability=vuln, url="https://example.com/with/more/info/MOCK-CVE-2020-1337"
     )
     models.PackageRelatedVulnerability.objects.create(
         vulnerability=vuln,
-        package=models.Package.objects.create(name='mock-webserver', type='pypi', version='1.2.33'),
-        is_vulnerable=True
+        package=models.Package.objects.create(name="mock-webserver", type="pypi", version="1.2.33"),
+        is_vulnerable=True,
     )
     models.PackageRelatedVulnerability.objects.create(
         vulnerability=vuln,
-        package=models.Package.objects.create(name='mock-webserver', type='pypi', version='1.2.34'),
-        is_vulnerable=False
+        package=models.Package.objects.create(name="mock-webserver", type="pypi", version="1.2.34"),
+        is_vulnerable=False,
     )
 
     advisories = deepcopy(ADVISORIES)
     advisories[0].impacted_package_urls.append(
-        PackageURL(name='mock-webserver', type='pypi', version='1.2.33a'))
+        PackageURL(name="mock-webserver", type="pypi", version="1.2.33a")
+    )
     runner = make_import_runner(updated_advs=advisories)
 
-    runner.run()
+    runner.run(create_vulcodes=False)
 
     assert runner.importer.last_run is not None
     assert runner.importer.saved
@@ -198,15 +198,16 @@ def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db)
     assert models.VulnerabilityReference.objects.count() == 1
     assert models.PackageRelatedVulnerability.objects.count() == 3
 
-    qs = models.Package.objects.filter(name='mock-webserver', version='1.2.33a')
+    qs = models.Package.objects.filter(name="mock-webserver", version="1.2.33a")
     assert len(qs) == 1
     added_package = qs[0]
 
     qs = models.PackageRelatedVulnerability.objects.filter(
-        package=added_package, is_vulnerable=True)
+        package=added_package, is_vulnerable=True
+    )
     assert len(qs) == 1
     impacted_package = qs[0]
-    assert impacted_package.vulnerability.identifier == 'MOCK-CVE-2020-1337'
+    assert impacted_package.vulnerability.identifier == "MOCK-CVE-2020-1337"
 
 
 # def test_ImportRunner_assumed_fixed_package_is_updated_as_impacted(db):
@@ -215,45 +216,45 @@ def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db)
 #     still be affected by a vulnerability that also already existed in the database (i.e. the
 #     previously stored data was corrected).
 #     """
-    # FIXME This case is not supported due to cascading deletes. When the ResolvedPackage is
-    # FIXME deleted, the referenced Package and Vulnerability are also deleted.
-    #
-    # vuln = models.Vulnerability.objects.create(
-    #     identifier='MOCK-CVE-2020-1337', summary='vulnerability description here')
-    #
-    # models.VulnerabilityReference.objects.create(
-    #     vulnerability=vuln,
-    #     url='https://example.com/with/more/info/MOCK-CVE-2020-1337'
-    # )
-    #
-    # misclassified_package = models.Package.objects.create(
-    #     name='mock-webserver', type='pypi', version='1.2.33')
-    #
-    # models.ResolvedPackage.objects.create(
-    #     vulnerability=vuln,
-    #     package=misclassified_package,
-    # )
-    # models.ResolvedPackage.objects.create(
-    #     vulnerability=vuln,
-    #     package=models.Package.objects.create(
-    #         name='mock-webserver', type='pypi', version='1.2.34'),
-    # )
-    #
-    # runner = make_import_runner(updated_advs=ADVISORIES)
-    #
-    # runner.run()
-    #
-    # assert runner.importer.last_run is not None
-    # assert runner.importer.saved
-    #
-    # assert models.Package.objects.all().count() == 2
-    # assert models.Vulnerability.objects.count() == 1
-    # assert models.VulnerabilityReference.objects.count() == 1
-    # assert models.ImpactedPackage.objects.count() == 2
-    # assert models.ResolvedPackage.objects.count() == 0
-    #
-    # assert models.ImpactedPackage.objects.filter(package=misclassified_package).count() == 1
-    # assert models.ResolvedPackage.objects.filter(package=misclassified_package).count() == 0
+# FIXME This case is not supported due to cascading deletes. When the ResolvedPackage is
+# FIXME deleted, the referenced Package and Vulnerability are also deleted.
+#
+# vuln = models.Vulnerability.objects.create(
+#     identifier='MOCK-CVE-2020-1337', summary='vulnerability description here')
+#
+# models.VulnerabilityReference.objects.create(
+#     vulnerability=vuln,
+#     url='https://example.com/with/more/info/MOCK-CVE-2020-1337'
+# )
+#
+# misclassified_package = models.Package.objects.create(
+#     name='mock-webserver', type='pypi', version='1.2.33')
+#
+# models.ResolvedPackage.objects.create(
+#     vulnerability=vuln,
+#     package=misclassified_package,
+# )
+# models.ResolvedPackage.objects.create(
+#     vulnerability=vuln,
+#     package=models.Package.objects.create(
+#         name='mock-webserver', type='pypi', version='1.2.34'),
+# )
+#
+# runner = make_import_runner(updated_advs=ADVISORIES)
+#
+# runner.run()
+#
+# assert runner.importer.last_run is not None
+# assert runner.importer.saved
+#
+# assert models.Package.objects.all().count() == 2
+# assert models.Vulnerability.objects.count() == 1
+# assert models.VulnerabilityReference.objects.count() == 1
+# assert models.ImpactedPackage.objects.count() == 2
+# assert models.ResolvedPackage.objects.count() == 0
+#
+# assert models.ImpactedPackage.objects.filter(package=misclassified_package).count() == 1
+# assert models.ResolvedPackage.objects.filter(package=misclassified_package).count() == 0
 
 
 def test_ImportRunner_fixed_package_version_is_added(db):
@@ -261,21 +262,21 @@ def test_ImportRunner_fixed_package_version_is_added(db):
     A new version of a package was published that fixes a previously unresolved vulnerability.
     """
     vuln = models.Vulnerability.objects.create(
-        identifier='MOCK-CVE-2020-1337', summary='vulnerability description here')
+        identifier="MOCK-CVE-2020-1337", summary="vulnerability description here"
+    )
 
     models.VulnerabilityReference.objects.create(
-        vulnerability=vuln,
-        url='https://example.com/with/more/info/MOCK-CVE-2020-1337'
+        vulnerability=vuln, url="https://example.com/with/more/info/MOCK-CVE-2020-1337"
     )
     models.PackageRelatedVulnerability.objects.create(
         vulnerability=vuln,
-        package=models.Package.objects.create(name='mock-webserver', type='pypi', version='1.2.33'),
+        package=models.Package.objects.create(name="mock-webserver", type="pypi", version="1.2.33"),
         is_vulnerable=True,
     )
 
     runner = make_import_runner(updated_advs=ADVISORIES)
 
-    runner.run()
+    runner.run(create_vulcodes=False)
 
     assert runner.importer.last_run is not None
     assert runner.importer.saved
@@ -285,15 +286,16 @@ def test_ImportRunner_fixed_package_version_is_added(db):
     assert models.VulnerabilityReference.objects.count() == 1
     assert models.PackageRelatedVulnerability.objects.count() == 2
 
-    qs = models.Package.objects.filter(name='mock-webserver', version='1.2.34')
+    qs = models.Package.objects.filter(name="mock-webserver", version="1.2.34")
     assert len(qs) == 1
     added_package = qs[0]
 
     qs = models.PackageRelatedVulnerability.objects.filter(
-        package=added_package, is_vulnerable=False)
+        package=added_package, is_vulnerable=False
+    )
     assert len(qs) == 1
     resolved_package = qs[0]
-    assert resolved_package.vulnerability.identifier == 'MOCK-CVE-2020-1337'
+    assert resolved_package.vulnerability.identifier == "MOCK-CVE-2020-1337"
 
 
 def test_ImportRunner_updated_vulnerability(db):
@@ -302,22 +304,23 @@ def test_ImportRunner_updated_vulnerability(db):
     reference.
     """
     vuln = models.Vulnerability.objects.create(
-        identifier='MOCK-CVE-2020-1337', summary='temporary description')
+        identifier="MOCK-CVE-2020-1337", summary="temporary description"
+    )
 
     models.PackageRelatedVulnerability.objects.create(
         vulnerability=vuln,
-        package=models.Package.objects.create(name='mock-webserver', type='pypi', version='1.2.33'),
-        is_vulnerable=True
+        package=models.Package.objects.create(name="mock-webserver", type="pypi", version="1.2.33"),
+        is_vulnerable=True,
     )
     models.PackageRelatedVulnerability.objects.create(
         vulnerability=vuln,
-        package=models.Package.objects.create(name='mock-webserver', type='pypi', version='1.2.34'),
-        is_vulnerable=False
+        package=models.Package.objects.create(name="mock-webserver", type="pypi", version="1.2.34"),
+        is_vulnerable=False,
     )
 
     runner = make_import_runner(updated_advs=ADVISORIES)
 
-    runner.run()
+    runner.run(create_vulcodes=False)
 
     assert runner.importer.last_run is not None
     assert runner.importer.saved
@@ -326,8 +329,18 @@ def test_ImportRunner_updated_vulnerability(db):
     assert models.PackageRelatedVulnerability.objects.count() == 2
 
     vuln = models.Vulnerability.objects.first()
-    assert vuln.summary == 'vulnerability description here'
+    assert vuln.summary == "vulnerability description here"
 
     vuln_refs = models.VulnerabilityReference.objects.filter(vulnerability=vuln)
     assert vuln_refs.count() == 1
-    assert vuln_refs[0].url == 'https://example.com/with/more/info/MOCK-CVE-2020-1337'
+    assert vuln_refs[0].url == "https://example.com/with/more/info/MOCK-CVE-2020-1337"
+
+
+def test_ImportRunner_create_vulcodes(db):
+
+    runner = make_import_runner(updated_advs=ADVISORIES)
+    runner.run(create_vulcodes=True)
+
+    assert models.Package.objects.all().count() == 4
+    assert models.PackageRelatedVulnerability.objects.count() == 4
+    assert models.Vulnerability.objects.filter(identifier__startswith="VULCODE").count() == 1

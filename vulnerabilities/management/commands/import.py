@@ -32,55 +32,64 @@ from vulnerabilities.importer_yielder import load_importers
 
 
 class Command(BaseCommand):
-    help = 'Import vulnerability data'
+    help = "Import vulnerability data"
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--list',
-            action='store_true',
-            help='List available data sources',
+            "--list",
+            action="store_true",
+            help="List available data sources",
         )
-        parser.add_argument('--all', action='store_true',
-                            help='Import data from all available sources')
+        parser.add_argument(
+            "--all", action="store_true", help="Import data from all available sources"
+        )
 
         parser.add_argument(
-            '--cutoff-date',
+            "--cutoff-date",
             type=datetime.fromisoformat,
-            help='ISO8601 formatted timestamp denoting the maximum age of vulnerability '
-                 'information to import.',
+            help="ISO8601 formatted timestamp denoting the maximum age of vulnerability "
+            "information to import.",
         )
-        parser.add_argument('sources', nargs='*',
-                            help='Data sources from which to import')
+        parser.add_argument("sources", nargs="*", help="Data sources from which to import")
 
         parser.add_argument(
-            '--batch_size', help='The batch size to be used for bulk inserting data')
+            "--batch_size", help="The batch size to be used for bulk inserting data"
+        )
+
+        parser.add_argument(
+            "--cv",
+            action="store_true",
+            help="This will import and assign id's to vulnerabilities without any identifiers",
+        )
 
     def handle(self, *args, **options):
         # load_importers() seeds the DB with Importers
         load_importers()
-        if options['list']:
+        if options["list"]:
             self.list_sources()
             return
 
-        if options['batch_size']:
-            self.batch_size = options['batch_size']
+        if options["batch_size"]:
+            self.batch_size = options["batch_size"]
 
-        if options['all']:
-            self._import_data(Importer.objects.all(), options['cutoff_date'])
+        self.create_vulcodes = options["cv"]
+
+        if options["all"]:
+            self._import_data(Importer.objects.all(), options["cutoff_date"])
             return
 
-        sources = options['sources']
+        sources = options["sources"]
         if not sources:
             raise CommandError(
-                'Please provide at least one data source to import from or use "--all".')
+                'Please provide at least one data source to import from or use "--all".'
+            )
 
-        self.import_data(sources, options['cutoff_date'])
+        self.import_data(sources, options["cutoff_date"])
 
     def list_sources(self):
         importers = Importer.objects.all()
-        self.stdout.write(
-            'Vulnerability data can be imported from the following sources:')
-        self.stdout.write(', '.join([i.name for i in importers]))
+        self.stdout.write("Vulnerability data can be imported from the following sources:")
+        self.stdout.write(", ".join([i.name for i in importers]))
 
     def import_data(self, names, cutoff_date):
         importers = []
@@ -93,15 +102,18 @@ class Command(BaseCommand):
                 unknown_importers.add(name)
 
         if unknown_importers:
-            unknown_importers = ', '.join(unknown_importers)
-            raise CommandError(f'Unknown data sources: {unknown_importers}')
+            unknown_importers = ", ".join(unknown_importers)
+            raise CommandError(f"Unknown data sources: {unknown_importers}")
 
         self._import_data(importers, cutoff_date)
 
     def _import_data(self, importers, cutoff_date):
         for importer in importers:
-            self.stdout.write(f'Importing data from {importer.name}')
-            batch_size = int(getattr(self, 'batch_size', 10))
-            ImportRunner(importer, batch_size).run(cutoff_date=cutoff_date)
+            self.stdout.write(f"Importing data from {importer.name}")
+            batch_size = int(getattr(self, "batch_size", 10))
+            ImportRunner(importer, batch_size).run(
+                cutoff_date=cutoff_date, create_vulcodes=self.create_vulcodes
+            )
             self.stdout.write(
-                self.style.SUCCESS(f'Successfully imported data from {importer.name}'))
+                self.style.SUCCESS(f"Successfully imported data from {importer.name}")
+            )

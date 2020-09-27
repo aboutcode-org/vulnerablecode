@@ -78,7 +78,7 @@ class ImportRunner:
         self.importer = importer
         self.batch_size = batch_size
 
-    def run(self, cutoff_date: datetime.datetime = None) -> None:
+    def run(self, create_vulcodes=True, cutoff_date: datetime.datetime = None) -> None:
         """
         Create a data source for the given importer and store the data retrieved in the database.
 
@@ -92,7 +92,7 @@ class ImportRunner:
         logger.info(f"Starting import for {self.importer.name}.")
         data_source = self.importer.make_data_source(self.batch_size, cutoff_date=cutoff_date)
         with data_source:
-            process_advisories(data_source)
+            process_advisories(data_source, create_vulcodes)
         self.importer.last_run = datetime.datetime.now(tz=datetime.timezone.utc)
         self.importer.data_source_cfg = dataclasses.asdict(data_source.config)
         self.importer.save()
@@ -122,6 +122,9 @@ def process_advisories(data_source: DataSource) -> None:
     for batch in advisory_batches:
         for advisory in batch:
             try:
+                if not advisory.identifier and not create_vulcodes:
+                    continue
+
                 vuln, vuln_created = _get_or_create_vulnerability(advisory)
                 for vuln_ref in advisory.vuln_references:
                     ref, _ = models.VulnerabilityReference.objects.get_or_create(
@@ -153,12 +156,20 @@ def process_advisories(data_source: DataSource) -> None:
                         existing_ref = get_vuln_pkg_refs(vuln, pkg)
                         if not existing_ref:
                             bulk_create_vuln_pkg_refs.add(pkg_vuln_ref)
+                            # A vulnerability-package relationship does not exist already if either the
+                            # vulnerability or the package is just created.
 
                         else:
-                            # This handles conflicts between existing data and obtained data
-                            if existing_ref[0].is_vulnerable != pkg_vuln_ref.is_vulnerable:
-                                handle_conflicts([existing_ref[0], pkg_vuln_ref.to_model_object()])
-                                existing_ref.delete()
+                            # insert only if it there is no existing vulnerability-package relationship.
+                            existing_ref = get_vuln_pkg_refs(vuln, pkg)
+                            if not existing_ref:
+                                bulk_create_vuln_pkg_refs.add(pkg_vuln_ref)
+
+                            else:
+                                # This handles conflicts between existing data and obtained data
+                                if existing_ref[0].is_vulnerable != pkg_vuln_ref.is_vulnerable:
+                                    handle_conflicts([existing_ref[0], pkg_vuln_ref.to_model_object()])
+                                    existing_ref.delete()
             except Exception:
                 # TODO: store error but continue
                 logger.error(
@@ -222,20 +233,13 @@ def handle_conflicts(conflicts):
 def _get_or_create_vulnerability(
     advisory: Advisory,
 ) -> Tuple[models.Vulnerability, bool]:
-    if advisory.identifier:
-        query_kwargs = {"identifier": advisory.identifier}
-    elif advisory.summary:
-        query_kwargs = {"summary": advisory.summary}
-    else:
-        return models.Vulnerability.objects.create(), True
 
-    try:
-        vuln, created = models.Vulnerability.objects.get_or_create(**query_kwargs)
-        # Eventually we only want to keep summary from NVD and ignore other descriptions.
-        if advisory.summary and vuln.summary != advisory.summary:
-            vuln.summary = advisory.summary
-            vuln.save()
-        return vuln, created
+    vuln, created = models.Vulnerability.objects.get_or_create(identifier=advisory.identifier)
+
+    # Eventually we only want to keep summary from NVD and ignore other descriptions.
+    if advisory.summary and vuln.summary != advisory.summary:
+        vuln.summary = advisory.summary
+        vuln.save()
 
     except Exception:
         logger.error(

@@ -172,7 +172,6 @@ IMPORTER_REGISTRY = [
             'db_url': 'https://usn.ubuntu.com/usn-db/database-all.json.bz2'
         },
     },
-
     {
         'name': 'github',
         'license': '',
@@ -182,7 +181,16 @@ IMPORTER_REGISTRY = [
             'endpoint': 'https://api.github.com/graphql',
             'ecosystems': ['MAVEN', 'NUGET', 'COMPOSER']
         }
-    }
+    },
+    {
+        'name': 'msr2019',
+        'license': '',
+        'last_run': None,
+        'data_source': 'ProjectKBMSRDataSource',
+        'data_source_cfg': {
+            'etag': {}
+        },
+    },
 
 ]
 

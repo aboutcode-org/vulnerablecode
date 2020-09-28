@@ -50,8 +50,8 @@ cd vulnerablecode
 ### Using Docker Compose
 An easy way to set up VulnerableCode is with docker containers and docker compose.
 For this you need to have the following installed.
-- Docker Engine. Find instructions to install it here
-- Docker Compose. Find instructions to install it here
+- Docker Engine. Find instructions to install it [here](https://docs.docker.com/get-docker/)
+- Docker Compose. Find instructions to install it [here](https://docs.docker.com/compose/install/#install-compose)
 
 Use `sudo docker-compose up` to start VulnerableCode.
 Access VulnerableCode at http://localhost:8000/ or at http://127.0.0.1:8000/ .

@@ -21,7 +21,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 from dataclasses import dataclass
-import xml.etree.ElementTree as ET
+from xml.etree import ElementTree
 
 import requests
 from packageurl import PackageURL
@@ -81,12 +81,12 @@ def to_advisories(data):
 
             if info.tag == "fixed":
                 resolved_packages.append(
-                    PackageURL(name="httpd", version=info.attrib["version"], type="generic")
+                    PackageURL(type="apache", name="httpd", version=info.attrib["version"])
                 )
 
             if info.tag == "affects" or info.tag == "maybeaffects":
                 impacted_packages.append(
-                    PackageURL(name="httpd", version=info.attrib["version"], type="generic")
+                    PackageURL(type="apache", name="httpd", version=info.attrib["version"])
                 )
 
         advisories.append(
@@ -103,4 +103,4 @@ def to_advisories(data):
 
 def fetch_xml(url):
     resp = requests.get(url).content
-    return ET.fromstring(resp)
+    return ElementTree.fromstring(resp)

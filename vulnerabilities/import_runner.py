@@ -260,22 +260,16 @@ def _get_or_create_vulnerability(
 
 
 def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:
-    version = p.version
 
-    query_kwargs = {
-        "name": packageurl.normalize_name(p.name, p.type, encode=True),
-        "version": version,
-        "type": packageurl.normalize_type(p.type, encode=True),
-    }
-
-    if p.namespace:
-        query_kwargs["namespace"] = packageurl.normalize_namespace(p.namespace, p.type, encode=True)
-
-    if p.qualifiers:
-        query_kwargs["qualifiers"] = packageurl.normalize_qualifiers(p.qualifiers, encode=False)
-
-    if p.subpath:
-        query_kwargs["subpath"] = packageurl.normalize_subpath(p.subpath, encode=True)
+    query_kwargs = {}
+    for key, val in p.to_dict().items():
+        if not val:
+            if key == "qualifiers":
+                query_kwargs[key] = {}
+            else:
+                query_kwargs[key] = ""
+        else:
+            query_kwargs[key] = val
 
     return models.Package.objects.get_or_create(**query_kwargs)
 

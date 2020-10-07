@@ -191,6 +191,15 @@ IMPORTER_REGISTRY = [
             'etag': {}
         },
     },
+    {
+        'name': 'nginx',
+        'license': '',
+        'last_run': None,
+        'data_source': 'NginxDataSource',
+        'data_source_cfg': {
+            'etag': {}
+        },
+    },
 
 ]
 

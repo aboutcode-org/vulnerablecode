@@ -109,3 +109,13 @@ ENV/
 
 # Staticfiles
 staticfiles/
+
+# virtualenv
+bin
+include
+lib64
+share
+
+
+# pytest
+.pytest_cache

@@ -428,7 +428,7 @@ class OvalDataSource(DataSource):
 
         return all_pkgs
 
-    def _fetch() -> Tuple[Mapping, Iterable[ET.ElementTree]]:
+    def _fetch(self) -> Tuple[Mapping, Iterable[ET.ElementTree]]:
         """
         This method  contains logic to fetch OVAL files and yield them into
         a tuple of file's metadata and it's ET.ElementTree.
@@ -453,9 +453,9 @@ class OvalDataSource(DataSource):
         and caches all the versions of these packages and exposes them through
         self.pkg_manager_api.get(<package_name>). Example
 
-        >>> self.set_api(['electron'])
+        >> self.set_api(['electron'])
         Assume 'electron' has only versions 1.0.0 and 1.2.0
-        >>> assert  self.pkg_manager_api.get('electron') == {'1.0.0','1.2.0'}
+        >> assert  self.pkg_manager_api.get('electron') == {'1.0.0','1.2.0'}
 
         """
         raise NotImplementedError

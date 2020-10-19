@@ -26,12 +26,10 @@ import datetime
 import logging
 from collections import Counter
 from itertools import chain
-from typing import Dict
-from typing import List
+import traceback
 from typing import Set
 from typing import Tuple
 from typing import Optional
-from typing import Sequence
 
 import packageurl
 from django.db import DataError
@@ -144,42 +142,46 @@ def process_advisories(data_source: DataSource) -> None:
     advisory_batches = chain(data_source.updated_advisories(), data_source.added_advisories())
     for batch in advisory_batches:
         for advisory in batch:
-            vuln, vuln_created = _get_or_create_vulnerability(advisory)
-            for vuln_ref in advisory.vuln_references:
-                ref = VulnerabilityReferenceInserter(
-                    vulnerability=vuln,
-                    url=vuln_ref.url,
-                    reference_id=vuln_ref.reference_id,
-                )
+            try:
+                vuln, vuln_created = _get_or_create_vulnerability(advisory)
+                for vuln_ref in advisory.vuln_references:
+                    ref = VulnerabilityReferenceInserter(
+                        vulnerability=vuln,
+                        url=vuln_ref.url,
+                        reference_id=vuln_ref.reference_id,
+                    )
 
-                if vuln_created or not vuln_ref_exists(vuln, vuln_ref.url, vuln_ref.reference_id):
-                    # A vulnerability reference can't exist if the vulnerability is just created so
-                    # insert it
-                    bulk_create_vuln_refs.add(ref)
+                    if vuln_created or not vuln_ref_exists(vuln, vuln_ref.url, vuln_ref.reference_id):
+                        # A vulnerability reference can't exist if the vulnerability is just created so
+                        # insert it
+                        bulk_create_vuln_refs.add(ref)
 
-            for purl in chain(advisory.impacted_package_urls, advisory.resolved_package_urls):
-                pkg, pkg_created = _get_or_create_package(purl)
-                is_vulnerable = purl in advisory.impacted_package_urls
-                pkg_vuln_ref = PackageRelatedVulnerabilityInserter(
-                    vulnerability=vuln, is_vulnerable=is_vulnerable, package=pkg
-                )
+                for purl in chain(advisory.impacted_package_urls, advisory.resolved_package_urls):
+                    pkg, pkg_created = _get_or_create_package(purl)
+                    is_vulnerable = purl in advisory.impacted_package_urls
+                    pkg_vuln_ref = PackageRelatedVulnerabilityInserter(
+                        vulnerability=vuln, is_vulnerable=is_vulnerable, package=pkg
+                    )
 
-                if vuln_created or pkg_created:
-                    bulk_create_vuln_pkg_refs.add(pkg_vuln_ref)
-                    # A vulnerability-package relationship does not exist already if either the
-                    # vulnerability or the package is just created.
-
-                else:
-                    # insert only if it there is no existing vulnerability-package relationship.
-                    existing_ref = get_vuln_pkg_refs(vuln, pkg)
-                    if not existing_ref:
+                    if vuln_created or pkg_created:
                         bulk_create_vuln_pkg_refs.add(pkg_vuln_ref)
+                        # A vulnerability-package relationship does not exist already if either the
+                        # vulnerability or the package is just created.
 
                     else:
-                        # This handles conflicts between existing data and obtained data
-                        if existing_ref[0].is_vulnerable != pkg_vuln_ref.is_vulnerable:
-                            handle_conflicts([existing_ref[0], pkg_vuln_ref.to_model_object()])
-                            existing_ref.delete()
+                        # insert only if it there is no existing vulnerability-package relationship.
+                        existing_ref = get_vuln_pkg_refs(vuln, pkg)
+                        if not existing_ref:
+                            bulk_create_vuln_pkg_refs.add(pkg_vuln_ref)
+
+                        else:
+                            # This handles conflicts between existing data and obtained data
+                            if existing_ref[0].is_vulnerable != pkg_vuln_ref.is_vulnerable:
+                                handle_conflicts([existing_ref[0], pkg_vuln_ref.to_model_object()])
+                                existing_ref.delete()
+            except Exception as e:
+                # TODO: store error but continue
+                logger.error(f"Failed to process advisory: {advisory}:\n" +  traceback.format_exc())
 
     models.VulnerabilityReference.objects.bulk_create(
         [i.to_model_object() for i in bulk_create_vuln_refs]
@@ -242,21 +244,25 @@ def handle_conflicts(conflicts):
 def _get_or_create_vulnerability(
     advisory: Advisory,
 ) -> Tuple[models.Vulnerability, bool]:
+
     if advisory.cve_id:
         query_kwargs = {"cve_id": advisory.cve_id}
     elif advisory.summary:
         query_kwargs = {"summary": advisory.summary}
     else:
         return models.Vulnerability.objects.create(), True
+    
+    try:
+        vuln, created = models.Vulnerability.objects.get_or_create(**query_kwargs)
+        # Eventually we only want to keep summary from NVD and ignore other descriptions.
+        if advisory.summary and vuln.summary != advisory.summary:
+            vuln.summary = advisory.summary
+            vuln.save()
+        return vuln, created
 
-    vuln, created = models.Vulnerability.objects.get_or_create(**query_kwargs)
-
-    # Eventually we only want to keep summary from NVD and ignore other descriptions.
-    if advisory.summary and vuln.summary != advisory.summary:
-        vuln.summary = advisory.summary
-        vuln.save()
-
-    return vuln, created
+    except Exception as e:
+        logger.error(f"Failed to _get_or_create_vulnerability: {query_kwargs!r}:\n" +  traceback.format_exc())
+        raise
 
 
 def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:

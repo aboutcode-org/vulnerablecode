@@ -1,25 +1,11 @@
-.. raw:: html
-
-   <h1 align="center">
-
 Adding a new Importer to VulnerableCode
+=======================================
 
-.. raw:: html
-
-   </h1>
 
 This tutorial contains all the things one should know to quickly
 implement an Importer.
 
-.. raw:: html
-
-   <h2 align="center">
-
 The Building Blocks A.K.A Prerequisites
-
-.. raw:: html
-
-   </h2>
 
 (1) ``PackageURL`` : VulnerableCode decodes ``PackageURL`` objects and
     writes them into DB. PackageURL's constructor requires 3 arguments
@@ -38,6 +24,7 @@ The Building Blocks A.K.A Prerequisites
     from packageurl import PackageURL
     p1 = PackageURL(name="ffmpeg",type="deb",version="1.2.3")
 
+
 (2) ``Advisory``: ``Advisory`` is an intermediate data-format, it is
     expected, that your code converts the data into these ``Advisory``
     objects. The following is the re-paste of definition of ``Advisory``
@@ -53,26 +40,13 @@ The Building Blocks A.K.A Prerequisites
         reference_ids: Sequence[str] = dataclasses.field(default_factory=list)
         cve_id: Optional[str] = None
 
-.. raw:: html
 
-   <hr>
-
-.. raw:: html
-
-   <h2 align="center">
-
-Steps to build an Importer:
-
-.. raw:: html
-
-   </h2>
-
-.. raw:: html
-
-   <hr>
+Steps to build an Importer
+--------------------------
 
 * **Register an Importer:**
-To do this go to ``vulnerabilites/importer_yielder.py``, in the ``IMPORTER_REGISTRY`` 
+
+To do this go to ``vulnerabilites/importer_yielder.py``, in the ``IMPORTER_REGISTRY``
 list add a dictionary with following data 
 
 .. code:: python
@@ -84,15 +58,22 @@ list add a dictionary with following data
         'data_source': <your_data_source_name>,
         'data_source_cfg': {},
     }
+
   
-**Don't forget to replace <your_importer_name> and <your_data_source_name> with appropriate strings** For this example let's consider `<your_data_source_name> = "ExampleDataSource"` . If you know the license of the data you are importing, assign the license field equal to the license of the data in the  ``add_<your_importer_name>_importer`` method of the migration script.
+**Don't forget to replace <your_importer_name> and <your_data_source_name> with
+appropriate strings**
+
+For this example let's consider `<your_data_source_name> = "ExampleDataSource"`.
+If you know the license of the data you are importing, assign the license field
+equal to the license of the data in the  ``add_<your_importer_name>_importer``
+method of the migration script.
 
 * **Create a data source** : 
 
   - Go to ``vulnerabilities/importers`` , create a python script, let's call it ``my_importer.py``
-  
+
   - Implement the ``updated_advisories`` method.
-  
+
   A minimal ``my_importer`` would look like :
 
 .. code:: python

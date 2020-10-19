@@ -39,29 +39,29 @@ Available exceptions:
 
 1. Create an OvalDocument:
 
-    >>> tree = ElementTree()
-    >>> tree.parse("OvalTest.xml")
-    >>> document = OvalDocument(tree)
+    >> tree = ElementTree()
+    >> tree.parse("OvalTest.xml")
+    >> document = OvalDocument(tree)
 
 2. Find an oval element within the loaded document:
 
-    >>> element = document.getElementByID("oval:org.mitre.oval:def:22382")
-    >>> if element is not None:
-    >>>    ....
+    >> element = document.getElementByID("oval:org.mitre.oval:def:22382")
+    >> if element is not None:
+    >>    ....
 
 3. Read an XML file with a single OVAL Definition (error checking omitted for brevity):
 
-    >>> tree = ElementTree()    
-    >>> tree.parse('test-definition.xml')
-    >>> root = tree.getroot()    
-    >>> definition = lib_oval.OvalDefinition(root)
+    >> tree = ElementTree()    
+    >> tree.parse('test-definition.xml')
+    >> root = tree.getroot()    
+    >> definition = lib_oval.OvalDefinition(root)
     
 4. Change information in the definition from #3 and write the changes
 
-    >>> meta = definition.getMetadata()
-    >>> repo = meta.getOvalRepositoryInformation()
-    >>> repo.setMinimumSchemaVersion("5.9")
-    >>> tree.write("outfilename.xml", UTF-8", True)
+    >> meta = definition.getMetadata()
+    >> repo = meta.getOvalRepositoryInformation()
+    >> repo.setMinimumSchemaVersion("5.9")
+    >> tree.write("outfilename.xml", UTF-8", True)
         
 
 

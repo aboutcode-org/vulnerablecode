@@ -151,9 +151,11 @@ def process_advisories(data_source: DataSource) -> None:
                         reference_id=vuln_ref.reference_id,
                     )
 
-                    if vuln_created or not vuln_ref_exists(vuln, vuln_ref.url, vuln_ref.reference_id):
-                        # A vulnerability reference can't exist if the vulnerability is just created so
-                        # insert it
+                    if vuln_created or not vuln_ref_exists(
+                        vuln, vuln_ref.url, vuln_ref.reference_id
+                    ):
+                        # A vulnerability reference can't exist if the
+                        # vulnerability is just created so insert it
                         bulk_create_vuln_refs.add(ref)
 
                 for purl in chain(advisory.impacted_package_urls, advisory.resolved_package_urls):
@@ -179,9 +181,12 @@ def process_advisories(data_source: DataSource) -> None:
                             if existing_ref[0].is_vulnerable != pkg_vuln_ref.is_vulnerable:
                                 handle_conflicts([existing_ref[0], pkg_vuln_ref.to_model_object()])
                                 existing_ref.delete()
-            except Exception as e:
+            except Exception:
                 # TODO: store error but continue
-                logger.error(f"Failed to process advisory: {advisory!r}:\n" +  traceback.format_exc())
+                logger.error(
+                    f"Failed to process advisory: {advisory!r}:\n"
+                    + traceback.format_exc()
+                )
 
     models.VulnerabilityReference.objects.bulk_create(
         [i.to_model_object() for i in bulk_create_vuln_refs]
@@ -251,7 +256,7 @@ def _get_or_create_vulnerability(
         query_kwargs = {"summary": advisory.summary}
     else:
         return models.Vulnerability.objects.create(), True
-    
+
     try:
         vuln, created = models.Vulnerability.objects.get_or_create(**query_kwargs)
         # Eventually we only want to keep summary from NVD and ignore other descriptions.
@@ -261,7 +266,9 @@ def _get_or_create_vulnerability(
         return vuln, created
 
     except Exception:
-        logger.error(f"Failed to _get_or_create_vulnerability: {query_kwargs!r}:\n" +  traceback.format_exc())
+        logger.error(
+            f"Failed to _get_or_create_vulnerability: {query_kwargs!r}:\n"
+            + traceback.format_exc())
         raise
 
 

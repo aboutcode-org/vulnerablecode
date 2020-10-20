@@ -451,15 +451,18 @@ class OvalDataSource(DataSource):
             try:
                 oval_data = self.get_data_from_xml_doc(oval_file, metadata)
                 yield oval_data
-            except Exception as e:
-                logger.error(f"Failed to get updated_advisories: {oval_file!r} with {metadata!r}:\n" +  traceback.format_exc())
+            except Exception:
+                logger.error(
+                    f"Failed to get updated_advisories: {oval_file!r} "
+                    "with {metadata!r}:\n" + traceback.format_exc()
+                )
                 continue
 
     def set_api(self, all_pkgs: Iterable[str]):
         """
-        This method loads the self.pkg_manager_api with the specified packages. It fetches
-        and caches all the versions of these packages and exposes them through
-        self.pkg_manager_api.get(<package_name>). Example
+        This method loads the self.pkg_manager_api with the specified packages.
+        It fetches and caches all the versions of these packages and exposes
+        them through self.pkg_manager_api.get(<package_name>). Example
 
         >> self.set_api(['electron'])
         Assume 'electron' has only versions 1.0.0 and 1.2.0

@@ -21,9 +21,11 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import dataclasses
+import logging
 import os
 import shutil
 import tempfile
+import traceback
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -32,7 +34,6 @@ from typing import Iterable
 from typing import List
 from typing import Mapping
 from typing import Optional
-from typing import Sequence
 from typing import Set
 from typing import Tuple
 import xml.etree.ElementTree as ET
@@ -41,6 +42,8 @@ import pygit2
 from packageurl import PackageURL
 
 from vulnerabilities.oval_parser import OvalParser
+
+logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass
@@ -428,7 +431,7 @@ class OvalDataSource(DataSource):
 
         return all_pkgs
 
-    def _fetch() -> Tuple[Mapping, Iterable[ET.ElementTree]]:
+    def _fetch(self) -> Tuple[Mapping, Iterable[ET.ElementTree]]:
         """
         This method  contains logic to fetch OVAL files and yield them into
         a tuple of file's metadata and it's ET.ElementTree.
@@ -445,17 +448,25 @@ class OvalDataSource(DataSource):
         Note: metadata MUST INCLUDE "type" key, implement _fetch accordingly.
         """
         for metadata, oval_file in self._fetch():
-            yield self.get_data_from_xml_doc(oval_file, metadata)
+            try:
+                oval_data = self.get_data_from_xml_doc(oval_file, metadata)
+                yield oval_data
+            except Exception:
+                logger.error(
+                    f"Failed to get updated_advisories: {oval_file!r} "
+                    "with {metadata!r}:\n" + traceback.format_exc()
+                )
+                continue
 
     def set_api(self, all_pkgs: Iterable[str]):
         """
-        This method loads the self.pkg_manager_api with the specified packages. It fetches
-        and caches all the versions of these packages and exposes them through
-        self.pkg_manager_api.get(<package_name>). Example
+        This method loads the self.pkg_manager_api with the specified packages.
+        It fetches and caches all the versions of these packages and exposes
+        them through self.pkg_manager_api.get(<package_name>). Example
 
-        >>> self.set_api(['electron'])
+        >> self.set_api(['electron'])
         Assume 'electron' has only versions 1.0.0 and 1.2.0
-        >>> assert  self.pkg_manager_api.get('electron') == {'1.0.0','1.2.0'}
+        >> assert  self.pkg_manager_api.get('electron') == {'1.0.0','1.2.0'}
 
         """
         raise NotImplementedError

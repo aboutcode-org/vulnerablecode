@@ -109,7 +109,7 @@ class ImportRunner:
         data sources. For example, a vulnerability in the Linux kernel is mentioned by advisories
         from all Linux distributions that package this kernel version.
         """
-        logger.debug(f"Starting import for {self.importer.name}.")
+        logger.info(f"Starting import for {self.importer.name}.")
         data_source = self.importer.make_data_source(self.batch_size, cutoff_date=cutoff_date)
         with data_source:
             process_advisories(data_source)
@@ -117,7 +117,7 @@ class ImportRunner:
         self.importer.data_source_cfg = dataclasses.asdict(data_source.config)
         self.importer.save()
 
-        logger.debug(f"Successfully finished import for {self.importer.name}.")
+        logger.info(f"Finished import for {self.importer.name}.")
 
 
 def vuln_ref_exists(vulnerability, url, reference_id):
@@ -181,7 +181,7 @@ def process_advisories(data_source: DataSource) -> None:
                                 existing_ref.delete()
             except Exception as e:
                 # TODO: store error but continue
-                logger.error(f"Failed to process advisory: {advisory}:\n" +  traceback.format_exc())
+                logger.error(f"Failed to process advisory: {advisory!r}:\n" +  traceback.format_exc())
 
     models.VulnerabilityReference.objects.bulk_create(
         [i.to_model_object() for i in bulk_create_vuln_refs]
@@ -260,7 +260,7 @@ def _get_or_create_vulnerability(
             vuln.save()
         return vuln, created
 
-    except Exception as e:
+    except Exception:
         logger.error(f"Failed to _get_or_create_vulnerability: {query_kwargs!r}:\n" +  traceback.format_exc())
         raise
 

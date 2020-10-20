@@ -4,6 +4,8 @@ VulnerableCode
 |Build Status| |License| |Python 3.8| |stability-wip| |Gitter chat| |PRs
 Welcome|
 
+.. image:: README.gif
+
 
 The What
 --------

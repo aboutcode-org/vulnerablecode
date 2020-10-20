@@ -21,9 +21,11 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import dataclasses
+import logging
 import os
 import shutil
 import tempfile
+import traceback
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -41,6 +43,8 @@ import pygit2
 from packageurl import PackageURL
 
 from vulnerabilities.oval_parser import OvalParser
+
+logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass
@@ -445,7 +449,12 @@ class OvalDataSource(DataSource):
         Note: metadata MUST INCLUDE "type" key, implement _fetch accordingly.
         """
         for metadata, oval_file in self._fetch():
-            yield self.get_data_from_xml_doc(oval_file, metadata)
+            try:
+                oval_data = self.get_data_from_xml_doc(oval_file, metadata)
+                yield oval_data
+            except Exception as e:
+                logger.error(f"Failed to get updated_advisories: {oval_file!r} with {metadata!r}:\n" +  traceback.format_exc())
+                continue
 
     def set_api(self, all_pkgs: Iterable[str]):
         """

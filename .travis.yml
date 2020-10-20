@@ -5,7 +5,7 @@ services:
   - postgresql
 
 install:
-  - pip install -r requirements.txt
+  - pip install -e . -r requirements.txt
 
 env:
   global:
@@ -13,13 +13,13 @@ env:
   - GH_TOKEN="dummygithubtoken"
 
 before_script:
-  - pycodestyle --exclude=migrations,settings.py,venv,lib_oval.py,test_ubuntu.py,test_suse.py,test_data_source.py --max-line-length=100 .
   - psql -c "CREATE DATABASE vulnerablecode;" -U postgres
   - ./manage.py migrate
 
 script:
   - ./manage.py collectstatic
   - pytest
+  - pycodestyle --exclude=migrations,settings.py,venv,lib_oval.py,test_ubuntu.py,test_suse.py,test_data_source.py --max-line-length=100 vulnerablecode vulnerabilities
 
 notifications:
   email: false

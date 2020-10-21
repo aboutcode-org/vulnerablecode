@@ -22,11 +22,11 @@ databases, which in itself does not make sense because the data is about
 FOSS.
 
 National Vulnerability Database which is the primary data source for all
-things security, is not particulary catered to address FOSS security
+things security, is not  particularly catered to address FOSS security
 issues, because:
 
-1. It predates explosion of FOSS software usage
-2. It's data format reflects commercial vendor-centric point of view,
+1. It predates the explosion of FOSS software usage
+2. It's data format reflects  a commercial vendor-centric point of view,
    this is due to the usage of
    `CPE <https://nvd.nist.gov/products/cpe>`__ to map vulnerabilities
    and the packages.
@@ -42,7 +42,7 @@ The How
 VulnerableCode independently aggregates many software vulnerability data
 sources that can easily be recreated in a decentralized fashion. These
 data sources include security advisories published by distros, package
-managers etc. Due to this the data obtained is not generalized to apply
+managers, etc. Due to this, the data obtained is not generalized to apply
 for other ecosystems. This increases the accuracy as the same version of
 a package across different distros may or may not be vulnerable to some
 vulnerability.
@@ -53,16 +53,16 @@ This makes it really easy to answer questions like "Is package foo
 vulnerable to vulnerability bar ? ".
 
 The web interface enables community curation of data by enabling
-addition of new packages, vulnerabilities and modifying the
+the addition of new packages, vulnerabilities, and modifying the
 relationships between them as shown in GIF. Along with the web interface
 the API allows seamless consumption of the data.
 
 We also plan to mine for vulnerabilities which didn't receive any
 exposure due to various reasons like but not limited to the complicated
 procedure to receive CVE ID or not able to classify a bug as a security
-compromise. 
+compromise.
 
-Check VulnerableCode at `Open Source Summit 2020 
+Check VulnerableCode at `Open Source Summit 2020
 <https://ossna2020.sched.com/event/c46p/why-is-there-no-free-software-vulnerability-database-philippe-ombredanne-aboutcodeorg-and-nexb-inc-michael-herzog-nexb-inc>`__
 
 Setting up VulnerableCode
@@ -138,7 +138,7 @@ Tests
 ::
 
     pycodestyle --exclude=migrations,settings.py,venv,lib_oval.py,test_ubuntu.py,test_suse.py,test_data_source.py --max-line-length=100 .
-    DJANGO_DEV=1 pytest 
+    DJANGO_DEV=1 pytest
 
 Data import
 -----------

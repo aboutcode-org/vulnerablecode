@@ -290,7 +290,14 @@ class ComposerVersionAPI(VersionAPI):
 
     @staticmethod
     def composer_url(pkg_name: str) -> str:
-        vendor, name = pkg_name.split("/")
+        try:
+            vendor, name = pkg_name.split("//")
+        except : 
+            try : 
+                vendor, name = pkg_name.split("/")
+            except : 
+                vendor, name = pkg_name.split("\\")
+        
         return f"https://repo.packagist.org/p/{vendor}/{name}.json"
 
     @staticmethod

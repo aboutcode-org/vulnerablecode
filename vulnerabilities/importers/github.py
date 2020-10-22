@@ -38,6 +38,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
+from vulnerabilities.data_source import VulnPkgVersionRange
 
 from vulnerabilities.package_managers import MavenVersionAPI
 from vulnerabilities.package_managers import NugetVersionAPI
@@ -189,6 +190,13 @@ class GitHubAPIDataSource(DataSource):
                                    version=version, type=pkg_type)
                         for version in unaff_vers
                     }
+                    if aff_range : 
+                        vuln_pkg_version_ranges = [VulnPkgVersionRange(
+                            purl_string=PackageURL(name=pkg_name,namespace=ns,type=pkg_type).to_string(),
+                            version_ranges=str(RangeSpecifier(aff_range).peppify()),
+                        )]
+                    else : 
+                        vuln_pkg_version_ranges = []
 
                     cve_ids = set()
                     vuln_references = []
@@ -214,6 +222,7 @@ class GitHubAPIDataSource(DataSource):
                                 impacted_package_urls=affected_purls,
                                 resolved_package_urls=unaffected_purls,
                                 vuln_references=vuln_references,
+                                vuln_pkg_version_ranges=vuln_pkg_version_ranges,
                             )
                         )
         return adv_list

@@ -28,8 +28,10 @@ from django.db import models
 import django.contrib.postgres.fields as pgfields
 from django.utils.translation import ugettext_lazy as _
 
-from packageurl.contrib.django_models import PackageURLMixin
+from packageurl.contrib.django.models import PackageURLMixin
+from packageurl.contrib.django.models import PackageURLQuerySetMixin
 from packageurl import PackageURL
+from dephell_specifier import RangeSpecifier
 
 from vulnerabilities.data_source import DataSource
 
@@ -83,6 +85,35 @@ class VulnerabilityReference(models.Model):
         return f"{self.source} {self.reference_id} {self.url}"
 
 
+class VulnerableCodePackageQuerySet(PackageURLQuerySetMixin, models.QuerySet):
+
+    def vulnerabilities_for_purl(self, purl_str):
+        purl_obj = PackageURL.from_string(purl_str)
+        in_db = Package.objects.filter(**purl_obj.to_dict())
+        if in_db : 
+            # Found in db
+            return Vulnerability.objects.filter(packagerelatedvulnerability__package__in=in_db)    
+        
+        else:
+            # Not in db 
+            version_less_purl = purl_obj._replace(**{"version":None}).to_string()
+            version_range_exps_for_purl = VulnerablePackageVersionRange.objects.filter(purl=version_less_purl)
+            if not version_range_exps_for_purl : 
+                # No version range expression  found the same purl without version.
+                return Vulnerability.objects.none()
+            
+            else:
+                # Check if the requested purl satisfies the version range. If yes  then it is vulnerable to the
+                # corresponding vulnerability
+
+                vulns = Vulnerability.objects.none()
+                for expr in  version_range_exps_for_purl :
+                    if purl_obj.version in  RangeSpecifier(expr.version_ranges) :
+                        # Append vulnerability to `vulns` queryset
+                        vulns |= Vulnerability.objects.filter(pk=expr.vulnerability_id)
+                
+                return vulns
+
 class Package(PackageURLMixin):
     """
     A software package with links to relevant vulnerabilities.
@@ -91,7 +122,7 @@ class Package(PackageURLMixin):
     vulnerabilities = models.ManyToManyField(
         to="Vulnerability", through="PackageRelatedVulnerability"
     )
-
+    objects = VulnerableCodePackageQuerySet.as_manager()
     @property
     def vulnerable_to(self):
         return self.vulnerabilities.filter(
@@ -199,3 +230,10 @@ class Importer(models.Model):
 
     def __str__(self):
         return self.name
+
+class VulnerablePackageVersionRange(models.Model):
+
+    purl = models.CharField(max_length=100, help_text="purl string without version")
+    vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
+    version_ranges = models.CharField(max_length=100, 
+                                    help_text="version range expression for which the package is vulnerable")

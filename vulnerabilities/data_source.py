@@ -56,6 +56,11 @@ class Reference:
         if not any([self.url, self.reference_id]):
             raise TypeError
 
+@dataclasses.dataclass
+class VulnPkgVersionRange:
+
+    purl_string: str
+    version_ranges: str
 
 @dataclasses.dataclass
 class Advisory:
@@ -70,9 +75,11 @@ class Advisory:
     """
     summary: str
     impacted_package_urls: Iterable[PackageURL]
-    resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
+    resolved_package_urls: Iterable[PackageURL] 
+    vuln_pkg_version_ranges : Iterable[VulnPkgVersionRange]
     vuln_references: List[Reference] = dataclasses.field(default_factory=list)
     cve_id: Optional[str] = None
+    
 
     def __hash__(self):
         s = '{}{}{}{}'.format(

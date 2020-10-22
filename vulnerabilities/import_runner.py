@@ -32,6 +32,7 @@ from typing import Tuple
 from typing import Optional
 
 import packageurl
+from dephell_specifier import RangeSpecifier
 from django.db import DataError
 from django.core import serializers
 
@@ -144,6 +145,23 @@ def process_advisories(data_source: DataSource) -> None:
         for advisory in batch:
             try:
                 vuln, vuln_created = _get_or_create_vulnerability(advisory)
+                for vuln_pkg_range in  advisory.vuln_pkg_version_ranges : 
+                    obj, created = models.VulnerablePackageVersionRange.objects.get_or_create(
+                        purl=vuln_pkg_range.purl_string,
+                        vulnerability=vuln
+                    )
+                    if created:
+                        obj.version_ranges = vuln_pkg_range.version_ranges
+                    
+                    else:
+                        existing_ver_ranges = set(obj.version_ranges.split(','))
+                        found_ver_ranges = set(vuln_pkg_range.version_ranges.split(','))
+                        new_ranges = existing_ver_ranges - found_ver_ranges 
+                        if new_ranges : 
+                            updated_range = new_ranges.union(existing_ver_ranges)
+                            obj.version_ranges = ",".join(updated_range)
+                    
+                    obj.save()
                 for vuln_ref in advisory.vuln_references:
                     ref = VulnerabilityReferenceInserter(
                         vulnerability=vuln,
@@ -200,6 +218,8 @@ def process_advisories(data_source: DataSource) -> None:
     )
 
     handle_conflicts([i.to_model_object() for i in conflicts])
+
+
 
 
 def find_conflicting_relations(

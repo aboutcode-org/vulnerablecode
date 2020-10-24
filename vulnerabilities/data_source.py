@@ -59,7 +59,17 @@ class Reference:
 @dataclasses.dataclass
 class VulnPkgVersionRange:
 
-    purl_string: str
+# This dataclass is nested inside the `Advisory` class below. It is used 
+# by the importers to transport vulnerable version ranges of a particular
+# package to the db insertion mechanism. 
+
+# The `purl` in  this case is a package url without a version. Eg value `pkg:maven/axis/axis`
+
+# The `version_ranges` contains a comma separated version  range expressions. Eg value `<4.1.4,>=4.0.0`
+# for which  the `purl` is vulnerable to some vulnerability. This `vulnerability` is specified by the parent `Advisory`
+# dataclass.
+
+    purl: str
     version_ranges: str
 
 @dataclasses.dataclass

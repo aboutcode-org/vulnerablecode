@@ -88,8 +88,20 @@ class VulnerabilityReference(models.Model):
 class VulnerableCodePackageQuerySet(PackageURLQuerySetMixin, models.QuerySet):
 
     def vulnerabilities_for_purl(self, purl_str):
+
+        # This function finds all the related vulnerabilities for the given purl string.
+        # It does so by :
+        #   1. Find whether a package with  specifications exactly same as that of the provided purl exists.
+        #       If yes, then return related vulnerabilities to this package. Else do (2)
+        #   2. Chop off the version part from  the provided purl string lets call this "v1".
+        #        Query whether there exists a row in the VulnerablePackageVersionRange table
+        #        with purl equal to the obtained purl. If there is no 
+        #        no such row we return empty handed. Else we obtain the version expressions from this row.
+        #        Then we cross check whether `v1` satisfies these version expressions if yes then add corresponding
+        #        vulnerability to the returned queryset. 
+
         purl_obj = PackageURL.from_string(purl_str)
-        in_db = Package.objects.filter(**purl_obj.to_dict())
+        in_db = Package.objects.for_package_url(purl_str)
         if in_db : 
             # Found in db
             return Vulnerability.objects.filter(packagerelatedvulnerability__package__in=in_db)    

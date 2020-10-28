@@ -132,6 +132,48 @@ When not running in development mode, an environment variable named
 is to use the code Django includes for this purpose:
 ``SECRET_KEY=$(python -c "from django.core.management import utils; print(utils.get_random_secret_key())")``.
 
+Using Nix
+~~~~~~~~~
+
+You can install VulnerableCode with `Nix <https://nixos.org/download.html>`__ (`Flake <https://nixos.wiki/wiki/Flakes>`__ support is needed).
+
+::
+
+    nix --print-build-logs flake check # build & run tests
+
+There are several options to use the Nix version
+
+::
+
+    # Enter an interactive environment with all dependencies setup.
+    nix-shell
+    > ./manage.py ... # invoke the local checkout
+    > vulnerablecode-manage.py ... # invoke the installed manage.py in the nix store
+
+    # Test the import prodecure using the Nix version.
+    ./test-import-using-nix.sh --all # import everything
+    # Test the import using the local checkout.
+    INSTALL_DIR=. ./test-import-using-nix.sh ruby # import ruby only
+
+
+**Keeping the Nix setup in sync**
+
+The Nix installation uses `poetry2nix <https://github.com/nix-community/poetry2nix>`__ to handle Python dependencies because some dependencies are currently not available as Nix packages.
+The file ``./poetry-conversion.patch`` allows to convert VulnerableCode into a `Poetry <https://python-poetry.org/>`__ project.
+This is done on the fly during the Nix installation.
+The patch file is created by ``./make-poetry-conversion-patch.sh``.
+It needs to be recreated whenever ``./requirements.txt`` changes.
+The ``expectedRequirementstxtMd5sum`` in ``flake.nix`` also needs to be updated in that case.
+Running ``nix flake check`` will fail otherwise.
+
+::
+
+    # Update poetry-conversion.patch.
+    nix-shell -p poetry --run ./make-poetry-conversion-patch.sh
+    # Get new hash. See flake.nix.
+    md5sum requirements.txt
+
+
 Tests
 -----
 

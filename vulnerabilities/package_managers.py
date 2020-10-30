@@ -17,7 +17,7 @@
 #  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
 #  VulnerableCode should be considered or used as legal advice. Consult an Attorney
 #  for any legal advice.
-#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
+#  VulnerableCode is free software from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio

@@ -143,14 +143,31 @@ Tests
 Data import
 -----------
 
+Many data importers use GitHub APIs. For this, first set up value of the ``GH_TOKEN`` environment variable by running :
+
+::
+
+    export GH_TOKEN=yourgithubtoken
+
+
+See `GitHub docs  <https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token>`_ for instructions on how to obtain your GitHub token.
+
+
+To run all data importers use :
 ::
 
     DJANGO_DEV=1 python manage.py import --all
 
-It is not required to run all the importers . To quickly get started with some data run :
-:: 
+To list available importers use :
+::
 
-    DJANGO_DEV=1 python manage.py import rust ruby
+    DJANGO_DEV=1 python manage.py import --list
+
+To run specific importers :
+::
+
+    DJANGO_DEV=1 python manage.py import rust npm 
+
 
 If you want to run the import periodically, you can use a systemd timer:
 

@@ -18,7 +18,6 @@
         (builtins.readFile ./setup.py));
 
       vulnerablecode-src = ./.;
-      poetryPatch = ./poetry-conversion.patch;
       # From commit cc7659f978b6ea17363511d25b7b30f52ccf45dd
       expectedRequirementstxtMd5sum = "b40c1c5c07315647fff28c220aafea10";
 
@@ -47,7 +46,16 @@
             cp -r ${vulnerablecode-src} $out
             chmod +w $out
             cd $out
-            patch < ${poetryPatch}
+            EXPECTED=${expectedRequirementstxtMd5sum}
+            ACTUAL=$(md5sum ${vulnerablecode-src}/requirements.txt | cut -d ' ' -f 1)
+            if [[ $EXPECTED != $ACTUAL ]] ; then
+              echo ""
+              echo "The requirements.txt has changed!"
+              echo "1) Run make-poetry-conversion-patch.sh."
+              echo "2) Update expectedRequirementstxtMd5sum in flake.nix."
+              exit 1
+            fi
+            patch < ./poetry-conversion.patch
           '';
 
           vulnerablecode = poetry2nix.mkPoetryApplication {
@@ -138,27 +146,6 @@
                 ${wget}/bin/wget http://127.0.0.1:8000/api/
                 kill %1 # kill webserver
               )
-            '';
-
-            installPhase = "mkdir -p $out";
-          };
-        vulnerablecode-requirements = with nixpkgsFor.${system};
-          stdenv.mkDerivation {
-            name = "vulnerablecode-requirements-${version}";
-
-            unpackPhase = "true";
-
-            buildPhase = ''
-              EXPECTED=${expectedRequirementstxtMd5sum}
-              ACTUAL=$(md5sum ${vulnerablecode}/requirements.txt | cut -d ' ' -f 1)
-              if [[ $EXPECTED != $ACTUAL ]] ; then
-                echo ""
-                echo "The requirements.txt has changed!"
-                echo "You should recreate ${baseNameOf poetryPatch}!"
-                echo "1) Run make-poetry-conversion-patch.sh."
-                echo "2) Update expectedRequirementstxtMd5sum in flake.nix."
-                exit 1
-              fi
             '';
 
             installPhase = "mkdir -p $out";

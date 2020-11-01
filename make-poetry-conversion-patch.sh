@@ -7,6 +7,8 @@
 GENERATED_POETRY_FILES=(pyproject.toml poetry.lock)
 PATCH_FILE=poetry-conversion.patch
 
+set -e
+
 # Sanity check.
 for f in "${GENERATED_POETRY_FILES[@]}" ; do
   test -f "$f" && { echo "File $f exists! Aborting ..." ; exit 1; }
@@ -47,8 +49,7 @@ EOF
 
 # Convert requirements.txt entries to pyproject.toml entries.
 # https://github.com/python-poetry/poetry/issues/663
-# This may take very long.
-perl -pe 's/([<=>]+)/:$1/' requirements.txt | xargs -t -n 1 -I {} poetry add '{}'
+perl -pe 's/([<=>]+)/:$1/' requirements.txt | tr '\n' ' ' | xargs -t -I {} bash -c "poetry add {}"
 
 # Generate the patch file.
 rm $PATCH_FILE

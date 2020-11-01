@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nix-shell
+#!nix-shell -i bash -p diffutils libxml2 libxslt perl poetry
 
 # This script is used to update ./poetry-conversion.patch. Applying the patch
 # will to convert this folder into a Poetry project.
@@ -52,7 +53,7 @@ perl -pe 's/([<=>]+)/:$1/' requirements.txt | xargs -t -n 1 -I {} poetry add '{}
 # Generate the patch file.
 rm $PATCH_FILE
 for f in "${GENERATED_POETRY_FILES[@]}" ; do
-  diff -u /dev/null "$f" >> $PATCH_FILE
+  diff -u /dev/null "$f" >> $PATCH_FILE || true # we expect differences
 done
 
 # Remove poetry files again.

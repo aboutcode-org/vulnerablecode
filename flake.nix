@@ -61,6 +61,8 @@
                 (old: { buildInputs = old.buildInputs ++ [ libgit2-glib ]; });
             });
 
+            propagatedBuildInputs = [ postgresql ];
+
             dontConfigure = true; # do not use ./configure
             dontBuild = true;
 
@@ -77,16 +79,13 @@
 
       # Provide a nix-shell env to work with vulnerablecode.
       devShell = forAllSystems (system:
-        nixpkgsFor.${system}.mkShell {
-          buildInputs = with nixpkgsFor.${system}; [
-            postgresql
-            vulnerablecode
-          ];
+        with nixpkgsFor.${system};
+        mkShell rec {
+          # will be available as env var in `nix develop`
+          VULNERABLECODE_INSTALL_DIR = vulnerablecode;
+          buildInputs = [ vulnerablecode ];
           shellHook = ''
-            export VULNERABLECODE_INSTALL_DIR=${
-              self.packages.${system}.vulnerablecode
-            }
-            alias vulnerablecode-manage.py=$VULNERABLECODE_INSTALL_DIR/manage.py
+            alias vulnerablecode-manage.py=${VULNERABLECODE_INSTALL_DIR}/manage.py
           '';
 
         });
@@ -108,7 +107,7 @@
           stdenv.mkDerivation {
             name = "vulnerablecode-test-${version}";
 
-            buildInputs = [ wget ] ++ self.devShell.${system}.buildInputs;
+            buildInputs = [ wget vulnerablecode ];
 
             # Used by pygit2.
             # See https://github.com/NixOS/nixpkgs/pull/72544#issuecomment-582674047.

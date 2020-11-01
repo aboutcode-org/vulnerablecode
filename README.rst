@@ -146,7 +146,7 @@ There are several options to use the Nix version
 ::
 
     # Enter an interactive environment with all dependencies setup.
-    nix-shell
+    nix develop
     > ./manage.py ... # invoke the local checkout
     > vulnerablecode-manage.py ... # invoke the installed manage.py in the nix store
 

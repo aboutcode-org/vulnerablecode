@@ -43,18 +43,17 @@
         with final.pkgs; {
 
           # Create a patched version of Vulnerablecode.
-          patched-vulnerablecode-src =
-            runCommand "patched-vulnerablecode-src" { } ''
-              cp -r ${vulnerablecode-src} $out
-              chmod +w $out
-              cd $out
-              patch < ${poetryPatch}
-            '';
+          patcheVulnerablecodeSrc = runCommand "patcheVulnerablecodeSrc" { } ''
+            cp -r ${vulnerablecode-src} $out
+            chmod +w $out
+            cd $out
+            patch < ${poetryPatch}
+          '';
 
           vulnerablecode = poetry2nix.mkPoetryApplication {
             projectDir =
-              patched-vulnerablecode-src; # where to find {pyproject.toml,poetry.lock}
-            src = ./.;
+              patcheVulnerablecodeSrc; # where to find {pyproject.toml,poetry.lock}
+            src = vulnerablecode-src;
             python = python38;
             overrides = poetry2nix.overrides.withDefaults (self: super: {
               pygit2 = super.pygit2.overridePythonAttrs

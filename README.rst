@@ -148,7 +148,7 @@ There are several options to use the Nix version
     # Enter an interactive environment with all dependencies setup.
     nix develop
     > ./manage.py ... # invoke the local checkout
-    > vulnerablecode-manage.py ... # invoke the installed manage.py in the nix store
+    > vulnerablecode-manage.py ... # invoke manage.py as installed in the nix store
 
     # Test the import prodecure using the Nix version.
     ./test-import-using-nix.sh --all # import everything
@@ -161,10 +161,9 @@ There are several options to use the Nix version
 The Nix installation uses `poetry2nix <https://github.com/nix-community/poetry2nix>`__ to handle Python dependencies because some dependencies are currently not available as Nix packages.
 The file ``./poetry-conversion.patch`` allows to convert VulnerableCode into a `Poetry <https://python-poetry.org/>`__ project.
 This is done on the fly during the Nix installation.
-The patch file is created by ``./make-poetry-conversion-patch.sh``.
-It needs to be recreated whenever ``./requirements.txt`` changes.
+The patch file itself is created by ``./make-poetry-conversion-patch.sh``.
+It needs to be recreated whenever ``./requirements.txt`` changes (this is not done automatically).
 The ``expectedRequirementstxtMd5sum`` in ``flake.nix`` also needs to be updated in that case.
-Running ``nix flake check`` will fail otherwise.
 
 ::
 

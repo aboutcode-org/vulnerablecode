@@ -219,6 +219,13 @@ IMPORTER_REGISTRY = [
             'etag': {}
         },
     },
+    {
+        'name': 'postgresql',
+        'license': '',
+        'last_run': None,
+        'data_source': 'PostgreSQLDataSource',
+        'data_source_cfg': {},
+    },
 
 ]
 

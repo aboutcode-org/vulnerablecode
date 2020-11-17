@@ -189,6 +189,15 @@ IMPORTER_REGISTRY = [
         'data_source': 'ProjectKBMSRDataSource',
         'data_source_cfg': {
             'etag': {}
+        }
+    },
+    {
+        'name': 'apache_httpd',
+        'license': '',
+        'last_run': None,
+        'data_source': 'ApacheHTTPDDataSource',
+        'data_source_cfg': {
+            'etags': {}
         },
     },
 

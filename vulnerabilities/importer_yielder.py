@@ -210,6 +210,15 @@ IMPORTER_REGISTRY = [
             'branch': 'vulnerability-data'
         },
     },
+    {
+        'name': 'nginx',
+        'license': '',
+        'last_run': None,
+        'data_source': 'NginxDataSource',
+        'data_source_cfg': {
+            'etag': {}
+        },
+    },
 
 ]
 

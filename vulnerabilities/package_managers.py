@@ -25,11 +25,8 @@ from json import JSONDecodeError
 from typing import Mapping
 from typing import Set
 from typing import List
-from urllib.error import HTTPError
-from urllib.request import urlopen
 import xml.etree.ElementTree as ET
 
-import requests
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientResponseError
 
@@ -303,3 +300,24 @@ class ComposerVersionAPI(VersionAPI):
         # See https://github.com/composer/composer/blob/44a4429978d1b3c6223277b875762b2930e83e8c/doc/articles/versions.md#tags  # nopep8
         # for explanation of removing 'v'
         return all_versions
+
+
+class GitHubTagsAPI(VersionAPI):
+    async def load_api(self, repo_set):
+        async with ClientSession(raise_for_status=True) as session:
+            await asyncio.gather(
+                *[
+                    self.fetch(owner_repo.lower(), session)
+                    for owner_repo in repo_set
+                    if owner_repo.lower() not in self.cache
+                ]
+            )
+
+    async def fetch(self, owner_repo: str, session) -> None:
+        # owner_repo is a string of format "{repo_owner}/{repo_name}"
+        # Example value of owner_repo = "nexB/scancode-toolkit"
+        endpoint = f"https://api.github.com/repos/{owner_repo}/git/refs/tags"
+        resp = await session.request(method="GET", url=endpoint)
+        resp = await resp.json()
+        print(resp)
+        self.cache[owner_repo] = [release["ref"].split("/")[-1] for release in resp]

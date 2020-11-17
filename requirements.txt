@@ -21,7 +21,7 @@ ipython-genutils==0.2.0
 jedi==0.17.0
 lxml==4.3.3
 more-itertools==8.0.2
-packageurl-python==0.9.1
+packageurl-python==0.9.3
 packaging==19.2
 parso==0.7.0
 pexpect==4.8.0

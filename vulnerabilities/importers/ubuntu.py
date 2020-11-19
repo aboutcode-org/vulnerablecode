@@ -36,6 +36,7 @@ import requests
 
 from vulnerabilities.data_source import OvalDataSource, DataSourceConfiguration
 from vulnerabilities.package_managers import LaunchpadVersionAPI
+from vulnerabilities.helpers import create_etag
 
 
 @dataclasses.dataclass
@@ -53,22 +54,22 @@ class UbuntuDataSource(OvalDataSource):
         # we could avoid setting translations, and have it
         # set by default in the OvalParser, but we don't yet know
         # whether all OVAL providers use the same format
-        self.translations = {'less than': '<'}
+        self.translations = {"less than": "<"}
         self.pkg_manager_api = LaunchpadVersionAPI()
 
     def _fetch(self):
-        base_url = 'https://people.canonical.com/~ubuntu-security/oval/'
-        file_name = 'com.ubuntu.{}.cve.oval.xml.bz2'
+        base_url = "https://people.canonical.com/~ubuntu-security/oval/"
+        file_name = "com.ubuntu.{}.cve.oval.xml.bz2"
         releases = self.config.releases
         for release in releases:
             file_url = base_url + file_name.format(release)
-            if not self.create_etag(file_url):
+            if not create_etag(data_src=self, url=file_url, etag_key="ETag"):
                 continue
             resp = requests.get(file_url)
             extracted = bz2.decompress(resp.content)
             yield (
-                {'type': 'deb', 'namespace': 'ubuntu'},
-                ET.ElementTree(ET.fromstring(extracted.decode('utf-8')))
+                {"type": "deb", "namespace": "ubuntu"},
+                ET.ElementTree(ET.fromstring(extracted.decode("utf-8"))),
             )
         # In case every file is latest, _fetch won't yield anything(due to checking for new etags),
         # this would return None to added_advisories
@@ -78,16 +79,3 @@ class UbuntuDataSource(OvalDataSource):
 
     def set_api(self, packages):
         asyncio.run(self.pkg_manager_api.load_api(packages))
-
-    def create_etag(self, url):
-
-        etag = requests.head(url).headers.get('ETag')
-        if not etag:
-            # Kind of inaccurate to return True since etag is
-            # not created
-            return True
-        elif url in self.config.etags:
-            if self.config.etags[url] == etag:
-                return False
-        self.config.etags[url] = etag
-        return True

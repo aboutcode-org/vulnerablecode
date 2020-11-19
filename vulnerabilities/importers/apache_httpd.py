@@ -20,7 +20,7 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from dataclasses import dataclass
+import dataclasses
 from xml.etree import ElementTree
 
 import requests
@@ -29,9 +29,10 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
+from vulnerabilities.helpers import create_etag
 
 
-@dataclass
+@dataclasses.dataclass
 class ApacheHTTPDDataSourceConfiguration(DataSourceConfiguration):
     etags: dict
 
@@ -47,24 +48,12 @@ class ApacheHTTPDDataSource(DataSource):
         # (url, etag) pair. If a (url, etag) already exists then the code
         # skips processing the response further to avoid duplicate work
 
-        if self.create_etag(self.url):
+        if create_etag(data_src=self, url=self.url, etag_key="ETag"):
             data = fetch_xml(self.url)
             advisories = to_advisories(data)
             return self.batch_advisories(advisories)
 
         return []
-
-    def create_etag(self, url):
-        etag = requests.head(url).headers.get("ETag")
-        if not etag:
-            return True
-
-        elif url in self.config.etags:
-            if self.config.etags[url] == etag:
-                return False
-
-        self.config.etags[url] = etag
-        return True
 
 
 def to_advisories(data):

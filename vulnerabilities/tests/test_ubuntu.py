@@ -17,10 +17,6 @@ from vulnerabilities.data_source import Reference
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")
 
-class MockResponse:
-
-    headers = {"ETag":"0x1234"}
-
 class TestUbuntuOvalParser(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -276,14 +272,3 @@ class TestUbuntuDataSource(unittest.TestCase):
         for adv in data : 
             adv.vuln_references = sorted(adv.vuln_references, key=lambda x : x.url)
         assert expected_data == data
-
-    def test_create_etag(self):
-        
-        assert self.ubuntu_data_src.config.etags == {}
-        with patch('vulnerabilities.importers.ubuntu.requests.head', return_value=MockResponse()):
-            assert True == self.ubuntu_data_src.create_etag("https://example.org")
-            assert self.ubuntu_data_src.config.etags == {"https://example.org":"0x1234"}
-            assert False == self.ubuntu_data_src.create_etag("https://example.org")
-        
-
-

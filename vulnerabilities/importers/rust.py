@@ -21,7 +21,6 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
-import json
 from itertools import chain
 import re
 from typing import Optional, Mapping

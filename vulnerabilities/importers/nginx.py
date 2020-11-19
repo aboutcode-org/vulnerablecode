@@ -1,23 +1,23 @@
-# Copyright (c)  nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
-# The VulnerableCode software is licensed under the Apache License version
+# The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
 #
 # You may not use this software except in compliance with the License.
-# You may obtain a copy of the License at: http://apache.org/licenses/LICE
-# Unless required by applicable law or agreed to in writing, software dist
-# under the License is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES
-# CONDITIONS OF ANY KIND, either express or implied. See the License for t
-# specific language governing permissions and limitations under the Licens
+# You may obtain a copy of the License at: http://apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software distributed
+# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+# CONDITIONS OF ANY KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations under the License.
 #
-# When you publish or redistribute any data created with VulnerableCode or
-# derivative work, you must accompany this data with the following acknowl
+# When you publish or redistribute any data created with VulnerableCode or any VulnerableCode
+# derivative work, you must accompany this data with the following acknowledgment:
 #
-#  Generated with VulnerableCode and provided on an 'AS IS' BASIS, WITHOUT
-#  OR CONDITIONS OF ANY KIND, either express or implied. No content create
-#  VulnerableCode should be considered or used as legal advice. Consult an
+#  Generated with VulnerableCode and provided on an "AS IS" BASIS, WITHOUT WARRANTIES
+#  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
+#  VulnerableCode should be considered or used as legal advice. Consult an Attorney
 #  for any legal advice.
-#  VulnerableCode is a free software  from nexB Inc. and others.
+#  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
@@ -34,11 +34,12 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.helpers import create_etag
 
 
 @dataclasses.dataclass
 class NginxDataSourceConfiguration(DataSourceConfiguration):
-    etag: dict
+    etags: dict
 
 
 class NginxDataSource(DataSource):
@@ -57,23 +58,11 @@ class NginxDataSource(DataSource):
 
     def updated_advisories(self):
         advisories = []
-        if self.create_etag():
+        if create_etag(data_src=self, url=self.url, etag_key="ETag"):
             self.set_api()
             data = requests.get(self.url).content
             advisories.extend(self.to_advisories(data))
         return self.batch_advisories(advisories)
-
-    def create_etag(self):
-        etag = requests.head(self.url).headers.get("ETag")
-        if not etag:
-            return True
-
-        elif self.url in self.config.etag:
-            if self.config.etag[self.url] == etag:
-                return False
-
-        self.config.etag[self.url] = etag
-        return True
 
     def to_advisories(self, data):
         advisories = []

@@ -20,7 +20,6 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-
 from typing import Any
 from typing import Iterable
 from typing import List

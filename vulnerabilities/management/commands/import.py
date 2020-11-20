@@ -102,13 +102,6 @@ class Command(BaseCommand):
         for importer in importers:
             self.stdout.write(f'Importing data from {importer.name}')
             batch_size = int(getattr(self, 'batch_size', 10))
-            try:
-                ImportRunner(importer, batch_size).run(cutoff_date=cutoff_date)
-                self.stdout.write(
-                    self.style.SUCCESS(f'Successfully imported data from {importer.name}'))
-
-            except Exception as e:
-                # TBD
-                self.stdout.write(
-                    self.style.ERROR(f'Importing data from {importer.name} failed due to {e}'))
-                continue
+            ImportRunner(importer, batch_size).run(cutoff_date=cutoff_date)
+            self.stdout.write(
+                self.style.SUCCESS(f'Successfully imported data from {importer.name}'))

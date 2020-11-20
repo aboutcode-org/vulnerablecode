@@ -21,9 +21,10 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import json
-import requests
+
 import yaml
-import pytoml as toml
+import requests
+import toml
 
 
 def load_yaml(path):

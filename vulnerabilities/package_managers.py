@@ -29,6 +29,7 @@ import xml.etree.ElementTree as ET
 
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientResponseError
+from aiohttp.client_exceptions import ServerDisconnectedError
 
 
 class VersionAPI:

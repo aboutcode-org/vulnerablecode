@@ -29,7 +29,7 @@ from typing import Tuple
 from urllib.error import HTTPError
 from urllib.request import urlopen
 
-import pytoml as toml
+import toml
 from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
 
@@ -47,7 +47,7 @@ class RustDataSource(GitDataSource):
             self._added_files, self._updated_files = self.file_changes(
                 subdir="crates",  # TODO Consider importing the advisories for cargo, etc as well.
                 recursive=True,
-                file_ext="toml",
+                file_ext="md",
             )
 
     @property
@@ -66,15 +66,13 @@ class RustDataSource(GitDataSource):
         return self._load_advisories(self._updated_files)
 
     def _load_advisories(self, files) -> Set[Advisory]:
-        files = [f for f in files if not f.endswith("-0000.toml")]  # skip temporary files
+        files = [f for f in files if not f.endswith("-0000.md")]  # skip temporary files
         packages = self.collect_packages(files)
         self.set_api(packages)
 
         while files:
-            batch, files = files[: self.batch_size], files[self.batch_size:]
-
+            batch, files = files[: self.batch_size], files[self.batch_size :]
             advisories = set()
-
             for path in batch:
                 advisory = self._load_advisory(path)
                 if advisory:
@@ -84,13 +82,13 @@ class RustDataSource(GitDataSource):
     def collect_packages(self, paths):
         packages = set()
         for path in paths:
-            record = load_toml(path)
+            record = load_toml_from_md(path)
             packages.add(record["advisory"]["package"])
 
         return packages
 
     def _load_advisory(self, path: str) -> Optional[Advisory]:
-        record = load_toml(path)
+        record = load_toml_from_md(path)
         advisory = record.get("advisory", {})
         crate_name = advisory["package"]
         references = []
@@ -175,6 +173,22 @@ def categorize_versions(
     return unaffected, affected
 
 
-def load_toml(path):
-    with open(path) as f:
-        return toml.load(f)
+def load_toml_from_md(md_path):
+    # This collects the text between all the pairs of ```toml\n and ```\n characters
+    # and converts it into a parsed toml document and returns it.
+    parsed_data = {}
+    with open(md_path) as f:
+        lines = f.readlines()
+        for j, i in enumerate(lines):
+            if i == "```toml\n":
+                toml_lines = []
+                j += 1
+
+                while lines[j] != "```\n":
+                    toml_lines.append(lines[j])
+                    j += 1
+
+                parsed_toml = toml.loads("".join(toml_lines))
+                parsed_data.update(parsed_toml)
+
+    return parsed_data

@@ -33,7 +33,7 @@ from django.test import TestCase
 from vulnerabilities import models
 from vulnerabilities.importers.rust import categorize_versions
 from vulnerabilities.import_runner import ImportRunner
-from vulnerabilities.package_managers import CratesVersionAPI
+from vulnerabilities.package_managers import VersionAPI
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
@@ -165,10 +165,10 @@ class RustImportTest(TestCase):
 
         with patch(
                 'vulnerabilities.importers.RustDataSource.crates_api',
-                new=CratesVersionAPI(cache=self.crates_api_cache)
-        ):
-            runner.run(cutoff_date=datetime.datetime(
-                year=2020, month=3, day=18, tzinfo=datetime.timezone.utc))
+                new=VersionAPI(cache=self.crates_api_cache)):
+            with patch('vulnerabilities.importers.RustDataSource.set_api'):
+                runner.run(cutoff_date=datetime.datetime(
+                    year=2020, month=3, day=18, tzinfo=datetime.timezone.utc))
 
         self.assert_for_package('bitvec', 'RUSTSEC-2020-0007')
         self.assert_for_package('bumpalo', 'RUSTSEC-2020-0006')

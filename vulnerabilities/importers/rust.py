@@ -23,6 +23,7 @@
 import asyncio
 import json
 from itertools import chain
+import re
 from typing import Optional, Mapping
 from typing import Set
 from typing import Tuple
@@ -174,21 +175,19 @@ def categorize_versions(
 
 
 def load_toml_from_md(md_path):
-    # This collects the text between all the pairs of ```toml\n and ```\n characters
-    # and converts it into a parsed toml document and returns it.
+    """
+    Return a mapping of vulnerability data from a RustSec advisory file at
+    ``location``.
+    RustSec advisories documents are .md files starting with a block of TOML
+    identified as the text inside a tripple-backtick TOML block. Per
+    https://github.com/RustSec/advisory-db#advisory-format:
+        Advisories are formatted in Markdown with TOML "front matter".
+    """
     parsed_data = {}
     with open(md_path) as f:
-        lines = f.readlines()
-        for j, i in enumerate(lines):
-            if i == "```toml\n":
-                toml_lines = []
-                j += 1
-
-                while lines[j] != "```\n":
-                    toml_lines.append(lines[j])
-                    j += 1
-
-                parsed_toml = toml.loads("".join(toml_lines))
-                parsed_data.update(parsed_toml)
-
+        result = re.findall("^```toml(.*?)^```", f.read(), re.DOTALL | re.MULTILINE)
+        # This regex matches everything that's between ```toml and ```
+        for i in result:
+            parsed_toml = toml.loads("".join(i))
+            parsed_data.update(parsed_toml)
     return parsed_data

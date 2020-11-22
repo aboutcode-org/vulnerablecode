@@ -147,6 +147,12 @@ Data import
 
     DJANGO_DEV=1 python manage.py import --all
 
+It is not required to run all the importers . In fact it is suggested
+to run only a few small importers via 
+:: 
+
+    DJANGO_DEV=1 python manage.py import rust ruby
+
 If you want to run the import periodically, you can use a systemd timer:
 
 ::

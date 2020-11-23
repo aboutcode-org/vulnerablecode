@@ -34,7 +34,7 @@ from vulnerabilities import models
 from vulnerabilities.importers.rust import categorize_versions
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.package_managers import VersionAPI
-from vulnerabilities.importers.rust import load_toml_from_md
+from vulnerabilities.importers.rust import get_advisory_data
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/rust")
@@ -187,7 +187,7 @@ class RustImportTest(TestCase):
     def test_load_toml_from_md(self, _):
         md_path = os.path.join(TEST_DATA, "CVE-2019-16760.md")
         # print(list(os.walk(self.tempdir)))
-        loaded_data = load_toml_from_md(md_path)
+        loaded_data = get_advisory_data(md_path)
         expected_data = {
             "advisory": {
                 "aliases": ["GHSA-phjm-8x66-qw4r"],
@@ -196,8 +196,6 @@ class RustImportTest(TestCase):
                 "package": "cargo",
                 "url": "https://groups.google.com/forum/#!topic/rustlang-security-announcements/rVQ5e3TDnpQ",  # nopep8
             },
-            "serde": {"features": ["derive"], "version": "1.0"},
-            "serde1": {"features": ["derive"], "version": "1.0"},
             "versions": {"patched": [">= 1.26.0"]},
         }
 

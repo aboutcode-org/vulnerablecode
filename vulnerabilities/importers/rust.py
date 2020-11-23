@@ -83,13 +83,13 @@ class RustDataSource(GitDataSource):
     def collect_packages(self, paths):
         packages = set()
         for path in paths:
-            record = load_toml_from_md(path)
+            record = get_advisory_data(path)
             packages.add(record["advisory"]["package"])
 
         return packages
 
     def _load_advisory(self, path: str) -> Optional[Advisory]:
-        record = load_toml_from_md(path)
+        record = get_advisory_data(path)
         advisory = record.get("advisory", {})
         crate_name = advisory["package"]
         references = []
@@ -174,7 +174,54 @@ def categorize_versions(
     return unaffected, affected
 
 
-def load_toml_from_md(md_path):
+def get_toml_lines(lines):
+    """
+    Yield lines of TOML extracted from an iterable of text ``lines``.
+    The lines are expected to be from a RustSec Markdown advisory file with
+    embedded TOML metadata.
+
+    For example::
+
+    >>> text = '''
+    ... ```toml
+    ... [advisory]
+    ... id = "RUST-001"
+    ...
+    ... [versions]
+    ... patch = [">= 1.2.1"]
+    ... ```
+    ... # Use-after-free with objects returned by `Stream`'s `get_format_info`
+    ...
+    ... Affected versions contained a pair of use-after-free issues with the objects.
+    ... '''
+    >>> list(get_toml_lines(text.splitlines()))
+    ['', '[advisory]', 'id = "RUST-001"', '', '[versions]', 'patch = [">= 1.2.1"]']
+    """
+
+    for line in lines:
+        line = line.strip()
+        if line.startswith("```toml"):
+            continue
+        elif line.endswith("```"):
+            break
+        else:
+            yield line
+
+
+def data_from_toml_lines(lines):
+    """
+    Return a mapping of data from an iterable of TOML text ``lines``.
+
+    For example::
+
+    >>> lines = ['[advisory]', 'id = "RUST1"', '', '[versions]', 'patch = [">= 1"]']
+    >>> data_from_toml_lines(lines)
+    {'advisory': {'id': 'RUST1'}, 'versions': {'patch': ['>= 1']}}
+    """
+    return toml.loads("\n".join(lines))
+
+
+def get_advisory_data(location):
     """
     Return a mapping of vulnerability data from a RustSec advisory file at
     ``location``.
@@ -183,11 +230,7 @@ def load_toml_from_md(md_path):
     https://github.com/RustSec/advisory-db#advisory-format:
         Advisories are formatted in Markdown with TOML "front matter".
     """
-    parsed_data = {}
-    with open(md_path) as f:
-        result = re.findall("^```toml(.*?)^```", f.read(), re.DOTALL | re.MULTILINE)
-        # This regex matches everything that's between ```toml and ```
-        for i in result:
-            parsed_toml = toml.loads("".join(i))
-            parsed_data.update(parsed_toml)
-    return parsed_data
+
+    with open(location) as lines:
+        toml_lines = get_toml_lines(lines)
+        return data_from_toml_lines(toml_lines)

@@ -147,8 +147,7 @@ Data import
 
     DJANGO_DEV=1 python manage.py import --all
 
-It is not required to run all the importers . In fact it is suggested
-to run only a few small importers via 
+It is not required to run all the importers . To quickly get started with some data run :
 :: 
 
     DJANGO_DEV=1 python manage.py import rust ruby

@@ -77,6 +77,7 @@ class DebianImportTest(TestCase):
         self.assert_for_package("mimetex", "1.74-1", "stretch")
         self.assert_for_package("mimetex", "1.50-1.1", "buster")
         self.assert_for_package("mimetex", "1.76-1", "buster")
+        assert models.Vulnerability.objects.filter(cve_id__startswith="TEMP").count() == 0
 
     def test_response_is_new(self):
 

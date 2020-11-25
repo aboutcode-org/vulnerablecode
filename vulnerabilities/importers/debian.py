@@ -108,6 +108,8 @@ class DebianDataSource(DataSource):
 
         for cve_id, record in records.items():
             impacted_purls, resolved_purls = set(), set()
+            if not cve_id.startswith("CVE"):
+                continue
 
             for release_name, release_record in record["releases"].items():
                 if not release_record.get("repositories", {}).get(release_name):

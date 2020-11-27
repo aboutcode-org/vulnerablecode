@@ -1,4 +1,4 @@
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -47,8 +47,14 @@ logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass
+class VulnerabilityScore: 
+    severity_type: str
+    severity_value: str
+
+@dataclasses.dataclass
 class Reference:
 
+    scores: List[VulnerabilityScore]
     url: str = ''
     reference_id: str = ''
 

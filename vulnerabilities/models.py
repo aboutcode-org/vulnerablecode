@@ -163,7 +163,9 @@ class Importer(models.Model):
     name = models.CharField(max_length=100, unique=True, help_text="Name of the importer")
 
     license = models.CharField(
-        max_length=100, blank=True, help_text="License of the vulnerability data",
+        max_length=100,
+        blank=True,
+        help_text="License of the vulnerability data",
     )
 
     last_run = models.DateTimeField(null=True, help_text="UTC Timestamp of the last run")
@@ -199,3 +201,17 @@ class Importer(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class VulnerabilitySeverity(models.Model):
+
+    severity_type = models.CharField(
+        max_length=50, help_text="Example: CVSS v2, Redhat Impact Score"
+    )
+    severity_value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
+    reference = models.ForeignKey(VulnerabilityReference, on_delete=models.CASCADE)
+    vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
+
+    class Meta:
+        # TBD
+        unique_together = ("vulnerability", "reference", "severity_type")

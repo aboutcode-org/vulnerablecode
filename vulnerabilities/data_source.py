@@ -47,16 +47,17 @@ logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass
-class VulnerabilityScore: 
+class VulnerabilitySeverity:
     severity_type: str
     severity_value: str
+
 
 @dataclasses.dataclass
 class Reference:
 
-    scores: List[VulnerabilityScore]
-    url: str = ''
-    reference_id: str = ''
+    scores: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
+    url: str = ""
+    reference_id: str = ""
 
     def __post_init__(self):
         if not any([self.url, self.reference_id]):
@@ -74,6 +75,7 @@ class Advisory:
         data class; PackageURL objects and strings. As a convention, the former is referred to in
         variable names, etc. as "package_urls" and the latter as "purls".
     """
+
     summary: str
     impacted_package_urls: Iterable[PackageURL]
     resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
@@ -81,10 +83,10 @@ class Advisory:
     cve_id: Optional[str] = None
 
     def __hash__(self):
-        s = '{}{}{}{}'.format(
+        s = "{}{}{}{}".format(
             self.summary,
-            ''.join(sorted([str(p) for p in self.impacted_package_urls])),
-            ''.join(sorted([str(p) for p in self.resolved_package_urls])),
+            "".join(sorted([str(p) for p in self.impacted_package_urls])),
+            "".join(sorted([str(p) for p in self.resolved_package_urls])),
             self.cve_id,
         )
         return hash(s)
@@ -110,11 +112,11 @@ class DataSource(ContextManager):
     CONFIG_CLASS = DataSourceConfiguration
 
     def __init__(
-            self,
-            batch_size: int,
-            last_run_date: Optional[datetime] = None,
-            cutoff_date: Optional[datetime] = None,
-            config: Optional[Mapping[str, Any]] = None,
+        self,
+        batch_size: int,
+        last_run_date: Optional[datetime] = None,
+        cutoff_date: Optional[datetime] = None,
+        config: Optional[Mapping[str, Any]] = None,
     ):
         """
         Create a DataSource instance.
@@ -132,8 +134,8 @@ class DataSource(ContextManager):
             # These really should be declared in DataSourceConfiguration above but that would
             # prevent DataSource subclasses from declaring mandatory parameters (i.e. positional
             # arguments)
-            setattr(self.config, 'last_run_date', last_run_date)
-            setattr(self.config, 'cutoff_date', cutoff_date)
+            setattr(self.config, "last_run_date", last_run_date)
+            setattr(self.config, "cutoff_date", cutoff_date)
         except Exception as e:
             raise InvalidConfigurationError(str(e))
 
@@ -151,7 +153,7 @@ class DataSource(ContextManager):
         :return: An integer Unix timestamp of the last time this data source was queried or the
         cutoff date passed in the constructor, whichever is more recent.
         """
-        if not hasattr(self, '_cutoff_timestamp'):
+        if not hasattr(self, "_cutoff_timestamp"):
             last_run = 0
             if self.config.last_run_date is not None:
                 last_run = int(self.config.last_run_date.timestamp())
@@ -160,7 +162,7 @@ class DataSource(ContextManager):
             if self.config.cutoff_date is not None:
                 cutoff = int(self.config.cutoff_date.timestamp())
 
-            setattr(self, '_cutoff_timestamp', max(last_run, cutoff))
+            setattr(self, "_cutoff_timestamp", max(last_run, cutoff))
 
         return self._cutoff_timestamp
 
@@ -196,7 +198,7 @@ class DataSource(ContextManager):
         """
         Helper method for raising InvalidConfigurationError with the class name in the message.
         """
-        raise InvalidConfigurationError(f'{type(self).__name__}: {msg}')
+        raise InvalidConfigurationError(f"{type(self).__name__}: {msg}")
 
     def batch_advisories(self, advisories: List[Advisory]) -> Set[Advisory]:
         """
@@ -205,7 +207,7 @@ class DataSource(ContextManager):
         advisories = advisories[:]  # copy the list as we are mutating it in the loop below
 
         while advisories:
-            b, advisories = advisories[:self.batch_size], advisories[self.batch_size:]
+            b, advisories = advisories[: self.batch_size], advisories[self.batch_size:]
             yield set(b)
 
 
@@ -224,17 +226,24 @@ class GitDataSource(DataSource):
     def validate_configuration(self) -> None:
 
         if not self.config.create_working_directory and self.config.working_directory is None:
-            self.error('"create_working_directory" is not set but "working_directory" is set to '
-                       'the default, which calls tempfile.mkdtemp()')
+            self.error(
+                '"create_working_directory" is not set but "working_directory" is set to '
+                "the default, which calls tempfile.mkdtemp()"
+            )
 
-        if not self.config.create_working_directory and \
-                not os.path.exists(self.config.working_directory):
-            self.error('"working_directory" does not contain an existing directory and'
-                       '"create_working_directory" is not set')
+        if not self.config.create_working_directory and not os.path.exists(
+            self.config.working_directory
+        ):
+            self.error(
+                '"working_directory" does not contain an existing directory and'
+                '"create_working_directory" is not set'
+            )
 
         if not self.config.remove_working_directory and self.config.working_directory is None:
-            self.error('"remove_working_directory" is not set and "working_directory" is set to '
-                       'the default, which calls tempfile.mkdtemp()')
+            self.error(
+                '"remove_working_directory" is not set and "working_directory" is set to '
+                "the default, which calls tempfile.mkdtemp()"
+            )
 
     def __enter__(self):
         self._ensure_working_directory()
@@ -245,10 +254,10 @@ class GitDataSource(DataSource):
             shutil.rmtree(self.config.working_directory)
 
     def file_changes(
-            self,
-            subdir: str = None,
-            recursive: bool = False,
-            file_ext: Optional[str] = None,
+        self,
+        subdir: str = None,
+        recursive: bool = False,
+        file_ext: Optional[str] = None,
     ) -> Tuple[Set[str], Set[str]]:
         """
         Returns all added and modified files since last_run_date or cutoff_date (whichever is more
@@ -269,30 +278,28 @@ class GitDataSource(DataSource):
 
         if self.config.last_run_date is None and self.config.cutoff_date is None:
             if recursive:
-                glob = '**/*'
+                glob = "**/*"
             else:
-                glob = '*'
+                glob = "*"
 
             if file_ext:
-                glob = f'{glob}.{file_ext}'
+                glob = f"{glob}.{file_ext}"
 
             return {str(p) for p in path.glob(glob) if p.is_file()}, set()
 
-        return self._collect_file_changes(
-            subdir=subdir, recursive=recursive, file_ext=file_ext)
+        return self._collect_file_changes(subdir=subdir, recursive=recursive, file_ext=file_ext)
 
     def _collect_file_changes(
-            self,
-            subdir: Optional[str],
-            recursive: bool,
-            file_ext: Optional[str],
+        self,
+        subdir: Optional[str],
+        recursive: bool,
+        file_ext: Optional[str],
     ) -> Tuple[Set[str], Set[str]]:
 
         previous_commit = None
         added_files, updated_files = set(), set()
 
-        for commit in self._repo.walk(
-                self._repo.head.target, pygit2.GIT_SORT_TIME):
+        for commit in self._repo.walk(self._repo.head.target, pygit2.GIT_SORT_TIME):
             commit_time = commit.commit_time + commit.commit_time_offset  # convert to UTC
 
             if commit_time < self.cutoff_timestamp:
@@ -303,12 +310,10 @@ class GitDataSource(DataSource):
                 continue
 
             for d in commit.tree.diff_to_tree(previous_commit.tree).deltas:
-                if not _include_file(
-                        d.new_file.path, subdir, recursive, file_ext) or d.is_binary:
+                if not _include_file(d.new_file.path, subdir, recursive, file_ext) or d.is_binary:
                     continue
 
-                abspath = os.path.join(
-                    self.config.working_directory, d.new_file.path)
+                abspath = os.path.join(self.config.working_directory, d.new_file.path)
                 # TODO
                 # Just filtering on the two status values for "added" and "modified" is too
                 # simplistic. This does not cover file renames, copies &
@@ -330,8 +335,9 @@ class GitDataSource(DataSource):
     def _ensure_working_directory(self) -> None:
         if self.config.working_directory is None:
             self.config.working_directory = tempfile.mkdtemp()
-        elif self.config.create_working_directory and \
-                not os.path.exists(self.config.working_directory):
+        elif self.config.create_working_directory and not os.path.exists(
+            self.config.working_directory
+        ):
             os.mkdir(self.config.working_directory)
 
     def _ensure_repository(self) -> None:
@@ -355,12 +361,10 @@ class GitDataSource(DataSource):
     def _clone_repository(self) -> None:
         kwargs = {}
         if self.config.branch:
-            kwargs['checkout_branch'] = self.config.branch
+            kwargs["checkout_branch"] = self.config.branch
 
         self._repo = pygit2.clone_repository(
-            self.config.repository_url,
-            self.config.working_directory,
-            **kwargs
+            self.config.repository_url, self.config.working_directory, **kwargs
         )
 
     def _find_or_add_remote(self):
@@ -372,7 +376,8 @@ class GitDataSource(DataSource):
 
         if remote is None:
             remote = self._repo.remotes.create(
-                'added_by_vulnerablecode', self.config.repository_url)
+                "added_by_vulnerablecode", self.config.repository_url
+            )
 
         return remote
 
@@ -381,30 +386,30 @@ class GitDataSource(DataSource):
         if progress.received_objects == 0:
             return
 
-        remote_branch = self._repo.branches[f'{remote.name}/{self.config.branch}']
+        remote_branch = self._repo.branches[f"{remote.name}/{self.config.branch}"]
         branch.set_target(remote_branch.target)
         self._repo.checkout(branch, strategy=pygit2.GIT_CHECKOUT_FORCE)
 
 
 def _include_file(
-        path: str,
-        subdir: Optional[str] = None,
-        recursive: bool = False,
-        file_ext: Optional[str] = None,
+    path: str,
+    subdir: Optional[str] = None,
+    recursive: bool = False,
+    file_ext: Optional[str] = None,
 ) -> bool:
     match = True
 
     if subdir:
         if not subdir.endswith(os.path.sep):
-            subdir = f'{subdir}{os.path.sep}'
+            subdir = f"{subdir}{os.path.sep}"
 
         match = match and path.startswith(subdir)
 
     if not recursive:
-        match = match and (os.path.sep not in path[len(subdir or ''):])
+        match = match and (os.path.sep not in path[len(subdir or ""):])
 
     if file_ext:
-        match = match and path.endswith(f'.{file_ext}')
+        match = match and path.endswith(f".{file_ext}")
 
     return match
 
@@ -414,6 +419,7 @@ class OvalDataSource(DataSource):
     All data sources which collect data from OVAL files must inherit from this
     `OvalDataSource` class. Subclasses must implement the methods `_fetch` and `set_api`.
     """
+
     @staticmethod
     def create_purl(pkg_name: str, pkg_version: str, pkg_data: Mapping) -> PackageURL:
         """
@@ -431,8 +437,8 @@ class OvalDataSource(DataSource):
         """
         all_pkgs = set()
         for definition_data in parsed_oval_data:
-            for test_data in definition_data['test_data']:
-                for package in test_data['package_list']:
+            for test_data in definition_data["test_data"]:
+                for package in test_data["package_list"]:
                     all_pkgs.add(package)
 
         return all_pkgs
@@ -494,42 +500,37 @@ class OvalDataSource(DataSource):
 
             # These fields are definition level, i.e common for all
             # elements connected/linked to an OvalDefinition
-            vuln_id = definition_data['vuln_id']
-            description = definition_data['description']
+            vuln_id = definition_data["vuln_id"]
+            description = definition_data["description"]
             affected_purls = set()
             safe_purls = set()
-            references = [Reference(url=url)
-                          for url in definition_data['reference_urls']]
+            references = [Reference(url=url) for url in definition_data["reference_urls"]]
 
-            for test_data in definition_data['test_data']:
-                for package in test_data['package_list']:
+            for test_data in definition_data["test_data"]:
+                for package in test_data["package_list"]:
                     pkg_name = package
                     if package and len(pkg_name) >= 50:
                         continue
-                    aff_ver_range = test_data['version_ranges']
+                    aff_ver_range = test_data["version_ranges"]
                     all_versions = self.pkg_manager_api.get(package)
                     # This filter is for filtering out long versions.
                     # 50 is limit because that's what db permits atm.
-                    all_versions = set(
-                        filter(
-                            lambda x: len(x) < 50,
-                            all_versions))
+                    all_versions = set(filter(lambda x: len(x) < 50, all_versions))
                     if not all_versions:
                         continue
-                    affected_versions = set(
-                        filter(
-                            lambda x: x in aff_ver_range,
-                            all_versions))
+                    affected_versions = set(filter(lambda x: x in aff_ver_range, all_versions))
                     safe_versions = all_versions - affected_versions
 
                     for version in affected_versions:
                         pkg_url = self.create_purl(
-                            pkg_name=pkg_name, pkg_version=version, pkg_data=pkg_metadata)
+                            pkg_name=pkg_name, pkg_version=version, pkg_data=pkg_metadata
+                        )
                         affected_purls.add(pkg_url)
 
                     for version in safe_versions:
                         pkg_url = self.create_purl(
-                            pkg_name=pkg_name, pkg_version=version, pkg_data=pkg_metadata)
+                            pkg_name=pkg_name, pkg_version=version, pkg_data=pkg_metadata
+                        )
                         safe_purls.add(pkg_url)
 
             all_adv.append(
@@ -538,5 +539,7 @@ class OvalDataSource(DataSource):
                     impacted_package_urls=affected_purls,
                     resolved_package_urls=safe_purls,
                     cve_id=vuln_id,
-                    vuln_references=references))
+                    vuln_references=references,
+                )
+            )
         return all_adv

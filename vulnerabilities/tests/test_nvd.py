@@ -140,9 +140,18 @@ class TestNVDDataSource(TestCase):
                     [
                         Reference(
                             url="http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",  # nopep8
+                            scores=[],
                         ),
                         Reference(
                             url="http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",  # nopep8
+                            scores=[],
+                        ),
+                        Reference(
+                            url="https://nvd.nist.gov/vuln/detail/CVE-2005-4895",  # nopep8
+                            scores=[
+                                VulnerabilitySeverity(severity_type="cvssV2", severity_value="5.0")
+                            ],
+                            reference_id="CVE-2005-4895",
                         ),
                         Reference(
                             url="https://nvd.nist.gov/vuln/detail/CVE-2005-4895",  # nopep8

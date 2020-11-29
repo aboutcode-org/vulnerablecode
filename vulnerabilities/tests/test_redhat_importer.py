@@ -30,6 +30,7 @@ from packageurl import PackageURL
 import vulnerabilities.importers.redhat as redhat
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
+from vulnerabilities.data_source import VulnerabilitySeverity
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/", "redhat.json")
@@ -83,18 +84,38 @@ class TestRedhat(unittest.TestCase):
                         Reference(
                             url="https://bugzilla.redhat.com/show_bug.cgi?id=1396383",
                             reference_id="1396383",
+                            scores=[
+                                VulnerabilitySeverity(
+                                    severity_type="REDHAT_BUGZILLA_SEVERITY", severity_value=2.0
+                                )
+                            ],
                         ),
                         Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:1931",
                             reference_id="RHSA-2017:1931",
+                            scores=[
+                                VulnerabilitySeverity(
+                                    severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
+                                )
+                            ],
                         ),
                         Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:0725",
                             reference_id="RHSA-2017:0725",
+                            scores=[
+                                VulnerabilitySeverity(
+                                    severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
+                                )
+                            ],
                         ),
                         Reference(
                             url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-9401.json",  # nopep8
                             reference_id="",
+                            scores=[
+                                VulnerabilitySeverity(
+                                    severity_type="REDHAT_CVSS3", severity_value=6.0
+                                )
+                            ],
                         ),
                     ],
                     key=lambda x: x.url,
@@ -138,26 +159,56 @@ class TestRedhat(unittest.TestCase):
                         Reference(
                             url="https://bugzilla.redhat.com/show_bug.cgi?id=1430347",
                             reference_id="1430347",
+                            scores=[
+                                VulnerabilitySeverity(
+                                    severity_type="REDHAT_BUGZILLA_SEVERITY", severity_value=2.0
+                                )
+                            ],
                         ),
                         Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:1842",
                             reference_id="RHSA-2017:1842",
+                            scores=[
+                                VulnerabilitySeverity(
+                                    severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
+                                )
+                            ],
                         ),
                         Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:2437",
                             reference_id="RHSA-2017:2437",
+                            scores=[
+                                VulnerabilitySeverity(
+                                    severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
+                                )
+                            ],
                         ),
                         Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:2077",
                             reference_id="RHSA-2017:2077",
+                            scores=[
+                                VulnerabilitySeverity(
+                                    severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
+                                )
+                            ],
                         ),
                         Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:2444",
                             reference_id="RHSA-2017:2444",
+                            scores=[
+                                VulnerabilitySeverity(
+                                    severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
+                                )
+                            ],
                         ),
                         Reference(
                             url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-10200.json",  # nopep8
                             reference_id="",
+                            scores=[
+                                VulnerabilitySeverity(
+                                    severity_type="REDHAT_CVSS3", severity_value=6.0
+                                )
+                            ],
                         ),
                     ],
                     key=lambda x: x.url,
@@ -176,10 +227,20 @@ class TestRedhat(unittest.TestCase):
                         Reference(
                             url="https://bugzilla.redhat.com/show_bug.cgi?id=1492984",
                             reference_id="1492984",
+                            scores=[
+                                VulnerabilitySeverity(
+                                    severity_type="REDHAT_BUGZILLA_SEVERITY", severity_value=2.0
+                                )
+                            ],
                         ),
                         Reference(
                             url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2017-12168.json",  # nopep8
                             reference_id="",
+                            scores=[
+                                VulnerabilitySeverity(
+                                    severity_type="REDHAT_CVSS3", severity_value=6.0
+                                )
+                            ],
                         ),
                     ],
                     key=lambda x: x.url,
@@ -189,8 +250,18 @@ class TestRedhat(unittest.TestCase):
         }
 
         found_data = set()
+        mock_resp = unittest.mock.MagicMock()
+        mock_resp.json = lambda: {
+            "bugs": [{"severity": 2.0}],
+            "cvrfdoc": {"aggregate_severity": 2.2},
+            "cvss3": {"cvss3_base_score": 6.0},
+        }
         for adv in data:
-            adv = redhat.to_advisory(adv)
-            adv.vuln_references = sorted(adv.vuln_references, key=lambda x: x.url)
-            found_data.add(adv)
+            with unittest.mock.patch(
+                "vulnerabilities.importers.redhat.requests.get", return_value=mock_resp
+            ):
+                adv = redhat.to_advisory(adv)
+                adv.vuln_references = sorted(adv.vuln_references, key=lambda x: x.url)
+                found_data.add(adv)
+
         assert expected_data == found_data

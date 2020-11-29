@@ -134,7 +134,6 @@ def get_vuln_pkg_refs(vulnerability, package):
 
 
 def process_advisories(data_source: DataSource) -> None:
-    # bulk_create_vuln_refs = set()
     bulk_create_vuln_pkg_refs = set()
     # Treat updated_advisories and added_advisories as same. Eventually
     # we want to  refactor all data sources to  provide advisories via a

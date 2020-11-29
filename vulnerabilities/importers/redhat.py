@@ -20,14 +20,17 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import requests
+
+import json
 
 from packageurl import PackageURL
+import requests
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
+from vulnerabilities.data_source import VulnerabilitySeverity
 
 
 class RedhatDataSource(DataSource):
@@ -40,9 +43,9 @@ class RedhatDataSource(DataSource):
     def updated_advisories(self):
         processed_advisories = []
         for advisory_data in self.redhat_response:
-            processed_advisories.append(to_advisory(advisory_data))
+            yield [to_advisory(advisory_data)]
 
-        return self.batch_advisories(processed_advisories)
+        # return self.batch_advisories(processed_advisories)
 
 
 def fetch():
@@ -75,21 +78,50 @@ def to_advisory(advisory_data):
     references = []
     if advisory_data.get("bugzilla"):
         bugzilla = advisory_data.get("bugzilla")
+        url = "https://bugzilla.redhat.com/show_bug.cgi?id={}".format(bugzilla)
+        bugzilla_severity = VulnerabilitySeverity(
+            severity_type="REDHAT_BUGZILLA_SEVERITY",
+            severity_value=requests.get(f"https://bugzilla.redhat.com/rest/bug/{bugzilla}").json()["bugs"][0]["severity"],  # nopep8
+        )
+
         references.append(
             Reference(
-                url="https://bugzilla.redhat.com/show_bug.cgi?id={}".format(bugzilla),
+                scores=[bugzilla_severity],
+                url=url,
                 reference_id=bugzilla,
             )
         )
 
-    for rhsa in advisory_data["advisories"]:
-        references.append(
-            Reference(
-                url="https://access.redhat.com/errata/{}".format(rhsa), reference_id=rhsa,
-            )
-        )
+    for rh_adv in advisory_data["advisories"]:
 
-    references.append(Reference(url=advisory_data["resource_url"]))
+        url = "https://access.redhat.com/errata/{}".format(rh_adv)
+
+        # RH provides 3 types of advisories RHSA, RHBA, RHEA. Only RHSA's contain severity score.
+        # See https://access.redhat.com/articles/2130961 for more details.
+
+        if "RHSA" in rh_adv:
+            rhsa_aggregate_severity = VulnerabilitySeverity(
+                severity_type="RHSA_AGGREGATE_SEVERITY",
+                severity_value=requests.get(f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json").json()["cvrfdoc"]["aggregate_severity"],  # nopep8
+            )
+
+            references.append(
+                Reference(
+                    scores=[rhsa_aggregate_severity],
+                    url=url,
+                    reference_id=rh_adv,
+                )
+            )
+
+        else:
+            references.append(Reference(scores=[], url=url, reference_id=rh_adv))
+
+    redhat_cvss3 = VulnerabilitySeverity(
+        severity_type="REDHAT_CVSS3",
+        severity_value=requests.get(advisory_data["resource_url"]).json()["cvss3"]["cvss3_base_score"],  # nopep8
+    )
+
+    references.append(Reference(scores=[redhat_cvss3], url=advisory_data["resource_url"]))
 
     return Advisory(
         summary=advisory_data["bugzilla_description"],

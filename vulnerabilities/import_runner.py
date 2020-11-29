@@ -41,27 +41,7 @@ from vulnerabilities.data_source import PackageURL
 
 logger = logging.getLogger(__name__)
 
-# These _inserter classes are used to instantiate model objects.
-# Frozen dataclass  store args required to store instantiate
-# model objects, this way model objects can be hashed indirectly which
-# is required in this implementation.
-
-
-@dataclasses.dataclass(frozen=True)
-class VulnerabilityReferenceInserter:
-    vulnerability: models.Vulnerability
-    reference_id: Optional[str] = ""
-    url: Optional[str] = ""
-
-    def __post_init__(self):
-        if not any([self.reference_id, self.url]):
-            raise TypeError("VulnerabilityReferenceInserter expects either reference_id or url")
-
-    def to_model_object(self):
-        return models.VulnerabilityReference(**dataclasses.asdict(self))
-
-
-# These _inserter classes are used to instantiate model objects.
+# This *Inserter class is used to instantiate model objects.
 # Frozen dataclass  store args required to store instantiate
 # model objects, this way model objects can be hashed indirectly which
 # is required in this implementation.

@@ -28,6 +28,7 @@ from unittest import TestCase
 from vulnerabilities.importers import NVDDataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import VulnerabilitySeverity
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/nvd/nvd_test.json")
@@ -139,9 +140,18 @@ class TestNVDDataSource(TestCase):
                     [
                         Reference(
                             url="http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",  # nopep8
+                            scores=[],
                         ),
                         Reference(
                             url="http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",  # nopep8
+                            scores=[],
+                        ),
+                        Reference(
+                            url="https://nvd.nist.gov/vuln/detail/CVE-2005-4895",  # nopep8
+                            scores=[
+                                VulnerabilitySeverity(severity_type="cvssV2", severity_value="5.0")
+                            ],
+                            reference_id="CVE-2005-4895",
                         ),
                     ],
                     key=lambda x: x.url,
@@ -154,6 +164,10 @@ class TestNVDDataSource(TestCase):
         found_advisories = list(self.data_src.to_advisories(self.nvd_data))
         # Only 1 advisory because other advisory is hardware related
         assert len(found_advisories) == 1
-        found_advisories[0].vuln_references = sorted(found_advisories[0].vuln_references, key=lambda x: x.url)  # nopep8
+        found_advisories[0].vuln_references = sorted(
+            found_advisories[0].vuln_references, key=lambda x: x.url
+        )  # nopep8
+        # for id,ref in found_advisories[0].vuln_references :
+        #     ref[id].scores.sort(key = lambda x : x.severity_value)
 
         assert expected_advisories == found_advisories

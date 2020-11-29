@@ -33,6 +33,7 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
 from vulnerabilities.helpers import create_etag
+from vulnerabilities.data_source import VulnerabilitySeverity
 
 
 @dataclasses.dataclass
@@ -77,6 +78,14 @@ class NVDDataSource(DataSource):
             cve_id = cve_item["cve"]["CVE_data_meta"]["ID"]
             ref_urls = self.extract_reference_urls(cve_item)
             references = [Reference(url=url) for url in ref_urls]
+            severity_scores = self.extract_severity_scores(cve_item)
+            references.append(
+                Reference(
+                    url=f"https://nvd.nist.gov/vuln/detail/{cve_id}",
+                    reference_id=cve_id,
+                    scores=severity_scores,
+                )
+            )
             summary = self.extract_summary(cve_item)
             yield Advisory(
                 cve_id=cve_id, summary=summary, vuln_references=references, impacted_package_urls=[]
@@ -89,6 +98,28 @@ class NVDDataSource(DataSource):
         # In the remaining 1% cases this returns the longest summary.
         summaries = [desc["value"] for desc in cve_item["cve"]["description"]["description_data"]]
         return max(summaries, key=len)
+
+    @staticmethod
+    def extract_severity_scores(cve_item):
+        severity_scores = []
+
+        if cve_item["impact"].get("baseMetricV3"):
+            severity_scores.append(
+                VulnerabilitySeverity(
+                    severity_type="cvssV3",
+                    severity_value=str(cve_item["impact"]["baseMetricV3"]["cvssV3"]["baseScore"]),
+                )
+            )
+
+        if cve_item["impact"].get("baseMetricV2"):
+            severity_scores.append(
+                VulnerabilitySeverity(
+                    severity_type="cvssV2",
+                    severity_value=str(cve_item["impact"]["baseMetricV2"]["cvssV2"]["baseScore"]),
+                )
+            )
+
+        return severity_scores
 
     def extract_reference_urls(self, cve_item):
         urls = set()

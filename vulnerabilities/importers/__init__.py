@@ -43,3 +43,4 @@ from vulnerabilities.importers.apache_httpd import ApacheHTTPDDataSource
 from vulnerabilities.importers.kaybee import KaybeeDataSource
 from vulnerabilities.importers.nginx import NginxDataSource
 from vulnerabilities.importers.postgresql import PostgreSQLDataSource
+from vulnerabilities.importers.apache_tomcat import ApacheTomcatDataSource

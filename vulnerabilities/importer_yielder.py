@@ -184,12 +184,47 @@ IMPORTER_REGISTRY = [
     },
     {
         'name': 'msr2019',
-        'license': '',
+        'license': 'apache-2.0',
         'last_run': None,
         'data_source': 'ProjectKBMSRDataSource',
         'data_source_cfg': {
             'etag': {}
+        }
+    },
+    {
+        'name': 'apache_httpd',
+        'license': '',
+        'last_run': None,
+        'data_source': 'ApacheHTTPDDataSource',
+        'data_source_cfg': {
+            'etags': {}
         },
+    },
+    {
+        'name': 'kaybee',
+        'license': 'apache-2.0',
+        'last_run': None,
+        'data_source': 'KaybeeDataSource',
+        'data_source_cfg': {
+            'repository_url': 'https://github.com/SAP/project-kb.git',
+            'branch': 'vulnerability-data'
+        },
+    },
+    {
+        'name': 'nginx',
+        'license': '',
+        'last_run': None,
+        'data_source': 'NginxDataSource',
+        'data_source_cfg': {
+            'etag': {}
+        },
+    },
+    {
+        'name': 'postgresql',
+        'license': '',
+        'last_run': None,
+        'data_source': 'PostgreSQLDataSource',
+        'data_source_cfg': {},
     },
 
 ]

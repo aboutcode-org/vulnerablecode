@@ -348,7 +348,7 @@ class GitDataSource(DataSource):
 
     def _clone_repository(self) -> None:
         kwargs = {}
-        if getattr(self, 'branch', False):
+        if self.config.branch:
             kwargs['checkout_branch'] = self.config.branch
 
         self._repo = pygit2.clone_repository(

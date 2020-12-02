@@ -139,6 +139,7 @@ You can install VulnerableCode with `Nix <https://nixos.org/download.html>`__ (`
 
 ::
 
+    cd etc/nix
     nix --print-build-logs flake check # build & run tests
 
 There are several options to use the Nix version
@@ -146,6 +147,7 @@ There are several options to use the Nix version
 ::
 
     # Enter an interactive environment with all dependencies setup.
+    cd etc/nix
     nix develop
     > ./manage.py ... # invoke the local checkout
     > vulnerablecode-manage.py ... # invoke manage.py as installed in the nix store
@@ -159,16 +161,15 @@ There are several options to use the Nix version
 **Keeping the Nix setup in sync**
 
 The Nix installation uses `poetry2nix <https://github.com/nix-community/poetry2nix>`__ to handle Python dependencies because some dependencies are currently not available as Nix packages.
-The file ``./poetry-conversion.patch`` allows to convert VulnerableCode into a `Poetry <https://python-poetry.org/>`__ project.
-This is done on the fly during the Nix installation.
-The patch file itself is created by ``./make-poetry-conversion-patch.sh``.
-It needs to be recreated whenever ``./requirements.txt`` changes (this is not done automatically).
-The ``expectedRequirementstxtMd5sum`` in ``flake.nix`` also needs to be updated in that case.
+The are some ``*.generated`` files in ``etc/nix`` that are created/updated using ``etc/nix/generate-poetry-files.sh``.
+These files need to be recreated whenever ``./requirements.txt`` changes.
+The ``expectedRequirementstxtMd5sum`` in ``etc/nix/flake.nix`` also needs to be updated in that case.
+The Nix installation uses the files to convert VulnerableCode into a `Poetry <https://python-poetry.org/>`__ project on the fly.
 
 ::
 
     # Update poetry-conversion.patch.
-    nix-shell -p poetry --run ./make-poetry-conversion-patch.sh
+    etc/nix/generate-poetry-files.sh
     # Get new hash. See flake.nix.
     md5sum requirements.txt
 

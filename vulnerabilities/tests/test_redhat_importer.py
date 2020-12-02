@@ -84,7 +84,7 @@ class TestRedhat(unittest.TestCase):
                         Reference(
                             url="https://bugzilla.redhat.com/show_bug.cgi?id=1396383",
                             reference_id="1396383",
-                            scores=[
+                            severities=[
                                 VulnerabilitySeverity(
                                     severity_type="REDHAT_BUGZILLA_SEVERITY", severity_value=2.0
                                 )
@@ -93,7 +93,7 @@ class TestRedhat(unittest.TestCase):
                         Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:1931",
                             reference_id="RHSA-2017:1931",
-                            scores=[
+                            severities=[
                                 VulnerabilitySeverity(
                                     severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
                                 )
@@ -102,7 +102,7 @@ class TestRedhat(unittest.TestCase):
                         Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:0725",
                             reference_id="RHSA-2017:0725",
-                            scores=[
+                            severities=[
                                 VulnerabilitySeverity(
                                     severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
                                 )
@@ -111,7 +111,7 @@ class TestRedhat(unittest.TestCase):
                         Reference(
                             url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-9401.json",  # nopep8
                             reference_id="",
-                            scores=[
+                            severities=[
                                 VulnerabilitySeverity(
                                     severity_type="REDHAT_CVSS3", severity_value=6.0
                                 )
@@ -159,7 +159,7 @@ class TestRedhat(unittest.TestCase):
                         Reference(
                             url="https://bugzilla.redhat.com/show_bug.cgi?id=1430347",
                             reference_id="1430347",
-                            scores=[
+                            severities=[
                                 VulnerabilitySeverity(
                                     severity_type="REDHAT_BUGZILLA_SEVERITY", severity_value=2.0
                                 )
@@ -168,7 +168,7 @@ class TestRedhat(unittest.TestCase):
                         Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:1842",
                             reference_id="RHSA-2017:1842",
-                            scores=[
+                            severities=[
                                 VulnerabilitySeverity(
                                     severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
                                 )
@@ -177,7 +177,7 @@ class TestRedhat(unittest.TestCase):
                         Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:2437",
                             reference_id="RHSA-2017:2437",
-                            scores=[
+                            severities=[
                                 VulnerabilitySeverity(
                                     severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
                                 )
@@ -186,7 +186,7 @@ class TestRedhat(unittest.TestCase):
                         Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:2077",
                             reference_id="RHSA-2017:2077",
-                            scores=[
+                            severities=[
                                 VulnerabilitySeverity(
                                     severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
                                 )
@@ -195,7 +195,7 @@ class TestRedhat(unittest.TestCase):
                         Reference(
                             url="https://access.redhat.com/errata/RHSA-2017:2444",
                             reference_id="RHSA-2017:2444",
-                            scores=[
+                            severities=[
                                 VulnerabilitySeverity(
                                     severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
                                 )
@@ -204,7 +204,7 @@ class TestRedhat(unittest.TestCase):
                         Reference(
                             url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-10200.json",  # nopep8
                             reference_id="",
-                            scores=[
+                            severities=[
                                 VulnerabilitySeverity(
                                     severity_type="REDHAT_CVSS3", severity_value=6.0
                                 )
@@ -227,7 +227,7 @@ class TestRedhat(unittest.TestCase):
                         Reference(
                             url="https://bugzilla.redhat.com/show_bug.cgi?id=1492984",
                             reference_id="1492984",
-                            scores=[
+                            severities=[
                                 VulnerabilitySeverity(
                                     severity_type="REDHAT_BUGZILLA_SEVERITY", severity_value=2.0
                                 )
@@ -236,7 +236,7 @@ class TestRedhat(unittest.TestCase):
                         Reference(
                             url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2017-12168.json",  # nopep8
                             reference_id="",
-                            scores=[
+                            severities=[
                                 VulnerabilitySeverity(
                                     severity_type="REDHAT_CVSS3", severity_value=6.0
                                 )

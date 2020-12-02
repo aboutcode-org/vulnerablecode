@@ -43,9 +43,9 @@ class RedhatDataSource(DataSource):
     def updated_advisories(self):
         processed_advisories = []
         for advisory_data in self.redhat_response:
-            yield [to_advisory(advisory_data)]
+            processed_advisories.extend(to_advisory(advisory_data))
 
-        # return self.batch_advisories(processed_advisories)
+        return self.batch_advisories(processed_advisories)
 
 
 def fetch():
@@ -79,9 +79,11 @@ def to_advisory(advisory_data):
     if advisory_data.get("bugzilla"):
         bugzilla = advisory_data.get("bugzilla")
         url = "https://bugzilla.redhat.com/show_bug.cgi?id={}".format(bugzilla)
+        bugzilla_data = requests.get(f"https://bugzilla.redhat.com/rest/bug/{bugzilla}").json()
+        bugzilla_severity_val = bugzilla_data["bugs"][0]["severity"]
         bugzilla_severity = VulnerabilitySeverity(
             severity_type="REDHAT_BUGZILLA_SEVERITY",
-            severity_value=requests.get(f"https://bugzilla.redhat.com/rest/bug/{bugzilla}").json()["bugs"][0]["severity"],  # nopep8
+            severity_value=bugzilla_severity_val,
         )
 
         references.append(
@@ -100,9 +102,11 @@ def to_advisory(advisory_data):
         # See https://access.redhat.com/articles/2130961 for more details.
 
         if "RHSA" in rh_adv:
+            rhsa_data = requests.get(f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json").json()  # nopep8
+            severity_value = rhsa_data["cvrfdoc"]["aggregate_severity"]
             rhsa_aggregate_severity = VulnerabilitySeverity(
                 severity_type="RHSA_AGGREGATE_SEVERITY",
-                severity_value=requests.get(f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json").json()["cvrfdoc"]["aggregate_severity"],  # nopep8
+                severity_value=severity_value,
             )
 
             references.append(
@@ -116,9 +120,11 @@ def to_advisory(advisory_data):
         else:
             references.append(Reference(scores=[], url=url, reference_id=rh_adv))
 
+    redhat_cve_entry = requests.get(advisory_data["resource_url"]).json()
+    redhat_cvss = redhat_cve_entry["cvss3"]["cvss3_base_score"]
     redhat_cvss3 = VulnerabilitySeverity(
         severity_type="REDHAT_CVSS3",
-        severity_value=requests.get(advisory_data["resource_url"]).json()["cvss3"]["cvss3_base_score"],  # nopep8
+        severity_value=redhat_cvss,
     )
 
     references.append(Reference(scores=[redhat_cvss3], url=advisory_data["resource_url"]))

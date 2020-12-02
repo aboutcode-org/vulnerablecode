@@ -39,3 +39,7 @@ from vulnerabilities.importers.ubuntu_usn import UbuntuUSNDataSource
 from vulnerabilities.importers.github import GitHubAPIDataSource
 from vulnerabilities.importers.nvd import NVDDataSource
 from vulnerabilities.importers.project_kb_msr2019 import ProjectKBMSRDataSource
+from vulnerabilities.importers.apache_httpd import ApacheHTTPDDataSource
+from vulnerabilities.importers.kaybee import KaybeeDataSource
+from vulnerabilities.importers.nginx import NginxDataSource
+from vulnerabilities.importers.postgresql import PostgreSQLDataSource

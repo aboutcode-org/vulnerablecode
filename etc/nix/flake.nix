@@ -17,7 +17,7 @@
       version = builtins.head (builtins.match ''.*version=["']?([^"',]+).*''
         (builtins.readFile ./setup.py));
 
-      vulnerablecode-src = ./.;
+      vulnerablecode-src = ./../..;
       # From commit cc7659f978b6ea17363511d25b7b30f52ccf45dd
       expectedRequirementstxtMd5sum = "b40c1c5c07315647fff28c220aafea10";
 

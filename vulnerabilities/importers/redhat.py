@@ -88,7 +88,7 @@ def to_advisory(advisory_data):
 
         references.append(
             Reference(
-                scores=[bugzilla_severity],
+                severities=[bugzilla_severity],
                 url=url,
                 reference_id=bugzilla,
             )
@@ -111,14 +111,14 @@ def to_advisory(advisory_data):
 
             references.append(
                 Reference(
-                    scores=[rhsa_aggregate_severity],
+                    severities=[rhsa_aggregate_severity],
                     url=url,
                     reference_id=rh_adv,
                 )
             )
 
         else:
-            references.append(Reference(scores=[], url=url, reference_id=rh_adv))
+            references.append(Reference(severities=[], url=url, reference_id=rh_adv))
 
     redhat_cve_entry = requests.get(advisory_data["resource_url"]).json()
     redhat_cvss = redhat_cve_entry["cvss3"]["cvss3_base_score"]
@@ -127,7 +127,7 @@ def to_advisory(advisory_data):
         severity_value=redhat_cvss,
     )
 
-    references.append(Reference(scores=[redhat_cvss3], url=advisory_data["resource_url"]))
+    references.append(Reference(severities=[redhat_cvss3], url=advisory_data["resource_url"]))
 
     return Advisory(
         summary=advisory_data["bugzilla_description"],

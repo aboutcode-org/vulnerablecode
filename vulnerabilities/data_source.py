@@ -55,7 +55,7 @@ class VulnerabilitySeverity:
 @dataclasses.dataclass
 class Reference:
 
-    scores: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
+    severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
     url: str = ""
     reference_id: str = ""
 

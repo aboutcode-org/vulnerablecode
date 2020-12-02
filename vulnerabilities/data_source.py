@@ -55,9 +55,9 @@ class VulnerabilitySeverity:
 @dataclasses.dataclass
 class Reference:
 
-    severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
-    url: str = ""
     reference_id: str = ""
+    url: str = ""
+    severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
 
     def __post_init__(self):
         if not any([self.url, self.reference_id]):

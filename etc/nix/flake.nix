@@ -13,13 +13,14 @@
   outputs = { self, nixpkgs }:
     let
 
+      vulnerablecode-src = ./../..;
+
       # Extract version from setup.py.
       version = builtins.head (builtins.match ''.*version=["']?([^"',]+).*''
-        (builtins.readFile ./setup.py));
+        (builtins.readFile (vulnerablecode-src + "/setup.py")));
 
-      vulnerablecode-src = ./../..;
-      # From commit cc7659f978b6ea17363511d25b7b30f52ccf45dd
-      expectedRequirementstxtMd5sum = "b40c1c5c07315647fff28c220aafea10";
+      # From commit 7f8ae6399b02b1d508689b303f117e2f03f7854a
+      expectedRequirementstxtMd5sum = "7ea5fec4096b9c532450d68fad721017";
 
       # System types to support.
       supportedSystems = [ "x86_64-linux" ];
@@ -41,26 +42,26 @@
       overlay = final: prev:
         with final.pkgs; {
 
-          # Create a patched version of Vulnerablecode.
-          patcheVulnerablecodeSrc = runCommand "patcheVulnerablecodeSrc" { } ''
-            cp -r ${vulnerablecode-src} $out
-            chmod +w $out
-            cd $out
-            EXPECTED=${expectedRequirementstxtMd5sum}
-            ACTUAL=$(md5sum ${vulnerablecode-src}/requirements.txt | cut -d ' ' -f 1)
-            if [[ $EXPECTED != $ACTUAL ]] ; then
-              echo ""
-              echo "The requirements.txt has changed!"
-              echo "1) Run make-poetry-conversion-patch.sh."
-              echo "2) Update expectedRequirementstxtMd5sum in flake.nix."
-              exit 1
-            fi
-            patch < ./poetry-conversion.patch
-          '';
+          # Create a mock project.
+          mockPoetryProject =
+            runCommand "mockPoetryProject" { } ''
+              EXPECTED=${expectedRequirementstxtMd5sum}
+              ACTUAL=$(md5sum ${vulnerablecode-src}/requirements.txt | cut -d ' ' -f 1)
+              if [[ $EXPECTED != $ACTUAL ]] ; then
+                echo ""
+                echo "The requirements.txt has changed!"
+                echo "1) Run make-poetry-conversion-patch.sh."
+                echo "2) Update expectedRequirementstxtMd5sum in flake.nix."
+                exit 1
+              fi
 
-          vulnerablecode = poetry2nix.mkPoetryApplication {
-            projectDir =
-              patcheVulnerablecodeSrc; # where to find {pyproject.toml,poetry.lock}
+              mkdir $out
+              cd $out
+              patch < ${vulnerablecode-src}/etc/nix/poetry-conversion.patch
+            '';
+
+          vulnerablecode = poetry2nix.mkPoetryApplication rec {
+            projectDir = mockPoetryProject; # where to find {pyproject.toml,poetry.lock}
             src = vulnerablecode-src;
             python = python38;
             overrides = poetry2nix.overrides.withDefaults (self: super: {
@@ -68,13 +69,18 @@
                 (old: { buildInputs = old.buildInputs ++ [ libgit2-glib ]; });
             });
 
+            patchPhase = ''
+              # Make sure "our" pycodestyle binary is used.
+              sed -i 's/join(bin_dir, "pycodestyle")/"pycodestyle"/' vulnerabilities/tests/test_basics.py
+              '';
+
             propagatedBuildInputs = [ postgresql ];
 
             dontConfigure = true; # do not use ./configure
             dontBuild = true;
 
             installPhase = ''
-              cp -r $src $out
+              cp -r . $out
             '';
 
             meta = {

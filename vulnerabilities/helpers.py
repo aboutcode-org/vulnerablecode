@@ -43,6 +43,14 @@ def load_toml(path):
 
 
 def create_etag(data_src, url, etag_key):
+    """
+    Etags are like hashes of web responses. For a data source `data_src`,
+    we maintain (url, etag) mappings in the DB.  `create_etag`  creates
+    (`url`, etag) pair. If a (`url`, etag) already exists then the code
+    skips processing the response further to avoid duplicate work.
+
+    `etag_key` is the name of header which contains the etag for the url.
+    """
     etag = requests.head(url).headers.get(etag_key)
     if not etag:
         return True

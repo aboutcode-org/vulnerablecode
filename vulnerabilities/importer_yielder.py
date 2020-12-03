@@ -226,6 +226,15 @@ IMPORTER_REGISTRY = [
         'data_source': 'PostgreSQLDataSource',
         'data_source_cfg': {},
     },
+    {
+    'name': 'elixir_security',
+    'license': '',
+    'last_run': None,
+    'data_source': 'ElixirSecurityDataSource',
+    'data_source_cfg': {
+        'repository_url': 'https://github.com/dependabot/elixir-security-advisories'
+    },
+    },
 
 ]
 

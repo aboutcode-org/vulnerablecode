@@ -30,9 +30,9 @@ from typing import Tuple
 from urllib.error import HTTPError
 from urllib.request import urlopen
 
-import toml
 from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
+import toml
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource

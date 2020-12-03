@@ -26,4 +26,4 @@ jobs:
         run: |
           cd etc/nix
           nix --print-build-logs flake check
-          ./test-import-using-nix.sh --all
+          ./test-import-using-nix.sh alpine

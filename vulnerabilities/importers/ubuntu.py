@@ -58,11 +58,9 @@ class UbuntuDataSource(OvalDataSource):
         self.pkg_manager_api = LaunchpadVersionAPI()
 
     def _fetch(self):
-        base_url = "https://people.canonical.com/~ubuntu-security/oval/"
-        file_name = "com.ubuntu.{}.cve.oval.xml.bz2"
         releases = self.config.releases
         for release in releases:
-            file_url = base_url + file_name.format(release)
+            file_url = f"https://people.canonical.com/~ubuntu-security/oval/com.ubuntu.{release}.cve.oval.xml.bz2"  # nopep8
             if not create_etag(data_src=self, url=file_url, etag_key="ETag"):
                 continue
             resp = requests.get(file_url)

@@ -31,12 +31,10 @@ from typing import Iterable
 from typing import Mapping
 from typing import Set
 from typing import Tuple
-from urllib.error import HTTPError
-from urllib.request import urlopen
-import requests
 
 from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
+import requests
 from schema import Or
 from schema import Regex
 from schema import Schema
@@ -94,8 +92,7 @@ class SafetyDbDataSource(DataSource):
 
     def _fetch(self) -> Mapping[str, Any]:
         if create_etag(data_src=self, url=self.config.url, etag_key="ETag"):
-            with urlopen(self.config.url) as response:
-                return json.load(response)
+            return requests.get(self.config.url).json()
 
         return []
 
@@ -142,13 +139,13 @@ class SafetyDbDataSource(DataSource):
 def categorize_versions(
     package_name: str,
     all_versions: Set[str],
-    version_specs: Iterable[str],
+    version_ranges: Iterable[str],
 ) -> Tuple[Set[PackageURL], Set[PackageURL]]:
     """
     :return: impacted, resolved purls
     """
     impacted_versions, impacted_purls = set(), set()
-    ranges = [RangeSpecifier(s) for s in version_specs]
+    ranges = [RangeSpecifier(s) for s in version_ranges]
 
     for version in all_versions:
         if any([version in r for r in ranges]):

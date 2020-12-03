@@ -57,11 +57,9 @@ class DebianOvalDataSource(OvalDataSource):
         self.pkg_manager_api = DebianVersionAPI()
 
     def _fetch(self):
-        base_url = "https://www.debian.org/security/oval/"
-        file_name = "oval-definitions-{}.xml"
         releases = self.config.releases
         for release in releases:
-            file_url = base_url + file_name.format(release)
+            file_url = f"https://www.debian.org/security/oval/oval-definitions-{release}.xml"
             if not create_etag(data_src=self, url=file_url, etag_key="ETag"):
                 continue
 

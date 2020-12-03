@@ -49,10 +49,6 @@ class ProjectKBMSRDataSource(DataSource):
     url = "https://raw.githubusercontent.com/SAP/project-kb/master/MSR2019/dataset/vulas_db_msr2019_release.csv"  # nopep8
 
     def updated_advisories(self):
-        # etag are like hashes of web responses. We maintain
-        # (url, etag) mappings in the DB. `create_etag`  creates
-        # (url, etag) pair. If a (url, etag) already exists then the code
-        # skips processing the response further to avoid duplicate work
         if create_etag(data_src=self, url=self.url, etag_key="ETag"):
             raw_data = self.fetch()
             advisories = self.to_advisories(raw_data)

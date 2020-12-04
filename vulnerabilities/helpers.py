@@ -21,6 +21,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import json
+import re
 
 import yaml
 import requests
@@ -61,3 +62,6 @@ def create_etag(data_src, url, etag_key):
 
     data_src.config.etags[url] = etag
     return True
+
+
+is_cve = re.compile(r"CVE-\d+-\d+", re.IGNORECASE).match

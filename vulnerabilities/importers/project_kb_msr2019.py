@@ -35,6 +35,7 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.helpers import create_etag
+from vulnerabilities.helpers import is_cve
 
 
 @dataclasses.dataclass
@@ -69,7 +70,7 @@ class ProjectKBMSRDataSource(DataSource):
             vuln_id, proj_home, fix_commit, _ = row
             commit_link = proj_home + "/commit/" + fix_commit
 
-            if re.compile(r"CVE-\d+-\d+").match(vuln_id):
+            if is_cve(vuln_id):
                 reference = Reference(url=commit_link)
 
             else:

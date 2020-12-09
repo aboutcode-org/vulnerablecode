@@ -1,4 +1,4 @@
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -41,9 +41,9 @@ class TestElixirSecurityDataSource(TestCase):
         }
         cls.data_src = ElixirSecurityDataSource(1, config=data_source_cfg)
 
-    def test_generate_all_versions_list(self):
+    def test_generate_all_version_list(self):
         package = "coherence"
-        actual_list = self.data_src.generate_all_versions_list(package)
+        actual_list = self.data_src.generate_all_version_list(package)
         expected_list = [
             "0.5.2",
             "0.5.1",

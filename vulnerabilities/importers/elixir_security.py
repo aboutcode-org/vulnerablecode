@@ -1,4 +1,4 @@
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -26,7 +26,7 @@ import json
 import requests
 from typing import Set
 from typing import List
-
+from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import GitDataSource
@@ -63,32 +63,24 @@ class ElixirSecurityDataSource(GitDataSource):
         return self.batch_advisories(advisories)
 
     @staticmethod
-    def generate_all_versions_list(pkg_name):
+    def generate_all_version_list(pkg_name):
         resp = requests.get(f"https://hex.pm/api/packages/{pkg_name}")
         resp = resp.content
         json_resp = json.loads(resp)
-        versions_list = []
+        version_list = []
         for release in json_resp["releases"]:
-            versions_list.append(release["version"])
-        return versions_list
+            version_list.append(release["version"])
+        return version_list
 
-    def get_pkg_from_range(self, versions_list, pkg_name):
+    def get_pkg_from_range(self, version_list, pkg_name):
         pkg_versions = []
-        all_versions_list = self.generate_all_versions_list(pkg_name)
-        if versions_list is None:
+        all_version_list = self.generate_all_version_list(pkg_name)
+        if version_list is None:
             return
-        for version in versions_list:
-            if re.match("^>=", version):
-                index = all_versions_list.index(version[3:])
-                pkg_versions = pkg_versions + all_versions_list[0: index + 1]
-            elif re.match("^>", version):
-                index = all_versions_list.index(version[2:])
-                pkg_versions = pkg_versions + all_versions_list[0:index]
-            elif re.match("^<", version):
-                index = all_versions_list.index(version[2:])
-                pkg_versions = pkg_versions + all_versions_list[index + 1: -1]
-            else:
-                pkg_versions.append(version[3:])
+        version_ranges = {RangeSpecifier(r) for r in version_list}
+        for version in all_version_list:
+            if any([version in v for v in version_ranges]):
+                pkg_versions.append(version)
         return pkg_versions
 
     def process_file(self, path):

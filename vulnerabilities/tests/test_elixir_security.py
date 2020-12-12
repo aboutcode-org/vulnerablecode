@@ -58,8 +58,8 @@ class TestElixirSecurityDataSource(TestCase):
             "0.1.2",
             "0.1.1",
             "0.1.0",
-        ])
-    def test_generate_all_version_list(self,mock_write):
+                    ])
+    def test_generate_all_version_list(self, mock_write):
         package = "coherence"
         actual_list = self.data_src.generate_all_version_list(package)
         expected_list = [
@@ -76,6 +76,7 @@ class TestElixirSecurityDataSource(TestCase):
             "0.1.0",
         ]
         assert actual_list == expected_list
+
     @patch('vulnerabilities.package_managers.HexVersionAPI.get',
            return_value=[
             "0.5.2",
@@ -89,8 +90,8 @@ class TestElixirSecurityDataSource(TestCase):
             "0.1.2",
             "0.1.1",
             "0.1.0",
-        ])
-    def test_process_file(self,mock_write):
+                ])
+    def test_process_file(self, mock_write):
 
         path = os.path.join(BASE_DIR, "test_data/elixir_security/test_file.yml")
         expected_data = Advisory(
@@ -107,7 +108,7 @@ class TestElixirSecurityDataSource(TestCase):
             },
             vuln_references=[
                 Reference(reference_id='2aae6e3a-24a3-4d5f-86ff-b964eaf7c6d1',
-                url="https://github.com/smpallen99/coherence/issues/270")
+                          url="https://github.com/smpallen99/coherence/issues/270")
             ],
             cve_id="CVE-2018-20301",
         )

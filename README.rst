@@ -149,29 +149,20 @@ There are several options to use the Nix version
     # Enter an interactive environment with all dependencies setup.
     cd etc/nix
     nix develop
-    > ./manage.py ... # invoke the local checkout
+    > ../../manage.py ... # invoke the local checkout
     > vulnerablecode-manage.py ... # invoke manage.py as installed in the nix store
 
     # Test the import prodecure using the Nix version.
-    ./test-import-using-nix.sh --all # import everything
+    etc/nix/test-import-using-nix.sh --all # import everything
     # Test the import using the local checkout.
-    INSTALL_DIR=. ./test-import-using-nix.sh ruby # import ruby only
+    INSTALL_DIR=. etc/nix/test-import-using-nix.sh ruby # import ruby only
 
 
 **Keeping the Nix setup in sync**
 
-The Nix installation uses `poetry2nix <https://github.com/nix-community/poetry2nix>`__ to handle Python dependencies because some dependencies are currently not available as Nix packages.
-The are some ``*.generated`` files in ``etc/nix`` that are created/updated using ``etc/nix/generate-poetry-files.sh``.
-These files need to be recreated whenever ``./requirements.txt`` changes.
-The ``expectedRequirementstxtMd5sum`` in ``etc/nix/flake.nix`` also needs to be updated in that case.
-The Nix installation uses the files to convert VulnerableCode into a `Poetry <https://python-poetry.org/>`__ project on the fly.
-
-::
-
-    # Update poetry-conversion.patch.
-    etc/nix/generate-poetry-files.sh
-    # Get new hash. See flake.nix.
-    md5sum requirements.txt
+The Nix installation uses `mach-nix <https://github.com/DavHau/mach-nix>`__ to handle Python dependencies because some dependencies are currently not available as Nix packages.
+All Python dependencies are automatically fetched from ``./requirements.txt``.
+Non-Python dependencies are curated in ``etc/nix/flake.nix:Vulnerablecode.propagatedBuildInputs``.
 
 
 Tests

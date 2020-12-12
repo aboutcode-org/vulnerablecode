@@ -5,15 +5,16 @@
 # checkout.
 
 set -e
+
+THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DEFAULT_INSTALL_DIR=$VULNERABLECODE_INSTALL_DIR # in the Nix store, see flake.nix
 INSTALL_DIR=${INSTALL_DIR:-$DEFAULT_INSTALL_DIR}
 ARGS=$(if [ $# -eq 0 ]; then echo "--all"; else echo "$@"; fi)
 export DJANGO_DEV=${DJANGO_DEV:-1}
+TEMPDIR=$(mktemp -d -p "$THIS_DIR")
+export TEMPDIR
 
-export THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-export TEMPDIR=$(mktemp -d -p "$THIS_DIR")
-export DATADIR="${TEMPDIR}/pgdata"
-export RUNDIR="${TEMPDIR}/run"
+source "$THIS_DIR/lib.sh"
 
 cleanup() {
   pg_ctl -D "$DATADIR" stop
@@ -22,12 +23,7 @@ cleanup() {
 
 trap cleanup EXIT
 
-ENCODING="UTF-8"
-mkdir -p "$RUNDIR"
-initdb -D "$DATADIR" -E $ENCODING
-pg_ctl -D "$DATADIR" -o "-k $RUNDIR" -l "$DATADIR/logfile" start
-createuser --host "$RUNDIR" --no-createrole --no-superuser --login --inherit --createdb vulnerablecode
-createdb   --host "$RUNDIR" -E $ENCODING --owner=vulnerablecode --user=vulnerablecode --port=5432 vulnerablecode
+initPostgres "$TEMPDIR"
 
 "$INSTALL_DIR/manage.py" migrate
 "$INSTALL_DIR/manage.py" import $ARGS

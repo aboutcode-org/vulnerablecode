@@ -22,13 +22,16 @@
 
 import os
 from unittest import TestCase
+from unittest.mock import patch
 from collections import OrderedDict
 
 from vulnerabilities.data_source import Reference
 from packageurl import PackageURL
 
-from vulnerabilities.importers.elixir_security import ElixirSecurityDataSource
 from vulnerabilities.data_source import Advisory
+from vulnerabilities.importers.elixir_security import ElixirSecurityDataSource
+from vulnerabilities.package_managers import HexVersionAPI
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -37,11 +40,26 @@ class TestElixirSecurityDataSource(TestCase):
     @classmethod
     def setUpClass(cls):
         data_source_cfg = {
-            "repository_url": "https://test.net",
+            "repository_url": 'https://github.com/dependabot/elixir-security-advisories',
         }
         cls.data_src = ElixirSecurityDataSource(1, config=data_source_cfg)
+        cls.data_src.pkg_manager_api = HexVersionAPI()
 
-    def test_generate_all_version_list(self):
+    @patch('vulnerabilities.package_managers.HexVersionAPI.get',
+           return_value=[
+            "0.5.2",
+            "0.5.1",
+            "0.5.0",
+            "0.4.0",
+            "0.3.1",
+            "0.3.0",
+            "0.2.0",
+            "0.1.3",
+            "0.1.2",
+            "0.1.1",
+            "0.1.0",
+        ])
+    def test_generate_all_version_list(self,mock_write):
         package = "coherence"
         actual_list = self.data_src.generate_all_version_list(package)
         expected_list = [
@@ -58,8 +76,21 @@ class TestElixirSecurityDataSource(TestCase):
             "0.1.0",
         ]
         assert actual_list == expected_list
-
-    def test_process_file(self):
+    @patch('vulnerabilities.package_managers.HexVersionAPI.get',
+           return_value=[
+            "0.5.2",
+            "0.5.1",
+            "0.5.0",
+            "0.4.0",
+            "0.3.1",
+            "0.3.0",
+            "0.2.0",
+            "0.1.3",
+            "0.1.2",
+            "0.1.1",
+            "0.1.0",
+        ])
+    def test_process_file(self,mock_write):
 
         path = os.path.join(BASE_DIR, "test_data/elixir_security/test_file.yml")
         expected_data = Advisory(
@@ -75,9 +106,10 @@ class TestElixirSecurityDataSource(TestCase):
                 ),
             },
             vuln_references=[
-                Reference(url="https://github.com/smpallen99/coherence/issues/270")
+                Reference(reference_id='2aae6e3a-24a3-4d5f-86ff-b964eaf7c6d1',
+                url="https://github.com/smpallen99/coherence/issues/270")
             ],
-            cve_id="2018-20301",
+            cve_id="CVE-2018-20301",
         )
 
         found_data = self.data_src.process_file(path)

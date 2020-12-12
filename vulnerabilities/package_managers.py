@@ -351,3 +351,24 @@ class GitHubTagsAPI(VersionAPI):
         resp = await session.request(method="GET", url=endpoint)
         resp = await resp.json()
         self.cache[owner_repo] = [release["ref"].split("/")[-1] for release in resp]
+
+class HexVersionAPI(VersionAPI):
+    async def load_api(self, pkg_set):
+        async with ClientSession(raise_for_status=True) as session:
+            await asyncio.gather(
+                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
+            )
+
+    async def fetch(self, pkg, session):
+        url = f"https://hex.pm/api/packages/{pkg}"
+        versions = set()
+        try:
+            response = await session.request(method="GET", url=url)
+            response = await response.json()
+            for release in response["releases"]:
+                versions.add(release["version"])
+        except (ClientResponseError, JSONDecodeError):
+            pass
+
+        self.cache[pkg] = versions
+        

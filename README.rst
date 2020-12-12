@@ -146,7 +146,7 @@ There are several options to use the Nix version
 
 ::
 
-    # Enter an interactive environment with all dependencies setup.
+    # Enter an interactive environment with all dependencies set up.
     cd etc/nix
     nix develop
     > ../../manage.py ... # invoke the local checkout
@@ -162,7 +162,7 @@ There are several options to use the Nix version
 
 The Nix installation uses `mach-nix <https://github.com/DavHau/mach-nix>`__ to handle Python dependencies because some dependencies are currently not available as Nix packages.
 All Python dependencies are automatically fetched from ``./requirements.txt``.
-Non-Python dependencies are curated in ``etc/nix/flake.nix:Vulnerablecode.propagatedBuildInputs``.
+Non-Python dependencies are curated in ``etc/nix/flake.nix:vulnerablecode.propagatedBuildInputs``.
 
 
 Tests

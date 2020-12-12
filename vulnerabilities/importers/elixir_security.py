@@ -20,12 +20,14 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import asyncio
 import yaml
-import re
 import json
 import requests
+import re
 from typing import Set
 from typing import List
+
 from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
 
@@ -33,7 +35,7 @@ from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import GitDataSourceConfiguration
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
-
+from vulnerabilities.package_managers import HexVersionAPI
 
 class ElixirSecurityDataSource(GitDataSource):
     def __enter__(self):
@@ -43,6 +45,11 @@ class ElixirSecurityDataSource(GitDataSource):
             self._added_files, self._updated_files = self.file_changes(
                 recursive=True, file_ext="yml", subdir="./packages"
             )
+        self.pkg_manager_api = HexVersionAPI()
+        self.set_api(self.collect_packages())
+
+    def set_api(self, packages):
+        asyncio.run(self.pkg_manager_api.load_api(packages))
 
     def updated_advisories(self) -> Set[Advisory]:
         files = self._updated_files
@@ -62,17 +69,25 @@ class ElixirSecurityDataSource(GitDataSource):
                 advisories.append(processed_data)
         return self.batch_advisories(advisories)
 
-    @staticmethod
-    def generate_all_version_list(pkg_name):
-        resp = requests.get(f"https://hex.pm/api/packages/{pkg_name}")
-        resp = resp.content
-        json_resp = json.loads(resp)
-        version_list = []
-        for release in json_resp["releases"]:
-            version_list.append(release["version"])
+    def collect_packages(self):
+        packages = set()
+        files = self._updated_files.union(self._added_files)
+        for f in files:
+            with open(f) as file:
+                data = yaml.safe_load(file)
+                if data.get("package"):
+                    packages.add(data["package"])
+
+        return packages
+            
+    def generate_all_version_list(self,pkg_name):
+        if not getattr(self, 'pkg_manager_api', None):
+            self.pkg_manager_api = HexVersionAPI()
+        version_list = self.pkg_manager_api.get(
+            pkg_name)
         return version_list
 
-    def get_pkg_from_range(self, version_list, pkg_name):
+    def get_versions_from_range(self, version_list, pkg_name):
         pkg_versions = []
         all_version_list = self.generate_all_version_list(pkg_name)
         if version_list is None:
@@ -89,15 +104,16 @@ class ElixirSecurityDataSource(GitDataSource):
             pkg_name = yaml_file["package"]
             safe_pkg_versions = []
             if yaml_file.get("unaffected_versions"):
-                safe_pkg_versions = self.get_pkg_from_range(
+                safe_pkg_versions = self.get_versions_from_range(
                     yaml_file["patched_versions"] + yaml_file["unaffected_versions"],
                     pkg_name,
                 )
             else:
-                safe_pkg_versions = self.get_pkg_from_range(
+                safe_pkg_versions = self.get_versions_from_range(
                     yaml_file["patched_versions"], pkg_name
                 )
-            cve_id = yaml_file["cve"]
+            
+            cve_id = "CVE-"+str(yaml_file["cve"])
             safe_purls = []
             if safe_pkg_versions is not None:
                 safe_purls = {
@@ -107,6 +123,7 @@ class ElixirSecurityDataSource(GitDataSource):
 
             vuln_reference = [
                 Reference(
+                    reference_id=yaml_file["id"],
                     url=yaml_file["link"],
                 )
             ]

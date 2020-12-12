@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Setup postgres; see the README.md for the the latest instructions.
+# Setup postgres; see the README.md for the latest instructions.
 #
 # $RUNDIR is used to prevent postgres from accessings its default run dir at
 # /run/postgresql. See

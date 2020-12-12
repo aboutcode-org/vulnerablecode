@@ -25,6 +25,7 @@
       version = builtins.head (builtins.match ''.*version=["']?([^"',]+).*''
         (builtins.readFile (vulnerablecode-src + "/setup.py")));
 
+      # Common shell code.
       libSh = ./lib.sh;
 
       # System types to support.

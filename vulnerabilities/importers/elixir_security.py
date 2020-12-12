@@ -37,6 +37,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import HexVersionAPI
 
+
 class ElixirSecurityDataSource(GitDataSource):
     def __enter__(self):
         super(ElixirSecurityDataSource, self).__enter__()
@@ -79,8 +80,8 @@ class ElixirSecurityDataSource(GitDataSource):
                     packages.add(data["package"])
 
         return packages
-            
-    def generate_all_version_list(self,pkg_name):
+
+    def generate_all_version_list(self, pkg_name):
         if not getattr(self, 'pkg_manager_api', None):
             self.pkg_manager_api = HexVersionAPI()
         version_list = self.pkg_manager_api.get(
@@ -105,14 +106,15 @@ class ElixirSecurityDataSource(GitDataSource):
             safe_pkg_versions = []
             if yaml_file.get("unaffected_versions"):
                 safe_pkg_versions = self.get_versions_from_range(
-                    yaml_file["patched_versions"] + yaml_file["unaffected_versions"],
+                    yaml_file["patched_versions"] +
+                    yaml_file["unaffected_versions"],
                     pkg_name,
                 )
             else:
                 safe_pkg_versions = self.get_versions_from_range(
                     yaml_file["patched_versions"], pkg_name
                 )
-            
+
             cve_id = "CVE-"+str(yaml_file["cve"])
             safe_purls = []
             if safe_pkg_versions is not None:

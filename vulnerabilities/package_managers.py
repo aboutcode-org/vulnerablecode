@@ -352,6 +352,7 @@ class GitHubTagsAPI(VersionAPI):
         resp = await resp.json()
         self.cache[owner_repo] = [release["ref"].split("/")[-1] for release in resp]
 
+
 class HexVersionAPI(VersionAPI):
     async def load_api(self, pkg_set):
         async with ClientSession(raise_for_status=True) as session:
@@ -371,4 +372,3 @@ class HexVersionAPI(VersionAPI):
             pass
 
         self.cache[pkg] = versions
-        

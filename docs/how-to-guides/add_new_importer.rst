@@ -36,10 +36,13 @@ The Building Blocks A.K.A Prerequisites
         summary: str
         impacted_package_urls: Iterable[PackageURL]
         resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
-        reference_urls: Sequence[str] = dataclasses.field(default_factory=list)
-        reference_ids: Sequence[str] = dataclasses.field(default_factory=list)
+        vuln_references: List[Reference] = dataclasses.field(default_factory=list)
         cve_id: Optional[str] = None
 
+    class Reference:
+
+        url: str = ''
+        reference_id: str = ''
 
 Steps to build an Importer
 --------------------------

@@ -67,6 +67,8 @@ class RustDataSource(GitDataSource):
         return self._load_advisories(self._updated_files)
 
     def _load_advisories(self, files) -> Set[Advisory]:
+        # per @tarcieri It will always be named RUSTSEC-0000-0000.md
+        # https://github.com/nexB/vulnerablecode/pull/281/files#r528899864
         files = [f for f in files if not f.endswith("-0000.md")]  # skip temporary files
         packages = self.collect_packages(files)
         self.set_api(packages)

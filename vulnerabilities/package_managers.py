@@ -319,5 +319,4 @@ class GitHubTagsAPI(VersionAPI):
         endpoint = f"https://api.github.com/repos/{owner_repo}/git/refs/tags"
         resp = await session.request(method="GET", url=endpoint)
         resp = await resp.json()
-        print(resp)
         self.cache[owner_repo] = [release["ref"].split("/")[-1] for release in resp]

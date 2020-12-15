@@ -23,15 +23,16 @@
 import asyncio
 import json
 from itertools import chain
+import re
 from typing import Optional, Mapping
 from typing import Set
 from typing import Tuple
 from urllib.error import HTTPError
 from urllib.request import urlopen
 
-import pytoml as toml
 from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
+import toml
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
@@ -47,7 +48,7 @@ class RustDataSource(GitDataSource):
             self._added_files, self._updated_files = self.file_changes(
                 subdir="crates",  # TODO Consider importing the advisories for cargo, etc as well.
                 recursive=True,
-                file_ext="toml",
+                file_ext="md",
             )
 
     @property
@@ -66,15 +67,15 @@ class RustDataSource(GitDataSource):
         return self._load_advisories(self._updated_files)
 
     def _load_advisories(self, files) -> Set[Advisory]:
-        files = [f for f in files if not f.endswith("-0000.toml")]  # skip temporary files
+        # per @tarcieri It will always be named RUSTSEC-0000-0000.md
+        # https://github.com/nexB/vulnerablecode/pull/281/files#r528899864
+        files = [f for f in files if not f.endswith("-0000.md")]  # skip temporary files
         packages = self.collect_packages(files)
         self.set_api(packages)
 
         while files:
             batch, files = files[: self.batch_size], files[self.batch_size:]
-
             advisories = set()
-
             for path in batch:
                 advisory = self._load_advisory(path)
                 if advisory:
@@ -84,13 +85,13 @@ class RustDataSource(GitDataSource):
     def collect_packages(self, paths):
         packages = set()
         for path in paths:
-            record = load_toml(path)
+            record = get_advisory_data(path)
             packages.add(record["advisory"]["package"])
 
         return packages
 
     def _load_advisory(self, path: str) -> Optional[Advisory]:
-        record = load_toml(path)
+        record = get_advisory_data(path)
         advisory = record.get("advisory", {})
         crate_name = advisory["package"]
         references = []
@@ -175,6 +176,63 @@ def categorize_versions(
     return unaffected, affected
 
 
-def load_toml(path):
-    with open(path) as f:
-        return toml.load(f)
+def get_toml_lines(lines):
+    """
+    Yield lines of TOML extracted from an iterable of text ``lines``.
+    The lines are expected to be from a RustSec Markdown advisory file with
+    embedded TOML metadata.
+
+    For example::
+
+    >>> text = '''
+    ... ```toml
+    ... [advisory]
+    ... id = "RUST-001"
+    ...
+    ... [versions]
+    ... patch = [">= 1.2.1"]
+    ... ```
+    ... # Use-after-free with objects returned by `Stream`'s `get_format_info`
+    ...
+    ... Affected versions contained a pair of use-after-free issues with the objects.
+    ... '''
+    >>> list(get_toml_lines(text.splitlines()))
+    ['', '[advisory]', 'id = "RUST-001"', '', '[versions]', 'patch = [">= 1.2.1"]']
+    """
+
+    for line in lines:
+        line = line.strip()
+        if line.startswith("```toml"):
+            continue
+        elif line.endswith("```"):
+            break
+        else:
+            yield line
+
+
+def data_from_toml_lines(lines):
+    """
+    Return a mapping of data from an iterable of TOML text ``lines``.
+
+    For example::
+
+    >>> lines = ['[advisory]', 'id = "RUST1"', '', '[versions]', 'patch = [">= 1"]']
+    >>> data_from_toml_lines(lines)
+    {'advisory': {'id': 'RUST1'}, 'versions': {'patch': ['>= 1']}}
+    """
+    return toml.loads("\n".join(lines))
+
+
+def get_advisory_data(location):
+    """
+    Return a mapping of vulnerability data from a RustSec advisory file at
+    ``location``.
+    RustSec advisories documents are .md files starting with a block of TOML
+    identified as the text inside a tripple-backtick TOML block. Per
+    https://github.com/RustSec/advisory-db#advisory-format:
+        Advisories are formatted in Markdown with TOML "front matter".
+    """
+
+    with open(location) as lines:
+        toml_lines = get_toml_lines(lines)
+        return data_from_toml_lines(toml_lines)

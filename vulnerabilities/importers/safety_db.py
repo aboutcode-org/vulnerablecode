@@ -31,12 +31,10 @@ from typing import Iterable
 from typing import Mapping
 from typing import Set
 from typing import Tuple
-from urllib.error import HTTPError
-from urllib.request import urlopen
-import requests
 
 from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
+import requests
 from schema import Or
 from schema import Regex
 from schema import Schema
@@ -46,6 +44,7 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import PypiVersionAPI
+from vulnerabilities.helpers import create_etag
 
 
 def validate_schema(advisory_dict):
@@ -92,9 +91,8 @@ class SafetyDbDataSource(DataSource):
         asyncio.run(self._versions.load_api(packages))
 
     def _fetch(self) -> Mapping[str, Any]:
-        if self.create_etag(self.config.url):
-            with urlopen(self.config.url) as response:
-                return json.load(response)
+        if create_etag(data_src=self, url=self.config.url, etag_key="ETag"):
+            return requests.get(self.config.url).json()
 
         return []
 
@@ -137,33 +135,29 @@ class SafetyDbDataSource(DataSource):
 
         return self.batch_advisories(advisories)
 
-    def create_etag(self, url):
-        etag = requests.head(url).headers.get('ETag')
-        if not etag:
-            # Kind of inaccurate to return True since etag is
-            # not created
-            return True
-        elif url in self.config.etags:
-            if self.config.etags[url] == etag:
-                return False
-        self.config.etags[url] = etag
-        return True
-
 
 def categorize_versions(
-    package_name: str, all_versions: Set[str], version_specs: Iterable[str],
+    package_name: str,
+    all_versions: Set[str],
+    version_ranges: Iterable[str],
 ) -> Tuple[Set[PackageURL], Set[PackageURL]]:
     """
     :return: impacted, resolved purls
     """
     impacted_versions, impacted_purls = set(), set()
-    ranges = [RangeSpecifier(s) for s in version_specs]
+    ranges = [RangeSpecifier(s) for s in version_ranges]
 
     for version in all_versions:
         if any([version in r for r in ranges]):
             impacted_versions.add(version)
 
-            impacted_purls.add(PackageURL(name=package_name, type="pypi", version=version,))
+            impacted_purls.add(
+                PackageURL(
+                    name=package_name,
+                    type="pypi",
+                    version=version,
+                )
+            )
 
     resolved_purls = set()
     for version in all_versions - impacted_versions:

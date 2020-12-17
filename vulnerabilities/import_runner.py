@@ -90,7 +90,7 @@ class ImportRunner:
     Efficiency:
         - Bulk inserts should be used whenever possible.
         - Checking whether a record already exists should be kept to a minimum
-          (the data source should know this instead).
+        (the data source should know this instead).
         - All update and select operations must use indexed columns.
     """
 

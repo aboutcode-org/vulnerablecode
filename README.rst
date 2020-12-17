@@ -41,11 +41,11 @@ The How
 
 VulnerableCode independently aggregates many software vulnerability data
 sources that can easily be recreated in a decentralized fashion. These
-data sources include security advisories published by distros, package
-managers, etc. Due to this, the data obtained is not generalized to apply
-for other ecosystems. This increases the accuracy as the same version of
-a package across different distros may or may not be vulnerable to some
-vulnerability.
+data sources (see complete list `here <./SOURCES.rst>`_) include security
+advisories published by distros, package managers, etc. Due to this, the
+data obtained is not generalized to apply for other ecosystems. This
+increases the accuracy as the same version of a package across different distros
+may or may not be vulnerable to some vulnerability.
 
 The packages are identified using
 `PURL <https://github.com/package-url/purl-spec>`__ rather than CPEs.

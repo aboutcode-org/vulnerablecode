@@ -122,7 +122,7 @@ def _versions_to_purls(package_name, versions):
 
 def categorize_versions(
     all_versions: Set[str],
-    aff_version_range: str,
+    affected_version_range: str,
     fixed_version_range: str,
 ) -> Tuple[Set[str], Set[str]]:
     """
@@ -135,12 +135,12 @@ def categorize_versions(
         # NPM registry has no data regarding this package, we skip these
         return set(), set()
 
-    aff_spec = RangeSpecifier(aff_version_range)
+    aff_spec = RangeSpecifier(affected_version_range)
     fix_spec = RangeSpecifier(fixed_version_range)
     aff_ver, fix_ver = set(), set()
 
     # Unaffected version is that version which is in the fixed_version_range
-    # or which is absent in the aff_version_range
+    # or which is absent in the affected_version_range
     for ver in all_versions:
         if ver in fix_spec or ver not in aff_spec:
             fix_ver.add(ver)

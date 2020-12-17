@@ -226,6 +226,15 @@ IMPORTER_REGISTRY = [
         'data_source': 'PostgreSQLDataSource',
         'data_source_cfg': {},
     },
+    {
+        'name': 'apache_tomcat',
+        'license': '',
+        'last_run': None,
+        'data_source': 'ApacheTomcatDataSource',
+        'data_source_cfg': {
+            "etags": {}
+        },
+    },
 
 ]
 

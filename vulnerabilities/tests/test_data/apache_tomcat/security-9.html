@@ -1,0 +1,140 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link href="res/css/tomcat.css" rel="stylesheet" type="text/css"><link href="res/css/fonts/fonts.css" rel="stylesheet" type="text/css"><title>Apache Tomcat&reg; - Apache Tomcat 9 vulnerabilities</title><meta name="author" content="Apache Tomcat Project"></head><body><div id="wrapper"><header id="header"><div class="clearfix"><div class="menu-toggler pull-left" tabindex="1"><div class="hamburger"></div></div><a href="http://tomcat.apache.org/"><img class="tomcat-logo pull-left noPrint" alt="Tomcat Home" src="res/images/tomcat.png"></a><h1 class="pull-left">Apache Tomcat<sup>&reg;</sup></h1><div class="asf-logos pull-right"><a href="https://www.apache.org/foundation/contributing.html" target="_blank" class="pull-left"><img src="https://www.apache.org/images/SupportApache-small.png" class="support-asf" alt="Support Apache"></a><a href="http://www.apache.org/" target="_blank" class="pull-left"><img src="res/images/asf_logo.svg" class="asf-logo" alt="The Apache Software Foundation"></a></div></div></header><main id="middle"><div><div id="mainLeft"><div id="nav-wrapper"><form action="https://www.google.com/search" method="get"><div class="searchbox"><input value="tomcat.apache.org" name="sitesearch" type="hidden"><input aria-label="Search text" placeholder="Search&hellip;" required="required" name="q" id="query" type="search"><button>GO</button></div></form><div class="asfevents"><a href="https://www.apache.org/events/current-event.html"><img src="https://www.apache.org/events/current-event-234x60.png" alt="Next ASF event"><br>
+              Save the date!
+            </a></div><nav><div><h2>Apache Tomcat</h2><ul><li><a href="./index.html">Home</a></li><li><a href="./taglibs.html">Taglibs</a></li><li><a href="./maven-plugin.html">Maven Plugin</a></li></ul></div><div><h2>Download</h2><ul><li><a href="./whichversion.html">Which version?</a></li><li><a href="https://tomcat.apache.org/download-10.cgi">Tomcat 10 (alpha)</a></li><li><a href="https://tomcat.apache.org/download-90.cgi">Tomcat 9</a></li><li><a href="https://tomcat.apache.org/download-80.cgi">Tomcat 8</a></li><li><a href="https://tomcat.apache.org/download-70.cgi">Tomcat 7</a></li><li><a href="https://tomcat.apache.org/download-connectors.cgi">Tomcat Connectors</a></li><li><a href="https://tomcat.apache.org/download-native.cgi">Tomcat Native</a></li><li><a href="https://tomcat.apache.org/download-taglibs.cgi">Taglibs</a></li><li><a href="https://archive.apache.org/dist/tomcat/">Archives</a></li></ul></div><div><h2>Documentation</h2><ul><li><a href="./tomcat-10.0-doc/index.html">Tomcat 10.0 (alpha)</a></li><li><a href="./tomcat-9.0-doc/index.html">Tomcat 9.0</a></li><li><a href="./tomcat-8.5-doc/index.html">Tomcat 8.5</a></li><li><a href="./tomcat-7.0-doc/index.html">Tomcat 7.0</a></li><li><a href="./connectors-doc/">Tomcat Connectors</a></li><li><a href="./native-doc/">Tomcat Native</a></li><li><a href="https://cwiki.apache.org/confluence/display/TOMCAT">Wiki</a></li><li><a href="./migration.html">Migration Guide</a></li><li><a href="./presentations.html">Presentations</a></li><li><a href="https://cwiki.apache.org/confluence/x/Bi8lBg">Specifications</a></li></ul></div><div><h2>Problems?</h2><ul><li><a href="./security.html">Security Reports</a></li><li><a href="./findhelp.html">Find help</a></li><li><a href="https://cwiki.apache.org/confluence/display/TOMCAT/FAQ">FAQ</a></li><li><a href="./lists.html">Mailing Lists</a></li><li><a href="./bugreport.html">Bug Database</a></li><li><a href="./irc.html">IRC</a></li></ul></div><div><h2>Get Involved</h2><ul><li><a href="./getinvolved.html">Overview</a></li><li><a href="./source.html">Source code</a></li><li><a href="./ci.html">Buildbot</a></li><li><a href="https://cwiki.apache.org/confluence/x/vIPzBQ">Translations</a></li><li><a href="./tools.html">Tools</a></li></ul></div><div><h2>Media</h2><ul><li><a href="https://twitter.com/theapachetomcat">Twitter</a></li><li><a href="https://www.youtube.com/c/ApacheTomcatOfficial">YouTube</a></li><li><a href="https://blogs.apache.org/tomcat/">Blog</a></li></ul></div><div><h2>Misc</h2><ul><li><a href="./whoweare.html">Who We Are</a></li><li><a href="https://www.redbubble.com/people/comdev/works/30885254-apache-tomcat">Swag</a></li><li><a href="./heritage.html">Heritage</a></li><li><a href="http://www.apache.org">Apache Home</a></li><li><a href="./resources.html">Resources</a></li><li><a href="./contact.html">Contact</a></li><li><a href="./legal.html">Legal</a></li><li><a href="https://www.apache.org/foundation/contributing.html">Support Apache</a></li><li><a href="https://www.apache.org/foundation/sponsorship.html">Sponsorship</a></li><li><a href="http://www.apache.org/foundation/thanks.html">Thanks</a></li><li><a href="http://www.apache.org/licenses/">License</a></li></ul></div></nav></div></div><div id="mainRight"><div id="content"><h2 style="display: none;">Content</h2><h3 id="Table_of_Contents">Table of Contents</h3><div class="text">
+<ul><li><a href="#Apache_Tomcat_9.x_vulnerabilities">Apache Tomcat 9.x vulnerabilities</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.38">Fixed in Apache Tomcat 9.0.38</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.37">Fixed in Apache Tomcat 9.0.37</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.36">Fixed in Apache Tomcat 9.0.36</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.35">Fixed in Apache Tomcat 9.0.35</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.31">Fixed in Apache Tomcat 9.0.31</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.30">Fixed in Apache Tomcat 9.0.30</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.29">Fixed in Apache Tomcat 9.0.29</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.20">Fixed in Apache Tomcat 9.0.20</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.19">Fixed in Apache Tomcat 9.0.19</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.16">Fixed in Apache Tomcat 9.0.16</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.12">Fixed in Apache Tomcat 9.0.12</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.10">Fixed in Apache Tomcat 9.0.10</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.9">Fixed in Apache Tomcat 9.0.9</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.8">Fixed in Apache Tomcat 9.0.8</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.5">Fixed in Apache Tomcat 9.0.5</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.2">Fixed in Apache Tomcat 9.0.2</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.1">Fixed in Apache Tomcat 9.0.1</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.0.M22">Fixed in Apache Tomcat 9.0.0.M22</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.0.M21">Fixed in Apache Tomcat 9.0.0.M21</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.0.M19">Fixed in Apache Tomcat 9.0.0.M19</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.0.M18">Fixed in Apache Tomcat 9.0.0.M18</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.0.M17">Fixed in Apache Tomcat 9.0.0.M17</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.0.M15">Fixed in Apache Tomcat 9.0.0.M15</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.0.M13">Fixed in Apache Tomcat 9.0.0.M13</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.0.M10">Fixed in Apache Tomcat 9.0.0.M10</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.0.M8">Fixed in Apache Tomcat 9.0.0.M8</a></li><li><a href="#Fixed_in_Apache_Tomcat_9.0.0.M3">Fixed in Apache Tomcat 9.0.0.M3</a></li></ul>
+</div><h3 id="Apache_Tomcat_9.x_vulnerabilities">Apache Tomcat 9.x vulnerabilities</h3><div class="text">
+    <p>This page lists all security vulnerabilities fixed in released versions
+       of Apache Tomcat 9.x. Each vulnerability is given a
+       <a href="security-impact.html">security impact rating</a> by the Apache
+       Tomcat security team &mdash; please note that this rating may vary from
+       platform to platform. We also list the versions of Apache Tomcat the flaw
+       is known to affect, and where a flaw has not been verified list the
+       version with a question mark.</p>
+
+    <p><strong>Note:</strong> Vulnerabilities that are not Tomcat vulnerabilities
+       but have either been incorrectly reported against Tomcat or where Tomcat
+       provides a workaround are listed at the end of this page.</p>
+
+    <p>Please note that binary patches are never provided. If you need to
+       apply a source code patch, use the building instructions for the
+       Apache Tomcat version that you are using. For Tomcat 9.0 those are
+       <a href="/tomcat-9.0-doc/building.html"><code>building.html</code></a> and
+       <a href="/tomcat-9.0-doc/BUILDING.txt"><code>BUILDING.txt</code></a>.
+       Both files can be found in the <code>webapps/docs</code> subdirectory
+       of a binary distribution. You may also want to review the
+       <a href="/tomcat-9.0-doc/security-howto.html">Security Considerations</a>
+       page in the documentation.</p>
+
+    <p>If you need help on building or configuring Tomcat or other help on
+       following the instructions to mitigate the known vulnerabilities listed
+       here, please send your questions to the public
+       <a href="lists.html">Tomcat Users mailing list</a>
+    </p>
+
+    <p>If you have encountered an unlisted security vulnerability or other
+       unexpected behaviour that has <a href="security-impact.html">security
+       impact</a>, or if the descriptions here are incomplete,
+       please report them privately to the
+       <a href="security.html">Tomcat Security Team</a>. Thank you.
+    </p>
+  </div><h3 id="Fixed_in_Apache_Tomcat_9.0.0.M3"><span class="pull-right">5 January 2016</span> Fixed in Apache Tomcat 9.0.0.M3</h3><div class="text">
+  
+    <p><strong>Moderate: Security Manager bypass</strong>
+       <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0763" rel="nofollow">CVE-2016-0763</a></p>
+
+    <p>This issue only affects users running untrusted web applications under a
+       security manager.</p>
+       
+    <p><code>ResourceLinkFactory.setGlobalContext()</code> is a public method
+       and was accessible to web applications even when running under a security
+       manager. This allowed a malicious web application to inject a malicious
+       global context that could in turn be used to disrupt other web
+       applications and/or read and write data owned by other web
+       applications.</p>
+
+    <p>This was fixed in revision <a href="https://svn.apache.org/viewvc?view=rev&amp;rev=1725926">1725926</a>.</p>
+
+    <p>This issue was identified by the Tomcat security team on 18 January 2016
+       and made public on 22 February 2016.</p>
+
+    <p>Affects: 9.0.0.M1 to 9.0.0.M2</p>
+
+  <p><i>Note: The issues below were fixed in Apache Tomcat 9.0.0.M2 but the
+       release vote for the 9.0.0.M2 release candidate did not pass. Therefore,
+       although users must download 9.0.0.M3 to obtain a version that includes
+       fixes for these issues, version 9.0.0.M2 is not included in the list of
+       affected versions.</i></p>
+
+    <p><strong>Moderate: CSRF token leak</strong>
+       <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-5351" rel="nofollow">CVE-2015-5351</a></p>
+
+    <p>The index page of the Manager and Host Manager applications included a
+       valid CSRF token when issuing a redirect as a result of an
+       unauthenticated request to the root of the web application. If an
+       attacker had access to the Manager or Host Manager applications
+       (typically these applications are only accessible to internal users, not
+       exposed to the Internet), this token could then be used by the attacker
+       to construct a CSRF attack.</p>
+
+    <p>This was fixed in revisions <a href="https://svn.apache.org/viewvc?view=rev&amp;rev=1720652">1720652</a> and
+       <a href="https://svn.apache.org/viewvc?view=rev&amp;rev=1720655">1720655</a>.</p>
+
+    <p>This issue was identified by the Tomcat security team on 8 December 2015
+       and made public on 22 February 2016.</p>
+
+    <p>Affects: 8.0.0.M1 to 9.0.0, 9.0.1.M1 to 9.0.1.M2-</p>
+
+    <p><strong>Low: Security Manager bypass</strong>
+       <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0706" rel="nofollow">CVE-2016-0706</a></p>
+
+    <p>This issue only affects users running untrusted web applications under a
+       security manager.</p>
+       
+    <p>The internal StatusManagerServlet could be loaded by a malicious web
+       application when a security manager was configured. This servlet could
+       then provide the malicious web application with a list of all deployed
+       applications and a list of the HTTP request lines for all requests
+       currently being processed. This could have exposed sensitive information
+       from other web applications, such as session IDs, to the web
+       application.</p>
+
+    <p>This was fixed in revision <a href="https://svn.apache.org/viewvc?view=rev&amp;rev=1722799">1722799</a>.</p>
+
+    <p>This issue was identified by the Tomcat security team on 27 December 2015
+       and made public on 22 February 2016.</p>
+
+    <p>Affects: 9.0.0.M1</p>
+
+    <p><strong>Moderate: Security Manager bypass</strong>
+       <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0714" rel="nofollow">CVE-2016-0714</a></p>
+
+    <p>This issue only affects users running untrusted web applications under a
+       security manager.</p>
+       
+    <p>Tomcat provides several session persistence mechanisms. The
+       <code>StandardManager</code> persists session over a restart. The
+       <code>PersistentManager</code> is able to persist sessions to files, a
+       database or a custom <code>Store</code>. The cluster implementation
+       persists sessions to one or more additional nodes in the cluster. All of
+       these mechanisms could be exploited to bypass a security manager. Session
+       persistence is performed by Tomcat code with the permissions assigned to
+       Tomcat internal code. By placing a carefully crafted object into a
+       session, a malicious web application could trigger the execution of
+       arbitrary code.</p>
+
+    <p>This was fixed in revisions <a href="https://svn.apache.org/viewvc?view=rev&amp;rev=1725263">1725263</a> and
+       <a href="https://svn.apache.org/viewvc?view=rev&amp;rev=1725914">1725914</a>.</p>
+
+    <p>This issue was identified by the Tomcat security team on 12 November 2015
+       and made public on 22 February 2016.</p>
+
+    <p>Affects: 9.0.0.M1-9.0.0.M2</p>
+
+  </div></div></div></div></main><footer id="footer">
+    Copyright &copy; 1999-2020, The Apache Software Foundation
+    <br>
+    Apache Tomcat, Tomcat, Apache, the Apache feather, and the Apache Tomcat
+    project logo are either registered trademarks or trademarks of the Apache
+    Software Foundation.
+  </footer></div><script src="res/js/tomcat.js"></script></body></html>

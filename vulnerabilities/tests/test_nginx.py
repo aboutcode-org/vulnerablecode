@@ -72,7 +72,7 @@ class TestNginxDataSource(TestCase):
                         )
                     },
                     vuln_references=[],
-                    cve_id="CVE-2013-2028",
+                    identifier="CVE-2013-2028",
                 ),
                 Advisory(
                     summary="Vulnerabilities with Windows directory aliases",
@@ -121,7 +121,7 @@ class TestNginxDataSource(TestCase):
                         ),
                     },
                     vuln_references=[],
-                    cve_id="CVE-2011-4963",
+                    identifier="CVE-2011-4963",
                 ),
                 Advisory(
                     summary="Vulnerabilities with invalid UTF-8 sequence on Windows",
@@ -137,14 +137,14 @@ class TestNginxDataSource(TestCase):
                     },
                     resolved_package_urls=set(),
                     vuln_references=[],
-                    cve_id="CVE-2010-2266",
+                    identifier="CVE-2010-2266",
                 ),
                 Advisory(
                     summary="An error log data are not sanitized",
                     impacted_package_urls=set(),
                     resolved_package_urls={},
                     vuln_references=[],
-                    cve_id="CVE-2009-4487",
+                    identifier="CVE-2009-4487",
                 ),
                 Advisory(
                     summary="The renegotiation vulnerability in SSL protocol",
@@ -160,7 +160,7 @@ class TestNginxDataSource(TestCase):
                     },
                     resolved_package_urls=set(),
                     vuln_references=[],
-                    cve_id="CVE-2009-3555",
+                    identifier="CVE-2009-3555",
                 ),
                 Advisory(
                     summary="Directory traversal vulnerability",
@@ -176,12 +176,12 @@ class TestNginxDataSource(TestCase):
                     },
                     resolved_package_urls=set(),
                     vuln_references=[],
-                    cve_id="CVE-2009-3898",
+                    identifier="CVE-2009-3898",
                 ),
             ],
-            key=lambda adv: adv.cve_id,
+            key=lambda adv: adv.identifier,
         )
 
-        found_data = sorted(self.data_src.to_advisories(self.data), key=lambda adv: adv.cve_id)
+        found_data = sorted(self.data_src.to_advisories(self.data), key=lambda adv: adv.identifier)
 
         assert expected_data == found_data

@@ -343,4 +343,4 @@ def test_ImportRunner_create_vulcodes(db):
 
     assert models.Package.objects.all().count() == 4
     assert models.PackageRelatedVulnerability.objects.count() == 4
-    assert models.Vulnerability.objects.filter(identifier__startswith="VULCODE").count() == 1
+    assert models.Vulnerability.objects.filter(identifier__startswith="VULCOID").count() == 1

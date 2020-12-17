@@ -44,7 +44,7 @@ def cd(newdir):
 def get_vulcodes():
 
     vulcodes = models.Vulnerability.objects.filter(
-        identifier__startswith="VULCODE"
+        identifier__startswith="VULCOID"
     ).select_related()
     for vuln in vulcodes:
         yield {

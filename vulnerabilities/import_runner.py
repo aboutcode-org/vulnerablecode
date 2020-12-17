@@ -118,12 +118,18 @@ def process_advisories(data_source: DataSource) -> None:
     # Treat updated_advisories and added_advisories as same. Eventually
     # we want to  refactor all data sources to  provide advisories via a
     # single method.
+    vulcoid = datetime.datetime.now()
     advisory_batches = chain(data_source.updated_advisories(), data_source.added_advisories())
     for batch in advisory_batches:
         for advisory in batch:
             try:
+
                 if not advisory.identifier and not create_vulcodes:
                     continue
+
+                if not advisory.identifier:
+                    advisory.identifier = "VULCOID-" + vulcoid.strftime("%Y-%m-%d-%H:%M:%S")
+                    vulcoid += datetime.timedelta(seconds=1)
 
                 vuln, vuln_created = _get_or_create_vulnerability(advisory)
                 for vuln_ref in advisory.vuln_references:
@@ -156,11 +162,11 @@ def process_advisories(data_source: DataSource) -> None:
                         existing_ref = get_vuln_pkg_refs(vuln, pkg)
                         if not existing_ref:
                             bulk_create_vuln_pkg_refs.add(pkg_vuln_ref)
-                            # A vulnerability-package relationship does not exist already if either the
-                            # vulnerability or the package is just created.
+                            # A vulnerability-package relationship does not exist already
+                            # if either the vulnerability or the package is just created.
 
                         else:
-                            # insert only if it there is no existing vulnerability-package relationship.
+                            # insert only if it there is no existing vulnerability-package relationship.  # nopep8
                             existing_ref = get_vuln_pkg_refs(vuln, pkg)
                             if not existing_ref:
                                 bulk_create_vuln_pkg_refs.add(pkg_vuln_ref)
@@ -168,8 +174,11 @@ def process_advisories(data_source: DataSource) -> None:
                             else:
                                 # This handles conflicts between existing data and obtained data
                                 if existing_ref[0].is_vulnerable != pkg_vuln_ref.is_vulnerable:
-                                    handle_conflicts([existing_ref[0], pkg_vuln_ref.to_model_object()])
+                                    handle_conflicts(
+                                        [existing_ref[0], pkg_vuln_ref.to_model_object()]
+                                    )
                                     existing_ref.delete()
+
             except Exception:
                 # TODO: store error but continue
                 logger.error(
@@ -234,12 +243,15 @@ def _get_or_create_vulnerability(
     advisory: Advisory,
 ) -> Tuple[models.Vulnerability, bool]:
 
-    vuln, created = models.Vulnerability.objects.get_or_create(identifier=advisory.identifier)
+    try:
+        vuln, created = models.Vulnerability.objects.get_or_create(identifier=advisory.identifier)
 
-    # Eventually we only want to keep summary from NVD and ignore other descriptions.
-    if advisory.summary and vuln.summary != advisory.summary:
-        vuln.summary = advisory.summary
-        vuln.save()
+        # Eventually we only want to keep summary from NVD and ignore other descriptions.
+        if advisory.summary and vuln.summary != advisory.summary:
+            vuln.summary = advisory.summary
+            vuln.save()
+
+        return vuln, created
 
     except Exception:
         logger.error(

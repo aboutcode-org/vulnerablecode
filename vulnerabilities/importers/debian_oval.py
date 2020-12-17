@@ -35,6 +35,7 @@ import requests
 
 from vulnerabilities.data_source import OvalDataSource, DataSourceConfiguration
 from vulnerabilities.package_managers import DebianVersionAPI
+from vulnerabilities.helpers import create_etag
 
 
 @dataclasses.dataclass
@@ -52,35 +53,22 @@ class DebianOvalDataSource(OvalDataSource):
         # we could avoid setting translations, and have it
         # set by default in the OvalParser, but we don't yet know
         # whether all OVAL providers use the same format
-        self.translations = {'less than': '<'}
+        self.translations = {"less than": "<"}
         self.pkg_manager_api = DebianVersionAPI()
 
     def _fetch(self):
-        base_url = 'https://www.debian.org/security/oval/'
-        file_name = 'oval-definitions-{}.xml'
         releases = self.config.releases
         for release in releases:
-            file_url = base_url + file_name.format(release)
-            if not self.create_etag(file_url):
+            file_url = f"https://www.debian.org/security/oval/oval-definitions-{release}.xml"
+            if not create_etag(data_src=self, url=file_url, etag_key="ETag"):
                 continue
+
             resp = requests.get(file_url).content
             yield (
-                {'type': 'deb', 'namespace': 'debian',
-                    'qualifiers': {'distro': release}
-                 },
-                ET.ElementTree(ET.fromstring(resp.decode('utf-8')))
+                {"type": "deb", "namespace": "debian", "qualifiers": {"distro": release}},
+                ET.ElementTree(ET.fromstring(resp.decode("utf-8"))),
             )
         return []
 
     def set_api(self, packages):
         asyncio.run(self.pkg_manager_api.load_api(packages))
-
-    def create_etag(self, url):
-        etag = requests.head(url).headers.get('ETag')
-        if not etag:
-            return True
-        elif url in self.config.etags:
-            if self.config.etags[url] == etag:
-                return False
-        self.config.etags[url] = etag
-        return True

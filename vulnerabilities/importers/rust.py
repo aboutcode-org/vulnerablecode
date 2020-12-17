@@ -21,7 +21,6 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
-import json
 from itertools import chain
 import re
 from typing import Optional, Mapping
@@ -38,6 +37,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import CratesVersionAPI
+from vulnerabilities.helpers import load_toml
 
 
 class RustDataSource(GitDataSource):

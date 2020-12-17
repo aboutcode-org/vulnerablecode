@@ -186,7 +186,6 @@ class RustImportTest(TestCase):
 
     def test_load_toml_from_md(self, _):
         md_path = os.path.join(TEST_DATA, "CVE-2019-16760.md")
-        # print(list(os.walk(self.tempdir)))
         loaded_data = get_advisory_data(md_path)
         expected_data = {
             "advisory": {

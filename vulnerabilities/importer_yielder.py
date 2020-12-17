@@ -188,7 +188,7 @@ IMPORTER_REGISTRY = [
         'last_run': None,
         'data_source': 'ProjectKBMSRDataSource',
         'data_source_cfg': {
-            'etag': {}
+            'etags': {}
         }
     },
     {
@@ -216,7 +216,7 @@ IMPORTER_REGISTRY = [
         'last_run': None,
         'data_source': 'NginxDataSource',
         'data_source_cfg': {
-            'etag': {}
+            'etags': {}
         },
     },
     {

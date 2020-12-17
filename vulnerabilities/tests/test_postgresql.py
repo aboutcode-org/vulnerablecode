@@ -71,7 +71,7 @@ class TestPostgreSQLDataSource(TestCase):
                             reference_id="",
                         )
                     ],
-                    cve_id="CVE-2020-10733",
+                    identifier="CVE-2020-10733",
                 ),
                 Advisory(
                     summary="ALTER ... DEPENDS ON EXTENSION is missing authorization checks.",
@@ -113,12 +113,12 @@ class TestPostgreSQLDataSource(TestCase):
                             reference_id="",
                         ),
                     ],
-                    cve_id="CVE-2020-1720",
+                    identifier="CVE-2020-1720",
                 ),
             ],
-            key=lambda adv: adv.cve_id,
+            key=lambda adv: adv.identifier,
         )
 
-        found_data = sorted(to_advisories(raw_data), key=lambda adv: adv.cve_id)
+        found_data = sorted(to_advisories(raw_data), key=lambda adv: adv.identifier)
 
         assert expected_data == found_data

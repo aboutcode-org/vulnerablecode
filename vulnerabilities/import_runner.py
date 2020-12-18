@@ -131,9 +131,9 @@ def process_advisories(data_source: DataSource) -> None:
                     for score in vuln_ref.severities:
                         models.VulnerabilitySeverity.objects.update_or_create(
                             vulnerability=vuln,
+                            scoring_system_identifier=score.system,
                             reference=ref,
-                            severity_type=score.severity_type,
-                            defaults={"severity_value": score.severity_value},
+                            defaults={"value": score.value},
                         )
 
                 for purl in chain(advisory.impacted_package_urls, advisory.resolved_package_urls):

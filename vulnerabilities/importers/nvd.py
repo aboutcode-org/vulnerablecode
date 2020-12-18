@@ -106,16 +106,16 @@ class NVDDataSource(DataSource):
         if cve_item["impact"].get("baseMetricV3"):
             severity_scores.append(
                 VulnerabilitySeverity(
-                    severity_type="cvssV3",
-                    severity_value=str(cve_item["impact"]["baseMetricV3"]["cvssV3"]["baseScore"]),
+                    system="cvssV3",
+                    value=str(cve_item["impact"]["baseMetricV3"]["cvssV3"]["baseScore"]),
                 )
             )
 
         if cve_item["impact"].get("baseMetricV2"):
             severity_scores.append(
                 VulnerabilitySeverity(
-                    severity_type="cvssV2",
-                    severity_value=str(cve_item["impact"]["baseMetricV2"]["cvssV2"]["baseScore"]),
+                    system="cvssV2",
+                    value=str(cve_item["impact"]["baseMetricV2"]["cvssV2"]["baseScore"]),
                 )
             )
 

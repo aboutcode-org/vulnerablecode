@@ -90,7 +90,7 @@ class TestRedhat(unittest.TestCase):
                             scores=[
 >>>>>>> Store severity scores given by RedHat
                                 VulnerabilitySeverity(
-                                    severity_type="REDHAT_BUGZILLA_SEVERITY", severity_value=2.0
+                                    system="REDHAT_BUGZILLA_SEVERITY", value=2.0
                                 )
                             ],
                         ),
@@ -103,7 +103,7 @@ class TestRedhat(unittest.TestCase):
                             scores=[
 >>>>>>> Store severity scores given by RedHat
                                 VulnerabilitySeverity(
-                                    severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
+                                    system="RHSA_AGGREGATE_SEVERITY", value=2.2
                                 )
                             ],
                         ),
@@ -116,7 +116,7 @@ class TestRedhat(unittest.TestCase):
                             scores=[
 >>>>>>> Store severity scores given by RedHat
                                 VulnerabilitySeverity(
-                                    severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
+                                    system="RHSA_AGGREGATE_SEVERITY", value=2.2
                                 )
                             ],
                         ),
@@ -129,7 +129,7 @@ class TestRedhat(unittest.TestCase):
                             scores=[
 >>>>>>> Store severity scores given by RedHat
                                 VulnerabilitySeverity(
-                                    severity_type="REDHAT_CVSS3", severity_value=6.0
+                                    system="REDHAT_CVSS3", value=6.0
                                 )
                             ],
                         ),
@@ -181,7 +181,7 @@ class TestRedhat(unittest.TestCase):
                             scores=[
 >>>>>>> Store severity scores given by RedHat
                                 VulnerabilitySeverity(
-                                    severity_type="REDHAT_BUGZILLA_SEVERITY", severity_value=2.0
+                                    system="REDHAT_BUGZILLA_SEVERITY", value=2.0
                                 )
                             ],
                         ),
@@ -194,7 +194,7 @@ class TestRedhat(unittest.TestCase):
                             scores=[
 >>>>>>> Store severity scores given by RedHat
                                 VulnerabilitySeverity(
-                                    severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
+                                    system="RHSA_AGGREGATE_SEVERITY", value=2.2
                                 )
                             ],
                         ),
@@ -207,7 +207,7 @@ class TestRedhat(unittest.TestCase):
                             scores=[
 >>>>>>> Store severity scores given by RedHat
                                 VulnerabilitySeverity(
-                                    severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
+                                    system="RHSA_AGGREGATE_SEVERITY", value=2.2
                                 )
                             ],
                         ),
@@ -220,7 +220,7 @@ class TestRedhat(unittest.TestCase):
                             scores=[
 >>>>>>> Store severity scores given by RedHat
                                 VulnerabilitySeverity(
-                                    severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
+                                    system="RHSA_AGGREGATE_SEVERITY", value=2.2
                                 )
                             ],
                         ),
@@ -233,7 +233,7 @@ class TestRedhat(unittest.TestCase):
                             scores=[
 >>>>>>> Store severity scores given by RedHat
                                 VulnerabilitySeverity(
-                                    severity_type="RHSA_AGGREGATE_SEVERITY", severity_value=2.2
+                                    system="RHSA_AGGREGATE_SEVERITY", value=2.2
                                 )
                             ],
                         ),
@@ -246,7 +246,7 @@ class TestRedhat(unittest.TestCase):
                             scores=[
 >>>>>>> Store severity scores given by RedHat
                                 VulnerabilitySeverity(
-                                    severity_type="REDHAT_CVSS3", severity_value=6.0
+                                    system="REDHAT_CVSS3", value=6.0
                                 )
                             ],
                         ),
@@ -273,7 +273,7 @@ class TestRedhat(unittest.TestCase):
                             scores=[
 >>>>>>> Store severity scores given by RedHat
                                 VulnerabilitySeverity(
-                                    severity_type="REDHAT_BUGZILLA_SEVERITY", severity_value=2.0
+                                    system="REDHAT_BUGZILLA_SEVERITY", value=2.0
                                 )
                             ],
                         ),
@@ -286,7 +286,7 @@ class TestRedhat(unittest.TestCase):
                             scores=[
 >>>>>>> Store severity scores given by RedHat
                                 VulnerabilitySeverity(
-                                    severity_type="REDHAT_CVSS3", severity_value=6.0
+                                    system="REDHAT_CVSS3", value=6.0
                                 )
                             ],
                         ),

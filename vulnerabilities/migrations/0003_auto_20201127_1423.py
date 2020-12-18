@@ -15,8 +15,8 @@ class Migration(migrations.Migration):
             name='VulnerabilitySeverity',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('severity_type', models.CharField(help_text='Example: CVSS v2, Redhat Impact Score', max_length=50)),
-                ('severity_value', models.CharField(help_text='Example: 9.0, Important, High', max_length=50)),
+                ('system', models.CharField(help_text='Example: CVSS v2, Redhat Impact Score', max_length=50)),
+                ('value', models.CharField(help_text='Example: 9.0, Important, High', max_length=50)),
                 ('reference', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='vulnerabilities.VulnerabilityReference')),
                 ('vulnerability', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='vulnerabilities.Vulnerability')),
             ],

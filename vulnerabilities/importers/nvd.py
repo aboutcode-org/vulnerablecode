@@ -83,7 +83,7 @@ class NVDDataSource(DataSource):
                 Reference(
                     url=f"https://nvd.nist.gov/vuln/detail/{cve_id}",
                     reference_id=cve_id,
-                    severities=severity_severities,
+                    severities=severity_scores,
                 )
             )
             summary = self.extract_summary(cve_item)

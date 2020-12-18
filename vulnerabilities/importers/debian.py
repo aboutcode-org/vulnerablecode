@@ -111,6 +111,10 @@ class DebianDataSource(DataSource):
             if not cve_id.startswith("CVE"):
                 continue
 
+            # vulnerabilities starting with something may not be public yet
+            # see for instance https://web.archive.org/web/20201215213725/https://security-tracker.debian.org/tracker/TEMP-0000000-A2EB44  # nopep8
+            # TODO: this would need to be revisited though to ensure we are not missing out on anything  # nopep8
+
             for release_name, release_record in record["releases"].items():
                 if not release_record.get("repositories", {}).get(release_name):
                     continue

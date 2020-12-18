@@ -48,8 +48,8 @@ logger = logging.getLogger(__name__)
 
 @dataclasses.dataclass
 class VulnerabilitySeverity:
-    severity_type: str
-    severity_value: str
+    system: str
+    value: str
 
 
 @dataclasses.dataclass

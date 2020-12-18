@@ -12,6 +12,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterUniqueTogether(
             name='vulnerabilityseverity',
-            unique_together={('vulnerability', 'reference', 'severity_type')},
+            unique_together={('vulnerability', 'reference', 'system')},
         ),
     ]

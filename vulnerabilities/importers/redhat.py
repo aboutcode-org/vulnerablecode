@@ -43,9 +43,9 @@ class RedhatDataSource(DataSource):
     def updated_advisories(self):
         processed_advisories = []
         for advisory_data in self.redhat_response:
-            yield [to_advisory(advisory_data)]
+            processed_advisories.extend(to_advisory(advisory_data))
 
-        # return self.batch_advisories(processed_advisories)
+        return self.batch_advisories(processed_advisories)
 
 
 def fetch():

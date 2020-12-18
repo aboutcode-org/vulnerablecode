@@ -205,13 +205,14 @@ class Importer(models.Model):
 
 class VulnerabilitySeverity(models.Model):
 
-    severity_type = models.CharField(
-        max_length=50, help_text="Example: CVSS v2, Redhat Impact Score"
-    )
-    severity_value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
-    reference = models.ForeignKey(VulnerabilityReference, on_delete=models.CASCADE)
     vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
+    value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
+    scoring_system_identifier = models.CharField(
+        max_length=50, help_text="Example: cvssv2"
+    )
+    reference = models.ForeignKey(VulnerabilityReference, on_delete=models.CASCADE)
+    
 
     class Meta:
         # TBD
-        unique_together = ("vulnerability", "reference", "severity_type")
+        unique_together = ("vulnerability", "reference", "scoring_system_identifier")

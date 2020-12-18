@@ -149,7 +149,7 @@ class TestNVDDataSource(TestCase):
                         Reference(
                             url="https://nvd.nist.gov/vuln/detail/CVE-2005-4895",  # nopep8
                             scores=[
-                                VulnerabilitySeverity(severity_type="cvssV2", severity_value="5.0")
+                                VulnerabilitySeverity(system="cvssV2", value="5.0")
                             ],
                             reference_id="CVE-2005-4895",
                         ),

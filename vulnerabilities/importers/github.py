@@ -97,14 +97,6 @@ class GitHubAPIDataSource(DataSource):
         except KeyError:
             raise GitHubTokenError("Environment variable GH_TOKEN is missing")
 
-        self.ecosytem_type = {
-            "RUBYGEMS": "gem",
-            "NUGET": "nuget",
-            "PIP": "pypi",
-            "MAVEN": "maven",
-            "COMPOSER": "composer",
-        }
-
     def __enter__(self):
         self.advisories = self.fetch()
 
@@ -177,7 +169,7 @@ class GitHubAPIDataSource(DataSource):
         adv_list = []
         for ecosystem in self.advisories:
             self.set_version_api(ecosystem)
-            pkg_type = self.ecosytem_type[ecosystem]
+            pkg_type = self.version_api.package_type
             for resp_page in self.advisories[ecosystem]:
                 for adv in resp_page["data"]["securityVulnerabilities"]["edges"]:
                     name = adv["node"]["package"]["name"]

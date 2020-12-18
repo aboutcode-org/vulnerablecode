@@ -17,21 +17,19 @@
 #  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
 #  VulnerableCode should be considered or used as legal advice. Consult an Attorney
 #  for any legal advice.
-#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
+#  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import os
-from unittest import TestCase
-from unittest.mock import patch
 from collections import OrderedDict
+from unittest import TestCase
 
-from vulnerabilities.data_source import Reference
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import Reference
 from vulnerabilities.importers.elixir_security import ElixirSecurityDataSource
 from vulnerabilities.package_managers import HexVersionAPI
-
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -43,55 +41,21 @@ class TestElixirSecurityDataSource(TestCase):
             "repository_url": 'https://github.com/dependabot/elixir-security-advisories',
         }
         cls.data_src = ElixirSecurityDataSource(1, config=data_source_cfg)
-        cls.data_src.pkg_manager_api = HexVersionAPI()
+        cls.data_src.pkg_manager_api = HexVersionAPI({'coherence': [
+            "0.5.2",
+            "0.5.1",
+            "0.5.0",
+            "0.4.0",
+            "0.3.1",
+            "0.3.0",
+            "0.2.0",
+            "0.1.3",
+            "0.1.2",
+            "0.1.1",
+            "0.1.0",
+                    ]})
 
-    @patch('vulnerabilities.package_managers.HexVersionAPI.get',
-           return_value=[
-            "0.5.2",
-            "0.5.1",
-            "0.5.0",
-            "0.4.0",
-            "0.3.1",
-            "0.3.0",
-            "0.2.0",
-            "0.1.3",
-            "0.1.2",
-            "0.1.1",
-            "0.1.0",
-                    ])
-    def test_generate_all_version_list(self, mock_write):
-        package = "coherence"
-        actual_list = self.data_src.generate_all_version_list(package)
-        expected_list = [
-            "0.5.2",
-            "0.5.1",
-            "0.5.0",
-            "0.4.0",
-            "0.3.1",
-            "0.3.0",
-            "0.2.0",
-            "0.1.3",
-            "0.1.2",
-            "0.1.1",
-            "0.1.0",
-        ]
-        assert actual_list == expected_list
-
-    @patch('vulnerabilities.package_managers.HexVersionAPI.get',
-           return_value=[
-            "0.5.2",
-            "0.5.1",
-            "0.5.0",
-            "0.4.0",
-            "0.3.1",
-            "0.3.0",
-            "0.2.0",
-            "0.1.3",
-            "0.1.2",
-            "0.1.1",
-            "0.1.0",
-                ])
-    def test_process_file(self, mock_write):
+    def test_process_file(self):
 
         path = os.path.join(BASE_DIR, "test_data/elixir_security/test_file.yml")
         expected_data = Advisory(
@@ -108,7 +72,8 @@ class TestElixirSecurityDataSource(TestCase):
             },
             vuln_references=[
                 Reference(reference_id='2aae6e3a-24a3-4d5f-86ff-b964eaf7c6d1',
-                          url="https://github.com/smpallen99/coherence/issues/270")
+                          ),
+                Reference(url='https://github.com/smpallen99/coherence/issues/270')
             ],
             cve_id="CVE-2018-20301",
         )

@@ -51,7 +51,7 @@ class NginxDataSource(DataSource):
         self.version_api = GitHubTagsAPI()
         asyncio.run(self.version_api.load_api(["nginx/nginx"]))
 
-        # For some reason nginx tags it's releases in the form of `release-1.2.3`
+        # For some reason nginx tags it's releases are in the form of `release-1.2.3`
         # Chop off the `release-` part here.
         for index, version in enumerate(self.version_api.cache["nginx/nginx"]):
             self.version_api.cache["nginx/nginx"][index] = version.replace("release-", "")

@@ -29,6 +29,7 @@ import xml.etree.ElementTree as ET
 
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientResponseError
+from aiohttp.client_exceptions import ServerDisconnectedError
 
 
 class VersionAPI:
@@ -40,6 +41,9 @@ class VersionAPI:
 
 
 class LaunchpadVersionAPI(VersionAPI):
+
+    package_type = "deb"
+
     async def load_api(self, pkg_set):
         async with ClientSession(raise_for_status=True) as session:
             await asyncio.gather(
@@ -74,6 +78,9 @@ class LaunchpadVersionAPI(VersionAPI):
 
 
 class PypiVersionAPI(VersionAPI):
+
+    package_type = "pypi"
+
     async def load_api(self, pkg_set):
         async with ClientSession(raise_for_status=True) as session:
             await asyncio.gather(
@@ -95,6 +102,9 @@ class PypiVersionAPI(VersionAPI):
 
 
 class CratesVersionAPI(VersionAPI):
+
+    package_type = "cargo"
+
     async def load_api(self, pkg_set):
         async with ClientSession(raise_for_status=True) as session:
             await asyncio.gather(
@@ -113,6 +123,9 @@ class CratesVersionAPI(VersionAPI):
 
 
 class RubyVersionAPI(VersionAPI):
+
+    package_type = "gem"
+
     async def load_api(self, pkg_set):
         async with ClientSession(raise_for_status=True) as session:
             await asyncio.gather(
@@ -134,6 +147,9 @@ class RubyVersionAPI(VersionAPI):
 
 
 class NpmVersionAPI(VersionAPI):
+
+    package_type = "npm"
+
     async def load_api(self, pkg_set):
         async with ClientSession(raise_for_status=True) as session:
             await asyncio.gather(
@@ -155,6 +171,9 @@ class NpmVersionAPI(VersionAPI):
 
 
 class DebianVersionAPI(VersionAPI):
+
+    package_type = "deb"
+
     async def load_api(self, pkg_set):
         # Need to set the headers, because the Debian API upgrades
         # the connection to HTTP 2.0
@@ -188,6 +207,9 @@ class DebianVersionAPI(VersionAPI):
 
 
 class MavenVersionAPI(VersionAPI):
+
+    package_type = "maven"
+
     async def load_api(self, pkg_set):
         async with ClientSession(raise_for_status=True) as session:
             await asyncio.gather(
@@ -241,6 +263,9 @@ class MavenVersionAPI(VersionAPI):
 
 
 class NugetVersionAPI(VersionAPI):
+
+    package_type = "nuget"
+
     async def load_api(self, pkg_set):
         async with ClientSession(raise_for_status=True) as session:
             await asyncio.gather(
@@ -273,6 +298,9 @@ class NugetVersionAPI(VersionAPI):
 
 
 class ComposerVersionAPI(VersionAPI):
+
+    package_type = "composer"
+
     async def load_api(self, pkg_set):
         async with ClientSession(raise_for_status=True) as session:
             await asyncio.gather(
@@ -303,6 +331,9 @@ class ComposerVersionAPI(VersionAPI):
 
 
 class GitHubTagsAPI(VersionAPI):
+
+    package_type = "github"
+
     async def load_api(self, repo_set):
         async with ClientSession(raise_for_status=True) as session:
             await asyncio.gather(
@@ -319,7 +350,6 @@ class GitHubTagsAPI(VersionAPI):
         endpoint = f"https://api.github.com/repos/{owner_repo}/git/refs/tags"
         resp = await session.request(method="GET", url=endpoint)
         resp = await resp.json()
-        print(resp)
         self.cache[owner_repo] = [release["ref"].split("/")[-1] for release in resp]
 
 

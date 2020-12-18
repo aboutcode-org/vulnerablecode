@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <title>PostgreSQL: Security Information</title>
+  
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row justify-content-center pg-shout-box">
+        <div class="col text-white text-center">12th November 2020: <a href="https://www.postgresql.org/about/news/postgresql-131-125-1110-1015-9620-and-9524-released-2111/">
+  PostgreSQL 13.1, 12.5, 11.10, 10.15, 9.6.20, &amp; 9.5.24 Released</a>!
+
+</div>
+      </div>
+    </div>
+    
+<div class="container-fluid margin">
+  <div class="row">
+    <div class="col-lg-2">
+      <div id="pgSideWrap">
+       
+       <div id="pgSideNav">
+         <h2>Quick Links</h2>
+
+         <ul>
+           
+           
+           <li><a href="/support/">Support</a>
+            
+            
+           
+           </li>
+           <li><a href="/support/versioning/">Versioning Policy</a>
+            
+            
+           
+           </li>
+           <li><a href="/support/security/">Security</a>
+            
+            
+           
+           </li>
+           <li><a href="/support/professional_support/">Professional Services</a>
+            
+            
+           
+           </li>
+           <li><a href="/support/professional_hosting/">Hosting Solutions</a>
+            
+            
+           
+           </li>
+           <li class="last-child"><a href="/account/submitbug/">Report a Bug</a>
+            
+            
+           </li>
+            
+           
+        </ul>
+
+       </div>
+       
+      </div> <!-- pgSideWrap -->
+    </div>
+    <div class="col-lg-10">
+      <div id="pgContentWrap">
+        
+
+<h1>Security Information <i class="fas fa-lock"></i></h1>
+
+<p>
+If you wish to report a new security vulnerability in PostgreSQL, please
+send an email to
+<a href="mailto:security@postgresql.org">security@postgresql.org</a>.
+For reporting non-security bugs, please see the <a href="/account/submitbug/">Report a Bug</a> page.
+</p>
+
+
+<h2>Known security issues in all supported versions</h2>
+<p>
+You can filter the view of patches to show just patches for version:<br/>
+
+<a href="/support/security/13/">13</a> -
+
+<a href="/support/security/12/">12</a> -
+
+<a href="/support/security/11/">11</a> -
+
+<a href="/support/security/10/">10</a> -
+
+<a href="/support/security/9.6/">9.6</a> -
+
+<a href="/support/security/9.5/">9.5</a>
+
+- <a href="/support/security/">all</a>
+</p>
+
+<table class="table table-striped">
+  <thead class="thead-light">
+    <tr>
+      <th>Reference</th>
+      <th>Affected</th>
+      <th>Fixed</th>
+      <th><a href="#comp">Component</a> & CVSS v3 Base Score</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    
+      <tr>
+        <td>
+          <nobr>CVE-2020-10733</nobr><br/>
+          <a href="/about/news/postgresql-123-118-1013-9618-and-9522-released-2038/">Announcement</a><br/>
+        </td>
+        <td>9.5</td>
+        <td>9.5.22</td>
+        <td>packaging<br/>
+          <a href="https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:L/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:H">6.7</a><br/><span class="cvssvector">AV:L/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:H</span>
+    </td>
+        <td>Windows installer runs executables from uncontrolled directories</td>
+      </tr>
+    
+      <tr>
+        <td>
+          <nobr><a href="https://access.redhat.com/security/cve/CVE-2020-1720">CVE-2020-1720</a></nobr><br/>
+          <a href="/about/news/postgresql-122-117-1012-9617-9521-and-9426-released-2011/">Announcement</a><br/>
+        </td>
+        <td>11, 12</td>
+        <td></td>
+        <td>core server<br/>
+          <a href="https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N">3.1</a><br/><span class="cvssvector">AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N</span>
+    </td>
+        <td>ALTER ... DEPENDS ON EXTENSION is missing authorization checks.</td>
+      </tr>
+    
+  </tbody>
+</table>
+
+<h3>Unsupported versions</h3>
+<p>
+  You can also view archived security patches for unsupported versions. Note that no further
+  security patches are made available for these versions as they are end of life.<br/>
+
+<a href="/support/security/9.4/">9.4</a> -
+
+<a href="/support/security/9.3/">9.3</a> -
+
+<a href="/support/security/9.2/">9.2</a> -
+
+<a href="/support/security/9.1/">9.1</a> -
+
+<a href="/support/security/9.0/">9.0</a> -
+
+<a href="/support/security/8.4/">8.4</a> -
+
+<a href="/support/security/8.3/">8.3</a> -
+
+<a href="/support/security/8.2/">8.2</a> -
+
+<a href="/support/security/8.1/">8.1</a> -
+
+<a href="/support/security/8.0/">8.0</a> -
+
+<a href="/support/security/7.4/">7.4</a> -
+
+<a href="/support/security/7.3/">7.3</a>
+
+</p>
+
+
+<a name="comp"></a>
+<h2>Components</h2>
+<p>
+The following component references are used in the above table:
+</p>
+
+<table class="table table-striped">
+  <thead class="thead-light">
+    <tr>
+      <th>Component</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+       <td>core server</td>
+       <td>This vulnerability exists in the core server product.</td>
+      </tr>
+
+      <tr>
+       <td>client</td>
+       <td>This vulnerability exists in a client library or client application only.</td>
+      </tr>
+
+      <tr>
+       <td>contrib module</td>
+       <td>This vulnerability exists in a contrib module. Contrib modules are not installed by default when PostgreSQL is installed from source. They may be installed by binary packages.</td>
+      </tr>
+
+      <tr>
+       <td>client contrib module</td>
+       <td>This vulnerability exists in a contrib module used on the client only.</td>
+      </tr>
+
+      <tr>
+       <td>packaging</td>
+       <td>This vulnerability exists in PostgreSQL binary packaging, e.g. an installer or RPM.</td>
+      </tr>
+  </tbody>
+</table>
+
+
+
+      </div> <!-- pgContentWrap -->
+    </div>
+  </div>
+</div>
+
+    <!-- Footer -->
+    <footer id="footer">
+      <!-- Copyright -->
+      <div class="container">
+        <a href="/about/policies/">Policies</a> |
+        <a href="/about/policies/coc/">Code of Conduct</a> |
+        <a href="/about/">About PostgreSQL</a> |
+        <a href="/about/contact/">Contact</a><br/>
+        <p>Copyright &copy; 1996-2020 The PostgreSQL Global Development Group</p>
+      </div>
+    </footer>
+  </body>
+</html>

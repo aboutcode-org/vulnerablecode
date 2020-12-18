@@ -20,13 +20,12 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import yaml
-
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
+from vulnerabilities.helpers import load_yaml
 
 
 class KaybeeDataSource(GitDataSource):
@@ -36,14 +35,11 @@ class KaybeeDataSource(GitDataSource):
             recursive=True,
             file_ext="yaml",
         )
-        print(self._added_files.union(self._updated_files))
 
     def updated_advisories(self):
         advisories = []
         for yaml_file in self._added_files.union(self._updated_files):
-            print(yaml_file)
             advisories.append(yaml_file_to_advisory(yaml_file))
-            print(advisories[-1])
 
         return self.batch_advisories(advisories)
 
@@ -76,9 +72,3 @@ def yaml_file_to_advisory(yaml_path):
         resolved_package_urls=resolved_packages,
         vuln_references=references,
     )
-
-
-# TODO refactor all such  commonly needed helpers into one single module
-def load_yaml(path):
-    with open(path) as f:
-        return yaml.safe_load(f)

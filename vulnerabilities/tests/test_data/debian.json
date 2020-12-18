@@ -72,6 +72,29 @@
           "urgency": "medium"
         }
       }
+    },
+    "TEMP-0000000-A2EB44": {
+      "scope": "remote",
+      "debianbug": 456,
+      "description": "Multiple temp vulnerabilities in foo bar",
+      "releases": {
+        "stretch": {
+          "status": "resolved",
+          "repositories": {
+            "stretch": "1.2.3"
+          },
+          "fixed_version": "1.3.3",
+          "urgency": "medium"
+        },
+        "buster": {
+          "status": "resolved",
+          "repositories": {
+            "buster": "1.3.4"
+          },
+          "fixed_version": "1.4.5",
+          "urgency": "medium"
+        }
+      }
     }
   }
 }

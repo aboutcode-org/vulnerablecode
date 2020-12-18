@@ -27,12 +27,12 @@ from typing import List
 from dephell_specifier import RangeSpecifier
 from dephell_specifier.range_specifier import InvalidSpecifier
 from packageurl import PackageURL
-import yaml
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import RubyVersionAPI
+from vulnerabilities.helpers import load_yaml
 
 
 class RubyDataSource(GitDataSource):
@@ -152,8 +152,3 @@ class RubyDataSource(GitDataSource):
                     safe_versions.add(i)
 
         return (safe_versions, all_versions - safe_versions)
-
-
-def load_yaml(path):
-    with open(path) as f:
-        return yaml.safe_load(f)

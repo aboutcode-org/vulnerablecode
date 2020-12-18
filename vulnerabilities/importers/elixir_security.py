@@ -17,17 +17,13 @@
 #  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
 #  VulnerableCode should be considered or used as legal advice. Consult an Attorney
 #  for any legal advice.
-#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
+#  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
-import yaml
-import json
-import requests
-import re
-from typing import Set
-from typing import List
+from typing import List, Set
 
+import yaml
 from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
 
@@ -74,23 +70,18 @@ class ElixirSecurityDataSource(GitDataSource):
         packages = set()
         files = self._updated_files.union(self._added_files)
         for f in files:
-            with open(f) as file:
-                data = yaml.safe_load(file)
-                if data.get("package"):
-                    packages.add(data["package"])
+            data = load_yaml(f)
+            if data.get("package"):
+                packages.add(data["package"])
 
         return packages
 
-    def generate_all_version_list(self, pkg_name):
-        if not getattr(self, 'pkg_manager_api', None):
-            self.pkg_manager_api = HexVersionAPI()
-        version_list = self.pkg_manager_api.get(
-            pkg_name)
-        return version_list
-
     def get_versions_from_range(self, version_list, pkg_name):
         pkg_versions = []
-        all_version_list = self.generate_all_version_list(pkg_name)
+        if not getattr(self, 'pkg_manager_api', None):
+            self.pkg_manager_api = HexVersionAPI()
+        all_version_list = self.pkg_manager_api.get(
+            pkg_name)
         if version_list is None:
             return
         version_ranges = {RangeSpecifier(r) for r in version_list}
@@ -100,40 +91,49 @@ class ElixirSecurityDataSource(GitDataSource):
         return pkg_versions
 
     def process_file(self, path):
-        with open(path) as f:
-            yaml_file = yaml.safe_load(f)
-            pkg_name = yaml_file["package"]
-            safe_pkg_versions = []
-            if yaml_file.get("unaffected_versions"):
-                safe_pkg_versions = self.get_versions_from_range(
-                    yaml_file["patched_versions"] +
-                    yaml_file["unaffected_versions"],
-                    pkg_name,
-                )
-            else:
-                safe_pkg_versions = self.get_versions_from_range(
-                    yaml_file["patched_versions"], pkg_name
-                )
-
-            cve_id = "CVE-"+str(yaml_file["cve"])
-            safe_purls = []
-            if safe_pkg_versions is not None:
-                safe_purls = {
-                    PackageURL(name=pkg_name, type="hex", version=version)
-                    for version in safe_pkg_versions
-                }
-
-            vuln_reference = [
-                Reference(
-                    reference_id=yaml_file["id"],
-                    url=yaml_file["link"],
-                )
-            ]
-
-            return Advisory(
-                summary=yaml_file["description"],
-                impacted_package_urls=[],
-                resolved_package_urls=safe_purls,
-                cve_id=cve_id,
-                vuln_references=vuln_reference,
+        yaml_file = load_yaml(path)
+        pkg_name = yaml_file["package"]
+        safe_pkg_versions = []
+        if yaml_file.get("unaffected_versions"):
+            safe_pkg_versions = self.get_versions_from_range(
+                yaml_file["patched_versions"] +
+                yaml_file["unaffected_versions"],
+                pkg_name,
             )
+        else:
+            safe_pkg_versions = self.get_versions_from_range(
+                yaml_file["patched_versions"], pkg_name
+            )
+        if yaml_file.get('cve'):
+            cve_id = "CVE-" + yaml_file["cve"]
+        else:
+            cve_id = ""
+
+        safe_purls = []
+        if safe_pkg_versions is not None:
+            safe_purls = {
+                PackageURL(name=pkg_name, type="hex", version=version)
+                for version in safe_pkg_versions
+            }
+
+        vuln_reference = [
+            Reference(
+                reference_id=yaml_file["id"],
+            ),
+            Reference(
+                url=yaml_file["link"],
+            )
+        ]
+
+        return Advisory(
+            summary=yaml_file["description"],
+            impacted_package_urls=[],
+            resolved_package_urls=safe_purls,
+            cve_id=cve_id,
+            vuln_references=vuln_reference,
+        )
+
+
+def load_yaml(path):
+    with open(path) as f:
+        return yaml.safe_load(f)

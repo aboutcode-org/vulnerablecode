@@ -303,6 +303,7 @@ class TestGitHubAPIDataSource(TestCase):
         ]
 
         mock_version_api = MagicMock()
+        mock_version_api.package_type = "maven"
         mock_version_api.get = lambda x: {'1.2.0', '9.0.2'}
         with patch('vulnerabilities.importers.github.MavenVersionAPI', return_value=mock_version_api):  # nopep8
             with patch('vulnerabilities.importers.github.GitHubAPIDataSource.set_api'):

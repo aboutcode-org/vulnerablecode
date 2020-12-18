@@ -22,12 +22,11 @@
 
 import csv
 import dataclasses
+import re
 import urllib.request
 
 # Reading CSV file from  a url using `requests` is bit too complicated.
-# Use `urllib.request` for that purpose. Need `requests` because making
-# a HEADER request using `urllib.request` is too complicated.
-import requests
+# Use `urllib.request` for that purpose.
 from packageurl import PackageURL
 
 
@@ -35,11 +34,13 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import DataSourceConfiguration
+from vulnerabilities.helpers import create_etag
+from vulnerabilities.helpers import is_cve
 
 
 @dataclasses.dataclass
 class ProjectKBDataSourceConfiguration(DataSourceConfiguration):
-    etag: dict
+    etags: dict
 
 
 class ProjectKBMSRDataSource(DataSource):
@@ -49,28 +50,12 @@ class ProjectKBMSRDataSource(DataSource):
     url = "https://raw.githubusercontent.com/SAP/project-kb/master/MSR2019/dataset/vulas_db_msr2019_release.csv"  # nopep8
 
     def updated_advisories(self):
-        # etag are like hashes of web responses. We maintain
-        # (url, etag) mappings in the DB. `create_etag`  creates
-        # (url, etag) pair. If a (url, etag) already exists then the code
-        # skips processing the response further to avoid duplicate work
-        if self.create_etag(self.url):
+        if create_etag(data_src=self, url=self.url, etag_key="ETag"):
             raw_data = self.fetch()
             advisories = self.to_advisories(raw_data)
             return self.batch_advisories(advisories)
 
         return []
-
-    def create_etag(self, url):
-        etag = requests.head(url).headers.get("ETag")
-        if not etag:
-            return True
-
-        elif url in self.config.etag:
-            if self.config.etag[url] == etag:
-                return False
-
-        self.config.etag[url] = etag
-        return True
 
     def fetch(self):
         response = urllib.request.urlopen(self.url)
@@ -80,15 +65,23 @@ class ProjectKBMSRDataSource(DataSource):
     @staticmethod
     def to_advisories(csv_reader):
         # Project KB MSR csv file has no header row
-        advsiories = []
+        advisories = []
         for row in csv_reader:
             vuln_id, proj_home, fix_commit, _ = row
             commit_link = proj_home + "/commit/" + fix_commit
-            advsiories.append(
+
+            if is_cve(vuln_id):
+                reference = Reference(url=commit_link)
+
+            else:
+                reference = Reference(url=commit_link, reference_id=vuln_id)
+                vuln_id = ""
+
+            advisories.append(
                 Advisory(
                     summary="",
                     impacted_package_urls=[],
-                    vuln_references=[Reference(url=commit_link)],
+                    vuln_references=[reference],
                     cve_id=vuln_id,
                 )
             )

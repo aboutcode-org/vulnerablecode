@@ -30,6 +30,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
+from vulnerabilities.helpers import create_etag
 
 
 @dataclasses.dataclass
@@ -43,7 +44,7 @@ class UbuntuUSNDataSource(DataSource):
 
     def updated_advisories(self):
         advisories = []
-        if self.create_etag(self.config.db_url):
+        if create_etag(data_src=self, url=self.config.db_url, etag_key="etag"):
             advisories.extend(self.to_advisories(fetch(self.config.db_url)))
 
         return self.batch_advisories(advisories)

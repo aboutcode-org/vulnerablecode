@@ -1,4 +1,4 @@
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -17,7 +17,7 @@
 #  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
 #  VulnerableCode should be considered or used as legal advice. Consult an Attorney
 #  for any legal advice.
-#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
+#  VulnerableCode is a free software code from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 
@@ -82,8 +82,8 @@ def to_advisory(advisory_data):
         bugzilla_data = requests.get(f"https://bugzilla.redhat.com/rest/bug/{bugzilla}").json()
         bugzilla_severity_val = bugzilla_data["bugs"][0]["severity"]
         bugzilla_severity = VulnerabilitySeverity(
-            severity_type="REDHAT_BUGZILLA_SEVERITY",
-            severity_value=bugzilla_severity_val,
+            system="REDHAT_BUGZILLA_SEVERITY",
+            value=bugzilla_severity_val,
         )
 
         references.append(
@@ -102,11 +102,13 @@ def to_advisory(advisory_data):
         # See https://access.redhat.com/articles/2130961 for more details.
 
         if "RHSA" in rh_adv:
-            rhsa_data = requests.get(f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json").json()  # nopep8
-            severity_value = rhsa_data["cvrfdoc"]["aggregate_severity"]
+            rhsa_data = requests.get(
+                f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json"
+            ).json()  # nopep8
+            value = rhsa_data["cvrfdoc"]["aggregate_severity"]
             rhsa_aggregate_severity = VulnerabilitySeverity(
-                severity_type="RHSA_AGGREGATE_SEVERITY",
-                severity_value=severity_value,
+                system="RHSA_AGGREGATE_SEVERITY",
+                value=value,
             )
 
             references.append(
@@ -123,8 +125,8 @@ def to_advisory(advisory_data):
     redhat_cve_entry = requests.get(advisory_data["resource_url"]).json()
     redhat_cvss = redhat_cve_entry["cvss3"]["cvss3_base_score"]
     redhat_cvss3 = VulnerabilitySeverity(
-        severity_type="REDHAT_CVSS3",
-        severity_value=redhat_cvss,
+        system="REDHAT_CVSS3",
+        value=redhat_cvss,
     )
 
     references.append(Reference(severities=[redhat_cvss3], url=advisory_data["resource_url"]))

@@ -207,11 +207,8 @@ class VulnerabilitySeverity(models.Model):
 
     vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
     value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
-    scoring_system_identifier = models.CharField(
-        max_length=50, help_text="Example: cvssv2"
-    )
+    scoring_system_identifier = models.CharField(max_length=50, help_text="Example: cvssv2")
     reference = models.ForeignKey(VulnerabilityReference, on_delete=models.CASCADE)
-    
 
     class Meta:
         # TBD

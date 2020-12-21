@@ -78,58 +78,62 @@ class ElixirSecurityDataSource(GitDataSource):
         return packages
 
     def get_versions_from_range(self, version_list, pkg_name):
-        pkg_versions = []
-        if not getattr(self, 'pkg_manager_api', None):
-            self.pkg_manager_api = HexVersionAPI()
-        all_version_list = self.pkg_manager_api.get(
-            pkg_name)
-        if version_list is None:
-            return
+        safe_pkg_versions = []
+        vuln_pkg_versions = []
+        all_version_list = self.pkg_manager_api.get(pkg_name)
+        if not version_list:
+            return [], all_version_list
         version_ranges = {RangeSpecifier(r) for r in version_list}
         for version in all_version_list:
             if any([version in v for v in version_ranges]):
-                pkg_versions.append(version)
-        return pkg_versions
+                safe_pkg_versions.append(version)
+
+        vuln_pkg_versions = set(all_version_list) - set(safe_pkg_versions)
+        return safe_pkg_versions, vuln_pkg_versions
 
     def process_file(self, path):
         yaml_file = load_yaml(path)
         pkg_name = yaml_file["package"]
         safe_pkg_versions = []
-        if yaml_file.get("unaffected_versions"):
-            safe_pkg_versions = self.get_versions_from_range(
-                yaml_file["patched_versions"] +
-                yaml_file["unaffected_versions"],
-                pkg_name,
-            )
-        else:
-            safe_pkg_versions = self.get_versions_from_range(
-                yaml_file["patched_versions"], pkg_name
-            )
-        if yaml_file.get('cve'):
+        vuln_pkg_versions = []
+        if not yaml_file.get("patched_versions"):
+            yaml_file["patched_versions"] = []
+        if not yaml_file.get("unaffected_versions"):
+            yaml_file["unaffected_versions"] = []
+        safe_pkg_versions, vuln_pkg_versions = self.get_versions_from_range(
+            yaml_file.get("patched_versions", []) + yaml_file.get("unaffected_versions", []),
+            pkg_name,
+        )
+
+        if yaml_file.get("cve"):
             cve_id = "CVE-" + yaml_file["cve"]
         else:
             cve_id = ""
 
         safe_purls = []
-        if safe_pkg_versions is not None:
-            safe_purls = {
-                PackageURL(name=pkg_name, type="hex", version=version)
-                for version in safe_pkg_versions
-            }
+        vuln_purls = []
 
-        vuln_reference = [
+        safe_purls = {
+            PackageURL(name=pkg_name, type="hex", version=version) for version in safe_pkg_versions
+        }
+
+        vuln_purls = {
+            PackageURL(name=pkg_name, type="hex", version=version) for version in vuln_pkg_versions
+        }
+
+        vuln_references = [
             Reference(
                 reference_id=yaml_file["id"],
             ),
             Reference(
                 url=yaml_file["link"],
-            )
+            ),
         ]
 
         return Advisory(
             summary=yaml_file["description"],
-            impacted_package_urls=[],
+            impacted_package_urls=vuln_purls,
             resolved_package_urls=safe_purls,
             cve_id=cve_id,
-            vuln_references=vuln_reference,
+            vuln_references=vuln_references,
         )

@@ -133,21 +133,21 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     # TODO: Find a good name for this endpoint
     @action(detail=False, methods=["post"])
     def fetch(self, request):
-
         filter_list = Q()
-        # TODO: Do some validation here
+        response = {}
+        # TODO: Do some validation here of request body
+
         for purl in request.data["packages"]:
             filter_list |= Q(
                 **{k: v for k, v in PackageURL.from_string(purl).to_dict().items() if v}
             )
 
-        res = Package.objects.filter(filter_list)
-        response = {}
-        for purl in request.data["packages"]:
+            # This handles the case when the said purl doesnt exist in db
             response[purl] = {}
-            for p in res:
-                if p.package_url == purl:
-                    response[purl] = PackageSerializer(p, context={"request": request}).data
+
+        res = Package.objects.filter(filter_list)
+        for p in res:
+            response[p.package_url] = PackageSerializer(p, context={"request": request}).data
 
         return Response(response)
 
@@ -172,16 +172,16 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=["post"])
     def fetch(self, request):
         filter_list = Q()
-        # TODO: Do some validation here
+        response = {}
+        # TODO: Do some validation here of request body
         for cve_id in request.data["vulnerabilities"]:
             filter_list |= Q(cve_id=cve_id)
 
+            # This handles the case when the said cve doesnt exist in db
+            response[cve_id] = {}
+
         res = Vulnerability.objects.filter(filter_list)
-        response = {}
-        for cve in request.data["vulnerabilities"]:
-            response[cve] = {}
-            for vuln in res:
-                if vuln.cve_id == cve:
-                    response[cve] = VulnerabilitySerializer(vuln, context={"request": request}).data
+        for vuln in res:
+            response[vuln.cve_id] = VulnerabilitySerializer(vuln, context={"request": request}).data
 
         return Response(response)

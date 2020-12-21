@@ -38,31 +38,84 @@ class TestElixirSecurityDataSource(TestCase):
     @classmethod
     def setUpClass(cls):
         data_source_cfg = {
-            "repository_url": 'https://github.com/dependabot/elixir-security-advisories',
+            "repository_url": "https://github.com/dependabot/elixir-security-advisories",
         }
         cls.data_src = ElixirSecurityDataSource(1, config=data_source_cfg)
-        cls.data_src.pkg_manager_api = HexVersionAPI({'coherence': [
-            "0.5.2",
-            "0.5.1",
-            "0.5.0",
-            "0.4.0",
-            "0.3.1",
-            "0.3.0",
-            "0.2.0",
-            "0.1.3",
-            "0.1.2",
-            "0.1.1",
-            "0.1.0",
-                    ]})
+        cls.data_src.pkg_manager_api = HexVersionAPI(
+            {
+                "coherence": [
+                    "0.5.2",
+                    "0.5.1",
+                    "0.5.0",
+                    "0.4.0",
+                    "0.3.1",
+                    "0.3.0",
+                    "0.2.0",
+                    "0.1.3",
+                    "0.1.2",
+                    "0.1.1",
+                    "0.1.0",
+                ]
+            }
+        )
 
     def test_process_file(self):
 
         path = os.path.join(BASE_DIR, "test_data/elixir_security/test_file.yml")
         expected_data = Advisory(
-            summary=(
-                'The Coherence library has "Mass Assignment"-like vulnerabilities.\n'
-            ),
-            impacted_package_urls=[],
+            summary=('The Coherence library has "Mass Assignment"-like vulnerabilities.\n'),
+            impacted_package_urls={
+                PackageURL(
+                    type="hex",
+                    name="coherence",
+                    version="0.5.1",
+                ),
+                PackageURL(
+                    type="hex",
+                    name="coherence",
+                    version="0.5.0",
+                ),
+                PackageURL(
+                    type="hex",
+                    name="coherence",
+                    version="0.4.0",
+                ),
+                PackageURL(
+                    type="hex",
+                    name="coherence",
+                    version="0.3.1",
+                ),
+                PackageURL(
+                    type="hex",
+                    name="coherence",
+                    version="0.3.0",
+                ),
+                PackageURL(
+                    type="hex",
+                    name="coherence",
+                    version="0.2.0",
+                ),
+                PackageURL(
+                    type="hex",
+                    name="coherence",
+                    version="0.1.3",
+                ),
+                PackageURL(
+                    type="hex",
+                    name="coherence",
+                    version="0.1.2",
+                ),
+                PackageURL(
+                    type="hex",
+                    name="coherence",
+                    version="0.1.1",
+                ),
+                PackageURL(
+                    type="hex",
+                    name="coherence",
+                    version="0.1.0",
+                ),
+            },
             resolved_package_urls={
                 PackageURL(
                     type="hex",
@@ -71,9 +124,10 @@ class TestElixirSecurityDataSource(TestCase):
                 ),
             },
             vuln_references=[
-                Reference(reference_id='2aae6e3a-24a3-4d5f-86ff-b964eaf7c6d1',
-                          ),
-                Reference(url='https://github.com/smpallen99/coherence/issues/270')
+                Reference(
+                    reference_id="2aae6e3a-24a3-4d5f-86ff-b964eaf7c6d1",
+                ),
+                Reference(url="https://github.com/smpallen99/coherence/issues/270"),
             ],
             cve_id="CVE-2018-20301",
         )

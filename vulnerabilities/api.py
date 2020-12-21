@@ -129,6 +129,8 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageFilterSet
 
+    # `fetch` is a placeholder
+    # TODO: Find a good name for this endpoint
     @action(detail=False, methods=["post"])
     def fetch(self, request):
 
@@ -165,6 +167,8 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = VulnerabilityFilterSet
 
+    # `fetch` is a placeholder
+    # TODO: Find a good name for this endpoint
     @action(detail=False, methods=["post"])
     def fetch(self, request):
         filter_list = Q()

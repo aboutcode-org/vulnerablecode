@@ -228,7 +228,7 @@ IMPORTER_REGISTRY = [
     },
     {
         'name': 'elixir_security',
-        'license': '',
+        'license': 'cc0-1.0',
         'last_run': None,
         'data_source': 'ElixirSecurityDataSource',
         'data_source_cfg': {

@@ -77,13 +77,17 @@ class ElixirSecurityDataSource(GitDataSource):
 
         return packages
 
-    def get_versions_from_range(self, version_list, pkg_name):
+    def get_versions_for_pkg_from_range_list(self, version_range_list, pkg_name):
+        # Takes a list of version ranges(pathced and unaffected) of a package
+        # as parameter and returns a tuple of safe package versions and
+        # vulnerable package versions
+
         safe_pkg_versions = []
         vuln_pkg_versions = []
         all_version_list = self.pkg_manager_api.get(pkg_name)
-        if not version_list:
+        if not version_range_list:
             return [], all_version_list
-        version_ranges = {RangeSpecifier(r) for r in version_list}
+        version_ranges = {RangeSpecifier(r) for r in version_range_list}
         for version in all_version_list:
             if any([version in v for v in version_ranges]):
                 safe_pkg_versions.append(version)
@@ -98,10 +102,12 @@ class ElixirSecurityDataSource(GitDataSource):
         vuln_pkg_versions = []
         if not yaml_file.get("patched_versions"):
             yaml_file["patched_versions"] = []
+
         if not yaml_file.get("unaffected_versions"):
             yaml_file["unaffected_versions"] = []
-        safe_pkg_versions, vuln_pkg_versions = self.get_versions_from_range(
-            yaml_file.get("patched_versions", []) + yaml_file.get("unaffected_versions", []),
+
+        safe_pkg_versions, vuln_pkg_versions = self.get_versions_for_pkg_from_range_list(
+            yaml_file.get("patched_versions") + yaml_file.get("unaffected_versions"),
             pkg_name,
         )
 

@@ -42,13 +42,14 @@ import pygit2
 from packageurl import PackageURL
 
 from vulnerabilities.oval_parser import OvalParser
+from vulnerabilities.severity_systems import ScoringSystem
 
 logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass
 class VulnerabilitySeverity:
-    system: str
+    system: ScoringSystem
     value: str
 
 

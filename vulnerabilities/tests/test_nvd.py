@@ -29,6 +29,7 @@ from vulnerabilities.importers import NVDDataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.severity_systems import scoring_systems
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/nvd/nvd_test.json")
@@ -147,7 +148,7 @@ class TestNVDDataSource(TestCase):
                         Reference(
                             url="https://nvd.nist.gov/vuln/detail/CVE-2005-4895",  # nopep8
                             severities=[
-                                VulnerabilitySeverity(system="cvssV2", value="5.0")
+                                VulnerabilitySeverity(system=scoring_systems["cvssv2"], value="5.0")
                             ],
                             reference_id="CVE-2005-4895",
                         ),

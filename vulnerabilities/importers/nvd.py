@@ -32,8 +32,9 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
-from vulnerabilities.helpers import create_etag
 from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.helpers import create_etag
+from vulnerabilities.severity_systems import scoring_systems
 
 
 @dataclasses.dataclass
@@ -106,7 +107,7 @@ class NVDDataSource(DataSource):
         if cve_item["impact"].get("baseMetricV3"):
             severity_scores.append(
                 VulnerabilitySeverity(
-                    system="cvssV3",
+                    system=scoring_systems["cvssv3"],
                     value=str(cve_item["impact"]["baseMetricV3"]["cvssV3"]["baseScore"]),
                 )
             )
@@ -114,7 +115,7 @@ class NVDDataSource(DataSource):
         if cve_item["impact"].get("baseMetricV2"):
             severity_scores.append(
                 VulnerabilitySeverity(
-                    system="cvssV2",
+                    system=scoring_systems["cvssv2"],
                     value=str(cve_item["impact"]["baseMetricV2"]["cvssV2"]["baseScore"]),
                 )
             )

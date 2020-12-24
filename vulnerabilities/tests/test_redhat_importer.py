@@ -31,6 +31,7 @@ import vulnerabilities.importers.redhat as redhat
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.severity_systems import scoring_systems
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/", "redhat.json")
@@ -86,7 +87,7 @@ class TestRedhat(unittest.TestCase):
                             reference_id="1396383",
                             severities=[
                                 VulnerabilitySeverity(
-                                    system="REDHAT_BUGZILLA_SEVERITY", value=2.0
+                                   system=scoring_systems["rhbs"], value=2.0
                                 )
                             ],
                         ),
@@ -95,7 +96,7 @@ class TestRedhat(unittest.TestCase):
                             reference_id="RHSA-2017:1931",
                             severities=[
                                 VulnerabilitySeverity(
-                                    system="RHSA_AGGREGATE_SEVERITY", value=2.2
+                                    system=scoring_systems["rhas"], value=2.2
                                 )
                             ],
                         ),
@@ -104,7 +105,7 @@ class TestRedhat(unittest.TestCase):
                             reference_id="RHSA-2017:0725",
                             severities=[
                                 VulnerabilitySeverity(
-                                    system="RHSA_AGGREGATE_SEVERITY", value=2.2
+                                    system=scoring_systems["rhas"], value=2.2
                                 )
                             ],
                         ),
@@ -113,7 +114,7 @@ class TestRedhat(unittest.TestCase):
                             reference_id="",
                             severities=[
                                 VulnerabilitySeverity(
-                                    system="REDHAT_CVSS3", value=6.0
+                                    system=scoring_systems["rh_cvssv3"], value=6.0
                                 )
                             ],
                         ),
@@ -161,7 +162,7 @@ class TestRedhat(unittest.TestCase):
                             reference_id="1430347",
                             severities=[
                                 VulnerabilitySeverity(
-                                    system="REDHAT_BUGZILLA_SEVERITY", value=2.0
+                                    system=scoring_systems["rhbs"], value=2.0
                                 )
                             ],
                         ),
@@ -170,7 +171,7 @@ class TestRedhat(unittest.TestCase):
                             reference_id="RHSA-2017:1842",
                             severities=[
                                 VulnerabilitySeverity(
-                                    system="RHSA_AGGREGATE_SEVERITY", value=2.2
+                                    system=scoring_systems["rhas"], value=2.2
                                 )
                             ],
                         ),
@@ -179,7 +180,7 @@ class TestRedhat(unittest.TestCase):
                             reference_id="RHSA-2017:2437",
                             severities=[
                                 VulnerabilitySeverity(
-                                    system="RHSA_AGGREGATE_SEVERITY", value=2.2
+                                    system=scoring_systems["rhas"], value=2.2
                                 )
                             ],
                         ),
@@ -188,7 +189,7 @@ class TestRedhat(unittest.TestCase):
                             reference_id="RHSA-2017:2077",
                             severities=[
                                 VulnerabilitySeverity(
-                                    system="RHSA_AGGREGATE_SEVERITY", value=2.2
+                                    system=scoring_systems["rhas"], value=2.2
                                 )
                             ],
                         ),
@@ -197,7 +198,7 @@ class TestRedhat(unittest.TestCase):
                             reference_id="RHSA-2017:2444",
                             severities=[
                                 VulnerabilitySeverity(
-                                    system="RHSA_AGGREGATE_SEVERITY", value=2.2
+                                    system=scoring_systems["rhas"], value=2.2
                                 )
                             ],
                         ),
@@ -206,7 +207,7 @@ class TestRedhat(unittest.TestCase):
                             reference_id="",
                             severities=[
                                 VulnerabilitySeverity(
-                                    system="REDHAT_CVSS3", value=6.0
+                                    system=scoring_systems["rh_cvssv3"], value=6.0
                                 )
                             ],
                         ),
@@ -229,7 +230,7 @@ class TestRedhat(unittest.TestCase):
                             reference_id="1492984",
                             severities=[
                                 VulnerabilitySeverity(
-                                    system="REDHAT_BUGZILLA_SEVERITY", value=2.0
+                                    system=scoring_systems["rhbs"], value=2.0
                                 )
                             ],
                         ),
@@ -238,7 +239,7 @@ class TestRedhat(unittest.TestCase):
                             reference_id="",
                             severities=[
                                 VulnerabilitySeverity(
-                                    system="REDHAT_CVSS3", value=6.0
+                                    system=scoring_systems["rh_cvssv3"], value=6.0
                                 )
                             ],
                         ),

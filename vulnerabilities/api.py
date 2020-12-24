@@ -171,16 +171,15 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     # TODO: Find a good name for this endpoint
     @action(detail=False, methods=["post"])
     def fetch(self, request):
-        filter_list = Q()
+        filter_list = []
         response = {}
         # TODO: Do some validation here of request body
         for cve_id in request.data["vulnerabilities"]:
-            filter_list |= Q(cve_id=cve_id)
-
+            filter_list.append(cve_id)
             # This handles the case when the said cve doesnt exist in db
             response[cve_id] = {}
 
-        res = Vulnerability.objects.filter(filter_list)
+        res = Vulnerability.objects.filter(cve_id__in=[cve_id])
         for vuln in res:
             response[vuln.cve_id] = VulnerabilitySerializer(vuln, context={"request": request}).data
 

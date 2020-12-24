@@ -133,7 +133,7 @@ def process_advisories(data_source: DataSource) -> None:
                             vulnerability=vuln,
                             scoring_system_identifier=score.system.identifier,
                             reference=ref,
-                            defaults={"value": score.value},
+                            defaults={"value": str(score.value)},
                         )
 
                 for purl in chain(advisory.impacted_package_urls, advisory.resolved_package_urls):

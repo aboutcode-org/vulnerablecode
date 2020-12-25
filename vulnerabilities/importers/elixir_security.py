@@ -28,7 +28,6 @@ from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import GitDataSource
-from vulnerabilities.data_source import GitDataSourceConfiguration
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import HexVersionAPI
@@ -106,7 +105,7 @@ class ElixirSecurityDataSource(GitDataSource):
             yaml_file["unaffected_versions"] = []
 
         safe_pkg_versions, vuln_pkg_versions = self.get_versions_for_pkg_from_range_list(
-            yaml_file.get("patched_versions") + yaml_file.get("unaffected_versions"),
+            yaml_file["patched_versions"] + yaml_file["unaffected_versions"],
             pkg_name,
         )
 

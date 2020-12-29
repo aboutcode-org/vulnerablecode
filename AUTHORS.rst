@@ -11,3 +11,4 @@ The following organizations or individuals have contributed to this repo:
 - Islam Elhakmi @EslamHiko
 - Edoardo Lanzini @elanzini
 - Navonil Das @NavonilDas
+- Tushar Upadhyay @tushar912

@@ -115,7 +115,10 @@ bin
 include
 lib64
 share
+Pipfile
 
+# editor
+.vscode/
 
 # pytest
 .pytest_cache

@@ -117,7 +117,7 @@ lib64
 share
 Pipfile
 
-# editor
+# editors
 .vscode/
 
 # pytest

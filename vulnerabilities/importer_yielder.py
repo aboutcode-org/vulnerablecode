@@ -227,13 +227,13 @@ IMPORTER_REGISTRY = [
         'data_source_cfg': {},
     },
     {
-        'name': 'apache_tomcat',
-        'license': '',
-        'last_run': None,
-        'data_source': 'ApacheTomcatDataSource',
-        'data_source_cfg': {
-            "etags": {}
-        },
+    'name': 'elixir_security',
+    'license': '',
+    'last_run': None,
+    'data_source': 'ElixirSecurityDataSource',
+    'data_source_cfg': {
+        'repository_url': 'https://github.com/dependabot/elixir-security-advisories'
+    },
     },
 
 ]

@@ -31,6 +31,10 @@ from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import HexVersionAPI
+<<<<<<< HEAD
+=======
+from vulnerabilities.helpers import load_yaml
+>>>>>>> 167734ec853c305a0b2c833512f14a95d4a1a281
 
 
 class ElixirSecurityDataSource(GitDataSource):
@@ -141,8 +145,11 @@ class ElixirSecurityDataSource(GitDataSource):
             cve_id=cve_id,
             vuln_references=vuln_references,
         )
+<<<<<<< HEAD
 
 
 def load_yaml(path):
     with open(path) as f:
         return yaml.safe_load(f)
+=======
+>>>>>>> 167734ec853c305a0b2c833512f14a95d4a1a281

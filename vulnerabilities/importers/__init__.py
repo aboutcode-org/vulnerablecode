@@ -44,3 +44,7 @@ from vulnerabilities.importers.safety_db import SafetyDbDataSource
 from vulnerabilities.importers.suse_backports import SUSEBackportsDataSource
 from vulnerabilities.importers.ubuntu import UbuntuDataSource
 from vulnerabilities.importers.ubuntu_usn import UbuntuUSNDataSource
+<<<<<<< HEAD
+=======
+from vulnerabilities.importers.apache_tomcat import ApacheTomcatDataSource
+>>>>>>> 167734ec853c305a0b2c833512f14a95d4a1a281

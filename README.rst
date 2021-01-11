@@ -10,7 +10,7 @@ Welcome|
 The What
 --------
 
-VulnerableCode is a free and open source-software (FOSS) database of vulnerabilities and the FOSS
+VulnerableCode is a FOSS (free and open source-software) database of vulnerabilities and the FOSS
 packages they impact. It is made by the FOSS community to improve and
 secure the open source software ecosystem.
 

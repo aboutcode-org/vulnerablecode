@@ -55,11 +55,10 @@
       overlay = final: prev:
         with final.pkgs; {
 
-          pythonEnv = with machnixFor.${system};
-            mkPython {
-              requirements =
-                builtins.readFile (vulnerablecode-src + "/requirements.txt");
-            };
+          pythonEnv = machnixFor.${system}.mkPython {
+            requirements =
+              builtins.readFile (vulnerablecode-src + "/requirements.txt");
+          };
 
           vulnerablecode = stdenv.mkDerivation {
             inherit version;
@@ -90,7 +89,7 @@
           buildInputs = [ vulnerablecode ];
           shellHook = ''
             alias vulnerablecode-manage.py=${vulnerablecode}/manage.py
-              '';
+          '';
         });
 
       # Provide some packages for selected system types.
@@ -103,8 +102,7 @@
 
       # Tests run by 'nix flake check' and by Hydra.
       checks = forAllSystems (system: {
-        inherit (self.packages.${system})
-        ;
+        inherit (self.packages.${system}) vulnerablecode;
 
         vulnerablecode-test = with nixpkgsFor.${system};
           stdenv.mkDerivation {

@@ -239,7 +239,9 @@ class TestBulkAPIResponse(TestCase):
             },
             "RANDOM-CVE": {},
         }
-        response = self.client.post("/api/vulnerabilities/bulk_search/", request_body).data
+        response = self.client.post(
+            "/api/vulnerabilities/bulk_search/", data=request_body, content_type="application/json"
+        ).data
         assert response == expected_response
 
     def test_bulk_packages_api(self):
@@ -249,7 +251,9 @@ class TestBulkAPIResponse(TestCase):
                 "pkg:deb/debian/mimetex@1.50-1.1?distro=jessie",
             ]
         }
-        response = self.client.post("/api/packages/bulk_search/", request_body).data
+        response = self.client.post(
+            "/api/packages/bulk_search/", data=request_body, content_type="application/json"
+        ).data
         expected_response = {
             "pkg:deb/debian/librsync@0.9.7-10?distro=jessie": {
                 "url": "http://testserver/api/packages/1/",
@@ -298,3 +302,60 @@ class TestBulkAPIResponse(TestCase):
         }
 
         assert response == expected_response
+
+    def test_invalid_request_bulk_packages(self):
+        error_response = {
+            "Error": "Request needs to contain a key 'packages' which has the value of a list of package urls"  # nopep8
+        }
+        invalid_key_request_data = {"pkg": []}
+        response = self.client.post(
+            "/api/packages/bulk_search/",
+            data=invalid_key_request_data,
+            content_type="application/json",
+        ).data
+        assert response == error_response
+
+        valid_key_invalid_datatype_request_data = {"packages": {}}
+        response = self.client.post(
+            "/api/packages/bulk_search/",
+            data=valid_key_invalid_datatype_request_data,
+            content_type="application/json",
+        ).data
+        assert response == error_response
+
+        invalid_purl_request_data = {
+            "packages": [
+                "pkg:deb/debian/librsync@0.9.7-10?distro=jessie",
+                "pg:deb/debian/mimetex@1.50-1.1?distro=jessie",
+            ]
+        }
+        response = self.client.post(
+            "/api/packages/bulk_search/",
+            data=invalid_purl_request_data,
+            content_type="application/json",
+        ).data
+        purl_error_respones = {
+            "Error": "purl is missing the required \"pkg\" scheme component: 'pg:deb/debian/mimetex@1.50-1.1?distro=jessie'."  # nopep8
+        }
+        assert response == purl_error_respones
+
+    def test_invalid_request_bulk_vulnerabilities(self):
+        error_response = {
+            "Error": "Request needs to contain a key 'vulnerabilities' which has the value of a list of vulnerability ids"  # nopep8
+        }
+
+        wrong_key_data = {"xyz": []}
+        response = self.client.post(
+            "/api/vulnerabilities/bulk_search/",
+            data=wrong_key_data,
+            content_type="application/json",
+        ).data
+        assert response == error_response
+
+        wrong_type_data = {"vulnerabilities": {}}
+        response = self.client.post(
+            "/api/vulnerabilities/bulk_search/",
+            data=wrong_key_data,
+            content_type="application/json",
+        ).data
+        assert response == error_response

@@ -133,16 +133,23 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     def bulk_search(self, request):
         filter_list = Q()
         response = {}
-        # TODO: Do some validation here of request body
-
-        for purl in request.POST.getlist("packages"):
-            filter_list |= Q(
-                **{k: v for k, v in PackageURL.from_string(purl).to_dict().items() if v}
+        if not isinstance(request.data.get("packages"), list):
+            return Response(
+                status=400,
+                data={
+                    "Error": "Request needs to contain a key 'packages' which has the value of a list of package urls"  # nopep8
+                },
             )
+        for purl in request.data["packages"]:
+            try:
+                filter_list |= Q(
+                    **{k: v for k, v in PackageURL.from_string(purl).to_dict().items() if v}
+                )
+            except ValueError as ve:
+                return Response(status=400, data={"Error": str(ve)})
 
             # This handles the case when the said purl doesnt exist in db
             response[purl] = {}
-
         res = Package.objects.filter(filter_list)
         for p in res:
             response[p.package_url] = PackageSerializer(p, context={"request": request}).data
@@ -169,9 +176,15 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     def bulk_search(self, request):
         filter_list = []
         response = {}
-        # TODO: Do some validation here of request body
+        if not isinstance(request.data.get("vulnerabilities"), list):
+            return Response(
+                status=400,
+                data={
+                    "Error": "Request needs to contain a key 'vulnerabilities' which has the value of a list of vulnerability ids"  # nopep8
+                },
+            )
 
-        for cve_id in request.POST.getlist("vulnerabilities"):
+        for cve_id in request.data["vulnerabilities"]:
             filter_list.append(cve_id)
             # This handles the case when the said cve doesnt exist in db
             response[cve_id] = {}

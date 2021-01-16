@@ -73,7 +73,7 @@
 },
 {
   "model": "vulnerabilities.packagerelatedvulnerability",
-  "pk": 1,
+  "pk": 10,
   "fields": {
     "vulnerability": 2,
     "package": 2,

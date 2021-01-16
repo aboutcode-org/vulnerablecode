@@ -129,15 +129,13 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageFilterSet
 
-    # `fetch` is a placeholder
-    # TODO: Find a good name for this endpoint
     @action(detail=False, methods=["post"])
-    def fetch(self, request):
+    def bulk_search(self, request):
         filter_list = Q()
         response = {}
         # TODO: Do some validation here of request body
 
-        for purl in request.data["packages"]:
+        for purl in request.POST.getlist("packages"):
             filter_list |= Q(
                 **{k: v for k, v in PackageURL.from_string(purl).to_dict().items() if v}
             )
@@ -167,20 +165,17 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = VulnerabilityFilterSet
 
-    # `fetch` is a placeholder
-    # TODO: Find a good name for this endpoint
     @action(detail=False, methods=["post"])
-    def fetch(self, request):
+    def bulk_search(self, request):
         filter_list = []
         response = {}
         # TODO: Do some validation here of request body
-        for cve_id in request.data["vulnerabilities"]:
+
+        for cve_id in request.POST.getlist("vulnerabilities"):
             filter_list.append(cve_id)
             # This handles the case when the said cve doesnt exist in db
             response[cve_id] = {}
-
-        res = Vulnerability.objects.filter(cve_id__in=[cve_id])
+        res = Vulnerability.objects.filter(cve_id__in=filter_list)
         for vuln in res:
             response[vuln.cve_id] = VulnerabilitySerializer(vuln, context={"request": request}).data
-
         return Response(response)

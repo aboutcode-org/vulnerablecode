@@ -1,0 +1,48 @@
+name: CI
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  unit_tests:
+    runs-on: ubuntu-latest
+
+    services:
+      # Label used to access the service container
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: vulnerablecode
+          POSTGRES_DB: vulnerablecode
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          sudo apt install  python3-dev postgresql libpq-dev build-essential libxml2-dev libxslt1-dev 
+          python -m pip install --upgrade pip 
+          pip install -r requirements.txt
+    
+      - name: Run tests
+        run: pytest
+        env:
+          # The hostname, username used to communicate with the PostgreSQL service container
+          POSTGRES_HOST: localhost
+          VC_DB_USER: postgres
+          POSTGRES_PORT: 5432
+          DJANGO_DEV: 1
+          GH_TOKEN: 1 

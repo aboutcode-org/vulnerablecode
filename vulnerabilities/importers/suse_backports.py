@@ -30,6 +30,7 @@ from bs4 import BeautifulSoup
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
+from vulnerabilities.helpers import create_etag
 
 
 @dataclasses.dataclass
@@ -54,22 +55,10 @@ class SUSEBackportsDataSource(DataSource):
         advisories = []
         all_urls = self.get_all_urls_of_backports(self.config.url)
         for url in all_urls:
-            if not self.create_etag(url):
+            if not create_etag(data_src=self, url=url, etag_key="ETag"):
                 continue
             advisories.extend(self.process_file(self._fetch_yaml(url)))
         return self.batch_advisories(advisories)
-
-    def create_etag(self, url):
-        etag = requests.head(url).headers.get('ETag')
-        if not etag:
-            # Kind of inaccurate to return True since etag is
-            # not created
-            return True
-        elif url in self.config.etags:
-            if self.config.etags[url] == etag:
-                return False
-        self.config.etags[url] = etag
-        return True
 
     def _fetch_yaml(self, url):
 

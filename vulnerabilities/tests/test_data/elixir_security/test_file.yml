@@ -1,0 +1,12 @@
+---
+id: 2aae6e3a-24a3-4d5f-86ff-b964eaf7c6d1
+package: coherence
+disclosure_date: 2017-08-02
+cve: 2018-20301
+link: https://github.com/smpallen99/coherence/issues/270
+title: |
+  Permissive parameters and privilege escalation
+description: |
+  The Coherence library has "Mass Assignment"-like vulnerabilities.
+patched_versions:
+  - ">= 0.5.2"

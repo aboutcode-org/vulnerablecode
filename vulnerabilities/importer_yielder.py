@@ -179,7 +179,7 @@ IMPORTER_REGISTRY = [
         'data_source': 'GitHubAPIDataSource',
         'data_source_cfg': {
             'endpoint': 'https://api.github.com/graphql',
-            'ecosystems': ['MAVEN', 'NUGET', 'COMPOSER']
+            'ecosystems': ['MAVEN', 'NUGET', 'COMPOSER', 'PIP', 'RUBYGEMS']
         }
     },
     {
@@ -188,7 +188,7 @@ IMPORTER_REGISTRY = [
         'last_run': None,
         'data_source': 'ProjectKBMSRDataSource',
         'data_source_cfg': {
-            'etag': {}
+            'etags': {}
         }
     },
     {
@@ -216,7 +216,7 @@ IMPORTER_REGISTRY = [
         'last_run': None,
         'data_source': 'NginxDataSource',
         'data_source_cfg': {
-            'etag': {}
+            'etags': {}
         },
     },
     {
@@ -225,6 +225,24 @@ IMPORTER_REGISTRY = [
         'last_run': None,
         'data_source': 'PostgreSQLDataSource',
         'data_source_cfg': {},
+    },
+    {
+        'name': 'elixir_security',
+        'license': 'cc0-1.0',
+        'last_run': None,
+        'data_source': 'ElixirSecurityDataSource',
+        'data_source_cfg': {
+            'repository_url': 'https://github.com/dependabot/elixir-security-advisories'
+        },
+    },
+    {
+        'name': 'apache_tomcat',
+        'license': '',
+        'last_run': None,
+        'data_source': 'ApacheTomcatDataSource',
+        'data_source_cfg': {
+            "etags": {}
+        },
     },
 
 ]

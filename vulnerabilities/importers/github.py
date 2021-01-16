@@ -42,6 +42,8 @@ from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import MavenVersionAPI
 from vulnerabilities.package_managers import NugetVersionAPI
 from vulnerabilities.package_managers import ComposerVersionAPI
+from vulnerabilities.package_managers import PypiVersionAPI
+from vulnerabilities.package_managers import RubyVersionAPI
 
 # set of all possible values of first '%s' = {'MAVEN','COMPOSER', 'NUGET'}
 # second '%s' is interesting, it will have the value '' for the first request,
@@ -132,6 +134,8 @@ class GitHubAPIDataSource(DataSource):
             "MAVEN": MavenVersionAPI,
             "NUGET": NugetVersionAPI,
             "COMPOSER": ComposerVersionAPI,
+            "PIP": PypiVersionAPI,
+            "RUBYGEMS": RubyVersionAPI,
         }
         versioner = versioners.get(ecosystem)
         if versioner:
@@ -147,12 +151,12 @@ class GitHubAPIDataSource(DataSource):
             ns, name = artifact_comps
             return ns, name
 
-        if ecosystem == "NUGET":
-            return None, pkg_name
-
         if ecosystem == "COMPOSER":
             vendor, name = pkg_name.split("/")
             return vendor, name
+
+        if ecosystem == "NUGET" or ecosystem == "PIP" or ecosystem == "RUBYGEMS":
+            return None, pkg_name
 
     def collect_packages(self, ecosystem):
         packages = set()
@@ -165,30 +169,29 @@ class GitHubAPIDataSource(DataSource):
         adv_list = []
         for ecosystem in self.advisories:
             self.set_version_api(ecosystem)
-            pkg_type = ecosystem.lower()
+            pkg_type = self.version_api.package_type
             for resp_page in self.advisories[ecosystem]:
                 for adv in resp_page["data"]["securityVulnerabilities"]["edges"]:
                     name = adv["node"]["package"]["name"]
 
                     if self.process_name(ecosystem, name):
                         ns, pkg_name = self.process_name(ecosystem, name)
-                    else:
-                        continue
-                    aff_range = adv["node"]["vulnerableVersionRange"]
-                    aff_vers, unaff_vers = self.categorize_versions(
-                        aff_range, self.version_api.get(name)
-                    )
-                    affected_purls = {
-                        PackageURL(name=pkg_name, namespace=ns,
-                                   version=version, type=pkg_type)
-                        for version in aff_vers
-                    }
+                        aff_range = adv["node"]["vulnerableVersionRange"]
+                        aff_vers, unaff_vers = self.categorize_versions(
+                            aff_range, self.version_api.get(name)
+                        )
+                        affected_purls = {
+                            PackageURL(name=pkg_name, namespace=ns, version=version, type=pkg_type)
+                            for version in aff_vers
+                        }
 
-                    unaffected_purls = {
-                        PackageURL(name=pkg_name, namespace=ns,
-                                   version=version, type=pkg_type)
-                        for version in unaff_vers
-                    }
+                        unaffected_purls = {
+                            PackageURL(name=pkg_name, namespace=ns, version=version, type=pkg_type)
+                            for version in unaff_vers
+                        }
+                    else:
+                        affected_purls = set()
+                        unaffected_purls = set()
 
                     cve_ids = set()
                     vuln_references = []
@@ -199,12 +202,13 @@ class GitHubAPIDataSource(DataSource):
                             cve_ids.add(vuln["value"])
 
                         elif vuln["type"] == "GHSA":
-                            ghsa = vuln['value']
-                            vuln_references.append(Reference(
-                                reference_id=ghsa,
-                                url="https://github.com/advisories/{}".format(
-                                    ghsa)
-                            ))
+                            ghsa = vuln["value"]
+                            vuln_references.append(
+                                Reference(
+                                    reference_id=ghsa,
+                                    url="https://github.com/advisories/{}".format(ghsa),
+                                )
+                            )
 
                     for cve_id in cve_ids:
                         adv_list.append(
@@ -219,8 +223,9 @@ class GitHubAPIDataSource(DataSource):
         return adv_list
 
     @staticmethod
-    def categorize_versions(version_range: str, all_versions: Set[str]) -> Tuple[Set[str], Set[str]]:  # nopep8
+    def categorize_versions(
+        version_range: str, all_versions: Set[str]
+    ) -> Tuple[Set[str], Set[str]]:  # nopep8
         version_range = RangeSpecifier(version_range)
-        affected_versions = {
-            version for version in all_versions if version in version_range}
+        affected_versions = {version for version in all_versions if version in version_range}
         return (affected_versions, all_versions - affected_versions)

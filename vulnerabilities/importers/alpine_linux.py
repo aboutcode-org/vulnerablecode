@@ -26,7 +26,6 @@ from typing import List
 from typing import Mapping
 from typing import Set
 
-import yaml
 from packageurl import PackageURL
 from schema import Or
 from schema import Regex
@@ -35,6 +34,7 @@ from schema import Schema
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Reference
+from vulnerabilities.helpers import load_yaml
 
 
 def validate_schema(advisory_dict):
@@ -90,19 +90,17 @@ class AlpineDataSource(GitDataSource):
     def _process_file(self, path) -> List[Advisory]:
         advisories = []
 
-        with open(path) as f:
-            record = yaml.safe_load(f)
+        record = load_yaml(path)
+        if record["packages"] is None:
+            return advisories
+        validate_schema(record)
 
-            if record["packages"] is None:
-                return advisories
-            validate_schema(record)
-
-            for p in record["packages"]:
-                advisories.extend(
-                    self._load_advisories(
-                        p["pkg"], record["distroversion"], record["reponame"], record["archs"],
-                    )
+        for p in record["packages"]:
+            advisories.extend(
+                self._load_advisories(
+                    p["pkg"], record["distroversion"], record["reponame"], record["archs"],
                 )
+            )
 
         return advisories
 

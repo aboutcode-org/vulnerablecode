@@ -146,6 +146,7 @@ class PackageRelatedVulnerability(models.Model):
 
     class Meta:
         unique_together = ("package", "vulnerability")
+        verbose_name_plural = "PackageRelatedVulnerabilities"
 
 
 class ImportProblem(models.Model):

@@ -268,7 +268,7 @@ class GitDataSourceTest(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.tempdir = tempfile.mkdtemp()
-        zip_path = os.path.join(TEST_DATA, 'rust-advisory-db.zip')
+        zip_path = os.path.join(TEST_DATA, 'advisory-db.zip')
 
         with zipfile.ZipFile(zip_path, "r") as zip_ref:
             zip_ref.extractall(cls.tempdir)

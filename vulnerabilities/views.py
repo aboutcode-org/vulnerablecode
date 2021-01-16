@@ -186,10 +186,10 @@ class PackageRelatedVulnerablityCreate(View):
         return render(request, self.template_name, context=context)
 
     def post(self, request, *args, **kwargs):
-        if "cve_id" in self.request.POST:
+        if "vuln_id" in self.request.POST:
             is_vulnerable = "impacted" in self.request.headers["Referer"]
             relation = self.create_relationship_instance(
-                cve_id=self.request.POST["cve_id"],
+                cve_id=self.request.POST["vuln_id"],
                 package_id=kwargs["pid"],
                 is_vulnerable=is_vulnerable,
             )

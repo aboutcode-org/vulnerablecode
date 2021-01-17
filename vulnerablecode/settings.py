@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'widget_tweaks',
-    'drf_yasg',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -159,7 +159,14 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 100,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
+
+SPECTACULAR_SETTINGS = {
+    'SERVE_INCLUDE_SCHEMA': False,
+    'TITLE': "VulnerableCode API"
+}
+# TODO: Specify the license for the API here. 
 
 
 # Set `DJANGO_DEV=1` in env to enable dev mode

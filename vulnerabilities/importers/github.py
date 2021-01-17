@@ -45,7 +45,7 @@ from vulnerabilities.package_managers import ComposerVersionAPI
 from vulnerabilities.package_managers import PypiVersionAPI
 from vulnerabilities.package_managers import RubyVersionAPI
 
-# set of all possible values of first '%s' = {'MAVEN','COMPOSER', 'NUGET'}
+# set of all possible values of first '%s' = {'MAVEN','COMPOSER', 'NUGET', 'RUBYGEMS', 'PYPI'}
 # second '%s' is interesting, it will have the value '' for the first request,
 # since we don't have any value for endCursor at the beginning
 # for all the subsequent requests it will have value 'after: "{endCursor}""

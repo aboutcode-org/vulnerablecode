@@ -22,6 +22,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 from urllib.parse import unquote
+from typing import List
 
 from django.db.models import Q
 from django.urls import reverse
@@ -31,10 +32,16 @@ from rest_framework import serializers
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema, inline_serializer
+from drf_spectacular.types import OpenApiTypes
 
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
+
+# This serializer is used for the bulk apis, to prevent wrong auto documentation
+# TODO: Fix the swagger documentation for bulk apis
+placeholder_serializer = inline_serializer(name="Placeholder", fields={})
 
 
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
@@ -63,8 +70,8 @@ class HyperLinkedVulnerabilitySerializer(serializers.HyperlinkedModelSerializer)
         fields = ["url", "vulnerability_id"]
 
 
-class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
-    references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
+class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
+
     resolved_packages = HyperLinkedPackageSerializer(
         many=True, source="resolved_to", read_only=True
     )
@@ -74,32 +81,39 @@ class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Vulnerability
+        fields = ["url", "unresolved_packages", "resolved_packages"]
+
+
+class VulnerabilitySerializer(MinimalVulnerabilitySerializer):
+    references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
+
+    class Meta:
+        model = Vulnerability
         fields = "__all__"
 
 
-class PackageSerializer(serializers.HyperlinkedModelSerializer):
+class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
     unresolved_vulnerabilities = HyperLinkedVulnerabilitySerializer(
         many=True, source="vulnerable_to", read_only=True
     )
     resolved_vulnerabilities = HyperLinkedVulnerabilitySerializer(
         many=True, source="resolved_to", read_only=True
     )
-    purl = serializers.CharField(source="package_url")
 
     class Meta:
         model = Package
         fields = [
-            "url",
-            "type",
-            "namespace",
-            "name",
-            "version",
-            "qualifiers",
-            "subpath",
-            "purl",
             "resolved_vulnerabilities",
             "unresolved_vulnerabilities",
         ]
+
+
+class PackageSerializer(MinimalPackageSerializer):
+    purl = serializers.CharField(source="package_url")
+
+    class Meta:
+        model = Package
+        exclude = ["vulnerabilities"]
 
 
 class PackageFilterSet(filters.FilterSet):
@@ -129,8 +143,13 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageFilterSet
 
+    # TODO: Fix the swagger documentation for this endpoint
+    @extend_schema(request=placeholder_serializer, responses=placeholder_serializer)
     @action(detail=False, methods=["post"])
     def bulk_search(self, request):
+        """
+        See https://github.com/nexB/vulnerablecode/pull/303#issuecomment-761801639 for docs
+        """
         filter_list = Q()
         response = {}
         if not isinstance(request.data.get("packages"), list):
@@ -152,7 +171,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
             response[purl] = {}
         res = Package.objects.filter(filter_list)
         for p in res:
-            response[p.package_url] = PackageSerializer(p, context={"request": request}).data
+            response[p.package_url] = MinimalPackageSerializer(p, context={"request": request}).data
 
         return Response(response)
 
@@ -172,8 +191,13 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = VulnerabilityFilterSet
 
+    # TODO: Fix the swagger documentation for this endpoint
+    @extend_schema(request=placeholder_serializer, responses=placeholder_serializer)
     @action(detail=False, methods=["post"])
     def bulk_search(self, request):
+        """
+        See https://github.com/nexB/vulnerablecode/pull/303#issuecomment-761801619 for docs
+        """
         filter_list = []
         response = {}
         if not isinstance(request.data.get("vulnerabilities"), list):
@@ -190,5 +214,7 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
             response[cve_id] = {}
         res = Vulnerability.objects.filter(cve_id__in=filter_list)
         for vuln in res:
-            response[vuln.cve_id] = VulnerabilitySerializer(vuln, context={"request": request}).data
+            response[vuln.cve_id] = MinimalVulnerabilitySerializer(
+                vuln, context={"request": request}
+            ).data
         return Response(response)

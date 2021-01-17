@@ -200,8 +200,6 @@ class TestBulkAPIResponse(TestCase):
         request_body = {"vulnerabilities": ["CVE-2009-1382", "CVE-2014-8242", "RANDOM-CVE"]}
         expected_response = {
             "CVE-2009-1382": {
-                "url": "http://testserver/api/vulnerabilities/2/",
-                "references": [],
                 "resolved_packages": [
                     OrderedDict(
                         [
@@ -217,13 +215,9 @@ class TestBulkAPIResponse(TestCase):
                     ),
                 ],
                 "unresolved_packages": [],
-                "cve_id": "CVE-2009-1382",
-                "summary": "",
-                "cvss": None,
+                "url": "http://testserver/api/vulnerabilities/2/",
             },
             "CVE-2014-8242": {
-                "url": "http://testserver/api/vulnerabilities/1/",
-                "references": [],
                 "resolved_packages": [],
                 "unresolved_packages": [
                     OrderedDict(
@@ -233,12 +227,11 @@ class TestBulkAPIResponse(TestCase):
                         ]
                     )
                 ],
-                "cve_id": "CVE-2014-8242",
-                "summary": "",
-                "cvss": None,
+                "url": "http://testserver/api/vulnerabilities/1/",
             },
             "RANDOM-CVE": {},
         }
+
         response = self.client.post(
             "/api/vulnerabilities/bulk_search/", data=request_body, content_type="application/json"
         ).data
@@ -256,14 +249,6 @@ class TestBulkAPIResponse(TestCase):
         ).data
         expected_response = {
             "pkg:deb/debian/librsync@0.9.7-10?distro=jessie": {
-                "url": "http://testserver/api/packages/1/",
-                "type": "deb",
-                "namespace": "debian",
-                "name": "librsync",
-                "version": "0.9.7-10",
-                "qualifiers": {"distro": "jessie"},
-                "subpath": "",
-                "purl": "pkg:deb/debian/librsync@0.9.7-10?distro=jessie",
                 "resolved_vulnerabilities": [],
                 "unresolved_vulnerabilities": [
                     OrderedDict(
@@ -275,14 +260,6 @@ class TestBulkAPIResponse(TestCase):
                 ],
             },
             "pkg:deb/debian/mimetex@1.50-1.1?distro=jessie": {
-                "url": "http://testserver/api/packages/3/",
-                "type": "deb",
-                "namespace": "debian",
-                "name": "mimetex",
-                "version": "1.50-1.1",
-                "qualifiers": {"distro": "jessie"},
-                "subpath": "",
-                "purl": "pkg:deb/debian/mimetex@1.50-1.1?distro=jessie",
                 "resolved_vulnerabilities": [
                     OrderedDict(
                         [

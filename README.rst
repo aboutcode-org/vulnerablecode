@@ -162,6 +162,8 @@ There are several options to use the Nix version
 
 The Nix installation uses `mach-nix <https://github.com/DavHau/mach-nix>`__ to handle Python dependencies because some dependencies are currently not available as Nix packages.
 All Python dependencies are automatically fetched from ``./requirements.txt``.
+If the ``mach-nix``-based installation fails, you might need to update ``mach-nix`` itself and the `pypi-deps-db <https://github.com/DavHau/pypi-deps-db>`_ version in use (see ``etc/nix/flake.nix:inputs.machnix`` and ``machnixFor.pypiDataRev``).
+
 Non-Python dependencies are curated in ``etc/nix/flake.nix:vulnerablecode.propagatedBuildInputs``.
 
 

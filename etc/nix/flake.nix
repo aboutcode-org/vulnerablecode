@@ -49,7 +49,9 @@
           python = "python38";
 
           # Pin pypi repo to a specific commit which includes all necessary
-          # Python deps. The corresponding sha256 hash can be obtained with:
+          # Python deps. The default version is updated with every mach-nix
+          # release might be be sufficient for newer releases.
+          # The corresponding sha256 hash can be obtained with:
           # $ nix-prefetch-url --unpack https://github.com/DavHau/pypi-deps-db/tarball/<pypiDataRev>
           pypiDataRev = "c86b4490a7d838bd54a2d82730455e96c6e4eb14";
           pypiDataSha256 =

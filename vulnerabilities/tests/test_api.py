@@ -22,6 +22,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import os
+from collections import OrderedDict
 from random import choices
 from unittest.mock import MagicMock
 from urllib.parse import quote
@@ -31,6 +32,8 @@ from django.test.client import RequestFactory
 
 from vulnerabilities.api import PackageSerializer
 from vulnerabilities.models import Package
+from rest_framework.test import APIRequestFactory
+from rest_framework.test import APIClient
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -188,3 +191,148 @@ class TestSerializers(TestCase):
         purls = {r["purl"] for r in response}
         self.assertIn("pkg:deb/debian/mimetex@1.50-1.1?distro=jessie", purls)
         self.assertIn("pkg:deb/debian/mimetex@1.74-1?distro=jessie", purls)
+
+
+class TestBulkAPIResponse(TestCase):
+    fixtures = ["debian.json"]
+
+    def test_bulk_vulnerabilities_api(self):
+        request_body = {"vulnerabilities": ["CVE-2009-1382", "CVE-2014-8242", "RANDOM-CVE"]}
+        expected_response = {
+            "CVE-2009-1382": {
+                "resolved_packages": [
+                    OrderedDict(
+                        [
+                            ("url", "http://testserver/api/packages/2/"),
+                            ("purl", "pkg:deb/debian/mimetex@1.74-1?distro=jessie"),
+                        ]
+                    ),
+                    OrderedDict(
+                        [
+                            ("url", "http://testserver/api/packages/3/"),
+                            ("purl", "pkg:deb/debian/mimetex@1.50-1.1?distro=jessie"),
+                        ]
+                    ),
+                ],
+                "unresolved_packages": [],
+                "url": "http://testserver/api/vulnerabilities/2/",
+            },
+            "CVE-2014-8242": {
+                "resolved_packages": [],
+                "unresolved_packages": [
+                    OrderedDict(
+                        [
+                            ("url", "http://testserver/api/packages/1/"),
+                            ("purl", "pkg:deb/debian/librsync@0.9.7-10?distro=jessie"),
+                        ]
+                    )
+                ],
+                "url": "http://testserver/api/vulnerabilities/1/",
+            },
+            "RANDOM-CVE": {},
+        }
+
+        response = self.client.post(
+            "/api/vulnerabilities/bulk_search/", data=request_body, content_type="application/json"
+        ).data
+        assert response == expected_response
+
+    def test_bulk_packages_api(self):
+        request_body = {
+            "packages": [
+                "pkg:deb/debian/librsync@0.9.7-10?distro=jessie",
+                "pkg:deb/debian/mimetex@1.50-1.1?distro=jessie",
+            ]
+        }
+        response = self.client.post(
+            "/api/packages/bulk_search/", data=request_body, content_type="application/json"
+        ).data
+        expected_response = {
+            "pkg:deb/debian/librsync@0.9.7-10?distro=jessie": {
+                "resolved_vulnerabilities": [],
+                "unresolved_vulnerabilities": [
+                    OrderedDict(
+                        [
+                            ("url", "http://testserver/api/vulnerabilities/1/"),
+                            ("vulnerability_id", "CVE-2014-8242"),
+                        ]
+                    )
+                ],
+            },
+            "pkg:deb/debian/mimetex@1.50-1.1?distro=jessie": {
+                "resolved_vulnerabilities": [
+                    OrderedDict(
+                        [
+                            ("url", "http://testserver/api/vulnerabilities/2/"),
+                            ("vulnerability_id", "CVE-2009-1382"),
+                        ]
+                    ),
+                    OrderedDict(
+                        [
+                            ("url", "http://testserver/api/vulnerabilities/3/"),
+                            ("vulnerability_id", "CVE-2009-2459"),
+                        ]
+                    ),
+                ],
+                "unresolved_vulnerabilities": [],
+            },
+        }
+
+        assert response == expected_response
+
+    def test_invalid_request_bulk_packages(self):
+        error_response = {
+            "Error": "Request needs to contain a key 'packages' which has the value of a list of package urls"  # nopep8
+        }
+        invalid_key_request_data = {"pkg": []}
+        response = self.client.post(
+            "/api/packages/bulk_search/",
+            data=invalid_key_request_data,
+            content_type="application/json",
+        ).data
+        assert response == error_response
+
+        valid_key_invalid_datatype_request_data = {"packages": {}}
+        response = self.client.post(
+            "/api/packages/bulk_search/",
+            data=valid_key_invalid_datatype_request_data,
+            content_type="application/json",
+        ).data
+        assert response == error_response
+
+        invalid_purl_request_data = {
+            "packages": [
+                "pkg:deb/debian/librsync@0.9.7-10?distro=jessie",
+                "pg:deb/debian/mimetex@1.50-1.1?distro=jessie",
+            ]
+        }
+        response = self.client.post(
+            "/api/packages/bulk_search/",
+            data=invalid_purl_request_data,
+            content_type="application/json",
+        ).data
+        purl_error_respones = {
+            "Error": "purl is missing the required \"pkg\" scheme component: 'pg:deb/debian/mimetex@1.50-1.1?distro=jessie'."  # nopep8
+        }
+        assert response == purl_error_respones
+
+    def test_invalid_request_bulk_vulnerabilities(self):
+        error_response = {
+            "Error": "Request needs to contain a key 'vulnerabilities' which has the value of a list of vulnerability ids"  # nopep8
+        }
+
+        wrong_key_data = {"xyz": []}
+        response = self.client.post(
+            "/api/vulnerabilities/bulk_search/",
+            data=wrong_key_data,
+            content_type="application/json",
+        ).data
+        assert response == error_response
+
+        wrong_type_data = {"vulnerabilities": {}}
+        response = self.client.post(
+            "/api/vulnerabilities/bulk_search/",
+            data=wrong_key_data,
+            content_type="application/json",
+        ).data
+        assert response == error_response

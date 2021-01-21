@@ -114,7 +114,7 @@ class Package(PackageURLMixin):
             "Extra qualifying data for a package such as the name of an OS, "
             "architecture, distro, etc."
         ),
-        null=True,
+        null=False,
     )
 
     def set_package_url(self, package_url):

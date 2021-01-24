@@ -131,7 +131,7 @@ def process_advisories(data_source: DataSource) -> None:
                     for score in vuln_ref.severities:
                         models.VulnerabilitySeverity.objects.update_or_create(
                             vulnerability=vuln,
-                            scoring_system_identifier=score.system.identifier,
+                            scoring_system=score.system.identifier,
                             reference=ref,
                             defaults={"value": str(score.value)},
                         )

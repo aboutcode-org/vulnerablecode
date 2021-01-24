@@ -1,4 +1,3 @@
-#
 # Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
@@ -31,6 +30,7 @@ from packageurl.contrib.django.models import PackageURLMixin
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import DataSource
+from vulnerabilities.severity_systems import scoring_systems
 
 
 class Vulnerability(models.Model):
@@ -41,7 +41,6 @@ class Vulnerability(models.Model):
 
     cve_id = models.CharField(max_length=50, help_text="CVE ID", unique=True, null=True)
     summary = models.TextField(help_text="Summary of the vulnerability", blank=True)
-    cvss = models.FloatField(max_length=100, help_text="CVSS Score", null=True)
 
     @property
     def vulnerable_to(self):
@@ -205,11 +204,21 @@ class Importer(models.Model):
 
 class VulnerabilitySeverity(models.Model):
 
+    scoring_system_choices = [(system.identifier, system.name) for system in scoring_systems.values()]  # nopep8
     vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
     value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
-    scoring_system_identifier = models.CharField(max_length=50, help_text="Example: cvssv2")
+    scoring_system = models.CharField(
+        max_length=50,
+        choices=scoring_system_choices,
+        help_text="Identifier for the scoring system used. Avaiable choices are: {} ".format(
+                  ", ".join(
+                        [
+                            f"{ss.identifier} is identifier for {ss.name} system"
+                            for ss in scoring_systems.values()
+                        ]
+                    ))
+    )
     reference = models.ForeignKey(VulnerabilityReference, on_delete=models.CASCADE)
 
     class Meta:
-        # TBD
-        unique_together = ("vulnerability", "reference", "scoring_system_identifier")
+        unique_together = ("vulnerability", "reference", "scoring_system")

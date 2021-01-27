@@ -194,8 +194,9 @@ need to update ``mach-nix`` itself and the `pypi-deps-db
 <https://github.com/DavHau/pypi-deps-db>`_ version in use (see
 ``etc/nix/flake.nix:inputs.machnix`` and ``machnixFor.pypiDataRev``).
 
-Non-Python dependencies are curated in
-``etc/nix/flake.nix:vulnerablecode.propagatedBuildInputs``.
+Non-Python dependencies are curated in::
+
+    etc/nix/flake.nix:vulnerablecode.propagatedBuildInputs
 
 
 

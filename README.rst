@@ -131,6 +131,41 @@ When not running in development mode, an environment variable named
 is to use the code Django includes for this purpose:
 ``SECRET_KEY=$(python -c "from django.core.management import utils; print(utils.get_random_secret_key())")``.
 
+Using Nix
+~~~~~~~~~
+
+You can install VulnerableCode with `Nix <https://nixos.org/download.html>`__ (`Flake <https://nixos.wiki/wiki/Flakes>`__ support is needed).
+
+::
+
+    cd etc/nix
+    nix --print-build-logs flake check # build & run tests
+
+There are several options to use the Nix version
+
+::
+
+    # Enter an interactive environment with all dependencies set up.
+    cd etc/nix
+    nix develop
+    > ../../manage.py ... # invoke the local checkout
+    > vulnerablecode-manage.py ... # invoke manage.py as installed in the nix store
+
+    # Test the import prodecure using the Nix version.
+    etc/nix/test-import-using-nix.sh --all # import everything
+    # Test the import using the local checkout.
+    INSTALL_DIR=. etc/nix/test-import-using-nix.sh ruby # import ruby only
+
+
+**Keeping the Nix setup in sync**
+
+The Nix installation uses `mach-nix <https://github.com/DavHau/mach-nix>`__ to handle Python dependencies because some dependencies are currently not available as Nix packages.
+All Python dependencies are automatically fetched from ``./requirements.txt``.
+If the ``mach-nix``-based installation fails, you might need to update ``mach-nix`` itself and the `pypi-deps-db <https://github.com/DavHau/pypi-deps-db>`_ version in use (see ``etc/nix/flake.nix:inputs.machnix`` and ``machnixFor.pypiDataRev``).
+
+Non-Python dependencies are curated in ``etc/nix/flake.nix:vulnerablecode.propagatedBuildInputs``.
+
+
 Tests
 -----
 

@@ -1,8 +1,7 @@
 VulnerableCode
 ==============
 
-|Build Status| |License| |Python 3.8| |stability-wip| |Gitter chat| |PRs
-Welcome|
+|Build Status| |License| |Python 3.8| |stability-wip| |Gitter chat|
 
 .. image:: README.gif
 
@@ -225,5 +224,3 @@ For full documentation about API endpoints.
 .. |stability-wip| image:: https://img.shields.io/badge/stability-work_in_progress-lightgrey.svg
 .. |Gitter chat| image:: https://badges.gitter.im/gitterHQ/gitter.png
    :target: https://gitter.im/aboutcode-org/vulnerablecode
-.. |PRs Welcome| image:: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
-   :target: http://makeapullrequest.com

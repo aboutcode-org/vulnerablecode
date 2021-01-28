@@ -59,25 +59,21 @@ class UbuntuDataSource(OvalDataSource):
 
     def _fetch(self):
         releases = self.config.releases
-        for i, release in enumerate(releases, 1):
+        for release in releases:
             file_url = f"https://people.canonical.com/~ubuntu-security/oval/com.ubuntu.{release}.cve.oval.xml.bz2"  # nopep8
-#             if not create_etag(data_src=self, url=file_url, etag_key="ETag"):
-#                 print(f"Ubuntu Oval Etag not changed, not re-fetching: {file_url}")
-#                 continue
-
-            print(f"Fetching Ubuntu Oval: {file_url}")
-            response = requests.get(file_url)
-            if response.status_code != requests.codes.ok:
-                print(f"Failed to fetch Ubuntu Oval: HTTP {response.status_code} : {file_url}")
+            if not create_etag(data_src=self, url=file_url, etag_key="ETag"):
                 continue
-
-            extracted = bz2.decompress(response.content)
+            resp = requests.get(file_url)
+            extracted = bz2.decompress(resp.content)
             yield (
                 {"type": "deb", "namespace": "ubuntu"},
                 ET.ElementTree(ET.fromstring(extracted.decode("utf-8"))),
             )
-
-        print(f"Fetched {i} Ubuntu Oval releases https://people.canonical.com/~ubuntu-security/oval/")
+        # In case every file is latest, _fetch won't yield anything(due to checking for new etags),
+        # this would return None to added_advisories
+        # which will cause error, hence this
+        # function return an empty list
+        return []
 
     def set_api(self, packages):
         asyncio.run(self.pkg_manager_api.load_api(packages))

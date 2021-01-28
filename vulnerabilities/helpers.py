@@ -23,9 +23,9 @@
 import json
 import re
 
-import yaml
 import requests
 import toml
+import yaml
 
 
 def load_yaml(path):
@@ -43,6 +43,13 @@ def load_toml(path):
         return toml.load(f)
 
 
+# FIXME: this is NOT how etags work .
+# We should instead send the proper HTTP header
+# https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match
+# and integrate this finely in the processing as this typically needs to use
+# streaming=True requests, and proper handling of the HTTP return code
+# In all cases this ends up being a single request, not a HEADD followed
+# by another real request
 def create_etag(data_src, url, etag_key):
     """
     Etags are like hashes of web responses. For a data source `data_src`,

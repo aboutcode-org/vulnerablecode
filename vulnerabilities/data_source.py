@@ -106,9 +106,9 @@ class DataSource(ContextManager):
     def __init__(
             self,
             batch_size: int,
-            last_run_date: Optional[datetime] = None,
-            cutoff_date: Optional[datetime] = None,
-            config: Optional[Mapping[str, Any]] = None,
+            last_run_date: Optional[datetime]=None,
+            cutoff_date: Optional[datetime]=None,
+            config: Optional[Mapping[str, Any]]=None,
     ):
         """
         Create a DataSource instance.
@@ -240,9 +240,9 @@ class GitDataSource(DataSource):
 
     def file_changes(
             self,
-            subdir: str = None,
-            recursive: bool = False,
-            file_ext: Optional[str] = None,
+            subdir: str=None,
+            recursive: bool=False,
+            file_ext: Optional[str]=None,
     ) -> Tuple[Set[str], Set[str]]:
         """
         Returns all added and modified files since last_run_date or cutoff_date (whichever is more
@@ -382,9 +382,9 @@ class GitDataSource(DataSource):
 
 def _include_file(
         path: str,
-        subdir: Optional[str] = None,
-        recursive: bool = False,
-        file_ext: Optional[str] = None,
+        subdir: Optional[str]=None,
+        recursive: bool=False,
+        file_ext: Optional[str]=None,
 ) -> bool:
     match = True
 
@@ -408,6 +408,7 @@ class OvalDataSource(DataSource):
     All data sources which collect data from OVAL files must inherit from this
     `OvalDataSource` class. Subclasses must implement the methods `_fetch` and `set_api`.
     """
+
     @staticmethod
     def create_purl(pkg_name: str, pkg_version: str, pkg_data: Mapping) -> PackageURL:
         """
@@ -433,29 +434,48 @@ class OvalDataSource(DataSource):
 
     def _fetch(self) -> Tuple[Mapping, Iterable[ET.ElementTree]]:
         """
-        This method  contains logic to fetch OVAL files and yield them into
-        a tuple of file's metadata and it's ET.ElementTree.
+        Return a two-tuple of ({mapping of Package URL data}, it's ET.ElementTree)
         Subclasses must implement this method.
 
-        Note: Mapping MUST INCLUDE "type" key. Example values of Mapping
-              {"type":"deb","qualifiers":{"distro":"buster"} }
+        Note:  Package URL data MUST INCLUDE a Package URL "type" key so
+        implement _fetch() accordingly.
+        For example::
 
+              {"type":"deb","qualifiers":{"distro":"buster"} }
         """
+        # TODO: enforce that we receive the proper data here
         raise NotImplementedError
 
     def updated_advisories(self) -> List[Advisory]:
-        """
-        Note: metadata MUST INCLUDE "type" key, implement _fetch accordingly.
-        """
-        for metadata, oval_file in self._fetch():
+        for purl_data, oval_etree in self._fetch():
+            if 'type' not in purl_data:
+                ets = (oval_etree and ET.tostring(oval_etree)) or 'NO DATA'
+                msg = (
+                    "Failed to get updated_advisories for Ubuntu: purl_data is "
+                    f"missing a package type {purl_data!r}\n"
+                    f"with OVAL XML:\n"
+                    f"{ets}\n"
+                    f"... continuing..."
+                )
+                print(msg)
+                logger.error(msg)
+                continue
+
             try:
-                oval_data = self.get_data_from_xml_doc(oval_file, metadata)
+                oval_data = self.get_data_from_xml_doc(oval_etree, purl_data)
                 yield oval_data
             except Exception:
-                logger.error(
-                    f"Failed to get updated_advisories: {oval_file!r} "
-                    "with {metadata!r}:\n" + traceback.format_exc()
+                ets = (oval_etree and ET.tostring(oval_etree)) or 'NO DATA'
+                tb = traceback.format_exc()
+                msg = (
+                    f"Failed to get updated_advisories for Ubuntu:"
+                    f"with {purl_data!r}\n"
+                    f"and with OVAL XML:\n"
+                    f"{ets}\n{tb}\n"
+                    f"... continuing..."
                 )
+                print(msg)
+                logger.error(msg)
                 continue
 
     def set_api(self, all_pkgs: Iterable[str]):
@@ -473,57 +493,89 @@ class OvalDataSource(DataSource):
 
     def get_data_from_xml_doc(self, xml_doc: ET.ElementTree, pkg_metadata={}) -> List[Advisory]:
         """
-        The orchestration method of the OvalDataSource. This method breaks an OVAL xml
-        ElementTree into a list of `Advisory`.
+        The orchestration method of the OvalDataSource. This method breaks an
+        OVAL xml ElementTree into a list of `Advisory`.
 
-        Note: pkg_metadata MUST INCLUDE "type" key. Example value of pkg_metadata,
+        Note: pkg_metadata is a mapping of Package URL data that MUST INCLUDE
+        "type" key.
+
+        Example value of pkg_metadata:
               {"type":"deb","qualifiers":{"distro":"buster"} }
         """
+        if 'type' not in pkg_metadata:
+            ets = xml_doc and ET.tostring(xml_doc) or 'NO DATA'
+            msg = (
+                "Failed to get_data_from_xml_doc: pkg_metadata is "
+                f"missing a package type {pkg_metadata!r}\n"
+                f"with OVAL XML:\n"
+                f"{ets}"
+            )
+            print(msg)
+            logger.error(msg)
+            raise Exception(msg)
+
         all_adv = []
         oval_doc = OvalParser(self.translations, xml_doc)
-        raw_data = oval_doc.get_data()
+        try:
+            raw_data = oval_doc.get_data()
+        except Exception:
+            ets = xml_doc and ET.tostring(xml_doc) or 'NO DATA'
+            tb = traceback.format_exc()
+            msg = (
+                f"Failed to get_data_from_xml_doc:"
+                f"with {pkg_metadata!r}\n"
+                f"and with OVAL XML:\n"
+                f"{ets}\n{tb}"
+            )
+            print(msg)
+            logger.error(msg)
+            raise Exception(msg)
+
         all_pkgs = self._collect_pkgs(raw_data)
         self.set_api(all_pkgs)
-        for definition_data in raw_data:  # definition_data -> Advisory
 
-            # These fields are definition level, i.e common for all
-            # elements connected/linked to an OvalDefinition
+        # convert definition_data to Advisory objects
+        for definition_data in raw_data:
+            # These fields are definition level, i.e common for all elements
+            # connected/linked to an OvalDefinition
             vuln_id = definition_data['vuln_id']
             description = definition_data['description']
             affected_purls = set()
             safe_purls = set()
-            references = [Reference(url=url)
-                          for url in definition_data['reference_urls']]
-
+            references = [Reference(url=url) for url in definition_data['reference_urls']]
             for test_data in definition_data['test_data']:
                 for package in test_data['package_list']:
                     pkg_name = package
                     if package and len(pkg_name) >= 50:
                         continue
-                    aff_ver_range = test_data['version_ranges']
+                    aff_ver_range = test_data['version_ranges'] or set()
                     all_versions = self.pkg_manager_api.get(package)
+
+                    # FIXME: what is this 50 DB limit? that's too small for versions
+                    # FIXME: we should not drop data this way
                     # This filter is for filtering out long versions.
                     # 50 is limit because that's what db permits atm.
-                    all_versions = set(
-                        filter(
-                            lambda x: len(x) < 50,
-                            all_versions))
+                    all_versions = set(filter(lambda x: len(x) < 50, all_versions))
                     if not all_versions:
                         continue
-                    affected_versions = set(
-                        filter(
-                            lambda x: x in aff_ver_range,
-                            all_versions))
+
+                    affected_versions = set(filter(lambda x: x in aff_ver_range, all_versions))
                     safe_versions = all_versions - affected_versions
 
                     for version in affected_versions:
                         pkg_url = self.create_purl(
-                            pkg_name=pkg_name, pkg_version=version, pkg_data=pkg_metadata)
+                            pkg_name=pkg_name,
+                            pkg_version=version,
+                            pkg_data=pkg_metadata,
+                        )
                         affected_purls.add(pkg_url)
 
                     for version in safe_versions:
                         pkg_url = self.create_purl(
-                            pkg_name=pkg_name, pkg_version=version, pkg_data=pkg_metadata)
+                            pkg_name=pkg_name,
+                            pkg_version=version,
+                            pkg_data=pkg_metadata,
+                        )
                         safe_purls.add(pkg_url)
 
             all_adv.append(
@@ -532,5 +584,8 @@ class OvalDataSource(DataSource):
                     impacted_package_urls=affected_purls,
                     resolved_package_urls=safe_purls,
                     cve_id=vuln_id,
-                    vuln_references=references))
+                    vuln_references=references,
+                ))
+
+        print(f"Processed {len(all_adv)} Advisory from Oval data for {pkg_metadata}")
         return all_adv

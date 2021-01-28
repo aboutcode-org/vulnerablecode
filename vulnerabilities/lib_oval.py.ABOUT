@@ -1,14 +1,12 @@
 about_resource: lib_oval.py
-version: 6aaae0
-download_url: https://raw.githubusercontent.com/CISecurity/OVALRepo/6aaae00876ec716927e0ae5b9ccfa12f310427a0/scripts/lib_oval.py
-
-name: OVALRepo - lib_oval
+version: e74da20d7c1de91c098c564ce65d6b93656eb86f
+download_url: https://raw.githubusercontent.com/CISecurity/OVALRepo/e74da20d7c1de91c098c564ce65d6b93656eb86f/scripts/lib_oval.py
+package_url: pkg:github/CISecurity/OVALRepo@e74da20d7c1de91c098c564ce65d6b93656eb86f#scripts/lib_oval.py
 homepage_url: https://github.com/CISecurity/OVALRepo
 owner: Center for Internet Security
 author: Gunnar Engelbach <Gunnar.Engelbach@ThreatGuard.com>
 notes: This a single file extracted from OVALRepo that parses OVAL files.
 
-license: bsd-new
-license_file: lib_oval.py.LICENSE
-
 copyright: Copyright (c) 2010 United States Government. All Rights Reserved.
+license_expression: bsd-new
+license_file: lib_oval.py.LICENSE

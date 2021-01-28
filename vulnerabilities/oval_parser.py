@@ -30,8 +30,12 @@ import xml.etree.ElementTree as ET
 
 from dephell_specifier import RangeSpecifier
 
-from vulnerabilities.lib_oval import (
-    OvalDefinition, OvalDocument, OvalTest, OvalObject, OvalState)
+from vulnerabilities.lib_oval import OvalDefinition
+from vulnerabilities.lib_oval import OvalDocument
+from vulnerabilities.lib_oval import OvalObject
+from vulnerabilities.lib_oval import OvalState
+from vulnerabilities.lib_oval import OvalTest
+import traceback
 
 
 class OvalParser:
@@ -45,8 +49,7 @@ class OvalParser:
 
     def get_data(self) -> List[Dict]:
         """
-        This is the orchestration method, it returns a list of dictionaries,
-        where each dictionary represents data from an OvalDefinition
+        Return a list of OvalDefinition mappings.
         """
         oval_data = []
         for definition in self.all_definitions:
@@ -55,27 +58,22 @@ class OvalParser:
             if not matching_tests:
                 continue
             definition_data = {'test_data': []}
-            definition_data['description'] = definition.getMetadata(
-            ).getDescription()  # this could use some data cleaning
+            # TODO:this could use some data cleaning
+            definition_data['description'] = definition.getMetadata().getDescription() or ''
 
-            if not definition_data['description']:
-                definition_data['description'] = ''
+            definition_data['vuln_id'] = self.get_vuln_id_from_definition(definition)
+            definition_data['reference_urls'] = self.get_urls_from_definition(definition)
 
-            definition_data['vuln_id'] = self.get_vuln_id_from_definition(
-                definition)
-            definition_data['reference_urls'] = self.get_urls_from_definition(
-                definition
-            )
             for test in matching_tests:
                 test_obj, test_state = self.get_object_state_of_test(test)
                 if not test_obj or not test_state:
                     continue
                 test_data = {'package_list': []}
-                test_data['package_list'].extend(
-                    self.get_pkgs_from_obj(test_obj))
-                test_data['version_ranges'] = self.get_versionsrngs_from_state(
-                    test_state)
+                test_data['package_list'].extend(self.get_pkgs_from_obj(test_obj))
+                version_ranges = self.get_versionsrngs_from_state(test_state)
+                test_data['version_ranges'] = version_ranges
                 definition_data['test_data'].append(test_data)
+
             oval_data.append(definition_data)
 
         return oval_data
@@ -138,18 +136,27 @@ class OvalParser:
 
         return pkg_list
 
+    # TODO: this method needs a better name
     def get_versionsrngs_from_state(self, state: OvalState) -> Optional[RangeSpecifier]:
         """
-        returns  all related version ranges within a state
+        Return a version range(s)? from a state
         """
         for var in state.element:
-            if var.get('operation'):
-                if var.get('operation') not in self.translations:
-                    continue
-                operand = self.translations[var.get('operation')]
-                version = var.text
-                version_range = operand + version
+            operation = var.get('operation')
+            if not operation:
+                continue
+            operand = self.translations.get(operation) or ''
+            if not operand:
+                continue
+            version = var.text or ''
+            if not version:
+                continue
+            version_range = operand + version
+            try:
                 return RangeSpecifier(version_range)
+            except Exception:
+                # FIXME: we should not continue
+                print(f"Failed to process invalid version_range in OvalState: {version_range}...continuing")
 
     @staticmethod
     def get_urls_from_definition(definition: OvalDefinition) -> Set[str]:

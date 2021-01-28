@@ -1,13 +1,32 @@
 #!/usr/bin/env/ python3
-# Copyright© 2010 United States Government. All Rights Reserved.
+# Copyright (c) 2010 United States Government. All Rights Reserved.
 
-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+# list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice, this
+# list of conditions and the following disclaimer in the documentation and/or
+# other materials provided with the distribution.
+#
+# * Neither the name of the Center for Internet Security, Inc. (CIS) nor the names
+# of its contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
 
-# * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-# * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-# * Neither the name of the Center for Internet Security, Inc. (CIS) nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER, CIS AND CONTRIBUTORS "AS
+# IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER, CIS OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
 
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER, CIS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER, CIS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """Library to simplify working with the OVAL XML structure
 
 
@@ -39,29 +58,29 @@ Available exceptions:
 
 1. Create an OvalDocument:
 
-    >> tree = ElementTree()
-    >> tree.parse("OvalTest.xml")
-    >> document = OvalDocument(tree)
+    >>> tree = ElementTree()
+    >>> tree.parse("OvalTest.xml")
+    >>> document = OvalDocument(tree)
 
 2. Find an oval element within the loaded document:
 
-    >> element = document.getElementByID("oval:org.mitre.oval:def:22382")
-    >> if element is not None:
-    >>    ....
+    >>> element = document.getElementByID("oval:org.mitre.oval:def:22382")
+    >>> if element is not None:
+    >>>    ....
 
 3. Read an XML file with a single OVAL Definition (error checking omitted for brevity):
 
-    >> tree = ElementTree()    
-    >> tree.parse('test-definition.xml')
-    >> root = tree.getroot()    
-    >> definition = lib_oval.OvalDefinition(root)
+    >>> tree = ElementTree()    
+    >>> tree.parse('test-definition.xml')
+    >>> root = tree.getroot()    
+    >>> definition = lib_oval.OvalDefinition(root)
     
 4. Change information in the definition from #3 and write the changes
 
-    >> meta = definition.getMetadata()
-    >> repo = meta.getOvalRepositoryInformation()
-    >> repo.setMinimumSchemaVersion("5.9")
-    >> tree.write("outfilename.xml", UTF-8", True)
+    >>> meta = definition.getMetadata()
+    >>> repo = meta.getOvalRepositoryInformation()
+    >>> repo.setMinimumSchemaVersion("5.9")
+    >>> tree.write("outfilename.xml", UTF-8", True)
         
 
 

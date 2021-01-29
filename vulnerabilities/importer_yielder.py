@@ -229,11 +229,27 @@ IMPORTER_REGISTRY = [
         "data_source_cfg": {"etags": {}},
     },
     {
+        "name": "apache_tomcat",
+        "license": "",
+        "last_run": None,
+        "data_source": "ApacheTomcatDataSource",
+        "data_source_cfg": {"etags": {}},
+    },
+    {
         "name": "apache_kafka",
         "license": "",
         "last_run": None,
         "data_source": "ApacheKafkaDataSource",
         "data_source_cfg": {},
+    },
+    {
+        'name': 'istio',
+        'license': '',
+        'last_run': None,
+        'data_source': 'IstioDataSource',
+        'data_source_cfg': {
+            'repository_url': 'https://github.com/istio/istio.io'
+        },
     },
 ]
 

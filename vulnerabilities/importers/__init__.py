@@ -48,3 +48,5 @@ from vulnerabilities.importers.suse_scores import SUSESeverityScoreDataSource
 from vulnerabilities.importers.ubuntu import UbuntuDataSource
 from vulnerabilities.importers.ubuntu_usn import UbuntuUSNDataSource
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatDataSource
+from vulnerabilities.importers.apache_kafka import ApacheKafkaDataSource
+from vulnerabilities.importers.istio import IstioDataSource

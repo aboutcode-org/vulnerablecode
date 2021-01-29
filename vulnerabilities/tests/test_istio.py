@@ -1,0 +1,120 @@
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# http://nexb.com and https://github.com/nexB/vulnerablecode/
+# The VulnerableCode software is licensed under the Apache License version 2.0.
+# Data generated with VulnerableCode require an acknowledgment.
+#
+# You may not use this software except in compliance with the License.
+# You may obtain a copy of the License at: http://apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software distributed
+# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+# CONDITIONS OF ANY KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations under the License.
+#
+# When you publish or redistribute any data created with VulnerableCode or any VulnerableCode
+# derivative work, you must accompany this data with the following acknowledgment:
+#
+#  Generated with VulnerableCode and provided on an "AS IS" BASIS, WITHOUT WARRANTIES
+#  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
+#  VulnerableCode should be considered or used as legal advice. Consult an Attorney
+#  for any legal advice.
+#  VulnerableCode is a free software tool from nexB Inc. and others.
+#  Visit https://github.com/nexB/vulnerablecode/ for support and download.
+
+import os
+from collections import OrderedDict
+from unittest import TestCase
+
+from packageurl import PackageURL
+
+from vulnerabilities.data_source import Advisory, Reference
+from vulnerabilities.importers.istio import IstioDataSource
+from vulnerabilities.package_managers import GitHubTagsAPI
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+class TestIstioDataSource(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        data_source_cfg = {
+            "repository_url": "",
+        }
+        cls.data_src = IstioDataSource(1, config=data_source_cfg)
+        cls.data_src.version_api = GitHubTagsAPI(
+            {
+                "istio/istio": [
+                    "1.1.0-rc.0",
+                    "1.1.0-rc.1",
+                    "1.1.0-rc.2",
+                    "1.1.0-rc.3",
+                    "1.1.0-rc.4",
+                    "1.1.0-rc.5",
+                    "1.1.0-rc.6",
+                    "1.1.0-snapshot.2",
+                    "1.1.0-snapshot.3",
+                ]
+            }
+        )
+
+    def test_process_file(self):
+
+        path = os.path.join(BASE_DIR, "test_data/istio/test_file.md")
+        expected_data = [
+            Advisory(
+                summary=("Incorrect access control."),
+                impacted_package_urls={
+                    PackageURL(
+                        type="golang",
+                        name="istio",
+                        version="1.1.0-snapshot.2",
+                    ),
+                    PackageURL(
+                        type="golang",
+                        name="istio",
+                        version="1.1.0-snapshot.3",
+                    ),
+                },
+                resolved_package_urls={
+                    PackageURL(
+                        type="golang",
+                        name="istio",
+                        version="1.1.0-rc.2",
+                    ),
+                    PackageURL(
+                        type="golang",
+                        name="istio",
+                        version="1.1.0-rc.4",
+                    ),
+                    PackageURL(
+                        type="golang",
+                        name="istio",
+                        version="1.1.0-rc.3",
+                    ),
+                    PackageURL(
+                        type="golang",
+                        name="istio",
+                        version="1.1.0-rc.0",
+                    ),
+                    PackageURL(
+                        type="golang",
+                        name="istio",
+                        version="1.1.0-rc.5",
+                    ),
+                    PackageURL(
+                        type="golang",
+                        name="istio",
+                        version="1.1.0-rc.1",
+                    ),
+                    PackageURL(
+                        type="golang",
+                        name="istio",
+                        version="1.1.0-rc.6",
+                    ),
+                },
+                cve_id="CVE-2019-12243",
+            )
+        ]
+
+        found_data = self.data_src.process_file(path)
+
+        assert expected_data == found_data

@@ -144,6 +144,9 @@ class PackageRelatedVulnerability(models.Model):
     vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
     is_vulnerable = models.BooleanField()
 
+    def __str__(self):
+        return self.package.package_url + " " + self.vulnerability.cve_id
+
     class Meta:
         unique_together = ("package", "vulnerability")
         verbose_name_plural = "PackageRelatedVulnerabilities"

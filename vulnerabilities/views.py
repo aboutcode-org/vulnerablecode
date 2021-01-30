@@ -45,12 +45,14 @@ class PackageSearchView(View):
 
         if request.GET:
             packages = self.request_to_queryset(request)
+            total_results = packages.count()
             page_no = int(request.GET.get("page", 1))
             packages = Paginator(packages, 50).get_page(page_no)
             context["packages"] = packages
             context["searched_for"] = urlencode(
                 {param: request.GET[param] for param in request.GET if param != "page"}
             )
+            context["total_results"] = total_results
 
         return render(request, self.template_name, context)
 

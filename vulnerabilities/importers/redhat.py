@@ -76,8 +76,8 @@ def to_advisory(advisory_data):
                 affected_purls.append(rpm_to_purl(rpm))
 
     references = []
-    if advisory_data.get("bugzilla"):
-        bugzilla = advisory_data.get("bugzilla")
+    bugzilla = advisory_data.get("bugzilla")
+    if bugzilla:
         url = "https://bugzilla.redhat.com/show_bug.cgi?id={}".format(bugzilla)
         bugzilla_data = requests.get(f"https://bugzilla.redhat.com/rest/bug/{bugzilla}").json()
         bugzilla_severity_val = bugzilla_data["bugs"][0]["severity"]
@@ -98,7 +98,7 @@ def to_advisory(advisory_data):
         # RH provides 3 types of advisories RHSA, RHBA, RHEA. Only RHSA's contain severity score.
         # See https://access.redhat.com/articles/2130961 for more details.
 
-        if "RHSA" in rh_adv:
+        if "RHSA" in rh_adv.upper():
             rhsa_data = requests.get(f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json").json()  # nopep8
             value = rhsa_data["cvrfdoc"]["aggregate_severity"]
             rhsa_aggregate_severity = VulnerabilitySeverity(

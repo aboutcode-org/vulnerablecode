@@ -204,7 +204,7 @@ class Importer(models.Model):
 
 class VulnerabilitySeverity(models.Model):
 
-    scoring_system_choices = [(system.identifier, system.name) for system in scoring_systems.values()]  # nopep8
+    scoring_system_choices = ((system.identifier, system.name) for system in scoring_systems.values())  # nopep8
     vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
     value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
     scoring_system = models.CharField(

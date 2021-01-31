@@ -17,7 +17,7 @@ class ScoringSystem:
     def as_score(self, value):
         """
         Return a normalized numeric score for this scoring system  given a raw
-        value. For instance htis can be used to convert a CVSS vector to a base
+        value. For instance this can be used to convert a CVSS vector to a base
         score.
         """
         raise NotImplementedError

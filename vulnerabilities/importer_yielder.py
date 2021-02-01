@@ -179,7 +179,7 @@ IMPORTER_REGISTRY = [
         'data_source': 'GitHubAPIDataSource',
         'data_source_cfg': {
             'endpoint': 'https://api.github.com/graphql',
-            'ecosystems': ['MAVEN', 'NUGET', 'COMPOSER', 'PIP', 'RUBYGEMS']
+            'ecosystems': ['PIP']
         }
     },
     {

@@ -26,15 +26,27 @@ class ScoringSystem:
 scoring_systems = {
     "cvssv2": ScoringSystem(
         identifier="cvssv2",
-        name="CVSSv2",
+        name="CVSSv2 Base Score",
         url="https://www.first.org/cvss/v2/",
-        notes="We store the vector as value and compute scores from that.",
+        notes="cvssv2 base score",
+    ),
+    "cvssv2_vector": ScoringSystem(
+        identifier="cvssv2_vector",
+        name="CVSSv2 Vector",
+        url="https://www.first.org/cvss/v2/",
+        notes="cvssv2 vector, used to get additional info about nature and severity of vulnerability",
     ),
     "cvssv3": ScoringSystem(
         identifier="cvssv3",
-        name="CVSSv3",
+        name="CVSSv3 Base Score",
         url="https://www.first.org/cvss/v3-0/",
-        notes="We store the vector as value and compute scores from that.",
+        notes="cvssv3 base score",
+    ),
+    "cvssv3_vector": ScoringSystem(
+        identifier="cvssv3_vector",
+        name="CVSSv3 Vector",
+        url="https://www.first.org/cvss/v3-0/",
+        notes="cvssv3 vector, used to get additional info about nature and severity of vulnerability",
     ),
     "rhbs": ScoringSystem(
         identifier="rhbs",
@@ -44,11 +56,6 @@ scoring_systems = {
     "rhas": ScoringSystem(
         identifier="rhas",
         name="RedHat Aggregate severity",
-        url="https://access.redhat.com/security/updates/classification/",
-    ),
-    "rh_cvssv3": ScoringSystem(
-        identifier="rh_cvssv3",
-        name="RedHat CVSSv3",
         url="https://access.redhat.com/security/updates/classification/",
     ),
 }

@@ -1,4 +1,4 @@
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -31,7 +31,7 @@ import vulnerabilities.importers.redhat as redhat
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import VulnerabilitySeverity
-from vulnerabilities.severity_systems import scoring_systems
+from vulnerabilities.severity_systems import scoring_systems, ScoringSystem
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/", "redhat.json")
@@ -67,7 +67,7 @@ class TestRedhat(unittest.TestCase):
                         namespace="redhat",
                         name="bash",
                         version="4.2.46-28.el7",
-                        qualifiers=OrderedDict(),
+                        qualifiers={},
                         subpath=None,
                     ),
                     PackageURL(
@@ -75,179 +75,59 @@ class TestRedhat(unittest.TestCase):
                         namespace="redhat",
                         name="bash",
                         version="4.1.2-48.el6",
-                        qualifiers=OrderedDict(),
+                        qualifiers={},
                         subpath=None,
                     ),
                 ],
                 resolved_package_urls=[],
-                vuln_references=sorted(
-                    [
-                        Reference(
-                            url="https://bugzilla.redhat.com/show_bug.cgi?id=1396383",
-                            reference_id="1396383",
-                            severities=[
-                                VulnerabilitySeverity(
-                                   system=scoring_systems["rhbs"], value=2.0
-                                )
-                            ],
-                        ),
-                        Reference(
-                            url="https://access.redhat.com/errata/RHSA-2017:1931",
-                            reference_id="RHSA-2017:1931",
-                            severities=[
-                                VulnerabilitySeverity(
-                                    system=scoring_systems["rhas"], value=2.2
-                                )
-                            ],
-                        ),
-                        Reference(
-                            url="https://access.redhat.com/errata/RHSA-2017:0725",
-                            reference_id="RHSA-2017:0725",
-                            severities=[
-                                VulnerabilitySeverity(
-                                    system=scoring_systems["rhas"], value=2.2
-                                )
-                            ],
-                        ),
-                        Reference(
-                            url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-9401.json",  # nopep8
-                            reference_id="",
-                            severities=[
-                                VulnerabilitySeverity(
-                                    system=scoring_systems["rh_cvssv3"], value=6.0
-                                )
-                            ],
-                        ),
-                    ],
-                    key=lambda x: x.url,
-                ),
+                vuln_references=[
+                    Reference(
+                        reference_id="RHSA-2017:0725",
+                        url="https://access.redhat.com/errata/RHSA-2017:0725",
+                        severities=[
+                            VulnerabilitySeverity(
+                                system=scoring_systems["rhas"],
+                                value=2.2,
+                            )
+                        ],
+                    ),
+                    Reference(
+                        reference_id="RHSA-2017:1931",
+                        url="https://access.redhat.com/errata/RHSA-2017:1931",
+                        severities=[
+                            VulnerabilitySeverity(
+                                system=scoring_systems["rhas"],
+                                value=2.2,
+                            )
+                        ],
+                    ),
+                    Reference(
+                        reference_id="",
+                        url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-9401.json",
+                        severities=[
+                            VulnerabilitySeverity(
+                                system=scoring_systems["cvssv3"],
+                                value="3.3",
+                            ),
+                            VulnerabilitySeverity(
+                                system=scoring_systems["cvssv3_vector"],
+                                value="CVSS:3.0/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L",
+                            ),
+                        ],
+                    ),
+                    Reference(
+                        reference_id="1396383",
+                        url="https://bugzilla.redhat.com/show_bug.cgi?id=1396383",
+                        severities=[
+                            VulnerabilitySeverity(
+                                system=scoring_systems["rhbs"],
+                                value=2.0,
+                            )
+                        ],
+                    ),
+                ],
                 cve_id="CVE-2016-9401",
-            ),
-            Advisory(
-                summary=(
-                    "CVE-2016-10200 kernel: l2tp: Race condition "
-                    "in the L2TPv3 IP encapsulation feature"
-                ),
-                impacted_package_urls=[
-                    PackageURL(
-                        type="rpm",
-                        namespace="redhat",
-                        name="kernel-rt",
-                        version="3.10.0-693.rt56.617.el7",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    ),
-                    PackageURL(
-                        type="rpm",
-                        namespace="redhat",
-                        name="kernel",
-                        version="3.10.0-693.el7",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    ),
-                    PackageURL(
-                        type="rpm",
-                        namespace="redhat",
-                        name="kernel",
-                        version="3.10.0-514.28.1.el7",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    ),
-                ],
-                resolved_package_urls=[],
-                vuln_references=sorted(
-                    [
-                        Reference(
-                            url="https://bugzilla.redhat.com/show_bug.cgi?id=1430347",
-                            reference_id="1430347",
-                            severities=[
-                                VulnerabilitySeverity(
-                                    system=scoring_systems["rhbs"], value=2.0
-                                )
-                            ],
-                        ),
-                        Reference(
-                            url="https://access.redhat.com/errata/RHSA-2017:1842",
-                            reference_id="RHSA-2017:1842",
-                            severities=[
-                                VulnerabilitySeverity(
-                                    system=scoring_systems["rhas"], value=2.2
-                                )
-                            ],
-                        ),
-                        Reference(
-                            url="https://access.redhat.com/errata/RHSA-2017:2437",
-                            reference_id="RHSA-2017:2437",
-                            severities=[
-                                VulnerabilitySeverity(
-                                    system=scoring_systems["rhas"], value=2.2
-                                )
-                            ],
-                        ),
-                        Reference(
-                            url="https://access.redhat.com/errata/RHSA-2017:2077",
-                            reference_id="RHSA-2017:2077",
-                            severities=[
-                                VulnerabilitySeverity(
-                                    system=scoring_systems["rhas"], value=2.2
-                                )
-                            ],
-                        ),
-                        Reference(
-                            url="https://access.redhat.com/errata/RHSA-2017:2444",
-                            reference_id="RHSA-2017:2444",
-                            severities=[
-                                VulnerabilitySeverity(
-                                    system=scoring_systems["rhas"], value=2.2
-                                )
-                            ],
-                        ),
-                        Reference(
-                            url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-10200.json",  # nopep8
-                            reference_id="",
-                            severities=[
-                                VulnerabilitySeverity(
-                                    system=scoring_systems["rh_cvssv3"], value=6.0
-                                )
-                            ],
-                        ),
-                    ],
-                    key=lambda x: x.url,
-                ),
-                cve_id="CVE-2016-10200",
-            ),
-            Advisory(
-                summary=(
-                    "CVE-2017-12168 Kernel: kvm: ARM64: "
-                    "assert failure when accessing PMCCNTR register"
-                ),
-                impacted_package_urls=[],
-                resolved_package_urls=[],
-                vuln_references=sorted(
-                    [
-                        Reference(
-                            url="https://bugzilla.redhat.com/show_bug.cgi?id=1492984",
-                            reference_id="1492984",
-                            severities=[
-                                VulnerabilitySeverity(
-                                    system=scoring_systems["rhbs"], value=2.0
-                                )
-                            ],
-                        ),
-                        Reference(
-                            url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2017-12168.json",  # nopep8
-                            reference_id="",
-                            severities=[
-                                VulnerabilitySeverity(
-                                    system=scoring_systems["rh_cvssv3"], value=6.0
-                                )
-                            ],
-                        ),
-                    ],
-                    key=lambda x: x.url,
-                ),
-                cve_id="CVE-2017-12168",
-            ),
+            )
         }
 
         found_data = set()
@@ -255,7 +135,6 @@ class TestRedhat(unittest.TestCase):
         mock_resp.json = lambda: {
             "bugs": [{"severity": 2.0}],
             "cvrfdoc": {"aggregate_severity": 2.2},
-            "cvss3": {"cvss3_base_score": 6.0},
         }
         for adv in data:
             with unittest.mock.patch(

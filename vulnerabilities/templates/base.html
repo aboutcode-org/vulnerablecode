@@ -7,8 +7,8 @@
 <link rel="stylesheet" href="{% static 'css/custom.css' %}"/>
 <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<body class="Site has-background-light">
-    <nav class="navbar is-dark is-fixed-top" role="navigation" aria-label="main navigation">
+<body class="Site">
+    <nav class="navbar is-light" role="navigation" aria-label="main navigation">
         <div  class="navbar-menu">
             <div class="navbar-start">
                 <a class="navbar-item" href="{% url 'home' %}">
@@ -48,23 +48,11 @@
                 </div>
 
             </div>
-            <div class="navbar-end">
-                <div class="navbar-item">
-                    <div class="buttons">
-                        <a class="button is-info">
-                        <strong>Sign up</strong>
-                        </a>
-                        <a class="button is-light">
-                        Log in
-                        </a>
-                    </div>
-                </div>
-            </div>
         </div>
     </nav>
     <main class="Site-content">
 
-    <section class="section is-medium  has-text-centered">
+    <section class="section is-small  has-text-centered">
         <div class="container ">
             {% block title %}
             {% endblock %}

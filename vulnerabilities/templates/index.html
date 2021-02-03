@@ -7,8 +7,12 @@ Welcome to VulnerableCode!
 {% endblock %}
 
 {% block content %}
-<div class = "hero is-large has-text-centered is-light">
-<a class="button is-medium has-background-info-light"  href="{% url 'vulnerability_search' %}"> Search Vulnerabilities</a>
-<a class="button is-medium has-background-info-light" href="{% url 'package_search' %}"> Search Packages</a>
+<div class = "columns is-multiline">
+    <div class="column has-text-centered is-full">
+        <a class="button is-medium has-background-light"  href="{% url 'vulnerability_search' %}"> Search Vulnerabilities</a>
+    </div>
+    <div class="column has-text-centered is-full">
+        <a class="button is-medium has-background-light" href="{% url 'package_search' %}"> Search Packages</a>
+    </div>
 </div>
 {% endblock %}

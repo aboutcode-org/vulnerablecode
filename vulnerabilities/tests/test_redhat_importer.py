@@ -103,7 +103,7 @@ class TestRedhat(unittest.TestCase):
                     ),
                     Reference(
                         reference_id="",
-                        url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-9401.json",
+                        url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-9401.json",  # nopep8
                         severities=[
                             VulnerabilitySeverity(
                                 system=scoring_systems["cvssv3"],

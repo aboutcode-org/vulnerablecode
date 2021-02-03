@@ -29,7 +29,7 @@ from vulnerabilities.importers import NVDDataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import VulnerabilitySeverity
-from vulnerabilities.severity_systems import ScoringSystem
+from vulnerabilities.severity_systems import scoring_systems
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/nvd/nvd_test.json")
@@ -149,21 +149,11 @@ class TestNVDDataSource(TestCase):
                             url="https://nvd.nist.gov/vuln/detail/CVE-2005-4895",
                             severities=[
                                 VulnerabilitySeverity(
-                                    system=ScoringSystem(
-                                        identifier="cvssv2",
-                                        name="CVSSv2 Base Score",
-                                        url="https://www.first.org/cvss/v2/",
-                                        notes="cvssv2 base score",
-                                    ),
+                                    system=scoring_systems["cvssv2"],
                                     value="5.0",
                                 ),
                                 VulnerabilitySeverity(
-                                    system=ScoringSystem(
-                                        identifier="cvssv2_vector",
-                                        name="CVSSv2 Vector",
-                                        url="https://www.first.org/cvss/v2/",
-                                        notes="cvssv2 vector, used to get additional info about nature and severity of vulnerability",
-                                    ),
+                                    system=scoring_systems["cvssv2_vector"],
                                     value="AV:N/AC:L/Au:N/C:N/I:N/A:P",
                                 ),
                             ],

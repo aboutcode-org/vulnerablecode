@@ -34,7 +34,7 @@ scoring_systems = {
         identifier="cvssv2_vector",
         name="CVSSv2 Vector",
         url="https://www.first.org/cvss/v2/",
-        notes="cvssv2 vector, used to get additional info about nature and severity of vulnerability",
+        notes="cvssv2 vector, used to get additional info about nature and severity of vulnerability",  # nopep8
     ),
     "cvssv3": ScoringSystem(
         identifier="cvssv3",
@@ -46,7 +46,7 @@ scoring_systems = {
         identifier="cvssv3_vector",
         name="CVSSv3 Vector",
         url="https://www.first.org/cvss/v3-0/",
-        notes="cvssv3 vector, used to get additional info about nature and severity of vulnerability",
+        notes="cvssv3 vector, used to get additional info about nature and severity of vulnerability",  # nopep8
     ),
     "rhbs": ScoringSystem(
         identifier="rhbs",

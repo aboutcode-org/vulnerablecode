@@ -43,7 +43,7 @@ class RedhatDataSource(DataSource):
     def updated_advisories(self):
         processed_advisories = []
         for advisory_data in self.redhat_response:
-            processed_advisories.extend(to_advisory(advisory_data))
+            processed_advisories.append(to_advisory(advisory_data))
 
         return self.batch_advisories(processed_advisories)
 
@@ -55,7 +55,6 @@ def fetch():
     url = "https://access.redhat.com/hydra/rest/securitydata/cve.json?page={}"
 
     while True:
-
         resp_json = requests.get(url.format(page_no)).json()
         page_no += 1
         if not resp_json:
@@ -68,7 +67,6 @@ def fetch():
 
 
 def to_advisory(advisory_data):
-
     affected_purls = []
     if advisory_data.get("affected_packages"):
         for rpm in advisory_data["affected_packages"]:
@@ -117,14 +115,26 @@ def to_advisory(advisory_data):
         else:
             references.append(Reference(severities=[], url=url, reference_id=rh_adv))
 
-    redhat_cve_entry = requests.get(advisory_data["resource_url"]).json()
-    redhat_cvss = redhat_cve_entry["cvss3"]["cvss3_base_score"]
-    redhat_cvss3 = VulnerabilitySeverity(
-        system=scoring_systems["rh_cvssv3"],
-        value=redhat_cvss,
-    )
+    redhat_scores = []
+    cvssv3_score = advisory_data.get("cvss3_score")
+    if cvssv3_score:
+        redhat_scores.append(
+            VulnerabilitySeverity(
+                system=scoring_systems["cvssv3"],
+                value=cvssv3_score,
+            )
+        )
 
-    references.append(Reference(severities=[redhat_cvss3], url=advisory_data["resource_url"]))
+    cvssv3_vector = advisory_data.get("cvss3_scoring_vector")
+    if cvssv3_vector:
+        redhat_scores.append(
+            VulnerabilitySeverity(
+                system=scoring_systems["cvssv3_vector"],
+                value=cvssv3_vector,
+            )
+        )
+
+    references.append(Reference(severities=redhat_scores, url=advisory_data["resource_url"]))
 
     return Advisory(
         summary=advisory_data["bugzilla_description"],

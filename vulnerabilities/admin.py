@@ -29,6 +29,7 @@ from vulnerabilities.models import (
     Package,
     Vulnerability,
     VulnerabilityReference,
+    VulnerabilitySeverity
 )
 
 
@@ -54,4 +55,8 @@ class PackageRelatedVulnerabilityAdmin(admin.ModelAdmin):
 
 @admin.register(Importer)
 class ImporterAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(VulnerabilitySeverity)
+class VulnerabilitySeverityAdmin(admin.ModelAdmin):
     pass

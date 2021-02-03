@@ -29,7 +29,7 @@ from vulnerabilities.importers import NVDDataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import VulnerabilitySeverity
-from vulnerabilities.severity_systems import scoring_systems
+from vulnerabilities.severity_systems import ScoringSystem
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/nvd/nvd_test.json")
@@ -146,9 +146,26 @@ class TestNVDDataSource(TestCase):
                             url="http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",  # nopep8
                         ),
                         Reference(
-                            url="https://nvd.nist.gov/vuln/detail/CVE-2005-4895",  # nopep8
+                            url="https://nvd.nist.gov/vuln/detail/CVE-2005-4895",
                             severities=[
-                                VulnerabilitySeverity(system=scoring_systems["cvssv2"], value="5.0")
+                                VulnerabilitySeverity(
+                                    system=ScoringSystem(
+                                        identifier="cvssv2",
+                                        name="CVSSv2 Base Score",
+                                        url="https://www.first.org/cvss/v2/",
+                                        notes="cvssv2 base score",
+                                    ),
+                                    value="5.0",
+                                ),
+                                VulnerabilitySeverity(
+                                    system=ScoringSystem(
+                                        identifier="cvssv2_vector",
+                                        name="CVSSv2 Vector",
+                                        url="https://www.first.org/cvss/v2/",
+                                        notes="cvssv2 vector, used to get additional info about nature and severity of vulnerability",
+                                    ),
+                                    value="AV:N/AC:L/Au:N/C:N/I:N/A:P",
+                                ),
                             ],
                             reference_id="CVE-2005-4895",
                         ),
@@ -163,5 +180,7 @@ class TestNVDDataSource(TestCase):
         found_advisories = list(self.data_src.to_advisories(self.nvd_data))
         # Only 1 advisory because other advisory is hardware related
         assert len(found_advisories) == 1
-        found_advisories[0].vuln_references = sorted(found_advisories[0].vuln_references, key=lambda x: x.url)  # nopep8
+        found_advisories[0].vuln_references = sorted(
+            found_advisories[0].vuln_references, key=lambda x: x.url
+        )  # nopep8
         assert expected_advisories == found_advisories

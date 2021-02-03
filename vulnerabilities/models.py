@@ -210,7 +210,7 @@ class VulnerabilitySeverity(models.Model):
     scoring_system = models.CharField(
         max_length=50,
         choices=scoring_system_choices,
-        help_text="Identifier for the scoring system used. Avaiable choices are: {} ".format(
+        help_text="Identifier for the scoring system used. Available choices are: {} ".format(
                   ", ".join(
                         [
                             f"{ss.identifier} is identifier for {ss.name} system"

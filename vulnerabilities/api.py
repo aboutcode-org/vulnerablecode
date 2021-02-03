@@ -208,13 +208,13 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
                 },
             )
 
-        for cve_id in request.data["vulnerabilities"]:
-            filter_list.append(cve_id)
+        for vulnerability_id in request.data["vulnerabilities"]:
+            filter_list.append(vulnerability_id)
             # This handles the case when the said cve doesnt exist in db
-            response[cve_id] = {}
-        res = Vulnerability.objects.filter(cve_id__in=filter_list)
+            response[vulnerability_id] = {}
+        res = Vulnerability.objects.filter(identifier__in=filter_list)
         for vuln in res:
-            response[vuln.cve_id] = MinimalVulnerabilitySerializer(
+            response[vuln.identifier] = MinimalVulnerabilitySerializer(
                 vuln, context={"request": request}
             ).data
         return Response(response)

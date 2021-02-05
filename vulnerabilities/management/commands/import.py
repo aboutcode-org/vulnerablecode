@@ -56,12 +56,6 @@ class Command(BaseCommand):
             "--batch_size", help="The batch size to be used for bulk inserting data"
         )
 
-        parser.add_argument(
-            "--cv",
-            action="store_true",
-            help="This will import and assign id's to vulnerabilities without any identifiers",
-        )
-
     def handle(self, *args, **options):
         # load_importers() seeds the DB with Importers
         load_importers()
@@ -71,8 +65,6 @@ class Command(BaseCommand):
 
         if options["batch_size"]:
             self.batch_size = options["batch_size"]
-
-        self.create_vulcodes = options["cv"]
 
         if options["all"]:
             self._import_data(Importer.objects.all(), options["cutoff_date"])
@@ -111,9 +103,7 @@ class Command(BaseCommand):
         for importer in importers:
             self.stdout.write(f"Importing data from {importer.name}")
             batch_size = int(getattr(self, "batch_size", 10))
-            ImportRunner(importer, batch_size).run(
-                cutoff_date=cutoff_date, create_vulcodes=self.create_vulcodes
-            )
+            ImportRunner(importer, batch_size).run(cutoff_date=cutoff_date)
             self.stdout.write(
                 self.style.SUCCESS(f"Successfully imported data from {importer.name}")
             )

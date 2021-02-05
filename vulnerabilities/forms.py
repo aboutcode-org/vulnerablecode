@@ -44,7 +44,9 @@ def get_package_namespaces():
 class PackageForm(forms.Form):
 
     type = forms.ChoiceField(choices=get_package_types)
-    name = forms.CharField(required=False,widget=forms.TextInput(attrs={"placeholder": "package name"}))
+    name = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"placeholder": "package name"})
+    )
 
 
 class CVEForm(forms.Form):

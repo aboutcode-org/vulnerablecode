@@ -256,16 +256,6 @@ IMPORTER_REGISTRY = [
         'data_source_cfg': {},
     },
 
-    {
-        'name': 'vulcodes',
-        'license': '',
-        'last_run': None,
-        'data_source': 'VulCodeDataSource',
-        'data_source_cfg': {
-            'repository_url': 'https://github.com/sbs2001/vulcodes.git'
-        }
-    }
-
 ]
 
 

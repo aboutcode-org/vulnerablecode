@@ -7,35 +7,21 @@ Explore/Curate Vulnerable packages
 {% block content %}
 {% load widget_tweaks %}
 
-<!-- <section class="columns  has-text-centered">  
-    <div class = "column is-three-fifths is-offset-one-fifth">
-        <form action="{% url 'package_search' %}" method="get">
-      <div class="field is-horizontal">
-        {% for field in  form %}
-        {{ field|add_class:"input" }}
-        {% endfor %}
-      <button class="button is-success" , type="submit">
-        Search
-      </button>
-    </form>
-  </div>
-  </div>
-
-</section> -->
-
 <div class="columns">
   <div class="column is-one-third is-offset-one-third">
-
     <form action="{% url 'package_search' %}" method="get">
     {% load widget_tweaks %}
-    <div class="field is-horizontal">
-      {{form.name|add_class:"input"}}
-      <button class="button is-success", type="submit">
-        Search
-      </button>
-    </div>
+      <div class="field is-horizontal pd-3">
+        <div class="select">
+        {{form.type}}
+        </div>
+        {{form.name|add_class:"input"}}
+        <button class="button is-success", type="submit">
+          Search
+        </button>
+      </div>
     </form>
-     </div>
+  </div>
 </div>
 
 {% if packages %}

@@ -61,7 +61,7 @@ class PackageSearchView(View):
         query = {}
         if len(request.GET["name"]):
             query["name"] = request.GET["name"]
-        
+
         if len(request.GET["type"]):
             query["type"] = request.GET["type"]
 

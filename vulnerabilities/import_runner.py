@@ -78,7 +78,7 @@ class ImportRunner:
         self.importer = importer
         self.batch_size = batch_size
 
-    def run(self, create_vulcodes=True, cutoff_date: datetime.datetime = None) -> None:
+    def run(self, cutoff_date: datetime.datetime = None) -> None:
         """
         Create a data source for the given importer and store the data retrieved in the database.
 
@@ -92,7 +92,7 @@ class ImportRunner:
         logger.info(f"Starting import for {self.importer.name}.")
         data_source = self.importer.make_data_source(self.batch_size, cutoff_date=cutoff_date)
         with data_source:
-            process_advisories(data_source, create_vulcodes)
+            process_advisories(data_source)
         self.importer.last_run = datetime.datetime.now(tz=datetime.timezone.utc)
         self.importer.data_source_cfg = dataclasses.asdict(data_source.config)
         self.importer.save()
@@ -118,18 +118,19 @@ def process_advisories(data_source: DataSource) -> None:
     # Treat updated_advisories and added_advisories as same. Eventually
     # we want to  refactor all data sources to  provide advisories via a
     # single method.
-    vulcoid = datetime.datetime.now()
+    vulcoid_timestamp = datetime.datetime.now()
     advisory_batches = chain(data_source.updated_advisories(), data_source.added_advisories())
     for batch in advisory_batches:
         for advisory in batch:
             try:
 
-                if not advisory.identifier and not create_vulcodes:
-                    continue
-
                 if not advisory.identifier:
-                    advisory.identifier = "VULCOID-" + vulcoid.strftime("%Y-%m-%d-%H:%M:%S")
-                    vulcoid += datetime.timedelta(seconds=1)
+                    advisory.identifier = "VULCOID-" + vulcoid_timestamp.strftime(
+                        "%Y-%m-%d-%H:%M:%S"
+                    )
+                    vulcoid_timestamp = max(
+                        vulcoid_timestamp + datetime.timedelta(seconds=1), datetime.datetime.now()
+                    )
 
                 vuln, vuln_created = _get_or_create_vulnerability(advisory)
                 for vuln_ref in advisory.vuln_references:

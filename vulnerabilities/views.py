@@ -62,8 +62,8 @@ class PackageSearchView(View):
         if len(request.GET["name"]):
             query["name"] = request.GET["name"]
 
-        if len(request.GET["version"]):
-            query["version"] = request.GET["version"]
+        # if len(request.GET["version"]):
+        #     query["version"] = request.GET["version"]
 
         return models.Package.objects.all().filter(**query)
 

@@ -7,7 +7,7 @@ Explore/Curate Vulnerable packages
 {% block content %}
 {% load widget_tweaks %}
 
-<section class="columns  has-text-centered">  
+<!-- <section class="columns  has-text-centered">  
     <div class = "column is-three-fifths is-offset-one-fifth">
         <form action="{% url 'package_search' %}" method="get">
       <div class="field is-horizontal">
@@ -21,7 +21,22 @@ Explore/Curate Vulnerable packages
   </div>
   </div>
 
-</section>
+</section> -->
+
+<div class="columns">
+  <div class="column is-one-third is-offset-one-third">
+
+    <form action="{% url 'package_search' %}" method="get">
+    {% load widget_tweaks %}
+    <div class="field is-horizontal">
+      {{form.name|add_class:"input"}}
+      <button class="button is-success", type="submit">
+        Search
+      </button>
+    </div>
+    </form>
+     </div>
+</div>
 
 {% if packages %}
 

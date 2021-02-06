@@ -60,6 +60,13 @@ Explore Vulnerabilities
 
     </section>
 
+{% elif result_size == 0 %}
+    <section class="section is-medium has-text-centered">
+      <div class="container">
+        <h1 class="title" id="results">No result found for "{{searched_for}}"</h1>
+      </div>
+    </section>
+
 {% endif %}
 
 {% endblock %}

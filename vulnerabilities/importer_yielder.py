@@ -38,10 +38,7 @@ IMPORTER_REGISTRY = [
         'license': '',
         'last_run': None,
         'data_source': 'AlpineDataSource',
-        'data_source_cfg': {
-            'branch': None,
-            'repository_url': 'https://gitlab.alpinelinux.org/alpine/infra/alpine-secdb',
-        },
+        'data_source_cfg': {},
     },
     {
         'name': 'archlinux',

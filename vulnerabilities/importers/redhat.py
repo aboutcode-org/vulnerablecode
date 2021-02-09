@@ -54,22 +54,24 @@ def fetch():
     """
     cves = []
     page_no = 1
-    url_template = "https://access.redhat.com/hydra/rest/securitydata/cve.json?per_page=10000&page={}"
+    url_template = (
+        "https://access.redhat.com/hydra/rest/securitydata/cve.json?per_page=10000&page={}"
+    )
 
     cve_data = None
     while True:
         current_url = url_template.format(page_no)
         try:
-            print(f'Fetching: {current_url}')
+            print(f"Fetching: {current_url}")
             response = requests.get(current_url)
             if response.status_code != requests.codes.ok:
                 # TODO: log me
-                print(f'Failed to fetch results from {current_url}')
+                print(f"Failed to fetch results from {current_url}")
                 break
             cve_data = response.json()
         except Exception as e:
             # TODO: log me
-            msg = f'Failed to fetch results from {current_url}:\n{e}'
+            msg = f"Failed to fetch results from {current_url}:\n{e}"
             print(msg)
             break
 
@@ -78,7 +80,7 @@ def fetch():
         cves.extend(cve_data)
         page_no += 1
 
-    print(f'Fetched {len(cves)} CVEs from: {current_url}')
+    print(f"Fetched {len(cves)} CVEs from: {current_url}")
     return cves
 
 

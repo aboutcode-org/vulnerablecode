@@ -18,109 +18,137 @@
 #  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
 #  VulnerableCode should be considered or used as legal advice. Consult an Attorney
 #  for any legal advice.
-#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
+#  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
+
 import os
-from unittest.mock import patch
+import yaml
+from unittest import TestCase
+from unittest.mock import patch, MagicMock
 
-from django.test import TestCase
+from packageurl import PackageURL
 
-from vulnerabilities import models
-from vulnerabilities.import_runner import ImportRunner
+from vulnerabilities.data_source import Advisory, Reference
+from vulnerabilities.importers.alpine_linux import AlpineDataSource
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
-
-MOCK_ADDED_FILES = {os.path.join(TEST_DATA, 'alpine', p) for p in {
-    'v3.11/main.yaml',
-}}
-
-MOCK_UPDATED_FILES = {os.path.join(TEST_DATA, 'alpine', p) for p in {
-    'v3.11/community.yaml',
-}}
+TEST_DATA = os.path.join(BASE_DIR, "test_data", "alpine", "v3.11")
 
 
-@patch('vulnerabilities.importers.AlpineDataSource.file_changes',
-       return_value=(MOCK_ADDED_FILES, MOCK_UPDATED_FILES))
-@patch('vulnerabilities.importers.AlpineDataSource._ensure_repository')
 class AlpineImportTest(TestCase):
-
     @classmethod
-    def setUpClass(cls) -> None:
-        cls.importer = models.Importer.objects.create(
-            name='alpine_unittests',
-            license='',
-            last_run=None,
-            data_source='AlpineDataSource',
-            data_source_cfg={
-                'repository_url': 'https://example.com/unit-tests/alpine-secdb',
-                'working_directory': os.path.join(TEST_DATA, 'alpine'),
-                'create_working_directory': False,
-                'remove_working_directory': False,
-            },
-        )
+    def setUpClass(cls):
+        cls.data_source = AlpineDataSource(batch_size=1)
 
-    @classmethod
-    def tearDownClass(cls) -> None:
-        pass
-
-    def test_import(self, *_):
-        runner = ImportRunner(self.importer, 5)
-
-        runner.run()
-
-        assert models.Vulnerability.objects.count() == 7
-        assert models.VulnerabilityReference.objects.count() == 1
-        assert models.PackageRelatedVulnerability.objects.filter(
-            is_vulnerable=False).count() == 8
-        assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=True).count() == 0
-
-        assert models.Package.objects.count() == 5
-
-        self.assert_for_package('cacti', '1.2.8-r0', cve_ids={'CVE-2019-17358'}, arch='armv7')
-        self.assert_for_package('cacti', '1.2.8-r0', cve_ids={'CVE-2019-17358'}, arch='x86_64')
-        self.assert_for_package('xen', '4.12.1-r0', vuln_ref='XSA-295', arch='x86_64')
-
-        self.assert_for_package(
-            'ansible',
-            '2.9.3-r0',
-            cve_ids={'CVE-2019-14904', 'CVE-2019-14905'},
-            arch='x86_64'
-        )
-        self.assert_for_package(
-            'ansible',
-            '2.8.6-r0',
-            cve_ids={'CVE-2019-14846', 'CVE-2019-14856', 'CVE-2019-14858'},
-            arch='x86_64'
-        )
-
-    def assert_for_package(self, name, version, cve_ids=None, vuln_ref=None, arch=None):
-        qs = models.Package.objects.filter(name=name, version=version)
-        assert qs
-
-        if arch:
-            pkg = qs.get(qualifiers__arch=arch)
-        else:
-            pkg = qs[0]
-
-        qs = models.PackageRelatedVulnerability.objects.filter(package=pkg)
-        assert qs
-
-        if cve_ids is None and vuln_ref is None:
-            return
-
-        vulns = {rp.vulnerability for rp in qs}
-
-        if cve_ids:
-            assert cve_ids == {v.cve_id for v in vulns}
-
-        if vuln_ref:
-            vuln_refs = set()
-
-            for vuln in vulns:
-                vuln_refs.update(
-                    {v.reference_id for v in
-                     models.VulnerabilityReference.objects.filter(vulnerability=vuln)}
-                )
-
-            assert vuln_ref in vuln_refs
+    def test__process_link(self):
+        expected_advisories = [
+            Advisory(
+                summary="",
+                impacted_package_urls=[],
+                resolved_package_urls={
+                    PackageURL(
+                        type="alpine",
+                        namespace=None,
+                        name="ansible",
+                        version="2.9.3-r0",
+                        qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
+                        subpath=None,
+                    )
+                },
+                vuln_references=[],
+                cve_id="CVE-2019-14904",
+            ),
+            Advisory(
+                summary="",
+                impacted_package_urls=[],
+                resolved_package_urls={
+                    PackageURL(
+                        type="alpine",
+                        namespace=None,
+                        name="ansible",
+                        version="2.9.3-r0",
+                        qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
+                        subpath=None,
+                    )
+                },
+                vuln_references=[],
+                cve_id="CVE-2019-14905",
+            ),
+            Advisory(
+                summary="",
+                impacted_package_urls=[],
+                resolved_package_urls={
+                    PackageURL(
+                        type="alpine",
+                        namespace=None,
+                        name="ansible",
+                        version="2.8.6-r0",
+                        qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
+                        subpath=None,
+                    )
+                },
+                vuln_references=[],
+                cve_id="CVE-2019-14846",
+            ),
+            Advisory(
+                summary="",
+                impacted_package_urls=[],
+                resolved_package_urls={
+                    PackageURL(
+                        type="alpine",
+                        namespace=None,
+                        name="ansible",
+                        version="2.8.6-r0",
+                        qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
+                        subpath=None,
+                    )
+                },
+                vuln_references=[],
+                cve_id="CVE-2019-14856",
+            ),
+            Advisory(
+                summary="",
+                impacted_package_urls=[],
+                resolved_package_urls={
+                    PackageURL(
+                        type="alpine",
+                        namespace=None,
+                        name="ansible",
+                        version="2.8.6-r0",
+                        qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
+                        subpath=None,
+                    )
+                },
+                vuln_references=[],
+                cve_id="CVE-2019-14858",
+            ),
+            Advisory(
+                summary="",
+                impacted_package_urls=[],
+                resolved_package_urls={
+                    PackageURL(
+                        type="alpine",
+                        namespace=None,
+                        name="xen",
+                        version="4.12.1-r0",
+                        qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
+                        subpath=None,
+                    )
+                },
+                vuln_references=[
+                    Reference(
+                        url="https://xenbits.xen.org/xsa/advisory-295.html", reference_id="XSA-295"
+                    )
+                ],
+                cve_id=None,
+            ),
+        ]
+        mock_requests = MagicMock()
+        mock_content = MagicMock()
+        with open(os.path.join(TEST_DATA, "main.yaml")) as f:
+            mock_requests.get = lambda x: mock_content
+            mock_content.content = f
+            with patch("vulnerabilities.importers.alpine_linux.requests", new=mock_requests):
+                found_advisories = self.data_source._process_link("does not matter")
+                assert expected_advisories == found_advisories

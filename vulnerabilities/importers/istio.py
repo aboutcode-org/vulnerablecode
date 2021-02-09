@@ -22,6 +22,7 @@
 
 import asyncio
 from typing import List, Set
+import yaml
 
 from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
@@ -80,31 +81,27 @@ class IstioDataSource(GitDataSource):
         safe_pkg_versions = set(all_version_list) - set(vuln_pkg_versions)
         return safe_pkg_versions, vuln_pkg_versions
 
-    def get_data_from_md(self, file):
-        data = {}
-        for line in file:
+    def get_data_from_yaml_lines(self, yaml_lines):
+
+        return yaml.safe_load("\n".join(yaml_lines))
+
+    def get_yaml_lines(self, lines):
+
+        for line in lines:
             line = line.strip()
-            line = line.split()
-            if len(line) > 0 and line is not None:
+            if line.startswith("---"):
+                continue
+            elif line.endswith("---"):
+                break
+            else:
+                yield line
 
-                start = line[0]
+    def process_file(self, path):
 
-                if start == "title:":
-                    data["title"] = " ".join(line[1:])
-                elif start == "description:":
-                    data["description"] = " ".join(line[1:])
-                elif start == "cves:":
-                    data["cves"] = " ".join(line[1:])
-                    data["cves"] = data["cves"].replace("[", "")
-                    data["cves"] = data["cves"].replace("]", "")
-                    data["cves"] = data["cves"].split(",")
+        advisories = []
 
-                elif start == "releases:":
-                    data["releases"] = " ".join(line[1:])
-                    data["releases"] = data["releases"].replace("[", "")
-                    data["releases"] = data["releases"].replace("]", "")
-                    data["releases"] = data["releases"].replace('"', "")
-                    data["releases"] = data["releases"].split(",")
+        data = self.get_data_from_md(path)
+
         releases = []
         if data.get("releases"):
             for release in data["releases"]:
@@ -114,60 +111,54 @@ class IstioDataSource(GitDataSource):
                     lbound = ">=" + release[0]
                     ubound = "<=" + release[2]
                     releases.append(lbound + "," + ubound)
+
         data["releases"] = releases
 
-        return data
+        if not data.get("cves"):
+            data["cves"] = [""]
 
-    def process_file(self, path):
+        for cve_id in data["cves"]:
 
-        advisories = []
+            if not cve_id.startswith("CVE"):
+                continue
 
-        with open(path) as f:
-            data = {}
+            safe_pkg_versions = []
+            vuln_pkg_versions = []
 
-            data = self.get_data_from_md(f)
+            if not data.get("releases"):
+                data["releases"] = []
 
-            if not data.get("cves"):
-                data["cves"] = [""]
+            safe_pkg_versions, vuln_pkg_versions = self.get_versions_for_pkg_from_range_list(
+                data["releases"]
+            )
 
-            for cve_id in data["cves"]:
+            safe_purls = []
+            vuln_purls = []
 
-                if not cve_id.startswith("CVE"):
-                    continue
+            cve_id = cve_id
 
-                safe_pkg_versions = []
-                vuln_pkg_versions = []
+            safe_purls = {
+                PackageURL(name="istio", type="golang", version=version)
+                for version in safe_pkg_versions
+            }
 
-                if not data.get("releases"):
-                    data["releases"] = []
+            vuln_purls = {
+                PackageURL(name="istio", type="golang", version=version)
+                for version in vuln_pkg_versions
+            }
 
-                (
-                    safe_pkg_versions,
-                    vuln_pkg_versions,
-                ) = self.get_versions_for_pkg_from_range_list(data["releases"])
-
-                safe_purls = []
-                vuln_purls = []
-
-                cve_id = cve_id
-
-                safe_purls = {
-                    PackageURL(name="istio", type="golang", version=version)
-                    for version in safe_pkg_versions
-                }
-
-                vuln_purls = {
-                    PackageURL(name="istio", type="golang", version=version)
-                    for version in vuln_pkg_versions
-                }
-
-                advisories.append(
-                    Advisory(
-                        summary=data["description"],
-                        impacted_package_urls=vuln_purls,
-                        resolved_package_urls=safe_purls,
-                        cve_id=cve_id,
-                    )
+            advisories.append(
+                Advisory(
+                    summary=data["description"],
+                    impacted_package_urls=vuln_purls,
+                    resolved_package_urls=safe_purls,
+                    cve_id=cve_id,
                 )
+            )
 
         return advisories
+
+    def get_data_from_md(self, path):
+        with open(path) as f:
+            yaml_lines = self.get_yaml_lines(f)
+            return self.get_data_from_yaml_lines(yaml_lines)

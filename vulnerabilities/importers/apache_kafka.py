@@ -27,7 +27,9 @@ from bs4 import BeautifulSoup
 from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory, DataSource, Reference
+from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import DataSource
+from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
 
 GH_PAGE_URL = "https://raw.githubusercontent.com/apache/kafka-site/asf-site/cve-list.html"
@@ -59,10 +61,8 @@ class ApacheKafkaDataSource(DataSource):
             cve_description_paragraph = cve_section_beginning.find_next_sibling("p")
             cve_data_table = cve_section_beginning.find_next_sibling("table")
             cve_data_table_rows = cve_data_table.find_all("tr")
-            affected_versions_row, fixed_versions_row = (
-                cve_data_table_rows[0],
-                cve_data_table_rows[1],
-            )
+            affected_versions_row = cve_data_table_rows[0]
+            fixed_versions_row = cve_data_table_rows[1]
             affected_version_ranges = to_version_ranges(
                 affected_versions_row.find_all("td")[1].text
             )

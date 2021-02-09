@@ -1,4 +1,4 @@
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -17,24 +17,27 @@
 #  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
 #  VulnerableCode should be considered or used as legal advice. Consult an Attorney
 #  for any legal advice.
-#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
+#  VulnerableCode is a free software code from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import requests
+
+import json
 
 from packageurl import PackageURL
+import requests
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
+from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.severity_systems import scoring_systems
 
 
 class RedhatDataSource(DataSource):
     CONFIG_CLASS = DataSourceConfiguration
 
     def __enter__(self):
-
         self.redhat_response = fetch()
 
     def updated_advisories(self):
@@ -52,7 +55,6 @@ def fetch():
     url = "https://access.redhat.com/hydra/rest/securitydata/cve.json?page={}"
 
     while True:
-
         resp_json = requests.get(url.format(page_no)).json()
         page_no += 1
         if not resp_json:
@@ -65,7 +67,6 @@ def fetch():
 
 
 def to_advisory(advisory_data):
-
     affected_purls = []
     if advisory_data.get("affected_packages"):
         for rpm in advisory_data["affected_packages"]:
@@ -73,23 +74,67 @@ def to_advisory(advisory_data):
                 affected_purls.append(rpm_to_purl(rpm))
 
     references = []
-    if advisory_data.get("bugzilla"):
-        bugzilla = advisory_data.get("bugzilla")
+    bugzilla = advisory_data.get("bugzilla")
+    if bugzilla:
+        url = "https://bugzilla.redhat.com/show_bug.cgi?id={}".format(bugzilla)
+        bugzilla_data = requests.get(f"https://bugzilla.redhat.com/rest/bug/{bugzilla}").json()
+        bugzilla_severity_val = bugzilla_data["bugs"][0]["severity"]
+        bugzilla_severity = VulnerabilitySeverity(
+            system=scoring_systems["rhbs"],
+            value=bugzilla_severity_val,
+        )
+
         references.append(
             Reference(
-                url="https://bugzilla.redhat.com/show_bug.cgi?id={}".format(bugzilla),
+                severities=[bugzilla_severity],
+                url=url,
                 reference_id=bugzilla,
             )
         )
 
-    for rhsa in advisory_data["advisories"]:
-        references.append(
-            Reference(
-                url="https://access.redhat.com/errata/{}".format(rhsa), reference_id=rhsa,
+    for rh_adv in advisory_data["advisories"]:
+        # RH provides 3 types of advisories RHSA, RHBA, RHEA. Only RHSA's contain severity score.
+        # See https://access.redhat.com/articles/2130961 for more details.
+
+        if "RHSA" in rh_adv.upper():
+            rhsa_data = requests.get(f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json").json()  # nopep8
+            value = rhsa_data["cvrfdoc"]["aggregate_severity"]
+            rhsa_aggregate_severity = VulnerabilitySeverity(
+                system=scoring_systems["rhas"],
+                value=value,
+            )
+
+            references.append(
+                Reference(
+                    severities=[rhsa_aggregate_severity],
+                    url="https://access.redhat.com/errata/{}".format(rh_adv),
+                    reference_id=rh_adv,
+                )
+            )
+
+        else:
+            references.append(Reference(severities=[], url=url, reference_id=rh_adv))
+
+    redhat_scores = []
+    cvssv3_score = advisory_data.get("cvss3_score")
+    if cvssv3_score:
+        redhat_scores.append(
+            VulnerabilitySeverity(
+                system=scoring_systems["cvssv3"],
+                value=cvssv3_score,
             )
         )
 
-    references.append(Reference(url=advisory_data["resource_url"]))
+    cvssv3_vector = advisory_data.get("cvss3_scoring_vector")
+    if cvssv3_vector:
+        redhat_scores.append(
+            VulnerabilitySeverity(
+                system=scoring_systems["cvssv3_vector"],
+                value=cvssv3_vector,
+            )
+        )
+
+    references.append(Reference(severities=redhat_scores, url=advisory_data["resource_url"]))
 
     return Advisory(
         summary=advisory_data["bugzilla_description"],

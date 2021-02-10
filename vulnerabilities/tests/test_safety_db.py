@@ -167,7 +167,7 @@ class SafetyDbImportTest(TestCase):
                     } == resolved_pkgs
 
         if cve_ids:
-            assert {v.identifier for v in vulns} == cve_ids
+            assert {v.vulnerability_id for v in vulns} == cve_ids
 
 
 def test_categorize_versions():

@@ -66,7 +66,7 @@ def yaml_file_to_advisory(yaml_path):
             references.append(Reference(url=f"{commit['repository']}/{commit['id']}"))
 
     return Advisory(
-        identifier=vuln_id,
+        vulnerability_id=vuln_id,
         summary=summary,
         impacted_package_urls=impacted_packages,
         resolved_package_urls=resolved_packages,

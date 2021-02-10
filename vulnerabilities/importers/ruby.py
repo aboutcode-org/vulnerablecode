@@ -130,7 +130,7 @@ class RubyDataSource(GitDataSource):
             impacted_package_urls=impacted_purls,
             resolved_package_urls=resolved_purls,
             vuln_references=references,
-            identifier=cve_id
+            vulnerability_id=cve_id
         )
 
     @staticmethod

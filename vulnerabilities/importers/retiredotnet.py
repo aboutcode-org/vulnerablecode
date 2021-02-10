@@ -99,5 +99,5 @@ class RetireDotnetDataSource(GitDataSource):
                 summary=json_doc['description'],
                 impacted_package_urls=affected_purls,
                 resolved_package_urls=fixed_purls,
-                identifier=vuln_id,
+                vulnerability_id=vuln_id,
                 vuln_references=vuln_reference)

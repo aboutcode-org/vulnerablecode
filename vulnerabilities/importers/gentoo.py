@@ -77,7 +77,7 @@ class GentooDataSource(GitDataSource):
         # this way, but there seems no alternative.
         for cve in xml_data["cves"]:
             advisory = Advisory(
-                identifier=cve,
+                vulnerability_id=cve,
                 summary=xml_data["description"],
                 impacted_package_urls=xml_data["affected_purls"],
                 resolved_package_urls=xml_data["unaffected_purls"],

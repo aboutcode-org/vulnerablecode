@@ -128,6 +128,15 @@ def process_advisories(data_source: DataSource) -> None:
                     advisory.identifier = "VULCOID-" + vulcoid_timestamp.strftime(
                         "%Y-%m-%d-%H:%M:%S"
                     )
+
+                    # Set VULCOID timestamp to the max of
+                    # (1) the next valid timestamp (by incrementing current timestamp by 1) or
+                    # (2) the current time
+                    # We set the VULCOID to max of (1) and (2), because in case of encountering
+                    # many cve-less advisories, we need to obtain unique valid timestamps quickly
+                    # (<1s) without waiting for the "real time" to catchup. This case is taken care
+                    # of by (1). In other cases the "cve-less" advisories occur rarely, in such
+                    # situation (2) is suitable and "wins" the max function.
                     vulcoid_timestamp = max(
                         vulcoid_timestamp + datetime.timedelta(seconds=1), datetime.datetime.now()
                     )

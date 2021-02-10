@@ -22,12 +22,14 @@
 
 import asyncio
 from typing import List, Set
-import yaml
 
+import yaml
 from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory, GitDataSource, Reference
+from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import GitDataSource
+from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
 
 
@@ -64,28 +66,52 @@ class IstioDataSource(GitDataSource):
         return self.batch_advisories(advisories)
 
     def get_versions_for_pkg_from_range_list(self, version_range_list):
-        # Takes a list of version ranges(affected) of a package
-        # as parameter and returns a tuple of safe package versions and
-        # vulnerable package versions
+        """Takes a list of version ranges(affected) of a package
+        as parameter and returns a tuple of safe package versions and
+        vulnerable package versions"""
 
         safe_pkg_versions = []
         vuln_pkg_versions = []
-        all_version_list = self.version_api.get("istio/istio")
+        all_version = self.version_api.get("istio/istio")
         if not version_range_list:
-            return all_version_list, []
+            return all_version, []
         version_ranges = {RangeSpecifier(r) for r in version_range_list}
-        for version in all_version_list:
+        for version in all_version:
             if any([version in v for v in version_ranges]):
                 vuln_pkg_versions.append(version)
 
-        safe_pkg_versions = set(all_version_list) - set(vuln_pkg_versions)
+        safe_pkg_versions = set(all_version) - set(vuln_pkg_versions)
         return safe_pkg_versions, vuln_pkg_versions
 
     def get_data_from_yaml_lines(self, yaml_lines):
+        """Return a mapping of data from a iterable of yaml_lines
+        for example :
+            ['title: ISTIO-SECURITY-2019-001',
+            'description: Incorrect access control.','cves: [CVE-2019-12243]']
+
+            would give {'title':'ISTIO-SECURITY-2019-001',
+            'description': 'Incorrect access control.',
+            'cves': '[CVE-2019-12243]'}
+        """
 
         return yaml.safe_load("\n".join(yaml_lines))
 
     def get_yaml_lines(self, lines):
+        """The istio advisory file contains lines similar to yaml format .
+        This function extracts those lines and return an iterable of lines
+
+        for example :
+            lines =
+            ---
+            title: ISTIO-SECURITY-2019-001
+            description: Incorrect access control.
+            cves: [CVE-2019-12243]
+            ---
+
+        get_yaml_lines(lines) would return
+        ['title: ISTIO-SECURITY-2019-001','description: Incorrect access control.'
+        ,'cves: [CVE-2019-12243]']
+        """
 
         for line in lines:
             line = line.strip()
@@ -129,23 +155,34 @@ class IstioDataSource(GitDataSource):
                 data["releases"] = []
 
             safe_pkg_versions, vuln_pkg_versions = self.get_versions_for_pkg_from_range_list(
-                data["releases"]
-            )
+                data["releases"])
 
             safe_purls = []
             vuln_purls = []
 
             cve_id = cve_id
 
-            safe_purls = {
-                PackageURL(name="istio", type="golang", version=version)
+            safe_purls_golang = {
+                PackageURL(type="golang", name="istio", version=version)
                 for version in safe_pkg_versions
             }
 
-            vuln_purls = {
-                PackageURL(name="istio", type="golang", version=version)
+            safe_purls_github = {
+                PackageURL(type="github", name="istio", version=version)
+                for version in safe_pkg_versions
+            }
+            safe_purls = safe_purls_github | safe_purls_golang
+
+            vuln_purls_golang = {
+                PackageURL(type="golang", name="istio", version=version)
                 for version in vuln_pkg_versions
             }
+
+            vuln_purls_github = {
+                PackageURL(type="github", name="istio", version=version)
+                for version in vuln_pkg_versions
+            }
+            vuln_purls = vuln_purls_github | vuln_purls_golang
 
             advisories.append(
                 Advisory(
@@ -159,6 +196,10 @@ class IstioDataSource(GitDataSource):
         return advisories
 
     def get_data_from_md(self, path):
+        """Return a mapping of vulnerability data from istio . The data is
+        in the form of yaml_lines inside a .md file.
+        """
+
         with open(path) as f:
             yaml_lines = self.get_yaml_lines(f)
             return self.get_data_from_yaml_lines(yaml_lines)

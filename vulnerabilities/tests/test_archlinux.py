@@ -112,4 +112,4 @@ class ArchlinuxImportTest(TestCase):
         assert qs
 
         if cve_ids:
-            assert cve_ids == {v.identifier for v in qs[0].vulnerabilities.all()}
+            assert cve_ids == {v.vulnerability_id for v in qs[0].vulnerabilities.all()}

@@ -38,13 +38,25 @@ class Vulnerability(models.Model):
     A software vulnerability with minimal information. Identifiers other than CVE ID are stored as
     VulnerabilityReference.
     """
-    identifier = models.CharField(max_length=50, help_text="CVE_ID or VC_ID", unique=True, null=True)  # nopep8
-    vc_identifier = models.CharField(max_length=50, help_text="empty if no  CVE else VC id", unique=True, null=True)  # nopep8
+
+    vulnerability_id = models.CharField(
+        max_length=50,
+        help_text="Unique vulnerability_id for a vulnerability: this is either a published CVE id"
+        " (as in CVE-2020-7965) if it exists. Otherwise this is a VulnerableCode-assigned VULCOID"
+        " (as in VULCOID-2021-01-23-15-12). When a vulnerability CVE is assigned later we replace"
+        " this with the CVE and keep the 'old' VULCOID in the 'old_vulnerability_id' field to "
+        "support redirection to the CVE id.",
+        unique=True,
+        null=True,
+    )
+    old_vulnerability_id = models.CharField(
+        max_length=50, help_text="empty if no  CVE else VC id", unique=True, null=True
+    )
     summary = models.TextField(help_text="Summary of the vulnerability", blank=True)
 
     def save(self, *args, **kwargs):
-        if not self.identifier:
-            self.identifier = "VULCOID-" + datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
+        if not self.vulnerability_id:
+            self.vulnerability_id = "VULCOID-" + datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
         super().save(*args, **kwargs)
 
     @property
@@ -60,7 +72,7 @@ class Vulnerability(models.Model):
         )
 
     def __str__(self):
-        return self.identifier or self.summary
+        return self.vulnerability_id or self.summary
 
     class Meta:
         verbose_name_plural = "Vulnerabilities"
@@ -212,16 +224,16 @@ class Importer(models.Model):
 
 class VulnerabilitySeverity(models.Model):
 
-    scoring_system_choices = ((system.identifier, system.name) for system in scoring_systems.values())  # nopep8
+    scoring_system_choices = ((system.vulnerability_id, system.name) for system in scoring_systems.values())  # nopep8
     vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
     value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
     scoring_system = models.CharField(
         max_length=50,
         choices=scoring_system_choices,
-        help_text="Identifier for the scoring system used. Available choices are: {} ".format(
+        help_text="vulnerability_id for the scoring system used. Available choices are: {} ".format(
                   ", ".join(
                         [
-                            f"{ss.identifier} is identifier for {ss.name} system"
+                            f"{ss.vulnerability_id} is vulnerability_id for {ss.name} system"
                             for ss in scoring_systems.values()
                         ]
                     ))

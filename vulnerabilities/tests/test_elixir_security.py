@@ -129,7 +129,7 @@ class TestElixirSecurityDataSource(TestCase):
                 ),
                 Reference(url="https://github.com/smpallen99/coherence/issues/270"),
             ],
-            identifier="CVE-2018-20301",
+            vulnerability_id="CVE-2018-20301",
         )
 
         found_data = self.data_src.process_file(path)

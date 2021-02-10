@@ -63,7 +63,6 @@ class HyperLinkedPackageSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class HyperLinkedVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
-    vulnerability_id = serializers.CharField(source="identifier")
 
     class Meta:
         model = Vulnerability
@@ -177,7 +176,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class VulnerabilityFilterSet(filters.FilterSet):
-    vulnerability_id = filters.CharFilter(field_name="identifier")
+    vulnerability_id = filters.CharFilter(field_name="vulnerability_id")
 
     class Meta:
         model = Vulnerability
@@ -212,9 +211,9 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
             filter_list.append(vulnerability_id)
             # This handles the case when the said cve doesnt exist in db
             response[vulnerability_id] = {}
-        res = Vulnerability.objects.filter(identifier__in=filter_list)
+        res = Vulnerability.objects.filter(vulnerability_id__in=filter_list)
         for vuln in res:
-            response[vuln.identifier] = MinimalVulnerabilitySerializer(
+            response[vuln.vulnerability_id] = MinimalVulnerabilitySerializer(
                 vuln, context={"request": request}
             ).data
         return Response(response)

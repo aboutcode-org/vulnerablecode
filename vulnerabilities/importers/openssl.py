@@ -111,7 +111,7 @@ class OpenSSLDataSource(DataSource):
                 }
 
                 advisory = Advisory(
-                    identifier=cve_id,
+                    vulnerability_id=cve_id,
                     summary=summary,
                     impacted_package_urls=vuln_purls,
                     resolved_package_urls=safe_purls,

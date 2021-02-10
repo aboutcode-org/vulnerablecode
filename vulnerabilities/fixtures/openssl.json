@@ -3,7 +3,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 293,
         "fields": {
-            "identifier": "CVE-2018-5407",
+            "vulnerability_id": "CVE-2018-5407",
             "summary": "OpenSSL ECC scalar multiplication, used in e.g. ECDSA and ECDH, has been shown to be vulnerable to a microarchitecture timing side channel attack. An attacker with sufficient access to mount local timing attacks during ECDSA signature generation could recover the private key."
         }
     },
@@ -11,7 +11,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 294,
         "fields": {
-            "identifier": "CVE-2019-1549",
+            "vulnerability_id": "CVE-2019-1549",
             "summary": "OpenSSL 1.1.1 introduced a rewritten random number generator (RNG). This was intended to include protection in the event of a fork() system call in order to ensure that the parent and child processes did not share the same RNG state. However this protection was not being used in the default case. A partial mitigation for this issue is that the output from a high precision timer is mixed into the RNG state so the likelihood of a parent and child process sharing state i significantly reduced. If an application already calls OPENSSL_init_crypto() explicitly using OPENSSL_INIT_ATFORK then this problem does not occur at all."
         }
     },
@@ -19,7 +19,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 295,
         "fields": {
-            "identifier": "CVE-2020-1967",
+            "vulnerability_id": "CVE-2020-1967",
             "summary": "Server or client applications that call the SSL_check_chain() function during or after a TLS 1.3 handshake may crash due to a NULL pointer dereference as a result of incorrect handling of the \"signature_algorithms_cert\" TLS extension. The crash occurs if an invalid or unrecognised signature algorithm is received from the peer. This could be exploited by a malicious peer in a Denial of Service attack. OpenSSL version 1.1.1d, 1.1.1e, and 1.1.1f are affected by thi issue. This issue did not affect OpenSSL versions prior to 1.1.1d."
         }
     },
@@ -27,7 +27,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 296,
         "fields": {
-            "identifier": "CVE-2019-1552",
+            "vulnerability_id": "CVE-2019-1552",
             "summary": "OpenSSL has internal defaults for a directory tree where it can find a configuration file as well as certificates used for verification in TLS. This directory is most commonly referred to as OPENSSLDIR, and is configurable with the --prefix / --openssldir configuration options. For OpenSSL versions 1.1.0 and 1.1.1, the mingw configuration targets assume that resulting programs and libraries are installed in a Unix-like environment and the default prefix for progra installation as well as for OPENSSLDIR should be '/usr/local'. However, mingw programs are Windows programs, and as such, find themselves looking at sub-directories of 'C:/usr/local', which may be world writable, which enables untrusted users to modify OpenSSL's default configuration, insert CA certificates, modify (or even replace) existing engine modules, etc. For OpenSSL 1.0.2, '/usr/local/ssl' is used as default for OPENSSLDIR on all Unix and Windows targets, including Visual C builds. However, some build instructions for the diverse Windows targets on 1.0.2 encourage you to specify your own --prefix. OpenSSL versions 1.1.1, 1.1.0 and 1.0.2 are affected by this issue. Due to the limited scope of affected deployments this has been assessed as low severity and therefore we are not creating new releases at this time."
         }
     },
@@ -35,7 +35,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 297,
         "fields": {
-            "identifier": "CVE-2019-1551",
+            "vulnerability_id": "CVE-2019-1551",
             "summary": "There is an overflow bug in the x64_64 Montgomery squaring procedure used in exponentiation with 512-bit moduli. No EC algorithms are affected. Analysis suggests that attacks against 2-prime RSA1024, 3-prime RSA1536, and DSA1024 as a result of this defect would be very difficult to perform and are not believed likely. Attacks against DH512 are considered just feasible. However, for an attack the target would have to re-use the DH512 private key, which is not recommende anyway. Also applications directly using the low level API BN_mod_exp may be affected if they use BN_FLG_CONSTTIME."
         }
     },
@@ -43,7 +43,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 298,
         "fields": {
-            "identifier": "CVE-2019-1543",
+            "vulnerability_id": "CVE-2019-1543",
             "summary": "ChaCha20-Poly1305 is an AEAD cipher, and requires a unique nonce input for every encryption operation. RFC 7539 specifies that the nonce value (IV) should be 96 bits (12 bytes). OpenSSL allows a variable nonce length and front pads the nonce with 0 bytes if it is less than 12 bytes. However it also incorrectly allows a nonce to be set of up to 16 bytes. In this case only the last 12 bytes are significant and any additional leading bytes are ignored. It is a requiremen of using this cipher that nonce values are unique. Messages encrypted using a reused nonce value are susceptible to serious confidentiality and integrity attacks. If an application changes the default nonce length to be longer than 12 bytes and then makes a change to the leading bytes of the nonce expecting the new value to be a new unique nonce then such an application could inadvertently encrypt messages with a reused nonce. Additionally the ignored bytes in a long nonce are not covered by the integrity guarantee of this cipher. Any application that relies on the integrity of these ignored leading bytes of a long nonce may be further affected. Any OpenSSL internal use of this cipher, including in SSL/TLS, is safe because no such use sets such a long nonce value. However user applications that use this cipher directly and set a non-default nonce length to be longer than 12 bytes may be vulnerable. OpenSSL versions 1.1.1 and 1.1.0 are affected by this issue. Due to the limited scope of affected deployments this has been assessed as low severity and therefore we are not creating new releases at this time."
         }
     },
@@ -51,7 +51,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 299,
         "fields": {
-            "identifier": "CVE-2020-1968",
+            "vulnerability_id": "CVE-2020-1968",
             "summary": "The Raccoon attack exploits a flaw in the TLS specification which can lead to an attacker being able to compute the pre-master secret in connections which have used a Diffie-Hellman (DH) based ciphersuite. In such a case this would result in the attacker being able to eavesdrop on all encrypted communications sent over that TLS connection. The attack can only be exploited if an implementation re-uses a DH secret across multiple TLS connections. Note that this issue onl impacts DH ciphersuites and not ECDH ciphersuites. This issue affects OpenSSL 1.0.2 which is out of support and no longer receiving public updates. OpenSSL 1.1.1 is not vulnerable to this issue."
         }
     },
@@ -59,7 +59,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 300,
         "fields": {
-            "identifier": "CVE-2019-1547",
+            "vulnerability_id": "CVE-2019-1547",
             "summary": "Normally in OpenSSL EC groups always have a co-factor present and this is used in side channel resistant code paths. However, in some cases, it is possible to construct a group using explicit parameters (instead of using a named curve). In those cases it is possible that such a group does not have the cofactor present. This can occur even where all the parameters match a known named curve. If such a curve is used then OpenSSL falls back to non-side channel resistant cod paths which may result in full key recovery during an ECDSA signature operation. In order to be vulnerable an attacker would have to have the ability to time the creation of a large number of signatures where explicit parameters with no co-factor present are in use by an application using libcrypto. For the avoidance of doubt libssl is not vulnerable because explicit parameters are never used."
         }
     },
@@ -67,7 +67,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 301,
         "fields": {
-            "identifier": "CVE-2019-1563",
+            "vulnerability_id": "CVE-2019-1563",
             "summary": "In situations where an attacker receives automated notification of the success or failure of a decryption attempt an attacker, after sending a very large number of messages to be decrypted, can recover a CMS/PKCS7 transported encryption key or decrypt any RSA encrypted message that was encrypted with the public RSA key, using a Bleichenbacher padding oracle attack. Applications are not affected if they use a certificate together with the private RSA key to th CMS_decrypt or PKCS7_decrypt functions to select the correct recipient info to decrypt."
         }
     },
@@ -75,7 +75,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 302,
         "fields": {
-            "identifier": "CVE-2019-1559",
+            "vulnerability_id": "CVE-2019-1559",
             "summary": "If an application encounters a fatal protocol error and then calls SSL_shutdown() twice (once to send a close_notify, and once to receive one) then OpenSSL can respond differently to the calling application if a 0 byte record is received with invalid padding compared to if a 0 byte record is received with an invalid MAC. If the application then behaves differently based on that in a way that is detectable to the remote peer, then this amounts to a padding oracle tha could be used to decrypt data. In order for this to be exploitable \"non-stitched\" ciphersuites must be in use. Stitched ciphersuites are optimised implementations of certain commonly used ciphersuites. Also the application must call SSL_shutdown() twice even if a protocol error has occurred (applications should not do this but some do anyway). AEAD ciphersuites are not impacted."
         }
     },
@@ -83,7 +83,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 303,
         "fields": {
-            "identifier": "CVE-2017-3738",
+            "vulnerability_id": "CVE-2017-3738",
             "summary": "There is an overflow bug in the AVX2 Montgomery multiplication procedure used in exponentiation with 1024-bit moduli. No EC algorithms are affected. Analysis suggests that attacks against RSA and DSA as a result of this defect would be very difficult to perform and are not believed likely. Attacks against DH1024 are considered just feasible, because most of the work necessary to deduce information about a private key may be performed offline. The amount of resource required for such an attack would be significant. However, for an attack on TLS to be meaningful, the server would have to share the DH1024 private key among multiple clients, which is no longer an option since CVE-2016-0701. This only affects processors that support the AVX2 but not ADX extensions like Intel Haswell (4th generation). Note: The impact from this issue is similar to CVE-2017-3736, CVE-2017-3732 and CVE-2015-3193. Due to the low severity of this issue we are not issuing a new release of OpenSSL 1.1.0 at this time. The fix will be included in OpenSSL 1.1.0h when it becomes available. The fix is also available in commit e502cc86d in the OpenSSL git repository."
         }
     },
@@ -91,7 +91,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 304,
         "fields": {
-            "identifier": "CVE-2017-3735",
+            "vulnerability_id": "CVE-2017-3735",
             "summary": "While parsing an IPAdressFamily extension in an X.509 certificate, it is possible to do a one-byte overread. This would result in an incorrect text display of the certificate."
         }
     },
@@ -99,7 +99,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 305,
         "fields": {
-            "identifier": "CVE-2018-0733",
+            "vulnerability_id": "CVE-2018-0733",
             "summary": "Because of an implementation bug the PA-RISC CRYPTO_memcmp function is effectively reduced to only comparing the least significant bit of each byte. This allows an attacker to forge messages that would be considered as authenticated in an amount of tries lower than that guaranteed by the security claims of the scheme. The module can only be compiled by the HP-UX assembler, so that only HP-UX PA-RISC targets are affected."
         }
     },
@@ -107,7 +107,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 306,
         "fields": {
-            "identifier": "CVE-2017-3737",
+            "vulnerability_id": "CVE-2017-3737",
             "summary": "OpenSSL 1.0.2 (starting from version 1.0.2b) introduced an \"error state\" mechanism. The intent was that if a fatal error occurred during a handshake then OpenSSL would move into the error state and would immediately fail if you attempted to continue the handshake. This works as designed for the explicit handshake functions (SSL_do_handshake(), SSL_accept() and SSL_connect()), however due to a bug it does not work correctly if SSL_read() or SSL_write() is calle directly. In that scenario, if the handshake fails then a fatal error will be returned in the initial function call. If SSL_read()/SSL_write() is subsequently called by the application for the same SSL object then it will succeed and the data is passed without being decrypted/encrypted directly from the SSL/TLS record layer. In order to exploit this issue an application bug would have to be present that resulted in a call to SSL_read()/SSL_write() being issued after having already received a fatal error."
         }
     },
@@ -115,7 +115,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 307,
         "fields": {
-            "identifier": "CVE-2018-0735",
+            "vulnerability_id": "CVE-2018-0735",
             "summary": "The OpenSSL ECDSA signature algorithm has been shown to be vulnerable to a timing side channel attack. An attacker could use variations in the signing algorithm to recover the private key."
         }
     },
@@ -123,7 +123,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 308,
         "fields": {
-            "identifier": "CVE-2017-3736",
+            "vulnerability_id": "CVE-2017-3736",
             "summary": "There is a carry propagating bug in the x86_64 Montgomery squaring procedure. No EC algorithms are affected. Analysis suggests that attacks against RSA and DSA as a result of this defect would be very difficult to perform and are not believed likely. Attacks against DH are considered just feasible (although very difficult) because most of the work necessary to deduce information about a private key may be performed offline. The amount of resources required for such a attack would be very significant and likely only accessible to a limited number of attackers. An attacker would additionally need online access to an unpatched system using the target private key in a scenario with persistent DH parameters and a private key that is shared between multiple clients. This only affects processors that support the BMI1, BMI2 and ADX extensions like Intel Broadwell (5th generation) and later or AMD Ryzen."
         }
     },
@@ -131,7 +131,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 309,
         "fields": {
-            "identifier": "CVE-2018-0737",
+            "vulnerability_id": "CVE-2018-0737",
             "summary": "The OpenSSL RSA Key generation algorithm has been shown to be vulnerable to a cache timing side channel attack. An attacker with sufficient access to mount cache timing attacks during the RSA key generation process could recover the private key."
         }
     },
@@ -139,7 +139,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 310,
         "fields": {
-            "identifier": "CVE-2018-0739",
+            "vulnerability_id": "CVE-2018-0739",
             "summary": "Constructed ASN.1 types with a recursive definition (such as can be found in PKCS7) could eventually exceed the stack given malicious input with excessive recursion. This could result in a Denial Of Service attack. There are no such structures used within SSL/TLS that come from untrusted sources so this is considered safe."
         }
     },
@@ -147,7 +147,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 311,
         "fields": {
-            "identifier": "CVE-2018-0734",
+            "vulnerability_id": "CVE-2018-0734",
             "summary": "The OpenSSL DSA signature algorithm has been shown to be vulnerable to a timing side channel attack. An attacker could use variations in the signing algorithm to recover the private key."
         }
     },
@@ -155,7 +155,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 312,
         "fields": {
-            "identifier": "CVE-2018-0732",
+            "vulnerability_id": "CVE-2018-0732",
             "summary": "During key agreement in a TLS handshake using a DH(E) based ciphersuite a malicious server can send a very large prime value to the client. This will cause the client to spend an unreasonably long period of time generating a key for this prime resulting in a hang until the client has finished. This could be exploited in a Denial Of Service attack."
         }
     },
@@ -163,7 +163,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 313,
         "fields": {
-            "identifier": "CVE-2017-3732",
+            "vulnerability_id": "CVE-2017-3732",
             "summary": "There is a carry propagating bug in the x86_64 Montgomery squaring procedure. No EC algorithms are affected. Analysis suggests that attacks against RSA and DSA as a result of this defect would be very difficult to perform and are not believed likely. Attacks against DH are considered just feasible (although very difficult) because most of the work necessary to deduce information about a private key may be performed offline. The amount of resources required for such a attack would be very significant and likely only accessible to a limited number of attackers. An attacker would additionally need online access to an unpatched system using the target private key in a scenario with persistent DH parameters and a private key that is shared between multiple clients. For example this can occur by default in OpenSSL DHE based SSL/TLS ciphersuites. Note: This issue is very similar to CVE-2015-3193 but must be treated as a separate problem."
         }
     },
@@ -171,7 +171,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 314,
         "fields": {
-            "identifier": "CVE-2017-3733",
+            "vulnerability_id": "CVE-2017-3733",
             "summary": "During a renegotiation handshake if the Encrypt-Then-Mac extension is negotiated where it was not in the original handshake (or vice-versa) then this can cause OpenSSL to crash (dependent on ciphersuite). Both clients and servers are affected."
         }
     },
@@ -179,7 +179,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 315,
         "fields": {
-            "identifier": "CVE-2016-7053",
+            "vulnerability_id": "CVE-2016-7053",
             "summary": "Applications parsing invalid CMS structures can crash with a NULL pointer dereference. This is caused by a bug in the handling of the ASN.1 CHOICE type in OpenSSL 1.1.0 which can result in a NULL value being passed to the structure callback if an attempt is made to free certain invalid encodings. Only CHOICE structures using a callback which do not handle NULL value are affected."
         }
     },
@@ -187,7 +187,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 316,
         "fields": {
-            "identifier": "CVE-2017-3730",
+            "vulnerability_id": "CVE-2017-3730",
             "summary": "If a malicious server supplies bad parameters for a DHE or ECDHE key exchange then this can result in the client attempting to dereference a NULL pointer leading to a client crash. This could be exploited in a Denial of Service attack."
         }
     },
@@ -195,7 +195,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 317,
         "fields": {
-            "identifier": "CVE-2016-7052",
+            "vulnerability_id": "CVE-2016-7052",
             "summary": "This issue only affects OpenSSL 1.0.2i, released on 22nd September 2016. A bug fix which included a CRL sanity check was added to OpenSSL 1.1.0 but was omitted from OpenSSL 1.0.2i. As a result any attempt to use CRLs in OpenSSL 1.0.2i will crash with a null pointer exception."
         }
     },
@@ -203,7 +203,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 318,
         "fields": {
-            "identifier": "CVE-2016-6304",
+            "vulnerability_id": "CVE-2016-6304",
             "summary": "A malicious client can send an excessively large OCSP Status Request extension. If that client continually requests renegotiation, sending a large OCSP Status Request extension each time, then there will be unbounded memory growth on the server. This will eventually lead to a Denial Of Service attack through memory exhaustion. Servers with a default configuration are vulnerable even if they do not support OCSP. Builds using the \"no-ocsp\" build time option are no affected. Servers using OpenSSL versions prior to 1.0.1g are not vulnerable in a default configuration, instead only if an application explicitly enables OCSP stapling support."
         }
     },
@@ -211,7 +211,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 319,
         "fields": {
-            "identifier": "CVE-2016-7054",
+            "vulnerability_id": "CVE-2016-7054",
             "summary": "TLS connections using *-CHACHA20-POLY1305 ciphersuites are susceptible to a DoS attack by corrupting larger payloads. This can result in an OpenSSL crash. This issue is not considered to be exploitable beyond a DoS."
         }
     },
@@ -219,7 +219,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 320,
         "fields": {
-            "identifier": "CVE-2016-6309",
+            "vulnerability_id": "CVE-2016-6309",
             "summary": "This issue only affects OpenSSL 1.1.0a, released on 22nd September 2016. The patch applied to address CVE-2016-6307 resulted in an issue where if a message larger than approx 16k is received then the underlying buffer to store the incoming message is reallocated and moved. Unfortunately a dangling pointer to the old location is left which results in an attempt to write to the previously freed location. This is likely to result in a crash, however it could potentiall lead to execution of arbitrary code."
         }
     },
@@ -227,7 +227,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 321,
         "fields": {
-            "identifier": "CVE-2017-3731",
+            "vulnerability_id": "CVE-2017-3731",
             "summary": "If an SSL/TLS server or client is running on a 32-bit host, and a specific cipher is being used, then a truncated packet can cause that server or client to perform an out-of-bounds read, usually resulting in a crash. For OpenSSL 1.1.0, the crash can be triggered when using CHACHA20/POLY1305; users should upgrade to 1.1.0d. For Openssl 1.0.2, the crash can be triggered when using RC4-MD5; users who have not disabled that algorithm should update to 1.0.2k"
         }
     },
@@ -235,7 +235,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 322,
         "fields": {
-            "identifier": "CVE-2016-7055",
+            "vulnerability_id": "CVE-2016-7055",
             "summary": "There is a carry propagating bug in the Broadwell-specific Montgomery multiplication procedure that handles input lengths divisible by, but longer than 256 bits. Analysis suggests that attacks against RSA, DSA and DH private keys are impossible. This is because the subroutine in question is not used in operations with the private key itself and an input of the attacker's direct choice. Otherwise the bug can manifest itself as transient authentication and key negotiatio failures or reproducible erroneous outcome of public-key operations with specially crafted input. Among EC algorithms only Brainpool P-512 curves are affected and one presumably can attack ECDH key negotiation. Impact was not analyzed in detail, because pre-requisites for attack are considered unlikely. Namely multiple clients have to choose the curve in question and the server has to share the private key among them, neither of which is default behaviour. Even then only clients that chose the curve will be affected."
         }
     },
@@ -243,7 +243,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 323,
         "fields": {
-            "identifier": "CVE-2016-6302",
+            "vulnerability_id": "CVE-2016-6302",
             "summary": "If a server uses SHA512 for TLS session ticket HMAC it is vulnerable to a DoS attack where a malformed ticket will result in an OOB read which will ultimately crash. The use of SHA512 in TLS session tickets is comparatively rare as it requires a custom server callback and ticket lookup mechanism."
         }
     },
@@ -251,7 +251,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 324,
         "fields": {
-            "identifier": "CVE-2016-2182",
+            "vulnerability_id": "CVE-2016-2182",
             "summary": "The function BN_bn2dec() does not check the return value of BN_div_word(). This can cause an OOB write if an application uses this function with an overly large BIGNUM. This could be a problem if an overly large certificate or CRL is printed out from an untrusted source. TLS is not affected because record limits will reject an oversized certificate before it is parsed."
         }
     },
@@ -259,7 +259,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 325,
         "fields": {
-            "identifier": "CVE-2016-2180",
+            "vulnerability_id": "CVE-2016-2180",
             "summary": "The function TS_OBJ_print_bio() misuses OBJ_obj2txt(): the return value is the total length the OID text representation would use and not the amount of data written. This will result in OOB reads when large OIDs are presented."
         }
     },
@@ -267,7 +267,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 326,
         "fields": {
-            "identifier": "CVE-2016-2178",
+            "vulnerability_id": "CVE-2016-2178",
             "summary": "Operations in the DSA signing algorithm should run in constant time in order to avoid side channel attacks. A flaw in the OpenSSL DSA implementation means that a non-constant time codepath is followed for certain operations. This has been demonstrated through a cache-timing attack to be sufficient for an attacker to recover the private DSA key."
         }
     },
@@ -275,7 +275,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 327,
         "fields": {
-            "identifier": "CVE-2016-6305",
+            "vulnerability_id": "CVE-2016-6305",
             "summary": "OpenSSL 1.1.0 SSL/TLS will hang during a call to SSL_peek() if the peer sends an empty record. This could be exploited by a malicious peer in a Denial Of Service attack."
         }
     },
@@ -283,7 +283,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 328,
         "fields": {
-            "identifier": "CVE-2016-6306",
+            "vulnerability_id": "CVE-2016-6306",
             "summary": "In OpenSSL 1.0.2 and earlier some missing message length checks can result in OOB reads of up to 2 bytes beyond an allocated buffer. There is a theoretical DoS risk but this has not been observed in practice on common platforms. The messages affected are client certificate, client certificate request and server certificate. As a result the attack can only be performed against a client or a server which enables client authentication."
         }
     },
@@ -291,7 +291,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 329,
         "fields": {
-            "identifier": "CVE-2016-2181",
+            "vulnerability_id": "CVE-2016-2181",
             "summary": "A flaw in the DTLS replay attack protection mechanism means that records that arrive for future epochs update the replay protection \"window\" before the MAC for the record has been validated. This could be exploited by an attacker by sending a record for the next epoch (which does not have to decrypt or have a valid MAC), with a very large sequence number. This means that all subsequent legitimate packets are dropped causing a denial of service for a specific DTL connection."
         }
     },
@@ -299,7 +299,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 330,
         "fields": {
-            "identifier": "CVE-2016-2179",
+            "vulnerability_id": "CVE-2016-2179",
             "summary": "In a DTLS connection where handshake messages are delivered out-of-order those messages that OpenSSL is not yet ready to process will be buffered for later use. Under certain circumstances, a flaw in the logic means that those messages do not get removed from the buffer even though the handshake has been completed. An attacker could force up to approx. 15 messages to remain in the buffer when they are no longer required. These messages will be cleared when the DTL connection is closed. The default maximum size for a message is 100k. Therefore the attacker could force an additional 1500k to be consumed per connection. By opening many simulataneous connections an attacker could cause a DoS attack through memory exhaustion."
         }
     },
@@ -307,7 +307,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 331,
         "fields": {
-            "identifier": "CVE-2016-2177",
+            "vulnerability_id": "CVE-2016-2177",
             "summary": "Avoid some undefined pointer arithmetic A common idiom in the codebase is to check limits in the following manner: \"p + len > limit\" Where \"p\" points to some malloc'd data of SIZE bytes and limit == p + SIZE \"len\" here could be from some externally supplied data (e.g. from a TLS message). The rules of C pointer arithmetic are such that \"p + len\" is only well defined where len <= SIZE. Therefore the above idiom is actually undefined behaviour. For example thi could cause problems if some malloc implementation provides an address for \"p\" such that \"p + len\" actually overflows for values of len that are too big and therefore p + len < limit."
         }
     },
@@ -315,7 +315,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 332,
         "fields": {
-            "identifier": "CVE-2016-6303",
+            "vulnerability_id": "CVE-2016-6303",
             "summary": "An overflow can occur in MDC2_Update() either if called directly or through the EVP_DigestUpdate() function using MDC2. If an attacker is able to supply very large amounts of input data after a previous call to EVP_EncryptUpdate() with a partial block then a length check can overflow resulting in a heap corruption. The amount of data needed is comparable to SIZE_MAX which is impractical on most platforms."
         }
     },
@@ -323,7 +323,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 333,
         "fields": {
-            "identifier": "CVE-2016-2106",
+            "vulnerability_id": "CVE-2016-2106",
             "summary": "An overflow can occur in the EVP_EncryptUpdate() function. If an attacker is able to supply very large amounts of input data after a previous call to EVP_EncryptUpdate() with a partial block then a length check can overflow resulting in a heap corruption. Following an analysis of all OpenSSL internal usage of the EVP_EncryptUpdate() function all usage is one of two forms. The first form is where the EVP_EncryptUpdate() call is known to be the first called function afte an EVP_EncryptInit(), and therefore that specific call must be safe. The second form is where the length passed to EVP_EncryptUpdate() can be seen from the code to be some small value and therefore there is no possibility of an overflow. Since all instances are one of these two forms, it is believed that there can be no overflows in internal code due to this problem. It should be noted that EVP_DecryptUpdate() can call EVP_EncryptUpdate() in certain code paths. Also EVP_CipherUpdate() is a synonym for EVP_EncryptUpdate(). All instances of these calls have also been analysed too and it is believed there are no instances in internal usage where an overflow could occur. This could still represent a security issue for end user code that calls this function directly."
         }
     },
@@ -331,7 +331,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 334,
         "fields": {
-            "identifier": "CVE-2016-6308",
+            "vulnerability_id": "CVE-2016-6308",
             "summary": "A DTLS message includes 3 bytes for its length in the header for the message. This would allow for messages up to 16Mb in length. Messages of this length are excessive and OpenSSL includes a check to ensure that a peer is sending reasonably sized messages in order to avoid too much memory being consumed to service a connection. A flaw in the logic of version 1.1.0 means that memory for the message is allocated too early, prior to the excessive message length check. Du to way memory is allocated in OpenSSL this could mean an attacker could force up to 21Mb to be allocated to service a connection. This could lead to a Denial of Service through memory exhaustion. However, the excessive message length check still takes place, and this would cause the connection to immediately fail. Assuming that the application calls SSL_free() on the failed conneciton in a timely manner then the 21Mb of allocated memory will then be immediately freed again. Therefore the excessive memory allocation will be transitory in nature. This then means that there is only a security impact if: 1) The application does not call SSL_free() in a timely manner in the event that the connection fails or 2) The application is working in a constrained environment where there is very little free memory or 3) The attacker initiates multiple connection attempts such that there are multiple connections in a state where memory has been allocated for the connection; SSL_free() has not yet been called; and there is insufficient memory to service the multiple requests. Except in the instance of (1) above any Denial Of Service is likely to be transitory because as soon as the connection fails the memory is subsequently freed again in the SSL_free() call. However there is an increased risk during this period of application crashes due to the lack of memory - which would then mean a more serious Denial of Service."
         }
     },
@@ -339,7 +339,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 335,
         "fields": {
-            "identifier": "CVE-2016-6307",
+            "vulnerability_id": "CVE-2016-6307",
             "summary": "A TLS message includes 3 bytes for its length in the header for the message. This would allow for messages up to 16Mb in length. Messages of this length are excessive and OpenSSL includes a check to ensure that a peer is sending reasonably sized messages in order to avoid too much memory being consumed to service a connection. A flaw in the logic of version 1.1.0 means that memory for the message is allocated too early, prior to the excessive message length check. Due t way memory is allocated in OpenSSL this could mean an attacker could force up to 21Mb to be allocated to service a connection. This could lead to a Denial of Service through memory exhaustion. However, the excessive message length check still takes place, and this would cause the connection to immediately fail. Assuming that the application calls SSL_free() on the failed conneciton in a timely manner then the 21Mb of allocated memory will then be immediately freed again. Therefore the excessive memory allocation will be transitory in nature. This then means that there is only a security impact if: 1) The application does not call SSL_free() in a timely manner in the event that the connection fails or 2) The application is working in a constrained environment where there is very little free memory or 3) The attacker initiates multiple connection attempts such that there are multiple connections in a state where memory has been allocated for the connection; SSL_free() has not yet been called; and there is insufficient memory to service the multiple requests. Except in the instance of (1) above any Denial Of Service is likely to be transitory because as soon as the connection fails the memory is subsequently freed again in the SSL_free() call. However there is an increased risk during this period of application crashes due to the lack of memory - which would then mean a more serious Denial of Service."
         }
     },
@@ -347,7 +347,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 336,
         "fields": {
-            "identifier": "CVE-2016-2109",
+            "vulnerability_id": "CVE-2016-2109",
             "summary": "When ASN.1 data is read from a BIO using functions such as d2i_CMS_bio() a short invalid encoding can casuse allocation of large amounts of memory potentially consuming excessive resources or exhausting memory. Any application parsing untrusted data through d2i BIO functions is affected. The memory based functions such as d2i_X509() are *not* affected. Since the memory based functions are used by the TLS library, TLS applications are not affected."
         }
     },
@@ -355,7 +355,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 337,
         "fields": {
-            "identifier": "CVE-2016-2107",
+            "vulnerability_id": "CVE-2016-2107",
             "summary": "A MITM attacker can use a padding oracle attack to decrypt traffic when the connection uses an AES CBC cipher and the server support AES-NI. This issue was introduced as part of the fix for Lucky 13 padding attack (CVE-2013-0169). The padding check was rewritten to be in constant time by making sure that always the same bytes are read and compared against either the MAC or padding bytes. But it no longer checked that there was enough data to have both the MAC and paddin bytes."
         }
     },
@@ -363,7 +363,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 338,
         "fields": {
-            "identifier": "CVE-2016-0705",
+            "vulnerability_id": "CVE-2016-0705",
             "summary": "A double free bug was discovered when OpenSSL parses malformed DSA private keys and could lead to a DoS attack or memory corruption for applications that receive DSA private keys from untrusted sources. This scenario is considered rare."
         }
     },
@@ -371,7 +371,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 339,
         "fields": {
-            "identifier": "CVE-2016-2108",
+            "vulnerability_id": "CVE-2016-2108",
             "summary": "This issue affected versions of OpenSSL prior to April 2015. The bug causing the vulnerability was fixed on April 18th 2015, and released as part of the June 11th 2015 security releases. The security impact of the bug was not known at the time. In previous versions of OpenSSL, ASN.1 encoding the value zero represented as a negative integer can cause a buffer underflow with an out-of-bounds write in i2c_ASN1_INTEGER. The ASN.1 parser does not normally create \"negativ zeroes\" when parsing ASN.1 input, and therefore, an attacker cannot trigger this bug. However, a second, independent bug revealed that the ASN.1 parser (specifically, d2i_ASN1_TYPE) can misinterpret a large universal tag as a negative zero value. Large universal tags are not present in any common ASN.1 structures (such as X509) but are accepted as part of ANY structures. Therefore, if an application deserializes untrusted ASN.1 structures containing an ANY field, and later reserializes them, an attacker may be able to trigger an out-of-bounds write. This has been shown to cause memory corruption that is potentially exploitable with some malloc implementations. Applications that parse and re-encode X509 certificates are known to be vulnerable. Applications that verify RSA signatures on X509 certificates may also be vulnerable; however, only certificates with valid signatures trigger ASN.1 re-encoding and hence the bug. Specifically, since OpenSSL's default TLS X509 chain verification code verifies the certificate chain from root to leaf, TLS handshakes could only be targeted with valid certificates issued by trusted Certification Authorities."
         }
     },
@@ -379,7 +379,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 340,
         "fields": {
-            "identifier": "CVE-2016-2105",
+            "vulnerability_id": "CVE-2016-2105",
             "summary": "An overflow can occur in the EVP_EncodeUpdate() function which is used for Base64 encoding of binary data. If an attacker is able to supply very large amounts of input data then a length check can overflow resulting in a heap corruption. Internally to OpenSSL the EVP_EncodeUpdate() function is primarly used by the PEM_write_bio* family of functions. These are mainly used within the OpenSSL command line applications. These internal uses are not considered vulnerabl because all calls are bounded with length checks so no overflow is possible. User applications that call these APIs directly with large amounts of untrusted data may be vulnerable. (Note: Initial analysis suggested that the PEM_write_bio* were vulnerable, and this is reflected in the patch commit message. This is no longer believed to be the case)."
         }
     },
@@ -387,7 +387,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 341,
         "fields": {
-            "identifier": "CVE-2016-2176",
+            "vulnerability_id": "CVE-2016-2176",
             "summary": "ASN1 Strings that are over 1024 bytes can cause an overread in applications using the X509_NAME_oneline() function on EBCDIC systems. This could result in arbitrary stack data being returned in the buffer."
         }
     },
@@ -395,7 +395,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 342,
         "fields": {
-            "identifier": "CVE-2016-0800",
+            "vulnerability_id": "CVE-2016-0800",
             "summary": "A cross-protocol attack was discovered that could lead to decryption of TLS sessions by using a server supporting SSLv2 and EXPORT cipher suites as a Bleichenbacher RSA padding oracle. Note that traffic between clients and non-vulnerable servers can be decrypted provided another server supporting SSLv2 and EXPORT ciphers (even with a different protocol such as SMTP, IMAP or POP) shares the RSA keys of the non-vulnerable server. This vulnerability is known as DROWN (CV-2016-0800). Recovering one session key requires the attacker to perform approximately 2^50 computation, as well as thousands of connections to the affected server. A more efficient variant of the DROWN attack exists against unpatched OpenSSL servers using versions that predate 1.0.2a, 1.0.1m, 1.0.0r and 0.9.8zf released on 19/Mar/2015 (see CVE-2016-0703 below). Users can avoid this issue by disabling the SSLv2 protocol in all their SSL/TLS servers, if they've not done so already. Disabling all SSLv2 ciphers is also sufficient, provided the patches for CVE-2015-3197 (fixed in OpenSSL 1.0.1r and 1.0.2f) have been deployed. Servers that have not disabled the SSLv2 protocol, and are not patched for CVE-2015-3197 are vulnerable to DROWN even if all SSLv2 ciphers are nominally disabled, because malicious clients can force the use of SSLv2 with EXPORT ciphers. OpenSSL 1.0.2g and 1.0.1s deploy the following mitigation against DROWN: SSLv2 is now by default disabled at build-time. Builds that are not configured with \"enable-ssl2\" will not support SSLv2. Even if \"enable-ssl2\" is used, users who want to negotiate SSLv2 via the version-flexible SSLv23_method() will need to explicitly call either of: SSL_CTX_clear_options(ctx, SSL_OP_NO_SSLv2); or SSL_clear_options(ssl, SSL_OP_NO_SSLv2); as appropriate. Even if either of those is used, or the application explicitly uses the version-specific SSLv2_method() or its client or server variants, SSLv2 ciphers vulnerable to exhaustive search key recovery have been removed. Specifically, the SSLv2 40-bit EXPORT ciphers, and SSLv2 56-bit DES are no longer available. In addition, weak ciphers in SSLv3 and up are now disabled in default builds of OpenSSL. Builds that are not configured with \"enable-weak-ssl-ciphers\" will not provide any \"EXPORT\" or \"LOW\" strength ciphers."
         }
     },
@@ -403,7 +403,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 343,
         "fields": {
-            "identifier": "CVE-2016-0703",
+            "vulnerability_id": "CVE-2016-0703",
             "summary": "This issue only affected versions of OpenSSL prior to March 19th 2015 at which time the code was refactored to address vulnerability CVE-2015-0293. s2_srvr.c did not enforce that clear-key-length is 0 for non-export ciphers. If clear-key bytes are present for these ciphers, they *displace* encrypted-key bytes. This leads to an efficient divide-and-conquer key recovery attack: if an eavesdropper has intercepted an SSLv2 handshake, they can use the server as an oracle t determine the SSLv2 master-key, using only 16 connections to the server and negligible computation. More importantly, this leads to a more efficient version of DROWN that is effective against non-export ciphersuites, and requires no significant computation."
         }
     },
@@ -411,7 +411,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 344,
         "fields": {
-            "identifier": "CVE-2016-0799",
+            "vulnerability_id": "CVE-2016-0799",
             "summary": "The internal |fmtstr| function used in processing a \"%s\" format string in the BIO_*printf functions could overflow while calculating the length of a string and cause an OOB read when printing very long strings. Additionally the internal |doapr_outch| function can attempt to write to an OOB memory location (at an offset from the NULL pointer) in the event of a memory allocation failure. In 1.0.2 and below this could be caused where the size of a buffer to be allocate is greater than INT_MAX. E.g. this could be in processing a very long \"%s\" format string. Memory leaks can also occur. The first issue may mask the second issue dependent on compiler behaviour. These problems could enable attacks where large amounts of untrusted data is passed to the BIO_*printf functions. If applications use these functions in this way then they could be vulnerable. OpenSSL itself uses these functions when printing out human-readable dumps of ASN.1 data. Therefore applications that print this data could be vulnerable if the data is from untrusted sources. OpenSSL command line applications could also be vulnerable where they print out ASN.1 data, or if untrusted data is passed as command line arguments. Libssl is not considered directly vulnerable. Additionally certificates etc received via remote connections via libssl are also unlikely to be able to trigger these issues because of message size limits enforced within libssl."
         }
     },
@@ -419,7 +419,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 345,
         "fields": {
-            "identifier": "CVE-2015-3193",
+            "vulnerability_id": "CVE-2015-3193",
             "summary": "There is a carry propagating bug in the x86_64 Montgomery squaring procedure. No EC algorithms are affected. Analysis suggests that attacks against RSA and DSA as a result of this defect would be very difficult to perform and are not believed likely. Attacks against DH are considered just feasible (although very difficult) because most of the work necessary to deduce information about a private key may be performed offline. The amount of resources required for such a attack would be very significant and likely only accessible to a limited number of attackers. An attacker would additionally need online access to an unpatched system using the target private key in a scenario with persistent DH parameters and a private key that is shared between multiple clients. For example this can occur by default in OpenSSL DHE based SSL/TLS ciphersuites."
         }
     },
@@ -427,7 +427,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 346,
         "fields": {
-            "identifier": "CVE-2016-0704",
+            "vulnerability_id": "CVE-2016-0704",
             "summary": "This issue only affected versions of OpenSSL prior to March 19th 2015 at which time the code was refactored to address the vulnerability CVE-2015-0293. s2_srvr.c overwrite the wrong bytes in the master-key when applying Bleichenbacher protection for export cipher suites. This provides a Bleichenbacher oracle, and could potentially allow more efficient variants of the DROWN attack."
         }
     },
@@ -435,7 +435,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 347,
         "fields": {
-            "identifier": "CVE-2015-3197",
+            "vulnerability_id": "CVE-2015-3197",
             "summary": "A malicious client can negotiate SSLv2 ciphers that have been disabled on the server and complete SSLv2 handshakes even if all SSLv2 ciphers have been disabled, provided that the SSLv2 protocol was not also disabled via SSL_OP_NO_SSLv2."
         }
     },
@@ -443,7 +443,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 348,
         "fields": {
-            "identifier": "CVE-2015-1794",
+            "vulnerability_id": "CVE-2015-1794",
             "summary": "If a client receives a ServerKeyExchange for an anonymous DH ciphersuite with the value of p set to 0 then a seg fault can occur leading to a possible denial of service attack."
         }
     },
@@ -451,7 +451,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 349,
         "fields": {
-            "identifier": "CVE-2016-0798",
+            "vulnerability_id": "CVE-2016-0798",
             "summary": "The SRP user database lookup method SRP_VBASE_get_by_user had confusing memory management semantics; the returned pointer was sometimes newly allocated, and sometimes owned by the callee. The calling code has no way of distinguishing these two cases. Specifically, SRP servers that configure a secret seed to hide valid login information are vulnerable to a memory leak: an attacker connecting with an invalid username can cause a memory leak of around 300 bytes pe connection. Servers that do not configure SRP, or configure SRP but do not configure a seed are not vulnerable. In Apache, the seed directive is known as SSLSRPUnknownUserSeed. To mitigate the memory leak, the seed handling in SRP_VBASE_get_by_user is now disabled even if the user has configured a seed. Applications are advised to migrate to SRP_VBASE_get1_by_user. However, note that OpenSSL makes no strong guarantees about the indistinguishability of valid and invalid logins. In particular, computations are currently not carried out in constant time."
         }
     },
@@ -459,7 +459,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 350,
         "fields": {
-            "identifier": "CVE-2016-0797",
+            "vulnerability_id": "CVE-2016-0797",
             "summary": "In the BN_hex2bn function the number of hex digits is calculated using an int value |i|. Later |bn_expand| is called with a value of |i * 4|. For large values of |i| this can result in |bn_expand| not allocating any memory because |i * 4| is negative. This can leave the internal BIGNUM data field as NULL leading to a subsequent NULL ptr deref. For very large values of |i|, the calculation |i * 4| could be a positive value smaller than |i|. In this case memory i allocated to the internal BIGNUM data field, but it is insufficiently sized leading to heap corruption. A similar issue exists in BN_dec2bn. This could have security consequences if BN_hex2bn/BN_dec2bn is ever called by user applications with very large untrusted hex/dec data. This is anticipated to be a rare occurrence. All OpenSSL internal usage of these functions use data that is not expected to be untrusted, e.g. config file data or application command line arguments. If user developed applications generate config file data based on untrusted data then it is possible that this could also lead to security consequences. This is also anticipated to be rare."
         }
     },
@@ -467,7 +467,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 351,
         "fields": {
-            "identifier": "CVE-2016-0701",
+            "vulnerability_id": "CVE-2016-0701",
             "summary": "Historically OpenSSL usually only ever generated DH parameters based on \"safe\" primes. More recently (in version 1.0.2) support was provided for generating X9.42 style parameter files such as those required for RFC 5114 support. The primes used in such files may not be \"safe\". Where an application is using DH configured with parameters based on primes that are not \"safe\" then an attacker could use this fact to find a peer's private DH exponent. This attack require that the attacker complete multiple handshakes in which the peer uses the same private DH exponent. For example this could be used to discover a TLS server's private DH exponent if it's reusing the private DH exponent or it's using a static DH ciphersuite. OpenSSL provides the option SSL_OP_SINGLE_DH_USE for ephemeral DH (DHE) in TLS. It is not on by default. If the option is not set then the server reuses the same private DH exponent for the life of the server process and would be vulnerable to this attack. It is believed that many popular applications do set this option and would therefore not be at risk. OpenSSL before 1.0.2f will reuse the key if: - SSL_CTX_set_tmp_dh()/SSL_set_tmp_dh() is used and SSL_OP_SINGLE_DH_USE is not set. - SSL_CTX_set_tmp_dh_callback()/SSL_set_tmp_dh_callback() is used, and both the parameters and the key are set and SSL_OP_SINGLE_DH_USE is not used. This is an undocumted feature and parameter files don't contain the key. - Static DH ciphersuites are used. The key is part of the certificate and so it will always reuse it. This is only supported in 1.0.2. It will not reuse the key for DHE ciphers suites if: - SSL_OP_SINGLE_DH_USE is set - SSL_CTX_set_tmp_dh_callback()/SSL_set_tmp_dh_callback() is used and the callback does not provide the key, only the parameters. The callback is almost always used like this. Non-safe primes are generated by OpenSSL when using: - genpkey with the dh_rfc5114 option. This will write an X9.42 style file including the prime-order subgroup size \"q\". This is supported since the 1.0.2 version. Older versions can't read files generated in this way. - dhparam with the -dsaparam option. This has always been documented as requiring the single use. The fix for this issue adds an additional check where a \"q\" parameter is available (as is the case in X9.42 based parameters). This detects the only known attack, and is the only possible defense for static DH ciphersuites. This could have some performance impact. Additionally the SSL_OP_SINGLE_DH_USE option has been switched on by default and cannot be disabled. This could have some performance impact."
         }
     },
@@ -475,7 +475,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 352,
         "fields": {
-            "identifier": "CVE-2016-0702",
+            "vulnerability_id": "CVE-2016-0702",
             "summary": "A side-channel attack was found which makes use of cache-bank conflicts on the Intel Sandy-Bridge microarchitecture which could lead to the recovery of RSA keys. The ability to exploit this issue is limited as it relies on an attacker who has control of code in a thread running on the same hyper-threaded core as the victim thread which is performing decryptions."
         }
     },
@@ -483,7 +483,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 353,
         "fields": {
-            "identifier": "CVE-2015-3196",
+            "vulnerability_id": "CVE-2015-3196",
             "summary": "If PSK identity hints are received by a multi-threaded client then the values are wrongly updated in the parent SSL_CTX structure. This can result in a race condition potentially leading to a double free of the identify hint data."
         }
     },
@@ -491,7 +491,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 354,
         "fields": {
-            "identifier": "CVE-2015-1793",
+            "vulnerability_id": "CVE-2015-1793",
             "summary": "An error in the implementation of the alternative certificate chain logic could allow an attacker to cause certain checks on untrusted certificates to be bypassed, such as the CA flag, enabling them to use a valid leaf certificate to act as a CA and \"issue\" an invalid certificate."
         }
     },
@@ -499,7 +499,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 355,
         "fields": {
-            "identifier": "CVE-2015-3195",
+            "vulnerability_id": "CVE-2015-3195",
             "summary": "When presented with a malformed X509_ATTRIBUTE structure OpenSSL will leak memory. This structure is used by the PKCS#7 and CMS routines so any application which reads PKCS#7 or CMS data from untrusted sources is affected. SSL/TLS is not affected."
         }
     },
@@ -507,7 +507,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 356,
         "fields": {
-            "identifier": "CVE-2015-1792",
+            "vulnerability_id": "CVE-2015-1792",
             "summary": "When verifying a signedData message the CMS code can enter an infinite loop if presented with an unknown hash function OID. This can be used to perform denial of service against any system which verifies signedData messages using the CMS code."
         }
     },
@@ -515,7 +515,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 357,
         "fields": {
-            "identifier": "CVE-2015-1790",
+            "vulnerability_id": "CVE-2015-1790",
             "summary": "The PKCS#7 parsing code does not handle missing inner EncryptedContent correctly. An attacker can craft malformed ASN.1-encoded PKCS#7 blobs with missing content and trigger a NULL pointer dereference on parsing. Applications that decrypt PKCS#7 data or otherwise parse PKCS#7 structures from untrusted sources are affected. OpenSSL clients and servers are not affected."
         }
     },
@@ -523,7 +523,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 358,
         "fields": {
-            "identifier": "CVE-2015-1788",
+            "vulnerability_id": "CVE-2015-1788",
             "summary": "When processing an ECParameters structure OpenSSL enters an infinite loop if the curve specified is over a specially malformed binary polynomial field. This can be used to perform denial of service against any system which processes public keys, certificate requests or certificates. This includes TLS clients and TLS servers with client authentication enabled."
         }
     },
@@ -531,7 +531,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 359,
         "fields": {
-            "identifier": "CVE-2015-1789",
+            "vulnerability_id": "CVE-2015-1789",
             "summary": "X509_cmp_time does not properly check the length of the ASN1_TIME string and can read a few bytes out of bounds. In addition, X509_cmp_time accepts an arbitrary number of fractional seconds in the time string. An attacker can use this to craft malformed certificates and CRLs of various sizes and potentially cause a segmentation fault, resulting in a DoS on applications that verify certificates or CRLs. TLS clients that verify CRLs are affected. TLS clients and server with client authentication enabled may be affected if they use custom verification callbacks."
         }
     },
@@ -539,7 +539,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 360,
         "fields": {
-            "identifier": "CVE-2014-8176",
+            "vulnerability_id": "CVE-2014-8176",
             "summary": "This vulnerability does not affect current versions of OpenSSL. It existed in previous OpenSSL versions and was fixed in June 2014. If a DTLS peer receives application data between the ChangeCipherSpec and Finished messages, buffering of such data may cause an invalid free, resulting in a segmentation fault or potentially, memory corruption."
         }
     },
@@ -547,7 +547,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 361,
         "fields": {
-            "identifier": "CVE-2015-1791",
+            "vulnerability_id": "CVE-2015-1791",
             "summary": "If a NewSessionTicket is received by a multi-threaded client when attempting to reuse a previous ticket then a race condition can occur potentially leading to a double free of the ticket data."
         }
     },
@@ -555,7 +555,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 362,
         "fields": {
-            "identifier": "CVE-2015-3194",
+            "vulnerability_id": "CVE-2015-3194",
             "summary": "The signature verification routines will crash with a NULL pointer dereference if presented with an ASN.1 signature using the RSA PSS algorithm and absent mask generation function parameter. Since these routines are used to verify certificate signature algorithms this can be used to crash any certificate verification operation and exploited in a DoS attack. Any application which performs certificate verification is vulnerable including OpenSSL clients and servers whic enable client authentication."
         }
     },
@@ -563,7 +563,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 363,
         "fields": {
-            "identifier": "CVE-2015-0293",
+            "vulnerability_id": "CVE-2015-0293",
             "summary": "DoS via reachable assert in SSLv2 servers. A malicious client can trigger an OPENSSL_assert in servers that both support SSLv2 and enable export cipher suites by sending a specially crafted SSLv2 CLIENT-MASTER-KEY message."
         }
     },
@@ -571,7 +571,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 364,
         "fields": {
-            "identifier": "CVE-2015-0292",
+            "vulnerability_id": "CVE-2015-0292",
             "summary": "A vulnerability existed in previous versions of OpenSSL related to the processing of base64 encoded data. Any code path that reads base64 data from an untrusted source could be affected (such as the PEM processing routines). Maliciously crafted base 64 data could trigger a segmenation fault or memory corruption."
         }
     },
@@ -579,7 +579,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 365,
         "fields": {
-            "identifier": "CVE-2015-0287",
+            "vulnerability_id": "CVE-2015-0287",
             "summary": "ASN.1 structure reuse memory corruption. Reusing a structure in ASN.1 parsing may allow an attacker to cause memory corruption via an invalid write. Such reuse is and has been strongly discouraged and is believed to be rare."
         }
     },
@@ -587,7 +587,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 366,
         "fields": {
-            "identifier": "CVE-2015-0286",
+            "vulnerability_id": "CVE-2015-0286",
             "summary": "Segmentation fault in ASN1_TYPE_cmp. The function ASN1_TYPE_cmp will crash with an invalid read if an attempt is made to compare ASN.1 boolean types. Since ASN1_TYPE_cmp is used to check certificate signature algorithm consistency this can be used to crash any certificate verification operation and exploited in a DoS attack. Any application which performs certificate verification is vulnerable including OpenSSL clients and servers which enable client authentication."
         }
     },
@@ -595,7 +595,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 367,
         "fields": {
-            "identifier": "CVE-2015-0208",
+            "vulnerability_id": "CVE-2015-0208",
             "summary": "Segmentation fault for invalid PSS parameters. The signature verification routines will crash with a NULL pointer dereference if presented with an ASN.1 signature using the RSA PSS algorithm and invalid parameters. Since these routines are used to verify certificate signature algorithms this can be used to crash any certificate verification operation and exploited in a DoS attack. Any application which performs certificate verification is vulnerable including OpenSS clients and servers which enable client authentication."
         }
     },
@@ -603,7 +603,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 368,
         "fields": {
-            "identifier": "CVE-2015-0207",
+            "vulnerability_id": "CVE-2015-0207",
             "summary": "Segmentation fault in DTLSv1_listen. A defect in the implementation of DTLSv1_listen means that state is preserved in the SSL object from one invocation to the next that can lead to a segmentation fault. Errors processing the initial ClientHello can trigger this scenario. An example of such an error could be that a DTLS1.0 only client is attempting to connect to a DTLS1.2 only server."
         }
     },
@@ -611,7 +611,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 369,
         "fields": {
-            "identifier": "CVE-2015-1787",
+            "vulnerability_id": "CVE-2015-1787",
             "summary": "Empty CKE with client auth and DHE. If client auth is used then a server can seg fault in the event of a DHE ciphersuite being selected and a zero length ClientKeyExchange message being sent by the client. This could be exploited in a DoS attack."
         }
     },
@@ -619,7 +619,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 370,
         "fields": {
-            "identifier": "CVE-2015-0289",
+            "vulnerability_id": "CVE-2015-0289",
             "summary": "PKCS#7 NULL pointer dereference. The PKCS#7 parsing code does not handle missing outer ContentInfo correctly. An attacker can craft malformed ASN.1-encoded PKCS#7 blobs with missing content and trigger a NULL pointer dereference on parsing. Applications that verify PKCS#7 signatures, decrypt PKCS#7 data or otherwise parse PKCS#7 structures from untrusted sources are affected. OpenSSL clients and servers are not affected."
         }
     },
@@ -627,7 +627,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 371,
         "fields": {
-            "identifier": "CVE-2015-0290",
+            "vulnerability_id": "CVE-2015-0290",
             "summary": "Multiblock corrupted pointer. OpenSSL 1.0.2 introduced the \"multiblock\" performance improvement. This feature only applies on 64 bit x86 architecture platforms that support AES NI instructions. A defect in the implementation of \"multiblock\" can cause OpenSSL's internal write buffer to become incorrectly set to NULL when using non-blocking IO. Typically, when the user application is using a socket BIO for writing, this will only result in a failed connection. Howeve if some other BIO is used then it is likely that a segmentation fault will be triggered, thus enabling a potential DoS attack."
         }
     },
@@ -635,7 +635,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 372,
         "fields": {
-            "identifier": "CVE-2015-0291",
+            "vulnerability_id": "CVE-2015-0291",
             "summary": "ClientHello sigalgs DoS. If a client connects to an OpenSSL 1.0.2 server and renegotiates with an invalid signature algorithms extension a NULL pointer dereference will occur. This can be exploited in a DoS attack against the server."
         }
     },
@@ -643,7 +643,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 373,
         "fields": {
-            "identifier": "CVE-2015-0205",
+            "vulnerability_id": "CVE-2015-0205",
             "summary": "An OpenSSL server will accept a DH certificate for client authentication without the certificate verify message. This effectively allows a client to authenticate without the use of a private key. This only affects servers which trust a client certificate authority which issues certificates containing DH keys: these are extremely rare and hardly ever encountered."
         }
     },
@@ -651,7 +651,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 374,
         "fields": {
-            "identifier": "CVE-2015-0206",
+            "vulnerability_id": "CVE-2015-0206",
             "summary": "A memory leak can occur in the dtls1_buffer_record function under certain conditions. In particular this could occur if an attacker sent repeated DTLS records with the same sequence number but for the next epoch. The memory leak could be exploited by an attacker in a Denial of Service attack through memory exhaustion."
         }
     },
@@ -659,7 +659,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 375,
         "fields": {
-            "identifier": "CVE-2015-0204",
+            "vulnerability_id": "CVE-2015-0204",
             "summary": "An OpenSSL client will accept the use of an RSA temporary key in a non-export RSA key exchange ciphersuite. A server could present a weak temporary key and downgrade the security of the session."
         }
     },
@@ -667,7 +667,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 376,
         "fields": {
-            "identifier": "CVE-2015-0209",
+            "vulnerability_id": "CVE-2015-0209",
             "summary": "Use After Free following d2i_ECPrivatekey error. A malformed EC private key file consumed via the d2i_ECPrivateKey function could cause a use after free condition. This, in turn, could cause a double free in several private key parsing functions (such as d2i_PrivateKey or EVP_PKCS82PKEY) and could lead to a DoS attack or memory corruption for applications that receive EC private keys from untrusted sources. This scenario is considered rare."
         }
     },
@@ -675,7 +675,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 377,
         "fields": {
-            "identifier": "CVE-2015-0288",
+            "vulnerability_id": "CVE-2015-0288",
             "summary": "X509_to_X509_REQ NULL pointer deref. The function X509_to_X509_REQ will crash with a NULL pointer dereference if the certificate key is invalid. This function is rarely used in practice."
         }
     },
@@ -683,7 +683,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 378,
         "fields": {
-            "identifier": "CVE-2014-3572",
+            "vulnerability_id": "CVE-2014-3572",
             "summary": "An OpenSSL client will accept a handshake using an ephemeral ECDH ciphersuite using an ECDSA certificate if the server key exchange message is omitted. This effectively removes forward secrecy from the ciphersuite."
         }
     },
@@ -691,7 +691,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 379,
         "fields": {
-            "identifier": "CVE-2015-0285",
+            "vulnerability_id": "CVE-2015-0285",
             "summary": "Under certain conditions an OpenSSL 1.0.2 client can complete a handshake with an unseeded PRNG. If the handshake succeeds then the client random that has been used will have been generated from a PRNG with insufficient entropy and therefore the output may be predictable."
         }
     },
@@ -699,7 +699,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 380,
         "fields": {
-            "identifier": "CVE-2014-8275",
+            "vulnerability_id": "CVE-2014-8275",
             "summary": "OpenSSL accepts several non-DER-variations of certificate signature algorithm and signature encodings. OpenSSL also does not enforce a match between the signature algorithm between the signed and unsigned portions of the certificate. By modifying the contents of the signature algorithm or the encoding of the signature, it is possible to change the certificate's fingerprint. This does not allow an attacker to forge certificates, and does not affect certificat verification or OpenSSL servers/clients in any other way. It also does not affect common revocation mechanisms. Only custom applications that rely on the uniqueness of the fingerprint (e.g. certificate blacklists) may be affected."
         }
     },
@@ -707,7 +707,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 381,
         "fields": {
-            "identifier": "CVE-2014-3571",
+            "vulnerability_id": "CVE-2014-3571",
             "summary": "A carefully crafted DTLS message can cause a segmentation fault in OpenSSL due to a NULL pointer dereference. This could lead to a Denial Of Service attack."
         }
     },
@@ -715,7 +715,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 382,
         "fields": {
-            "identifier": "CVE-2014-3569",
+            "vulnerability_id": "CVE-2014-3569",
             "summary": "When openssl is built with the no-ssl3 option and a SSL v3 ClientHello is received the ssl method would be set to NULL which could later result in a NULL pointer dereference."
         }
     },
@@ -723,7 +723,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 383,
         "fields": {
-            "identifier": "CVE-2014-5139",
+            "vulnerability_id": "CVE-2014-5139",
             "summary": "A crash was found affecting SRP ciphersuites used in a Server Hello message. The issue affects OpenSSL clients and allows a malicious server to crash the client with a null pointer dereference (read) by specifying an SRP ciphersuite even though it was not properly negotiated with the client. This could lead to a Denial of Service."
         }
     },
@@ -731,7 +731,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 384,
         "fields": {
-            "identifier": "CVE-2014-3508",
+            "vulnerability_id": "CVE-2014-3508",
             "summary": "A flaw in OBJ_obj2txt may cause pretty printing functions such as X509_name_oneline, X509_name_print_ex, to leak some information from the stack. Applications may be affected if they echo pretty printing output to the attacker. OpenSSL SSL/TLS clients and servers themselves are not affected."
         }
     },
@@ -739,7 +739,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 385,
         "fields": {
-            "identifier": "CVE-2014-3505",
+            "vulnerability_id": "CVE-2014-3505",
             "summary": "A Double Free was found when processing DTLS packets. An attacker can force an error condition which causes openssl to crash whilst processing DTLS packets due to memory being freed twice. This could lead to a Denial of Service attack."
         }
     },
@@ -747,7 +747,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 386,
         "fields": {
-            "identifier": "CVE-2014-3509",
+            "vulnerability_id": "CVE-2014-3509",
             "summary": "A race condition was found in ssl_parse_serverhello_tlsext. If a multithreaded client connects to a malicious server using a resumed session and the server sends an ec point format extension, it could write up to 255 bytes to freed memory."
         }
     },
@@ -755,7 +755,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 387,
         "fields": {
-            "identifier": null,
+            "vulnerability_id": null,
             "summary": "OpenSSL has added support for TLS_FALLBACK_SCSV to allow applications to block the ability for a MITM attacker to force a protocol downgrade. Some client applications (such as browsers) will reconnect using a downgraded protocol to work around interoperability bugs in older servers. This could be exploited by an active man-in-the-middle to downgrade connections to SSL 3.0 even if both sides of the connection support higher protocols. SSL 3.0 contains a number o weaknesses including POODLE (CVE-2014-3566). See also https://tools.ietf.org/html/draft-ietf-tls-downgrade-scsv-00 and https://www.openssl.org/~bodo/ssl-poodle.pdf"
         }
     },
@@ -763,7 +763,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 388,
         "fields": {
-            "identifier": "CVE-2014-3568",
+            "vulnerability_id": "CVE-2014-3568",
             "summary": "When OpenSSL is configured with \"no-ssl3\" as a build option, servers could accept and complete a SSL 3.0 handshake, and clients could be configured to send them."
         }
     },
@@ -771,7 +771,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 389,
         "fields": {
-            "identifier": "CVE-2014-3506",
+            "vulnerability_id": "CVE-2014-3506",
             "summary": "A DTLS flaw leading to memory exhaustion was found. An attacker can force openssl to consume large amounts of memory whilst processing DTLS handshake messages. This could lead to a Denial of Service attack."
         }
     },
@@ -779,7 +779,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 390,
         "fields": {
-            "identifier": "CVE-2014-3567",
+            "vulnerability_id": "CVE-2014-3567",
             "summary": "When an OpenSSL SSL/TLS/DTLS server receives a session ticket the integrity of that ticket is first verified. In the event of a session ticket integrity check failing, OpenSSL will fail to free memory causing a memory leak. By sending a large number of invalid session tickets an attacker could exploit this issue in a Denial Of Service attack."
         }
     },
@@ -787,7 +787,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 391,
         "fields": {
-            "identifier": "CVE-2014-3570",
+            "vulnerability_id": "CVE-2014-3570",
             "summary": "Bignum squaring (BN_sqr) may produce incorrect results on some platforms, including x86_64. This bug occurs at random with a very low probability, and is not known to be exploitable in any way, though its exact impact is difficult to determine. The following has been determined: *) The probability of BN_sqr producing an incorrect result at random is very low: 1/2^64 on the single affected 32-bit platform (MIPS) and 1/2^128 on affected 64-bit platforms. *) On mos platforms, RSA follows a different code path and RSA operations are not affected at all. For the remaining platforms (e.g. OpenSSL built without assembly support), pre-existing countermeasures thwart bug attacks [1]. *) Static ECDH is theoretically affected: it is possible to construct elliptic curve points that would falsely appear to be on the given curve. However, there is no known computationally feasible way to construct such points with low order, and so the security of static ECDH private keys is believed to be unaffected. *) Other routines known to be theoretically affected are modular exponentiation, primality testing, DSA, RSA blinding, JPAKE and SRP. No exploits are known and straightforward bug attacks fail - either the attacker cannot control when the bug triggers, or no private key material is involved."
         }
     },
@@ -795,7 +795,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 392,
         "fields": {
-            "identifier": "CVE-2014-3513",
+            "vulnerability_id": "CVE-2014-3513",
             "summary": "A flaw in the DTLS SRTP extension parsing code allows an attacker, who sends a carefully crafted handshake message, to cause OpenSSL to fail to free up to 64k of memory causing a memory leak. This could be exploited in a Denial Of Service attack. This issue affects OpenSSL 1.0.1 server implementations for both SSL/TLS and DTLS regardless of whether SRTP is used or configured. Implementations of OpenSSL that have been compiled with OPENSSL_NO_SRTP defined are no affected."
         }
     },
@@ -803,7 +803,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 393,
         "fields": {
-            "identifier": "CVE-2002-0659",
+            "vulnerability_id": "CVE-2002-0659",
             "summary": "A flaw in the ASN1 library allowed remote attackers to cause a denial of service by sending invalid encodings."
         }
     },
@@ -811,7 +811,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 394,
         "fields": {
-            "identifier": "CVE-2014-3507",
+            "vulnerability_id": "CVE-2014-3507",
             "summary": "A DTLS memory leak from zero-length fragments was found. By sending carefully crafted DTLS packets an attacker could cause OpenSSL to leak memory. This could lead to a Denial of Service attack."
         }
     },
@@ -819,7 +819,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 395,
         "fields": {
-            "identifier": "CVE-2014-3512",
+            "vulnerability_id": "CVE-2014-3512",
             "summary": "A SRP buffer overrun was found. A malicious client or server can send invalid SRP parameters and overrun an internal buffer. Only applications which are explicitly set up for SRP use are affected."
         }
     },
@@ -827,7 +827,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 396,
         "fields": {
-            "identifier": "CVE-2002-1568",
+            "vulnerability_id": "CVE-2002-1568",
             "summary": "The use of assertions when detecting buffer overflow attacks allowed remote attackers to cause a denial of service (crash) by sending certain messages to cause OpenSSL to abort from a failed assertion, as demonstrated using SSLv2 CLIENT_MASTER_KEY messages, which were not properly handled in s2_srvr.c."
         }
     },
@@ -835,7 +835,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 397,
         "fields": {
-            "identifier": "CVE-2002-0656",
+            "vulnerability_id": "CVE-2002-0656",
             "summary": "A buffer overflow allowed remote attackers to execute arbitrary code by sending a large client master key in SSL2 or a large session ID in SSL3."
         }
     },
@@ -843,7 +843,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 398,
         "fields": {
-            "identifier": "CVE-2014-3511",
+            "vulnerability_id": "CVE-2014-3511",
             "summary": "A flaw in the OpenSSL SSL/TLS server code causes the server to negotiate TLS 1.0 instead of higher protocol versions when the ClientHello message is badly fragmented. This allows a man-in-the-middle attacker to force a downgrade to TLS 1.0 even if both the server and the client support a higher protocol version, by modifying the client's TLS records."
         }
     },
@@ -851,7 +851,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 399,
         "fields": {
-            "identifier": "CVE-2002-0655",
+            "vulnerability_id": "CVE-2002-0655",
             "summary": "Inproper handling of ASCII representations of integers on 64 bit platforms allowed remote attackers to cause a denial of service or possibly execute arbitrary code."
         }
     },
@@ -859,7 +859,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 400,
         "fields": {
-            "identifier": "CVE-2002-0657",
+            "vulnerability_id": "CVE-2002-0657",
             "summary": "A buffer overflow when Kerberos is enabled allowed attackers to execute arbitrary code by sending a long master key. Note that this flaw did not affect any released version of 0.9.6 or 0.9.7"
         }
     },
@@ -867,7 +867,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 401,
         "fields": {
-            "identifier": "CVE-2003-0078",
+            "vulnerability_id": "CVE-2003-0078",
             "summary": "sl3_get_record in s3_pkt.c did not perform a MAC computation if an incorrect block cipher padding was used, causing an information leak (timing discrepancy) that may make it easier to launch cryptographic attacks that rely on distinguishing between padding and MAC verification errors, possibly leading to extraction of the original plaintext, aka the \"Vaudenay timing attack.\""
         }
     },
@@ -875,7 +875,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 402,
         "fields": {
-            "identifier": "CVE-2014-3510",
+            "vulnerability_id": "CVE-2014-3510",
             "summary": "A flaw in handling DTLS anonymous EC(DH) ciphersuites was found. OpenSSL DTLS clients enabling anonymous (EC)DH ciphersuites are subject to a denial of service attack. A malicious server can crash the client with a null pointer dereference (read) by specifying an anonymous (EC)DH ciphersuite and sending carefully crafted handshake messages."
         }
     },
@@ -883,7 +883,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 403,
         "fields": {
-            "identifier": "CVE-2003-0545",
+            "vulnerability_id": "CVE-2003-0545",
             "summary": "Certain ASN.1 encodings that were rejected as invalid by the parser could trigger a bug in the deallocation of the corresponding data structure, corrupting the stack, leading to a crash."
         }
     },
@@ -891,7 +891,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 404,
         "fields": {
-            "identifier": "CVE-2004-0079",
+            "vulnerability_id": "CVE-2004-0079",
             "summary": "The Codenomicon TLS Test Tool uncovered a null-pointer assignment in the do_change_cipher_spec() function. A remote attacker could perform a carefully crafted SSL/TLS handshake against a server that used the OpenSSL library in such a way as to cause a crash."
         }
     },
@@ -899,7 +899,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 405,
         "fields": {
-            "identifier": "CVE-2004-0112",
+            "vulnerability_id": "CVE-2004-0112",
             "summary": "A flaw in SSL/TLS handshaking code when using Kerberos ciphersuites. A remote attacker could perform a carefully crafted SSL/TLS handshake against a server configured to use Kerberos ciphersuites in such a way as to cause OpenSSL to crash. Most applications have no ability to use Kerberos ciphersuites and will therefore be unaffected."
         }
     },
@@ -907,7 +907,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 406,
         "fields": {
-            "identifier": "CVE-2004-0975",
+            "vulnerability_id": "CVE-2004-0975",
             "summary": "The der_chop script created temporary files insecurely which could allow local users to overwrite files via a symlink attack on temporary files. Note that it is quite unlikely that a user would be using the redundant der_chop script, and this script was removed from the OpenSSL distribution."
         }
     },
@@ -915,7 +915,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 407,
         "fields": {
-            "identifier": "CVE-2003-0851",
+            "vulnerability_id": "CVE-2003-0851",
             "summary": "A flaw in OpenSSL 0.9.6k (only) would cause certain ASN.1 sequences to trigger a large recursion. On platforms such as Windows this large recursion cannot be handled correctly and so the bug causes OpenSSL to crash. A remote attacker could exploit this flaw if they can send arbitrary ASN.1 sequences which would cause OpenSSL to crash. This could be performed for example by sending a client certificate to a SSL/TLS enabled server which is configured to accept them."
         }
     },
@@ -923,7 +923,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 408,
         "fields": {
-            "identifier": "CVE-2003-0147",
+            "vulnerability_id": "CVE-2003-0147",
             "summary": "RSA blinding was not enabled by default, which could allow local and remote attackers to obtain a server's private key by determining factors using timing differences on (1) the number of extra reductions during Montgomery reduction, and (2) the use of different integer multiplication algorithms (\"Karatsuba\" and normal)."
         }
     },
@@ -931,7 +931,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 409,
         "fields": {
-            "identifier": "CVE-2003-0543",
+            "vulnerability_id": "CVE-2003-0543",
             "summary": "An integer overflow could allow remote attackers to cause a denial of service (crash) via an SSL client certificate with certain ASN.1 tag values."
         }
     },
@@ -939,7 +939,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 410,
         "fields": {
-            "identifier": "CVE-2003-0131",
+            "vulnerability_id": "CVE-2003-0131",
             "summary": "The SSL and TLS components allowed remote attackers to perform an unauthorized RSA private key operation via a modified Bleichenbacher attack that uses a large number of SSL or TLS connections using PKCS #1 v1.5 padding that caused OpenSSL to leak information regarding the relationship between ciphertext and the associated plaintext, aka the \"Klima-Pokorny-Rosa attack\""
         }
     },
@@ -947,7 +947,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 411,
         "fields": {
-            "identifier": "CVE-2004-0081",
+            "vulnerability_id": "CVE-2004-0081",
             "summary": "The Codenomicon TLS Test Tool found that some unknown message types were handled incorrectly, allowing a remote attacker to cause a denial of service (infinite loop)."
         }
     },
@@ -955,7 +955,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 412,
         "fields": {
-            "identifier": "CVE-2003-0544",
+            "vulnerability_id": "CVE-2003-0544",
             "summary": "Incorrect tracking of the number of characters in certain ASN.1 inputs could allow remote attackers to cause a denial of service (crash) by sending an SSL client certificate that causes OpenSSL to read past the end of a buffer when the long form is used."
         }
     },
@@ -963,7 +963,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 413,
         "fields": {
-            "identifier": "CVE-2006-4343",
+            "vulnerability_id": "CVE-2006-4343",
             "summary": "A flaw in the SSLv2 client code was discovered. When a client application used OpenSSL to create an SSLv2 connection to a malicious server, that server could cause the client to crash."
         }
     },
@@ -971,7 +971,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 414,
         "fields": {
-            "identifier": "CVE-2006-2937",
+            "vulnerability_id": "CVE-2006-2937",
             "summary": "During the parsing of certain invalid ASN.1 structures an error condition is mishandled. This can result in an infinite loop which consumes system memory"
         }
     },
@@ -979,7 +979,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 415,
         "fields": {
-            "identifier": "CVE-2007-5502",
+            "vulnerability_id": "CVE-2007-5502",
             "summary": "The PRNG implementation for the OpenSSL FIPS Object Module 1.1.1 does not perform auto-seeding during the FIPS self-test, which generates random data that is more predictable than expected and makes it easier for attackers to bypass protection mechanisms that rely on the randomness."
         }
     },
@@ -987,7 +987,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 416,
         "fields": {
-            "identifier": "CVE-2007-5135",
+            "vulnerability_id": "CVE-2007-5135",
             "summary": "A flaw was found in the SSL_get_shared_ciphers() utility function. An attacker could send a list of ciphers to an application that used this function and overrun a buffer with a single byte. Few applications make use of this vulnerable function and generally it is used only when applications are compiled for debugging."
         }
     },
@@ -995,7 +995,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 417,
         "fields": {
-            "identifier": "CVE-2007-4995",
+            "vulnerability_id": "CVE-2007-4995",
             "summary": "A flaw in DTLS support. An attacker could create a malicious client or server that could trigger a heap overflow. This is possibly exploitable to run arbitrary code, but it has not been verified."
         }
     },
@@ -1003,7 +1003,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 418,
         "fields": {
-            "identifier": "CVE-2006-4339",
+            "vulnerability_id": "CVE-2006-4339",
             "summary": "Daniel Bleichenbacher discovered an attack on PKCS #1 v1.5 signatures where under certain circumstances it may be possible for an attacker to forge a PKCS #1 v1.5 signature that would be incorrectly verified by OpenSSL."
         }
     },
@@ -1011,7 +1011,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 419,
         "fields": {
-            "identifier": "CVE-2005-2969",
+            "vulnerability_id": "CVE-2005-2969",
             "summary": "A deprecated option, SSL_OP_MISE_SSLV2_RSA_PADDING, could allow an attacker acting as a \"man in the middle\" to force a connection to downgrade to SSL 2.0 even if both parties support better protocols."
         }
     },
@@ -1019,7 +1019,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 420,
         "fields": {
-            "identifier": "CVE-2008-0891",
+            "vulnerability_id": "CVE-2008-0891",
             "summary": "Testing using the Codenomicon TLS test suite discovered a flaw in the handling of server name extension data in OpenSSL 0.9.8f and OpenSSL 0.9.8g. If OpenSSL has been compiled using the non-default TLS server name extensions, a remote attacker could send a carefully crafted packet to a server application using OpenSSL and cause it to crash."
         }
     },
@@ -1027,7 +1027,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 421,
         "fields": {
-            "identifier": "CVE-2006-2940",
+            "vulnerability_id": "CVE-2006-2940",
             "summary": "Certain types of public key can take disproportionate amounts of time to process. This could be used by an attacker in a denial of service attack."
         }
     },
@@ -1035,7 +1035,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 422,
         "fields": {
-            "identifier": "CVE-2006-3738",
+            "vulnerability_id": "CVE-2006-3738",
             "summary": "A buffer overflow was discovered in the SSL_get_shared_ciphers() utility function. An attacker could send a list of ciphers to an application that uses this function and overrun a buffer."
         }
     },
@@ -1043,7 +1043,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 423,
         "fields": {
-            "identifier": "CVE-2009-3555",
+            "vulnerability_id": "CVE-2009-3555",
             "summary": "Implement RFC5746 to address vulnerabilities in SSL/TLS renegotiation."
         }
     },
@@ -1051,7 +1051,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 424,
         "fields": {
-            "identifier": "CVE-2009-0590",
+            "vulnerability_id": "CVE-2009-0590",
             "summary": "The function ASN1_STRING_print_ex() when used to print a BMPString or UniversalString will crash with an invalid memory access if the encoded length of the string is illegal. Any OpenSSL application which prints out the contents of a certificate could be affected by this bug, including SSL servers, clients and S/MIME software."
         }
     },
@@ -1059,7 +1059,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 425,
         "fields": {
-            "identifier": "CVE-2009-1378",
+            "vulnerability_id": "CVE-2009-1378",
             "summary": "Fix a denial of service flaw in the DTLS implementation. In dtls1_process_out_of_seq_message() the check if the current message is already buffered was missing. For every new message was memory allocated, allowing an attacker to perform an denial of service attack against a DTLS server by sending out of seq handshake messages until there is no memory left."
         }
     },
@@ -1067,7 +1067,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 426,
         "fields": {
-            "identifier": "CVE-2009-0789",
+            "vulnerability_id": "CVE-2009-0789",
             "summary": "When a malformed ASN1 structure is received it's contents are freed up and zeroed and an error condition returned. On a small number of platforms where sizeof(long) < sizeof(void *) (for example WIN64) this can cause an invalid memory access later resulting in a crash when some invalid structures are read, for example RSA public keys."
         }
     },
@@ -1075,7 +1075,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 427,
         "fields": {
-            "identifier": "CVE-2008-1672",
+            "vulnerability_id": "CVE-2008-1672",
             "summary": "Testing using the Codenomicon TLS test suite discovered a flaw if the 'Server Key exchange message' is omitted from a TLS handshake in OpenSSL 0.9.8f and OpenSSL 0.9.8g. If a client connects to a malicious server with particular cipher suites, the server could cause the client to crash."
         }
     },
@@ -1083,7 +1083,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 428,
         "fields": {
-            "identifier": "CVE-2009-1386",
+            "vulnerability_id": "CVE-2009-1386",
             "summary": "Fix a NULL pointer dereference if a DTLS server recieved ChangeCipherSpec as first record. A remote attacker could use this flaw to cause a DTLS server to crash"
         }
     },
@@ -1091,7 +1091,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 429,
         "fields": {
-            "identifier": "CVE-2008-5077",
+            "vulnerability_id": "CVE-2008-5077",
             "summary": "The Google Security Team discovered several functions inside OpenSSL incorrectly checked the result after calling the EVP_VerifyFinal function, allowing a malformed signature to be treated as a good signature rather than as an error. This issue affected the signature checks on DSA and ECDSA keys used with SSL/TLS. One way to exploit this flaw would be for a remote attacker who is in control of a malicious server or who can use a 'man in the middle' attack to present  malformed SSL/TLS signature from a certificate chain to a vulnerable client, bypassing validation."
         }
     },
@@ -1099,7 +1099,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 430,
         "fields": {
-            "identifier": "CVE-2009-1377",
+            "vulnerability_id": "CVE-2009-1377",
             "summary": "Fix a denial of service flaw in the DTLS implementation. Records are buffered if they arrive with a future epoch to be processed after finishing the corresponding handshake. There is currently no limitation to this buffer allowing an attacker to perform a DOS attack to a DTLS server by sending records with future epochs until there is no memory left."
         }
     },
@@ -1107,7 +1107,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 431,
         "fields": {
-            "identifier": "CVE-2009-1387",
+            "vulnerability_id": "CVE-2009-1387",
             "summary": "Fix denial of service flaw due in the DTLS implementation. A remote attacker could use this flaw to cause a DTLS server to crash."
         }
     },
@@ -1115,7 +1115,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 432,
         "fields": {
-            "identifier": "CVE-2009-0591",
+            "vulnerability_id": "CVE-2009-0591",
             "summary": "The function CMS_verify() does not correctly handle an error condition involving malformed signed attributes. This will cause an invalid set of signed attributes to appear valid and content digests will not be checked."
         }
     },
@@ -1123,7 +1123,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 433,
         "fields": {
-            "identifier": "CVE-2010-0740",
+            "vulnerability_id": "CVE-2010-0740",
             "summary": "In TLS connections, certain incorrectly formatted records can cause an OpenSSL client or server to crash due to a read attempt at NULL."
         }
     },
@@ -1131,7 +1131,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 434,
         "fields": {
-            "identifier": "CVE-2009-3245",
+            "vulnerability_id": "CVE-2009-3245",
             "summary": "It was discovered that OpenSSL did not always check the return value of the bn_wexpand() function. An attacker able to trigger a memory allocation failure in that function could cause an application using the OpenSSL library to crash or, possibly, execute arbitrary code"
         }
     },
@@ -1139,7 +1139,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 435,
         "fields": {
-            "identifier": "CVE-2009-1379",
+            "vulnerability_id": "CVE-2009-1379",
             "summary": "Use-after-free vulnerability in the dtls1_retrieve_buffered_fragment function could cause a client accessing a malicious DTLS server to crash."
         }
     },
@@ -1147,7 +1147,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 436,
         "fields": {
-            "identifier": "CVE-2009-4355",
+            "vulnerability_id": "CVE-2009-4355",
             "summary": "A memory leak in the zlib_stateful_finish function in crypto/comp/c_zlib.c allows remote attackers to cause a denial of service via vectors that trigger incorrect calls to the CRYPTO_cleanup_all_ex_data function."
         }
     },
@@ -1155,7 +1155,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 437,
         "fields": {
-            "identifier": "CVE-2010-0742",
+            "vulnerability_id": "CVE-2010-0742",
             "summary": "A flaw in the handling of CMS structures containing OriginatorInfo was found which could lead to a write to invalid memory address or double free. CMS support is disabled by default in OpenSSL 0.9.8 versions."
         }
     },
@@ -1163,7 +1163,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 438,
         "fields": {
-            "identifier": "CVE-2010-0433",
+            "vulnerability_id": "CVE-2010-0433",
             "summary": "A missing return value check flaw was discovered in OpenSSL, that could possibly cause OpenSSL to call a Kerberos library function with invalid arguments, resulting in a NULL pointer dereference crash in the MIT Kerberos library. In certain configurations, a remote attacker could use this flaw to crash a TLS/SSL server using OpenSSL by requesting Kerberos cipher suites during the TLS handshake"
         }
     },
@@ -1171,7 +1171,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 439,
         "fields": {
-            "identifier": "CVE-2010-3864",
+            "vulnerability_id": "CVE-2010-3864",
             "summary": "A flaw in the OpenSSL TLS server extension code parsing which on affected servers can be exploited in a buffer overrun attack. Any OpenSSL based TLS server is vulnerable if it is multi-threaded and uses OpenSSL's internal caching mechanism. Servers that are multi-process and/or disable internal session caching are NOT affected."
         }
     },
@@ -1179,7 +1179,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 440,
         "fields": {
-            "identifier": "CVE-2010-4252",
+            "vulnerability_id": "CVE-2010-4252",
             "summary": "An error in OpenSSL's experimental J-PAKE implementation which could lead to successful validation by someone with no knowledge of the shared secret. The OpenSSL Team still consider the implementation of J-PAKE to be experimental and is not compiled by default."
         }
     },
@@ -1187,7 +1187,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 441,
         "fields": {
-            "identifier": "CVE-2010-4180",
+            "vulnerability_id": "CVE-2010-4180",
             "summary": "A flaw in the OpenSSL SSL/TLS server code where an old bug workaround allows malicious clients to modify the stored session cache ciphersuite. In some cases the ciphersuite can be downgraded to a weaker one on subsequent connections. This issue only affects OpenSSL based SSL/TLS server if it uses OpenSSL's internal caching mechanisms and the SSL_OP_NETSCAPE_REUSE_CIPHER_CHANGE_BUG flag (many applications enable this by using the SSL_OP_ALL option)."
         }
     },
@@ -1195,7 +1195,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 442,
         "fields": {
-            "identifier": "CVE-2010-1633",
+            "vulnerability_id": "CVE-2010-1633",
             "summary": "An invalid Return value check in pkey_rsa_verifyrecover was discovered. When verification recovery fails for RSA keys an uninitialised buffer with an undefined length is returned instead of an error code. This could lead to an information leak."
         }
     },
@@ -1203,7 +1203,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 443,
         "fields": {
-            "identifier": "CVE-2011-4108",
+            "vulnerability_id": "CVE-2011-4108",
             "summary": "OpenSSL was susceptable an extension of the Vaudenay padding oracle attack on CBC mode encryption which enables an efficient plaintext recovery attack against the OpenSSL implementation of DTLS by exploiting timing differences arising during decryption processing."
         }
     },
@@ -1211,7 +1211,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 444,
         "fields": {
-            "identifier": "CVE-2011-4576",
+            "vulnerability_id": "CVE-2011-4576",
             "summary": "OpenSSL failed to clear the bytes used as block cipher padding in SSL 3.0 records which could leak the contents of memory in some circumstances."
         }
     },
@@ -1219,7 +1219,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 445,
         "fields": {
-            "identifier": "CVE-2011-3207",
+            "vulnerability_id": "CVE-2011-3207",
             "summary": "Under certain circumstances OpenSSL's internal certificate verification routines can incorrectly accept a CRL whose nextUpdate field is in the past. Applications are only affected by the CRL checking vulnerability if they enable OpenSSL's internal CRL checking which is off by default. Applications which use their own custom CRL checking (such as Apache) are not affected."
         }
     },
@@ -1227,7 +1227,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 446,
         "fields": {
-            "identifier": "CVE-2012-0027",
+            "vulnerability_id": "CVE-2012-0027",
             "summary": "A malicious TLS client can send an invalid set of GOST parameters which will cause the server to crash due to lack of error checking. This could be used in a denial-of-service attack. Only users of the OpenSSL GOST ENGINE are affected by this bug."
         }
     },
@@ -1235,7 +1235,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 447,
         "fields": {
-            "identifier": "CVE-2011-4109",
+            "vulnerability_id": "CVE-2011-4109",
             "summary": "If X509_V_FLAG_POLICY_CHECK is set in OpenSSL 0.9.8, then a policy check failure can lead to a double-free. The bug does not occur unless this flag is set. Users of OpenSSL 1.0.0 are not affected"
         }
     },
@@ -1243,7 +1243,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 448,
         "fields": {
-            "identifier": "CVE-2012-0050",
+            "vulnerability_id": "CVE-2012-0050",
             "summary": "A flaw in the fix to CVE-2011-4108 can be exploited in a denial of service attack. Only DTLS applications are affected."
         }
     },
@@ -1251,7 +1251,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 449,
         "fields": {
-            "identifier": "CVE-2011-3210",
+            "vulnerability_id": "CVE-2011-3210",
             "summary": "OpenSSL server code for ephemeral ECDH ciphersuites is not thread-safe, and furthermore can crash if a client violates the protocol by sending handshake messages in incorrect order. Only server-side applications that specifically support ephemeral ECDH ciphersuites are affected, and only if ephemeral ECDH ciphersuites are enabled in the configuration."
         }
     },
@@ -1259,7 +1259,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 450,
         "fields": {
-            "identifier": "CVE-2012-0884",
+            "vulnerability_id": "CVE-2012-0884",
             "summary": "A weakness in the OpenSSL CMS and PKCS #7 code can be exploited using Bleichenbacher's attack on PKCS #1 v1.5 RSA padding also known as the million message attack (MMA). Only users of CMS, PKCS #7, or S/MIME decryption operations are affected, SSL/TLS applications are not affected by this issue."
         }
     },
@@ -1267,7 +1267,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 451,
         "fields": {
-            "identifier": "CVE-2011-4577",
+            "vulnerability_id": "CVE-2011-4577",
             "summary": "RFC 3779 data can be included in certificates, and if it is malformed, may trigger an assertion failure. This could be used in a denial-of-service attack. Builds of OpenSSL are only vulnerable if configured with \"enable-rfc3779\", which is not a default."
         }
     },
@@ -1275,7 +1275,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 452,
         "fields": {
-            "identifier": "CVE-2011-4619",
+            "vulnerability_id": "CVE-2011-4619",
             "summary": "Support for handshake restarts for server gated cryptograpy (SGC) can be used in a denial-of-service attack."
         }
     },
@@ -1283,7 +1283,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 453,
         "fields": {
-            "identifier": "CVE-2012-2686",
+            "vulnerability_id": "CVE-2012-2686",
             "summary": "A flaw in the OpenSSL handling of CBC ciphersuites in TLS 1.1 and TLS 1.2 on AES-NI supporting platforms can be exploited in a DoS attack."
         }
     },
@@ -1291,7 +1291,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 454,
         "fields": {
-            "identifier": "CVE-2011-0014",
+            "vulnerability_id": "CVE-2011-0014",
             "summary": "A buffer over-read flaw was discovered in the way OpenSSL parsed the Certificate Status Request TLS extensions in ClientHello TLS handshake messages. A remote attacker could possibly use this flaw to crash an SSL server using the affected OpenSSL functionality."
         }
     },
@@ -1299,7 +1299,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 455,
         "fields": {
-            "identifier": "CVE-2013-6450",
+            "vulnerability_id": "CVE-2013-6450",
             "summary": "A flaw in DTLS handling can cause an application using OpenSSL and DTLS to crash. This is not a vulnerability for OpenSSL prior to 1.0.0."
         }
     },
@@ -1307,7 +1307,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 456,
         "fields": {
-            "identifier": "CVE-2013-6449",
+            "vulnerability_id": "CVE-2013-6449",
             "summary": "A flaw in OpenSSL can cause an application using OpenSSL to crash when using TLS version 1.2. This issue only affected OpenSSL 1.0.1 versions."
         }
     },
@@ -1315,7 +1315,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 457,
         "fields": {
-            "identifier": "CVE-2013-0169",
+            "vulnerability_id": "CVE-2013-0169",
             "summary": "A weakness in the handling of CBC ciphersuites in SSL, TLS and DTLS which could lead to plaintext recovery by exploiting timing differences arising during MAC processing."
         }
     },
@@ -1323,7 +1323,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 458,
         "fields": {
-            "identifier": "CVE-2012-2110",
+            "vulnerability_id": "CVE-2012-2110",
             "summary": "Multiple numeric conversion errors, leading to a buffer overflow, were found in the way OpenSSL parsed ASN.1 (Abstract Syntax Notation One) data from BIO (OpenSSL's I/O abstraction) inputs. Specially-crafted DER (Distinguished Encoding Rules) encoded data read from a file or other BIO input could cause an application using the OpenSSL library to crash or, potentially, execute arbitrary code."
         }
     },
@@ -1331,7 +1331,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 459,
         "fields": {
-            "identifier": "CVE-2012-2333",
+            "vulnerability_id": "CVE-2012-2333",
             "summary": "An integer underflow flaw, leading to a buffer over-read, was found in the way OpenSSL handled TLS 1.1, TLS 1.2, and DTLS (Datagram Transport Layer Security) application data record lengths when using a block cipher in CBC (cipher-block chaining) mode. A malicious TLS 1.1, TLS 1.2, or DTLS client or server could use this flaw to crash its connection peer."
         }
     },
@@ -1339,7 +1339,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 460,
         "fields": {
-            "identifier": "CVE-2013-4353",
+            "vulnerability_id": "CVE-2013-4353",
             "summary": "A carefully crafted invalid TLS handshake could crash OpenSSL with a NULL pointer exception. A malicious server could use this flaw to crash a connecting client. This issue only affected OpenSSL 1.0.1 versions."
         }
     },
@@ -1347,7 +1347,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 461,
         "fields": {
-            "identifier": "CVE-2013-0166",
+            "vulnerability_id": "CVE-2013-0166",
             "summary": "A flaw in the OpenSSL handling of OCSP response verification can be exploited in a denial of service attack."
         }
     },
@@ -1355,7 +1355,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 462,
         "fields": {
-            "identifier": "CVE-2012-2131",
+            "vulnerability_id": "CVE-2012-2131",
             "summary": "It was discovered that the fix for CVE-2012-2110 released on 19 Apr 2012 was not sufficient to correct the issue for OpenSSL 0.9.8. This issue only affects OpenSSL 0.9.8v. OpenSSL 1.0.1a and 1.0.0i already contain a patch sufficient to correct CVE-2012-2110."
         }
     },
@@ -1363,7 +1363,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 463,
         "fields": {
-            "identifier": "CVE-2014-0224",
+            "vulnerability_id": "CVE-2014-0224",
             "summary": "An attacker can force the use of weak keying material in OpenSSL SSL/TLS clients and servers. This can be exploited by a Man-in-the-middle (MITM) attack where the attacker can decrypt and modify traffic from the attacked client and server."
         }
     },
@@ -1371,7 +1371,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 464,
         "fields": {
-            "identifier": "CVE-2014-0198",
+            "vulnerability_id": "CVE-2014-0198",
             "summary": "A flaw in the do_ssl3_write function can allow remote attackers to cause a denial of service via a NULL pointer dereference. This flaw only affects OpenSSL 1.0.0 and 1.0.1 where SSL_MODE_RELEASE_BUFFERS is enabled, which is not the default and not common."
         }
     },
@@ -1379,7 +1379,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 465,
         "fields": {
-            "identifier": "CVE-2014-0221",
+            "vulnerability_id": "CVE-2014-0221",
             "summary": "By sending an invalid DTLS handshake to an OpenSSL DTLS client the code can be made to recurse eventually crashing in a DoS attack. Only applications using OpenSSL as a DTLS client are affected."
         }
     },
@@ -1387,7 +1387,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 466,
         "fields": {
-            "identifier": "CVE-2010-5298",
+            "vulnerability_id": "CVE-2010-5298",
             "summary": "A race condition in the ssl3_read_bytes function can allow remote attackers to inject data across sessions or cause a denial of service. This flaw only affects multithreaded applications using OpenSSL 1.0.0 and 1.0.1, where SSL_MODE_RELEASE_BUFFERS is enabled, which is not the default and not common."
         }
     },
@@ -1395,7 +1395,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 467,
         "fields": {
-            "identifier": "CVE-2014-3470",
+            "vulnerability_id": "CVE-2014-3470",
             "summary": "OpenSSL TLS clients enabling anonymous ECDH ciphersuites are subject to a denial of service attack."
         }
     },
@@ -1403,7 +1403,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 468,
         "fields": {
-            "identifier": "CVE-2014-0076",
+            "vulnerability_id": "CVE-2014-0076",
             "summary": "Fix for the attack described in the paper \"Recovering OpenSSL ECDSA Nonces Using the FLUSH+RELOAD Cache Side-channel Attack\""
         }
     },
@@ -1411,7 +1411,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 469,
         "fields": {
-            "identifier": "CVE-2014-0160",
+            "vulnerability_id": "CVE-2014-0160",
             "summary": "A missing bounds check in the handling of the TLS heartbeat extension can be used to reveal up to 64kB of memory to a connected client or server (a.k.a. Heartbleed). This issue did not affect versions of OpenSSL prior to 1.0.1."
         }
     },
@@ -1419,7 +1419,7 @@
         "model": "vulnerabilities.vulnerability",
         "pk": 470,
         "fields": {
-            "identifier": "CVE-2014-0195",
+            "vulnerability_id": "CVE-2014-0195",
             "summary": "A buffer overrun attack can be triggered by sending invalid DTLS fragments to an OpenSSL DTLS client or server. This is potentially exploitable to run arbitrary code on a vulnerable client or server. Only applications using OpenSSL as a DTLS client or server affected."
         }
     },

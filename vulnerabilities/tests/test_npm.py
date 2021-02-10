@@ -95,7 +95,7 @@ class NpmImportTest(TestCase):
         expected_package_count = sum([len(v) for v in MOCK_VERSION_API.cache.values()])
         assert models.Package.objects.count() == expected_package_count
 
-        self.assert_for_package('jquery', {'3.4'}, {'3.8'}, '1518', identifier='CVE-2020-11022')
+        self.assert_for_package('jquery', {'3.4'}, {'3.8'}, '1518', vulnerability_id='CVE-2020-11022')  # nopep8
         self.assert_for_package('kerberos', {'0.5.8'}, {'1.2'}, '1514')
         self.assert_for_package('subtext', {'4.1.1', '7.0.0'}, {'3.7', '6.1.3', '7.0.5'}, '1476')
 
@@ -105,7 +105,7 @@ class NpmImportTest(TestCase):
             impacted_versions,
             resolved_versions,
             vuln_id,
-            identifier=None,
+            vulnerability_id=None,
     ):
         vuln = None
 
@@ -114,8 +114,8 @@ class NpmImportTest(TestCase):
 
             assert pkg.vulnerabilities.count() == 1
             vuln = pkg.vulnerabilities.first()
-            if identifier:
-                assert vuln.identifier == identifier
+            if vulnerability_id:
+                assert vuln.vulnerability_id == vulnerability_id
 
             ref_url = f'https://registry.npmjs.org/-/npm/v1/advisories/{vuln_id}'
             assert models.VulnerabilityReference.objects.get(url=ref_url, vulnerability=vuln)

@@ -105,7 +105,7 @@ def to_advisories(data):
 
         advisories.append(
             Advisory(
-                identifier=cve_id,
+                vulnerability_id=cve_id,
                 summary=summary,
                 vuln_references=references,
                 impacted_package_urls=affected_packages,

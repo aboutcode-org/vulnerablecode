@@ -57,7 +57,7 @@ class AlpineImportTest(TestCase):
                     )
                 },
                 vuln_references=[],
-                identifier="CVE-2019-14904",
+                vulnerability_id="CVE-2019-14904",
             ),
             Advisory(
                 summary="",
@@ -73,7 +73,7 @@ class AlpineImportTest(TestCase):
                     )
                 },
                 vuln_references=[],
-                identifier="CVE-2019-14905",
+                vulnerability_id="CVE-2019-14905",
             ),
             Advisory(
                 summary="",
@@ -89,7 +89,7 @@ class AlpineImportTest(TestCase):
                     )
                 },
                 vuln_references=[],
-                identifier="CVE-2019-14846",
+                vulnerability_id="CVE-2019-14846",
             ),
             Advisory(
                 summary="",
@@ -105,7 +105,7 @@ class AlpineImportTest(TestCase):
                     )
                 },
                 vuln_references=[],
-                identifier="CVE-2019-14856",
+                vulnerability_id="CVE-2019-14856",
             ),
             Advisory(
                 summary="",
@@ -121,7 +121,7 @@ class AlpineImportTest(TestCase):
                     )
                 },
                 vuln_references=[],
-                identifier="CVE-2019-14858",
+                vulnerability_id="CVE-2019-14858",
             ),
             Advisory(
                 summary="",
@@ -141,7 +141,7 @@ class AlpineImportTest(TestCase):
                         url="https://xenbits.xen.org/xsa/advisory-295.html", reference_id="XSA-295"
                     )
                 ],
-                identifier=None,
+                vulnerability_id=None,
             ),
         ]
         mock_requests = MagicMock()

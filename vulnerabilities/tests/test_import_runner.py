@@ -69,7 +69,7 @@ class MockImporter:
 
 ADVISORIES = [
     Advisory(
-        identifier='MOCK-CVE-2020-1337',
+        vulnerability_id='MOCK-CVE-2020-1337',
         summary='vulnerability description here',
         vuln_references=[
             Reference(
@@ -121,7 +121,7 @@ def test_ImportRunner_new_package_and_new_vulnerability(db):
     assert resolved_package.vulnerabilities.count() == 1
 
     vuln = impacted_package.vulnerabilities.first()
-    assert vuln.identifier == 'MOCK-CVE-2020-1337'
+    assert vuln.vulnerability_id == 'MOCK-CVE-2020-1337'
 
     vuln_refs = models.VulnerabilityReference.objects.filter(vulnerability=vuln)
     assert vuln_refs.count() == 1
@@ -153,7 +153,7 @@ def test_ImportRunner_existing_package_and_new_vulnerability(db):
 
     impacted_package = models.PackageRelatedVulnerability.objects.filter(is_vulnerable=True)[0]
     vuln = impacted_package.vulnerability
-    assert vuln.identifier == 'MOCK-CVE-2020-1337'
+    assert vuln.vulnerability_id == 'MOCK-CVE-2020-1337'
 
     vuln_refs = models.VulnerabilityReference.objects.filter(vulnerability=vuln)
     assert vuln_refs.count() == 1
@@ -166,7 +166,7 @@ def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db)
     vulnerability that also already existed in the database.
     """
     vuln = models.Vulnerability.objects.create(
-        identifier='MOCK-CVE-2020-1337', summary='vulnerability description here')
+        vulnerability_id='MOCK-CVE-2020-1337', summary='vulnerability description here')
 
     models.VulnerabilityReference.objects.create(
         vulnerability=vuln,
@@ -206,7 +206,7 @@ def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db)
         package=added_package, is_vulnerable=True)
     assert len(qs) == 1
     impacted_package = qs[0]
-    assert impacted_package.vulnerability.identifier == 'MOCK-CVE-2020-1337'
+    assert impacted_package.vulnerability.vulnerability_id == 'MOCK-CVE-2020-1337'
 
 
 # def test_ImportRunner_assumed_fixed_package_is_updated_as_impacted(db):
@@ -219,7 +219,7 @@ def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db)
     # FIXME deleted, the referenced Package and Vulnerability are also deleted.
     #
     # vuln = models.Vulnerability.objects.create(
-    #     identifier='MOCK-CVE-2020-1337', summary='vulnerability description here')
+    #     vulnerability_id='MOCK-CVE-2020-1337', summary='vulnerability description here')
     #
     # models.VulnerabilityReference.objects.create(
     #     vulnerability=vuln,
@@ -261,7 +261,7 @@ def test_ImportRunner_fixed_package_version_is_added(db):
     A new version of a package was published that fixes a previously unresolved vulnerability.
     """
     vuln = models.Vulnerability.objects.create(
-        identifier='MOCK-CVE-2020-1337', summary='vulnerability description here')
+        vulnerability_id='MOCK-CVE-2020-1337', summary='vulnerability description here')
 
     models.VulnerabilityReference.objects.create(
         vulnerability=vuln,
@@ -293,7 +293,7 @@ def test_ImportRunner_fixed_package_version_is_added(db):
         package=added_package, is_vulnerable=False)
     assert len(qs) == 1
     resolved_package = qs[0]
-    assert resolved_package.vulnerability.identifier == 'MOCK-CVE-2020-1337'
+    assert resolved_package.vulnerability.vulnerability_id == 'MOCK-CVE-2020-1337'
 
 
 def test_ImportRunner_updated_vulnerability(db):
@@ -302,7 +302,7 @@ def test_ImportRunner_updated_vulnerability(db):
     reference.
     """
     vuln = models.Vulnerability.objects.create(
-        identifier='MOCK-CVE-2020-1337', summary='temporary description')
+        vulnerability_id='MOCK-CVE-2020-1337', summary='temporary description')
 
     models.PackageRelatedVulnerability.objects.create(
         vulnerability=vuln,

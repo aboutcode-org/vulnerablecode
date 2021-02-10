@@ -89,7 +89,7 @@ class TestApacheTomcatDataSource(TestCase):
                             reference_id="",
                         ),
                     ],
-                    identifier="CVE-2016-0763",
+                    vulnerability_id="CVE-2016-0763",
                 ),
                 Advisory(
                     summary="",
@@ -127,7 +127,7 @@ class TestApacheTomcatDataSource(TestCase):
                             reference_id="",
                         ),
                     ],
-                    identifier="CVE-2015-5351",
+                    vulnerability_id="CVE-2015-5351",
                 ),
                 Advisory(
                     summary="",
@@ -169,7 +169,7 @@ class TestApacheTomcatDataSource(TestCase):
                             reference_id="",
                         ),
                     ],
-                    identifier="CVE-2016-0706",
+                    vulnerability_id="CVE-2016-0706",
                 ),
                 Advisory(
                     summary="",
@@ -207,16 +207,16 @@ class TestApacheTomcatDataSource(TestCase):
                             reference_id="",
                         ),
                     ],
-                    identifier="CVE-2016-0714",
+                    vulnerability_id="CVE-2016-0714",
                 ),
             ],
-            key=lambda x: x.identifier,
+            key=lambda x: x.vulnerability_id,
         )
 
         with open(TEST_DATA) as f:
             found_advisories = self.data_src.to_advisories(f)
 
-        found_advisories.sort(key=lambda x: x.identifier)
+        found_advisories.sort(key=lambda x: x.vulnerability_id)
 
         for i in range(len(found_advisories)):
             found_advisories[i].vuln_references.sort(key=lambda x: x.url)

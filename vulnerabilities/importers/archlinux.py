@@ -130,7 +130,7 @@ class ArchlinuxDataSource(DataSource):
 
             advisories.append(
                 Advisory(
-                    identifier=cve_id,
+                    vulnerability_id=cve_id,
                     summary="",
                     impacted_package_urls=impacted_purls,
                     resolved_package_urls=resolved_purls,

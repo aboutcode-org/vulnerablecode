@@ -124,8 +124,8 @@ def process_advisories(data_source: DataSource) -> None:
         for advisory in batch:
             try:
 
-                if not advisory.identifier:
-                    advisory.identifier = "VULCOID-" + vulcoid_timestamp.strftime(
+                if not advisory.vulnerability_id:
+                    advisory.vulnerability_id = "VULCOID-" + vulcoid_timestamp.strftime(
                         "%Y-%m-%d-%H:%M:%S"
                     )
 
@@ -150,7 +150,7 @@ def process_advisories(data_source: DataSource) -> None:
                     for score in vuln_ref.severities:
                         models.VulnerabilitySeverity.objects.update_or_create(
                             vulnerability=vuln,
-                            scoring_system=score.system.identifier,
+                            scoring_system=score.system.vulnerability_id,
                             reference=ref,
                             defaults={"value": str(score.value)},
                         )
@@ -254,7 +254,7 @@ def _get_or_create_vulnerability(
 ) -> Tuple[models.Vulnerability, bool]:
 
     try:
-        vuln, created = models.Vulnerability.objects.get_or_create(identifier=advisory.identifier)
+        vuln, created = models.Vulnerability.objects.get_or_create(vulnerability_id=advisory.vulnerability_id)  # nopep8
 
         # Eventually we only want to keep summary from NVD and ignore other descriptions.
         if advisory.summary and vuln.summary != advisory.summary:

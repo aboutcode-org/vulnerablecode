@@ -116,7 +116,7 @@ class ApacheTomcatDataSource(DataSource):
                         summary="",
                         impacted_package_urls=affected_packages,
                         resolved_package_urls=fixed_package,
-                        identifier=cve_id,
+                        vulnerability_id=cve_id,
                         vuln_references=references,
                     )
                 )

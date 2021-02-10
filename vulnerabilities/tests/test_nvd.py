@@ -162,7 +162,7 @@ class TestNVDDataSource(TestCase):
                     ],
                     key=lambda x: x.url,
                 ),
-                identifier="CVE-2005-4895",
+                vulnerability_id="CVE-2005-4895",
             )
         ]
         assert len(self.nvd_data["CVE_Items"]) == 2

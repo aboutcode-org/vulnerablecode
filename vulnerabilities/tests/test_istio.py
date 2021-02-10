@@ -20,6 +20,7 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import datetime
 import os
 from collections import OrderedDict
 from unittest import TestCase
@@ -56,6 +57,22 @@ class TestIstioDataSource(TestCase):
             }
         )
 
+    def test_get_data_from_md(self):
+        path = os.path.join(BASE_DIR, "test_data/istio/test_file.md")
+        actual_data = self.data_src.get_data_from_md(path)
+        expected_data = {
+            "title": "ISTIO-SECURITY-2019-001",
+            "subtitle": "Security Bulletin",
+            "description": "Incorrect access control.",
+            "cves": ["CVE-2019-12243"],
+            "cvss": "8.9",
+            "vector": "CVSS:3.0/AV:A/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N/E:H/RL:O/RC:C",
+            "releases": ["1.1 to 1.1.15", "1.2 to 1.2.6", "1.3 to 1.3.1"],
+            "publishdate": datetime.date(2019, 5, 28),
+        }
+
+        assert expected_data == actual_data
+
     def test_process_file(self):
 
         path = os.path.join(BASE_DIR, "test_data/istio/test_file.md")
@@ -70,6 +87,16 @@ class TestIstioDataSource(TestCase):
                     ),
                     PackageURL(
                         type="golang",
+                        name="istio",
+                        version="1.1.0-snapshot.3",
+                    ),
+                    PackageURL(
+                        type="github",
+                        name="istio",
+                        version="1.1.0-snapshot.2",
+                    ),
+                    PackageURL(
+                        type="github",
                         name="istio",
                         version="1.1.0-snapshot.3",
                     ),
@@ -107,6 +134,41 @@ class TestIstioDataSource(TestCase):
                     ),
                     PackageURL(
                         type="golang",
+                        name="istio",
+                        version="1.1.0-rc.6",
+                    ),
+                    PackageURL(
+                        type="github",
+                        name="istio",
+                        version="1.1.0-rc.2",
+                    ),
+                    PackageURL(
+                        type="github",
+                        name="istio",
+                        version="1.1.0-rc.4",
+                    ),
+                    PackageURL(
+                        type="github",
+                        name="istio",
+                        version="1.1.0-rc.3",
+                    ),
+                    PackageURL(
+                        type="github",
+                        name="istio",
+                        version="1.1.0-rc.0",
+                    ),
+                    PackageURL(
+                        type="github",
+                        name="istio",
+                        version="1.1.0-rc.5",
+                    ),
+                    PackageURL(
+                        type="github",
+                        name="istio",
+                        version="1.1.0-rc.1",
+                    ),
+                    PackageURL(
+                        type="github",
                         name="istio",
                         version="1.1.0-rc.6",
                     ),

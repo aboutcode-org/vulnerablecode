@@ -123,24 +123,6 @@ def process_advisories(data_source: DataSource) -> None:
     for batch in advisory_batches:
         for advisory in batch:
             try:
-
-                if not advisory.vulnerability_id:
-                    advisory.vulnerability_id = "VULCOID-" + vulcoid_timestamp.strftime(
-                        "%Y-%m-%d-%H:%M:%S"
-                    )
-
-                    # Set VULCOID timestamp to the max of
-                    # (1) the next valid timestamp (by incrementing current timestamp by 1) or
-                    # (2) the current time
-                    # We set the VULCOID to max of (1) and (2), because in case of encountering
-                    # many cve-less advisories, we need to obtain unique valid timestamps quickly
-                    # (<1s) without waiting for the "real time" to catchup. This case is taken care
-                    # of by (1). In other cases the "cve-less" advisories occur rarely, in such
-                    # situation (2) is suitable and "wins" the max function.
-                    vulcoid_timestamp = max(
-                        vulcoid_timestamp + datetime.timedelta(seconds=1), datetime.datetime.now()
-                    )
-
                 vuln, vuln_created = _get_or_create_vulnerability(advisory)
                 for vuln_ref in advisory.vuln_references:
                     ref, _ = models.VulnerabilityReference.objects.get_or_create(
@@ -253,21 +235,13 @@ def _get_or_create_vulnerability(
     advisory: Advisory,
 ) -> Tuple[models.Vulnerability, bool]:
 
-    try:
-        vuln, created = models.Vulnerability.objects.get_or_create(vulnerability_id=advisory.vulnerability_id)  # nopep8
+    vuln, created = models.Vulnerability.objects.get_or_create(vulnerability_id=advisory.vulnerability_id)  # nopep8
+    # Eventually we only want to keep summary from NVD and ignore other descriptions.
+    if advisory.summary and vuln.summary != advisory.summary:
+        vuln.summary = advisory.summary
+        vuln.save()
 
-        # Eventually we only want to keep summary from NVD and ignore other descriptions.
-        if advisory.summary and vuln.summary != advisory.summary:
-            vuln.summary = advisory.summary
-            vuln.save()
-
-        return vuln, created
-
-    except Exception:
-        logger.error(
-            f"Failed to _get_or_create_vulnerability: {query_kwargs!r}:\n" + traceback.format_exc()
-        )
-        raise
+    return vuln, created
 
 
 def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:

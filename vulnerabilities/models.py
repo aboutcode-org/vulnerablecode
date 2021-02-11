@@ -22,8 +22,11 @@
 
 import importlib
 from datetime import datetime
+from time import sleep
 
 from django.db import models
+from django.db import IntegrityError
+from django.db import transaction
 import django.contrib.postgres.fields as pgfields
 from django.utils.translation import ugettext_lazy as _
 from packageurl.contrib.django.models import PackageURLMixin
@@ -47,17 +50,40 @@ class Vulnerability(models.Model):
         " this with the CVE and keep the 'old' VULCOID in the 'old_vulnerability_id' field to "
         "support redirection to the CVE id.",
         unique=True,
-        null=True,
     )
     old_vulnerability_id = models.CharField(
-        max_length=50, help_text="empty if no  CVE else VC id", unique=True, null=True
+        max_length=50,
+        help_text="empty if no  CVE else VC id",
+        unique=True,
+        null=True,
     )
-    summary = models.TextField(help_text="Summary of the vulnerability", blank=True)
+    summary = models.TextField(
+        help_text="Summary of the vulnerability",
+        blank=True,
+    )
 
     def save(self, *args, **kwargs):
-        if not self.vulnerability_id:
-            self.vulnerability_id = "VULCOID-" + datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
-        super().save(*args, **kwargs)
+        if self.vulnerability_id:
+            return super().save(*args, **kwargs)
+        # Generate unique VULCOID
+        ie = None
+        for attempt in range(1, 11):
+            try:
+                self.vulnerability_id = self.generate_vulcoid()
+                # Using the context manager due to https://stackoverflow.com/a/23326971
+                with transaction.atomic():
+                    return super().save(*args, **kwargs)
+
+            except IntegrityError as ie:
+                sleep(0.5 * attempt)
+        raise Exception("Failed to generate a unique VULCOID after 10 attempts") from ie
+
+    @staticmethod
+    def generate_vulcoid(timestamp=None):
+        if not timestamp:
+            timestamp = datetime.now()
+        timestamp = timestamp.strftime("%Y-%m-%d%H%M%S")
+        return f"VULCOID-{timestamp}"
 
     @property
     def vulnerable_to(self):

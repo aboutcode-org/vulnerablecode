@@ -11,23 +11,21 @@ Explore Vulnerabilities
      <form action="{% url 'vulnerability_search' %}" method="get">
       {% load widget_tweaks %}
       <div class="field is-horizontal">
-        {{form.vuln_id|add_class:"input"}}
+        {% with searched_for as query%}
+          {% render_field form.vuln_id class="input" value=query %}
+        {% endwith %}
         <button class="button is-success", type="submit">
           Search
         </button>
       </div>
       </form>
+      {% if searched_for %}
+      <p class="has-text-centered">{{result_size}} results</p>
+      {% endif %}
        </div>
 </div>
 
 {% if vulnerabilities %}
-    <section class="section is-small has-text-centered">
-      <div class="container">
-        <h1 class="title" id="results">Results of your query "{{searched_for}}"</h1>
-        <h3 class="subtitle" id="results">Total {{result_size}} results</h3>
-      </div>
-    </section>
-
     <section class="section">
       
         <div class="content is-large">

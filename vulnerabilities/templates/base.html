@@ -17,6 +17,7 @@
                 <a class="navbar-item" href="{% url 'swagger-ui' %}">
                 API Docs
                 </a>
+                {% if enable_curation %}
                 <div class="navbar-item has-dropdown is-hoverable">
 
                     <a class="navbar-link">
@@ -26,12 +27,19 @@
                         <a class ="navbar-item" href = "{% url 'vulnerability_search' %}" >
                         Explore
                         </a>
-                        <a class ="navbar-item" href = "{% url 'vulnerability_create' %}">
-                        Create
-                        </a>
+                        
+                            <a class ="navbar-item" href = "{% url 'vulnerability_create' %}">
+                            Create
+                            </a>
                     </div>
                 </div>
-
+                {% else %}
+                        <a class="navbar-item" href="{% url 'vulnerability_search' %}">
+                            Vulnerabilities
+                        </a>
+                {% endif %}
+                
+                {% if enable_curation %}
                 <div class="navbar-item has-dropdown is-hoverable">
 
                     <a class="navbar-link">
@@ -41,11 +49,16 @@
                         <a class ="navbar-item" href = "{% url 'package_search' %}" >
                         Explore
                         </a>
-                        <a class ="navbar-item" href = "{% url 'package_create' %}" >
-                        Create
-                        </a>
+                            <a class ="navbar-item" href = "{% url 'package_create' %}" >
+                            Create
+                            </a>
                     </div>
                 </div>
+                {% else %}
+                    <a class="navbar-item" href="{% url 'package_search' %}">
+                        Packages
+                    </a>
+                {% endif %}
 
             </div>
         </div>

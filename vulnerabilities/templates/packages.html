@@ -37,15 +37,15 @@ Explore/Curate Vulnerable packages
   <div class="content is-medium">
     <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
       <tr>
-        <th>Packages</th>
-        <th>Patched Vulnerabilities</th>
+        <th>Package URL</th>
         <th>Vulnerabilities</th>
+        <th>Patched Vulnerabilities</th>
       </tr>
       {% for package in packages %}
       <tr>
         <td><a href="{% url 'package_view' package.pk %}">{{package}}</a></td>
-        <td>{{package.resolved_to.all|length}}</td>
         <td>{{package.vulnerable_to.all|length}}</td>
+        <td>{{package.resolved_to.all|length}}</td>
       </tr>
       {% endfor %}
     </table>

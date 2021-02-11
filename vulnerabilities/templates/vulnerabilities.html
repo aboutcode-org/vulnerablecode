@@ -34,15 +34,15 @@ Explore Vulnerabilities
         <div class="content is-large">
           <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
           <tr>
-              <th>Vulnerabilities</th>
-              <th>Patched packages</th>
+              <th>Vulnerability ID</th>
               <th>Vulnerable packages</th>
+              <th>Patched packages</th>
           </tr>
           {% for vulnerability in  vulnerabilities %}
               <tr>
                   <td><a href="{% url 'vulnerability_view' vulnerability.pk %}">{{vulnerability.cve_id}}</a></td>
-                  <td>{{vulnerability.resolved_to.all|length}}</td>
                   <td>{{vulnerability.vulnerable_to.all|length}}</td>
+                  <td>{{vulnerability.resolved_to.all|length}}</td>
               </tr>
           {% endfor %}
           </table>

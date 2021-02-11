@@ -35,6 +35,7 @@ from django.views.generic.edit import DeleteView
 
 from vulnerabilities import forms
 from vulnerabilities import models
+from vulnerablecode.settings import ENABLE_CURATION
 
 
 class PackageSearchView(View):
@@ -102,6 +103,7 @@ class PackageUpdate(UpdateView):
         resolved_vuln, unresolved_vuln = self._package_vulnerabilities(self.kwargs["pk"])
         context["resolved_vuln"] = resolved_vuln
         context["impacted_vuln"] = unresolved_vuln
+        context["enable_curation"] = ENABLE_CURATION
 
         return context
 
@@ -130,6 +132,7 @@ class VulnerabilityDetails(ListView):
     def get_context_data(self, **kwargs):
         context = super(VulnerabilityDetails, self).get_context_data(**kwargs)
         context["vulnerability"] = models.Vulnerability.objects.get(id=self.kwargs["pk"])
+        context["enable_curation"] = ENABLE_CURATION
         return context
 
     def get_queryset(self):
@@ -176,7 +179,7 @@ class HomePage(View):
     template_name = "index.html"
 
     def get(self, request):
-        return render(request, self.template_name)
+        return render(request, self.template_name, context={"enable_curation": ENABLE_CURATION})
 
 
 class PackageRelatedVulnerablityCreate(View):

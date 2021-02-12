@@ -35,7 +35,6 @@ from vulnerabilities.lib_oval import OvalDocument
 from vulnerabilities.lib_oval import OvalObject
 from vulnerabilities.lib_oval import OvalState
 from vulnerabilities.lib_oval import OvalTest
-import traceback
 
 
 class OvalParser:

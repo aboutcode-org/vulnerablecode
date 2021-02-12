@@ -26,20 +26,21 @@ import subprocess
 import sys
 import unittest
 
-
 root_dir = dirname(dirname(dirname(__file__)))
 bin_dir = dirname(sys.executable)
 
 
 class BaseTests(unittest.TestCase):
     def test_codestyle(self):
-        subprocess.check_output(
-            (
-                join(bin_dir, "pycodestyle")
-                + " --exclude=migrations,settings.py,venv,lib_oval.py,test_ubuntu.py,"
-                "test_suse.py,test_data_source.py "
-                "--max-line-length=100 "
-                "vulnerablecode vulnerabilities"
-            ).split(),
-            cwd=root_dir,
+        args = (
+            join(bin_dir, "pycodestyle") +
+            " --exclude=migrations,settings.py,venv,lib_oval.py,test_ubuntu.py,"
+            "test_suse.py,test_data_source.py "
+            "--max-line-length=100 "
+            "vulnerablecode vulnerabilities"
         )
+        try:
+                    
+            subprocess.check_output(args.split(), cwd=root_dir)
+        except Exception as e:
+            raise Exception(f'failed to run:\n{args}') from e

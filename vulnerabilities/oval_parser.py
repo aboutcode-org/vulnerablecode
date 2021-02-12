@@ -155,7 +155,10 @@ class OvalParser:
                 return RangeSpecifier(version_range)
             except Exception:
                 # FIXME: we should not continue
-                print(f"Failed to process invalid version_range in OvalState: {version_range}...continuing")  # nopep8
+                print(
+                    f"get_versionsrngs_from_state: Failed to process invalid "
+                    f"OvalState version range: {version_range}...continuing"
+                )
 
     @staticmethod
     def get_urls_from_definition(definition: OvalDefinition) -> Set[str]:

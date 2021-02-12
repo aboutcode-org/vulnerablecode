@@ -42,7 +42,7 @@ class PackageSearchView(View):
     template_name = "packages.html"
 
     def get(self, request):
-        context = {"form": forms.PackageForm()}
+        context = {"form": forms.PackageForm(request.GET or  None)}
 
         if request.GET:
             packages = self.request_to_queryset(request)

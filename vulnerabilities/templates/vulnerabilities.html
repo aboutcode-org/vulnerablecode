@@ -8,21 +8,21 @@ Explore Vulnerabilities
 
 <div class="columns">
     <div class="column is-one-third is-offset-one-third">
-     <form action="{% url 'vulnerability_search' %}" method="get">
+    <form action="{% url 'vulnerability_search' %}" method="get">
       {% load widget_tweaks %}
       <div class="field is-horizontal">
-        {% with searched_for as query%}
-          {% render_field form.vuln_id class="input" value=query %}
-        {% endwith %}
+          {% render_field form.vuln_id class="input"%}
         <button class="button is-success", type="submit">
           Search
         </button>
       </div>
-      </form>
-      {% if searched_for %}
-      <p class="has-text-centered">{{result_size}} results</p>
-      {% endif %}
-       </div>
+    </form>
+    {% if result_size %}
+      <p class="has-text-centered" id="result_count">{{result_size}} results</p>
+    {% elif result_size == 0 %}
+      <p class="has-text-centered" id="result_count">No results found</p>
+    {% endif %}
+    </div>
 </div>
 
 {% if vulnerabilities %}
@@ -55,13 +55,6 @@ Explore Vulnerabilities
           {% endif %}
         </div>
 
-    </section>
-
-{% elif result_size == 0 %}
-    <section class="section is-medium has-text-centered">
-      <div class="container">
-        <h1 class="title" id="results">No result found for "{{searched_for}}"</h1>
-      </div>
     </section>
 
 {% endif %}

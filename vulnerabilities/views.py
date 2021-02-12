@@ -46,14 +46,14 @@ class PackageSearchView(View):
 
         if request.GET:
             packages = self.request_to_queryset(request)
-            total_results = packages.count()
+            result_size = packages.count()
             page_no = int(request.GET.get("page", 1))
             packages = Paginator(packages, 50).get_page(page_no)
             context["packages"] = packages
             context["searched_for"] = urlencode(
                 {param: request.GET[param] for param in request.GET if param != "page"}
             )
-            context["total_results"] = total_results
+            context["result_size"] = result_size
 
         return render(request, self.template_name, context)
 
@@ -74,14 +74,13 @@ class VulnerabilitySearchView(View):
     template_name = "vulnerabilities.html"
 
     def get(self, request):
-        context = {"form": forms.CVEForm()}
+        context = {"form": forms.CVEForm(request.GET or None)}
         if request.GET:
             vulnerabilities = self.request_to_queryset(request)
+            result_size = vulnerabilities.count()
             pages = Paginator(vulnerabilities, 50)
-            result_size = pages.count
             vulnerabilities = pages.get_page(int(self.request.GET.get("page", 1)))
             context["vulnerabilities"] = vulnerabilities
-            context["searched_for"] = request.GET.get("vuln_id")
             context["result_size"] = result_size
 
         return render(request, self.template_name, context)

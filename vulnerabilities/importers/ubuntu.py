@@ -58,9 +58,10 @@ class UbuntuDataSource(OvalDataSource):
         self.pkg_manager_api = LaunchpadVersionAPI()
 
     def _fetch(self):
+        base_url = 'https://people.canonical.com/~ubuntu-security/oval'
         releases = self.config.releases
         for i, release in enumerate(releases, 1):
-            file_url = f"https://people.canonical.com/~ubuntu-security/oval/com.ubuntu.{release}.cve.oval.xml.bz2"  # nopep8
+            file_url = f"{base_url}/com.ubuntu.{release}.cve.oval.xml.bz2"  # nopep8
 #             if not create_etag(data_src=self, url=file_url, etag_key="ETag"):
 #                 print(f"Ubuntu Oval Etag not changed, not re-fetching: {file_url}")
 #                 continue
@@ -77,7 +78,7 @@ class UbuntuDataSource(OvalDataSource):
                 ET.ElementTree(ET.fromstring(extracted.decode("utf-8"))),
             )
 
-        print(f"Fetched {i} Ubuntu Oval releases https://people.canonical.com/~ubuntu-security/oval/")  # nopep8
+        print(f"Fetched {i} Ubuntu Oval releases from {base_url}")
 
     def set_api(self, packages):
         asyncio.run(self.pkg_manager_api.load_api(packages))

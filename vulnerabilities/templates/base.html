@@ -12,24 +12,24 @@
         <div  class="navbar-menu">
             <div class="navbar-start">
                 <a class="navbar-item" href="{% url 'home' %}">
-                Home
+                    Home
                 </a>
                 <a class="navbar-item" href="{% url 'swagger-ui' %}">
-                API Docs
+                    API Docs
                 </a>
                 {% if enable_curation %}
                 <div class="navbar-item has-dropdown is-hoverable">
 
                     <a class="navbar-link">
-                    Vulnerabilities
+                        Vulnerabilities
                     </a>
                     <div class="navbar-dropdown">
                         <a class ="navbar-item" href = "{% url 'vulnerability_search' %}" >
-                        Explore
+                            Explore
                         </a>
                         
                             <a class ="navbar-item" href = "{% url 'vulnerability_create' %}">
-                            Create
+                                Create
                             </a>
                     </div>
                 </div>
@@ -43,14 +43,14 @@
                 <div class="navbar-item has-dropdown is-hoverable">
 
                     <a class="navbar-link">
-                    Packages
+                        Packages
                     </a>
                     <div class="navbar-dropdown">
                         <a class ="navbar-item" href = "{% url 'package_search' %}" >
-                        Explore
+                            Explore
                         </a>
                             <a class ="navbar-item" href = "{% url 'package_create' %}" >
-                            Create
+                                Create
                             </a>
                     </div>
                 </div>

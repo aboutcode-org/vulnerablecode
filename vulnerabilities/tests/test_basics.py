@@ -38,7 +38,7 @@ class BaseTests(unittest.TestCase):
             "test_suse.py,test_data_source.py "
             "--max-line-length=100 "
             # Skip default and E252, triggered when using black-like style
-            "--ignore=E121,E123,E126,E226,E24,E704,W503,W504,E252"
+            "--ignore=E121,E123,E126,E226,E24,E704,W503,W504,E252 "
             "vulnerablecode vulnerabilities"
         )
         try:

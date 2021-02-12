@@ -21,17 +21,15 @@ Explore Vulnerable packages
         </button>
       </div>
     </form>
+    {% if result_size %}
+      <p class="has-text-centered" id="result_count">{{result_size}} results</p>
+    {% elif result_size == 0 %}
+      <p class="has-text-centered" id="result_count">No results found</p>
+    {% endif %}
   </div>
 </div>
 
 {% if packages %}
-
-<section class="section is-small  has-text-centered">
-  <div class="container">
-    <h1 class="title">Results of your query</h1>
-    <h3 class="subtitle">Total Results {{ total_results }}</h3>
-  </div>
-</section>
 
 <section class="section">
   <div class="content is-medium">

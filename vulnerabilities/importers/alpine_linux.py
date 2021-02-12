@@ -20,6 +20,7 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
+from re import IGNORECASE
 from typing import Any
 from typing import Iterable
 from typing import List
@@ -54,7 +55,7 @@ def validate_schema(advisory_dict):
                         str: Or(
                             [
                                 Or(
-                                    Regex(r"CVE.\d+-\d+"),
+                                    Regex(r"CVE.\d+-\d+", flags=IGNORECASE),
                                     Regex(r"XSA-\d{3}"),
                                     Regex(r"ZBX-\d{4}"),
                                     Regex(r"wnpa-sec-\d{4}-\d{2}"),
@@ -187,7 +188,7 @@ class AlpineDataSource(DataSource):
                         impacted_package_urls=[],
                         resolved_package_urls=resolved_purls,
                         vuln_references=references,
-                        cve_id=vuln_ids[0] if vuln_ids[0] != "CVE-????-?????" else None,
+                        cve_id=vuln_ids[0].upper() if vuln_ids[0] != "CVE-????-?????" else None,
                     )
                 )
 

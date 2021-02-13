@@ -4,8 +4,8 @@ VulnerableCode
 |Build Status| |License| |Python 3.8| |stability-wip| |Gitter chat|
 
 
-.. |Build Status| image:: https://travis-ci.org/nexB/vulnerablecode.svg?branch=develop
-   :target: https://travis-ci.org/nexB/vulnerablecode
+.. |Build Status| image:: https://github.com/nexB/vulnerablecode/workflows/CI/badge.svg
+   :target: https://github.com/nexB/vulnerablecode/actions?query=workflow%3ACI
 .. |License| image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
    :target: https://opensource.org/licenses/Apache-2.0
 .. |Python 3.8| image:: https://img.shields.io/badge/python-3.8-blue.svg

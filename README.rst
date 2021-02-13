@@ -59,8 +59,8 @@ ecosystems may or may not be vulnerable to the same vulnerability.
 
 The packages are identified using Package URL `PURL 
 <https://github.com/package-url/purl-spec>`__ as primary identifiers rather than
-CPEs. This makes packeg queries more dpscific and more accurate to answer
-questions such as "Is package foo vulnerable to vulnerability bar?"
+CPEs. This makes answers to questions such as "Is package foo vulnerable
+to vulnerability bar?"  much more accurate and easy to interpret.
 
 
 The primary access to the data is through a REST API.

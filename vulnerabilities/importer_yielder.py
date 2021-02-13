@@ -241,6 +241,13 @@ IMPORTER_REGISTRY = [
             "etags": {}
         },
     },
+    {
+        'name': 'apache_kafka',
+        'license': '',
+        'last_run': None,
+        'data_source': 'ApacheKafkaDataSource',
+        'data_source_cfg': {},
+    },
 
 ]
 

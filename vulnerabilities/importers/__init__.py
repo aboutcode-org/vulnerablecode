@@ -45,3 +45,4 @@ from vulnerabilities.importers.suse_backports import SUSEBackportsDataSource
 from vulnerabilities.importers.ubuntu import UbuntuDataSource
 from vulnerabilities.importers.ubuntu_usn import UbuntuUSNDataSource
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatDataSource
+from vulnerabilities.importers.apache_kafka import ApacheKafkaDataSource

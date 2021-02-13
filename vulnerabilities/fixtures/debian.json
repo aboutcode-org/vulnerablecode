@@ -4,8 +4,8 @@
   "pk": 1,
   "fields": {
     "cve_id": "CVE-2014-8242",
-    "summary": "",
-    "cvss": null
+    "summary": ""
+    
   }
 },
 {
@@ -13,8 +13,8 @@
   "pk": 2,
   "fields": {
     "cve_id": "CVE-2009-1382",
-    "summary": "",
-    "cvss": null
+    "summary": ""
+    
   }
 },
 {
@@ -22,8 +22,8 @@
   "pk": 3,
   "fields": {
     "cve_id": "CVE-2009-2459",
-    "summary": "",
-    "cvss": null
+    "summary": ""
+    
   }
 },
 {

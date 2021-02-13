@@ -60,6 +60,9 @@ query = """
                     value
                 }
                 summary
+                references {
+                    url
+                }
                 }
                 package {
                 name
@@ -158,6 +161,24 @@ class GitHubAPIDataSource(DataSource):
         if ecosystem == "NUGET" or ecosystem == "PIP" or ecosystem == "RUBYGEMS":
             return None, pkg_name
 
+    @staticmethod
+    def extract_references(reference_data):
+        references = []
+        for ref in reference_data:
+            url = ref["url"]
+            if "GHSA-" in url.upper():
+                reference = Reference(
+                    url=url,
+                    reference_id=url.split("/")[-1]
+                )
+            else:
+                reference = Reference(
+                    url=url
+                )
+            references.append(reference)
+
+        return references
+
     def collect_packages(self, ecosystem):
         packages = set()
         for page in self.advisories[ecosystem]:
@@ -194,21 +215,12 @@ class GitHubAPIDataSource(DataSource):
                         unaffected_purls = set()
 
                     cve_ids = set()
-                    vuln_references = []
+                    vuln_references = self.extract_references(adv["node"]["advisory"]["references"])
                     vuln_desc = adv["node"]["advisory"]["summary"]
 
                     for vuln in adv["node"]["advisory"]["identifiers"]:
                         if vuln["type"] == "CVE":
                             cve_ids.add(vuln["value"])
-
-                        elif vuln["type"] == "GHSA":
-                            ghsa = vuln["value"]
-                            vuln_references.append(
-                                Reference(
-                                    reference_id=ghsa,
-                                    url="https://github.com/advisories/{}".format(ghsa),
-                                )
-                            )
 
                     for cve_id in cve_ids:
                         adv_list.append(

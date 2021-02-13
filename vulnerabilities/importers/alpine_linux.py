@@ -20,21 +20,26 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
+from re import IGNORECASE
 from typing import Any
 from typing import Iterable
 from typing import List
 from typing import Mapping
 from typing import Set
 
+import requests
+import yaml
+from bs4 import BeautifulSoup
 from packageurl import PackageURL
 from schema import Or
 from schema import Regex
 from schema import Schema
 
 from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import GitDataSource
+from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import Reference
-from vulnerabilities.helpers import load_yaml
+
+BASE_URL = "https://secdb.alpinelinux.org/"
 
 
 def validate_schema(advisory_dict):
@@ -50,10 +55,11 @@ def validate_schema(advisory_dict):
                         str: Or(
                             [
                                 Or(
-                                    Regex(r"CVE.\d+-\d+"),
+                                    Regex(r"CVE.\d+-\d+", flags=IGNORECASE),
                                     Regex(r"XSA-\d{3}"),
                                     Regex(r"ZBX-\d{4}"),
                                     Regex(r"wnpa-sec-\d{4}-\d{2}"),
+                                    Regex(r"GHSA-.{4}-.{4}-.{4}"),
                                 )
                             ],
                             "",
@@ -70,31 +76,50 @@ def validate_schema(advisory_dict):
     Schema(scheme).validate(advisory_dict)
 
 
-class AlpineDataSource(GitDataSource):
-    def __enter__(self):
-        super(AlpineDataSource, self).__enter__()
+class AlpineDataSource(DataSource):
 
-        if not getattr(self, "_added_files", None):
-            self._added_files, self._updated_files = self.file_changes(
-                recursive=True, file_ext="yaml"
-            )
+    @staticmethod
+    def fetch_advisory_links():
+        index_page = BeautifulSoup(requests.get(BASE_URL).content, features="lxml")
+
+        alpine_versions = [
+            link.text for link in index_page.find_all("a")
+            if link.text.startswith("v")
+        ]
+
+        advisory_directory_links = [
+            f"{BASE_URL}{version}" for version in alpine_versions
+        ]
+
+        advisory_links = []
+        for advisory_directory_link in advisory_directory_links:
+            advisory_directory_page = requests.get(advisory_directory_link).content
+            advisory_directory_page = BeautifulSoup(advisory_directory_page, features="lxml")
+            advisory_links.extend([
+                f"{advisory_directory_link}{anchore_tag.text}"
+                for anchore_tag in advisory_directory_page.find_all("a")
+                if anchore_tag.text.endswith("yaml")
+            ])
+
+        return advisory_links
 
     def updated_advisories(self) -> Set[Advisory]:
-        files = self._updated_files.union(self._added_files)
         advisories = []
-        for f in files:
-            advisories.extend(self._process_file(f))
+        advisory_links = self.fetch_advisory_links()
+        for link in advisory_links:
+            advisories.extend(self._process_link(link))
 
         return self.batch_advisories(advisories)
 
-    def _process_file(self, path) -> List[Advisory]:
+    def _process_link(self, link) -> List[Advisory]:
         advisories = []
+        yaml_response = requests.get(link).content
+        record = yaml.safe_load(yaml_response)
 
-        record = load_yaml(path)
         if record["packages"] is None:
             return advisories
-        validate_schema(record)
 
+        validate_schema(record)
         for p in record["packages"]:
             advisories.extend(
                 self._load_advisories(
@@ -163,7 +188,7 @@ class AlpineDataSource(GitDataSource):
                         impacted_package_urls=[],
                         resolved_package_urls=resolved_purls,
                         vuln_references=references,
-                        cve_id=vuln_ids[0] if vuln_ids[0] != "CVE-????-?????" else None,
+                        cve_id=vuln_ids[0].upper() if vuln_ids[0] != "CVE-????-?????" else None,
                     )
                 )
 

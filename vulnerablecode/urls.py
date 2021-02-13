@@ -40,6 +40,7 @@ from vulnerabilities.views import VulnerabilityDetails
 from vulnerabilities.views import VulnerabilitySearchView
 from vulnerabilities.views import VulnerabilityCreate
 from vulnerabilities.views import VulnerabilityReferenceCreate
+from vulnerablecode.settings import ENABLE_CURATION
 
 api_router = DefaultRouter()
 api_router.register(r"packages", PackageViewSet)
@@ -47,15 +48,7 @@ api_router.register(r"packages", PackageViewSet)
 # define a queryset.
 api_router.register(r"vulnerabilities", VulnerabilityViewSet, basename="vulnerability")
 
-
-urlpatterns = [
-    path("admin/", admin.site.urls),
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(), name='swagger-ui'),
-    path("packages/search", PackageSearchView.as_view(), name="package_search"),
-    path("packages/<int:pk>", PackageUpdate.as_view(), name="package_view"),
-    path("vulnerabilities/<int:pk>", VulnerabilityDetails.as_view(), name="vulnerability_view"),
-    path("vulnerabilities/search", VulnerabilitySearchView.as_view(), name="vulnerability_search"),
+curation_views = [
     path("vulnerabilities/create", VulnerabilityCreate.as_view(), name="vulnerability_create"),
     path("packages/create", PackageCreate.as_view(), name="package_create"),
     path(
@@ -83,6 +76,18 @@ urlpatterns = [
         VulnerabilityReferenceCreate.as_view(),
         name="vulnerability_reference_create",
     ),
+]
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(), name='swagger-ui'),
+    path("packages/search", PackageSearchView.as_view(), name="package_search"),
+    path("packages/<int:pk>", PackageUpdate.as_view(), name="package_view"),
+    path("vulnerabilities/<int:pk>", VulnerabilityDetails.as_view(), name="vulnerability_view"),
+    path("vulnerabilities/search", VulnerabilitySearchView.as_view(), name="vulnerability_search"),
     path("", HomePage.as_view(), name="home"),
     path(r"api/", include(api_router.urls))
 ]
+
+if ENABLE_CURATION:
+    urlpatterns.extend(curation_views)

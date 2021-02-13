@@ -7,64 +7,65 @@
 <link rel="stylesheet" href="{% static 'css/custom.css' %}"/>
 <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<body class="Site has-background-light">
-    <nav class="navbar is-dark is-fixed-top" role="navigation" aria-label="main navigation">
+<body class="Site">
+    <nav class="navbar is-light" role="navigation" aria-label="main navigation">
         <div  class="navbar-menu">
             <div class="navbar-start">
                 <a class="navbar-item" href="{% url 'home' %}">
-                Home
+                    Home
                 </a>
                 <a class="navbar-item" href="{% url 'swagger-ui' %}">
-                API Docs
+                    API Docs
                 </a>
+                {% if enable_curation %}
                 <div class="navbar-item has-dropdown is-hoverable">
 
                     <a class="navbar-link">
-                    Vulnerabilities
+                        Vulnerabilities
                     </a>
                     <div class="navbar-dropdown">
                         <a class ="navbar-item" href = "{% url 'vulnerability_search' %}" >
-                        Explore
+                            Explore
                         </a>
-                        <a class ="navbar-item" href = "{% url 'vulnerability_create' %}">
-                        Create
-                        </a>
+                        
+                            <a class ="navbar-item" href = "{% url 'vulnerability_create' %}">
+                                Create
+                            </a>
                     </div>
                 </div>
-
+                {% else %}
+                        <a class="navbar-item" href="{% url 'vulnerability_search' %}">
+                            Vulnerabilities
+                        </a>
+                {% endif %}
+                
+                {% if enable_curation %}
                 <div class="navbar-item has-dropdown is-hoverable">
 
                     <a class="navbar-link">
-                    Packages
+                        Packages
                     </a>
                     <div class="navbar-dropdown">
                         <a class ="navbar-item" href = "{% url 'package_search' %}" >
-                        Explore
+                            Explore
                         </a>
-                        <a class ="navbar-item" href = "{% url 'package_create' %}" >
-                        Create
-                        </a>
+                            <a class ="navbar-item" href = "{% url 'package_create' %}" >
+                                Create
+                            </a>
                     </div>
                 </div>
+                {% else %}
+                    <a class="navbar-item" href="{% url 'package_search' %}">
+                        Packages
+                    </a>
+                {% endif %}
 
-            </div>
-            <div class="navbar-end">
-                <div class="navbar-item">
-                    <div class="buttons">
-                        <a class="button is-info">
-                        <strong>Sign up</strong>
-                        </a>
-                        <a class="button is-light">
-                        Log in
-                        </a>
-                    </div>
-                </div>
             </div>
         </div>
     </nav>
     <main class="Site-content">
 
-    <section class="section is-medium  has-text-centered">
+    <section class="section is-small  has-text-centered">
         <div class="container ">
             {% block title %}
             {% endblock %}

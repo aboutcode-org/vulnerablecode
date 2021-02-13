@@ -15,7 +15,12 @@
                   "value": "CVE-2019-0199"
                 }
               ],
-              "summary": "Denial of Service in Tomcat"
+              "summary": "Denial of Service in Tomcat",
+              "references":[
+                {
+                  "url":"https://github.com/advisories/GHSA-qcxh-w3j9-58qr"
+                }
+              ]
             },
             "package": {
               "name": "org.apache.tomcat.embed:tomcat-embed-core"
@@ -36,7 +41,12 @@
                   "value": "CVE-2019-0199"
                 }
               ],
-              "summary": "Denial of Service in Tomcat"
+              "summary": "Denial of Service in Tomcat",
+              "references":[
+                {
+                  "url":"https://github.com/advisories/GHSA-qcxh-w3j9-58qr"
+                }
+              ]
             },
             "package": {
               "name": "org.apache.tomcat.embed:tomcat-embed-core"
@@ -57,7 +67,12 @@
                   "value": "CVE-2020-1938"
                 }
               ],
-              "summary": "Improper Input Validation in Tomcat"
+              "summary": "Improper Input Validation in Tomcat",
+              "references":[
+                {
+                  "url":"https://github.com/advisories/GHSA-c9hw-wf7x-jp9j"
+                }
+              ]
             },
             "package": {
               "name": "org.apache.tomcat.embed:tomcat-embed-core"
@@ -78,7 +93,12 @@
                   "value": "CVE-2020-1938"
                 }
               ],
-              "summary": "Improper Input Validation in Tomcat"
+              "summary": "Improper Input Validation in Tomcat",
+              "references":[
+                {
+                  "url":"https://github.com/advisories/GHSA-c9hw-wf7x-jp9j"
+                }
+              ]
             },
             "package": {
               "name": "org.apache.tomcat.embed:tomcat-embed-core"
@@ -99,7 +119,12 @@
                   "value": "CVE-2020-1938"
                 }
               ],
-              "summary": "Improper Input Validation in Tomcat"
+              "summary": "Improper Input Validation in Tomcat",
+              "references":[
+                {
+                  "url":"https://github.com/advisories/GHSA-c9hw-wf7x-jp9j"
+                }
+              ]
             },
             "package": {
               "name": "org.apache.tomcat.embed:tomcat-embed-core"

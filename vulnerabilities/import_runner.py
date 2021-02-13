@@ -41,27 +41,7 @@ from vulnerabilities.data_source import PackageURL
 
 logger = logging.getLogger(__name__)
 
-# These _inserter classes are used to instantiate model objects.
-# Frozen dataclass  store args required to store instantiate
-# model objects, this way model objects can be hashed indirectly which
-# is required in this implementation.
-
-
-@dataclasses.dataclass(frozen=True)
-class VulnerabilityReferenceInserter:
-    vulnerability: models.Vulnerability
-    reference_id: Optional[str] = ""
-    url: Optional[str] = ""
-
-    def __post_init__(self):
-        if not any([self.reference_id, self.url]):
-            raise TypeError("VulnerabilityReferenceInserter expects either reference_id or url")
-
-    def to_model_object(self):
-        return models.VulnerabilityReference(**dataclasses.asdict(self))
-
-
-# These _inserter classes are used to instantiate model objects.
+# This *Inserter class is used to instantiate model objects.
 # Frozen dataclass  store args required to store instantiate
 # model objects, this way model objects can be hashed indirectly which
 # is required in this implementation.
@@ -134,7 +114,6 @@ def get_vuln_pkg_refs(vulnerability, package):
 
 
 def process_advisories(data_source: DataSource) -> None:
-    bulk_create_vuln_refs = set()
     bulk_create_vuln_pkg_refs = set()
     # Treat updated_advisories and added_advisories as same. Eventually
     # we want to  refactor all data sources to  provide advisories via a
@@ -145,18 +124,17 @@ def process_advisories(data_source: DataSource) -> None:
             try:
                 vuln, vuln_created = _get_or_create_vulnerability(advisory)
                 for vuln_ref in advisory.vuln_references:
-                    ref = VulnerabilityReferenceInserter(
-                        vulnerability=vuln,
-                        url=vuln_ref.url,
-                        reference_id=vuln_ref.reference_id,
+                    ref, _ = models.VulnerabilityReference.objects.get_or_create(
+                        vulnerability=vuln, reference_id=vuln_ref.reference_id, url=vuln_ref.url
                     )
 
-                    if vuln_created or not vuln_ref_exists(
-                        vuln, vuln_ref.url, vuln_ref.reference_id
-                    ):
-                        # A vulnerability reference can't exist if the
-                        # vulnerability is just created so insert it
-                        bulk_create_vuln_refs.add(ref)
+                    for score in vuln_ref.severities:
+                        models.VulnerabilitySeverity.objects.update_or_create(
+                            vulnerability=vuln,
+                            scoring_system=score.system.identifier,
+                            reference=ref,
+                            defaults={"value": str(score.value)},
+                        )
 
                 for purl in chain(advisory.impacted_package_urls, advisory.resolved_package_urls):
                     pkg, pkg_created = _get_or_create_package(purl)
@@ -184,13 +162,8 @@ def process_advisories(data_source: DataSource) -> None:
             except Exception:
                 # TODO: store error but continue
                 logger.error(
-                    f"Failed to process advisory: {advisory!r}:\n"
-                    + traceback.format_exc()
+                    f"Failed to process advisory: {advisory!r}:\n" + traceback.format_exc()
                 )
-
-    models.VulnerabilityReference.objects.bulk_create(
-        [i.to_model_object() for i in bulk_create_vuln_refs]
-    )
 
     # find_conflicting_relations handles in-memory conflicts
     conflicts = find_conflicting_relations(bulk_create_vuln_pkg_refs)
@@ -267,8 +240,8 @@ def _get_or_create_vulnerability(
 
     except Exception:
         logger.error(
-            f"Failed to _get_or_create_vulnerability: {query_kwargs!r}:\n"
-            + traceback.format_exc())
+            f"Failed to _get_or_create_vulnerability: {query_kwargs!r}:\n" + traceback.format_exc()
+        )
         raise
 
 

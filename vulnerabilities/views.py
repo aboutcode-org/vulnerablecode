@@ -35,22 +35,25 @@ from django.views.generic.edit import DeleteView
 
 from vulnerabilities import forms
 from vulnerabilities import models
+from vulnerablecode.settings import ENABLE_CURATION
 
 
 class PackageSearchView(View):
     template_name = "packages.html"
 
     def get(self, request):
-        context = {"form": forms.PackageForm()}
+        context = {"form": forms.PackageForm(request.GET or None)}
 
         if request.GET:
             packages = self.request_to_queryset(request)
+            result_size = packages.count()
             page_no = int(request.GET.get("page", 1))
             packages = Paginator(packages, 50).get_page(page_no)
             context["packages"] = packages
             context["searched_for"] = urlencode(
                 {param: request.GET[param] for param in request.GET if param != "page"}
             )
+            context["result_size"] = result_size
 
         return render(request, self.template_name, context)
 
@@ -60,8 +63,8 @@ class PackageSearchView(View):
         if len(request.GET["name"]):
             query["name"] = request.GET["name"]
 
-        if len(request.GET["version"]):
-            query["version"] = request.GET["version"]
+        if len(request.GET["type"]):
+            query["type"] = request.GET["type"]
 
         return models.Package.objects.all().filter(**query)
 
@@ -71,14 +74,13 @@ class VulnerabilitySearchView(View):
     template_name = "vulnerabilities.html"
 
     def get(self, request):
-        context = {"form": forms.CVEForm()}
+        context = {"form": forms.CVEForm(request.GET or None)}
         if request.GET:
             vulnerabilities = self.request_to_queryset(request)
+            result_size = vulnerabilities.count()
             pages = Paginator(vulnerabilities, 50)
-            result_size = pages.count
             vulnerabilities = pages.get_page(int(self.request.GET.get("page", 1)))
             context["vulnerabilities"] = vulnerabilities
-            context["searched_for"] = request.GET.get("vuln_id")
             context["result_size"] = result_size
 
         return render(request, self.template_name, context)
@@ -100,6 +102,7 @@ class PackageUpdate(UpdateView):
         resolved_vuln, unresolved_vuln = self._package_vulnerabilities(self.kwargs["pk"])
         context["resolved_vuln"] = resolved_vuln
         context["impacted_vuln"] = unresolved_vuln
+        context["enable_curation"] = ENABLE_CURATION
 
         return context
 
@@ -128,6 +131,7 @@ class VulnerabilityDetails(ListView):
     def get_context_data(self, **kwargs):
         context = super(VulnerabilityDetails, self).get_context_data(**kwargs)
         context["vulnerability"] = models.Vulnerability.objects.get(id=self.kwargs["pk"])
+        context["enable_curation"] = ENABLE_CURATION
         return context
 
     def get_queryset(self):
@@ -174,7 +178,7 @@ class HomePage(View):
     template_name = "index.html"
 
     def get(self, request):
-        return render(request, self.template_name)
+        return render(request, self.template_name, context={"enable_curation": ENABLE_CURATION})
 
 
 class PackageRelatedVulnerablityCreate(View):

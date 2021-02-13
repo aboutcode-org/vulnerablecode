@@ -122,3 +122,6 @@ Pipfile
 
 # pytest
 .pytest_cache
+
+# VSCode
+.vscode

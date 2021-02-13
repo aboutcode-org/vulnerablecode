@@ -27,7 +27,7 @@ from vulnerabilities.models import Package, PackageRelatedVulnerability, Vulnera
 
 def get_package_types():
     pkg_types = [(i.type, i.type) for i in Package.objects.distinct("type").all()]
-    pkg_types.append((None, "package type"))
+    pkg_types.append((None, "Any type"))
     return pkg_types
 
 
@@ -44,10 +44,8 @@ def get_package_namespaces():
 class PackageForm(forms.Form):
 
     type = forms.ChoiceField(choices=get_package_types)
-    namespace = forms.ChoiceField(choices=get_package_namespaces, required=False)
-    name = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "package name"}))
-    version = forms.CharField(
-        widget=forms.TextInput(attrs={"placeholder": "package version"}), required=False
+    name = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"placeholder": "package name"})
     )
 
 

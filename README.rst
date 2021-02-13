@@ -1,95 +1,115 @@
 VulnerableCode
 ==============
 
-|Build Status| |License| |Python 3.8| |stability-wip| |Gitter chat| |PRs
-Welcome|
+|Build Status| |License| |Python 3.8| |stability-wip| |Gitter chat|
+
+
+.. |Build Status| image:: https://travis-ci.org/nexB/vulnerablecode.svg?branch=develop
+   :target: https://travis-ci.org/nexB/vulnerablecode
+.. |License| image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
+   :target: https://opensource.org/licenses/Apache-2.0
+.. |Python 3.8| image:: https://img.shields.io/badge/python-3.8-blue.svg
+   :target: https://www.python.org/downloads/release/python-380/
+.. |stability-wip| image:: https://img.shields.io/badge/stability-work_in_progress-lightgrey.svg
+.. |Gitter chat| image:: https://badges.gitter.im/gitterHQ/gitter.png
+   :target: https://gitter.im/aboutcode-org/vulnerablecode
+
+
+VulnerableCode is a free and open database of FOSS software package
+vulnerabilities and the tools to create and keep the data current.
+
+It is made by the FOSS community to improve and secure the open source software
+ecosystem.
 
 .. image:: README.gif
 
+Why?
+----
 
-The What
---------
+The existing solutions are commercial proprietary vulnerability databases, which
+in itself does not make sense because the data is about FOSS (Free and Open
+Source Software).
 
-VulnerableCode is a FOSS database of vulnerabilities and the FOSS
-packages they impact. It is made by the FOSS community to improve and
-secure the open source software ecosystem.
-
-The Why
--------
-
-The existing solutions are commercial proprietary vulnerability
-databases, which in itself does not make sense because the data is about
-FOSS.
-
-National Vulnerability Database which is the primary data source for all
-things security, is not  particularly catered to address FOSS security
-issues, because:
+The National Vulnerability Database which is a primary centralized data source
+for known vulnerabilities is not particularly well suited to address FOSS
+security issues because:
 
 1. It predates the explosion of FOSS software usage
-2. It's data format reflects  a commercial vendor-centric point of view,
-   this is due to the usage of
-   `CPE <https://nvd.nist.gov/products/cpe>`__ to map vulnerabilities
-   and the packages.
-3. CPEs are just not designed to map FOSS to vulnerabilities owing to
-   their vendor-product centric semantics. This makes it really hard to
-   answer the fundamental question "Is package foo vulnerable to
-   vulnerability bar?"
+2. It's data format reflects a commercial vendor-centric point of view in part
+   due to the usage of `CPE <https://nvd.nist.gov/products/cpe>`__ to map
+   vulnerabilities to existing packages.
+3. CPEs are just not designed to map FOSS to vulnerabilities owing to their
+   vendor-product centric semantics. This makes it really hard to answer the
+   fundamental questions "Is package foo vulnerable" and "Is package foo
+   vulnerable to vulnerability bar?"
+
+How
+---
+
+VulnerableCode independently aggregates many software vulnerability data sources
+and supports data re-creation in a decentralized fashion. These data sources
+(see complete list `here <./SOURCES.rst>`_) include security advisories
+published by Linux and BSD distributions, application software package managers
+and package repositories, FOSS projects, GitHub and more. Thanks to this
+approach, the data is focused on specific ecosystems yet aggregated in a single
+database that enables querying a richer graph of relations between multiple
+incarnations of a package. Being specific increases the accuracy and validity
+of the data as the same version of an upstream package across different
+ecosystems may or may not be vulnerable to the same vulnerability.
+
+The packages are identified using Package URL `PURL 
+<https://github.com/package-url/purl-spec>`__ as primary identifiers rather than
+CPEs. This makes answers to questions such as "Is package foo vulnerable
+to vulnerability bar?"  much more accurate and easy to interpret.
 
 
-The How
--------
+The primary access to the data is through a REST API.
 
-VulnerableCode independently aggregates many software vulnerability data
-sources that can easily be recreated in a decentralized fashion. These
-data sources (see complete list `here <./SOURCES.rst>`_) include security
-advisories published by distros, package managers, etc. Due to this, the
-data obtained is not generalized to apply for other ecosystems. This
-increases the accuracy as the same version of a package across different distros
-may or may not be vulnerable to some vulnerability.
-
-The packages are identified using
-`PURL <https://github.com/package-url/purl-spec>`__ rather than CPEs.
-This makes it really easy to answer questions like "Is package foo
-vulnerable to vulnerability bar ? ".
-
-The web interface enables community curation of data by enabling
-the addition of new packages, vulnerabilities, and modifying the
-relationships between them as shown in GIF. Along with the web interface
-the API allows seamless consumption of the data.
+In addition, an emerging web interface goal is to support vulnerabilities data
+browsing and search and progressively to enable community curation of the data
+with the addition of new packages and vulnerabilities, and reviewing and
+updating their relationships. 
 
 We also plan to mine for vulnerabilities which didn't receive any
 exposure due to various reasons like but not limited to the complicated
 procedure to receive CVE ID or not able to classify a bug as a security
 compromise.
 
-Check VulnerableCode at `Open Source Summit 2020
-<https://ossna2020.sched.com/event/c46p/why-is-there-no-free-software-vulnerability-database-philippe-ombredanne-aboutcodeorg-and-nexb-inc-michael-herzog-nexb-inc>`__
+Recent presentations:
+
+- `Open Source Summit 2020 <docs/Why-Is-There-No-Free-Software-Vulnerability-Database-v1.0.pdf>`__
+
+
 
 Setting up VulnerableCode
 -------------------------
 
-Clone the source code:
-
-::
+First clone the source code::
 
     git clone https://github.com/nexB/vulnerablecode.git
     cd vulnerablecode
 
+
+
+
 Using Docker Compose
 ~~~~~~~~~~~~~~~~~~~~
 
-An easy way to set up VulnerableCode is with docker containers and
-docker compose. For this you need to have the following installed.
+An easy way to set up VulnerableCode is with docker containers and docker
+compose. For this you need to have the following installed.
 
-- Docker Engine. Find instructions to install it `here <https://docs.docker.com/get-docker/>`__ 
-- Docker Compose. Find instructions to install it `here <https://docs.docker.com/compose/install/#install-compose>`__
+- Docker Engine. Find instructions to install it
+  `here <https://docs.docker.com/get-docker/>`__
+- Docker Compose. Find instructions to install it
+  `here <https://docs.docker.com/compose/install/#install-compose>`__
 
-Use ``sudo docker-compose up`` to start VulnerableCode. Access
-VulnerableCode at http://localhost:8000/ or at http://127.0.0.1:8000/ .
+Use ``sudo docker-compose up`` to start VulnerableCode. Then access
+VulnerableCode at http://localhost:8000/ or at http://127.0.0.1:8000/
 
 Use ``sudo docker-compose exec web bash`` to access the VulnerableCode
-container. From here you can access ``manage.py`` and run management
-commands to import data as specified below.
+container. From here you can access ``manage.py`` and run management commands
+to import data as specified below.
+
 
 Without Docker Compose
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -100,50 +120,57 @@ Without Docker Compose
 -  PostgreSQL 9+
 -  Compiler toolchain and development files for Python and PostgreSQL
 
-On Debian-based distros, these can be installed with
-``sudo apt install python3-venv python3-dev postgresql libpq-dev build-essential``.
+On Debian-based distros, these can be installed with::
 
-**Database configuration** - Create a user named ``vulnerablecode``. Use
-``vulnerablecode`` as password when prompted:
-``sudo -u postgres createuser --no-createrole --no-superuser --login --inherit --createdb --pwprompt vulnerablecode``
+    sudo apt-get install python3-venv python3-dev postgresql libpq-dev build-essential
 
--  Create a databased named ``vulnerablecode``:
-   ``createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode --password --host=localhost --port=5432 vulnerablecode``
+
+**Database configuration** 
+
+- Create a user named ``vulnerablecode``. Use ``vulnerablecode`` as password
+  when prompted::
+
+    sudo -u postgres createuser --no-createrole --no-superuser --login \
+        --inherit --createdb --pwprompt vulnerablecode``
+
+- Create a databased named ``vulnerablecode``::
+
+    createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode \
+        --password --host=localhost --port=5432 vulnerablecode
+
 
 **Application dependencies**
 
-Create a virtualenv, install dependencies, and run the database
-migrations:
-
-::
+Create a virtualenv, install dependencies, and run the database migrations::
 
     python3 -m venv venv
     source venv/bin/activate
     pip install -r requirements.txt
     DJANGO_DEV=1 python manage.py migrate
 
-The environment variable ``DJANGO_DEV`` is used to load settings
-suitable for development, defined in ``vulnerablecode/dev.py``. If you
+The environment variable ``DJANGO_DEV`` is used to load settings suitable for
+development,  defined in ``vulnerablecode/dev.py``. If you
 don't want to type it every time use ``export DJANGO_DEV=1`` instead.
+Do not use `DJANGO_DEV` in a production environment.
 
-When not running in development mode, an environment variable named
-``SECRET_KEY`` needs to be set. The recommended way to generate this key
-is to use the code Django includes for this purpose:
-``SECRET_KEY=$(python -c "from django.core.management import utils; print(utils.get_random_secret_key())")``.
+
+For a production mode, an environment variable named ``SECRET_KEY`` needs to be
+set. The recommended way to generate this key is to use the code Django includes
+for this purpose::
+
+    SECRET_KEY=$(python -c "from django.core.management import utils; print(utils.get_random_secret_key())")
+
 
 Using Nix
 ~~~~~~~~~
 
-You can install VulnerableCode with `Nix <https://nixos.org/download.html>`__ (`Flake <https://nixos.wiki/wiki/Flakes>`__ support is needed).
-
-::
+You can install VulnerableCode with `Nix <https://nixos.org/download.html>`__ 
+(`Flake <https://nixos.wiki/wiki/Flakes>`__ support is needed)::
 
     cd etc/nix
     nix --print-build-logs flake check # build & run tests
 
-There are several options to use the Nix version
-
-::
+There are several options to use the Nix version::
 
     # Enter an interactive environment with all dependencies set up.
     cd etc/nix
@@ -159,53 +186,74 @@ There are several options to use the Nix version
 
 **Keeping the Nix setup in sync**
 
-The Nix installation uses `mach-nix <https://github.com/DavHau/mach-nix>`__ to handle Python dependencies because some dependencies are currently not available as Nix packages.
-All Python dependencies are automatically fetched from ``./requirements.txt``.
-If the ``mach-nix``-based installation fails, you might need to update ``mach-nix`` itself and the `pypi-deps-db <https://github.com/DavHau/pypi-deps-db>`_ version in use (see ``etc/nix/flake.nix:inputs.machnix`` and ``machnixFor.pypiDataRev``).
+The Nix installation uses `mach-nix <https://github.com/DavHau/mach-nix>`__ to
+handle Python dependencies because some dependencies are currently not available
+as Nix packages. All Python dependencies are automatically fetched from
+``./requirements.txt``. If the ``mach-nix``-based installation fails, you might
+need to update ``mach-nix`` itself and the `pypi-deps-db
+<https://github.com/DavHau/pypi-deps-db>`_ version in use (see
+``etc/nix/flake.nix:inputs.machnix`` and ``machnixFor.pypiDataRev``).
 
-Non-Python dependencies are curated in ``etc/nix/flake.nix:vulnerablecode.propagatedBuildInputs``.
+Non-Python dependencies are curated in::
+
+    etc/nix/flake.nix:vulnerablecode.propagatedBuildInputs
 
 
-Tests
------
 
-::
+Run Tests
+---------
+
+Use these commands to run code style checks and the test suite::
 
     pycodestyle --exclude=migrations,settings.py,venv,lib_oval.py,test_ubuntu.py,test_suse.py,test_data_source.py --max-line-length=100 .
     DJANGO_DEV=1 pytest
 
+
 Data import
 -----------
 
-Many data importers use GitHub APIs. For this, first set up value of the ``GH_TOKEN`` environment variable by running :
-
-::
+Some data importers use the GitHub APIs. For this, export the ``GH_TOKEN``
+environment variable with::
 
     export GH_TOKEN=yourgithubtoken
 
 
-See `GitHub docs  <https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token>`_ for instructions on how to obtain your GitHub token.
+See `GitHub docs  
+<https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token>`_ 
+for instructions on how to obtain your GitHub token.
 
-
-To run all data importers use :
-::
+To run all data importers use::
 
     DJANGO_DEV=1 python manage.py import --all
 
-To list available importers use :
-::
+To list available importers use::
 
     DJANGO_DEV=1 python manage.py import --list
 
-To run specific importers :
-::
+To run specific importers::
 
     DJANGO_DEV=1 python manage.py import rust npm 
 
 
-If you want to run the import periodically, you can use a systemd timer:
+REST API access
+---------------
 
-::
+Start the webserver::
+
+    DJANGO_DEV=1 python manage.py runserver
+
+
+For full documentation about API endpoints use this URL::
+
+    http://127.0.0.1:8000/api/docs
+
+
+
+Continuous periodic Data import
+-------------------------------
+
+
+If you want to run the import periodically, you can use a systemd timer::
 
     $ cat ~/.config/systemd/user/vulnerablecode.service
 
@@ -228,37 +276,9 @@ If you want to run the import periodically, you can use a systemd timer:
     [Install]
     WantedBy=multi-user.target
 
-Start it with
 
-::
+Start this "timer" with::
 
-    systemctl --user daemon-reload && systemctl --user start vulnerablecode.timer
+    systemctl --user daemon-reload
+    systemctl --user start vulnerablecode.timer
 
-API
----
-
-Start the webserver
-
-::
-
-    DJANGO_DEV=1 python manage.py runserver
-
-In your browser access:
-
-::
-
-    http://127.0.0.1:8000/api/docs
-
-For full documentation about API endpoints.
-
-.. |Build Status| image:: https://travis-ci.org/nexB/vulnerablecode.svg?branch=develop
-   :target: https://travis-ci.org/nexB/vulnerablecode
-.. |License| image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
-   :target: https://opensource.org/licenses/Apache-2.0
-.. |Python 3.8| image:: https://img.shields.io/badge/python-3.8-blue.svg
-   :target: https://www.python.org/downloads/release/python-360/
-.. |stability-wip| image:: https://img.shields.io/badge/stability-work_in_progress-lightgrey.svg
-.. |Gitter chat| image:: https://badges.gitter.im/gitterHQ/gitter.png
-   :target: https://gitter.im/aboutcode-org/vulnerablecode
-.. |PRs Welcome| image:: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
-   :target: http://makeapullrequest.com

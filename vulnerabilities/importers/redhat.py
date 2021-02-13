@@ -54,9 +54,7 @@ def fetch():
     """
     cves = []
     page_no = 1
-    url_template = (
-        "https://access.redhat.com/hydra/rest/securitydata/cve.json?per_page=10000&page={}"
-    )
+    url_template = "https://access.redhat.com/hydra/rest/securitydata/cve.json?per_page=10&page={}"
 
     cve_data = None
     while True:

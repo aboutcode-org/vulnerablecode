@@ -168,6 +168,8 @@ SPECTACULAR_SETTINGS = {
 }
 # TODO: Specify the license for the API here. 
 
+# Set this to true to enable community curation, ie users will be able to edit data
+ENABLE_CURATION = False
 
 # Set `DJANGO_DEV=1` in env to enable dev mode
 if DEV_MODE:

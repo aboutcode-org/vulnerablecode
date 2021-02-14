@@ -203,31 +203,31 @@ class TestBulkAPIResponse(TestCase):
                 "resolved_packages": [
                     OrderedDict(
                         [
-                            ("url", "http://testserver/api/packages/2/"),
+                            ("url", "http://testserver/api/packages/2"),
                             ("purl", "pkg:deb/debian/mimetex@1.74-1?distro=jessie"),
                         ]
                     ),
                     OrderedDict(
                         [
-                            ("url", "http://testserver/api/packages/3/"),
+                            ("url", "http://testserver/api/packages/3"),
                             ("purl", "pkg:deb/debian/mimetex@1.50-1.1?distro=jessie"),
                         ]
                     ),
                 ],
                 "unresolved_packages": [],
-                "url": "http://testserver/api/vulnerabilities/2/",
+                "url": "http://testserver/api/vulnerabilities/2",
             },
             "CVE-2014-8242": {
                 "resolved_packages": [],
                 "unresolved_packages": [
                     OrderedDict(
                         [
-                            ("url", "http://testserver/api/packages/1/"),
+                            ("url", "http://testserver/api/packages/1"),
                             ("purl", "pkg:deb/debian/librsync@0.9.7-10?distro=jessie"),
                         ]
                     )
                 ],
-                "url": "http://testserver/api/vulnerabilities/1/",
+                "url": "http://testserver/api/vulnerabilities/1",
             },
             "RANDOM-CVE": {},
         }
@@ -253,7 +253,7 @@ class TestBulkAPIResponse(TestCase):
                 "unresolved_vulnerabilities": [
                     OrderedDict(
                         [
-                            ("url", "http://testserver/api/vulnerabilities/1/"),
+                            ("url", "http://testserver/api/vulnerabilities/1"),
                             ("vulnerability_id", "CVE-2014-8242"),
                         ]
                     )
@@ -263,13 +263,13 @@ class TestBulkAPIResponse(TestCase):
                 "resolved_vulnerabilities": [
                     OrderedDict(
                         [
-                            ("url", "http://testserver/api/vulnerabilities/2/"),
+                            ("url", "http://testserver/api/vulnerabilities/2"),
                             ("vulnerability_id", "CVE-2009-1382"),
                         ]
                     ),
                     OrderedDict(
                         [
-                            ("url", "http://testserver/api/vulnerabilities/3/"),
+                            ("url", "http://testserver/api/vulnerabilities/3"),
                             ("vulnerability_id", "CVE-2009-2459"),
                         ]
                     ),

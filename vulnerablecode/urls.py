@@ -42,7 +42,15 @@ from vulnerabilities.views import VulnerabilityCreate
 from vulnerabilities.views import VulnerabilityReferenceCreate
 from vulnerablecode.settings import ENABLE_CURATION
 
-api_router = DefaultRouter()
+
+# See the comment at https://stackoverflow.com/a/46163870.
+class OptionalSlashRouter(DefaultRouter):
+    def __init__(self, *args, **kwargs):
+        super(DefaultRouter, self).__init__(*args, **kwargs)
+        self.trailing_slash = '/?'
+
+
+api_router = OptionalSlashRouter()
 api_router.register(r"packages", PackageViewSet)
 # `DefaultRouter` requires `basename` when registering viewsets which don't
 # define a queryset.

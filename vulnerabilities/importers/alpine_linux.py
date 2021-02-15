@@ -42,38 +42,38 @@ from vulnerabilities.data_source import Reference
 BASE_URL = "https://secdb.alpinelinux.org/"
 
 
-def validate_schema(advisory_dict):
-    scheme = {
-        "distroversion": Regex(r"v\d.\d*"),
-        "reponame": str,
-        "archs": list,
-        "packages": [
-            {
-                "pkg": {
-                    "name": str,
-                    "secfixes": {
-                        str: Or(
-                            [
-                                Or(
-                                    Regex(r"CVE.\d+-\d+", flags=IGNORECASE),
-                                    Regex(r"XSA-\d{3}"),
-                                    Regex(r"ZBX-\d{4}"),
-                                    Regex(r"wnpa-sec-\d{4}-\d{2}"),
-                                    Regex(r"GHSA-.{4}-.{4}-.{4}"),
-                                )
-                            ],
-                            "",
-                            # FIXME: Remove the None when below issue gets fixed
-                            # https://gitlab.alpinelinux.org/alpine/infra/alpine-secdb/-/issues/1
-                            None,
-                        ),
-                    },
-                }
-            }
-        ],
-        object: object,
-    }
-    Schema(scheme).validate(advisory_dict)
+# def validate_schema(advisory_dict):
+#     scheme = {
+#         "distroversion": Regex(r"v\d.\d*"),
+#         "reponame": str,
+#         "archs": list,
+#         "packages": [
+#             {
+#                 "pkg": {
+#                     "name": str,
+#                     "secfixes": {
+#                         str: Or(
+#                             [
+#                                 Or(
+#                                     Regex(r"CVE.\d+-\d+", flags=IGNORECASE),
+#                                     Regex(r"XSA-\d{3}"),
+#                                     Regex(r"ZBX-\d{4}"),
+#                                     Regex(r"wnpa-sec-\d{4}-\d{2}"),
+#                                     Regex(r"GHSA-.{4}-.{4}-.{4}"),
+#                                 )
+#                             ],
+#                             "",
+#                             # FIXME: Remove the None when below issue gets fixed
+#                             # https://gitlab.alpinelinux.org/alpine/infra/alpine-secdb/-/issues/1
+#                             None,
+#                         ),
+#                     },
+#                 }
+#             }
+#         ],
+#         object: object,
+#     }
+#     Schema(scheme).validate(advisory_dict)
 
 
 class AlpineDataSource(DataSource):
@@ -119,7 +119,6 @@ class AlpineDataSource(DataSource):
         if record["packages"] is None:
             return advisories
 
-        validate_schema(record)
         for p in record["packages"]:
             advisories.extend(
                 self._load_advisories(

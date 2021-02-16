@@ -70,4 +70,9 @@ scoring_systems = {
         name="RedHat Aggregate severity",
         url="https://access.redhat.com/security/updates/classification/",
     ),
+    "avgs": ScoringSystem(
+        identifier="avgs",
+        name="Archlinux Vulnerability Group Severity",
+        url="https://wiki.archlinux.org/index.php/Bug_reporting_guidelines#Severity"
+    )
 }

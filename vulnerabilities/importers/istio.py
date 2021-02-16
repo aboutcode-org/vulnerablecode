@@ -21,15 +21,14 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
+import re
 from typing import List, Set
 
 import yaml
+
 from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
-
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import GitDataSource
-from vulnerabilities.data_source import Reference
+from vulnerabilities.data_source import Advisory, GitDataSource, Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
 
 
@@ -56,26 +55,14 @@ class IstioDataSource(GitDataSource):
                 advisories.extend(processed_data)
         return self.batch_advisories(advisories)
 
-    def added_advisories(self) -> Set[Advisory]:
-        files = self._added_files
-        advisories = []
-        for f in files:
-            processed_data = self.process_file(f)
-            if processed_data:
-                advisories.extend(processed_data)
-        return self.batch_advisories(advisories)
-
-    def get_versions_for_pkg_from_range_list(self, version_range_list):
+    def get_pkg_versions_from_ranges(self, version_range_list):
         """Takes a list of version ranges(affected) of a package
         as parameter and returns a tuple of safe package versions and
         vulnerable package versions"""
-
+        all_version = self.version_api.get("istio/istio")
         safe_pkg_versions = []
         vuln_pkg_versions = []
-        all_version = self.version_api.get("istio/istio")
-        if not version_range_list:
-            return all_version, []
-        version_ranges = {RangeSpecifier(r) for r in version_range_list}
+        version_ranges = [RangeSpecifier(r) for r in version_range_list]
         for version in all_version:
             if any([version in v for v in version_ranges]):
                 vuln_pkg_versions.append(version)
@@ -113,9 +100,9 @@ class IstioDataSource(GitDataSource):
         ,'cves: [CVE-2019-12243]']
         """
 
-        for line in lines:
+        for index, line in enumerate(lines):
             line = line.strip()
-            if line.startswith("---"):
+            if line.startswith("---") and index == 0:
                 continue
             elif line.endswith("---"):
                 break
@@ -131,14 +118,23 @@ class IstioDataSource(GitDataSource):
         releases = []
         if data.get("releases"):
             for release in data["releases"]:
-                release = release.strip()
-                release = release.split(" ")
-                if len(release) > 2:
+                # If it is of form "All versions prior to x"
+                if "All releases" in release:
+                    release = release.strip()
+                    release = release.split(" ")
+                    releases.append("<" + release[4])
+                # If it is of form "a to b"
+                elif "to" in release:
+                    release = release.strip()
+                    release = release.split(" ")
                     lbound = ">=" + release[0]
                     ubound = "<=" + release[2]
                     releases.append(lbound + "," + ubound)
+                # If it is a single release
+                elif is_release(release):
+                    releases.append(release)
 
-        data["releases"] = releases
+        data["release_ranges"] = releases
 
         if not data.get("cves"):
             data["cves"] = [""]
@@ -146,21 +142,17 @@ class IstioDataSource(GitDataSource):
         for cve_id in data["cves"]:
 
             if not cve_id.startswith("CVE"):
-                continue
+                cve_id = ""
 
             safe_pkg_versions = []
             vuln_pkg_versions = []
 
-            if not data.get("releases"):
-                data["releases"] = []
+            if not data.get("release_ranges"):
+                data["release_ranges"] = []
 
-            safe_pkg_versions, vuln_pkg_versions = self.get_versions_for_pkg_from_range_list(
-                data["releases"])
-
-            safe_purls = []
-            vuln_purls = []
-
-            cve_id = cve_id
+            safe_pkg_versions, vuln_pkg_versions = self.get_pkg_versions_from_ranges(
+                data["release_ranges"]
+            )
 
             safe_purls_golang = {
                 PackageURL(type="golang", name="istio", version=version)
@@ -171,7 +163,7 @@ class IstioDataSource(GitDataSource):
                 PackageURL(type="github", name="istio", version=version)
                 for version in safe_pkg_versions
             }
-            safe_purls = safe_purls_github | safe_purls_golang
+            safe_purls = safe_purls_github.union(safe_purls_golang)
 
             vuln_purls_golang = {
                 PackageURL(type="golang", name="istio", version=version)
@@ -182,14 +174,14 @@ class IstioDataSource(GitDataSource):
                 PackageURL(type="github", name="istio", version=version)
                 for version in vuln_pkg_versions
             }
-            vuln_purls = vuln_purls_github | vuln_purls_golang
+            vuln_purls = vuln_purls_github.union(vuln_purls_golang)
 
             advisories.append(
                 Advisory(
                     summary=data["description"],
                     impacted_package_urls=vuln_purls,
                     resolved_package_urls=safe_purls,
-                    cve_id=cve_id,
+                    vulnerability_id=cve_id,
                 )
             )
 
@@ -203,3 +195,5 @@ class IstioDataSource(GitDataSource):
         with open(path) as f:
             yaml_lines = self.get_yaml_lines(f)
             return self.get_data_from_yaml_lines(yaml_lines)
+
+    is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match

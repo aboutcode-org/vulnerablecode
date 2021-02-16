@@ -173,7 +173,7 @@ class TestIstioDataSource(TestCase):
                         version="1.1.0-rc.6",
                     ),
                 },
-                cve_id="CVE-2019-12243",
+                vulnerability_id="CVE-2019-12243",
             )
         ]
 

@@ -27,6 +27,8 @@ import yaml
 import requests
 import toml
 
+# TODO add logging here
+
 
 def load_yaml(path):
     with open(path) as f:
@@ -41,6 +43,11 @@ def load_json(path):
 def load_toml(path):
     with open(path) as f:
         return toml.load(f)
+
+
+def fetch_yaml(url):
+    response = requests.get(url)
+    return yaml.safe_load(response.content)
 
 
 def create_etag(data_src, url, etag_key):

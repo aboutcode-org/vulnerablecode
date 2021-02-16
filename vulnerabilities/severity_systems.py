@@ -48,6 +48,18 @@ scoring_systems = {
         url="https://www.first.org/cvss/v3-0/",
         notes="cvssv3 vector, used to get additional info about nature and severity of vulnerability",  # nopep8
     ),
+    "cvssv3.1": ScoringSystem(
+        identifier="cvssv3.1",
+        name="CVSSv3.1 Base Score",
+        url="https://www.first.org/cvss/v3-1/",
+        notes="cvssv3.1 base score",
+    ),
+    "cvssv3.1_vector": ScoringSystem(
+        identifier="cvssv3.1_vector",
+        name="CVSSv3.1 Vector",
+        url="https://www.first.org/cvss/v3-1/",
+        notes="cvssv3.1 vector, used to get additional info about nature and severity of vulnerability",  # nopep8
+    ),
     "rhbs": ScoringSystem(
         identifier="rhbs",
         name="RedHat Bugzilla severity",

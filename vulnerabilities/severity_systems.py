@@ -63,7 +63,7 @@ scoring_systems = {
     "rhbs": ScoringSystem(
         identifier="rhbs",
         name="RedHat Bugzilla severity",
-        url="https://bugzilla.redhat.com/pageb.cgi?id=fields.html#bug_severity",
+        url="https://bugzilla.redhat.com/page.cgi?id=fields.html#bug_severity",
     ),
     "rhas": ScoringSystem(
         identifier="rhas",

@@ -35,6 +35,8 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
+from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.severity_systems import scoring_systems
 
 
 def validate_schema(advisory_dict):
@@ -108,6 +110,13 @@ class ArchlinuxDataSource(DataSource):
                 Reference(
                     reference_id=record["name"],
                     url="https://security.archlinux.org/{}".format(record["name"]),
+                    severities=[
+                        VulnerabilitySeverity(
+                            system=scoring_systems["avgs"],
+                            value=record["severity"]
+                        )
+
+                    ]
                 )
             )
 

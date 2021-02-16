@@ -116,6 +116,13 @@ IMPORTER_REGISTRY = [
         },
     },
     {
+        'name': 'suse_scores',
+        'license': '',
+        'last_run': None,
+        'data_source': 'SUSESeverityScoreDataSource',
+        'data_source_cfg': {}
+    },
+    {
         'name': 'debian_oval',
         'license': '',
         'last_run': None,

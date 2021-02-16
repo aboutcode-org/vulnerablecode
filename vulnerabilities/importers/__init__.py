@@ -23,6 +23,8 @@
 
 from vulnerabilities.importers.alpine_linux import AlpineDataSource
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDDataSource
+from vulnerabilities.importers.apache_kafka import ApacheKafkaDataSource
+from vulnerabilities.importers.apache_tomcat import ApacheTomcatDataSource
 from vulnerabilities.importers.archlinux import ArchlinuxDataSource
 from vulnerabilities.importers.debian import DebianDataSource
 from vulnerabilities.importers.debian_oval import DebianOvalDataSource
@@ -42,7 +44,6 @@ from vulnerabilities.importers.ruby import RubyDataSource
 from vulnerabilities.importers.rust import RustDataSource
 from vulnerabilities.importers.safety_db import SafetyDbDataSource
 from vulnerabilities.importers.suse_backports import SUSEBackportsDataSource
+from vulnerabilities.importers.suse_scores import SUSESeverityScoreDataSource
 from vulnerabilities.importers.ubuntu import UbuntuDataSource
 from vulnerabilities.importers.ubuntu_usn import UbuntuUSNDataSource
-from vulnerabilities.importers.apache_tomcat import ApacheTomcatDataSource
-from vulnerabilities.importers.apache_kafka import ApacheKafkaDataSource

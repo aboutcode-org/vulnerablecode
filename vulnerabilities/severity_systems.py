@@ -63,11 +63,16 @@ scoring_systems = {
     "rhbs": ScoringSystem(
         identifier="rhbs",
         name="RedHat Bugzilla severity",
-        url="https://bugzilla.redhat.com/page.cgi?id=fields.html#bug_severity",
+        url="https://bugzilla.redhat.com/pageb.cgi?id=fields.html#bug_severity",
     ),
     "rhas": ScoringSystem(
         identifier="rhas",
         name="RedHat Aggregate severity",
         url="https://access.redhat.com/security/updates/classification/",
     ),
+    "avgs": ScoringSystem(
+        identifier="avgs",
+        name="Archlinux Vulnerability Group Severity",
+        url="https://wiki.archlinux.org/index.php/Bug_reporting_guidelines#Severity"
+    )
 }

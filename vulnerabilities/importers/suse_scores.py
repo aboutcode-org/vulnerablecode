@@ -27,7 +27,7 @@ from vulnerabilities.data_source import VulnerabilitySeverity
 from vulnerabilities.helpers import fetch_yaml
 from vulnerabilities.severity_systems import scoring_systems
 
-URL = f"https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml"
+URL = "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml"
 
 
 class SUSESeverityScoreDataSource(DataSource):

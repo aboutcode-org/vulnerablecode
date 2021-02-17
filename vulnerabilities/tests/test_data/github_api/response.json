@@ -20,7 +20,8 @@
                 {
                   "url":"https://github.com/advisories/GHSA-qcxh-w3j9-58qr"
                 }
-              ]
+              ],
+              "severity": "MODERATE"
             },
             "package": {
               "name": "org.apache.tomcat.embed:tomcat-embed-core"
@@ -46,7 +47,8 @@
                 {
                   "url":"https://github.com/advisories/GHSA-qcxh-w3j9-58qr"
                 }
-              ]
+              ],
+              "severity": "HIGH"
             },
             "package": {
               "name": "org.apache.tomcat.embed:tomcat-embed-core"
@@ -72,7 +74,8 @@
                 {
                   "url":"https://github.com/advisories/GHSA-c9hw-wf7x-jp9j"
                 }
-              ]
+              ],
+              "severity": "LOW"
             },
             "package": {
               "name": "org.apache.tomcat.embed:tomcat-embed-core"
@@ -98,7 +101,8 @@
                 {
                   "url":"https://github.com/advisories/GHSA-c9hw-wf7x-jp9j"
                 }
-              ]
+              ],
+              "severity": "MODERATE"
             },
             "package": {
               "name": "org.apache.tomcat.embed:tomcat-embed-core"
@@ -124,7 +128,8 @@
                 {
                   "url":"https://github.com/advisories/GHSA-c9hw-wf7x-jp9j"
                 }
-              ]
+              ],
+              "severity": "LOW"
             },
             "package": {
               "name": "org.apache.tomcat.embed:tomcat-embed-core"

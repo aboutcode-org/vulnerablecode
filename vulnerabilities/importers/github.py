@@ -155,7 +155,11 @@ class GitHubAPIDataSource(DataSource):
             return ns, name
 
         if ecosystem == "COMPOSER":
-            vendor, name = pkg_name.split("/")
+            try:
+                vendor, name = pkg_name.split("/")
+            except ValueError:
+                # TODO log this
+                return None
             return vendor, name
 
         if ecosystem == "NUGET" or ecosystem == "PIP" or ecosystem == "RUBYGEMS":

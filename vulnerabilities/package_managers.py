@@ -309,13 +309,18 @@ class ComposerVersionAPI(VersionAPI):
 
     async def fetch(self, pkg, session) -> None:
         endpoint = self.composer_url(pkg)
-        resp = await session.request(method="GET", url=endpoint)
-        resp = await resp.json()
-        self.cache[pkg] = self.extract_versions(resp, pkg)
+        if endpoint:
+            resp = await session.request(method="GET", url=endpoint)
+            resp = await resp.json()
+            self.cache[pkg] = self.extract_versions(resp, pkg)
 
     @staticmethod
     def composer_url(pkg_name: str) -> str:
-        vendor, name = pkg_name.split("/")
+        try:
+            vendor, name = pkg_name.split("/")
+        except ValueError:
+            # TODO Log this
+            return None
         return f"https://repo.packagist.org/p/{vendor}/{name}.json"
 
     @staticmethod

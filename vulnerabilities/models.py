@@ -65,24 +65,14 @@ class Vulnerability(models.Model):
     def save(self, *args, **kwargs):
         if self.vulnerability_id:
             return super().save(*args, **kwargs)
-        # Generate unique VULCOID
-        ie = None
-        for attempt in range(1, 11):
-            try:
-                self.vulnerability_id = self.generate_vulcoid()
-                # Using the context manager due to https://stackoverflow.com/a/23326971
-                with transaction.atomic():
-                    return super().save(*args, **kwargs)
-
-            except IntegrityError as ie:
-                sleep(0.5 * attempt)
-        raise Exception("Failed to generate a unique VULCOID after 10 attempts") from ie
+        self.vulnerability_id = self.generate_vulcoid()
+        return super().save(*args, **kwargs)
 
     @staticmethod
     def generate_vulcoid(timestamp=None):
         if not timestamp:
             timestamp = datetime.now()
-        timestamp = timestamp.strftime("%Y-%m-%d%H%M%S")
+        timestamp = timestamp.strftime("%Y%m%d-%H%M-%S%f")[:-4]
         return f"VULCOID-{timestamp}"
 
     @property

@@ -33,14 +33,14 @@ from vulnerabilities import models
 class TestVulnerabilityModel(TestCase):
 
     def test_generate_vulcoid_given_timestamp_object(self):
-        timestamp_object = datetime(2021, 1, 1, 11, 12, 13)
-        expected_vulcoid = "VULCOID-2021-01-01111213"
+        timestamp_object = datetime(2021, 1, 1, 11, 12, 13, 2000)
+        expected_vulcoid = "VULCOID-20210101-1112-1300"
         found_vulcoid = models.Vulnerability.generate_vulcoid(timestamp_object)
         assert expected_vulcoid == found_vulcoid
 
     def test_generate_vulcoid(self):
-        expected_vulcoid = "VULCOID-2021-01-01111213"
-        with freeze_time("2021-01-01 11:12:13"):
+        expected_vulcoid = "VULCOID-20210101-1112-1300"
+        with freeze_time("2021-01-01 11:12:13.0000"):
             found_vulcoid = models.Vulnerability.generate_vulcoid()
         assert expected_vulcoid == found_vulcoid
 
@@ -52,22 +52,11 @@ class TestVulnerabilityModel(TestCase):
     @pytest.mark.django_db
     def test_vulnerability_save_without_vulnerability_id(self):
         assert models.Vulnerability.objects.filter(
-            vulnerability_id="VULCOID-2021-01-01111213"
+            vulnerability_id="VULCOID-20210101-1112-1300"
             ).count() == 0
 
-        with freeze_time("2021-01-01 11:12:13"):
+        with freeze_time("2021-01-01 11:12:13.0000"):
             models.Vulnerability(vulnerability_id="").save()
             assert models.Vulnerability.objects.filter(
-                vulnerability_id="VULCOID-2021-01-01111213"
-                ).count() == 1
-
-        assert models.Vulnerability.objects.filter(
-            vulnerability_id="VULCOID-2021-01-01111214"
-            ).count() == 0
-
-        with freeze_time("2021-01-01 11:12:13", tick=True):
-            # This context manager sets time to "2021-01-01 11:12:13" and starts the clock.
-            models.Vulnerability(vulnerability_id="").save()
-            assert models.Vulnerability.objects.filter(
-                vulnerability_id="VULCOID-2021-01-01111214"
+                vulnerability_id="VULCOID-20210101-1112-1300"
                 ).count() == 1

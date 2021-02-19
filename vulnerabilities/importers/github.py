@@ -253,7 +253,6 @@ class GitHubAPIDataSource(DataSource):
                                 vuln_references=vuln_references,
                             )
                         )
-                        print(adv_list[-1])
         return adv_list
 
     @staticmethod

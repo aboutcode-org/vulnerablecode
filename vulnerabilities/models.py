@@ -46,9 +46,9 @@ class Vulnerability(models.Model):
         max_length=50,
         help_text="Unique vulnerability_id for a vulnerability: this is either a published CVE id"
         " (as in CVE-2020-7965) if it exists. Otherwise this is a VulnerableCode-assigned VULCOID"
-        " (as in VULCOID-2021-01-23-15-12). When a vulnerability CVE is assigned later we replace"
-        " this with the CVE and keep the 'old' VULCOID in the 'old_vulnerability_id' field to "
-        "support redirection to the CVE id.",
+        " (as in VULCOID-20210222-1315-16461541). When a vulnerability CVE is assigned later we"
+        " replace this with the CVE and keep the 'old' VULCOID in the 'old_vulnerability_id'"
+        " field to support redirection to the CVE id.",
         unique=True,
     )
     old_vulnerability_id = models.CharField(
@@ -72,7 +72,7 @@ class Vulnerability(models.Model):
     def generate_vulcoid(timestamp=None):
         if not timestamp:
             timestamp = datetime.now()
-        timestamp = timestamp.strftime("%Y%m%d-%H%M-%S%f")[:-4]
+        timestamp = timestamp.strftime("%Y%m%d-%H%M-%S%f")
         return f"VULCOID-{timestamp}"
 
     @property

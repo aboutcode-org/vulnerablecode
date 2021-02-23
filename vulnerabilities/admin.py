@@ -35,12 +35,12 @@ from vulnerabilities.models import (
 
 @admin.register(Vulnerability)
 class VulnerabilityAdmin(admin.ModelAdmin):
-    search_fields = ["cve_id"]
+    search_fields = ["vulnerability_id"]
 
 
 @admin.register(VulnerabilityReference)
 class VulnerabilityReferenceAdmin(admin.ModelAdmin):
-    search_fields = ["vulnerability__cve_id", "reference_id", "url"]
+    search_fields = ["vulnerability__vulnerability_id", "reference_id", "url"]
 
 
 @admin.register(Package)
@@ -52,7 +52,7 @@ class PackageAdmin(admin.ModelAdmin):
 @admin.register(PackageRelatedVulnerability)
 class PackageRelatedVulnerabilityAdmin(admin.ModelAdmin):
     list_filter = ("is_vulnerable", "package__type", "package__namespace")
-    search_fields = ["vulnerability__cve_id", "package__name"]
+    search_fields = ["vulnerability__vulnerability_id", "package__name"]
 
 
 @admin.register(Importer)

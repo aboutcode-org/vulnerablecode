@@ -37,12 +37,13 @@ The Building Blocks A.K.A Prerequisites
         impacted_package_urls: Iterable[PackageURL]
         resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
         vuln_references: List[Reference] = dataclasses.field(default_factory=list)
-        cve_id: Optional[str] = None
+        vulnerability_id: Optional[str] = None
 
     class Reference:
-
-        url: str = ''
-        reference_id: str = ''
+        reference_id: str = ""
+        url: str = ""
+        severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
+        
 
 Steps to build an Importer
 --------------------------
@@ -120,7 +121,7 @@ method of the migration script.
                     for version in vuln_pkg_versions}
                      
                      
-                advisory = Advisory(cve_id=cve_id,summary='',impacted_package_urls=vuln_purls,resolved_package_urls=safe_purls)
+                advisory = Advisory(vulnerability_id=cve_id,summary='',impacted_package_urls=vuln_purls,resolved_package_urls=safe_purls)
                 advisories.append(advisory)
             return advisories
     

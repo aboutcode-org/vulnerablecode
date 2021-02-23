@@ -118,7 +118,6 @@ def process_advisories(data_source: DataSource) -> None:
     # Treat updated_advisories and added_advisories as same. Eventually
     # we want to  refactor all data sources to  provide advisories via a
     # single method.
-    vulcoid_timestamp = datetime.datetime.now()
     advisory_batches = chain(data_source.updated_advisories(), data_source.added_advisories())
     for batch in advisory_batches:
         for advisory in batch:

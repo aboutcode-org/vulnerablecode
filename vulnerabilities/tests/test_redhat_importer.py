@@ -126,7 +126,7 @@ class TestRedhat(unittest.TestCase):
                         ],
                     ),
                 ],
-                cve_id="CVE-2016-9401",
+                vulnerability_id="CVE-2016-9401",
             )
         }
 

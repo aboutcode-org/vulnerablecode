@@ -86,7 +86,7 @@ class TestSUSESeverityScoreDataSource(TestCase):
                         ],
                     )
                 ],
-                cve_id="CVE-2004-0230",
+                vulnerability_id="CVE-2004-0230",
             ),
             Advisory(
                 summary="",
@@ -118,7 +118,7 @@ class TestSUSESeverityScoreDataSource(TestCase):
                         ],
                     )
                 ],
-                cve_id="CVE-2003-1605",
+                vulnerability_id="CVE-2003-1605",
             ),
         ]
 

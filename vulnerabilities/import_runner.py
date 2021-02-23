@@ -153,12 +153,23 @@ def process_advisories(data_source: DataSource) -> None:
                         existing_ref = get_vuln_pkg_refs(vuln, pkg)
                         if not existing_ref:
                             bulk_create_vuln_pkg_refs.add(pkg_vuln_ref)
+                            # A vulnerability-package relationship does not exist already
+                            # if either the vulnerability or the package is just created.
 
                         else:
-                            # This handles conflicts between existing data and obtained data
-                            if existing_ref[0].is_vulnerable != pkg_vuln_ref.is_vulnerable:
-                                handle_conflicts([existing_ref[0], pkg_vuln_ref.to_model_object()])
-                                existing_ref.delete()
+                            # insert only if it there is no existing vulnerability-package relationship.  # nopep8
+                            existing_ref = get_vuln_pkg_refs(vuln, pkg)
+                            if not existing_ref:
+                                bulk_create_vuln_pkg_refs.add(pkg_vuln_ref)
+
+                            else:
+                                # This handles conflicts between existing data and obtained data
+                                if existing_ref[0].is_vulnerable != pkg_vuln_ref.is_vulnerable:
+                                    handle_conflicts(
+                                        [existing_ref[0], pkg_vuln_ref.to_model_object()]
+                                    )
+                                    existing_ref.delete()
+
             except Exception:
                 # TODO: store error but continue
                 logger.error(
@@ -223,26 +234,13 @@ def _get_or_create_vulnerability(
     advisory: Advisory,
 ) -> Tuple[models.Vulnerability, bool]:
 
-    if advisory.cve_id:
-        query_kwargs = {"cve_id": advisory.cve_id}
-    elif advisory.summary:
-        query_kwargs = {"summary": advisory.summary}
-    else:
-        return models.Vulnerability.objects.create(), True
+    vuln, created = models.Vulnerability.objects.get_or_create(vulnerability_id=advisory.vulnerability_id)  # nopep8
+    # Eventually we only want to keep summary from NVD and ignore other descriptions.
+    if advisory.summary and vuln.summary != advisory.summary:
+        vuln.summary = advisory.summary
+        vuln.save()
 
-    try:
-        vuln, created = models.Vulnerability.objects.get_or_create(**query_kwargs)
-        # Eventually we only want to keep summary from NVD and ignore other descriptions.
-        if advisory.summary and vuln.summary != advisory.summary:
-            vuln.summary = advisory.summary
-            vuln.save()
-        return vuln, created
-
-    except Exception:
-        logger.error(
-            f"Failed to _get_or_create_vulnerability: {query_kwargs!r}:\n" + traceback.format_exc()
-        )
-        raise
+    return vuln, created
 
 
 def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:

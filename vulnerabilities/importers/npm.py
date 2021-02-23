@@ -106,7 +106,7 @@ class NpmDataSource(GitDataSource):
             advisories.append(
                 Advisory(
                     summary=record.get("overview", ""),
-                    cve_id=cve_id,
+                    vulnerability_id=cve_id,
                     impacted_package_urls=impacted_purls,
                     resolved_package_urls=resolved_purls,
                     vuln_references=vuln_reference,

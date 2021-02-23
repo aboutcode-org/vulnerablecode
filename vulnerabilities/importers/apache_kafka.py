@@ -82,7 +82,7 @@ class ApacheKafkaDataSource(DataSource):
 
             advisories.append(
                 Advisory(
-                    cve_id=cve_id,
+                    vulnerability_id=cve_id,
                     summary=cve_description_paragraph.text,
                     impacted_package_urls=affected_packages,
                     resolved_package_urls=fixed_packages,

@@ -192,7 +192,7 @@ class TestGitHubAPIDataSource(TestCase):
                 vuln_references=[Reference(
                     url='https://github.com/advisories/GHSA-qcxh-w3j9-58qr',
                     reference_id='GHSA-qcxh-w3j9-58qr')],
-                cve_id='CVE-2019-0199',
+                vulnerability_id='CVE-2019-0199',
             ),
             Advisory(
                 summary='Denial of Service in Tomcat',
@@ -219,7 +219,7 @@ class TestGitHubAPIDataSource(TestCase):
                 vuln_references=[Reference(
                     url='https://github.com/advisories/GHSA-qcxh-w3j9-58qr',
                     reference_id='GHSA-qcxh-w3j9-58qr')],
-                cve_id='CVE-2019-0199',
+                vulnerability_id='CVE-2019-0199',
             ),
             Advisory(
                 summary='Improper Input Validation in Tomcat',
@@ -245,7 +245,7 @@ class TestGitHubAPIDataSource(TestCase):
                 vuln_references=[Reference(
                     url='https://github.com/advisories/GHSA-c9hw-wf7x-jp9j',
                     reference_id='GHSA-c9hw-wf7x-jp9j')],
-                cve_id='CVE-2020-1938',
+                vulnerability_id='CVE-2020-1938',
             ),
             Advisory(
                 summary='Improper Input Validation in Tomcat',
@@ -271,7 +271,7 @@ class TestGitHubAPIDataSource(TestCase):
                 vuln_references=[Reference(
                     url='https://github.com/advisories/GHSA-c9hw-wf7x-jp9j',
                     reference_id='GHSA-c9hw-wf7x-jp9j')],
-                cve_id='CVE-2020-1938',
+                vulnerability_id='CVE-2020-1938',
             ),
             Advisory(
                 summary='Improper Input Validation in Tomcat',
@@ -298,7 +298,7 @@ class TestGitHubAPIDataSource(TestCase):
                 vuln_references=[Reference(
                     url='https://github.com/advisories/GHSA-c9hw-wf7x-jp9j',
                     reference_id='GHSA-c9hw-wf7x-jp9j')],
-                cve_id='CVE-2020-1938',
+                vulnerability_id='CVE-2020-1938',
             ),
         ]
 

@@ -109,7 +109,7 @@ class NginxDataSource(DataSource):
 
             advisories.append(
                 Advisory(
-                    cve_id=cve_id,
+                    vulnerability_id=cve_id,
                     summary=summary,
                     impacted_package_urls=vulnerable_packages,
                     resolved_package_urls=fixed_packages,

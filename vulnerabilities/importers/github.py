@@ -38,12 +38,13 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
-
+from vulnerabilities.data_source import VulnerabilitySeverity
 from vulnerabilities.package_managers import MavenVersionAPI
 from vulnerabilities.package_managers import NugetVersionAPI
 from vulnerabilities.package_managers import ComposerVersionAPI
 from vulnerabilities.package_managers import PypiVersionAPI
 from vulnerabilities.package_managers import RubyVersionAPI
+from vulnerabilities.severity_systems import scoring_systems
 
 # set of all possible values of first '%s' = {'MAVEN','COMPOSER', 'NUGET', 'RUBYGEMS', 'PYPI'}
 # second '%s' is interesting, it will have the value '' for the first request,
@@ -63,6 +64,7 @@ query = """
                 references {
                     url
                 }
+                severity
                 }
                 package {
                 name
@@ -222,9 +224,24 @@ class GitHubAPIDataSource(DataSource):
                     vuln_references = self.extract_references(adv["node"]["advisory"]["references"])
                     vuln_desc = adv["node"]["advisory"]["summary"]
 
-                    for vuln in adv["node"]["advisory"]["identifiers"]:
-                        if vuln["type"] == "CVE":
-                            cve_ids.add(vuln["value"])
+                    for identifier in adv["node"]["advisory"]["identifiers"]:
+                        # collect CVEs
+                        if identifier["type"] == "CVE":
+                            cve_ids.add(identifier["value"])
+
+                        # attach the GHSA with severity score
+                        if identifier["type"] == "GHSA":
+                            for ref in vuln_references:
+                                if ref.reference_id == identifier["value"]:
+                                    ref.severities = [
+                                        VulnerabilitySeverity(
+                                            system=scoring_systems["cvssv3.1_qr"],
+                                            value=adv["node"]["advisory"]["severity"]
+                                        )
+                                    ]
+                                    # Each Node has only one GHSA, hence exit after attaching
+                                    # score to this GHSA
+                                    break
 
                     for cve_id in cve_ids:
                         adv_list.append(

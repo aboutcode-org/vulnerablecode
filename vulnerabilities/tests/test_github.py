@@ -34,40 +34,40 @@ from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
+from vulnerabilities.data_source import VulnerabilitySeverity
 from vulnerabilities.importers.github import GitHubAPIDataSource
 from vulnerabilities.package_managers import MavenVersionAPI
 from vulnerabilities.package_managers import NugetVersionAPI
 from vulnerabilities.package_managers import ComposerVersionAPI
+from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.importers.github import GitHubTokenError
 from vulnerabilities.importers.github import query
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, 'test_data')
+TEST_DATA = os.path.join(BASE_DIR, "test_data")
 
 
 class TestGitHubAPIDataSource(TestCase):
     @classmethod
     def setUpClass(cls):
         data_source_cfg = {
-            'endpoint': 'https://api.example.com/graphql',
-            'ecosystems': ['MAVEN'],
+            "endpoint": "https://api.example.com/graphql",
+            "ecosystems": ["MAVEN"],
         }
         # os.environ = {'GH_TOKEN':'abc'}
-        with patch.dict(os.environ, {'GH_TOKEN': 'abc'}):
+        with patch.dict(os.environ, {"GH_TOKEN": "abc"}):
             cls.data_src = GitHubAPIDataSource(1, config=data_source_cfg)
 
     def tearDown(self):
-        setattr(self.data_src, 'version_api', None)
+        setattr(self.data_src, "version_api", None)
 
     def test_categorize_versions(self):
-        eg_version_range = '>= 3.3.0, < 3.3.5'
-        eg_versions = {'3.3.6', '3.3.0', '3.3.4', '3.2.0'}
+        eg_version_range = ">= 3.3.0, < 3.3.5"
+        eg_versions = {"3.3.6", "3.3.0", "3.3.4", "3.2.0"}
 
-        aff_vers, safe_vers = self.data_src.categorize_versions(
-            eg_version_range, eg_versions
-        )
-        exp_safe_vers = {'3.3.6', '3.2.0'}
-        exp_aff_vers = {'3.3.0', '3.3.4'}
+        aff_vers, safe_vers = self.data_src.categorize_versions(eg_version_range, eg_versions)
+        exp_safe_vers = {"3.3.6", "3.2.0"}
+        exp_aff_vers = {"3.3.0", "3.3.4"}
 
         assert aff_vers == exp_aff_vers
         assert safe_vers == exp_safe_vers
@@ -76,14 +76,14 @@ class TestGitHubAPIDataSource(TestCase):
         class MockErrorResponse(MagicMock):
             @staticmethod
             def json():
-                return {'message': 'Bad credentials'}
+                return {"message": "Bad credentials"}
 
         # This test checks whether `fetch` raises an error when there is an Authentication
         # failure.
-        exp_headers = {'Authorization': 'token abc'}
-        first_query = {'query': query % ('MAVEN', '')}
+        exp_headers = {"Authorization": "token abc"}
+        first_query = {"query": query % ("MAVEN", "")}
         mock = MockErrorResponse()
-        with patch('vulnerabilities.importers.github.requests.post', new=mock):
+        with patch("vulnerabilities.importers.github.requests.post", new=mock):
             self.assertRaises(GitHubTokenError, self.data_src.fetch)
             mock.assert_called_with(
                 self.data_src.config.endpoint, headers=exp_headers, json=first_query
@@ -101,212 +101,280 @@ class TestGitHubAPIDataSource(TestCase):
             def json(self):
                 self.has_next_page = not self.has_next_page
                 return {
-                    'data': {
-                        'securityVulnerabilities': {
-                            'pageInfo': {
-                                'endCursor': 'page=2',
-                                'hasNextPage': self.has_next_page,
+                    "data": {
+                        "securityVulnerabilities": {
+                            "pageInfo": {
+                                "endCursor": "page=2",
+                                "hasNextPage": self.has_next_page,
                             }
                         }
                     }
                 }
 
-        exp_headers = {'Authorization': 'token abc'}
-        first_query = {'query': query % ('MAVEN', '')}
-        second_query = {'query': query % ('MAVEN', 'after: "page=2"')}
+        exp_headers = {"Authorization": "token abc"}
+        first_query = {"query": query % ("MAVEN", "")}
+        second_query = {"query": query % ("MAVEN", 'after: "page=2"')}
         mock = MockCorrectResponse()
-        with patch('vulnerabilities.importers.github.requests.post', new=mock):
+        with patch("vulnerabilities.importers.github.requests.post", new=mock):
             resp = self.data_src.fetch()
 
-        call_1 = call(
-            self.data_src.config.endpoint, headers=exp_headers, json=first_query
-        )
-        call_2 = call(
-            self.data_src.config.endpoint, headers=exp_headers, json=second_query
-        )
+        call_1 = call(self.data_src.config.endpoint, headers=exp_headers, json=first_query)
+        call_2 = call(self.data_src.config.endpoint, headers=exp_headers, json=second_query)
 
         assert mock.call_args_list[0] == call_1
         assert mock.call_args_list[1] == call_2
 
     def test_set_version_api(self):
 
-        with patch('vulnerabilities.importers.github.GitHubAPIDataSource.set_api'):
-            with patch('vulnerabilities.importers.github.GitHubAPIDataSource.collect_packages'):
-                assert getattr(self.data_src, 'version_api', None) is None
+        with patch("vulnerabilities.importers.github.GitHubAPIDataSource.set_api"):
+            with patch("vulnerabilities.importers.github.GitHubAPIDataSource.collect_packages"):
+                assert getattr(self.data_src, "version_api", None) is None
 
-                self.data_src.set_version_api('MAVEN')
+                self.data_src.set_version_api("MAVEN")
                 assert isinstance(self.data_src.version_api, MavenVersionAPI)
 
-                self.data_src.set_version_api('NUGET')
+                self.data_src.set_version_api("NUGET")
                 assert isinstance(self.data_src.version_api, NugetVersionAPI)
 
-                self.data_src.set_version_api('COMPOSER')
+                self.data_src.set_version_api("COMPOSER")
                 assert isinstance(self.data_src.version_api, ComposerVersionAPI)
 
     def test_process_name(self):
 
-        expected_1 = ('org.apache', 'kafka')
-        result_1 = self.data_src.process_name('MAVEN', 'org.apache:kafka')
+        expected_1 = ("org.apache", "kafka")
+        result_1 = self.data_src.process_name("MAVEN", "org.apache:kafka")
         assert result_1 == expected_1
 
-        expected_2 = (None, 'WindowS.nUget.ExIsts')
-        result_2 = self.data_src.process_name('NUGET', 'WindowS.nUget.ExIsts')
+        expected_2 = (None, "WindowS.nUget.ExIsts")
+        result_2 = self.data_src.process_name("NUGET", "WindowS.nUget.ExIsts")
         assert result_2 == expected_2
 
-        expected_3 = ('psf', 'black')
-        result_3 = self.data_src.process_name('COMPOSER', 'psf/black')
+        expected_3 = ("psf", "black")
+        result_3 = self.data_src.process_name("COMPOSER", "psf/black")
         assert result_3 == expected_3
 
         expected_4 = None
-        result_4 = self.data_src.process_name('SAMPLE', 'sample?example=True')
+        result_4 = self.data_src.process_name("SAMPLE", "sample?example=True")
         assert result_4 == expected_4
 
     def test_process_response(self):
 
-        with open(os.path.join(TEST_DATA, 'github_api', 'response.json')) as f:
+        with open(os.path.join(TEST_DATA, "github_api", "response.json")) as f:
             resp = json.load(f)
             self.data_src.advisories = resp
 
         expected_result = [
             Advisory(
-                summary='Denial of Service in Tomcat',
+                summary="Denial of Service in Tomcat",
                 impacted_package_urls=set(),
                 resolved_package_urls={
                     PackageURL(
-                        type='maven',
-                        namespace='org.apache.tomcat.embed',
-                        name='tomcat-embed-core',
-                        version='1.2.0',
-                        qualifiers=OrderedDict(),
+                        type="maven",
+                        namespace="org.apache.tomcat.embed",
+                        name="tomcat-embed-core",
+                        version="9.0.2",
+                        qualifiers={},
                         subpath=None,
                     ),
                     PackageURL(
-                        type='maven',
-                        namespace='org.apache.tomcat.embed',
-                        name='tomcat-embed-core',
-                        version='9.0.2',
-                        qualifiers=OrderedDict(),
+                        type="maven",
+                        namespace="org.apache.tomcat.embed",
+                        name="tomcat-embed-core",
+                        version="1.2.0",
+                        qualifiers={},
                         subpath=None,
                     ),
                 },
-                vuln_references=[Reference(
-                    url='https://github.com/advisories/GHSA-qcxh-w3j9-58qr',
-                    reference_id='GHSA-qcxh-w3j9-58qr')],
-                vulnerability_id='CVE-2019-0199',
+                vuln_references=[
+                    Reference(
+                        reference_id="GHSA-qcxh-w3j9-58qr",
+                        url="https://github.com/advisories/GHSA-qcxh-w3j9-58qr",
+                        severities=[
+                            VulnerabilitySeverity(
+                                system=ScoringSystem(
+                                    identifier="cvssv3.1_qr",
+                                    name="CVSSv3.1 Qualitative Severity Rating",
+                                    url="https://www.first.org/cvss/specification-document",
+                                    notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",  # nopep8
+                                ),
+                                value="MODERATE",
+                            )
+                        ],
+                    )
+                ],
+                vulnerability_id="CVE-2019-0199",
             ),
             Advisory(
-                summary='Denial of Service in Tomcat',
+                summary="Denial of Service in Tomcat",
                 impacted_package_urls={
                     PackageURL(
-                        type='maven',
-                        namespace='org.apache.tomcat.embed',
-                        name='tomcat-embed-core',
-                        version='9.0.2',
-                        qualifiers=OrderedDict(),
+                        type="maven",
+                        namespace="org.apache.tomcat.embed",
+                        name="tomcat-embed-core",
+                        version="9.0.2",
+                        qualifiers={},
                         subpath=None,
                     )
                 },
                 resolved_package_urls={
                     PackageURL(
-                        type='maven',
-                        namespace='org.apache.tomcat.embed',
-                        name='tomcat-embed-core',
-                        version='1.2.0',
-                        qualifiers=OrderedDict(),
+                        type="maven",
+                        namespace="org.apache.tomcat.embed",
+                        name="tomcat-embed-core",
+                        version="1.2.0",
+                        qualifiers={},
                         subpath=None,
                     )
                 },
-                vuln_references=[Reference(
-                    url='https://github.com/advisories/GHSA-qcxh-w3j9-58qr',
-                    reference_id='GHSA-qcxh-w3j9-58qr')],
-                vulnerability_id='CVE-2019-0199',
+                vuln_references=[
+                    Reference(
+                        reference_id="GHSA-qcxh-w3j9-58qr",
+                        url="https://github.com/advisories/GHSA-qcxh-w3j9-58qr",
+                        severities=[
+                            VulnerabilitySeverity(
+                                system=ScoringSystem(
+                                    identifier="cvssv3.1_qr",
+                                    name="CVSSv3.1 Qualitative Severity Rating",
+                                    url="https://www.first.org/cvss/specification-document",
+                                    notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",  # nopep8
+                                ),
+                                value="HIGH",
+                            )
+                        ],
+                    )
+                ],
+                vulnerability_id="CVE-2019-0199",
             ),
             Advisory(
-                summary='Improper Input Validation in Tomcat',
+                summary="Improper Input Validation in Tomcat",
                 impacted_package_urls=set(),
                 resolved_package_urls={
                     PackageURL(
-                        type='maven',
-                        namespace='org.apache.tomcat.embed',
-                        name='tomcat-embed-core',
-                        version='1.2.0',
-                        qualifiers=OrderedDict(),
+                        type="maven",
+                        namespace="org.apache.tomcat.embed",
+                        name="tomcat-embed-core",
+                        version="9.0.2",
+                        qualifiers={},
                         subpath=None,
                     ),
                     PackageURL(
-                        type='maven',
-                        namespace='org.apache.tomcat.embed',
-                        name='tomcat-embed-core',
-                        version='9.0.2',
-                        qualifiers=OrderedDict(),
+                        type="maven",
+                        namespace="org.apache.tomcat.embed",
+                        name="tomcat-embed-core",
+                        version="1.2.0",
+                        qualifiers={},
                         subpath=None,
                     ),
                 },
-                vuln_references=[Reference(
-                    url='https://github.com/advisories/GHSA-c9hw-wf7x-jp9j',
-                    reference_id='GHSA-c9hw-wf7x-jp9j')],
-                vulnerability_id='CVE-2020-1938',
+                vuln_references=[
+                    Reference(
+                        reference_id="GHSA-c9hw-wf7x-jp9j",
+                        url="https://github.com/advisories/GHSA-c9hw-wf7x-jp9j",
+                        severities=[
+                            VulnerabilitySeverity(
+                                system=ScoringSystem(
+                                    identifier="cvssv3.1_qr",
+                                    name="CVSSv3.1 Qualitative Severity Rating",
+                                    url="https://www.first.org/cvss/specification-document",
+                                    notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",  # nopep8
+                                ),
+                                value="LOW",
+                            )
+                        ],
+                    )
+                ],
+                vulnerability_id="CVE-2020-1938",
             ),
             Advisory(
-                summary='Improper Input Validation in Tomcat',
+                summary="Improper Input Validation in Tomcat",
                 impacted_package_urls=set(),
                 resolved_package_urls={
                     PackageURL(
-                        type='maven',
-                        namespace='org.apache.tomcat.embed',
-                        name='tomcat-embed-core',
-                        version='1.2.0',
-                        qualifiers=OrderedDict(),
+                        type="maven",
+                        namespace="org.apache.tomcat.embed",
+                        name="tomcat-embed-core",
+                        version="9.0.2",
+                        qualifiers={},
                         subpath=None,
                     ),
                     PackageURL(
-                        type='maven',
-                        namespace='org.apache.tomcat.embed',
-                        name='tomcat-embed-core',
-                        version='9.0.2',
-                        qualifiers=OrderedDict(),
+                        type="maven",
+                        namespace="org.apache.tomcat.embed",
+                        name="tomcat-embed-core",
+                        version="1.2.0",
+                        qualifiers={},
                         subpath=None,
                     ),
                 },
-                vuln_references=[Reference(
-                    url='https://github.com/advisories/GHSA-c9hw-wf7x-jp9j',
-                    reference_id='GHSA-c9hw-wf7x-jp9j')],
-                vulnerability_id='CVE-2020-1938',
+                vuln_references=[
+                    Reference(
+                        reference_id="GHSA-c9hw-wf7x-jp9j",
+                        url="https://github.com/advisories/GHSA-c9hw-wf7x-jp9j",
+                        severities=[
+                            VulnerabilitySeverity(
+                                system=ScoringSystem(
+                                    identifier="cvssv3.1_qr",
+                                    name="CVSSv3.1 Qualitative Severity Rating",
+                                    url="https://www.first.org/cvss/specification-document",
+                                    notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",  # nopep8
+                                ),
+                                value="MODERATE",
+                            )
+                        ],
+                    )
+                ],
+                vulnerability_id="CVE-2020-1938",
             ),
             Advisory(
-                summary='Improper Input Validation in Tomcat',
+                summary="Improper Input Validation in Tomcat",
                 impacted_package_urls={
                     PackageURL(
-                        type='maven',
-                        namespace='org.apache.tomcat.embed',
-                        name='tomcat-embed-core',
-                        version='9.0.2',
-                        qualifiers=OrderedDict(),
+                        type="maven",
+                        namespace="org.apache.tomcat.embed",
+                        name="tomcat-embed-core",
+                        version="9.0.2",
+                        qualifiers={},
                         subpath=None,
                     )
                 },
                 resolved_package_urls={
                     PackageURL(
-                        type='maven',
-                        namespace='org.apache.tomcat.embed',
-                        name='tomcat-embed-core',
-                        version='1.2.0',
-                        qualifiers=OrderedDict(),
+                        type="maven",
+                        namespace="org.apache.tomcat.embed",
+                        name="tomcat-embed-core",
+                        version="1.2.0",
+                        qualifiers={},
                         subpath=None,
                     )
                 },
-                vuln_references=[Reference(
-                    url='https://github.com/advisories/GHSA-c9hw-wf7x-jp9j',
-                    reference_id='GHSA-c9hw-wf7x-jp9j')],
-                vulnerability_id='CVE-2020-1938',
+                vuln_references=[
+                    Reference(
+                        reference_id="GHSA-c9hw-wf7x-jp9j",
+                        url="https://github.com/advisories/GHSA-c9hw-wf7x-jp9j",
+                        severities=[
+                            VulnerabilitySeverity(
+                                system=ScoringSystem(
+                                    identifier="cvssv3.1_qr",
+                                    name="CVSSv3.1 Qualitative Severity Rating",
+                                    url="https://www.first.org/cvss/specification-document",
+                                    notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",  # nopep8
+                                ),
+                                value="LOW",
+                            )
+                        ],
+                    )
+                ],
+                vulnerability_id="CVE-2020-1938",
             ),
         ]
 
         mock_version_api = MagicMock()
         mock_version_api.package_type = "maven"
-        mock_version_api.get = lambda x: {'1.2.0', '9.0.2'}
-        with patch('vulnerabilities.importers.github.MavenVersionAPI', return_value=mock_version_api):  # nopep8
-            with patch('vulnerabilities.importers.github.GitHubAPIDataSource.set_api'):
+        mock_version_api.get = lambda x: {"1.2.0", "9.0.2"}
+        with patch(
+            "vulnerabilities.importers.github.MavenVersionAPI", return_value=mock_version_api
+        ):  # nopep8
+            with patch("vulnerabilities.importers.github.GitHubAPIDataSource.set_api"):
                 found_result = self.data_src.process_response()
 
         assert expected_result == found_result

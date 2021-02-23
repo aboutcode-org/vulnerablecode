@@ -176,7 +176,7 @@ class PackageRelatedVulnerability(models.Model):
     is_vulnerable = models.BooleanField()
 
     def __str__(self):
-        return f"{self.package.package_url} {self.vulnerability.cve_id}"
+        return f"{self.package.package_url} {self.vulnerability.vulnerability_id}"
 
     class Meta:
         unique_together = ("package", "vulnerability")

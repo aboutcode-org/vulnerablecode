@@ -88,7 +88,7 @@ class VulnerabilitySearchView(View):
     @staticmethod
     def request_to_queryset(request):
         vuln_id = request.GET["vuln_id"]
-        return models.Vulnerability.objects.filter(cve_id__contains=vuln_id)
+        return models.Vulnerability.objects.filter(vulnerability_id__contains=vuln_id)
 
 
 class PackageUpdate(UpdateView):
@@ -142,7 +142,7 @@ class VulnerabilityCreate(CreateView):
 
     template_name = "vulnerability_create.html"
     model = models.Vulnerability
-    fields = ["cve_id", "summary"]
+    fields = ["vulnerability_id", "summary"]
 
     def get_success_url(self):
 
@@ -193,7 +193,7 @@ class PackageRelatedVulnerablityCreate(View):
         if "vuln_id" in self.request.POST:
             is_vulnerable = "impacted" in self.request.headers["Referer"]
             relation = self.create_relationship_instance(
-                cve_id=self.request.POST["vuln_id"],
+                vulnerability_id=self.request.POST["vuln_id"],
                 package_id=kwargs["pid"],
                 is_vulnerable=is_vulnerable,
             )
@@ -214,9 +214,9 @@ class PackageRelatedVulnerablityCreate(View):
         return existing_relation.exists()
 
     @staticmethod
-    def create_relationship_instance(cve_id, package_id, is_vulnerable):
+    def create_relationship_instance(vulnerability_id, package_id, is_vulnerable):
         package = models.Package.objects.get(id=package_id)
-        vulnerability, vuln_created = models.Vulnerability.objects.get_or_create(cve_id=cve_id)
+        vulnerability, vuln_created = models.Vulnerability.objects.get_or_create(vulnerability_id=vulnerability_id)  # nopep8
         return models.PackageRelatedVulnerability(
             vulnerability=vulnerability, package=package, is_vulnerable=is_vulnerable
         )

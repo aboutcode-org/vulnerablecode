@@ -36,7 +36,7 @@ Explore Vulnerabilities
           </tr>
           {% for vulnerability in  vulnerabilities %}
               <tr>
-                  <td><a href="{% url 'vulnerability_view' vulnerability.pk %}">{{vulnerability.cve_id}}</a></td>
+                  <td><a href="{% url 'vulnerability_view' vulnerability.pk %}">{{vulnerability.vulnerability_id}}</a></td>
                   <td>{{vulnerability.vulnerable_to.all|length}}</td>
                   <td>{{vulnerability.resolved_to.all|length}}</td>
               </tr>

@@ -176,7 +176,6 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class VulnerabilityFilterSet(filters.FilterSet):
-    vulnerability_id = filters.CharFilter(field_name="vulnerability_id")
 
     class Meta:
         model = Vulnerability

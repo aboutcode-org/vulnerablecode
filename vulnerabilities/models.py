@@ -44,7 +44,7 @@ class Vulnerability(models.Model):
 
     vulnerability_id = models.CharField(
         max_length=50,
-        help_text="Unique vulnerability_id for a vulnerability: this is either a published CVE id"
+        help_text="Unique identifier for a vulnerability: this is either a published CVE id"
         " (as in CVE-2020-7965) if it exists. Otherwise this is a VulnerableCode-assigned VULCOID"
         " (as in VULCOID-20210222-1315-16461541). When a vulnerability CVE is assigned later we"
         " replace this with the CVE and keep the 'old' VULCOID in the 'old_vulnerability_id'"
@@ -63,9 +63,8 @@ class Vulnerability(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        if self.vulnerability_id:
-            return super().save(*args, **kwargs)
-        self.vulnerability_id = self.generate_vulcoid()
+        if not self.vulnerability_id:
+            self.vulnerability_id = self.generate_vulcoid()
         return super().save(*args, **kwargs)
 
     @staticmethod

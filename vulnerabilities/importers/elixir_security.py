@@ -139,6 +139,6 @@ class ElixirSecurityDataSource(GitDataSource):
             summary=yaml_file["description"],
             impacted_package_urls=vuln_purls,
             resolved_package_urls=safe_purls,
-            cve_id=cve_id,
+            vulnerability_id=cve_id,
             vuln_references=vuln_references,
         )

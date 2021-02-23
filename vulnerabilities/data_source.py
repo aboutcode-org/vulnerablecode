@@ -81,14 +81,14 @@ class Advisory:
     impacted_package_urls: Iterable[PackageURL]
     resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
     vuln_references: List[Reference] = dataclasses.field(default_factory=list)
-    cve_id: Optional[str] = None
+    vulnerability_id: Optional[str] = None
 
     def __hash__(self):
         s = "{}{}{}{}".format(
             self.summary,
-            "".join(sorted([str(p) for p in self.impacted_package_urls])),
-            "".join(sorted([str(p) for p in self.resolved_package_urls])),
-            self.cve_id,
+            ''.join(sorted([str(p) for p in self.impacted_package_urls])),
+            ''.join(sorted([str(p) for p in self.resolved_package_urls])),
+            self.vulnerability_id,
         )
         return hash(s)
 
@@ -539,8 +539,6 @@ class OvalDataSource(DataSource):
                     summary=description,
                     impacted_package_urls=affected_purls,
                     resolved_package_urls=safe_purls,
-                    cve_id=vuln_id,
-                    vuln_references=references,
-                )
-            )
+                    vulnerability_id=vuln_id,
+                    vuln_references=references))
         return all_adv

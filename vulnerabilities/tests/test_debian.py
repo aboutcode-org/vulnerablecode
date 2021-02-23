@@ -77,7 +77,7 @@ class DebianImportTest(TestCase):
         self.assert_for_package("mimetex", "1.74-1", "stretch")
         self.assert_for_package("mimetex", "1.50-1.1", "buster")
         self.assert_for_package("mimetex", "1.76-1", "buster")
-        assert models.Vulnerability.objects.filter(cve_id__startswith="TEMP").count() == 0
+        assert models.Vulnerability.objects.filter(vulnerability_id__startswith="TEMP").count() == 0
 
     def test_response_is_new(self):
 
@@ -101,4 +101,4 @@ class DebianImportTest(TestCase):
         assert qs
 
         if cve_ids:
-            assert cve_ids == {v.cve_id for v in qs[0].vulnerabilities.all()}
+            assert cve_ids == {v.vulnerability_id for v in qs[0].vulnerabilities.all()}

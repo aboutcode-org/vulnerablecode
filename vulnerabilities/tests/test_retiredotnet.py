@@ -132,7 +132,7 @@ class TestRetireDotnetDataSource(TestCase):
                     url="https://github.com/aspnet/Announcements/issues/359", reference_id=""
                 )
             ],
-            cve_id="CVE-2019-0982",
+            vulnerability_id="CVE-2019-0982",
         )
 
         found_data = self.data_src.process_file(path)

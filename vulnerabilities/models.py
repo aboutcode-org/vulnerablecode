@@ -22,8 +22,11 @@
 
 import importlib
 from datetime import datetime
+from time import sleep
 
 from django.db import models
+from django.db import IntegrityError
+from django.db import transaction
 import django.contrib.postgres.fields as pgfields
 from django.utils.translation import ugettext_lazy as _
 from packageurl.contrib.django.models import PackageURLMixin
@@ -39,8 +42,37 @@ class Vulnerability(models.Model):
     VulnerabilityReference.
     """
 
-    cve_id = models.CharField(max_length=50, help_text="CVE ID", unique=True, null=True)
-    summary = models.TextField(help_text="Summary of the vulnerability", blank=True)
+    vulnerability_id = models.CharField(
+        max_length=50,
+        help_text="Unique identifier for a vulnerability: this is either a published CVE id"
+        " (as in CVE-2020-7965) if it exists. Otherwise this is a VulnerableCode-assigned VULCOID"
+        " (as in VULCOID-20210222-1315-16461541). When a vulnerability CVE is assigned later we"
+        " replace this with the CVE and keep the 'old' VULCOID in the 'old_vulnerability_id'"
+        " field to support redirection to the CVE id.",
+        unique=True,
+    )
+    old_vulnerability_id = models.CharField(
+        max_length=50,
+        help_text="empty if no  CVE else VC id",
+        unique=True,
+        null=True,
+    )
+    summary = models.TextField(
+        help_text="Summary of the vulnerability",
+        blank=True,
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.vulnerability_id:
+            self.vulnerability_id = self.generate_vulcoid()
+        return super().save(*args, **kwargs)
+
+    @staticmethod
+    def generate_vulcoid(timestamp=None):
+        if not timestamp:
+            timestamp = datetime.now()
+        timestamp = timestamp.strftime("%Y%m%d-%H%M-%S%f")
+        return f"VULCOID-{timestamp}"
 
     @property
     def vulnerable_to(self):
@@ -55,7 +87,7 @@ class Vulnerability(models.Model):
         )
 
     def __str__(self):
-        return self.cve_id or self.summary
+        return self.vulnerability_id or self.summary
 
     class Meta:
         verbose_name_plural = "Vulnerabilities"
@@ -213,10 +245,10 @@ class VulnerabilitySeverity(models.Model):
     scoring_system = models.CharField(
         max_length=50,
         choices=scoring_system_choices,
-        help_text="Identifier for the scoring system used. Available choices are: {} ".format(
+        help_text="identifier for the scoring system used. Available choices are: {} ".format(
                   ", ".join(
                         [
-                            f"{ss.identifier} is identifier for {ss.name} system"
+                            f"{ss.identifier} is vulnerability_id for {ss.name} system"
                             for ss in scoring_systems.values()
                         ]
                     ))

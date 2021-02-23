@@ -80,7 +80,7 @@ class SUSESeverityScoreDataSource(DataSource):
 
             advisories.append(
                 Advisory(
-                    cve_id=cve_id,
+                    vulnerability_id=cve_id,
                     summary="",
                     impacted_package_urls=[],
                     vuln_references=[

@@ -93,7 +93,7 @@ class TestApacheKafkaDataSource(TestCase):
                         reference_id="CVE-2018-17196",
                     ),
                 ],
-                cve_id="CVE-2018-17196",
+                vulnerability_id="CVE-2018-17196",
             )
         ]
         with open(TEST_DATA) as f:

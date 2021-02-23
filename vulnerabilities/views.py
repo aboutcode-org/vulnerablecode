@@ -59,14 +59,19 @@ class PackageSearchView(View):
 
     @staticmethod
     def request_to_queryset(request):
-        query = {}
-        if len(request.GET["name"]):
-            query["name"] = request.GET["name"]
+        package_type = ""
+        package_name = ""
 
         if len(request.GET["type"]):
-            query["type"] = request.GET["type"]
+            package_type = request.GET["type"]
 
-        return models.Package.objects.all().filter(**query)
+        if len(request.GET["name"]):
+            package_name = request.GET["name"]
+
+        return models.Package.objects.all().filter(
+            name__icontains=package_name,
+            type__icontains=package_type,
+        )
 
 
 class VulnerabilitySearchView(View):
@@ -88,7 +93,7 @@ class VulnerabilitySearchView(View):
     @staticmethod
     def request_to_queryset(request):
         vuln_id = request.GET["vuln_id"]
-        return models.Vulnerability.objects.filter(vulnerability_id__contains=vuln_id)
+        return models.Vulnerability.objects.filter(vulnerability_id__icontains=vuln_id)
 
 
 class PackageUpdate(UpdateView):

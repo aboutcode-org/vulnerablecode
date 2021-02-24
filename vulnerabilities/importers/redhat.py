@@ -20,9 +20,6 @@
 #  VulnerableCode is a free software code from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-
-import json
-
 from packageurl import PackageURL
 import requests
 
@@ -54,7 +51,7 @@ def fetch():
     """
     cves = []
     page_no = 1
-    url_template = "https://access.redhat.com/hydra/rest/securitydata/cve.json?per_page=10&page={}"
+    url_template = "https://access.redhat.com/hydra/rest/securitydata/cve.json?per_page=10000&page={}"  # nopep8
 
     cve_data = None
     while True:
@@ -78,7 +75,6 @@ def fetch():
         cves.extend(cve_data)
         page_no += 1
 
-    print(f"Fetched {len(cves)} CVEs from: {current_url}")
     return cves
 
 
@@ -152,9 +148,8 @@ def to_advisory(advisory_data):
         )
 
     references.append(Reference(severities=redhat_scores, url=advisory_data["resource_url"]))
-
     return Advisory(
-        cve_id=advisory_data["CVE"],
+        vulnerability_id=advisory_data["CVE"],
         summary=advisory_data["bugzilla_description"],
         impacted_package_urls=affected_purls,
         vuln_references=references,
@@ -163,7 +158,7 @@ def to_advisory(advisory_data):
 
 def rpm_to_purl(rpm_string):
     # FIXME: there is code in scancode to handle RPM conversion AND this should
-    # be all be part of the pcakageurl library
+    # be all be part of the packageurl library
 
     # Red Hat uses `-:0` instead of just `-` to separate
     # package name and version

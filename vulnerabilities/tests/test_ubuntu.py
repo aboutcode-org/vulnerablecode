@@ -90,7 +90,7 @@ class TestUbuntuOvalParser(unittest.TestCase):
         assert pkg_set1 == {"potrace"}
         assert pkg_set2 == {"tor"}
 
-    def test_get_versionsrngs_from_state(self):
+    def test_get_version_ranges_from_state(self):
 
         assert len(self.parsed_oval.oval_document.getStates()) == 2
 
@@ -100,8 +100,8 @@ class TestUbuntuOvalParser(unittest.TestCase):
         exp_range_1 = RangeSpecifier("<1.14-2")
         exp_range_2 = RangeSpecifier("<0.2.8.9-1ubuntu1")
 
-        assert self.parsed_oval.get_versionsrngs_from_state(state_1) == exp_range_1
-        assert self.parsed_oval.get_versionsrngs_from_state(state_2) == exp_range_2
+        assert self.parsed_oval.get_version_ranges_from_state(state_1) == exp_range_1
+        assert self.parsed_oval.get_version_ranges_from_state(state_2) == exp_range_2
 
     def test_get_urls_from_definition(self):
 

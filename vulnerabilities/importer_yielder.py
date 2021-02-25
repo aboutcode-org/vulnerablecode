@@ -93,7 +93,7 @@ IMPORTER_REGISTRY = [
         'data_source': 'UbuntuDataSource',
         'data_source_cfg': {
             'etags': {},
-            'releases': ['bionic', 'trusty', 'focal', 'eoan', 'xenial'],
+            'releases': ['xenial'],
         },
     },
     {

@@ -95,7 +95,7 @@ class TestSUSEOvalParser(unittest.TestCase):
         # it's object due to filters to  avoid such tests in  the first place
         assert pkg_set2 == {"cacti"}
 
-    def test_get_versionsrngs_from_state(self):
+    def test_get_version_ranges_from_state(self):
 
         assert len(self.parsed_oval.oval_document.getStates()) == 4
 
@@ -104,11 +104,11 @@ class TestSUSEOvalParser(unittest.TestCase):
 
         exp_range_1 = None
         exp_range_2 = RangeSpecifier("<0:1.2.11-lp151.3.6")
-        # In a full run we wont get exp_range1 because we won't obtain
-        # it's state due to filters to  avoid such tests in  the first place
-        assert self.parsed_oval.get_versionsrngs_from_state(state_1) == exp_range_1
-        assert self.parsed_oval.get_versionsrngs_from_state(state_2) == exp_range_2
-
+        #In a full run we wont get exp_range1 because we won't obtain 
+        #it's state due to filters to  avoid such tests in  the first place
+        assert self.parsed_oval.get_version_ranges_from_state(state_1) == exp_range_1
+        assert self.parsed_oval.get_version_ranges_from_state(state_2) == exp_range_2
+    
     def test_get_urls_from_definition(self):
 
         def1_urls = {

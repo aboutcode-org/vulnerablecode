@@ -73,7 +73,7 @@ class LaunchpadVersionAPI(VersionAPI):
                 else:
                     break
             self.cache[pkg] = all_versions
-        except (ClientResponseError, asyncio.exceptions.TimeoutError):
+        except (ClientResponseError, asyncio.exceptions.TimeoutError, ServerDisconnectedError):
             self.cache[pkg] = {}
 
 

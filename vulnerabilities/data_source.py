@@ -20,6 +20,7 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import pickle
 import dataclasses
 import logging
 import os
@@ -479,35 +480,15 @@ class OvalDataSource(DataSource):
         raise NotImplementedError
 
     def updated_advisories(self) -> List[Advisory]:
-        for purl_data, oval_etree in self._fetch():
-            if 'type' not in purl_data:
-                ets = (oval_etree and ET.tostring(oval_etree)) or 'NO DATA'
-                msg = (
-                    "Failed to get updated_advisories for Ubuntu: purl_data is "
-                    f"missing a package type {purl_data!r}\n"
-                    f"with OVAL XML:\n"
-                    f"{ets}\n"
-                    f"... continuing..."
-                )
-                print(msg)
-                logger.error(msg)
-                continue
-
+        for metadata, oval_file in self._fetch():
             try:
-                oval_data = self.get_data_from_xml_doc(oval_etree, purl_data)
+                oval_data = self.get_data_from_xml_doc(oval_file, metadata)
                 yield oval_data
             except Exception:
-                ets = (oval_etree and ET.tostring(oval_etree)) or 'NO DATA'
-                tb = traceback.format_exc()
-                msg = (
-                    f"Failed to get updated_advisories for Ubuntu:"
-                    f"with {purl_data!r}\n"
-                    f"and with OVAL XML:\n"
-                    f"{ets}\n{tb}\n"
-                    f"... continuing..."
+                logger.error(
+                    f"Failed to get updated_advisories: {oval_file!r} "
+                    "with {metadata!r}:\n" + traceback.format_exc()
                 )
-                print(msg)
-                logger.error(msg)
                 continue
 
     def set_api(self, all_pkgs: Iterable[str]):
@@ -534,35 +515,10 @@ class OvalDataSource(DataSource):
         Example value of pkg_metadata:
               {"type":"deb","qualifiers":{"distro":"buster"} }
         """
-        if 'type' not in pkg_metadata:
-            ets = xml_doc and ET.tostring(xml_doc) or 'NO DATA'
-            msg = (
-                "Failed to get_data_from_xml_doc: pkg_metadata is "
-                f"missing a package type {pkg_metadata!r}\n"
-                f"with OVAL XML:\n"
-                f"{ets}"
-            )
-            print(msg)
-            logger.error(msg)
-            raise Exception(msg)
 
         all_adv = []
         oval_doc = OvalParser(self.translations, xml_doc)
-        try:
-            raw_data = oval_doc.get_data()
-        except Exception:
-            ets = xml_doc and ET.tostring(xml_doc) or 'NO DATA'
-            tb = traceback.format_exc()
-            msg = (
-                f"Failed to get_data_from_xml_doc:"
-                f"with {pkg_metadata!r}\n"
-                f"and with OVAL XML:\n"
-                f"{ets}\n{tb}"
-            )
-            print(msg)
-            logger.error(msg)
-            raise Exception(msg)
-
+        raw_data = oval_doc.get_data()
         all_pkgs = self._collect_pkgs(raw_data)
         self.set_api(all_pkgs)
 
@@ -570,18 +526,17 @@ class OvalDataSource(DataSource):
         for definition_data in raw_data:
             # These fields are definition level, i.e common for all elements
             # connected/linked to an OvalDefinition
-            vuln_id = definition_data['vuln_id']
-            description = definition_data['description']
+            vuln_id = definition_data["vuln_id"]
+            description = definition_data["description"]
             affected_purls = set()
             safe_purls = set()
-            references = [Reference(url=url) for url in definition_data['reference_urls']]
-            for test_data in definition_data['test_data']:
-                for package in test_data['package_list']:
-                    pkg_name = package
-                    if package and len(pkg_name) >= 50:
+            references = [Reference(url=url) for url in definition_data["reference_urls"]]
+            for test_data in definition_data["test_data"]:
+                for package_name in test_data["package_list"]:
+                    if package_name and len(package_name) >= 50:
                         continue
-                    aff_ver_range = test_data['version_ranges'] or set()
-                    all_versions = self.pkg_manager_api.get(package)
+                    aff_ver_range = test_data["version_ranges"] or set()
+                    all_versions = self.pkg_manager_api.get(package_name)
 
                     # FIXME: what is this 50 DB limit? that's too small for versions
                     # FIXME: we should not drop data this way
@@ -594,20 +549,20 @@ class OvalDataSource(DataSource):
                     safe_versions = all_versions - affected_versions
 
                     for version in affected_versions:
-                        pkg_url = self.create_purl(
-                            pkg_name=pkg_name,
+                        purl = self.create_purl(
+                            pkg_name=package_name,
                             pkg_version=version,
                             pkg_data=pkg_metadata,
                         )
-                        affected_purls.add(pkg_url)
+                        affected_purls.add(purl)
 
                     for version in safe_versions:
-                        pkg_url = self.create_purl(
-                            pkg_name=pkg_name,
+                        purl = self.create_purl(
+                            pkg_name=package_name,
                             pkg_version=version,
                             pkg_data=pkg_metadata,
                         )
-                        safe_purls.add(pkg_url)
+                        safe_purls.add(purl)
 
             all_adv.append(
                 Advisory(
@@ -615,5 +570,7 @@ class OvalDataSource(DataSource):
                     impacted_package_urls=affected_purls,
                     resolved_package_urls=safe_purls,
                     vulnerability_id=vuln_id,
-                    vuln_references=references))
+                    vuln_references=references,
+                )
+            )
         return all_adv

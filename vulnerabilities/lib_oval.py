@@ -27,71 +27,71 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# Library to simplify working with the OVAL XML structure
+"""Library to simplify working with the OVAL XML structure
 
 
-# Authors: Gunnar Engelbach <Gunnar.Engelbach@ThreatGuard.com>
-
-
-
-# Available classes:
-#     - OvalDocument:    operations at the OVAL document level, such as reading in an existing OVAL document from
-# file, creating a new one, finding or adding OVAL elements
-#     - OvalElement:    the base class for OVAL elements.  Implements a few common methods inherited by the
-# subclasses for definition, test, state, object, and variable
-#     - OvalDefinition:    a type of OVAL element with certain attributes available.  Additional classes used by the OvalDefinition class:
-#         - OvalMetadata:    the metadata associated with a definition, which includes the definition title and description.  Metadata also contains:
-#             - OvalAffected:    The family and platforms affected by this definition
-#             - OvalRepositoryInformation:    Additional information added by the OVAL repository
-#     - OvalTest:    for working with OVAL test elements
-#     - OvalObject:    for working with OVAL object elements
-#     - OvalState:    for working with OVAL state elements
-#     - OvalVariable:    for working with OVAL variable elements
+Authors: Gunnar Engelbach <Gunnar.Engelbach@ThreatGuard.com>
 
 
 
-# Available exceptions:
-#     - None at this time
+Available classes:
+    - OvalDocument:    operations at the OVAL document level, such as reading in an existing OVAL document from
+file, creating a new one, finding or adding OVAL elements
+    - OvalElement:    the base class for OVAL elements.  Implements a few common methods inherited by the
+subclasses for definition, test, state, object, and variable
+    - OvalDefinition:    a type of OVAL element with certain attributes available.  Additional classes used by the OvalDefinition class:
+        - OvalMetadata:    the metadata associated with a definition, which includes the definition title and description.  Metadata also contains:
+            - OvalAffected:    The family and platforms affected by this definition
+            - OvalRepositoryInformation:    Additional information added by the OVAL repository
+    - OvalTest:    for working with OVAL test elements
+    - OvalObject:    for working with OVAL object elements
+    - OvalState:    for working with OVAL state elements
+    - OvalVariable:    for working with OVAL variable elements
+
+
+
+Available exceptions:
+    - None at this time
     
     
-# :Usage:
+:Usage:
 
-# 1. Create an OvalDocument:
+1. Create an OvalDocument:
 
-#     >>> tree = ElementTree()
-#     >>> tree.parse("OvalTest.xml")
-#     >>> document = OvalDocument(tree)
+    >>> tree = ElementTree()
+    >>> tree.parse("OvalTest.xml")
+    >>> document = OvalDocument(tree)
 
-# 2. Find an oval element within the loaded document:
+2. Find an oval element within the loaded document:
 
-#     >>> element = document.getElementByID("oval:org.mitre.oval:def:22382")
-#     >>> if element is not None:
-#     >>>    ....
+    >>> element = document.getElementByID("oval:org.mitre.oval:def:22382")
+    >>> if element is not None:
+    >>>    ....
 
-# 3. Read an XML file with a single OVAL Definition (error checking omitted for brevity):
+3. Read an XML file with a single OVAL Definition (error checking omitted for brevity):
 
-#     >>> tree = ElementTree()    
-#     >>> tree.parse('test-definition.xml')
-#     >>> root = tree.getroot()    
-#     >>> definition = lib_oval.OvalDefinition(root)
+    >>> tree = ElementTree()    
+    >>> tree.parse('test-definition.xml')
+    >>> root = tree.getroot()    
+    >>> definition = lib_oval.OvalDefinition(root)
     
-# 4. Change information in the definition from #3 and write the changes
+4. Change information in the definition from #3 and write the changes
 
-#     >>> meta = definition.getMetadata()
-#     >>> repo = meta.getOvalRepositoryInformation()
-#     >>> repo.setMinimumSchemaVersion("5.9")
-#     >>> tree.write("outfilename.xml", UTF-8", True)
+    >>> meta = definition.getMetadata()
+    >>> repo = meta.getOvalRepositoryInformation()
+    >>> repo.setMinimumSchemaVersion("5.9")
+    >>> tree.write("outfilename.xml", UTF-8", True)
         
 
 
   
 
-# TODO:
-#     - Add exceptions that give more detail about why a value of None is sometimes returned
-#     - Expand use of find() to allow for the possibility that the XML document is not using namespaces
-#     - Lots of pydoc to be added
-#     - Redo getter/setter for OvalRepository status elements.
-
+TODO:
+    - Add exceptions that give more detail about why a value of None is sometimes returned
+    - Expand use of find() to allow for the possibility that the XML document is not using namespaces
+    - Lots of pydoc to be added
+    - Redo getter/setter for OvalRepository status elements.
+"""
 
 import os, xml.etree
 from xml.etree import ElementTree

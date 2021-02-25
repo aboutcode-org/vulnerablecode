@@ -24,6 +24,7 @@
 import asyncio
 import bz2
 import dataclasses
+import logging
 from typing import Iterable
 from typing import List
 from typing import Mapping
@@ -37,6 +38,8 @@ import requests
 from vulnerabilities.data_source import OvalDataSource, DataSourceConfiguration
 from vulnerabilities.package_managers import LaunchpadVersionAPI
 from vulnerabilities.helpers import create_etag
+
+logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass
@@ -58,18 +61,16 @@ class UbuntuDataSource(OvalDataSource):
         self.pkg_manager_api = LaunchpadVersionAPI()
 
     def _fetch(self):
-        base_url = 'https://people.canonical.com/~ubuntu-security/oval'
+        base_url = "https://people.canonical.com/~ubuntu-security/oval"
         releases = self.config.releases
         for i, release in enumerate(releases, 1):
             file_url = f"{base_url}/com.ubuntu.{release}.cve.oval.xml.bz2"  # nopep8
-#             if not create_etag(data_src=self, url=file_url, etag_key="ETag"):
-#                 print(f"Ubuntu Oval Etag not changed, not re-fetching: {file_url}")
-#                 continue
-
-            print(f"Fetching Ubuntu Oval: {file_url}")
+            logger.info(f"Fetching Ubuntu Oval: {file_url}")
             response = requests.get(file_url)
             if response.status_code != requests.codes.ok:
-                print(f"Failed to fetch Ubuntu Oval: HTTP {response.status_code} : {file_url}")
+                logger.error(
+                    f"Failed to fetch Ubuntu Oval: HTTP {response.status_code} : {file_url}"
+                )
                 continue
 
             extracted = bz2.decompress(response.content)
@@ -78,7 +79,7 @@ class UbuntuDataSource(OvalDataSource):
                 ET.ElementTree(ET.fromstring(extracted.decode("utf-8"))),
             )
 
-        print(f"Fetched {i} Ubuntu Oval releases from {base_url}")
+        logger.info(f"Fetched {i} Ubuntu Oval releases from {base_url}")
 
     def set_api(self, packages):
         asyncio.run(self.pkg_manager_api.load_api(packages))

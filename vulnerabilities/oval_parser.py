@@ -38,7 +38,6 @@ from vulnerabilities.lib_oval import OvalTest
 
 
 class OvalParser:
-
     def __init__(self, translations: Dict, oval_document: ET.ElementTree):
 
         self.translations = translations
@@ -56,22 +55,22 @@ class OvalParser:
             matching_tests = self.get_tests_of_definition(definition)
             if not matching_tests:
                 continue
-            definition_data = {'test_data': []}
+            definition_data = {"test_data": []}
             # TODO:this could use some data cleaning
-            definition_data['description'] = definition.getMetadata().getDescription() or ''
+            definition_data["description"] = definition.getMetadata().getDescription() or ""
 
-            definition_data['vuln_id'] = self.get_vuln_id_from_definition(definition)
-            definition_data['reference_urls'] = self.get_urls_from_definition(definition)
+            definition_data["vuln_id"] = self.get_vuln_id_from_definition(definition)
+            definition_data["reference_urls"] = self.get_urls_from_definition(definition)
 
             for test in matching_tests:
                 test_obj, test_state = self.get_object_state_of_test(test)
                 if not test_obj or not test_state:
                     continue
-                test_data = {'package_list': []}
-                test_data['package_list'].extend(self.get_pkgs_from_obj(test_obj))
-                version_ranges = self.get_versionsrngs_from_state(test_state)
-                test_data['version_ranges'] = version_ranges
-                definition_data['test_data'].append(test_data)
+                test_data = {"package_list": []}
+                test_data["package_list"].extend(self.get_pkgs_from_obj(test_obj))
+                version_ranges = self.get_version_ranges_from_state(test_state)
+                test_data["version_ranges"] = version_ranges
+                definition_data["test_data"].append(test_data)
 
             oval_data.append(definition_data)
 
@@ -86,8 +85,8 @@ class OvalParser:
 
         for child in definition.element.iter():
 
-            if 'test_ref' in child.attrib:
-                criteria_refs.append(child.get('test_ref'))
+            if "test_ref" in child.attrib:
+                criteria_refs.append(child.get("test_ref"))
 
         matching_tests = []
         for ref in criteria_refs:
@@ -96,12 +95,11 @@ class OvalParser:
                 _, state = self.get_object_state_of_test(oval_test)
                 valid_test = True
                 for child in state.element:
-                    if child.get('operation') not in self.translations:
+                    if child.get("operation") not in self.translations:
                         valid_test = False
                         break
                 if valid_test:
-                    matching_tests.append(
-                        self.oval_document.getElementByID(ref))
+                    matching_tests.append(self.oval_document.getElementByID(ref))
 
         return matching_tests
 
@@ -109,8 +107,7 @@ class OvalParser:
         """
         returns a tuple of (OvalObject,OvalState) of an OvalTest
         """
-        obj, state = list(test.element)[0].get(
-            'object_ref'), list(test.element)[1].get('state_ref')
+        obj, state = list(test.element)[0].get("object_ref"), list(test.element)[1].get("state_ref")
         obj = self.oval_document.getElementByID(obj)
         state = self.oval_document.getElementByID(state)
         return (obj, state)
@@ -124,10 +121,9 @@ class OvalParser:
         pkg_list = []
 
         for var in obj.element:
-            if var.get('var_ref'):
-                var_elem = self.oval_document.getElementByID(
-                    var.get('var_ref'))
-                comment = var_elem.element.get('comment')
+            if var.get("var_ref"):
+                var_elem = self.oval_document.getElementByID(var.get("var_ref"))
+                comment = var_elem.element.get("comment")
                 pkg_name = re.match("'.+'", comment).group().replace("'", "")
                 pkg_list.append(pkg_name)
             else:
@@ -135,44 +131,47 @@ class OvalParser:
 
         return pkg_list
 
-    # TODO: this method needs a better name
-    def get_versionsrngs_from_state(self, state: OvalState) -> Optional[RangeSpecifier]:
+    def get_version_ranges_from_state(self, state: OvalState) -> Optional[RangeSpecifier]:
         """
         Return a version range(s)? from a state
         """
         for var in state.element:
-            operation = var.get('operation')
+            operation = var.get("operation")
             if not operation:
                 continue
-            operand = self.translations.get(operation) or ''
+            operand = self.translations.get(operation) or ""
             if not operand:
                 continue
-            version = var.text or ''
+            version = var.text or ""
             if not version:
                 continue
             version_range = operand + version
             try:
                 return RangeSpecifier(version_range)
             except Exception:
-                # FIXME: we should not continue
-                print(
-                    f"get_versionsrngs_from_state: Failed to process invalid "
-                    f"OvalState version range: {version_range}...continuing"
-                )
+                try:
+                    version_range = version_range.replace(".x", "")
+                    return RangeSpecifier(version_range)
+                except Exception:
+                    # FIXME: we should not continue
+                    print(
+                        f"get_version_ranges_from_state: Failed to process invalid "
+                        f"OvalState version range: {version_range}...continuing"
+                    )
 
     @staticmethod
     def get_urls_from_definition(definition: OvalDefinition) -> Set[str]:
         all_urls = set()
         definition_metadata = definition.getMetadata().element
         for child in definition_metadata:
-            if child.tag.endswith('reference'):
-                all_urls.add(child.get('ref_url'))
-            if child.tag.endswith('advisory'):
+            if child.tag.endswith("reference"):
+                all_urls.add(child.get("ref_url"))
+            if child.tag.endswith("advisory"):
                 for grandchild in child:
-                    if grandchild.tag.endswith('ref'):
+                    if grandchild.tag.endswith("ref"):
                         all_urls.add(grandchild.text)
-                    if grandchild.get('href'):
-                        all_urls.add(grandchild.get('href'))
+                    if grandchild.get("href"):
+                        all_urls.add(grandchild.get("href"))
                 break
 
         return all_urls
@@ -181,7 +180,7 @@ class OvalParser:
     def get_vuln_id_from_definition(definition):
         # SUSE and Ubuntu OVAL files will get cves via this loop
         for child in definition.element.iter():
-            if child.get('ref_id'):
-                return child.get('ref_id')
+            if child.get("ref_id"):
+                return child.get("ref_id")
         # Debian OVAL files will get cves via this
         return definition.getMetadata().getTitle()

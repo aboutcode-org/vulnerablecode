@@ -33,6 +33,7 @@ from vulnerabilities.data_source import GitDataSourceConfiguration
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import RubyVersionAPI
+from vulnerabilities.tests.utils import advisories_are_equal
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -56,7 +57,7 @@ class RubyDataSourceTest(TestCase):
     @patch('vulnerabilities.package_managers.RubyVersionAPI.get',
            return_value={'1.0.0', '1.8.0', '2.0.3'})
     def test_process_file(self, mock_write):
-        expected_advisories = {
+        expected_advisories = [
             Advisory(
                 summary=(
                     "An issue was discovered in"
@@ -136,13 +137,13 @@ class RubyDataSourceTest(TestCase):
                 vulnerability_id="CVE-2018-11627",
             ),
             None,
-        }
+        ]
 
-        found_advisories = set()
-
+        found_advisories = []
         for p in MOCK_ADDED_FILES:
-            found_advisories.add(self.data_src.process_file(p))
-        assert found_advisories == expected_advisories
+            found_advisories.append(self.data_src.process_file(p))
+
+        assert advisories_are_equal(expected_advisories, found_advisories)
 
     def test_categorize_versions(self):
 

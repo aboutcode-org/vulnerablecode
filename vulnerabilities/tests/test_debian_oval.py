@@ -12,6 +12,7 @@ from packageurl import PackageURL
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.importers.debian_oval import DebianOvalDataSource
 from vulnerabilities.data_source import Advisory
+from vulnerabilities.tests.utils import advisories_are_equal
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -43,7 +44,7 @@ class TestDebianOvalDataSource(unittest.TestCase):
             '2.3.9'})
     @patch('vulnerabilities.importers.debian_oval.DebianVersionAPI.load_api', new=mock)
     def test_get_data_from_xml_doc(self, mock_write):
-        expected_data = {
+        expected_advisories = [
             Advisory(
                 summary='denial of service',
                 impacted_package_urls={
@@ -97,18 +98,17 @@ class TestDebianOvalDataSource(unittest.TestCase):
                                qualifiers=OrderedDict([('distro', 'wheezy')]),
                                subpath=None)},
                 vulnerability_id='CVE-2001-1593')
-
-        }
+        ]
 
         xml_doc = ET.parse(os.path.join(TEST_DATA, "debian_oval_data.xml"))
         # Dirty quick patch to mock batch_advisories
         with patch('vulnerabilities.importers.debian_oval.DebianOvalDataSource.batch_advisories',
                    new=return_adv):
-            data = {i for i in self.debian_oval_data_src.get_data_from_xml_doc(
+            found_advisories = [i for i in self.debian_oval_data_src.get_data_from_xml_doc(
                 xml_doc,
                 {
                     "type": "deb",
                     "qualifiers": {"distro": "wheezy"}
                 })
-            }
-        assert expected_data == data
+            ]
+        assert advisories_are_equal(expected_advisories, found_advisories)

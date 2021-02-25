@@ -33,6 +33,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 import vulnerabilities.importers.ubuntu_usn as ubuntu_usn
+from vulnerabilities.tests.utils import advisories_are_equal
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/", "ubuntu_usn_db", "database-all.json.bz2")
@@ -131,7 +132,7 @@ class TestUbuntuUSNDataSource(TestCase):
 
     def test_to_advisories(self):
 
-        expected_advisories = {
+        expected_advisories = [
             Advisory(
                 summary="",
                 impacted_package_urls=[],
@@ -188,10 +189,10 @@ class TestUbuntuUSNDataSource(TestCase):
                 ],
                 vulnerability_id="CVE-2009-1274",
             ),
-        }
-        found_advisories = set(self.data_src.to_advisories(self.db))
+        ]
+        found_advisories = self.data_src.to_advisories(self.db)
 
-        assert expected_advisories == found_advisories
+        assert advisories_are_equal(expected_advisories, found_advisories)
 
     def test_create_etag(self):
         assert self.data_src.config.etags == {}

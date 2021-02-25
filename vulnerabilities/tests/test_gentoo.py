@@ -31,6 +31,7 @@ from packageurl import PackageURL
 from vulnerabilities.importers.gentoo import GentooDataSource
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
+from vulnerabilities.tests.utils import advisories_are_equal
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/gentoo/glsa-201709-09.xml")
@@ -87,7 +88,7 @@ class TestGentooDataSource(unittest.TestCase):
 
     def test_process_file(self):
 
-        exp_data = [
+        expected_advisories = [
             Advisory(
                 summary=(
                     'A command injection vulnerability in '
@@ -115,5 +116,5 @@ class TestGentooDataSource(unittest.TestCase):
                         reference_id='GLSA-201709-09')],
                 vulnerability_id='CVE-2017-9800')]
 
-        found_data = self.data_src.process_file(TEST_DATA)
-        assert exp_data == found_data
+        found_advisories = self.data_src.process_file(TEST_DATA)
+        assert advisories_are_equal(expected_advisories, found_advisories)

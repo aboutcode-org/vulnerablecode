@@ -32,6 +32,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import VulnerabilitySeverity
 from vulnerabilities.severity_systems import scoring_systems, ScoringSystem
+from vulnerabilities.tests.utils import advisories_are_equal
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/", "redhat.json")
@@ -58,7 +59,7 @@ class TestRedhat(unittest.TestCase):
 
     def test_to_advisory(self):
         data = load_test_data()
-        expected_data = {
+        expected_advisories = [
             Advisory(
                 summary="CVE-2016-9401 bash: popd controlled free",
                 impacted_package_urls=[
@@ -128,9 +129,9 @@ class TestRedhat(unittest.TestCase):
                 ],
                 vulnerability_id="CVE-2016-9401",
             )
-        }
+        ]
 
-        found_data = set()
+        found_advisories = []
         mock_resp = unittest.mock.MagicMock()
         mock_resp.json = lambda: {
             "bugs": [{"severity": 2.0}],
@@ -141,7 +142,6 @@ class TestRedhat(unittest.TestCase):
                 "vulnerabilities.importers.redhat.requests.get", return_value=mock_resp
             ):
                 adv = redhat.to_advisory(adv)
-                adv.vuln_references = sorted(adv.vuln_references, key=lambda x: x.url)
-                found_data.add(adv)
+                found_advisories.append(adv)
 
-        assert expected_data == found_data
+        assert advisories_are_equal(expected_advisories, found_advisories)

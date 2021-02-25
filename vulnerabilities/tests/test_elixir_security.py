@@ -30,6 +30,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.importers.elixir_security import ElixirSecurityDataSource
 from vulnerabilities.package_managers import HexVersionAPI
+from vulnerabilities.tests.utils import advisories_are_equal
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -62,7 +63,7 @@ class TestElixirSecurityDataSource(TestCase):
     def test_process_file(self):
 
         path = os.path.join(BASE_DIR, "test_data/elixir_security/test_file.yml")
-        expected_data = Advisory(
+        expected_advisory = Advisory(
             summary=('The Coherence library has "Mass Assignment"-like vulnerabilities.\n'),
             impacted_package_urls={
                 PackageURL(
@@ -132,6 +133,6 @@ class TestElixirSecurityDataSource(TestCase):
             vulnerability_id="CVE-2018-20301",
         )
 
-        found_data = self.data_src.process_file(path)
+        found_advisory = self.data_src.process_file(path)
 
-        assert expected_data == found_data
+        assert advisories_are_equal([expected_advisory], [found_advisory])

@@ -30,6 +30,7 @@ from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import VulnerabilitySeverity
 from vulnerabilities.severity_systems import scoring_systems
+from vulnerabilities.tests.utils import advisories_are_equal
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/nvd/nvd_test.json")
@@ -137,8 +138,7 @@ class TestNVDDataSource(TestCase):
                 ),
                 impacted_package_urls=[],
                 resolved_package_urls=[],
-                vuln_references=sorted(
-                    [
+                vuln_references=[
                         Reference(
                             url="http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",  # nopep8
                         ),
@@ -159,18 +159,11 @@ class TestNVDDataSource(TestCase):
                             ],
                             reference_id="CVE-2005-4895",
                         ),
-                    ],
-                    key=lambda x: x.url,
-                ),
+                ],
                 vulnerability_id="CVE-2005-4895",
             )
         ]
         assert len(self.nvd_data["CVE_Items"]) == 2
 
         found_advisories = list(self.data_src.to_advisories(self.nvd_data))
-        # Only 1 advisory because other advisory is hardware related
-        assert len(found_advisories) == 1
-        found_advisories[0].vuln_references = sorted(
-            found_advisories[0].vuln_references, key=lambda x: x.url
-        )  # nopep8
-        assert expected_advisories == found_advisories
+        assert advisories_are_equal(expected_advisories, found_advisories)

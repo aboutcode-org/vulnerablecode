@@ -31,6 +31,7 @@ from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.importers.apache_kafka import ApacheKafkaDataSource
 from vulnerabilities.importers.apache_kafka import to_version_ranges
+from vulnerabilities.tests.utils import advisories_are_equal
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "apache_kafka", "cve-list.html")
@@ -59,7 +60,7 @@ class TestApacheKafkaDataSource(TestCase):
         data_source.version_api = GitHubTagsAPI(
             cache={"apache/kafka": ["2.1.2", "0.10.2.2"]}
         )
-        expected_data = [
+        expected_advisories = [
             Advisory(
                 summary="In Apache Kafka versions between 0.11.0.0 and 2.1.0, it is possible to "
                 "manually\n    craft a Produce request which bypasses transaction/idempotent ACL "
@@ -97,6 +98,6 @@ class TestApacheKafkaDataSource(TestCase):
             )
         ]
         with open(TEST_DATA) as f:
-            found_data = data_source.to_advisory(f)
+            found_advisories = data_source.to_advisory(f)
 
-        assert found_data == expected_data
+        assert advisories_are_equal(found_advisories, expected_advisories)

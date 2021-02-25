@@ -78,19 +78,10 @@ class Advisory:
     """
 
     summary: str
-    impacted_package_urls: Iterable[PackageURL]
+    vulnerability_id: Optional[str] = None
+    impacted_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
     resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
     vuln_references: List[Reference] = dataclasses.field(default_factory=list)
-    vulnerability_id: Optional[str] = None
-
-    def __hash__(self):
-        s = "{}{}{}{}".format(
-            self.summary,
-            ''.join(sorted([str(p) for p in self.impacted_package_urls])),
-            ''.join(sorted([str(p) for p in self.resolved_package_urls])),
-            self.vulnerability_id,
-        )
-        return hash(s)
 
 
 class InvalidConfigurationError(Exception):
@@ -209,7 +200,7 @@ class DataSource(ContextManager):
 
         while advisories:
             b, advisories = advisories[: self.batch_size], advisories[self.batch_size:]
-            yield set(b)
+            yield b
 
 
 @dataclasses.dataclass

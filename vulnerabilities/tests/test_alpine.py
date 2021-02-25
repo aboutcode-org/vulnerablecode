@@ -30,6 +30,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory, Reference
 from vulnerabilities.importers.alpine_linux import AlpineDataSource
+from vulnerabilities.tests.utils import advisories_are_equal
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -141,7 +142,7 @@ class AlpineImportTest(TestCase):
                         url="https://xenbits.xen.org/xsa/advisory-295.html", reference_id="XSA-295"
                     )
                 ],
-                vulnerability_id=None,
+                vulnerability_id="",
             ),
         ]
         mock_requests = MagicMock()
@@ -151,4 +152,4 @@ class AlpineImportTest(TestCase):
             mock_content.content = f
             with patch("vulnerabilities.importers.alpine_linux.requests", new=mock_requests):
                 found_advisories = self.data_source._process_link("does not matter")
-                assert expected_advisories == found_advisories
+                assert advisories_are_equal(expected_advisories, found_advisories)

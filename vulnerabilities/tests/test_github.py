@@ -42,6 +42,7 @@ from vulnerabilities.package_managers import ComposerVersionAPI
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.importers.github import GitHubTokenError
 from vulnerabilities.importers.github import query
+from vulnerabilities.tests.utils import advisories_are_equal
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")
@@ -163,7 +164,7 @@ class TestGitHubAPIDataSource(TestCase):
             resp = json.load(f)
             self.data_src.advisories = resp
 
-        expected_result = [
+        expected_advisories = [
             Advisory(
                 summary="Denial of Service in Tomcat",
                 impacted_package_urls=set(),
@@ -371,10 +372,8 @@ class TestGitHubAPIDataSource(TestCase):
         mock_version_api = MagicMock()
         mock_version_api.package_type = "maven"
         mock_version_api.get = lambda x: {"1.2.0", "9.0.2"}
-        with patch(
-            "vulnerabilities.importers.github.MavenVersionAPI", return_value=mock_version_api
-        ):  # nopep8
+        with patch("vulnerabilities.importers.github.MavenVersionAPI", return_value=mock_version_api):  # nopep8
             with patch("vulnerabilities.importers.github.GitHubAPIDataSource.set_api"):
-                found_result = self.data_src.process_response()
+                found_advisories = self.data_src.process_response()
 
-        assert expected_result == found_result
+        assert advisories_are_equal(expected_advisories, found_advisories)

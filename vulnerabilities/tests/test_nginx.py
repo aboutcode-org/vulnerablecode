@@ -30,6 +30,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.importers.nginx import NginxDataSource
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.tests.utils import advisories_are_equal
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/nginx", "security_advisories.html")
@@ -47,8 +48,7 @@ class TestNginxDataSource(TestCase):
         )
 
     def test_to_advisories(self):
-        expected_data = sorted(
-            [
+        expected_advisories = [
                 Advisory(
                     summary="Stack-based buffer overflow with specially crafted request",
                     impacted_package_urls={
@@ -178,10 +178,8 @@ class TestNginxDataSource(TestCase):
                     vuln_references=[],
                     vulnerability_id="CVE-2009-3898",
                 ),
-            ],
-            key=lambda adv: adv.vulnerability_id,
-        )
+            ]
 
-        found_data = sorted(self.data_src.to_advisories(self.data), key=lambda adv: adv.vulnerability_id)  # nopep8
+        found_data = self.data_src.to_advisories(self.data)
 
-        assert expected_data == found_data
+        assert advisories_are_equal(expected_advisories, found_data)

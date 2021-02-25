@@ -13,6 +13,7 @@ from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.importers.ubuntu import UbuntuDataSource
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
+from vulnerabilities.tests.utils import advisories_are_equal
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")
@@ -190,7 +191,7 @@ class TestUbuntuDataSource(unittest.TestCase):
             '2.14-2'})
     @patch('vulnerabilities.importers.ubuntu.LaunchpadVersionAPI.load_api',new=mock)
     def test_get_data_from_xml_doc(self, mock_write):
-        expected_data = {
+        expected_advisories = [
             Advisory(
                 summary=('Tor before 0.2.8.9 and 0.2.9.x before 0.2.9.4-alpha had '
                 'internal functions that were entitled to expect that buf_t data had '
@@ -262,13 +263,11 @@ class TestUbuntuDataSource(unittest.TestCase):
                     Reference(url='http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8703.html'),
                     Reference(url='https://blogs.gentoo.org/ago/2016/08/08/potrace-multiplesix-heap-based-buffer-overflow-in-bm_readbody_bmp-bitmap_io-c/'),
                     Reference(url='https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8703')],key=lambda x: x.url),
-                vulnerability_id='CVE-2016-8703')}
+                vulnerability_id='CVE-2016-8703')]
 
         xml_doc = ET.parse(os.path.join(TEST_DATA, "ubuntu_oval_data.xml"))
         # Dirty quick patch to mock batch_advisories
         with patch('vulnerabilities.importers.ubuntu.UbuntuDataSource.batch_advisories',
          new=return_adv):
-            data = {i for i in self.ubuntu_data_src.get_data_from_xml_doc(xml_doc,{"type":"deb"})}
-        for adv in data : 
-            adv.vuln_references = sorted(adv.vuln_references, key=lambda x : x.url)
-        assert expected_data == data
+            found_advisories = [i for i in self.ubuntu_data_src.get_data_from_xml_doc(xml_doc,{"type":"deb"})]
+        assert advisories_are_equal(expected_advisories, found_advisories)

@@ -29,6 +29,7 @@ from packageurl import PackageURL
 from vulnerabilities.importers.openssl import OpenSSLDataSource
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
+from vulnerabilities.tests.utils import advisories_are_equal
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, 'test_data/', 'openssl_xml_data.xml')
@@ -42,7 +43,7 @@ def load_test_data():
 class TestOpenSSL(unittest.TestCase):
     def test_to_advisory(self):
         data = load_test_data()
-        expected_data = [
+        expected_advisories = [
             Advisory(
                 summary='Server or client applications that call the SSL_check_chain() '
                         'function during or'
@@ -197,10 +198,6 @@ class TestOpenSSL(unittest.TestCase):
                                 'f1c5eea8a817075d31e43f5876993c6710238c98')],
                 vulnerability_id='CVE-2019-1551')
         ]
-        found_data = OpenSSLDataSource.to_advisories(data)
+        found_advisories = OpenSSLDataSource.to_advisories(data)
 
-        # Sort them by CVE-ID
-        found_data.sort(key=lambda x: x.vulnerability_id)
-        expected_data.sort(key=lambda x: x.vulnerability_id)
-
-        assert found_data == expected_data
+        assert advisories_are_equal(expected_advisories, found_advisories)

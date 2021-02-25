@@ -30,6 +30,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatDataSource
+from vulnerabilities.tests.utils import advisories_are_equal
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "apache_tomcat", "security-9.html")
@@ -47,8 +48,7 @@ class TestApacheTomcatDataSource(TestCase):
         cls.data_src.version_api = mock_api
 
     def test_to_advisories(self):
-        expected_advisories = sorted(
-            [
+        expected_advisories = [
                 Advisory(
                     summary="",
                     impacted_package_urls=[
@@ -209,19 +209,8 @@ class TestApacheTomcatDataSource(TestCase):
                     ],
                     vulnerability_id="CVE-2016-0714",
                 ),
-            ],
-            key=lambda x: x.vulnerability_id,
-        )
+            ]
 
         with open(TEST_DATA) as f:
             found_advisories = self.data_src.to_advisories(f)
-
-        found_advisories.sort(key=lambda x: x.vulnerability_id)
-
-        for i in range(len(found_advisories)):
-            found_advisories[i].vuln_references.sort(key=lambda x: x.url)
-
-        for i in range(len(expected_advisories)):
-            expected_advisories[i].vuln_references.sort(key=lambda x: x.url)
-
-        assert expected_advisories == found_advisories
+        assert advisories_are_equal(expected_advisories, found_advisories)

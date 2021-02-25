@@ -29,6 +29,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.importers.postgresql import to_advisories
+from vulnerabilities.tests.utils import advisories_are_equal
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -41,8 +42,7 @@ class TestPostgreSQLDataSource(TestCase):
         with open(TEST_DATA) as f:
             raw_data = f.read()
 
-        expected_data = sorted(
-            [
+        expected_advisories = [
                 Advisory(
                     summary="Windows installer runs executables from uncontrolled directories",
                     impacted_package_urls=[
@@ -115,10 +115,8 @@ class TestPostgreSQLDataSource(TestCase):
                     ],
                     vulnerability_id="CVE-2020-1720",
                 ),
-            ],
-            key=lambda adv: adv.vulnerability_id,
-        )
+            ]
 
-        found_data = sorted(to_advisories(raw_data), key=lambda adv: adv.vulnerability_id)
+        found_advisories = to_advisories(raw_data)
 
-        assert expected_data == found_data
+        assert advisories_are_equal(expected_advisories, found_advisories)

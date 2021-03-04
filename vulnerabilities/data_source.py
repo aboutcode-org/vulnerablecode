@@ -47,13 +47,13 @@ from vulnerabilities.severity_systems import ScoringSystem
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(order=True)
 class VulnerabilitySeverity:
     system: ScoringSystem
     value: str
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(order=True)
 class Reference:
 
     reference_id: str = ""
@@ -64,8 +64,16 @@ class Reference:
         if not any([self.url, self.reference_id]):
             raise TypeError
 
+    def normalized(self):
+        severities = sorted(self.severities)
+        return Reference(
+            reference_id=self.reference_id,
+            url=self.url,
+            severities=severities
+        )
 
-@dataclasses.dataclass
+
+@dataclasses.dataclass(order=True)
 class Advisory:
     """
     This data class expresses the contract between data sources and the import runner.
@@ -78,19 +86,27 @@ class Advisory:
     """
 
     summary: str
-    impacted_package_urls: Iterable[PackageURL]
+    vulnerability_id: Optional[str] = None
+    impacted_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
     resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
     vuln_references: List[Reference] = dataclasses.field(default_factory=list)
-    vulnerability_id: Optional[str] = None
 
-    def __hash__(self):
-        s = "{}{}{}{}".format(
-            self.summary,
-            ''.join(sorted([str(p) for p in self.impacted_package_urls])),
-            ''.join(sorted([str(p) for p in self.resolved_package_urls])),
-            self.vulnerability_id,
+    def normalized(self):
+        impacted_package_urls = {package_url for package_url in self.impacted_package_urls}
+        resolved_package_urls = {package_url for package_url in self.resolved_package_urls}
+        vuln_references = sorted(
+            self.vuln_references, key=lambda reference: (reference.reference_id, reference.url)
         )
-        return hash(s)
+        for index, _ in enumerate(self.vuln_references):
+            vuln_references[index] = (vuln_references[index].normalized())
+
+        return Advisory(
+            summary=self.summary,
+            vulnerability_id=self.vulnerability_id,
+            impacted_package_urls=impacted_package_urls,
+            resolved_package_urls=resolved_package_urls,
+            vuln_references=vuln_references,
+        )
 
 
 class InvalidConfigurationError(Exception):
@@ -205,11 +221,15 @@ class DataSource(ContextManager):
         """
         Yield batches of the passed in list of advisories.
         """
-        advisories = advisories[:]  # copy the list as we are mutating it in the loop below
+
+        # TODO make this less cryptic and efficient
+
+        advisories = advisories[:]
+        # copy the list as we are mutating it in the loop below
 
         while advisories:
             b, advisories = advisories[: self.batch_size], advisories[self.batch_size:]
-            yield set(b)
+            yield b
 
 
 @dataclasses.dataclass

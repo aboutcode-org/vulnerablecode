@@ -141,7 +141,7 @@ class AlpineImportTest(TestCase):
                         url="https://xenbits.xen.org/xsa/advisory-295.html", reference_id="XSA-295"
                     )
                 ],
-                vulnerability_id=None,
+                vulnerability_id="",
             ),
         ]
         mock_requests = MagicMock()
@@ -151,4 +151,7 @@ class AlpineImportTest(TestCase):
             mock_content.content = f
             with patch("vulnerabilities.importers.alpine_linux.requests", new=mock_requests):
                 found_advisories = self.data_source._process_link("does not matter")
-                assert expected_advisories == found_advisories
+
+                found_advisories = list(map(Advisory.normalized, found_advisories))
+                expected_advisories = list(map(Advisory.normalized, expected_advisories))
+                assert sorted(found_advisories) == sorted(expected_advisories)

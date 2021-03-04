@@ -75,11 +75,11 @@ class RustDataSource(GitDataSource):
 
         while files:
             batch, files = files[: self.batch_size], files[self.batch_size:]
-            advisories = set()
+            advisories = []
             for path in batch:
                 advisory = self._load_advisory(path)
                 if advisory:
-                    advisories.add(advisory)
+                    advisories.append(advisory)
             yield advisories
 
     def collect_packages(self, paths):

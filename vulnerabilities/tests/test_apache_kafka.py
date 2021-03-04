@@ -56,10 +56,8 @@ class TestApacheKafkaDataSource(TestCase):
 
     def test_to_advisory(self):
         data_source = ApacheKafkaDataSource(batch_size=1)
-        data_source.version_api = GitHubTagsAPI(
-            cache={"apache/kafka": ["2.1.2", "0.10.2.2"]}
-        )
-        expected_data = [
+        data_source.version_api = GitHubTagsAPI(cache={"apache/kafka": ["2.1.2", "0.10.2.2"]})
+        expected_advisories = [
             Advisory(
                 summary="In Apache Kafka versions between 0.11.0.0 and 2.1.0, it is possible to "
                 "manually\n    craft a Produce request which bypasses transaction/idempotent ACL "
@@ -97,6 +95,8 @@ class TestApacheKafkaDataSource(TestCase):
             )
         ]
         with open(TEST_DATA) as f:
-            found_data = data_source.to_advisory(f)
+            found_advisories = data_source.to_advisory(f)
 
-        assert found_data == expected_data
+        found_advisories = list(map(Advisory.normalized, found_advisories))
+        expected_advisories = list(map(Advisory.normalized, expected_advisories))
+        assert sorted(found_advisories) == sorted(expected_advisories)

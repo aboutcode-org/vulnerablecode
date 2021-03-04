@@ -31,6 +31,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import VulnerabilitySeverity
 from vulnerabilities.severity_systems import scoring_systems
 
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/nvd/nvd_test.json")
 
@@ -137,40 +138,34 @@ class TestNVDDataSource(TestCase):
                 ),
                 impacted_package_urls=[],
                 resolved_package_urls=[],
-                vuln_references=sorted(
-                    [
-                        Reference(
-                            url="http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",  # nopep8
-                        ),
-                        Reference(
-                            url="http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",  # nopep8
-                        ),
-                        Reference(
-                            url="https://nvd.nist.gov/vuln/detail/CVE-2005-4895",
-                            severities=[
-                                VulnerabilitySeverity(
-                                    system=scoring_systems["cvssv2"],
-                                    value="5.0",
-                                ),
-                                VulnerabilitySeverity(
-                                    system=scoring_systems["cvssv2_vector"],
-                                    value="AV:N/AC:L/Au:N/C:N/I:N/A:P",
-                                ),
-                            ],
-                            reference_id="CVE-2005-4895",
-                        ),
-                    ],
-                    key=lambda x: x.url,
-                ),
+                vuln_references=[
+                    Reference(
+                        url="http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",  # nopep8
+                    ),
+                    Reference(
+                        url="http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",  # nopep8
+                    ),
+                    Reference(
+                        url="https://nvd.nist.gov/vuln/detail/CVE-2005-4895",
+                        severities=[
+                            VulnerabilitySeverity(
+                                system=scoring_systems["cvssv2"],
+                                value="5.0",
+                            ),
+                            VulnerabilitySeverity(
+                                system=scoring_systems["cvssv2_vector"],
+                                value="AV:N/AC:L/Au:N/C:N/I:N/A:P",
+                            ),
+                        ],
+                        reference_id="CVE-2005-4895",
+                    ),
+                ],
                 vulnerability_id="CVE-2005-4895",
             )
         ]
         assert len(self.nvd_data["CVE_Items"]) == 2
 
         found_advisories = list(self.data_src.to_advisories(self.nvd_data))
-        # Only 1 advisory because other advisory is hardware related
-        assert len(found_advisories) == 1
-        found_advisories[0].vuln_references = sorted(
-            found_advisories[0].vuln_references, key=lambda x: x.url
-        )  # nopep8
-        assert expected_advisories == found_advisories
+        found_advisories = list(map(Advisory.normalized, found_advisories))
+        expected_advisories = list(map(Advisory.normalized, expected_advisories))
+        assert sorted(found_advisories) == sorted(expected_advisories)

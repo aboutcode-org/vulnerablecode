@@ -32,13 +32,14 @@ bin_dir = dirname(sys.executable)
 
 
 class BaseTests(unittest.TestCase):
-
     def test_codestyle(self):
         subprocess.check_output(
             (
-                join(bin_dir, "pycodestyle") +
-                " --exclude=migrations,settings.py,venv,lib_oval.py,test_ubuntu.py,"
+                join(bin_dir, "pycodestyle")
+                + " --exclude=migrations,settings.py,venv,lib_oval.py,test_ubuntu.py,"
                 "test_suse.py,test_data_source.py "
                 "--max-line-length=100 "
                 "vulnerablecode vulnerabilities"
-            ).split(), cwd=root_dir)
+            ).split(),
+            cwd=root_dir,
+        )

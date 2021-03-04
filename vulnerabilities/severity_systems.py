@@ -1,7 +1,7 @@
 import dataclasses
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(order=True)
 class ScoringSystem:
 
     # a short identifier for the scoring system.

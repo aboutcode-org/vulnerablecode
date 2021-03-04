@@ -67,13 +67,13 @@ class LaunchpadVersionAPI(VersionAPI):
                     self.cache[pkg] = {}
                     break
                 for release in resp_json["entries"]:
-                    all_versions.add(release["source_package_version"])
+                    all_versions.add(release["source_package_version"].replace("0:", ""))
                 if resp_json.get("next_collection_link"):
                     url = resp_json["next_collection_link"]
                 else:
                     break
             self.cache[pkg] = all_versions
-        except (ClientResponseError, asyncio.exceptions.TimeoutError):
+        except (ClientResponseError, asyncio.exceptions.TimeoutError, ServerDisconnectedError):
             self.cache[pkg] = {}
 
 
@@ -197,7 +197,7 @@ class DebianVersionAPI(VersionAPI):
                 self.cache[pkg] = {}
                 return
             for release in resp_json["versions"]:
-                all_versions.add(release["version"])
+                all_versions.add(release["version"].replace("0:", ""))
 
             self.cache[pkg] = all_versions
         # TODO : Handle ServerDisconnectedError by using some sort of

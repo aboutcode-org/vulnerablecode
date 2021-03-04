@@ -20,6 +20,7 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import pickle
 import dataclasses
 import logging
 import os
@@ -466,20 +467,19 @@ class OvalDataSource(DataSource):
 
     def _fetch(self) -> Tuple[Mapping, Iterable[ET.ElementTree]]:
         """
-        This method  contains logic to fetch OVAL files and yield them into
-        a tuple of file's metadata and it's ET.ElementTree.
+        Return a two-tuple of ({mapping of Package URL data}, it's ET.ElementTree)
         Subclasses must implement this method.
 
-        Note: Mapping MUST INCLUDE "type" key. Example values of Mapping
-              {"type":"deb","qualifiers":{"distro":"buster"} }
+        Note:  Package URL data MUST INCLUDE a Package URL "type" key so
+        implement _fetch() accordingly.
+        For example::
 
+              {"type":"deb","qualifiers":{"distro":"buster"} }
         """
+        # TODO: enforce that we receive the proper data here
         raise NotImplementedError
 
     def updated_advisories(self) -> List[Advisory]:
-        """
-        Note: metadata MUST INCLUDE "type" key, implement _fetch accordingly.
-        """
         for metadata, oval_file in self._fetch():
             try:
                 oval_data = self.get_data_from_xml_doc(oval_file, metadata)
@@ -506,34 +506,40 @@ class OvalDataSource(DataSource):
 
     def get_data_from_xml_doc(self, xml_doc: ET.ElementTree, pkg_metadata={}) -> List[Advisory]:
         """
-        The orchestration method of the OvalDataSource. This method breaks an OVAL xml
-        ElementTree into a list of `Advisory`.
+        The orchestration method of the OvalDataSource. This method breaks an
+        OVAL xml ElementTree into a list of `Advisory`.
 
-        Note: pkg_metadata MUST INCLUDE "type" key. Example value of pkg_metadata,
+        Note: pkg_metadata is a mapping of Package URL data that MUST INCLUDE
+        "type" key.
+
+        Example value of pkg_metadata:
               {"type":"deb","qualifiers":{"distro":"buster"} }
         """
+
         all_adv = []
         oval_doc = OvalParser(self.translations, xml_doc)
         raw_data = oval_doc.get_data()
         all_pkgs = self._collect_pkgs(raw_data)
         self.set_api(all_pkgs)
-        for definition_data in raw_data:  # definition_data -> Advisory
 
-            # These fields are definition level, i.e common for all
-            # elements connected/linked to an OvalDefinition
+        # convert definition_data to Advisory objects
+        for definition_data in raw_data:
+            # These fields are definition level, i.e common for all elements
+            # connected/linked to an OvalDefinition
             vuln_id = definition_data["vuln_id"]
             description = definition_data["description"]
             affected_purls = set()
             safe_purls = set()
             references = [Reference(url=url) for url in definition_data["reference_urls"]]
-
             for test_data in definition_data["test_data"]:
-                for package in test_data["package_list"]:
-                    pkg_name = package
-                    if package and len(pkg_name) >= 50:
+                for package_name in test_data["package_list"]:
+                    if package_name and len(package_name) >= 50:
                         continue
-                    aff_ver_range = test_data["version_ranges"]
-                    all_versions = self.pkg_manager_api.get(package)
+                    aff_ver_range = test_data["version_ranges"] or set()
+                    all_versions = self.pkg_manager_api.get(package_name)
+
+                    # FIXME: what is this 50 DB limit? that's too small for versions
+                    # FIXME: we should not drop data this way
                     # This filter is for filtering out long versions.
                     # 50 is limit because that's what db permits atm.
                     all_versions = set(filter(lambda x: len(x) < 50, all_versions))
@@ -543,16 +549,20 @@ class OvalDataSource(DataSource):
                     safe_versions = all_versions - affected_versions
 
                     for version in affected_versions:
-                        pkg_url = self.create_purl(
-                            pkg_name=pkg_name, pkg_version=version, pkg_data=pkg_metadata
+                        purl = self.create_purl(
+                            pkg_name=package_name,
+                            pkg_version=version,
+                            pkg_data=pkg_metadata,
                         )
-                        affected_purls.add(pkg_url)
+                        affected_purls.add(purl)
 
                     for version in safe_versions:
-                        pkg_url = self.create_purl(
-                            pkg_name=pkg_name, pkg_version=version, pkg_data=pkg_metadata
+                        purl = self.create_purl(
+                            pkg_name=package_name,
+                            pkg_version=version,
+                            pkg_data=pkg_metadata,
                         )
-                        safe_purls.add(pkg_url)
+                        safe_purls.add(purl)
 
             all_adv.append(
                 Advisory(
@@ -560,5 +570,7 @@ class OvalDataSource(DataSource):
                     impacted_package_urls=affected_purls,
                     resolved_package_urls=safe_purls,
                     vulnerability_id=vuln_id,
-                    vuln_references=references))
+                    vuln_references=references,
+                )
+            )
         return all_adv

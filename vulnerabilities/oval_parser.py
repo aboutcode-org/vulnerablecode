@@ -30,12 +30,14 @@ import xml.etree.ElementTree as ET
 
 from dephell_specifier import RangeSpecifier
 
-from vulnerabilities.lib_oval import (
-    OvalDefinition, OvalDocument, OvalTest, OvalObject, OvalState)
+from vulnerabilities.lib_oval import OvalDefinition
+from vulnerabilities.lib_oval import OvalDocument
+from vulnerabilities.lib_oval import OvalObject
+from vulnerabilities.lib_oval import OvalState
+from vulnerabilities.lib_oval import OvalTest
 
 
 class OvalParser:
-
     def __init__(self, translations: Dict, oval_document: ET.ElementTree):
 
         self.translations = translations
@@ -45,8 +47,7 @@ class OvalParser:
 
     def get_data(self) -> List[Dict]:
         """
-        This is the orchestration method, it returns a list of dictionaries,
-        where each dictionary represents data from an OvalDefinition
+        Return a list of OvalDefinition mappings.
         """
         oval_data = []
         for definition in self.all_definitions:
@@ -54,28 +55,23 @@ class OvalParser:
             matching_tests = self.get_tests_of_definition(definition)
             if not matching_tests:
                 continue
-            definition_data = {'test_data': []}
-            definition_data['description'] = definition.getMetadata(
-            ).getDescription()  # this could use some data cleaning
+            definition_data = {"test_data": []}
+            # TODO:this could use some data cleaning
+            definition_data["description"] = definition.getMetadata().getDescription() or ""
 
-            if not definition_data['description']:
-                definition_data['description'] = ''
+            definition_data["vuln_id"] = self.get_vuln_id_from_definition(definition)
+            definition_data["reference_urls"] = self.get_urls_from_definition(definition)
 
-            definition_data['vuln_id'] = self.get_vuln_id_from_definition(
-                definition)
-            definition_data['reference_urls'] = self.get_urls_from_definition(
-                definition
-            )
             for test in matching_tests:
                 test_obj, test_state = self.get_object_state_of_test(test)
                 if not test_obj or not test_state:
                     continue
-                test_data = {'package_list': []}
-                test_data['package_list'].extend(
-                    self.get_pkgs_from_obj(test_obj))
-                test_data['version_ranges'] = self.get_versionsrngs_from_state(
-                    test_state)
-                definition_data['test_data'].append(test_data)
+                test_data = {"package_list": []}
+                test_data["package_list"].extend(self.get_pkgs_from_obj(test_obj))
+                version_ranges = self.get_version_ranges_from_state(test_state)
+                test_data["version_ranges"] = version_ranges
+                definition_data["test_data"].append(test_data)
+
             oval_data.append(definition_data)
 
         return oval_data
@@ -89,8 +85,8 @@ class OvalParser:
 
         for child in definition.element.iter():
 
-            if 'test_ref' in child.attrib:
-                criteria_refs.append(child.get('test_ref'))
+            if "test_ref" in child.attrib:
+                criteria_refs.append(child.get("test_ref"))
 
         matching_tests = []
         for ref in criteria_refs:
@@ -99,12 +95,11 @@ class OvalParser:
                 _, state = self.get_object_state_of_test(oval_test)
                 valid_test = True
                 for child in state.element:
-                    if child.get('operation') not in self.translations:
+                    if child.get("operation") not in self.translations:
                         valid_test = False
                         break
                 if valid_test:
-                    matching_tests.append(
-                        self.oval_document.getElementByID(ref))
+                    matching_tests.append(self.oval_document.getElementByID(ref))
 
         return matching_tests
 
@@ -112,8 +107,7 @@ class OvalParser:
         """
         returns a tuple of (OvalObject,OvalState) of an OvalTest
         """
-        obj, state = list(test.element)[0].get(
-            'object_ref'), list(test.element)[1].get('state_ref')
+        obj, state = list(test.element)[0].get("object_ref"), list(test.element)[1].get("state_ref")
         obj = self.oval_document.getElementByID(obj)
         state = self.oval_document.getElementByID(state)
         return (obj, state)
@@ -127,10 +121,9 @@ class OvalParser:
         pkg_list = []
 
         for var in obj.element:
-            if var.get('var_ref'):
-                var_elem = self.oval_document.getElementByID(
-                    var.get('var_ref'))
-                comment = var_elem.element.get('comment')
+            if var.get("var_ref"):
+                var_elem = self.oval_document.getElementByID(var.get("var_ref"))
+                comment = var_elem.element.get("comment")
                 pkg_name = re.match("'.+'", comment).group().replace("'", "")
                 pkg_list.append(pkg_name)
             else:
@@ -138,32 +131,50 @@ class OvalParser:
 
         return pkg_list
 
-    def get_versionsrngs_from_state(self, state: OvalState) -> Optional[RangeSpecifier]:
+    def get_version_ranges_from_state(self, state: OvalState) -> Optional[RangeSpecifier]:
         """
-        returns  all related version ranges within a state
+        Return a version range(s)? from a state
         """
         for var in state.element:
-            if var.get('operation'):
-                if var.get('operation') not in self.translations:
-                    continue
-                operand = self.translations[var.get('operation')]
-                version = var.text
-                version_range = operand + version
-                return RangeSpecifier(version_range)
+            operation = var.get("operation")
+            if not operation:
+                continue
+            operand = self.translations.get(operation) or ""
+            if not operand:
+                continue
+            version = var.text or ""
+            if not version:
+                continue
+            version_range = operand + version
+            version_range = version_range.replace("only", "").strip()
+
+            # 0: is default epoch, remove it
+            version_range = version_range.replace("0:", "").strip()
+            x_version_ranges = {
+                "<2.0.x": "2.0.x",
+                "<3.x": "3.x",
+                "<4.6.x": "4.6.x",
+                "<8.0.x": "8.0.x",
+                "<8.x": "8.x",
+            }
+            if version_range in x_version_ranges:
+                version_range = x_version_ranges[version_range]
+
+            return RangeSpecifier(version_range)
 
     @staticmethod
     def get_urls_from_definition(definition: OvalDefinition) -> Set[str]:
         all_urls = set()
         definition_metadata = definition.getMetadata().element
         for child in definition_metadata:
-            if child.tag.endswith('reference'):
-                all_urls.add(child.get('ref_url'))
-            if child.tag.endswith('advisory'):
+            if child.tag.endswith("reference"):
+                all_urls.add(child.get("ref_url"))
+            if child.tag.endswith("advisory"):
                 for grandchild in child:
-                    if grandchild.tag.endswith('ref'):
+                    if grandchild.tag.endswith("ref"):
                         all_urls.add(grandchild.text)
-                    if grandchild.get('href'):
-                        all_urls.add(grandchild.get('href'))
+                    if grandchild.get("href"):
+                        all_urls.add(grandchild.get("href"))
                 break
 
         return all_urls
@@ -172,7 +183,7 @@ class OvalParser:
     def get_vuln_id_from_definition(definition):
         # SUSE and Ubuntu OVAL files will get cves via this loop
         for child in definition.element.iter():
-            if child.get('ref_id'):
-                return child.get('ref_id')
+            if child.get("ref_id"):
+                return child.get("ref_id")
         # Debian OVAL files will get cves via this
         return definition.getMetadata().getTitle()

@@ -97,7 +97,7 @@ class TestDebianOvalDataSource(unittest.TestCase):
                                subpath=None)},
                 vulnerability_id='CVE-2001-1593')
 
-        }
+        ]
 
         xml_doc = ET.parse(os.path.join(TEST_DATA, "debian_oval_data.xml"))
         # Dirty quick patch to mock batch_advisories

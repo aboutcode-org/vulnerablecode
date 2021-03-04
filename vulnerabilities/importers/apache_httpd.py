@@ -80,7 +80,7 @@ def to_advisories(data):
 
         advisories.append(
             Advisory(
-                cve_id=cve,
+                vulnerability_id=cve,
                 summary=summary,
                 impacted_package_urls=impacted_packages,
                 resolved_package_urls=resolved_packages,

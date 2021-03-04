@@ -30,7 +30,6 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.importers.elixir_security import ElixirSecurityDataSource
 from vulnerabilities.package_managers import HexVersionAPI
-from vulnerabilities.tests.utils import advisories_are_equal
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -135,4 +134,4 @@ class TestElixirSecurityDataSource(TestCase):
 
         found_advisory = self.data_src.process_file(path)
 
-        assert advisories_are_equal([expected_advisory], [found_advisory])
+        assert expected_advisory.normalized() == found_advisory.normalized()

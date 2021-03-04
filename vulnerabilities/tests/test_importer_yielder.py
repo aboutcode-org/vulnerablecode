@@ -30,31 +30,30 @@ from vulnerabilities.models import Importer
 
 MOCK_IMPORTER_REGISTRY = [
     {
-        'name': 'mock_rust',
-        'license': 'https://creativecommons.org/publicdomain/zero/1.0/',
-        'last_run': None,
-        'data_source': 'RustDataSource',
-        'data_source_cfg': {
-            'branch': None,
-            'repository_url': 'https://github.com/RustSec/advisory-db',
+        "name": "mock_rust",
+        "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "last_run": None,
+        "data_source": "RustDataSource",
+        "data_source_cfg": {
+            "branch": None,
+            "repository_url": "https://github.com/RustSec/advisory-db",
         },
     },
     {
-        'name': 'mock_alpine',
-        'license': '',
-        'last_run': None,
-        'data_source': 'AlpineDataSource',
-        'data_source_cfg': {
-            'branch': None,
-            'repository_url': 'https://gitlab.alpinelinux.org/alpine/infra/alpine-secdb',
-            'etags': {}
+        "name": "mock_alpine",
+        "license": "",
+        "last_run": None,
+        "data_source": "AlpineDataSource",
+        "data_source_cfg": {
+            "branch": None,
+            "repository_url": "https://gitlab.alpinelinux.org/alpine/infra/alpine-secdb",
+            "etags": {},
         },
     },
 ]
 
 
 class TestImporterYielder(TestCase):
-
     @classmethod
     def setUpClass(cls):
         cls.importer_yielder = importer_yielder
@@ -63,7 +62,9 @@ class TestImporterYielder(TestCase):
     def test_load_importers_freshdb(self):
         assert Importer.objects.all().count() == 0
 
-        with patch('vulnerabilities.importer_yielder.IMPORTER_REGISTRY', new=MOCK_IMPORTER_REGISTRY):  # nopep8
+        with patch(
+            "vulnerabilities.importer_yielder.IMPORTER_REGISTRY", new=MOCK_IMPORTER_REGISTRY
+        ):  # nopep8
             self.importer_yielder.load_importers()
             assert Importer.objects.all().count() == 2
 
@@ -72,14 +73,15 @@ class TestImporterYielder(TestCase):
         assert Importer.objects.all().count() == 0
 
         mock_existing_importer = Importer.objects.create(**MOCK_IMPORTER_REGISTRY[1])
-        mock_existing_importer.data_source_cfg['etags'] = {'url': '0x1234'}
+        mock_existing_importer.data_source_cfg["etags"] = {"url": "0x1234"}
         mock_existing_importer.save()
 
         assert Importer.objects.all().count() == 1
 
-        with patch('vulnerabilities.importer_yielder.IMPORTER_REGISTRY', new=MOCK_IMPORTER_REGISTRY):  # nopep8
+        with patch(
+            "vulnerabilities.importer_yielder.IMPORTER_REGISTRY", new=MOCK_IMPORTER_REGISTRY
+        ):  # nopep8
             self.importer_yielder.load_importers()
             assert Importer.objects.all().count() == 2
 
-        assert mock_existing_importer == Importer.objects.get(
-            name='mock_alpine')
+        assert mock_existing_importer == Importer.objects.get(name="mock_alpine")

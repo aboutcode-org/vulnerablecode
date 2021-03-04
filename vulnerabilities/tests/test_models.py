@@ -31,7 +31,6 @@ from vulnerabilities import models
 
 
 class TestVulnerabilityModel(TestCase):
-
     def test_generate_vulcoid_given_timestamp_object(self):
         timestamp_object = datetime(2021, 1, 1, 11, 12, 13, 2000)
         expected_vulcoid = "VULCOID-20210101-1112-13002000"
@@ -52,12 +51,18 @@ class TestVulnerabilityModel(TestCase):
 
     @pytest.mark.django_db
     def test_vulnerability_save_without_vulnerability_id(self):
-        assert models.Vulnerability.objects.filter(
-            vulnerability_id="VULCOID-20210101-1112-13000000"
-            ).count() == 0
+        assert (
+            models.Vulnerability.objects.filter(
+                vulnerability_id="VULCOID-20210101-1112-13000000"
+            ).count()
+            == 0
+        )
 
         with freeze_time("2021-01-01 11:12:13.000000"):
             models.Vulnerability(vulnerability_id="").save()
-            assert models.Vulnerability.objects.filter(
-                vulnerability_id="VULCOID-20210101-1112-13000000"
-                ).count() == 1
+            assert (
+                models.Vulnerability.objects.filter(
+                    vulnerability_id="VULCOID-20210101-1112-13000000"
+                ).count()
+                == 1
+            )

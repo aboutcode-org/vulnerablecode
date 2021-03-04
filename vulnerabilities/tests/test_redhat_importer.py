@@ -32,7 +32,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import VulnerabilitySeverity
 from vulnerabilities.severity_systems import scoring_systems, ScoringSystem
-from vulnerabilities.tests.utils import advisories_are_equal
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/", "redhat.json")
@@ -144,4 +144,6 @@ class TestRedhat(unittest.TestCase):
                 adv = redhat.to_advisory(adv)
                 found_advisories.append(adv)
 
-        assert advisories_are_equal(expected_advisories, found_advisories)
+        found_advisories = list(map(Advisory.normalized, found_advisories))
+        expected_advisories = list(map(Advisory.normalized, expected_advisories))
+        assert sorted(found_advisories) == sorted(expected_advisories)

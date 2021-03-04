@@ -28,9 +28,9 @@ import pytest
 
 @pytest.fixture
 def no_mkdir(monkeypatch):
-    monkeypatch.delattr('os.mkdir')
+    monkeypatch.delattr("os.mkdir")
 
 
 @pytest.fixture
 def no_rmtree(monkeypatch):
-    monkeypatch.delattr('shutil.rmtree')
+    monkeypatch.delattr("shutil.rmtree")

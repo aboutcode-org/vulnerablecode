@@ -43,79 +43,93 @@ def yaml_loader():
 
 
 class TestSUSEBackportsDataSource(TestCase):
-
     @classmethod
     def setUpClass(cls):
-        data_source_cfg = {
-            'url': 'https://endpoint.com',
-            'etags': {}}
+        data_source_cfg = {"url": "https://endpoint.com", "etags": {}}
         cls.data_src = SUSEBackportsDataSource(1, config=data_source_cfg)
 
     def test_process_file(self):
         parsed_yamls = yaml_loader()
         expected_data = [
             Advisory(
-                summary='',
+                summary="",
                 impacted_package_urls=[],
                 resolved_package_urls=[
                     PackageURL(
-                        type='rpm',
-                        namespace='opensuse',
-                        name='MozillaFirefox',
-                        version='3.0.10-1.1.1',
+                        type="rpm",
+                        namespace="opensuse",
+                        name="MozillaFirefox",
+                        version="3.0.10-1.1.1",
                         qualifiers=OrderedDict(),
-                        subpath=None)],
-                vulnerability_id='CVE-2009-1313'),
+                        subpath=None,
+                    )
+                ],
+                vulnerability_id="CVE-2009-1313",
+            ),
             Advisory(
-                summary='',
-                impacted_package_urls=[],
-                resolved_package_urls=[
-                        PackageURL(
-                            type='rpm',
-                            namespace='opensuse',
-                            name='MozillaFirefox-branding-SLED',
-                            version='3.5-1.1.5',
-                            qualifiers=OrderedDict(),
-                            subpath=None)],
-                vulnerability_id='CVE-2009-1313'),
-            Advisory(
-                summary='',
+                summary="",
                 impacted_package_urls=[],
                 resolved_package_urls=[
                     PackageURL(
-                        type='rpm',
-                        namespace='opensuse',
-                        name='MozillaFirefox-translations',
-                        version='3.0.10-1.1.1',
+                        type="rpm",
+                        namespace="opensuse",
+                        name="MozillaFirefox-branding-SLED",
+                        version="3.5-1.1.5",
                         qualifiers=OrderedDict(),
-                        subpath=None)],
-                vulnerability_id='CVE-2009-1313'),
+                        subpath=None,
+                    )
+                ],
+                vulnerability_id="CVE-2009-1313",
+            ),
             Advisory(
-                summary='',
+                summary="",
                 impacted_package_urls=[],
                 resolved_package_urls=[
                     PackageURL(
-                        type='rpm',
-                        namespace='opensuse',
-                        name='NetworkManager',
-                        version='0.7.0.r4359-15.9.2',
+                        type="rpm",
+                        namespace="opensuse",
+                        name="MozillaFirefox-translations",
+                        version="3.0.10-1.1.1",
                         qualifiers=OrderedDict(),
-                        subpath=None)],
-                vulnerability_id='CVE-2009-0365'),
+                        subpath=None,
+                    )
+                ],
+                vulnerability_id="CVE-2009-1313",
+            ),
             Advisory(
-                summary='',
+                summary="",
                 impacted_package_urls=[],
                 resolved_package_urls=[
                     PackageURL(
-                        type='rpm',
-                        namespace='opensuse',
-                        name='NetworkManager',
-                        version='0.7.0.r4359-15.9.2',
+                        type="rpm",
+                        namespace="opensuse",
+                        name="NetworkManager",
+                        version="0.7.0.r4359-15.9.2",
                         qualifiers=OrderedDict(),
-                        subpath=None)],
-                vulnerability_id='CVE-2009-0578'),
+                        subpath=None,
+                    )
+                ],
+                vulnerability_id="CVE-2009-0365",
+            ),
+            Advisory(
+                summary="",
+                impacted_package_urls=[],
+                resolved_package_urls=[
+                    PackageURL(
+                        type="rpm",
+                        namespace="opensuse",
+                        name="NetworkManager",
+                        version="0.7.0.r4359-15.9.2",
+                        qualifiers=OrderedDict(),
+                        subpath=None,
+                    )
+                ],
+                vulnerability_id="CVE-2009-0578",
+            ),
         ]
 
-        found_data = self.data_src.process_file(
-            parsed_yamls['backports-sle11-sp0.yaml'])
-        assert expected_data == found_data
+        found_data = self.data_src.process_file(parsed_yamls["backports-sle11-sp0.yaml"])
+
+        found_advisories = list(map(Advisory.normalized, found_data))
+        expected_advisories = list(map(Advisory.normalized, expected_data))
+        assert sorted(found_advisories) == sorted(expected_advisories)

@@ -30,7 +30,8 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.importers.nginx import NginxDataSource
 from vulnerabilities.package_managers import GitHubTagsAPI
-from vulnerabilities.tests.utils import advisories_are_equal
+
+#
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/nginx", "security_advisories.html")
@@ -49,137 +50,138 @@ class TestNginxDataSource(TestCase):
 
     def test_to_advisories(self):
         expected_advisories = [
-                Advisory(
-                    summary="Stack-based buffer overflow with specially crafted request",
-                    impacted_package_urls={
-                        PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="1.3.9",
-                            qualifiers={},
-                            subpath=None,
-                        )
-                    },
-                    resolved_package_urls={
-                        PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="1.7.0",
-                            qualifiers={},
-                            subpath=None,
-                        )
-                    },
-                    vuln_references=[],
-                    vulnerability_id="CVE-2013-2028",
-                ),
-                Advisory(
-                    summary="Vulnerabilities with Windows directory aliases",
-                    impacted_package_urls={
-                        PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="0.7.52",
-                            qualifiers={"os": "windows"},
-                            subpath=None,
-                        ),
-                        PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="1.2.3",
-                            qualifiers={"os": "windows"},
-                            subpath=None,
-                        ),
-                    },
-                    resolved_package_urls={
-                        PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="1.2.3",
-                            qualifiers={},
-                            subpath=None,
-                        ),
-                        PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="1.3.9",
-                            qualifiers={},
-                            subpath=None,
-                        ),
-                        PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="1.7.0",
-                            qualifiers={},
-                            subpath=None,
-                        ),
-                    },
-                    vuln_references=[],
-                    vulnerability_id="CVE-2011-4963",
-                ),
-                Advisory(
-                    summary="Vulnerabilities with invalid UTF-8 sequence on Windows",
-                    impacted_package_urls={
-                        PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="0.7.52",
-                            qualifiers={"os": "windows"},
-                            subpath=None,
-                        )
-                    },
-                    resolved_package_urls=set(),
-                    vuln_references=[],
-                    vulnerability_id="CVE-2010-2266",
-                ),
-                Advisory(
-                    summary="An error log data are not sanitized",
-                    impacted_package_urls=set(),
-                    resolved_package_urls={},
-                    vuln_references=[],
-                    vulnerability_id="CVE-2009-4487",
-                ),
-                Advisory(
-                    summary="The renegotiation vulnerability in SSL protocol",
-                    impacted_package_urls={
-                        PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="0.7.52",
-                            qualifiers={},
-                            subpath=None,
-                        )
-                    },
-                    resolved_package_urls=set(),
-                    vuln_references=[],
-                    vulnerability_id="CVE-2009-3555",
-                ),
-                Advisory(
-                    summary="Directory traversal vulnerability",
-                    impacted_package_urls={
-                        PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="0.7.52",
-                            qualifiers={},
-                            subpath=None,
-                        )
-                    },
-                    resolved_package_urls=set(),
-                    vuln_references=[],
-                    vulnerability_id="CVE-2009-3898",
-                ),
-            ]
+            Advisory(
+                summary="Stack-based buffer overflow with specially crafted request",
+                impacted_package_urls={
+                    PackageURL(
+                        type="generic",
+                        namespace=None,
+                        name="nginx",
+                        version="1.3.9",
+                        qualifiers={},
+                        subpath=None,
+                    )
+                },
+                resolved_package_urls={
+                    PackageURL(
+                        type="generic",
+                        namespace=None,
+                        name="nginx",
+                        version="1.7.0",
+                        qualifiers={},
+                        subpath=None,
+                    )
+                },
+                vuln_references=[],
+                vulnerability_id="CVE-2013-2028",
+            ),
+            Advisory(
+                summary="Vulnerabilities with Windows directory aliases",
+                impacted_package_urls={
+                    PackageURL(
+                        type="generic",
+                        namespace=None,
+                        name="nginx",
+                        version="0.7.52",
+                        qualifiers={"os": "windows"},
+                        subpath=None,
+                    ),
+                    PackageURL(
+                        type="generic",
+                        namespace=None,
+                        name="nginx",
+                        version="1.2.3",
+                        qualifiers={"os": "windows"},
+                        subpath=None,
+                    ),
+                },
+                resolved_package_urls={
+                    PackageURL(
+                        type="generic",
+                        namespace=None,
+                        name="nginx",
+                        version="1.2.3",
+                        qualifiers={},
+                        subpath=None,
+                    ),
+                    PackageURL(
+                        type="generic",
+                        namespace=None,
+                        name="nginx",
+                        version="1.3.9",
+                        qualifiers={},
+                        subpath=None,
+                    ),
+                    PackageURL(
+                        type="generic",
+                        namespace=None,
+                        name="nginx",
+                        version="1.7.0",
+                        qualifiers={},
+                        subpath=None,
+                    ),
+                },
+                vuln_references=[],
+                vulnerability_id="CVE-2011-4963",
+            ),
+            Advisory(
+                summary="Vulnerabilities with invalid UTF-8 sequence on Windows",
+                impacted_package_urls={
+                    PackageURL(
+                        type="generic",
+                        namespace=None,
+                        name="nginx",
+                        version="0.7.52",
+                        qualifiers={"os": "windows"},
+                        subpath=None,
+                    )
+                },
+                resolved_package_urls=set(),
+                vuln_references=[],
+                vulnerability_id="CVE-2010-2266",
+            ),
+            Advisory(
+                summary="An error log data are not sanitized",
+                impacted_package_urls=set(),
+                resolved_package_urls={},
+                vuln_references=[],
+                vulnerability_id="CVE-2009-4487",
+            ),
+            Advisory(
+                summary="The renegotiation vulnerability in SSL protocol",
+                impacted_package_urls={
+                    PackageURL(
+                        type="generic",
+                        namespace=None,
+                        name="nginx",
+                        version="0.7.52",
+                        qualifiers={},
+                        subpath=None,
+                    )
+                },
+                resolved_package_urls=set(),
+                vuln_references=[],
+                vulnerability_id="CVE-2009-3555",
+            ),
+            Advisory(
+                summary="Directory traversal vulnerability",
+                impacted_package_urls={
+                    PackageURL(
+                        type="generic",
+                        namespace=None,
+                        name="nginx",
+                        version="0.7.52",
+                        qualifiers={},
+                        subpath=None,
+                    )
+                },
+                resolved_package_urls=set(),
+                vuln_references=[],
+                vulnerability_id="CVE-2009-3898",
+            ),
+        ]
 
         found_data = self.data_src.to_advisories(self.data)
-
-        assert advisories_are_equal(expected_advisories, found_data)
+        expected_advisories = list(map(Advisory.normalized, expected_advisories))
+        found_data = list(map(Advisory.normalized, found_data))
+        assert sorted(found_data) == sorted(expected_advisories)

@@ -181,6 +181,7 @@ class AlpineDataSource(DataSource):
                             )
                         )
 
+                # TODO: Handle the CVE-????-????? case
                 advisories.append(
                     Advisory(
                         summary="",

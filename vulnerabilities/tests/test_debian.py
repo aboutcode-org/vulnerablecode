@@ -95,7 +95,10 @@ class DebianImportTest(TestCase):
 
     def assert_for_package(self, name, version, release, cve_ids=None):
         qs = models.Package.objects.filter(
-            name=name, version=version, type="deb", namespace="debian",
+            name=name,
+            version=version,
+            type="deb",
+            namespace="debian",
         )
         qs = qs.filter(qualifiers__distro=release)
         assert qs

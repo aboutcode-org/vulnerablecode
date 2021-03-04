@@ -146,18 +146,21 @@ class OvalParser:
             if not version:
                 continue
             version_range = operand + version
-            try:
-                return RangeSpecifier(version_range)
-            except Exception:
-                try:
-                    version_range = version_range.replace(".x", "")
-                    return RangeSpecifier(version_range)
-                except Exception:
-                    # FIXME: we should not continue
-                    print(
-                        f"get_version_ranges_from_state: Failed to process invalid "
-                        f"OvalState version range: {version_range}...continuing"
-                    )
+            version_range = version_range.replace("only", "").strip()
+
+            # 0: is default epoch, remove it
+            version_range = version_range.replace("0:", "").strip()
+            x_version_ranges = {
+                "<2.0.x": "2.0.x",
+                "<3.x": "3.x",
+                "<4.6.x": "4.6.x",
+                "<8.0.x": "8.0.x",
+                "<8.x": "8.x",
+            }
+            if version_range in x_version_ranges:
+                version_range = x_version_ranges[version_range]
+
+            return RangeSpecifier(version_range)
 
     @staticmethod
     def get_urls_from_definition(definition: OvalDefinition) -> Set[str]:

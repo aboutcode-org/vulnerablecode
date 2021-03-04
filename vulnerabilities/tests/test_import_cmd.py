@@ -32,58 +32,56 @@ from vulnerabilities.models import Importer
 
 
 class TestListSources(TestCase):
-
     @classmethod
     def setUpTestData(cls):
-        for name in ('npm', 'debian', 'ubuntu', 'archlinux'):
-            name += '_import_cmd_test'
+        for name in ("npm", "debian", "ubuntu", "archlinux"):
+            name += "_import_cmd_test"
 
             Importer.objects.create(
                 name=name,
-                license='fakelicense',
+                license="fakelicense",
                 last_run=None,
-                data_source='fakesource',
+                data_source="fakesource",
                 data_source_cfg={},
             )
 
     def test_list_sources(self):
         buf = StringIO()
-        with patch('vulnerabilities.importer_yielder.load_importers'):
-            call_command('import', '--list', stdout=buf)
+        with patch("vulnerabilities.importer_yielder.load_importers"):
+            call_command("import", "--list", stdout=buf)
         out = buf.getvalue()
-        assert 'npm' in out
-        assert 'debian' in out
-        assert 'ubuntu' in out
-        assert 'archlinux' in out
+        assert "npm" in out
+        assert "debian" in out
+        assert "ubuntu" in out
+        assert "archlinux" in out
 
 
 def test_missing_sources():
 
     with pytest.raises(CommandError) as cm:
-        call_command('import', stdout=StringIO())
+        call_command("import", stdout=StringIO())
 
     err = str(cm)
-    assert 'Please provide at least one data source' in err
+    assert "Please provide at least one data source" in err
 
 
 class TestUnknownSources(TestCase):
-
     @classmethod
     def setUpTestData(cls):
         Importer.objects.create(
-            name='debian_import_cmd_test',
-            license='fakelicense',
+            name="debian_import_cmd_test",
+            license="fakelicense",
             last_run=None,
-            data_source='fakesource',
+            data_source="fakesource",
             data_source_cfg={},
         )
 
     def test_error_message_includes_unknown_sources(self):
 
         with pytest.raises(CommandError) as cm:
-            call_command('import', 'debian_import_cmd_test', 'foo', 'bar', stdout=StringIO())
+            call_command("import", "debian_import_cmd_test", "foo", "bar", stdout=StringIO())
 
         err = str(cm)
-        assert 'bar' in err
-        assert 'foo' in err
-        assert 'debian_import_cmd_test' not in err
+        assert "bar" in err
+        assert "foo" in err
+        assert "debian_import_cmd_test" not in err

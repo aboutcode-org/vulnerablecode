@@ -43,6 +43,7 @@ from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.importers.github import GitHubTokenError
 from vulnerabilities.importers.github import query
 
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")
 
@@ -163,7 +164,7 @@ class TestGitHubAPIDataSource(TestCase):
             resp = json.load(f)
             self.data_src.advisories = resp
 
-        expected_result = [
+        expected_advisories = [
             Advisory(
                 summary="Denial of Service in Tomcat",
                 impacted_package_urls=set(),
@@ -375,6 +376,8 @@ class TestGitHubAPIDataSource(TestCase):
             "vulnerabilities.importers.github.MavenVersionAPI", return_value=mock_version_api
         ):  # nopep8
             with patch("vulnerabilities.importers.github.GitHubAPIDataSource.set_api"):
-                found_result = self.data_src.process_response()
+                found_advisories = self.data_src.process_response()
 
-        assert expected_result == found_result
+        found_advisories = list(map(Advisory.normalized, found_advisories))
+        expected_advisories = list(map(Advisory.normalized, expected_advisories))
+        assert sorted(found_advisories) == sorted(expected_advisories)

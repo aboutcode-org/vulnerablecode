@@ -53,10 +53,12 @@ class RubyDataSourceTest(TestCase):
         cls.data_src = RubyDataSource(1, config=data_source_cfg)
         cls.data_src.pkg_manager_api = RubyVersionAPI()
 
-    @patch('vulnerabilities.package_managers.RubyVersionAPI.get',
-           return_value={'1.0.0', '1.8.0', '2.0.3'})
+    @patch(
+        "vulnerabilities.package_managers.RubyVersionAPI.get",
+        return_value={"1.0.0", "1.8.0", "2.0.3"},
+    )
     def test_process_file(self, mock_write):
-        expected_advisories = {
+        expected_advisories = [
             Advisory(
                 summary=(
                     "An issue was discovered in"
@@ -92,9 +94,7 @@ class RubyDataSourceTest(TestCase):
                         subpath=None,
                     ),
                 },
-                vuln_references=[
-                    Reference(url="https://github.com/sinatra/sinatra/pull/1379")
-                ],
+                vuln_references=[Reference(url="https://github.com/sinatra/sinatra/pull/1379")],
                 vulnerability_id="CVE-2018-7212",
             ),
             Advisory(
@@ -130,19 +130,20 @@ class RubyDataSourceTest(TestCase):
                         subpath=None,
                     )
                 },
-                vuln_references=[
-                    Reference(url="https://github.com/sinatra/sinatra/issues/1428")
-                ],
+                vuln_references=[Reference(url="https://github.com/sinatra/sinatra/issues/1428")],
                 vulnerability_id="CVE-2018-11627",
             ),
-            None,
-        }
+        ]
 
-        found_advisories = set()
-
+        found_advisories = []
         for p in MOCK_ADDED_FILES:
-            found_advisories.add(self.data_src.process_file(p))
-        assert found_advisories == expected_advisories
+            advisory = self.data_src.process_file(p)
+            if advisory:
+                found_advisories.append(advisory)
+
+        found_advisories = list(map(Advisory.normalized, found_advisories))
+        expected_advisories = list(map(Advisory.normalized, expected_advisories))
+        assert sorted(found_advisories) == sorted(expected_advisories)
 
     def test_categorize_versions(self):
 

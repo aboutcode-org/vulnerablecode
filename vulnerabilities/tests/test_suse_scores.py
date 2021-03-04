@@ -123,4 +123,6 @@ class TestSUSESeverityScoreDataSource(TestCase):
         ]
 
         found_data = SUSESeverityScoreDataSource.to_advisory(raw_data)
-        assert expected_data == found_data
+        found_advisories = list(map(Advisory.normalized, found_data))
+        expected_advisories = list(map(Advisory.normalized, expected_data))
+        assert sorted(found_advisories) == sorted(expected_advisories)

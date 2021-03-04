@@ -41,84 +41,83 @@ class TestPostgreSQLDataSource(TestCase):
         with open(TEST_DATA) as f:
             raw_data = f.read()
 
-        expected_data = sorted(
-            [
-                Advisory(
-                    summary="Windows installer runs executables from uncontrolled directories",
-                    impacted_package_urls=[
-                        PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="postgresql",
-                            version="9.5",
-                            qualifiers={"os": "windows"},
-                            subpath=None,
-                        )
-                    ],
-                    resolved_package_urls=[
-                        PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="postgresql",
-                            version="9.5.22",
-                            qualifiers={"os": "windows"},
-                            subpath=None,
-                        )
-                    ],
-                    vuln_references=[
-                        Reference(
-                            url="https://www.postgresql.org/about/news/postgresql-123-118-1013-9618-and-9522-released-2038/",  # nopep8
-                            reference_id="",
-                        )
-                    ],
-                    vulnerability_id="CVE-2020-10733",
-                ),
-                Advisory(
-                    summary="ALTER ... DEPENDS ON EXTENSION is missing authorization checks.",
-                    impacted_package_urls=[
-                        PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="postgresql",
-                            version="11",
-                            qualifiers={},
-                            subpath=None,
-                        ),
-                        PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="postgresql",
-                            version="12",
-                            qualifiers={},
-                            subpath=None,
-                        ),
-                    ],
-                    resolved_package_urls=[
-                        PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="postgresql",
-                            version=None,
-                            qualifiers={},
-                            subpath=None,
-                        )
-                    ],
-                    vuln_references=[
-                        Reference(
-                            url="https://access.redhat.com/security/cve/CVE-2020-1720",
-                            reference_id="",
-                        ),
-                        Reference(
-                            url="https://www.postgresql.org/about/news/postgresql-122-117-1012-9617-9521-and-9426-released-2011/",  # nopep8
-                            reference_id="",
-                        ),
-                    ],
-                    vulnerability_id="CVE-2020-1720",
-                ),
-            ],
-            key=lambda adv: adv.vulnerability_id,
-        )
+        expected_advisories = [
+            Advisory(
+                summary="Windows installer runs executables from uncontrolled directories",
+                impacted_package_urls=[
+                    PackageURL(
+                        type="generic",
+                        namespace=None,
+                        name="postgresql",
+                        version="9.5",
+                        qualifiers={"os": "windows"},
+                        subpath=None,
+                    )
+                ],
+                resolved_package_urls=[
+                    PackageURL(
+                        type="generic",
+                        namespace=None,
+                        name="postgresql",
+                        version="9.5.22",
+                        qualifiers={"os": "windows"},
+                        subpath=None,
+                    )
+                ],
+                vuln_references=[
+                    Reference(
+                        url="https://www.postgresql.org/about/news/postgresql-123-118-1013-9618-and-9522-released-2038/",  # nopep8
+                        reference_id="",
+                    )
+                ],
+                vulnerability_id="CVE-2020-10733",
+            ),
+            Advisory(
+                summary="ALTER ... DEPENDS ON EXTENSION is missing authorization checks.",
+                impacted_package_urls=[
+                    PackageURL(
+                        type="generic",
+                        namespace=None,
+                        name="postgresql",
+                        version="11",
+                        qualifiers={},
+                        subpath=None,
+                    ),
+                    PackageURL(
+                        type="generic",
+                        namespace=None,
+                        name="postgresql",
+                        version="12",
+                        qualifiers={},
+                        subpath=None,
+                    ),
+                ],
+                resolved_package_urls=[
+                    PackageURL(
+                        type="generic",
+                        namespace=None,
+                        name="postgresql",
+                        version=None,
+                        qualifiers={},
+                        subpath=None,
+                    )
+                ],
+                vuln_references=[
+                    Reference(
+                        url="https://access.redhat.com/security/cve/CVE-2020-1720",
+                        reference_id="",
+                    ),
+                    Reference(
+                        url="https://www.postgresql.org/about/news/postgresql-122-117-1012-9617-9521-and-9426-released-2011/",  # nopep8
+                        reference_id="",
+                    ),
+                ],
+                vulnerability_id="CVE-2020-1720",
+            ),
+        ]
 
-        found_data = sorted(to_advisories(raw_data), key=lambda adv: adv.vulnerability_id)
+        found_advisories = to_advisories(raw_data)
 
-        assert expected_data == found_data
+        found_advisories = list(map(Advisory.normalized, found_advisories))
+        expected_advisories = list(map(Advisory.normalized, expected_advisories))
+        assert sorted(found_advisories) == sorted(expected_advisories)

@@ -33,32 +33,31 @@ from vulnerabilities.importers.safety_db import categorize_versions
 from vulnerabilities.data_source import Reference
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, 'test_data/')
+TEST_DATA = os.path.join(BASE_DIR, "test_data/")
 
-MOCK_VERSION_API = PypiVersionAPI(cache={
-    'ampache': {'2.0', '5.2.1'},
-    'django': {'1.8', '1.4.19', '1.4.22', '1.5.1', '1.6.9', '1.8.14'},
-    'zulip': {'2.0', '2.1.1', '2.1.2', '2.1.3'},
-})
+MOCK_VERSION_API = PypiVersionAPI(
+    cache={
+        "ampache": {"2.0", "5.2.1"},
+        "django": {"1.8", "1.4.19", "1.4.22", "1.5.1", "1.6.9", "1.8.14"},
+        "zulip": {"2.0", "2.1.1", "2.1.2", "2.1.3"},
+    }
+)
 
 
-@patch('vulnerabilities.importers.SafetyDbDataSource.versions', new=MOCK_VERSION_API)
+@patch("vulnerabilities.importers.SafetyDbDataSource.versions", new=MOCK_VERSION_API)
 class SafetyDbImportTest(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        fixture_path = os.path.join(TEST_DATA, 'safety_db', 'insecure_full.json')
+        fixture_path = os.path.join(TEST_DATA, "safety_db", "insecure_full.json")
         with open(fixture_path) as f:
             cls.mock_response = json.load(f)
 
         cls.importer = models.Importer.objects.create(
-            name='safetydb_unittests',
-            license='CC-BY-NC 4.0',
+            name="safetydb_unittests",
+            license="CC-BY-NC 4.0",
             last_run=None,
-            data_source='SafetyDbDataSource',
-            data_source_cfg={
-                'url': 'https://example.com',
-                'etags': {}
-            },
+            data_source="SafetyDbDataSource",
+            data_source_cfg={"url": "https://example.com", "etags": {}},
         )
 
     @classmethod
@@ -69,112 +68,120 @@ class SafetyDbImportTest(TestCase):
     def test_import(self):
         runner = ImportRunner(self.importer, 5)
 
-        with patch('vulnerabilities.importers.SafetyDbDataSource._fetch', return_value=self.mock_response):  # nopep8
-            with patch('vulnerabilities.importers.SafetyDbDataSource.set_api'):
+        with patch(
+            "vulnerabilities.importers.SafetyDbDataSource._fetch", return_value=self.mock_response
+        ):  # nopep8
+            with patch("vulnerabilities.importers.SafetyDbDataSource.set_api"):
                 runner.run()
 
         assert models.Vulnerability.objects.count() == 9
         assert models.VulnerabilityReference.objects.count() == 9
-        assert models.PackageRelatedVulnerability.objects.filter(
-            is_vulnerable=False).count() == 18
-        assert models.PackageRelatedVulnerability.objects.filter(
-            is_vulnerable=True).count() == 18
+        assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=False).count() == 18
+        assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=True).count() == 18
 
         expected_package_count = sum([len(v) for v in MOCK_VERSION_API.cache.values()])
         assert models.Package.objects.count() == expected_package_count
 
         self.assert_by_vulnerability(
-            'pyup.io-37863',
-            'ampache',
-            {'2.0'},
-            {'5.2.1'},
-            cve_ids={'CVE-2019-12385', 'CVE-2019-12386'},
+            "pyup.io-37863",
+            "ampache",
+            {"2.0"},
+            {"5.2.1"},
+            cve_ids={"CVE-2019-12385", "CVE-2019-12386"},
         )
 
         self.assert_by_vulnerability(
-            'pyup.io-25713',
-            'django',
-            {'1.8', '1.4.19', '1.5.1', '1.6.9'},
-            {'1.8.14', '1.4.22'},
-            cve_ids={'CVE-2015-2317'},
+            "pyup.io-25713",
+            "django",
+            {"1.8", "1.4.19", "1.5.1", "1.6.9"},
+            {"1.8.14", "1.4.22"},
+            cve_ids={"CVE-2015-2317"},
         )
 
         self.assert_by_vulnerability(
-            'pyup.io-25721',
-            'django',
-            {'1.8.14'},
-            {'1.8', '1.4.19', '1.5.1', '1.6.9', '1.4.22'},
-            cve_ids={'CVE-2016-6186'},
+            "pyup.io-25721",
+            "django",
+            {"1.8.14"},
+            {"1.8", "1.4.19", "1.5.1", "1.6.9", "1.4.22"},
+            cve_ids={"CVE-2016-6186"},
         )
 
         self.assert_by_vulnerability(
-            'pyup.io-38115',
-            'zulip',
-            {'2.0'},
-            {'2.1.1', '2.1.2', '2.1.3'},
+            "pyup.io-38115",
+            "zulip",
+            {"2.0"},
+            {"2.1.1", "2.1.2", "2.1.3"},
         )
 
         self.assert_by_vulnerability(
-            'pyup.io-38114',
-            'zulip',
-            {'2.0', '2.1.1'},
-            {'2.1.2', '2.1.3'},
-            cve_ids={'CVE-2019-19775', 'CVE-2015-2104'},
+            "pyup.io-38114",
+            "zulip",
+            {"2.0", "2.1.1"},
+            {"2.1.2", "2.1.3"},
+            cve_ids={"CVE-2019-19775", "CVE-2015-2104"},
         )
 
         self.assert_by_vulnerability(
-            'pyup.io-38200',
-            'zulip',
-            {'2.0', '2.1.1', '2.1.2'},
-            {'2.1.3'},
-            cve_ids={'CVE-2020-9444', 'CVE-2020-10935'},
+            "pyup.io-38200",
+            "zulip",
+            {"2.0", "2.1.1", "2.1.2"},
+            {"2.1.3"},
+            cve_ids={"CVE-2020-9444", "CVE-2020-10935"},
         )
 
     def assert_by_vulnerability(
-            self,
-            vuln_ref,
-            pkg_name,
-            impacted_versions,
-            resolved_versions,
-            cve_ids=None,
+        self,
+        vuln_ref,
+        pkg_name,
+        impacted_versions,
+        resolved_versions,
+        cve_ids=None,
     ):
-        impacted_pkgs = set(models.Package.objects.filter(
-            name=pkg_name, version__in=impacted_versions))
+        impacted_pkgs = set(
+            models.Package.objects.filter(name=pkg_name, version__in=impacted_versions)
+        )
 
         assert len(impacted_pkgs) == len(impacted_versions)
 
-        resolved_pkgs = set(models.Package.objects.filter(
-            name=pkg_name, version__in=resolved_versions))
+        resolved_pkgs = set(
+            models.Package.objects.filter(name=pkg_name, version__in=resolved_versions)
+        )
 
         assert len(resolved_pkgs) == len(resolved_versions)
 
         vuln_count = 1 if cve_ids is None else len(cve_ids)
 
-        vulns = {r.vulnerability for r in
-                 models.VulnerabilityReference.objects.filter(reference_id=vuln_ref)}
+        vulns = {
+            r.vulnerability
+            for r in models.VulnerabilityReference.objects.filter(reference_id=vuln_ref)
+        }
 
         assert len(vulns) == vuln_count
 
         for vuln in vulns:
-            assert {ip.package for ip in
-                    models.PackageRelatedVulnerability.objects.filter(
-                        vulnerability=vuln, is_vulnerable=True)
-                    } == impacted_pkgs
+            assert {
+                ip.package
+                for ip in models.PackageRelatedVulnerability.objects.filter(
+                    vulnerability=vuln, is_vulnerable=True
+                )
+            } == impacted_pkgs
 
-            assert {rp.package for rp in
-                    models.PackageRelatedVulnerability.objects.filter(
-                        vulnerability=vuln, is_vulnerable=False)
-                    } == resolved_pkgs
+            assert {
+                rp.package
+                for rp in models.PackageRelatedVulnerability.objects.filter(
+                    vulnerability=vuln, is_vulnerable=False
+                )
+            } == resolved_pkgs
 
         if cve_ids:
             assert {v.vulnerability_id for v in vulns} == cve_ids
 
 
 def test_categorize_versions():
-    all_versions = {'1.8', '1.4.19', '1.4.22', '1.5.1', '1.6.9', '1.8.14'}
+    all_versions = {"1.8", "1.4.19", "1.4.22", "1.5.1", "1.6.9", "1.8.14"}
     version_specs = [">=1.8,<1.8.3", "<1.4.20", ">=1.5,<1.6", ">=1.6,<1.6.11", ">=1.7,<1.7.7"]
 
-    impacted_purls, resolved_purls = categorize_versions('django', all_versions, version_specs)
+    impacted_purls, resolved_purls = categorize_versions("django", all_versions, version_specs)
 
     assert len(impacted_purls) == 4
     assert len(resolved_purls) == 2
@@ -182,5 +189,5 @@ def test_categorize_versions():
     impacted_versions = {p.version for p in impacted_purls}
     resolved_versions = {p.version for p in resolved_purls}
 
-    assert impacted_versions == {'1.8', '1.4.19', '1.5.1', '1.6.9'}
-    assert resolved_versions == {'1.4.22', '1.8.14'}
+    assert impacted_versions == {"1.8", "1.4.19", "1.5.1", "1.6.9"}
+    assert resolved_versions == {"1.4.22", "1.8.14"}

@@ -181,13 +181,14 @@ class AlpineDataSource(DataSource):
                             )
                         )
 
+                # TODO: Handle the CVE-????-????? case
                 advisories.append(
                     Advisory(
                         summary="",
                         impacted_package_urls=[],
                         resolved_package_urls=resolved_purls,
                         vuln_references=references,
-                        vulnerability_id=vuln_ids[0] if vuln_ids[0] != "CVE-????-?????" else None,
+                        vulnerability_id=vuln_ids[0] if vuln_ids[0] != "CVE-????-?????" else "",
                     )
                 )
 

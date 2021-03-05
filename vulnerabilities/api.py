@@ -38,20 +38,26 @@ from drf_spectacular.types import OpenApiTypes
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
+from vulnerabilities.models import VulnerabilitySeverity
+
 
 # This serializer is used for the bulk apis, to prevent wrong auto documentation
 # TODO: Fix the swagger documentation for bulk apis
 placeholder_serializer = inline_serializer(name="Placeholder", fields={})
 
 
+class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VulnerabilitySeverity
+        fields = ["value", "scoring_system"]
+
+
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
+    scores = VulnerabilitySeveritySerializer(many=True)
+
     class Meta:
         model = VulnerabilityReference
-        fields = [
-            "source",
-            "reference_id",
-            "url",
-        ]
+        fields = ["source", "reference_id", "url", "scores"]
 
 
 class HyperLinkedPackageSerializer(serializers.HyperlinkedModelSerializer):
@@ -63,9 +69,11 @@ class HyperLinkedPackageSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class HyperLinkedVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
+    references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
+
     class Meta:
         model = Vulnerability
-        fields = ["url", "vulnerability_id"]
+        fields = ["url", "vulnerability_id", "references"]
 
 
 class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
@@ -149,7 +157,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         See https://github.com/nexB/vulnerablecode/pull/303#issuecomment-761801639 for docs
         """
         filter_list = Q()
-        response = {}
+        response = []
         if not isinstance(request.data.get("packages"), list):
             return Response(
                 status=400,
@@ -157,19 +165,18 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                     "Error": "Request needs to contain a key 'packages' which has the value of a list of package urls"  # nopep8
                 },
             )
-        for purl in request.data["packages"]:
+        for index, purl in enumerate(request.data["packages"]):
             try:
-                filter_list |= Q(
-                    **{k: v for k, v in PackageURL.from_string(purl).to_dict().items() if v}
-                )
+                purl = PackageURL.from_string(purl).to_dict()
             except ValueError as ve:
                 return Response(status=400, data={"Error": str(ve)})
-
-            # This handles the case when the said purl doesnt exist in db
-            response[purl] = {}
-        res = Package.objects.filter(filter_list)
-        for p in res:
-            response[p.package_url] = MinimalPackageSerializer(p, context={"request": request}).data
+            purl_data = Package.objects.filter(
+                **{key: value for key, value in purl.items() if value}
+            )
+            purl_response = {}
+            if purl_data:
+                purl_response = PackageSerializer(purl_data[0], context={"request": request}).data
+            response.append(purl_response)
 
         return Response(response)
 
@@ -186,31 +193,3 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     paginate_by = 50
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = VulnerabilityFilterSet
-
-    # TODO: Fix the swagger documentation for this endpoint
-    @extend_schema(request=placeholder_serializer, responses=placeholder_serializer)
-    @action(detail=False, methods=["post"])
-    def bulk_search(self, request):
-        """
-        See https://github.com/nexB/vulnerablecode/pull/303#issuecomment-761801619 for docs
-        """
-        filter_list = []
-        response = {}
-        if not isinstance(request.data.get("vulnerabilities"), list):
-            return Response(
-                status=400,
-                data={
-                    "Error": "Request needs to contain a key 'vulnerabilities' which has the value of a list of vulnerability ids"  # nopep8
-                },
-            )
-
-        for vulnerability_id in request.data["vulnerabilities"]:
-            filter_list.append(vulnerability_id)
-            # This handles the case when the said cve doesnt exist in db
-            response[vulnerability_id] = {}
-        res = Vulnerability.objects.filter(vulnerability_id__in=filter_list)
-        for vuln in res:
-            response[vuln.vulnerability_id] = MinimalVulnerabilitySerializer(
-                vuln, context={"request": request}
-            ).data
-        return Response(response)

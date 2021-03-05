@@ -5,4 +5,4 @@ from django.apps import AppConfig
 
 
 class VulnerabilitiesAppConfig(AppConfig):
-    name = 'vulnerabilities'
+    name = "vulnerabilities"

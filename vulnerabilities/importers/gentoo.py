@@ -104,7 +104,9 @@ class GentooDataSource(GitDataSource):
 
         for pkg in affected_elem:
             for info in pkg:
-                pkg_ns, pkg_name, = pkg.attrib["name"].split("/")
+                pkg_ns, pkg_name, = pkg.attrib[
+                    "name"
+                ].split("/")
                 purl = PackageURL(type="ebuild", name=pkg_name, version=info.text, namespace=pkg_ns)
 
                 if info.attrib.get("range"):

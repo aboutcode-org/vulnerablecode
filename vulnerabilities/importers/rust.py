@@ -74,7 +74,7 @@ class RustDataSource(GitDataSource):
         self.set_api(packages)
 
         while files:
-            batch, files = files[: self.batch_size], files[self.batch_size:]
+            batch, files = files[: self.batch_size], files[self.batch_size :]
             advisories = []
             for path in batch:
                 advisory = self._load_advisory(path)

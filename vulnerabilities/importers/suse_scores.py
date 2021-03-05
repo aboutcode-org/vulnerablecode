@@ -31,7 +31,6 @@ URL = "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml"
 
 
 class SUSESeverityScoreDataSource(DataSource):
-
     def updated_advisories(self):
         advisories = []
         score_data = fetch_yaml(URL)
@@ -48,32 +47,26 @@ class SUSESeverityScoreDataSource(DataSource):
                 vector = None
                 if cvss_score["version"] == 2.0:
                     score = VulnerabilitySeverity(
-                        system=scoring_systems["cvssv2"],
-                        value=str(cvss_score["score"])
+                        system=scoring_systems["cvssv2"], value=str(cvss_score["score"])
                     )
                     vector = VulnerabilitySeverity(
-                        system=scoring_systems["cvssv2_vector"],
-                        value=str(cvss_score["vector"])
+                        system=scoring_systems["cvssv2_vector"], value=str(cvss_score["vector"])
                     )
 
                 elif cvss_score["version"] == 3:
                     score = VulnerabilitySeverity(
-                        system=scoring_systems["cvssv3"],
-                        value=str(cvss_score["score"])
+                        system=scoring_systems["cvssv3"], value=str(cvss_score["score"])
                     )
                     vector = VulnerabilitySeverity(
-                        system=scoring_systems["cvssv3_vector"],
-                        value=str(cvss_score["vector"])
+                        system=scoring_systems["cvssv3_vector"], value=str(cvss_score["vector"])
                     )
 
                 elif cvss_score["version"] == 3.1:
                     score = VulnerabilitySeverity(
-                        system=scoring_systems["cvssv3.1"],
-                        value=str(cvss_score["score"])
+                        system=scoring_systems["cvssv3.1"], value=str(cvss_score["score"])
                     )
                     vector = VulnerabilitySeverity(
-                        system=scoring_systems["cvssv3.1_vector"],
-                        value=str(cvss_score["vector"])
+                        system=scoring_systems["cvssv3.1_vector"], value=str(cvss_score["vector"])
                     )
 
                 severities.extend([score, vector])
@@ -83,12 +76,7 @@ class SUSESeverityScoreDataSource(DataSource):
                     vulnerability_id=cve_id,
                     summary="",
                     impacted_package_urls=[],
-                    vuln_references=[
-                        Reference(
-                            url=URL,
-                            severities=severities
-                        )
-                    ]
+                    vuln_references=[Reference(url=URL, severities=severities)],
                 )
             )
         return advisories

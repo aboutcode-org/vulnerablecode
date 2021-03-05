@@ -234,7 +234,9 @@ def _get_or_create_vulnerability(
     advisory: Advisory,
 ) -> Tuple[models.Vulnerability, bool]:
 
-    vuln, created = models.Vulnerability.objects.get_or_create(vulnerability_id=advisory.vulnerability_id)  # nopep8
+    vuln, created = models.Vulnerability.objects.get_or_create(
+        vulnerability_id=advisory.vulnerability_id
+    )  # nopep8
     # Eventually we only want to keep summary from NVD and ignore other descriptions.
     if advisory.summary and vuln.summary != advisory.summary:
         vuln.summary = advisory.summary

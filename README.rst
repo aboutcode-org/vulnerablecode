@@ -205,7 +205,7 @@ Run Tests
 
 Use these commands to run code style checks and the test suite::
 
-    pycodestyle --exclude=migrations,settings.py,venv,lib_oval.py,test_ubuntu.py,test_suse.py,test_data_source.py --max-line-length=100 .
+    black -l 100 --check .
     DJANGO_DEV=1 pytest
 
 

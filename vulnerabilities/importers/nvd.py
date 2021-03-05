@@ -89,7 +89,10 @@ class NVDDataSource(DataSource):
             )
             summary = self.extract_summary(cve_item)
             yield Advisory(
-                vulnerability_id=cve_id, summary=summary, vuln_references=references, impacted_package_urls=[]  # nopep8
+                vulnerability_id=cve_id,
+                summary=summary,
+                vuln_references=references,
+                impacted_package_urls=[],  # nopep8
             )
 
     @staticmethod

@@ -63,7 +63,6 @@ class HyperLinkedPackageSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class HyperLinkedVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = Vulnerability
         fields = ["url", "vulnerability_id"]
@@ -176,7 +175,6 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class VulnerabilityFilterSet(filters.FilterSet):
-
     class Meta:
         model = Vulnerability
         fields = ["vulnerability_id"]

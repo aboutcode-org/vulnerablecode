@@ -33,12 +33,10 @@ class TestDebianOvalDataSource(unittest.TestCase):
         cls.debian_oval_data_src = DebianOvalDataSource(batch_size=1, config=data_source_cfg)
 
     @patch(
-        'vulnerabilities.importers.debian_oval.DebianVersionAPI.get',
-        return_value={
-            '1.11.1+dfsg-5+deb7u1',
-            '0.11.1+dfsg-5+deb7u1',
-            '2.3.9'})
-    @patch('vulnerabilities.importers.debian_oval.DebianVersionAPI.load_api', new=mock)
+        "vulnerabilities.importers.debian_oval.DebianVersionAPI.get",
+        return_value={"1.11.1+dfsg-5+deb7u1", "0.11.1+dfsg-5+deb7u1", "2.3.9"},
+    )
+    @patch("vulnerabilities.importers.debian_oval.DebianVersionAPI.load_api", new=mock)
     def test_get_data_from_xml_doc(self, mock_write):
         expected_advisories = [
             Advisory(
@@ -47,19 +45,21 @@ class TestDebianOvalDataSource(unittest.TestCase):
                     PackageURL(
                         type="deb",
                         namespace=None,
-                        name='krb5',
-                        version='0.11.1+dfsg-5+deb7u1',
-                        qualifiers=OrderedDict([('distro', 'wheezy')]),
-                        subpath=None
-                    )},
+                        name="krb5",
+                        version="0.11.1+dfsg-5+deb7u1",
+                        qualifiers=OrderedDict([("distro", "wheezy")]),
+                        subpath=None,
+                    )
+                },
                 resolved_package_urls={
                     PackageURL(
                         type="deb",
                         namespace=None,
-                        name='krb5',
-                        version='1.11.1+dfsg-5+deb7u1',
-                        qualifiers=OrderedDict([('distro', 'wheezy')]),
-                        subpath=None),
+                        name="krb5",
+                        version="1.11.1+dfsg-5+deb7u1",
+                        qualifiers=OrderedDict([("distro", "wheezy")]),
+                        subpath=None,
+                    ),
                     PackageURL(
                         type="deb",
                         namespace=None,
@@ -77,26 +77,32 @@ class TestDebianOvalDataSource(unittest.TestCase):
                     PackageURL(
                         type="deb",
                         namespace=None,
-                        name='a2ps',
-                        version='0.11.1+dfsg-5+deb7u1',
-                        qualifiers=OrderedDict([('distro', 'wheezy')]),
-                        subpath=None
-                    )},
+                        name="a2ps",
+                        version="0.11.1+dfsg-5+deb7u1",
+                        qualifiers=OrderedDict([("distro", "wheezy")]),
+                        subpath=None,
+                    )
+                },
                 resolved_package_urls={
-                    PackageURL(type='deb',
-                               namespace=None,
-                               name='a2ps',
-                               version='2.3.9',
-                               qualifiers=OrderedDict([('distro', 'wheezy')]),
-                               subpath=None),
-                    PackageURL(type='deb',
-                               namespace=None,
-                               name='a2ps',
-                               version='1.11.1+dfsg-5+deb7u1',
-                               qualifiers=OrderedDict([('distro', 'wheezy')]),
-                               subpath=None)},
-                vulnerability_id='CVE-2001-1593')
-
+                    PackageURL(
+                        type="deb",
+                        namespace=None,
+                        name="a2ps",
+                        version="2.3.9",
+                        qualifiers=OrderedDict([("distro", "wheezy")]),
+                        subpath=None,
+                    ),
+                    PackageURL(
+                        type="deb",
+                        namespace=None,
+                        name="a2ps",
+                        version="1.11.1+dfsg-5+deb7u1",
+                        qualifiers=OrderedDict([("distro", "wheezy")]),
+                        subpath=None,
+                    ),
+                },
+                vulnerability_id="CVE-2001-1593",
+            ),
         ]
 
         xml_doc = ET.parse(os.path.join(TEST_DATA, "debian_oval_data.xml"))

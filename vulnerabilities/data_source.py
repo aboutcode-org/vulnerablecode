@@ -67,11 +67,7 @@ class Reference:
 
     def normalized(self):
         severities = sorted(self.severities)
-        return Reference(
-            reference_id=self.reference_id,
-            url=self.url,
-            severities=severities
-        )
+        return Reference(reference_id=self.reference_id, url=self.url, severities=severities)
 
 
 @dataclasses.dataclass(order=True)
@@ -99,7 +95,7 @@ class Advisory:
             self.vuln_references, key=lambda reference: (reference.reference_id, reference.url)
         )
         for index, _ in enumerate(self.vuln_references):
-            vuln_references[index] = (vuln_references[index].normalized())
+            vuln_references[index] = vuln_references[index].normalized()
 
         return Advisory(
             summary=self.summary,
@@ -229,7 +225,7 @@ class DataSource(ContextManager):
         # copy the list as we are mutating it in the loop below
 
         while advisories:
-            b, advisories = advisories[: self.batch_size], advisories[self.batch_size:]
+            b, advisories = advisories[: self.batch_size], advisories[self.batch_size :]
             yield b
 
 
@@ -428,7 +424,7 @@ def _include_file(
         match = match and path.startswith(subdir)
 
     if not recursive:
-        match = match and (os.path.sep not in path[len(subdir or ""):])
+        match = match and (os.path.sep not in path[len(subdir or "") :])
 
     if file_ext:
         match = match and path.endswith(f".{file_ext}")

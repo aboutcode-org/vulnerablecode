@@ -50,12 +50,12 @@
 
           # Pin pypi repo to a specific commit which includes all necessary
           # Python deps. The default version (which is updated with every
-          # mach-nix release) is insufficient.
-          # The corresponding sha256 hash can be obtained with:
-          # $ nix-prefetch-url --unpack https://github.com/DavHau/pypi-deps-db/tarball/<pypiDataRev>
-          pypiDataRev = "fb3c23d059d64e81539fa317635bbe241ba4531e";
+          # mach-nix release) is usually insufficient. Use
+          # ./get-latest-pypi-deps-db.sh to obtain the data rev & hash.
+          pypiDataRev =
+            "894c2005d655011934c04d150f8c57d25a25e29d"; # 2021-03-04T20:10:42Z
           pypiDataSha256 =
-            "168zc3a0z1flgk3srhyf4z6379f37ka5d6z1c1h3hr2agllr7rmc";
+            "1y6297drhbv34da1rjwp01s8wwwqkwxjsq3rkjcdqy69w4r987rz";
         });
 
     in {

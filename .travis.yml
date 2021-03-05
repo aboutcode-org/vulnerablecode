@@ -19,7 +19,6 @@ before_script:
 script:
   - ./manage.py collectstatic
   - pytest
-  - pycodestyle --exclude=migrations,settings.py,venv,lib_oval.py,test_ubuntu.py,test_suse.py,test_data_source.py --max-line-length=100 vulnerablecode vulnerabilities
 
 notifications:
   email: false

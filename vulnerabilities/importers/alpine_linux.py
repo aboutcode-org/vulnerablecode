@@ -77,29 +77,27 @@ BASE_URL = "https://secdb.alpinelinux.org/"
 
 
 class AlpineDataSource(DataSource):
-
     @staticmethod
     def fetch_advisory_links():
         index_page = BeautifulSoup(requests.get(BASE_URL).content, features="lxml")
 
         alpine_versions = [
-            link.text for link in index_page.find_all("a")
-            if link.text.startswith("v")
+            link.text for link in index_page.find_all("a") if link.text.startswith("v")
         ]
 
-        advisory_directory_links = [
-            f"{BASE_URL}{version}" for version in alpine_versions
-        ]
+        advisory_directory_links = [f"{BASE_URL}{version}" for version in alpine_versions]
 
         advisory_links = []
         for advisory_directory_link in advisory_directory_links:
             advisory_directory_page = requests.get(advisory_directory_link).content
             advisory_directory_page = BeautifulSoup(advisory_directory_page, features="lxml")
-            advisory_links.extend([
-                f"{advisory_directory_link}{anchore_tag.text}"
-                for anchore_tag in advisory_directory_page.find_all("a")
-                if anchore_tag.text.endswith("yaml")
-            ])
+            advisory_links.extend(
+                [
+                    f"{advisory_directory_link}{anchore_tag.text}"
+                    for anchore_tag in advisory_directory_page.find_all("a")
+                    if anchore_tag.text.endswith("yaml")
+                ]
+            )
 
         return advisory_links
 
@@ -122,14 +120,21 @@ class AlpineDataSource(DataSource):
         for p in record["packages"]:
             advisories.extend(
                 self._load_advisories(
-                    p["pkg"], record["distroversion"], record["reponame"], record["archs"],
+                    p["pkg"],
+                    record["distroversion"],
+                    record["reponame"],
+                    record["archs"],
                 )
             )
 
         return advisories
 
     def _load_advisories(
-        self, pkg_infos: Mapping[str, Any], distroversion: str, reponame: str, archs: Iterable[str],
+        self,
+        pkg_infos: Mapping[str, Any],
+        distroversion: str,
+        reponame: str,
+        archs: Iterable[str],
     ) -> List[Advisory]:
 
         advisories = []

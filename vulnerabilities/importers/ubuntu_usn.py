@@ -91,9 +91,7 @@ class UbuntuUSNDataSource(DataSource):
 
 
 def get_usn_references(usn_id):
-    return Reference(
-        reference_id="USN-" + usn_id, url="https://usn.ubuntu.com/{}/".format(usn_id)
-    )
+    return Reference(reference_id="USN-" + usn_id, url="https://usn.ubuntu.com/{}/".format(usn_id))
 
 
 def fetch(url):
@@ -112,7 +110,14 @@ def get_purls(pkg_dict):
         if not version:
             continue
 
-        purls.add(PackageURL(name=pkg_name, version=version, type="deb", namespace="ubuntu",))
+        purls.add(
+            PackageURL(
+                name=pkg_name,
+                version=version,
+                type="deb",
+                namespace="ubuntu",
+            )
+        )
 
     for pkg_name in pkg_dict["binaries"]:
         version = pkg_dict["binaries"][pkg_name]["version"]
@@ -121,5 +126,12 @@ def get_purls(pkg_dict):
         if not version:
             continue
 
-        purls.add(PackageURL(name=pkg_name, version=version, type="deb", namespace="ubuntu",))
+        purls.add(
+            PackageURL(
+                name=pkg_name,
+                version=version,
+                type="deb",
+                namespace="ubuntu",
+            )
+        )
     return purls

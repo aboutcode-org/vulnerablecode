@@ -80,57 +80,57 @@ class RubyDataSource(GitDataSource):
 
     def process_file(self, path) -> List[Advisory]:
         record = load_yaml(path)
-        package_name = record.get('gem')
+        package_name = record.get("gem")
 
         if not package_name:
             return
 
-        if 'cve' in record:
-            cve_id = 'CVE-{}'.format(record['cve'])
+        if "cve" in record:
+            cve_id = "CVE-{}".format(record["cve"])
         else:
             return
 
-        safe_version_ranges = record.get('patched_versions', [])
+        safe_version_ranges = record.get("patched_versions", [])
         # this case happens when the advisory contain only 'patched_versions' field
         # and it has value None(i.e it is empty :( ).
         if not safe_version_ranges:
             safe_version_ranges = []
-        safe_version_ranges += record.get('unaffected_versions', [])
+        safe_version_ranges += record.get("unaffected_versions", [])
         safe_version_ranges = [i for i in safe_version_ranges if i]
 
-        if not getattr(self, 'pkg_manager_api', None):
+        if not getattr(self, "pkg_manager_api", None):
             self.pkg_manager_api = RubyVersionAPI()
-        all_vers = self.pkg_manager_api.get(
-            package_name)
-        safe_versions, affected_versions = self.categorize_versions(
-            all_vers, safe_version_ranges)
+        all_vers = self.pkg_manager_api.get(package_name)
+        safe_versions, affected_versions = self.categorize_versions(all_vers, safe_version_ranges)
 
         impacted_purls = {
             PackageURL(
                 name=package_name,
-                type='gem',
+                type="gem",
                 version=version,
-            ) for version in affected_versions}
+            )
+            for version in affected_versions
+        }
 
         resolved_purls = {
             PackageURL(
                 name=package_name,
-                type='gem',
+                type="gem",
                 version=version,
-            ) for version in safe_versions}
+            )
+            for version in safe_versions
+        }
 
         references = []
-        if record.get('url'):
-            references.append(
-                Reference(url=record.get('url'))
-            )
+        if record.get("url"):
+            references.append(Reference(url=record.get("url")))
 
         return Advisory(
-            summary=record.get('description', ''),
+            summary=record.get("description", ""),
             impacted_package_urls=impacted_purls,
             resolved_package_urls=resolved_purls,
             vuln_references=references,
-            vulnerability_id=cve_id
+            vulnerability_id=cve_id,
         )
 
     @staticmethod

@@ -73,12 +73,12 @@ scoring_systems = {
     "avgs": ScoringSystem(
         identifier="avgs",
         name="Archlinux Vulnerability Group Severity",
-        url="https://wiki.archlinux.org/index.php/Bug_reporting_guidelines#Severity"
+        url="https://wiki.archlinux.org/index.php/Bug_reporting_guidelines#Severity",
     ),
     "cvssv3.1_qr": ScoringSystem(
         identifier="cvssv3.1_qr",
         name="CVSSv3.1 Qualitative Severity Rating",
         url="https://www.first.org/cvss/specification-document",
-        notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc"
-    )
+        notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",
+    ),
 }

@@ -34,13 +34,13 @@ from vulnerabilities.data_source import Reference
 
 
 class RetireDotnetDataSource(GitDataSource):
-
     def __enter__(self):
         super(RetireDotnetDataSource, self).__enter__()
 
-        if not getattr(self, '_added_files', None):
+        if not getattr(self, "_added_files", None):
             self._added_files, self._updated_files = self.file_changes(
-                recursive=True, file_ext='json', subdir='./Content')
+                recursive=True, file_ext="json", subdir="./Content"
+            )
 
     def updated_advisories(self) -> Set[Advisory]:
         files = self._updated_files
@@ -65,7 +65,7 @@ class RetireDotnetDataSource(GitDataSource):
         cve_regex = re.compile(r"CVE-\d+-\d+")
         res = cve_regex.search(desc)
         if res:
-            return desc[res.start():res.end()]
+            return desc[res.start() : res.end()]
         else:
             return None
 
@@ -80,24 +80,23 @@ class RetireDotnetDataSource(GitDataSource):
             affected_purls = set()
             fixed_purls = set()
 
-            for pkg in json_doc['packages']:
-                affected_purls.add(PackageURL(
-                    name=pkg['id'],
-                    version=pkg['affected'],
-                    type='nuget'))
+            for pkg in json_doc["packages"]:
+                affected_purls.add(
+                    PackageURL(name=pkg["id"], version=pkg["affected"], type="nuget")
+                )
 
-                fixed_purls.add(PackageURL(
-                    name=pkg['id'],
-                    version=pkg['fix'],
-                    type='nuget'))
+                fixed_purls.add(PackageURL(name=pkg["id"], version=pkg["fix"], type="nuget"))
 
-            vuln_reference = [Reference(
-                url=json_doc['link'],
-            )]
+            vuln_reference = [
+                Reference(
+                    url=json_doc["link"],
+                )
+            ]
 
             return Advisory(
-                summary=json_doc['description'],
+                summary=json_doc["description"],
                 impacted_package_urls=affected_purls,
                 resolved_package_urls=fixed_purls,
                 vulnerability_id=vuln_id,
-                vuln_references=vuln_reference)
+                vuln_references=vuln_reference,
+            )

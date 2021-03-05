@@ -46,10 +46,10 @@ class SUSEBackportsDataSource(DataSource):
     @staticmethod
     def get_all_urls_of_backports(url):
         r = requests.get(url)
-        soup = BeautifulSoup(r.content, 'lxml')
-        for a_tag in soup.find_all('a', href=True):
-            if a_tag['href'].endswith('.yaml') and a_tag['href'].startswith('backports'):
-                yield url + a_tag['href']
+        soup = BeautifulSoup(r.content, "lxml")
+        for a_tag in soup.find_all("a", href=True):
+            if a_tag["href"].endswith(".yaml") and a_tag["href"].startswith("backports"):
+                yield url + a_tag["href"]
 
     def updated_advisories(self):
         advisories = []
@@ -74,17 +74,20 @@ class SUSEBackportsDataSource(DataSource):
     def process_file(yaml_file):
         advisories = []
         try:
-            for pkg in yaml_file[0]['packages']:
-                for version in yaml_file[0]['packages'][pkg]['fixed']:
-                    for vuln in yaml_file[0]['packages'][pkg]['fixed'][version]:
+            for pkg in yaml_file[0]["packages"]:
+                for version in yaml_file[0]["packages"][pkg]["fixed"]:
+                    for vuln in yaml_file[0]["packages"][pkg]["fixed"][version]:
                         # yaml_file specific data can be added
-                        purl = [PackageURL(
-                            name=pkg, type="rpm", version=version, namespace='opensuse')]
+                        purl = [
+                            PackageURL(name=pkg, type="rpm", version=version, namespace="opensuse")
+                        ]
                         advisories.append(
-                            Advisory(vulnerability_id=vuln,
-                                     resolved_package_urls=purl,
-                                     summary='',
-                                     impacted_package_urls=[])
+                            Advisory(
+                                vulnerability_id=vuln,
+                                resolved_package_urls=purl,
+                                summary="",
+                                impacted_package_urls=[],
+                            )
                         )
         except TypeError:
             # could've used pass

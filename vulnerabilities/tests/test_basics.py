@@ -32,16 +32,8 @@ bin_dir = dirname(sys.executable)
 
 class BaseTests(unittest.TestCase):
     def test_codestyle(self):
-        args = (
-            join(bin_dir, "pycodestyle") +
-            " --exclude=migrations,settings.py,venv,lib_oval.py,test_ubuntu.py,"
-            "test_suse.py,test_data_source.py "
-            "--max-line-length=100 "
-            # Skip default and E252, triggered when using black-like style
-            "--ignore=E121,E123,E126,E226,E24,E704,W503,W504,E252 "
-            "vulnerablecode vulnerabilities"
-        )
+        args = join(bin_dir, "black --check -l 100 .")
         try:
             subprocess.check_output(args.split(), cwd=root_dir)
         except Exception as e:
-            raise Exception(f'failed to run:\n{args}') from e
+            raise Exception(f"Black style check failed, please format the code using black") from e

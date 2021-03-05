@@ -173,14 +173,9 @@ class GitHubAPIDataSource(DataSource):
         for ref in reference_data:
             url = ref["url"]
             if "GHSA-" in url.upper():
-                reference = Reference(
-                    url=url,
-                    reference_id=url.split("/")[-1]
-                )
+                reference = Reference(url=url, reference_id=url.split("/")[-1])
             else:
-                reference = Reference(
-                    url=url
-                )
+                reference = Reference(url=url)
             references.append(reference)
 
         return references
@@ -236,7 +231,7 @@ class GitHubAPIDataSource(DataSource):
                                     ref.severities = [
                                         VulnerabilitySeverity(
                                             system=scoring_systems["cvssv3.1_qr"],
-                                            value=adv["node"]["advisory"]["severity"]
+                                            value=adv["node"]["advisory"]["severity"],
                                         )
                                     ]
                                     # Each Node has only one GHSA, hence exit after attaching

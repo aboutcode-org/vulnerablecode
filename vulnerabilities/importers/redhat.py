@@ -110,7 +110,9 @@ def to_advisory(advisory_data):
         # See https://access.redhat.com/articles/2130961 for more details.
 
         if "RHSA" in rh_adv.upper():
-            rhsa_data = requests.get(f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json").json()  # nopep8
+            rhsa_data = requests.get(
+                f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json"
+            ).json()  # nopep8
             value = rhsa_data["cvrfdoc"]["aggregate_severity"]
             rhsa_aggregate_severity = VulnerabilitySeverity(
                 system=scoring_systems["rhas"],

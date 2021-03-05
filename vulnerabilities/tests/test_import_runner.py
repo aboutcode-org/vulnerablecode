@@ -48,7 +48,7 @@ class MockDataSource(DataSource):
 
     def _yield_advisories(self, advisories):
         while advisories:
-            b, advisories = advisories[:self.batch_size], advisories[self.batch_size:]
+            b, advisories = advisories[: self.batch_size], advisories[self.batch_size :]
             yield b
 
 

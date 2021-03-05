@@ -221,7 +221,9 @@ class PackageRelatedVulnerablityCreate(View):
     @staticmethod
     def create_relationship_instance(vulnerability_id, package_id, is_vulnerable):
         package = models.Package.objects.get(id=package_id)
-        vulnerability, vuln_created = models.Vulnerability.objects.get_or_create(vulnerability_id=vulnerability_id)  # nopep8
+        vulnerability, vuln_created = models.Vulnerability.objects.get_or_create(
+            vulnerability_id=vulnerability_id
+        )  # nopep8
         return models.PackageRelatedVulnerability(
             vulnerability=vulnerability, package=package, is_vulnerable=is_vulnerable
         )

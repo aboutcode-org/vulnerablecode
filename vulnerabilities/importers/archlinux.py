@@ -91,7 +91,10 @@ class ArchlinuxDataSource(DataSource):
             for name in record["packages"]:
                 impacted_purls.add(
                     PackageURL(
-                        name=name, type="pacman", namespace="archlinux", version=record["affected"],
+                        name=name,
+                        type="pacman",
+                        namespace="archlinux",
+                        version=record["affected"],
                     )
                 )
 
@@ -112,11 +115,9 @@ class ArchlinuxDataSource(DataSource):
                     url="https://security.archlinux.org/{}".format(record["name"]),
                     severities=[
                         VulnerabilitySeverity(
-                            system=scoring_systems["avgs"],
-                            value=record["severity"]
+                            system=scoring_systems["avgs"], value=record["severity"]
                         )
-
-                    ]
+                    ],
                 )
             )
 

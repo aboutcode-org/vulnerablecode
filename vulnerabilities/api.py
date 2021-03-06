@@ -60,7 +60,8 @@ class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
         fields = ["source", "reference_id", "url", "scores"]
 
 
-class HyperLinkedPackageSerializer(serializers.HyperlinkedModelSerializer):
+# Used for nesting inside vulnerability focused APIs.
+class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
     purl = serializers.CharField(source="package_url")
 
     class Meta:
@@ -68,7 +69,8 @@ class HyperLinkedPackageSerializer(serializers.HyperlinkedModelSerializer):
         fields = ["url", "purl"]
 
 
-class HyperLinkedVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
+# Used for nesting inside package focused APIs.
+class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
 
     class Meta:
@@ -76,21 +78,13 @@ class HyperLinkedVulnerabilitySerializer(serializers.HyperlinkedModelSerializer)
         fields = ["url", "vulnerability_id", "references"]
 
 
-class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
+class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
 
-    resolved_packages = HyperLinkedPackageSerializer(
-        many=True, source="resolved_to", read_only=True
-    )
-    unresolved_packages = HyperLinkedPackageSerializer(
+    resolved_packages = MinimalPackageSerializer(many=True, source="resolved_to", read_only=True)
+    unresolved_packages = MinimalPackageSerializer(
         many=True, source="vulnerable_to", read_only=True
     )
 
-    class Meta:
-        model = Vulnerability
-        fields = ["url", "unresolved_packages", "resolved_packages"]
-
-
-class VulnerabilitySerializer(MinimalVulnerabilitySerializer):
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
 
     class Meta:
@@ -98,23 +92,14 @@ class VulnerabilitySerializer(MinimalVulnerabilitySerializer):
         fields = "__all__"
 
 
-class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
-    unresolved_vulnerabilities = HyperLinkedVulnerabilitySerializer(
+class PackageSerializer(serializers.HyperlinkedModelSerializer):
+
+    unresolved_vulnerabilities = MinimalVulnerabilitySerializer(
         many=True, source="vulnerable_to", read_only=True
     )
-    resolved_vulnerabilities = HyperLinkedVulnerabilitySerializer(
+    resolved_vulnerabilities = MinimalVulnerabilitySerializer(
         many=True, source="resolved_to", read_only=True
     )
-
-    class Meta:
-        model = Package
-        fields = [
-            "resolved_vulnerabilities",
-            "unresolved_vulnerabilities",
-        ]
-
-
-class PackageSerializer(MinimalPackageSerializer):
     purl = serializers.CharField(source="package_url")
 
     class Meta:

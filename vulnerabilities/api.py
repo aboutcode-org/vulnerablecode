@@ -165,7 +165,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                     "Error": "Request needs to contain a key 'packages' which has the value of a list of package urls"  # nopep8
                 },
             )
-        for index, purl in enumerate(request.data["packages"]):
+        for purl in request.data.get("packages"):
             try:
                 purl = PackageURL.from_string(purl).to_dict()
             except ValueError as ve:

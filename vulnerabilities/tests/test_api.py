@@ -198,7 +198,7 @@ class TestBulkAPIResponse(TestCase):
 
     def test_bulk_packages_api(self):
         request_body = {
-            "packages": [
+            "purls": [
                 "pkg:deb/debian/doesnotexist@0.9.7-10?distro=jessie",
                 "pkg:maven/com.datadoghq/datadog-api-client@1.0.0-beta.7",
             ]
@@ -281,7 +281,7 @@ class TestBulkAPIResponse(TestCase):
 
     def test_invalid_request_bulk_packages(self):
         error_response = {
-            "Error": "Request needs to contain a key 'packages' which has the value of a list of package urls"  # nopep8
+            "Error": "Request needs to contain a key 'purls' which has the value of a list of package urls"  # nopep8
         }
         invalid_key_request_data = {"pkg": []}
         response = self.client.post(
@@ -301,7 +301,7 @@ class TestBulkAPIResponse(TestCase):
         assert response == error_response
 
         invalid_purl_request_data = {
-            "packages": [
+            "purls": [
                 "pkg:deb/debian/librsync@0.9.7-10?distro=jessie",
                 "pg:deb/debian/mimetex@1.50-1.1?distro=jessie",
             ]

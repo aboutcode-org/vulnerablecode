@@ -22,24 +22,20 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 from urllib.parse import unquote
-from typing import List
 
 from django.db.models import Q
 from django.urls import reverse
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema, inline_serializer
 from packageurl import PackageURL
-from rest_framework import serializers
-from rest_framework import viewsets
+
+from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema, inline_serializer
-from drf_spectacular.types import OpenApiTypes
-
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
-
 
 # This serializer is used for the bulk apis, to prevent wrong auto documentation
 # TODO: Fix the swagger documentation for bulk apis
@@ -141,16 +137,15 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         """
         See https://github.com/nexB/vulnerablecode/pull/303#issuecomment-761801639 for docs
         """
-        filter_list = Q()
         response = []
-        if not isinstance(request.data.get("packages"), list):
+        if not isinstance(request.data.get("purls"), list):
             return Response(
                 status=400,
                 data={
-                    "Error": "Request needs to contain a key 'packages' which has the value of a list of package urls"  # nopep8
+                    "Error": "Request needs to contain a key 'purls' which has the value of a list of package urls"  # nopep8
                 },
             )
-        for purl in request.data.get("packages"):
+        for purl in request.data.get("purls"):
             try:
                 purl = PackageURL.from_string(purl).to_dict()
             except ValueError as ve:

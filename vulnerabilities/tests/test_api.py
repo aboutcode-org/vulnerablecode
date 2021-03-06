@@ -204,80 +204,59 @@ class TestBulkAPIResponse(TestCase):
             ]
         }
         response = self.client.post(
-            "/api/packages/bulk_search/", data=request_body, content_type="application/json"
-        ).data
+            "/api/packages/bulk_search/",
+            data=request_body,
+            content_type="application/json",
+        ).json()
 
         expected_response = [
             {},
             {
-                "name": "datadog-api-client",
-                "namespace": "com.datadoghq",
-                "purl": "pkg:maven/com.datadoghq/datadog-api-client@1.0.0-beta.7",
-                "qualifiers": {},
-                "resolved_vulnerabilities": [],
-                "subpath": "",
-                "type": "maven",
-                "unresolved_vulnerabilities": [
-                    OrderedDict(
-                        [
-                            ("url", "http://testserver/api/vulnerabilities/60"),
-                            ("vulnerability_id", "CVE-2021-21331"),
-                            (
-                                "references",
-                                [
-                                    OrderedDict(
-                                        [
-                                            ("source", ""),
-                                            ("reference_id", "GHSA-2cxf-6567-7pp6"),
-                                            (
-                                                "url",
-                                                "https://github.com/advisories/GHSA-2cxf-6567-7pp6",
-                                            ),
-                                            ("scores", []),
-                                        ]
-                                    ),
-                                    OrderedDict(
-                                        [
-                                            ("source", ""),
-                                            ("reference_id", ""),
-                                            (
-                                                "url",
-                                                "https://nvd.nist.gov/vuln/detail/CVE-2021-21331",
-                                            ),
-                                            ("scores", []),
-                                        ]
-                                    ),
-                                    OrderedDict(
-                                        [
-                                            ("source", ""),
-                                            ("reference_id", "GHSA-2cxf-6567-7pp6"),
-                                            (
-                                                "url",
-                                                "https://github.com/DataDog/datadog-api-client-java/security/advisories/GHSA-2cxf-6567-7pp6",
-                                            ),
-                                            (
-                                                "scores",
-                                                [
-                                                    OrderedDict(
-                                                        [
-                                                            ("value", "LOW"),
-                                                            ("scoring_system", "cvssv3.1_qr"),
-                                                        ]
-                                                    )
-                                                ],
-                                            ),
-                                        ]
-                                    ),
-                                ],
-                            ),
-                        ]
-                    )
-                ],
                 "url": "http://testserver/api/packages/3467",
+                "unresolved_vulnerabilities": [
+                    {
+                        "url": "http://testserver/api/vulnerabilities/60",
+                        "vulnerability_id": "CVE-2021-21331",
+                        "references": [
+                            {
+                                "source": "",
+                                "reference_id": "GHSA-2cxf-6567-7pp6",
+                                "url": "https://github.com/advisories/GHSA-2cxf-6567-7pp6",
+                                "scores": [],
+                            },
+                            {
+                                "source": "",
+                                "reference_id": "",
+                                "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-21331",
+                                "scores": [],
+                            },
+                            {
+                                "source": "",
+                                "reference_id": "GHSA-2cxf-6567-7pp6",
+                                "url": "https://github.com/DataDog/datadog-api-client-java/security/advisories/GHSA-2cxf-6567-7pp6",
+                                "scores": [{"value": "LOW", "scoring_system": "cvssv3.1_qr"}],
+                            },
+                        ],
+                    }
+                ],
+                "resolved_vulnerabilities": [],
+                "purl": "pkg:maven/com.datadoghq/datadog-api-client@1.0.0-beta.7",
+                "type": "maven",
+                "namespace": "com.datadoghq",
+                "name": "datadog-api-client",
                 "version": "1.0.0-beta.7",
+                "subpath": "",
+                "qualifiers": {},
             },
         ]
-        assert response == expected_response
+
+        # This normalization is brittle
+        expected_response[1]["unresolved_vulnerabilities"][0]["references"].sort(
+            key=lambda x: x["url"]
+        )
+        response[1]["unresolved_vulnerabilities"][0]["references"].sort(key=lambda x: x["url"])
+
+        assert all([purl_response in expected_response for purl_response in response])
 
     def test_invalid_request_bulk_packages(self):
         error_response = {

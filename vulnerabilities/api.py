@@ -146,7 +146,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                     "Error": "A non-empty 'purls' list of package URLs is required."
                 },
             )
-        for purl in request.data.get("purls"):
+        for purl in request.data["purls"]:
             try:
                 purl = PackageURL.from_string(purl).to_dict()
             except ValueError as ve:

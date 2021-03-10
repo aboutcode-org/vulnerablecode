@@ -168,7 +168,7 @@ You can install VulnerableCode with `Nix <https://nixos.org/download.html>`__
 (`Flake <https://nixos.wiki/wiki/Flakes>`__ support is needed)::
 
     cd etc/nix
-    nix --print-build-logs flake check # build & run tests
+    nix-shell -p nixFlakes --run "nix --print-build-logs flake check " # build & run tests 
 
 There are several options to use the Nix version::
 

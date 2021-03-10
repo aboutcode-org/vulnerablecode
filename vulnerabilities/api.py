@@ -142,15 +142,13 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         if not purls or not isinstance(purls, list):
             return Response(
                 status=400,
-                data={
-                    "Error": "A non-empty 'purls' list of package URLs is required."
-                },
+                data={"Error": "A non-empty 'purls' list of package URLs is required."},
             )
         for purl in request.data["purls"]:
             try:
                 purl = PackageURL.from_string(purl).to_dict()
             except ValueError as ve:
-                return Response(status=400, data={"Error": f"Invalid Package URL: {purl}")
+                return Response(status=400, data={"Error": f"Invalid Package URL: {purl}"})
             purl_data = Package.objects.filter(
                 **{key: value for key, value in purl.items() if value}
             )

@@ -40,6 +40,53 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")
 
 
+def cleaned_response(response):
+    """
+    Return a cleaned response suitable for comparison in tests in particular:
+    - sort lists with a stable order
+    """
+    cleaned_response = []
+    response_copy = sorted(response, key=lambda x: x.get("purl", ""))
+    for package_data in response_copy:
+        package_data["unresolved_vulnerabilities"] = sorted(
+            package_data["unresolved_vulnerabilities"], key=lambda x: x["vulnerability_id"]
+        )
+        for index, vulnerability in enumerate(package_data["unresolved_vulnerabilities"]):
+            package_data["unresolved_vulnerabilities"][index]["references"] = sorted(
+                vulnerability["references"], key=lambda x: (x["reference_id"], x["url"])
+            )
+            for index2, reference in enumerate(
+                package_data["unresolved_vulnerabilities"][index]["references"]
+            ):
+                reference["scores"] = sorted(
+                    reference["scores"], key=lambda x: (x["value"], x["scoring_system"])
+                )
+                package_data["unresolved_vulnerabilities"][index]["references"][index2][
+                    "scores"
+                ] = reference["scores"]
+
+        package_data["resolved_vulnerabilities"] = sorted(
+            package_data["resolved_vulnerabilities"], key=lambda x: x["vulnerability_id"]
+        )
+        for index, vulnerability in enumerate(package_data["resolved_vulnerabilities"]):
+            package_data["resolved_vulnerabilities"][index]["references"] = sorted(
+                vulnerability["references"], key=lambda x: (x["reference_id"], x["url"])
+            )
+            for index2, reference in enumerate(
+                package_data["resolved_vulnerabilities"][index]["references"]
+            ):
+                reference["scores"] = sorted(
+                    reference["scores"], key=lambda x: (x["value"], x["scoring_system"])
+                )
+                package_data["resolved_vulnerabilities"][index]["references"][index2][
+                    "scores"
+                ] = reference["scores"]
+
+        cleaned_response.append(package_data)
+
+    return cleaned_response
+
+
 class TestDebianResponse(TestCase):
     fixtures = ["debian.json"]
 
@@ -210,53 +257,55 @@ class TestBulkAPIResponse(TestCase):
         ).json()
 
         expected_response = [
-            {},
             {
-                "url": "http://testserver/api/packages/3467",
+                "name": "doesnotexist",
+                "namespace": "debian",
+                "qualifiers": {"distro": "jessie"},
+                "resolved_vulnerabilities": [],
+                "subpath": None,
+                "type": "deb",
+                "unresolved_vulnerabilities": [],
+                "version": "0.9.7-10",
+            },
+            {
+                "name": "datadog-api-client",
+                "namespace": "com.datadoghq",
+                "purl": "pkg:maven/com.datadoghq/datadog-api-client@1.0.0-beta.7",
+                "qualifiers": {},
+                "resolved_vulnerabilities": [],
+                "subpath": "",
+                "type": "maven",
                 "unresolved_vulnerabilities": [
                     {
-                        "url": "http://testserver/api/vulnerabilities/60",
-                        "vulnerability_id": "CVE-2021-21331",
                         "references": [
                             {
-                                "source": "",
-                                "reference_id": "GHSA-2cxf-6567-7pp6",
-                                "url": "https://github.com/advisories/GHSA-2cxf-6567-7pp6",
-                                "scores": [],
-                            },
-                            {
-                                "source": "",
                                 "reference_id": "",
-                                "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-21331",
                                 "scores": [],
+                                "source": "",
+                                "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-21331",
                             },
                             {
-                                "source": "",
                                 "reference_id": "GHSA-2cxf-6567-7pp6",
+                                "scores": [{"scoring_system": "cvssv3.1_qr", "value": "LOW"}],
+                                "source": "",
                                 "url": "https://github.com/DataDog/datadog-api-client-java/security/advisories/GHSA-2cxf-6567-7pp6",
-                                "scores": [{"value": "LOW", "scoring_system": "cvssv3.1_qr"}],
+                            },
+                            {
+                                "reference_id": "GHSA-2cxf-6567-7pp6",
+                                "scores": [],
+                                "source": "",
+                                "url": "https://github.com/advisories/GHSA-2cxf-6567-7pp6",
                             },
                         ],
+                        "url": "http://testserver/api/vulnerabilities/60",
+                        "vulnerability_id": "CVE-2021-21331",
                     }
                 ],
-                "resolved_vulnerabilities": [],
-                "purl": "pkg:maven/com.datadoghq/datadog-api-client@1.0.0-beta.7",
-                "type": "maven",
-                "namespace": "com.datadoghq",
-                "name": "datadog-api-client",
+                "url": "http://testserver/api/packages/3467",
                 "version": "1.0.0-beta.7",
-                "subpath": "",
-                "qualifiers": {},
             },
         ]
-
-        # This normalization is brittle
-        expected_response[1]["unresolved_vulnerabilities"][0]["references"].sort(
-            key=lambda x: x["url"]
-        )
-        response[1]["unresolved_vulnerabilities"][0]["references"].sort(key=lambda x: x["url"])
-
-        assert all([purl_response in expected_response for purl_response in response])
+        assert cleaned_response(expected_response) == cleaned_response(response)
 
     def test_invalid_request_bulk_packages(self):
         error_response = {

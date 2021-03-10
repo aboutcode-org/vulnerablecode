@@ -13,7 +13,7 @@
     type = "github";
     owner = "DavHau";
     repo = "mach-nix";
-    ref = "3.1.1";
+    ref = "235a0a81d05a043bca2a93442f2560946266fc73";
   };
 
   outputs = { self, nixpkgs, machnix }:
@@ -53,9 +53,9 @@
           # mach-nix release) is usually insufficient. Use
           # ./get-latest-pypi-deps-db.sh to obtain the data rev & hash.
           pypiDataRev =
-            "894c2005d655011934c04d150f8c57d25a25e29d"; # 2021-03-04T20:10:42Z
+            "499750266bb4b2840cbe856c2cc0e3297685e362"; # 2021-03-06T08:13:08Z
           pypiDataSha256 =
-            "1y6297drhbv34da1rjwp01s8wwwqkwxjsq3rkjcdqy69w4r987rz";
+            "188g24k8pk4lgqybywimkvwjwh8014v6l2mrkvzv309882i9p5gc";
         });
 
     in {

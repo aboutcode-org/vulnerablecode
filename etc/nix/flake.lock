@@ -22,16 +22,16 @@
         "pypi-deps-db": "pypi-deps-db"
       },
       "locked": {
-        "lastModified": 1606460537,
-        "narHash": "sha256-gcKjBA1fpCzh0nGoaxurIjIJanPDrAea6NK60M+vfRk=",
+        "lastModified": 1614316305,
+        "narHash": "sha256-GLZqAazQu7zYR/1VU8QpjdrPdNMn9H8QdlMukT1TeZQ=",
         "owner": "DavHau",
         "repo": "mach-nix",
-        "rev": "1ec92303acd142aa1a3b60bb97745544cf049312",
+        "rev": "235a0a81d05a043bca2a93442f2560946266fc73",
         "type": "github"
       },
       "original": {
         "owner": "DavHau",
-        "ref": "3.1.1",
+        "ref": "235a0a81d05a043bca2a93442f2560946266fc73",
         "repo": "mach-nix",
         "type": "github"
       }

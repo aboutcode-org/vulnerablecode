@@ -157,6 +157,10 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
             purl_response = {}
             if purl_data:
                 purl_response = PackageSerializer(purl_data[0], context={"request": request}).data
+            else:
+                purl_response = purl
+                purl_response["unresolved_vulnerabilities"] = []
+                purl_response["resolved_vulnerabilities"] = []
             response.append(purl_response)
 
         return Response(response)

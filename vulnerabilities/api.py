@@ -143,7 +143,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
             return Response(
                 status=400,
                 data={
-                    "Error": "Request needs to contain a key 'purls' which has the value of a list of package urls"  # nopep8
+                    "Error": "A non-empty 'purls' list of package URLs is required."
                 },
             )
         for purl in request.data.get("purls"):

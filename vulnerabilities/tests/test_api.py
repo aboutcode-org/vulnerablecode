@@ -309,7 +309,7 @@ class TestBulkAPIResponse(TestCase):
 
     def test_invalid_request_bulk_packages(self):
         error_response = {
-            "Error": "Request needs to contain a key 'purls' which has the value of a list of package urls"  # nopep8
+            "Error": "A non-empty 'purls' list of package URLs is required."  # nopep8
         }
         invalid_key_request_data = {"pkg": []}
         response = self.client.post(
@@ -340,6 +340,6 @@ class TestBulkAPIResponse(TestCase):
             content_type="application/json",
         ).data
         purl_error_respones = {
-            "Error": "purl is missing the required \"pkg\" scheme component: 'pg:deb/debian/mimetex@1.50-1.1?distro=jessie'."  # nopep8
+            "Error": "Invalid Package URL: pg:deb/debian/mimetex@1.50-1.1?distro=jessie"
         }
         assert response == purl_error_respones

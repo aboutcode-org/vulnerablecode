@@ -138,7 +138,8 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         See https://github.com/nexB/vulnerablecode/pull/303#issuecomment-761801639 for docs
         """
         response = []
-        if not isinstance(request.data.get("purls"), list):
+        purls = request.data.get("purls", []) or []
+        if not purls or not isinstance(purls, list):
             return Response(
                 status=400,
                 data={

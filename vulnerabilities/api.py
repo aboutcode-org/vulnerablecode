@@ -141,7 +141,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=["post"])
     def bulk_search(self, request):
         """
-        See https://github.com/nexB/vulnerablecode/pull/303#issuecomment-761801639 for docs
+        See https://github.com/nexB/vulnerablecode/pull/369#issuecomment-796877606 for docs
         """
         response = []
         purls = request.data.get("purls", []) or []

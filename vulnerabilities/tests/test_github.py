@@ -195,7 +195,7 @@ class TestGitHubAPIDataSource(TestCase):
                                 system=ScoringSystem(
                                     identifier="cvssv3.1_qr",
                                     name="CVSSv3.1 Qualitative Severity Rating",
-                                    url="https://www.first.org/cvss/specification-document",
+                                    url="https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale",
                                     notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",  # nopep8
                                 ),
                                 value="MODERATE",
@@ -236,7 +236,7 @@ class TestGitHubAPIDataSource(TestCase):
                                 system=ScoringSystem(
                                     identifier="cvssv3.1_qr",
                                     name="CVSSv3.1 Qualitative Severity Rating",
-                                    url="https://www.first.org/cvss/specification-document",
+                                    url="https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale",
                                     notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",  # nopep8
                                 ),
                                 value="HIGH",
@@ -276,7 +276,7 @@ class TestGitHubAPIDataSource(TestCase):
                                 system=ScoringSystem(
                                     identifier="cvssv3.1_qr",
                                     name="CVSSv3.1 Qualitative Severity Rating",
-                                    url="https://www.first.org/cvss/specification-document",
+                                    url="https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale",
                                     notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",  # nopep8
                                 ),
                                 value="LOW",
@@ -316,7 +316,7 @@ class TestGitHubAPIDataSource(TestCase):
                                 system=ScoringSystem(
                                     identifier="cvssv3.1_qr",
                                     name="CVSSv3.1 Qualitative Severity Rating",
-                                    url="https://www.first.org/cvss/specification-document",
+                                    url="https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale",
                                     notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",  # nopep8
                                 ),
                                 value="MODERATE",
@@ -357,7 +357,7 @@ class TestGitHubAPIDataSource(TestCase):
                                 system=ScoringSystem(
                                     identifier="cvssv3.1_qr",
                                     name="CVSSv3.1 Qualitative Severity Rating",
-                                    url="https://www.first.org/cvss/specification-document",
+                                    url="https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale",
                                     notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",  # nopep8
                                 ),
                                 value="LOW",

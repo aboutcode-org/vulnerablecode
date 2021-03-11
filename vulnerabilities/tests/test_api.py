@@ -40,6 +40,53 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")
 
 
+def cleaned_response(response):
+    """
+    Return a cleaned response suitable for comparison in tests in particular:
+    - sort lists with a stable order
+    """
+    cleaned_response = []
+    response_copy = sorted(response, key=lambda x: x.get("purl", ""))
+    for package_data in response_copy:
+        package_data["unresolved_vulnerabilities"] = sorted(
+            package_data["unresolved_vulnerabilities"], key=lambda x: x["vulnerability_id"]
+        )
+        for index, vulnerability in enumerate(package_data["unresolved_vulnerabilities"]):
+            package_data["unresolved_vulnerabilities"][index]["references"] = sorted(
+                vulnerability["references"], key=lambda x: (x["reference_id"], x["url"])
+            )
+            for index2, reference in enumerate(
+                package_data["unresolved_vulnerabilities"][index]["references"]
+            ):
+                reference["scores"] = sorted(
+                    reference["scores"], key=lambda x: (x["value"], x["scoring_system"])
+                )
+                package_data["unresolved_vulnerabilities"][index]["references"][index2][
+                    "scores"
+                ] = reference["scores"]
+
+        package_data["resolved_vulnerabilities"] = sorted(
+            package_data["resolved_vulnerabilities"], key=lambda x: x["vulnerability_id"]
+        )
+        for index, vulnerability in enumerate(package_data["resolved_vulnerabilities"]):
+            package_data["resolved_vulnerabilities"][index]["references"] = sorted(
+                vulnerability["references"], key=lambda x: (x["reference_id"], x["url"])
+            )
+            for index2, reference in enumerate(
+                package_data["resolved_vulnerabilities"][index]["references"]
+            ):
+                reference["scores"] = sorted(
+                    reference["scores"], key=lambda x: (x["value"], x["scoring_system"])
+                )
+                package_data["resolved_vulnerabilities"][index]["references"][index2][
+                    "scores"
+                ] = reference["scores"]
+
+        cleaned_response.append(package_data)
+
+    return cleaned_response
+
+
 class TestDebianResponse(TestCase):
     fixtures = ["debian.json"]
 
@@ -194,95 +241,75 @@ class TestSerializers(TestCase):
 
 
 class TestBulkAPIResponse(TestCase):
-    fixtures = ["debian.json"]
-
-    def test_bulk_vulnerabilities_api(self):
-        request_body = {"vulnerabilities": ["CVE-2009-1382", "CVE-2014-8242", "RANDOM-CVE"]}
-        expected_response = {
-            "CVE-2009-1382": {
-                "resolved_packages": [
-                    OrderedDict(
-                        [
-                            ("url", "http://testserver/api/packages/2"),
-                            ("purl", "pkg:deb/debian/mimetex@1.74-1?distro=jessie"),
-                        ]
-                    ),
-                    OrderedDict(
-                        [
-                            ("url", "http://testserver/api/packages/3"),
-                            ("purl", "pkg:deb/debian/mimetex@1.50-1.1?distro=jessie"),
-                        ]
-                    ),
-                ],
-                "unresolved_packages": [],
-                "url": "http://testserver/api/vulnerabilities/2",
-            },
-            "CVE-2014-8242": {
-                "resolved_packages": [],
-                "unresolved_packages": [
-                    OrderedDict(
-                        [
-                            ("url", "http://testserver/api/packages/1"),
-                            ("purl", "pkg:deb/debian/librsync@0.9.7-10?distro=jessie"),
-                        ]
-                    )
-                ],
-                "url": "http://testserver/api/vulnerabilities/1",
-            },
-            "RANDOM-CVE": {},
-        }
-
-        response = self.client.post(
-            "/api/vulnerabilities/bulk_search/", data=request_body, content_type="application/json"
-        ).data
-        assert response == expected_response
+    fixtures = ["github.json"]
 
     def test_bulk_packages_api(self):
         request_body = {
-            "packages": [
-                "pkg:deb/debian/librsync@0.9.7-10?distro=jessie",
-                "pkg:deb/debian/mimetex@1.50-1.1?distro=jessie",
+            "purls": [
+                "pkg:deb/debian/doesnotexist@0.9.7-10?distro=jessie",
+                "pkg:maven/com.datadoghq/datadog-api-client@1.0.0-beta.7",
             ]
         }
         response = self.client.post(
-            "/api/packages/bulk_search/", data=request_body, content_type="application/json"
-        ).data
-        expected_response = {
-            "pkg:deb/debian/librsync@0.9.7-10?distro=jessie": {
-                "resolved_vulnerabilities": [],
-                "unresolved_vulnerabilities": [
-                    OrderedDict(
-                        [
-                            ("url", "http://testserver/api/vulnerabilities/1"),
-                            ("vulnerability_id", "CVE-2014-8242"),
-                        ]
-                    )
-                ],
-            },
-            "pkg:deb/debian/mimetex@1.50-1.1?distro=jessie": {
-                "resolved_vulnerabilities": [
-                    OrderedDict(
-                        [
-                            ("url", "http://testserver/api/vulnerabilities/2"),
-                            ("vulnerability_id", "CVE-2009-1382"),
-                        ]
-                    ),
-                    OrderedDict(
-                        [
-                            ("url", "http://testserver/api/vulnerabilities/3"),
-                            ("vulnerability_id", "CVE-2009-2459"),
-                        ]
-                    ),
-                ],
-                "unresolved_vulnerabilities": [],
-            },
-        }
+            "/api/packages/bulk_search/",
+            data=request_body,
+            content_type="application/json",
+        ).json()
 
-        assert response == expected_response
+        expected_response = [
+            {
+                "name": "doesnotexist",
+                "namespace": "debian",
+                "qualifiers": {"distro": "jessie"},
+                "resolved_vulnerabilities": [],
+                "subpath": None,
+                "type": "deb",
+                "unresolved_vulnerabilities": [],
+                "version": "0.9.7-10",
+            },
+            {
+                "name": "datadog-api-client",
+                "namespace": "com.datadoghq",
+                "purl": "pkg:maven/com.datadoghq/datadog-api-client@1.0.0-beta.7",
+                "qualifiers": {},
+                "resolved_vulnerabilities": [],
+                "subpath": "",
+                "type": "maven",
+                "unresolved_vulnerabilities": [
+                    {
+                        "references": [
+                            {
+                                "reference_id": "",
+                                "scores": [],
+                                "source": "",
+                                "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-21331",
+                            },
+                            {
+                                "reference_id": "GHSA-2cxf-6567-7pp6",
+                                "scores": [{"scoring_system": "cvssv3.1_qr", "value": "LOW"}],
+                                "source": "",
+                                "url": "https://github.com/DataDog/datadog-api-client-java/security/advisories/GHSA-2cxf-6567-7pp6",
+                            },
+                            {
+                                "reference_id": "GHSA-2cxf-6567-7pp6",
+                                "scores": [],
+                                "source": "",
+                                "url": "https://github.com/advisories/GHSA-2cxf-6567-7pp6",
+                            },
+                        ],
+                        "url": "http://testserver/api/vulnerabilities/60",
+                        "vulnerability_id": "CVE-2021-21331",
+                    }
+                ],
+                "url": "http://testserver/api/packages/3467",
+                "version": "1.0.0-beta.7",
+            },
+        ]
+        assert cleaned_response(expected_response) == cleaned_response(response)
 
     def test_invalid_request_bulk_packages(self):
         error_response = {
-            "Error": "Request needs to contain a key 'packages' which has the value of a list of package urls"  # nopep8
+            "Error": "A non-empty 'purls' list of package URLs is required."  # nopep8
         }
         invalid_key_request_data = {"pkg": []}
         response = self.client.post(
@@ -298,10 +325,11 @@ class TestBulkAPIResponse(TestCase):
             data=valid_key_invalid_datatype_request_data,
             content_type="application/json",
         ).data
+
         assert response == error_response
 
         invalid_purl_request_data = {
-            "packages": [
+            "purls": [
                 "pkg:deb/debian/librsync@0.9.7-10?distro=jessie",
                 "pg:deb/debian/mimetex@1.50-1.1?distro=jessie",
             ]
@@ -312,27 +340,6 @@ class TestBulkAPIResponse(TestCase):
             content_type="application/json",
         ).data
         purl_error_respones = {
-            "Error": "purl is missing the required \"pkg\" scheme component: 'pg:deb/debian/mimetex@1.50-1.1?distro=jessie'."  # nopep8
+            "Error": "Invalid Package URL: pg:deb/debian/mimetex@1.50-1.1?distro=jessie"
         }
         assert response == purl_error_respones
-
-    def test_invalid_request_bulk_vulnerabilities(self):
-        error_response = {
-            "Error": "Request needs to contain a key 'vulnerabilities' which has the value of a list of vulnerability ids"  # nopep8
-        }
-
-        wrong_key_data = {"xyz": []}
-        response = self.client.post(
-            "/api/vulnerabilities/bulk_search/",
-            data=wrong_key_data,
-            content_type="application/json",
-        ).data
-        assert response == error_response
-
-        wrong_type_data = {"vulnerabilities": {}}
-        response = self.client.post(
-            "/api/vulnerabilities/bulk_search/",
-            data=wrong_key_data,
-            content_type="application/json",
-        ).data
-        assert response == error_response

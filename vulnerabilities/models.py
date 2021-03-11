@@ -106,6 +106,10 @@ class VulnerabilityReference(models.Model):
     )
     url = models.URLField(max_length=1024, help_text="URL of Vulnerability data", blank=True)
 
+    @property
+    def scores(self):
+        return VulnerabilitySeverity.objects.filter(reference=self.id)
+
     class Meta:
         unique_together = ("vulnerability", "source", "reference_id", "url")
 

@@ -78,7 +78,7 @@ scoring_systems = {
     "cvssv3.1_qr": ScoringSystem(
         identifier="cvssv3.1_qr",
         name="CVSSv3.1 Qualitative Severity Rating",
-        url="https://www.first.org/cvss/specification-document",
+        url="https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale",
         notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",
     ),
 }

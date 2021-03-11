@@ -22,39 +22,45 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 from urllib.parse import unquote
-from typing import List
 
 from django.db.models import Q
 from django.urls import reverse
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema, inline_serializer
 from packageurl import PackageURL
-from rest_framework import serializers
-from rest_framework import viewsets
+
+from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema, inline_serializer
-from drf_spectacular.types import OpenApiTypes
-
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
+from vulnerabilities.models import VulnerabilitySeverity
 
 # This serializer is used for the bulk apis, to prevent wrong auto documentation
 # TODO: Fix the swagger documentation for bulk apis
 placeholder_serializer = inline_serializer(name="Placeholder", fields={})
 
 
+class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VulnerabilitySeverity
+        fields = ["value", "scoring_system"]
+
+
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
+    scores = VulnerabilitySeveritySerializer(many=True)
+
     class Meta:
         model = VulnerabilityReference
-        fields = [
-            "source",
-            "reference_id",
-            "url",
-        ]
+        fields = ["source", "reference_id", "url", "scores"]
 
 
-class HyperLinkedPackageSerializer(serializers.HyperlinkedModelSerializer):
+class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Used for nesting inside vulnerability focused APIs.
+    """
+
     purl = serializers.CharField(source="package_url")
 
     class Meta:
@@ -62,27 +68,25 @@ class HyperLinkedPackageSerializer(serializers.HyperlinkedModelSerializer):
         fields = ["url", "purl"]
 
 
-class HyperLinkedVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
+class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Used for nesting inside package focused APIs.
+    """
+
+    references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
+
     class Meta:
         model = Vulnerability
-        fields = ["url", "vulnerability_id"]
+        fields = ["url", "vulnerability_id", "references"]
 
 
-class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
+class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
 
-    resolved_packages = HyperLinkedPackageSerializer(
-        many=True, source="resolved_to", read_only=True
-    )
-    unresolved_packages = HyperLinkedPackageSerializer(
+    resolved_packages = MinimalPackageSerializer(many=True, source="resolved_to", read_only=True)
+    unresolved_packages = MinimalPackageSerializer(
         many=True, source="vulnerable_to", read_only=True
     )
 
-    class Meta:
-        model = Vulnerability
-        fields = ["url", "unresolved_packages", "resolved_packages"]
-
-
-class VulnerabilitySerializer(MinimalVulnerabilitySerializer):
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
 
     class Meta:
@@ -90,23 +94,14 @@ class VulnerabilitySerializer(MinimalVulnerabilitySerializer):
         fields = "__all__"
 
 
-class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
-    unresolved_vulnerabilities = HyperLinkedVulnerabilitySerializer(
+class PackageSerializer(serializers.HyperlinkedModelSerializer):
+
+    unresolved_vulnerabilities = MinimalVulnerabilitySerializer(
         many=True, source="vulnerable_to", read_only=True
     )
-    resolved_vulnerabilities = HyperLinkedVulnerabilitySerializer(
+    resolved_vulnerabilities = MinimalVulnerabilitySerializer(
         many=True, source="resolved_to", read_only=True
     )
-
-    class Meta:
-        model = Package
-        fields = [
-            "resolved_vulnerabilities",
-            "unresolved_vulnerabilities",
-        ]
-
-
-class PackageSerializer(MinimalPackageSerializer):
     purl = serializers.CharField(source="package_url")
 
     class Meta:
@@ -148,28 +143,29 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         """
         See https://github.com/nexB/vulnerablecode/pull/303#issuecomment-761801639 for docs
         """
-        filter_list = Q()
-        response = {}
-        if not isinstance(request.data.get("packages"), list):
+        response = []
+        purls = request.data.get("purls", []) or []
+        if not purls or not isinstance(purls, list):
             return Response(
                 status=400,
-                data={
-                    "Error": "Request needs to contain a key 'packages' which has the value of a list of package urls"  # nopep8
-                },
+                data={"Error": "A non-empty 'purls' list of package URLs is required."},
             )
-        for purl in request.data["packages"]:
+        for purl in request.data["purls"]:
             try:
-                filter_list |= Q(
-                    **{k: v for k, v in PackageURL.from_string(purl).to_dict().items() if v}
-                )
+                purl = PackageURL.from_string(purl).to_dict()
             except ValueError as ve:
-                return Response(status=400, data={"Error": str(ve)})
-
-            # This handles the case when the said purl doesnt exist in db
-            response[purl] = {}
-        res = Package.objects.filter(filter_list)
-        for p in res:
-            response[p.package_url] = MinimalPackageSerializer(p, context={"request": request}).data
+                return Response(status=400, data={"Error": f"Invalid Package URL: {purl}"})
+            purl_data = Package.objects.filter(
+                **{key: value for key, value in purl.items() if value}
+            )
+            purl_response = {}
+            if purl_data:
+                purl_response = PackageSerializer(purl_data[0], context={"request": request}).data
+            else:
+                purl_response = purl
+                purl_response["unresolved_vulnerabilities"] = []
+                purl_response["resolved_vulnerabilities"] = []
+            response.append(purl_response)
 
         return Response(response)
 
@@ -186,31 +182,3 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     paginate_by = 50
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = VulnerabilityFilterSet
-
-    # TODO: Fix the swagger documentation for this endpoint
-    @extend_schema(request=placeholder_serializer, responses=placeholder_serializer)
-    @action(detail=False, methods=["post"])
-    def bulk_search(self, request):
-        """
-        See https://github.com/nexB/vulnerablecode/pull/303#issuecomment-761801619 for docs
-        """
-        filter_list = []
-        response = {}
-        if not isinstance(request.data.get("vulnerabilities"), list):
-            return Response(
-                status=400,
-                data={
-                    "Error": "Request needs to contain a key 'vulnerabilities' which has the value of a list of vulnerability ids"  # nopep8
-                },
-            )
-
-        for vulnerability_id in request.data["vulnerabilities"]:
-            filter_list.append(vulnerability_id)
-            # This handles the case when the said cve doesnt exist in db
-            response[vulnerability_id] = {}
-        res = Vulnerability.objects.filter(vulnerability_id__in=filter_list)
-        for vuln in res:
-            response[vuln.vulnerability_id] = MinimalVulnerabilitySerializer(
-                vuln, context={"request": request}
-            ).data
-        return Response(response)

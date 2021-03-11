@@ -56,8 +56,11 @@ class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
         fields = ["source", "reference_id", "url", "scores"]
 
 
-# Used for nesting inside vulnerability focused APIs.
 class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Used for nesting inside vulnerability focused APIs.
+    """
+
     purl = serializers.CharField(source="package_url")
 
     class Meta:
@@ -65,8 +68,11 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
         fields = ["url", "purl"]
 
 
-# Used for nesting inside package focused APIs.
 class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Used for nesting inside package focused APIs.
+    """
+
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
 
     class Meta:

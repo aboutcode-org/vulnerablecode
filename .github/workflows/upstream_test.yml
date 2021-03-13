@@ -1,7 +1,10 @@
-name: CI
 on:
-  pull_request:
-    types: [opened, synchronize]
+  workflow_dispatch: # allow manual execution
+  push:
+  schedule:
+    # run on every 9 o'clock
+    - cron: '0 9 * * *'
+
 jobs:
   unit_tests:
     runs-on: ubuntu-latest
@@ -38,7 +41,7 @@ jobs:
           pip install -r requirements.txt
     
       - name: Run tests
-        run: python -m pytest -v -m "not webtest"
+        run: pytest -v -m webtest
         env:
           # The hostname, username used to communicate with the PostgreSQL service container
           POSTGRES_HOST: localhost

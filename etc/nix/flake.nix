@@ -136,7 +136,11 @@
             checkPhase = ''
               # Run pytest on the installed version. A running postgres
               # database server is needed.
-              (cd ${vulnerablecode} && pytest)
+              (
+                cd ${vulnerablecode}
+                black -l 100 --check .
+                pytest -m "not webtest"
+              )
 
               # Launch the webserver and call the API.
               ${vulnerablecode}/manage.py runserver &

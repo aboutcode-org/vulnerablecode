@@ -91,7 +91,7 @@ class NVDDataSource(DataSource):
             yield Advisory(
                 vulnerability_id=cve_id,
                 summary=summary,
-                vuln_references=references,
+                references=references,
                 impacted_package_urls=[],  # nopep8
             )
 

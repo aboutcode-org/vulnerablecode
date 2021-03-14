@@ -108,8 +108,8 @@ class ArchlinuxDataSource(DataSource):
                         )
                     )
 
-            vuln_references = []
-            vuln_references.append(
+            references = []
+            references.append(
                 Reference(
                     reference_id=record["name"],
                     url="https://security.archlinux.org/{}".format(record["name"]),
@@ -122,7 +122,7 @@ class ArchlinuxDataSource(DataSource):
             )
 
             for ref in record["advisories"]:
-                vuln_references.append(
+                references.append(
                     Reference(
                         reference_id=ref,
                         url="https://security.archlinux.org/{}".format(ref),
@@ -135,7 +135,7 @@ class ArchlinuxDataSource(DataSource):
                     summary="",
                     impacted_package_urls=impacted_purls,
                     resolved_package_urls=resolved_purls,
-                    vuln_references=vuln_references,
+                    references=references,
                 )
             )
 

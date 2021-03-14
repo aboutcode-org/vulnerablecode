@@ -94,7 +94,7 @@ class TestOpenSSL(unittest.TestCase):
                         subpath=None,
                     )
                 },
-                vuln_references=[
+                references=[
                     Reference(
                         url="https://github.com/openssl/openssl/commit/"
                         + "eb563247aef3e83dda7679c43f9649270462e5b1"
@@ -345,7 +345,7 @@ class TestOpenSSL(unittest.TestCase):
                         subpath=None,
                     ),
                 },
-                vuln_references=[
+                references=[
                     Reference(
                         url="https://github.com/openssl/openssl/commit/"
                         + "419102400a2811582a7a3d4a4e317d72e5ce0a8f"

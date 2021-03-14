@@ -126,7 +126,7 @@ class ElixirSecurityDataSource(GitDataSource):
             PackageURL(name=pkg_name, type="hex", version=version) for version in vuln_pkg_versions
         }
 
-        vuln_references = [
+        references = [
             Reference(
                 reference_id=yaml_file["id"],
             ),
@@ -140,5 +140,5 @@ class ElixirSecurityDataSource(GitDataSource):
             impacted_package_urls=vuln_purls,
             resolved_package_urls=safe_purls,
             vulnerability_id=cve_id,
-            vuln_references=vuln_references,
+            references=references,
         )

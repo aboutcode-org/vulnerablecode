@@ -56,7 +56,7 @@ class AlpineImportTest(TestCase):
                         subpath=None,
                     )
                 },
-                vuln_references=[],
+                references=[],
                 vulnerability_id="CVE-2019-14904",
             ),
             Advisory(
@@ -72,7 +72,7 @@ class AlpineImportTest(TestCase):
                         subpath=None,
                     )
                 },
-                vuln_references=[],
+                references=[],
                 vulnerability_id="CVE-2019-14905",
             ),
             Advisory(
@@ -88,7 +88,7 @@ class AlpineImportTest(TestCase):
                         subpath=None,
                     )
                 },
-                vuln_references=[],
+                references=[],
                 vulnerability_id="CVE-2019-14846",
             ),
             Advisory(
@@ -104,7 +104,7 @@ class AlpineImportTest(TestCase):
                         subpath=None,
                     )
                 },
-                vuln_references=[],
+                references=[],
                 vulnerability_id="CVE-2019-14856",
             ),
             Advisory(
@@ -120,7 +120,7 @@ class AlpineImportTest(TestCase):
                         subpath=None,
                     )
                 },
-                vuln_references=[],
+                references=[],
                 vulnerability_id="CVE-2019-14858",
             ),
             Advisory(
@@ -136,7 +136,7 @@ class AlpineImportTest(TestCase):
                         subpath=None,
                     )
                 },
-                vuln_references=[
+                references=[
                     Reference(
                         url="https://xenbits.xen.org/xsa/advisory-295.html", reference_id="XSA-295"
                     )

@@ -123,7 +123,7 @@ def process_advisories(data_source: DataSource) -> None:
         for advisory in batch:
             try:
                 vuln, vuln_created = _get_or_create_vulnerability(advisory)
-                for vuln_ref in advisory.vuln_references:
+                for vuln_ref in advisory.references:
                     ref, _ = models.VulnerabilityReference.objects.get_or_create(
                         vulnerability=vuln, reference_id=vuln_ref.reference_id, url=vuln_ref.url
                     )

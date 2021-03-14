@@ -129,7 +129,7 @@ class RubyDataSource(GitDataSource):
             summary=record.get("description", ""),
             impacted_package_urls=impacted_purls,
             resolved_package_urls=resolved_purls,
-            vuln_references=references,
+            references=references,
             vulnerability_id=cve_id,
         )
 

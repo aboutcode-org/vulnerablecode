@@ -154,7 +154,7 @@ def to_advisory(advisory_data):
         vulnerability_id=advisory_data["CVE"],
         summary=advisory_data["bugzilla_description"],
         impacted_package_urls=affected_purls,
-        vuln_references=references,
+        references=references,
     )
 
 

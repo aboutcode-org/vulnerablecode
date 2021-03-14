@@ -76,7 +76,7 @@ class SUSESeverityScoreDataSource(DataSource):
                     vulnerability_id=cve_id,
                     summary="",
                     impacted_package_urls=[],
-                    vuln_references=[Reference(url=URL, severities=severities)],
+                    references=[Reference(url=URL, severities=severities)],
                 )
             )
         return advisories

@@ -138,7 +138,7 @@ class TestNVDDataSource(TestCase):
                 ),
                 impacted_package_urls=[],
                 resolved_package_urls=[],
-                vuln_references=[
+                references=[
                     Reference(
                         url="http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",  # nopep8
                     ),

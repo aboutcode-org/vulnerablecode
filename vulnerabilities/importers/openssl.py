@@ -115,7 +115,7 @@ class OpenSSLDataSource(DataSource):
                     summary=summary,
                     impacted_package_urls=vuln_purls,
                     resolved_package_urls=safe_purls,
-                    vuln_references=ref_urls,
+                    references=ref_urls,
                 )
                 advisories.append(advisory)
 

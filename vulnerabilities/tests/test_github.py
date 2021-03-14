@@ -186,7 +186,7 @@ class TestGitHubAPIDataSource(TestCase):
                         subpath=None,
                     ),
                 },
-                vuln_references=[
+                references=[
                     Reference(
                         reference_id="GHSA-qcxh-w3j9-58qr",
                         url="https://github.com/advisories/GHSA-qcxh-w3j9-58qr",
@@ -227,7 +227,7 @@ class TestGitHubAPIDataSource(TestCase):
                         subpath=None,
                     )
                 },
-                vuln_references=[
+                references=[
                     Reference(
                         reference_id="GHSA-qcxh-w3j9-58qr",
                         url="https://github.com/advisories/GHSA-qcxh-w3j9-58qr",
@@ -267,7 +267,7 @@ class TestGitHubAPIDataSource(TestCase):
                         subpath=None,
                     ),
                 },
-                vuln_references=[
+                references=[
                     Reference(
                         reference_id="GHSA-c9hw-wf7x-jp9j",
                         url="https://github.com/advisories/GHSA-c9hw-wf7x-jp9j",
@@ -307,7 +307,7 @@ class TestGitHubAPIDataSource(TestCase):
                         subpath=None,
                     ),
                 },
-                vuln_references=[
+                references=[
                     Reference(
                         reference_id="GHSA-c9hw-wf7x-jp9j",
                         url="https://github.com/advisories/GHSA-c9hw-wf7x-jp9j",
@@ -348,7 +348,7 @@ class TestGitHubAPIDataSource(TestCase):
                         subpath=None,
                     )
                 },
-                vuln_references=[
+                references=[
                     Reference(
                         reference_id="GHSA-c9hw-wf7x-jp9j",
                         url="https://github.com/advisories/GHSA-c9hw-wf7x-jp9j",

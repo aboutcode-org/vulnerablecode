@@ -155,7 +155,7 @@ class DebianDataSource(DataSource):
                     summary=record.get("description", ""),
                     impacted_package_urls=impacted_purls,
                     resolved_package_urls=resolved_purls,
-                    vuln_references=references,
+                    references=references,
                 )
             )
 

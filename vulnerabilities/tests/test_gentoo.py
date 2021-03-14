@@ -119,7 +119,7 @@ class TestGentooDataSource(unittest.TestCase):
                         subpath=None,
                     )
                 },
-                vuln_references=[
+                references=[
                     Reference(
                         url="https://security.gentoo.org/glsa/201709-09",
                         reference_id="GLSA-201709-09",

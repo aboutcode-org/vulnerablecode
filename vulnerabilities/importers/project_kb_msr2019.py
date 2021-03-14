@@ -81,7 +81,7 @@ class ProjectKBMSRDataSource(DataSource):
                 Advisory(
                     summary="",
                     impacted_package_urls=[],
-                    vuln_references=[reference],
+                    references=[reference],
                     cve_id=vuln_id,
                 )
             )

@@ -136,7 +136,7 @@ class RustDataSource(GitDataSource):
             impacted_package_urls=impacted_purls,
             resolved_package_urls=resolved_purls,
             vulnerability_id=cve_id,
-            vuln_references=references,
+            references=references,
         )
 
 

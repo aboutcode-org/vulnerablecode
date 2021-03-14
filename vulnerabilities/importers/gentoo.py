@@ -81,7 +81,7 @@ class GentooDataSource(GitDataSource):
                 summary=xml_data["description"],
                 impacted_package_urls=xml_data["affected_purls"],
                 resolved_package_urls=xml_data["unaffected_purls"],
-                vuln_references=vuln_reference,
+                references=vuln_reference,
             )
             advisory_list.append(advisory)
         return advisory_list

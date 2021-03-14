@@ -78,7 +78,7 @@ class TestApacheTomcatDataSource(TestCase):
                         subpath=None,
                     )
                 ],
-                vuln_references=[
+                references=[
                     Reference(
                         url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0763",
                         reference_id="",
@@ -112,7 +112,7 @@ class TestApacheTomcatDataSource(TestCase):
                         subpath=None,
                     )
                 ],
-                vuln_references=[
+                references=[
                     Reference(
                         url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-5351",
                         reference_id="",
@@ -158,7 +158,7 @@ class TestApacheTomcatDataSource(TestCase):
                         subpath=None,
                     )
                 ],
-                vuln_references=[
+                references=[
                     Reference(
                         url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0706",
                         reference_id="",
@@ -192,7 +192,7 @@ class TestApacheTomcatDataSource(TestCase):
                         subpath=None,
                     )
                 ],
-                vuln_references=[
+                references=[
                     Reference(
                         url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0714",
                         reference_id="",

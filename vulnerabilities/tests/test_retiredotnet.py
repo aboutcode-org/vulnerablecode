@@ -127,7 +127,7 @@ class TestRetireDotnetDataSource(TestCase):
                     subpath=None,
                 ),
             },
-            vuln_references=[
+            references=[
                 Reference(url="https://github.com/aspnet/Announcements/issues/359", reference_id="")
             ],
             vulnerability_id="CVE-2019-0982",

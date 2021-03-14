@@ -86,23 +86,23 @@ class Advisory:
     vulnerability_id: Optional[str] = None
     impacted_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
     resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
-    vuln_references: List[Reference] = dataclasses.field(default_factory=list)
+    references: List[Reference] = dataclasses.field(default_factory=list)
 
     def normalized(self):
         impacted_package_urls = {package_url for package_url in self.impacted_package_urls}
         resolved_package_urls = {package_url for package_url in self.resolved_package_urls}
-        vuln_references = sorted(
-            self.vuln_references, key=lambda reference: (reference.reference_id, reference.url)
+        references = sorted(
+            self.references, key=lambda reference: (reference.reference_id, reference.url)
         )
-        for index, _ in enumerate(self.vuln_references):
-            vuln_references[index] = vuln_references[index].normalized()
+        for index, _ in enumerate(self.references):
+            references[index] = references[index].normalized()
 
         return Advisory(
             summary=self.summary,
             vulnerability_id=self.vulnerability_id,
             impacted_package_urls=impacted_package_urls,
             resolved_package_urls=resolved_package_urls,
-            vuln_references=vuln_references,
+            references=references,
         )
 
 
@@ -566,7 +566,7 @@ class OvalDataSource(DataSource):
                     impacted_package_urls=affected_purls,
                     resolved_package_urls=safe_purls,
                     vulnerability_id=vuln_id,
-                    vuln_references=references,
+                    references=references,
                 )
             )
         return all_adv

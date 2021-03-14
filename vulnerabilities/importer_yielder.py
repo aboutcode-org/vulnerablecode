@@ -102,10 +102,7 @@ IMPORTER_REGISTRY = [
         "license": "",
         "last_run": None,
         "data_source": "SUSEBackportsDataSource",
-        "data_source_cfg": {
-            "url": "http://ftp.suse.com/pub/projects/security/yaml/",
-            "etags": {},
-        },
+        "data_source_cfg": {"url": "http://ftp.suse.com/pub/projects/security/yaml/", "etags": {}},
     },
     {
         "name": "suse_scores",
@@ -119,10 +116,7 @@ IMPORTER_REGISTRY = [
         "license": "",
         "last_run": None,
         "data_source": "DebianOvalDataSource",
-        "data_source_cfg": {
-            "etags": {},
-            "releases": ["wheezy", "stretch", "jessie", "buster"],
-        },
+        "data_source_cfg": {"etags": {}, "releases": ["wheezy", "stretch", "jessie", "buster"]},
     },
     {
         "name": "redhat",
@@ -136,9 +130,7 @@ IMPORTER_REGISTRY = [
         "license": "",
         "last_run": None,
         "data_source": "NVDDataSource",
-        "data_source_cfg": {
-            "etags": {},
-        },
+        "data_source_cfg": {"etags": {}},
     },
     {
         "name": "gentoo",
@@ -235,6 +227,13 @@ IMPORTER_REGISTRY = [
         "data_source": "ApacheKafkaDataSource",
         "data_source_cfg": {},
     },
+    {
+        "name": "istio",
+        "license": "apache-2.0",
+        "last_run": None,
+        "data_source": "IstioDataSource",
+        "data_source_cfg": {"repository_url": "https://github.com/istio/istio.io"},
+    },
 ]
 
 
@@ -242,9 +241,7 @@ def load_importers():
 
     for importer in IMPORTER_REGISTRY:
         imp, created = Importer.objects.get_or_create(
-            name=importer["name"],
-            data_source=importer["data_source"],
-            license=importer["license"],
+            name=importer["name"], data_source=importer["data_source"], license=importer["license"]
         )
 
         if created:

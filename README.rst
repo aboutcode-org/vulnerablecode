@@ -206,7 +206,7 @@ Run Tests
 Use these commands to run code style checks and the test suite::
 
     black -l 100 --check .
-    DJANGO_DEV=1 pytest
+    DJANGO_DEV=1 python -m pytest
 
 
 Data import
@@ -245,7 +245,7 @@ Start the webserver::
 
 For full documentation about API endpoints use this URL::
 
-    http://127.0.0.1:8000/api/docs
+    http://127.0.0.1:8000/api/schema/swagger-ui/
 
 
 

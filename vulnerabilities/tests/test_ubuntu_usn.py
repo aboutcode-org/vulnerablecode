@@ -154,7 +154,7 @@ class TestUbuntuUSNDataSource(TestCase):
                         subpath=None,
                     ),
                 },
-                vuln_references=[
+                references=[
                     Reference(url="https://usn.ubuntu.com/763-1/", reference_id="USN-763-1")
                 ],
                 vulnerability_id="CVE-2009-0698",
@@ -180,7 +180,7 @@ class TestUbuntuUSNDataSource(TestCase):
                         subpath=None,
                     ),
                 },
-                vuln_references=[
+                references=[
                     Reference(url="https://usn.ubuntu.com/763-1/", reference_id="USN-763-1")
                 ],
                 vulnerability_id="CVE-2009-1274",

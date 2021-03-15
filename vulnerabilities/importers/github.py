@@ -216,7 +216,7 @@ class GitHubAPIDataSource(DataSource):
                         unaffected_purls = set()
 
                     cve_ids = set()
-                    vuln_references = self.extract_references(adv["node"]["advisory"]["references"])
+                    references = self.extract_references(adv["node"]["advisory"]["references"])
                     vuln_desc = adv["node"]["advisory"]["summary"]
 
                     for identifier in adv["node"]["advisory"]["identifiers"]:
@@ -226,7 +226,7 @@ class GitHubAPIDataSource(DataSource):
 
                         # attach the GHSA with severity score
                         if identifier["type"] == "GHSA":
-                            for ref in vuln_references:
+                            for ref in references:
                                 if ref.reference_id == identifier["value"]:
                                     ref.severities = [
                                         VulnerabilitySeverity(
@@ -245,7 +245,7 @@ class GitHubAPIDataSource(DataSource):
                                 summary=vuln_desc,
                                 impacted_package_urls=affected_purls,
                                 resolved_package_urls=unaffected_purls,
-                                vuln_references=vuln_references,
+                                references=references,
                             )
                         )
         return adv_list

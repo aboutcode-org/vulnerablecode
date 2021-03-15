@@ -98,5 +98,5 @@ class RetireDotnetDataSource(GitDataSource):
                 impacted_package_urls=affected_purls,
                 resolved_package_urls=fixed_purls,
                 vulnerability_id=vuln_id,
-                vuln_references=vuln_reference,
+                references=vuln_reference,
             )

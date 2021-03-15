@@ -71,7 +71,7 @@ ADVISORIES = [
     Advisory(
         vulnerability_id="MOCK-CVE-2020-1337",
         summary="vulnerability description here",
-        vuln_references=[Reference(url="https://example.com/with/more/info/MOCK-CVE-2020-1337")],
+        references=[Reference(url="https://example.com/with/more/info/MOCK-CVE-2020-1337")],
         impacted_package_urls=[PackageURL(name="mock-webserver", type="pypi", version="1.2.33")],
         resolved_package_urls=[PackageURL(name="mock-webserver", type="pypi", version="1.2.34")],
     )

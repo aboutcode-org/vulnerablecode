@@ -83,7 +83,7 @@ class UbuntuUSNDataSource(DataSource):
                         impacted_package_urls=[],
                         resolved_package_urls=safe_purls,
                         summary="",
-                        vuln_references=[reference],
+                        references=[reference],
                     )
                 )
 

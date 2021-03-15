@@ -136,7 +136,7 @@ class SafetyDbDataSource(DataSource):
                         Advisory(
                             vulnerability_id=cve_id,
                             summary=advisory["advisory"],
-                            vuln_references=reference,
+                            references=reference,
                             impacted_package_urls=impacted_purls,
                             resolved_package_urls=resolved_purls,
                         )

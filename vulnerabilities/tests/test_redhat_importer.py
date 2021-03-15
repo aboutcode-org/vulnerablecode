@@ -81,7 +81,7 @@ class TestRedhat(unittest.TestCase):
                     ),
                 ],
                 resolved_package_urls=[],
-                vuln_references=[
+                references=[
                     Reference(
                         reference_id="RHSA-2017:0725",
                         url="https://access.redhat.com/errata/RHSA-2017:0725",

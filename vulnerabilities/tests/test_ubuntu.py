@@ -224,7 +224,7 @@ class TestUbuntuDataSource(unittest.TestCase):
                         subpath=None,
                     ),
                 },
-                vuln_references=sorted(
+                references=sorted(
                     [
                         Reference(url="http://www.openwall.com/lists/oss-security/2016/10/18/11"),
                         Reference(
@@ -281,7 +281,7 @@ class TestUbuntuDataSource(unittest.TestCase):
                         subpath=None,
                     )
                 },
-                vuln_references=sorted(
+                references=sorted(
                     [
                         Reference(
                             url="http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8703.html"

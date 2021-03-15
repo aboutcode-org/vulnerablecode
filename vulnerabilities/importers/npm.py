@@ -109,7 +109,7 @@ class NpmDataSource(GitDataSource):
                     vulnerability_id=cve_id,
                     impacted_package_urls=impacted_purls,
                     resolved_package_urls=resolved_purls,
-                    vuln_references=vuln_reference,
+                    references=vuln_reference,
                 )
             )
         return advisories

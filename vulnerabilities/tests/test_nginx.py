@@ -72,7 +72,7 @@ class TestNginxDataSource(TestCase):
                         subpath=None,
                     )
                 },
-                vuln_references=[],
+                references=[],
                 vulnerability_id="CVE-2013-2028",
             ),
             Advisory(
@@ -121,7 +121,7 @@ class TestNginxDataSource(TestCase):
                         subpath=None,
                     ),
                 },
-                vuln_references=[],
+                references=[],
                 vulnerability_id="CVE-2011-4963",
             ),
             Advisory(
@@ -137,14 +137,14 @@ class TestNginxDataSource(TestCase):
                     )
                 },
                 resolved_package_urls=set(),
-                vuln_references=[],
+                references=[],
                 vulnerability_id="CVE-2010-2266",
             ),
             Advisory(
                 summary="An error log data are not sanitized",
                 impacted_package_urls=set(),
                 resolved_package_urls={},
-                vuln_references=[],
+                references=[],
                 vulnerability_id="CVE-2009-4487",
             ),
             Advisory(
@@ -160,7 +160,7 @@ class TestNginxDataSource(TestCase):
                     )
                 },
                 resolved_package_urls=set(),
-                vuln_references=[],
+                references=[],
                 vulnerability_id="CVE-2009-3555",
             ),
             Advisory(
@@ -176,7 +176,7 @@ class TestNginxDataSource(TestCase):
                     )
                 },
                 resolved_package_urls=set(),
-                vuln_references=[],
+                references=[],
                 vulnerability_id="CVE-2009-3898",
             ),
         ]

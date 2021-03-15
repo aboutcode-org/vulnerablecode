@@ -84,7 +84,7 @@ class TestApacheKafkaDataSource(TestCase):
                         subpath=None,
                     )
                 ],
-                vuln_references=[
+                references=[
                     Reference(url="https://kafka.apache.org/cve-list", reference_id=""),
                     Reference(
                         url="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-17196",

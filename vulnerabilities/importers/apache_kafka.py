@@ -86,7 +86,7 @@ class ApacheKafkaDataSource(DataSource):
                     summary=cve_description_paragraph.text,
                     impacted_package_urls=affected_packages,
                     resolved_package_urls=fixed_packages,
-                    vuln_references=[
+                    references=[
                         Reference(url=ASF_PAGE_URL),
                         Reference(
                             url=f"https://cve.mitre.org/cgi-bin/cvename.cgi?name={cve_id}",

@@ -64,7 +64,7 @@ class TestPostgreSQLDataSource(TestCase):
                         subpath=None,
                     )
                 ],
-                vuln_references=[
+                references=[
                     Reference(
                         url="https://www.postgresql.org/about/news/postgresql-123-118-1013-9618-and-9522-released-2038/",  # nopep8
                         reference_id="",
@@ -102,7 +102,7 @@ class TestPostgreSQLDataSource(TestCase):
                         subpath=None,
                     )
                 ],
-                vuln_references=[
+                references=[
                     Reference(
                         url="https://access.redhat.com/security/cve/CVE-2020-1720",
                         reference_id="",

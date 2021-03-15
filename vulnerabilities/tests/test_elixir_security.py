@@ -123,7 +123,7 @@ class TestElixirSecurityDataSource(TestCase):
                     version="0.5.2",
                 ),
             },
-            vuln_references=[
+            references=[
                 Reference(
                     reference_id="2aae6e3a-24a3-4d5f-86ff-b964eaf7c6d1",
                 ),

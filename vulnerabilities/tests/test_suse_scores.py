@@ -42,7 +42,7 @@ class TestSUSESeverityScoreDataSource(TestCase):
                 summary="",
                 impacted_package_urls=[],
                 resolved_package_urls=[],
-                vuln_references=[
+                references=[
                     Reference(
                         reference_id="",
                         url="https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml",
@@ -92,7 +92,7 @@ class TestSUSESeverityScoreDataSource(TestCase):
                 summary="",
                 impacted_package_urls=[],
                 resolved_package_urls=[],
-                vuln_references=[
+                references=[
                     Reference(
                         reference_id="",
                         url="https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml",

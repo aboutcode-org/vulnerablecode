@@ -36,7 +36,7 @@ The Building Blocks A.K.A Prerequisites
         summary: str
         impacted_package_urls: Iterable[PackageURL]
         resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
-        vuln_references: List[Reference] = dataclasses.field(default_factory=list)
+        references: List[Reference] = dataclasses.field(default_factory=list)
         vulnerability_id: Optional[str] = None
 
     class Reference:

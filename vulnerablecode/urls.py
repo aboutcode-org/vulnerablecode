@@ -88,7 +88,7 @@ curation_views = [
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
-    path("api/schema/swagger-ui/", SpectacularSwaggerView.as_view(), name="swagger-ui"),
+    path("api/docs", SpectacularSwaggerView.as_view(), name="swagger-ui"),
     path("packages/search", PackageSearchView.as_view(), name="package_search"),
     path("packages/<int:pk>", PackageUpdate.as_view(), name="package_view"),
     path("vulnerabilities/<int:pk>", VulnerabilityDetails.as_view(), name="vulnerability_view"),

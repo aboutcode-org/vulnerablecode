@@ -18,7 +18,7 @@ before_script:
 
 script:
   - ./manage.py collectstatic
-  - pytest
+  - python -m pytest
 
 notifications:
   email: false

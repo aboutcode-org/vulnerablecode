@@ -228,6 +228,26 @@ class DataSource(ContextManager):
             b, advisories = advisories[: self.batch_size], advisories[self.batch_size :]
             yield b
 
+    @staticmethod
+    def is_cve(id: str):
+        c = id.split("-")
+        if len(c) == 3 and c[0].lower() == "cve" and c[1].isdigit() and c[2].isdigit():
+            return True
+        return False
+
+    @staticmethod
+    def is_vulcoid(id: str):
+        c = id.split("-")
+        if (
+            len(c) == 4
+            and c[0].lower() == "vulcoid"
+            and c[1].isdigit()
+            and c[2].isdigit()
+            and c[3].isdigit()
+        ):
+            return True
+        return False
+
 
 @dataclasses.dataclass
 class GitDataSourceConfiguration(DataSourceConfiguration):

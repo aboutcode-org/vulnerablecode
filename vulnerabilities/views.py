@@ -136,6 +136,7 @@ class VulnerabilityDetails(ListView):
     def get_context_data(self, **kwargs):
         context = super(VulnerabilityDetails, self).get_context_data(**kwargs)
         context["vulnerability"] = models.Vulnerability.objects.get(id=self.kwargs["pk"])
+        context["severity"] = models.VulnerabilitySeverity.objects.get(id=self.kwargs["pk"])
         context["enable_curation"] = ENABLE_CURATION
         return context
 

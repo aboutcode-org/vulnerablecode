@@ -91,19 +91,24 @@ def to_advisory(advisory_data):
     if bugzilla:
         url = "https://bugzilla.redhat.com/show_bug.cgi?id={}".format(bugzilla)
         bugzilla_data = requests.get(f"https://bugzilla.redhat.com/rest/bug/{bugzilla}").json()
-        bugzilla_severity_val = bugzilla_data["bugs"][0]["severity"]
-        bugzilla_severity = VulnerabilitySeverity(
-            system=scoring_systems["rhbs"],
-            value=bugzilla_severity_val,
-        )
-
-        references.append(
-            Reference(
-                severities=[bugzilla_severity],
-                url=url,
-                reference_id=bugzilla,
+        if (
+            bugzilla_data.get("bugs")
+            and len(bugzilla_data["bugs"])
+            and bugzilla_data["bugs"][0].get("severity")
+        ):
+            bugzilla_severity_val = bugzilla_data["bugs"][0]["severity"]
+            bugzilla_severity = VulnerabilitySeverity(
+                system=scoring_systems["rhbs"],
+                value=bugzilla_severity_val,
             )
-        )
+
+            references.append(
+                Reference(
+                    severities=[bugzilla_severity],
+                    url=url,
+                    reference_id=bugzilla,
+                )
+            )
 
     for rh_adv in advisory_data["advisories"]:
         # RH provides 3 types of advisories RHSA, RHBA, RHEA. Only RHSA's contain severity score.

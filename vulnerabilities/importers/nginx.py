@@ -66,7 +66,7 @@ class NginxDataSource(DataSource):
 
     def to_advisories(self, data):
         advisories = []
-        soup = BeautifulSoup(data, features="lxml")
+        soup = BeautifulSoup(data)
         vuln_list = soup.select("li p")
 
         # Example value of `vuln_list` :

@@ -38,6 +38,7 @@ from schema import Schema
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import Reference
+from vulnerabilities.helpers import is_cve
 
 BASE_URL = "https://secdb.alpinelinux.org/"
 
@@ -193,9 +194,7 @@ class AlpineDataSource(DataSource):
                         impacted_package_urls=[],
                         resolved_package_urls=resolved_purls,
                         references=references,
-                        vulnerability_id=vuln_ids[0]
-                        if self.is_cve(vuln_ids[0]) or self.is_vulcoid(vuln_ids[0])
-                        else "",
+                        vulnerability_id=vuln_ids[0] if is_cve(vuln_ids[0]) else "",
                     )
                 )
 

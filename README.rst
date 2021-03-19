@@ -206,7 +206,7 @@ Run Tests
 Use these commands to run code style checks and the test suite::
 
     black -l 100 --check .
-    DJANGO_DEV=1 python -m pytest
+    DJANGO_DEV=1 pytest
 
 
 Data import

@@ -36,6 +36,7 @@ from vulnerabilities.importers.nginx import NginxDataSource
 from vulnerabilities.importers.npm import NpmDataSource
 from vulnerabilities.importers.nvd import NVDDataSource
 from vulnerabilities.importers.openssl import OpenSSLDataSource
+from vulnerabilities.importers.openstack import OpenstackDataSource
 from vulnerabilities.importers.postgresql import PostgreSQLDataSource
 from vulnerabilities.importers.project_kb_msr2019 import ProjectKBMSRDataSource
 from vulnerabilities.importers.redhat import RedhatDataSource

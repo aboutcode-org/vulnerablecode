@@ -234,6 +234,13 @@ IMPORTER_REGISTRY = [
         "data_source": "IstioDataSource",
         "data_source_cfg": {"repository_url": "https://github.com/istio/istio.io"},
     },
+    {
+        "name": "openstack",
+        "license": "apache-2.0",
+        "last_run": None,
+        "data_source": "OpenstackDataSource",
+        "data_source_cfg": {"etags": {}},
+    },
 ]
 
 

@@ -58,7 +58,7 @@ class PostgreSQLDataSource(DataSource):
 
 def to_advisories(data):
     advisories = []
-    soup = BeautifulSoup(data, features="lxml")
+    soup = BeautifulSoup(data)
     table = soup.select("table")[0]
     for row in table.select("tbody tr"):
         ref_col, affected_col, fixed_col, severity_score_col, desc_col = row.select("td")

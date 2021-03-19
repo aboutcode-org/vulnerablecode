@@ -44,6 +44,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import ScoringSystem
+from vulnerabilities.helpers import is_cve
 
 logger = logging.getLogger(__name__)
 
@@ -87,6 +88,10 @@ class Advisory:
     impacted_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
     resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
     references: List[Reference] = dataclasses.field(default_factory=list)
+
+    def __post_init__(self):
+        if self.vulnerability_id and not is_cve(self.vulnerability_id):
+            raise ValueError("CVE expected, found: {}".format(self.vulnerability_id))
 
     def normalized(self):
         impacted_package_urls = {package_url for package_url in self.impacted_package_urls}
@@ -227,26 +232,6 @@ class DataSource(ContextManager):
         while advisories:
             b, advisories = advisories[: self.batch_size], advisories[self.batch_size :]
             yield b
-
-    @staticmethod
-    def is_cve(id: str):
-        c = id.split("-")
-        if len(c) == 3 and c[0].lower() == "cve" and c[1].isdigit() and c[2].isdigit():
-            return True
-        return False
-
-    @staticmethod
-    def is_vulcoid(id: str):
-        c = id.split("-")
-        if (
-            len(c) == 4
-            and c[0].lower() == "vulcoid"
-            and c[1].isdigit()
-            and c[2].isdigit()
-            and c[3].isdigit()
-        ):
-            return True
-        return False
 
 
 @dataclasses.dataclass

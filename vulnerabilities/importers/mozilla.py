@@ -61,6 +61,9 @@ class MozillaDataSource(GitDataSource):
                     yield advisories
                     advisories = []
 
+        # In case batch size is too high
+        yield advisories
+
     def _to_advisories(self, path: str) -> List[Advisory]:
         """
         Convert a file to corresponding advisories.
@@ -88,13 +91,10 @@ class MozillaDataSource(GitDataSource):
             return []
 
         for cve, advisory in data["advisories"].items():
-            if not is_cve(cve):
-                continue
-
             advisories.append(
                 Advisory(
                     summary=advisory.get("description"),
-                    vulnerability_id=cve,
+                    vulnerability_id=cve if is_cve(cve) else "",
                     impacted_package_urls=[],
                     resolved_package_urls=fixed_package_urls,
                     references=references,

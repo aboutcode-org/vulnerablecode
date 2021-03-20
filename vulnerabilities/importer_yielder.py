@@ -239,7 +239,10 @@ IMPORTER_REGISTRY = [
         "license": "mpl-2.0",
         "last_run": None,
         "data_source": "MozillaDataSource",
-        "data_source_cfg": {},
+        "data_source_cfg": {
+            "branch": None,
+            "repository_url": "https://github.com/mozilla/foundation-security-advisories",
+        },
     },
 ]
 

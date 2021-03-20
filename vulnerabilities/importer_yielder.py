@@ -234,6 +234,13 @@ IMPORTER_REGISTRY = [
         "data_source": "IstioDataSource",
         "data_source_cfg": {"repository_url": "https://github.com/istio/istio.io"},
     },
+    {
+        "name": "mozilla",
+        "license": "mpl-2.0",
+        "last_run": None,
+        "data_source": "MozillaDataSource",
+        "data_source_cfg": {},
+    },
 ]
 
 

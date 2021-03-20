@@ -20,6 +20,7 @@ ipython==7.13.0
 ipython-genutils==0.2.0
 jedi==0.17.0
 lxml==4.6.3
+Markdown==3.3.4
 more-itertools==8.0.2
 packageurl-python==0.9.3
 packaging==19.2

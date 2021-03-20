@@ -1,19 +1,20 @@
-from typing import Set, List
+from typing import Set, List, Generator
 
 import re
+import asyncio
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
 import requests
 
-from github import Github
 import yaml
 from markdown import markdown
 
 from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
+from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import VulnerabilitySeverity
 from vulnerabilities.severity_systems import scoring_systems
+from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.helpers import is_cve
 
 
@@ -21,51 +22,70 @@ REPOSITORY = "mozilla/foundation-security-advisories"
 MFSA_FILENAME_RE = re.compile(r"mfsa(\d{4}-\d{2,3})\.(md|yml)$")
 
 
-class MozillaDataSource(DataSource):
+class MozillaDataSource(GitDataSource):
+    def __enter__(self):
+        super(MozillaDataSource, self).__enter__()
+
+        if not getattr(self, "_added_files", None):
+            self._added_files, self._updated_files = self.file_changes(
+                recursive=True, subdir="announce"
+            )
+
+        # Do we need this ?
+        # self.version_api = GitHubTagsAPI()
+        # self.set_api()
+
+    def set_api(self):
+        repository = "/".join(self.config.repository_url.split("/")[-2:])
+        asyncio.run(self.version_api.load_api([repository]))
+
+    def added_advisories(self) -> Set[Advisory]:
+        return self._load_advisories(self._added_files)
+
     def updated_advisories(self) -> Set[Advisory]:
+        return self._load_advisories(self._updated_files)
+
+    def _load_advisories(self, files) -> Set[Advisory]:
+        """
+        Yields list of advisories of batch size
+        """
+        files = [
+            f for f in files if f.endswith(".md") or f.endswith(".yml")
+        ]  # skip irrelevant files
+
         advisories = []
-        advisory_links = self.fetch_advisory_links()
-        for link in advisory_links:
-            advisories.extend(self.to_advisories(link))
-        return self.batch_advisories(advisories)
+        for path in files:
+            for advisory in self._to_advisories(path):
+                advisories.append(advisory)
+                if len(advisories) >= self.batch_size:
+                    yield advisories
+                    advisories = []
 
-    def fetch_advisory_links(self):
-        links = []
-        # TODO: Migrate to GitDataSource
-        g = Github("ffa10510de8dfa1bad60cd3963c45d2db2035287")
-        repo = g.get_repo(REPOSITORY)
-        years = repo.get_contents("announce")
-        for year in years:
-            if year.type != "dir":
-                continue
-            advisories = repo.get_contents(year.path)
-            links.extend([advisory.download_url for advisory in advisories])
-        return links
+    def _to_advisories(self, path: str) -> List[Advisory]:
+        """
+        Convert a file to corresponding advisories.
+        This calls proper method to handle yml/md files.
+        """
+        mfsa_id = self._mfsa_id_from_filename(path)
 
-    def to_advisories(self, link: str) -> Set[Advisory]:
+        with open(path) as lines:
+            if path.endswith(".md"):
+                return self._parse_md(mfsa_id, lines)
+            elif path.endswith(".yml"):
+                return self._parse_yml(mfsa_id, lines)
+
+        return []
+
+    def _parse_yml(self, mfsa_id, lines) -> List[Advisory]:
         advisories = []
+        data = yaml.safe_load(lines)
+        data["mfsa_id"] = mfsa_id
 
-        if link.endswith(".md"):
-            advisories.extend(self.parse_md(link))
-        elif link.endswith(".yml"):
-            advisories.extend(self.parse_yml(link))
+        fixed_package_urls = self._get_package_urls(data.get("fixed_in"))
+        references = self._get_references(data)
 
-        return advisories
-
-    def parse_yml(self, link) -> List[Advisory]:
-        advisories = []
-        advisory_page = requests.get(link).text
-        data = yaml.safe_load(advisory_page)
-
-        mfsa_id = self.mfsa_id_from_filename(link)
-        if mfsa_id:
-            data["mfsa_id"] = mfsa_id
-        else:
-            ValueError("mfsa_id not present")
-            # FIXME: Handle else case too? mfsa_id must be there anyway
-
-        fixed_package_urls = self.get_package_urls(data["fixed_in"])
-        references = self.get_references(data)
+        if not data.get("advisories"):
+            return []
 
         for cve, advisory in data["advisories"].items():
             if not is_cve(cve):
@@ -73,7 +93,7 @@ class MozillaDataSource(DataSource):
 
             advisories.append(
                 Advisory(
-                    summary=advisory["description"],
+                    summary=advisory.get("description"),
                     vulnerability_id=cve,
                     impacted_package_urls=[],
                     resolved_package_urls=fixed_package_urls,
@@ -83,31 +103,16 @@ class MozillaDataSource(DataSource):
 
         return advisories
 
-    def parse_md(self, link) -> List[Advisory]:
-        advisory_page = requests.get(link).text
-        yamltext, mdtext = self.parse_md_front_matter(advisory_page)
+    def _parse_md(self, mfsa_id, lines) -> List[Advisory]:
+        yamltext, mdtext = self._parse_md_front_matter(lines)
 
         data = yaml.safe_load(yamltext)
-        mfsa_id = self.mfsa_id_from_filename(link)
-        if mfsa_id:
-            data["mfsa_id"] = mfsa_id
-        else:
-            ValueError("mfsa_id not present")
-            # FIXME: Same as parse_yml
+        data["mfsa_id"] = mfsa_id
 
-        fixed_package_urls = self.get_package_urls(data["fixed_in"])
-        references = self.get_references(data)
+        fixed_package_urls = self._get_package_urls(data.get("fixed_in"))
+        references = self._get_references(data)
 
-        soup = BeautifulSoup(markdown(mdtext), features="lxml")
-
-        description = ""
-        descTag = soup.find("h3", text=lambda txt: txt.lower() == "description")
-        if descTag:
-            for tag in descTag.next_siblings:
-                if tag.name:
-                    if tag.name != "p":
-                        break
-                    description += tag.get_text()
+        description = self._html_get_p_under_h3(markdown(mdtext), "description")
 
         # FIXME: add references from md ? They lack a proper reference id and are mostly bug reports
 
@@ -121,13 +126,25 @@ class MozillaDataSource(DataSource):
             )
         ]
 
-    def parse_md_front_matter(self, lines):
-        """Return the YAML and MD sections.
+    def _html_get_p_under_h3(self, html, h3: str):
+        soup = BeautifulSoup(html, features="lxml")
+        h3tag = soup.find("h3", text=lambda txt: txt.lower() == h3)
+        p = ""
+        if h3tag:
+            for tag in h3tag.next_siblings:
+                if tag.name:
+                    if tag.name != "p":
+                        break
+                    p += tag.get_text()
+        return p
+
+    def _parse_md_front_matter(self, lines):
+        """
+        Return the YAML and MD sections.
         :param: lines iterator
         :return: str YAML, str Markdown
         """
         # fm_count: 0: init, 1: in YAML, 2: in Markdown
-        lines = lines.split("\n")
         fm_count = 0
         yaml_lines = []
         md_lines = []
@@ -143,20 +160,21 @@ class MozillaDataSource(DataSource):
             if fm_count == 2:
                 md_lines.append(line)
 
-        return "\n".join(yaml_lines), "\n".join(md_lines)
+        return "".join(yaml_lines), "".join(md_lines)
 
-    def mfsa_id_from_filename(self, filename):
+    def _mfsa_id_from_filename(self, filename):
         match = MFSA_FILENAME_RE.search(filename)
         if match:
             return "mfsa" + match.group(1)
 
         return None
 
-    def get_package_urls(self, pkgs: List[str]) -> List[PackageURL]:
+    def _get_package_urls(self, pkgs: List[str]) -> List[PackageURL]:
         package_urls = [
             PackageURL(
                 type="mozilla",
                 # TODO: Improve after https://github.com/mozilla/foundation-security-advisories/issues/76#issuecomment-803082182
+                # pkg is of the form "Firefox ESR 1.21" or "Thunderbird 2.21"
                 name=" ".join(pkg.split(" ")[0:-1]),
                 version=pkg.split(" ")[-1],
             )
@@ -164,17 +182,27 @@ class MozillaDataSource(DataSource):
         ]
         return package_urls
 
-    def get_references(self, data: any) -> List[Reference]:
-        # FIXME: Should we add 'bugs' section in references too?
+    def _get_references(self, data: any) -> List[Reference]:
+        """
+        Returns a list of references
+        Currently only considers the given mfsa as a reference
+        """
+        # FIXME: Needs improvement
+        # Should we add 'bugs' section in references too?
         # Should we add 'impact'/severity of CVE in references too?
         # If yes, then fix alpine_linux importer as well
-        # Otherwise, do we need severity fieild for adversary as well?
+        # Otherwise, do we need severity field for adversary as well?
+
+        # FIXME: Write a helper for cvssv3.1_qr severity detection ?
+        severities = ["critical", "low", "high", "medium", "none"]
+        severity = [{severity in data.get("impact"): severity} for severity in severities][0].get(
+            True
+        )
+
         return [
             Reference(
                 reference_id=data["mfsa_id"],
                 url="https://www.mozilla.org/en-US/security/advisories/{}".format(data["mfsa_id"]),
-                severities=[
-                    VulnerabilitySeverity(scoring_systems["cvssv3.1_qr"], data.get("impact"))
-                ],
+                severities=[VulnerabilitySeverity(scoring_systems["cvssv3.1_qr"], severity)],
             )
         ]

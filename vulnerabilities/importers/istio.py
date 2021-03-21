@@ -49,8 +49,6 @@ class IstioDataSource(GitDataSource):
         asyncio.run(self.version_api.load_api(["istio/istio"]))
 
     def added_advisories(self) -> Set[Advisory]:
-        import pdb
-        #pdb.set_trace()
         return self._load_advisories(self._added_files)
 
     def updated_advisories(self) -> Set[Advisory]:

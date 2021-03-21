@@ -48,6 +48,8 @@ class IstioDataSource(GitDataSource):
         asyncio.run(self.version_api.load_api(["istio/istio"]))
 
     def added_advisories(self) -> Set[Advisory]:
+        import pdb
+        #pdb.set_trace()
         return self._load_advisories(self._added_files)
 
     def updated_advisories(self) -> Set[Advisory]:
@@ -161,23 +163,23 @@ class IstioDataSource(GitDataSource):
             )
 
             safe_purls_golang = {
-                PackageURL(type="golang", name="istio", version=version)
+                PackageURL(name="golang", type="istio", version=version)
                 for version in safe_pkg_versions
             }
 
             safe_purls_github = {
-                PackageURL(type="github", name="istio", version=version)
+                PackageURL(name="github", type="istio", version=version)
                 for version in safe_pkg_versions
             }
             safe_purls = safe_purls_github.union(safe_purls_golang)
 
             vuln_purls_golang = {
-                PackageURL(type="golang", name="istio", version=version)
+                PackageURL(name="golang", type="istio", version=version)
                 for version in vuln_pkg_versions
             }
 
             vuln_purls_github = {
-                PackageURL(type="github", name="istio", version=version)
+                PackageURL(name="github", type="istio", version=version)
                 for version in vuln_pkg_versions
             }
             vuln_purls = vuln_purls_github.union(vuln_purls_golang)

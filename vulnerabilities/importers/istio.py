@@ -31,6 +31,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory, GitDataSource, Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
 
+IS_RELEASE = re.compile(r"^[\d.]+$", re.IGNORECASE).match
 
 class IstioDataSource(GitDataSource):
     def __enter__(self):
@@ -46,8 +47,13 @@ class IstioDataSource(GitDataSource):
     def set_api(self):
         asyncio.run(self.version_api.load_api(["istio/istio"]))
 
+    def added_advisories(self) -> Set[Advisory]:
+        return self._load_advisories(self._added_files)
+
     def updated_advisories(self) -> Set[Advisory]:
-        files = self._updated_files
+        return self._load_advisories(self._updated_files)
+
+    def _load_advisories(self, files) -> Set[Advisory]:
         advisories = []
         for f in files:
             processed_data = self.process_file(f)
@@ -131,7 +137,7 @@ class IstioDataSource(GitDataSource):
                     ubound = "<=" + release[2]
                     releases.append(lbound + "," + ubound)
                 # If it is a single release
-                elif is_release(release):
+                elif IS_RELEASE(release):
                     releases.append(release)
 
         data["release_ranges"] = releases
@@ -195,5 +201,3 @@ class IstioDataSource(GitDataSource):
         with open(path) as f:
             yaml_lines = self.get_yaml_lines(f)
             return self.get_data_from_yaml_lines(yaml_lines)
-
-    is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match

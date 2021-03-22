@@ -44,6 +44,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import ScoringSystem
+from vulnerabilities.helpers import is_cve
 
 logger = logging.getLogger(__name__)
 
@@ -87,6 +88,10 @@ class Advisory:
     impacted_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
     resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
     references: List[Reference] = dataclasses.field(default_factory=list)
+
+    def __post_init__(self):
+        if self.vulnerability_id and not is_cve(self.vulnerability_id):
+            raise ValueError("CVE expected, found: {}".format(self.vulnerability_id))
 
     def normalized(self):
         impacted_package_urls = {package_url for package_url in self.impacted_package_urls}

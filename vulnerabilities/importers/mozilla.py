@@ -81,7 +81,7 @@ class MozillaDataSource(GitDataSource):
         return advisories
 
     def get_advisories_from_md(self, mfsa_id, lines) -> List[Advisory]:
-        yamltext, mdtext = split_markdown_front_matter(lines)
+        yamltext, mdtext = split_markdown_front_matter(lines.read())
         data = yaml.safe_load(yamltext)
         data["mfsa_id"] = mfsa_id
 

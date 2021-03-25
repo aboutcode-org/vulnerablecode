@@ -46,7 +46,7 @@ def cleaned_response(response):
     - sort lists with a stable order
     """
     cleaned_response = []
-    response_copy = sorted(response, key=lambda x: x.get("purl", ""))
+    response_copy = sorted(response["result"], key=lambda x: x.get("purl", ""))
     for package_data in response_copy:
         package_data["unresolved_vulnerabilities"] = sorted(
             package_data["unresolved_vulnerabilities"], key=lambda x: x["vulnerability_id"]

@@ -136,17 +136,13 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageFilterSet
 
-    class PackageBulkSearchRequestSerializer(serializers.Serializer):
-        purls = serializers.ListField(
-            child=serializers.CharField(max_length=100)
-        )
+    class PackageBulkRequestSerializer(serializers.Serializer):
+        purls = serializers.ListField(child=serializers.CharField(max_length=100))
 
-    class PackageBulkSearchResponseSerializer(serializers.Serializer):
-        result = serializers.ListField(
-            child=PackageSerializer()
-        )
+    class PackageBulkResponseSerializer(serializers.Serializer):
+        result = serializers.ListField(child=PackageSerializer())
 
-    @extend_schema(request=PackageBulkSearchRequestSerializer, responses=PackageBulkSearchResponseSerializer)
+    @extend_schema(request=PackageBulkRequestSerializer, responses=PackageBulkResponseSerializer)
     @action(detail=False, methods=["post"])
     def bulk_search(self, request):
         response = []
@@ -172,7 +168,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                 purl_response["unresolved_vulnerabilities"] = []
                 purl_response["resolved_vulnerabilities"] = []
             response.append(purl_response)
-        res = {'result': response}
+        res = {"result": response}
         return Response(res)
 
 

@@ -237,6 +237,7 @@ IMPORTER_REGISTRY = [
     {
         "name": "mattermost",
         "license": "",
+        "last_run": None,
         "data_source": "MattermostDataSource",
         "data_source_cfg": {},
     },

@@ -136,13 +136,19 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageFilterSet
 
-    # TODO: Fix the swagger documentation for this endpoint
-    @extend_schema(request=placeholder_serializer, responses=placeholder_serializer)
+    class PackageBulkSearchRequestSerializer(serializers.Serializer):
+        purls = serializers.ListField(
+            child=serializers.CharField(max_length=100)
+        )
+
+    class PackageBulkSearchResponseSerializer(serializers.Serializer):
+        result = serializers.ListField(
+            child=PackageSerializer()
+        )
+
+    @extend_schema(request=PackageBulkSearchRequestSerializer, responses=PackageBulkSearchResponseSerializer)
     @action(detail=False, methods=["post"])
     def bulk_search(self, request):
-        """
-        See https://github.com/nexB/vulnerablecode/pull/369#issuecomment-796877606 for docs
-        """
         response = []
         purls = request.data.get("purls", []) or []
         if not purls or not isinstance(purls, list):
@@ -166,8 +172,8 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                 purl_response["unresolved_vulnerabilities"] = []
                 purl_response["resolved_vulnerabilities"] = []
             response.append(purl_response)
-
-        return Response(response)
+        res = {'result': response}
+        return Response(res)
 
 
 class VulnerabilityFilterSet(filters.FilterSet):

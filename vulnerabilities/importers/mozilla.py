@@ -1,21 +1,19 @@
-from typing import Set, List, Generator
-
 import re
-import asyncio
-from bs4 import BeautifulSoup
-from packageurl import PackageURL
-import requests
+from typing import List
+from typing import Set
 
 import yaml
+from bs4 import BeautifulSoup
 from markdown import markdown
+from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import VulnerabilitySeverity
-from vulnerabilities.severity_systems import scoring_systems
-from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.helpers import is_cve
+from vulnerabilities.helpers import split_markdown_front_matter
+from vulnerabilities.severity_systems import scoring_systems
 
 
 REPOSITORY = "mozilla/foundation-security-advisories"
@@ -31,61 +29,40 @@ class MozillaDataSource(GitDataSource):
                 recursive=True, subdir="announce"
             )
 
-        # Do we need this ?
-        # self.version_api = GitHubTagsAPI()
-        # self.set_api()
-
-    def set_api(self):
-        repository = "/".join(self.config.repository_url.split("/")[-2:])
-        asyncio.run(self.version_api.load_api([repository]))
-
-    def added_advisories(self) -> Set[Advisory]:
-        return self._load_advisories(self._added_files)
-
     def updated_advisories(self) -> Set[Advisory]:
-        return self._load_advisories(self._updated_files)
-
-    def _load_advisories(self, files) -> Set[Advisory]:
-        """
-        Yields list of advisories of batch size
-        """
+        files = self._updated_files.union(self._added_files)
         files = [
             f for f in files if f.endswith(".md") or f.endswith(".yml")
         ]  # skip irrelevant files
 
         advisories = []
         for path in files:
-            for advisory in self._to_advisories(path):
-                advisories.append(advisory)
-                if len(advisories) >= self.batch_size:
-                    yield advisories
-                    advisories = []
+            advisories.extend(self.to_advisories(path))
 
-        # In case batch size is too high
-        yield advisories
+        return self.batch_advisories(advisories)
 
-    def _to_advisories(self, path: str) -> List[Advisory]:
+    def to_advisories(self, path: str) -> List[Advisory]:
         """
         Convert a file to corresponding advisories.
         This calls proper method to handle yml/md files.
         """
-        mfsa_id = self._mfsa_id_from_filename(path)
+        mfsa_id = self.mfsa_id_from_filename(path)
 
         with open(path) as lines:
             if path.endswith(".md"):
-                return self._parse_md(mfsa_id, lines)
-            elif path.endswith(".yml"):
-                return self._parse_yml(mfsa_id, lines)
+                return self.get_advisories_from_md(mfsa_id, lines)
+            if path.endswith(".yml"):
+                return self.get_advisories_from_yml(mfsa_id, lines)
 
         return []
 
-    def _parse_yml(self, mfsa_id, lines) -> List[Advisory]:
+    def get_advisories_from_yml(self, mfsa_id, lines) -> List[Advisory]:
         advisories = []
         data = yaml.safe_load(lines)
         data["mfsa_id"] = mfsa_id
 
-        fixed_package_urls = self._get_package_urls(data.get("fixed_in"))
-        references = self._get_references(data)
+        fixed_package_urls = self.get_package_urls(data.get("fixed_in"))
+        references = self.get_references(data)
 
         if not data.get("advisories"):
             return []
@@ -103,16 +80,15 @@ class MozillaDataSource(GitDataSource):
 
         return advisories
 
-    def _parse_md(self, mfsa_id, lines) -> List[Advisory]:
-        yamltext, mdtext = self._parse_md_front_matter(lines)
-
+    def get_advisories_from_md(self, mfsa_id, lines) -> List[Advisory]:
+        yamltext, mdtext = split_markdown_front_matter(lines)
         data = yaml.safe_load(yamltext)
         data["mfsa_id"] = mfsa_id
 
-        fixed_package_urls = self._get_package_urls(data.get("fixed_in"))
-        references = self._get_references(data)
+        fixed_package_urls = self.get_package_urls(data.get("fixed_in"))
+        references = self.get_references(data)
 
-        description = self._html_get_p_under_h3(markdown(mdtext), "description")
+        description = self.html_get_p_under_h3(markdown(mdtext), "description")
 
         # FIXME: add references from md ? They lack a proper reference id and are mostly bug reports
 
@@ -126,7 +102,7 @@ class MozillaDataSource(GitDataSource):
             )
         ]
 
-    def _html_get_p_under_h3(self, html, h3: str):
+    def html_get_p_under_h3(self, html, h3: str):
         soup = BeautifulSoup(html, features="lxml")
         h3tag = soup.find("h3", text=lambda txt: txt.lower() == h3)
         p = ""
@@ -138,38 +114,14 @@ class MozillaDataSource(GitDataSource):
                     p += tag.get_text()
         return p
 
-    def _parse_md_front_matter(self, lines):
-        """
-        Return the YAML and MD sections.
-        :param: lines iterator
-        :return: str YAML, str Markdown
-        """
-        # fm_count: 0: init, 1: in YAML, 2: in Markdown
-        fm_count = 0
-        yaml_lines = []
-        md_lines = []
-        for line in lines:
-            # first line we care about is FM start
-            if fm_count < 2 and line.strip() == "---":
-                fm_count += 1
-                continue
-
-            if fm_count == 1:
-                yaml_lines.append(line)
-
-            if fm_count == 2:
-                md_lines.append(line)
-
-        return "".join(yaml_lines), "".join(md_lines)
-
-    def _mfsa_id_from_filename(self, filename):
+    def mfsa_id_from_filename(self, filename):
         match = MFSA_FILENAME_RE.search(filename)
         if match:
             return "mfsa" + match.group(1)
 
         return None
 
-    def _get_package_urls(self, pkgs: List[str]) -> List[PackageURL]:
+    def get_package_urls(self, pkgs: List[str]) -> List[PackageURL]:
         package_urls = [
             PackageURL(
                 type="mozilla",
@@ -182,7 +134,7 @@ class MozillaDataSource(GitDataSource):
         ]
         return package_urls
 
-    def _get_references(self, data: any) -> List[Reference]:
+    def get_references(self, data: any) -> List[Reference]:
         """
         Returns a list of references
         Currently only considers the given mfsa as a reference

@@ -80,11 +80,10 @@ def create_etag(data_src, url, etag_key):
     return True
 
 
-def split_markdown_front_matter(lines: Iterable) -> Tuple[str, str]:
+def split_markdown_front_matter(lines: str) -> Tuple[str, str]:
     """
     This function splits lines into markdown front matter and the markdown body
     and returns list of lines for both
-    NOTE: lines is expected to be an iterable containing strings
 
     for example :
         lines =
@@ -95,7 +94,7 @@ def split_markdown_front_matter(lines: Iterable) -> Tuple[str, str]:
         ---
         # Markdown starts here
 
-    get_markdown_front_matter(lines) would return
+    split_markdown_front_matter(lines) would return
     ['title: ISTIO-SECURITY-2019-001','description: Incorrect access control.'
     ,'cves: [CVE-2019-12243]'],
     ["# Markdown starts here"]
@@ -105,11 +104,10 @@ def split_markdown_front_matter(lines: Iterable) -> Tuple[str, str]:
     mdlines = []
     splitter = mdlines
 
-    for index, line in enumerate(lines):
-        line = line.strip()
-        if index == 0 and line.startswith("---"):
+    for index, line in enumerate(lines.split("\n")):
+        if index == 0 and line.strip().startswith("---"):
             splitter = fmlines
-        elif line.startswith("---"):
+        elif line.strip().startswith("---"):
             splitter = mdlines
         else:
             splitter.append(line)

@@ -21,17 +21,19 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
-from itertools import chain
 import re
+from itertools import chain
 from typing import Optional, Mapping
 from typing import Set
 from typing import Tuple
 from urllib.error import HTTPError
 from urllib.request import urlopen
 
-from dephell_specifier import RangeSpecifier
-from packageurl import PackageURL
 import toml
+from universal_versions.version_specifier import VersionSpecifier
+from universal_versions.versions import SemverVersion
+from packageurl import PackageURL
+
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
@@ -100,15 +102,24 @@ class RustDataSource(GitDataSource):
 
         all_versions = self.crates_api.get(crate_name)
 
+        # FIXME: Avoid wildcard version ranges for now.
+        # See https://github.com/RustSec/advisory-db/discussions/831
         affected_ranges = {
-            RangeSpecifier(r)
+            VersionSpecifier.from_scheme_version_spec_string("semver", r)
             for r in chain.from_iterable(record.get("affected", {}).get("functions", {}).values())
+            if r != "*"
         }
 
         unaffected_ranges = {
-            RangeSpecifier(r) for r in record.get("versions", {}).get("unaffected", [])
+            VersionSpecifier.from_scheme_version_spec_string("semver", r)
+            for r in record.get("versions", {}).get("unaffected", [])
+            if r != "*"
         }
-        resolved_ranges = {RangeSpecifier(r) for r in record.get("versions", {}).get("patched", [])}
+        resolved_ranges = {
+            VersionSpecifier.from_scheme_version_spec_string("semver", r)
+            for r in record.get("versions", {}).get("patched", [])
+            if r != "*"
+        }
 
         unaffected, affected = categorize_versions(
             all_versions, unaffected_ranges, affected_ranges, resolved_ranges
@@ -142,26 +153,29 @@ class RustDataSource(GitDataSource):
 
 def categorize_versions(
     all_versions: Set[str],
-    unaffected_versions: Set[RangeSpecifier],
-    affected_versions: Set[RangeSpecifier],
-    resolved_versions: Set[RangeSpecifier],
+    unaffected_versions: Set[VersionSpecifier],
+    affected_versions: Set[VersionSpecifier],
+    resolved_versions: Set[VersionSpecifier],
 ) -> Tuple[Set[str], Set[str]]:
     """
     Categorize all versions of a crate according to the given version ranges.
 
     :return: unaffected versions, affected versions
     """
+
     unaffected, affected = set(), set()
 
     if not any(unaffected_versions.union(affected_versions).union(resolved_versions)):
         return unaffected, affected
 
+    # TODO: This is probably wrong
     for version in all_versions:
-        if affected_versions and all([version in av for av in affected_versions]):
+        version_obj = SemverVersion(version)
+        if affected_versions and all([version_obj in av for av in affected_versions]):
             affected.add(version)
-        elif unaffected_versions and all([version in av for av in unaffected_versions]):
+        elif unaffected_versions and all([version_obj in av for av in unaffected_versions]):
             unaffected.add(version)
-        elif resolved_versions and all([version in av for av in resolved_versions]):
+        elif resolved_versions and all([version_obj in av for av in resolved_versions]):
             unaffected.add(version)
 
     # If some versions were not classified above, one or more of the given ranges might be empty, so

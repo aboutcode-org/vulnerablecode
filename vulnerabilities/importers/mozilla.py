@@ -62,7 +62,7 @@ class MozillaDataSource(GitDataSource):
         data["mfsa_id"] = mfsa_id
 
         fixed_package_urls = self.get_package_urls(data.get("fixed_in"))
-        references = self.get_references(data)
+        references = self.get_yml_references(data)
 
         if not data.get("advisories"):
             return []
@@ -86,16 +86,21 @@ class MozillaDataSource(GitDataSource):
         data["mfsa_id"] = mfsa_id
 
         fixed_package_urls = self.get_package_urls(data.get("fixed_in"))
-        references = self.get_references(data)
+        references = self.get_yml_references(data)
+        cves = re.findall(r"CVE-\d+-\d+", yamltext + mdtext, re.IGNORECASE)
+        for cve in cves:
+            references.append(
+                Reference(
+                    reference_id=cve, url=f"https://cve.mitre.org/cgi-bin/cvename.cgi?name={cve}"
+                )
+            )
 
         description = self.html_get_p_under_h3(markdown(mdtext), "description")
-
-        # FIXME: add references from md ? They lack a proper reference id and are mostly bug reports
 
         return [
             Advisory(
                 summary=description,
-                vulnerability_id="",  # FIXME: Scrape the entire page for CVE regex ?
+                vulnerability_id="",
                 impacted_package_urls=[],
                 resolved_package_urls=fixed_package_urls,
                 references=references,
@@ -134,7 +139,7 @@ class MozillaDataSource(GitDataSource):
         ]
         return package_urls
 
-    def get_references(self, data: any) -> List[Reference]:
+    def get_yml_references(self, data: any) -> List[Reference]:
         """
         Returns a list of references
         Currently only considers the given mfsa as a reference

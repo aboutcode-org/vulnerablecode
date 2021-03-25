@@ -31,7 +31,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory, GitDataSource, Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
 
-IS_RELEASE = re.compile(r"^[\d.]+$", re.IGNORECASE).match
+is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match
 
 
 class IstioDataSource(GitDataSource):
@@ -48,13 +48,8 @@ class IstioDataSource(GitDataSource):
     def set_api(self):
         asyncio.run(self.version_api.load_api(["istio/istio"]))
 
-    def added_advisories(self) -> Set[Advisory]:
-        return self._load_advisories(self._added_files)
-
     def updated_advisories(self) -> Set[Advisory]:
-        return self._load_advisories(self._updated_files)
-
-    def _load_advisories(self, files) -> Set[Advisory]:
+        files = self._added_files.union(self._updated_files)
         advisories = []
         for f in files:
             processed_data = self.process_file(f)
@@ -138,7 +133,7 @@ class IstioDataSource(GitDataSource):
                     ubound = "<=" + release[2]
                     releases.append(lbound + "," + ubound)
                 # If it is a single release
-                elif IS_RELEASE(release):
+                elif is_release(release):
                     releases.append(release)
 
         data["release_ranges"] = releases
@@ -162,23 +157,23 @@ class IstioDataSource(GitDataSource):
             )
 
             safe_purls_golang = {
-                PackageURL(name="golang", type="istio", version=version)
+                PackageURL(type="istio", name="golang", version=version)
                 for version in safe_pkg_versions
             }
 
             safe_purls_github = {
-                PackageURL(name="github", type="istio", version=version)
+                PackageURL(type="istio", name="github", version=version)
                 for version in safe_pkg_versions
             }
             safe_purls = safe_purls_github.union(safe_purls_golang)
 
             vuln_purls_golang = {
-                PackageURL(name="golang", type="istio", version=version)
+                PackageURL(type="istio", name="golang", version=version)
                 for version in vuln_pkg_versions
             }
 
             vuln_purls_github = {
-                PackageURL(name="github", type="istio", version=version)
+                PackageURL(type="istio", name="github", version=version)
                 for version in vuln_pkg_versions
             }
             vuln_purls = vuln_purls_github.union(vuln_purls_golang)

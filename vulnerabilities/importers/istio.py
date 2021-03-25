@@ -23,13 +23,15 @@
 import asyncio
 import re
 from typing import List, Set
-
 import yaml
 
-from dephell_specifier import RangeSpecifier
+from universal_versions.version_specifier import VersionSpecifier
+from universal_versions.versions import SemverVersion
 from packageurl import PackageURL
+
 from vulnerabilities.data_source import Advisory, GitDataSource, Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.helpers import contains_alpha
 
 is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match
 
@@ -47,6 +49,8 @@ class IstioDataSource(GitDataSource):
 
     def set_api(self):
         asyncio.run(self.version_api.load_api(["istio/istio"]))
+        # Only keep public releases
+        self.version_api.cache = list(filter(contains_alpha, self.version_api.cache))
 
     def updated_advisories(self) -> Set[Advisory]:
         files = self._added_files.union(self._updated_files)
@@ -64,9 +68,13 @@ class IstioDataSource(GitDataSource):
         all_version = self.version_api.get("istio/istio")
         safe_pkg_versions = []
         vuln_pkg_versions = []
-        version_ranges = [RangeSpecifier(r) for r in version_range_list]
+        version_ranges = [
+            VersionSpecifier.from_scheme_version_spec_string("semver", r)
+            for r in version_range_list
+        ]
         for version in all_version:
-            if any([version in v for v in version_ranges]):
+            version_obj = SemverVersion(version)
+            if any([version_obj in v for v in version_ranges]):
                 vuln_pkg_versions.append(version)
 
         safe_pkg_versions = set(all_version) - set(vuln_pkg_versions)

@@ -34,7 +34,7 @@ from aiohttp.client_exceptions import ServerDisconnectedError
 
 class VersionAPI:
     def __init__(self, cache: Mapping[str, Set[str]] = None):
-        self.cache = cache or set()
+        self.cache = cache or {}
 
     def get(self, package_name: str) -> Set[str]:
         return self.cache.get(package_name, set())

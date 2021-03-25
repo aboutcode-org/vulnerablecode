@@ -56,7 +56,7 @@ class MozillaImportTest(TestCase):
         # pdb.set_trace()
 
         assert models.Vulnerability.objects.count() == 9
-        assert models.VulnerabilityReference.objects.count() == 9
+        assert models.VulnerabilityReference.objects.count() == 10
         assert models.VulnerabilitySeverity.objects.count() == 9
         assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=False).count() == 16
 

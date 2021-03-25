@@ -28,6 +28,8 @@ import re
 import requests
 from bs4 import BeautifulSoup
 from dephell_specifier import RangeSpecifier
+from universal_versions.version_specifier import VersionSpecifier
+from universal_versions.versions import MavenVersion
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
@@ -101,7 +103,7 @@ class ApacheTomcatDataSource(DataSource):
                                 type="maven", namespace="apache", name="tomcat", version=version
                             )
                             for version in self.version_api.get("org.apache.tomcat:tomcat")
-                            if version in version_range
+                            if MavenVersion(version) in version_range
                         ]
                     )
 
@@ -110,6 +112,8 @@ class ApacheTomcatDataSource(DataSource):
                         type="maven", namespace="apache", name="tomcat", version=fixed_version
                     )
                 ]
+                if fixed_package in affected_packages:
+                    raise ValueError("Bing bong")
 
                 advisories.append(
                     Advisory(
@@ -147,4 +151,6 @@ def parse_version_ranges(string):
         else:
             lower_bound = upper_bound = version_range
 
-        yield RangeSpecifier(">=" + lower_bound + "<=" + upper_bound)
+        yield VersionSpecifier.from_scheme_version_spec_string(
+            "maven", f">={lower_bound},<={upper_bound}"
+        )

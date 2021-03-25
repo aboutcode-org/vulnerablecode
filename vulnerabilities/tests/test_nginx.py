@@ -31,7 +31,6 @@ from vulnerabilities.data_source import Reference
 from vulnerabilities.importers.nginx import NginxDataSource
 from vulnerabilities.package_managers import GitHubTagsAPI
 
-#
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/nginx", "security_advisories.html")

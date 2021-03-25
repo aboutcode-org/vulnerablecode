@@ -22,6 +22,7 @@
 
 import json
 import re
+from typing import Iterable, List, Tuple
 
 import requests
 import toml
@@ -77,6 +78,43 @@ def create_etag(data_src, url, etag_key):
 
     data_src.config.etags[url] = etag
     return True
+
+
+def split_markdown_front_matter(lines: Iterable) -> Tuple[str, str]:
+    """
+    This function splits lines into markdown front matter and the markdown body
+    and returns list of lines for both
+    NOTE: lines is expected to be an iterable containing strings
+
+    for example :
+        lines =
+        ---
+        title: ISTIO-SECURITY-2019-001
+        description: Incorrect access control.
+        cves: [CVE-2019-12243]
+        ---
+        # Markdown starts here
+
+    get_markdown_front_matter(lines) would return
+    ['title: ISTIO-SECURITY-2019-001','description: Incorrect access control.'
+    ,'cves: [CVE-2019-12243]'],
+    ["# Markdown starts here"]
+    """
+
+    fmlines = []
+    mdlines = []
+    splitter = mdlines
+
+    for index, line in enumerate(lines):
+        line = line.strip()
+        if index == 0 and line.startswith("---"):
+            splitter = fmlines
+        elif line.startswith("---"):
+            splitter = mdlines
+        else:
+            splitter.append(line)
+
+    return "\n".join(fmlines), "\n".join(mdlines)
 
 
 is_cve = re.compile(r"CVE-\d+-\d+", re.IGNORECASE).match

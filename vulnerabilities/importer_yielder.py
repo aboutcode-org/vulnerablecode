@@ -234,6 +234,12 @@ IMPORTER_REGISTRY = [
         "data_source": "IstioDataSource",
         "data_source_cfg": {"repository_url": "https://github.com/istio/istio.io"},
     },
+    {
+        "name": "mattermost",
+        "license": "",
+        "data_source": "MattermostDataSource",
+        "data_source_cfg": {},
+    },
 ]
 
 

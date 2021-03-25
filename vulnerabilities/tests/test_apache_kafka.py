@@ -23,8 +23,8 @@
 import os
 from unittest import TestCase
 
-from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
+from universal_versions.version_specifier import VersionSpecifier
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
@@ -39,19 +39,25 @@ TEST_DATA = os.path.join(BASE_DIR, "test_data", "apache_kafka", "cve-list.html")
 class TestApacheKafkaDataSource(TestCase):
     def test_to_version_ranges(self):
         # Check single version
-        assert [RangeSpecifier("==3.2.2")] == to_version_ranges("3.2.2")
+        assert [
+            VersionSpecifier.from_scheme_version_spec_string("maven", "=3.2.2")
+        ] == to_version_ranges("3.2.2")
 
         # Check range with lower and upper bounds
-        assert [RangeSpecifier(">=3.2.2, <=3.2.3")] == to_version_ranges("3.2.2 to 3.2.3")
+        assert [
+            VersionSpecifier.from_scheme_version_spec_string("maven", ">=3.2.2, <=3.2.3")
+        ] == to_version_ranges("3.2.2 to 3.2.3")
 
         # Check range with "and later"
-        assert [RangeSpecifier(">=3.2.2")] == to_version_ranges("3.2.2 and later")
+        assert [
+            VersionSpecifier.from_scheme_version_spec_string("maven", ">=3.2.2")
+        ] == to_version_ranges("3.2.2 and later")
 
         # Check combination of above cases
         assert [
-            RangeSpecifier(">=3.2.2"),
-            RangeSpecifier(">=3.2.2, <=3.2.3"),
-            RangeSpecifier("==3.2.2"),
+            VersionSpecifier.from_scheme_version_spec_string("maven", ">=3.2.2"),
+            VersionSpecifier.from_scheme_version_spec_string("maven", ">=3.2.2, <=3.2.3"),
+            VersionSpecifier.from_scheme_version_spec_string("maven", "==3.2.2"),
         ] == to_version_ranges("3.2.2 and later, 3.2.2 to 3.2.3, 3.2.2")
 
     def test_to_advisory(self):

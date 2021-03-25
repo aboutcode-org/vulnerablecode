@@ -27,7 +27,6 @@ import re
 
 import requests
 from bs4 import BeautifulSoup
-from dephell_specifier import RangeSpecifier
 from universal_versions.version_specifier import VersionSpecifier
 from universal_versions.versions import MavenVersion
 from packageurl import PackageURL

@@ -11,7 +11,7 @@ dephell-specifier==0.2.1
 dj-database-url==0.4.2
 Django==3.0.13
 django-filter==2.2.0
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 django-widget-tweaks==1.4.8
 drf-spectacular==0.13.0
 gunicorn==19.7.1

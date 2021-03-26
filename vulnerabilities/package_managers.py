@@ -288,9 +288,12 @@ class NugetVersionAPI(VersionAPI):
     def extract_versions(resp: dict) -> Set[str]:
         all_versions = set()
         try:
-            for entry in resp["items"][0]["items"]:
-                all_versions.add(entry["catalogEntry"]["version"])
-        # json response for YamlDotNet.Signed triggers this exception
+            for entry_group in resp["items"]:
+                for entry in entry_group["items"]:
+                    all_versions.add(entry["catalogEntry"]["version"])
+        # FIXME: json response for YamlDotNet.Signed triggers this exception.
+        # Some packages with many versions give a response of a list of endpoints.
+        # In such cases rather, we should collect data from those endpoints.
         except KeyError:
             pass
 

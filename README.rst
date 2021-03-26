@@ -160,6 +160,11 @@ for this purpose::
 
     SECRET_KEY=$(python -c "from django.core.management import utils; print(utils.get_random_secret_key())")
 
+You will also need to setup the VC_ALLOWED_HOSTS environment variable to match the hostname where the app is deployed::
+
+    VC_ALLOWED_HOSTS=vulnerablecode.your.domain.example.com
+
+You can specify several host by separating them with a colon `:`
 
 Using Nix
 ~~~~~~~~~

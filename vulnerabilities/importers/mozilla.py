@@ -130,10 +130,9 @@ class MozillaDataSource(GitDataSource):
         package_urls = [
             PackageURL(
                 type="mozilla",
-                # TODO: Improve after https://github.com/mozilla/foundation-security-advisories/issues/76#issuecomment-803082182
                 # pkg is of the form "Firefox ESR 1.21" or "Thunderbird 2.21"
-                name=" ".join(pkg.split(" ")[0:-1]),
-                version=pkg.split(" ")[-1],
+                name=pkg.rsplit(None, 1)[0],
+                version=pkg.rsplit(None, 1)[1],
             )
             for pkg in pkgs
         ]

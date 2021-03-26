@@ -27,9 +27,7 @@ if not DEV_MODE:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [
-    ".herokuapp.com",
-]
+ALLOWED_HOSTS = os.environ.get("VC_ALLOWED_HOSTS", "*").split(":")
 
 # Application definition
 

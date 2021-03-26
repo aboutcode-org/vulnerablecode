@@ -157,23 +157,23 @@ class IstioDataSource(GitDataSource):
             )
 
             safe_purls_golang = {
-                PackageURL(type="istio", name="golang", version=version)
+                PackageURL(type="golang", name="istio", version=version)
                 for version in safe_pkg_versions
             }
 
             safe_purls_github = {
-                PackageURL(type="istio", name="github", version=version)
+                PackageURL(type="github", name="istio", version=version)
                 for version in safe_pkg_versions
             }
             safe_purls = safe_purls_github.union(safe_purls_golang)
 
             vuln_purls_golang = {
-                PackageURL(type="istio", name="golang", version=version)
+                PackageURL(type="golang", name="istio", version=version)
                 for version in vuln_pkg_versions
             }
 
             vuln_purls_github = {
-                PackageURL(type="istio", name="github", version=version)
+                PackageURL(type="github", name="istio", version=version)
                 for version in vuln_pkg_versions
             }
             vuln_purls = vuln_purls_github.union(vuln_purls_golang)

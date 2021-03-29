@@ -141,11 +141,12 @@ On Debian-based distros, these can be installed with::
 
 **Application dependencies**
 
-Create a virtualenv, install dependencies, and run the database migrations::
+Create a virtualenv, install dependencies, generate static files and run the database migrations::
 
     python3 -m venv venv
     source venv/bin/activate
     pip install -r requirements.txt
+    DJANGO_DEV=1 python manage.py collectstatic
     DJANGO_DEV=1 python manage.py migrate
 
 The environment variable ``DJANGO_DEV`` is used to load settings suitable for

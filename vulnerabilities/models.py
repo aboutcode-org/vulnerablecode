@@ -23,6 +23,7 @@
 import importlib
 from datetime import datetime
 from time import sleep
+import urlpy
 
 from django.db import models
 from django.db import IntegrityError
@@ -109,6 +110,38 @@ class VulnerabilityReference(models.Model):
     @property
     def scores(self):
         return VulnerabilitySeverity.objects.filter(reference=self.id)
+
+    def save(self, *args, **kwargs):
+        if self.id:
+            super(VulnerabilityReference, self).save(*args, **kwargs)
+        else:
+            url_parsed = urlpy.parse(self.url)
+            self.url = str(url_parsed.canonical())
+            url_scheme = url_parsed.scheme
+            scheme_independent_url = self.url[len(url_scheme) :]
+            if url_scheme == "http":
+                similar_instance = VulnerabilityReference.objects.filter(
+                    vulnerability=self.vulnerability,
+                    source=self.source,
+                    reference_id=self.reference_id,
+                    url="https" + scheme_independent_url,
+                ).first()
+                if not similar_instance:
+                    super(VulnerabilityReference, self).save(*args, **kwargs)
+            elif url_scheme == "https":
+                similar_instance = VulnerabilityReference.objects.filter(
+                    vulnerability=self.vulnerability,
+                    source=self.source,
+                    reference_id=self.reference_id,
+                    url="http" + scheme_independent_url,
+                ).first()
+                if similar_instance:
+                    similar_instance.url = self.url
+                    similar_instance.save()
+                else:
+                    super(VulnerabilityReference, self).save(*args, **kwargs)
+            else:
+                super(VulnerabilityReference, self).save(*args, **kwargs)
 
     class Meta:
         unique_together = ("vulnerability", "source", "reference_id", "url")

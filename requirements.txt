@@ -56,3 +56,4 @@ requests==2.23.0
 toml==0.10.2
 PyYAML==5.4
 freezegun==1.1.0
+urlpy==0.5

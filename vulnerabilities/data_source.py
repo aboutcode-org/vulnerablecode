@@ -39,7 +39,7 @@ from typing import Set
 from typing import Tuple
 import xml.etree.ElementTree as ET
 
-import pygit2
+from git import Repo, DiffIndex
 from packageurl import PackageURL
 
 from vulnerabilities.oval_parser import OvalParser
@@ -319,34 +319,40 @@ class GitDataSource(DataSource):
         file_ext: Optional[str],
     ) -> Tuple[Set[str], Set[str]]:
 
-        previous_commit = None
         added_files, updated_files = set(), set()
 
-        for commit in self._repo.walk(self._repo.head.target, pygit2.GIT_SORT_TIME):
-            commit_time = commit.commit_time + commit.commit_time_offset  # convert to UTC
-
-            if commit_time < self.cutoff_timestamp:
+        # find the most ancient commit we need to diff with
+        cutoff_commit = None
+        for commit in self._repo.iter_commits(self._repo.head):
+            if commit.committed_date < self.cutoff_timestamp:
                 break
+            cutoff_commit = commit
 
-            if previous_commit is None:
-                previous_commit = commit
+        if cutoff_commit is None:
+            return added_files, updated_files
+
+        def _is_binary(d: DiffIndex):
+            if not d.b_blob:
+                return False
+            try:
+                d.b_blob.data_stream.read().decode()
+            except UnicodeDecodeError:
+                return True
+            return False
+
+        for d in cutoff_commit.diff(self._repo.head.commit):
+            if not _include_file(d.b_path, subdir, recursive, file_ext) or _is_binary(d):
                 continue
 
-            for d in commit.tree.diff_to_tree(previous_commit.tree).deltas:
-                if not _include_file(d.new_file.path, subdir, recursive, file_ext) or d.is_binary:
-                    continue
-
-                abspath = os.path.join(self.config.working_directory, d.new_file.path)
-                # TODO
-                # Just filtering on the two status values for "added" and "modified" is too
-                # simplistic. This does not cover file renames, copies &
-                # deletions.
-                if d.status == pygit2.GIT_DELTA_ADDED:
+            abspath = os.path.join(self.config.working_directory, d.b_path)
+            if d.new_file:
+                added_files.add(abspath)
+            elif d.a_blob and d.b_blob:
+                if d.a_path != d.b_path:
+                    # consider moved files as added
                     added_files.add(abspath)
-                elif d.status == pygit2.GIT_DELTA_MODIFIED:
+                elif d.a_blob != d.b_blob:
                     updated_files.add(abspath)
-
-            previous_commit = commit
 
         # Any file that has been added and then updated inside the window of the git history we
         # looked at, should be considered "added", not "updated", since it does not exist in the
@@ -364,19 +370,16 @@ class GitDataSource(DataSource):
             os.mkdir(self.config.working_directory)
 
     def _ensure_repository(self) -> None:
-        repodir = pygit2.discover_repository(self.config.working_directory)
-        if repodir is None:
+        if not os.path.exists(os.path.join(self.config.working_directory, ".git")):
             self._clone_repository()
             return
-
-        self._repo = pygit2.Repository(repodir)
+        self._repo = Repo(self.config.working_directory)
 
         if self.config.branch is None:
-            self.config.branch = self._repo.head.shorthand
-        branch = self._repo.branches[self.config.branch]
-
-        if not branch.is_checked_out():
-            self._repo.checkout(branch)
+            self.config.branch = str(self._repo.active_branch)
+        branch = self.config.branch
+        self._repo.head.reference = self._repo.heads[branch]
+        self._repo.head.reset(index=True, working_tree=True)
 
         remote = self._find_or_add_remote()
         self._update_from_remote(remote, branch)
@@ -384,9 +387,9 @@ class GitDataSource(DataSource):
     def _clone_repository(self) -> None:
         kwargs = {}
         if self.config.branch:
-            kwargs["checkout_branch"] = self.config.branch
+            kwargs["branch"] = self.config.branch
 
-        self._repo = pygit2.clone_repository(
+        self._repo = Repo.clone_from(
             self.config.repository_url, self.config.working_directory, **kwargs
         )
 
@@ -398,20 +401,19 @@ class GitDataSource(DataSource):
                 break
 
         if remote is None:
-            remote = self._repo.remotes.create(
-                "added_by_vulnerablecode", self.config.repository_url
+            remote = self._repo.create_remote(
+                "added_by_vulnerablecode", url=self.config.repository_url
             )
 
         return remote
 
     def _update_from_remote(self, remote, branch) -> None:
-        progress = remote.fetch()
-        if progress.received_objects == 0:
+        fetch_info = remote.fetch()
+        if len(fetch_info) == 0:
             return
-
-        remote_branch = self._repo.branches[f"{remote.name}/{self.config.branch}"]
-        branch.set_target(remote_branch.target)
-        self._repo.checkout(branch, strategy=pygit2.GIT_CHECKOUT_FORCE)
+        branch = self._repo.branches[branch]
+        branch.set_reference(remote.refs[branch.name])
+        self._repo.head.reset(index=True, working_tree=True)
 
 
 def _include_file(

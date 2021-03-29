@@ -40,12 +40,16 @@ class VersionAPI:
         return self.cache.get(package_name, set())
 
 
+def client_session():
+    return ClientSession(raise_for_status=True, trust_env=True)
+
+
 class LaunchpadVersionAPI(VersionAPI):
 
     package_type = "deb"
 
     async def load_api(self, pkg_set):
-        async with ClientSession(raise_for_status=True) as session:
+        async with client_session() as session:
             await asyncio.gather(
                 *[self.set_api(pkg, session) for pkg in pkg_set if pkg not in self.cache]
             )
@@ -82,7 +86,7 @@ class PypiVersionAPI(VersionAPI):
     package_type = "pypi"
 
     async def load_api(self, pkg_set):
-        async with ClientSession(raise_for_status=True) as session:
+        async with client_session() as session:
             await asyncio.gather(
                 *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
             )
@@ -106,7 +110,7 @@ class CratesVersionAPI(VersionAPI):
     package_type = "cargo"
 
     async def load_api(self, pkg_set):
-        async with ClientSession(raise_for_status=True) as session:
+        async with client_session() as session:
             await asyncio.gather(
                 *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
             )
@@ -127,7 +131,7 @@ class RubyVersionAPI(VersionAPI):
     package_type = "gem"
 
     async def load_api(self, pkg_set):
-        async with ClientSession(raise_for_status=True) as session:
+        async with client_session() as session:
             await asyncio.gather(
                 *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
             )
@@ -151,7 +155,7 @@ class NpmVersionAPI(VersionAPI):
     package_type = "npm"
 
     async def load_api(self, pkg_set):
-        async with ClientSession(raise_for_status=True) as session:
+        async with client_session() as session:
             await asyncio.gather(
                 *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
             )
@@ -211,7 +215,7 @@ class MavenVersionAPI(VersionAPI):
     package_type = "maven"
 
     async def load_api(self, pkg_set):
-        async with ClientSession(raise_for_status=True) as session:
+        async with client_session() as session:
             await asyncio.gather(
                 *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
             )
@@ -267,7 +271,7 @@ class NugetVersionAPI(VersionAPI):
     package_type = "nuget"
 
     async def load_api(self, pkg_set):
-        async with ClientSession(raise_for_status=True) as session:
+        async with client_session() as session:
             await asyncio.gather(
                 *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
             )
@@ -305,7 +309,7 @@ class ComposerVersionAPI(VersionAPI):
     package_type = "composer"
 
     async def load_api(self, pkg_set):
-        async with ClientSession(raise_for_status=True) as session:
+        async with client_session() as session:
             await asyncio.gather(
                 *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
             )
@@ -343,7 +347,7 @@ class GitHubTagsAPI(VersionAPI):
     package_type = "github"
 
     async def load_api(self, repo_set):
-        async with ClientSession(raise_for_status=True) as session:
+        async with client_session() as session:
             await asyncio.gather(
                 *[
                     self.fetch(owner_repo.lower(), session)
@@ -363,7 +367,7 @@ class GitHubTagsAPI(VersionAPI):
 
 class HexVersionAPI(VersionAPI):
     async def load_api(self, pkg_set):
-        async with ClientSession(raise_for_status=True) as session:
+        async with client_session() as session:
             await asyncio.gather(
                 *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
             )

@@ -41,6 +41,8 @@ import xml.etree.ElementTree as ET
 
 import pygit2
 from packageurl import PackageURL
+from universal_versions.version_specifier import VersionSpecifier
+from universal_versions.versions import version_class_by_package_type
 
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import ScoringSystem
@@ -514,7 +516,7 @@ class OvalDataSource(DataSource):
         "type" key.
 
         Example value of pkg_metadata:
-              {"type":"deb","qualifiers":{"distro":"buster"} }
+                {"type":"deb","qualifiers":{"distro":"buster"} }
         """
 
         all_adv = []
@@ -536,7 +538,14 @@ class OvalDataSource(DataSource):
                 for package_name in test_data["package_list"]:
                     if package_name and len(package_name) >= 50:
                         continue
-                    aff_ver_range = test_data["version_ranges"] or set()
+
+                    affected_version_range = test_data["version_ranges"] or set()
+                    version_class = version_class_by_package_type[pkg_metadata["type"]]
+                    version_scheme = version_class.scheme
+
+                    affected_version_range = VersionSpecifier.from_scheme_version_spec_string(
+                        version_scheme, affected_version_range
+                    )
                     all_versions = self.pkg_manager_api.get(package_name)
 
                     # FIXME: what is this 50 DB limit? that's too small for versions
@@ -546,7 +555,9 @@ class OvalDataSource(DataSource):
                     all_versions = set(filter(lambda x: len(x) < 50, all_versions))
                     if not all_versions:
                         continue
-                    affected_versions = set(filter(lambda x: x in aff_ver_range, all_versions))
+                    affected_versions = set(
+                        filter(lambda x: version_class(x) in affected_version_range, all_versions)
+                    )
                     safe_versions = all_versions - affected_versions
 
                     for version in affected_versions:

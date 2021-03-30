@@ -31,10 +31,9 @@ from typing import Mapping
 from typing import Optional
 
 import requests
-from dephell_specifier import RangeSpecifier
+from packageurl import PackageURL
 from universal_versions.version_specifier import VersionSpecifier
 from universal_versions.versions import version_class_by_package_type
-from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource

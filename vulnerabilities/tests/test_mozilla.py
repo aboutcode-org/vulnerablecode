@@ -53,7 +53,6 @@ class MozillaImportTest(TestCase):
         #     with patch("vulnerabilities.importers.MozillaDataSource.set_api"):
         #         runner.run()
         runner.run()
-        # pdb.set_trace()
 
         assert models.Vulnerability.objects.count() == 9
         assert models.VulnerabilityReference.objects.count() == 10

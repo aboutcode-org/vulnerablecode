@@ -140,7 +140,7 @@ def normalize_ranges(version_range_string):
     version_ranges = list(map(str.strip, version_ranges))
     for id, version_range in enumerate(version_ranges):
 
-        # TODO: This cryptic, simplify this if possible
+        # TODO: This is cryptic, simplify this if possible
         version_ranges[id] = ",".join(version_range.split())
         version_ranges[id] = version_ranges[id].replace(">=,", ">=")
         version_ranges[id] = version_ranges[id].replace("<=,", "<=")

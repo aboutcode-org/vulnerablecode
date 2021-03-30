@@ -136,7 +136,9 @@ class RubyDataSource(GitDataSource):
     def categorize_versions(all_versions, unaffected_version_ranges):
 
         for id, elem in enumerate(unaffected_version_ranges):
-            unaffected_version_ranges[id] = VersionSpecifier.from_scheme_version_spec_string("semver",elem)
+            unaffected_version_ranges[id] = VersionSpecifier.from_scheme_version_spec_string(
+                "semver", elem
+            )
 
         safe_versions = set()
         for i in all_versions:

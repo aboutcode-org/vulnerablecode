@@ -129,16 +129,21 @@ class ApacheTomcatDataSource(DataSource):
 
 def parse_version_ranges(string):
     """
-    This method yields Rangespecifier objects obtained by
+    This method yields VersionSpecifier objects obtained by
     parsing `string`.
-    >> list(parse_version_ranges("Affects: 9.0.0.M1 to 9.0.0.M9"))
-    [RangeSpecifier(<=9.0.0.M9,>=9.0.0.M1)]
-
-    >> list(parse_version_ranges("Affects: 9.0.0.M1"))
-    [RangeSpecifier(>=9.0.0.M1<=9.0.0.M1)]
-
-    >> list(parse_version_ranges("Affects: 9.0.0.M1 to 9.0.0.M9, 1.2.3 to 3.4.5"))
-    [RangeSpecifier(<=9.0.0.M9,>=9.0.0.M1), RangeSpecifier(<=3.4.5,>=1.2.3)]
+    >>> list(parse_version_ranges("Affects: 9.0.0.M1 to 9.0.0.M9")) == [
+    ...     VersionSpecifier.from_scheme_version_spec_string('maven','<=9.0.0.M9,>=9.0.0.M1')
+    ...  ]
+    True
+    >>> list(parse_version_ranges("Affects: 9.0.0.M1")) == [
+    ...     VersionSpecifier.from_scheme_version_spec_string('maven','>=9.0.0.M1,<=9.0.0.M1')
+    ...  ]
+    True
+    >>> list(parse_version_ranges("Affects: 9.0.0.M1 to 9.0.0.M9, 1.2.3 to 3.4.5")) == [
+    ...     VersionSpecifier.from_scheme_version_spec_string('maven','<=9.0.0.M9,>=9.0.0.M1'),
+    ...     VersionSpecifier.from_scheme_version_spec_string('maven','<=3.4.5,>=1.2.3')
+    ...  ]
+    True
     """
     version_rng_txt = string.split("Affects:")[-1].strip()
     version_ranges = version_rng_txt.split(",")

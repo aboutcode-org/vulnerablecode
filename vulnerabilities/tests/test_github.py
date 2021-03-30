@@ -55,7 +55,6 @@ class TestGitHubAPIDataSource(TestCase):
             "endpoint": "https://api.example.com/graphql",
             "ecosystems": ["MAVEN"],
         }
-        # os.environ = {'GH_TOKEN':'abc'}
         with patch.dict(os.environ, {"GH_TOKEN": "abc"}):
             cls.data_src = GitHubAPIDataSource(1, config=data_source_cfg)
 
@@ -66,7 +65,9 @@ class TestGitHubAPIDataSource(TestCase):
         eg_version_range = ">= 3.3.0, < 3.3.5"
         eg_versions = {"3.3.6", "3.3.0", "3.3.4", "3.2.0"}
 
-        aff_vers, safe_vers = self.data_src.categorize_versions(eg_version_range, eg_versions)
+        aff_vers, safe_vers = self.data_src.categorize_versions(
+            "pypi", eg_version_range, eg_versions
+        )
         exp_safe_vers = {"3.3.6", "3.2.0"}
         exp_aff_vers = {"3.3.0", "3.3.4"}
 

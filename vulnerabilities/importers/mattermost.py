@@ -1,18 +1,19 @@
-import re
-from typing import List, Tuple
 import asyncio
+import re
+from typing import List
+from typing import Tuple
 
+import requests
 from bs4 import BeautifulSoup
 from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
-import requests
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import VulnerabilitySeverity
-from vulnerabilities.severity_systems import scoring_systems
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.severity_systems import scoring_systems
 
 SECURITY_UPDATES_URL = "https://mattermost.com/security-updates"
 MM_REPO = {
@@ -86,9 +87,7 @@ class MattermostDataSource(DataSource):
                 and not any((version in version_range for version_range in excluded_version_ranges))
             ]
 
-            """
-            Severities are either "na" or cvssv3.1_qr
-            """
+            # Severities are either "na" or cvssv3.1_qr
             references = [
                 Reference(
                     reference_id=ref_col.text,

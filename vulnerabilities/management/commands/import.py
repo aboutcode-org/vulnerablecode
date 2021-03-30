@@ -22,6 +22,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 from datetime import datetime
+import traceback
 
 from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
@@ -100,10 +101,21 @@ class Command(BaseCommand):
         self._import_data(importers, cutoff_date)
 
     def _import_data(self, importers, cutoff_date):
+        failed_importers = []
+
         for importer in importers:
             self.stdout.write(f"Importing data from {importer.name}")
             batch_size = int(getattr(self, "batch_size", 10))
-            ImportRunner(importer, batch_size).run(cutoff_date=cutoff_date)
-            self.stdout.write(
-                self.style.SUCCESS(f"Successfully imported data from {importer.name}")
-            )
+            try:
+                ImportRunner(importer, batch_size).run(cutoff_date=cutoff_date)
+                self.stdout.write(
+                    self.style.SUCCESS(f"Successfully imported data from {importer.name}")
+                )
+            except Exception:
+                failed_importers.append(importer.name)
+                traceback.print_exc()
+                self.stdout.write(
+                    self.style.ERROR(f"Failure to import data from {importer.name}. Continuing...")
+                )
+        if failed_importers:
+            raise CommandError(f"{len(failed_importers)} failed!: {','.join(failed_importers)}")

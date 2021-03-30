@@ -81,4 +81,10 @@ scoring_systems = {
         url="https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale",
         notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",
     ),
+    "unspecified": ScoringSystem(
+        identifier="unspecified",
+        name="unspecified",
+        url="https://example.com",
+        notes="Severity with unspecified scoring system. Contains values like High, Low etc",
+    ),
 }

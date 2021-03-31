@@ -127,15 +127,19 @@ def to_advisory(advisory_data):
                 rhsa_data = requests_session.get(
                     f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json"
                 ).json()  # nopep8
-                value = rhsa_data["cvrfdoc"]["aggregate_severity"]
-                rhsa_aggregate_severity = VulnerabilitySeverity(
-                    system=scoring_systems["rhas"],
-                    value=value,
-                )
+
+                rhsa_aggregate_severities = []
+                if rhsa_data.get("cvrfdoc"):
+                    # not all RHSA errata have a corresponding CVRF document
+                    value = rhsa_data["cvrfdoc"]["aggregate_severity"]
+                    rhsa_aggregate_severities.append(VulnerabilitySeverity(
+                        system=scoring_systems["rhas"],
+                        value=value,
+                    ))
 
                 references.append(
                     Reference(
-                        severities=[rhsa_aggregate_severity],
+                        severities=rhsa_aggregate_severities,
                         url="https://access.redhat.com/errata/{}".format(rh_adv),
                         reference_id=rh_adv,
                     )

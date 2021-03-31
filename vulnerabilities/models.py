@@ -112,7 +112,7 @@ class VulnerabilityReference(models.Model):
         return VulnerabilitySeverity.objects.filter(reference=self.id)
 
     def save(self, *args, **kwargs):
-        if self.id:
+        if self.id or not self.url:
             super(VulnerabilityReference, self).save(*args, **kwargs)
         else:
             url_parsed = urlpy.parse(self.url)

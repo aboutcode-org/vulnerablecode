@@ -28,9 +28,7 @@ if not DEV_MODE:
 DEBUG = False
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
-ALLOWED_HOSTS = [
-    ".herokuapp.com",
-]
+ALLOWED_HOSTS = os.environ.get("VC_ALLOWED_HOSTS", "*").split(":")
 
 # Application definition
 

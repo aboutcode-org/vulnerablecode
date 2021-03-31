@@ -22,7 +22,7 @@ jedi==0.17.0
 lxml==4.6.3
 more-itertools==8.0.2
 packageurl-python==0.9.3
-packaging==19.2
+packaging==20.9
 parso==0.7.0
 pexpect==4.8.0
 pickleshare==0.7.5

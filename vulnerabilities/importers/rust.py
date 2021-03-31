@@ -23,7 +23,9 @@
 import asyncio
 import re
 from itertools import chain
-from typing import Optional, Mapping
+from typing import Optional
+from typing import Mapping
+from typing import List
 from typing import Set
 from typing import Tuple
 from urllib.error import HTTPError
@@ -104,22 +106,22 @@ class RustDataSource(GitDataSource):
 
         # FIXME: Avoid wildcard version ranges for now.
         # See https://github.com/RustSec/advisory-db/discussions/831
-        affected_ranges = {
+        affected_ranges = [
             VersionSpecifier.from_scheme_version_spec_string("semver", r)
             for r in chain.from_iterable(record.get("affected", {}).get("functions", {}).values())
             if r != "*"
-        }
+        ]
 
-        unaffected_ranges = {
+        unaffected_ranges = [
             VersionSpecifier.from_scheme_version_spec_string("semver", r)
             for r in record.get("versions", {}).get("unaffected", [])
             if r != "*"
-        }
-        resolved_ranges = {
+        ]
+        resolved_ranges = [
             VersionSpecifier.from_scheme_version_spec_string("semver", r)
             for r in record.get("versions", {}).get("patched", [])
             if r != "*"
-        }
+        ]
 
         unaffected, affected = categorize_versions(
             all_versions, unaffected_ranges, affected_ranges, resolved_ranges
@@ -153,9 +155,9 @@ class RustDataSource(GitDataSource):
 
 def categorize_versions(
     all_versions: Set[str],
-    unaffected_versions: Set[VersionSpecifier],
-    affected_versions: Set[VersionSpecifier],
-    resolved_versions: Set[VersionSpecifier],
+    unaffected_version_ranges: List[VersionSpecifier],
+    affected_version_ranges: List[VersionSpecifier],
+    resolved_version_ranges: List[VersionSpecifier],
 ) -> Tuple[Set[str], Set[str]]:
     """
     Categorize all versions of a crate according to the given version ranges.
@@ -165,24 +167,30 @@ def categorize_versions(
 
     unaffected, affected = set(), set()
 
-    if not any(unaffected_versions.union(affected_versions).union(resolved_versions)):
+    if (
+        not unaffected_version_ranges
+        and not affected_version_ranges
+        and not resolved_version_ranges
+    ):
         return unaffected, affected
 
     # TODO: This is probably wrong
     for version in all_versions:
         version_obj = SemverVersion(version)
-        if affected_versions and all([version_obj in av for av in affected_versions]):
+        if affected_version_ranges and all([version_obj in av for av in affected_version_ranges]):
             affected.add(version)
-        elif unaffected_versions and all([version_obj in av for av in unaffected_versions]):
+        elif unaffected_version_ranges and all(
+            [version_obj in av for av in unaffected_version_ranges]
+        ):
             unaffected.add(version)
-        elif resolved_versions and all([version_obj in av for av in resolved_versions]):
+        elif resolved_version_ranges and all([version_obj in av for av in resolved_version_ranges]):
             unaffected.add(version)
 
     # If some versions were not classified above, one or more of the given ranges might be empty, so
     # the remaining versions default to either affected or unaffected.
     uncategorized_versions = all_versions - unaffected.union(affected)
     if uncategorized_versions:
-        if not affected_versions:
+        if not affected_version_ranges:
             affected.update(uncategorized_versions)
         else:
             unaffected.update(uncategorized_versions)

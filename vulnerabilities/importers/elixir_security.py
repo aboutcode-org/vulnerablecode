@@ -87,10 +87,10 @@ class ElixirSecurityDataSource(GitDataSource):
         all_version_list = self.pkg_manager_api.get(pkg_name)
         if not version_range_list:
             return [], all_version_list
-        version_ranges = {
+        version_ranges = [
             VersionSpecifier.from_scheme_version_spec_string("semver", r)
             for r in version_range_list
-        }
+        ]
         for version in all_version_list:
             version_obj = SemverVersion(version)
             if any([version_obj in v for v in version_ranges]):

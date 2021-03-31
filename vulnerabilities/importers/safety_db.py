@@ -167,8 +167,11 @@ def categorize_versions(
     :return: impacted, resolved purls
     """
     impacted_versions, impacted_purls = set(), set()
-    vurl_spec = f"pypi:{ ','.join(version_specs) }"
-    vurl_spec = VersionSpecifier.from_version_spec_string(vurl_spec)
+    # vurl_spec = f"pypi:{ ','.join(version_specs) }"
+    # vurl_spec = VersionSpecifier.from_version_spec_string(vurl_spec)
+    vurl_specs = []
+    for version_spec in version_specs:
+        vurl_specs.append(VersionSpecifier.from_scheme_version_spec_string("pypi", version_spec))
 
     for version in all_versions:
         try:
@@ -176,7 +179,7 @@ def categorize_versions(
         except:
             continue
 
-        if version_object in vurl_spec:
+        if any([version_object in vurl_spec for vurl_spec in vurl_specs]):
             impacted_versions.add(version)
             impacted_purls.add(
                 PackageURL(

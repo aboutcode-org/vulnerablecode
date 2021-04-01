@@ -30,11 +30,13 @@ import traceback
 from typing import Set
 from typing import Tuple
 from typing import Optional
+from tqdm import tqdm
 
 import packageurl
 from django.db import DataError
 from django.core import serializers
 
+from django.core.management.base import BaseCommand
 from vulnerabilities import models
 from vulnerabilities.data_source import Advisory, DataSource
 from vulnerabilities.data_source import PackageURL
@@ -78,7 +80,7 @@ class ImportRunner:
         self.importer = importer
         self.batch_size = batch_size
 
-    def run(self, cutoff_date: datetime.datetime = None) -> None:
+    def run(self, cutoff_date: datetime.datetime = None, command: BaseCommand = None) -> None:
         """
         Create a data source for the given importer and store the data retrieved in the database.
 
@@ -92,7 +94,7 @@ class ImportRunner:
         logger.info(f"Starting import for {self.importer.name}.")
         data_source = self.importer.make_data_source(self.batch_size, cutoff_date=cutoff_date)
         with data_source:
-            process_advisories(data_source)
+            process_advisories(data_source, command=command)
         self.importer.last_run = datetime.datetime.now(tz=datetime.timezone.utc)
         self.importer.data_source_cfg = dataclasses.asdict(data_source.config)
         self.importer.save()
@@ -113,13 +115,17 @@ def get_vuln_pkg_refs(vulnerability, package):
     )
 
 
-def process_advisories(data_source: DataSource) -> None:
+def process_advisories(data_source: DataSource, command: BaseCommand = None) -> None:
     bulk_create_vuln_pkg_refs = set()
     # Treat updated_advisories and added_advisories as same. Eventually
     # we want to  refactor all data sources to  provide advisories via a
     # single method.
-    advisory_batches = chain(data_source.updated_advisories(), data_source.added_advisories())
-    for batch in advisory_batches:
+    if command:
+        command.stdout.write("Collecting the data from the source ..")
+    advisory_batches = list(chain(data_source.updated_advisories(), data_source.added_advisories()))
+    if command:
+        command.stdout.write("installing the data on database ...")
+    for batch in tqdm(advisory_batches):
         for advisory in batch:
             try:
                 vuln, vuln_created = _get_or_create_vulnerability(advisory)

@@ -104,10 +104,10 @@ class Command(BaseCommand):
         failed_importers = []
 
         for importer in importers:
-            self.stdout.write(f"Importing data from {importer.name}")
+            self.stdout.write(f"Importing data from {importer.name}...")
             batch_size = int(getattr(self, "batch_size", 10))
             try:
-                ImportRunner(importer, batch_size).run(cutoff_date=cutoff_date)
+                ImportRunner(importer, batch_size).run(cutoff_date=cutoff_date, command=self)
                 self.stdout.write(
                     self.style.SUCCESS(f"Successfully imported data from {importer.name}")
                 )
@@ -119,3 +119,9 @@ class Command(BaseCommand):
                 )
         if failed_importers:
             raise CommandError(f"{len(failed_importers)} failed!: {','.join(failed_importers)}")
+        else:
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "\n\nAll done! vulnerability data has been successfully fetched."
+                )
+            )

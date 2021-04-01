@@ -32,8 +32,6 @@ from vulnerabilities.helpers import requests_with_5xx_retry
 from vulnerabilities.severity_systems import scoring_systems
 
 
-import pdb
-
 class RedhatDataSource(DataSource):
     CONFIG_CLASS = DataSourceConfiguration
 
@@ -85,102 +83,96 @@ def fetch():
 
 
 def to_advisory(advisory_data):
-    try:
-        affected_purls = []
-        if advisory_data.get("affected_packages"):
-            for rpm in advisory_data["affected_packages"]:
-                purl = rpm_to_purl(rpm)
-                if purl:
-                    affected_purls.append(purl)
+    affected_purls = []
+    if advisory_data.get("affected_packages"):
+        for rpm in advisory_data["affected_packages"]:
+            purl = rpm_to_purl(rpm)
+            if purl:
+                affected_purls.append(purl)
 
-        references = []
-        bugzilla = advisory_data.get("bugzilla")
-        if bugzilla:
-            url = "https://bugzilla.redhat.com/show_bug.cgi?id={}".format(bugzilla)
-            bugzilla_data = requests_session.get(
-                f"https://bugzilla.redhat.com/rest/bug/{bugzilla}"
-            ).json()
-            if (
-                bugzilla_data.get("bugs")
-                and len(bugzilla_data["bugs"])
-                and bugzilla_data["bugs"][0].get("severity")
-            ):
-                bugzilla_severity_val = bugzilla_data["bugs"][0]["severity"]
-                bugzilla_severity = VulnerabilitySeverity(
-                    system=scoring_systems["rhbs"],
-                    value=bugzilla_severity_val,
+    references = []
+    bugzilla = advisory_data.get("bugzilla")
+    if bugzilla:
+        url = "https://bugzilla.redhat.com/show_bug.cgi?id={}".format(bugzilla)
+        bugzilla_data = requests_session.get(
+            f"https://bugzilla.redhat.com/rest/bug/{bugzilla}"
+        ).json()
+        if (
+            bugzilla_data.get("bugs")
+            and len(bugzilla_data["bugs"])
+            and bugzilla_data["bugs"][0].get("severity")
+        ):
+            bugzilla_severity_val = bugzilla_data["bugs"][0]["severity"]
+            bugzilla_severity = VulnerabilitySeverity(
+                system=scoring_systems["rhbs"],
+                value=bugzilla_severity_val,
+            )
+
+            references.append(
+                Reference(
+                    severities=[bugzilla_severity],
+                    url=url,
+                    reference_id=bugzilla,
                 )
+            )
 
-                references.append(
-                    Reference(
-                        severities=[bugzilla_severity],
-                        url=url,
-                        reference_id=bugzilla,
-                    )
-                )
+    for rh_adv in advisory_data["advisories"]:
+        # RH provides 3 types of advisories RHSA, RHBA, RHEA. Only RHSA's contain severity score.
+        # See https://access.redhat.com/articles/2130961 for more details.
 
-        for rh_adv in advisory_data["advisories"]:
-            # RH provides 3 types of advisories RHSA, RHBA, RHEA. Only RHSA's contain severity score.
-            # See https://access.redhat.com/articles/2130961 for more details.
+        if "RHSA" in rh_adv.upper():
+            rhsa_data = requests_session.get(
+                f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json"
+            ).json()  # nopep8
 
-            if "RHSA" in rh_adv.upper():
-                rhsa_data = requests_session.get(
-                    f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json"
-                ).json()  # nopep8
-
-                rhsa_aggregate_severities = []
-                if rhsa_data.get("cvrfdoc"):
-                    # not all RHSA errata have a corresponding CVRF document
-                    value = rhsa_data["cvrfdoc"]["aggregate_severity"]
-                    rhsa_aggregate_severities.append(VulnerabilitySeverity(
+            rhsa_aggregate_severities = []
+            if rhsa_data.get("cvrfdoc"):
+                # not all RHSA errata have a corresponding CVRF document
+                value = rhsa_data["cvrfdoc"]["aggregate_severity"]
+                rhsa_aggregate_severities.append(
+                    VulnerabilitySeverity(
                         system=scoring_systems["rhas"],
                         value=value,
-                    ))
-
-                references.append(
-                    Reference(
-                        severities=rhsa_aggregate_severities,
-                        url="https://access.redhat.com/errata/{}".format(rh_adv),
-                        reference_id=rh_adv,
                     )
                 )
 
-            else:
-                references.append(
-                    Reference(severities=[], url=url, reference_id=rh_adv)
-                )
-
-        redhat_scores = []
-        cvssv3_score = advisory_data.get("cvss3_score")
-        if cvssv3_score:
-            redhat_scores.append(
-                VulnerabilitySeverity(
-                    system=scoring_systems["cvssv3"],
-                    value=cvssv3_score,
+            references.append(
+                Reference(
+                    severities=rhsa_aggregate_severities,
+                    url="https://access.redhat.com/errata/{}".format(rh_adv),
+                    reference_id=rh_adv,
                 )
             )
 
-        cvssv3_vector = advisory_data.get("cvss3_scoring_vector")
-        if cvssv3_vector:
-            redhat_scores.append(
-                VulnerabilitySeverity(
-                    system=scoring_systems["cvssv3_vector"],
-                    value=cvssv3_vector,
-                )
-            )
+        else:
+            references.append(Reference(severities=[], url=url, reference_id=rh_adv))
 
-        references.append(
-            Reference(severities=redhat_scores, url=advisory_data["resource_url"])
+    redhat_scores = []
+    cvssv3_score = advisory_data.get("cvss3_score")
+    if cvssv3_score:
+        redhat_scores.append(
+            VulnerabilitySeverity(
+                system=scoring_systems["cvssv3"],
+                value=cvssv3_score,
+            )
         )
-        return Advisory(
-            vulnerability_id=advisory_data["CVE"],
-            summary=advisory_data["bugzilla_description"],
-            impacted_package_urls=affected_purls,
-            references=references,
+
+    cvssv3_vector = advisory_data.get("cvss3_scoring_vector")
+    if cvssv3_vector:
+        redhat_scores.append(
+            VulnerabilitySeverity(
+                system=scoring_systems["cvssv3_vector"],
+                value=cvssv3_vector,
+            )
         )
-    except Exception as e:
-        print(e)
-        pdb.set_trace()
+
+    references.append(Reference(severities=redhat_scores, url=advisory_data["resource_url"]))
+    return Advisory(
+        vulnerability_id=advisory_data["CVE"],
+        summary=advisory_data["bugzilla_description"],
+        impacted_package_urls=affected_purls,
+        references=references,
+    )
 
 
 def rpm_to_purl(rpm_string):

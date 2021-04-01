@@ -7,3 +7,7 @@
 .Site-content {
 flex: 1;
 }
+
+table {
+  border: 1px solid black;
+}

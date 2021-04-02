@@ -1,8 +1,8 @@
-import shutil
 import os
+import shutil
 import tempfile
-from unittest.mock import patch
 import zipfile
+from unittest.mock import patch
 
 from django.test import TestCase
 

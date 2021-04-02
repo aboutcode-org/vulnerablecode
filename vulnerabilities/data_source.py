@@ -41,8 +41,8 @@ import xml.etree.ElementTree as ET
 
 import pygit2
 from packageurl import PackageURL
-from universal_versions.version_specifier import VersionSpecifier
-from universal_versions.versions import version_class_by_package_type
+from univers.version_specifier import VersionSpecifier
+from univers.versions import version_class_by_package_type
 
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import ScoringSystem

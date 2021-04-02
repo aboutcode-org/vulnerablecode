@@ -27,8 +27,8 @@ import json
 import requests
 from packageurl import PackageURL
 from bs4 import BeautifulSoup
-from universal_versions.version_specifier import VersionSpecifier
-from universal_versions.versions import SemverVersion
+from univers.version_specifier import VersionSpecifier
+from univers.versions import SemverVersion
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource

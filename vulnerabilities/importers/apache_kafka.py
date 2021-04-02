@@ -25,8 +25,8 @@ import asyncio
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
-from universal_versions.versions import MavenVersion
-from universal_versions.version_specifier import VersionSpecifier
+from univers.versions import MavenVersion
+from univers.version_specifier import VersionSpecifier
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource

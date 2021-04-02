@@ -34,8 +34,8 @@ from typing import Set
 from typing import Tuple
 
 import requests
-from universal_versions.version_specifier import VersionSpecifier
-from universal_versions.versions import PYPIVersion
+from univers.version_specifier import VersionSpecifier
+from univers.versions import PYPIVersion
 from packageurl import PackageURL
 from schema import Or
 from schema import Regex

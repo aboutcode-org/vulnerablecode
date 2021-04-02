@@ -32,8 +32,8 @@ from urllib.parse import quote
 from urllib.request import urlopen
 
 from dateutil.parser import parse
-from universal_versions.version_specifier import VersionSpecifier
-from universal_versions.versions import SemverVersion
+from univers.version_specifier import VersionSpecifier
+from univers.versions import SemverVersion
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory

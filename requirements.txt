@@ -1,6 +1,6 @@
 aiohttp==3.7.4
 asgiref==3.2.7
-attrs==19.3.0
+attrs==20.3.0
 backcall==0.1.0
 beautifulsoup4==4.7.1
 cached-property==1.5.1

@@ -8,6 +8,12 @@
 flex: 1;
 }
 
-table {
-  border: 1px solid black;
+.scoring_system {
+  margin-top: -10px !important;
+  margin-bottom: -10px !important;
+}
+
+.severity_value {
+  margin-top: -10px !important;
+  margin-bottom: -10px !important;
 }

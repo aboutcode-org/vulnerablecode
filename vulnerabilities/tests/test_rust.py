@@ -27,7 +27,7 @@ import zipfile
 from unittest.mock import patch
 
 
-from universal_versions.version_specifier import VersionSpecifier
+from univers.version_specifier import VersionSpecifier
 
 from django.test import TestCase
 

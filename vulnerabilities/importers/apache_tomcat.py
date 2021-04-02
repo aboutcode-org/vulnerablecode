@@ -27,8 +27,8 @@ import re
 
 import requests
 from bs4 import BeautifulSoup
-from universal_versions.version_specifier import VersionSpecifier
-from universal_versions.versions import MavenVersion
+from univers.version_specifier import VersionSpecifier
+from univers.versions import MavenVersion
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory

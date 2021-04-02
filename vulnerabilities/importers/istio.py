@@ -31,7 +31,6 @@ from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory, GitDataSource, Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
-from vulnerabilities.helpers import contains_alpha
 
 is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match
 
@@ -49,8 +48,6 @@ class IstioDataSource(GitDataSource):
 
     def set_api(self):
         asyncio.run(self.version_api.load_api(["istio/istio"]))
-        # Only keep public releases
-        self.version_api.cache = list(filter(contains_alpha, self.version_api.cache))
 
     def updated_advisories(self) -> Set[Advisory]:
         files = self._added_files.union(self._updated_files)

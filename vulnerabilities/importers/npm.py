@@ -130,7 +130,9 @@ def _versions_to_purls(package_name, versions):
 
 def normalize_ranges(version_range_string):
     """
-    Splits version range strings with "||" operator into separate ranges
+    - Splits version range strings with "||" operator into separate ranges.
+    - Removes spaces between range operator and range operands
+    - Normalizes 'x' ranges
     Example:
     >>> z = normalize_ranges(">=6.1.3 < 7.0.0 || >=7.0.3")
     >>> assert z == [">=6.1.3,<7.0.0", ">=7.0.3"]

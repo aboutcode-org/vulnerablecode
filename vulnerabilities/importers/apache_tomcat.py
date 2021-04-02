@@ -111,8 +111,6 @@ class ApacheTomcatDataSource(DataSource):
                         type="maven", namespace="apache", name="tomcat", version=fixed_version
                     )
                 ]
-                if fixed_package in affected_packages:
-                    raise ValueError("Bing bong")
 
                 advisories.append(
                     Advisory(

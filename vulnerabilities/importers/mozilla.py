@@ -175,7 +175,6 @@ def get_yml_references(data: any) -> List[Reference]:
         Reference(
             reference_id=data["mfsa_id"],
             url="https://www.mozilla.org/en-US/security/advisories/{}".format(data["mfsa_id"]),
-            # severities=[VulnerabilitySeverity(scoring_systems["unspecified"], severity)],
-            severities=[VulnerabilitySeverity(scoring_systems["cvssv3.1_qr"], severity)],
+            severities=[VulnerabilitySeverity(scoring_systems["generic_textual"], severity)],
         )
     ]

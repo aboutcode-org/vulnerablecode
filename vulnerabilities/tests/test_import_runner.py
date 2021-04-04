@@ -69,9 +69,9 @@ class MockImporter:
 
 ADVISORIES = [
     Advisory(
-        vulnerability_id="MOCK-CVE-2020-1337",
+        vulnerability_id="CVE-2020-13371337",
         summary="vulnerability description here",
-        references=[Reference(url="https://example.com/with/more/info/MOCK-CVE-2020-1337")],
+        references=[Reference(url="https://example.com/with/more/info/CVE-2020-13371337")],
         impacted_package_urls=[PackageURL(name="mock-webserver", type="pypi", version="1.2.33")],
         resolved_package_urls=[PackageURL(name="mock-webserver", type="pypi", version="1.2.34")],
     )
@@ -113,11 +113,11 @@ def test_ImportRunner_new_package_and_new_vulnerability(db):
     assert resolved_package.vulnerabilities.count() == 1
 
     vuln = impacted_package.vulnerabilities.first()
-    assert vuln.vulnerability_id == "MOCK-CVE-2020-1337"
+    assert vuln.vulnerability_id == "CVE-2020-13371337"
 
     vuln_refs = models.VulnerabilityReference.objects.filter(vulnerability=vuln)
     assert vuln_refs.count() == 1
-    assert vuln_refs[0].url == "https://example.com/with/more/info/MOCK-CVE-2020-1337"
+    assert vuln_refs[0].url == "https://example.com/with/more/info/CVE-2020-13371337"
 
 
 def test_ImportRunner_existing_package_and_new_vulnerability(db):
@@ -145,11 +145,11 @@ def test_ImportRunner_existing_package_and_new_vulnerability(db):
 
     impacted_package = models.PackageRelatedVulnerability.objects.filter(is_vulnerable=True)[0]
     vuln = impacted_package.vulnerability
-    assert vuln.vulnerability_id == "MOCK-CVE-2020-1337"
+    assert vuln.vulnerability_id == "CVE-2020-13371337"
 
     vuln_refs = models.VulnerabilityReference.objects.filter(vulnerability=vuln)
     assert vuln_refs.count() == 1
-    assert vuln_refs[0].url == "https://example.com/with/more/info/MOCK-CVE-2020-1337"
+    assert vuln_refs[0].url == "https://example.com/with/more/info/CVE-2020-13371337"
 
 
 def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db):
@@ -158,11 +158,11 @@ def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db)
     vulnerability that also already existed in the database.
     """
     vuln = models.Vulnerability.objects.create(
-        vulnerability_id="MOCK-CVE-2020-1337", summary="vulnerability description here"
+        vulnerability_id="CVE-2020-13371337", summary="vulnerability description here"
     )
 
     models.VulnerabilityReference.objects.create(
-        vulnerability=vuln, url="https://example.com/with/more/info/MOCK-CVE-2020-1337"
+        vulnerability=vuln, url="https://example.com/with/more/info/CVE-2020-13371337"
     )
     models.PackageRelatedVulnerability.objects.create(
         vulnerability=vuln,
@@ -200,7 +200,7 @@ def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db)
     )
     assert len(qs) == 1
     impacted_package = qs[0]
-    assert impacted_package.vulnerability.vulnerability_id == "MOCK-CVE-2020-1337"
+    assert impacted_package.vulnerability.vulnerability_id == "CVE-2020-13371337"
 
 
 # def test_ImportRunner_assumed_fixed_package_is_updated_as_impacted(db):
@@ -213,11 +213,11 @@ def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db)
 # FIXME deleted, the referenced Package and Vulnerability are also deleted.
 #
 # vuln = models.Vulnerability.objects.create(
-#     vulnerability_id='MOCK-CVE-2020-1337', summary='vulnerability description here')
+#     vulnerability_id='CVE-2020-13371337', summary='vulnerability description here')
 #
 # models.VulnerabilityReference.objects.create(
 #     vulnerability=vuln,
-#     url='https://example.com/with/more/info/MOCK-CVE-2020-1337'
+#     url='https://example.com/with/more/info/CVE-2020-13371337'
 # )
 #
 # misclassified_package = models.Package.objects.create(
@@ -255,11 +255,11 @@ def test_ImportRunner_fixed_package_version_is_added(db):
     A new version of a package was published that fixes a previously unresolved vulnerability.
     """
     vuln = models.Vulnerability.objects.create(
-        vulnerability_id="MOCK-CVE-2020-1337", summary="vulnerability description here"
+        vulnerability_id="CVE-2020-13371337", summary="vulnerability description here"
     )
 
     models.VulnerabilityReference.objects.create(
-        vulnerability=vuln, url="https://example.com/with/more/info/MOCK-CVE-2020-1337"
+        vulnerability=vuln, url="https://example.com/with/more/info/CVE-2020-13371337"
     )
     models.PackageRelatedVulnerability.objects.create(
         vulnerability=vuln,
@@ -288,7 +288,7 @@ def test_ImportRunner_fixed_package_version_is_added(db):
     )
     assert len(qs) == 1
     resolved_package = qs[0]
-    assert resolved_package.vulnerability.vulnerability_id == "MOCK-CVE-2020-1337"
+    assert resolved_package.vulnerability.vulnerability_id == "CVE-2020-13371337"
 
 
 def test_ImportRunner_updated_vulnerability(db):
@@ -297,7 +297,7 @@ def test_ImportRunner_updated_vulnerability(db):
     reference.
     """
     vuln = models.Vulnerability.objects.create(
-        vulnerability_id="MOCK-CVE-2020-1337", summary="temporary description"
+        vulnerability_id="CVE-2020-13371337", summary="temporary description"
     )
 
     models.PackageRelatedVulnerability.objects.create(
@@ -326,4 +326,4 @@ def test_ImportRunner_updated_vulnerability(db):
 
     vuln_refs = models.VulnerabilityReference.objects.filter(vulnerability=vuln)
     assert vuln_refs.count() == 1
-    assert vuln_refs[0].url == "https://example.com/with/more/info/MOCK-CVE-2020-1337"
+    assert vuln_refs[0].url == "https://example.com/with/more/info/CVE-2020-13371337"

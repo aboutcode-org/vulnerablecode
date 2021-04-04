@@ -139,7 +139,7 @@ class TestRedhat(unittest.TestCase):
         }
         for adv in data:
             with unittest.mock.patch(
-                "vulnerabilities.importers.redhat.requests.get", return_value=mock_resp
+                "vulnerabilities.importers.redhat.requests_session.get", return_value=mock_resp
             ):
                 adv = redhat.to_advisory(adv)
                 found_advisories.append(adv)

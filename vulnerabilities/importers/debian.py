@@ -45,6 +45,7 @@ def validate_schema(advisory_dict):
 
     deb_versions = [
         "bullseye",
+        "bullseye-security",
         "buster",
         "buster-security",
         "sid",

@@ -141,11 +141,12 @@ On Debian-based distros, these can be installed with::
 
 **Application dependencies**
 
-Create a virtualenv, install dependencies, and run the database migrations::
+Create a virtualenv, install dependencies, generate static files and run the database migrations::
 
     python3 -m venv venv
     source venv/bin/activate
     pip install -r requirements.txt
+    DJANGO_DEV=1 python manage.py collectstatic
     DJANGO_DEV=1 python manage.py migrate
 
 The environment variable ``DJANGO_DEV`` is used to load settings suitable for
@@ -160,6 +161,11 @@ for this purpose::
 
     SECRET_KEY=$(python -c "from django.core.management import utils; print(utils.get_random_secret_key())")
 
+You will also need to setup the VC_ALLOWED_HOSTS environment variable to match the hostname where the app is deployed::
+
+    VC_ALLOWED_HOSTS=vulnerablecode.your.domain.example.com
+
+You can specify several host by separating them with a colon `:`
 
 Using Nix
 ~~~~~~~~~

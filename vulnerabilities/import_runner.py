@@ -29,10 +29,7 @@ from itertools import chain
 import traceback
 from typing import Set
 from typing import Tuple
-from typing import Optional
 
-import packageurl
-from django.db import DataError
 from django.core import serializers
 
 from vulnerabilities import models

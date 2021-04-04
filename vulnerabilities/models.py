@@ -22,12 +22,10 @@
 
 import importlib
 from datetime import datetime
-from time import sleep
 
 from django.db import models
-from django.db import IntegrityError
-from django.db import transaction
 import django.contrib.postgres.fields as pgfields
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from packageurl.contrib.django.models import PackageURLMixin
 from packageurl import PackageURL
@@ -123,7 +121,9 @@ class Package(PackageURLMixin):
     """
 
     vulnerabilities = models.ManyToManyField(
-        to="Vulnerability", through="PackageRelatedVulnerability"
+        to="Vulnerability",
+        through="PackageRelatedVulnerability",
+        through_fields=("package", "vulnerability"),
     )
 
     @property
@@ -175,9 +175,14 @@ class Package(PackageURLMixin):
 
 class PackageRelatedVulnerability(models.Model):
 
-    package = models.ForeignKey(Package, on_delete=models.CASCADE)
+    package = models.ForeignKey(
+        Package, on_delete=models.CASCADE, related_name="vulnerable_package"
+    )
     vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
     is_vulnerable = models.BooleanField()
+    patched_package = models.ForeignKey(
+        Package, on_delete=models.CASCADE, null=True, blank=True, related_name="patched_package"
+    )
 
     def __str__(self):
         return f"{self.package.package_url} {self.vulnerability.vulnerability_id}"

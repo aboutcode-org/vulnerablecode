@@ -20,6 +20,7 @@
 #  VulnerableCode is a free software from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import bisect
 import json
 import re
 
@@ -27,6 +28,7 @@ import requests
 import toml
 import urllib3
 import yaml
+from univers.versions import version_class_by_package_type
 
 # TODO add logging here
 
@@ -84,6 +86,14 @@ is_cve = cve_regex.match
 find_all_cve = cve_regex.findall
 
 
+def contains_alpha(string):
+    """
+    Return True if the input 'string' contains any alphabet
+    """
+
+    return any([c.isalpha() for c in string])
+
+
 def requests_with_5xx_retry(max_retries=5, backoff_factor=0.5):
     """
     Returns a requests sessions which retries on 5xx errors with
@@ -102,9 +112,72 @@ def requests_with_5xx_retry(max_retries=5, backoff_factor=0.5):
     return session
 
 
-def contains_alpha(string):
+def nearest_patched_package(vulnerable_packages, resolved_packages):
+
+    if not vulnerable_packages:
+        return {}
+
+    def create_package_by_version_obj_mapping(packages, overwrite=False):
+        # overwrite=True, returns version->PackageURL mapping.
+        # overwrite=False, returns version->[PackageURL] mapping.
+        if not packages:
+            return {}
+
+        package_by_version_obj_mapping = {}
+        version_class = version_class_by_package_type[packages[0].type]
+        for package in packages:
+            version_object = version_class(package.version)
+            if not overwrite:
+                if version_object in package_by_version_obj_mapping:
+                    package_by_version_obj_mapping[version_object].append(package)
+                else:
+                    package_by_version_obj_mapping[version_object] = [package]
+            else:
+                package_by_version_obj_mapping[version_object] = package
+
+        return package_by_version_obj_mapping
+
+    vulnerable_packages_by_version_obj = create_package_by_version_obj_mapping(vulnerable_packages)
+    resolved_package_by_version_obj = create_package_by_version_obj_mapping(
+        resolved_packages, overwrite=True
+    )
+
+    vulnerable_versions = list(vulnerable_packages_by_version_obj.keys())
+    resolved_versions = list(resolved_package_by_version_obj.keys())
+
+    patched_version_by_vulnerable_versions = nearest_patched_versions(
+        vulnerable_versions, resolved_versions
+    )
+
+    patched_package_by_vulnerable_packages = {}
+    for vulnerable_version, patched_version in patched_version_by_vulnerable_versions.items():
+        for vulnerable_package in vulnerable_packages_by_version_obj[vulnerable_version]:
+            patched_package_by_vulnerable_packages[vulnerable_package] = None
+
+            if patched_version:
+                patched_package = resolved_package_by_version_obj[patched_version]
+                patched_package_by_vulnerable_packages[vulnerable_package] = patched_package
+
+    return patched_package_by_vulnerable_packages
+
+
+def nearest_patched_versions(vulnerable_versions, resolved_versions):
     """
-    Return True if the input 'string' contains any alphabet
+    Returns a mapping of vulnerable_version -> nearest_safe_version
     """
 
-    return any([c.isalpha() for c in string])
+    vulnerable_versions = sorted(vulnerable_versions)
+    resolved_versions = sorted(resolved_versions)
+    resolved_version_count = len(resolved_versions)
+    nearest_patch_for_version = {}
+    for vulnerable_version in vulnerable_versions:
+        nearest_patch_for_version[vulnerable_version] = None
+        if not resolved_versions:
+            continue
+
+        patched_version_index = bisect.bisect_right(resolved_versions, vulnerable_version)
+        if patched_version_index >= resolved_version_count:
+            continue
+        nearest_patch_for_version[vulnerable_version] = resolved_versions[patched_version_index]
+
+    return nearest_patch_for_version

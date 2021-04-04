@@ -21,14 +21,18 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import dataclasses
-from xml.etree import ElementTree
 
+from bs4 import BeautifulSoup
 import requests
+import re
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
+from vulnerabilities.data_source import Reference
+from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.severity_systems import scoring_systems
 from vulnerabilities.helpers import create_etag
 
 
@@ -40,7 +44,7 @@ class ApacheHTTPDDataSourceConfiguration(DataSourceConfiguration):
 class ApacheHTTPDDataSource(DataSource):
 
     CONFIG_CLASS = ApacheHTTPDDataSourceConfiguration
-    url = "https://httpd.apache.org/security/vulnerabilities-httpd.xml"
+    url = "https://httpd.apache.org/security/json/"
 
     def updated_advisories(self):
         # Etags are like hashes of web responses. We maintain
@@ -49,47 +53,55 @@ class ApacheHTTPDDataSource(DataSource):
         # skips processing the response further to avoid duplicate work
 
         if create_etag(data_src=self, url=self.url, etag_key="ETag"):
-            data = fetch_xml(self.url)
-            advisories = to_advisories(data)
+            links = fetch_links(self.url)
+            advisories = []
+            for link in links:
+                data = requests.get(link).json()
+                advisories.append(self.to_advisories(data))
             return self.batch_advisories(advisories)
 
         return []
 
+    def to_advisories(self, data):
+        cve = data["CVE_data_meta"]["ID"]
+        description = data["description"]["description_data"]
+        summary = next((item["value"] for item in description if item["lang"] == "eng"), "")
+        reference = Reference(reference_id=cve, url=self.url + cve + ".json")
 
-def to_advisories(data):
-    advisories = []
-    for issue in data:
         resolved_packages = []
         impacted_packages = []
-        for info in issue:
-            if info.tag == "cve":
-                cve = info.attrib["name"]
 
-            if info.tag == "title":
-                summary = info.text
+        for vendor in data["affects"]["vendor"]["vendor_data"]:
+            for products in vendor["product"]["product_data"]:
+                for version in products["version"]["version_data"]:
+                    version_value = version["version_value"]
 
-            if info.tag == "fixed":
-                resolved_packages.append(
-                    PackageURL(type="apache", name="httpd", version=info.attrib["version"])
-                )
+                    if version["version_affected"] == "<":
+                        resolved_packages.append(
+                            PackageURL(type="apache", name="httpd", version=version_value)
+                        )
 
-            if info.tag == "affects" or info.tag == "maybeaffects":
-                impacted_packages.append(
-                    PackageURL(type="apache", name="httpd", version=info.attrib["version"])
-                )
+                    else:
+                        impacted_packages.append(
+                            PackageURL(type="apache", name="httpd", version=version_value)
+                        )
 
-        advisories.append(
-            Advisory(
-                vulnerability_id=cve,
-                summary=summary,
-                impacted_package_urls=impacted_packages,
-                resolved_package_urls=resolved_packages,
-            )
+        return Advisory(
+            vulnerability_id=cve,
+            summary=summary,
+            impacted_package_urls=impacted_packages,
+            resolved_package_urls=resolved_packages,
+            references=[reference],
         )
 
-    return advisories
 
-
-def fetch_xml(url):
-    resp = requests.get(url).content
-    return ElementTree.fromstring(resp)
+def fetch_links(url):
+    links = []
+    data = requests.get(url).content
+    soup = BeautifulSoup(data, features="lxml")
+    for tag in soup.find_all("a"):
+        link = tag.get("href")
+        if not re.search("^.*json$", link):
+            continue
+        links.append(url + link)
+    return links

@@ -12,3 +12,4 @@ The following organizations or individuals have contributed to this repo:
 - Edoardo Lanzini @elanzini
 - Navonil Das @NavonilDas
 - Tushar Upadhyay @tushar912
+- Hritik Vijay @hritik14

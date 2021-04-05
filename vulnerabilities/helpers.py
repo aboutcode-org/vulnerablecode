@@ -79,7 +79,7 @@ def create_etag(data_src, url, etag_key):
     return True
 
 
-is_cve = re.compile(r"CVE-\d+-\d+$", re.IGNORECASE).match
+is_cve = re.compile(r"CVE-\d{4}-\d{4,7}", re.IGNORECASE).match
 
 
 def requests_with_5xx_retry(max_retries=5, backoff_factor=0.5):

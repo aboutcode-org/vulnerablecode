@@ -57,17 +57,20 @@ class ApacheHTTPDDataSource(DataSource):
             advisories = []
             for link in links:
                 data = requests.get(link).json()
-                advisories.append(self.to_advisories(data))
+                advisories.append(self.to_advisory(data))
             return self.batch_advisories(advisories)
 
         return []
 
-    def to_advisories(self, data):
+    def to_advisory(self, data):
         cve = data["CVE_data_meta"]["ID"]
         description = data["description"]["description_data"]
         summary = next((item["value"] for item in description if item["lang"] == "eng"), "")
-        reference = Reference(reference_id=cve, url=self.url + cve + ".json")
-
+        severity = VulnerabilitySeverity(
+            system=scoring_systems["generic_textual"],
+            value=data["impact"][0]["other"],
+        )
+        reference = Reference(reference_id=cve, url=self.url + cve + ".json", severities=[severity])
         resolved_packages = []
         impacted_packages = []
 
@@ -101,7 +104,7 @@ def fetch_links(url):
     soup = BeautifulSoup(data, features="lxml")
     for tag in soup.find_all("a"):
         link = tag.get("href")
-        if not re.search("^.*json$", link):
+        if not re.search("^CVE.*json$", link):
             continue
         links.append(url + link)
     return links

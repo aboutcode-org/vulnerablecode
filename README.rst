@@ -106,10 +106,7 @@ compose. For this you need to have the following installed.
 Use ``sudo docker-compose up`` to start VulnerableCode. Then access
 VulnerableCode at http://localhost:8000/ or at http://127.0.0.1:8000/
 
-If you run into a ``ModuleNotFoundError: No module named '<module>'``, run::
-
-    sudo docker-compose exec web bash
-    pip install -r requirements.txt
+**Important**: Don't forget to run `sudo docker-compose up -d --no-deps --build web` to sync your instance after every `git pull`.
 
 
 Use ``sudo docker-compose exec web bash`` to access the VulnerableCode

@@ -58,10 +58,12 @@ class TestImporterYielder(TestCase):
     def setUpClass(cls):
         cls.importer_yielder = importer_yielder
 
+    def setUp(self):
+        Importer.objects.all().delete()
+
     @pytest.mark.django_db
     def test_load_importers_freshdb(self):
         assert Importer.objects.all().count() == 0
-
         with patch(
             "vulnerabilities.importer_yielder.IMPORTER_REGISTRY", new=MOCK_IMPORTER_REGISTRY
         ):  # nopep8
@@ -71,7 +73,6 @@ class TestImporterYielder(TestCase):
     @pytest.mark.django_db
     def test_load_importers_setteddb(self):
         assert Importer.objects.all().count() == 0
-
         mock_existing_importer = Importer.objects.create(**MOCK_IMPORTER_REGISTRY[1])
         mock_existing_importer.data_source_cfg["etags"] = {"url": "0x1234"}
         mock_existing_importer.save()

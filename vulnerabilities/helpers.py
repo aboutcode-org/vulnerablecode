@@ -25,6 +25,7 @@ import re
 
 import requests
 import toml
+import urllib3
 import yaml
 
 # TODO add logging here
@@ -78,4 +79,22 @@ def create_etag(data_src, url, etag_key):
     return True
 
 
-is_cve = re.compile(r"CVE-\d+-\d+", re.IGNORECASE).match
+is_cve = re.compile(r"CVE-\d{4}-\d{4,7}", re.IGNORECASE).match
+
+
+def requests_with_5xx_retry(max_retries=5, backoff_factor=0.5):
+    """
+    Returns a requests sessions which retries on 5xx errors with
+    a backoff_factor
+    """
+    retries = urllib3.util.Retry(
+        total=max_retries,
+        backoff_factor=backoff_factor,
+        raise_on_status=True,
+        status_forcelist=range(500, 600, 1),
+    )
+    adapter = requests.adapters.HTTPAdapter(max_retries=retries)
+    session = requests.Session()
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    return session

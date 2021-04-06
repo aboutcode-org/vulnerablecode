@@ -36,10 +36,11 @@ pycparser==2.20
 pygit2==1.5.0
 Pygments==2.7.4
 pyparsing==2.4.5
-pytest==5.3.2
+pytest==6.2.3
+pytest-django==4.1.0
 django-widget-tweaks==1.4.8 
 pytest-dependency==0.4.0
-pytest-django==3.7.0
+pytest-django==4.1.0
 pytest-mock==1.13.0
 python-dateutil==2.8.1
 pytz==2019.3

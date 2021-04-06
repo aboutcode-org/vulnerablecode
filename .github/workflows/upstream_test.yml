@@ -43,7 +43,7 @@ jobs:
       - name: Run tests
         run: |
           pip install pytest-xdist
-          pytest -v -m "webtest" -n 2
+          python -m pytest -v -m "webtest" -n 2
         env:
           # The hostname, username used to communicate with the PostgreSQL service container
           POSTGRES_HOST: localhost

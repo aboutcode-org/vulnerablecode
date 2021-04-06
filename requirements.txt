@@ -31,7 +31,7 @@ prompt-toolkit==3.0.5
 black==20.8b1
 psycopg2==2.8.4
 ptyprocess==0.6.0
-py==1.8.0
+py==1.10.0
 pycparser==2.20
 pygit2==1.5.0
 Pygments==2.7.4

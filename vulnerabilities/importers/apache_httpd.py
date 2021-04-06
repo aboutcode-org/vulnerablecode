@@ -67,7 +67,7 @@ class ApacheHTTPDDataSource(DataSource):
         description = data["description"]["description_data"]
         summary = next((item["value"] for item in description if item["lang"] == "eng"), "")
         severity = VulnerabilitySeverity(
-            system=scoring_systems["generic_textual"],
+            system=scoring_systems["apache_httpd"],
             value=data["impact"][0]["other"],
         )
         reference = Reference(reference_id=cve, url=self.url + cve + ".json", severities=[severity])

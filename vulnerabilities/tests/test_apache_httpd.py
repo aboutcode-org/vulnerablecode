@@ -80,7 +80,7 @@ class TestApacheHTTPDDataSource(TestCase):
                         url="https://httpd.apache.org/security/json/CVE-1999-1199.json",
                         severities=[
                             VulnerabilitySeverity(
-                                system=scoring_systems["generic_textual"],
+                                system=scoring_systems["apache_httpd"],
                                 value="important",
                             ),
                         ],

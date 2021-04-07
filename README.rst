@@ -1,7 +1,7 @@
 VulnerableCode
 ==============
 
-|Build Status| |License| |Python 3.8| |stability-wip| |Gitter chat|
+|Build Status| |License| |Python 3.8| |stability-wip| |Gitter chat| |Coverage|
 
 
 .. |Build Status| image:: https://github.com/nexB/vulnerablecode/workflows/CI/badge.svg
@@ -13,7 +13,7 @@ VulnerableCode
 .. |stability-wip| image:: https://img.shields.io/badge/stability-work_in_progress-lightgrey.svg
 .. |Gitter chat| image:: https://badges.gitter.im/gitterHQ/gitter.png
    :target: https://gitter.im/aboutcode-org/vulnerablecode
-.. image:: https://coveralls.io/repos/github/anshsrtv/vulnerablecode/badge.svg?branch=main
+.. |Coverage| image:: https://coveralls.io/repos/github/anshsrtv/vulnerablecode/badge.svg?branch=main
    :target: https://coveralls.io/github/anshsrtv/vulnerablecode?branch=main
 
 

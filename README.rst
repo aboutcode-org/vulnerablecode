@@ -13,6 +13,9 @@ VulnerableCode
 .. |stability-wip| image:: https://img.shields.io/badge/stability-work_in_progress-lightgrey.svg
 .. |Gitter chat| image:: https://badges.gitter.im/gitterHQ/gitter.png
    :target: https://gitter.im/aboutcode-org/vulnerablecode
+.. image:: https://coveralls.io/repos/github/anshsrtv/vulnerablecode/badge.svg?branch=main
+   :target: https://coveralls.io/github/anshsrtv/vulnerablecode?branch=main
+
 
 
 VulnerableCode is a free and open database of FOSS software package

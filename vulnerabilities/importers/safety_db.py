@@ -34,7 +34,8 @@ from typing import Set
 from typing import Tuple
 
 import requests
-from dephell_specifier import RangeSpecifier
+from univers.version_specifier import VersionSpecifier
+from univers.versions import PYPIVersion
 from packageurl import PackageURL
 from schema import Or
 from schema import Regex
@@ -101,9 +102,9 @@ class SafetyDbDataSource(DataSource):
         advisories = []
 
         for package_name in self._api_response:
-            if package_name == "$meta":
+            if package_name == "$meta" or package_name == "cumin":
                 # This is the first entry in the data feed. It contains metadata of the feed.
-                # Skip it.
+                # Skip it. The 'cumin' entry is wrong
                 continue
 
             try:
@@ -119,15 +120,15 @@ class SafetyDbDataSource(DataSource):
                 continue
 
             for advisory in self._api_response[package_name]:
-                impacted_purls, resolved_purls = categorize_versions(
-                    package_name, all_package_versions, advisory["specs"]
-                )
-
                 if advisory["cve"]:
                     # Check on advisory["cve"] instead of using `get` because it can have null value
                     cve_ids = re.findall(r"CVE-\d+-\d+", advisory["cve"])
                 else:
-                    cve_ids = [None]
+                    continue
+
+                impacted_purls, resolved_purls = categorize_versions(
+                    package_name, all_package_versions, advisory["specs"]
+                )
 
                 reference = [Reference(reference_id=advisory["id"])]
 
@@ -166,12 +167,20 @@ def categorize_versions(
     :return: impacted, resolved purls
     """
     impacted_versions, impacted_purls = set(), set()
-    ranges = [RangeSpecifier(s) for s in version_specs]
+    # vurl_spec = f"pypi:{ ','.join(version_specs) }"
+    # vurl_spec = VersionSpecifier.from_version_spec_string(vurl_spec)
+    vurl_specs = []
+    for version_spec in version_specs:
+        vurl_specs.append(VersionSpecifier.from_scheme_version_spec_string("pypi", version_spec))
 
     for version in all_versions:
-        if any([version in r for r in ranges]):
-            impacted_versions.add(version)
+        try:
+            version_object = PYPIVersion(version)
+        except:
+            continue
 
+        if any([version_object in vurl_spec for vurl_spec in vurl_specs]):
+            impacted_versions.add(version)
             impacted_purls.add(
                 PackageURL(
                     name=package_name,
@@ -183,5 +192,4 @@ def categorize_versions(
     resolved_purls = set()
     for version in all_versions - impacted_versions:
         resolved_purls.add(PackageURL(name=package_name, type="pypi", version=version))
-
     return impacted_purls, resolved_purls

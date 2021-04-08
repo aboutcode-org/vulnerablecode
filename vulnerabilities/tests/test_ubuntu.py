@@ -6,7 +6,6 @@ import xml.etree.ElementTree as ET
 from collections import OrderedDict
 import asyncio
 
-from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
 
 from vulnerabilities.oval_parser import OvalParser
@@ -90,18 +89,18 @@ class TestUbuntuOvalParser(unittest.TestCase):
         assert pkg_set1 == {"potrace"}
         assert pkg_set2 == {"tor"}
 
-    def test_get_version_ranges_from_state(self):
+    def test_get_version_range_from_state(self):
 
         assert len(self.parsed_oval.oval_document.getStates()) == 2
 
         state_1 = self.parsed_oval.oval_document.getStates()[0]
         state_2 = self.parsed_oval.oval_document.getStates()[1]
 
-        exp_range_1 = RangeSpecifier("<1.14-2")
-        exp_range_2 = RangeSpecifier("<0.2.8.9-1ubuntu1")
+        exp_range_1 = "<1.14-2"
+        exp_range_2 = "<0.2.8.9-1ubuntu1"
 
-        assert self.parsed_oval.get_version_ranges_from_state(state_1) == exp_range_1
-        assert self.parsed_oval.get_version_ranges_from_state(state_2) == exp_range_2
+        assert self.parsed_oval.get_version_range_from_state(state_1) == exp_range_1
+        assert self.parsed_oval.get_version_range_from_state(state_2) == exp_range_2
 
     def test_get_urls_from_definition(self):
 
@@ -131,7 +130,7 @@ class TestUbuntuOvalParser(unittest.TestCase):
                 "test_data": [
                     {
                         "package_list": ["potrace"],
-                        "version_ranges": RangeSpecifier("<1.14-2"),
+                        "version_ranges": "<1.14-2",
                     }
                 ],
                 "description": "Heap-based buffer overflow in the bm_readbody_bmp function in bitmap_io.c in potrace before 1.13 allows remote attackers to have unspecified impact via a crafted BMP image, a different vulnerability than CVE-2016-8698, CVE-2016-8699, CVE-2016-8700, CVE-2016-8701, and CVE-2016-8702.",
@@ -146,7 +145,7 @@ class TestUbuntuOvalParser(unittest.TestCase):
                 "test_data": [
                     {
                         "package_list": ["tor"],
-                        "version_ranges": RangeSpecifier("<0.2.8.9-1ubuntu1"),
+                        "version_ranges": "<0.2.8.9-1ubuntu1",
                     }
                 ],
                 "description": "Tor before 0.2.8.9 and 0.2.9.x before 0.2.9.4-alpha had internal functions that were entitled to expect that buf_t data had NUL termination, but the implementation of or/buffers.c did not ensure that NUL termination was present, which allows remote attackers to cause a denial of service (client, hidden service, relay, or authority crash) via crafted data.",

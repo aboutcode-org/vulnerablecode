@@ -40,9 +40,9 @@ TEST_DATA = os.path.join(BASE_DIR, "test_data/")
 
 MOCK_VERSION_API = NpmVersionAPI(
     cache={
-        "jquery": {"3.4", "3.8"},
-        "kerberos": {"0.5.8", "1.2"},
-        "@hapi/subtext": {"3.7", "4.1.1", "6.1.3", "7.0.0", "7.0.5"},
+        "jquery": {"3.4.0", "3.8.0"},
+        "kerberos": {"0.5.8", "1.2.0"},
+        "@hapi/subtext": {"3.7.0", "4.1.1", "6.1.3", "7.0.0", "7.0.5"},
     }
 )
 
@@ -96,10 +96,10 @@ class NpmImportTest(TestCase):
         assert models.Package.objects.count() == expected_package_count
 
         self.assert_for_package(
-            "jquery", {"3.4"}, {"3.8"}, "1518", vulnerability_id="CVE-2020-11022"
+            "jquery", {"3.4.0"}, {"3.8.0"}, "1518", vulnerability_id="CVE-2020-11022"
         )  # nopep8
-        self.assert_for_package("kerberos", {"0.5.8"}, {"1.2"}, "1514")
-        self.assert_for_package("subtext", {"4.1.1", "7.0.0"}, {"3.7", "6.1.3", "7.0.5"}, "1476")
+        self.assert_for_package("kerberos", {"0.5.8"}, {"1.2.0"}, "1514")
+        self.assert_for_package("subtext", {"4.1.1", "7.0.0"}, {"3.7.0", "6.1.3", "7.0.5"}, "1476")
 
     def assert_for_package(
         self,
@@ -130,7 +130,7 @@ class NpmImportTest(TestCase):
 
 
 def test_categorize_versions_simple_ranges():
-    all_versions = {"3.4", "3.8"}
+    all_versions = {"3.4.0", "3.8.0"}
     impacted_ranges = "<3.5.0"
     resolved_ranges = ">=3.5.0"
 
@@ -138,12 +138,12 @@ def test_categorize_versions_simple_ranges():
         all_versions, impacted_ranges, resolved_ranges
     )
 
-    assert impacted_versions == {"3.4"}
-    assert resolved_versions == {"3.8"}
+    assert impacted_versions == {"3.4.0"}
+    assert resolved_versions == {"3.8.0"}
 
 
 def test_categorize_versions_complex_ranges():
-    all_versions = {"3.7", "4.1.1", "6.1.3", "7.0.0", "7.0.5"}
+    all_versions = {"3.7.0", "4.1.1", "6.1.3", "7.0.0", "7.0.5"}
     impacted_ranges = ">=4.1.0 <6.1.3 || >= 7.0.0 <7.0.3"
     resolved_ranges = ">=6.1.3 <7.0.0 || >=7.0.3"
 
@@ -152,4 +152,4 @@ def test_categorize_versions_complex_ranges():
     )
 
     assert impacted_versions == {"4.1.1", "7.0.0"}
-    assert resolved_versions == {"3.7", "6.1.3", "7.0.5"}
+    assert resolved_versions == {"3.7.0", "6.1.3", "7.0.5"}

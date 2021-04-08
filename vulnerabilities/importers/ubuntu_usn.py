@@ -76,7 +76,7 @@ class UbuntuUSNDataSource(DataSource):
                 # {'cves': ['python-pgsql vulnerabilities', 'CVE-2006-2313', 'CVE-2006-2314']}
                 # This `if` filters entries like 'python-pgsql vulnerabilities'
                 if not is_cve(cve):
-                    continue
+                    cve = ""
 
                 advisories.append(
                     Advisory(

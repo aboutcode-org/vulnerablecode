@@ -116,7 +116,7 @@ class ApacheTomcatDataSource(DataSource):
                 advisories.append(
                     Advisory(
                         summary="",
-                        patched_package_by_vulnerable_packages=nearest_patched_package(
+                        affected_packages_with_patched_package=nearest_patched_package(
                             affected_packages, fixed_package
                         ),
                         vulnerability_id=cve_id,

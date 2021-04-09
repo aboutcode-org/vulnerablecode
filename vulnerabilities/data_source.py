@@ -47,6 +47,7 @@ from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.helpers import is_cve
 from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
 
 logger = logging.getLogger(__name__)
 
@@ -87,9 +88,9 @@ class Advisory:
 
     summary: str
     vulnerability_id: Optional[str] = None
-    patched_package_by_vulnerable_packages: Mapping[PackageURL, PackageURL] = dataclasses.field(
-        default_factory=dict
-    )
+    affected_packages_with_patched_package: List[
+        AffectedPackageWithPatchedPackage
+    ] = dataclasses.field(default_factory=list)
     references: List[Reference] = dataclasses.field(default_factory=list)
 
     def __post_init__(self):
@@ -106,7 +107,9 @@ class Advisory:
         return Advisory(
             summary=self.summary,
             vulnerability_id=self.vulnerability_id,
-            patched_package_by_vulnerable_packages=self.patched_package_by_vulnerable_packages,
+            affected_packages_with_patched_package=sorted(
+                self.affected_packages_with_patched_package
+            ),
             references=references,
         )
 
@@ -570,7 +573,7 @@ class OvalDataSource(DataSource):
             all_adv.append(
                 Advisory(
                     summary=description,
-                    patched_package_by_vulnerable_packages=nearest_patched_package(
+                    affected_packages_with_patched_package=nearest_patched_package(
                         affected_purls, safe_purls
                     ),
                     vulnerability_id=vuln_id,

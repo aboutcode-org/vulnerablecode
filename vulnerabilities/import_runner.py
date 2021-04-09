@@ -136,7 +136,7 @@ def process_advisories(data_source: DataSource) -> None:
                 for (
                     vulnerable_package,
                     patched_package,
-                ) in advisory.patched_package_by_vulnerable_packages.items():
+                ) in advisory.affected_packages_with_patched_package.items():
                     vulnerable_package, _ = _get_or_create_package(vulnerable_package)
                     if patched_package:
                         patched_package, _ = _get_or_create_package(patched_package)

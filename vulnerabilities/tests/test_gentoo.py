@@ -31,6 +31,7 @@ from packageurl import PackageURL
 from vulnerabilities.importers.gentoo import GentooDataSource
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
+from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -99,23 +100,22 @@ class TestGentooDataSource(unittest.TestCase):
                     "Subversion may allow remote\n    "
                     "attackers to execute arbitrary code.\n  "
                 ),
-                patched_package_by_vulnerable_packages={
-                    PackageURL(
-                        type="ebuild",
-                        namespace="dev-vcs",
-                        name="subversion",
-                        version="0.1.1",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    ): PackageURL(
-                        type="ebuild",
-                        namespace="dev-vcs",
-                        name="subversion",
-                        version="1.9.7",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
+                affected_packages_with_patched_package=[
+                    AffectedPackageWithPatchedPackage(
+                        vulnerable_package=PackageURL(
+                            type="ebuild",
+                            namespace="dev-vcs",
+                            name="subversion",
+                            version="0.1.1",
+                        ),
+                        patched_package=PackageURL(
+                            type="ebuild",
+                            namespace="dev-vcs",
+                            name="subversion",
+                            version="1.9.7",
+                        ),
                     )
-                },
+                ],
                 references=[
                     Reference(
                         url="https://security.gentoo.org/glsa/201709-09",

@@ -21,16 +21,29 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import bisect
+import dataclasses
 import json
 import re
+from typing import Optional
 
 import requests
 import toml
 import urllib3
 import yaml
+from packageurl import PackageURL
 from univers.versions import version_class_by_package_type
 
 # TODO add logging here
+
+cve_regex = re.compile(r"CVE-\d{4}-\d{4,7}", re.IGNORECASE)
+is_cve = cve_regex.match
+find_all_cve = cve_regex.findall
+
+
+@dataclasses.dataclass(order=True, frozen=True)
+class AffectedPackageWithPatchedPackage:
+    vulnerable_package: PackageURL
+    patched_package: Optional[PackageURL] = None
 
 
 def load_yaml(path):
@@ -81,11 +94,6 @@ def create_etag(data_src, url, etag_key):
     return True
 
 
-cve_regex = re.compile(r"CVE-\d{4}-\d{4,7}", re.IGNORECASE)
-is_cve = cve_regex.match
-find_all_cve = cve_regex.findall
-
-
 def contains_alpha(string):
     """
     Return True if the input 'string' contains any alphabet
@@ -113,9 +121,8 @@ def requests_with_5xx_retry(max_retries=5, backoff_factor=0.5):
 
 
 def nearest_patched_package(vulnerable_packages, resolved_packages):
-
     if not vulnerable_packages:
-        return {}
+        return []
 
     def create_package_by_version_obj_mapping(packages, overwrite=False):
         # overwrite=True, returns version->PackageURL mapping.
@@ -149,16 +156,17 @@ def nearest_patched_package(vulnerable_packages, resolved_packages):
         vulnerable_versions, resolved_versions
     )
 
-    patched_package_by_vulnerable_packages = {}
+    affected_packages_with_patched_package = []
     for vulnerable_version, patched_version in patched_version_by_vulnerable_versions.items():
         for vulnerable_package in vulnerable_packages_by_version_obj[vulnerable_version]:
-            patched_package_by_vulnerable_packages[vulnerable_package] = None
+            affected_packages_with_patched_package.append(
+                AffectedPackageWithPatchedPackage(
+                    vulnerable_package=vulnerable_package,
+                    patched_package=resolved_package_by_version_obj.get(patched_version),
+                )
+            )
 
-            if patched_version:
-                patched_package = resolved_package_by_version_obj[patched_version]
-                patched_package_by_vulnerable_packages[vulnerable_package] = patched_package
-
-    return patched_package_by_vulnerable_packages
+    return affected_packages_with_patched_package
 
 
 def nearest_patched_versions(vulnerable_versions, resolved_versions):

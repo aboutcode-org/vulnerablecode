@@ -29,6 +29,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
+from vulnerabilities.helpers import nearest_patched_package
 
 
 class GentooDataSource(GitDataSource):
@@ -71,6 +72,8 @@ class GentooDataSource(GitDataSource):
                     xml_data["affected_purls"],
                     xml_data["unaffected_purls"],
                 ) = self.affected_and_safe_purls(child)
+                xml_data["unaffected_purls"] = list(xml_data["unaffected_purls"])
+                xml_data["affected_purls"] = list(xml_data["affected_purls"])
 
         advisory_list = []
         # It is very inefficient, to create new Advisory for each CVE
@@ -79,8 +82,9 @@ class GentooDataSource(GitDataSource):
             advisory = Advisory(
                 vulnerability_id=cve,
                 summary=xml_data["description"],
-                impacted_package_urls=xml_data["affected_purls"],
-                resolved_package_urls=xml_data["unaffected_purls"],
+                patched_package_by_vulnerable_packages=nearest_patched_package(
+                    xml_data["affected_purls"], xml_data["unaffected_purls"]
+                ),
                 references=vuln_reference,
             )
             advisory_list.append(advisory)

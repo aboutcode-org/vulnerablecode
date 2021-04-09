@@ -32,6 +32,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.helpers import nearest_patched_package
 
 GH_PAGE_URL = "https://raw.githubusercontent.com/apache/kafka-site/asf-site/cve-list.html"
 ASF_PAGE_URL = "https://kafka.apache.org/cve-list"
@@ -95,8 +96,9 @@ class ApacheKafkaDataSource(DataSource):
                 Advisory(
                     vulnerability_id=cve_id,
                     summary=cve_description_paragraph.text,
-                    impacted_package_urls=affected_packages,
-                    resolved_package_urls=fixed_packages,
+                    patched_package_by_vulnerable_packages=nearest_patched_package(
+                        affected_packages, fixed_packages
+                    ),
                     references=[
                         Reference(url=ASF_PAGE_URL),
                         Reference(

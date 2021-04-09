@@ -36,6 +36,7 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
 from vulnerabilities.helpers import create_etag
+from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.package_managers import MavenVersionAPI
 
 
@@ -115,8 +116,9 @@ class ApacheTomcatDataSource(DataSource):
                 advisories.append(
                     Advisory(
                         summary="",
-                        impacted_package_urls=affected_packages,
-                        resolved_package_urls=fixed_package,
+                        patched_package_by_vulnerable_packages=nearest_patched_package(
+                            affected_packages, fixed_package
+                        ),
                         vulnerability_id=cve_id,
                         references=references,
                     )

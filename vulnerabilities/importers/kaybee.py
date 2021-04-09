@@ -26,6 +26,7 @@ from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.helpers import load_yaml
+from vulnerabilities.helpers import nearest_patched_package
 
 
 class KaybeeDataSource(GitDataSource):
@@ -68,7 +69,8 @@ def yaml_file_to_advisory(yaml_path):
     return Advisory(
         vulnerability_id=vuln_id,
         summary=summary,
-        impacted_package_urls=impacted_packages,
-        resolved_package_urls=resolved_packages,
+        affected_packages_with_patched_package=nearest_patched_package(
+            impacted_packages, resolved_packages
+        ),
         references=references,
     )

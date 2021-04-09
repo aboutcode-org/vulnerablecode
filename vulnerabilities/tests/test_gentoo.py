@@ -99,7 +99,7 @@ class TestGentooDataSource(unittest.TestCase):
                     "Subversion may allow remote\n    "
                     "attackers to execute arbitrary code.\n  "
                 ),
-                impacted_package_urls={
+                patched_package_by_vulnerable_packages={
                     PackageURL(
                         type="ebuild",
                         namespace="dev-vcs",
@@ -107,10 +107,7 @@ class TestGentooDataSource(unittest.TestCase):
                         version="0.1.1",
                         qualifiers=OrderedDict(),
                         subpath=None,
-                    )
-                },
-                resolved_package_urls={
-                    PackageURL(
+                    ): PackageURL(
                         type="ebuild",
                         namespace="dev-vcs",
                         name="subversion",

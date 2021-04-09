@@ -42,7 +42,7 @@ from vulnerabilities.package_managers import ComposerVersionAPI
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.importers.github import GitHubTokenError
 from vulnerabilities.importers.github import query
-
+from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")
@@ -63,13 +63,13 @@ class TestGitHubAPIDataSource(TestCase):
 
     def test_categorize_versions(self):
         eg_version_range = ">= 3.3.0, < 3.3.5"
-        eg_versions = {"3.3.6", "3.3.0", "3.3.4", "3.2.0"}
+        eg_versions = ["3.3.6", "3.3.0", "3.3.4", "3.2.0"]
 
         aff_vers, safe_vers = self.data_src.categorize_versions(
             "pypi", eg_version_range, eg_versions
         )
-        exp_safe_vers = {"3.3.6", "3.2.0"}
-        exp_aff_vers = {"3.3.0", "3.3.4"}
+        exp_safe_vers = ["3.3.6", "3.2.0"]
+        exp_aff_vers = ["3.3.0", "3.3.4"]
 
         assert aff_vers == exp_aff_vers
         assert safe_vers == exp_safe_vers
@@ -168,25 +168,6 @@ class TestGitHubAPIDataSource(TestCase):
         expected_advisories = [
             Advisory(
                 summary="Denial of Service in Tomcat",
-                impacted_package_urls=set(),
-                resolved_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="9.0.2",
-                        qualifiers={},
-                        subpath=None,
-                    ),
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="1.2.0",
-                        qualifiers={},
-                        subpath=None,
-                    ),
-                },
                 references=[
                     Reference(
                         reference_id="GHSA-qcxh-w3j9-58qr",
@@ -208,26 +189,18 @@ class TestGitHubAPIDataSource(TestCase):
             ),
             Advisory(
                 summary="Denial of Service in Tomcat",
-                impacted_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="9.0.2",
-                        qualifiers={},
-                        subpath=None,
+                affected_packages_with_patched_package=[
+                    AffectedPackageWithPatchedPackage(
+                        vulnerable_package=PackageURL(
+                            type="maven",
+                            namespace="org.apache.tomcat.embed",
+                            name="tomcat-embed-core",
+                            version="9.0.2",
+                            qualifiers={},
+                            subpath=None,
+                        )
                     )
-                },
-                resolved_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="1.2.0",
-                        qualifiers={},
-                        subpath=None,
-                    )
-                },
+                ],
                 references=[
                     Reference(
                         reference_id="GHSA-qcxh-w3j9-58qr",
@@ -249,25 +222,6 @@ class TestGitHubAPIDataSource(TestCase):
             ),
             Advisory(
                 summary="Improper Input Validation in Tomcat",
-                impacted_package_urls=set(),
-                resolved_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="9.0.2",
-                        qualifiers={},
-                        subpath=None,
-                    ),
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="1.2.0",
-                        qualifiers={},
-                        subpath=None,
-                    ),
-                },
                 references=[
                     Reference(
                         reference_id="GHSA-c9hw-wf7x-jp9j",
@@ -289,25 +243,6 @@ class TestGitHubAPIDataSource(TestCase):
             ),
             Advisory(
                 summary="Improper Input Validation in Tomcat",
-                impacted_package_urls=set(),
-                resolved_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="9.0.2",
-                        qualifiers={},
-                        subpath=None,
-                    ),
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="1.2.0",
-                        qualifiers={},
-                        subpath=None,
-                    ),
-                },
                 references=[
                     Reference(
                         reference_id="GHSA-c9hw-wf7x-jp9j",
@@ -329,26 +264,16 @@ class TestGitHubAPIDataSource(TestCase):
             ),
             Advisory(
                 summary="Improper Input Validation in Tomcat",
-                impacted_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="9.0.2",
-                        qualifiers={},
-                        subpath=None,
+                affected_packages_with_patched_package=[
+                    AffectedPackageWithPatchedPackage(
+                        vulnerable_package=PackageURL(
+                            type="maven",
+                            namespace="org.apache.tomcat.embed",
+                            name="tomcat-embed-core",
+                            version="9.0.2",
+                        )
                     )
-                },
-                resolved_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="1.2.0",
-                        qualifiers={},
-                        subpath=None,
-                    )
-                },
+                ],
                 references=[
                     Reference(
                         reference_id="GHSA-c9hw-wf7x-jp9j",

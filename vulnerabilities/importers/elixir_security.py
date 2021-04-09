@@ -33,6 +33,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import HexVersionAPI
 from vulnerabilities.helpers import load_yaml
+from vulnerabilities.helpers import nearest_patched_package
 
 
 class ElixirSecurityDataSource(GitDataSource):
@@ -123,13 +124,13 @@ class ElixirSecurityDataSource(GitDataSource):
         safe_purls = []
         vuln_purls = []
 
-        safe_purls = {
+        safe_purls = [
             PackageURL(name=pkg_name, type="hex", version=version) for version in safe_pkg_versions
-        }
+        ]
 
-        vuln_purls = {
+        vuln_purls = [
             PackageURL(name=pkg_name, type="hex", version=version) for version in vuln_pkg_versions
-        }
+        ]
 
         references = [
             Reference(
@@ -142,8 +143,7 @@ class ElixirSecurityDataSource(GitDataSource):
 
         return Advisory(
             summary=yaml_file["description"],
-            impacted_package_urls=vuln_purls,
-            resolved_package_urls=safe_purls,
+            patched_package_by_vulnerable_packages=nearest_patched_package(vuln_purls, safe_purls),
             vulnerability_id=cve_id,
             references=references,
         )

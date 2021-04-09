@@ -22,7 +22,6 @@
 
 import asyncio
 import dataclasses
-import json
 
 import requests
 from packageurl import PackageURL
@@ -35,7 +34,7 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
-from vulnerabilities.helpers import create_etag
+from vulnerabilities.helpers import nearest_patched_package
 
 
 @dataclasses.dataclass
@@ -59,7 +58,6 @@ class NginxDataSource(DataSource):
 
     def updated_advisories(self):
         advisories = []
-        # if create_etag(data_src=self, url=self.url, etag_key="ETag"):
         self.set_api()
         data = requests.get(self.url).content
         advisories.extend(self.to_advisories(data))
@@ -112,8 +110,9 @@ class NginxDataSource(DataSource):
                 Advisory(
                     vulnerability_id=cve_id,
                     summary=summary,
-                    impacted_package_urls=vulnerable_packages,
-                    resolved_package_urls=fixed_packages,
+                    affected_packages_with_patched_package=nearest_patched_package(
+                        vulnerable_packages, fixed_packages
+                    ),
                 )
             )
 
@@ -139,9 +138,9 @@ class NginxDataSource(DataSource):
 
         valid_versions = find_valid_versions(self.version_api.get("nginx/nginx"), version_ranges)
 
-        return {
+        return [
             PackageURL(type="generic", name="nginx", version=version) for version in valid_versions
-        }
+        ]
 
     def extract_vuln_pkgs(self, vuln_info):
         vuln_status, version_infos = vuln_info.split(": ")
@@ -177,10 +176,10 @@ class NginxDataSource(DataSource):
         if windows_only:
             qualifiers["os"] = "windows"
 
-        return {
+        return [
             PackageURL(type="generic", name="nginx", version=version, qualifiers=qualifiers)
             for version in valid_versions
-        }
+        ]
 
 
 def find_valid_versions(versions, version_ranges):

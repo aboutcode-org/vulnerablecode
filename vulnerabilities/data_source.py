@@ -46,6 +46,7 @@ from univers.versions import version_class_by_package_type
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.helpers import is_cve
+from vulnerabilities.helpers import nearest_patched_package
 
 logger = logging.getLogger(__name__)
 
@@ -86,8 +87,9 @@ class Advisory:
 
     summary: str
     vulnerability_id: Optional[str] = None
-    impacted_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
-    resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
+    patched_package_by_vulnerable_packages: Mapping[PackageURL, PackageURL] = dataclasses.field(
+        default_factory=dict
+    )
     references: List[Reference] = dataclasses.field(default_factory=list)
 
     def __post_init__(self):
@@ -95,8 +97,6 @@ class Advisory:
             raise ValueError("CVE expected, found: {}".format(self.vulnerability_id))
 
     def normalized(self):
-        impacted_package_urls = {package_url for package_url in self.impacted_package_urls}
-        resolved_package_urls = {package_url for package_url in self.resolved_package_urls}
         references = sorted(
             self.references, key=lambda reference: (reference.reference_id, reference.url)
         )
@@ -106,8 +106,7 @@ class Advisory:
         return Advisory(
             summary=self.summary,
             vulnerability_id=self.vulnerability_id,
-            impacted_package_urls=impacted_package_urls,
-            resolved_package_urls=resolved_package_urls,
+            patched_package_by_vulnerable_packages=self.patched_package_by_vulnerable_packages,
             references=references,
         )
 
@@ -551,35 +550,29 @@ class OvalDataSource(DataSource):
                     # FIXME: we should not drop data this way
                     # This filter is for filtering out long versions.
                     # 50 is limit because that's what db permits atm.
-                    all_versions = set(filter(lambda x: len(x) < 50, all_versions))
+                    all_versions = [version for version in all_versions if len(version) < 50]
                     if not all_versions:
                         continue
-                    affected_versions = set(
-                        filter(lambda x: version_class(x) in affected_version_range, all_versions)
-                    )
-                    safe_versions = all_versions - affected_versions
 
-                    for version in affected_versions:
+                    affected_purls = []
+                    safe_purls = []
+                    for version in all_versions:
                         purl = self.create_purl(
                             pkg_name=package_name,
                             pkg_version=version,
                             pkg_data=pkg_metadata,
                         )
-                        affected_purls.add(purl)
-
-                    for version in safe_versions:
-                        purl = self.create_purl(
-                            pkg_name=package_name,
-                            pkg_version=version,
-                            pkg_data=pkg_metadata,
-                        )
-                        safe_purls.add(purl)
+                        if version in affected_version_range:
+                            affected_purls.append(purl)
+                        else:
+                            safe_purls.append(purl)
 
             all_adv.append(
                 Advisory(
                     summary=description,
-                    impacted_package_urls=affected_purls,
-                    resolved_package_urls=safe_purls,
+                    patched_package_by_vulnerable_packages=nearest_patched_package(
+                        affected_purls, safe_purls
+                    ),
                     vulnerability_id=vuln_id,
                     references=references,
                 )

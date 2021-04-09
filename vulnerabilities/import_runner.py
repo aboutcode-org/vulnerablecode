@@ -133,39 +133,19 @@ def process_advisories(data_source: DataSource) -> None:
                             defaults={"value": str(score.value)},
                         )
 
-                for purl in chain(advisory.impacted_package_urls, advisory.resolved_package_urls):
-                    pkg, pkg_created = _get_or_create_package(purl)
-                    is_vulnerable = purl in advisory.impacted_package_urls
-                    pkg_vuln_ref = PackageRelatedVulnerabilityInserter(
-                        vulnerability=vuln, is_vulnerable=is_vulnerable, package=pkg
+                for (
+                    vulnerable_package,
+                    patched_package,
+                ) in advisory.patched_package_by_vulnerable_packages.items():
+                    vulnerable_package, _ = _get_or_create_package(vulnerable_package)
+                    if patched_package:
+                        patched_package, _ = _get_or_create_package(patched_package)
+
+                    models.PackageRelatedVulnerability.objects.get_or_create(
+                        vulnerability=vuln,
+                        patched_package=patched_package,
+                        package=vulnerable_package,
                     )
-
-                    if vuln_created or pkg_created:
-                        bulk_create_vuln_pkg_refs.add(pkg_vuln_ref)
-                        # A vulnerability-package relationship does not exist already if either the
-                        # vulnerability or the package is just created.
-
-                    else:
-                        # insert only if it there is no existing vulnerability-package relationship.
-                        existing_ref = get_vuln_pkg_refs(vuln, pkg)
-                        if not existing_ref:
-                            bulk_create_vuln_pkg_refs.add(pkg_vuln_ref)
-                            # A vulnerability-package relationship does not exist already
-                            # if either the vulnerability or the package is just created.
-
-                        else:
-                            # insert only if it there is no existing vulnerability-package relationship.  # nopep8
-                            existing_ref = get_vuln_pkg_refs(vuln, pkg)
-                            if not existing_ref:
-                                bulk_create_vuln_pkg_refs.add(pkg_vuln_ref)
-
-                            else:
-                                # This handles conflicts between existing data and obtained data
-                                if existing_ref[0].is_vulnerable != pkg_vuln_ref.is_vulnerable:
-                                    handle_conflicts(
-                                        [existing_ref[0], pkg_vuln_ref.to_model_object()]
-                                    )
-                                    existing_ref.delete()
 
             except Exception:
                 # TODO: store error but continue
@@ -174,13 +154,13 @@ def process_advisories(data_source: DataSource) -> None:
                 )
 
     # find_conflicting_relations handles in-memory conflicts
-    conflicts = find_conflicting_relations(bulk_create_vuln_pkg_refs)
+    # conflicts = find_conflicting_relations(bulk_create_vuln_pkg_refs)
 
     models.PackageRelatedVulnerability.objects.bulk_create(
         [i.to_model_object() for i in bulk_create_vuln_pkg_refs if i not in conflicts]
     )
 
-    handle_conflicts([i.to_model_object() for i in conflicts])
+    # handle_conflicts([i.to_model_object() for i in conflicts])
 
 
 def find_conflicting_relations(

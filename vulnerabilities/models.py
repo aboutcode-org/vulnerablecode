@@ -179,7 +179,6 @@ class PackageRelatedVulnerability(models.Model):
         Package, on_delete=models.CASCADE, related_name="vulnerable_package"
     )
     vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
-    is_vulnerable = models.BooleanField()
     patched_package = models.ForeignKey(
         Package, on_delete=models.CASCADE, null=True, blank=True, related_name="patched_package"
     )

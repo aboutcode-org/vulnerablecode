@@ -31,6 +31,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory, GitDataSource, Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.helpers import nearest_patched_package
 
 is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match
 
@@ -161,34 +162,35 @@ class IstioDataSource(GitDataSource):
                 data["release_ranges"]
             )
 
-            safe_purls_golang = {
+            safe_purls_golang = [
                 PackageURL(type="golang", name="istio", version=version)
                 for version in safe_pkg_versions
-            }
+            ]
 
-            safe_purls_github = {
+            safe_purls_github = [
                 PackageURL(type="github", name="istio", version=version)
                 for version in safe_pkg_versions
-            }
-            safe_purls = safe_purls_github.union(safe_purls_golang)
+            ]
+            safe_purls = safe_purls_github + safe_purls_golang
 
-            vuln_purls_golang = {
+            vuln_purls_golang = [
                 PackageURL(type="golang", name="istio", version=version)
                 for version in vuln_pkg_versions
-            }
+            ]
 
-            vuln_purls_github = {
+            vuln_purls_github = [
                 PackageURL(type="github", name="istio", version=version)
                 for version in vuln_pkg_versions
-            }
-            vuln_purls = vuln_purls_github.union(vuln_purls_golang)
+            ]
+            vuln_purls = vuln_purls_github + vuln_purls_golang
 
             advisories.append(
                 Advisory(
-                    summary=data["description"],
-                    impacted_package_urls=vuln_purls,
-                    resolved_package_urls=safe_purls,
                     vulnerability_id=cve_id,
+                    summary=data["description"],
+                    affected_packages_with_patched_package=nearest_patched_package(
+                        vuln_purls, safe_purls
+                    ),
                 )
             )
 

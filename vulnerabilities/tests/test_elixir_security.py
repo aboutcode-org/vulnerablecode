@@ -64,60 +64,53 @@ class TestElixirSecurityDataSource(TestCase):
         path = os.path.join(BASE_DIR, "test_data/elixir_security/test_file.yml")
         expected_advisory = Advisory(
             summary=('The Coherence library has "Mass Assignment"-like vulnerabilities.\n'),
-            impacted_package_urls={
-                PackageURL(
+            patched_package_by_vulnerable_packages={
+                PackageURL(type="hex", name="coherence", version="0.5.1",): PackageURL(
                     type="hex",
                     name="coherence",
-                    version="0.5.1",
+                    version="0.5.2",
                 ),
-                PackageURL(
+                PackageURL(type="hex", name="coherence", version="0.5.0",): PackageURL(
                     type="hex",
                     name="coherence",
-                    version="0.5.0",
+                    version="0.5.2",
                 ),
-                PackageURL(
+                PackageURL(type="hex", name="coherence", version="0.4.0",): PackageURL(
                     type="hex",
                     name="coherence",
-                    version="0.4.0",
+                    version="0.5.2",
                 ),
-                PackageURL(
+                PackageURL(type="hex", name="coherence", version="0.3.1",): PackageURL(
                     type="hex",
                     name="coherence",
-                    version="0.3.1",
+                    version="0.5.2",
                 ),
-                PackageURL(
+                PackageURL(type="hex", name="coherence", version="0.3.0",): PackageURL(
                     type="hex",
                     name="coherence",
-                    version="0.3.0",
+                    version="0.5.2",
                 ),
-                PackageURL(
+                PackageURL(type="hex", name="coherence", version="0.2.0",): PackageURL(
                     type="hex",
                     name="coherence",
-                    version="0.2.0",
+                    version="0.5.2",
                 ),
-                PackageURL(
+                PackageURL(type="hex", name="coherence", version="0.1.3",): PackageURL(
                     type="hex",
                     name="coherence",
-                    version="0.1.3",
+                    version="0.5.2",
                 ),
-                PackageURL(
+                PackageURL(type="hex", name="coherence", version="0.1.2",): PackageURL(
                     type="hex",
                     name="coherence",
-                    version="0.1.2",
+                    version="0.5.2",
                 ),
-                PackageURL(
+                PackageURL(type="hex", name="coherence", version="0.1.1",): PackageURL(
                     type="hex",
                     name="coherence",
-                    version="0.1.1",
+                    version="0.5.2",
                 ),
-                PackageURL(
-                    type="hex",
-                    name="coherence",
-                    version="0.1.0",
-                ),
-            },
-            resolved_package_urls={
-                PackageURL(
+                PackageURL(type="hex", name="coherence", version="0.1.0",): PackageURL(
                     type="hex",
                     name="coherence",
                     version="0.5.2",

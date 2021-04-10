@@ -33,6 +33,7 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.helpers import create_etag
+from vulnerabilities.helpers import nearest_patched_package
 
 
 @dataclasses.dataclass
@@ -101,20 +102,21 @@ class OpenSSLDataSource(DataSource):
                         # Description
                         summary = re.sub(r"\s+", " ", info.text).strip()
 
-                safe_purls = {
+                safe_purls = [
                     PackageURL(name=pkg_name, type=pkg_type, version=version)
                     for version in safe_pkg_versions
-                }
-                vuln_purls = {
+                ]
+                vuln_purls = [
                     PackageURL(name=pkg_name, type=pkg_type, version=version)
                     for version in vuln_pkg_versions
-                }
+                ]
 
                 advisory = Advisory(
                     vulnerability_id=cve_id,
                     summary=summary,
-                    impacted_package_urls=vuln_purls,
-                    resolved_package_urls=safe_purls,
+                    affected_packages_with_patched_package=nearest_patched_package(
+                        vuln_purls, safe_purls
+                    ),
                     references=ref_urls,
                 )
                 advisories.append(advisory)

@@ -33,7 +33,7 @@ from vulnerabilities.data_source import GitDataSourceConfiguration
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import RubyVersionAPI
-
+from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "ruby")
@@ -60,81 +60,74 @@ class RubyDataSourceTest(TestCase):
     def test_process_file(self, mock_write):
         expected_advisories = [
             Advisory(
-                summary=(
-                    "An issue was discovered in"
-                    " rack-protection/lib/rack/protection/path_traversal.rb\n"
-                    "in Sinatra 2.x before 2.0.1 on Windows."
-                    " Path traversal is possible via backslash\ncharacters.\n"
-                ),
-                impacted_package_urls={
-                    PackageURL(
-                        type="gem",
-                        namespace=None,
-                        name="sinatra",
-                        version="1.8.0",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    )
-                },
-                resolved_package_urls={
-                    PackageURL(
-                        type="gem",
-                        namespace=None,
-                        name="sinatra",
-                        version="1.0.0",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    ),
-                    PackageURL(
-                        type="gem",
-                        namespace=None,
-                        name="sinatra",
-                        version="2.0.3",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    ),
-                },
-                references=[Reference(url="https://github.com/sinatra/sinatra/pull/1379")],
+                summary="An issue was discovered in rack-protection/lib/rack/protection/path_traversal.rb\nin Sinatra 2.x before 2.0.1 on Windows. Path traversal is possible via backslash\ncharacters.\n",
                 vulnerability_id="CVE-2018-7212",
+                affected_packages_with_patched_package=[
+                    AffectedPackageWithPatchedPackage(
+                        vulnerable_package=PackageURL(
+                            type="gem",
+                            namespace=None,
+                            name="sinatra",
+                            version="1.8.0",
+                        ),
+                        patched_package=PackageURL(
+                            type="gem",
+                            namespace=None,
+                            name="sinatra",
+                            version="2.0.3",
+                        ),
+                    )
+                ],
+                references=[
+                    Reference(
+                        reference_id="",
+                        url="https://github.com/sinatra/sinatra/pull/1379",
+                        severities=[],
+                    )
+                ],
             ),
             Advisory(
-                summary=(
-                    "Sinatra before 2.0.2 has XSS via the 400 Bad Request "
-                    "page that occurs upon a params parser exception.\n"
-                ),
-                impacted_package_urls={
-                    PackageURL(
-                        type="gem",
-                        namespace=None,
-                        name="sinatra",
-                        version="1.0.0",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    ),
-                    PackageURL(
-                        type="gem",
-                        namespace=None,
-                        name="sinatra",
-                        version="1.8.0",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    ),
-                },
-                resolved_package_urls={
-                    PackageURL(
-                        type="gem",
-                        namespace=None,
-                        name="sinatra",
-                        version="2.0.3",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    )
-                },
-                references=[Reference(url="https://github.com/sinatra/sinatra/issues/1428")],
+                summary="Sinatra before 2.0.2 has XSS via the 400 Bad Request page that occurs upon a params parser exception.\n",
                 vulnerability_id="CVE-2018-11627",
+                affected_packages_with_patched_package=[
+                    AffectedPackageWithPatchedPackage(
+                        vulnerable_package=PackageURL(
+                            type="gem",
+                            namespace=None,
+                            name="sinatra",
+                            version="1.0.0",
+                        ),
+                        patched_package=PackageURL(
+                            type="gem",
+                            namespace=None,
+                            name="sinatra",
+                            version="2.0.3",
+                        ),
+                    ),
+                    AffectedPackageWithPatchedPackage(
+                        vulnerable_package=PackageURL(
+                            type="gem",
+                            namespace=None,
+                            name="sinatra",
+                            version="1.8.0",
+                        ),
+                        patched_package=PackageURL(
+                            type="gem",
+                            namespace=None,
+                            name="sinatra",
+                            version="2.0.3",
+                        ),
+                    ),
+                ],
+                references=[
+                    Reference(
+                        reference_id="",
+                        url="https://github.com/sinatra/sinatra/issues/1428",
+                        severities=[],
+                    )
+                ],
             ),
         ]
-
         found_advisories = []
         for p in MOCK_ADDED_FILES:
             advisory = self.data_src.process_file(p)
@@ -147,11 +140,11 @@ class RubyDataSourceTest(TestCase):
 
     def test_categorize_versions(self):
 
-        all_versions = {"1.0.0", "1.2.0", "9.0.2", "0.2.3"}
+        all_versions = ["1.0.0", "1.2.0", "9.0.2", "0.2.3"]
         safe_ver_ranges = ["==1.0.0", ">1.2.0"]
 
-        exp_safe_vers = {"1.0.0", "9.0.2"}
-        exp_aff_vers = {"1.2.0", "0.2.3"}
+        exp_safe_vers = ["1.0.0", "9.0.2"]
+        exp_aff_vers = ["1.2.0", "0.2.3"]
 
         safe_vers, aff_vers = self.data_src.categorize_versions(all_versions, safe_ver_ranges)
         assert exp_aff_vers == aff_vers

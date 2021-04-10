@@ -33,6 +33,7 @@ from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import RubyVersionAPI
 from vulnerabilities.helpers import load_yaml
+from vulnerabilities.helpers import nearest_patched_package
 
 
 class RubyDataSource(GitDataSource):
@@ -102,23 +103,23 @@ class RubyDataSource(GitDataSource):
         all_vers = self.pkg_manager_api.get(package_name)
         safe_versions, affected_versions = self.categorize_versions(all_vers, safe_version_ranges)
 
-        impacted_purls = {
+        impacted_purls = [
             PackageURL(
                 name=package_name,
                 type="gem",
                 version=version,
             )
             for version in affected_versions
-        }
+        ]
 
-        resolved_purls = {
+        resolved_purls = [
             PackageURL(
                 name=package_name,
                 type="gem",
                 version=version,
             )
             for version in safe_versions
-        }
+        ]
 
         references = []
         if record.get("url"):
@@ -126,8 +127,9 @@ class RubyDataSource(GitDataSource):
 
         return Advisory(
             summary=record.get("description", ""),
-            impacted_package_urls=impacted_purls,
-            resolved_package_urls=resolved_purls,
+            affected_packages_with_patched_package=nearest_patched_package(
+                impacted_purls, resolved_purls
+            ),
             references=references,
             vulnerability_id=cve_id,
         )
@@ -140,12 +142,18 @@ class RubyDataSource(GitDataSource):
                 "semver", elem
             )
 
-        safe_versions = set()
+        safe_versions = []
+        vulnerable_versions = []
         for i in all_versions:
             vobj = SemverVersion(i)
-
+            is_vulnerable = False
             for ver_rng in unaffected_version_ranges:
                 if vobj in ver_rng:
-                    safe_versions.add(i)
+                    safe_versions.append(i)
+                    is_vulnerable = True
+                    break
 
-        return (safe_versions, all_versions - safe_versions)
+            if not is_vulnerable:
+                vulnerable_versions.append(i)
+
+        return safe_versions, vulnerable_versions

@@ -29,6 +29,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.importers.postgresql import to_advisories
+from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -43,76 +44,75 @@ class TestPostgreSQLDataSource(TestCase):
 
         expected_advisories = [
             Advisory(
-                summary="Windows installer runs executables from uncontrolled directories",
-                impacted_package_urls=[
-                    PackageURL(
-                        type="generic",
-                        namespace=None,
-                        name="postgresql",
-                        version="9.5",
-                        qualifiers={"os": "windows"},
-                        subpath=None,
-                    )
-                ],
-                resolved_package_urls=[
-                    PackageURL(
-                        type="generic",
-                        namespace=None,
-                        name="postgresql",
-                        version="9.5.22",
-                        qualifiers={"os": "windows"},
-                        subpath=None,
-                    )
+                summary="ALTER ... DEPENDS ON EXTENSION is missing authorization checks.",
+                vulnerability_id="CVE-2020-1720",
+                affected_packages_with_patched_package=[
+                    AffectedPackageWithPatchedPackage(
+                        vulnerable_package=PackageURL(
+                            type="generic",
+                            namespace=None,
+                            name="postgresql",
+                            version="11",
+                            qualifiers={},
+                            subpath=None,
+                        ),
+                        patched_package=None,
+                    ),
+                    AffectedPackageWithPatchedPackage(
+                        vulnerable_package=PackageURL(
+                            type="generic",
+                            namespace=None,
+                            name="postgresql",
+                            version="12",
+                            qualifiers={},
+                            subpath=None,
+                        ),
+                        patched_package=None,
+                    ),
                 ],
                 references=[
                     Reference(
-                        url="https://www.postgresql.org/about/news/postgresql-123-118-1013-9618-and-9522-released-2038/",  # nopep8
                         reference_id="",
-                    )
+                        url="https://access.redhat.com/security/cve/CVE-2020-1720",
+                        severities=[],
+                    ),
+                    Reference(
+                        reference_id="",
+                        url="https://www.postgresql.org/about/news/postgresql-122-117-1012-9617-9521-and-9426-released-2011/",
+                        severities=[],
+                    ),
                 ],
-                vulnerability_id="CVE-2020-10733",
             ),
             Advisory(
-                summary="ALTER ... DEPENDS ON EXTENSION is missing authorization checks.",
-                impacted_package_urls=[
-                    PackageURL(
-                        type="generic",
-                        namespace=None,
-                        name="postgresql",
-                        version="11",
-                        qualifiers={},
-                        subpath=None,
-                    ),
-                    PackageURL(
-                        type="generic",
-                        namespace=None,
-                        name="postgresql",
-                        version="12",
-                        qualifiers={},
-                        subpath=None,
-                    ),
-                ],
-                resolved_package_urls=[
-                    PackageURL(
-                        type="generic",
-                        namespace=None,
-                        name="postgresql",
-                        version=None,
-                        qualifiers={},
-                        subpath=None,
+                summary="Windows installer runs executables from uncontrolled directories",
+                vulnerability_id="CVE-2020-10733",
+                affected_packages_with_patched_package=[
+                    AffectedPackageWithPatchedPackage(
+                        vulnerable_package=PackageURL(
+                            type="generic",
+                            namespace=None,
+                            name="postgresql",
+                            version="9.5",
+                            qualifiers={"os": "windows"},
+                            subpath=None,
+                        ),
+                        patched_package=PackageURL(
+                            type="generic",
+                            namespace=None,
+                            name="postgresql",
+                            version="9.5.22",
+                            qualifiers={"os": "windows"},
+                            subpath=None,
+                        ),
                     )
                 ],
                 references=[
                     Reference(
-                        url="https://access.redhat.com/security/cve/CVE-2020-1720",
                         reference_id="",
-                    ),
-                    Reference(
-                        url="https://www.postgresql.org/about/news/postgresql-122-117-1012-9617-9521-and-9426-released-2011/",  # nopep8
-                        reference_id="",
-                    ),
+                        url="https://www.postgresql.org/about/news/postgresql-123-118-1013-9618-and-9522-released-2038/",
+                        severities=[],
+                    )
                 ],
-                vulnerability_id="CVE-2020-1720",
             ),
         ]
 

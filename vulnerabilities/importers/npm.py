@@ -41,6 +41,7 @@ from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import NpmVersionAPI
 from vulnerabilities.helpers import load_json
+from vulnerabilities.helpers import nearest_patched_package
 
 NPM_URL = "https://registry.npmjs.org{}"
 
@@ -115,8 +116,9 @@ class NpmDataSource(GitDataSource):
                 Advisory(
                     summary=record.get("overview", ""),
                     vulnerability_id=cve_id,
-                    impacted_package_urls=impacted_purls,
-                    resolved_package_urls=resolved_purls,
+                    affected_packages_with_patched_package=nearest_patched_package(
+                        impacted_purls, resolved_purls
+                    ),
                     references=vuln_reference,
                 )
             )
@@ -125,7 +127,7 @@ class NpmDataSource(GitDataSource):
 
 def _versions_to_purls(package_name, versions):
     purls = {f"pkg:npm/{quote(package_name)}@{v}" for v in versions}
-    return {PackageURL.from_string(s) for s in purls}
+    return [PackageURL.from_string(s) for s in purls]
 
 
 def normalize_ranges(version_range_string):

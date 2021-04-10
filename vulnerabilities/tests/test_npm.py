@@ -88,18 +88,21 @@ class NpmImportTest(TestCase):
 
         assert models.Vulnerability.objects.count() == 3
         assert models.VulnerabilityReference.objects.count() == 3
-        assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=False).count() == 5
+        assert models.PackageRelatedVulnerability.objects.all().count() == 4
 
-        assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=True).count() == 4
-
-        expected_package_count = sum([len(v) for v in MOCK_VERSION_API.cache.values()])
+        expected_package_count = (
+            models.PackageRelatedVulnerability.objects.all().count()
+            + models.PackageRelatedVulnerability.objects.filter(
+                patched_package__isnull=False
+            ).count()
+        )
         assert models.Package.objects.count() == expected_package_count
 
         self.assert_for_package(
             "jquery", {"3.4.0"}, {"3.8.0"}, "1518", vulnerability_id="CVE-2020-11022"
         )  # nopep8
         self.assert_for_package("kerberos", {"0.5.8"}, {"1.2.0"}, "1514")
-        self.assert_for_package("subtext", {"4.1.1", "7.0.0"}, {"3.7.0", "6.1.3", "7.0.5"}, "1476")
+        self.assert_for_package("subtext", {"4.1.1", "7.0.0"}, {"6.1.3", "7.0.5"}, "1476")
 
     def assert_for_package(
         self,
@@ -125,7 +128,7 @@ class NpmImportTest(TestCase):
         for version in resolved_versions:
             pkg = models.Package.objects.get(name=package_name, version=version)
             assert models.PackageRelatedVulnerability.objects.filter(
-                package=pkg, vulnerability=vuln, is_vulnerable=False
+                patched_package=pkg, vulnerability=vuln
             )
 
 

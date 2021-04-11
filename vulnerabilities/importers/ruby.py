@@ -24,9 +24,9 @@ import asyncio
 from typing import Set
 from typing import List
 
-from dephell_specifier import RangeSpecifier
-from dephell_specifier.range_specifier import InvalidSpecifier
 from packageurl import PackageURL
+from univers.version_specifier import VersionSpecifier
+from univers.versions import SemverVersion
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
@@ -81,7 +81,6 @@ class RubyDataSource(GitDataSource):
     def process_file(self, path) -> List[Advisory]:
         record = load_yaml(path)
         package_name = record.get("gem")
-
         if not package_name:
             return
 
@@ -137,17 +136,16 @@ class RubyDataSource(GitDataSource):
     def categorize_versions(all_versions, unaffected_version_ranges):
 
         for id, elem in enumerate(unaffected_version_ranges):
-            try:
-                unaffected_version_ranges[id] = RangeSpecifier(elem.replace(" ", ""))
-            except InvalidSpecifier:
-                continue
+            unaffected_version_ranges[id] = VersionSpecifier.from_scheme_version_spec_string(
+                "semver", elem
+            )
 
         safe_versions = set()
         for i in all_versions:
+            vobj = SemverVersion(i)
+
             for ver_rng in unaffected_version_ranges:
-
-                if i in ver_rng:
-
+                if vobj in ver_rng:
                     safe_versions.add(i)
 
         return (safe_versions, all_versions - safe_versions)

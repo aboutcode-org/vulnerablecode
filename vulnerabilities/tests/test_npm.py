@@ -90,13 +90,7 @@ class NpmImportTest(TestCase):
         assert models.VulnerabilityReference.objects.count() == 3
         assert models.PackageRelatedVulnerability.objects.all().count() == 4
 
-        expected_package_count = (
-            models.PackageRelatedVulnerability.objects.all().count()
-            + models.PackageRelatedVulnerability.objects.filter(
-                patched_package__isnull=False
-            ).count()
-        )
-        assert models.Package.objects.count() == expected_package_count
+        assert models.Package.objects.count() == 8
 
         self.assert_for_package(
             "jquery", {"3.4.0"}, {"3.8.0"}, "1518", vulnerability_id="CVE-2020-11022"

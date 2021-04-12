@@ -6,7 +6,6 @@ import xml.etree.ElementTree as ET
 from collections import OrderedDict
 import asyncio
 
-from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
 
 from vulnerabilities.oval_parser import OvalParser
@@ -73,35 +72,35 @@ class TestDebianOvalDataSource(unittest.TestCase):
             ),
             Advisory(
                 summary="security update",
+                vulnerability_id="CVE-2001-1593",
                 impacted_package_urls={
                     PackageURL(
                         type="deb",
                         namespace=None,
                         name="a2ps",
-                        version="0.11.1+dfsg-5+deb7u1",
-                        qualifiers=OrderedDict([("distro", "wheezy")]),
+                        version="1.11.1+dfsg-5+deb7u1",
+                        qualifiers={"distro": "wheezy"},
                         subpath=None,
-                    )
-                },
-                resolved_package_urls={
+                    ),
                     PackageURL(
                         type="deb",
                         namespace=None,
                         name="a2ps",
                         version="2.3.9",
-                        qualifiers=OrderedDict([("distro", "wheezy")]),
+                        qualifiers={"distro": "wheezy"},
                         subpath=None,
                     ),
                     PackageURL(
                         type="deb",
                         namespace=None,
                         name="a2ps",
-                        version="1.11.1+dfsg-5+deb7u1",
-                        qualifiers=OrderedDict([("distro", "wheezy")]),
+                        version="0.11.1+dfsg-5+deb7u1",
+                        qualifiers={"distro": "wheezy"},
                         subpath=None,
                     ),
                 },
-                vulnerability_id="CVE-2001-1593",
+                resolved_package_urls=set(),
+                references=[],
             ),
         ]
 

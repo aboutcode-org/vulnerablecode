@@ -74,10 +74,10 @@ class SafetyDbImportTest(TestCase):
             with patch("vulnerabilities.importers.SafetyDbDataSource.set_api"):
                 runner.run()
 
-        assert models.Vulnerability.objects.count() == 9
-        assert models.VulnerabilityReference.objects.count() == 9
-        assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=False).count() == 18
-        assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=True).count() == 18
+        assert models.Vulnerability.objects.count() == 8
+        assert models.VulnerabilityReference.objects.count() == 8
+        assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=False).count() == 15
+        assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=True).count() == 17
 
         expected_package_count = sum([len(v) for v in MOCK_VERSION_API.cache.values()])
         assert models.Package.objects.count() == expected_package_count
@@ -104,13 +104,6 @@ class SafetyDbImportTest(TestCase):
             {"1.8.14"},
             {"1.8", "1.4.19", "1.5.1", "1.6.9", "1.4.22"},
             cve_ids={"CVE-2016-6186"},
-        )
-
-        self.assert_by_vulnerability(
-            "pyup.io-38115",
-            "zulip",
-            {"2.0"},
-            {"2.1.1", "2.1.2", "2.1.3"},
         )
 
         self.assert_by_vulnerability(

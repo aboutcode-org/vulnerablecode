@@ -23,11 +23,12 @@
 import asyncio
 import re
 from typing import List, Set
-
 import yaml
 
-from dephell_specifier import RangeSpecifier
+from univers.version_specifier import VersionSpecifier
+from univers.versions import SemverVersion
 from packageurl import PackageURL
+
 from vulnerabilities.data_source import Advisory, GitDataSource, Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
 
@@ -64,9 +65,13 @@ class IstioDataSource(GitDataSource):
         all_version = self.version_api.get("istio/istio")
         safe_pkg_versions = []
         vuln_pkg_versions = []
-        version_ranges = [RangeSpecifier(r) for r in version_range_list]
+        version_ranges = [
+            VersionSpecifier.from_scheme_version_spec_string("semver", r)
+            for r in version_range_list
+        ]
         for version in all_version:
-            if any([version in v for v in version_ranges]):
+            version_obj = SemverVersion(version)
+            if any([version_obj in v for v in version_ranges]):
                 vuln_pkg_versions.append(version)
 
         safe_pkg_versions = set(all_version) - set(vuln_pkg_versions)

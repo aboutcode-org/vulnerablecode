@@ -129,13 +129,13 @@ class Package(PackageURLMixin):
     @property
     def vulnerable_to(self):
         return self.vulnerabilities.filter(
-            packagerelatedvulnerability__is_vulnerable=True,
+            packagerelatedvulnerability__package=self,
         )
 
     @property
     def resolved_to(self):
-        return self.vulnerabilities.filter(
-            packagerelatedvulnerability__is_vulnerable=False,
+        return Vulnerability.objects.filter(
+            packagerelatedvulnerability__patched_package=self,
         )
 
     class Meta:

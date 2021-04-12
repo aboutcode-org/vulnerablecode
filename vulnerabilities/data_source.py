@@ -565,7 +565,7 @@ class OvalDataSource(DataSource):
                             pkg_version=version,
                             pkg_data=pkg_metadata,
                         )
-                        if version in affected_version_range:
+                        if version_class(version) in affected_version_range:
                             affected_purls.append(purl)
                         else:
                             safe_purls.append(purl)

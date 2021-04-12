@@ -31,6 +31,7 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.helpers import create_etag
+from vulnerabilities.helpers import is_cve
 
 
 @dataclasses.dataclass
@@ -74,8 +75,8 @@ class UbuntuUSNDataSource(DataSource):
                 # The db sometimes contains entries like
                 # {'cves': ['python-pgsql vulnerabilities', 'CVE-2006-2313', 'CVE-2006-2314']}
                 # This `if` filters entries like 'python-pgsql vulnerabilities'
-                if not cve.startswith("CVE-"):
-                    continue
+                if not is_cve(cve):
+                    cve = ""
 
                 advisories.append(
                     Advisory(

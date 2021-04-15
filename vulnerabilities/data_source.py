@@ -27,6 +27,8 @@ import os
 import shutil
 import tempfile
 import traceback
+import xml.etree.ElementTree as ET
+from binaryornot.helpers import is_binary_string
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -37,8 +39,6 @@ from typing import Mapping
 from typing import Optional
 from typing import Set
 from typing import Tuple
-import xml.etree.ElementTree as ET
-
 from git import Repo, DiffIndex
 from packageurl import PackageURL
 
@@ -332,13 +332,7 @@ class GitDataSource(DataSource):
             return added_files, updated_files
 
         def _is_binary(d: DiffIndex):
-            if not d.b_blob:
-                return False
-            try:
-                d.b_blob.data_stream.read().decode()
-            except UnicodeDecodeError:
-                return True
-            return False
+            return is_binary_string(d.b_blob.data_stream.read(1024))
 
         for d in cutoff_commit.diff(self._repo.head.commit):
             if not _include_file(d.b_path, subdir, recursive, file_ext) or _is_binary(d):

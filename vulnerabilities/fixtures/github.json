@@ -76,20 +76,11 @@
     },
     {
         "model": "vulnerabilities.packagerelatedvulnerability",
-        "pk": 3844,
-        "fields": {
-            "package": 3469,
-            "vulnerability": 60,
-            "is_vulnerable": false
-        }
-    },
-    {
-        "model": "vulnerabilities.packagerelatedvulnerability",
         "pk": 3845,
         "fields": {
             "package": 3467,
             "vulnerability": 60,
-            "is_vulnerable": true
+            "patched_package": 3469
         }
     },
     {
@@ -98,7 +89,7 @@
         "fields": {
             "package": 3468,
             "vulnerability": 60,
-            "is_vulnerable": true
+            "patched_package": 3469
         }
     },
     {

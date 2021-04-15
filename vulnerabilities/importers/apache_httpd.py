@@ -22,9 +22,8 @@
 
 import dataclasses
 
-from bs4 import BeautifulSoup
 import requests
-import re
+from bs4 import BeautifulSoup
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
@@ -44,7 +43,8 @@ class ApacheHTTPDDataSourceConfiguration(DataSourceConfiguration):
 class ApacheHTTPDDataSource(DataSource):
 
     CONFIG_CLASS = ApacheHTTPDDataSourceConfiguration
-    url = "https://httpd.apache.org/security/json/"
+    url = "https://httpd.apache.org/security/json/{}"
+    ref_url = "https://httpd.apache.org/security/json/{}.json"
 
     def updated_advisories(self):
         # Etags are like hashes of web responses. We maintain
@@ -64,13 +64,37 @@ class ApacheHTTPDDataSource(DataSource):
 
     def to_advisory(self, data):
         cve = data["CVE_data_meta"]["ID"]
-        description = data["description"]["description_data"]
-        summary = next((item["value"] for item in description if item["lang"] == "eng"), "")
-        severity = VulnerabilitySeverity(
-            system=scoring_systems["apache_httpd"],
-            value=data["impact"][0]["other"],
-        )
-        reference = Reference(reference_id=cve, url=self.url + cve + ".json", severities=[severity])
+        descriptions = data.get("description", {}).get("description_data", [])
+        description = None
+        for desc in descriptions:
+            if desc.get("lang") == "eng":
+                description = desc.get("value")
+                break
+
+        impacts = data.get("impact", [])
+        impact = None
+        for imp in impacts:
+            value = imp.get("other")
+            if value is not None:
+                impact = value
+                break
+
+        if impact is not None:
+            severity = VulnerabilitySeverity(
+                system=scoring_systems["apache_httpd"],
+                value=impact,
+            )
+            reference = Reference(
+                reference_id=cve,
+                url=self.ref_url.format(cve),
+                severities=[severity],
+            )
+        else:
+            reference = Reference(
+                reference_id=cve,
+                url=self.ref_url.format(cve),
+            )
+
         resolved_packages = []
         impacted_packages = []
 
@@ -91,7 +115,7 @@ class ApacheHTTPDDataSource(DataSource):
 
         return Advisory(
             vulnerability_id=cve,
-            summary=summary,
+            summary=description,
             impacted_package_urls=impacted_packages,
             resolved_package_urls=resolved_packages,
             references=[reference],
@@ -100,11 +124,11 @@ class ApacheHTTPDDataSource(DataSource):
 
 def fetch_links(url):
     links = []
-    data = requests.get(url).content
+    data = requests.get(url.format("")).content
     soup = BeautifulSoup(data, features="lxml")
     for tag in soup.find_all("a"):
         link = tag.get("href")
-        if not re.search("^CVE.*json$", link):
+        if not link.endswith("json"):
             continue
-        links.append(url + link)
+        links.append(url.format(link))
     return links

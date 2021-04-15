@@ -22,17 +22,15 @@
 
 import os
 import json
-from dateutil import parser as dateparser
-from packageurl import PackageURL
-
 from unittest import TestCase
+
+from packageurl import PackageURL
 
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import VulnerabilitySeverity
 from vulnerabilities.severity_systems import scoring_systems
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDDataSource
-from vulnerabilities.importers.apache_httpd import fetch_links
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/apache_httpd/CVE-1999-1199.json")
@@ -44,7 +42,7 @@ class TestApacheHTTPDDataSource(TestCase):
         data_source_cfg = {"etags": {}}
         cls.data_src = ApacheHTTPDDataSource(1, config=data_source_cfg)
         with open(TEST_DATA) as f:
-            cls.nvd_data = json.load(f)
+            cls.data = json.load(f)
 
     def test_to_advisory(self):
         expected_advisories = [
@@ -59,19 +57,13 @@ class TestApacheHTTPDDataSource(TestCase):
                 impacted_package_urls=[
                     PackageURL(
                         type="apache",
-                        namespace=None,
                         name="httpd",
                         version="1.3.1",
-                        qualifiers={},
-                        subpath=None,
                     ),
                     PackageURL(
                         type="apache",
-                        namespace=None,
                         name="httpd",
                         version="1.3.0",
-                        qualifiers={},
-                        subpath=None,
                     ),
                 ],
                 resolved_package_urls=[],
@@ -90,7 +82,7 @@ class TestApacheHTTPDDataSource(TestCase):
                 vulnerability_id="CVE-1999-1199",
             )
         ]
-        found_advisories = [self.data_src.to_advisory(self.nvd_data)]
+        found_advisories = [self.data_src.to_advisory(self.data)]
         found_advisories = list(map(Advisory.normalized, found_advisories))
         expected_advisories = list(map(Advisory.normalized, expected_advisories))
         assert sorted(found_advisories) == sorted(expected_advisories)

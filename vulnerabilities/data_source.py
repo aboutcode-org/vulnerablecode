@@ -532,9 +532,8 @@ class OvalDataSource(DataSource):
             # connected/linked to an OvalDefinition
             vuln_id = definition_data["vuln_id"]
             description = definition_data["description"]
-            affected_purls = set()
-            safe_purls = set()
             references = [Reference(url=url) for url in definition_data["reference_urls"]]
+            affected_packages_with_patched_package = []
             for test_data in definition_data["test_data"]:
                 for package_name in test_data["package_list"]:
                     if package_name and len(package_name) >= 50:
@@ -570,12 +569,14 @@ class OvalDataSource(DataSource):
                         else:
                             safe_purls.append(purl)
 
+                    affected_packages_with_patched_package.extend(
+                        nearest_patched_package(affected_purls, safe_purls),
+                    )
+
             all_adv.append(
                 Advisory(
                     summary=description,
-                    affected_packages_with_patched_package=nearest_patched_package(
-                        affected_purls, safe_purls
-                    ),
+                    affected_packages_with_patched_package=affected_packages_with_patched_package,
                     vulnerability_id=vuln_id,
                     references=references,
                 )

@@ -85,33 +85,9 @@ class TestIstioDataSource(TestCase):
                 affected_packages_with_patched_package=[
                     AffectedPackageWithPatchedPackage(
                         vulnerable_package=PackageURL(
-                            type="github",
-                            name="istio",
-                            version="1.1.0",
-                        ),
-                        patched_package=PackageURL(
-                            type="golang",
-                            name="istio",
-                            version="1.1.17",
-                        ),
-                    ),
-                    AffectedPackageWithPatchedPackage(
-                        vulnerable_package=PackageURL(
                             type="golang",
                             name="istio",
                             version="1.1.0",
-                        ),
-                        patched_package=PackageURL(
-                            type="golang",
-                            name="istio",
-                            version="1.1.17",
-                        ),
-                    ),
-                    AffectedPackageWithPatchedPackage(
-                        vulnerable_package=PackageURL(
-                            type="github",
-                            name="istio",
-                            version="1.1.1",
                         ),
                         patched_package=PackageURL(
                             type="golang",
@@ -133,18 +109,6 @@ class TestIstioDataSource(TestCase):
                     ),
                     AffectedPackageWithPatchedPackage(
                         vulnerable_package=PackageURL(
-                            type="github",
-                            name="istio",
-                            version="1.2.1",
-                        ),
-                        patched_package=PackageURL(
-                            type="golang",
-                            name="istio",
-                            version="1.2.7",
-                        ),
-                    ),
-                    AffectedPackageWithPatchedPackage(
-                        vulnerable_package=PackageURL(
                             type="golang",
                             name="istio",
                             version="1.2.1",
@@ -153,18 +117,6 @@ class TestIstioDataSource(TestCase):
                             type="golang",
                             name="istio",
                             version="1.2.7",
-                        ),
-                    ),
-                    AffectedPackageWithPatchedPackage(
-                        vulnerable_package=PackageURL(
-                            type="github",
-                            name="istio",
-                            version="1.3.0",
-                        ),
-                        patched_package=PackageURL(
-                            type="golang",
-                            name="istio",
-                            version="1.3.2",
                         ),
                     ),
                     AffectedPackageWithPatchedPackage(
@@ -181,7 +133,7 @@ class TestIstioDataSource(TestCase):
                     ),
                     AffectedPackageWithPatchedPackage(
                         vulnerable_package=PackageURL(
-                            type="github",
+                            type="golang",
                             name="istio",
                             version="1.3.1",
                         ),
@@ -193,12 +145,60 @@ class TestIstioDataSource(TestCase):
                     ),
                     AffectedPackageWithPatchedPackage(
                         vulnerable_package=PackageURL(
-                            type="golang",
+                            type="github",
+                            name="istio",
+                            version="1.1.0",
+                        ),
+                        patched_package=PackageURL(
+                            type="github",
+                            name="istio",
+                            version="1.1.17",
+                        ),
+                    ),
+                    AffectedPackageWithPatchedPackage(
+                        vulnerable_package=PackageURL(
+                            type="github",
+                            name="istio",
+                            version="1.1.1",
+                        ),
+                        patched_package=PackageURL(
+                            type="github",
+                            name="istio",
+                            version="1.1.17",
+                        ),
+                    ),
+                    AffectedPackageWithPatchedPackage(
+                        vulnerable_package=PackageURL(
+                            type="github",
+                            name="istio",
+                            version="1.2.1",
+                        ),
+                        patched_package=PackageURL(
+                            type="github",
+                            name="istio",
+                            version="1.2.7",
+                        ),
+                    ),
+                    AffectedPackageWithPatchedPackage(
+                        vulnerable_package=PackageURL(
+                            type="github",
+                            name="istio",
+                            version="1.3.0",
+                        ),
+                        patched_package=PackageURL(
+                            type="github",
+                            name="istio",
+                            version="1.3.2",
+                        ),
+                    ),
+                    AffectedPackageWithPatchedPackage(
+                        vulnerable_package=PackageURL(
+                            type="github",
                             name="istio",
                             version="1.3.1",
                         ),
                         patched_package=PackageURL(
-                            type="golang",
+                            type="github",
                             name="istio",
                             version="1.3.2",
                         ),

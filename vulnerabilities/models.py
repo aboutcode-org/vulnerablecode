@@ -74,15 +74,11 @@ class Vulnerability(models.Model):
 
     @property
     def vulnerable_to(self):
-        return self.package_set.filter(
-            packagerelatedvulnerability__is_vulnerable=True,
-        )
+        return self.vulnerable_packages.all()
 
     @property
     def resolved_to(self):
-        return self.package_set.filter(
-            packagerelatedvulnerability__is_vulnerable=False,
-        )
+        return self.patched_packages.all()
 
     def __str__(self):
         return self.vulnerability_id or self.summary
@@ -124,19 +120,23 @@ class Package(PackageURLMixin):
         to="Vulnerability",
         through="PackageRelatedVulnerability",
         through_fields=("package", "vulnerability"),
+        related_name="vulnerable_packages",
+    )
+
+    resolved_vulnerabilities = models.ManyToManyField(
+        to="Vulnerability",
+        through="PackageRelatedVulnerability",
+        through_fields=("patched_package", "vulnerability"),
+        related_name="patched_packages",
     )
 
     @property
     def vulnerable_to(self):
-        return self.vulnerabilities.filter(
-            packagerelatedvulnerability__package=self,
-        )
+        return self.vulnerabilities.all()
 
     @property
     def resolved_to(self):
-        return Vulnerability.objects.filter(
-            packagerelatedvulnerability__patched_package=self,
-        )
+        return self.resolved_vulnerabilities.all()
 
     class Meta:
         unique_together = ("name", "namespace", "type", "version", "qualifiers", "subpath")

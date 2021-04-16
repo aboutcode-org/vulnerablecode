@@ -30,7 +30,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
-from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
 
 
 class RetireDotnetDataSource(GitDataSource):
@@ -77,15 +77,18 @@ class RetireDotnetDataSource(GitDataSource):
             else:
                 return
 
-            affected_purls = []
-            fixed_purls = []
-
+            affected_packages_with_patched_package = []
             for pkg in json_doc["packages"]:
-                affected_purls.append(
-                    PackageURL(name=pkg["id"], version=pkg["affected"], type="nuget")
+                affected_packages_with_patched_package.append(
+                    AffectedPackageWithPatchedPackage(
+                        vulnerable_package=PackageURL(
+                            name=pkg["id"], version=pkg["affected"], type="nuget"
+                        ),
+                        patched_package=PackageURL(
+                            name=pkg["id"], version=pkg["fix"], type="nuget"
+                        ),
+                    )
                 )
-
-                fixed_purls.append(PackageURL(name=pkg["id"], version=pkg["fix"], type="nuget"))
 
             vuln_reference = [
                 Reference(
@@ -96,8 +99,6 @@ class RetireDotnetDataSource(GitDataSource):
             return Advisory(
                 vulnerability_id=vuln_id,
                 summary=json_doc["description"],
-                affected_packages_with_patched_package=nearest_patched_package(
-                    affected_purls, fixed_purls
-                ),
+                affected_packages_with_patched_package=affected_packages_with_patched_package,
                 references=vuln_reference,
             )

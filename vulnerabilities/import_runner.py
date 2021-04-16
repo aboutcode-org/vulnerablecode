@@ -137,16 +137,20 @@ def process_advisories(data_source: DataSource) -> None:
                     vulnerable_package, _ = _get_or_create_package(
                         aff_pkg_with_patched_pkg.vulnerable_package
                     )
+                    patched_package = None
                     if aff_pkg_with_patched_pkg.patched_package:
                         patched_package, _ = _get_or_create_package(
                             aff_pkg_with_patched_pkg.patched_package
                         )
 
-                    models.PackageRelatedVulnerability.objects.get_or_create(
+                    prv, _ = models.PackageRelatedVulnerability.objects.get_or_create(
                         vulnerability=vuln,
-                        patched_package=patched_package,
                         package=vulnerable_package,
                     )
+
+                    if patched_package:
+                        prv.patched_package = patched_package
+                        prv.save()
 
             except Exception:
                 # TODO: store error but continue

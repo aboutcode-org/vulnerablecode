@@ -58,7 +58,6 @@ def yaml_file_to_advisory(yaml_path):
         package = PackageURL.from_string(entry["id"])
         if entry["affected"]:
             impacted_packages.append(package)
-
         else:
             resolved_packages.append(package)
 

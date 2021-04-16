@@ -7,7 +7,7 @@ cached-property==1.5.1
 cffi==1.14.0
 contextlib2==0.5.5
 decorator==4.4.2
-univers==21.4.9
+univers==21.4.16.6
 dj-database-url==0.4.2
 Django==3.0.14
 django-filter==2.2.0

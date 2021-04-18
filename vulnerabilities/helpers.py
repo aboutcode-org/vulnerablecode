@@ -26,6 +26,7 @@ import json
 import re
 from typing import Optional
 from typing import List
+from typing import Tuple
 
 import requests
 import saneyaml
@@ -164,3 +165,30 @@ def nearest_patched_package(
         )
 
     return affected_package_with_patched_package_objects
+
+
+def split_markdown_front_matter(text: str) -> Tuple[str, str]:
+    r"""
+    Split text into markdown front matter and the markdown body
+    Returns ("", text) for text with non existing front matter
+
+    >>> text='''---
+    ... title: DUMMY-SECURITY-2019-001
+    ... description: Incorrect access control.
+    ... cves: [CVE-2042-1337]
+    ... ---
+    ... # Markdown starts here
+    ... '''
+    >>> split_markdown_front_matter(text)
+    ('title: DUMMY-SECURITY-2019-001\ndescription: Incorrect access control.\ncves: [CVE-2042-1337]\n', '\n# Markdown starts here\n')
+    """
+
+    front_matter = ""
+    body = text
+    text = text.replace("\r\n", "\n")
+    linezero,_, text = text.partition("---\n")
+
+    if not linezero: # nothing before first ---
+        front_matter,_, body = text.partition("---")
+
+    return front_matter, body

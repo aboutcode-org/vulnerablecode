@@ -186,9 +186,9 @@ def split_markdown_front_matter(text: str) -> Tuple[str, str]:
     front_matter = ""
     body = text
     text = text.replace("\r\n", "\n")
-    linezero,_, text = text.partition("---\n")
+    linezero, _, text = text.partition("---\n")
 
-    if not linezero: # nothing before first ---
-        front_matter,_, body = text.partition("---")
+    if not linezero:  # nothing before first ---
+        front_matter, _, body = text.partition("---")
 
     return front_matter, body

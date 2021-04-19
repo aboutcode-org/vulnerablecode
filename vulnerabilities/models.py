@@ -74,10 +74,17 @@ class Vulnerability(models.Model):
 
     @property
     def vulnerable_to(self):
+        """
+        Returns packages which are vulnerable to this vulnerability.
+        """
         return self.vulnerable_packages.all()
 
     @property
     def resolved_to(self):
+        """
+        Returns packages, which first received patch against this vulnerability
+        in their particular version history.
+        """
         return self.patched_packages.all()
 
     def __str__(self):
@@ -132,10 +139,16 @@ class Package(PackageURLMixin):
 
     @property
     def vulnerable_to(self):
+        """
+        Returns vulnerabilities which are affecting this package.
+        """
         return self.vulnerabilities.all()
 
     @property
     def resolved_to(self):
+        """
+        Returns the vulnerabilities which this package is patched against.
+        """
         return self.resolved_vulnerabilities.all()
 
     class Meta:

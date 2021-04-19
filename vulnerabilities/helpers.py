@@ -121,71 +121,40 @@ def requests_with_5xx_retry(max_retries=5, backoff_factor=0.5):
 
 
 def nearest_patched_package(vulnerable_packages, resolved_packages):
-    if not vulnerable_packages:
-        return []
+    # This class is used to  get around bisect module's lack of supplying custom
+    # compartor. Get rid of this once we use python 3.10 which supports this.
+    # See https://github.com/python/cpython/pull/20556
+    class PackageURLWithVersionComparator:
+        def __init__(self, package):
+            self.package = package
+            self.version_object = version_class_by_package_type[package.type](package.version)
 
-    def create_package_by_version_obj_mapping(packages, overwrite=False):
-        # overwrite=True, returns version->PackageURL mapping.
-        # overwrite=False, returns version->[PackageURL] mapping.
-        if not packages:
-            return {}
+        def __eq__(self, other):
+            return self.version_object == other.version_object
 
-        package_by_version_obj_mapping = {}
-        version_class = version_class_by_package_type[packages[0].type]
-        for package in packages:
-            version_object = version_class(package.version)
-            if not overwrite:
-                if version_object in package_by_version_obj_mapping:
-                    package_by_version_obj_mapping[version_object].append(package)
-                else:
-                    package_by_version_obj_mapping[version_object] = [package]
-            else:
-                package_by_version_obj_mapping[version_object] = package
+        def __lt__(self, other):
+            return self.version_object < other.version_object
 
-        return package_by_version_obj_mapping
-
-    vulnerable_packages_by_version_obj = create_package_by_version_obj_mapping(vulnerable_packages)
-    resolved_package_by_version_obj = create_package_by_version_obj_mapping(
-        resolved_packages, overwrite=True
+    vulnerable_packages = sorted(
+        [PackageURLWithVersionComparator(package) for package in vulnerable_packages]
+    )
+    resolved_packages = sorted(
+        [PackageURLWithVersionComparator(package) for package in resolved_packages]
     )
 
-    vulnerable_versions = list(vulnerable_packages_by_version_obj.keys())
-    resolved_versions = list(resolved_package_by_version_obj.keys())
+    resolved_package_count = len(resolved_packages)
+    affected_package_with_patched_package_objects = []
 
-    patched_version_by_vulnerable_versions = nearest_patched_versions(
-        vulnerable_versions, resolved_versions
-    )
+    for vulnerable_package in vulnerable_packages:
+        patched_package_index = bisect.bisect_right(resolved_packages, vulnerable_package)
+        patched_package = None
+        if patched_package_index < resolved_package_count:
+            patched_package = resolved_packages[patched_package_index].package
 
-    affected_packages_with_patched_package = []
-    for vulnerable_version, patched_version in patched_version_by_vulnerable_versions.items():
-        for vulnerable_package in vulnerable_packages_by_version_obj[vulnerable_version]:
-            affected_packages_with_patched_package.append(
-                AffectedPackageWithPatchedPackage(
-                    vulnerable_package=vulnerable_package,
-                    patched_package=resolved_package_by_version_obj.get(patched_version),
-                )
+        affected_package_with_patched_package_objects.append(
+            AffectedPackageWithPatchedPackage(
+                vulnerable_package=vulnerable_package.package, patched_package=patched_package
             )
+        )
 
-    return affected_packages_with_patched_package
-
-
-def nearest_patched_versions(vulnerable_versions, resolved_versions):
-    """
-    Returns a mapping of vulnerable_version -> nearest_safe_version
-    """
-
-    vulnerable_versions = sorted(vulnerable_versions)
-    resolved_versions = sorted(resolved_versions)
-    resolved_version_count = len(resolved_versions)
-    nearest_patch_for_version = {}
-    for vulnerable_version in vulnerable_versions:
-        nearest_patch_for_version[vulnerable_version] = None
-        if not resolved_versions:
-            continue
-
-        patched_version_index = bisect.bisect_right(resolved_versions, vulnerable_version)
-        if patched_version_index >= resolved_version_count:
-            continue
-        nearest_patch_for_version[vulnerable_version] = resolved_versions[patched_version_index]
-
-    return nearest_patch_for_version
+    return affected_package_with_patched_package_objects

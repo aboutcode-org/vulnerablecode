@@ -158,58 +158,9 @@ def process_advisories(data_source: DataSource) -> None:
                     f"Failed to process advisory: {advisory!r}:\n" + traceback.format_exc()
                 )
 
-    # find_conflicting_relations handles in-memory conflicts
-    # conflicts = find_conflicting_relations(bulk_create_vuln_pkg_refs)
-
     models.PackageRelatedVulnerability.objects.bulk_create(
-        [i.to_model_object() for i in bulk_create_vuln_pkg_refs if i not in conflicts]
+        [i.to_model_object() for i in bulk_create_vuln_pkg_refs]
     )
-
-    # handle_conflicts([i.to_model_object() for i in conflicts])
-
-
-# def find_conflicting_relations(
-#     relations: Set[Set[PackageRelatedVulnerabilityInserter]],
-# ) -> Set[PackageRelatedVulnerabilityInserter]:
-
-#     # Chop off `is_vulnerable` flag from PackageRelatedVulnerabilityInserter and create a list of
-#     # tuples of format (rel.package, rel.vulnerability)
-
-#     relation_tuples = [(rel.package, rel.vulnerability) for rel in relations]
-#     relation_counter = Counter(relation_tuples).most_common()
-
-#     # If a (rel.package, rel.vulnerability) occurs twice then that means the
-#     # PackageRelatedVulnerabilityInserter objects
-#     # (rel.package, rel.vulnerability, is_vulnerable=True) and
-#     # (rel.package, rel.vulnerability, is_vulnerable=False) both existed which is conflicting data.
-#     # We detect and return these conflicts.
-
-#     conflicts = set()
-#     for rel, count in relation_counter:
-#         if count < 2:
-#             # All the subsequent entries from here on would have count == 1 which is of no interest
-#             # since conflicts exist in pairs with `is_vulnerable=True` and `is_vulnerable=False`.
-#             break
-
-#         # `rel` is of format (pkg, vuln)
-#         conflicts.add(
-#             PackageRelatedVulnerabilityInserter(
-#                 vulnerability=rel[1], package=rel[0], is_vulnerable=True
-#             )
-#         )
-
-#         conflicts.add(
-#             PackageRelatedVulnerabilityInserter(
-#                 vulnerability=rel[1], package=rel[0], is_vulnerable=False
-#             )
-#         )
-
-#     return conflicts
-
-
-# def handle_conflicts(conflicts):
-#     conflicts = serializers.serialize("json", [i for i in conflicts])
-#     models.ImportProblem.objects.create(conflicting_model=conflicts)
 
 
 def _get_or_create_vulnerability(

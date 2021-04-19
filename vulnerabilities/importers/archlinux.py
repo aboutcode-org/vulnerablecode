@@ -88,9 +88,9 @@ class ArchlinuxDataSource(DataSource):
         advisories = []
 
         for cve_id in record["issues"]:
-            impacted_purls, resolved_purls = [], []
             affected_packages_with_patched_package = []
             for name in record["packages"]:
+                impacted_purls, resolved_purls = [], []
                 impacted_purls.append(
                     PackageURL(
                         name=name,

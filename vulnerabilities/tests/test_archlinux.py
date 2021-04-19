@@ -68,7 +68,6 @@ class ArchlinuxImportTest(TestCase):
             models.PackageRelatedVulnerability.objects.filter(patched_package__isnull=False).count()
             == 8
         )
-        print(models.Package.objects.all())
         assert models.Package.objects.count() == 10
 
         self.assert_for_package(

@@ -28,6 +28,7 @@ def nearest_patched_versions(vulnerable_versions, resolved_versions):
 
     return nearest_patch_for_version
 
+
 def _get_tuple_key(packagerelatedvulnerability):
     return (
         packagerelatedvulnerability.vulnerability,

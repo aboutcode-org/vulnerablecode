@@ -50,19 +50,16 @@ class OpenSSLDataSource(DataSource):
         # (url, etag) mappings in the DB. `create_etag`  creates
         # (url, etag) pair. If a (url, etag) already exists then the code
         # skips processing the response further to avoid duplicate work
-        if create_etag(data_src=self, url=self.url, etag_key="ETag"):
-            raw_data = self.fetch()
-            advisories = self.to_advisories(raw_data)
-            return self.batch_advisories(advisories)
+        raw_data = self.fetch()
+        for advisory in self.to_advisories(raw_data):
+            yield advisory
 
-        return []
 
     def fetch(self):
         return requests.get(self.url).content
 
     @staticmethod
     def to_advisories(xml_response: str) -> Set[Advisory]:
-        advisories = []
         pkg_name = "openssl"
         pkg_type = "generic"
         root = ET.fromstring(xml_response)
@@ -110,13 +107,10 @@ class OpenSSLDataSource(DataSource):
                     for version in vuln_pkg_versions
                 }
 
-                advisory = Advisory(
+                yield Advisory(
                     vulnerability_id=cve_id,
                     summary=summary,
                     impacted_package_urls=vuln_purls,
                     resolved_package_urls=safe_purls,
                     references=ref_urls,
                 )
-                advisories.append(advisory)
-
-        return advisories

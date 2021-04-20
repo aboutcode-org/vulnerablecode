@@ -40,7 +40,7 @@ from typing import Tuple
 import xml.etree.ElementTree as ET
 
 import pygit2
-from packageurl import PackageURL
+from packageurl import PackageURL, normalize
 from univers.version_specifier import VersionSpecifier
 from univers.versions import version_class_by_package_type
 
@@ -96,8 +96,8 @@ class Advisory:
             raise ValueError("CVE expected, found: {}".format(self.vulnerability_id))
 
     def normalized(self):
-        impacted_package_urls = {package_url for package_url in self.impacted_package_urls}
-        resolved_package_urls = {package_url for package_url in self.resolved_package_urls}
+        impacted_package_urls = sorted([package_url for package_url in self.impacted_package_urls])
+        resolved_package_urls = sorted([package_url for package_url in self.resolved_package_urls])
         references = sorted(
             self.references, key=lambda reference: (reference.reference_id, reference.url)
         )
@@ -111,6 +111,18 @@ class Advisory:
             resolved_package_urls=resolved_package_urls,
             references=references,
         )
+
+    def to_dict(self):
+        adv = self.normalized()
+        data = {}
+
+        data["vulnerability_id"] = self.vulnerability_id
+        data["impacted_package_urls"] = [pkg.to_string() for pkg in  self.impacted_package_urls]
+        data["resolved_package_urls"] = [pkg.to_string() for pkg in  self.resolved_package_urls]
+        data["references"] = [dataclasses.asdict(reference) for reference in self.references]
+        data["summary"] = self.summary
+
+        return data
 
 
 class InvalidConfigurationError(Exception):

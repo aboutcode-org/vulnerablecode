@@ -90,7 +90,7 @@ WSGI_APPLICATION = "vulnerablecode.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("VC_DB_NAME", "vulnerablecode"),
+        "NAME": os.environ.get("VC_DB_NAME", "vulnerablecode2"),
         "USER": os.environ.get("VC_DB_USER", "vulnerablecode"),
         "PASSWORD": os.environ.get("VC_DB_PASSWORD", "vulnerablecode"),
         "HOST": os.environ.get("VC_DB_HOST", "localhost"),

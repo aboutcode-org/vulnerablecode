@@ -192,6 +192,14 @@ class ImportProblem(models.Model):
     conflicting_model = pgfields.JSONField()
 
 
+class ImportRun(models.Model):
+    date = models.DateField(auto_now=True)
+    importer = models.ForeignKey("Importer",on_delete=models.CASCADE, related_name="importer")
+
+class Advisory(models.Model):
+    content = pgfields.JSONField()
+    import_run = models.ForeignKey(ImportRun, on_delete=models.CASCADE)
+
 class Importer(models.Model):
     """
     Metadata and pointer to the implementation for a source of vulnerability data (aka security
@@ -206,7 +214,9 @@ class Importer(models.Model):
         help_text="License of the vulnerability data",
     )
 
+    last_import = models.ForeignKey(ImportRun, on_delete=models.CASCADE, related_name="last_import_run", null=True)
     last_run = models.DateTimeField(null=True, help_text="UTC Timestamp of the last run")
+
 
     data_source = models.CharField(
         max_length=100,
@@ -230,7 +240,6 @@ class Importer(models.Model):
 
         ds = klass(
             batch_size,
-            last_run_date=self.last_run,
             cutoff_date=cutoff_date,
             config=self.data_source_cfg,
         )

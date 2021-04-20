@@ -1,6 +1,5 @@
 on:
   workflow_dispatch: # allow manual execution
-  push:
   schedule:
     # run on every 9 o'clock
     - cron: '0 9 * * *'

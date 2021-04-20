@@ -98,3 +98,11 @@ def requests_with_5xx_retry(max_retries=5, backoff_factor=0.5):
     session.mount("https://", adapter)
     session.mount("http://", adapter)
     return session
+
+
+def contains_alpha(string):
+    """
+    Return True if the input 'string' contains any alphabet
+    """
+
+    return any([c.isalpha() for c in string])

@@ -54,6 +54,7 @@ class Vulnerability(models.Model):
         help_text="empty if no  CVE else VC id",
         unique=True,
         null=True,
+        blank=True,
     )
     summary = models.TextField(
         help_text="Summary of the vulnerability",
@@ -162,6 +163,7 @@ class Package(PackageURLMixin):
             "Extra qualifying data for a package such as the name of an OS, "
             "architecture, distro, etc."
         ),
+        blank=True,
         null=False,
     )
 

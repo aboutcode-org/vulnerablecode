@@ -136,8 +136,6 @@ class TestNVDDataSource(TestCase):
                     "attacks such as buffer overflows via a large size value, which causes less memory to "  # nopep8
                     "be allocated than expected."
                 ),
-                impacted_package_urls=[],
-                resolved_package_urls=[],
                 references=[
                     Reference(
                         url="http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",  # nopep8

@@ -122,38 +122,22 @@ class AlpineDataSource(DataSource):
             advisories.extend(
                 self._load_advisories(
                     p["pkg"],
-                    record["distroversion"],
-                    record["reponame"],
-                    record["archs"],
                 )
             )
 
         return advisories
 
+    @staticmethod
     def _load_advisories(
-        self,
         pkg_infos: Mapping[str, Any],
-        distroversion: str,
-        reponame: str,
-        archs: Iterable[str],
     ) -> List[Advisory]:
 
         advisories = []
 
-        for version, fixed_vulns in pkg_infos["secfixes"].items():
+        for fixed_vulns in pkg_infos["secfixes"].values():
 
             if fixed_vulns is None:
                 continue
-
-            resolved_purls = {
-                PackageURL(
-                    name=pkg_infos["name"],
-                    type="alpine",
-                    version=version,
-                    qualifiers={"arch": arch, "distroversion": distroversion, "reponame": reponame},
-                )
-                for arch in archs
-            }
 
             for vuln_ids in fixed_vulns:
                 vuln_ids = vuln_ids.split()
@@ -191,8 +175,6 @@ class AlpineDataSource(DataSource):
                 advisories.append(
                     Advisory(
                         summary="",
-                        impacted_package_urls=[],
-                        resolved_package_urls=resolved_purls,
                         references=references,
                         vulnerability_id=vuln_ids[0] if is_cve(vuln_ids[0]) else "",
                     )

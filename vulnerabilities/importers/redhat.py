@@ -28,6 +28,7 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.helpers import requests_with_5xx_retry
 from vulnerabilities.severity_systems import scoring_systems
 
@@ -170,7 +171,7 @@ def to_advisory(advisory_data):
     return Advisory(
         vulnerability_id=advisory_data["CVE"],
         summary=advisory_data["bugzilla_description"],
-        impacted_package_urls=affected_purls,
+        affected_packages=nearest_patched_package(affected_purls, []),
         references=references,
     )
 

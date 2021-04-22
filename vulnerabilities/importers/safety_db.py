@@ -46,6 +46,7 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import PypiVersionAPI
+from vulnerabilities.helpers import nearest_patched_package
 
 logger = logging.getLogger(__name__)
 
@@ -75,11 +76,8 @@ class SafetyDbDataSource(DataSource):
 
     CONFIG_CLASS = SafetyDbConfiguration
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._api_response = self._fetch()
-
     def __enter__(self):
+        self._api_response = self._fetch()
         self._versions = PypiVersionAPI()
         self.set_api(self.collect_packages())
 
@@ -138,13 +136,15 @@ class SafetyDbDataSource(DataSource):
                             vulnerability_id=cve_id,
                             summary=advisory["advisory"],
                             references=reference,
-                            impacted_package_urls=impacted_purls,
-                            resolved_package_urls=resolved_purls,
+                            affected_packages=nearest_patched_package(
+                                impacted_purls, resolved_purls
+                            ),
                         )
                     )
 
-        return self.batch_advisories(advisories)
+        return advisories
 
+    # FIXME: This is duplicate code. Use the the helper instead.
     def create_etag(self, url):
         etag = requests.head(url).headers.get("ETag")
         if not etag:
@@ -158,6 +158,7 @@ class SafetyDbDataSource(DataSource):
         return True
 
 
+# FIXME: This function is horribly named incorretly.
 def categorize_versions(
     package_name: str,
     all_versions: Set[str],
@@ -166,9 +167,7 @@ def categorize_versions(
     """
     :return: impacted, resolved purls
     """
-    impacted_versions, impacted_purls = set(), set()
-    # vurl_spec = f"pypi:{ ','.join(version_specs) }"
-    # vurl_spec = VersionSpecifier.from_version_spec_string(vurl_spec)
+    impacted_versions, impacted_purls = set(), []
     vurl_specs = []
     for version_spec in version_specs:
         vurl_specs.append(VersionSpecifier.from_scheme_version_spec_string("pypi", version_spec))
@@ -181,7 +180,7 @@ def categorize_versions(
 
         if any([version_object in vurl_spec for vurl_spec in vurl_specs]):
             impacted_versions.add(version)
-            impacted_purls.add(
+            impacted_purls.append(
                 PackageURL(
                     name=package_name,
                     type="pypi",
@@ -189,7 +188,7 @@ def categorize_versions(
                 )
             )
 
-    resolved_purls = set()
+    resolved_purls = []
     for version in all_versions - impacted_versions:
-        resolved_purls.add(PackageURL(name=package_name, type="pypi", version=version))
+        resolved_purls.append(PackageURL(name=package_name, type="pypi", version=version))
     return impacted_purls, resolved_purls

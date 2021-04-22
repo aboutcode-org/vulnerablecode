@@ -113,15 +113,8 @@ class PackageUpdate(UpdateView):
 
     def _package_vulnerabilities(self, package_pk):
 
-        ip = models.PackageRelatedVulnerability.objects.filter(
-            package_id=package_pk, is_vulnerable=True
-        ).select_related()
-        rp = models.PackageRelatedVulnerability.objects.filter(
-            package_id=package_pk, is_vulnerable=False
-        ).select_related()
-
-        resolved_vuln = [i.vulnerability for i in rp]
-        unresolved_vuln = [i.vulnerability for i in ip]
+        resolved_vuln = [i for i in self.get_object().resolved_to]
+        unresolved_vuln = [i for i in self.get_object().vulnerable_to]
 
         return resolved_vuln, unresolved_vuln
 

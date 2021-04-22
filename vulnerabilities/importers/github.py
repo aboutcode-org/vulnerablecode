@@ -31,8 +31,9 @@ from typing import Mapping
 from typing import Optional
 
 import requests
-from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
+from univers.version_specifier import VersionSpecifier
+from univers.versions import version_class_by_package_type
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
@@ -45,6 +46,7 @@ from vulnerabilities.package_managers import ComposerVersionAPI
 from vulnerabilities.package_managers import PypiVersionAPI
 from vulnerabilities.package_managers import RubyVersionAPI
 from vulnerabilities.severity_systems import scoring_systems
+from vulnerabilities.helpers import nearest_patched_package
 
 # set of all possible values of first '%s' = {'MAVEN','COMPOSER', 'NUGET', 'RUBYGEMS', 'PYPI'}
 # second '%s' is interesting, it will have the value '' for the first request,
@@ -200,20 +202,20 @@ class GitHubAPIDataSource(DataSource):
                         ns, pkg_name = self.process_name(ecosystem, name)
                         aff_range = adv["node"]["vulnerableVersionRange"]
                         aff_vers, unaff_vers = self.categorize_versions(
-                            aff_range, self.version_api.get(name)
+                            self.version_api.package_type, aff_range, self.version_api.get(name)
                         )
-                        affected_purls = {
+                        affected_purls = [
                             PackageURL(name=pkg_name, namespace=ns, version=version, type=pkg_type)
                             for version in aff_vers
-                        }
+                        ]
 
-                        unaffected_purls = {
+                        unaffected_purls = [
                             PackageURL(name=pkg_name, namespace=ns, version=version, type=pkg_type)
                             for version in unaff_vers
-                        }
+                        ]
                     else:
-                        affected_purls = set()
-                        unaffected_purls = set()
+                        affected_purls = []
+                        unaffected_purls = []
 
                     cve_ids = set()
                     references = self.extract_references(adv["node"]["advisory"]["references"])
@@ -243,8 +245,9 @@ class GitHubAPIDataSource(DataSource):
                             Advisory(
                                 vulnerability_id=cve_id,
                                 summary=vuln_desc,
-                                impacted_package_urls=affected_purls,
-                                resolved_package_urls=unaffected_purls,
+                                affected_packages=nearest_patched_package(
+                                    affected_purls, unaffected_purls
+                                ),
                                 references=references,
                             )
                         )
@@ -252,8 +255,19 @@ class GitHubAPIDataSource(DataSource):
 
     @staticmethod
     def categorize_versions(
-        version_range: str, all_versions: Set[str]
-    ) -> Tuple[Set[str], Set[str]]:  # nopep8
-        version_range = RangeSpecifier(version_range)
-        affected_versions = {version for version in all_versions if version in version_range}
-        return (affected_versions, all_versions - affected_versions)
+        package_type: str, version_range: str, all_versions: Set[str]
+    ) -> Tuple[List[str], List[str]]:
+        version_class = version_class_by_package_type[package_type]
+        version_scheme = version_class.scheme
+        version_range = VersionSpecifier.from_scheme_version_spec_string(
+            version_scheme, version_range
+        )
+        affected_versions = []
+        unaffected_versions = []
+        for version in all_versions:
+            if version_class(version) in version_range:
+                affected_versions.append(version)
+            else:
+                unaffected_versions.append(version)
+
+        return (affected_versions, unaffected_versions)

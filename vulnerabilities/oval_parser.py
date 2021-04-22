@@ -28,8 +28,6 @@ from typing import Tuple
 from typing import Set
 import xml.etree.ElementTree as ET
 
-from dephell_specifier import RangeSpecifier
-
 from vulnerabilities.lib_oval import OvalDefinition
 from vulnerabilities.lib_oval import OvalDocument
 from vulnerabilities.lib_oval import OvalObject
@@ -68,7 +66,7 @@ class OvalParser:
                     continue
                 test_data = {"package_list": []}
                 test_data["package_list"].extend(self.get_pkgs_from_obj(test_obj))
-                version_ranges = self.get_version_ranges_from_state(test_state)
+                version_ranges = self.get_version_range_from_state(test_state)
                 test_data["version_ranges"] = version_ranges
                 definition_data["test_data"].append(test_data)
 
@@ -131,9 +129,9 @@ class OvalParser:
 
         return pkg_list
 
-    def get_version_ranges_from_state(self, state: OvalState) -> Optional[RangeSpecifier]:
+    def get_version_range_from_state(self, state: OvalState) -> Optional[str]:
         """
-        Return a version range(s)? from a state
+        Return a version range from a state
         """
         for var in state.element:
             operation = var.get("operation")
@@ -160,7 +158,7 @@ class OvalParser:
             if version_range in x_version_ranges:
                 version_range = x_version_ranges[version_range]
 
-            return RangeSpecifier(version_range)
+            return version_range
 
     @staticmethod
     def get_urls_from_definition(definition: OvalDefinition) -> Set[str]:

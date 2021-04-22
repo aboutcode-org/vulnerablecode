@@ -22,19 +22,19 @@
 
 import asyncio
 import dataclasses
-import json
 
 import requests
 from packageurl import PackageURL
 from bs4 import BeautifulSoup
-from dephell_specifier import RangeSpecifier
+from univers.version_specifier import VersionSpecifier
+from univers.versions import SemverVersion
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
-from vulnerabilities.helpers import create_etag
+from vulnerabilities.helpers import nearest_patched_package
 
 
 @dataclasses.dataclass
@@ -58,10 +58,9 @@ class NginxDataSource(DataSource):
 
     def updated_advisories(self):
         advisories = []
-        if create_etag(data_src=self, url=self.url, etag_key="ETag"):
-            self.set_api()
-            data = requests.get(self.url).content
-            advisories.extend(self.to_advisories(data))
+        self.set_api()
+        data = requests.get(self.url).content
+        advisories.extend(self.to_advisories(data))
         return self.batch_advisories(advisories)
 
     def to_advisories(self, data):
@@ -111,8 +110,7 @@ class NginxDataSource(DataSource):
                 Advisory(
                     vulnerability_id=cve_id,
                     summary=summary,
-                    impacted_package_urls=vulnerable_packages,
-                    resolved_package_urls=fixed_packages,
+                    affected_packages=nearest_patched_package(vulnerable_packages, fixed_packages),
                 )
             )
 
@@ -126,19 +124,21 @@ class NginxDataSource(DataSource):
         raw_ranges = version_info.split(",")
         version_ranges = []
         for rng in raw_ranges:
-            # Eg. "1.7.3+" gets converted to RangeSpecifier("^1.7.3")
+            # Eg. "1.7.3+" gets converted to VersionSpecifier.from_scheme_version_spec_string("semver","^1.7.3")
             # The advisory in this case uses `+` in the sense that any version
             # with greater or equal `minor` version satisfies the range.
             # "1.7.4" satisifes "1.7.3+", but "1.8.4" does not. "1.7.3+" has same
             # semantics as that of "^1.7.3"
 
-            version_ranges.append(RangeSpecifier("^" + rng[:-1]))
+            version_ranges.append(
+                VersionSpecifier.from_scheme_version_spec_string("semver", "^" + rng[:-1])
+            )
 
         valid_versions = find_valid_versions(self.version_api.get("nginx/nginx"), version_ranges)
 
-        return {
+        return [
             PackageURL(type="generic", name="nginx", version=version) for version in valid_versions
-        }
+        ]
 
     def extract_vuln_pkgs(self, vuln_info):
         vuln_status, version_infos = vuln_info.split(": ")
@@ -148,32 +148,43 @@ class NginxDataSource(DataSource):
         version_ranges = []
         windows_only = False
         for version_info in version_infos.split(", "):
+            if version_info == "all":
+                # This is misleading since eventually some version get fixed.
+                continue
+
             if "-" not in version_info:
                 # These are discrete versions
-                version_ranges.append(RangeSpecifier(version_info[0]))
+                version_ranges.append(
+                    VersionSpecifier.from_scheme_version_spec_string("semver", version_info[0])
+                )
                 continue
 
             windows_only = "nginx/Windows" in version_info
             version_info = version_info.replace("nginx/Windows", "")
             lower_bound, upper_bound = version_info.split("-")
 
-            version_ranges.append(RangeSpecifier(f">={lower_bound},<={upper_bound}"))
+            version_ranges.append(
+                VersionSpecifier.from_scheme_version_spec_string(
+                    "semver", f">={lower_bound},<={upper_bound}"
+                )
+            )
 
         valid_versions = find_valid_versions(self.version_api.get("nginx/nginx"), version_ranges)
         qualifiers = {}
         if windows_only:
             qualifiers["os"] = "windows"
 
-        return {
+        return [
             PackageURL(type="generic", name="nginx", version=version, qualifiers=qualifiers)
             for version in valid_versions
-        }
+        ]
 
 
 def find_valid_versions(versions, version_ranges):
     valid_versions = set()
     for version in versions:
-        if any([version in ver_range for ver_range in version_ranges]):
+        version_obj = SemverVersion(version)
+        if any([version_obj in ver_range for ver_range in version_ranges]):
             valid_versions.add(version)
 
     return valid_versions

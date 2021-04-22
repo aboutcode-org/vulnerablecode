@@ -27,7 +27,8 @@ import re
 
 import requests
 from bs4 import BeautifulSoup
-from dephell_specifier import RangeSpecifier
+from univers.version_specifier import VersionSpecifier
+from univers.versions import MavenVersion
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
@@ -35,6 +36,7 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
 from vulnerabilities.helpers import create_etag
+from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.package_managers import MavenVersionAPI
 
 
@@ -101,7 +103,7 @@ class ApacheTomcatDataSource(DataSource):
                                 type="maven", namespace="apache", name="tomcat", version=version
                             )
                             for version in self.version_api.get("org.apache.tomcat:tomcat")
-                            if version in version_range
+                            if MavenVersion(version) in version_range
                         ]
                     )
 
@@ -114,8 +116,7 @@ class ApacheTomcatDataSource(DataSource):
                 advisories.append(
                     Advisory(
                         summary="",
-                        impacted_package_urls=affected_packages,
-                        resolved_package_urls=fixed_package,
+                        affected_packages=nearest_patched_package(affected_packages, fixed_package),
                         vulnerability_id=cve_id,
                         references=references,
                     )
@@ -126,16 +127,21 @@ class ApacheTomcatDataSource(DataSource):
 
 def parse_version_ranges(string):
     """
-    This method yields Rangespecifier objects obtained by
+    This method yields VersionSpecifier objects obtained by
     parsing `string`.
-    >> list(parse_version_ranges("Affects: 9.0.0.M1 to 9.0.0.M9"))
-    [RangeSpecifier(<=9.0.0.M9,>=9.0.0.M1)]
-
-    >> list(parse_version_ranges("Affects: 9.0.0.M1"))
-    [RangeSpecifier(>=9.0.0.M1<=9.0.0.M1)]
-
-    >> list(parse_version_ranges("Affects: 9.0.0.M1 to 9.0.0.M9, 1.2.3 to 3.4.5"))
-    [RangeSpecifier(<=9.0.0.M9,>=9.0.0.M1), RangeSpecifier(<=3.4.5,>=1.2.3)]
+    >>> list(parse_version_ranges("Affects: 9.0.0.M1 to 9.0.0.M9")) == [
+    ...     VersionSpecifier.from_scheme_version_spec_string('maven','<=9.0.0.M9,>=9.0.0.M1')
+    ...  ]
+    True
+    >>> list(parse_version_ranges("Affects: 9.0.0.M1")) == [
+    ...     VersionSpecifier.from_scheme_version_spec_string('maven','>=9.0.0.M1,<=9.0.0.M1')
+    ...  ]
+    True
+    >>> list(parse_version_ranges("Affects: 9.0.0.M1 to 9.0.0.M9, 1.2.3 to 3.4.5")) == [
+    ...     VersionSpecifier.from_scheme_version_spec_string('maven','<=9.0.0.M9,>=9.0.0.M1'),
+    ...     VersionSpecifier.from_scheme_version_spec_string('maven','<=3.4.5,>=1.2.3')
+    ...  ]
+    True
     """
     version_rng_txt = string.split("Affects:")[-1].strip()
     version_ranges = version_rng_txt.split(",")
@@ -147,4 +153,6 @@ def parse_version_ranges(string):
         else:
             lower_bound = upper_bound = version_range
 
-        yield RangeSpecifier(">=" + lower_bound + "<=" + upper_bound)
+        yield VersionSpecifier.from_scheme_version_spec_string(
+            "maven", f">={lower_bound},<={upper_bound}"
+        )

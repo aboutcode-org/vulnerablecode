@@ -24,15 +24,16 @@ import asyncio
 from typing import Set
 from typing import List
 
-from dephell_specifier import RangeSpecifier
-from dephell_specifier.range_specifier import InvalidSpecifier
 from packageurl import PackageURL
+from univers.version_specifier import VersionSpecifier
+from univers.versions import SemverVersion
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import RubyVersionAPI
 from vulnerabilities.helpers import load_yaml
+from vulnerabilities.helpers import nearest_patched_package
 
 
 class RubyDataSource(GitDataSource):
@@ -81,7 +82,6 @@ class RubyDataSource(GitDataSource):
     def process_file(self, path) -> List[Advisory]:
         record = load_yaml(path)
         package_name = record.get("gem")
-
         if not package_name:
             return
 
@@ -103,23 +103,23 @@ class RubyDataSource(GitDataSource):
         all_vers = self.pkg_manager_api.get(package_name)
         safe_versions, affected_versions = self.categorize_versions(all_vers, safe_version_ranges)
 
-        impacted_purls = {
+        impacted_purls = [
             PackageURL(
                 name=package_name,
                 type="gem",
                 version=version,
             )
             for version in affected_versions
-        }
+        ]
 
-        resolved_purls = {
+        resolved_purls = [
             PackageURL(
                 name=package_name,
                 type="gem",
                 version=version,
             )
             for version in safe_versions
-        }
+        ]
 
         references = []
         if record.get("url"):
@@ -127,8 +127,7 @@ class RubyDataSource(GitDataSource):
 
         return Advisory(
             summary=record.get("description", ""),
-            impacted_package_urls=impacted_purls,
-            resolved_package_urls=resolved_purls,
+            affected_packages=nearest_patched_package(impacted_purls, resolved_purls),
             references=references,
             vulnerability_id=cve_id,
         )
@@ -137,17 +136,22 @@ class RubyDataSource(GitDataSource):
     def categorize_versions(all_versions, unaffected_version_ranges):
 
         for id, elem in enumerate(unaffected_version_ranges):
-            try:
-                unaffected_version_ranges[id] = RangeSpecifier(elem.replace(" ", ""))
-            except InvalidSpecifier:
-                continue
+            unaffected_version_ranges[id] = VersionSpecifier.from_scheme_version_spec_string(
+                "semver", elem
+            )
 
-        safe_versions = set()
+        safe_versions = []
+        vulnerable_versions = []
         for i in all_versions:
+            vobj = SemverVersion(i)
+            is_vulnerable = False
             for ver_rng in unaffected_version_ranges:
+                if vobj in ver_rng:
+                    safe_versions.append(i)
+                    is_vulnerable = True
+                    break
 
-                if i in ver_rng:
+            if not is_vulnerable:
+                vulnerable_versions.append(i)
 
-                    safe_versions.add(i)
-
-        return (safe_versions, all_versions - safe_versions)
+        return safe_versions, vulnerable_versions

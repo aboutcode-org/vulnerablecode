@@ -25,6 +25,7 @@ import dataclasses
 import json
 import re
 from typing import Optional
+from typing import List
 
 import requests
 import toml
@@ -41,7 +42,7 @@ find_all_cve = cve_regex.findall
 
 
 @dataclasses.dataclass(order=True, frozen=True)
-class AffectedPackageWithPatchedPackage:
+class AffectedPackage:
     vulnerable_package: PackageURL
     patched_package: Optional[PackageURL] = None
 
@@ -120,11 +121,22 @@ def requests_with_5xx_retry(max_retries=5, backoff_factor=0.5):
     return session
 
 
-def nearest_patched_package(vulnerable_packages, resolved_packages):
-    # This class is used to  get around bisect module's lack of supplying custom
-    # compartor. Get rid of this once we use python 3.10 which supports this.
-    # See https://github.com/python/cpython/pull/20556
+def nearest_patched_package(
+    vulnerable_packages: List[PackageURL], resolved_packages: List[PackageURL]
+) -> List[AffectedPackage]:
+    """
+    Parameters:
+    :vulnerable_packages(list)
+    :resolved_packages(list)
+    """
+
     class PackageURLWithVersionComparator:
+        """
+        This class is used to  get around bisect module's lack of supplying custom
+        compartor. Get rid of this once we use python 3.10 which supports this.
+        See https://github.com/python/cpython/pull/20556
+        """
+
         def __init__(self, package):
             self.package = package
             self.version_object = version_class_by_package_type[package.type](package.version)
@@ -152,7 +164,7 @@ def nearest_patched_package(vulnerable_packages, resolved_packages):
             patched_package = resolved_packages[patched_package_index].package
 
         affected_package_with_patched_package_objects.append(
-            AffectedPackageWithPatchedPackage(
+            AffectedPackage(
                 vulnerable_package=vulnerable_package.package, patched_package=patched_package
             )
         )

@@ -110,9 +110,7 @@ class NginxDataSource(DataSource):
                 Advisory(
                     vulnerability_id=cve_id,
                     summary=summary,
-                    affected_packages_with_patched_package=nearest_patched_package(
-                        vulnerable_packages, fixed_packages
-                    ),
+                    affected_packages=nearest_patched_package(vulnerable_packages, fixed_packages),
                 )
             )
 

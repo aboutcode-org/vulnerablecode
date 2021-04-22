@@ -7,7 +7,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.importers.debian_oval import DebianOvalDataSource
 from vulnerabilities.data_source import Advisory
-from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
+from vulnerabilities.helpers import AffectedPackage
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -38,8 +38,8 @@ class TestDebianOvalDataSource(unittest.TestCase):
             Advisory(
                 summary="denial of service",
                 vulnerability_id="CVE-2002-2443",
-                affected_packages_with_patched_package=[
-                    AffectedPackageWithPatchedPackage(
+                affected_packages=[
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="deb",
                             namespace=None,
@@ -63,8 +63,8 @@ class TestDebianOvalDataSource(unittest.TestCase):
             Advisory(
                 summary="security update",
                 vulnerability_id="CVE-2001-1593",
-                affected_packages_with_patched_package=[
-                    AffectedPackageWithPatchedPackage(
+                affected_packages=[
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="deb",
                             namespace=None,
@@ -75,7 +75,7 @@ class TestDebianOvalDataSource(unittest.TestCase):
                         ),
                         patched_package=None,
                     ),
-                    AffectedPackageWithPatchedPackage(
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="deb",
                             namespace=None,
@@ -86,7 +86,7 @@ class TestDebianOvalDataSource(unittest.TestCase):
                         ),
                         patched_package=None,
                     ),
-                    AffectedPackageWithPatchedPackage(
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="deb",
                             namespace=None,

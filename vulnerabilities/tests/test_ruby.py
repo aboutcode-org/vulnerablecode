@@ -33,7 +33,7 @@ from vulnerabilities.data_source import GitDataSourceConfiguration
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import RubyVersionAPI
-from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
+from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "ruby")
@@ -62,8 +62,8 @@ class RubyDataSourceTest(TestCase):
             Advisory(
                 summary="An issue was discovered in rack-protection/lib/rack/protection/path_traversal.rb\nin Sinatra 2.x before 2.0.1 on Windows. Path traversal is possible via backslash\ncharacters.\n",
                 vulnerability_id="CVE-2018-7212",
-                affected_packages_with_patched_package=[
-                    AffectedPackageWithPatchedPackage(
+                affected_packages=[
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="gem",
                             namespace=None,
@@ -89,8 +89,8 @@ class RubyDataSourceTest(TestCase):
             Advisory(
                 summary="Sinatra before 2.0.2 has XSS via the 400 Bad Request page that occurs upon a params parser exception.\n",
                 vulnerability_id="CVE-2018-11627",
-                affected_packages_with_patched_package=[
-                    AffectedPackageWithPatchedPackage(
+                affected_packages=[
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="gem",
                             namespace=None,
@@ -104,7 +104,7 @@ class RubyDataSourceTest(TestCase):
                             version="2.0.3",
                         ),
                     ),
-                    AffectedPackageWithPatchedPackage(
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="gem",
                             namespace=None,

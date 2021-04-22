@@ -154,9 +154,7 @@ class DebianDataSource(DataSource):
             advisories.append(
                 Advisory(
                     vulnerability_id=cve_id,
-                    affected_packages_with_patched_package=nearest_patched_package(
-                        impacted_purls, resolved_purls
-                    ),
+                    affected_packages=nearest_patched_package(impacted_purls, resolved_purls),
                     summary=record.get("description", ""),
                     references=references,
                 )

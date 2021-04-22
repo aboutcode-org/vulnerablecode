@@ -162,7 +162,7 @@ class IstioDataSource(GitDataSource):
                 data["release_ranges"]
             )
 
-            affected_packages_with_patched_package = []
+            affected_packages = []
 
             safe_purls_golang = [
                 PackageURL(type="golang", name="istio", version=version)
@@ -174,9 +174,7 @@ class IstioDataSource(GitDataSource):
                 for version in vuln_pkg_versions
             ]
 
-            affected_packages_with_patched_package.extend(
-                nearest_patched_package(vuln_purls_golang, safe_purls_golang)
-            )
+            affected_packages.extend(nearest_patched_package(vuln_purls_golang, safe_purls_golang))
 
             safe_purls_github = [
                 PackageURL(type="github", name="istio", version=version)
@@ -188,15 +186,13 @@ class IstioDataSource(GitDataSource):
                 for version in vuln_pkg_versions
             ]
 
-            affected_packages_with_patched_package.extend(
-                nearest_patched_package(vuln_purls_github, safe_purls_github)
-            )
+            affected_packages.extend(nearest_patched_package(vuln_purls_github, safe_purls_github))
 
             advisories.append(
                 Advisory(
                     vulnerability_id=cve_id,
                     summary=data["description"],
-                    affected_packages_with_patched_package=affected_packages_with_patched_package,
+                    affected_packages=affected_packages,
                 )
             )
 

@@ -30,7 +30,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory, Reference
 from vulnerabilities.importers.istio import IstioDataSource
 from vulnerabilities.package_managers import GitHubTagsAPI
-from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
+from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -82,8 +82,8 @@ class TestIstioDataSource(TestCase):
             Advisory(
                 summary="Incorrect access control.",
                 vulnerability_id="CVE-2019-12243",
-                affected_packages_with_patched_package=[
-                    AffectedPackageWithPatchedPackage(
+                affected_packages=[
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="golang",
                             name="istio",
@@ -95,7 +95,7 @@ class TestIstioDataSource(TestCase):
                             version="1.1.17",
                         ),
                     ),
-                    AffectedPackageWithPatchedPackage(
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="golang",
                             name="istio",
@@ -107,7 +107,7 @@ class TestIstioDataSource(TestCase):
                             version="1.1.17",
                         ),
                     ),
-                    AffectedPackageWithPatchedPackage(
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="golang",
                             name="istio",
@@ -119,7 +119,7 @@ class TestIstioDataSource(TestCase):
                             version="1.2.7",
                         ),
                     ),
-                    AffectedPackageWithPatchedPackage(
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="golang",
                             name="istio",
@@ -131,7 +131,7 @@ class TestIstioDataSource(TestCase):
                             version="1.3.2",
                         ),
                     ),
-                    AffectedPackageWithPatchedPackage(
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="golang",
                             name="istio",
@@ -143,7 +143,7 @@ class TestIstioDataSource(TestCase):
                             version="1.3.2",
                         ),
                     ),
-                    AffectedPackageWithPatchedPackage(
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="github",
                             name="istio",
@@ -155,7 +155,7 @@ class TestIstioDataSource(TestCase):
                             version="1.1.17",
                         ),
                     ),
-                    AffectedPackageWithPatchedPackage(
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="github",
                             name="istio",
@@ -167,7 +167,7 @@ class TestIstioDataSource(TestCase):
                             version="1.1.17",
                         ),
                     ),
-                    AffectedPackageWithPatchedPackage(
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="github",
                             name="istio",
@@ -179,7 +179,7 @@ class TestIstioDataSource(TestCase):
                             version="1.2.7",
                         ),
                     ),
-                    AffectedPackageWithPatchedPackage(
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="github",
                             name="istio",
@@ -191,7 +191,7 @@ class TestIstioDataSource(TestCase):
                             version="1.3.2",
                         ),
                     ),
-                    AffectedPackageWithPatchedPackage(
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="github",
                             name="istio",

@@ -133,7 +133,7 @@ def process_advisories(data_source: DataSource) -> None:
                             defaults={"value": str(score.value)},
                         )
 
-                for aff_pkg_with_patched_pkg in advisory.affected_packages_with_patched_package:
+                for aff_pkg_with_patched_pkg in advisory.affected_packages:
                     vulnerable_package, _ = _get_or_create_package(
                         aff_pkg_with_patched_pkg.vulnerable_package
                     )

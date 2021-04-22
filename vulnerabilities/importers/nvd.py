@@ -92,7 +92,6 @@ class NVDDataSource(DataSource):
                 vulnerability_id=cve_id,
                 summary=summary,
                 references=references,
-                impacted_package_urls=[],  # nopep8
             )
 
     @staticmethod

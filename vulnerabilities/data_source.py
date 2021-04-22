@@ -20,13 +20,14 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import pickle
 import dataclasses
 import logging
 import os
 import shutil
 import tempfile
 import traceback
+import xml.etree.ElementTree as ET
+from binaryornot.helpers import is_binary_string
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -37,9 +38,7 @@ from typing import Mapping
 from typing import Optional
 from typing import Set
 from typing import Tuple
-import xml.etree.ElementTree as ET
-
-import pygit2
+from git import Repo, DiffIndex
 from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 from univers.versions import version_class_by_package_type
@@ -47,6 +46,8 @@ from univers.versions import version_class_by_package_type
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.helpers import is_cve
+from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.helpers import AffectedPackage
 
 logger = logging.getLogger(__name__)
 
@@ -87,8 +88,7 @@ class Advisory:
 
     summary: str
     vulnerability_id: Optional[str] = None
-    impacted_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
-    resolved_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
+    affected_packages: List[AffectedPackage] = dataclasses.field(default_factory=list)
     references: List[Reference] = dataclasses.field(default_factory=list)
 
     def __post_init__(self):
@@ -96,8 +96,6 @@ class Advisory:
             raise ValueError("CVE expected, found: {}".format(self.vulnerability_id))
 
     def normalized(self):
-        impacted_package_urls = {package_url for package_url in self.impacted_package_urls}
-        resolved_package_urls = {package_url for package_url in self.resolved_package_urls}
         references = sorted(
             self.references, key=lambda reference: (reference.reference_id, reference.url)
         )
@@ -107,8 +105,7 @@ class Advisory:
         return Advisory(
             summary=self.summary,
             vulnerability_id=self.vulnerability_id,
-            impacted_package_urls=impacted_package_urls,
-            resolved_package_urls=resolved_package_urls,
+            affected_packages=sorted(self.affected_packages),
             references=references,
         )
 
@@ -321,34 +318,34 @@ class GitDataSource(DataSource):
         file_ext: Optional[str],
     ) -> Tuple[Set[str], Set[str]]:
 
-        previous_commit = None
         added_files, updated_files = set(), set()
 
-        for commit in self._repo.walk(self._repo.head.target, pygit2.GIT_SORT_TIME):
-            commit_time = commit.commit_time + commit.commit_time_offset  # convert to UTC
-
-            if commit_time < self.cutoff_timestamp:
+        # find the most ancient commit we need to diff with
+        cutoff_commit = None
+        for commit in self._repo.iter_commits(self._repo.head):
+            if commit.committed_date < self.cutoff_timestamp:
                 break
+            cutoff_commit = commit
 
-            if previous_commit is None:
-                previous_commit = commit
+        if cutoff_commit is None:
+            return added_files, updated_files
+
+        def _is_binary(d: DiffIndex):
+            return is_binary_string(d.b_blob.data_stream.read(1024))
+
+        for d in cutoff_commit.diff(self._repo.head.commit):
+            if not _include_file(d.b_path, subdir, recursive, file_ext) or _is_binary(d):
                 continue
 
-            for d in commit.tree.diff_to_tree(previous_commit.tree).deltas:
-                if not _include_file(d.new_file.path, subdir, recursive, file_ext) or d.is_binary:
-                    continue
-
-                abspath = os.path.join(self.config.working_directory, d.new_file.path)
-                # TODO
-                # Just filtering on the two status values for "added" and "modified" is too
-                # simplistic. This does not cover file renames, copies &
-                # deletions.
-                if d.status == pygit2.GIT_DELTA_ADDED:
+            abspath = os.path.join(self.config.working_directory, d.b_path)
+            if d.new_file:
+                added_files.add(abspath)
+            elif d.a_blob and d.b_blob:
+                if d.a_path != d.b_path:
+                    # consider moved files as added
                     added_files.add(abspath)
-                elif d.status == pygit2.GIT_DELTA_MODIFIED:
+                elif d.a_blob != d.b_blob:
                     updated_files.add(abspath)
-
-            previous_commit = commit
 
         # Any file that has been added and then updated inside the window of the git history we
         # looked at, should be considered "added", not "updated", since it does not exist in the
@@ -366,19 +363,16 @@ class GitDataSource(DataSource):
             os.mkdir(self.config.working_directory)
 
     def _ensure_repository(self) -> None:
-        repodir = pygit2.discover_repository(self.config.working_directory)
-        if repodir is None:
+        if not os.path.exists(os.path.join(self.config.working_directory, ".git")):
             self._clone_repository()
             return
-
-        self._repo = pygit2.Repository(repodir)
+        self._repo = Repo(self.config.working_directory)
 
         if self.config.branch is None:
-            self.config.branch = self._repo.head.shorthand
-        branch = self._repo.branches[self.config.branch]
-
-        if not branch.is_checked_out():
-            self._repo.checkout(branch)
+            self.config.branch = str(self._repo.active_branch)
+        branch = self.config.branch
+        self._repo.head.reference = self._repo.heads[branch]
+        self._repo.head.reset(index=True, working_tree=True)
 
         remote = self._find_or_add_remote()
         self._update_from_remote(remote, branch)
@@ -386,9 +380,9 @@ class GitDataSource(DataSource):
     def _clone_repository(self) -> None:
         kwargs = {}
         if self.config.branch:
-            kwargs["checkout_branch"] = self.config.branch
+            kwargs["branch"] = self.config.branch
 
-        self._repo = pygit2.clone_repository(
+        self._repo = Repo.clone_from(
             self.config.repository_url, self.config.working_directory, **kwargs
         )
 
@@ -400,20 +394,19 @@ class GitDataSource(DataSource):
                 break
 
         if remote is None:
-            remote = self._repo.remotes.create(
-                "added_by_vulnerablecode", self.config.repository_url
+            remote = self._repo.create_remote(
+                "added_by_vulnerablecode", url=self.config.repository_url
             )
 
         return remote
 
     def _update_from_remote(self, remote, branch) -> None:
-        progress = remote.fetch()
-        if progress.received_objects == 0:
+        fetch_info = remote.fetch()
+        if len(fetch_info) == 0:
             return
-
-        remote_branch = self._repo.branches[f"{remote.name}/{self.config.branch}"]
-        branch.set_target(remote_branch.target)
-        self._repo.checkout(branch, strategy=pygit2.GIT_CHECKOUT_FORCE)
+        branch = self._repo.branches[branch]
+        branch.set_reference(remote.refs[branch.name])
+        self._repo.head.reset(index=True, working_tree=True)
 
 
 def _include_file(
@@ -531,9 +524,8 @@ class OvalDataSource(DataSource):
             # connected/linked to an OvalDefinition
             vuln_id = definition_data["vuln_id"]
             description = definition_data["description"]
-            affected_purls = set()
-            safe_purls = set()
             references = [Reference(url=url) for url in definition_data["reference_urls"]]
+            affected_packages = []
             for test_data in definition_data["test_data"]:
                 for package_name in test_data["package_list"]:
                     if package_name and len(package_name) >= 50:
@@ -552,35 +544,31 @@ class OvalDataSource(DataSource):
                     # FIXME: we should not drop data this way
                     # This filter is for filtering out long versions.
                     # 50 is limit because that's what db permits atm.
-                    all_versions = set(filter(lambda x: len(x) < 50, all_versions))
+                    all_versions = [version for version in all_versions if len(version) < 50]
                     if not all_versions:
                         continue
-                    affected_versions = set(
-                        filter(lambda x: version_class(x) in affected_version_range, all_versions)
+
+                    affected_purls = []
+                    safe_purls = []
+                    for version in all_versions:
+                        purl = self.create_purl(
+                            pkg_name=package_name,
+                            pkg_version=version,
+                            pkg_data=pkg_metadata,
+                        )
+                        if version_class(version) in affected_version_range:
+                            affected_purls.append(purl)
+                        else:
+                            safe_purls.append(purl)
+
+                    affected_packages.extend(
+                        nearest_patched_package(affected_purls, safe_purls),
                     )
-                    safe_versions = all_versions - affected_versions
-
-                    for version in affected_versions:
-                        purl = self.create_purl(
-                            pkg_name=package_name,
-                            pkg_version=version,
-                            pkg_data=pkg_metadata,
-                        )
-                        affected_purls.add(purl)
-
-                    for version in safe_versions:
-                        purl = self.create_purl(
-                            pkg_name=package_name,
-                            pkg_version=version,
-                            pkg_data=pkg_metadata,
-                        )
-                        safe_purls.add(purl)
 
             all_adv.append(
                 Advisory(
                     summary=description,
-                    impacted_package_urls=affected_purls,
-                    resolved_package_urls=safe_purls,
+                    affected_packages=affected_packages,
                     vulnerability_id=vuln_id,
                     references=references,
                 )

@@ -28,9 +28,9 @@ from typing import List
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import GitDataSource
-from vulnerabilities.data_source import GitDataSourceConfiguration
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
+from vulnerabilities.helpers import AffectedPackage
 
 
 class RetireDotnetDataSource(GitDataSource):
@@ -77,15 +77,18 @@ class RetireDotnetDataSource(GitDataSource):
             else:
                 return
 
-            affected_purls = set()
-            fixed_purls = set()
-
+            affected_packages = []
             for pkg in json_doc["packages"]:
-                affected_purls.add(
-                    PackageURL(name=pkg["id"], version=pkg["affected"], type="nuget")
+                affected_packages.append(
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            name=pkg["id"], version=pkg["affected"], type="nuget"
+                        ),
+                        patched_package=PackageURL(
+                            name=pkg["id"], version=pkg["fix"], type="nuget"
+                        ),
+                    )
                 )
-
-                fixed_purls.add(PackageURL(name=pkg["id"], version=pkg["fix"], type="nuget"))
 
             vuln_reference = [
                 Reference(
@@ -94,9 +97,8 @@ class RetireDotnetDataSource(GitDataSource):
             ]
 
             return Advisory(
-                summary=json_doc["description"],
-                impacted_package_urls=affected_purls,
-                resolved_package_urls=fixed_purls,
                 vulnerability_id=vuln_id,
+                summary=json_doc["description"],
+                affected_packages=affected_packages,
                 references=vuln_reference,
             )

@@ -31,6 +31,7 @@ from packageurl import PackageURL
 from vulnerabilities.importers.gentoo import GentooDataSource
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
+from vulnerabilities.helpers import AffectedPackage
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -99,26 +100,22 @@ class TestGentooDataSource(unittest.TestCase):
                     "Subversion may allow remote\n    "
                     "attackers to execute arbitrary code.\n  "
                 ),
-                impacted_package_urls={
-                    PackageURL(
-                        type="ebuild",
-                        namespace="dev-vcs",
-                        name="subversion",
-                        version="0.1.1",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
+                affected_packages=[
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="ebuild",
+                            namespace="dev-vcs",
+                            name="subversion",
+                            version="0.1.1",
+                        ),
+                        patched_package=PackageURL(
+                            type="ebuild",
+                            namespace="dev-vcs",
+                            name="subversion",
+                            version="1.9.7",
+                        ),
                     )
-                },
-                resolved_package_urls={
-                    PackageURL(
-                        type="ebuild",
-                        namespace="dev-vcs",
-                        name="subversion",
-                        version="1.9.7",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    )
-                },
+                ],
                 references=[
                     Reference(
                         url="https://security.gentoo.org/glsa/201709-09",

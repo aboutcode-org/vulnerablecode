@@ -21,15 +21,11 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
-import re
 from itertools import chain
 from typing import Optional
-from typing import Mapping
 from typing import List
 from typing import Set
 from typing import Tuple
-from urllib.error import HTTPError
-from urllib.request import urlopen
 
 import toml
 from univers.version_specifier import VersionSpecifier
@@ -41,7 +37,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import CratesVersionAPI
-from vulnerabilities.helpers import load_toml
+from vulnerabilities.helpers import nearest_patched_package
 
 
 class RustDataSource(GitDataSource):
@@ -127,8 +123,8 @@ class RustDataSource(GitDataSource):
             all_versions, unaffected_ranges, affected_ranges, resolved_ranges
         )
 
-        impacted_purls = {PackageURL(type="cargo", name=crate_name, version=v) for v in affected}
-        resolved_purls = {PackageURL(type="cargo", name=crate_name, version=v) for v in unaffected}
+        impacted_purls = [PackageURL(type="cargo", name=crate_name, version=v) for v in affected]
+        resolved_purls = [PackageURL(type="cargo", name=crate_name, version=v) for v in unaffected]
 
         cve_id = None
         if "aliases" in advisory:
@@ -146,8 +142,7 @@ class RustDataSource(GitDataSource):
 
         return Advisory(
             summary=advisory.get("description", ""),
-            impacted_package_urls=impacted_purls,
-            resolved_package_urls=resolved_purls,
+            affected_packages=nearest_patched_package(impacted_purls, resolved_purls),
             vulnerability_id=cve_id,
             references=references,
         )

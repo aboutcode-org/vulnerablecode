@@ -97,13 +97,13 @@ IMPORTER_REGISTRY = [
         "data_source": "RetireDotnetDataSource",
         "data_source_cfg": {"repository_url": "https://github.com/RetireNet/Packages.git"},
     },
-    {
-        "name": "suse_backports",
-        "license": "",
-        "last_run": None,
-        "data_source": "SUSEBackportsDataSource",
-        "data_source_cfg": {"url": "http://ftp.suse.com/pub/projects/security/yaml/", "etags": {}},
-    },
+    # {
+    #     "name": "suse_backports",
+    #     "license": "",
+    #     "last_run": None,
+    #     "data_source": "SUSEBackportsDataSource",
+    #     "data_source_cfg": {"url": "http://ftp.suse.com/pub/projects/security/yaml/", "etags": {}},
+    # },
     {
         "name": "suse_scores",
         "license": "",

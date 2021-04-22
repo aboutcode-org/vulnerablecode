@@ -20,14 +20,16 @@
 #  VulnerableCode is a free software code from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from packageurl import PackageURL
 import requests
+from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.helpers import requests_with_5xx_retry
 from vulnerabilities.severity_systems import scoring_systems
 
 
@@ -41,6 +43,9 @@ class RedhatDataSource(DataSource):
     def updated_advisories(self):
         processed_advisories = list(map(to_advisory, self.redhat_cves))
         return self.batch_advisories(processed_advisories)
+
+
+requests_session = requests_with_5xx_retry(max_retries=5, backoff_factor=1)
 
 
 def fetch():
@@ -58,7 +63,7 @@ def fetch():
         current_url = url_template.format(page_no)
         try:
             print(f"Fetching: {current_url}")
-            response = requests.get(current_url)
+            response = requests_session.get(current_url)
             if response.status_code != requests.codes.ok:
                 # TODO: log me
                 print(f"Failed to fetch results from {current_url}")
@@ -90,7 +95,9 @@ def to_advisory(advisory_data):
     bugzilla = advisory_data.get("bugzilla")
     if bugzilla:
         url = "https://bugzilla.redhat.com/show_bug.cgi?id={}".format(bugzilla)
-        bugzilla_data = requests.get(f"https://bugzilla.redhat.com/rest/bug/{bugzilla}").json()
+        bugzilla_data = requests_session.get(
+            f"https://bugzilla.redhat.com/rest/bug/{bugzilla}"
+        ).json()
         if (
             bugzilla_data.get("bugs")
             and len(bugzilla_data["bugs"])
@@ -115,18 +122,24 @@ def to_advisory(advisory_data):
         # See https://access.redhat.com/articles/2130961 for more details.
 
         if "RHSA" in rh_adv.upper():
-            rhsa_data = requests.get(
+            rhsa_data = requests_session.get(
                 f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json"
             ).json()  # nopep8
-            value = rhsa_data["cvrfdoc"]["aggregate_severity"]
-            rhsa_aggregate_severity = VulnerabilitySeverity(
-                system=scoring_systems["rhas"],
-                value=value,
-            )
+
+            rhsa_aggregate_severities = []
+            if rhsa_data.get("cvrfdoc"):
+                # not all RHSA errata have a corresponding CVRF document
+                value = rhsa_data["cvrfdoc"]["aggregate_severity"]
+                rhsa_aggregate_severities.append(
+                    VulnerabilitySeverity(
+                        system=scoring_systems["rhas"],
+                        value=value,
+                    )
+                )
 
             references.append(
                 Reference(
-                    severities=[rhsa_aggregate_severity],
+                    severities=rhsa_aggregate_severities,
                     url="https://access.redhat.com/errata/{}".format(rh_adv),
                     reference_id=rh_adv,
                 )
@@ -158,7 +171,7 @@ def to_advisory(advisory_data):
     return Advisory(
         vulnerability_id=advisory_data["CVE"],
         summary=advisory_data["bugzilla_description"],
-        impacted_package_urls=affected_purls,
+        affected_packages=nearest_patched_package(affected_purls, []),
         references=references,
     )
 

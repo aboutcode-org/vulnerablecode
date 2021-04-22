@@ -30,6 +30,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory, Reference
 from vulnerabilities.importers.istio import IstioDataSource
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -44,15 +45,16 @@ class TestIstioDataSource(TestCase):
         cls.data_src.version_api = GitHubTagsAPI(
             {
                 "istio/istio": [
-                    "1.1.0-rc.0",
-                    "1.1.0-rc.1",
-                    "1.1.0-rc.2",
-                    "1.1.0-rc.3",
-                    "1.1.0-rc.4",
-                    "1.1.0-rc.5",
-                    "1.1.0-rc.6",
-                    "1.1.0-snapshot.2",
-                    "1.1.0-snapshot.3",
+                    "1.0.0",
+                    "1.1.0",
+                    "1.1.1",
+                    "1.1.17",
+                    "1.2.1",
+                    "1.2.7",
+                    "1.3.0",
+                    "1.3.1",
+                    "1.3.2",
+                    "1.9.1",
                 ]
             }
         )
@@ -78,105 +80,133 @@ class TestIstioDataSource(TestCase):
         path = os.path.join(BASE_DIR, "test_data/istio/test_file.md")
         expected_data = [
             Advisory(
-                summary=("Incorrect access control."),
-                impacted_package_urls={
-                    PackageURL(
-                        type="golang",
-                        name="istio",
-                        version="1.1.0-snapshot.2",
-                    ),
-                    PackageURL(
-                        type="golang",
-                        name="istio",
-                        version="1.1.0-snapshot.3",
-                    ),
-                    PackageURL(
-                        type="github",
-                        name="istio",
-                        version="1.1.0-snapshot.2",
-                    ),
-                    PackageURL(
-                        type="github",
-                        name="istio",
-                        version="1.1.0-snapshot.3",
-                    ),
-                },
-                resolved_package_urls={
-                    PackageURL(
-                        type="golang",
-                        name="istio",
-                        version="1.1.0-rc.2",
-                    ),
-                    PackageURL(
-                        type="golang",
-                        name="istio",
-                        version="1.1.0-rc.4",
-                    ),
-                    PackageURL(
-                        type="golang",
-                        name="istio",
-                        version="1.1.0-rc.3",
-                    ),
-                    PackageURL(
-                        type="golang",
-                        name="istio",
-                        version="1.1.0-rc.0",
-                    ),
-                    PackageURL(
-                        type="golang",
-                        name="istio",
-                        version="1.1.0-rc.5",
-                    ),
-                    PackageURL(
-                        type="golang",
-                        name="istio",
-                        version="1.1.0-rc.1",
-                    ),
-                    PackageURL(
-                        type="golang",
-                        name="istio",
-                        version="1.1.0-rc.6",
-                    ),
-                    PackageURL(
-                        type="github",
-                        name="istio",
-                        version="1.1.0-rc.2",
-                    ),
-                    PackageURL(
-                        type="github",
-                        name="istio",
-                        version="1.1.0-rc.4",
-                    ),
-                    PackageURL(
-                        type="github",
-                        name="istio",
-                        version="1.1.0-rc.3",
-                    ),
-                    PackageURL(
-                        type="github",
-                        name="istio",
-                        version="1.1.0-rc.0",
-                    ),
-                    PackageURL(
-                        type="github",
-                        name="istio",
-                        version="1.1.0-rc.5",
-                    ),
-                    PackageURL(
-                        type="github",
-                        name="istio",
-                        version="1.1.0-rc.1",
-                    ),
-                    PackageURL(
-                        type="github",
-                        name="istio",
-                        version="1.1.0-rc.6",
-                    ),
-                },
+                summary="Incorrect access control.",
                 vulnerability_id="CVE-2019-12243",
+                affected_packages=[
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="golang",
+                            name="istio",
+                            version="1.1.0",
+                        ),
+                        patched_package=PackageURL(
+                            type="golang",
+                            name="istio",
+                            version="1.1.17",
+                        ),
+                    ),
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="golang",
+                            name="istio",
+                            version="1.1.1",
+                        ),
+                        patched_package=PackageURL(
+                            type="golang",
+                            name="istio",
+                            version="1.1.17",
+                        ),
+                    ),
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="golang",
+                            name="istio",
+                            version="1.2.1",
+                        ),
+                        patched_package=PackageURL(
+                            type="golang",
+                            name="istio",
+                            version="1.2.7",
+                        ),
+                    ),
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="golang",
+                            name="istio",
+                            version="1.3.0",
+                        ),
+                        patched_package=PackageURL(
+                            type="golang",
+                            name="istio",
+                            version="1.3.2",
+                        ),
+                    ),
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="golang",
+                            name="istio",
+                            version="1.3.1",
+                        ),
+                        patched_package=PackageURL(
+                            type="golang",
+                            name="istio",
+                            version="1.3.2",
+                        ),
+                    ),
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="github",
+                            name="istio",
+                            version="1.1.0",
+                        ),
+                        patched_package=PackageURL(
+                            type="github",
+                            name="istio",
+                            version="1.1.17",
+                        ),
+                    ),
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="github",
+                            name="istio",
+                            version="1.1.1",
+                        ),
+                        patched_package=PackageURL(
+                            type="github",
+                            name="istio",
+                            version="1.1.17",
+                        ),
+                    ),
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="github",
+                            name="istio",
+                            version="1.2.1",
+                        ),
+                        patched_package=PackageURL(
+                            type="github",
+                            name="istio",
+                            version="1.2.7",
+                        ),
+                    ),
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="github",
+                            name="istio",
+                            version="1.3.0",
+                        ),
+                        patched_package=PackageURL(
+                            type="github",
+                            name="istio",
+                            version="1.3.2",
+                        ),
+                    ),
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="github",
+                            name="istio",
+                            version="1.3.1",
+                        ),
+                        patched_package=PackageURL(
+                            type="github",
+                            name="istio",
+                            version="1.3.2",
+                        ),
+                    ),
+                ],
+                references=[],
             )
         ]
 
         found_data = self.data_src.process_file(path)
-
         assert expected_data == found_data

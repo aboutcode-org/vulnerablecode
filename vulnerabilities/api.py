@@ -152,6 +152,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
             )
         for purl in request.data["purls"]:
             try:
+                purl_string = purl
                 purl = PackageURL.from_string(purl).to_dict()
             except ValueError as ve:
                 return Response(status=400, data={"Error": f"Invalid Package URL: {purl}"})
@@ -165,6 +166,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                 purl_response = purl
                 purl_response["unresolved_vulnerabilities"] = []
                 purl_response["resolved_vulnerabilities"] = []
+                purl_response["purl"] = purl_string
             response.append(purl_response)
 
         return Response(response)

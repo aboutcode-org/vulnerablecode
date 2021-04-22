@@ -48,8 +48,6 @@ class TestProjectKBMSRDataSource(TestCase):
             Advisory(
                 summary="",
                 vulnerability_id="CVE-2018-11040",
-                impacted_package_urls=set(),
-                resolved_package_urls=set(),
                 references=[
                     Reference(
                         reference_id="",
@@ -61,8 +59,6 @@ class TestProjectKBMSRDataSource(TestCase):
             Advisory(
                 summary="",
                 vulnerability_id="CVE-2013-6408",
-                impacted_package_urls=set(),
-                resolved_package_urls=set(),
                 references=[
                     Reference(
                         reference_id="",
@@ -74,8 +70,6 @@ class TestProjectKBMSRDataSource(TestCase):
             Advisory(
                 summary="",
                 vulnerability_id="CVE-2015-6748",
-                impacted_package_urls=set(),
-                resolved_package_urls=set(),
                 references=[
                     Reference(
                         reference_id="",
@@ -87,8 +81,6 @@ class TestProjectKBMSRDataSource(TestCase):
             Advisory(
                 summary="",
                 vulnerability_id="CVE-2018-14658",
-                impacted_package_urls=set(),
-                resolved_package_urls=set(),
                 references=[
                     Reference(
                         reference_id="",
@@ -100,8 +92,6 @@ class TestProjectKBMSRDataSource(TestCase):
             Advisory(
                 summary="",
                 vulnerability_id="CVE-2017-1000355",
-                impacted_package_urls=set(),
-                resolved_package_urls=set(),
                 references=[
                     Reference(
                         reference_id="",
@@ -113,8 +103,6 @@ class TestProjectKBMSRDataSource(TestCase):
             Advisory(
                 summary="",
                 vulnerability_id="CVE-2018-1000844",
-                impacted_package_urls=set(),
-                resolved_package_urls=set(),
                 references=[
                     Reference(
                         reference_id="",
@@ -126,8 +114,6 @@ class TestProjectKBMSRDataSource(TestCase):
             Advisory(
                 summary="",
                 vulnerability_id="",
-                impacted_package_urls=set(),
-                resolved_package_urls=set(),
                 references=[
                     Reference(
                         reference_id="HTTPCLIENT-1803",

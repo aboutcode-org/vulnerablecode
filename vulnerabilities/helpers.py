@@ -20,14 +20,31 @@
 #  VulnerableCode is a free software from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import bisect
+import dataclasses
 import json
 import re
+from typing import Optional
+from typing import List
 
 import requests
 import toml
+import urllib3
 import yaml
+from packageurl import PackageURL
+from univers.versions import version_class_by_package_type
 
 # TODO add logging here
+
+cve_regex = re.compile(r"CVE-\d{4}-\d{4,7}", re.IGNORECASE)
+is_cve = cve_regex.match
+find_all_cve = cve_regex.findall
+
+
+@dataclasses.dataclass(order=True, frozen=True)
+class AffectedPackage:
+    vulnerable_package: PackageURL
+    patched_package: Optional[PackageURL] = None
 
 
 def load_yaml(path):
@@ -78,4 +95,78 @@ def create_etag(data_src, url, etag_key):
     return True
 
 
-is_cve = re.compile(r"CVE-\d+-\d+", re.IGNORECASE).match
+def contains_alpha(string):
+    """
+    Return True if the input 'string' contains any alphabet
+    """
+
+    return any([c.isalpha() for c in string])
+
+
+def requests_with_5xx_retry(max_retries=5, backoff_factor=0.5):
+    """
+    Returns a requests sessions which retries on 5xx errors with
+    a backoff_factor
+    """
+    retries = urllib3.util.Retry(
+        total=max_retries,
+        backoff_factor=backoff_factor,
+        raise_on_status=True,
+        status_forcelist=range(500, 600, 1),
+    )
+    adapter = requests.adapters.HTTPAdapter(max_retries=retries)
+    session = requests.Session()
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    return session
+
+
+def nearest_patched_package(
+    vulnerable_packages: List[PackageURL], resolved_packages: List[PackageURL]
+) -> List[AffectedPackage]:
+    """
+    Parameters:
+    :vulnerable_packages(list)
+    :resolved_packages(list)
+    """
+
+    class PackageURLWithVersionComparator:
+        """
+        This class is used to  get around bisect module's lack of supplying custom
+        compartor. Get rid of this once we use python 3.10 which supports this.
+        See https://github.com/python/cpython/pull/20556
+        """
+
+        def __init__(self, package):
+            self.package = package
+            self.version_object = version_class_by_package_type[package.type](package.version)
+
+        def __eq__(self, other):
+            return self.version_object == other.version_object
+
+        def __lt__(self, other):
+            return self.version_object < other.version_object
+
+    vulnerable_packages = sorted(
+        [PackageURLWithVersionComparator(package) for package in vulnerable_packages]
+    )
+    resolved_packages = sorted(
+        [PackageURLWithVersionComparator(package) for package in resolved_packages]
+    )
+
+    resolved_package_count = len(resolved_packages)
+    affected_package_with_patched_package_objects = []
+
+    for vulnerable_package in vulnerable_packages:
+        patched_package_index = bisect.bisect_right(resolved_packages, vulnerable_package)
+        patched_package = None
+        if patched_package_index < resolved_package_count:
+            patched_package = resolved_packages[patched_package_index].package
+
+        affected_package_with_patched_package_objects.append(
+            AffectedPackage(
+                vulnerable_package=vulnerable_package.package, patched_package=patched_package
+            )
+        )
+
+    return affected_package_with_patched_package_objects

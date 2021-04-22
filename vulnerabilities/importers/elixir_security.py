@@ -24,7 +24,8 @@ import asyncio
 from typing import List, Set
 
 import yaml
-from dephell_specifier import RangeSpecifier
+from univers.version_specifier import VersionSpecifier
+from univers.versions import SemverVersion
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import GitDataSource
@@ -32,6 +33,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import HexVersionAPI
 from vulnerabilities.helpers import load_yaml
+from vulnerabilities.helpers import nearest_patched_package
 
 
 class ElixirSecurityDataSource(GitDataSource):
@@ -86,9 +88,13 @@ class ElixirSecurityDataSource(GitDataSource):
         all_version_list = self.pkg_manager_api.get(pkg_name)
         if not version_range_list:
             return [], all_version_list
-        version_ranges = {RangeSpecifier(r) for r in version_range_list}
+        version_ranges = [
+            VersionSpecifier.from_scheme_version_spec_string("semver", r)
+            for r in version_range_list
+        ]
         for version in all_version_list:
-            if any([version in v for v in version_ranges]):
+            version_obj = SemverVersion(version)
+            if any([version_obj in v for v in version_ranges]):
                 safe_pkg_versions.append(version)
 
         vuln_pkg_versions = set(all_version_list) - set(safe_pkg_versions)
@@ -118,13 +124,13 @@ class ElixirSecurityDataSource(GitDataSource):
         safe_purls = []
         vuln_purls = []
 
-        safe_purls = {
+        safe_purls = [
             PackageURL(name=pkg_name, type="hex", version=version) for version in safe_pkg_versions
-        }
+        ]
 
-        vuln_purls = {
+        vuln_purls = [
             PackageURL(name=pkg_name, type="hex", version=version) for version in vuln_pkg_versions
-        }
+        ]
 
         references = [
             Reference(
@@ -137,8 +143,7 @@ class ElixirSecurityDataSource(GitDataSource):
 
         return Advisory(
             summary=yaml_file["description"],
-            impacted_package_urls=vuln_purls,
-            resolved_package_urls=safe_purls,
+            affected_packages=nearest_patched_package(vuln_purls, safe_purls),
             vulnerability_id=cve_id,
             references=references,
         )

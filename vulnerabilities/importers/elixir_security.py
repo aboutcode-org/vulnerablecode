@@ -143,7 +143,7 @@ class ElixirSecurityDataSource(GitDataSource):
 
         return Advisory(
             summary=yaml_file["description"],
-            affected_packages_with_patched_package=nearest_patched_package(vuln_purls, safe_purls),
+            affected_packages=nearest_patched_package(vuln_purls, safe_purls),
             vulnerability_id=cve_id,
             references=references,
         )

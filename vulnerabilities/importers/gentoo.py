@@ -82,7 +82,7 @@ class GentooDataSource(GitDataSource):
             advisory = Advisory(
                 vulnerability_id=cve,
                 summary=xml_data["description"],
-                affected_packages_with_patched_package=nearest_patched_package(
+                affected_packages=nearest_patched_package(
                     xml_data["affected_purls"], xml_data["unaffected_purls"]
                 ),
                 references=vuln_reference,

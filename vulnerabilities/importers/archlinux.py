@@ -88,7 +88,7 @@ class ArchlinuxDataSource(DataSource):
         advisories = []
 
         for cve_id in record["issues"]:
-            affected_packages_with_patched_package = []
+            affected_packages = []
             for name in record["packages"]:
                 impacted_purls, resolved_purls = [], []
                 impacted_purls.append(
@@ -109,9 +109,7 @@ class ArchlinuxDataSource(DataSource):
                             version=record["fixed"],
                         )
                     )
-                affected_packages_with_patched_package.extend(
-                    nearest_patched_package(impacted_purls, resolved_purls)
-                )
+                affected_packages.extend(nearest_patched_package(impacted_purls, resolved_purls))
 
             references = []
             references.append(
@@ -138,7 +136,7 @@ class ArchlinuxDataSource(DataSource):
                 Advisory(
                     vulnerability_id=cve_id,
                     summary="",
-                    affected_packages_with_patched_package=affected_packages_with_patched_package,
+                    affected_packages=affected_packages,
                     references=references,
                 )
             )

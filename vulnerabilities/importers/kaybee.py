@@ -68,8 +68,6 @@ def yaml_file_to_advisory(yaml_path):
     return Advisory(
         vulnerability_id=vuln_id,
         summary=summary,
-        affected_packages_with_patched_package=nearest_patched_package(
-            impacted_packages, resolved_packages
-        ),
+        affected_packages=nearest_patched_package(impacted_packages, resolved_packages),
         references=references,
     )

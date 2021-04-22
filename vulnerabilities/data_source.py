@@ -47,7 +47,7 @@ from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.helpers import is_cve
 from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
+from vulnerabilities.helpers import AffectedPackage
 
 logger = logging.getLogger(__name__)
 
@@ -88,9 +88,7 @@ class Advisory:
 
     summary: str
     vulnerability_id: Optional[str] = None
-    affected_packages_with_patched_package: List[
-        AffectedPackageWithPatchedPackage
-    ] = dataclasses.field(default_factory=list)
+    affected_packages: List[AffectedPackage] = dataclasses.field(default_factory=list)
     references: List[Reference] = dataclasses.field(default_factory=list)
 
     def __post_init__(self):
@@ -107,9 +105,7 @@ class Advisory:
         return Advisory(
             summary=self.summary,
             vulnerability_id=self.vulnerability_id,
-            affected_packages_with_patched_package=sorted(
-                self.affected_packages_with_patched_package
-            ),
+            affected_packages=sorted(self.affected_packages),
             references=references,
         )
 
@@ -533,7 +529,7 @@ class OvalDataSource(DataSource):
             vuln_id = definition_data["vuln_id"]
             description = definition_data["description"]
             references = [Reference(url=url) for url in definition_data["reference_urls"]]
-            affected_packages_with_patched_package = []
+            affected_packages = []
             for test_data in definition_data["test_data"]:
                 for package_name in test_data["package_list"]:
                     if package_name and len(package_name) >= 50:
@@ -569,14 +565,14 @@ class OvalDataSource(DataSource):
                         else:
                             safe_purls.append(purl)
 
-                    affected_packages_with_patched_package.extend(
+                    affected_packages.extend(
                         nearest_patched_package(affected_purls, safe_purls),
                     )
 
             all_adv.append(
                 Advisory(
                     summary=description,
-                    affected_packages_with_patched_package=affected_packages_with_patched_package,
+                    affected_packages=affected_packages,
                     vulnerability_id=vuln_id,
                     references=references,
                 )

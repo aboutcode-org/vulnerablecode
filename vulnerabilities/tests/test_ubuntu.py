@@ -12,7 +12,7 @@ from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.importers.ubuntu import UbuntuDataSource
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
-from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
+from vulnerabilities.helpers import AffectedPackage
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -190,8 +190,8 @@ class TestUbuntuDataSource(unittest.TestCase):
             Advisory(
                 summary="Heap-based buffer overflow in the bm_readbody_bmp function in bitmap_io.c in potrace before 1.13 allows remote attackers to have unspecified impact via a crafted BMP image, a different vulnerability than CVE-2016-8698, CVE-2016-8699, CVE-2016-8700, CVE-2016-8701, and CVE-2016-8702.",
                 vulnerability_id="CVE-2016-8703",
-                affected_packages_with_patched_package=[
-                    AffectedPackageWithPatchedPackage(
+                affected_packages=[
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="deb",
                             name="potrace",
@@ -203,7 +203,7 @@ class TestUbuntuDataSource(unittest.TestCase):
                             version="2.14-2",
                         ),
                     ),
-                    AffectedPackageWithPatchedPackage(
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="deb",
                             name="potrace",
@@ -237,8 +237,8 @@ class TestUbuntuDataSource(unittest.TestCase):
             Advisory(
                 summary="Tor before 0.2.8.9 and 0.2.9.x before 0.2.9.4-alpha had internal functions that were entitled to expect that buf_t data had NUL termination, but the implementation of or/buffers.c did not ensure that NUL termination was present, which allows remote attackers to cause a denial of service (client, hidden service, relay, or authority crash) via crafted data.",
                 vulnerability_id="CVE-2016-8860",
-                affected_packages_with_patched_package=[
-                    AffectedPackageWithPatchedPackage(
+                affected_packages=[
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="deb",
                             name="tor",

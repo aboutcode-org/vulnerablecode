@@ -30,7 +30,7 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import PackageURL
 from vulnerabilities.data_source import Reference
 from vulnerabilities.import_runner import ImportRunner
-from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
+from vulnerabilities.helpers import AffectedPackage
 
 # from vulnerabilities.import_runner import _insert_vulnerabilities_and_references
 
@@ -73,8 +73,8 @@ ADVISORIES = [
         vulnerability_id="CVE-2020-13371337",
         summary="vulnerability description here",
         references=[Reference(url="https://example.com/with/more/info/CVE-2020-13371337")],
-        affected_packages_with_patched_package=[
-            AffectedPackageWithPatchedPackage(
+        affected_packages=[
+            AffectedPackage(
                 vulnerable_package=PackageURL(name="mock-webserver", type="pypi", version="1.2.33"),
                 patched_package=PackageURL(name="mock-webserver", type="pypi", version="1.2.34"),
             )
@@ -177,8 +177,8 @@ def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db)
     )
 
     advisories = deepcopy(ADVISORIES)
-    advisories[0].affected_packages_with_patched_package.append(
-        AffectedPackageWithPatchedPackage(
+    advisories[0].affected_packages.append(
+        AffectedPackage(
             vulnerable_package=PackageURL(name="mock-webserver", type="pypi", version="1.2.33a")
         )
     )

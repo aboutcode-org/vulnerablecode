@@ -29,7 +29,7 @@ from packageurl import PackageURL
 from vulnerabilities.importers.retiredotnet import RetireDotnetDataSource
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
-from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
+from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -58,8 +58,8 @@ class TestRetireDotnetDataSource(TestCase):
         expected_data = Advisory(
             summary="Microsoft Security Advisory CVE-2019-0982: ASP.NET Core Denial of Service Vulnerability",
             vulnerability_id="CVE-2019-0982",
-            affected_packages_with_patched_package=[
-                AffectedPackageWithPatchedPackage(
+            affected_packages=[
+                AffectedPackage(
                     vulnerable_package=PackageURL(
                         type="nuget",
                         namespace=None,
@@ -73,7 +73,7 @@ class TestRetireDotnetDataSource(TestCase):
                         version="1.0.11",
                     ),
                 ),
-                AffectedPackageWithPatchedPackage(
+                AffectedPackage(
                     vulnerable_package=PackageURL(
                         type="nuget",
                         namespace=None,
@@ -87,7 +87,7 @@ class TestRetireDotnetDataSource(TestCase):
                         version="1.0.11",
                     ),
                 ),
-                AffectedPackageWithPatchedPackage(
+                AffectedPackage(
                     vulnerable_package=PackageURL(
                         type="nuget",
                         namespace=None,
@@ -101,7 +101,7 @@ class TestRetireDotnetDataSource(TestCase):
                         version="1.0.11",
                     ),
                 ),
-                AffectedPackageWithPatchedPackage(
+                AffectedPackage(
                     vulnerable_package=PackageURL(
                         type="nuget",
                         namespace=None,
@@ -115,7 +115,7 @@ class TestRetireDotnetDataSource(TestCase):
                         version="1.0.11",
                     ),
                 ),
-                AffectedPackageWithPatchedPackage(
+                AffectedPackage(
                     vulnerable_package=PackageURL(
                         type="nuget",
                         namespace=None,
@@ -129,7 +129,7 @@ class TestRetireDotnetDataSource(TestCase):
                         version="1.0.11",
                     ),
                 ),
-                AffectedPackageWithPatchedPackage(
+                AffectedPackage(
                     vulnerable_package=PackageURL(
                         type="nuget",
                         namespace=None,

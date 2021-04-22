@@ -30,7 +30,7 @@ from vulnerabilities.data_source import Reference
 from vulnerabilities.importers.rust import categorize_versions
 from vulnerabilities.importers.rust import get_advisory_data
 from vulnerabilities.importers.rust import RustDataSource
-from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
+from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/rust")
@@ -147,8 +147,8 @@ class RustImportTest(TestCase):
         expected_data = Advisory(
             summary="",
             vulnerability_id="CVE-2021-28033",
-            affected_packages_with_patched_package=[
-                AffectedPackageWithPatchedPackage(
+            affected_packages=[
+                AffectedPackage(
                     vulnerable_package=PackageURL(
                         type="cargo",
                         name="byte_struct",

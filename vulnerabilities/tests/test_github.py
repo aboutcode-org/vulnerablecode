@@ -42,7 +42,7 @@ from vulnerabilities.package_managers import ComposerVersionAPI
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.importers.github import GitHubTokenError
 from vulnerabilities.importers.github import query
-from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
+from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")
@@ -189,8 +189,8 @@ class TestGitHubAPIDataSource(TestCase):
             ),
             Advisory(
                 summary="Denial of Service in Tomcat",
-                affected_packages_with_patched_package=[
-                    AffectedPackageWithPatchedPackage(
+                affected_packages=[
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="maven",
                             namespace="org.apache.tomcat.embed",
@@ -264,8 +264,8 @@ class TestGitHubAPIDataSource(TestCase):
             ),
             Advisory(
                 summary="Improper Input Validation in Tomcat",
-                affected_packages_with_patched_package=[
-                    AffectedPackageWithPatchedPackage(
+                affected_packages=[
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="maven",
                             namespace="org.apache.tomcat.embed",

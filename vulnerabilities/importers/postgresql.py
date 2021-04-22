@@ -110,9 +110,7 @@ def to_advisories(data):
                 vulnerability_id=cve_id,
                 summary=summary,
                 references=references,
-                affected_packages_with_patched_package=nearest_patched_package(
-                    affected_packages, fixed_packages
-                ),
+                affected_packages=nearest_patched_package(affected_packages, fixed_packages),
             )
         )
 

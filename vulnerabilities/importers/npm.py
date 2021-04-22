@@ -116,9 +116,7 @@ class NpmDataSource(GitDataSource):
                 Advisory(
                     summary=record.get("overview", ""),
                     vulnerability_id=cve_id,
-                    affected_packages_with_patched_package=nearest_patched_package(
-                        impacted_purls, resolved_purls
-                    ),
+                    affected_packages=nearest_patched_package(impacted_purls, resolved_purls),
                     references=vuln_reference,
                 )
             )

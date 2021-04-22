@@ -31,7 +31,7 @@ from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.importers.apache_kafka import ApacheKafkaDataSource
 from vulnerabilities.importers.apache_kafka import to_version_ranges
-from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
+from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "apache_kafka", "cve-list.html")
@@ -68,8 +68,8 @@ class TestApacheKafkaDataSource(TestCase):
             Advisory(
                 summary="In Apache Kafka versions between 0.11.0.0 and 2.1.0, it is possible to manually\n    craft a Produce request which bypasses transaction/idempotent ACL validation.\n    Only authenticated clients with Write permission on the respective topics are\n    able to exploit this vulnerability. Users should upgrade to 2.1.1 or later\n    where this vulnerability has been fixed.",
                 vulnerability_id="CVE-2018-17196",
-                affected_packages_with_patched_package=[
-                    AffectedPackageWithPatchedPackage(
+                affected_packages=[
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="apache",
                             namespace=None,

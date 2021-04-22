@@ -127,9 +127,7 @@ class RubyDataSource(GitDataSource):
 
         return Advisory(
             summary=record.get("description", ""),
-            affected_packages_with_patched_package=nearest_patched_package(
-                impacted_purls, resolved_purls
-            ),
+            affected_packages=nearest_patched_package(impacted_purls, resolved_purls),
             references=references,
             vulnerability_id=cve_id,
         )

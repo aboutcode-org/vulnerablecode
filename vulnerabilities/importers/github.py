@@ -245,7 +245,7 @@ class GitHubAPIDataSource(DataSource):
                             Advisory(
                                 vulnerability_id=cve_id,
                                 summary=vuln_desc,
-                                affected_packages_with_patched_package=nearest_patched_package(
+                                affected_packages=nearest_patched_package(
                                     affected_purls, unaffected_purls
                                 ),
                                 references=references,

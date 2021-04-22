@@ -80,7 +80,7 @@ class ProjectKBMSRDataSource(DataSource):
             advisories.append(
                 Advisory(
                     summary="",
-                    affected_packages_with_patched_package=[],
+                    affected_packages=[],
                     references=[reference],
                     vulnerability_id=vuln_id,
                 )

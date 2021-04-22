@@ -31,7 +31,7 @@ from packageurl import PackageURL
 from vulnerabilities.importers.gentoo import GentooDataSource
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
-from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
+from vulnerabilities.helpers import AffectedPackage
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -100,8 +100,8 @@ class TestGentooDataSource(unittest.TestCase):
                     "Subversion may allow remote\n    "
                     "attackers to execute arbitrary code.\n  "
                 ),
-                affected_packages_with_patched_package=[
-                    AffectedPackageWithPatchedPackage(
+                affected_packages=[
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="ebuild",
                             namespace="dev-vcs",

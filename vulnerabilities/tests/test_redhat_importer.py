@@ -33,7 +33,7 @@ from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import VulnerabilitySeverity
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.severity_systems import scoring_systems
-from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
+from vulnerabilities.helpers import AffectedPackage
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -63,8 +63,8 @@ class TestRedhat(unittest.TestCase):
             Advisory(
                 summary="CVE-2016-9401 bash: popd controlled free",
                 vulnerability_id="CVE-2016-9401",
-                affected_packages_with_patched_package=[
-                    AffectedPackageWithPatchedPackage(
+                affected_packages=[
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="rpm",
                             namespace="redhat",
@@ -73,7 +73,7 @@ class TestRedhat(unittest.TestCase):
                         ),
                         patched_package=None,
                     ),
-                    AffectedPackageWithPatchedPackage(
+                    AffectedPackage(
                         vulnerable_package=PackageURL(
                             type="rpm",
                             namespace="redhat",

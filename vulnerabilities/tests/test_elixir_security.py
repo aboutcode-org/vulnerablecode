@@ -30,7 +30,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.importers.elixir_security import ElixirSecurityDataSource
 from vulnerabilities.package_managers import HexVersionAPI
-from vulnerabilities.helpers import AffectedPackageWithPatchedPackage
+from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -65,8 +65,8 @@ class TestElixirSecurityDataSource(TestCase):
         path = os.path.join(BASE_DIR, "test_data/elixir_security/test_file.yml")
         expected_advisory = Advisory(
             summary=('The Coherence library has "Mass Assignment"-like vulnerabilities.\n'),
-            affected_packages_with_patched_package=[
-                AffectedPackageWithPatchedPackage(
+            affected_packages=[
+                AffectedPackage(
                     vulnerable_package=PackageURL(
                         type="hex",
                         namespace=None,
@@ -84,7 +84,7 @@ class TestElixirSecurityDataSource(TestCase):
                         subpath=None,
                     ),
                 ),
-                AffectedPackageWithPatchedPackage(
+                AffectedPackage(
                     vulnerable_package=PackageURL(
                         type="hex",
                         namespace=None,
@@ -102,7 +102,7 @@ class TestElixirSecurityDataSource(TestCase):
                         subpath=None,
                     ),
                 ),
-                AffectedPackageWithPatchedPackage(
+                AffectedPackage(
                     vulnerable_package=PackageURL(
                         type="hex",
                         namespace=None,
@@ -120,7 +120,7 @@ class TestElixirSecurityDataSource(TestCase):
                         subpath=None,
                     ),
                 ),
-                AffectedPackageWithPatchedPackage(
+                AffectedPackage(
                     vulnerable_package=PackageURL(
                         type="hex",
                         namespace=None,
@@ -138,7 +138,7 @@ class TestElixirSecurityDataSource(TestCase):
                         subpath=None,
                     ),
                 ),
-                AffectedPackageWithPatchedPackage(
+                AffectedPackage(
                     vulnerable_package=PackageURL(
                         type="hex",
                         namespace=None,
@@ -156,7 +156,7 @@ class TestElixirSecurityDataSource(TestCase):
                         subpath=None,
                     ),
                 ),
-                AffectedPackageWithPatchedPackage(
+                AffectedPackage(
                     vulnerable_package=PackageURL(
                         type="hex",
                         namespace=None,
@@ -174,7 +174,7 @@ class TestElixirSecurityDataSource(TestCase):
                         subpath=None,
                     ),
                 ),
-                AffectedPackageWithPatchedPackage(
+                AffectedPackage(
                     vulnerable_package=PackageURL(
                         type="hex",
                         namespace=None,
@@ -192,7 +192,7 @@ class TestElixirSecurityDataSource(TestCase):
                         subpath=None,
                     ),
                 ),
-                AffectedPackageWithPatchedPackage(
+                AffectedPackage(
                     vulnerable_package=PackageURL(
                         type="hex",
                         namespace=None,
@@ -210,7 +210,7 @@ class TestElixirSecurityDataSource(TestCase):
                         subpath=None,
                     ),
                 ),
-                AffectedPackageWithPatchedPackage(
+                AffectedPackage(
                     vulnerable_package=PackageURL(
                         type="hex",
                         namespace=None,
@@ -228,7 +228,7 @@ class TestElixirSecurityDataSource(TestCase):
                         subpath=None,
                     ),
                 ),
-                AffectedPackageWithPatchedPackage(
+                AffectedPackage(
                     vulnerable_package=PackageURL(
                         type="hex",
                         namespace=None,

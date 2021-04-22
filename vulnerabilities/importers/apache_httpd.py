@@ -33,6 +33,7 @@ from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import VulnerabilitySeverity
 from vulnerabilities.severity_systems import scoring_systems
 from vulnerabilities.helpers import create_etag
+from vulnerabilities.helpers import nearest_patched_package
 
 
 @dataclasses.dataclass
@@ -95,8 +96,8 @@ class ApacheHTTPDDataSource(DataSource):
                 url=self.ref_url.format(cve),
             )
 
-        resolved_packages = []
-        impacted_packages = []
+        fixed_packages = []
+        affected_packages = []
 
         for vendor in data["affects"]["vendor"]["vendor_data"]:
             for products in vendor["product"]["product_data"]:
@@ -104,20 +105,19 @@ class ApacheHTTPDDataSource(DataSource):
                     version_value = version["version_value"]
 
                     if version["version_affected"] == "<":
-                        resolved_packages.append(
+                        fixed_packages.append(
                             PackageURL(type="apache", name="httpd", version=version_value)
                         )
 
                     else:
-                        impacted_packages.append(
+                        affected_packages.append(
                             PackageURL(type="apache", name="httpd", version=version_value)
                         )
 
         return Advisory(
             vulnerability_id=cve,
             summary=description,
-            impacted_package_urls=impacted_packages,
-            resolved_package_urls=resolved_packages,
+            affected_packages=nearest_patched_package(affected_packages, fixed_packages),
             references=[reference],
         )
 

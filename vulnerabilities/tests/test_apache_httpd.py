@@ -31,9 +31,10 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import VulnerabilitySeverity
 from vulnerabilities.severity_systems import scoring_systems
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDDataSource
+from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "test_data/apache_httpd/CVE-1999-1199.json")
+TEST_DATA = os.path.join(BASE_DIR, "test_data", "apache_httpd", "CVE-1999-1199.json")
 
 
 class TestApacheHTTPDDataSource(TestCase):
@@ -54,19 +55,22 @@ class TestApacheHTTPDDataSource(TestCase):
                 "rather than increasing at a constant rate. This makes a denial of service "
                 "attack based on this method more effective than methods which cause Apache"
                 " to use memory at a constant rate, since the attacker has to send less data.",
-                impacted_package_urls=[
-                    PackageURL(
-                        type="apache",
-                        name="httpd",
-                        version="1.3.1",
+                affected_packages=[
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="apache",
+                            name="httpd",
+                            version="1.3.0",
+                        ),
                     ),
-                    PackageURL(
-                        type="apache",
-                        name="httpd",
-                        version="1.3.0",
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="apache",
+                            name="httpd",
+                            version="1.3.1",
+                        ),
                     ),
                 ],
-                resolved_package_urls=[],
                 references=[
                     Reference(
                         url="https://httpd.apache.org/security/json/CVE-1999-1199.json",

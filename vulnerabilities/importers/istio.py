@@ -23,13 +23,15 @@
 import asyncio
 import re
 from typing import List, Set
-
 import yaml
 
-from dephell_specifier import RangeSpecifier
+from univers.version_specifier import VersionSpecifier
+from univers.versions import SemverVersion
 from packageurl import PackageURL
+
 from vulnerabilities.data_source import Advisory, GitDataSource, Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.helpers import nearest_patched_package
 
 is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match
 
@@ -64,9 +66,13 @@ class IstioDataSource(GitDataSource):
         all_version = self.version_api.get("istio/istio")
         safe_pkg_versions = []
         vuln_pkg_versions = []
-        version_ranges = [RangeSpecifier(r) for r in version_range_list]
+        version_ranges = [
+            VersionSpecifier.from_scheme_version_spec_string("semver", r)
+            for r in version_range_list
+        ]
         for version in all_version:
-            if any([version in v for v in version_ranges]):
+            version_obj = SemverVersion(version)
+            if any([version_obj in v for v in version_ranges]):
                 vuln_pkg_versions.append(version)
 
         safe_pkg_versions = set(all_version) - set(vuln_pkg_versions)
@@ -156,34 +162,37 @@ class IstioDataSource(GitDataSource):
                 data["release_ranges"]
             )
 
-            safe_purls_golang = {
+            affected_packages = []
+
+            safe_purls_golang = [
                 PackageURL(type="golang", name="istio", version=version)
                 for version in safe_pkg_versions
-            }
+            ]
 
-            safe_purls_github = {
-                PackageURL(type="github", name="istio", version=version)
-                for version in safe_pkg_versions
-            }
-            safe_purls = safe_purls_github.union(safe_purls_golang)
-
-            vuln_purls_golang = {
+            vuln_purls_golang = [
                 PackageURL(type="golang", name="istio", version=version)
                 for version in vuln_pkg_versions
-            }
+            ]
 
-            vuln_purls_github = {
+            affected_packages.extend(nearest_patched_package(vuln_purls_golang, safe_purls_golang))
+
+            safe_purls_github = [
+                PackageURL(type="github", name="istio", version=version)
+                for version in safe_pkg_versions
+            ]
+
+            vuln_purls_github = [
                 PackageURL(type="github", name="istio", version=version)
                 for version in vuln_pkg_versions
-            }
-            vuln_purls = vuln_purls_github.union(vuln_purls_golang)
+            ]
+
+            affected_packages.extend(nearest_patched_package(vuln_purls_github, safe_purls_github))
 
             advisories.append(
                 Advisory(
-                    summary=data["description"],
-                    impacted_package_urls=vuln_purls,
-                    resolved_package_urls=safe_purls,
                     vulnerability_id=cve_id,
+                    summary=data["description"],
+                    affected_packages=affected_packages,
                 )
             )
 

@@ -39,6 +39,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
+from vulnerabilities.helpers import nearest_patched_package
 
 
 def validate_schema(advisory_dict):
@@ -108,7 +109,7 @@ class DebianDataSource(DataSource):
         advisories = []
 
         for cve_id, record in records.items():
-            impacted_purls, resolved_purls = set(), set()
+            impacted_purls, resolved_purls = [], []
             if not cve_id.startswith("CVE"):
                 continue
 
@@ -129,12 +130,12 @@ class DebianDataSource(DataSource):
                 )
 
                 if release_record.get("status", "") == "resolved":
-                    resolved_purls.add(purl)
+                    resolved_purls.append(purl)
                 else:
-                    impacted_purls.add(purl)
+                    impacted_purls.append(purl)
 
                 if "fixed_version" in release_record:
-                    resolved_purls.add(
+                    resolved_purls.append(
                         PackageURL(
                             name=pkg_name,
                             type="deb",
@@ -149,13 +150,12 @@ class DebianDataSource(DataSource):
             if debianbug:
                 bug_url = f"https://bugs.debian.org/cgi-bin/bugreport.cgi?bug={debianbug}"
                 references.append(Reference(url=bug_url, reference_id=debianbug))
-
+            # print(nearest_patched_package(impacted_purls, resolved_purls))
             advisories.append(
                 Advisory(
                     vulnerability_id=cve_id,
+                    affected_packages=nearest_patched_package(impacted_purls, resolved_purls),
                     summary=record.get("description", ""),
-                    impacted_package_urls=impacted_purls,
-                    resolved_package_urls=resolved_purls,
                     references=references,
                 )
             )

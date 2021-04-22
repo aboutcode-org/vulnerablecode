@@ -53,9 +53,9 @@
           # mach-nix release) is usually insufficient. Use
           # ./get-latest-pypi-deps-db.sh to obtain the data rev & hash.
           pypiDataRev =
-            "499750266bb4b2840cbe856c2cc0e3297685e362"; # 2021-03-06T08:13:08Z
+            "e9b0fc6b92cd6efbca7ba3b3d4a551bcc13a73c5"; # 2021-03-27T08:13:04Z
           pypiDataSha256 =
-            "188g24k8pk4lgqybywimkvwjwh8014v6l2mrkvzv309882i9p5gc";
+            "1ssa48l2iz8kncby1gfrbds79mg114dkhpxrridwcq6q2c37p62s";
         });
 
     in {
@@ -136,7 +136,11 @@
             checkPhase = ''
               # Run pytest on the installed version. A running postgres
               # database server is needed.
-              (cd ${vulnerablecode} && pytest)
+              (
+                cd ${vulnerablecode}
+                black -l 100 --check .
+                pytest -m "not webtest"
+              )
 
               # Launch the webserver and call the API.
               ${vulnerablecode}/manage.py runserver &

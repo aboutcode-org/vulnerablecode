@@ -30,6 +30,7 @@ from urllib.parse import urljoin
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import Reference
+from vulnerabilities.helpers import nearest_patched_package
 
 BASE_URL = "https://www.postgresql.org/"
 
@@ -85,6 +86,7 @@ def to_advisories(data):
                 qualifiers=pkg_qualifiers,
             )
             for version in fixed_col.text.split(",")
+            if version
         ]
 
         try:
@@ -108,8 +110,7 @@ def to_advisories(data):
                 vulnerability_id=cve_id,
                 summary=summary,
                 references=references,
-                impacted_package_urls=affected_packages,
-                resolved_package_urls=fixed_packages,
+                affected_packages=nearest_patched_package(affected_packages, fixed_packages),
             )
         )
 

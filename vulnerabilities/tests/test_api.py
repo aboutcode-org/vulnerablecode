@@ -258,6 +258,7 @@ class TestBulkAPIResponse(TestCase):
 
         expected_response = [
             {
+                "purl": "pkg:deb/debian/doesnotexist@0.9.7-10?distro=jessie",
                 "name": "doesnotexist",
                 "namespace": "debian",
                 "qualifiers": {"distro": "jessie"},

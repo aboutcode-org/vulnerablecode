@@ -43,9 +43,9 @@ from vulnerabilities.importers.retiredotnet import RetireDotnetDataSource
 from vulnerabilities.importers.ruby import RubyDataSource
 from vulnerabilities.importers.rust import RustDataSource
 from vulnerabilities.importers.safety_db import SafetyDbDataSource
-from vulnerabilities.importers.suse_backports import SUSEBackportsDataSource
 from vulnerabilities.importers.suse_scores import SUSESeverityScoreDataSource
 from vulnerabilities.importers.ubuntu import UbuntuDataSource
 from vulnerabilities.importers.ubuntu_usn import UbuntuUSNDataSource
-from vulnerabilities.importers.apache_tomcat import ApacheTomcatDataSource
 from vulnerabilities.importers.istio import IstioDataSource
+
+# from vulnerabilities.importers.suse_backports import SUSEBackportsDataSource

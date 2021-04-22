@@ -30,6 +30,7 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import PackageURL
 from vulnerabilities.data_source import Reference
 from vulnerabilities.import_runner import ImportRunner
+from vulnerabilities.helpers import AffectedPackage
 
 # from vulnerabilities.import_runner import _insert_vulnerabilities_and_references
 
@@ -72,8 +73,12 @@ ADVISORIES = [
         vulnerability_id="CVE-2020-13371337",
         summary="vulnerability description here",
         references=[Reference(url="https://example.com/with/more/info/CVE-2020-13371337")],
-        impacted_package_urls=[PackageURL(name="mock-webserver", type="pypi", version="1.2.33")],
-        resolved_package_urls=[PackageURL(name="mock-webserver", type="pypi", version="1.2.34")],
+        affected_packages=[
+            AffectedPackage(
+                vulnerable_package=PackageURL(name="mock-webserver", type="pypi", version="1.2.33"),
+                patched_package=PackageURL(name="mock-webserver", type="pypi", version="1.2.34"),
+            )
+        ],
     )
 ]
 
@@ -107,10 +112,10 @@ def test_ImportRunner_new_package_and_new_vulnerability(db):
 
     assert models.Vulnerability.objects.count() == 1
     assert models.VulnerabilityReference.objects.count() == 1
-    assert models.PackageRelatedVulnerability.objects.count() == 2
+    assert models.PackageRelatedVulnerability.objects.count() == 1
 
-    assert impacted_package.vulnerabilities.count() == 1
-    assert resolved_package.vulnerabilities.count() == 1
+    assert impacted_package.vulnerable_to.count() == 1
+    assert resolved_package.resolved_to.count() == 1
 
     vuln = impacted_package.vulnerabilities.first()
     assert vuln.vulnerability_id == "CVE-2020-13371337"
@@ -138,13 +143,12 @@ def test_ImportRunner_existing_package_and_new_vulnerability(db):
     assert models.Vulnerability.objects.count() == 1
     assert models.VulnerabilityReference.objects.count() == 1
 
-    assert models.PackageRelatedVulnerability.objects.count() == 2
+    assert models.PackageRelatedVulnerability.objects.count() == 1
 
-    resolved_package = models.PackageRelatedVulnerability.objects.filter(is_vulnerable=False)[0]
-    assert resolved_package.package.version == "1.2.34"
+    prv = models.PackageRelatedVulnerability.objects.all()[0]
+    assert prv.patched_package.version == "1.2.34"
 
-    impacted_package = models.PackageRelatedVulnerability.objects.filter(is_vulnerable=True)[0]
-    vuln = impacted_package.vulnerability
+    vuln = prv.vulnerability
     assert vuln.vulnerability_id == "CVE-2020-13371337"
 
     vuln_refs = models.VulnerabilityReference.objects.filter(vulnerability=vuln)
@@ -167,17 +171,16 @@ def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db)
     models.PackageRelatedVulnerability.objects.create(
         vulnerability=vuln,
         package=models.Package.objects.create(name="mock-webserver", type="pypi", version="1.2.33"),
-        is_vulnerable=True,
-    )
-    models.PackageRelatedVulnerability.objects.create(
-        vulnerability=vuln,
-        package=models.Package.objects.create(name="mock-webserver", type="pypi", version="1.2.34"),
-        is_vulnerable=False,
+        patched_package=models.Package.objects.create(
+            name="mock-webserver", type="pypi", version="1.2.34"
+        ),
     )
 
     advisories = deepcopy(ADVISORIES)
-    advisories[0].impacted_package_urls.append(
-        PackageURL(name="mock-webserver", type="pypi", version="1.2.33a")
+    advisories[0].affected_packages.append(
+        AffectedPackage(
+            vulnerable_package=PackageURL(name="mock-webserver", type="pypi", version="1.2.33a")
+        )
     )
     runner = make_import_runner(updated_advs=advisories)
 
@@ -189,106 +192,56 @@ def test_ImportRunner_new_package_version_affected_by_existing_vulnerability(db)
     assert models.Package.objects.all().count() == 3
     assert models.Vulnerability.objects.count() == 1
     assert models.VulnerabilityReference.objects.count() == 1
-    assert models.PackageRelatedVulnerability.objects.count() == 3
+    assert models.PackageRelatedVulnerability.objects.count() == 2
 
     qs = models.Package.objects.filter(name="mock-webserver", version="1.2.33a")
     assert len(qs) == 1
     added_package = qs[0]
 
-    qs = models.PackageRelatedVulnerability.objects.filter(
-        package=added_package, is_vulnerable=True
-    )
+    qs = models.PackageRelatedVulnerability.objects.filter(package=added_package)
     assert len(qs) == 1
     impacted_package = qs[0]
     assert impacted_package.vulnerability.vulnerability_id == "CVE-2020-13371337"
 
 
-# def test_ImportRunner_assumed_fixed_package_is_updated_as_impacted(db):
+# def test_ImportRunner_fixed_package_version_is_added(db):
 #     """
-#     A version of a package existing in the database that was assumed to be fixed was found to
-#     still be affected by a vulnerability that also already existed in the database (i.e. the
-#     previously stored data was corrected).
+#     A new version of a package was published that fixes a previously unresolved vulnerability.
 #     """
-# FIXME This case is not supported due to cascading deletes. When the ResolvedPackage is
-# FIXME deleted, the referenced Package and Vulnerability are also deleted.
-#
-# vuln = models.Vulnerability.objects.create(
-#     vulnerability_id='CVE-2020-13371337', summary='vulnerability description here')
-#
-# models.VulnerabilityReference.objects.create(
-#     vulnerability=vuln,
-#     url='https://example.com/with/more/info/CVE-2020-13371337'
-# )
-#
-# misclassified_package = models.Package.objects.create(
-#     name='mock-webserver', type='pypi', version='1.2.33')
-#
-# models.ResolvedPackage.objects.create(
-#     vulnerability=vuln,
-#     package=misclassified_package,
-# )
-# models.ResolvedPackage.objects.create(
-#     vulnerability=vuln,
-#     package=models.Package.objects.create(
-#         name='mock-webserver', type='pypi', version='1.2.34'),
-# )
-#
-# runner = make_import_runner(updated_advs=ADVISORIES)
-#
-# runner.run()
-#
-# assert runner.importer.last_run is not None
-# assert runner.importer.saved
-#
-# assert models.Package.objects.all().count() == 2
-# assert models.Vulnerability.objects.count() == 1
-# assert models.VulnerabilityReference.objects.count() == 1
-# assert models.ImpactedPackage.objects.count() == 2
-# assert models.ResolvedPackage.objects.count() == 0
-#
-# assert models.ImpactedPackage.objects.filter(package=misclassified_package).count() == 1
-# assert models.ResolvedPackage.objects.filter(package=misclassified_package).count() == 0
+#     vuln = models.Vulnerability.objects.create(
+#         vulnerability_id="CVE-2020-13371337", summary="vulnerability description here"
+#     )
 
+#     models.VulnerabilityReference.objects.create(
+#         vulnerability=vuln, url="https://example.com/with/more/info/CVE-2020-13371337"
+#     )
+#     models.PackageRelatedVulnerability.objects.create(
+#         vulnerability=vuln,
+#         package=models.Package.objects.create(name="mock-webserver", type="pypi", version="1.2.33"),
+#     )
 
-def test_ImportRunner_fixed_package_version_is_added(db):
-    """
-    A new version of a package was published that fixes a previously unresolved vulnerability.
-    """
-    vuln = models.Vulnerability.objects.create(
-        vulnerability_id="CVE-2020-13371337", summary="vulnerability description here"
-    )
+#     runner = make_import_runner(updated_advs=ADVISORIES)
 
-    models.VulnerabilityReference.objects.create(
-        vulnerability=vuln, url="https://example.com/with/more/info/CVE-2020-13371337"
-    )
-    models.PackageRelatedVulnerability.objects.create(
-        vulnerability=vuln,
-        package=models.Package.objects.create(name="mock-webserver", type="pypi", version="1.2.33"),
-        is_vulnerable=True,
-    )
+#     runner.run()
 
-    runner = make_import_runner(updated_advs=ADVISORIES)
+#     assert runner.importer.last_run is not None
+#     assert runner.importer.saved
 
-    runner.run()
+#     assert models.Package.objects.all().count() == 2
+#     assert models.Vulnerability.objects.count() == 1
+#     assert models.VulnerabilityReference.objects.count() == 1
+#     assert models.PackageRelatedVulnerability.objects.count() == 2
 
-    assert runner.importer.last_run is not None
-    assert runner.importer.saved
+#     qs = models.Package.objects.filter(name="mock-webserver", version="1.2.34")
+#     assert len(qs) == 1
+#     added_package = qs[0]
 
-    assert models.Package.objects.all().count() == 2
-    assert models.Vulnerability.objects.count() == 1
-    assert models.VulnerabilityReference.objects.count() == 1
-    assert models.PackageRelatedVulnerability.objects.count() == 2
-
-    qs = models.Package.objects.filter(name="mock-webserver", version="1.2.34")
-    assert len(qs) == 1
-    added_package = qs[0]
-
-    qs = models.PackageRelatedVulnerability.objects.filter(
-        package=added_package, is_vulnerable=False
-    )
-    assert len(qs) == 1
-    resolved_package = qs[0]
-    assert resolved_package.vulnerability.vulnerability_id == "CVE-2020-13371337"
+#     qs = models.PackageRelatedVulnerability.objects.filter(
+#         package=added_package, is_vulnerable=False
+#     )
+#     assert len(qs) == 1
+#     resolved_package = qs[0]
+#     assert resolved_package.vulnerability.vulnerability_id == "CVE-2020-13371337"
 
 
 def test_ImportRunner_updated_vulnerability(db):
@@ -303,12 +256,9 @@ def test_ImportRunner_updated_vulnerability(db):
     models.PackageRelatedVulnerability.objects.create(
         vulnerability=vuln,
         package=models.Package.objects.create(name="mock-webserver", type="pypi", version="1.2.33"),
-        is_vulnerable=True,
-    )
-    models.PackageRelatedVulnerability.objects.create(
-        vulnerability=vuln,
-        package=models.Package.objects.create(name="mock-webserver", type="pypi", version="1.2.34"),
-        is_vulnerable=False,
+        patched_package=models.Package.objects.create(
+            name="mock-webserver", type="pypi", version="1.2.34"
+        ),
     )
 
     runner = make_import_runner(updated_advs=ADVISORIES)
@@ -319,7 +269,7 @@ def test_ImportRunner_updated_vulnerability(db):
     assert runner.importer.saved
 
     assert models.Package.objects.all().count() == 2
-    assert models.PackageRelatedVulnerability.objects.count() == 2
+    assert models.PackageRelatedVulnerability.objects.count() == 1
 
     vuln = models.Vulnerability.objects.first()
     assert vuln.summary == "vulnerability description here"

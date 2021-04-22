@@ -65,95 +65,11 @@ class TestUbuntuUSNDataSource(TestCase):
         with patch("vulnerabilities.importers.ubuntu_usn.requests.get", return_value=mock_response):
             assert ubuntu_usn.fetch("www.db.com") == self.db
 
-    def test_get_purls(self):
-
-        eg_pkg_dict_1 = self.db["763-1"]["releases"]["hardy"]
-        eg_pkg_dict_2 = self.db["763-1"]["releases"]["dapper"]
-        eg_pkg_dict_3 = self.db["763-1"]["releases"]["intrepid"]
-
-        exp_pkgs_1 = {
-            PackageURL(
-                type="deb",
-                namespace="ubuntu",
-                name="xine-lib",
-                version="1.1.11.1-1ubuntu3.4",
-                qualifiers=OrderedDict(),
-                subpath=None,
-            ),
-            PackageURL(
-                type="deb",
-                namespace="ubuntu",
-                name="libxine1",
-                version="1.1.11.1-1ubuntu3.4",
-                qualifiers=OrderedDict(),
-                subpath=None,
-            ),
-        }
-        exp_pkgs_2 = {
-            PackageURL(
-                type="deb",
-                namespace="ubuntu",
-                name="libxine-main1",
-                version="1.1.1+ubuntu2-7.12",
-                qualifiers=OrderedDict(),
-                subpath=None,
-            ),
-            PackageURL(
-                type="deb",
-                namespace="ubuntu",
-                name="xine-lib",
-                version="1.1.1+ubuntu2-7.12",
-                qualifiers=OrderedDict(),
-                subpath=None,
-            ),
-        }
-        exp_pkgs_3 = {
-            PackageURL(
-                type="deb",
-                namespace="ubuntu",
-                name="xine-lib",
-                version="1.1.15-0ubuntu3.3",
-                qualifiers=OrderedDict(),
-                subpath=None,
-            ),
-            PackageURL(
-                type="deb",
-                namespace="ubuntu",
-                name="libxine1",
-                version="1.1.15-0ubuntu3.3",
-                qualifiers=OrderedDict(),
-                subpath=None,
-            ),
-        }
-
-        assert exp_pkgs_1 == ubuntu_usn.get_purls(eg_pkg_dict_1)
-        assert exp_pkgs_2 == ubuntu_usn.get_purls(eg_pkg_dict_2)
-        assert exp_pkgs_3 == ubuntu_usn.get_purls(eg_pkg_dict_3)
-
     def test_to_advisories(self):
 
         expected_advisories = [
             Advisory(
                 summary="",
-                impacted_package_urls=[],
-                resolved_package_urls={
-                    PackageURL(
-                        type="deb",
-                        namespace="ubuntu",
-                        name="xine-lib",
-                        version="1.1.15-0ubuntu3.3",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    ),
-                    PackageURL(
-                        type="deb",
-                        namespace="ubuntu",
-                        name="libxine1",
-                        version="1.1.15-0ubuntu3.3",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    ),
-                },
                 references=[
                     Reference(url="https://usn.ubuntu.com/763-1/", reference_id="USN-763-1")
                 ],
@@ -161,25 +77,6 @@ class TestUbuntuUSNDataSource(TestCase):
             ),
             Advisory(
                 summary="",
-                impacted_package_urls=[],
-                resolved_package_urls={
-                    PackageURL(
-                        type="deb",
-                        namespace="ubuntu",
-                        name="xine-lib",
-                        version="1.1.15-0ubuntu3.3",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    ),
-                    PackageURL(
-                        type="deb",
-                        namespace="ubuntu",
-                        name="libxine1",
-                        version="1.1.15-0ubuntu3.3",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    ),
-                },
                 references=[
                     Reference(url="https://usn.ubuntu.com/763-1/", reference_id="USN-763-1")
                 ],

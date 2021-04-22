@@ -30,6 +30,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatDataSource
+from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "apache_tomcat", "security-9.html")
@@ -51,42 +52,54 @@ class TestApacheTomcatDataSource(TestCase):
             Advisory(
                 summary="",
                 vulnerability_id="CVE-2015-5351",
-                impacted_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="8.0.0.M1",
-                        qualifiers={},
-                        subpath=None,
+                affected_packages=[
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="8.0.0.M1",
+                            qualifiers={},
+                            subpath=None,
+                        ),
+                        patched_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M3",
+                            qualifiers={},
+                            subpath=None,
+                        ),
                     ),
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M1",
-                        qualifiers={},
-                        subpath=None,
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M1",
+                        ),
+                        patched_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M3",
+                        ),
                     ),
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M2",
-                        qualifiers={},
-                        subpath=None,
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M2",
+                        ),
+                        patched_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M3",
+                        ),
                     ),
-                },
-                resolved_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M3",
-                        qualifiers={},
-                        subpath=None,
-                    )
-                },
+                ],
                 references=[
                     Reference(
                         reference_id="",
@@ -108,26 +121,22 @@ class TestApacheTomcatDataSource(TestCase):
             Advisory(
                 summary="",
                 vulnerability_id="CVE-2016-0706",
-                impacted_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M1",
-                        qualifiers={},
-                        subpath=None,
+                affected_packages=[
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M1",
+                        ),
+                        patched_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M3",
+                        ),
                     )
-                },
-                resolved_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M3",
-                        qualifiers={},
-                        subpath=None,
-                    )
-                },
+                ],
                 references=[
                     Reference(
                         reference_id="",
@@ -144,17 +153,7 @@ class TestApacheTomcatDataSource(TestCase):
             Advisory(
                 summary="",
                 vulnerability_id="CVE-2016-0714",
-                impacted_package_urls=set(),
-                resolved_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M3",
-                        qualifiers={},
-                        subpath=None,
-                    )
-                },
+                affected_packages={},
                 references=[
                     Reference(
                         reference_id="",
@@ -176,34 +175,36 @@ class TestApacheTomcatDataSource(TestCase):
             Advisory(
                 summary="",
                 vulnerability_id="CVE-2016-0763",
-                impacted_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M1",
-                        qualifiers={},
-                        subpath=None,
+                affected_packages=[
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M1",
+                        ),
+                        patched_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M3",
+                        ),
                     ),
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M2",
-                        qualifiers={},
-                        subpath=None,
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M2",
+                        ),
+                        patched_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M3",
+                        ),
                     ),
-                },
-                resolved_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M3",
-                        qualifiers={},
-                        subpath=None,
-                    )
-                },
+                ],
                 references=[
                     Reference(
                         reference_id="",

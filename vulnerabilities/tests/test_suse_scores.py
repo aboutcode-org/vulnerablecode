@@ -40,8 +40,6 @@ class TestSUSESeverityScoreDataSource(TestCase):
         expected_data = [
             Advisory(
                 summary="",
-                impacted_package_urls=[],
-                resolved_package_urls=[],
                 references=[
                     Reference(
                         reference_id="",
@@ -90,8 +88,6 @@ class TestSUSESeverityScoreDataSource(TestCase):
             ),
             Advisory(
                 summary="",
-                impacted_package_urls=[],
-                resolved_package_urls=[],
                 references=[
                     Reference(
                         reference_id="",

@@ -74,7 +74,7 @@
             name = "vulnerablecode-${version}";
             src = vulnerablecode-src;
             dontConfigure = true; # do not use ./configure
-            propagatedBuildInputs = [ pythonEnv postgresql ];
+            propagatedBuildInputs = [ pythonEnv postgresql gitMinimal];
 
             postPatch = ''
               # Make sure the pycodestyle binary in $PATH is used.

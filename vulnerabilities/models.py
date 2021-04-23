@@ -86,7 +86,7 @@ class Vulnerability(models.Model):
         Returns packages, which first received patch against this vulnerability
         in their particular version history.
         """
-        return self.patched_packages.all()
+        return self.patched_packages.all().distinct()
 
     def __str__(self):
         return self.vulnerability_id or self.summary
@@ -150,7 +150,7 @@ class Package(PackageURLMixin):
         """
         Returns the vulnerabilities which this package is patched against.
         """
-        return self.resolved_vulnerabilities.all()
+        return self.resolved_vulnerabilities.all().distinct()
 
     class Meta:
         unique_together = ("name", "namespace", "type", "version", "qualifiers", "subpath")

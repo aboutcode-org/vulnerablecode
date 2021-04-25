@@ -25,10 +25,12 @@ import json
 from unittest import TestCase
 
 from packageurl import PackageURL
+from univers.version_specifier import VersionSpecifier
 
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.severity_systems import scoring_systems
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDDataSource
 from vulnerabilities.helpers import AffectedPackage
@@ -42,8 +44,38 @@ class TestApacheHTTPDDataSource(TestCase):
     def setUpClass(cls):
         data_source_cfg = {"etags": {}}
         cls.data_src = ApacheHTTPDDataSource(1, config=data_source_cfg)
+        known_versions = ["1.3.2", "1.3.1", "1.3.0"]
+        cls.data_src.version_api = GitHubTagsAPI(cache={"apache/httpd": known_versions})
         with open(TEST_DATA) as f:
             cls.data = json.load(f)
+
+    def test_to_version_ranges(self):
+        versions = [
+            {
+                "version_affected": "?=",
+                "version_value": "1.3.0",
+            },
+            {
+                "version_affected": "=",
+                "version_value": "1.3.1",
+            },
+            {
+                "version_affected": "<",
+                "version_value": "1.3.2",
+            },
+        ]
+        fixed_version_ranges, affected_version_ranges = self.data_src.to_version_ranges(versions)
+
+        # Check fixed packages
+        assert [
+            VersionSpecifier.from_scheme_version_spec_string("maven", ">=1.3.2")
+        ] == fixed_version_ranges
+
+        # Check vulnerable packages
+        assert [
+            VersionSpecifier.from_scheme_version_spec_string("maven", "==1.3.0"),
+            VersionSpecifier.from_scheme_version_spec_string("maven", "==1.3.1"),
+        ] == affected_version_ranges
 
     def test_to_advisory(self):
         expected_advisories = [

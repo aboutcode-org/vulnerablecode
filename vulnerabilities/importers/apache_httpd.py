@@ -21,16 +21,20 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import dataclasses
+import asyncio
 
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
+from univers.versions import MavenVersion
+from univers.version_specifier import VersionSpecifier
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.severity_systems import scoring_systems
 from vulnerabilities.helpers import create_etag
 from vulnerabilities.helpers import nearest_patched_package
@@ -47,6 +51,10 @@ class ApacheHTTPDDataSource(DataSource):
     url = "https://httpd.apache.org/security/json/{}"
     ref_url = "https://httpd.apache.org/security/json/{}.json"
 
+    def set_api(self):
+        self.version_api = GitHubTagsAPI()
+        asyncio.run(self.version_api.load_api(["apache/httpd"]))
+
     def updated_advisories(self):
         # Etags are like hashes of web responses. We maintain
         # (url, etag) mappings in the DB. `create_etag`  creates
@@ -55,6 +63,7 @@ class ApacheHTTPDDataSource(DataSource):
 
         if create_etag(data_src=self, url=self.url, etag_key="ETag"):
             links = fetch_links(self.url)
+            self.set_api()
             advisories = []
             for link in links:
                 data = requests.get(link).json()
@@ -72,6 +81,7 @@ class ApacheHTTPDDataSource(DataSource):
                 description = desc.get("value")
                 break
 
+        severities = []
         impacts = data.get("impact", [])
         impact = None
         for imp in impacts:
@@ -79,40 +89,47 @@ class ApacheHTTPDDataSource(DataSource):
             if value is not None:
                 impact = value
                 break
-
         if impact is not None:
-            severity = VulnerabilitySeverity(
-                system=scoring_systems["apache_httpd"],
-                value=impact,
+            severities.append(
+                VulnerabilitySeverity(
+                    system=scoring_systems["apache_httpd"],
+                    value=impact,
+                )
             )
-            reference = Reference(
-                reference_id=cve,
-                url=self.ref_url.format(cve),
-                severities=[severity],
-            )
-        else:
-            reference = Reference(
-                reference_id=cve,
-                url=self.ref_url.format(cve),
-            )
+        reference = Reference(
+            reference_id=cve,
+            url=self.ref_url.format(cve),
+            severities=severities,
+        )
 
-        fixed_packages = []
-        affected_packages = []
-
+        versions = []
         for vendor in data["affects"]["vendor"]["vendor_data"]:
             for products in vendor["product"]["product_data"]:
                 for version in products["version"]["version_data"]:
-                    version_value = version["version_value"]
+                    versions.append(version)
 
-                    if version["version_affected"] == "<":
-                        fixed_packages.append(
-                            PackageURL(type="apache", name="httpd", version=version_value)
-                        )
+        fixed_version_ranges, affected_version_ranges = self.to_version_ranges(versions)
 
-                    else:
-                        affected_packages.append(
-                            PackageURL(type="apache", name="httpd", version=version_value)
-                        )
+        affected_packages = []
+        fixed_packages = []
+
+        for version_range in fixed_version_ranges:
+            fixed_packages.extend(
+                [
+                    PackageURL(type="apache", name="httpd", version=version)
+                    for version in self.version_api.get("apache/httpd")
+                    if MavenVersion(version) in version_range
+                ]
+            )
+
+        for version_range in affected_version_ranges:
+            affected_packages.extend(
+                [
+                    PackageURL(type="apache", name="httpd", version=version)
+                    for version in self.version_api.get("apache/httpd")
+                    if MavenVersion(version) in version_range
+                ]
+            )
 
         return Advisory(
             vulnerability_id=cve,
@@ -120,6 +137,26 @@ class ApacheHTTPDDataSource(DataSource):
             affected_packages=nearest_patched_package(affected_packages, fixed_packages),
             references=[reference],
         )
+
+    def to_version_ranges(self, versions):
+        fixed_version_ranges = []
+        affected_version_ranges = []
+        for version in versions:
+            version_value = version["version_value"]
+            if version["version_affected"] == "<":
+                fixed_version_ranges.append(
+                    VersionSpecifier.from_scheme_version_spec_string(
+                        "maven", ">={}".format(version_value)
+                    )
+                )
+            elif version["version_affected"] == "=" or version["version_affected"] == "?=":
+                affected_version_ranges.append(
+                    VersionSpecifier.from_scheme_version_spec_string(
+                        "maven", "{}".format(version_value)
+                    )
+                )
+
+        return (fixed_version_ranges, affected_version_ranges)
 
 
 def fetch_links(url):

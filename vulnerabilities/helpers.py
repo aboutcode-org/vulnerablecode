@@ -170,7 +170,7 @@ def nearest_patched_package(
 def split_markdown_front_matter(text: str) -> Tuple[str, str]:
     r"""
     Split text into markdown front matter and the markdown body
-    Returns ("", text) for text with non existing front matter
+    Return ("", text) for text with non existing front matter
 
     >>> text='''---
     ... title: DUMMY-SECURITY-2019-001

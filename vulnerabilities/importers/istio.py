@@ -126,12 +126,17 @@ class IstioDataSource(GitDataSource):
         releases = []
         if data.get("releases"):
             for release in data["releases"]:
-                # If it is of form "All versions prior to x"
-                if "All releases" in release:
+                # If it is of form "All releases prior to x"
+                if "All releases prior" in release:
                     release = release.strip()
                     release = release.split(" ")
                     releases.append("<" + release[4])
-                # If it is of form "a to b"
+
+                # Eg. 'All releases 1.5 and later'
+                elif "All releases" in release and "and later" in release:
+                    release = release.split()[2].strip()
+                    releases.append(f">={release}")
+
                 elif "to" in release:
                     release = release.strip()
                     release = release.split(" ")
@@ -193,6 +198,12 @@ class IstioDataSource(GitDataSource):
                     vulnerability_id=cve_id,
                     summary=data["description"],
                     affected_packages=affected_packages,
+                    references=[
+                        Reference(
+                            reference_id=data["title"],
+                            url=f"https://istio.io/latest/news/security/{data['title']}/",
+                        )
+                    ],
                 )
             )
 

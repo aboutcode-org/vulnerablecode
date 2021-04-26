@@ -1606,7 +1606,6 @@
         "pk": 211,
         "fields": {
             "vulnerability": 330,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/26f2c5774f117aea588e8f31fad38bcf14e83bec"
         }
@@ -1616,7 +1615,6 @@
         "pk": 212,
         "fields": {
             "vulnerability": 329,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/3884b47b7c255c2e94d9b387ee83c7e8bb981258"
         }
@@ -1626,7 +1624,6 @@
         "pk": 213,
         "fields": {
             "vulnerability": 303,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/e502cc86df9dafded1694fceb3228ee34d11c11a"
         }
@@ -1636,7 +1633,6 @@
         "pk": 214,
         "fields": {
             "vulnerability": 304,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/31c8b265591a0aaa462a1f3eb5770661aaac67db"
         }
@@ -1646,7 +1642,6 @@
         "pk": 215,
         "fields": {
             "vulnerability": 313,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/760d04342a495ee86bf5adc71a91d126af64397f"
         }
@@ -1656,7 +1651,6 @@
         "pk": 216,
         "fields": {
             "vulnerability": 318,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/2c0d295e26306e15a92eb23a84a1802005c1c137"
         }
@@ -1666,7 +1660,6 @@
         "pk": 217,
         "fields": {
             "vulnerability": 310,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/2ac4c6f7b2b2af20c0e2b0ba05367e454cd11b33"
         }
@@ -1676,7 +1669,6 @@
         "pk": 218,
         "fields": {
             "vulnerability": 406,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/5fee606442a6738fd06a756d7076be53b7b7734c"
         }
@@ -1686,7 +1678,6 @@
         "pk": 219,
         "fields": {
             "vulnerability": 323,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/baaabfd8fdcec04a691695fad9a664bea43202b6"
         }
@@ -1696,7 +1687,6 @@
         "pk": 220,
         "fields": {
             "vulnerability": 301,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/08229ad838c50f644d7e928e2eef147b4308ad64"
         }
@@ -1706,7 +1696,6 @@
         "pk": 221,
         "fields": {
             "vulnerability": 320,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/acacbfa7565c78d2273c0b2a2e5e803f44afefeb"
         }
@@ -1716,7 +1705,6 @@
         "pk": 222,
         "fields": {
             "vulnerability": 296,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/e32bc855a81a2d48d215c506bdeb4f598045f7e9"
         }
@@ -1726,7 +1714,6 @@
         "pk": 223,
         "fields": {
             "vulnerability": 304,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/068b963bb7afc57f5bdd723de0dd15e7795d5822"
         }
@@ -1736,7 +1723,6 @@
         "pk": 224,
         "fields": {
             "vulnerability": 307,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/56fb454d281a023b3f950d969693553d3f3ceea1"
         }
@@ -1746,7 +1732,6 @@
         "pk": 225,
         "fields": {
             "vulnerability": 301,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/e21f8cf78a125cd3c8c0d1a1a6c8bb0b901f893f"
         }
@@ -1756,7 +1741,6 @@
         "pk": 226,
         "fields": {
             "vulnerability": 337,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/68595c0c2886e7942a14f98c17a55a88afb6c292"
         }
@@ -1766,7 +1750,6 @@
         "pk": 227,
         "fields": {
             "vulnerability": 460,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/197e0ea817ad64820789d86711d55ff50d71f631"
         }
@@ -1776,7 +1759,6 @@
         "pk": 228,
         "fields": {
             "vulnerability": 308,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/4443cf7aa0099e5ce615c18cee249fff77fb0871"
         }
@@ -1786,7 +1768,6 @@
         "pk": 229,
         "fields": {
             "vulnerability": 335,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/4b390b6c3f8df925dc92a3dd6b022baa9a2f4650"
         }
@@ -1796,7 +1777,6 @@
         "pk": 230,
         "fields": {
             "vulnerability": 435,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/561cbe567846a376153bea7f1f2d061e78029c2d"
         }
@@ -1806,7 +1786,6 @@
         "pk": 231,
         "fields": {
             "vulnerability": 430,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/88b48dc68024dcc437da4296c9fb04419b0ccbe1"
         }
@@ -1816,7 +1795,6 @@
         "pk": 232,
         "fields": {
             "vulnerability": 296,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/54aa9d51b09d67e90db443f682cface795f5af9e"
         }
@@ -1826,7 +1804,6 @@
         "pk": 233,
         "fields": {
             "vulnerability": 319,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/99d97842ddb5fbbbfb5e9820a64ebd19afe569f6"
         }
@@ -1836,7 +1813,6 @@
         "pk": 234,
         "fields": {
             "vulnerability": 327,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/63658103d4441924f8dbfc517b99bb54758a98b9"
         }
@@ -1846,7 +1822,6 @@
         "pk": 235,
         "fields": {
             "vulnerability": 316,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/efbe126e3ebb9123ac9d058aa2bb044261342aaa"
         }
@@ -1856,7 +1831,6 @@
         "pk": 236,
         "fields": {
             "vulnerability": 434,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/7e4cae1d2f555cbe9226b377aff4b56c9f7ddd4d"
         }
@@ -1866,7 +1840,6 @@
         "pk": 237,
         "fields": {
             "vulnerability": 295,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/eb563247aef3e83dda7679c43f9649270462e5b1"
         }
@@ -1876,7 +1849,6 @@
         "pk": 238,
         "fields": {
             "vulnerability": 468,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/4b7a4ba29cafa432fc4266fe6e59e60bc1c96332"
         }
@@ -1886,7 +1858,6 @@
         "pk": 239,
         "fields": {
             "vulnerability": 306,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/898fb884b706aaeb283de4812340bb0bde8476dc"
         }
@@ -1896,7 +1867,6 @@
         "pk": 240,
         "fields": {
             "vulnerability": 456,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/ca98926"
         }
@@ -1906,7 +1876,6 @@
         "pk": 241,
         "fields": {
             "vulnerability": 294,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/1b0fe00e2704b5e20334a16d3c9099d1ba2ef1be"
         }
@@ -1916,7 +1885,6 @@
         "pk": 242,
         "fields": {
             "vulnerability": 300,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/21c856b75d81eff61aa63b4f036bb64a85bf6d46"
         }
@@ -1926,7 +1894,6 @@
         "pk": 243,
         "fields": {
             "vulnerability": 318,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/ea39b16b71e4e72a228a4535bd6d6a02c5edbc1f"
         }
@@ -1936,7 +1903,6 @@
         "pk": 244,
         "fields": {
             "vulnerability": 330,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/00a4c1421407b6ac796688871b0a49a179c694d9"
         }
@@ -1946,7 +1912,6 @@
         "pk": 245,
         "fields": {
             "vulnerability": 298,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/ee22257b1418438ebaf54df98af4e24f494d1809"
         }
@@ -1956,7 +1921,6 @@
         "pk": 246,
         "fields": {
             "vulnerability": 309,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/6939eab03a6e23d2bd2c3f5e34fe1d48e542e787"
         }
@@ -1966,7 +1930,6 @@
         "pk": 247,
         "fields": {
             "vulnerability": 455,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/3462896"
         }
@@ -1976,7 +1939,6 @@
         "pk": 248,
         "fields": {
             "vulnerability": 328,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/bb1a4866034255749ac578adb06a76335fc117b1"
         }
@@ -1986,7 +1948,6 @@
         "pk": 249,
         "fields": {
             "vulnerability": 307,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/b1d6d55ece1c26fa2829e2b819b038d7b6d692b4"
         }
@@ -1996,7 +1957,6 @@
         "pk": 250,
         "fields": {
             "vulnerability": 308,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/38d600147331d36e74174ebbd4008b63188b321b"
         }
@@ -2006,7 +1966,6 @@
         "pk": 251,
         "fields": {
             "vulnerability": 314,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/4ad93618d26a3ea23d36ad5498ff4f59eff3a4d2"
         }
@@ -2016,7 +1975,6 @@
         "pk": 252,
         "fields": {
             "vulnerability": 312,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/3984ef0b72831da8b3ece4745cac4f8575b19098"
         }
@@ -2026,7 +1984,6 @@
         "pk": 253,
         "fields": {
             "vulnerability": 293,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/aab7c770353b1dc4ba045938c8fb446dd1c4531e"
         }
@@ -2036,7 +1993,6 @@
         "pk": 254,
         "fields": {
             "vulnerability": 323,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/1bbe48ab149893a78bf99c8eb8895c928900a16f"
         }
@@ -2046,7 +2002,6 @@
         "pk": 255,
         "fields": {
             "vulnerability": 468,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/2198be3483259de374f91e57d247d0fc667aef29"
         }
@@ -2056,7 +2011,6 @@
         "pk": 256,
         "fields": {
             "vulnerability": 311,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/43e6a58d4991a451daf4891ff05a48735df871ac"
         }
@@ -2066,7 +2020,6 @@
         "pk": 257,
         "fields": {
             "vulnerability": 321,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/00d965474b22b54e4275232bc71ee0c699c5cd21"
         }
@@ -2076,7 +2029,6 @@
         "pk": 258,
         "fields": {
             "vulnerability": 311,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/8abfe72e8c1de1b95f50aa0d9134803b4d00070f"
         }
@@ -2086,7 +2038,6 @@
         "pk": 259,
         "fields": {
             "vulnerability": 322,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/2a7dd548a6f5d6f7f84a89c98323b70a2822406e"
         }
@@ -2096,7 +2047,6 @@
         "pk": 260,
         "fields": {
             "vulnerability": 425,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/abda7c114791fa7fe95672ec7a66fc4733c40dbc"
         }
@@ -2106,7 +2056,6 @@
         "pk": 261,
         "fields": {
             "vulnerability": 301,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/631f94db0065c78181ca9ba5546ebc8bb3884b97"
         }
@@ -2116,7 +2065,6 @@
         "pk": 262,
         "fields": {
             "vulnerability": 315,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/610b66267e41a32805ab54cbc580c5a6d5826cb4"
         }
@@ -2126,7 +2074,6 @@
         "pk": 263,
         "fields": {
             "vulnerability": 312,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/ea7abeeabf92b7aca160bdd0208636d4da69f4f4"
         }
@@ -2136,7 +2083,6 @@
         "pk": 264,
         "fields": {
             "vulnerability": 297,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/f1c5eea8a817075d31e43f5876993c6710238c98"
         }
@@ -2146,7 +2092,6 @@
         "pk": 265,
         "fields": {
             "vulnerability": 309,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/349a41da1ad88ad87825414752a8ff5fdd6a6c3f"
         }
@@ -2156,7 +2101,6 @@
         "pk": 266,
         "fields": {
             "vulnerability": 328,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/006a788c84e541c8920dd2ad85fb62b52185c519"
         }
@@ -2166,7 +2110,6 @@
         "pk": 267,
         "fields": {
             "vulnerability": 305,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/56d5a4bfcaf37fa420aef2bb881aa55e61cf5f2f"
         }
@@ -2176,7 +2119,6 @@
         "pk": 268,
         "fields": {
             "vulnerability": 297,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/419102400a2811582a7a3d4a4e317d72e5ce0a8f"
         }
@@ -2186,7 +2128,6 @@
         "pk": 269,
         "fields": {
             "vulnerability": 438,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/cca1cd9a3447dd067503e4a85ebd1679ee78a48e"
         }
@@ -2196,7 +2137,6 @@
         "pk": 270,
         "fields": {
             "vulnerability": 300,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/30c22fa8b1d840036b8e203585738df62a03cec8"
         }
@@ -2206,7 +2146,6 @@
         "pk": 271,
         "fields": {
             "vulnerability": 311,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/ef11e19d1365eea2b1851e6f540a0bf365d303e7"
         }
@@ -2216,7 +2155,6 @@
         "pk": 272,
         "fields": {
             "vulnerability": 298,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/f426625b6ae9a7831010750490a5f0ad689c5ba3"
         }
@@ -2226,7 +2164,6 @@
         "pk": 273,
         "fields": {
             "vulnerability": 317,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/6e629b5be45face20b4ca71c4fcbfed78b864a2e"
         }
@@ -2236,7 +2173,6 @@
         "pk": 274,
         "fields": {
             "vulnerability": 332,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/1027ad4f34c30b8585592764b9a670ba36888269"
         }
@@ -2246,7 +2182,6 @@
         "pk": 275,
         "fields": {
             "vulnerability": 322,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/57c4b9f6a2f800b41ce2836986fe33640f6c3f8a"
         }
@@ -2256,7 +2191,6 @@
         "pk": 276,
         "fields": {
             "vulnerability": 313,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/a59b90bf491410f1f2bc4540cc21f1980fd14c5b"
         }
@@ -2266,7 +2200,6 @@
         "pk": 277,
         "fields": {
             "vulnerability": 318,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/a59ab1c4dd27a4c7c6e88f3c33747532fd144412"
         }
@@ -2276,7 +2209,6 @@
         "pk": 278,
         "fields": {
             "vulnerability": 296,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/d333ebaf9c77332754a9d5e111e2f53e1de54fdd"
         }
@@ -2286,7 +2218,6 @@
         "pk": 279,
         "fields": {
             "vulnerability": 302,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/e9bbefbf0f24c57645e7ad6a5a71ae649d18ac8e"
         }
@@ -2296,7 +2227,6 @@
         "pk": 280,
         "fields": {
             "vulnerability": 396,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/517a0e7fa0f5453c860a3aec17b678bd55d5aad7"
         }
@@ -2306,7 +2236,6 @@
         "pk": 281,
         "fields": {
             "vulnerability": 293,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/b18162a7c9bbfb57112459a4d6631fa258fd8c0cq"
         }
@@ -2316,7 +2245,6 @@
         "pk": 282,
         "fields": {
             "vulnerability": 321,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/51d009043670a627d6abe66894126851cf3690e9"
         }
@@ -2326,7 +2254,6 @@
         "pk": 283,
         "fields": {
             "vulnerability": 303,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/ca51bafc1a88d8b8348f5fd97adc5d6ca93f8e76"
         }
@@ -2336,7 +2263,6 @@
         "pk": 284,
         "fields": {
             "vulnerability": 329,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/b77ab018b79a00f789b0fb85596b446b08be4c9d"
         }
@@ -2346,7 +2272,6 @@
         "pk": 285,
         "fields": {
             "vulnerability": 332,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/2b4029e68fd7002d2307e6c3cde0f3784eef9c83"
         }
@@ -2356,7 +2281,6 @@
         "pk": 286,
         "fields": {
             "vulnerability": 428,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/1cbf663a6c89dcf8f7706d30a8bae675e2e0199a"
         }
@@ -2366,7 +2290,6 @@
         "pk": 287,
         "fields": {
             "vulnerability": 436,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/1b31b5ad560b16e2fe1cad54a755e3e6b5e778a3"
         }
@@ -2376,7 +2299,6 @@
         "pk": 288,
         "fields": {
             "vulnerability": 334,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/df6b5e29ffea2d5a3e08de92fb765fdb21c7a21e"
         }
@@ -2386,7 +2308,6 @@
         "pk": 289,
         "fields": {
             "vulnerability": 310,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/9310d45087ae546e27e61ddf8f6367f29848220d"
         }
@@ -2396,7 +2317,6 @@
         "pk": 290,
         "fields": {
             "vulnerability": 300,
-            "source": "",
             "reference_id": "",
             "url": "https://github.com/openssl/openssl/commit/7c1709c2da5414f5b6133d00a03fc8c5bf996c7a"
         }

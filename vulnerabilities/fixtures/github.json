@@ -13,7 +13,6 @@
         "pk": 136,
         "fields": {
             "vulnerability": 60,
-            "source": "",
             "reference_id": "GHSA-2cxf-6567-7pp6",
             "url": "https://github.com/DataDog/datadog-api-client-java/security/advisories/GHSA-2cxf-6567-7pp6"
         }
@@ -23,7 +22,6 @@
         "pk": 137,
         "fields": {
             "vulnerability": 60,
-            "source": "",
             "reference_id": "",
             "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-21331"
         }
@@ -33,7 +31,6 @@
         "pk": 138,
         "fields": {
             "vulnerability": 60,
-            "source": "",
             "reference_id": "GHSA-2cxf-6567-7pp6",
             "url": "https://github.com/advisories/GHSA-2cxf-6567-7pp6"
         }

@@ -204,7 +204,12 @@ class TestIstioDataSource(TestCase):
                         ),
                     ),
                 ],
-                references=[],
+                references=[
+                    Reference(
+                        reference_id="ISTIO-SECURITY-2019-001",
+                        url="https://istio.io/latest/news/security/ISTIO-SECURITY-2019-001/",
+                    )
+                ],
             )
         ]
 

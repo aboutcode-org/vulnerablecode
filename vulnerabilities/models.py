@@ -102,7 +102,6 @@ class VulnerabilityReference(models.Model):
     """
 
     vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
-    source = models.CharField(max_length=50, help_text="Source(s) name eg:NVD", blank=True)
     reference_id = models.CharField(
         max_length=50, help_text="Reference ID, eg:DSA-4465-1", blank=True
     )
@@ -113,7 +112,7 @@ class VulnerabilityReference(models.Model):
         return VulnerabilitySeverity.objects.filter(reference=self.id)
 
     class Meta:
-        unique_together = ("vulnerability", "source", "reference_id", "url")
+        unique_together = ("vulnerability", "reference_id", "url")
 
     def __str__(self):
         return f"{self.source} {self.reference_id} {self.url}"

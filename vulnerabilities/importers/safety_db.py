@@ -36,6 +36,7 @@ from typing import Tuple
 import requests
 from univers.version_specifier import VersionSpecifier
 from univers.versions import PYPIVersion
+from univers.versions import InvalidVersion
 from packageurl import PackageURL
 from schema import Or
 from schema import Regex
@@ -97,8 +98,6 @@ class SafetyDbDataSource(DataSource):
         return {pkg for pkg in self._api_response}
 
     def updated_advisories(self) -> Set[Advisory]:
-        advisories = []
-
         for package_name in self._api_response:
             if package_name == "$meta" or package_name == "cumin":
                 # This is the first entry in the data feed. It contains metadata of the feed.
@@ -129,7 +128,7 @@ class SafetyDbDataSource(DataSource):
                 )
 
                 reference = [Reference(reference_id=advisory["id"])]
-
+                advisories = []
                 for cve_id in cve_ids:
                     advisories.append(
                         Advisory(
@@ -142,7 +141,7 @@ class SafetyDbDataSource(DataSource):
                         )
                     )
 
-        return advisories
+                yield advisories
 
     # FIXME: This is duplicate code. Use the the helper instead.
     def create_etag(self, url):
@@ -172,10 +171,12 @@ def categorize_versions(
     for version_spec in version_specs:
         vurl_specs.append(VersionSpecifier.from_scheme_version_spec_string("pypi", version_spec))
 
+    invalid_versions = set()
     for version in all_versions:
         try:
             version_object = PYPIVersion(version)
-        except:
+        except InvalidVersion:
+            invalid_versions.add(version)
             continue
 
         if any([version_object in vurl_spec for vurl_spec in vurl_specs]):
@@ -189,6 +190,7 @@ def categorize_versions(
             )
 
     resolved_purls = []
+    all_versions -= invalid_versions
     for version in all_versions - impacted_versions:
         resolved_purls.append(PackageURL(name=package_name, type="pypi", version=version))
     return impacted_purls, resolved_purls

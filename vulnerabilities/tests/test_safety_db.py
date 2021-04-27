@@ -154,8 +154,14 @@ class SafetyDbtTest(TestCase):
             ),
         ]
 
-        found_data = [adv for adv in data_src.updated_advisories()]
+        found_data = []
+        # FIXME: This is messed up
+        for adv_batch in data_src.updated_advisories():
+            found_data.extend(adv_batch)
+            # found_data = [list(adv) for adv in data_src.updated_advisories()]
 
+        print(expected_data)
+        print("\n", found_data)
         assert expected_data == found_data
 
 

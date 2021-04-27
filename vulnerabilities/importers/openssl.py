@@ -83,6 +83,11 @@ class OpenSSLDataSource(DataSource):
                         else:
                             continue
 
+                    if cve_id == "CVE-2007-5502":
+                        # This CVE has weird version "fips-1.1.2".This is
+                        # probably a submodule. Skip this for now.
+                        continue
+
                     if info.tag == "affects":
                         # Vulnerable package versions
                         vuln_pkg_versions.append(info.attrib.get("version"))

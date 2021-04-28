@@ -50,7 +50,7 @@ class TestApacheHTTPDDataSource(TestCase):
             cls.data = json.load(f)
 
     def test_to_version_ranges(self):
-        versions = [
+        data = [
             {
                 "version_affected": "?=",
                 "version_value": "1.3.0",
@@ -64,7 +64,7 @@ class TestApacheHTTPDDataSource(TestCase):
                 "version_value": "1.3.2",
             },
         ]
-        fixed_version_ranges, affected_version_ranges = self.data_src.to_version_ranges(versions)
+        fixed_version_ranges, affected_version_ranges = self.data_src.to_version_ranges(data)
 
         # Check fixed packages
         assert [

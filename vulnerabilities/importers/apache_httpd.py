@@ -20,8 +20,9 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import dataclasses
 import asyncio
+import dataclasses
+import urllib
 
 import requests
 from bs4 import BeautifulSoup
@@ -48,8 +49,7 @@ class ApacheHTTPDDataSourceConfiguration(DataSourceConfiguration):
 class ApacheHTTPDDataSource(DataSource):
 
     CONFIG_CLASS = ApacheHTTPDDataSourceConfiguration
-    url = "https://httpd.apache.org/security/json/{}"
-    ref_url = "https://httpd.apache.org/security/json/{}.json"
+    base_url = "https://httpd.apache.org/security/json/"
 
     def set_api(self):
         self.version_api = GitHubTagsAPI()
@@ -61,8 +61,8 @@ class ApacheHTTPDDataSource(DataSource):
         # (url, etag) pair. If a (url, etag) already exists then the code
         # skips processing the response further to avoid duplicate work
 
-        if create_etag(data_src=self, url=self.url, etag_key="ETag"):
-            links = fetch_links(self.url)
+        if create_etag(data_src=self, url=self.base_url, etag_key="ETag"):
+            links = fetch_links(self.base_url)
             self.set_api()
             advisories = []
             for link in links:
@@ -83,32 +83,29 @@ class ApacheHTTPDDataSource(DataSource):
 
         severities = []
         impacts = data.get("impact", [])
-        impact = None
-        for imp in impacts:
-            value = imp.get("other")
+        for impact in impacts:
+            value = impact.get("other")
             if value is not None:
-                impact = value
-                break
-        if impact is not None:
-            severities.append(
-                VulnerabilitySeverity(
-                    system=scoring_systems["apache_httpd"],
-                    value=impact,
+                severities.append(
+                    VulnerabilitySeverity(
+                        system=scoring_systems["apache_httpd"],
+                        value=value,
+                    )
                 )
-            )
+                break
         reference = Reference(
             reference_id=cve,
-            url=self.ref_url.format(cve),
+            url=urllib.parse.urljoin(self.base_url, f"{cve}.json"),
             severities=severities,
         )
 
-        versions = []
+        versions_data = []
         for vendor in data["affects"]["vendor"]["vendor_data"]:
             for products in vendor["product"]["product_data"]:
-                for version in products["version"]["version_data"]:
-                    versions.append(version)
+                for version_data in products["version"]["version_data"]:
+                    versions_data.append(version_data)
 
-        fixed_version_ranges, affected_version_ranges = self.to_version_ranges(versions)
+        fixed_version_ranges, affected_version_ranges = self.to_version_ranges(versions_data)
 
         affected_packages = []
         fixed_packages = []
@@ -138,18 +135,19 @@ class ApacheHTTPDDataSource(DataSource):
             references=[reference],
         )
 
-    def to_version_ranges(self, versions):
+    def to_version_ranges(self, versions_data):
         fixed_version_ranges = []
         affected_version_ranges = []
-        for version in versions:
-            version_value = version["version_value"]
-            if version["version_affected"] == "<":
+        for version_data in versions_data:
+            version_value = version_data["version_value"]
+            range_expression = version_data["version_affected"]
+            if range_expression == "<":
                 fixed_version_ranges.append(
                     VersionSpecifier.from_scheme_version_spec_string(
                         "maven", ">={}".format(version_value)
                     )
                 )
-            elif version["version_affected"] == "=" or version["version_affected"] == "?=":
+            elif range_expression == "=" or range_expression == "?=":
                 affected_version_ranges.append(
                     VersionSpecifier.from_scheme_version_spec_string(
                         "maven", "{}".format(version_value)
@@ -161,11 +159,11 @@ class ApacheHTTPDDataSource(DataSource):
 
 def fetch_links(url):
     links = []
-    data = requests.get(url.format("")).content
+    data = requests.get(url).content
     soup = BeautifulSoup(data, features="lxml")
     for tag in soup.find_all("a"):
         link = tag.get("href")
         if not link.endswith("json"):
             continue
-        links.append(url.format(link))
+        links.append(urllib.parse.urljoin(url, link))
     return links

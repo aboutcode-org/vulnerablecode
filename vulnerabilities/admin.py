@@ -51,7 +51,7 @@ class PackageAdmin(admin.ModelAdmin):
 
 @admin.register(PackageRelatedVulnerability)
 class PackageRelatedVulnerabilityAdmin(admin.ModelAdmin):
-    list_filter = ("is_vulnerable", "package__type", "package__namespace")
+    list_filter = ("package__type", "package__namespace")
     search_fields = ["vulnerability__vulnerability_id", "package__name"]
 
 

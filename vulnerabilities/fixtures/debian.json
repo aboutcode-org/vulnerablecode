@@ -1,110 +1,89 @@
 [
-{
-  "model": "vulnerabilities.vulnerability",
-  "pk": 1,
-  "fields": {
-    "vulnerability_id": "CVE-2014-8242",
-    "summary": ""
-    
+  {
+    "model": "vulnerabilities.vulnerability",
+    "pk": 1,
+    "fields": {
+      "vulnerability_id": "CVE-2014-8242",
+      "old_vulnerability_id": null,
+      "summary": ""
+    }
+  },
+  {
+    "model": "vulnerabilities.vulnerability",
+    "pk": 2,
+    "fields": {
+      "vulnerability_id": "CVE-2009-1382",
+      "old_vulnerability_id": null,
+      "summary": ""
+    }
+  },
+  {
+    "model": "vulnerabilities.vulnerability",
+    "pk": 3,
+    "fields": {
+      "vulnerability_id": "CVE-2009-2459",
+      "old_vulnerability_id": null,
+      "summary": ""
+    }
+  },
+  {
+    "model": "vulnerabilities.package",
+    "pk": 1,
+    "fields": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "librsync",
+      "version": "0.9.7-10",
+      "subpath": "",
+      "qualifiers": {
+        "distro": "jessie"
+      }
+    }
+  },
+  {
+    "model": "vulnerabilities.package",
+    "pk": 2,
+    "fields": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "mimetex",
+      "version": "1.74-1",
+      "subpath": "",
+      "qualifiers": {
+        "distro": "jessie"
+      }
+    }
+  },
+  {
+    "model": "vulnerabilities.package",
+    "pk": 3,
+    "fields": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "mimetex",
+      "version": "1.50-1.1",
+      "subpath": "",
+      "qualifiers": {
+        "distro": "jessie"
+      }
+    }
+  },
+  {
+    "model": "vulnerabilities.packagerelatedvulnerability",
+    "pk": 1,
+    "fields": {
+      "package": 1,
+      "vulnerability": 1,
+      "patched_package": null
+    }
+  },
+  {
+    "model": "vulnerabilities.packagerelatedvulnerability",
+    "pk": 4,
+    "fields": {
+      "package": 3,
+      "vulnerability": 3,
+      "patched_package": 2
+    }
   }
-},
-{
-  "model": "vulnerabilities.vulnerability",
-  "pk": 2,
-  "fields": {
-    "vulnerability_id": "CVE-2009-1382",
-    "summary": ""
-    
-  }
-},
-{
-  "model": "vulnerabilities.vulnerability",
-  "pk": 3,
-  "fields": {
-    "vulnerability_id": "CVE-2009-2459",
-    "summary": ""
-    
-  }
-},
-{
-  "model": "vulnerabilities.package",
-  "pk": 1,
-  "fields": {
-    "type": "deb",
-    "namespace": "debian",
-    "name": "librsync",
-    "version": "0.9.7-10",
-    "qualifiers": {"distro":"jessie"},
-    "subpath": ""
-  }
-},
-{
-  "model": "vulnerabilities.package",
-  "pk": 2,
-  "fields": {
-    "type": "deb",
-    "namespace": "debian",
-    "name": "mimetex",
-    "version": "1.74-1",
-    "qualifiers": {"distro":"jessie"},
-    "subpath": ""
-  }
-},
-{
-  "model": "vulnerabilities.package",
-  "pk": 3,
-  "fields": {
-    "type": "deb",
-    "namespace": "debian",
-    "name": "mimetex",
-    "version": "1.50-1.1",
-    "qualifiers": {"distro":"jessie"},
-    "subpath": ""
-  }
-},
-{
-  "model": "vulnerabilities.packagerelatedvulnerability",
-  "pk": 1,
-  "fields": {
-    "vulnerability": 1,
-    "package": 1,
-    "is_vulnerable": true
-  }
-},
-{
-  "model": "vulnerabilities.packagerelatedvulnerability",
-  "pk": 10,
-  "fields": {
-    "vulnerability": 2,
-    "package": 2,
-    "is_vulnerable": false
-  }
-},
-{
-  "model": "vulnerabilities.packagerelatedvulnerability",
-  "pk": 2,
-  "fields": {
-    "vulnerability": 2,
-    "package": 3,
-    "is_vulnerable": false
-  }
-},
-{
-  "model": "vulnerabilities.packagerelatedvulnerability",
-  "pk": 3,
-  "fields": {
-    "vulnerability": 3,
-    "package": 2,
-    "is_vulnerable": false
-  }
-},
-{
-  "model": "vulnerabilities.packagerelatedvulnerability",
-  "pk": 4,
-  "fields": {
-    "vulnerability": 3,
-    "package": 3,
-    "is_vulnerable": false
-  }
-}
 ]

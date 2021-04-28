@@ -22,12 +22,10 @@
 
 import importlib
 from datetime import datetime
-from time import sleep
 
 from django.db import models
-from django.db import IntegrityError
-from django.db import transaction
 import django.contrib.postgres.fields as pgfields
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from packageurl.contrib.django.models import PackageURLMixin
 from packageurl import PackageURL
@@ -56,6 +54,7 @@ class Vulnerability(models.Model):
         help_text="empty if no  CVE else VC id",
         unique=True,
         null=True,
+        blank=True,
     )
     summary = models.TextField(
         help_text="Summary of the vulnerability",
@@ -76,15 +75,18 @@ class Vulnerability(models.Model):
 
     @property
     def vulnerable_to(self):
-        return self.package_set.filter(
-            packagerelatedvulnerability__is_vulnerable=True,
-        )
+        """
+        Returns packages which are vulnerable to this vulnerability.
+        """
+        return self.vulnerable_packages.all()
 
     @property
     def resolved_to(self):
-        return self.package_set.filter(
-            packagerelatedvulnerability__is_vulnerable=False,
-        )
+        """
+        Returns packages, which first received patch against this vulnerability
+        in their particular version history.
+        """
+        return self.patched_packages.all().distinct()
 
     def __str__(self):
         return self.vulnerability_id or self.summary
@@ -100,7 +102,6 @@ class VulnerabilityReference(models.Model):
     """
 
     vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
-    source = models.CharField(max_length=50, help_text="Source(s) name eg:NVD", blank=True)
     reference_id = models.CharField(
         max_length=50, help_text="Reference ID, eg:DSA-4465-1", blank=True
     )
@@ -111,7 +112,7 @@ class VulnerabilityReference(models.Model):
         return VulnerabilitySeverity.objects.filter(reference=self.id)
 
     class Meta:
-        unique_together = ("vulnerability", "source", "reference_id", "url")
+        unique_together = ("vulnerability", "reference_id", "url")
 
     def __str__(self):
         return f"{self.source} {self.reference_id} {self.url}"
@@ -123,20 +124,32 @@ class Package(PackageURLMixin):
     """
 
     vulnerabilities = models.ManyToManyField(
-        to="Vulnerability", through="PackageRelatedVulnerability"
+        to="Vulnerability",
+        through="PackageRelatedVulnerability",
+        through_fields=("package", "vulnerability"),
+        related_name="vulnerable_packages",
+    )
+
+    resolved_vulnerabilities = models.ManyToManyField(
+        to="Vulnerability",
+        through="PackageRelatedVulnerability",
+        through_fields=("patched_package", "vulnerability"),
+        related_name="patched_packages",
     )
 
     @property
     def vulnerable_to(self):
-        return self.vulnerabilities.filter(
-            packagerelatedvulnerability__is_vulnerable=True,
-        )
+        """
+        Returns vulnerabilities which are affecting this package.
+        """
+        return self.vulnerabilities.all()
 
     @property
     def resolved_to(self):
-        return self.vulnerabilities.filter(
-            packagerelatedvulnerability__is_vulnerable=False,
-        )
+        """
+        Returns the vulnerabilities which this package is patched against.
+        """
+        return self.resolved_vulnerabilities.all().distinct()
 
     class Meta:
         unique_together = ("name", "namespace", "type", "version", "qualifiers", "subpath")
@@ -149,6 +162,7 @@ class Package(PackageURLMixin):
             "Extra qualifying data for a package such as the name of an OS, "
             "architecture, distro, etc."
         ),
+        blank=True,
         null=False,
     )
 
@@ -175,9 +189,13 @@ class Package(PackageURLMixin):
 
 class PackageRelatedVulnerability(models.Model):
 
-    package = models.ForeignKey(Package, on_delete=models.CASCADE)
+    package = models.ForeignKey(
+        Package, on_delete=models.CASCADE, related_name="vulnerable_package"
+    )
     vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
-    is_vulnerable = models.BooleanField()
+    patched_package = models.ForeignKey(
+        Package, on_delete=models.CASCADE, null=True, blank=True, related_name="patched_package"
+    )
 
     def __str__(self):
         return f"{self.package.package_url} {self.vulnerability.vulnerability_id}"

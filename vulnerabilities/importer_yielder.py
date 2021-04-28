@@ -56,16 +56,16 @@ IMPORTER_REGISTRY = [
             "debian_tracker_url": "https://security-tracker.debian.org/tracker/data/json"
         },
     },
-    {
-        "name": "safetydb",
-        "license": "cc-by-nc-4.0",
-        "last_run": None,
-        "data_source": "SafetyDbDataSource",
-        "data_source_cfg": {
-            "url": "https://raw.githubusercontent.com/pyupio/safety-db/master/data/insecure_full.json",  # nopep8
-            "etags": {},
-        },
-    },
+    # {
+    #     "name": "safetydb",
+    #     "license": "cc-by-nc-4.0",
+    #     "last_run": None,
+    #     "data_source": "SafetyDbDataSource",
+    #     "data_source_cfg": {
+    #         "url": "https://raw.githubusercontent.com/pyupio/safety-db/master/data/insecure_full.json",
+    #         "etags": {},
+    #     },
+    # },
     {
         "name": "npm",
         "license": "mit",
@@ -97,13 +97,13 @@ IMPORTER_REGISTRY = [
         "data_source": "RetireDotnetDataSource",
         "data_source_cfg": {"repository_url": "https://github.com/RetireNet/Packages.git"},
     },
-    {
-        "name": "suse_backports",
-        "license": "",
-        "last_run": None,
-        "data_source": "SUSEBackportsDataSource",
-        "data_source_cfg": {"url": "http://ftp.suse.com/pub/projects/security/yaml/", "etags": {}},
-    },
+    # {
+    #     "name": "suse_backports",
+    #     "license": "",
+    #     "last_run": None,
+    #     "data_source": "SUSEBackportsDataSource",
+    #     "data_source_cfg": {"url": "http://ftp.suse.com/pub/projects/security/yaml/", "etags": {}},
+    # },
     {
         "name": "suse_scores",
         "license": "",

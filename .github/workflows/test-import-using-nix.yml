@@ -25,5 +25,6 @@ jobs:
       - name: run checks & test import
         run: |
           cd etc/nix
+          ./get-latest-pypi-deps-db.sh --in-place
           nix --print-build-logs flake check
           ./test-import-using-nix.sh alpine

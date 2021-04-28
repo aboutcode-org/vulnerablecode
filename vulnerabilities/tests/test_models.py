@@ -22,7 +22,6 @@
 
 from datetime import datetime
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
 
 import pytest
 from freezegun import freeze_time
@@ -35,7 +34,6 @@ class TestVulnerabilityModel(TestCase):
         timestamp_object = datetime(2021, 1, 1, 11, 12, 13, 2000)
         expected_vulcoid = "VULCOID-20210101-1112-13002000"
         found_vulcoid = models.Vulnerability.generate_vulcoid(timestamp_object)
-        print(found_vulcoid)
         assert expected_vulcoid == found_vulcoid
 
     def test_generate_vulcoid(self):
@@ -66,3 +64,39 @@ class TestVulnerabilityModel(TestCase):
                 ).count()
                 == 1
             )
+
+
+# FIXME: The fixture code is duplicated. setUpClass is not working with the pytest mark.
+@pytest.mark.django_db
+class TestPackageRelatedVulnerablity(TestCase):
+    def test_package_to_vulnerability(self):
+        p1 = models.Package.objects.create(type="deb", name="git", version="2.30.1")
+        p2 = models.Package.objects.create(type="deb", name="git", version="2.31.1")
+        v1 = models.Vulnerability.objects.create(vulnerability_id="CVE-123-2002")
+
+        prv1 = models.PackageRelatedVulnerability.objects.create(
+            patched_package=p2, package=p1, vulnerability=v1
+        )
+
+        assert p1.vulnerabilities.all().count() == 1
+        assert p1.resolved_vulnerabilities.all().count() == 0
+        assert p1.vulnerabilities.all()[0] == v1
+
+        assert p2.vulnerabilities.all().count() == 0
+        assert p2.resolved_vulnerabilities.all().count() == 1
+        assert p2.resolved_vulnerabilities.all()[0] == v1
+
+    def test_vulnerability_package(self):
+        p1 = models.Package.objects.create(type="deb", name="git", version="2.30.1")
+        p2 = models.Package.objects.create(type="deb", name="git", version="2.31.1")
+        v1 = models.Vulnerability.objects.create(vulnerability_id="CVE-123-2002")
+
+        prv1 = models.PackageRelatedVulnerability.objects.create(
+            patched_package=p2, package=p1, vulnerability=v1
+        )
+
+        assert v1.vulnerable_packages.all().count() == 1
+        assert v1.patched_packages.all().count() == 1
+
+        assert v1.vulnerable_packages.all()[0] == p1
+        assert v1.patched_packages.all()[0] == p2

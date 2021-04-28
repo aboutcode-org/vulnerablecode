@@ -24,13 +24,15 @@ import asyncio
 
 import requests
 from bs4 import BeautifulSoup
-from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
+from univers.versions import MavenVersion
+from univers.version_specifier import VersionSpecifier
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.helpers import nearest_patched_package
 
 GH_PAGE_URL = "https://raw.githubusercontent.com/apache/kafka-site/asf-site/cve-list.html"
 ASF_PAGE_URL = "https://kafka.apache.org/cve-list"
@@ -71,21 +73,30 @@ class ApacheKafkaDataSource(DataSource):
             fixed_packages = [
                 PackageURL(type="apache", name="kafka", version=version)
                 for version in self.version_api.get("apache/kafka")
-                if any([version in version_range for version_range in fixed_version_ranges])
+                if any(
+                    [
+                        MavenVersion(version) in version_range
+                        for version_range in fixed_version_ranges
+                    ]
+                )
             ]
 
             affected_packages = [
                 PackageURL(type="apache", name="kafka", version=version)
                 for version in self.version_api.get("apache/kafka")
-                if any([version in version_range for version_range in affected_version_ranges])
+                if any(
+                    [
+                        MavenVersion(version) in version_range
+                        for version_range in affected_version_ranges
+                    ]
+                )
             ]
 
             advisories.append(
                 Advisory(
                     vulnerability_id=cve_id,
                     summary=cve_description_paragraph.text,
-                    impacted_package_urls=affected_packages,
-                    resolved_package_urls=fixed_packages,
+                    affected_packages=nearest_patched_package(affected_packages, fixed_packages),
                     references=[
                         Reference(url=ASF_PAGE_URL),
                         Reference(
@@ -107,14 +118,22 @@ def to_version_ranges(version_range_text):
             lower_bound, upper_bound = range_expression.split("to")
             lower_bound = f">={lower_bound}"
             upper_bound = f"<={upper_bound}"
-            version_ranges.append(RangeSpecifier(f"{lower_bound},{upper_bound}"))
+            version_ranges.append(
+                VersionSpecifier.from_scheme_version_spec_string(
+                    "maven", f"{lower_bound},{upper_bound}"
+                )
+            )
 
         elif "and later" in range_expression:
             # eg range_expression == "2.1.1 and later"
             range_expression = range_expression.replace("and later", "")
-            version_ranges.append(RangeSpecifier(f">={range_expression}"))
+            version_ranges.append(
+                VersionSpecifier.from_scheme_version_spec_string("maven", f">={range_expression}")
+            )
 
         else:
             # eg  range_expression == "3.0.0"
-            version_ranges.append(RangeSpecifier(range_expression))
+            version_ranges.append(
+                VersionSpecifier.from_scheme_version_spec_string("maven", range_expression)
+            )
     return version_ranges

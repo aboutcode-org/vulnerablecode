@@ -74,7 +74,7 @@
             name = "vulnerablecode-${version}";
             src = vulnerablecode-src;
             dontConfigure = true; # do not use ./configure
-            propagatedBuildInputs = [ pythonEnv postgresql ];
+            propagatedBuildInputs = [ pythonEnv postgresql gitMinimal];
 
             postPatch = ''
               # Make sure the pycodestyle binary in $PATH is used.
@@ -136,7 +136,11 @@
             checkPhase = ''
               # Run pytest on the installed version. A running postgres
               # database server is needed.
-              (cd ${vulnerablecode} && pytest)
+              (
+                cd ${vulnerablecode}
+                black -l 100 --check .
+                pytest -m "not webtest"
+              )
 
               # Launch the webserver and call the API.
               ${vulnerablecode}/manage.py runserver &

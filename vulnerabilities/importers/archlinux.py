@@ -36,6 +36,7 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.severity_systems import scoring_systems
 
 
@@ -87,9 +88,10 @@ class ArchlinuxDataSource(DataSource):
         advisories = []
 
         for cve_id in record["issues"]:
-            impacted_purls, resolved_purls = set(), set()
+            affected_packages = []
             for name in record["packages"]:
-                impacted_purls.add(
+                impacted_purls, resolved_purls = [], []
+                impacted_purls.append(
                     PackageURL(
                         name=name,
                         type="pacman",
@@ -99,7 +101,7 @@ class ArchlinuxDataSource(DataSource):
                 )
 
                 if record["fixed"]:
-                    resolved_purls.add(
+                    resolved_purls.append(
                         PackageURL(
                             name=name,
                             type="pacman",
@@ -107,6 +109,7 @@ class ArchlinuxDataSource(DataSource):
                             version=record["fixed"],
                         )
                     )
+                affected_packages.extend(nearest_patched_package(impacted_purls, resolved_purls))
 
             references = []
             references.append(
@@ -133,8 +136,7 @@ class ArchlinuxDataSource(DataSource):
                 Advisory(
                     vulnerability_id=cve_id,
                     summary="",
-                    impacted_package_urls=impacted_purls,
-                    resolved_package_urls=resolved_purls,
+                    affected_packages=affected_packages,
                     references=references,
                 )
             )

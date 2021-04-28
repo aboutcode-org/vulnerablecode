@@ -22,6 +22,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import dataclasses
+import json
 from dateutil import parser as dateparser
 from typing import Any
 from typing import List
@@ -39,6 +40,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
+from vulnerabilities.helpers import nearest_patched_package
 
 
 def validate_schema(advisory_dict):
@@ -106,35 +108,44 @@ class DebianDataSource(DataSource):
 
     def _parse(self, pkg_name: str, records: Mapping[str, Any]) -> List[Advisory]:
         advisories = []
+        ignored_versions = {"3.8.20-4."}
 
         for cve_id, record in records.items():
-            impacted_purls, resolved_purls = set(), set()
+            impacted_purls, resolved_purls = [], []
             if not cve_id.startswith("CVE"):
                 continue
 
             # vulnerabilities starting with something else may not be public yet
-            # see for instance https://web.archive.org/web/20201215213725/https://security-tracker.debian.org/tracker/TEMP-0000000-A2EB44  # nopep8
-            # TODO: this would need to be revisited though to ensure we are not missing out on anything  # nopep8
+            # see for instance https://web.archive.org/web/20201215213725/https://security-tracker.debian.org/tracker/TEMP-0000000-A2EB44
+            # TODO: this would need to be revisited though to ensure we are not missing out on anything
 
             for release_name, release_record in record["releases"].items():
                 if not release_record.get("repositories", {}).get(release_name):
+                    continue
+
+                version = release_record["repositories"][release_name]
+
+                if version in ignored_versions:
                     continue
 
                 purl = PackageURL(
                     name=pkg_name,
                     type="deb",
                     namespace="debian",
-                    version=release_record["repositories"][release_name],
+                    version=version,
                     qualifiers={"distro": release_name},
                 )
 
                 if release_record.get("status", "") == "resolved":
-                    resolved_purls.add(purl)
+                    resolved_purls.append(purl)
                 else:
-                    impacted_purls.add(purl)
+                    impacted_purls.append(purl)
 
-                if "fixed_version" in release_record:
-                    resolved_purls.add(
+                if (
+                    "fixed_version" in release_record
+                    and release_record["fixed_version"] not in ignored_versions
+                ):
+                    resolved_purls.append(
                         PackageURL(
                             name=pkg_name,
                             type="deb",
@@ -149,13 +160,11 @@ class DebianDataSource(DataSource):
             if debianbug:
                 bug_url = f"https://bugs.debian.org/cgi-bin/bugreport.cgi?bug={debianbug}"
                 references.append(Reference(url=bug_url, reference_id=debianbug))
-
             advisories.append(
                 Advisory(
                     vulnerability_id=cve_id,
+                    affected_packages=nearest_patched_package(impacted_purls, resolved_purls),
                     summary=record.get("description", ""),
-                    impacted_package_urls=impacted_purls,
-                    resolved_package_urls=resolved_purls,
                     references=references,
                 )
             )

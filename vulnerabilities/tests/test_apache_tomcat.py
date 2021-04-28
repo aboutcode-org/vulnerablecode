@@ -30,6 +30,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatDataSource
+from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "apache_tomcat", "security-9.html")
@@ -50,163 +51,172 @@ class TestApacheTomcatDataSource(TestCase):
         expected_advisories = [
             Advisory(
                 summary="",
-                impacted_package_urls=[
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M1",
-                        qualifiers={},
-                        subpath=None,
-                    ),
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M2",
-                        qualifiers={},
-                        subpath=None,
-                    ),
-                ],
-                resolved_package_urls=[
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M3",
-                        qualifiers={},
-                        subpath=None,
-                    )
-                ],
-                references=[
-                    Reference(
-                        url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0763",
-                        reference_id="",
-                    ),
-                    Reference(
-                        url="https://svn.apache.org/viewvc?view=rev&rev=1725926",
-                        reference_id="",
-                    ),
-                ],
-                vulnerability_id="CVE-2016-0763",
-            ),
-            Advisory(
-                summary="",
-                impacted_package_urls=[
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="8.0.0.M1",
-                        qualifiers={},
-                        subpath=None,
-                    )
-                ],
-                resolved_package_urls=[
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M3",
-                        qualifiers={},
-                        subpath=None,
-                    )
-                ],
-                references=[
-                    Reference(
-                        url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-5351",
-                        reference_id="",
-                    ),
-                    Reference(
-                        url="https://svn.apache.org/viewvc?view=rev&rev=1720652",
-                        reference_id="",
-                    ),
-                    Reference(
-                        url="https://svn.apache.org/viewvc?view=rev&rev=1720655",
-                        reference_id="",
-                    ),
-                ],
                 vulnerability_id="CVE-2015-5351",
-            ),
-            Advisory(
-                summary="",
-                impacted_package_urls=[
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M1",
-                        qualifiers={},
-                        subpath=None,
+                affected_packages=[
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="8.0.0.M1",
+                            qualifiers={},
+                            subpath=None,
+                        ),
+                        patched_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M3",
+                            qualifiers={},
+                            subpath=None,
+                        ),
                     ),
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M2",
-                        qualifiers={},
-                        subpath=None,
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M1",
+                        ),
+                        patched_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M3",
+                        ),
                     ),
-                ],
-                resolved_package_urls=[
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M3",
-                        qualifiers={},
-                        subpath=None,
-                    )
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M2",
+                        ),
+                        patched_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M3",
+                        ),
+                    ),
                 ],
                 references=[
                     Reference(
-                        url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0706",
                         reference_id="",
+                        url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-5351",
+                        severities=[],
                     ),
                     Reference(
-                        url="https://svn.apache.org/viewvc?view=rev&rev=1722799",
                         reference_id="",
+                        url="https://svn.apache.org/viewvc?view=rev&rev=1720652",
+                        severities=[],
+                    ),
+                    Reference(
+                        reference_id="",
+                        url="https://svn.apache.org/viewvc?view=rev&rev=1720655",
+                        severities=[],
                     ),
                 ],
+            ),
+            Advisory(
+                summary="",
                 vulnerability_id="CVE-2016-0706",
-            ),
-            Advisory(
-                summary="",
-                impacted_package_urls=[
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M2",
-                        qualifiers={},
-                        subpath=None,
-                    )
-                ],
-                resolved_package_urls=[
-                    PackageURL(
-                        type="maven",
-                        namespace="apache",
-                        name="tomcat",
-                        version="9.0.0.M3",
-                        qualifiers={},
-                        subpath=None,
+                affected_packages=[
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M1",
+                        ),
+                        patched_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M3",
+                        ),
                     )
                 ],
                 references=[
                     Reference(
-                        url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0714",
                         reference_id="",
+                        url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0706",
+                        severities=[],
                     ),
                     Reference(
-                        url="https://svn.apache.org/viewvc?view=rev&rev=1725263",
                         reference_id="",
-                    ),
-                    Reference(
-                        url="https://svn.apache.org/viewvc?view=rev&rev=1725914",
-                        reference_id="",
+                        url="https://svn.apache.org/viewvc?view=rev&rev=1722799",
+                        severities=[],
                     ),
                 ],
+            ),
+            Advisory(
+                summary="",
                 vulnerability_id="CVE-2016-0714",
+                affected_packages={},
+                references=[
+                    Reference(
+                        reference_id="",
+                        url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0714",
+                        severities=[],
+                    ),
+                    Reference(
+                        reference_id="",
+                        url="https://svn.apache.org/viewvc?view=rev&rev=1725263",
+                        severities=[],
+                    ),
+                    Reference(
+                        reference_id="",
+                        url="https://svn.apache.org/viewvc?view=rev&rev=1725914",
+                        severities=[],
+                    ),
+                ],
+            ),
+            Advisory(
+                summary="",
+                vulnerability_id="CVE-2016-0763",
+                affected_packages=[
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M1",
+                        ),
+                        patched_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M3",
+                        ),
+                    ),
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M2",
+                        ),
+                        patched_package=PackageURL(
+                            type="maven",
+                            namespace="apache",
+                            name="tomcat",
+                            version="9.0.0.M3",
+                        ),
+                    ),
+                ],
+                references=[
+                    Reference(
+                        reference_id="",
+                        url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0763",
+                        severities=[],
+                    ),
+                    Reference(
+                        reference_id="",
+                        url="https://svn.apache.org/viewvc?view=rev&rev=1725926",
+                        severities=[],
+                    ),
+                ],
             ),
         ]
 

@@ -67,16 +67,14 @@ class DebianImportTest(TestCase):
 
         assert models.Vulnerability.objects.count() == 3
         assert models.VulnerabilityReference.objects.count() == 3
-        assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=True).count() == 2
-        assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=False).count() == 8
-        assert models.Package.objects.count() == 6
+        assert (
+            models.PackageRelatedVulnerability.objects.count()
+            == models.Package.objects.count()
+            == 2
+        )
 
         self.assert_for_package("librsync", "0.9.7-10", "jessie", cve_ids={"CVE-2014-8242"})
         self.assert_for_package("librsync", "0.9.7-10", "buster", cve_ids={"CVE-2014-8242"})
-        self.assert_for_package("mimetex", "1.50-1.1", "stretch")
-        self.assert_for_package("mimetex", "1.74-1", "stretch")
-        self.assert_for_package("mimetex", "1.50-1.1", "buster")
-        self.assert_for_package("mimetex", "1.76-1", "buster")
         assert models.Vulnerability.objects.filter(vulnerability_id__startswith="TEMP").count() == 0
 
     def test_response_is_new(self):

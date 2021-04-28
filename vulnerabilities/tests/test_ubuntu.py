@@ -6,13 +6,13 @@ import xml.etree.ElementTree as ET
 from collections import OrderedDict
 import asyncio
 
-from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
 
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.importers.ubuntu import UbuntuDataSource
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
+from vulnerabilities.helpers import AffectedPackage
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -90,18 +90,18 @@ class TestUbuntuOvalParser(unittest.TestCase):
         assert pkg_set1 == {"potrace"}
         assert pkg_set2 == {"tor"}
 
-    def test_get_version_ranges_from_state(self):
+    def test_get_version_range_from_state(self):
 
         assert len(self.parsed_oval.oval_document.getStates()) == 2
 
         state_1 = self.parsed_oval.oval_document.getStates()[0]
         state_2 = self.parsed_oval.oval_document.getStates()[1]
 
-        exp_range_1 = RangeSpecifier("<1.14-2")
-        exp_range_2 = RangeSpecifier("<0.2.8.9-1ubuntu1")
+        exp_range_1 = "<1.14-2"
+        exp_range_2 = "<0.2.8.9-1ubuntu1"
 
-        assert self.parsed_oval.get_version_ranges_from_state(state_1) == exp_range_1
-        assert self.parsed_oval.get_version_ranges_from_state(state_2) == exp_range_2
+        assert self.parsed_oval.get_version_range_from_state(state_1) == exp_range_1
+        assert self.parsed_oval.get_version_range_from_state(state_2) == exp_range_2
 
     def test_get_urls_from_definition(self):
 
@@ -131,7 +131,7 @@ class TestUbuntuOvalParser(unittest.TestCase):
                 "test_data": [
                     {
                         "package_list": ["potrace"],
-                        "version_ranges": RangeSpecifier("<1.14-2"),
+                        "version_ranges": "<1.14-2",
                     }
                 ],
                 "description": "Heap-based buffer overflow in the bm_readbody_bmp function in bitmap_io.c in potrace before 1.13 allows remote attackers to have unspecified impact via a crafted BMP image, a different vulnerability than CVE-2016-8698, CVE-2016-8699, CVE-2016-8700, CVE-2016-8701, and CVE-2016-8702.",
@@ -146,7 +146,7 @@ class TestUbuntuOvalParser(unittest.TestCase):
                 "test_data": [
                     {
                         "package_list": ["tor"],
-                        "version_ranges": RangeSpecifier("<0.2.8.9-1ubuntu1"),
+                        "version_ranges": "<0.2.8.9-1ubuntu1",
                     }
                 ],
                 "description": "Tor before 0.2.8.9 and 0.2.9.x before 0.2.9.4-alpha had internal functions that were entitled to expect that buf_t data had NUL termination, but the implementation of or/buffers.c did not ensure that NUL termination was present, which allows remote attackers to cause a denial of service (client, hidden service, relay, or authority crash) via crafted data.",
@@ -188,114 +188,101 @@ class TestUbuntuDataSource(unittest.TestCase):
     def test_get_data_from_xml_doc(self, mock_write):
         expected_advisories = [
             Advisory(
-                summary=(
-                    "Tor before 0.2.8.9 and 0.2.9.x before 0.2.9.4-alpha had "
-                    "internal functions that were entitled to expect that buf_t data had "
-                    "NUL termination, but the implementation of or/buffers.c did not "
-                    "ensure that NUL termination was present, which allows remote "
-                    "attackers to cause a denial of service (client, hidden "
-                    "service, relay, or authority crash) via crafted data."
-                ),
-                impacted_package_urls={
-                    PackageURL(
-                        type="deb",
-                        namespace=None,
-                        name="tor",
-                        version="0.2.0",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    )
-                },
-                resolved_package_urls={
-                    PackageURL(
-                        type="deb",
-                        namespace=None,
-                        name="tor",
-                        version="0.3.0",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
+                summary="Heap-based buffer overflow in the bm_readbody_bmp function in bitmap_io.c in potrace before 1.13 allows remote attackers to have unspecified impact via a crafted BMP image, a different vulnerability than CVE-2016-8698, CVE-2016-8699, CVE-2016-8700, CVE-2016-8701, and CVE-2016-8702.",
+                vulnerability_id="CVE-2016-8703",
+                affected_packages=[
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="deb",
+                            name="potrace",
+                            version="0.2.0",
+                        ),
+                        patched_package=PackageURL(
+                            type="deb",
+                            name="potrace",
+                            version="2.14-2",
+                        ),
                     ),
-                    PackageURL(
-                        type="deb",
-                        namespace=None,
-                        name="tor",
-                        version="2.14-2",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="deb",
+                            name="potrace",
+                            version="0.3.0",
+                        ),
+                        patched_package=PackageURL(
+                            type="deb",
+                            name="potrace",
+                            version="2.14-2",
+                        ),
                     ),
-                },
-                references=sorted(
-                    [
-                        Reference(url="http://www.openwall.com/lists/oss-security/2016/10/18/11"),
-                        Reference(
-                            url="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8860"
-                        ),
-                        Reference(
-                            url="http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8860.html"
-                        ),
-                        Reference(
-                            url="https://github.com/torproject/tor/commit/3cea86eb2fbb65949673eb4ba8ebb695c87a57ce"
-                        ),
-                        Reference(
-                            url="https://blog.torproject.org/blog/tor-0289-released-important-fixes"
-                        ),
-                        Reference(url="https://trac.torproject.org/projects/tor/ticket/20384"),
-                    ],
-                    key=lambda x: x.url,
-                ),
-                vulnerability_id="CVE-2016-8860",
+                ],
+                references=[
+                    Reference(
+                        reference_id="",
+                        url="http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8703.html",
+                        severities=[],
+                    ),
+                    Reference(
+                        reference_id="",
+                        url="https://blogs.gentoo.org/ago/2016/08/08/potrace-multiplesix-heap-based-buffer-overflow-in-bm_readbody_bmp-bitmap_io-c/",
+                        severities=[],
+                    ),
+                    Reference(
+                        reference_id="",
+                        url="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8703",
+                        severities=[],
+                    ),
+                ],
             ),
             Advisory(
-                summary=(
-                    "Heap-based buffer overflow in the bm_readbody_bmp function"
-                    " in bitmap_io.c in potrace before 1.13 allows remote attackers to "
-                    "have unspecified impact via a crafted BMP image, a different "
-                    "vulnerability than CVE-2016-8698, CVE-2016-8699, "
-                    "CVE-2016-8700, CVE-2016-8701, and CVE-2016-8702."
-                ),
-                impacted_package_urls={
-                    PackageURL(
-                        type="deb",
-                        namespace=None,
-                        name="potrace",
-                        version="0.3.0",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    ),
-                    PackageURL(
-                        type="deb",
-                        namespace=None,
-                        name="potrace",
-                        version="0.2.0",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
-                    ),
-                },
-                resolved_package_urls={
-                    PackageURL(
-                        type="deb",
-                        namespace=None,
-                        name="potrace",
-                        version="2.14-2",
-                        qualifiers=OrderedDict(),
-                        subpath=None,
+                summary="Tor before 0.2.8.9 and 0.2.9.x before 0.2.9.4-alpha had internal functions that were entitled to expect that buf_t data had NUL termination, but the implementation of or/buffers.c did not ensure that NUL termination was present, which allows remote attackers to cause a denial of service (client, hidden service, relay, or authority crash) via crafted data.",
+                vulnerability_id="CVE-2016-8860",
+                affected_packages=[
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="deb",
+                            name="tor",
+                            version="0.2.0",
+                        ),
+                        patched_package=PackageURL(
+                            type="deb",
+                            name="tor",
+                            version="0.3.0",
+                        ),
                     )
-                },
-                references=sorted(
-                    [
-                        Reference(
-                            url="http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8703.html"
-                        ),
-                        Reference(
-                            url="https://blogs.gentoo.org/ago/2016/08/08/potrace-multiplesix-heap-based-buffer-overflow-in-bm_readbody_bmp-bitmap_io-c/"
-                        ),
-                        Reference(
-                            url="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8703"
-                        ),
-                    ],
-                    key=lambda x: x.url,
-                ),
-                vulnerability_id="CVE-2016-8703",
+                ],
+                references=[
+                    Reference(
+                        reference_id="",
+                        url="http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8860.html",
+                        severities=[],
+                    ),
+                    Reference(
+                        reference_id="",
+                        url="http://www.openwall.com/lists/oss-security/2016/10/18/11",
+                        severities=[],
+                    ),
+                    Reference(
+                        reference_id="",
+                        url="https://blog.torproject.org/blog/tor-0289-released-important-fixes",
+                        severities=[],
+                    ),
+                    Reference(
+                        reference_id="",
+                        url="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8860",
+                        severities=[],
+                    ),
+                    Reference(
+                        reference_id="",
+                        url="https://github.com/torproject/tor/commit/3cea86eb2fbb65949673eb4ba8ebb695c87a57ce",
+                        severities=[],
+                    ),
+                    Reference(
+                        reference_id="",
+                        url="https://trac.torproject.org/projects/tor/ticket/20384",
+                        severities=[],
+                    ),
+                ],
             ),
         ]
 

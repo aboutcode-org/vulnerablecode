@@ -25,11 +25,14 @@ import dataclasses
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
 import requests
-from urllib.parse import urljoin
+import urllib.parse as urlparse
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import Reference
+from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.severity_systems import scoring_systems
 
 BASE_URL = "https://www.postgresql.org/"
 
@@ -85,6 +88,7 @@ def to_advisories(data):
                 qualifiers=pkg_qualifiers,
             )
             for version in fixed_col.text.split(",")
+            if version
         ]
 
         try:
@@ -95,21 +99,36 @@ def to_advisories(data):
             pass
 
         references = []
+        vector_link_tag = severity_score_col.find("a")
         for a_tag in ref_col.select("a"):
             link = a_tag.attrs["href"]
-            if link.startswith("/about/news/"):
-                # Convert postgresql official announcements to absolute url.
-                link = urljoin(BASE_URL, link)
-
-            references.append(Reference(url=link))
+            if link.startswith("/"):
+                # Convert relative urls to absolute url.
+                # All links qualify this criteria, so this `if` statement is kind of a defensive mechanism
+                link = urlparse.urljoin(BASE_URL, link)
+                severities = []
+                if "support/security/CVE" in link and vector_link_tag:
+                    parsed_link = urlparse.urlparse(vector_link_tag["href"])
+                    cvss3_vector = urlparse.parse_qs(parsed_link.query)["vector"]
+                    cvss3_base_score = vector_link_tag.text
+                    severities.extend(
+                        [
+                            VulnerabilitySeverity(
+                                system=scoring_systems["cvssv3"], value=cvss3_base_score
+                            ),
+                            VulnerabilitySeverity(
+                                system=scoring_systems["cvssv3_vector"], value=cvss3_vector
+                            ),
+                        ]
+                    )
+            references.append(Reference(url=link, severities=severities))
 
         advisories.append(
             Advisory(
                 vulnerability_id=cve_id,
                 summary=summary,
                 references=references,
-                impacted_package_urls=affected_packages,
-                resolved_package_urls=fixed_packages,
+                affected_packages=nearest_patched_package(affected_packages, fixed_packages),
             )
         )
 
@@ -118,4 +137,4 @@ def to_advisories(data):
 
 def find_advisory_urls(page_data):
     soup = BeautifulSoup(page_data)
-    return {urljoin(BASE_URL, a_tag.attrs["href"]) for a_tag in soup.select("h3+ p a")}
+    return {urlparse.urljoin(BASE_URL, a_tag.attrs["href"]) for a_tag in soup.select("h3+ p a")}

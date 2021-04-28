@@ -282,19 +282,16 @@ class TestBulkAPIResponse(TestCase):
                             {
                                 "reference_id": "",
                                 "scores": [],
-                                "source": "",
                                 "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-21331",
                             },
                             {
                                 "reference_id": "GHSA-2cxf-6567-7pp6",
                                 "scores": [{"scoring_system": "cvssv3.1_qr", "value": "LOW"}],
-                                "source": "",
                                 "url": "https://github.com/DataDog/datadog-api-client-java/security/advisories/GHSA-2cxf-6567-7pp6",
                             },
                             {
                                 "reference_id": "GHSA-2cxf-6567-7pp6",
                                 "scores": [],
-                                "source": "",
                                 "url": "https://github.com/advisories/GHSA-2cxf-6567-7pp6",
                             },
                         ],

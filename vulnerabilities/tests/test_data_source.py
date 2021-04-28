@@ -29,7 +29,8 @@ from unittest.mock import MagicMock
 from unittest.mock import patch
 import xml.etree.ElementTree as ET
 
-import pygit2
+import git
+
 import pytest
 from packageurl import PackageURL
 
@@ -51,8 +52,37 @@ def load_oval_data():
     return etrees_of_oval
 
 
+@pytest.fixture
+def clone_url(tmp_path):
+    git_dir = tmp_path / "git_dir"
+    repo = git.Repo.init(str(git_dir))
+    new_file_path = str(git_dir / "file")
+    open(new_file_path, "wb").close()
+    repo.index.add([new_file_path])
+    repo.index.commit("Added a new file")
+    try:
+        yield str(git_dir)
+    finally:
+        shutil.rmtree(git_dir)
+
+
+@pytest.fixture
+def clone_url2(tmp_path):
+    git_dir = tmp_path / "git_dir2"
+    repo = git.Repo.init(str(git_dir))
+    new_file_path = str(git_dir / "file2")
+    open(new_file_path, "wb").close()
+    repo.index.add([new_file_path])
+    repo.index.commit("Added a new file")
+
+    try:
+        yield str(git_dir)
+    finally:
+        shutil.rmtree(git_dir)
+
+
 def mk_ds(**kwargs):
-    # just for convenience, since this is a manadory parameter we always pass a value
+    # just for convenience, since this is a mandatory parameter we always pass a value
     if "repository_url" not in kwargs:
         kwargs["repository_url"] = "asdf"
 
@@ -105,179 +135,55 @@ def test_GitDataSource_validate_configuration_working_directory_must_exist_when_
         mk_ds(working_directory="/does/not/exist", create_working_directory=False)
 
 
-@patch("os.path.exists", return_value=False)
-@patch("shutil.rmtree")
-@patch("pygit2.clone_repository")
-@patch("os.mkdir")
-def test_GitDataSource_contextmgr_working_directory_is_created_and_removed(
-    mkdir, clone_repository, rmtree, _
-):
+def test_GitDataSource_contextmgr_working_directory_is_created_and_removed(tmp_path, clone_url):
 
-    wd = "/some/working/directory"
-    ds = mk_ds(working_directory=wd, create_working_directory=True, remove_working_directory=True)
+    wd = tmp_path / "working"
+    ds = mk_ds(
+        working_directory=str(wd),
+        create_working_directory=True,
+        remove_working_directory=True,
+        repository_url=clone_url,
+    )
 
     with ds:
-        assert wd == ds.config.working_directory
-        assert mkdir.called_with(wd)
+        assert str(wd) == ds.config.working_directory
+        assert (wd / ".git").exists()
+        assert (wd / "file").exists()
 
-    assert clone_repository.called_with("asdf", wd, checkout_branch=ds.config.branch)
-    assert rmtree.called_with(wd)
+    assert not (wd / ".git").exists()
 
 
-@patch("shutil.rmtree")
-@patch("pygit2.clone_repository")
-@patch("tempfile.mkdtemp", return_value="/fake/tempdir")
-def test_GitDataSource_contextmgr_calls_mkdtemp_if_working_directory_is_not_set(mkdtemp, *_):
+@patch("tempfile.mkdtemp")
+def test_GitDataSource_contextmgr_calls_mkdtemp_if_working_directory_is_not_set(
+    mkdtemp, tmp_path, clone_url
+):
 
-    ds = mk_ds()
+    mkdtemp.return_value = str(tmp_path / "working")
+    ds = mk_ds(repository_url=clone_url)
 
     with ds:
         assert mkdtemp.called
-        assert ds.config.working_directory == "/fake/tempdir"
+        assert ds.config.working_directory == str(tmp_path / "working")
 
 
-@patch("os.path.exists", return_value=True)
-@patch("pygit2.Repository")
-@patch("pygit2.clone_repository")
-@patch("pygit2.discover_repository", return_value="/fake/tempdir/.git")
 def test_GitDataSource_contextmgr_uses_existing_repository(
-    discover_repository,
-    clone_repository,
-    _,
+    clone_url,
+    clone_url2,
     no_mkdir,
     no_rmtree,
 ):
     ds = mk_ds(
-        working_directory="/fake/tempdir",
+        working_directory=clone_url,
+        repository_url=clone_url2,
         create_working_directory=False,
         remove_working_directory=False,
     )
 
     with ds:
-        assert discover_repository.called
-        assert not clone_repository.called
+        # also make sure we switch the branch (original do not have file2)
+        assert os.path.exists(os.path.join(ds.config.working_directory, "file2"))
 
-
-@patch("os.path.exists", return_value=True)
-@patch("pygit2.discover_repository", return_value="/fake/tempdir/.git")
-@patch("pygit2.Repository")
-def test_GitDataSource_contextmgr_switches_branch(
-    Repository, discover_repository, exists, no_mkdir, no_rmtree
-):
-
-    mock_repo, mock_remote, mock_remote_origin, mock_remote_other = (
-        MagicMock(),
-        MagicMock(),
-        MagicMock(),
-        MagicMock(),
-    )
-    mock_master, mock_custom, mock_remote_custom = MagicMock(), MagicMock(), MagicMock()
-
-    mock_master.is_checked_out = lambda: True
-    mock_custom.is_checked_out = lambda: False
-    mock_repo.branches = {
-        "master": mock_master,
-        "custom": mock_custom,
-        "origin/custom": mock_remote_custom,
-    }
-
-    repository_url = "https://foo/bar/baz.git"
-    mock_remote.url = repository_url
-    mock_remote.name = "origin"
-    mock_repo.remotes = [mock_remote]
-    Repository.return_value = mock_repo
-
-    ds = mk_ds(
-        repository_url=repository_url,
-        working_directory="/fake/tempdir",
-        create_working_directory=False,
-        remove_working_directory=False,
-        branch="custom",
-    )
-
-    with ds:
-        mock_repo.checkout.assert_called_with(mock_custom, strategy=pygit2.GIT_CHECKOUT_FORCE)
-
-
-@patch("os.path.exists", return_value=True)
-@patch("pygit2.discover_repository", return_value="/fake/tempdir/.git")
-@patch("pygit2.Repository")
-def test_GitDataSource_contextmgr_fetches_from_remote_in_already_cloned_repository(
-    Repository,
-    discover_repository,
-    exists,
-    no_mkdir,
-    no_rmtree,
-):
-    mock_repo, mock_remote_origin, mock_remote_other = MagicMock(), MagicMock(), MagicMock()
-    mock_branch, mock_remote_branch = MagicMock(), MagicMock()
-
-    repository_url = "https://foo/bar/baz.git"
-    mock_remote_origin.url = repository_url
-    mock_remote_origin.name = "origin"
-    mock_remote_other.url = "https://some/other/url.git"
-    mock_repo.remotes = [mock_remote_other, mock_remote_origin]
-
-    mock_remote_branch.target = "asdf"
-    mock_remote_branch.shorthand = "origin/master"
-    mock_repo.head.shorthand = "master"
-    mock_repo.branches = {"master": mock_branch, "origin/master": mock_remote_branch}
-
-    Repository.return_value = mock_repo
-
-    ds = mk_ds(
-        repository_url=repository_url,
-        working_directory="/fake/tempdir",
-        create_working_directory=False,
-        remove_working_directory=False,
-    )
-
-    with ds:
-        assert mock_remote_origin.fetch.called
-        assert not mock_remote_other.fetch.called
-
-
-@patch("os.path.exists", return_value=True)
-@patch("pygit2.discover_repository", return_value="/fake/tempdir/.git")
-@patch("pygit2.Repository")
-def test_GitDataSource_contextmgr_adds_missing_remote_to_already_cloned_repository(
-    Repository,
-    discover_repository,
-    exists,
-    no_mkdir,
-    no_rmtree,
-):
-    mock_repo, mock_remote, mock_branch, mock_remote_branch = (
-        MagicMock(),
-        MagicMock(),
-        MagicMock(),
-        MagicMock(),
-    )
-
-    repository_url = "https://foo/bar/baz.git"
-    mock_remote_branch.target = "asdf"
-    mock_remote_branch.shorthand = "added_by_vulnerablecode/master"
-    mock_repo.head.shorthand = "master"
-    mock_repo.branches = {
-        "master": mock_branch,
-        "added_by_vulnerablecode/master": mock_remote_branch,
-    }
-
-    mock_remote.name = "added_by_vulnerablecode"
-    mock_remote.url = repository_url
-    mock_repo.remotes = MagicMock()
-    mock_repo.remotes.create.return_value = mock_remote
-    Repository.return_value = mock_repo
-
-    ds = mk_ds(
-        repository_url=repository_url,
-        working_directory="/fake/tempdir",
-        create_working_directory=False,
-        remove_working_directory=False,
-    )
-
-    with ds:
-        mock_repo.remotes.create.assert_called_once_with("added_by_vulnerablecode", repository_url)
+    assert os.path.exists(ds.config.working_directory)
 
 
 def test__include_file():
@@ -375,7 +281,7 @@ class GitDataSourceTest(TestCase):
         # pick a date that includes commit 9889ed0831b4fb4beb7675de361926d2e9a99c20
         # ("Fix patched version for RUSTSEC-2020-0008")
         last_run_date = datetime.datetime(
-            year=2020, month=3, day=31, hour=19, tzinfo=datetime.timezone.utc
+            year=2020, month=3, day=31, hour=17, minute=40, tzinfo=datetime.timezone.utc
         )
         ds = self.mk_ds(last_run_date=last_run_date, cutoff_date=None)
 

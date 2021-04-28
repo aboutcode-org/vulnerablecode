@@ -53,7 +53,7 @@ class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = VulnerabilityReference
-        fields = ["source", "reference_id", "url", "scores"]
+        fields = ["reference_id", "url", "scores"]
 
 
 class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):

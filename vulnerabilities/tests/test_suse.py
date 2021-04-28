@@ -2,8 +2,6 @@ import os
 import unittest
 import xml.etree.ElementTree as ET
 
-from dephell_specifier import RangeSpecifier
-
 
 from vulnerabilities.oval_parser import OvalParser
 
@@ -95,7 +93,7 @@ class TestSUSEOvalParser(unittest.TestCase):
         # it's object due to filters to  avoid such tests in  the first place
         assert pkg_set2 == {"cacti"}
 
-    def test_get_version_ranges_from_state(self):
+    def test_get_version_range_from_state(self):
 
         assert len(self.parsed_oval.oval_document.getStates()) == 4
 
@@ -103,11 +101,11 @@ class TestSUSEOvalParser(unittest.TestCase):
         state_2 = self.parsed_oval.oval_document.getStates()[1]
 
         exp_range_1 = None
-        exp_range_2 = RangeSpecifier("<1.2.11-lp151.3.6")
+        exp_range_2 = "<1.2.11-lp151.3.6"
         # In a full run we wont get exp_range1 because we won't obtain
         # it's state due to filters to  avoid such tests in  the first place
-        assert self.parsed_oval.get_version_ranges_from_state(state_1) == exp_range_1
-        assert self.parsed_oval.get_version_ranges_from_state(state_2) == exp_range_2
+        assert self.parsed_oval.get_version_range_from_state(state_1) == exp_range_1
+        assert self.parsed_oval.get_version_range_from_state(state_2) == exp_range_2
 
     def test_get_urls_from_definition(self):
 
@@ -135,11 +133,11 @@ class TestSUSEOvalParser(unittest.TestCase):
                 "test_data": [
                     {
                         "package_list": ["cacti"],
-                        "version_ranges": RangeSpecifier("<1.2.11-lp151.3.6"),
+                        "version_ranges": "<1.2.11-lp151.3.6",
                     },
                     {
                         "package_list": ["cacti-spine"],
-                        "version_ranges": RangeSpecifier("<1.2.11-lp151.3.6"),
+                        "version_ranges": "<1.2.11-lp151.3.6",
                     },
                 ],
                 "description": '\n        Cacti 0.8.7e and earlier allows remote authenticated administrators to gain privileges by modifying the "Data Input Method" for the "Linux - Get Memory Usage" setting to contain arbitrary commands.\n        ',
@@ -155,11 +153,11 @@ class TestSUSEOvalParser(unittest.TestCase):
                 "test_data": [
                     {
                         "package_list": ["apache2-mod_perl"],
-                        "version_ranges": RangeSpecifier("<2.0.11-lp151.3.3"),
+                        "version_ranges": "<2.0.11-lp151.3.3",
                     },
                     {
                         "package_list": ["apache2-mod_perl-devel"],
-                        "version_ranges": RangeSpecifier("<2.0.11-lp151.3.3"),
+                        "version_ranges": "<2.0.11-lp151.3.3",
                     },
                 ],
                 "description": "\n        mod_perl 2.0 through 2.0.10 allows attackers to execute arbitrary Perl code by placing it in a user-owned .htaccess file, because (contrary to the documentation) there is no configuration option that permits Perl code for the administrator's control of HTTP request processing without also permitting unprivileged users to run Perl code in the context of the user account that runs Apache HTTP Server processes.\n        ",

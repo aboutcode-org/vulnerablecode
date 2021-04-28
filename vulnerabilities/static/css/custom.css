@@ -7,17 +7,3 @@
 .Site-content {
 	flex: 1;
 }
-
-.scoring_system,
-.severity_value {
-	margin-top: -10px !important;
-	margin-bottom: -10px !important;
-}
-
-.severity_url {
-	margin-top: 18px !important;
-}
-
-.scores {
-	margin-left: -160px !important;
-}

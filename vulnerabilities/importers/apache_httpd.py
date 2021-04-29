@@ -74,10 +74,10 @@ class ApacheHTTPDDataSource(DataSource):
 
     def to_advisory(self, data):
         cve = data["CVE_data_meta"]["ID"]
-        descriptions = data.get("description", {}).get("description_data", [])
+        descriptions = data["description"]["description_data"]
         description = None
         for desc in descriptions:
-            if desc.get("lang") == "eng":
+            if desc["lang"] == "eng":
                 description = desc.get("value")
                 break
 
@@ -85,7 +85,7 @@ class ApacheHTTPDDataSource(DataSource):
         impacts = data.get("impact", [])
         for impact in impacts:
             value = impact.get("other")
-            if value is not None:
+            if value:
                 severities.append(
                     VulnerabilitySeverity(
                         system=scoring_systems["apache_httpd"],

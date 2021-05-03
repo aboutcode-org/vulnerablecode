@@ -80,16 +80,17 @@ class Command(BaseCommand):
             vulnerabilities = {
                 vulnerability.vulnerability_id: vulnerability for vulnerability in vulnerabilities
             }
-            purl_cpe_mapping = {}
+            purl_cpe_mapping = []
 
             for cve_item in nvd_data["CVE_Items"]:
                 cve_id = cve_item["cve"]["CVE_data_meta"]["ID"]
                 if cve_id not in vulnerabilities:
                     continue
 
-                purl_cpe_mapping[cve_id] = {}
-                purl_cpe_mapping[cve_id]["purls"] = []
-                purl_cpe_mapping[cve_id]["cpes"] = list(nvd_utils.extract_cpes(cve_item))
+                purl_cpe_mapping.append({})
+                purl_cpe_mapping[-1]["cve_id"] = cve_id
+                purl_cpe_mapping[-1]["purls"] = []
+                purl_cpe_mapping[-1]["cpes"] = list(nvd_utils.extract_cpes(cve_item))
 
                 packages = self.get_packages(
                     vulnerabilities[cve_id],
@@ -97,7 +98,7 @@ class Command(BaseCommand):
                     options["patched_purls_only"],
                 )
                 for package in packages:
-                    purl_cpe_mapping[cve_id]["purls"].append(package.package_url)
+                    purl_cpe_mapping[-1]["purls"].append(package.package_url)
 
             if not os.path.exists("cpe2purl"):
                 os.mkdir("cpe2purl")

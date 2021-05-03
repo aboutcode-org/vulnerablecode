@@ -106,7 +106,5 @@ class Command(BaseCommand):
             with open(os.path.join("cpe2purl", f"{year}.json"), "w") as f:
                 json.dump(purl_cpe_mapping, f, indent=4)
 
-            path = os.path.abspath("cpe2purl")
-            self.stdout.write(
-                self.style.SUCCESS(f"Successfully created the mappings. Check {path}")
-            )
+        path = os.path.abspath("cpe2purl")
+        self.stdout.write(self.style.SUCCESS(f"Successfully created the mappings. Check {path}"))

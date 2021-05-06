@@ -56,21 +56,13 @@ class ApacheHTTPDDataSource(DataSource):
         asyncio.run(self.version_api.load_api(["apache/httpd"]))
 
     def updated_advisories(self):
-        # Etags are like hashes of web responses. We maintain
-        # (url, etag) mappings in the DB. `create_etag`  creates
-        # (url, etag) pair. If a (url, etag) already exists then the code
-        # skips processing the response further to avoid duplicate work
-
-        if create_etag(data_src=self, url=self.base_url, etag_key="ETag"):
-            links = fetch_links(self.base_url)
-            self.set_api()
-            advisories = []
-            for link in links:
-                data = requests.get(link).json()
-                advisories.append(self.to_advisory(data))
-            return self.batch_advisories(advisories)
-
-        return []
+        links = fetch_links(self.base_url)
+        self.set_api()
+        advisories = []
+        for link in links:
+            data = requests.get(link).json()
+            advisories.append(self.to_advisory(data))
+        return self.batch_advisories(advisories)
 
     def to_advisory(self, data):
         cve = data["CVE_data_meta"]["ID"]

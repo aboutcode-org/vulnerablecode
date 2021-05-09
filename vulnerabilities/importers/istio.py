@@ -174,10 +174,8 @@ class IstioDataSource(GitDataSource):
         return advisories
 
     def get_data_from_md(self, path):
-        """Return a mapping of vulnerability data from istio. The data is
-        in the form of yaml objects found inside front matter of the .md file.
-        """
+        """Return a mapping of vulnerability data extracted from an advisory."""
 
         with open(path) as f:
-            yaml_lines, _ = split_markdown_front_matter(f.read())
-            return saneyaml.load(yaml_lines)
+            front_matter, _ = split_markdown_front_matter(f.read())
+            return saneyaml.load(front_matter)

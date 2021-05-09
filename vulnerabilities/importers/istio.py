@@ -19,19 +19,21 @@
 #  for any legal advice.
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-
 import asyncio
 import re
-from typing import List, Set
-import yaml
+from typing import List
+from typing import Set
 
+import saneyaml
+from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 from univers.versions import SemverVersion
-from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory, GitDataSource, Reference
-from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import GitDataSource
+from vulnerabilities.data_source import Reference
 from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.package_managers import GitHubTagsAPI
 
 is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match
 
@@ -89,7 +91,7 @@ class IstioDataSource(GitDataSource):
             'cves': '[CVE-2019-12243]'}
         """
 
-        return yaml.safe_load("\n".join(yaml_lines))
+        return saneyaml.load("\n".join(yaml_lines))
 
     def get_yaml_lines(self, lines):
         """The istio advisory file contains lines similar to yaml format .

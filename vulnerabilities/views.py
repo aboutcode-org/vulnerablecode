@@ -47,7 +47,7 @@ class PackageSearchView(View):
 
         if request.GET:
             packages = self.request_to_queryset(request)
-            result_size = packages.count()
+            result_size = len(packages)
             page_no = int(request.GET.get("page", 1))
             packages = Paginator(packages, 50).get_page(page_no)
             context["packages"] = packages
@@ -69,9 +69,14 @@ class PackageSearchView(View):
         if len(request.GET["name"]):
             package_name = request.GET["name"]
 
-        return models.Package.objects.all().filter(
-            name__icontains=package_name,
-            type__icontains=package_type,
+        return list(
+            models.Package.objects.all()
+            .filter(name__icontains=package_name, type__icontains=package_type)
+            .annotate(
+                vulnerability_count=Count("vulnerabilities"),
+                patched_vulnerability_count=Count("resolved_vulnerabilities"),
+            )
+            .prefetch_related()
         )
 
 
@@ -118,9 +123,11 @@ class PackageUpdate(UpdateView):
         return context
 
     def _package_vulnerabilities(self, package_pk):
-
-        resolved_vuln = [i for i in self.get_object().resolved_to]
-        unresolved_vuln = [i for i in self.get_object().vulnerable_to]
+        # This can be further optimised by caching get_object result first time it
+        # is called
+        package = self.get_object()
+        resolved_vuln = [i for i in package.resolved_to.values("vulnerability_id", "pk")]
+        unresolved_vuln = [i for i in package.vulnerable_to.values("vulnerability_id", "pk")]
 
         return resolved_vuln, unresolved_vuln
 

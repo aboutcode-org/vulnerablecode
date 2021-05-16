@@ -41,9 +41,9 @@ Explore Vulnerable packages
       </tr>
       {% for package in packages %}
       <tr>
-        <td><a href="{% url 'package_view' package.pk %}">{{package}}</a></td>
-        <td>{{package.vulnerable_to.all|length}}</td>
-        <td>{{package.resolved_to.all|length}}</td>
+        <td><a href="{% url 'package_view' package.pk %}">{{package.package_url}}</a></td>
+        <td>{{package.vulnerability_count}}</td>
+        <td>{{package.patched_vulnerability_count}}</td>
       </tr>
       {% endfor %}
     </table>

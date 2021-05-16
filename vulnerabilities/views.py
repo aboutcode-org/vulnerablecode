@@ -23,6 +23,7 @@
 from urllib.parse import urlencode
 
 from django.core.paginator import Paginator
+from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -81,8 +82,8 @@ class VulnerabilitySearchView(View):
     def get(self, request):
         context = {"form": forms.CVEForm(request.GET or None)}
         if request.GET:
-            vulnerabilities = self.request_to_queryset(request)
-            result_size = vulnerabilities.count()
+            vulnerabilities = self.request_to_vulnerabilities(request)
+            result_size = len(vulnerabilities)
             pages = Paginator(vulnerabilities, 50)
             vulnerabilities = pages.get_page(int(self.request.GET.get("page", 1)))
             context["vulnerabilities"] = vulnerabilities
@@ -91,9 +92,14 @@ class VulnerabilitySearchView(View):
         return render(request, self.template_name, context)
 
     @staticmethod
-    def request_to_queryset(request):
+    def request_to_vulnerabilities(request):
         vuln_id = request.GET["vuln_id"]
-        return models.Vulnerability.objects.filter(vulnerability_id__icontains=vuln_id)
+        return list(
+            models.Vulnerability.objects.filter(vulnerability_id__icontains=vuln_id).annotate(
+                vulnerable_package_count=Count("vulnerable_packages"),
+                patched_package_count=Count("patched_packages"),
+            )
+        )
 
 
 class PackageUpdate(UpdateView):
@@ -214,9 +220,10 @@ class PackageRelatedVulnerablityCreate(View):
     @staticmethod
     def create_relationship_instance(vulnerability_id, package_id, is_vulnerable):
         package = models.Package.objects.get(id=package_id)
+        # FIXME: Handle the case when  vuln_created=True
         vulnerability, vuln_created = models.Vulnerability.objects.get_or_create(
             vulnerability_id=vulnerability_id
-        )  # nopep8
+        )
         return models.PackageRelatedVulnerability(
             vulnerability=vulnerability, package=package, is_vulnerable=is_vulnerable
         )

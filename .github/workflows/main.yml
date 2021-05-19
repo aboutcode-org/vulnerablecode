@@ -31,6 +31,14 @@ jobs:
         with:
           python-version: 3.8
 
+      - name: Restore cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: Install dependencies
         run: |
           sudo apt install  python3-dev postgresql libpq-dev build-essential libxml2-dev libxslt1-dev 

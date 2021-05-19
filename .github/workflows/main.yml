@@ -31,10 +31,11 @@ jobs:
     
       - name: Setup database
         run: |
+          sudo systemctl start postgresql
           sudo -u postgres createuser --no-createrole --no-superuser --login \
           --inherit --createdb --pwprompt vulnerablecode
-          createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode \
-          --password --host=localhost --port=5432 vulnerablecode
+          PGPASSWORD=vulnerablecode createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode \
+          --host=localhost --port=5432 vulnerablecode
 
       - name: Run tests
         run: python -m pytest -v -m "not webtest"

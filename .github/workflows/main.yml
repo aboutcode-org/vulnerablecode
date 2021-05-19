@@ -6,22 +6,6 @@ jobs:
   unit_tests:
     runs-on: ubuntu-latest
 
-    services:
-      # Label used to access the service container
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: vulnerablecode
-          POSTGRES_DB: vulnerablecode
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          # Maps tcp port 5432 on service container to the host
-          - 5432:5432
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -41,10 +25,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt install  python3-dev postgresql libpq-dev build-essential libxml2-dev libxslt1-dev 
+          sudo apt install  python3-dev postgresql libpq-dev build-essential libxml2-dev libxslt1-dev postgresql
           python -m pip install --upgrade pip 
           pip install -r requirements.txt
     
+      - name: Setup database
+        run: |
+          sudo -u postgres createuser --no-createrole --no-superuser --login \
+          --inherit --createdb --pwprompt vulnerablecode
+          createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode \
+          --password --host=localhost --port=5432 vulnerablecode
+
       - name: Run tests
         run: python -m pytest -v -m "not webtest"
         env:

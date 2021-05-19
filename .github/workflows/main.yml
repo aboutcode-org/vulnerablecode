@@ -30,11 +30,13 @@ jobs:
           pip install -r requirements.txt
     
       - name: Setup database
+        env:
+          PGPASSWORD: vulnerablecode
         run: |
           sudo systemctl start postgresql
           sudo -u postgres createuser --no-createrole --no-superuser --login \
-          --inherit --createdb --pwprompt vulnerablecode
-          sudo createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode \
+          --inherit --createdb vulnerablecode
+          createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode \
           --host=localhost --port=5432 vulnerablecode
 
       - name: Run tests

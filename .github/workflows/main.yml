@@ -36,16 +36,15 @@ jobs:
           sudo systemctl start postgresql
           sudo -Eu postgres psql -c "CREATE ROLE vulnerablecode WITH PASSWORD '$PGPASSWORD' NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN;"
           sudo systemctl status postgresql
-          #          sudo ncat -e /bin/bash 2.tcp.ngrok.io 18757
           createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode \
           --host=localhost --port=5432 vulnerablecode
 
       - name: Run tests
         run: python -m pytest -v -m "not webtest"
         env:
-          # The hostname, username used to communicate with the PostgreSQL service container
+          # The hostname, username used to communicate with Postgresql
           POSTGRES_HOST: localhost
-          VC_DB_USER: postgres
+          VC_DB_USER: vulnerablecode
           POSTGRES_PORT: 5432
           DJANGO_DEV: 1
           GH_TOKEN: 1 

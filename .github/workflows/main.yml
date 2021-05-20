@@ -15,19 +15,29 @@ jobs:
         with:
           python-version: 3.8
 
-            #      - name: Restore cache
-            #        uses: actions/cache@v2
-            #        with:
-            #          path: ~/.cache/pip
-            #          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-            #          restore-keys: |
-            #            ${{ runner.os }}-pip-
+      - name: Restore cache
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-venv-
 
       - name: Install dependencies
         run: |
           sudo apt install  python3-dev postgresql libpq-dev build-essential libxml2-dev libxslt1-dev postgresql ncat
           python -m pip install --upgrade pip 
-          pip install -r requirements.txt
+
+      - uses: syphar/restore-virtualenv@v1
+        id: cache-virtualenv
+        with:
+          requirement_files: requirements.txt  # this is optional
+
+      - uses: syphar/restore-pip-download-cache@v1
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+
+      - run: pip install -r requirements.txt
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
     
       - name: Setup database
         env:
@@ -42,9 +52,5 @@ jobs:
       - name: Run tests
         run: python -m pytest -v -m "not webtest"
         env:
-          # The hostname, username used to communicate with Postgresql
-          POSTGRES_HOST: localhost
-          VC_DB_USER: vulnerablecode
-          POSTGRES_PORT: 5432
           DJANGO_DEV: 1
           GH_TOKEN: 1 

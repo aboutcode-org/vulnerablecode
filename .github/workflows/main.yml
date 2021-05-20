@@ -34,6 +34,8 @@ jobs:
           PGPASSWORD: vulnerablecode
         run: |
           sudo systemctl start postgresql
+          echo "localhost:5432:vulnerablecode:vulnerablecode:$PGPASSWORD" > ~/.pgpass
+          chmod 0600 ~/.pgpass
           sudo -u postgres createuser --no-createrole --no-superuser --login \
           --inherit --createdb --no-password vulnerablecode
           createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode \

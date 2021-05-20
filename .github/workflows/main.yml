@@ -26,8 +26,8 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt install  python3-dev postgresql libpq-dev build-essential libxml2-dev libxslt1-dev postgresql ncat
-          #python -m pip install --upgrade pip 
-          #pip install -r requirements.txt
+          python -m pip install --upgrade pip 
+          pip install -r requirements.txt
     
       - name: Setup database
         env:

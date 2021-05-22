@@ -87,4 +87,9 @@ scoring_systems = {
         url="",
         notes="Severity for unknown scoring systems. Contains generic textual values like High, Low etc",
     ),
+    "apache_httpd": ScoringSystem(
+        identifier="apache_httpd",
+        name="Apache Httpd Severity",
+        url="https://httpd.apache.org/security/impact_levels.html",
+    ),
 }

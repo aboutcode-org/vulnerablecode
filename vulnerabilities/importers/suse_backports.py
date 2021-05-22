@@ -19,13 +19,12 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-
-import yaml
 import dataclasses
 
 import requests
-from packageurl import PackageURL
+import saneyaml
 from bs4 import BeautifulSoup
+from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
@@ -65,7 +64,7 @@ class SUSEBackportsDataSource(DataSource):
         try:
             resp = requests.get(url)
             resp.raise_for_status()
-            return yaml.safe_load(resp.content)
+            return saneyaml.load(resp.content)
 
         except requests.HTTPError:
             return {}

@@ -19,21 +19,19 @@
 #  for any legal advice.
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-
 import asyncio
-from typing import List, Set
+from typing import Set
 
-import yaml
+from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 from univers.versions import SemverVersion
-from packageurl import PackageURL
 
-from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Reference
-from vulnerabilities.package_managers import HexVersionAPI
 from vulnerabilities.helpers import load_yaml
 from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.package_managers import HexVersionAPI
 
 
 class ElixirSecurityDataSource(GitDataSource):

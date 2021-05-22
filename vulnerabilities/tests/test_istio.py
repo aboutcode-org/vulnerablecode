@@ -20,7 +20,6 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import datetime
 import os
 from collections import OrderedDict
 from unittest import TestCase
@@ -70,7 +69,7 @@ class TestIstioDataSource(TestCase):
             "cvss": "8.9",
             "vector": "CVSS:3.0/AV:A/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N/E:H/RL:O/RC:C",
             "releases": ["1.1 to 1.1.15", "1.2 to 1.2.6", "1.3 to 1.3.1"],
-            "publishdate": datetime.date(2019, 5, 28),
+            "publishdate": "2019-05-28",
         }
 
         assert expected_data == actual_data

@@ -47,5 +47,6 @@ from vulnerabilities.importers.suse_scores import SUSESeverityScoreDataSource
 from vulnerabilities.importers.ubuntu import UbuntuDataSource
 from vulnerabilities.importers.ubuntu_usn import UbuntuUSNDataSource
 from vulnerabilities.importers.istio import IstioDataSource
+from vulnerabilities.importers.xen import XenDataSource
 
 # from vulnerabilities.importers.suse_backports import SUSEBackportsDataSource

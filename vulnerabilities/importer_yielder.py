@@ -234,6 +234,16 @@ IMPORTER_REGISTRY = [
         "data_source": "IstioDataSource",
         "data_source_cfg": {"repository_url": "https://github.com/istio/istio.io"},
     },
+    {
+        "name": "xen",
+        "license": "",
+        "last_run": None,
+        "data_source": "XenDataSource",
+        "data_source_cfg": {
+            "etags": {},
+            "db_url": "https://xenbits.xen.org/xsa/xsa.json",
+        },
+    }
 ]
 
 

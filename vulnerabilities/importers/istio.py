@@ -21,7 +21,6 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 import asyncio
 import re
-from typing import List
 from typing import Set
 
 import saneyaml

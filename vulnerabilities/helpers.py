@@ -28,9 +28,9 @@ from typing import Optional
 from typing import List
 
 import requests
+import saneyaml
 import toml
 import urllib3
-import yaml
 from packageurl import PackageURL
 from univers.versions import version_class_by_package_type
 
@@ -49,7 +49,7 @@ class AffectedPackage:
 
 def load_yaml(path):
     with open(path) as f:
-        return yaml.safe_load(f)
+        return saneyaml.load(f)
 
 
 def load_json(path):
@@ -64,7 +64,7 @@ def load_toml(path):
 
 def fetch_yaml(url):
     response = requests.get(url)
-    return yaml.safe_load(response.content)
+    return saneyaml.load(response.content)
 
 
 # FIXME: this is NOT how etags work .

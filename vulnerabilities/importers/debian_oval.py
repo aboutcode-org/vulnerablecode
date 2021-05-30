@@ -23,14 +23,8 @@
 
 import asyncio
 import dataclasses
-from typing import Iterable
-from typing import List
-from typing import Mapping
-from typing import Set
 import xml.etree.ElementTree as ET
 
-from aiohttp import ClientSession
-from aiohttp.client_exceptions import ClientResponseError, ServerDisconnectedError
 import requests
 
 from vulnerabilities.data_source import OvalDataSource, DataSourceConfiguration

@@ -24,6 +24,8 @@ import asyncio
 import os
 import dataclasses
 import json
+from xml.etree.ElementTree import parse
+from dateutil import parser
 from typing import Set
 from typing import Tuple
 from typing import List
@@ -34,6 +36,7 @@ import requests
 from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 from univers.versions import version_class_by_package_type
+from univers.versions import InvalidVersion
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
@@ -67,6 +70,7 @@ query = """
                     url
                 }
                 severity
+                publishedAt
                 }
                 package {
                 name
@@ -185,7 +189,6 @@ class GitHubAPIDataSource(DataSource):
             end_cursor_exp = ""
 
             while True:
-
                 query_json = {"query": query % (ecosystem, end_cursor_exp)}
                 resp = requests.post(self.config.endpoint, headers=headers, json=query_json).json()
                 if resp.get("message") == "Bad credentials":
@@ -260,12 +263,16 @@ class GitHubAPIDataSource(DataSource):
             for resp_page in self.advisories[ecosystem]:
                 for adv in resp_page["data"]["securityVulnerabilities"]["edges"]:
                     name = adv["node"]["package"]["name"]
-
+                    cutoff_time = parser.parse(adv["node"]["advisory"]["publishedAt"])
+                    affected_purls = []
+                    unaffected_purls = []
                     if self.process_name(ecosystem, name):
                         ns, pkg_name = self.process_name(ecosystem, name)
                         aff_range = adv["node"]["vulnerableVersionRange"]
                         aff_vers, unaff_vers = self.categorize_versions(
-                            self.version_api.package_type, aff_range, self.version_api.get(name)
+                            self.version_api.package_type,
+                            aff_range,
+                            self.version_api.get(name, until=cutoff_time)["valid"],
                         )
                         affected_purls = [
                             PackageURL(name=pkg_name, namespace=ns, version=version, type=pkg_type)
@@ -276,10 +283,6 @@ class GitHubAPIDataSource(DataSource):
                             PackageURL(name=pkg_name, namespace=ns, version=version, type=pkg_type)
                             for version in unaff_vers
                         ]
-                    else:
-                        affected_purls = []
-                        unaffected_purls = []
-
                     cve_ids = set()
                     references = self.extract_references(adv["node"]["advisory"]["references"])
                     vuln_desc = adv["node"]["advisory"]["summary"]

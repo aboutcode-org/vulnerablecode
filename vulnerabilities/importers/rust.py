@@ -26,8 +26,10 @@ from typing import Optional
 from typing import List
 from typing import Set
 from typing import Tuple
+from dateutil.parser import parse
 
 import toml
+import pytz
 from univers.version_specifier import VersionSpecifier
 from univers.versions import SemverVersion
 from packageurl import PackageURL
@@ -98,7 +100,8 @@ class RustDataSource(GitDataSource):
         if advisory.get("url"):
             references.append(Reference(url=advisory["url"]))
 
-        all_versions = self.crates_api.get(crate_name)
+        publish_date = parse(advisory["date"]).replace(tzinfo=pytz.UTC)
+        all_versions = self.crates_api.get(crate_name, publish_date)["valid"]
 
         # FIXME: Avoid wildcard version ranges for now.
         # See https://github.com/RustSec/advisory-db/discussions/831

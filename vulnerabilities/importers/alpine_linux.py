@@ -28,7 +28,7 @@ from typing import Mapping
 from typing import Set
 
 import requests
-import yaml
+import saneyaml
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
 from schema import Or
@@ -113,7 +113,7 @@ class AlpineDataSource(DataSource):
     def _process_link(self, link) -> List[Advisory]:
         advisories = []
         yaml_response = requests.get(link).content
-        record = yaml.safe_load(yaml_response)
+        record = saneyaml.load(yaml_response)
 
         if record["packages"] is None:
             return advisories

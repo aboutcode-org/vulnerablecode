@@ -52,7 +52,9 @@ def yaml_file_to_advisory(yaml_path):
 
     data = load_yaml(yaml_path)
     vuln_id = data["vulnerability_id"]
-    summary = "\n".join([note["text"] for note in data["notes"]])
+    summary = ""
+    if data.get("text"):
+        summary = "\n".join([note["text"] for note in data["notes"]])
 
     for entry in data.get("artifacts", []):
         package = PackageURL.from_string(entry["id"])

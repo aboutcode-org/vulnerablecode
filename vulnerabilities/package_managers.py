@@ -22,6 +22,8 @@
 
 import asyncio
 from collections import namedtuple
+import aiohttp
+from bs4 import BeautifulSoup
 from dateutil import parser
 from json import JSONDecodeError
 from typing import Mapping
@@ -32,6 +34,7 @@ import xml.etree.ElementTree as ET
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.client_exceptions import ServerDisconnectedError
+from requests.sessions import session
 
 
 Version = namedtuple("Version", field_names=["value", "release_date"])
@@ -393,22 +396,51 @@ class GitHubTagsAPI(VersionAPI):
     package_type = "github"
 
     async def load_api(self, repo_set):
-        async with client_session() as session:
+        session = client_session()
+        async with session as session:
             await asyncio.gather(
                 *[
-                    self.fetch(owner_repo.lower(), session)
+                    self.fetch(owner_repo.lower())
                     for owner_repo in repo_set
                     if owner_repo.lower() not in self.cache
                 ]
             )
 
-    async def fetch(self, owner_repo: str, session) -> None:
+    async def fetch(self, owner_repo: str, endpoint=None) -> None:
         # owner_repo is a string of format "{repo_owner}/{repo_name}"
         # Example value of owner_repo = "nexB/scancode-toolkit"
-        endpoint = f"https://api.github.com/repos/{owner_repo}/git/refs/tags"
-        resp = await session.request(method="GET", url=endpoint)
-        resp = await resp.json()
-        self.cache[owner_repo] = [release["ref"].split("/")[-1] for release in resp]
+        if owner_repo not in self.cache:
+            self.cache[owner_repo] = set()
+
+        if not endpoint:
+            endpoint = f"https://github.com/{owner_repo}/tags"
+        async with client_session() as session:
+            resp = await session.get(endpoint)
+            resp = await resp.read()
+
+        soup = BeautifulSoup(resp, features="lxml")
+        for release_entry in soup.find_all("div", {"class": "commit"}):
+            version = None
+            for links in release_entry.find_all("a"):
+                if f"/{owner_repo}/releases/tag/" in links["href"].lower():
+                    version = links["href"].split("/")[-1]
+                    break
+
+            release_date = release_entry.find("relative-time")["datetime"]
+            self.cache[owner_repo].add(
+                Version(value=version, release_date=parser.parse(release_date))
+            )
+
+        url = None
+        pagination_links = soup.find("div", {"class": "paginate-container"}).find_all("a")
+        for link in pagination_links:
+            if link.text == "Next":
+                url = link["href"]
+                break
+
+        if url:
+            # FIXME: this could be asynced to improve performance
+            await self.fetch(owner_repo, url)
 
 
 class HexVersionAPI(VersionAPI):
@@ -425,7 +457,11 @@ class HexVersionAPI(VersionAPI):
             response = await session.request(method="GET", url=url)
             response = await response.json()
             for release in response["releases"]:
-                versions.add(release["version"])
+                versions.add(
+                    Version(
+                        value=release["version"], release_date=parser.parse(release["inserted_at"])
+                    )
+                )
         except (ClientResponseError, JSONDecodeError):
             pass
 

@@ -22,19 +22,16 @@
 
 import asyncio
 from collections import namedtuple
-import aiohttp
+import pytz
 from bs4 import BeautifulSoup
 from dateutil import parser
 from json import JSONDecodeError
 from typing import Mapping
 from typing import Set
-from typing import List
-import xml.etree.ElementTree as ET
 
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.client_exceptions import ServerDisconnectedError
-from requests.sessions import session
 
 
 Version = namedtuple("Version", field_names=["value", "release_date"])
@@ -255,12 +252,15 @@ class MavenVersionAPI(VersionAPI):
     async def load_api(self, pkg_set):
         async with client_session() as session:
             await asyncio.gather(
-                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
+                *[
+                    self.fetch(pkg, session)
+                    for pkg in pkg_set
+                    if pkg not in self.cache and "camel" not in pkg
+                ]
             )
 
     async def fetch(self, pkg, session) -> None:
-        artifact_comps = pkg.split(":")
-        endpoint = self.artifact_url(artifact_comps)
+        endpoint = self.artifact_url(pkg)
         try:
             resp = await session.request(method="GET", url=endpoint)
             resp = await resp.read()
@@ -269,11 +269,15 @@ class MavenVersionAPI(VersionAPI):
             self.cache[pkg] = set()
             return
 
-        xml_resp = ET.ElementTree(ET.fromstring(resp.decode("utf-8")))
-        self.cache[pkg] = self.extract_versions(xml_resp)
+        soup = BeautifulSoup(resp, features="lxml")
+        try:
+            self.cache[pkg] = self.extract_versions(soup)
+        except:
+            raise
 
     @staticmethod
-    def artifact_url(artifact_comps: List[str]) -> str:
+    def artifact_url(pkg: str) -> str:
+        artifact_comps = pkg.split(":")
         base_url = "https://repo1.maven.org/maven2/{}"
         try:
             group_id, artifact_id = artifact_comps
@@ -289,19 +293,35 @@ class MavenVersionAPI(VersionAPI):
                 raise
 
         group_url = group_id.replace(".", "/")
-        suffix = group_url + "/" + artifact_id + "/" + "maven-metadata.xml"
+        suffix = group_url + "/" + artifact_id + "/"
         endpoint = base_url.format(suffix)
 
         return endpoint
 
     @staticmethod
-    def extract_versions(xml_response: ET.ElementTree) -> Set[str]:
-        all_versions = set()
-        for child in xml_response.getroot().iter():
-            if child.tag == "version":
-                all_versions.add(child.text)
+    def extract_versions(soup: BeautifulSoup) -> Set[Version]:
+        pre_tag = soup.find("pre")
+        prev_tag = None
+        versions = set()
+        for atag in pre_tag:
+            if atag.name == "a" and atag["href"] != "../":
+                prev_tag = atag
+            elif prev_tag:
+                text_groups = atag.split()
+                if text_groups[-1] != "-":
+                    break
+                date = " ".join(text_groups[:-1])
+                if date != "-":
+                    versions.add(
+                        Version(
+                            value=prev_tag.text[:-1],
+                            release_date=parser.parse(date).replace(tzinfo=pytz.UTC),
+                        )
+                    )
+                else:
+                    versions.add(Version(value=prev_tag.text[:-1], release_date=None))
 
-        return all_versions
+        return versions
 
 
 class NugetVersionAPI(VersionAPI):

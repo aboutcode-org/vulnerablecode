@@ -53,8 +53,8 @@ class NginxDataSource(DataSource):
 
         # For some reason nginx tags it's releases are in the form of `release-1.2.3`
         # Chop off the `release-` part here.
-        for index, version in enumerate(self.version_api.cache["nginx/nginx"]):
-            self.version_api.cache["nginx/nginx"][index] = version.replace("release-", "")
+        for index, version in enumerate(self.version_api.cache["nginx/nginx"]["valid"]):
+            self.version_api.cache["nginx/nginx"]["valid"][index] = version.replace("release-", "")
 
     def updated_advisories(self):
         advisories = []
@@ -134,7 +134,9 @@ class NginxDataSource(DataSource):
                 VersionSpecifier.from_scheme_version_spec_string("semver", "^" + rng[:-1])
             )
 
-        valid_versions = find_valid_versions(self.version_api.get("nginx/nginx"), version_ranges)
+        valid_versions = find_valid_versions(
+            self.version_api.get("nginx/nginx")["valid"], version_ranges
+        )
 
         return [
             PackageURL(type="generic", name="nginx", version=version) for version in valid_versions

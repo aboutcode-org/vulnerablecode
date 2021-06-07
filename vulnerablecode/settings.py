@@ -94,7 +94,7 @@ DATABASES = {
         "USER": os.environ.get("VC_DB_USER", "vulnerablecode"),
         "PASSWORD": os.environ.get("VC_DB_PASSWORD", "vulnerablecode"),
         "HOST": os.environ.get("VC_DB_HOST", "localhost"),
-        "PORT": "5432",
+        "PORT": os.environ.get("VC_DB_PORT", "5432"),
     }
 }
 

@@ -106,7 +106,7 @@ class ApacheHTTPDDataSource(DataSource):
             fixed_packages.extend(
                 [
                     PackageURL(type="apache", name="httpd", version=version)
-                    for version in self.version_api.get("apache/httpd")
+                    for version in self.version_api.get("apache/httpd")["valid"]
                     if MavenVersion(version) in version_range
                 ]
             )
@@ -115,7 +115,7 @@ class ApacheHTTPDDataSource(DataSource):
             affected_packages.extend(
                 [
                     PackageURL(type="apache", name="httpd", version=version)
-                    for version in self.version_api.get("apache/httpd")
+                    for version in self.version_api.get("apache/httpd")["valid"]
                     if MavenVersion(version) in version_range
                 ]
             )

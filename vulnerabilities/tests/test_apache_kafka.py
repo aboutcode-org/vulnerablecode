@@ -29,6 +29,7 @@ from univers.version_specifier import VersionSpecifier
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.package_managers import Version
 from vulnerabilities.importers.apache_kafka import ApacheKafkaDataSource
 from vulnerabilities.importers.apache_kafka import to_version_ranges
 from vulnerabilities.helpers import AffectedPackage
@@ -63,7 +64,9 @@ class TestApacheKafkaDataSource(TestCase):
 
     def test_to_advisory(self):
         data_source = ApacheKafkaDataSource(batch_size=1)
-        data_source.version_api = GitHubTagsAPI(cache={"apache/kafka": ["2.1.2", "0.10.2.2"]})
+        data_source.version_api = GitHubTagsAPI(
+            cache={"apache/kafka": [Version("2.1.2"), Version("0.10.2.2")]}
+        )
         expected_advisories = [
             Advisory(
                 summary="In Apache Kafka versions between 0.11.0.0 and 2.1.0, it is possible to manually\n    craft a Produce request which bypasses transaction/idempotent ACL validation.\n    Only authenticated clients with Write permission on the respective topics are\n    able to exploit this vulnerability. Users should upgrade to 2.1.1 or later\n    where this vulnerability has been fixed.",

@@ -55,7 +55,7 @@ class RubyDataSourceTest(TestCase):
 
     @patch(
         "vulnerabilities.package_managers.RubyVersionAPI.get",
-        return_value={"1.0.0", "1.8.0", "2.0.3"},
+        return_value={"valid": {"1.0.0", "1.8.0", "2.0.3"}, "new": {}},
     )
     def test_process_file(self, mock_write):
         expected_advisories = [

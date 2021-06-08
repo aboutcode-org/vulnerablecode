@@ -21,20 +21,24 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
-from collections import namedtuple
+import dataclasses
 import pytz
 from bs4 import BeautifulSoup
 from dateutil import parser
 from json import JSONDecodeError
 from typing import Mapping
 from typing import Set
+from datetime import datetime
 
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.client_exceptions import ServerDisconnectedError
 
 
-Version = namedtuple("Version", field_names=["value", "release_date"])
+@dataclasses.dataclass(frozen=True)
+class Version:
+    value: str
+    release_date: datetime = None
 
 
 class VersionAPI:
@@ -303,8 +307,8 @@ class MavenVersionAPI(VersionAPI):
         pre_tag = soup.find("pre")
         prev_tag = None
         versions = set()
-        for atag in pre_tag:
-            if atag.name == "a" and atag["href"] != "../":
+        for i, atag in enumerate(pre_tag):
+            if atag.name == "a" and i != 0:
                 prev_tag = atag
             elif prev_tag:
                 text_groups = atag.split()

@@ -62,7 +62,9 @@ class ApacheTomcatDataSource(DataSource):
         return self.batch_advisories(advisories)
 
     def fetch_pages(self):
-        tomcat_major_versions = {i[0] for i in self.version_api.get("org.apache.tomcat:tomcat")}
+        tomcat_major_versions = {
+            i[0] for i in self.version_api.get("org.apache.tomcat:tomcat")["valid"]
+        }
         for version in tomcat_major_versions:
             page_url = self.base_url.format(version)
             if create_etag(self, page_url, "ETag"):
@@ -102,7 +104,7 @@ class ApacheTomcatDataSource(DataSource):
                             PackageURL(
                                 type="maven", namespace="apache", name="tomcat", version=version
                             )
-                            for version in self.version_api.get("org.apache.tomcat:tomcat")
+                            for version in self.version_api.get("org.apache.tomcat:tomcat")["valid"]
                             if MavenVersion(version) in version_range
                         ]
                     )

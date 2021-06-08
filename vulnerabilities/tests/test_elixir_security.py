@@ -30,6 +30,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.importers.elixir_security import ElixirSecurityDataSource
 from vulnerabilities.package_managers import HexVersionAPI
+from vulnerabilities.package_managers import Version
 from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -45,17 +46,17 @@ class TestElixirSecurityDataSource(TestCase):
         cls.data_src.pkg_manager_api = HexVersionAPI(
             {
                 "coherence": [
-                    "0.5.2",
-                    "0.5.1",
-                    "0.5.0",
-                    "0.4.0",
-                    "0.3.1",
-                    "0.3.0",
-                    "0.2.0",
-                    "0.1.3",
-                    "0.1.2",
-                    "0.1.1",
-                    "0.1.0",
+                    Version("0.5.2"),
+                    Version("0.5.1"),
+                    Version("0.5.0"),
+                    Version("0.4.0"),
+                    Version("0.3.1"),
+                    Version("0.3.0"),
+                    Version("0.2.0"),
+                    Version("0.1.3"),
+                    Version("0.1.2"),
+                    Version("0.1.1"),
+                    Version("0.1.0"),
                 ]
             }
         )

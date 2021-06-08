@@ -171,7 +171,9 @@ class NginxDataSource(DataSource):
                 )
             )
 
-        valid_versions = find_valid_versions(self.version_api.get("nginx/nginx"), version_ranges)
+        valid_versions = find_valid_versions(
+            self.version_api.get("nginx/nginx")["valid"], version_ranges
+        )
         qualifiers = {}
         if windows_only:
             qualifiers["os"] = "windows"

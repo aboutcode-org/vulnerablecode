@@ -63,7 +63,7 @@ class TestGitHubAPIDataSource(TestCase):
 
     def test_categorize_versions(self):
         eg_version_range = ">= 3.3.0, < 3.3.5"
-        eg_versions = ["3.3.6", "3.3.0", "3.3.4", "3.2.0"]
+        eg_versions = ["3.3.6", "3.3.0", "3.3.4", "3.2.0", "0.1-charmander"]
 
         aff_vers, safe_vers = self.data_src.categorize_versions(
             "pypi", eg_version_range, eg_versions

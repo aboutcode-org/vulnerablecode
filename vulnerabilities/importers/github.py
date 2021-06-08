@@ -23,7 +23,9 @@
 import asyncio
 import os
 import dataclasses
-import json
+import traceback
+import logging
+
 from typing import Set
 from typing import Tuple
 from typing import List
@@ -33,7 +35,7 @@ from typing import Optional
 import requests
 from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
-from univers.versions import version_class_by_package_type
+from univers.versions import version_class_by_package_type, InvalidVersion
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
@@ -47,6 +49,8 @@ from vulnerabilities.package_managers import PypiVersionAPI
 from vulnerabilities.package_managers import RubyVersionAPI
 from vulnerabilities.severity_systems import scoring_systems
 from vulnerabilities.helpers import nearest_patched_package
+
+logger = logging.getLogger(__name__)
 
 # set of all possible values of first '%s' = {'MAVEN','COMPOSER', 'NUGET', 'RUBYGEMS', 'PYPI'}
 # second '%s' is interesting, it will have the value '' for the first request,
@@ -265,9 +269,12 @@ class GitHubAPIDataSource(DataSource):
         affected_versions = []
         unaffected_versions = []
         for version in all_versions:
-            if version_class(version) in version_range:
-                affected_versions.append(version)
-            else:
-                unaffected_versions.append(version)
+            try:
+                if version_class(version) in version_range:
+                    affected_versions.append(version)
+                else:
+                    unaffected_versions.append(version)
+            except InvalidVersion:
+                logger.error(f"Failed to parse version: {version!r}:\n" + traceback.format_exc())
 
         return (affected_versions, unaffected_versions)

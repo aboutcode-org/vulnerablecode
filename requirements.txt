@@ -19,3 +19,4 @@ django-environ==0.4.5
 defusedxml==0.7.1
 
 Markdown==3.3.4
+isort==5.7.0

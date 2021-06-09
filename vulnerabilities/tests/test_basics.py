@@ -20,11 +20,10 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from os.path import dirname
-from os.path import join
 import subprocess
 import sys
 import unittest
+from os.path import dirname, join
 
 root_dir = dirname(dirname(dirname(__file__)))
 bin_dir = dirname(sys.executable)
@@ -36,4 +35,16 @@ class BaseTests(unittest.TestCase):
         try:
             subprocess.check_output(args.split(), cwd=root_dir)
         except Exception as e:
-            raise Exception(f"Black style check failed, please format the code using black") from e
+            raise Exception(
+                "Black style check failed, please format the code using black -l 100 . "
+                "Alternatively, run ``make valid``"
+            ) from e
+
+        args = join(bin_dir, "isort --check-only .")
+        try:
+            subprocess.check_output(args.split(), cwd=root_dir)
+        except Exception as e:
+            raise Exception(
+                "Unsorted imports, please sort your imports using isort. "
+                "Alternatively, run ``make valid``"
+            ) from e

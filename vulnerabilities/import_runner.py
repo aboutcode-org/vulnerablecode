@@ -31,6 +31,7 @@ from typing import Set
 from typing import Tuple
 
 from django.core import serializers
+from django.db import transaction
 
 from vulnerabilities import models
 from vulnerabilities.data_source import Advisory, DataSource
@@ -110,6 +111,7 @@ def get_vuln_pkg_refs(vulnerability, package):
     )
 
 
+@transaction.atomic
 def process_advisories(data_source: DataSource) -> None:
     bulk_create_vuln_pkg_refs = set()
     # Treat updated_advisories and added_advisories as same. Eventually

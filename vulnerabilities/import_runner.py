@@ -120,45 +120,38 @@ def process_advisories(data_source: DataSource) -> None:
     advisory_batches = chain(data_source.updated_advisories(), data_source.added_advisories())
     for batch in advisory_batches:
         for advisory in batch:
-            try:
-                vuln, vuln_created = _get_or_create_vulnerability(advisory)
-                for vuln_ref in advisory.references:
-                    ref, _ = models.VulnerabilityReference.objects.get_or_create(
-                        vulnerability=vuln, reference_id=vuln_ref.reference_id, url=vuln_ref.url
-                    )
-
-                    for score in vuln_ref.severities:
-                        models.VulnerabilitySeverity.objects.update_or_create(
-                            vulnerability=vuln,
-                            scoring_system=score.system.identifier,
-                            reference=ref,
-                            defaults={"value": str(score.value)},
-                        )
-
-                for aff_pkg_with_patched_pkg in advisory.affected_packages:
-                    vulnerable_package, _ = _get_or_create_package(
-                        aff_pkg_with_patched_pkg.vulnerable_package
-                    )
-                    patched_package = None
-                    if aff_pkg_with_patched_pkg.patched_package:
-                        patched_package, _ = _get_or_create_package(
-                            aff_pkg_with_patched_pkg.patched_package
-                        )
-
-                    prv, _ = models.PackageRelatedVulnerability.objects.get_or_create(
-                        vulnerability=vuln,
-                        package=vulnerable_package,
-                    )
-
-                    if patched_package:
-                        prv.patched_package = patched_package
-                        prv.save()
-
-            except Exception:
-                # TODO: store error but continue
-                logger.error(
-                    f"Failed to process advisory: {advisory!r}:\n" + traceback.format_exc()
+            vuln, vuln_created = _get_or_create_vulnerability(advisory)
+            for vuln_ref in advisory.references:
+                ref, _ = models.VulnerabilityReference.objects.get_or_create(
+                    vulnerability=vuln, reference_id=vuln_ref.reference_id, url=vuln_ref.url
                 )
+
+                for score in vuln_ref.severities:
+                    models.VulnerabilitySeverity.objects.update_or_create(
+                        vulnerability=vuln,
+                        scoring_system=score.system.identifier,
+                        reference=ref,
+                        defaults={"value": str(score.value)},
+                    )
+
+            for aff_pkg_with_patched_pkg in advisory.affected_packages:
+                vulnerable_package, _ = _get_or_create_package(
+                    aff_pkg_with_patched_pkg.vulnerable_package
+                )
+                patched_package = None
+                if aff_pkg_with_patched_pkg.patched_package:
+                    patched_package, _ = _get_or_create_package(
+                        aff_pkg_with_patched_pkg.patched_package
+                    )
+
+                prv, _ = models.PackageRelatedVulnerability.objects.get_or_create(
+                    vulnerability=vuln,
+                    package=vulnerable_package,
+                )
+
+                if patched_package:
+                    prv.patched_package = patched_package
+                    prv.save()
 
     models.PackageRelatedVulnerability.objects.bulk_create(
         [i.to_model_object() for i in bulk_create_vuln_pkg_refs]

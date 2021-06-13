@@ -272,7 +272,7 @@ class GitHubAPIDataSource(DataSource):
                         aff_vers, unaff_vers = self.categorize_versions(
                             self.version_api.package_type,
                             aff_range,
-                            self.version_api.get(name, until=cutoff_time)["valid"],
+                            self.version_api.get(name, until=cutoff_time).valid_versions,
                         )
                         affected_purls = [
                             PackageURL(name=pkg_name, namespace=ns, version=version, type=pkg_type)

@@ -67,7 +67,7 @@ class IstioDataSource(GitDataSource):
         """Takes a list of version ranges(affected) of a package
         as parameter and returns a tuple of safe package versions and
         vulnerable package versions"""
-        all_version = self.version_api.get("istio/istio", release_date)["valid"]
+        all_version = self.version_api.get("istio/istio", release_date).valid_versions
         safe_pkg_versions = []
         vuln_pkg_versions = []
         version_ranges = [

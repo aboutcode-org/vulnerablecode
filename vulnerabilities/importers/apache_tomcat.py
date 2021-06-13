@@ -63,7 +63,7 @@ class ApacheTomcatDataSource(DataSource):
 
     def fetch_pages(self):
         tomcat_major_versions = {
-            i[0] for i in self.version_api.get("org.apache.tomcat:tomcat")["valid"]
+            i[0] for i in self.version_api.get("org.apache.tomcat:tomcat").valid_versions
         }
         for version in tomcat_major_versions:
             page_url = self.base_url.format(version)
@@ -104,7 +104,9 @@ class ApacheTomcatDataSource(DataSource):
                             PackageURL(
                                 type="maven", namespace="apache", name="tomcat", version=version
                             )
-                            for version in self.version_api.get("org.apache.tomcat:tomcat")["valid"]
+                            for version in self.version_api.get(
+                                "org.apache.tomcat:tomcat"
+                            ).valid_versions
                             if MavenVersion(version) in version_range
                         ]
                     )

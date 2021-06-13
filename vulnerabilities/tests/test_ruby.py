@@ -24,15 +24,14 @@ import os
 import pathlib
 from unittest.mock import patch
 from unittest import TestCase
-from collections import OrderedDict
 
 from packageurl import PackageURL
 
 from vulnerabilities.importers.ruby import RubyDataSource
-from vulnerabilities.data_source import GitDataSourceConfiguration
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import RubyVersionAPI
+from vulnerabilities.package_managers import VersionResponse
 from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -55,7 +54,9 @@ class RubyDataSourceTest(TestCase):
 
     @patch(
         "vulnerabilities.package_managers.RubyVersionAPI.get",
-        return_value={"valid": {"1.0.0", "1.8.0", "2.0.3"}, "new": {}},
+        return_value=VersionResponse(
+            valid_versions={"1.0.0", "1.8.0", "2.0.3"}, newer_versions=set()
+        ),
     )
     def test_process_file(self, mock_write):
         expected_advisories = [

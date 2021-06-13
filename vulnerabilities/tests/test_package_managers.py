@@ -21,20 +21,20 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
+import json
+import os
 from datetime import datetime
 from bs4 import BeautifulSoup
 from dateutil.tz import tzlocal
 from pytz import UTC
-import os
-import json
 from unittest import TestCase
 from unittest.mock import AsyncMock
-import xml.etree.ElementTree as ET
 
 from vulnerabilities.package_managers import ComposerVersionAPI
 from vulnerabilities.package_managers import MavenVersionAPI
 from vulnerabilities.package_managers import NugetVersionAPI
 from vulnerabilities.package_managers import Version
+from vulnerabilities.package_managers import VersionResponse
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")
@@ -343,7 +343,7 @@ class TestComposerVersionAPI(TestCase):
 
     def test_fetch(self):
 
-        assert self.version_api.get("typo3/cms-core") == {"valid": set(), "new": set()}
+        assert self.version_api.get("typo3/cms-core") == VersionResponse()
         client_session = MockClientSession(self.response)
         asyncio.run(self.version_api.fetch("typo3/cms-core", client_session))
         assert self.version_api.cache["typo3/cms-core"] == self.expected_versions
@@ -355,7 +355,7 @@ class TestMavenVersionAPI(TestCase):
         cls.version_api = MavenVersionAPI()
         with open(os.path.join(TEST_DATA, "maven_api", "easygcm.html"), "rb") as f:
             data = f.read()
-            cls.response = BeautifulSoup(data)
+            cls.response = BeautifulSoup(data, features="lxml")
             cls.content = data
 
     def test_artifact_url(self):
@@ -377,7 +377,7 @@ class TestMavenVersionAPI(TestCase):
         assert expected_versions == self.version_api.extract_versions(self.response)
 
     def test_fetch(self):
-        assert self.version_api.get("org.apache:kafka") == {"new": set(), "valid": set()}
+        assert self.version_api.get("org.apache:kafka") == VersionResponse()
         expected = {
             Version(value="1.2.2", release_date=datetime(2014, 12, 22, 10, 29, tzinfo=UTC)),
             Version(value="1.3.0", release_date=datetime(2015, 3, 12, 15, 20, tzinfo=UTC)),
@@ -467,12 +467,12 @@ class TestNugetVersionAPI(TestCase):
 
     def test_fetch(self):
 
-        assert self.version_api.get("Exfat.Ntfs") == {"new": set(), "valid": set()}
+        assert self.version_api.get("Exfat.Ntfs") == VersionResponse()
         client_session = MockClientSession(self.response)
         asyncio.run(self.version_api.fetch("Exfat.Ntfs", client_session))
-        assert self.version_api.get("Exfat.Ntfs") == {
-            "new": set(),
-            "valid": {
+        assert self.version_api.get("Exfat.Ntfs") == VersionResponse(
+            newer_versions=set(),
+            valid_versions={
                 "2.0.0",
                 "2.1.0",
                 "2.0.0-preview01",
@@ -488,7 +488,7 @@ class TestNugetVersionAPI(TestCase):
                 "2.5.0",
                 "2.6.0",
             },
-        }
+        )
 
     # def test_load_to_api(self):
     #     assert self.version_api.get("Exfat.Ntfs") == set()

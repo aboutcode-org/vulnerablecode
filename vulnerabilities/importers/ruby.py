@@ -94,10 +94,7 @@ class RubyDataSource(GitDataSource):
 
         if not getattr(self, "pkg_manager_api", None):
             self.pkg_manager_api = RubyVersionAPI()
-        all_vers = self.pkg_manager_api.get(package_name, until=publish_time)["valid"]
-        print(
-            f"Ignored {len(self.pkg_manager_api.get(package_name,until=publish_time)['new'])} versions"
-        )
+        all_vers = self.pkg_manager_api.get(package_name, until=publish_time).valid_versions
         safe_versions, affected_versions = self.categorize_versions(all_vers, safe_version_ranges)
 
         impacted_purls = [

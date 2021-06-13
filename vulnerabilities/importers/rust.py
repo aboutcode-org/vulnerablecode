@@ -98,7 +98,7 @@ class RustDataSource(GitDataSource):
             references.append(Reference(url=advisory["url"]))
 
         publish_date = parse(advisory["date"]).replace(tzinfo=pytz.UTC)
-        all_versions = self.crates_api.get(crate_name, publish_date)["valid"]
+        all_versions = self.crates_api.get(crate_name, publish_date).valid_versions
 
         # FIXME: Avoid wildcard version ranges for now.
         # See https://github.com/RustSec/advisory-db/discussions/831

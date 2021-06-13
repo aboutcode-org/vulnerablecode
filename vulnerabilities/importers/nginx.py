@@ -53,8 +53,10 @@ class NginxDataSource(DataSource):
 
         # For some reason nginx tags it's releases are in the form of `release-1.2.3`
         # Chop off the `release-` part here.
-        for index, version in enumerate(self.version_api.cache["nginx/nginx"]["valid"]):
-            self.version_api.cache["nginx/nginx"]["valid"][index] = version.replace("release-", "")
+        for index, version in enumerate(self.version_api.cache["nginx/nginx"].valid_versions):
+            self.version_api.cache["nginx/nginx"].valid_versions[index] = version.replace(
+                "release-", ""
+            )
 
     def updated_advisories(self):
         advisories = []
@@ -135,7 +137,7 @@ class NginxDataSource(DataSource):
             )
 
         valid_versions = find_valid_versions(
-            self.version_api.get("nginx/nginx")["valid"], version_ranges
+            self.version_api.get("nginx/nginx").valid_versions, version_ranges
         )
 
         return [
@@ -172,7 +174,7 @@ class NginxDataSource(DataSource):
             )
 
         valid_versions = find_valid_versions(
-            self.version_api.get("nginx/nginx")["valid"], version_ranges
+            self.version_api.get("nginx/nginx").valid_versions, version_ranges
         )
         qualifiers = {}
         if windows_only:

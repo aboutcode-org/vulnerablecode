@@ -27,6 +27,7 @@ jobs:
         run: |
           sudo apt install  python3-dev postgresql libpq-dev build-essential libxml2-dev libxslt1-dev postgresql ncat
           python -m pip install --upgrade pip 
+          pip install -r requirements-dev.txt
 
       - uses: syphar/restore-virtualenv@v1
         id: cache-virtualenv

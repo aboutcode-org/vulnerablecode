@@ -27,6 +27,7 @@ from bs4 import BeautifulSoup
 from dateutil import parser
 from json import JSONDecodeError
 from typing import Mapping
+from typing import Tuple
 from typing import Set
 from datetime import datetime
 
@@ -41,19 +42,27 @@ class Version:
     release_date: datetime = None
 
 
+@dataclasses.dataclass(frozen=True)
+class VersionResponse:
+    valid_versions: Set[str] = dataclasses.field(default_factory=set)
+    newer_versions: Set[str] = dataclasses.field(default_factory=set)
+
+
+@dataclasses.dataclass(frozen=True)
 class VersionAPI:
     def __init__(self, cache: Mapping[str, Set[str]] = None):
         self.cache = cache or {}
 
     def get(self, package_name, until=None) -> Set[str]:
-        versions = {"new": set(), "valid": set()}
+        new_versions = set()
+        valid_versions = set()
         for version in self.cache.get(package_name, set()):
             if until and version.release_date and version.release_date > until:
-                versions["new"].add(version.value)
+                new_versions.add(version.value)
                 continue
-            versions["valid"].add(version.value)
+            valid_versions.add(version.value)
 
-        return versions
+        return VersionResponse(valid_versions=valid_versions, newer_versions=new_versions)
 
 
 def client_session():

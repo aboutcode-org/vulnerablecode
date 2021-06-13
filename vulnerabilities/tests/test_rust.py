@@ -50,7 +50,7 @@ MOCKED_CRATES_API_VERSIONS = CratesVersionAPI(
 
 
 def test_categorize_versions():
-    flatbuffers_versions = MOCKED_CRATES_API_VERSIONS.get("flatbuffers")["valid"]
+    flatbuffers_versions = MOCKED_CRATES_API_VERSIONS.get("flatbuffers").valid_versions
 
     unaffected_ranges = [VersionSpecifier.from_scheme_version_spec_string("semver", "< 0.4.0")]
     affected_ranges = [

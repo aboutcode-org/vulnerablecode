@@ -5,7 +5,7 @@ services:
   - postgresql
 
 install:
-  - pip install -e . -r requirements.txt
+  - pip install -e . -r requirements.txt -r requirements-dev.txt
 
 env:
   global:

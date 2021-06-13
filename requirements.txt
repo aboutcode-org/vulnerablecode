@@ -14,4 +14,4 @@ saneyaml>=0.5.2
 beautifulsoup4>=4.9.3
 python-dateutil>=2.8.1
 toml>=0.10.2
-
+lxml>=4.6.3

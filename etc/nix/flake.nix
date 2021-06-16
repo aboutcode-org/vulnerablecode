@@ -73,12 +73,6 @@
               ${requirements}
             '';
           };
-          pythonEnvDev = machnixFor.${system}.mkPython {
-            requirements = ''
-              ${requirements}
-              ${requirementsDev}
-            '';
-          };
 
           vulnerablecode = stdenv.mkDerivation {
             inherit version;
@@ -121,44 +115,53 @@
         forAllSystems (system: self.packages.${system}.vulnerablecode);
 
       # Tests run by 'nix flake check' and by Hydra.
-      checks = forAllSystems (system: {
-        inherit (self.packages.${system}) vulnerablecode pythonEnvDev;
-
-        vulnerablecode-test = with nixpkgsFor.${system};
-          stdenv.mkDerivation {
-            name = "${vulnerablecode.name}-test";
-
-            buildInputs = [ wget vulnerablecode pythonEnvDev ];
-
-            unpackPhase = "true";
-
-            buildPhase = ''
-              source ${libSh}
-              initPostgres $(pwd)
-              export DJANGO_DEV=1
-              ${vulnerablecode}/manage.py migrate
+      checks = forAllSystems (system:
+        let
+          pythonEnvDev = machnixFor.${system}.mkPython {
+            requirements = ''
+              ${requirements}
+              ${requirementsDev}
             '';
-
-            doCheck = true;
-            checkPhase = ''
-              # Run pytest on the installed version. A running postgres
-              # database server is needed.
-              (
-                cd ${vulnerablecode}
-                black -l 100 --check .
-                pytest -m "not webtest"
-              )
-
-              # Launch the webserver and call the API.
-              ${vulnerablecode}/manage.py runserver &
-              sleep 2
-              wget http://127.0.0.1:8000/api/
-              kill %1 # kill background task (i.e. webserver)
-            '';
-
-            installPhase =
-              "mkdir -p $out"; # make this derivation return success
           };
-      });
+
+        in {
+          inherit (self.packages.${system}) vulnerablecode;
+
+          vulnerablecode-test = with nixpkgsFor.${system};
+            stdenv.mkDerivation {
+              name = "${vulnerablecode.name}-test";
+
+              buildInputs = [ wget vulnerablecode pythonEnvDev ];
+
+              unpackPhase = "true";
+
+              buildPhase = ''
+                source ${libSh}
+                initPostgres $(pwd)
+                export DJANGO_DEV=1
+                ${vulnerablecode}/manage.py migrate
+              '';
+
+              doCheck = true;
+              checkPhase = ''
+                # Run pytest on the installed version. A running postgres
+                # database server is needed.
+                (
+                  cd ${vulnerablecode}
+                  black -l 100 --check .
+                  pytest -m "not webtest"
+                )
+
+                # Launch the webserver and call the API.
+                ${vulnerablecode}/manage.py runserver &
+                sleep 2
+                wget http://127.0.0.1:8000/api/
+                kill %1 # kill background task (i.e. webserver)
+              '';
+
+              installPhase =
+                "mkdir -p $out"; # make this derivation return success
+            };
+        });
     };
 }

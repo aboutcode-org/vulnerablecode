@@ -130,10 +130,6 @@
 
             buildInputs = [ wget vulnerablecode pythonEnvDev ];
 
-            # Used by pygit2.
-            # See https://github.com/NixOS/nixpkgs/pull/72544#issuecomment-582674047.
-            SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-
             unpackPhase = "true";
 
             buildPhase = ''

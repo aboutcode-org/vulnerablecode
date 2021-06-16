@@ -20,6 +20,10 @@
     let
 
       vulnerablecode-src = ./../..;
+      requirements =
+        builtins.readFile (vulnerablecode-src + "/requirements.txt");
+      requirementsDev =
+        builtins.readFile (vulnerablecode-src + "/requirements-dev.txt");
 
       # Extract version from setup.py.
       version = builtins.head (builtins.match ''.*version=["']?([^"',]+).*''
@@ -65,8 +69,15 @@
         with final.pkgs; {
 
           pythonEnv = machnixFor.${system}.mkPython {
-            requirements =
-              builtins.readFile (vulnerablecode-src + "/requirements.txt");
+            requirements = ''
+              ${requirements}
+            '';
+          };
+          pythonEnvDev = machnixFor.${system}.mkPython {
+            requirements = ''
+              ${requirements}
+              ${requirementsDev}
+            '';
           };
 
           vulnerablecode = stdenv.mkDerivation {
@@ -111,13 +122,13 @@
 
       # Tests run by 'nix flake check' and by Hydra.
       checks = forAllSystems (system: {
-        inherit (self.packages.${system}) vulnerablecode;
+        inherit (self.packages.${system}) vulnerablecode pythonEnvDev;
 
         vulnerablecode-test = with nixpkgsFor.${system};
           stdenv.mkDerivation {
             name = "${vulnerablecode.name}-test";
 
-            buildInputs = [ wget vulnerablecode ];
+            buildInputs = [ wget vulnerablecode pythonEnvDev ];
 
             # Used by pygit2.
             # See https://github.com/NixOS/nixpkgs/pull/72544#issuecomment-582674047.

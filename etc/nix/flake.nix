@@ -53,9 +53,9 @@
           # mach-nix release) is usually insufficient. Use
           # ./get-latest-pypi-deps-db.sh to obtain the data rev & hash.
           pypiDataRev =
-            "e9b0fc6b92cd6efbca7ba3b3d4a551bcc13a73c5"; # 2021-03-27T08:13:04Z
+            "8dcec158c51f8a96f316630679222e436c1b078c"; # 2021-06-16T08:41:20Z
           pypiDataSha256 =
-            "1ssa48l2iz8kncby1gfrbds79mg114dkhpxrridwcq6q2c37p62s";
+            "0499zl39aia74f0i7fkn5dsy8244dkmcw4vzd5nf4kai605j2jli";
         });
 
     in {
@@ -74,7 +74,7 @@
             name = "vulnerablecode-${version}";
             src = vulnerablecode-src;
             dontConfigure = true; # do not use ./configure
-            propagatedBuildInputs = [ pythonEnv postgresql gitMinimal];
+            propagatedBuildInputs = [ pythonEnv postgresql gitMinimal ];
 
             postPatch = ''
               # Make sure the pycodestyle binary in $PATH is used.

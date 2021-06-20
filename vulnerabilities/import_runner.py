@@ -24,13 +24,9 @@
 import dataclasses
 import datetime
 import logging
-from collections import Counter
 from itertools import chain
-import traceback
-from typing import Set
 from typing import Tuple
 
-from django.core import serializers
 from django.db import transaction
 
 from vulnerabilities import models

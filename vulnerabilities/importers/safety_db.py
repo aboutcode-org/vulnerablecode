@@ -38,9 +38,6 @@ from univers.version_specifier import VersionSpecifier
 from univers.versions import PYPIVersion
 from univers.versions import InvalidVersion
 from packageurl import PackageURL
-from schema import Or
-from schema import Regex
-from schema import Schema
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
@@ -50,21 +47,6 @@ from vulnerabilities.package_managers import PypiVersionAPI
 from vulnerabilities.helpers import nearest_patched_package
 
 logger = logging.getLogger(__name__)
-
-
-def validate_schema(advisory_dict):
-
-    scheme = [
-        {
-            "advisory": str,
-            "cve": Or(None, str),
-            "id": Regex(r"^pyup.io-\d"),
-            "specs": list,
-            "v": str,
-        }
-    ]
-
-    Schema(scheme).validate(advisory_dict)
 
 
 @dataclasses.dataclass
@@ -102,13 +84,6 @@ class SafetyDbDataSource(DataSource):
             if package_name == "$meta" or package_name == "cumin":
                 # This is the first entry in the data feed. It contains metadata of the feed.
                 # Skip it. The 'cumin' entry is wrong
-                continue
-
-            try:
-                validate_schema(self._api_response[package_name])
-
-            except Exception as e:
-                logger.error(e)
                 continue
 
             all_package_versions = self.versions.get(package_name)

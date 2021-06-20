@@ -965,7 +965,7 @@ class OvalElement(object):
 
     @staticmethod
     def getElementTypeFromOvalID(ovalid):
-        """ Gets element type from OVAL id. """
+        """Gets element type from OVAL id."""
 
         if not ovalid or ovalid is None:
             raise ValueError("No OVAL ID given")

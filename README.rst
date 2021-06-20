@@ -149,13 +149,8 @@ Create a virtualenv, install dependencies, generate static files and run the dat
     python3 -m venv venv
     source venv/bin/activate
     pip install -r requirements.txt
-    DJANGO_DEV=1 python manage.py collectstatic
-    DJANGO_DEV=1 python manage.py migrate
-
-The environment variable ``DJANGO_DEV`` is used to load settings suitable for
-development,  defined in ``vulnerablecode/dev.py``. If you
-don't want to type it every time use ``export DJANGO_DEV=1`` instead.
-Do not use `DJANGO_DEV` in a production environment.
+    python manage.py collectstatic
+    python manage.py migrate
 
 
 For a production mode, an environment variable named ``SECRET_KEY`` needs to be
@@ -211,11 +206,11 @@ Non-Python dependencies are curated in::
 
 Run Tests
 ---------
-
+Make sure to install dev dependencies by running ``pip install -r requirements-dev.txt``
 Use these commands to run code style checks and the test suite::
 
     black -l 100 --check .
-    DJANGO_DEV=1 python -m pytest
+    python -m pytest
 
 
 Data import
@@ -233,15 +228,15 @@ for instructions on how to obtain your GitHub token.
 
 To run all data importers use::
 
-    DJANGO_DEV=1 python manage.py import --all
+    python manage.py import --all
 
 To list available importers use::
 
-    DJANGO_DEV=1 python manage.py import --list
+    python manage.py import --list
 
 To run specific importers::
 
-    DJANGO_DEV=1 python manage.py import rust npm 
+    python manage.py import rust npm 
 
 
 REST API access
@@ -249,7 +244,7 @@ REST API access
 
 Start the webserver::
 
-    DJANGO_DEV=1 python manage.py runserver
+    python manage.py runserver
 
 
 For full documentation about API endpoints use this URL::

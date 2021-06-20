@@ -20,15 +20,13 @@
 #  for any legal advice.
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-
 import os
-import yaml
 from unittest import TestCase
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
-from packageurl import PackageURL
-
-from vulnerabilities.data_source import Advisory, Reference
+from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import Reference
 from vulnerabilities.importers.alpine_linux import AlpineDataSource
 
 

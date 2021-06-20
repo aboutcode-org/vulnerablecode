@@ -45,7 +45,7 @@ class SUSESeverityScoreDataSource(DataSource):
             for cvss_score in score_data[cve_id]["cvss"]:
                 score = None
                 vector = None
-                if cvss_score["version"] == 2.0:
+                if cvss_score["version"] == "2.0":
                     score = VulnerabilitySeverity(
                         system=scoring_systems["cvssv2"], value=str(cvss_score["score"])
                     )
@@ -53,7 +53,7 @@ class SUSESeverityScoreDataSource(DataSource):
                         system=scoring_systems["cvssv2_vector"], value=str(cvss_score["vector"])
                     )
 
-                elif cvss_score["version"] == 3:
+                elif cvss_score["version"] == "3":
                     score = VulnerabilitySeverity(
                         system=scoring_systems["cvssv3"], value=str(cvss_score["score"])
                     )
@@ -61,7 +61,7 @@ class SUSESeverityScoreDataSource(DataSource):
                         system=scoring_systems["cvssv3_vector"], value=str(cvss_score["vector"])
                     )
 
-                elif cvss_score["version"] == 3.1:
+                elif cvss_score["version"] == "3.1":
                     score = VulnerabilitySeverity(
                         system=scoring_systems["cvssv3.1"], value=str(cvss_score["score"])
                     )

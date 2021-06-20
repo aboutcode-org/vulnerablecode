@@ -24,7 +24,6 @@ import importlib
 from datetime import datetime
 
 from django.db import models
-import django.contrib.postgres.fields as pgfields
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from packageurl.contrib.django.models import PackageURLMixin
@@ -156,7 +155,7 @@ class Package(PackageURLMixin):
 
     # Remove the `qualifers` and `set_package_url` overrides after
     # https://github.com/package-url/packageurl-python/pull/35 gets merged
-    qualifiers = pgfields.JSONField(
+    qualifiers = models.JSONField(
         default=dict,
         help_text=_(
             "Extra qualifying data for a package such as the name of an OS, "
@@ -207,7 +206,7 @@ class PackageRelatedVulnerability(models.Model):
 
 class ImportProblem(models.Model):
 
-    conflicting_model = pgfields.JSONField()
+    conflicting_model = models.JSONField()
 
 
 class Importer(models.Model):
@@ -230,7 +229,7 @@ class Importer(models.Model):
         max_length=100,
         help_text="Name of the data source implementation importable from vulnerabilities.importers",  # nopep8
     )
-    data_source_cfg = pgfields.JSONField(
+    data_source_cfg = models.JSONField(
         null=False,
         default=dict,
         help_text="Implementation-specific configuration for the data source",

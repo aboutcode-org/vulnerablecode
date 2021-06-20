@@ -6,22 +6,6 @@ jobs:
   unit_tests:
     runs-on: ubuntu-latest
 
-    services:
-      # Label used to access the service container
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: vulnerablecode
-          POSTGRES_DB: vulnerablecode
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          # Maps tcp port 5432 on service container to the host
-          - 5432:5432
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -31,18 +15,42 @@ jobs:
         with:
           python-version: 3.8
 
+      - name: Restore cache
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-venv-
+
       - name: Install dependencies
         run: |
-          sudo apt install  python3-dev postgresql libpq-dev build-essential libxml2-dev libxslt1-dev 
-          python -m pip install --upgrade pip 
-          pip install -r requirements.txt
+          sudo apt install  python3-dev postgresql libpq-dev build-essential libxml2-dev libxslt1-dev postgresql ncat
+          python -m pip install --upgrade pip
+
+      - uses: syphar/restore-virtualenv@v1
+        id: cache-virtualenv
+        with:
+          requirement_files: requirements*.txt  # this is optional
+
+      - uses: syphar/restore-pip-download-cache@v1
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+
+      - run: pip install -r requirements.txt -r requirements-dev.txt
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
     
+      - name: Setup database
+        env:
+          PGPASSWORD: vulnerablecode
+        run: |
+          sudo systemctl start postgresql
+          sudo -Eu postgres psql -c "CREATE ROLE vulnerablecode WITH PASSWORD '$PGPASSWORD' NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN;"
+          sudo systemctl status postgresql
+          createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode \
+          --host=localhost --port=5432 vulnerablecode
+
       - name: Run tests
         run: python -m pytest -v -m "not webtest"
         env:
-          # The hostname, username used to communicate with the PostgreSQL service container
-          POSTGRES_HOST: localhost
-          VC_DB_USER: postgres
-          POSTGRES_PORT: 5432
           DJANGO_DEV: 1
           GH_TOKEN: 1 

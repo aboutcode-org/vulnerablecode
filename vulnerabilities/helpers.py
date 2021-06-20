@@ -24,8 +24,8 @@ import bisect
 import dataclasses
 import json
 import re
-from typing import Optional
 from typing import List
+from typing import Optional
 from typing import Tuple
 
 import requests
@@ -182,6 +182,7 @@ def split_markdown_front_matter(text: str) -> Tuple[str, str]:
     >>> split_markdown_front_matter(text)
     ('title: DUMMY-SECURITY-2019-001\ndescription: Incorrect access control.\ncves: [CVE-2042-1337]', '# Markdown starts here')
     """
+    # The doctest contains \n and for the sake of clarity I chose raw strings than escaping those.
     lines = text.splitlines()
     if lines[0] == "---":
         lines = lines[1:]

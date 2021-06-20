@@ -22,7 +22,6 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import dataclasses
-import json
 from dateutil import parser as dateparser
 from typing import Any
 from typing import List
@@ -31,51 +30,12 @@ from typing import Set
 
 import requests
 from packageurl import PackageURL
-from schema import Optional
-from schema import Or
-from schema import Regex
-from schema import Schema
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
 from vulnerabilities.helpers import nearest_patched_package
-
-
-def validate_schema(advisory_dict):
-
-    deb_versions = [
-        "bullseye",
-        "bullseye-security",
-        "buster",
-        "buster-security",
-        "sid",
-        "stretch",
-        "stretch-security",
-        "jessie",
-        "jessie-security",
-    ]
-    scheme = {
-        str: {
-            Or(Regex(r"CVE-\d+-\d+"), Regex(r"TEMP-.+-.+")): {
-                "releases": {
-                    Or(*deb_versions): {
-                        "repositories": {Or(*deb_versions): str},
-                        "status": str,
-                        "urgency": str,
-                        Optional("fixed_version"): str,
-                        Optional(str): object,
-                    }
-                },
-                Optional("description"): str,
-                Optional("debianbug"): int,
-                Optional(str): object,
-            }
-        }
-    }
-
-    Schema(scheme).validate(advisory_dict)
 
 
 @dataclasses.dataclass
@@ -90,7 +50,6 @@ class DebianDataSource(DataSource):
     def __enter__(self):
         if self.response_is_new():
             self._api_response = self._fetch()
-            validate_schema(self._api_response)
 
         else:
             self._api_response = {}

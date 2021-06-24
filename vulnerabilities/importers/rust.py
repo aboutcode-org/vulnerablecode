@@ -60,11 +60,8 @@ class RustDataSource(GitDataSource):
     def set_api(self, packages):
         asyncio.run(self.crates_api.load_api(packages))
 
-    def added_advisories(self) -> Set[Advisory]:
-        return self._load_advisories(self._added_files)
-
     def updated_advisories(self) -> Set[Advisory]:
-        return self._load_advisories(self._updated_files)
+        return self._load_advisories(self._updated_files.union(self._added_files))
 
     def _load_advisories(self, files) -> Set[Advisory]:
         # per @tarcieri It will always be named RUSTSEC-0000-0000.md

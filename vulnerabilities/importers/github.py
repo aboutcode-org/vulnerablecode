@@ -82,6 +82,69 @@ query = """
         }
         """
 
+# See https://github.com/nexB/vulnerablecode/issues/486
+IGNORE_VERSIONS = {
+    "0.1-bulbasaur",
+    "0.1-charmander",
+    "0.3m1",
+    "0.3m2",
+    "0.3m3",
+    "0.3m4",
+    "0.3m5",
+    "0.4m1",
+    "0.4m2",
+    "0.4m3",
+    "0.4m4",
+    "0.4m5",
+    "0.5m1",
+    "0.5m2",
+    "0.5m3",
+    "0.5m4",
+    "0.5m5",
+    "0.6m1",
+    "0.6m2",
+    "0.6m3",
+    "0.6m4",
+    "0.6m5",
+    "0.6m6",
+    "0.7.10p1",
+    "0.7.11p1",
+    "0.7.11p2",
+    "0.7.11p3",
+    "0.8.1p1",
+    "0.8.3p1",
+    "0.8.4p1",
+    "0.8.4p2",
+    "0.8.6p1",
+    "0.8.7p1",
+    "0.9-doduo",
+    "0.9-eevee",
+    "0.9-fearow",
+    "0.9-gyarados",
+    "0.9-horsea",
+    "0.9-ivysaur",
+    "2013-01-21T20:33:09+0100",
+    "2013-01-23T17:11:52+0100",
+    "2013-02-01T20:50:46+0100",
+    "2013-02-02T19:59:03+0100",
+    "2013-02-02T20:23:17+0100",
+    "2013-02-08T17:40:57+0000",
+    "2013-03-27T16:32:26+0100",
+    "2013-05-09T12:47:53+0200",
+    "2013-05-10T17:55:56+0200",
+    "2013-05-14T20:16:05+0200",
+    "2013-06-01T10:32:51+0200",
+    "2013-07-19T09:11:08+0000",
+    "2013-08-12T21:48:56+0200",
+    "2013-09-11T19-27-10",
+    "2013-12-23T17-51-15",
+    "2014-01-12T15-52-10",
+    "2.0.1rc2-git",
+    "3.0.0b3-",
+    "3.0b6dev-r41684",
+    "-class.-jw.util.version.Version-",
+}
+
 
 class GitHubTokenError(Exception):
     pass
@@ -265,9 +328,11 @@ class GitHubAPIDataSource(DataSource):
         affected_versions = []
         unaffected_versions = []
         for version in all_versions:
+            if version in IGNORE_VERSIONS:
+                continue
+
             if version_class(version) in version_range:
                 affected_versions.append(version)
             else:
                 unaffected_versions.append(version)
-
         return (affected_versions, unaffected_versions)

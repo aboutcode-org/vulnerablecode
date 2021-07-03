@@ -23,12 +23,13 @@
 import asyncio
 import dataclasses
 import pytz
+import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup
-from dateutil import parser
+from dateutil import parser as dateparser
 from json import JSONDecodeError
 from typing import Mapping
-from typing import Tuple
 from typing import Set
+from typing import List
 from datetime import datetime
 
 from aiohttp import ClientSession
@@ -122,13 +123,19 @@ class PypiVersionAPI(VersionAPI):
         try:
             response = await session.request(method="GET", url=url)
             response = await response.json()
-            for version in response["releases"]:
-                if response["releases"][version]:
+            for version, download_items in response["releases"].items():
+                if download_items:
+                    latest_download_item = max(
+                        download_items,
+                        key=lambda download_item: dateparser.parse(
+                            download_item["upload_time_iso_8601"]
+                        ),
+                    )
                     versions.add(
                         Version(
                             value=version,
-                            release_date=parser.parse(
-                                response["releases"][version][-1]["upload_time_iso_8601"]
+                            release_date=dateparser.parse(
+                                latest_download_item["upload_time_iso_8601"]
                             ),
                         )
                     )
@@ -157,7 +164,8 @@ class CratesVersionAPI(VersionAPI):
         for version_info in response["versions"]:
             versions.add(
                 Version(
-                    value=version_info["num"], release_date=parser.parse(version_info["updated_at"])
+                    value=version_info["num"],
+                    release_date=dateparser.parse(version_info["updated_at"]),
                 )
             )
 
@@ -183,7 +191,8 @@ class RubyVersionAPI(VersionAPI):
             for release in response:
                 versions.add(
                     Version(
-                        value=release["number"], release_date=parser.parse(release["created_at"])
+                        value=release["number"],
+                        release_date=dateparser.parse(release["created_at"]),
                     )
                 )
         except (ClientResponseError, JSONDecodeError):
@@ -211,7 +220,7 @@ class NpmVersionAPI(VersionAPI):
             for version in response.get("versions", []):
                 release_date = response.get("time", {}).get(version)
                 if release_date:
-                    release_date = parser.parse(release_date)
+                    release_date = dateparser.parse(release_date)
                     versions.add(Version(value=version, release_date=release_date))
                 else:
                     versions.add(Version(value=version, release_date=None))
@@ -265,15 +274,12 @@ class MavenVersionAPI(VersionAPI):
     async def load_api(self, pkg_set):
         async with client_session() as session:
             await asyncio.gather(
-                *[
-                    self.fetch(pkg, session)
-                    for pkg in pkg_set
-                    if pkg not in self.cache and "camel" not in pkg
-                ]
+                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
             )
 
     async def fetch(self, pkg, session) -> None:
-        endpoint = self.artifact_url(pkg)
+        artifact_comps = pkg.split(":")
+        endpoint = self.artifact_url(artifact_comps)
         try:
             resp = await session.request(method="GET", url=endpoint)
             resp = await resp.read()
@@ -282,15 +288,11 @@ class MavenVersionAPI(VersionAPI):
             self.cache[pkg] = set()
             return
 
-        soup = BeautifulSoup(resp, features="lxml")
-        try:
-            self.cache[pkg] = self.extract_versions(soup)
-        except:
-            raise
+        xml_resp = ET.ElementTree(ET.fromstring(resp.decode("utf-8")))
+        self.cache[pkg] = self.extract_versions(xml_resp)
 
     @staticmethod
-    def artifact_url(pkg: str) -> str:
-        artifact_comps = pkg.split(":")
+    def artifact_url(artifact_comps: List[str]) -> str:
         base_url = "https://repo1.maven.org/maven2/{}"
         try:
             group_id, artifact_id = artifact_comps
@@ -306,35 +308,19 @@ class MavenVersionAPI(VersionAPI):
                 raise
 
         group_url = group_id.replace(".", "/")
-        suffix = group_url + "/" + artifact_id + "/"
+        suffix = group_url + "/" + artifact_id + "/" + "maven-metadata.xml"
         endpoint = base_url.format(suffix)
 
         return endpoint
 
     @staticmethod
-    def extract_versions(soup: BeautifulSoup) -> Set[Version]:
-        pre_tag = soup.find("pre")
-        prev_tag = None
-        versions = set()
-        for i, atag in enumerate(pre_tag):
-            if atag.name == "a" and i != 0:
-                prev_tag = atag
-            elif prev_tag:
-                text_groups = atag.split()
-                if text_groups[-1] != "-":
-                    break
-                date = " ".join(text_groups[:-1])
-                if date != "-":
-                    versions.add(
-                        Version(
-                            value=prev_tag.text[:-1],
-                            release_date=parser.parse(date).replace(tzinfo=pytz.UTC),
-                        )
-                    )
-                else:
-                    versions.add(Version(value=prev_tag.text[:-1], release_date=None))
+    def extract_versions(xml_response: ET.ElementTree) -> Set[str]:
+        all_versions = set()
+        for child in xml_response.getroot().iter():
+            if child.tag == "version":
+                all_versions.add(Version(child.text))
 
-        return versions
+        return all_versions
 
 
 class NugetVersionAPI(VersionAPI):
@@ -368,7 +354,7 @@ class NugetVersionAPI(VersionAPI):
                     all_versions.add(
                         Version(
                             value=entry["catalogEntry"]["version"],
-                            release_date=parser.parse(entry["catalogEntry"]["published"]),
+                            release_date=dateparser.parse(entry["catalogEntry"]["published"]),
                         )
                     )
         # FIXME: json response for YamlDotNet.Signed triggers this exception.
@@ -412,15 +398,16 @@ class ComposerVersionAPI(VersionAPI):
         for version in resp["packages"][pkg_name]:
             if "dev" in version:
                 continue
+
+            # This if statement ensures, that all_versions contains only released versions
+            # See https://github.com/composer/composer/blob/44a4429978d1b3c6223277b875762b2930e83e8c/doc/articles/versions.md#tags  # nopep8
+            # for explanation of removing 'v'
             all_versions.add(
                 Version(
-                    value=version.replace("v", ""),
-                    release_date=parser.parse(resp["packages"][pkg_name][version]["time"]),
+                    value=version.lstrip("v"),
+                    release_date=dateparser.parse(resp["packages"][pkg_name][version]["time"]),
                 )
             )
-        # This if statement ensures, that all_versions contains only released versions
-        # See https://github.com/composer/composer/blob/44a4429978d1b3c6223277b875762b2930e83e8c/doc/articles/versions.md#tags  # nopep8
-        # for explanation of removing 'v'
         return all_versions
 
 
@@ -440,8 +427,10 @@ class GitHubTagsAPI(VersionAPI):
             )
 
     async def fetch(self, owner_repo: str, endpoint=None) -> None:
-        # owner_repo is a string of format "{repo_owner}/{repo_name}"
-        # Example value of owner_repo = "nexB/scancode-toolkit"
+        """
+        owner_repo is a string of format "{repo_owner}/{repo_name}"
+        Example value of owner_repo = "nexB/scancode-toolkit"
+        """
         if owner_repo not in self.cache:
             self.cache[owner_repo] = set()
 
@@ -456,12 +445,13 @@ class GitHubTagsAPI(VersionAPI):
             version = None
             for links in release_entry.find_all("a"):
                 if f"/{owner_repo}/releases/tag/" in links["href"].lower():
-                    version = links["href"].split("/")[-1]
+                    prefix, _slash, version = links["href"].rpartition("/")
+                    version = version.lstrip("v")
                     break
 
             release_date = release_entry.find("relative-time")["datetime"]
             self.cache[owner_repo].add(
-                Version(value=version, release_date=parser.parse(release_date))
+                Version(value=version, release_date=dateparser.parse(release_date))
             )
 
         url = None
@@ -492,7 +482,8 @@ class HexVersionAPI(VersionAPI):
             for release in response["releases"]:
                 versions.add(
                     Version(
-                        value=release["version"], release_date=parser.parse(release["inserted_at"])
+                        value=release["version"],
+                        release_date=dateparser.parse(release["inserted_at"]),
                     )
                 )
         except (ClientResponseError, JSONDecodeError):

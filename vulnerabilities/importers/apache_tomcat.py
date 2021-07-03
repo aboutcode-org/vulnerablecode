@@ -29,6 +29,7 @@ import requests
 from bs4 import BeautifulSoup
 from univers.version_specifier import VersionSpecifier
 from univers.versions import MavenVersion
+from univers.versions import SemverVersion
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
@@ -62,8 +63,10 @@ class ApacheTomcatDataSource(DataSource):
         return self.batch_advisories(advisories)
 
     def fetch_pages(self):
+        # Here Semver is used because it has notion of major, minor versions.
         tomcat_major_versions = {
-            i[0] for i in self.version_api.get("org.apache.tomcat:tomcat").valid_versions
+            SemverVersion(i).value.major
+            for i in self.version_api.get("org.apache.tomcat:tomcat").valid_versions
         }
         for version in tomcat_major_versions:
             page_url = self.base_url.format(version)

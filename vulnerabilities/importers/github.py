@@ -23,9 +23,7 @@
 import asyncio
 import os
 import dataclasses
-import json
-from xml.etree.ElementTree import parse
-from dateutil import parser
+from dateutil import parser as dateparser
 from typing import Set
 from typing import Tuple
 from typing import List
@@ -36,7 +34,6 @@ import requests
 from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 from univers.versions import version_class_by_package_type
-from univers.versions import InvalidVersion
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import DataSource
@@ -263,7 +260,7 @@ class GitHubAPIDataSource(DataSource):
             for resp_page in self.advisories[ecosystem]:
                 for adv in resp_page["data"]["securityVulnerabilities"]["edges"]:
                     name = adv["node"]["package"]["name"]
-                    cutoff_time = parser.parse(adv["node"]["advisory"]["publishedAt"])
+                    cutoff_time = dateparser.parse(adv["node"]["advisory"]["publishedAt"])
                     affected_purls = []
                     unaffected_purls = []
                     if self.process_name(ecosystem, name):

@@ -23,6 +23,7 @@
 import asyncio
 import json
 import os
+import xml.etree.ElementTree as ET
 from datetime import datetime
 from bs4 import BeautifulSoup
 from dateutil.tz import tzlocal
@@ -353,40 +354,35 @@ class TestMavenVersionAPI(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.version_api = MavenVersionAPI()
-        with open(os.path.join(TEST_DATA, "maven_api", "easygcm.html"), "rb") as f:
-            data = f.read()
-            cls.response = BeautifulSoup(data, features="lxml")
-            cls.content = data
+        with open(os.path.join(TEST_DATA, "maven_api", "maven-metadata.xml")) as f:
+            cls.response = ET.parse(f)
+
+        with open(os.path.join(TEST_DATA, "maven_api", "maven-metadata.xml"), "rb") as f:
+            cls.content = f.read()
 
     def test_artifact_url(self):
-        eg_pkg1 = "org.apache:kafka"
-        eg_pkg2 = "apple.msft.windows.mac.oss:exfat-ntfs"
+        eg_comps1 = ["org.apache", "kafka"]
+        eg_comps2 = ["apple.msft.windows.mac.oss", "exfat-ntfs"]
 
-        url1 = self.version_api.artifact_url(eg_pkg1)
-        url2 = self.version_api.artifact_url(eg_pkg2)
+        url1 = self.version_api.artifact_url(eg_comps1)
+        url2 = self.version_api.artifact_url(eg_comps2)
 
-        assert "https://repo1.maven.org/maven2/org/apache/kafka/" == url1
-        assert "https://repo1.maven.org/maven2/apple/msft/windows/mac/oss/exfat-ntfs/" == url2
+        assert "https://repo1.maven.org/maven2/org/apache/kafka/maven-metadata.xml" == url1
+        assert (
+            "https://repo1.maven.org/maven2"
+            "/apple/msft/windows/mac/oss/exfat-ntfs/maven-metadata.xml" == url2
+        )
 
     def test_extract_versions(self):
-        expected_versions = {
-            Version(value="1.3.0", release_date=datetime(2015, 3, 12, 15, 20, tzinfo=UTC)),
-            Version(value="1.2.3", release_date=datetime(2014, 12, 22, 10, 53, tzinfo=UTC)),
-            Version(value="1.2.2", release_date=datetime(2014, 12, 22, 10, 29, tzinfo=UTC)),
-        }
+        expected_versions = {Version("1.2.2"), Version("1.2.3"), Version("1.3.0")}
         assert expected_versions == self.version_api.extract_versions(self.response)
 
     def test_fetch(self):
         assert self.version_api.get("org.apache:kafka") == VersionResponse()
-        expected = {
-            Version(value="1.2.2", release_date=datetime(2014, 12, 22, 10, 29, tzinfo=UTC)),
-            Version(value="1.3.0", release_date=datetime(2015, 3, 12, 15, 20, tzinfo=UTC)),
-            Version(value="1.2.3", release_date=datetime(2014, 12, 22, 10, 53, tzinfo=UTC)),
-        }
-
+        expected = {"1.2.2", "1.2.3", "1.3.0"}
         client_session = MockClientSession(self.content)
         asyncio.run(self.version_api.fetch("org.apache:kafka", client_session))
-        assert self.version_api.cache["org.apache:kafka"] == expected
+        assert self.version_api.get("org.apache:kafka") == VersionResponse(valid_versions=expected)
 
 
 class TestNugetVersionAPI(TestCase):

@@ -77,12 +77,10 @@ class LaunchpadVersionAPI(VersionAPI):
     async def load_api(self, pkg_set):
         async with client_session() as session:
             await asyncio.gather(
-                *[self.set_api(pkg, session) for pkg in pkg_set if pkg not in self.cache]
+                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
             )
 
-    async def set_api(self, pkg, session):
-        if pkg in self.cache:
-            return
+    async def fetch(self, pkg, session):
         url = (
             "https://api.launchpad.net/1.0/ubuntu/+archive/"
             "primary?ws.op=getPublishedSources&"
@@ -242,12 +240,10 @@ class DebianVersionAPI(VersionAPI):
             raise_for_status=True, headers={"Connection": "keep-alive"}
         ) as session:
             await asyncio.gather(
-                *[self.set_api(pkg, session) for pkg in pkg_set if pkg not in self.cache]
+                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
             )
 
-    async def set_api(self, pkg, session, retry_count=5):
-        if pkg in self.cache:
-            return
+    async def fetch(self, pkg, session, retry_count=5):
         url = "https://sources.debian.org/api/src/{}".format(pkg)
         try:
             all_versions = set()
@@ -415,30 +411,22 @@ class GitHubTagsAPI(VersionAPI):
 
     package_type = "github"
 
-    async def load_api(self, repo_set):
-        session = client_session()
-        async with session as session:
+    async def load_api(self, pkg_set):
+        async with client_session() as session:
             await asyncio.gather(
-                *[
-                    self.fetch(owner_repo.lower())
-                    for owner_repo in repo_set
-                    if owner_repo.lower() not in self.cache
-                ]
+                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
             )
 
-    async def fetch(self, owner_repo: str, endpoint=None) -> None:
+    async def fetch(self, owner_repo: str, session) -> None:
         """
         owner_repo is a string of format "{repo_owner}/{repo_name}"
         Example value of owner_repo = "nexB/scancode-toolkit"
         """
-        if owner_repo not in self.cache:
-            self.cache[owner_repo] = set()
+        self.cache[owner_repo] = set()
+        endpoint = f"https://github.com/{owner_repo}/tags"
 
-        if not endpoint:
-            endpoint = f"https://github.com/{owner_repo}/tags"
-        async with client_session() as session:
-            resp = await session.get(endpoint)
-            resp = await resp.read()
+        resp = await session.get(endpoint)
+        resp = await resp.read()
 
         soup = BeautifulSoup(resp, features="lxml")
         for release_entry in soup.find_all("div", {"class": "commit"}):

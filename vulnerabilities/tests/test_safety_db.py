@@ -22,16 +22,16 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 import json
 import os
-from unittest.mock import patch
 from unittest import TestCase
 
 from packageurl import PackageURL
 
-from vulnerabilities.importers.safety_db import PypiVersionAPI
 from vulnerabilities.importers.safety_db import categorize_versions
 from vulnerabilities.importers.safety_db import SafetyDbDataSource
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
+from vulnerabilities.package_managers import PypiVersionAPI
+from vulnerabilities.package_managers import Version
 from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -39,9 +39,16 @@ TEST_DATA = os.path.join(BASE_DIR, "test_data", "safety_db")
 
 MOCK_VERSION_API = PypiVersionAPI(
     cache={
-        "ampache": {"2.0", "5.2.1"},
-        "django": {"1.8", "1.4.19", "1.4.22", "1.5.1", "1.6.9", "1.8.14"},
-        "zulip": {"2.0", "2.1.1", "2.1.2", "2.1.3"},
+        "ampache": {Version("2.0"), Version("5.2.1")},
+        "django": {
+            Version("1.8"),
+            Version("1.4.19"),
+            Version("1.4.22"),
+            Version("1.5.1"),
+            Version("1.6.9"),
+            Version("1.8.14"),
+        },
+        "zulip": {Version("2.0"), Version("2.1.1"), Version("2.1.2"), Version("2.1.3")},
     }
 )
 

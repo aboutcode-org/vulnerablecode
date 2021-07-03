@@ -37,7 +37,6 @@ from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import VulnerabilitySeverity
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.severity_systems import scoring_systems
-from vulnerabilities.helpers import create_etag
 from vulnerabilities.helpers import nearest_patched_package
 
 
@@ -106,7 +105,7 @@ class ApacheHTTPDDataSource(DataSource):
             fixed_packages.extend(
                 [
                     PackageURL(type="apache", name="httpd", version=version)
-                    for version in self.version_api.get("apache/httpd")
+                    for version in self.version_api.get("apache/httpd").valid_versions
                     if MavenVersion(version) in version_range
                 ]
             )
@@ -115,7 +114,7 @@ class ApacheHTTPDDataSource(DataSource):
             affected_packages.extend(
                 [
                     PackageURL(type="apache", name="httpd", version=version)
-                    for version in self.version_api.get("apache/httpd")
+                    for version in self.version_api.get("apache/httpd").valid_versions
                     if MavenVersion(version) in version_range
                 ]
             )

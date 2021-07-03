@@ -21,17 +21,21 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
-import os
 import json
-from unittest import TestCase
-from unittest.mock import patch
-from unittest.mock import MagicMock, AsyncMock
+import os
 import xml.etree.ElementTree as ET
-from aiohttp import test_utils
+from datetime import datetime
+from bs4 import BeautifulSoup
+from dateutil.tz import tzlocal
+from pytz import UTC
+from unittest import TestCase
+from unittest.mock import AsyncMock
 
 from vulnerabilities.package_managers import ComposerVersionAPI
 from vulnerabilities.package_managers import MavenVersionAPI
 from vulnerabilities.package_managers import NugetVersionAPI
+from vulnerabilities.package_managers import Version
+from vulnerabilities.package_managers import VersionResponse
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")
@@ -62,72 +66,270 @@ class TestComposerVersionAPI(TestCase):
             cls.response = json.load(f)
 
         cls.expected_versions = {
-            "9.5.3",
-            "8.7.30",
-            "9.3.1",
-            "9.5.1",
-            "9.5.11",
-            "9.5.6",
-            "8.7.18",
-            "8.7.15",
-            "9.4.0",
-            "9.5.7",
-            "8.7.21",
-            "9.5.12",
-            "9.5.14",
-            "8.7.27",
-            "8.7.17",
-            "8.7.9",
-            "10.4.3",
-            "10.0.0",
-            "10.1.0",
-            "9.5.13",
-            "9.5.5",
-            "8.7.22",
-            "8.7.10",
-            "8.7.24",
-            "8.7.13",
-            "8.7.14",
-            "8.7.19",
-            "9.5.17",
-            "9.3.2",
-            "9.5.15",
-            "8.7.8",
-            "9.3.3",
-            "8.7.32",
-            "10.4.0",
-            "10.4.1",
-            "9.5.18",
-            "9.1.0",
-            "9.5.19",
-            "9.5.2",
-            "8.7.26",
-            "8.7.20",
-            "10.2.0",
-            "8.7.31",
-            "8.7.11",
-            "9.2.1",
-            "8.7.25",
-            "9.5.10",
-            "10.2.2",
-            "10.4.2",
-            "9.5.9",
-            "9.2.0",
-            "9.3.0",
-            "9.5.16",
-            "10.3.0",
-            "8.7.7",
-            "10.4.4",
-            "8.7.12",
-            "8.7.29",
-            "10.2.1",
-            "9.5.8",
-            "9.5.4",
-            "9.5.0",
-            "8.7.28",
-            "8.7.23",
-            "9.0.0",
-            "8.7.16",
+            Version(
+                value="8.7.10",
+                release_date=datetime(2018, 2, 6, 10, 46, 2, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.11",
+                release_date=datetime(2018, 3, 13, 12, 44, 45, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.12",
+                release_date=datetime(2018, 3, 22, 11, 35, 42, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.13",
+                release_date=datetime(2018, 4, 17, 8, 15, 46, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.14",
+                release_date=datetime(2018, 5, 22, 13, 51, 9, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.15",
+                release_date=datetime(2018, 5, 23, 11, 31, 21, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.16",
+                release_date=datetime(2018, 6, 11, 17, 18, 14, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.17",
+                release_date=datetime(2018, 7, 12, 11, 29, 19, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.18",
+                release_date=datetime(2018, 7, 31, 8, 15, 29, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.19",
+                release_date=datetime(2018, 8, 21, 7, 23, 21, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.21",
+                release_date=datetime(2018, 12, 11, 12, 40, 12, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.20",
+                release_date=datetime(2018, 10, 30, 10, 39, 51, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.22",
+                release_date=datetime(2018, 12, 14, 7, 43, 50, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.23",
+                release_date=datetime(2019, 1, 22, 10, 10, 2, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.24",
+                release_date=datetime(2019, 1, 22, 15, 25, 55, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.25",
+                release_date=datetime(2019, 5, 7, 10, 5, 55, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.26",
+                release_date=datetime(2019, 5, 15, 11, 24, 12, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.27",
+                release_date=datetime(2019, 6, 25, 8, 24, 21, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.28",
+                release_date=datetime(2019, 10, 15, 7, 21, 52, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.29",
+                release_date=datetime(2019, 10, 30, 21, 0, 45, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.30",
+                release_date=datetime(2019, 12, 17, 10, 49, 17, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.31",
+                release_date=datetime(2020, 2, 17, 23, 29, 16, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.7",
+                release_date=datetime(2017, 9, 19, 14, 22, 53, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.32",
+                release_date=datetime(2020, 3, 31, 8, 33, 3, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.8",
+                release_date=datetime(2017, 10, 10, 16, 8, 44, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="8.7.9",
+                release_date=datetime(2017, 12, 12, 16, 9, 50, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.0.0",
+                release_date=datetime(2017, 12, 12, 16, 48, 22, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.1.0",
+                release_date=datetime(2018, 1, 30, 15, 31, 12, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.2.0",
+                release_date=datetime(2018, 4, 9, 20, 51, 35, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.2.1",
+                release_date=datetime(2018, 5, 22, 13, 47, 11, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.3.0",
+                release_date=datetime(2018, 6, 11, 17, 14, 33, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.3.1",
+                release_date=datetime(2018, 7, 12, 11, 33, 12, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.3.2",
+                release_date=datetime(2018, 7, 12, 15, 51, 49, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.3.3",
+                release_date=datetime(2018, 7, 31, 8, 20, 17, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.0",
+                release_date=datetime(2018, 10, 2, 8, 10, 33, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.4.0",
+                release_date=datetime(2018, 9, 4, 12, 8, 20, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.1",
+                release_date=datetime(2018, 10, 30, 10, 45, 30, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.10",
+                release_date=datetime(2019, 10, 15, 7, 29, 55, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.11",
+                release_date=datetime(2019, 10, 30, 20, 46, 49, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.12",
+                release_date=datetime(2019, 12, 17, 10, 53, 45, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.13",
+                release_date=datetime(2019, 12, 17, 14, 17, 37, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.14",
+                release_date=datetime(2020, 2, 17, 23, 37, 2, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.15",
+                release_date=datetime(2020, 3, 31, 8, 40, 25, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.16",
+                release_date=datetime(2020, 4, 28, 9, 22, 14, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.17",
+                release_date=datetime(2020, 5, 12, 10, 36, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.18",
+                release_date=datetime(2020, 5, 19, 13, 10, 50, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.2",
+                release_date=datetime(2018, 12, 11, 12, 42, 55, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.19",
+                release_date=datetime(2020, 6, 9, 8, 44, 34, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.3",
+                release_date=datetime(2018, 12, 14, 7, 28, 48, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.4",
+                release_date=datetime(2019, 1, 22, 10, 12, 4, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.5",
+                release_date=datetime(2019, 3, 4, 20, 25, 8, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.6",
+                release_date=datetime(2019, 5, 7, 10, 16, 30, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.7",
+                release_date=datetime(2019, 5, 15, 11, 41, 51, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.8",
+                release_date=datetime(2019, 6, 25, 8, 28, 51, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="9.5.9",
+                release_date=datetime(2019, 8, 20, 9, 33, 35, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="10.0.0",
+                release_date=datetime(2019, 7, 23, 7, 6, 3, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="10.1.0",
+                release_date=datetime(2019, 10, 1, 8, 18, 18, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="10.2.0",
+                release_date=datetime(2019, 12, 3, 11, 16, 26, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="10.2.1",
+                release_date=datetime(2019, 12, 17, 11, 0, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="10.2.2",
+                release_date=datetime(2019, 12, 17, 11, 36, 14, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="10.3.0",
+                release_date=datetime(2020, 2, 25, 12, 50, 9, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="10.4.0",
+                release_date=datetime(2020, 4, 21, 8, 0, 15, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="10.4.1",
+                release_date=datetime(2020, 4, 28, 9, 7, 54, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="10.4.2",
+                release_date=datetime(2020, 5, 12, 10, 41, 40, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="10.4.4",
+                release_date=datetime(2020, 6, 9, 8, 56, 30, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="10.4.3",
+                release_date=datetime(2020, 5, 19, 13, 16, 31, tzinfo=tzlocal()),
+            ),
         }
 
     def test_composer_url(self):
@@ -142,10 +344,10 @@ class TestComposerVersionAPI(TestCase):
 
     def test_fetch(self):
 
-        assert self.version_api.get("typo3/cms-core") == set()
+        assert self.version_api.get("typo3/cms-core") == VersionResponse()
         client_session = MockClientSession(self.response)
         asyncio.run(self.version_api.fetch("typo3/cms-core", client_session))
-        assert self.version_api.get("typo3/cms-core") == self.expected_versions
+        assert self.version_api.cache["typo3/cms-core"] == self.expected_versions
 
 
 class TestMavenVersionAPI(TestCase):
@@ -172,15 +374,15 @@ class TestMavenVersionAPI(TestCase):
         )
 
     def test_extract_versions(self):
-        expected_versions = {"1.2.2", "1.2.3", "1.3.0"}
+        expected_versions = {Version("1.2.2"), Version("1.2.3"), Version("1.3.0")}
         assert expected_versions == self.version_api.extract_versions(self.response)
 
     def test_fetch(self):
-        assert self.version_api.get("org.apache:kafka") == set()
-        expected = {"1.2.3", "1.3.0", "1.2.2"}
+        assert self.version_api.get("org.apache:kafka") == VersionResponse()
+        expected = {"1.2.2", "1.2.3", "1.3.0"}
         client_session = MockClientSession(self.content)
         asyncio.run(self.version_api.fetch("org.apache:kafka", client_session))
-        assert self.version_api.get("org.apache:kafka") == expected
+        assert self.version_api.get("org.apache:kafka") == VersionResponse(valid_versions=expected)
 
 
 class TestNugetVersionAPI(TestCase):
@@ -191,20 +393,62 @@ class TestNugetVersionAPI(TestCase):
             cls.response = json.load(f)
 
         cls.expected_versions = {
-            "0.23.0",
-            "0.24.0",
-            "1.0.0",
-            "1.0.1",
-            "1.0.2",
-            "2.0.0",
-            "2.0.0-preview01",
-            "2.6.0",
-            "2.1.0",
-            "2.2.0",
-            "2.3.0",
-            "2.4.0",
-            "2.5.0",
-            "2.7.0",
+            Version(
+                value="1.0.0",
+                release_date=datetime(2018, 9, 13, 8, 16, 0, 420000, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="1.0.1",
+                release_date=datetime(2020, 1, 17, 15, 31, 41, 857000, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="1.0.2",
+                release_date=datetime(2020, 4, 21, 12, 24, 53, 877000, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="2.0.0-preview01",
+                release_date=datetime(2018, 1, 9, 17, 12, 20, 440000, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="2.0.0",
+                release_date=datetime(2018, 9, 27, 13, 33, 15, 370000, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="2.1.0",
+                release_date=datetime(2018, 10, 16, 6, 59, 44, 680000, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="2.2.0",
+                release_date=datetime(2018, 11, 23, 8, 13, 8, 3000, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="2.3.0",
+                release_date=datetime(2019, 6, 27, 14, 27, 31, 613000, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="2.4.0",
+                release_date=datetime(2020, 1, 17, 15, 11, 5, 810000, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="2.5.0",
+                release_date=datetime(2020, 3, 24, 14, 22, 39, 960000, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="2.7.0",
+                release_date=datetime(2020, 4, 21, 12, 27, 36, 427000, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="2.6.0",
+                release_date=datetime(2020, 3, 27, 11, 6, 27, 500000, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="0.24.0",
+                release_date=datetime(2018, 3, 30, 7, 25, 18, 393000, tzinfo=tzlocal()),
+            ),
+            Version(
+                value="0.23.0",
+                release_date=datetime(2018, 1, 17, 9, 32, 59, 283000, tzinfo=tzlocal()),
+            ),
         }
 
     def test_nuget_url(self):
@@ -219,13 +463,30 @@ class TestNugetVersionAPI(TestCase):
 
     def test_fetch(self):
 
-        assert self.version_api.get("Exfat.Ntfs") == set()
+        assert self.version_api.get("Exfat.Ntfs") == VersionResponse()
         client_session = MockClientSession(self.response)
         asyncio.run(self.version_api.fetch("Exfat.Ntfs", client_session))
-        assert self.version_api.get("Exfat.Ntfs") == self.expected_versions
+        assert self.version_api.get("Exfat.Ntfs") == VersionResponse(
+            newer_versions=set(),
+            valid_versions={
+                "2.0.0",
+                "2.1.0",
+                "2.0.0-preview01",
+                "0.24.0",
+                "0.23.0",
+                "1.0.1",
+                "2.2.0",
+                "2.4.0",
+                "1.0.0",
+                "1.0.2",
+                "2.3.0",
+                "2.7.0",
+                "2.5.0",
+                "2.6.0",
+            },
+        )
 
     # def test_load_to_api(self):
-
     #     assert self.version_api.get("Exfat.Ntfs") == set()
 
     #     mock_response = MagicMock()

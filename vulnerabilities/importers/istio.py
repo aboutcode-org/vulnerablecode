@@ -20,8 +20,9 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 import asyncio
+import pytz
 import re
-from typing import List
+from dateutil import parser
 from typing import Set
 
 import saneyaml
@@ -62,11 +63,11 @@ class IstioDataSource(GitDataSource):
                 advisories.extend(processed_data)
         return self.batch_advisories(advisories)
 
-    def get_pkg_versions_from_ranges(self, version_range_list):
+    def get_pkg_versions_from_ranges(self, version_range_list, release_date):
         """Takes a list of version ranges(affected) of a package
         as parameter and returns a tuple of safe package versions and
         vulnerable package versions"""
-        all_version = self.version_api.get("istio/istio")
+        all_version = self.version_api.get("istio/istio", release_date).valid_versions
         safe_pkg_versions = []
         vuln_pkg_versions = []
         version_ranges = [
@@ -86,6 +87,7 @@ class IstioDataSource(GitDataSource):
         advisories = []
 
         data = self.get_data_from_md(path)
+        release_date = parser.parse(data["publishdate"]).replace(tzinfo=pytz.UTC)
 
         releases = []
         if data.get("releases"):
@@ -128,7 +130,7 @@ class IstioDataSource(GitDataSource):
                 data["release_ranges"] = []
 
             safe_pkg_versions, vuln_pkg_versions = self.get_pkg_versions_from_ranges(
-                data["release_ranges"]
+                data["release_ranges"], release_date
             )
 
             affected_packages = []

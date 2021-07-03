@@ -22,12 +22,10 @@
 
 import csv
 import dataclasses
-import re
 import urllib.request
 
 # Reading CSV file from  a url using `requests` is bit too complicated.
 # Use `urllib.request` for that purpose.
-from packageurl import PackageURL
 
 
 from vulnerabilities.data_source import Advisory

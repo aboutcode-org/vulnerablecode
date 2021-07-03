@@ -83,7 +83,7 @@ class ElixirSecurityDataSource(GitDataSource):
 
         safe_pkg_versions = []
         vuln_pkg_versions = []
-        all_version_list = self.pkg_manager_api.get(pkg_name)
+        all_version_list = self.pkg_manager_api.get(pkg_name).valid_versions
         if not version_range_list:
             return [], all_version_list
         version_ranges = [

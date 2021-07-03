@@ -20,7 +20,6 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-import json
 import os
 import shutil
 import tempfile
@@ -32,6 +31,7 @@ from django.test import TestCase
 from vulnerabilities import models
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.package_managers import NpmVersionAPI
+from vulnerabilities.package_managers import Version
 from vulnerabilities.importers.npm import categorize_versions
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -40,9 +40,15 @@ TEST_DATA = os.path.join(BASE_DIR, "test_data/")
 
 MOCK_VERSION_API = NpmVersionAPI(
     cache={
-        "jquery": {"3.4.0", "3.8.0"},
-        "kerberos": {"0.5.8", "1.2.0"},
-        "@hapi/subtext": {"3.7.0", "4.1.1", "6.1.3", "7.0.0", "7.0.5"},
+        "jquery": {Version("3.4.0"), Version("3.8.0")},
+        "kerberos": {Version("0.5.8"), Version("1.2.0")},
+        "@hapi/subtext": {
+            Version("3.7.0"),
+            Version("4.1.1"),
+            Version("6.1.3"),
+            Version("7.0.0"),
+            Version("7.0.5"),
+        },
     }
 )
 
@@ -67,7 +73,7 @@ class NpmImportTest(TestCase):
             data_source="NpmDataSource",
             data_source_cfg={
                 "repository_url": "https://example.git",
-                "working_directory": os.path.join(cls.tempdir, "npm_test"),
+                "working_directory": os.path.join(cls.tempdir, "npm/npm_test"),
                 "create_working_directory": False,
                 "remove_working_directory": False,
             },

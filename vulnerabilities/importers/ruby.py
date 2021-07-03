@@ -23,6 +23,8 @@
 import asyncio
 from typing import Set
 from typing import List
+from dateutil.parser import parse
+from pytz import UTC
 
 from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
@@ -90,6 +92,7 @@ class RubyDataSource(GitDataSource):
         else:
             return
 
+        publish_time = parse(record["date"]).replace(tzinfo=UTC)
         safe_version_ranges = record.get("patched_versions", [])
         # this case happens when the advisory contain only 'patched_versions' field
         # and it has value None(i.e it is empty :( ).
@@ -100,7 +103,7 @@ class RubyDataSource(GitDataSource):
 
         if not getattr(self, "pkg_manager_api", None):
             self.pkg_manager_api = RubyVersionAPI()
-        all_vers = self.pkg_manager_api.get(package_name)
+        all_vers = self.pkg_manager_api.get(package_name, until=publish_time).valid_versions
         safe_versions, affected_versions = self.categorize_versions(all_vers, safe_version_ranges)
 
         impacted_purls = [

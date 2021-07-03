@@ -31,6 +31,7 @@ from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import VulnerabilitySeverity
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.package_managers import Version
 from vulnerabilities.severity_systems import scoring_systems
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDDataSource
 from vulnerabilities.helpers import AffectedPackage
@@ -44,7 +45,7 @@ class TestApacheHTTPDDataSource(TestCase):
     def setUpClass(cls):
         data_source_cfg = {"etags": {}}
         cls.data_src = ApacheHTTPDDataSource(1, config=data_source_cfg)
-        known_versions = ["1.3.2", "1.3.1", "1.3.0"]
+        known_versions = [Version("1.3.2"), Version("1.3.1"), Version("1.3.0")]
         cls.data_src.version_api = GitHubTagsAPI(cache={"apache/httpd": known_versions})
         with open(TEST_DATA) as f:
             cls.data = json.load(f)

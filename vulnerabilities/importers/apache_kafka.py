@@ -72,7 +72,7 @@ class ApacheKafkaDataSource(DataSource):
 
             fixed_packages = [
                 PackageURL(type="apache", name="kafka", version=version)
-                for version in self.version_api.get("apache/kafka")
+                for version in self.version_api.get("apache/kafka").valid_versions
                 if any(
                     [
                         MavenVersion(version) in version_range
@@ -83,7 +83,7 @@ class ApacheKafkaDataSource(DataSource):
 
             affected_packages = [
                 PackageURL(type="apache", name="kafka", version=version)
-                for version in self.version_api.get("apache/kafka")
+                for version in self.version_api.get("apache/kafka").valid_versions
                 if any(
                     [
                         MavenVersion(version) in version_range

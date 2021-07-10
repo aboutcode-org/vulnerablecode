@@ -19,22 +19,20 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-
 import asyncio
 import dataclasses
-import pytz
 import xml.etree.ElementTree as ET
-from bs4 import BeautifulSoup
-from dateutil import parser as dateparser
+from datetime import datetime
 from json import JSONDecodeError
+from typing import List
 from typing import Mapping
 from typing import Set
-from typing import List
-from datetime import datetime
 
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.client_exceptions import ServerDisconnectedError
+from bs4 import BeautifulSoup
+from dateutil import parser as dateparser
 
 
 @dataclasses.dataclass(frozen=True)
@@ -65,6 +63,18 @@ class VersionAPI:
 
         return VersionResponse(valid_versions=valid_versions, newer_versions=new_versions)
 
+    async def load_api(self, pkg_set):
+        async with client_session() as session:
+            await asyncio.gather(
+                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
+            )
+
+    async def fetch(self, pkg, session):
+        """
+        Override this method to fetch the pkg's version in the cache
+        """
+        raise NotImplementedError
+
 
 def client_session():
     return ClientSession(raise_for_status=True, trust_env=True)
@@ -74,15 +84,7 @@ class LaunchpadVersionAPI(VersionAPI):
 
     package_type = "deb"
 
-    async def load_api(self, pkg_set):
-        async with client_session() as session:
-            await asyncio.gather(
-                *[self.set_api(pkg, session) for pkg in pkg_set if pkg not in self.cache]
-            )
-
-    async def set_api(self, pkg, session):
-        if pkg in self.cache:
-            return
+    async def fetch(self, pkg, session):
         url = (
             "https://api.launchpad.net/1.0/ubuntu/+archive/"
             "primary?ws.op=getPublishedSources&"
@@ -110,12 +112,6 @@ class LaunchpadVersionAPI(VersionAPI):
 class PypiVersionAPI(VersionAPI):
 
     package_type = "pypi"
-
-    async def load_api(self, pkg_set):
-        async with client_session() as session:
-            await asyncio.gather(
-                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
-            )
 
     async def fetch(self, pkg, session):
         url = f"https://pypi.org/pypi/{pkg}/json"
@@ -150,12 +146,6 @@ class CratesVersionAPI(VersionAPI):
 
     package_type = "cargo"
 
-    async def load_api(self, pkg_set):
-        async with client_session() as session:
-            await asyncio.gather(
-                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
-            )
-
     async def fetch(self, pkg, session):
         url = f"https://crates.io/api/v1/crates/{pkg}"
         response = await session.request(method="GET", url=url)
@@ -175,12 +165,6 @@ class CratesVersionAPI(VersionAPI):
 class RubyVersionAPI(VersionAPI):
 
     package_type = "gem"
-
-    async def load_api(self, pkg_set):
-        async with client_session() as session:
-            await asyncio.gather(
-                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
-            )
 
     async def fetch(self, pkg, session):
         url = f"https://rubygems.org/api/v1/versions/{pkg}.json"
@@ -204,12 +188,6 @@ class RubyVersionAPI(VersionAPI):
 class NpmVersionAPI(VersionAPI):
 
     package_type = "npm"
-
-    async def load_api(self, pkg_set):
-        async with client_session() as session:
-            await asyncio.gather(
-                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
-            )
 
     async def fetch(self, pkg, session):
         url = f"https://registry.npmjs.org/{pkg}"
@@ -242,12 +220,10 @@ class DebianVersionAPI(VersionAPI):
             raise_for_status=True, headers={"Connection": "keep-alive"}
         ) as session:
             await asyncio.gather(
-                *[self.set_api(pkg, session) for pkg in pkg_set if pkg not in self.cache]
+                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
             )
 
-    async def set_api(self, pkg, session, retry_count=5):
-        if pkg in self.cache:
-            return
+    async def fetch(self, pkg, session, retry_count=5):
         url = "https://sources.debian.org/api/src/{}".format(pkg)
         try:
             all_versions = set()
@@ -270,12 +246,6 @@ class DebianVersionAPI(VersionAPI):
 class MavenVersionAPI(VersionAPI):
 
     package_type = "maven"
-
-    async def load_api(self, pkg_set):
-        async with client_session() as session:
-            await asyncio.gather(
-                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
-            )
 
     async def fetch(self, pkg, session) -> None:
         artifact_comps = pkg.split(":")
@@ -327,12 +297,6 @@ class NugetVersionAPI(VersionAPI):
 
     package_type = "nuget"
 
-    async def load_api(self, pkg_set):
-        async with client_session() as session:
-            await asyncio.gather(
-                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
-            )
-
     async def fetch(self, pkg, session) -> None:
         endpoint = self.nuget_url(pkg)
         resp = await session.request(method="GET", url=endpoint)
@@ -369,12 +333,6 @@ class NugetVersionAPI(VersionAPI):
 class ComposerVersionAPI(VersionAPI):
 
     package_type = "composer"
-
-    async def load_api(self, pkg_set):
-        async with client_session() as session:
-            await asyncio.gather(
-                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
-            )
 
     async def fetch(self, pkg, session) -> None:
         endpoint = self.composer_url(pkg)
@@ -415,30 +373,16 @@ class GitHubTagsAPI(VersionAPI):
 
     package_type = "github"
 
-    async def load_api(self, repo_set):
-        session = client_session()
-        async with session as session:
-            await asyncio.gather(
-                *[
-                    self.fetch(owner_repo.lower())
-                    for owner_repo in repo_set
-                    if owner_repo.lower() not in self.cache
-                ]
-            )
-
-    async def fetch(self, owner_repo: str, endpoint=None) -> None:
+    async def fetch(self, owner_repo: str, session) -> None:
         """
         owner_repo is a string of format "{repo_owner}/{repo_name}"
         Example value of owner_repo = "nexB/scancode-toolkit"
         """
-        if owner_repo not in self.cache:
-            self.cache[owner_repo] = set()
+        self.cache[owner_repo] = set()
+        endpoint = f"https://github.com/{owner_repo}/tags"
 
-        if not endpoint:
-            endpoint = f"https://github.com/{owner_repo}/tags"
-        async with client_session() as session:
-            resp = await session.get(endpoint)
-            resp = await resp.read()
+        resp = await session.get(endpoint)
+        resp = await resp.read()
 
         soup = BeautifulSoup(resp, features="lxml")
         for release_entry in soup.find_all("div", {"class": "commit"}):
@@ -467,12 +411,6 @@ class GitHubTagsAPI(VersionAPI):
 
 
 class HexVersionAPI(VersionAPI):
-    async def load_api(self, pkg_set):
-        async with client_session() as session:
-            await asyncio.gather(
-                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
-            )
-
     async def fetch(self, pkg, session):
         url = f"https://hex.pm/api/packages/{pkg}"
         versions = set()

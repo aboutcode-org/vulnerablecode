@@ -95,6 +95,8 @@ First clone the source code::
 Using Docker Compose
 ~~~~~~~~~~~~~~~~~~~~
 
+**Note**: Running via docker is not recommended in a production environment.
+
 An easy way to set up VulnerableCode is with docker containers and docker
 compose. For this you need to have the following installed.
 
@@ -266,7 +268,6 @@ If you want to run the import periodically, you can use a systemd timer::
 
     [Service]
     Type=oneshot
-    Environment="DJANGO_DEV=1"
     ExecStart=/path/to/venv/bin/python /path/to/vulnerablecode/manage.py import --all
 
     $ cat ~/.config/systemd/user/vulnerablecode.timer

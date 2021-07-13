@@ -6,10 +6,11 @@ ENV PYTHONUNBUFFERED 1
 RUN mkdir /vulnerablecode
 WORKDIR /vulnerablecode
 ADD . /vulnerablecode/
+RUN python -m pip install --upgrade pip
 RUN pip install -r requirements.txt && \
-    DJANGO_DEV=1 python manage.py collectstatic
+    python manage.py collectstatic
 
 LABEL "base_image": "pkg:docker/python@sha256%3Ae9b7e3b4e9569808066c5901b8a9ad315a9f14ae8d3949ece22ae339fff2cad0"
-LABEL "dockerfile_url":  "https://github.com/nexB/vulnerablecode/blob/develop/Dockerfile"
+LABEL "dockerfile_url":  "https://github.com/nexB/vulnerablecode/blob/main/Dockerfile"
 LABEL "homepage_url":  "https://github.com/nexB/vulnerablecode"
 LABEL "license": "Apache-2.0"

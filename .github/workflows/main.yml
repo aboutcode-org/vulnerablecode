@@ -52,5 +52,4 @@ jobs:
       - name: Run tests
         run: python -m pytest -v -m "not webtest"
         env:
-          DJANGO_DEV: 1
           GH_TOKEN: 1 

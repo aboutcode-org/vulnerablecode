@@ -95,8 +95,6 @@ First clone the source code::
 Using Docker Compose
 ~~~~~~~~~~~~~~~~~~~~
 
-**Note**: Running via docker is not recommended in a production environment.
-
 An easy way to set up VulnerableCode is with docker containers and docker
 compose. For this you need to have the following installed.
 
@@ -108,10 +106,10 @@ compose. For this you need to have the following installed.
 Use ``sudo docker-compose up`` to start VulnerableCode. Then access
 VulnerableCode at http://localhost:8000/ or at http://127.0.0.1:8000/
 
-**Important**: Don't forget to run ``sudo docker-compose up -d --no-deps --build web`` to sync your instance after every ``git pull``.
+**Important**: Don't forget to run ``sudo docker-compose up -d --no-deps --build vulnerablecode`` to sync your instance after every ``git pull``.
 
 
-Use ``sudo docker-compose exec web bash`` to access the VulnerableCode
+Use ``sudo docker-compose exec vulnerablecode bash`` to access the VulnerableCode
 container. From here you can access ``manage.py`` and run management commands
 to import data as specified below.
 

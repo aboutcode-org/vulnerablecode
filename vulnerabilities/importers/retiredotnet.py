@@ -43,16 +43,7 @@ class RetireDotnetDataSource(GitDataSource):
             )
 
     def updated_advisories(self) -> Set[Advisory]:
-        files = self._updated_files
-        advisories = []
-        for f in files:
-            processed_data = self.process_file(f)
-            if processed_data:
-                advisories.append(processed_data)
-        return self.batch_advisories(advisories)
-
-    def added_advisories(self) -> Set[Advisory]:
-        files = self._added_files
+        files = self._updated_files.union(self._added_files)
         advisories = []
         for f in files:
             processed_data = self.process_file(f)

@@ -1,21 +1,36 @@
 version: '3'
 
 services:
-  web:
-    environment:
-        - VC_DB_HOST=db
-    build: .
-    command: bash -c "python manage.py migrate && python manage.py runserver --insecure 0.0.0.0:8000"
-    container_name: "vulnerablecode"
-    volumes:
-      - .:/vulnerablecode
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
   db:
     image: postgres
-    environment:
-        - POSTGRES_DB=vulnerablecode
-        - POSTGRES_USER=vulnerablecode
-        - POSTGRES_PASSWORD=vulnerablecode
+    env_file:
+      - docker.env
+
+  vulnerablecode:
+    build: .
+    command: /bin/sh -c "
+      ./manage.py migrate &&
+      ./manage.py collectstatic --no-input --clear &&
+      gunicorn vulnerablecode.wsgi:application -u nobody -g nogroup --bind :8000 --timeout 600 --workers 2"
+    env_file:
+      - docker.env
+    volumes:
+      - vulnerablecode:/vulnerablecode
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx
+    env_file:
+      - docker.env
+    volumes:
+      - vulnerablecode:/vulnerablecode
+      - ./etc/nginx/templates/:/etc/nginx/templates/
+    ports:
+      - ${NGINX_PORT:-8000}:80
+    depends_on:
+      - vulnerablecode
+
+
+volumes:
+  vulnerablecode:

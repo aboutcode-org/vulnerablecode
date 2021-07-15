@@ -1,16 +1,10 @@
-FROM python@sha256:e9b7e3b4e9569808066c5901b8a9ad315a9f14ae8d3949ece22ae339fff2cad0
+FROM python:3.9.6
 
-# PYTHONUNBUFFERED=1 ensures that the python output is set straight
-# to the terminal without buffering it first
+# Force unbuffered stdout and stderr (i.e. they are flushed to terminal immediately)
 ENV PYTHONUNBUFFERED 1
+
 RUN mkdir /vulnerablecode
 WORKDIR /vulnerablecode
-ADD . /vulnerablecode/
-RUN python -m pip install --upgrade pip
-RUN pip install -r requirements.txt && \
-    python manage.py collectstatic
-
-LABEL "base_image": "pkg:docker/python@sha256%3Ae9b7e3b4e9569808066c5901b8a9ad315a9f14ae8d3949ece22ae339fff2cad0"
-LABEL "dockerfile_url":  "https://github.com/nexB/vulnerablecode/blob/main/Dockerfile"
-LABEL "homepage_url":  "https://github.com/nexB/vulnerablecode"
-LABEL "license": "Apache-2.0"
+COPY . /vulnerablecode/
+RUN python -m pip install --upgrade pip && \
+		pip install -r requirements.txt

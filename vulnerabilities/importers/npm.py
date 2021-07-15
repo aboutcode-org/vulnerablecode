@@ -22,14 +22,11 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
-from typing import Any
+import pytz
 from typing import List
-from typing import Mapping
 from typing import Set
 from typing import Tuple
-from urllib.error import HTTPError
 from urllib.parse import quote
-from urllib.request import urlopen
 
 from dateutil.parser import parse
 from univers.version_specifier import VersionSpecifier
@@ -87,7 +84,11 @@ class NpmDataSource(GitDataSource):
         record = load_json(file)
         advisories = []
         package_name = record["module_name"].strip()
-        all_versions = self.versions.get(package_name)
+
+        publish_date = parse(record["updated_at"])
+        publish_date.replace(tzinfo=pytz.UTC)
+
+        all_versions = self.versions.get(package_name, until=publish_date).valid_versions
         aff_range = record.get("vulnerable_versions")
         if not aff_range:
             aff_range = ""

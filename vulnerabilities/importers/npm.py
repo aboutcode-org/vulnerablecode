@@ -86,7 +86,7 @@ class NpmDataSource(GitDataSource):
         package_name = record["module_name"].strip()
 
         publish_date = parse(record["updated_at"])
-        publish_date.replace(tzinfo=pytz.UTC)
+        publish_date = publish_date.replace(tzinfo=pytz.UTC)
 
         all_versions = self.versions.get(package_name, until=publish_date).valid_versions
         aff_range = record.get("vulnerable_versions")

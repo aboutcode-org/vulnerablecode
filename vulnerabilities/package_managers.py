@@ -41,13 +41,12 @@ class Version:
     release_date: datetime = None
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass
 class VersionResponse:
     valid_versions: Set[str] = dataclasses.field(default_factory=set)
     newer_versions: Set[str] = dataclasses.field(default_factory=set)
 
 
-@dataclasses.dataclass(frozen=True)
 class VersionAPI:
     def __init__(self, cache: Mapping[str, Set[str]] = None):
         self.cache = cache or {}

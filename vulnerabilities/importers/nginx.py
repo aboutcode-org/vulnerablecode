@@ -34,6 +34,7 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.package_managers import Version
 from vulnerabilities.helpers import nearest_patched_package
 
 
@@ -53,10 +54,14 @@ class NginxDataSource(DataSource):
 
         # For some reason nginx tags it's releases are in the form of `release-1.2.3`
         # Chop off the `release-` part here.
-        for index, version in enumerate(self.version_api.cache["nginx/nginx"].valid_versions):
-            self.version_api.cache["nginx/nginx"].valid_versions[index] = version.replace(
-                "release-", ""
+        normalized_versions = set()
+        while self.version_api.cache["nginx/nginx"]:
+            version = self.version_api.cache["nginx/nginx"].pop()
+            normalized_version = Version(
+                version.value.replace("release-", ""), version.release_date
             )
+            normalized_versions.add(normalized_version)
+        self.version_api.cache["nginx/nginx"] = normalized_versions
 
     def updated_advisories(self):
         advisories = []

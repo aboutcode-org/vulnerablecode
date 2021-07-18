@@ -12,13 +12,12 @@ env:
   - SECRET_KEY="i1bn=oly)w*2yl-5yc&f!vvgt)p)fh3_2$r#spa!*sw36f5ov7"
   - GH_TOKEN="dummygithubtoken"
 
+# venv is already activated
 before_script:
-  - psql -c "CREATE DATABASE vulnerablecode;" -U postgres
-  - ./manage.py migrate
+  - make postgres ACTIVATE=
 
 script:
-  - ./manage.py collectstatic
-  - python -m pytest -v -m "not webtest"
+  - make test ACTIVATE=
 
 notifications:
   email: false

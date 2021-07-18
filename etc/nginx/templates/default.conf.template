@@ -15,6 +15,6 @@ server {
 	}
 
 	location /static/ {
-		alias /vulnerablecode/static/;
+		alias /var/vulnerablecode/static/;
 	}
 }

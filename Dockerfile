@@ -1,10 +1,11 @@
-FROM python:3.9.6
+FROM python:3.8
 
 # Force unbuffered stdout and stderr (i.e. they are flushed to terminal immediately)
 ENV PYTHONUNBUFFERED 1
 
-RUN mkdir /vulnerablecode
-WORKDIR /vulnerablecode
-COPY . /vulnerablecode/
+RUN mkdir /opt/vulnerablecode && \
+    mkdir -p /var/vulnerablecode/static/
+WORKDIR /opt/vulnerablecode
+COPY . .
 RUN python -m pip install --upgrade pip && \
-		pip install -r requirements.txt
+    pip install -r requirements.txt

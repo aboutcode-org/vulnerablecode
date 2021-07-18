@@ -372,14 +372,14 @@ class GitHubTagsAPI(VersionAPI):
 
     package_type = "github"
 
-    async def fetch(self, owner_repo: str, session) -> None:
+    async def fetch(self, owner_repo: str, session, endpoint=None) -> None:
         """
         owner_repo is a string of format "{repo_owner}/{repo_name}"
         Example value of owner_repo = "nexB/scancode-toolkit"
         """
         self.cache[owner_repo] = set()
-        endpoint = f"https://github.com/{owner_repo}/tags"
-
+        if not endpoint:
+            endpoint = f"https://github.com/{owner_repo}/tags"
         resp = await session.get(endpoint)
         resp = await resp.read()
 
@@ -406,7 +406,7 @@ class GitHubTagsAPI(VersionAPI):
 
         if url:
             # FIXME: this could be asynced to improve performance
-            await self.fetch(owner_repo, url)
+            await self.fetch(owner_repo, session, url)
 
 
 class HexVersionAPI(VersionAPI):

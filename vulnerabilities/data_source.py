@@ -483,7 +483,7 @@ class OvalDataSource(DataSource):
             except Exception:
                 logger.error(
                     f"Failed to get updated_advisories: {oval_file!r} "
-                    "with {metadata!r}:\n" + traceback.format_exc()
+                    f"with {metadata!r}:\n" + traceback.format_exc()
                 )
                 continue
 
@@ -538,7 +538,7 @@ class OvalDataSource(DataSource):
                     affected_version_range = VersionSpecifier.from_scheme_version_spec_string(
                         version_scheme, affected_version_range
                     )
-                    all_versions = self.pkg_manager_api.get(package_name)
+                    all_versions = self.pkg_manager_api.get(package_name).valid_versions
 
                     # FIXME: what is this 50 DB limit? that's too small for versions
                     # FIXME: we should not drop data this way

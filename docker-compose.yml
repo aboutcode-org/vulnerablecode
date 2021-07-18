@@ -5,6 +5,8 @@ services:
     image: postgres
     env_file:
       - docker.env
+    volumes:
+      - db_data:/var/lib/postgresql/data/
 
   vulnerablecode:
     build: .
@@ -15,7 +17,8 @@ services:
     env_file:
       - docker.env
     volumes:
-      - vulnerablecode:/vulnerablecode
+      - static:/var/vulnerablecode/static/
+    restart: on-failure
     depends_on:
       - db
 
@@ -24,7 +27,7 @@ services:
     env_file:
       - docker.env
     volumes:
-      - vulnerablecode:/vulnerablecode
+      - static:/var/vulnerablecode/static/
       - ./etc/nginx/templates/:/etc/nginx/templates/
     ports:
       - ${NGINX_PORT:-8000}:80
@@ -33,4 +36,6 @@ services:
 
 
 volumes:
-  vulnerablecode:
+  static:
+  db_data:
+

@@ -18,14 +18,17 @@ jobs:
       - name: Restore cache
         uses: actions/cache@v2
         with:
-          path: .venv
+          path: venv
           key: ${{ runner.os }}-venv-${{ hashFiles('**/requirements*.txt') }}
           restore-keys: |
             ${{ runner.os }}-venv-
 
+      - name: Create env file
+        run: make envfile
+
       - name: Install dependencies
         run: |
-          sudo apt install  python3-dev postgresql libpq-dev build-essential libxml2-dev libxslt1-dev postgresql ncat
+          sudo apt install  python3-dev postgresql libpq-dev build-essential libxml2-dev libxslt1-dev postgresql
           python -m pip install --upgrade pip
 
       - uses: syphar/restore-virtualenv@v1
@@ -39,17 +42,13 @@ jobs:
       - run: pip install -r requirements.txt -r requirements-dev.txt
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
     
+      # virtualenv is already activated
       - name: Setup database
-        env:
-          PGPASSWORD: vulnerablecode
         run: |
           sudo systemctl start postgresql
-          sudo -Eu postgres psql -c "CREATE ROLE vulnerablecode WITH PASSWORD '$PGPASSWORD' NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN;"
-          sudo systemctl status postgresql
-          createdb --encoding=utf-8 --owner=vulnerablecode  --user=vulnerablecode \
-          --host=localhost --port=5432 vulnerablecode
+          make postgres ACTIVATE=
 
       - name: Run tests
-        run: python -m pytest -v -m "not webtest"
+        run: make test ACTIVATE=
         env:
           GH_TOKEN: 1 

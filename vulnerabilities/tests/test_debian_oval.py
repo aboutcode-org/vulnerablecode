@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 from packageurl import PackageURL
 
 from vulnerabilities.importers.debian_oval import DebianOvalDataSource
+from vulnerabilities.package_managers import VersionResponse
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.helpers import AffectedPackage
 
@@ -30,7 +31,9 @@ class TestDebianOvalDataSource(unittest.TestCase):
 
     @patch(
         "vulnerabilities.importers.debian_oval.DebianVersionAPI.get",
-        return_value={"1.11.1+dfsg-5+deb7u1", "0.11.1+dfsg-5+deb7u1", "2.3.9"},
+        return_value=VersionResponse(
+            valid_versions={"1.11.1+dfsg-5+deb7u1", "0.11.1+dfsg-5+deb7u1", "2.3.9"}
+        ),
     )
     @patch("vulnerabilities.importers.debian_oval.DebianVersionAPI.load_api", new=mock)
     def test_get_data_from_xml_doc(self, mock_write):

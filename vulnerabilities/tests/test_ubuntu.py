@@ -10,6 +10,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.importers.ubuntu import UbuntuDataSource
+from vulnerabilities.package_managers import VersionResponse
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.helpers import AffectedPackage
@@ -182,7 +183,7 @@ class TestUbuntuDataSource(unittest.TestCase):
 
     @patch(
         "vulnerabilities.importers.ubuntu.LaunchpadVersionAPI.get",
-        return_value={"0.3.0", "0.2.0", "2.14-2"},
+        return_value=VersionResponse(valid_versions={"0.3.0", "0.2.0", "2.14-2"}),
     )
     @patch("vulnerabilities.importers.ubuntu.LaunchpadVersionAPI.load_api", new=mock)
     def test_get_data_from_xml_doc(self, mock_write):

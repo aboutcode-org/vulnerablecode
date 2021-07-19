@@ -17,3 +17,4 @@ toml>=0.10.2
 lxml>=4.6.3
 gunicorn>=20.1.0
 django-environ==0.4.5
+defusedxml==0.7.1

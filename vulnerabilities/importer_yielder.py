@@ -236,7 +236,7 @@ IMPORTER_REGISTRY = [
     },
     {
         "name": "xen",
-        "license": "",
+        "license": "gplv2",
         "last_run": None,
         "data_source": "XenDataSource",
         "data_source_cfg": {

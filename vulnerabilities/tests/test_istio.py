@@ -29,6 +29,7 @@ from packageurl import PackageURL
 from vulnerabilities.data_source import Advisory, Reference
 from vulnerabilities.importers.istio import IstioDataSource
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.package_managers import Version
 from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -44,16 +45,16 @@ class TestIstioDataSource(TestCase):
         cls.data_src.version_api = GitHubTagsAPI(
             {
                 "istio/istio": [
-                    "1.0.0",
-                    "1.1.0",
-                    "1.1.1",
-                    "1.1.17",
-                    "1.2.1",
-                    "1.2.7",
-                    "1.3.0",
-                    "1.3.1",
-                    "1.3.2",
-                    "1.9.1",
+                    Version(value="1.0.0"),
+                    Version(value="1.1.0"),
+                    Version(value="1.1.1"),
+                    Version(value="1.1.17"),
+                    Version(value="1.2.1"),
+                    Version(value="1.2.7"),
+                    Version(value="1.3.0"),
+                    Version(value="1.3.1"),
+                    Version(value="1.3.2"),
+                    Version(value="1.9.1"),
                 ]
             }
         )

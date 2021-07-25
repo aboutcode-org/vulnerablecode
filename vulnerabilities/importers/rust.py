@@ -26,8 +26,10 @@ from typing import Optional
 from typing import List
 from typing import Set
 from typing import Tuple
+from dateutil.parser import parse
 
 import toml
+import pytz
 from univers.version_specifier import VersionSpecifier
 from univers.versions import SemverVersion
 from packageurl import PackageURL
@@ -60,11 +62,8 @@ class RustDataSource(GitDataSource):
     def set_api(self, packages):
         asyncio.run(self.crates_api.load_api(packages))
 
-    def added_advisories(self) -> Set[Advisory]:
-        return self._load_advisories(self._added_files)
-
     def updated_advisories(self) -> Set[Advisory]:
-        return self._load_advisories(self._updated_files)
+        return self._load_advisories(self._updated_files.union(self._added_files))
 
     def _load_advisories(self, files) -> Set[Advisory]:
         # per @tarcieri It will always be named RUSTSEC-0000-0000.md
@@ -98,7 +97,8 @@ class RustDataSource(GitDataSource):
         if advisory.get("url"):
             references.append(Reference(url=advisory["url"]))
 
-        all_versions = self.crates_api.get(crate_name)
+        publish_date = parse(advisory["date"]).replace(tzinfo=pytz.UTC)
+        all_versions = self.crates_api.get(crate_name, publish_date).valid_versions
 
         # FIXME: Avoid wildcard version ranges for now.
         # See https://github.com/RustSec/advisory-db/discussions/831

@@ -20,8 +20,9 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 import asyncio
+import pytz
 import re
-from typing import List
+from dateutil import parser
 from typing import Set
 
 import saneyaml
@@ -33,6 +34,7 @@ from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import GitDataSource
 from vulnerabilities.data_source import Reference
 from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.helpers import split_markdown_front_matter
 from vulnerabilities.package_managers import GitHubTagsAPI
 
 is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match
@@ -61,11 +63,11 @@ class IstioDataSource(GitDataSource):
                 advisories.extend(processed_data)
         return self.batch_advisories(advisories)
 
-    def get_pkg_versions_from_ranges(self, version_range_list):
+    def get_pkg_versions_from_ranges(self, version_range_list, release_date):
         """Takes a list of version ranges(affected) of a package
         as parameter and returns a tuple of safe package versions and
         vulnerable package versions"""
-        all_version = self.version_api.get("istio/istio")
+        all_version = self.version_api.get("istio/istio", release_date).valid_versions
         safe_pkg_versions = []
         vuln_pkg_versions = []
         version_ranges = [
@@ -80,50 +82,12 @@ class IstioDataSource(GitDataSource):
         safe_pkg_versions = set(all_version) - set(vuln_pkg_versions)
         return safe_pkg_versions, vuln_pkg_versions
 
-    def get_data_from_yaml_lines(self, yaml_lines):
-        """Return a mapping of data from a iterable of yaml_lines
-        for example :
-            ['title: ISTIO-SECURITY-2019-001',
-            'description: Incorrect access control.','cves: [CVE-2019-12243]']
-
-            would give {'title':'ISTIO-SECURITY-2019-001',
-            'description': 'Incorrect access control.',
-            'cves': '[CVE-2019-12243]'}
-        """
-
-        return saneyaml.load("\n".join(yaml_lines))
-
-    def get_yaml_lines(self, lines):
-        """The istio advisory file contains lines similar to yaml format .
-        This function extracts those lines and return an iterable of lines
-
-        for example :
-            lines =
-            ---
-            title: ISTIO-SECURITY-2019-001
-            description: Incorrect access control.
-            cves: [CVE-2019-12243]
-            ---
-
-        get_yaml_lines(lines) would return
-        ['title: ISTIO-SECURITY-2019-001','description: Incorrect access control.'
-        ,'cves: [CVE-2019-12243]']
-        """
-
-        for index, line in enumerate(lines):
-            line = line.strip()
-            if line.startswith("---") and index == 0:
-                continue
-            elif line.endswith("---"):
-                break
-            else:
-                yield line
-
     def process_file(self, path):
 
         advisories = []
 
         data = self.get_data_from_md(path)
+        release_date = parser.parse(data["publishdate"]).replace(tzinfo=pytz.UTC)
 
         releases = []
         if data.get("releases"):
@@ -166,7 +130,7 @@ class IstioDataSource(GitDataSource):
                 data["release_ranges"] = []
 
             safe_pkg_versions, vuln_pkg_versions = self.get_pkg_versions_from_ranges(
-                data["release_ranges"]
+                data["release_ranges"], release_date
             )
 
             affected_packages = []
@@ -212,10 +176,8 @@ class IstioDataSource(GitDataSource):
         return advisories
 
     def get_data_from_md(self, path):
-        """Return a mapping of vulnerability data from istio . The data is
-        in the form of yaml_lines inside a .md file.
-        """
+        """Return a mapping of vulnerability data extracted from an advisory."""
 
         with open(path) as f:
-            yaml_lines = self.get_yaml_lines(f)
-            return self.get_data_from_yaml_lines(yaml_lines)
+            front_matter, _ = split_markdown_front_matter(f.read())
+            return saneyaml.load(front_matter)

@@ -30,23 +30,27 @@ from vulnerabilities.data_source import Reference
 from vulnerabilities.importers.rust import categorize_versions
 from vulnerabilities.importers.rust import get_advisory_data
 from vulnerabilities.importers.rust import RustDataSource
+from vulnerabilities.package_managers import Version
+from vulnerabilities.package_managers import CratesVersionAPI
 from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/rust")
 
-MOCKED_CRATES_API_VERSIONS = {
-    "bitvec": {"0.10.0", "0.12.0", "0.18.0"},
-    "bumpalo": {"2.8.0", "3.0.1", "3.2.5"},
-    "cbox": {"0.10.0", "0.12.0", "0.18.0"},
-    "flatbuffers": {"0.3.0", "0.5.0", "0.6.5"},
-    "hyper": {"0.10.0", "0.12.0", "0.13.0"},
-    "byte_struct": {"0.6.1", "0.6.0", "1.0.0"},
-}
+MOCKED_CRATES_API_VERSIONS = CratesVersionAPI(
+    cache={
+        "bitvec": {Version("0.10.0"), Version("0.12.0"), Version("0.18.0")},
+        "bumpalo": {Version("2.8.0"), Version("3.0.1"), Version("3.2.5")},
+        "cbox": {Version("0.10.0"), Version("0.12.0"), Version("0.18.0")},
+        "flatbuffers": {Version("0.3.0"), Version("0.5.0"), Version("0.6.5")},
+        "hyper": {Version("0.10.0"), Version("0.12.0"), Version("0.13.0")},
+        "byte_struct": {Version("0.6.1"), Version("0.6.0"), Version("1.0.0")},
+    }
+)
 
 
 def test_categorize_versions():
-    flatbuffers_versions = MOCKED_CRATES_API_VERSIONS["flatbuffers"]
+    flatbuffers_versions = MOCKED_CRATES_API_VERSIONS.get("flatbuffers").valid_versions
 
     unaffected_ranges = [VersionSpecifier.from_scheme_version_spec_string("semver", "< 0.4.0")]
     affected_ranges = [

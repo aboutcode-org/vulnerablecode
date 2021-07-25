@@ -49,16 +49,7 @@ class ElixirSecurityDataSource(GitDataSource):
         asyncio.run(self.pkg_manager_api.load_api(packages))
 
     def updated_advisories(self) -> Set[Advisory]:
-        files = self._updated_files
-        advisories = []
-        for f in files:
-            processed_data = self.process_file(f)
-            if processed_data:
-                advisories.append(processed_data)
-        return self.batch_advisories(advisories)
-
-    def added_advisories(self) -> Set[Advisory]:
-        files = self._added_files
+        files = self._updated_files.union(self._added_files)
         advisories = []
         for f in files:
             processed_data = self.process_file(f)
@@ -83,7 +74,7 @@ class ElixirSecurityDataSource(GitDataSource):
 
         safe_pkg_versions = []
         vuln_pkg_versions = []
-        all_version_list = self.pkg_manager_api.get(pkg_name)
+        all_version_list = self.pkg_manager_api.get(pkg_name).valid_versions
         if not version_range_list:
             return [], all_version_list
         version_ranges = [

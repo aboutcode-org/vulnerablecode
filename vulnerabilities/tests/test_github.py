@@ -26,17 +26,14 @@ from unittest import TestCase
 from unittest.mock import patch
 from unittest.mock import MagicMock
 from unittest.mock import call
-import xml.etree.ElementTree as ET
-from collections import OrderedDict
 
-from requests.models import Response
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import VulnerabilitySeverity
 from vulnerabilities.importers.github import GitHubAPIDataSource
-from vulnerabilities.package_managers import MavenVersionAPI
+from vulnerabilities.package_managers import MavenVersionAPI, Version
 from vulnerabilities.package_managers import NugetVersionAPI
 from vulnerabilities.package_managers import ComposerVersionAPI
 from vulnerabilities.severity_systems import ScoringSystem
@@ -295,12 +292,14 @@ class TestGitHubAPIDataSource(TestCase):
             ),
         ]
 
-        mock_version_api = MagicMock()
-        mock_version_api.package_type = "maven"
-        mock_version_api.get = lambda x: {"1.2.0", "9.0.2"}
+        mock_version_api = MavenVersionAPI(
+            cache={
+                "org.apache.tomcat.embed:tomcat-embed-core": {Version("1.2.0"), Version("9.0.2")}
+            }
+        )
         with patch(
             "vulnerabilities.importers.github.MavenVersionAPI", return_value=mock_version_api
-        ):  # nopep8
+        ):
             with patch("vulnerabilities.importers.github.GitHubAPIDataSource.set_api"):
                 found_advisories = self.data_src.process_response()
 

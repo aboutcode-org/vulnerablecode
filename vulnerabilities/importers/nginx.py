@@ -34,6 +34,7 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.package_managers import Version
 from vulnerabilities.helpers import nearest_patched_package
 
 
@@ -53,8 +54,14 @@ class NginxDataSource(DataSource):
 
         # For some reason nginx tags it's releases are in the form of `release-1.2.3`
         # Chop off the `release-` part here.
-        for index, version in enumerate(self.version_api.cache["nginx/nginx"]):
-            self.version_api.cache["nginx/nginx"][index] = version.replace("release-", "")
+        normalized_versions = set()
+        while self.version_api.cache["nginx/nginx"]:
+            version = self.version_api.cache["nginx/nginx"].pop()
+            normalized_version = Version(
+                version.value.replace("release-", ""), version.release_date
+            )
+            normalized_versions.add(normalized_version)
+        self.version_api.cache["nginx/nginx"] = normalized_versions
 
     def updated_advisories(self):
         advisories = []
@@ -134,7 +141,9 @@ class NginxDataSource(DataSource):
                 VersionSpecifier.from_scheme_version_spec_string("semver", "^" + rng[:-1])
             )
 
-        valid_versions = find_valid_versions(self.version_api.get("nginx/nginx"), version_ranges)
+        valid_versions = find_valid_versions(
+            self.version_api.get("nginx/nginx").valid_versions, version_ranges
+        )
 
         return [
             PackageURL(type="generic", name="nginx", version=version) for version in valid_versions
@@ -169,7 +178,9 @@ class NginxDataSource(DataSource):
                 )
             )
 
-        valid_versions = find_valid_versions(self.version_api.get("nginx/nginx"), version_ranges)
+        valid_versions = find_valid_versions(
+            self.version_api.get("nginx/nginx").valid_versions, version_ranges
+        )
         qualifiers = {}
         if windows_only:
             qualifiers["os"] = "windows"

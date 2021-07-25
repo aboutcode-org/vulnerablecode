@@ -24,8 +24,9 @@ import bisect
 import dataclasses
 import json
 import re
-from typing import Optional
 from typing import List
+from typing import Optional
+from typing import Tuple
 
 import requests
 import saneyaml
@@ -164,3 +165,29 @@ def nearest_patched_package(
         )
 
     return affected_package_with_patched_package_objects
+
+
+def split_markdown_front_matter(text: str) -> Tuple[str, str]:
+    r"""
+    Return a tuple of (front matter, markdown body) strings split from ``text``.
+    Each can be an empty string.
+
+    >>> text='''---
+    ... title: DUMMY-SECURITY-2019-001
+    ... description: Incorrect access control.
+    ... cves: [CVE-2042-1337]
+    ... ---
+    ... # Markdown starts here
+    ... '''
+    >>> split_markdown_front_matter(text)
+    ('title: DUMMY-SECURITY-2019-001\ndescription: Incorrect access control.\ncves: [CVE-2042-1337]', '# Markdown starts here')
+    """
+    # The doctest contains \n and for the sake of clarity I chose raw strings than escaping those.
+    lines = text.splitlines()
+    if lines[0] == "---":
+        lines = lines[1:]
+        text = "\n".join(lines)
+        frontmatter, _, markdown = text.partition("\n---\n")
+        return frontmatter, markdown
+
+    return "", text

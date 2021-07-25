@@ -86,7 +86,7 @@ class SafetyDbDataSource(DataSource):
                 # Skip it. The 'cumin' entry is wrong
                 continue
 
-            all_package_versions = self.versions.get(package_name)
+            all_package_versions = self.versions.get(package_name).valid_versions
             if not len(all_package_versions):
                 # PyPi does not have data about this package, we skip these
                 continue

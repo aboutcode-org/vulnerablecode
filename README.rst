@@ -90,29 +90,10 @@ First clone the source code::
     cd vulnerablecode
 
 
-
-
 Using Docker Compose
-~~~~~~~~~~~~~~~~~~~~
+---------------------
 
-An easy way to set up VulnerableCode is with docker containers and docker
-compose. For this you need to have the following installed.
-
-- Docker Engine. Find instructions to install it
-  `here <https://docs.docker.com/get-docker/>`__
-- Docker Compose. Find instructions to install it
-  `here <https://docs.docker.com/compose/install/#install-compose>`__
-
-Use ``sudo docker-compose up`` to start VulnerableCode. Then access
-VulnerableCode at http://localhost:8000/ or at http://127.0.0.1:8000/
-
-**Important**: Don't forget to run ``sudo docker-compose up -d --no-deps --build web`` to sync your instance after every ``git pull``.
-
-
-Use ``sudo docker-compose exec web bash`` to access the VulnerableCode
-container. From here you can access ``manage.py`` and run management commands
-to import data as specified below.
-
+Please find the docker documentation in `Docker Installation <docs/docker_installation.rst>`__
 
 Without Docker Compose
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -159,11 +140,13 @@ for this purpose::
 
     SECRET_KEY=$(python -c "from django.core.management import utils; print(utils.get_random_secret_key())")
 
-You will also need to setup the VC_ALLOWED_HOSTS environment variable to match the hostname where the app is deployed::
+You will also need to setup the `ALLOWED_HOSTS` array inside `vulnerablecode/settings.py` according to
+[django specifications](https://docs.djangoproject.com/en/3.2/ref/settings/#allowed-hosts). One example would be:
+.. code-block:: python
 
-    VC_ALLOWED_HOSTS=vulnerablecode.your.domain.example.com
+    ALLOWED_HOSTS = ['vulnerablecode.your.domain.example.com']
 
-You can specify several host by separating them with a colon `:`
+You can specify several hosts by separating them with a comma (`,`)
 
 Using Nix
 ~~~~~~~~~
@@ -212,6 +195,8 @@ Use these commands to run code style checks and the test suite::
     black -l 100 --check .
     python -m pytest
 
+
+.. _Data import:
 
 Data import
 -----------
@@ -266,7 +251,6 @@ If you want to run the import periodically, you can use a systemd timer::
 
     [Service]
     Type=oneshot
-    Environment="DJANGO_DEV=1"
     ExecStart=/path/to/venv/bin/python /path/to/vulnerablecode/manage.py import --all
 
     $ cat ~/.config/systemd/user/vulnerablecode.timer

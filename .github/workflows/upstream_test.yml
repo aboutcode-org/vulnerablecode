@@ -48,5 +48,4 @@ jobs:
           POSTGRES_HOST: localhost
           VC_DB_USER: postgres
           POSTGRES_PORT: 5432
-          DJANGO_DEV: 1
           GH_TOKEN: 1 

@@ -91,7 +91,7 @@ First clone the source code::
 
 
 Using Docker Compose
----------------------
+~~~~~~~~~~~~~~~~~~~~~~
 
 Please find the docker documentation in `Docker Installation <docs/docker_installation.rst>`__
 

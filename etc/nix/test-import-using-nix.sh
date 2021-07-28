@@ -10,7 +10,6 @@ THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DEFAULT_INSTALL_DIR=$VULNERABLECODE_INSTALL_DIR # in the Nix store, see flake.nix
 INSTALL_DIR=${INSTALL_DIR:-$DEFAULT_INSTALL_DIR}
 ARGS=$(if [ $# -eq 0 ]; then echo "--all"; else echo "$@"; fi)
-export DJANGO_DEV=${DJANGO_DEV:-1}
 TEMPDIR=$(mktemp -d -p "$THIS_DIR")
 export TEMPDIR
 

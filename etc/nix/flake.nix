@@ -138,7 +138,6 @@
               buildPhase = ''
                 source ${libSh}
                 initPostgres $(pwd)
-                export DJANGO_DEV=1
                 ${vulnerablecode}/manage.py migrate
               '';
 

@@ -7,48 +7,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository code
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python 3.8
+      - name: Set up Python 3.8.11
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
-
-      - name: Restore cache
-        uses: actions/cache@v2
-        with:
-          path: venv
-          key: ${{ runner.os }}-venv-${{ hashFiles('**/requirements*.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-venv-
-
-      - name: Create env file
-        run: make envfile
+          python-version: 3.8.11
 
       - name: Install dependencies
         run: |
-          sudo apt install  python3-dev postgresql libpq-dev build-essential libxml2-dev libxslt1-dev postgresql
-          python -m pip install --upgrade pip
+          sudo apt-get install -y postgresql python3-dev libpq-dev build-essential
+          make dev envfile
 
-      - uses: syphar/restore-virtualenv@v1
-        id: cache-virtualenv
-        with:
-          requirement_files: requirements*.txt  # this is optional
+      - name: Validate code format
+        run: make check
 
-      - uses: syphar/restore-pip-download-cache@v1
-        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
-
-      - run: pip install -r requirements.txt -r requirements-dev.txt
-        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
-    
-      # virtualenv is already activated
       - name: Setup database
         run: |
           sudo systemctl start postgresql
-          make postgres ACTIVATE=
+          make postgres
 
       - name: Run tests
-        run: make test ACTIVATE=
+        run: make test
         env:
           GH_TOKEN: 1 

@@ -99,8 +99,12 @@ run:
 	${ACTIVATE} ./manage.py runserver
 
 test:
-	@echo "-> Run the test suite"
+	@echo "-> Run offline tests"
 	${ACTIVATE} ${PYTHON_EXE} -m pytest -v -m "not webtest"
+
+webtest:
+	@echo "-> Run web tests"
+	${ACTIVATE} ${PYTHON_EXE} -m pytest -v -m "webtest"
 
 package: conf
 	@echo "-> Create a VulnerableCode package for offline installation"

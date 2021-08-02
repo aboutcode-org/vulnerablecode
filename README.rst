@@ -95,6 +95,18 @@ Using Docker Compose
 
 Please find the docker documentation in `Docker Installation <docs/docker_installation.rst>`__
 
+TL;DR
+""""""
+
+.. code-block:: bash
+
+    git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
+    make envfile
+    docker-compose up
+
+Go to http://localhost:8000/ on a web browser to access the web UI.
+
+
 Without Docker Compose
 ~~~~~~~~~~~~~~~~~~~~~~
 

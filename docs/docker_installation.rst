@@ -45,7 +45,7 @@ At this point, the VulnerableCode app should be running at port ``8000`` on your
 Go to http://localhost:8000/ on a web browser to access the web UI.
 Optionally, you can set ``NGINX_PORT`` environment variable in your shell or in the `.env` file to run on a different port than 8000.
 
-.. warning::
+.. note::
 
     To access a dockerized VulnerableCode app from a remote location, the ``ALLOWED_HOSTS``
     setting need to be provided in your ``docker.env`` file::
@@ -54,6 +54,12 @@ Optionally, you can set ``NGINX_PORT`` environment variable in your shell or in 
 
     Refer to `Django ALLOWED_HOSTS settings <https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts>`_
     for documentation.
+
+.. warning::
+
+   Serving VulnerableCode on a network could lead to security issues and there
+   are several steps that may be needed to secure such a deployment. 
+   Currently, this is not recommendend.
 
 
 Invoke the importers

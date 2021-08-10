@@ -26,6 +26,7 @@ import datetime
 import logging
 from itertools import chain
 from typing import Tuple
+from typing import Set
 
 from django.db import transaction
 
@@ -68,9 +69,8 @@ class ImportRunner:
         - All update and select operations must use indexed columns.
     """
 
-    def __init__(self, importer: models.Importer, batch_size: int):
+    def __init__(self, importer: models.Importer):
         self.importer = importer
-        self.batch_size = batch_size
 
     def run(self, cutoff_date: datetime.datetime = None) -> None:
         """
@@ -84,9 +84,10 @@ class ImportRunner:
         from all Linux distributions that package this kernel version.
         """
         logger.info(f"Starting import for {self.importer.name}.")
-        data_source = self.importer.make_data_source(self.batch_size, cutoff_date=cutoff_date)
+        data_source = self.importer.make_data_source(cutoff_date=cutoff_date)
         with data_source:
-            process_advisories(data_source)
+            advisories = data_source.updated_advisories()
+            process_advisories(advisories)
         self.importer.last_run = datetime.datetime.now(tz=datetime.timezone.utc)
         self.importer.data_source_cfg = dataclasses.asdict(data_source.config)
         self.importer.save()
@@ -108,46 +109,41 @@ def get_vuln_pkg_refs(vulnerability, package):
 
 
 @transaction.atomic
-def process_advisories(data_source: DataSource) -> None:
+def process_advisories(advisories: Set[Advisory]) -> None:
     bulk_create_vuln_pkg_refs = set()
-    # Treat updated_advisories and added_advisories as same. Eventually
-    # we want to  refactor all data sources to  provide advisories via a
-    # single method.
-    advisory_batches = chain(data_source.updated_advisories(), data_source.added_advisories())
-    for batch in advisory_batches:
-        for advisory in batch:
-            vuln, vuln_created = _get_or_create_vulnerability(advisory)
-            for vuln_ref in advisory.references:
-                ref, _ = models.VulnerabilityReference.objects.get_or_create(
-                    vulnerability=vuln, reference_id=vuln_ref.reference_id, url=vuln_ref.url
-                )
+    for advisory in advisories:
+        vuln, vuln_created = _get_or_create_vulnerability(advisory)
+        for vuln_ref in advisory.references:
+            ref, _ = models.VulnerabilityReference.objects.get_or_create(
+                vulnerability=vuln, reference_id=vuln_ref.reference_id, url=vuln_ref.url
+            )
 
-                for score in vuln_ref.severities:
-                    models.VulnerabilitySeverity.objects.update_or_create(
-                        vulnerability=vuln,
-                        scoring_system=score.system.identifier,
-                        reference=ref,
-                        defaults={"value": str(score.value)},
-                    )
-
-            for aff_pkg_with_patched_pkg in advisory.affected_packages:
-                vulnerable_package, _ = _get_or_create_package(
-                    aff_pkg_with_patched_pkg.vulnerable_package
-                )
-                patched_package = None
-                if aff_pkg_with_patched_pkg.patched_package:
-                    patched_package, _ = _get_or_create_package(
-                        aff_pkg_with_patched_pkg.patched_package
-                    )
-
-                prv, _ = models.PackageRelatedVulnerability.objects.get_or_create(
+            for score in vuln_ref.severities:
+                models.VulnerabilitySeverity.objects.update_or_create(
                     vulnerability=vuln,
-                    package=vulnerable_package,
+                    scoring_system=score.system.identifier,
+                    reference=ref,
+                    defaults={"value": str(score.value)},
                 )
 
-                if patched_package:
-                    prv.patched_package = patched_package
-                    prv.save()
+        for aff_pkg_with_patched_pkg in advisory.affected_packages:
+            vulnerable_package, _ = _get_or_create_package(
+                aff_pkg_with_patched_pkg.vulnerable_package
+            )
+            patched_package = None
+            if aff_pkg_with_patched_pkg.patched_package:
+                patched_package, _ = _get_or_create_package(
+                    aff_pkg_with_patched_pkg.patched_package
+                )
+
+            prv, _ = models.PackageRelatedVulnerability.objects.get_or_create(
+                vulnerability=vuln,
+                package=vulnerable_package,
+            )
+
+            if patched_package:
+                prv.patched_package = patched_package
+                prv.save()
 
     models.PackageRelatedVulnerability.objects.bulk_create(
         [i.to_model_object() for i in bulk_create_vuln_pkg_refs]

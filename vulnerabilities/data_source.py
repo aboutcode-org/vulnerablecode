@@ -78,8 +78,6 @@ class Reference:
 class Advisory:
     """
     This data class expresses the contract between data sources and the import runner.
-    Data sources are expected to be usable as context managers and generators, yielding batches of
-    Advisory sequences.
 
     NB: There are two representations for package URLs that are commonly used by code consuming this
         data class; PackageURL objects and strings. As a convention, the former is referred to in
@@ -131,7 +129,6 @@ class DataSource(ContextManager):
 
     def __init__(
         self,
-        batch_size: int,
         last_run_date: Optional[datetime] = None,
         cutoff_date: Optional[datetime] = None,
         config: Optional[Mapping[str, Any]] = None,
@@ -139,14 +136,11 @@ class DataSource(ContextManager):
         """
         Create a DataSource instance.
 
-        :param batch_size: Maximum number of records to return from added_advisories() and
-               updated_advisories()
         :param last_run_date: Optional timestamp when this data source was last inspected
         :param cutoff_date: Optional timestamp, records older than this will be ignored
         :param config: Optional dictionary with subclass-specific configuration
         """
         config = config or {}
-        self.batch_size = batch_size
         try:
             self.config = self.__class__.CONFIG_CLASS(**config)
             # These really should be declared in DataSourceConfiguration above but that would
@@ -194,16 +188,9 @@ class DataSource(ContextManager):
         """
         pass
 
-    def added_advisories(self) -> Set[Advisory]:
-        """
-        Subclasses yield batch_size sized batches of Advisory objects that have been added to the
-        data source since the last run or self.cutoff_date.
-        """
-        return set()
-
     def updated_advisories(self) -> Set[Advisory]:
         """
-        Subclasses yield batch_size sized batches of Advisory objects that have been modified since
+        Subclasses return Advisory objects that have been modified since
         the last run or self.cutoff_date.
 
         NOTE: Data sources that do not enable detection of changes to existing records vs added
@@ -217,21 +204,6 @@ class DataSource(ContextManager):
         Helper method for raising InvalidConfigurationError with the class name in the message.
         """
         raise InvalidConfigurationError(f"{type(self).__name__}: {msg}")
-
-    def batch_advisories(self, advisories: List[Advisory]) -> Set[Advisory]:
-        """
-        Yield batches of the passed in list of advisories.
-        """
-
-        # TODO make this less cryptic and efficient
-
-        advisories = advisories[:]
-        # copy the list as we are mutating it in the loop below
-
-        while advisories:
-            b, advisories = advisories[: self.batch_size], advisories[self.batch_size :]
-            yield b
-
 
 @dataclasses.dataclass
 class GitDataSourceConfiguration(DataSourceConfiguration):

@@ -68,7 +68,7 @@ class NginxDataSource(DataSource):
         self.set_api()
         data = requests.get(self.url).content
         advisories.extend(self.to_advisories(data))
-        return self.batch_advisories(advisories)
+        return advisories
 
     def to_advisories(self, data):
         advisories = []

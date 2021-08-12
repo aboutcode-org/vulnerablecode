@@ -43,7 +43,7 @@ The Building Blocks A.K.A Prerequisites
         reference_id: str = ""
         url: str = ""
         severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
-        
+
 
 Steps to build an Importer
 --------------------------
@@ -51,7 +51,7 @@ Steps to build an Importer
 * **Register an Importer:**
 
 To do this go to ``vulnerabilites/importer_yielder.py``, in the ``IMPORTER_REGISTRY``
-list add a dictionary with following data 
+list add a dictionary with following data
 
 .. code:: python
 
@@ -63,7 +63,7 @@ list add a dictionary with following data
         'data_source_cfg': {},
     }
 
-  
+
 **Don't forget to replace <your_importer_name> and <your_data_source_name> with
 appropriate strings**
 
@@ -72,7 +72,7 @@ If you know the license of the data you are importing, assign the license field
 equal to the license of the data in the  ``add_<your_importer_name>_importer``
 method of the migration script.
 
-* **Create a data source** : 
+* **Create a data source** :
 
   - Go to ``vulnerabilities/importers`` , create a python script, let's call it ``my_importer.py``
 
@@ -83,25 +83,25 @@ method of the migration script.
 .. code:: python
 
     from typing import Set
-    
+
     from packageurl import PackageURL
     import requests
-    
+
     from vulnerabilities.data_source import Advisory
     from vulnerabilities.data_source import DataSource
-    
+
     class ExampleDataSource(DataSource):
         #This method must be implemented
         def updated_advisories(self)-> Set[Advisory]:
             raw_data = self.fetch()
             advisories = self.to_advisories(raw_data)
             return self.batch_advisories(advisories)
-            
-        #Optional Method, but it is recommended to have fetching separated  
+
+        #Optional Method, but it is recommended to have fetching separated
         def fetch(self):
             return requests.get("http://examplesecurity.org/api/json").json()
-            
-        #Optional Method  
+
+        #Optional Method
         @staticmethod
         def to_advisories(json_response:dict) -> Set[Advisory]:
             advisories = []
@@ -113,18 +113,18 @@ method of the migration script.
                 cve_id = entry['cve_id']
                 safe_purls ={ PackageURL(name=pkg_name,
                     type=pkg_type,
-                    version=version) 
+                    version=version)
                     for version in safe_pkg_versions}
                 vuln_purls= {PackageURL(name=pkg_name,
                     type=pkg_type,
-                    version=version) 
+                    version=version)
                     for version in vuln_pkg_versions}
-                     
-                     
+
+
                 advisory = Advisory(vulnerability_id=cve_id,summary='',impacted_package_urls=vuln_purls,resolved_package_urls=safe_purls)
                 advisories.append(advisory)
             return advisories
-    
+
 
 Finally register this ``ExampleDataSource`` in
 ``vulnerabilities/importers/__init__.py`` by adding the following line

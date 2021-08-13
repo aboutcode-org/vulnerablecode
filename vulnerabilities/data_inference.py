@@ -27,3 +27,11 @@ class Inference:
 
         if self.confidence < 0:
             raise UnderConfidenceError
+
+class Improver:
+    """
+    All improvers should inherit this class and implement updated_inferences method to return
+    new inferences for a package or vulnerability
+    """
+    def updated_inferences(self):
+        raise NotImplementedError

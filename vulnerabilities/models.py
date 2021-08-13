@@ -25,12 +25,15 @@ from datetime import datetime
 
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
+from django.core.validators import MinValueValidator
+from django.core.validators import MaxValueValidator
 from packageurl.contrib.django.models import PackageURLMixin
 from packageurl import PackageURL
 
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.severity_systems import scoring_systems
+from vulnerabilities.data_inference import MAX_CONFIDENCE
 
 
 class Vulnerability(models.Model):
@@ -131,8 +134,8 @@ class Package(PackageURLMixin):
 
     resolved_vulnerabilities = models.ManyToManyField(
         to="Vulnerability",
-        through="PackageRelatedVulnerability",
-        through_fields=("patched_package", "vulnerability"),
+        through="PackageRelatedVulnerabilityFix",
+        through_fields=("package", "vulnerability"),
         related_name="patched_packages",
     )
 
@@ -192,9 +195,8 @@ class PackageRelatedVulnerability(models.Model):
         Package, on_delete=models.CASCADE, related_name="vulnerable_package"
     )
     vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
-    patched_package = models.ForeignKey(
-        Package, on_delete=models.CASCADE, null=True, blank=True, related_name="patched_package"
-    )
+    source = models.TextField(null=True)
+    confidence = models.PositiveIntegerField(default=1, validators=[MinValueValidator(0), MaxValueValidator(MAX_CONFIDENCE)])
 
     def __str__(self):
         return f"{self.package.package_url} {self.vulnerability.vulnerability_id}"
@@ -203,6 +205,21 @@ class PackageRelatedVulnerability(models.Model):
         unique_together = ("package", "vulnerability")
         verbose_name_plural = "PackageRelatedVulnerabilities"
 
+class PackageRelatedVulnerabilityFix(models.Model):
+
+    package = models.ForeignKey(
+        Package, on_delete=models.CASCADE, related_name="patched_package"
+    )
+    vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
+    source = models.TextField(null=True)
+    confidence = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(MAX_CONFIDENCE)])
+
+    def __str__(self):
+        return f"{self.package.package_url} {self.vulnerability.vulnerability_id}"
+
+    class Meta:
+        unique_together = ("package", "vulnerability")
+        verbose_name_plural = "PackageRelatedVulnerabilitiyFixes"
 
 class ImportProblem(models.Model):
 

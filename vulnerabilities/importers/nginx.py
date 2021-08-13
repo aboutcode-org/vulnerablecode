@@ -36,6 +36,7 @@ from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import Version
 from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.helpers import AffectedPackage
 
 
 @dataclasses.dataclass
@@ -117,7 +118,8 @@ class NginxDataSource(DataSource):
                 Advisory(
                     vulnerability_id=cve_id,
                     summary=summary,
-                    affected_packages=nearest_patched_package(vulnerable_packages, fixed_packages),
+                    affected_package_urls=vulnerable_packages,
+                    fixed_package_urls=fixed_packages,
                 )
             )
 

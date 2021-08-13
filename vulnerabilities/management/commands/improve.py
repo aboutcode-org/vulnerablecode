@@ -31,7 +31,7 @@ from vulnerabilities.models import Importer
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.importer_yielder import load_importers
 from vulnerabilities.improvers import IMPROVER_REGISTRY
-from vulnerabilities.improvers import class_name
+from vulnerabilities.improvers import find_class
 from vulnerabilities.improve_runner import ImproveRunner
 
 
@@ -68,7 +68,7 @@ class Command(BaseCommand):
         self.improve_data(valid_sources(sources))
 
     def list_sources(self):
-        improvers = [ improver.__module__ for improver in IMPROVER_REGISTRY ]
+        improvers = [ improver.__name__ for improver in IMPROVER_REGISTRY ]
         self.stdout.write("Vulnerability data can be improved from the following sources:")
         self.stdout.write(", ".join(improvers))
 
@@ -76,17 +76,17 @@ class Command(BaseCommand):
         failed_improvers = []
 
         for improver in improvers:
-            self.stdout.write(f"Improving data using {improver.__module__}")
+            self.stdout.write(f"Improving data using {improver.__name__}")
             try:
                 ImproveRunner(improver).run()
                 self.stdout.write(
-                    self.style.SUCCESS(f"Successfully improved data using {improver.__module__}")
+                    self.style.SUCCESS(f"Successfully improved data using {improver.__name__}")
                 )
             except Exception:
-                failed_improvers.append(improver.__module__)
+                failed_improvers.append(improver.__name__)
                 traceback.print_exc()
                 self.stdout.write(
-                    self.style.ERROR(f"Failed to run improver {improver.__module__}. Continuing...")
+                    self.style.ERROR(f"Failed to run improver {improver.__name__}. Continuing...")
                 )
 
         if failed_improvers:
@@ -94,11 +94,12 @@ class Command(BaseCommand):
 
 
 def valid_sources(sources):
+    # FIXME: Need better approach, see definition of find_class
     improvers = []
     unknown_sources = []
     for source in sources:
         try:
-            improvers.append(class_name(source))
+            improvers.append(find_class(source))
         except AttributeError:
             unknown_sources.append(source)
     if unknown_sources:

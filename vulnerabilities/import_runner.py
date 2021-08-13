@@ -24,15 +24,16 @@
 import dataclasses
 import datetime
 import logging
-from itertools import chain
 from typing import Tuple
 from typing import Set
 
-from django.db import transaction
 
 from vulnerabilities import models
-from vulnerabilities.data_source import Advisory, DataSource
+from vulnerabilities.data_source import Advisory
 from vulnerabilities.data_source import PackageURL
+from vulnerabilities.data_inference import Inference
+from vulnerabilities.data_inference import MAX_CONFIDENCE
+from vulnerabilities.improve_runner import process_inferences
 
 logger = logging.getLogger(__name__)
 
@@ -87,7 +88,7 @@ class ImportRunner:
         data_source = self.importer.make_data_source(cutoff_date=cutoff_date)
         with data_source:
             advisories = data_source.updated_advisories()
-            process_advisories(advisories)
+            process_advisories("importer", advisories)
         self.importer.last_run = datetime.datetime.now(tz=datetime.timezone.utc)
         self.importer.data_source_cfg = dataclasses.asdict(data_source.config)
         self.importer.save()
@@ -108,79 +109,10 @@ def get_vuln_pkg_refs(vulnerability, package):
     )
 
 
-@transaction.atomic
-def process_advisories(advisories: Set[Advisory]) -> None:
-    bulk_create_vuln_pkg_refs = set()
-    for advisory in advisories:
-        vuln, vuln_created = _get_or_create_vulnerability(advisory)
-        for vuln_ref in advisory.references:
-            ref, _ = models.VulnerabilityReference.objects.get_or_create(
-                vulnerability=vuln, reference_id=vuln_ref.reference_id, url=vuln_ref.url
-            )
-
-            for score in vuln_ref.severities:
-                models.VulnerabilitySeverity.objects.update_or_create(
-                    vulnerability=vuln,
-                    scoring_system=score.system.identifier,
-                    reference=ref,
-                    defaults={"value": str(score.value)},
-                )
-
-        for aff_pkg_with_patched_pkg in advisory.affected_packages:
-            vulnerable_package, _ = _get_or_create_package(
-                aff_pkg_with_patched_pkg.vulnerable_package
-            )
-            patched_package = None
-            if aff_pkg_with_patched_pkg.patched_package:
-                patched_package, _ = _get_or_create_package(
-                    aff_pkg_with_patched_pkg.patched_package
-                )
-
-            prv, _ = models.PackageRelatedVulnerability.objects.get_or_create(
-                vulnerability=vuln,
-                package=vulnerable_package,
-            )
-
-            if patched_package:
-                prv.patched_package = patched_package
-                prv.save()
-
-    models.PackageRelatedVulnerability.objects.bulk_create(
-        [i.to_model_object() for i in bulk_create_vuln_pkg_refs]
-    )
-
-
-def _get_or_create_vulnerability(
-    advisory: Advisory,
-) -> Tuple[models.Vulnerability, bool]:
-
-    vuln, created = models.Vulnerability.objects.get_or_create(
-        vulnerability_id=advisory.vulnerability_id
-    )  # nopep8
-    # Eventually we only want to keep summary from NVD and ignore other descriptions.
-    if advisory.summary and vuln.summary != advisory.summary:
-        vuln.summary = advisory.summary
-        vuln.save()
-
-    return vuln, created
-
-
-def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:
-
-    query_kwargs = {}
-    for key, val in p.to_dict().items():
-        if not val:
-            if key == "qualifiers":
-                query_kwargs[key] = {}
-            else:
-                query_kwargs[key] = ""
-        else:
-            query_kwargs[key] = val
-
-    return models.Package.objects.get_or_create(**query_kwargs)
-
-
-def _package_url_to_package(purl: PackageURL) -> models.Package:
-    p = models.Package()
-    p.set_package_url(purl)
-    return p
+def process_advisories(source: str, advisories: Set[Advisory]) -> None:
+    """
+    Insert advisories into the database
+    Advisories are treated as full confidence infererences.
+    """
+    inferences = [ Inference(advisory, source, MAX_CONFIDENCE) for advisory in advisories ]
+    process_inferences(inferences)

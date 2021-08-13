@@ -86,7 +86,8 @@ class Advisory:
 
     summary: str
     vulnerability_id: Optional[str] = None
-    affected_packages: List[AffectedPackage] = dataclasses.field(default_factory=list)
+    affected_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
+    fixed_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
     references: List[Reference] = dataclasses.field(default_factory=list)
 
     def __post_init__(self):
@@ -94,6 +95,8 @@ class Advisory:
             raise ValueError("CVE expected, found: {}".format(self.vulnerability_id))
 
     def normalized(self):
+        affected_package_urls = set(self.affected_package_urls)
+        fixed_package_urls = set(self.fixed_package_urls)
         references = sorted(
             self.references, key=lambda reference: (reference.reference_id, reference.url)
         )
@@ -103,7 +106,8 @@ class Advisory:
         return Advisory(
             summary=self.summary,
             vulnerability_id=self.vulnerability_id,
-            affected_packages=sorted(self.affected_packages),
+            affected_package_urls=affected_package_urls,
+            fixed_package_urls=fixed_package_urls,
             references=references,
         )
 

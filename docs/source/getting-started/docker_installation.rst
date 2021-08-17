@@ -43,7 +43,8 @@ Run your image as a container
 
 At this point, the VulnerableCode app should be running at port ``8000`` on your Docker host.
 Go to http://localhost:8000/ on a web browser to access the web UI.
-Optionally, you can set ``NGINX_PORT`` environment variable in your shell or in the `.env` file to run on a different port than 8000.
+Optionally, you can set ``NGINX_PORT`` environment variable in your shell or in the `.env` file
+to run on a different port than 8000.
 
 .. note::
 
@@ -58,17 +59,17 @@ Optionally, you can set ``NGINX_PORT`` environment variable in your shell or in 
 .. warning::
 
    Serving VulnerableCode on a network could lead to security issues and there
-   are several steps that may be needed to secure such a deployment. 
+   are several steps that may be needed to secure such a deployment.
    Currently, this is not recommendend.
 
 
 Invoke the importers
 --------------------
 
-Connect to the Docker container ``bash``. 
-From here you can access ``manage.py`` and run management commands 
-to import data as specified in the `Data import <../README.rst#data-import>`_ section and run commands 
-for the importers from there
+Connect to the Docker container ``bash``.
+From here you can access ``manage.py`` and run management commands
+to import data as specified in the `Data import <../README.rst#data-import>`_ section and
+run commands for the importers from there
 
 For example:
 

@@ -14,6 +14,12 @@ Welcome to nexb-skeleton's documentation!
 
    how-to-guides/add_new_importer.rst
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Contribute:
+
+   contribute/index
+
 .. include:: ../../README.rst
 
 Indices and tables

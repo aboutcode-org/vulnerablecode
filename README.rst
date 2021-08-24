@@ -138,7 +138,8 @@ On Debian-based distros, these can be installed with::
 **Application dependencies**
 
 Create a virtualenv, install dependencies, generate static files and run the database migrations::
-
+    
+    make envfile
     python3 -m venv venv
     source venv/bin/activate
     pip install -r requirements.txt

@@ -138,8 +138,6 @@ class DebianDataSource(DataSource):
         head = requests.head(self.config.debian_tracker_url)
         date_str = head.headers.get("last-modified")
         last_modified_date = dateparser.parse(date_str)
-        print('last_modified_date:', type(last_modified_date), last_modified_date)
-        print('self.config.last_run_date:', type(self.config.last_run_date), self.config.last_run_date)
         if self.config.last_run_date:
             return self.config.last_run_date < last_modified_date
 

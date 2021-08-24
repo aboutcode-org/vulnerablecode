@@ -38,7 +38,6 @@ TEST_DATA = os.path.join(BASE_DIR, "test_data/")
 
 
 class DebianImportTest(TestCase):
-
     @classmethod
     def setUpClass(cls) -> None:
         fixture_path = os.path.join(TEST_DATA, "debian.json")
@@ -52,10 +51,12 @@ class DebianImportTest(TestCase):
             data_source="DebianDataSource",
             data_source_cfg={"debian_tracker_url": "https://security.example.com/json"},
         )
+        return super().setUpClass()
 
-    @classmethod
-    def tearDownClass(cls) -> None:
-        pass
+    def tearDown(self) -> None:
+        self.importer.data_source_cfg = {"debian_tracker_url": "https://security.example.com/json"}
+        self.importer.last_run = dateparser.parse("2019-08-05 13:14:17.733232+05:30")
+        self.importer.save()
 
     def test_import(self):
         runner = ImportRunner(self.importer, 5)

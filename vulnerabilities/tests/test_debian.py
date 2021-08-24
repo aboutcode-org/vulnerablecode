@@ -20,8 +20,10 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
+
 import json
 import os
+from dateutil import parser as dateparser
 from unittest.mock import patch
 from unittest.mock import MagicMock
 
@@ -36,6 +38,7 @@ TEST_DATA = os.path.join(BASE_DIR, "test_data/")
 
 
 class DebianImportTest(TestCase):
+
     @classmethod
     def setUpClass(cls) -> None:
         fixture_path = os.path.join(TEST_DATA, "debian.json")
@@ -45,7 +48,7 @@ class DebianImportTest(TestCase):
         cls.importer = models.Importer.objects.create(
             name="debian_unittests",
             license="",
-            last_run="2019-08-05 13:14:17.733232+05:30",
+            last_run=dateparser.parse("2019-08-05 13:14:17.733232+05:30"),
             data_source="DebianDataSource",
             data_source_cfg={"debian_tracker_url": "https://security.example.com/json"},
         )
@@ -84,12 +87,12 @@ class DebianImportTest(TestCase):
         mock_resp.headers = {"last-modified": "Wed, 05 Aug 2021 09:12:19 GMT"}
 
         with patch("vulnerabilities.importers.debian.requests.head", return_value=mock_resp):
-            assert test_data_source.response_is_new() is True
+            assert test_data_source.response_is_new()
 
-        mock_resp.headers = {"last-modified": "Wed, 05 Aug 2019 09:12:19 GMT"}
+        mock_resp.headers = {"last-modified": "Wed, 04 Aug 2019 09:12:19 GMT"}
 
         with patch("vulnerabilities.importers.debian.requests.head", return_value=mock_resp):
-            assert test_data_source.response_is_new() is False
+            assert not test_data_source.response_is_new()
 
     def assert_for_package(self, name, version, release, cve_ids=None):
         qs = models.Package.objects.filter(

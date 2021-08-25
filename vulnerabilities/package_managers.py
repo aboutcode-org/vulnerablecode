@@ -49,7 +49,7 @@ class VersionResponse:
 
 
 class VersionAPI:
-    def __init__(self, cache: Mapping[str, Set[str]] = None):
+    def __init__(self, cache: Mapping[str, Set[Version]] = None):
         self.cache = cache or {}
 
     def get(self, package_name, until=None) -> Set[str]:

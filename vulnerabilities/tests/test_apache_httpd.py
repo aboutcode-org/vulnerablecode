@@ -69,13 +69,13 @@ class TestApacheHTTPDDataSource(TestCase):
 
         # Check fixed packages
         assert [
-            VersionSpecifier.from_scheme_version_spec_string("maven", ">=1.3.2")
+            VersionSpecifier.from_scheme_version_spec_string("semver", ">=1.3.2")
         ] == fixed_version_ranges
 
         # Check vulnerable packages
         assert [
-            VersionSpecifier.from_scheme_version_spec_string("maven", "==1.3.0"),
-            VersionSpecifier.from_scheme_version_spec_string("maven", "==1.3.1"),
+            VersionSpecifier.from_scheme_version_spec_string("semver", "==1.3.0"),
+            VersionSpecifier.from_scheme_version_spec_string("semver", "==1.3.1"),
         ] == affected_version_ranges
 
     def test_to_advisory(self):

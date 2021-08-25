@@ -25,6 +25,7 @@ from urllib.parse import urlencode
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django.http import HttpResponse
+from django.http.response import HttpResponseNotAllowed
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
@@ -248,3 +249,9 @@ class VulnerabilityReferenceCreate(CreateView):
 
     def get_success_url(self):
         return reverse("vulnerability_view", kwargs={"pk": self.kwargs["vid"]})
+
+
+def schema_view(request):
+    if request.method != "GET":
+        return HttpResponseNotAllowed()
+    return render(request, "api_doc.html")

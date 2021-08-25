@@ -5,7 +5,6 @@ aiohttp>=3.7.4.post0
 djangorestframework>=3.12.4
 django-filter>=2.4.0
 django-widget-tweaks>=1.4.8
-drf-spectacular>=0.17.1
 packageurl-python>=0.9.4
 binaryornot>=0.4.4
 GitPython>=3.1.17

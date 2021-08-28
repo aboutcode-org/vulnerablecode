@@ -1,11 +1,6 @@
 from . import nginx
+from . import default
 
-IMPROVER_REGISTRY = [nginx.NginxTimeTravel]
+IMPROVER_REGISTRY = [default.DefaultImprover]
 
-def find_class(class_name: str):
-    # FIXME: this might cause problems when there are two modules containing same class name, think of a better approach
-    for improver in IMPROVER_REGISTRY:
-        if class_name == improver.__name__:
-            return improver
-
-    raise AttributeError
+improver_mapping = {f"{x.__module__}.{x.__name__}": x for x in IMPROVER_REGISTRY}

@@ -1,23 +1,33 @@
 import dataclasses
 import logging
-from vulnerabilities.data_source import Advisory
+from typing import List
+
+from vulnerabilities.data_source import AdvisoryData
 
 logger = logging.getLogger(__name__)
+
 
 class OverConfidenceError(ValueError):
     pass
 
+
 class UnderConfidenceError(ValueError):
     pass
 
+
 MAX_CONFIDENCE = 100
+
 
 @dataclasses.dataclass(order=True)
 class Inference:
     """
     This data class expresses the contract between data improvers and the improve runner.
+
+    Source and confidence correspond to the improver, only inferences with highest confidence
+    for one vulnerability <-> package relationship is to be inserted into the database
     """
-    advisory: Advisory
+
+    advisory_data: AdvisoryData
     source: str
     confidence: int
 
@@ -28,10 +38,12 @@ class Inference:
         if self.confidence < 0:
             raise UnderConfidenceError
 
+
 class Improver:
     """
-    All improvers should inherit this class and implement updated_inferences method to return
+    All improvers should inherit this class and implement inferences method to return
     new inferences for a package or vulnerability
     """
-    def updated_inferences(self):
+
+    def inferences(self):
         raise NotImplementedError

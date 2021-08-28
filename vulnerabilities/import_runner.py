@@ -23,13 +23,15 @@
 
 import dataclasses
 import datetime
+import json
 import logging
 from typing import Tuple
 from typing import Set
 
 
 from vulnerabilities import models
-from vulnerabilities.data_source import Advisory
+from vulnerabilities.models import Advisory
+from vulnerabilities.data_source import AdvisoryData
 from vulnerabilities.data_source import PackageURL
 from vulnerabilities.data_inference import Inference
 from vulnerabilities.data_inference import MAX_CONFIDENCE
@@ -87,8 +89,9 @@ class ImportRunner:
         logger.info(f"Starting import for {self.importer.name}.")
         data_source = self.importer.make_data_source(cutoff_date=cutoff_date)
         with data_source:
-            advisories = data_source.updated_advisories()
-            process_advisories("importer", advisories)
+            advisory_data = data_source.advisory_data()
+            source = f"{data_source.__module__}.{data_source.__class__.__qualname__}"
+            process_advisories(source, advisory_data)
         self.importer.last_run = datetime.datetime.now(tz=datetime.timezone.utc)
         self.importer.data_source_cfg = dataclasses.asdict(data_source.config)
         self.importer.save()
@@ -109,10 +112,20 @@ def get_vuln_pkg_refs(vulnerability, package):
     )
 
 
-def process_advisories(source: str, advisories: Set[Advisory]) -> None:
+def process_advisories(source: str, advisory_data: Set[AdvisoryData]) -> None:
     """
     Insert advisories into the database
-    Advisories are treated as full confidence infererences.
     """
-    inferences = [ Inference(advisory, source, MAX_CONFIDENCE) for advisory in advisories ]
-    process_inferences(inferences)
+
+    advisories = []
+    for data in advisory_data:
+        advisories.append(
+            Advisory(
+                date_published=data.date_published,
+                date_collected=datetime.datetime.now(tz=datetime.timezone.utc),
+                source=source,
+                data=data.toJson(),
+            )
+        )
+
+    Advisory.objects.bulk_create(advisories)  # TODO: handle conflicts, duplicates (update? ignore?)

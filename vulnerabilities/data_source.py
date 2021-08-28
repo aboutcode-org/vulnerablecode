@@ -21,6 +21,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import dataclasses
+import json
 import logging
 import os
 import shutil
@@ -47,7 +48,6 @@ from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.helpers import is_cve
 from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.helpers import AffectedPackage
 
 logger = logging.getLogger(__name__)
 
@@ -74,8 +74,36 @@ class Reference:
         return Reference(reference_id=self.reference_id, url=self.url, severities=severities)
 
 
+@dataclasses.dataclass(order=True, frozen=True)
+class AffectedPackage:
+    # this package MUST NOT have a version
+    package: PackageURL
+    # the version specifier contains the version scheme as is: semver:>=1,3,4
+    version_specifier: VersionSpecifier
+
+    def toJson(self):
+        # TODO: VersionSpecifier.__str__ is not working
+        # https://github.com/nexB/univers/issues/7
+        # Adjust following code when it is fixed
+        scheme = self.version_specifier.scheme
+        ranges = ",".join(
+            [f"{rng.operator}{rng.version.version_string}" for rng in self.version_specifier.ranges]
+        )
+        return json.dumps({"package": self.package, "version_specifier": f"{scheme}:{ranges}"})
+
+    @staticmethod
+    def fromJson(affected_package_json):
+        obj = json.loads(affected_package_json)
+        affected_package = AffectedPackage(**obj)
+        package = PackageURL(*affected_package.package)
+        version_specifier = VersionSpecifier.from_version_spec_string(
+            affected_package.version_specifier
+        )
+        return AffectedPackage(package=package, version_specifier=version_specifier)
+
+
 @dataclasses.dataclass(order=True)
-class Advisory:
+class AdvisoryData:
     """
     This data class expresses the contract between data sources and the import runner.
 
@@ -86,30 +114,44 @@ class Advisory:
 
     summary: str
     vulnerability_id: Optional[str] = None
-    affected_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
-    fixed_package_urls: Iterable[PackageURL] = dataclasses.field(default_factory=list)
+    affected_packages: List[AffectedPackage] = dataclasses.field(default_factory=list)
+    fixed_packages: List[AffectedPackage] = dataclasses.field(default_factory=list)
     references: List[Reference] = dataclasses.field(default_factory=list)
-
-    def __post_init__(self):
-        if self.vulnerability_id and not is_cve(self.vulnerability_id):
-            raise ValueError("CVE expected, found: {}".format(self.vulnerability_id))
+    date_published: Optional[str] = None
 
     def normalized(self):
-        affected_package_urls = set(self.affected_package_urls)
-        fixed_package_urls = set(self.fixed_package_urls)
-        references = sorted(
-            self.references, key=lambda reference: (reference.reference_id, reference.url)
-        )
-        for index, _ in enumerate(self.references):
-            references[index] = references[index].normalized()
+        ...
 
-        return Advisory(
-            summary=self.summary,
-            vulnerability_id=self.vulnerability_id,
-            affected_package_urls=affected_package_urls,
-            fixed_package_urls=fixed_package_urls,
-            references=references,
-        )
+    def serializable(self, o):
+        if isinstance(o, AffectedPackage):
+            return o.toJson()
+        if isinstance(o, Reference):
+            return vars(o)
+        if isinstance(o, datetime):
+            return o.isoformat()
+
+        return json.JSONEncoder.default(self, o)
+
+    def toJson(self):
+        return json.dumps(vars(self), default=self.serializable)
+
+    @staticmethod
+    def fromJson(advisory_data_json: str):
+        obj = json.loads(advisory_data_json)
+        advisory_data = AdvisoryData(**obj)
+        advisory_data.affected_packages = [
+            AffectedPackage.fromJson(p) for p in advisory_data.affected_packages
+        ]
+        advisory_data.fixed_packages = [
+            AffectedPackage.fromJson(p) for p in advisory_data.fixed_packages
+        ]
+        advisory_data.references = [Reference(**ref) for ref in advisory_data.references]
+        return advisory_data
+
+
+class Advisory:
+    # TODO: Get rid of this after migration
+    ...
 
 
 class InvalidConfigurationError(Exception):
@@ -192,22 +234,18 @@ class DataSource(ContextManager):
         """
         pass
 
-    def updated_advisories(self) -> Set[Advisory]:
+    def advisory_data(self) -> Set[AdvisoryData]:
         """
-        Subclasses return Advisory objects that have been modified since
-        the last run or self.cutoff_date.
-
-        NOTE: Data sources that do not enable detection of changes to existing records vs added
-              records must only implement this method, not added_advisories(). The ImportRunner
-              relies on this contract to decide between insert and update operations.
+        Subclasses return AdvisoryData objects
         """
-        return set()
+        raise NotImplementedError
 
     def error(self, msg: str) -> None:
         """
         Helper method for raising InvalidConfigurationError with the class name in the message.
         """
         raise InvalidConfigurationError(f"{type(self).__name__}: {msg}")
+
 
 @dataclasses.dataclass
 class GitDataSourceConfiguration(DataSourceConfiguration):
@@ -451,7 +489,7 @@ class OvalDataSource(DataSource):
         # TODO: enforce that we receive the proper data here
         raise NotImplementedError
 
-    def updated_advisories(self) -> List[Advisory]:
+    def advisory_data(self) -> List[AdvisoryData]:
         for metadata, oval_file in self._fetch():
             try:
                 oval_data = self.get_data_from_xml_doc(oval_file, metadata)
@@ -476,7 +514,7 @@ class OvalDataSource(DataSource):
         """
         raise NotImplementedError
 
-    def get_data_from_xml_doc(self, xml_doc: ET.ElementTree, pkg_metadata={}) -> List[Advisory]:
+    def get_data_from_xml_doc(self, xml_doc: ET.ElementTree, pkg_metadata={}) -> List[AdvisoryData]:
         """
         The orchestration method of the OvalDataSource. This method breaks an
         OVAL xml ElementTree into a list of `Advisory`.
@@ -488,65 +526,67 @@ class OvalDataSource(DataSource):
                 {"type":"deb","qualifiers":{"distro":"buster"} }
         """
 
-        all_adv = []
-        oval_doc = OvalParser(self.translations, xml_doc)
-        raw_data = oval_doc.get_data()
-        all_pkgs = self._collect_pkgs(raw_data)
-        self.set_api(all_pkgs)
+        # TODO: Make this compatible to new model
 
-        # convert definition_data to Advisory objects
-        for definition_data in raw_data:
-            # These fields are definition level, i.e common for all elements
-            # connected/linked to an OvalDefinition
-            vuln_id = definition_data["vuln_id"]
-            description = definition_data["description"]
-            references = [Reference(url=url) for url in definition_data["reference_urls"]]
-            affected_packages = []
-            for test_data in definition_data["test_data"]:
-                for package_name in test_data["package_list"]:
-                    if package_name and len(package_name) >= 50:
-                        continue
+        # all_adv = []
+        # oval_doc = OvalParser(self.translations, xml_doc)
+        # raw_data = oval_doc.get_data()
+        # all_pkgs = self._collect_pkgs(raw_data)
+        # self.set_api(all_pkgs)
 
-                    affected_version_range = test_data["version_ranges"] or set()
-                    version_class = version_class_by_package_type[pkg_metadata["type"]]
-                    version_scheme = version_class.scheme
+        # # convert definition_data to Advisory objects
+        # for definition_data in raw_data:
+        #     # These fields are definition level, i.e common for all elements
+        #     # connected/linked to an OvalDefinition
+        #     vuln_id = definition_data["vuln_id"]
+        #     description = definition_data["description"]
+        #     references = [Reference(url=url) for url in definition_data["reference_urls"]]
+        #     affected_packages = []
+        #     for test_data in definition_data["test_data"]:
+        #         for package_name in test_data["package_list"]:
+        #             if package_name and len(package_name) >= 50:
+        #                 continue
 
-                    affected_version_range = VersionSpecifier.from_scheme_version_spec_string(
-                        version_scheme, affected_version_range
-                    )
-                    all_versions = self.pkg_manager_api.get(package_name).valid_versions
+        #             affected_version_range = test_data["version_ranges"] or set()
+        #             version_class = version_class_by_package_type[pkg_metadata["type"]]
+        #             version_scheme = version_class.scheme
 
-                    # FIXME: what is this 50 DB limit? that's too small for versions
-                    # FIXME: we should not drop data this way
-                    # This filter is for filtering out long versions.
-                    # 50 is limit because that's what db permits atm.
-                    all_versions = [version for version in all_versions if len(version) < 50]
-                    if not all_versions:
-                        continue
+        #             affected_version_range = VersionSpecifier.from_scheme_version_spec_string(
+        #                 version_scheme, affected_version_range
+        #             )
+        #             all_versions = self.pkg_manager_api.get(package_name).valid_versions
 
-                    affected_purls = []
-                    safe_purls = []
-                    for version in all_versions:
-                        purl = self.create_purl(
-                            pkg_name=package_name,
-                            pkg_version=version,
-                            pkg_data=pkg_metadata,
-                        )
-                        if version_class(version) in affected_version_range:
-                            affected_purls.append(purl)
-                        else:
-                            safe_purls.append(purl)
+        #             # FIXME: what is this 50 DB limit? that's too small for versions
+        #             # FIXME: we should not drop data this way
+        #             # This filter is for filtering out long versions.
+        #             # 50 is limit because that's what db permits atm.
+        #             all_versions = [version for version in all_versions if len(version) < 50]
+        #             if not all_versions:
+        #                 continue
 
-                    affected_packages.extend(
-                        nearest_patched_package(affected_purls, safe_purls),
-                    )
+        #             affected_purls = []
+        #             safe_purls = []
+        #             for version in all_versions:
+        #                 purl = self.create_purl(
+        #                     pkg_name=package_name,
+        #                     pkg_version=version,
+        #                     pkg_data=pkg_metadata,
+        #                 )
+        #                 if version_class(version) in affected_version_range:
+        #                     affected_purls.append(purl)
+        #                 else:
+        #                     safe_purls.append(purl)
 
-            all_adv.append(
-                Advisory(
-                    summary=description,
-                    affected_packages=affected_packages,
-                    vulnerability_id=vuln_id,
-                    references=references,
-                )
-            )
-        return all_adv
+        #             affected_packages.extend(
+        #                 nearest_patched_package(affected_purls, safe_purls),
+        #             )
+
+        #     all_adv.append(
+        #         Advisory(
+        #             summary=description,
+        #             affected_packages=affected_packages,
+        #             vulnerability_id=vuln_id,
+        #             references=references,
+        #         )
+        #     )
+        # return all_adv

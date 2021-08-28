@@ -22,6 +22,8 @@
 
 import asyncio
 import dataclasses
+from datetime import datetime
+from typing import List
 
 import requests
 from packageurl import PackageURL
@@ -29,14 +31,14 @@ from bs4 import BeautifulSoup
 from univers.version_specifier import VersionSpecifier
 from univers.versions import SemverVersion
 
-from vulnerabilities.data_source import Advisory
+from vulnerabilities.data_source import AdvisoryData
+from vulnerabilities.data_source import AffectedPackage
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import Version
 from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.helpers import AffectedPackage
 
 
 @dataclasses.dataclass
@@ -64,15 +66,15 @@ class NginxDataSource(DataSource):
             normalized_versions.add(normalized_version)
         self.version_api.cache["nginx/nginx"] = normalized_versions
 
-    def updated_advisories(self):
-        advisories = []
-        self.set_api()
+    def advisory_data(self) -> List[AdvisoryData]:
+        adv_data = []
+        #        self.set_api()
         data = requests.get(self.url).content
-        advisories.extend(self.to_advisories(data))
-        return advisories
+        adv_data.extend(self.to_advisories(data))
+        return adv_data
 
     def to_advisories(self, data):
-        advisories = []
+        advisory_data = []
         soup = BeautifulSoup(data, features="lxml")
         vuln_list = soup.select("li p")
 
@@ -111,19 +113,21 @@ class NginxDataSource(DataSource):
                     continue
 
                 if "Vulnerable" in child:
-                    vulnerable_packages = self.extract_vuln_pkgs(child)
+                    affected_packages = self.extract_vuln_pkgs(child)
                     continue
 
-            advisories.append(
-                Advisory(
-                    vulnerability_id=cve_id,
+            advisory_data.append(
+                AdvisoryData(
                     summary=summary,
-                    affected_package_urls=vulnerable_packages,
-                    fixed_package_urls=fixed_packages,
+                    vulnerability_id=cve_id,
+                    affected_packages=affected_packages,
+                    fixed_packages=fixed_packages,
+                    references=references,
+                    date_published=datetime.now(),  # TODO: put real date here
                 )
             )
 
-        return advisories
+        return advisory_data
 
     def extract_fixed_pkgs(self, vuln_info):
         vuln_status, version_info = vuln_info.split(": ")
@@ -131,7 +135,8 @@ class NginxDataSource(DataSource):
             return {}
 
         raw_ranges = version_info.split(",")
-        version_ranges = []
+        purl = PackageURL(type="generic", name="nginx")
+        packages = []
         for rng in raw_ranges:
             # Eg. "1.7.3+" gets converted to VersionSpecifier.from_scheme_version_spec_string("semver","^1.7.3")
             # The advisory in this case uses `+` in the sense that any version
@@ -139,17 +144,16 @@ class NginxDataSource(DataSource):
             # "1.7.4" satisifes "1.7.3+", but "1.8.4" does not. "1.7.3+" has same
             # semantics as that of "^1.7.3"
 
-            version_ranges.append(
-                VersionSpecifier.from_scheme_version_spec_string("semver", "^" + rng[:-1])
+            packages.append(
+                AffectedPackage(
+                    package=purl,
+                    version_specifier=VersionSpecifier.from_scheme_version_spec_string(
+                        "semver", "^" + rng[:-1]
+                    ),
+                )
             )
 
-        valid_versions = find_valid_versions(
-            self.version_api.get("nginx/nginx").valid_versions, version_ranges
-        )
-
-        return [
-            PackageURL(type="generic", name="nginx", version=version) for version in valid_versions
-        ]
+        return packages
 
     def extract_vuln_pkgs(self, vuln_info):
         vuln_status, version_infos = vuln_info.split(": ")
@@ -180,16 +184,14 @@ class NginxDataSource(DataSource):
                 )
             )
 
-        valid_versions = find_valid_versions(
-            self.version_api.get("nginx/nginx").valid_versions, version_ranges
-        )
         qualifiers = {}
         if windows_only:
             qualifiers["os"] = "windows"
 
+        purl = PackageURL(type="generic", name="nginx", qualifiers=qualifiers)
         return [
-            PackageURL(type="generic", name="nginx", version=version, qualifiers=qualifiers)
-            for version in valid_versions
+            AffectedPackage(package=purl, version_specifier=version_range)
+            for version_range in version_ranges
         ]
 
 

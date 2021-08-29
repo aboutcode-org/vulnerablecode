@@ -89,7 +89,7 @@ class Vulnerability(models.Model):
         """
         Returns packages which are vulnerable to this vulnerability.
         """
-        return self.vulnerable_packages.all()
+        return self.packages.filter(vulnerabilities__packagerelatedvulnerability__fix=False)
 
     @property
     def resolved_to(self):
@@ -97,7 +97,7 @@ class Vulnerability(models.Model):
         Returns packages, which first received patch against this vulnerability
         in their particular version history.
         """
-        return self.patched_packages.all().distinct()
+        return self.packages.filter(vulnerabilities__packagerelatedvulnerability__fix=True)
 
     def __str__(self):
         return self.vulnerability_id or self.summary
@@ -149,14 +149,14 @@ class Package(PackageURLMixin):
         """
         Returns vulnerabilities which are affecting this package.
         """
-        return self.vulnerabilities.all()
+        return self.vulnerabilities.filter(packagerelatedvulnerability__fix=False)
 
     @property
     def resolved_to(self):
         """
         Returns the vulnerabilities which this package is patched against.
         """
-        return self.resolved_vulnerabilities.all().distinct()
+        return self.vulnerabilities.filter(packagerelatedvulnerability__fix=True)
 
     class Meta:
         unique_together = ("name", "namespace", "type", "version", "qualifiers", "subpath")

@@ -81,18 +81,18 @@ class AffectedPackage:
     # the version specifier contains the version scheme as is: semver:>=1,3,4
     version_specifier: VersionSpecifier
 
-    def toJson(self):
+    def json(self):
         # TODO: VersionSpecifier.__str__ is not working
         # https://github.com/nexB/univers/issues/7
         # Adjust following code when it is fixed
         scheme = self.version_specifier.scheme
         ranges = ",".join(
-            [f"{rng.operator}{rng.version.version_string}" for rng in self.version_specifier.ranges]
+            [f"{rng.operator}{rng.version.value}" for rng in self.version_specifier.ranges]
         )
         return json.dumps({"package": self.package, "version_specifier": f"{scheme}:{ranges}"})
 
     @staticmethod
-    def fromJson(affected_package_json):
+    def from_json(affected_package_json):
         obj = json.loads(affected_package_json)
         affected_package = AffectedPackage(**obj)
         package = PackageURL(*affected_package.package)
@@ -124,7 +124,7 @@ class AdvisoryData:
 
     def serializable(self, o):
         if isinstance(o, AffectedPackage):
-            return o.toJson()
+            return o.json()
         if isinstance(o, Reference):
             return vars(o)
         if isinstance(o, datetime):
@@ -132,18 +132,18 @@ class AdvisoryData:
 
         return json.JSONEncoder.default(self, o)
 
-    def toJson(self):
+    def json(self):
         return json.dumps(vars(self), default=self.serializable)
 
     @staticmethod
-    def fromJson(advisory_data_json: str):
+    def from_json(advisory_data_json: str):
         obj = json.loads(advisory_data_json)
         advisory_data = AdvisoryData(**obj)
         advisory_data.affected_packages = [
-            AffectedPackage.fromJson(p) for p in advisory_data.affected_packages
+            AffectedPackage.from_json(p) for p in advisory_data.affected_packages
         ]
         advisory_data.fixed_packages = [
-            AffectedPackage.fromJson(p) for p in advisory_data.fixed_packages
+            AffectedPackage.from_json(p) for p in advisory_data.fixed_packages
         ]
         advisory_data.references = [Reference(**ref) for ref in advisory_data.references]
         return advisory_data

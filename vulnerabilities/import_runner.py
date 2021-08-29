@@ -124,7 +124,7 @@ def process_advisories(source: str, advisory_data: Set[AdvisoryData]) -> None:
                 date_published=data.date_published,
                 date_collected=datetime.datetime.now(tz=datetime.timezone.utc),
                 source=source,
-                data=data.toJson(),
+                data=data.json(),
             )
         )
 

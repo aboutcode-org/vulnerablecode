@@ -325,5 +325,5 @@ class Advisory(models.Model):
     source = models.CharField(max_length=100)
     improved_on = models.DateTimeField(null=True)
     improved_times = models.IntegerField(default=0)
-    # data would contain a data_source.Advisory
+    # data would contain a data_source.AdvisoryData
     data = models.JSONField()

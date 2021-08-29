@@ -28,19 +28,18 @@ class ImproveRunner:
 
     def run(self) -> None:
         logger.info("Improving using %s.", self.improver.__name__)
+        source = f"{self.improver.__module__}.{self.improver.__qualname__}"
         inferences = self.improver().inferences()
-        process_inferences(inferences)
+        process_inferences(source=source, inferences=inferences)
         logger.info("Finished improving using %s.", self.improver.__name__)
 
 
 @transaction.atomic
-def process_inferences(inferences: Set[Inference]):
+def process_inferences(source: str, inferences: Set[Inference]):
     bulk_create_vuln_pkg_refs = set()
     for inference in inferences:
-        advisory = inference.advisory_data
-        print(advisory)
-        vuln, vuln_created = _get_or_create_vulnerability(advisory)
-        for vuln_ref in advisory.references:
+        vuln, vuln_created = _get_or_create_vulnerability(inference.vulnerability_id, inference.summary)
+        for vuln_ref in inference.references:
             ref, _ = models.VulnerabilityReference.objects.get_or_create(
                 vulnerability=vuln, reference_id=vuln_ref.reference_id, url=vuln_ref.url
             )
@@ -53,26 +52,22 @@ def process_inferences(inferences: Set[Inference]):
                     defaults={"value": str(score.value)},
                 )
 
-        for pkg in advisory.affected_packages:
-            aff_pkg = pkg.package
-            vulnerable_package, _ = _get_or_create_package(aff_pkg)
-
+        for pkg in inference.affected_packages:
+            vulnerable_package, _ = _get_or_create_package(pkg)
             models.PackageRelatedVulnerability(
                 package=vulnerable_package,
                 vulnerability=vuln,
-                source=inference.source,
+                source=source,
                 confidence=inference.confidence,
                 fix=False,
             ).update_or_create()
 
-        for pkg in advisory.fixed_packages:
-            fixed_pkg = pkg.package
-            patched_package, _ = _get_or_create_package(fixed_pkg)
-
+        for pkg in inference.fixed_packages:
+            patched_package, _ = _get_or_create_package(pkg)
             models.PackageRelatedVulnerability(
                 package=patched_package,
                 vulnerability=vuln,
-                source=inference.source,
+                source=source,
                 confidence=inference.confidence,
                 fix=True,
             ).update_or_create()
@@ -83,22 +78,21 @@ def process_inferences(inferences: Set[Inference]):
 
 
 def _get_or_create_vulnerability(
-    advisory: AdvisoryData,
+    vulnerability_id, summary
 ) -> Tuple[models.Vulnerability, bool]:
 
     vuln, created = models.Vulnerability.objects.get_or_create(
-        vulnerability_id=advisory.vulnerability_id
+        vulnerability_id=vulnerability_id
     )  # nopep8
     # Eventually we only want to keep summary from NVD and ignore other descriptions.
-    if advisory.summary and vuln.summary != advisory.summary:
-        vuln.summary = advisory.summary
+    if summary and vuln.summary != summary:
+        vuln.summary = summary
         vuln.save()
 
     return vuln, created
 
 
 def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:
-
     query_kwargs = {}
     for key, val in p.to_dict().items():
         if not val:

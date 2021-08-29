@@ -78,13 +78,13 @@
             inherit version;
             name = "vulnerablecode-${version}";
             src = vulnerablecode-src;
-            dontConfigure = true; # do not use ./configure
+            dontBuild = true; # do not use Makefile
             propagatedBuildInputs = [ pythonEnv postgresql gitMinimal ];
 
             postPatch = ''
-              # Make sure the pycodestyle binary in $PATH is used.
-              substituteInPlace vulnerabilities/tests/test_basics.py \
-                --replace 'join(bin_dir, "pycodestyle")' '"pycodestyle"'
+              # Do not use absolute path.
+              substituteInPlace vulnerablecode/settings.py \
+                --replace 'STATIC_ROOT = "/var/vulnerablecode/static"' 'STATIC_ROOT = "./static"'
             '';
 
             installPhase = ''
@@ -138,6 +138,8 @@
               buildPhase = ''
                 source ${libSh}
                 initPostgres $(pwd)
+                export SECRET_KEY=REALLY_SECRET
+                ${vulnerablecode}/manage.py collectstatic
                 ${vulnerablecode}/manage.py migrate
               '';
 

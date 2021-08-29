@@ -1,8 +1,11 @@
 import dataclasses
 import logging
 from typing import List
+from typing import Optional
 
-from vulnerabilities.data_source import AdvisoryData
+from packageurl import PackageURL
+
+from vulnerabilities.data_source import Reference
 
 logger = logging.getLogger(__name__)
 
@@ -23,13 +26,16 @@ class Inference:
     """
     This data class expresses the contract between data improvers and the improve runner.
 
-    Source and confidence correspond to the improver, only inferences with highest confidence
-    for one vulnerability <-> package relationship is to be inserted into the database
+    Only inferences with highest confidence for one vulnerability <-> package
+    relationship is to be inserted into the database
     """
 
-    advisory_data: AdvisoryData
-    source: str
     confidence: int
+    summary: Optional[str] = None
+    vulnerability_id: Optional[str] = None
+    affected_packages: List[PackageURL] = dataclasses.field(default_factory=list)
+    fixed_packages: List[PackageURL] = dataclasses.field(default_factory=list)
+    references: List[Reference] = dataclasses.field(default_factory=list)
 
     def __post_init__(self):
         if self.confidence > MAX_CONFIDENCE:
@@ -42,8 +48,8 @@ class Inference:
 class Improver:
     """
     All improvers should inherit this class and implement inferences method to return
-    new inferences for a package or vulnerability
+    new inferences for packages or vulnerabilities
     """
 
-    def inferences(self):
+    def inferences(self) -> List[Inference]:
         raise NotImplementedError

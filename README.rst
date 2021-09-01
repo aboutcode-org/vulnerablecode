@@ -93,7 +93,7 @@ First clone the source code::
 Using Docker Compose
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Please find the docker documentation in `Docker Installation <docs/docker_installation.rst>`__
+Please find the docker documentation in `Docker Installation <https://vulnerablecode.readthedocs.io/en/latest/getting-started/docker_installation.html>`__
 
 TL;DR
 """"""

@@ -16,6 +16,7 @@ env = environ.Env(TRAVIS=(bool, False))
 SECRET_KEY = env.str("SECRET_KEY")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[".localhost", "127.0.0.1", "[::1]"])
+DEBUG = True
 
 # Application definition
 
@@ -30,7 +31,6 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     "widget_tweaks",
-    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -122,8 +122,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = "/static/"
-
-STATIC_ROOT = "/var/vulnerablecode/static"
+STATIC_ROOT = "./"
 
 STATICFILES_DIRS = [
     str(PROJECT_DIR.joinpath("static")),
@@ -134,14 +133,7 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 100,
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
-
-SPECTACULAR_SETTINGS = {
-    "SERVE_INCLUDE_SCHEMA": False,
-    "TITLE": "VulnerableCode API",
-}
-# TODO: Specify the license for the API here.
 
 # Set this to true to enable community curation, ie users will be able to edit data
 ENABLE_CURATION = False

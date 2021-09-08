@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VulnerableCode API</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{% static 'api_doc/font.css' %}" rel="stylesheet">
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <redoc spec-url="{% static 'api_doc/api_schema.yaml' %}"></redoc>
+    <script src="{% static 'api_doc/redoc.standalone.js' %}"> </script>
+  </body>
+</html>

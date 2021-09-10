@@ -26,5 +26,5 @@ trap cleanup EXIT
 initPostgres "$TEMPDIR"
 
 "$INSTALL_DIR/manage.py" migrate
-"$INSTALL_DIR/manage.py" collectstatic
+"$INSTALL_DIR/manage.py" collectstatic --no-input
 "$INSTALL_DIR/manage.py" import $ARGS

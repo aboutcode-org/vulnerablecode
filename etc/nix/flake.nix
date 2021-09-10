@@ -147,7 +147,7 @@
                 source ${libSh}
                 initPostgres $(pwd)
                 export SECRET_KEY=REALLY_SECRET
-                ${vulnerablecode}/manage.py collectstatic
+                ${vulnerablecode}/manage.py collectstatic --no-input
                 ${vulnerablecode}/manage.py migrate
               '';
 

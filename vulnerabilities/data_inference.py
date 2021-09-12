@@ -30,9 +30,9 @@ class Inference:
     relationship is to be inserted into the database
     """
 
+    vulnerability_id: str
     confidence: int
     summary: Optional[str] = None
-    vulnerability_id: Optional[str] = None
     affected_packages: List[PackageURL] = dataclasses.field(default_factory=list)
     fixed_packages: List[PackageURL] = dataclasses.field(default_factory=list)
     references: List[Reference] = dataclasses.field(default_factory=list)
@@ -47,9 +47,12 @@ class Inference:
 
 class Improver:
     """
-    All improvers should inherit this class and implement inferences method to return
-    new inferences for packages or vulnerabilities
+    All improvers must inherit this class and implement the infer method to
+    return new inferences for packages or vulnerabilities
     """
 
-    def inferences(self) -> List[Inference]:
+    def infer(self) -> List[Inference]:
+        """
+        Implement this method to generate and return Inferences
+        """
         raise NotImplementedError

@@ -42,6 +42,8 @@ from typing import Tuple
 from git import Repo, DiffIndex
 from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
+from univers.versions import BaseVersion
+from univers.versions import parse_version
 from univers.versions import version_class_by_package_type
 
 from vulnerabilities.oval_parser import OvalParser
@@ -76,29 +78,57 @@ class Reference:
 
 @dataclasses.dataclass(order=True, frozen=True)
 class AffectedPackage:
-    # this package MUST NOT have a version
+    # TODO: Tweak after https://github.com/nexB/univers/issues/8
+    """
+    Contains a range of affected versions and a fixed verison of a given package
+    The PackageURL supplied must *not* have a version
+    """
     package: PackageURL
-    # the version specifier contains the version scheme as is: semver:>=1,3,4
-    version_specifier: VersionSpecifier
+    affected_version_specifier: VersionSpecifier
+    fixed_version: Optional[BaseVersion] = None
+
+    def __post_init__(self):
+        if self.package.version:
+            raise ValueError
+
+        if (
+            self.fixed_version
+            and self.affected_version_specifier.scheme != self.fixed_version.scheme
+        ):
+            raise ValueError
 
     def to_dict(self):
         # TODO: VersionSpecifier.__str__ is not working
         # https://github.com/nexB/univers/issues/7
         # Adjust following code when it is fixed
-        scheme = self.version_specifier.scheme
+        scheme = self.affected_version_specifier.scheme
         ranges = ",".join(
-            [f"{rng.operator}{rng.version.value}" for rng in self.version_specifier.ranges]
+            [f"{rng.operator}{rng.version.value}" for rng in self.affected_version_specifier.ranges]
         )
-        return {"package": self.package, "version_specifier": f"{scheme}:{ranges}"}
+        dct = {
+            "package": self.package,
+            "affected_version_specifier": f"{scheme}:{ranges}",
+        }
+        if self.fixed_version:
+            dct["fixed_version"] = str(self.fixed_version)
+        return dct
 
     @staticmethod
-    def from_dict(affected_package_dict):
-        affected_package = AffectedPackage(**affected_package_dict)
-        package = PackageURL(*affected_package.package)
-        version_specifier = VersionSpecifier.from_version_spec_string(
-            affected_package.version_specifier
+    def from_dict(aff_pkg: dict):
+        package = PackageURL(*aff_pkg["package"])
+        affected_version_specifier = VersionSpecifier.from_version_spec_string(
+            aff_pkg["affected_version_specifier"]
         )
-        return AffectedPackage(package=package, version_specifier=version_specifier)
+        if "fixed_version" in aff_pkg:
+            fixed_version = parse_version(aff_pkg["fixed_version"])
+        else:
+            fixed_version = None
+
+        return AffectedPackage(
+            package=package,
+            affected_version_specifier=affected_version_specifier,
+            fixed_version=fixed_version,
+        )
 
 
 @dataclasses.dataclass(order=True)
@@ -114,7 +144,6 @@ class AdvisoryData:
     summary: str
     vulnerability_id: Optional[str] = None
     affected_packages: List[AffectedPackage] = dataclasses.field(default_factory=list)
-    fixed_packages: List[AffectedPackage] = dataclasses.field(default_factory=list)
     references: List[Reference] = dataclasses.field(default_factory=list)
     date_published: Optional[datetime.date] = None
 
@@ -126,7 +155,6 @@ class AdvisoryData:
             "summary": self.summary,
             "vulnerability_id": self.vulnerability_id,
             "affected_packages": [pkg.to_dict() for pkg in self.affected_packages],
-            "fixed_packages": [pkg.to_dict() for pkg in self.fixed_packages],
             "references": [vars(ref) for ref in self.references],
             "date_published": self.date_published.isoformat(),
         }
@@ -136,9 +164,6 @@ class AdvisoryData:
         advisory_data = AdvisoryData(**advisory_data)
         advisory_data.affected_packages = [
             AffectedPackage.from_dict(p) for p in advisory_data.affected_packages
-        ]
-        advisory_data.fixed_packages = [
-            AffectedPackage.from_dict(p) for p in advisory_data.fixed_packages
         ]
         advisory_data.references = [Reference(**ref) for ref in advisory_data.references]
         return advisory_data

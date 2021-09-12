@@ -38,7 +38,9 @@ class ImproveRunner:
 def process_inferences(source: str, inferences: Set[Inference]):
     bulk_create_vuln_pkg_refs = set()
     for inference in inferences:
-        vuln, vuln_created = _get_or_create_vulnerability(inference.vulnerability_id, inference.summary)
+        vuln, vuln_created = _get_or_create_vulnerability(
+            inference.vulnerability_id, inference.summary
+        )
         for vuln_ref in inference.references:
             ref, _ = models.VulnerabilityReference.objects.get_or_create(
                 vulnerability=vuln, reference_id=vuln_ref.reference_id, url=vuln_ref.url
@@ -77,9 +79,7 @@ def process_inferences(source: str, inferences: Set[Inference]):
     )
 
 
-def _get_or_create_vulnerability(
-    vulnerability_id, summary
-) -> Tuple[models.Vulnerability, bool]:
+def _get_or_create_vulnerability(vulnerability_id, summary) -> Tuple[models.Vulnerability, bool]:
 
     vuln, created = models.Vulnerability.objects.get_or_create(
         vulnerability_id=vulnerability_id

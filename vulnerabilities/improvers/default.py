@@ -1,3 +1,4 @@
+import json
 from typing import List
 from itertools import chain
 
@@ -11,6 +12,7 @@ from vulnerabilities.data_inference import Improver
 from vulnerabilities.data_inference import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
 
+
 class DefaultImprover(Improver):
     def inferences(self) -> List[Inference]:
         advisories = Advisory.objects.all()
@@ -18,7 +20,7 @@ class DefaultImprover(Improver):
         inferences = []
 
         for advisory in advisories:
-            advisory_data = AdvisoryData.from_json(advisory.data)
+            advisory_data = AdvisoryData.from_dict(json.loads(advisory.data))
 
             affected_packages = chain.from_iterable(
                 [exact_purls(pkg) for pkg in advisory_data.affected_packages]
@@ -55,7 +57,7 @@ def exact_purls(pkg: AffectedPackage) -> List[PackageURL]:
     purls = []
     for rng in vs.ranges:
         if "=" in rng.operator and not "!" in rng.operator:
-            purl = pkg.package._replace(version = rng.version.value)
+            purl = pkg.package._replace(version=rng.version.value)
             purls.append(purl)
 
     return purls

@@ -320,10 +320,19 @@ class VulnerabilitySeverity(models.Model):
 
 
 class Advisory(models.Model):
-    date_published = models.DateField()
-    date_collected = models.DateField()
-    source = models.CharField(max_length=100)
-    improved_on = models.DateTimeField(null=True)
-    improved_times = models.IntegerField(default=0)
-    # data would contain a data_source.AdvisoryData
-    data = models.JSONField()
+    """
+    An advisory directly obtained from upstream without any modifications.
+    """
+
+    date_published = models.DateField(help_text="Date of publication of the advisory")
+    date_collected = models.DateField(help_text="Date on which the advisory was collected")
+    source = models.CharField(
+        max_length=100,
+        help_text="Fully qualified name of the importer prefixed with the module name importing the advisory. Eg: vulnerabilities.importers.nginx.NginxDataSource",
+    )
+    date_improved = models.DateTimeField(
+        null=True, help_text="Latest date on which the advisory was improved by an improver"
+    )
+    data = models.JSONField(
+        help_text="Contents of data_source.AdvisoryData serialized as a JSON object"
+    )

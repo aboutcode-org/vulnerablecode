@@ -75,8 +75,14 @@ class PackageSearchView(View):
             models.Package.objects.all()
             .filter(name__icontains=package_name, type__icontains=package_type)
             .annotate(
-                vulnerability_count=Count("vulnerabilities", filter=Q(vulnerabilities__packagerelatedvulnerability__fix=False)),
-                patched_vulnerability_count=Count("vulnerabilities",filter=Q(vulnerabilities__packagerelatedvulnerability__fix=True)),
+                vulnerability_count=Count(
+                    "vulnerabilities",
+                    filter=Q(vulnerabilities__packagerelatedvulnerability__fix=False),
+                ),
+                patched_vulnerability_count=Count(
+                    "vulnerabilities",
+                    filter=Q(vulnerabilities__packagerelatedvulnerability__fix=True),
+                ),
             )
             .prefetch_related()
         )
@@ -103,8 +109,12 @@ class VulnerabilitySearchView(View):
         vuln_id = request.GET["vuln_id"]
         return list(
             models.Vulnerability.objects.filter(vulnerability_id__icontains=vuln_id).annotate(
-                vulnerable_package_count=Count("packages", filter=Q(packagerelatedvulnerability__fix=False)),
-                patched_package_count=Count("packages", filter=Q(packagerelatedvulnerability__fix=True)),
+                vulnerable_package_count=Count(
+                    "packages", filter=Q(packagerelatedvulnerability__fix=False)
+                ),
+                patched_package_count=Count(
+                    "packages", filter=Q(packagerelatedvulnerability__fix=True)
+                ),
             )
         )
 

@@ -9,17 +9,7 @@ from vulnerabilities.data_source import Reference
 
 logger = logging.getLogger(__name__)
 
-
-class OverConfidenceError(ValueError):
-    pass
-
-
-class UnderConfidenceError(ValueError):
-    pass
-
-
 MAX_CONFIDENCE = 100
-
 
 @dataclasses.dataclass(order=True)
 class Inference:
@@ -33,16 +23,28 @@ class Inference:
     vulnerability_id: str
     confidence: int
     summary: Optional[str] = None
-    affected_packages: List[PackageURL] = dataclasses.field(default_factory=list)
-    fixed_packages: List[PackageURL] = dataclasses.field(default_factory=list)
+    affected_purls: List[PackageURL] = dataclasses.field(default_factory=list)
+    fixed_purls: List[PackageURL] = dataclasses.field(default_factory=list)
     references: List[Reference] = dataclasses.field(default_factory=list)
 
     def __post_init__(self):
-        if self.confidence > MAX_CONFIDENCE:
-            raise OverConfidenceError
+        if self.confidence > MAX_CONFIDENCE or self.confidence < 0:
+            raise ValueError
 
-        if self.confidence < 0:
-            raise UnderConfidenceError
+        if self.vulnerability_id:
+            assert self.summary or self.affected_purls or self.fixed_purls or self.references
+        else:
+            # TODO: Maybe only having summary
+            assert self.affected_purls or self.fixed_purls or self.references
+
+        versionless_purls = []
+        for purl in self.affected_purls + self.fixed_purls:
+            if not purl.version:
+                versionless_purls.append(purl)
+
+        assert (
+            not versionless_purls
+        ), f"Version-less purls are not supported in an Inference: {versionless_purls}"
 
 
 class Improver:

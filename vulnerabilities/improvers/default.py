@@ -22,20 +22,20 @@ class DefaultImprover(Improver):
         for advisory in advisories:
             advisory_data = AdvisoryData.from_dict(json.loads(advisory.data))
 
-            affected_packages = chain.from_iterable(
+            affected_purls = chain.from_iterable(
                 [exact_purls(pkg) for pkg in advisory_data.affected_packages]
             )
-            fixed_packages = chain.from_iterable(
+            fixed_purls = chain.from_iterable(
                 [exact_purls(pkg) for pkg in advisory_data.fixed_packages]
             )
 
             inferences.append(
                 Inference(
+                    vulnerability_id=advisory_data.vulnerability_id,
                     confidence=MAX_CONFIDENCE,
                     summary=advisory_data.summary,
-                    vulnerability_id=advisory_data.vulnerability_id,
-                    affected_packages=affected_packages,
-                    fixed_packages=fixed_packages,
+                    affected_purls=affected_purls,
+                    fixed_purls=fixed_purls,
                     references=advisory_data.references,
                 )
             )
@@ -50,7 +50,7 @@ def exact_purls(pkg: AffectedPackage) -> List[PackageURL]:
 
     For eg:
     AffectedPackage with version_specifier as scheme:<=2.0 is treated as
-    version 2 but the same with scheme:<2.0 is not considered at all as there
+    version 2.0 but the same with scheme:<2.0 is not considered at all as there
     is no info about what comes before the supplied version
     """
     vs = pkg.version_specifier

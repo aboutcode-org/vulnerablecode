@@ -219,6 +219,9 @@ environment variable with::
 
     export GH_TOKEN=yourgithubtoken
 
+If you are running behind a proxy, you will need to setup the standard ``https_proxy`` variable.
+
+    export https_proxy=https?://<proxy>:<port>
 
 See `GitHub docs  
 <https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token>`_ 

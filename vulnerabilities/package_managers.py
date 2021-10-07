@@ -82,8 +82,10 @@ class VersionAPI:
         raise NotImplementedError
 
 
-def client_session():
-    return ClientSession(raise_for_status=True, trust_env=True)
+def client_session(**kwargs):
+    # trust_env is important so that https_proxy environment variable is used
+    # in proxy protected environments
+    return ClientSession(raise_for_status=True, trust_env=True, **kwargs)
 
 
 class LaunchpadVersionAPI(VersionAPI):
@@ -227,9 +229,7 @@ class DebianVersionAPI(VersionAPI):
     async def load_api(self, pkg_set):
         # Need to set the headers, because the Debian API upgrades
         # the connection to HTTP 2.0
-        async with ClientSession(
-            raise_for_status=True, headers={"Connection": "keep-alive"}
-        ) as session:
+        async with client_session(headers={"Connection": "keep-alive"}) as session:
             await asyncio.gather(
                 *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
             )

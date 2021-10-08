@@ -21,11 +21,13 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
+import distutils.spawn
 import json
 import os
+from unittest.case import SkipTest
 import xml.etree.ElementTree as ET
 from datetime import datetime
-from bs4 import BeautifulSoup
+from aiohttp.client import ClientSession
 from dateutil.tz import tzlocal
 from pytz import UTC
 from unittest import TestCase
@@ -34,8 +36,10 @@ from unittest.mock import AsyncMock
 from vulnerabilities.package_managers import ComposerVersionAPI
 from vulnerabilities.package_managers import MavenVersionAPI
 from vulnerabilities.package_managers import NugetVersionAPI
+from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import Version
 from vulnerabilities.package_managers import VersionResponse
+from vulnerabilities.package_managers import client_session
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")
@@ -51,11 +55,70 @@ class MockClientSession:
         mock_response.read = self.read
         return mock_response
 
+    def get(self, *args, **kwargs):
+        kwargs["method"] = "get"
+        return self.request(*args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        kwargs["method"] = "post"
+        return self.request(*args, **kwargs)
+
     async def json(self):
         return self.return_val
 
     async def read(self):
         return self.return_val
+
+
+class RecordedClientSession:
+    def __init__(self, test_id, regen=False):
+        self.test_id = test_id
+        self.req_num = 1
+        self.headers = {}
+        self.regen = regen
+        if regen:
+            self.session = ClientSession()
+
+    @property
+    def record_filename(self):
+        return os.path.join(TEST_DATA, "records", f"{self.test_id}_{self.req_num}.json")
+
+    async def request(self, *args, **kwargs):
+        if self.regen:
+            self.session.headers.update(self.headers)
+            res = await self.session.request(*args, **kwargs)
+            data = await res.read()
+            with open(self.record_filename, "wb") as f:
+                f.write(data)
+        with open(self.record_filename, "rb") as f:
+            self.return_val = f.read()
+
+        mock_response = AsyncMock()
+        mock_response.json = self.json
+        mock_response.read = self.read
+        self.req_num += 1
+        return mock_response
+
+    def get(self, *args, **kwargs):
+        return self.request("get", *args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        return self.request("post", *args, **kwargs)
+
+    async def json(self):
+        return json.loads(self.return_val)
+
+    async def read(self):
+        return self.return_val
+
+    async def __aenter__(self):
+        if self.regen:
+            await self.session.__aenter__()
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb):
+        if self.regen:
+            return await self.session.__aexit__(exc_type, exc, tb)
 
 
 class TestComposerVersionAPI(TestCase):
@@ -496,3 +559,38 @@ class TestNugetVersionAPI(TestCase):
     #         self.version_api.load_to_api("Exfat.Ntfs")
 
     #     assert self.version_api.get("Exfat.Ntfs") == self.expected_versions
+
+
+class TestGitHubTagsAPI(TestCase):
+    regen = False
+
+    def setUp(self) -> None:
+        if not os.getenv("GH_TOKEN"):
+            if not distutils.spawn.find_executable("svn"):
+                raise SkipTest("cannot find svn executable and GH_TOKEN variable is not set")
+
+        return super().setUp()
+
+    def do_test_fetch(self, ownername):
+        self.version_api = GitHubTagsAPI()
+        test_id = ownername.replace("/", "_")
+
+        async def async_run():
+            async with RecordedClientSession(test_id, regen=self.regen) as session:
+                await self.version_api.fetch(ownername, session)
+
+        asyncio.run(async_run())
+
+    def test_simple(self):
+        self.do_test_fetch("nexB/vulnerablecode")
+        assert self.version_api.get("nexB/vulnerablecode") == VersionResponse(
+            newer_versions=set(),
+            valid_versions={
+                "v0.1",
+                "v20.10",
+            },
+        )
+
+    def test_huge_repo(self):
+        self.do_test_fetch("torvalds/linux")
+        assert len(self.version_api.get("torvalds/linux").valid_versions) > 700

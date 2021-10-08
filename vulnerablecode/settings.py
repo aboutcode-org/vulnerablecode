@@ -122,7 +122,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = "/static/"
-STATIC_ROOT = "./"
+STATIC_ROOT = env.str("VULNERABLECODE_STATIC_ROOT", "./")
 
 STATICFILES_DIRS = [
     str(PROJECT_DIR.joinpath("static")),

@@ -57,7 +57,7 @@ incarnations of a package. Being specific increases the accuracy and validity
 of the data as the same version of an upstream package across different
 ecosystems may or may not be vulnerable to the same vulnerability.
 
-The packages are identified using Package URL `PURL 
+The packages are identified using Package URL `PURL
 <https://github.com/package-url/purl-spec>`__ as primary identifiers rather than
 CPEs. This makes answers to questions such as "Is package foo vulnerable
 to vulnerability bar?"  much more accurate and easy to interpret.
@@ -68,7 +68,7 @@ The primary access to the data is through a REST API.
 In addition, an emerging web interface goal is to support vulnerabilities data
 browsing and search and progressively to enable community curation of the data
 with the addition of new packages and vulnerabilities, and reviewing and
-updating their relationships. 
+updating their relationships.
 
 We also plan to mine for vulnerabilities which didn't receive any
 exposure due to various reasons like but not limited to the complicated
@@ -102,6 +102,7 @@ TL;DR
 
     git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
     make envfile
+    docker-compose build
     docker-compose up
 
 Go to http://localhost:8000/ on a web browser to access the web UI.
@@ -121,7 +122,7 @@ On Debian-based distros, these can be installed with::
     sudo apt-get install python3-venv python3-dev postgresql libpq-dev build-essential
 
 
-**Database configuration** 
+**Database configuration**
 
 - Create a user named ``vulnerablecode``. Use ``vulnerablecode`` as password
   when prompted::
@@ -138,7 +139,7 @@ On Debian-based distros, these can be installed with::
 **Application dependencies**
 
 Create a virtualenv, install dependencies, generate static files and run the database migrations::
-    
+
     make envfile
     python3 -m venv venv
     source venv/bin/activate
@@ -164,11 +165,11 @@ You can specify several hosts by separating them with a comma (`,`)
 Using Nix
 ~~~~~~~~~
 
-You can install VulnerableCode with `Nix <https://nixos.org/download.html>`__ 
+You can install VulnerableCode with `Nix <https://nixos.org/download.html>`__
 (`Flake <https://nixos.wiki/wiki/Flakes>`__ support is needed)::
 
     cd etc/nix
-    nix-shell -p nixFlakes --run "nix --print-build-logs flake check " # build & run tests 
+    nix-shell -p nixFlakes --run "nix --print-build-logs flake check " # build & run tests
 
 There are several options to use the Nix version::
 
@@ -223,8 +224,8 @@ If you are running behind a proxy, you will need to setup the standard ``https_p
 
     export https_proxy=https?://<proxy>:<port>
 
-See `GitHub docs  
-<https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token>`_ 
+See `GitHub docs
+<https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token>`_
 for instructions on how to obtain your GitHub token.
 
 To run all data importers use::
@@ -237,7 +238,7 @@ To list available importers use::
 
 To run specific importers::
 
-    python manage.py import rust npm 
+    python manage.py import rust npm
 
 
 REST API access

@@ -3,7 +3,7 @@ from typing import List
 from itertools import chain
 
 from packageurl import PackageURL
-from univers.version_range import VersionRange
+from django.db.models.query import QuerySet
 
 from vulnerabilities.data_source import AdvisoryData
 from vulnerabilities.data_source import AffectedPackage
@@ -14,36 +14,28 @@ from vulnerabilities.models import Advisory
 
 
 class DefaultImprover(Improver):
-    def inferences(self) -> List[Inference]:
-        advisories = Advisory.objects.all()
+    @property
+    def interesting_advisories(self) -> QuerySet:
+        return Advisory.objects.all()
 
+    def get_inferences(self, advisory_data: AdvisoryData) -> List[Inference]:
         inferences = []
-
-        for advisory in advisories:
-            advisory_data = AdvisoryData.from_dict(json.loads(advisory.data))
-
-            affected_purls = chain.from_iterable(
-                [exact_purls(pkg) for pkg in advisory_data.affected_packages]
-            )
-            fixed_purls = chain.from_iterable(
-                [exact_purls(pkg) for pkg in advisory_data.fixed_packages]
-            )
-
+        for aff_pkg in advisory_data.affected_packages:
+            affected_purls, fixed_purl = exact_purls(aff_pkg)
             inferences.append(
                 Inference(
                     vulnerability_id=advisory_data.vulnerability_id,
                     confidence=MAX_CONFIDENCE,
                     summary=advisory_data.summary,
                     affected_purls=affected_purls,
-                    fixed_purls=fixed_purls,
+                    fixed_purls=[fixed_purl],
                     references=advisory_data.references,
                 )
             )
-
         return inferences
 
 
-def exact_purls(pkg: AffectedPackage) -> List[PackageURL]:
+def exact_purls(aff_pkg: AffectedPackage) -> (List[PackageURL], PackageURL):
     """
     Only AffectedPackages with an equality in their VersionSpecifier are
     considered as exact purls.
@@ -52,12 +44,17 @@ def exact_purls(pkg: AffectedPackage) -> List[PackageURL]:
     AffectedPackage with version_specifier as scheme:<=2.0 is treated as
     version 2.0 but the same with scheme:<2.0 is not considered at all as there
     is no info about what comes before the supplied version
+
+    Return a list of affected PackageURL and corresponding fixed PackageURL
     """
-    vs = pkg.version_specifier
-    purls = []
+    vs = aff_pkg.affected_version_specifier
+    aff_purls = []
     for rng in vs.ranges:
         if "=" in rng.operator and not "!" in rng.operator:
-            purl = pkg.package._replace(version=rng.version.value)
-            purls.append(purl)
+            aff_purl = aff_pkg.package._replace(version=rng.version.value)
+            aff_purls.append(aff_purl)
 
-    return purls
+    fixed_version = aff_pkg.fixed_version.version_string
+    fixed_purl = aff_pkg.package._replace(version=fixed_version)
+
+    return aff_purls, fixed_purl

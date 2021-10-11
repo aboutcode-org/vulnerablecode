@@ -1,4 +1,3 @@
-from . import nginx
 from . import default
 
 IMPROVER_REGISTRY = [default.DefaultImprover]

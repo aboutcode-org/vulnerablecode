@@ -4,12 +4,15 @@ from typing import List
 from typing import Optional
 
 from packageurl import PackageURL
+from django.db.models.query import QuerySet
 
 from vulnerabilities.data_source import Reference
+from vulnerabilities.data_source import AdvisoryData
 
 logger = logging.getLogger(__name__)
 
 MAX_CONFIDENCE = 100
+
 
 @dataclasses.dataclass(order=True)
 class Inference:
@@ -53,8 +56,15 @@ class Improver:
     return new inferences for packages or vulnerabilities
     """
 
-    def infer(self) -> List[Inference]:
+    @property
+    def interesting_advisories(self) -> QuerySet:
         """
-        Implement this method to generate and return Inferences
+        Return QuerySet for the advisories this improver is interested in
+        """
+        raise NotImplementedError
+
+    def get_inferences(self, advisory_data: AdvisoryData) -> List[Inference]:
+        """
+        Generate and return Inferences for the given advisory data
         """
         raise NotImplementedError

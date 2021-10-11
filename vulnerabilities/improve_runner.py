@@ -1,8 +1,9 @@
 from datetime import datetime
-import dataclasses
+from datetime import timezone
+import json
 import logging
 from typing import Tuple
-from typing import Set
+from typing import List
 
 from django.db import transaction
 
@@ -10,6 +11,7 @@ from vulnerabilities import models
 from vulnerabilities.data_source import PackageURL
 from vulnerabilities.data_source import AdvisoryData
 from vulnerabilities.data_inference import Inference
+from vulnerabilities.models import Advisory
 
 
 logger = logging.getLogger(__name__)
@@ -29,14 +31,25 @@ class ImproveRunner:
     def run(self) -> None:
         logger.info("Improving using %s.", self.improver.__name__)
         source = f"{self.improver.__module__}.{self.improver.__qualname__}"
-        inferences = self.improver().inferences()
-        process_inferences(source=source, inferences=inferences)
+        improver = self.improver()
+        for advisory in improver.interesting_advisories:
+            inferences = improver.get_inferences(
+                advisory_data=AdvisoryData.from_dict(json.loads(advisory.data))
+            )
+            process_inferences(source=source, advisory=advisory, inferences=inferences)
         logger.info("Finished improving using %s.", self.improver.__name__)
 
 
 @transaction.atomic
-def process_inferences(source: str, inferences: Set[Inference]):
-    bulk_create_vuln_pkg_refs = set()
+def process_inferences(source: str, advisory: Advisory, inferences: List[Inference]):
+
+    if not inferences:
+        logger.debug("Nothing to improve")
+        return
+
+    advisory.date_improved = datetime.now(timezone.utc)
+    advisory.save()
+
     for inference in inferences:
         vuln, vuln_created = _get_or_create_vulnerability(
             inference.vulnerability_id, inference.summary
@@ -54,7 +67,7 @@ def process_inferences(source: str, inferences: Set[Inference]):
                     defaults={"value": str(score.value)},
                 )
 
-        for pkg in inference.affected_packages:
+        for pkg in inference.affected_purls:
             vulnerable_package, _ = _get_or_create_package(pkg)
             models.PackageRelatedVulnerability(
                 package=vulnerable_package,
@@ -64,7 +77,7 @@ def process_inferences(source: str, inferences: Set[Inference]):
                 fix=False,
             ).update_or_create()
 
-        for pkg in inference.fixed_packages:
+        for pkg in inference.fixed_purls:
             patched_package, _ = _get_or_create_package(pkg)
             models.PackageRelatedVulnerability(
                 package=patched_package,
@@ -73,10 +86,6 @@ def process_inferences(source: str, inferences: Set[Inference]):
                 confidence=inference.confidence,
                 fix=True,
             ).update_or_create()
-
-    models.PackageRelatedVulnerability.objects.bulk_create(
-        [i.to_model_object() for i in bulk_create_vuln_pkg_refs]
-    )
 
 
 def _get_or_create_vulnerability(vulnerability_id, summary) -> Tuple[models.Vulnerability, bool]:

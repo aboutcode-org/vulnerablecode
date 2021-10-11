@@ -324,8 +324,8 @@ class Advisory(models.Model):
     An advisory directly obtained from upstream without any modifications.
     """
 
-    date_published = models.DateField(help_text="Date of publication of the advisory")
-    date_collected = models.DateField(help_text="Date on which the advisory was collected")
+    date_published = models.DateField(help_text="UTC Date of publication of the advisory")
+    date_collected = models.DateField(help_text="UTC Date on which the advisory was collected")
     source = models.CharField(
         max_length=100,
         help_text="Fully qualified name of the importer prefixed with the module name importing the advisory. Eg: vulnerabilities.importers.nginx.NginxDataSource",

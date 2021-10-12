@@ -109,19 +109,31 @@ class NginxDataSource(DataSource):
                     continue
 
                 if "Not vulnerable" in child:
-                    fixed_packages = self.extract_fixed_pkgs(child)
+                    fixed_package_versions = self.extract_fixed_pkg_versions(child)
                     continue
 
                 if "Vulnerable" in child:
-                    affected_packages = self.extract_vuln_pkgs(child)
+                    aff_pkgs = self.extract_vuln_pkgs(child)
                     continue
+
+            # TODO: Change this after https://github.com/nexB/univers/issues/8 is fixed
+            purl = PackageURL(type="generic", name="nginx")
+            affected_packages = []
+            for pkg in aff_pkgs:
+                for fixed_version in fixed_package_versions:
+                    affected_packages.append(
+                        AffectedPackage(
+                            package=purl,
+                            affected_version_specifier=pkg.affected_version_specifier,
+                            fixed_version=fixed_version,
+                        )
+                    )
 
             advisory_data.append(
                 AdvisoryData(
                     summary=summary,
                     vulnerability_id=cve_id,
                     affected_packages=affected_packages,
-                    fixed_packages=fixed_packages,
                     references=references,
                     date_published=datetime.now(),  # TODO: put real date here
                 )
@@ -129,33 +141,26 @@ class NginxDataSource(DataSource):
 
         return advisory_data
 
-    def extract_fixed_pkgs(self, vuln_info):
+    def extract_fixed_pkg_versions(self, vuln_info):
         vuln_status, version_info = vuln_info.split(": ")
         if "none" in version_info:
             return {}
 
         raw_ranges = version_info.split(",")
-        purl = PackageURL(type="generic", name="nginx")
-        packages = []
+        versions = []
         for rng in raw_ranges:
-            # Eg. "1.7.3+" gets converted to VersionSpecifier.from_scheme_version_spec_string("semver","^1.7.3")
-            # The advisory in this case uses `+` in the sense that any version
-            # with greater or equal `minor` version satisfies the range.
-            # "1.7.4" satisifes "1.7.3+", but "1.8.4" does not. "1.7.3+" has same
-            # semantics as that of "^1.7.3"
+            # Eg. "1.7.3+" gets converted to SemVersion(1.7.3)
+            # The way this needs to be interpreted is unique for nginx advisories
+            # More: https://github.com/nexB/vulnerablecode/issues/553
 
-            packages.append(
-                AffectedPackage(
-                    package=purl,
-                    version_specifier=VersionSpecifier.from_scheme_version_spec_string(
-                        "semver", "^" + rng[:-1]
-                    ),
-                )
-            )
+            versions.append(SemverVersion(rng[:-1].strip()))
 
-        return packages
+        return versions
 
     def extract_vuln_pkgs(self, vuln_info):
+        # TODO: This method needs to be modified accordingy after
+        # https://github.com/nexB/univers/issues/8 is fixed
+
         vuln_status, version_infos = vuln_info.split(": ")
         if "none" in version_infos:
             return {}
@@ -190,7 +195,7 @@ class NginxDataSource(DataSource):
 
         purl = PackageURL(type="generic", name="nginx", qualifiers=qualifiers)
         return [
-            AffectedPackage(package=purl, version_specifier=version_range)
+            AffectedPackage(package=purl, affected_version_specifier=version_range)
             for version_range in version_ranges
         ]
 

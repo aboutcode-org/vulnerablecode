@@ -19,16 +19,13 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-
 import dataclasses
-import json
 import logging
 import os
 import shutil
 import tempfile
 import traceback
 import xml.etree.ElementTree as ET
-from binaryornot.helpers import is_binary_string
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -39,13 +36,16 @@ from typing import Mapping
 from typing import Optional
 from typing import Set
 from typing import Tuple
-from git import Repo, DiffIndex
+
+from binaryornot.helpers import is_binary_string
+from git import DiffIndex
+from git import Repo
 from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 from univers.versions import BaseVersion
 from univers.versions import parse_version
 from univers.versions import version_class_by_package_type
-
+from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.helpers import is_cve
@@ -141,22 +141,25 @@ class AdvisoryData:
         variable names, etc. as "package_urls" and the latter as "purls".
     """
 
-    summary: str
     vulnerability_id: Optional[str] = None
+    summary: str = None
     affected_packages: List[AffectedPackage] = dataclasses.field(default_factory=list)
     references: List[Reference] = dataclasses.field(default_factory=list)
     date_published: Optional[datetime.date] = None
 
-    def normalized(self):
-        ...
+    def __post_init__(self):
+        if self.vulnerability_id:
+            assert self.summary or self.affected_packages or self.references
+        else:
+            assert self.affected_packages or self.references
 
     def to_dict(self):
         return {
-            "summary": self.summary,
             "vulnerability_id": self.vulnerability_id,
+            "summary": self.summary,
             "affected_packages": [pkg.to_dict() for pkg in self.affected_packages],
             "references": [vars(ref) for ref in self.references],
-            "date_published": self.date_published.isoformat(),
+            "date_published": self.date_published.isoformat() if self.date_published else None,
         }
 
     @staticmethod
@@ -167,11 +170,6 @@ class AdvisoryData:
         ]
         advisory_data.references = [Reference(**ref) for ref in advisory_data.references]
         return advisory_data
-
-
-class Advisory:
-    # TODO: Get rid of this after migration
-    ...
 
 
 class InvalidConfigurationError(Exception):
@@ -252,7 +250,6 @@ class DataSource(ContextManager):
         This method is called in the constructor. It should raise InvalidConfigurationError with a
         human-readable message.
         """
-        pass
 
     def advisory_data(self) -> Set[AdvisoryData]:
         """
@@ -546,67 +543,65 @@ class OvalDataSource(DataSource):
                 {"type":"deb","qualifiers":{"distro":"buster"} }
         """
 
-        # TODO: Make this compatible to new model
+        all_adv = []
+        oval_doc = OvalParser(self.translations, xml_doc)
+        raw_data = oval_doc.get_data()
+        all_pkgs = self._collect_pkgs(raw_data)
+        self.set_api(all_pkgs)
 
-        # all_adv = []
-        # oval_doc = OvalParser(self.translations, xml_doc)
-        # raw_data = oval_doc.get_data()
-        # all_pkgs = self._collect_pkgs(raw_data)
-        # self.set_api(all_pkgs)
+        # convert definition_data to Advisory objects
+        for definition_data in raw_data:
+            # These fields are definition level, i.e common for all elements
+            # connected/linked to an OvalDefinition
+            vuln_id = definition_data["vuln_id"]
+            description = definition_data["description"]
+            references = [Reference(url=url) for url in definition_data["reference_urls"]]
+            affected_packages = []
+            for test_data in definition_data["test_data"]:
+                for package_name in test_data["package_list"]:
+                    if package_name and len(package_name) >= 50:
+                        continue
 
-        # # convert definition_data to Advisory objects
-        # for definition_data in raw_data:
-        #     # These fields are definition level, i.e common for all elements
-        #     # connected/linked to an OvalDefinition
-        #     vuln_id = definition_data["vuln_id"]
-        #     description = definition_data["description"]
-        #     references = [Reference(url=url) for url in definition_data["reference_urls"]]
-        #     affected_packages = []
-        #     for test_data in definition_data["test_data"]:
-        #         for package_name in test_data["package_list"]:
-        #             if package_name and len(package_name) >= 50:
-        #                 continue
+                    affected_version_range = test_data["version_ranges"] or set()
+                    version_class = version_class_by_package_type[pkg_metadata["type"]]
+                    version_scheme = version_class.scheme
 
-        #             affected_version_range = test_data["version_ranges"] or set()
-        #             version_class = version_class_by_package_type[pkg_metadata["type"]]
-        #             version_scheme = version_class.scheme
+                    affected_version_range = VersionSpecifier.from_scheme_version_spec_string(
+                        version_scheme, affected_version_range
+                    )
+                    all_versions = self.pkg_manager_api.get(package_name).valid_versions
 
-        #             affected_version_range = VersionSpecifier.from_scheme_version_spec_string(
-        #                 version_scheme, affected_version_range
-        #             )
-        #             all_versions = self.pkg_manager_api.get(package_name).valid_versions
+                    # FIXME: what is this 50 DB limit? that's too small for versions
+                    # FIXME: we should not drop data this way
+                    # This filter is for filtering out long versions.
+                    # 50 is limit because that's what db permits atm.
+                    all_versions = [version for version in all_versions if len(version) < 50]
+                    if not all_versions:
+                        continue
 
-        #             # FIXME: what is this 50 DB limit? that's too small for versions
-        #             # FIXME: we should not drop data this way
-        #             # This filter is for filtering out long versions.
-        #             # 50 is limit because that's what db permits atm.
-        #             all_versions = [version for version in all_versions if len(version) < 50]
-        #             if not all_versions:
-        #                 continue
+                    affected_purls = []
+                    safe_purls = []
+                    for version in all_versions:
+                        purl = self.create_purl(
+                            pkg_name=package_name,
+                            pkg_version=version,
+                            pkg_data=pkg_metadata,
+                        )
+                        if version_class(version) in affected_version_range:
+                            affected_purls.append(purl)
+                        else:
+                            safe_purls.append(purl)
 
-        #             affected_purls = []
-        #             safe_purls = []
-        #             for version in all_versions:
-        #                 purl = self.create_purl(
-        #                     pkg_name=package_name,
-        #                     pkg_version=version,
-        #                     pkg_data=pkg_metadata,
-        #                 )
-        #                 if version_class(version) in affected_version_range:
-        #                     affected_purls.append(purl)
-        #                 else:
-        #                     safe_purls.append(purl)
+                    affected_packages.extend(
+                        nearest_patched_package(affected_purls, safe_purls),
+                    )
 
-        #             affected_packages.extend(
-        #                 nearest_patched_package(affected_purls, safe_purls),
-        #             )
-
-        #     all_adv.append(
-        #         Advisory(
-        #             summary=description,
-        #             affected_packages=affected_packages,
-        #             vulnerability_id=vuln_id,
-        #             references=references,
-        #         )
-        #     )
-        # return all_adv
+            all_adv.append(
+                Advisory(
+                    summary=description,
+                    affected_packages=affected_packages,
+                    vulnerability_id=vuln_id,
+                    references=references,
+                )
+            )
+        return all_adv

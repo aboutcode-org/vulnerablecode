@@ -25,34 +25,14 @@ import dataclasses
 import datetime
 import json
 import logging
-from typing import Tuple
 from typing import Set
 
 
 from vulnerabilities import models
 from vulnerabilities.models import Advisory
 from vulnerabilities.data_source import AdvisoryData
-from vulnerabilities.data_source import PackageURL
-from vulnerabilities.data_inference import Inference
-from vulnerabilities.data_inference import MAX_CONFIDENCE
-from vulnerabilities.improve_runner import process_inferences
 
 logger = logging.getLogger(__name__)
-
-# This *Inserter class is used to instantiate model objects.
-# Frozen dataclass  store args required to store instantiate
-# model objects, this way model objects can be hashed indirectly which
-# is required in this implementation.
-
-
-@dataclasses.dataclass(frozen=True)
-class PackageRelatedVulnerabilityInserter:
-    vulnerability: models.Vulnerability
-    is_vulnerable: bool
-    package: models.Package
-
-    def to_model_object(self):
-        return models.PackageRelatedVulnerability(**dataclasses.asdict(self))
 
 
 class ImportRunner:

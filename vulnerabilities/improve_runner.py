@@ -18,11 +18,9 @@ logger = logging.getLogger(__name__)
 
 
 class ImproveRunner:
-    """
-    The ImproveRunner is responsible to improve the already imported data by a datasource.
-    Inferences regarding the data could be generated based on multiple factors.
-    All the inferences consist of a confidence score whose threshold could be tuned in user
-    settings (.env file)
+    """ImproveRunner is responsible for populating the database with any
+    consumable data. It does so in its ``run`` method by invoking the given
+    improver and parsing the returned Inferences into proper database fields
     """
 
     def __init__(self, improver):

@@ -14,6 +14,12 @@ from vulnerabilities.models import Advisory
 
 
 class DefaultImprover(Improver):
+    """
+    This is the first step after running any importer. The inferences generated
+    are only a translation of Advisory data returned by the importers into
+    full confidence inferences
+    """
+
     @property
     def interesting_advisories(self) -> QuerySet:
         return Advisory.objects.all()

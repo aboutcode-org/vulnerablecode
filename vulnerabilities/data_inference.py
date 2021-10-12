@@ -52,8 +52,10 @@ class Inference:
 
 class Improver:
     """
-    All improvers must inherit this class and implement the infer method to
-    return new inferences for packages or vulnerabilities
+    Improvers are responsible to improve the already imported data by a datasource.
+    Inferences regarding the data could be generated based on multiple factors.
+    All the inferences consist of a confidence score whose threshold could be tuned in user
+    settings (.env file)
     """
 
     @property

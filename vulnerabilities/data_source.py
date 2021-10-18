@@ -43,13 +43,13 @@ from git import Repo
 from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 from univers.versions import BaseVersion
-from univers.versions import parse_version
 from univers.versions import version_class_by_package_type
 from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import ScoringSystem
-from vulnerabilities.helpers import is_cve
-from vulnerabilities.helpers import nearest_patched_package
+
+# TODO: remove after https://github.com/nexB/univers/issues/10 is fixed
+from vulnerabilities.helpers import parse_version
 
 logger = logging.getLogger(__name__)
 
@@ -119,15 +119,11 @@ class AffectedPackage:
         affected_version_specifier = VersionSpecifier.from_version_spec_string(
             aff_pkg["affected_version_specifier"]
         )
-        if "fixed_version" in aff_pkg:
-            fixed_version = parse_version(aff_pkg["fixed_version"])
-        else:
-            fixed_version = None
 
         return AffectedPackage(
             package=package,
             affected_version_specifier=affected_version_specifier,
-            fixed_version=fixed_version,
+            fixed_version=parse_version(aff_pkg["fixed_version"]),
         )
 
 

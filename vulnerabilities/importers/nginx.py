@@ -109,11 +109,11 @@ class NginxDataSource(DataSource):
                     continue
 
                 if "Not vulnerable" in child:
-                    fixed_package_versions = self.extract_fixed_pkg_versions(child)
+                    fixed_package_versions = extract_fixed_pkg_versions(child)
                     continue
 
                 if "Vulnerable" in child:
-                    aff_pkgs = self.extract_vuln_pkgs(child)
+                    aff_pkgs = extract_vuln_pkgs(child)
                     continue
 
             # TODO: Change this after https://github.com/nexB/univers/issues/8 is fixed
@@ -141,63 +141,71 @@ class NginxDataSource(DataSource):
 
         return advisory_data
 
-    def extract_fixed_pkg_versions(self, vuln_info):
-        vuln_status, version_info = vuln_info.split(": ")
-        if "none" in version_info:
-            return {}
 
-        raw_ranges = version_info.split(",")
-        versions = []
-        for rng in raw_ranges:
-            # Eg. "1.7.3+" gets converted to SemVersion(1.7.3)
-            # The way this needs to be interpreted is unique for nginx advisories
-            # More: https://github.com/nexB/vulnerablecode/issues/553
+def extract_fixed_pkg_versions(vuln_info):
+    vuln_status, version_info = vuln_info.split(": ")
+    if "none" in version_info:
+        return {}
 
-            versions.append(SemverVersion(rng[:-1].strip()))
+    raw_ranges = version_info.split(",")
+    versions = []
+    for rng in raw_ranges:
+        # Eg. "1.7.3+" gets converted to SemVersion(1.7.3)
+        # The way this needs to be interpreted is unique for nginx advisories
+        # More: https://github.com/nexB/vulnerablecode/issues/553
 
-        return versions
+        versions.append(SemverVersion(rng.partition("+")[0].strip()))
 
-    def extract_vuln_pkgs(self, vuln_info):
-        # TODO: This method needs to be modified accordingy after
-        # https://github.com/nexB/univers/issues/8 is fixed
+    return versions
 
-        vuln_status, version_infos = vuln_info.split(": ")
-        if "none" in version_infos:
-            return {}
 
-        version_ranges = []
-        windows_only = False
-        for version_info in version_infos.split(", "):
-            if version_info == "all":
-                # This is misleading since eventually some version get fixed.
-                continue
+def extract_vuln_pkgs(vuln_info) -> List[AffectedPackage]:
+    """
+    >>> vuln_info = "Vulnerable: nginx/Windows 0.7.52-1.3.0"
+    >>> vuln_info = "Vulnerable: 1.1.3-1.15.5, 1.0.7-1.0.15"
+    >>> vuln_info = "Vulnerable: 0.5.6-1.13.2"
+    >>> vuln_info = "Vulnerable: all"
+    """
+    # TODO: This method needs to be modified accordingy after
+    # https://github.com/nexB/univers/issues/8 is fixed
 
-            if "-" not in version_info:
-                # These are discrete versions
-                version_ranges.append(
-                    VersionSpecifier.from_scheme_version_spec_string("semver", version_info[0])
-                )
-                continue
+    vuln_status, version_infos = vuln_info.split(": ")
+    if "none" in version_infos:
+        return {}
 
-            windows_only = "nginx/Windows" in version_info
-            version_info = version_info.replace("nginx/Windows", "")
-            lower_bound, upper_bound = version_info.split("-")
+    version_ranges = []
+    windows_only = False
+    for version_info in version_infos.split(", "):
+        if version_info == "all":
+            # This is misleading since eventually some version get fixed.
+            continue
 
+        if "-" not in version_info:
+            # These are discrete versions
             version_ranges.append(
-                VersionSpecifier.from_scheme_version_spec_string(
-                    "semver", f">={lower_bound},<={upper_bound}"
-                )
+                VersionSpecifier.from_scheme_version_spec_string("semver", version_info[0])
             )
+            continue
 
-        qualifiers = {}
-        if windows_only:
-            qualifiers["os"] = "windows"
+        windows_only = "nginx/Windows" in version_info
+        version_info = version_info.replace("nginx/Windows", "")
+        lower_bound, upper_bound = version_info.split("-")
 
-        purl = PackageURL(type="generic", name="nginx", qualifiers=qualifiers)
-        return [
-            AffectedPackage(package=purl, affected_version_specifier=version_range)
-            for version_range in version_ranges
-        ]
+        version_ranges.append(
+            VersionSpecifier.from_scheme_version_spec_string(
+                "semver", f">={lower_bound},<={upper_bound}"
+            )
+        )
+
+    qualifiers = {}
+    if windows_only:
+        qualifiers["os"] = "windows"
+
+    purl = PackageURL(type="generic", name="nginx", qualifiers=qualifiers)
+    return [
+        AffectedPackage(package=purl, affected_version_specifier=version_range)
+        for version_range in version_ranges
+    ]
 
 
 def find_valid_versions(versions, version_ranges):

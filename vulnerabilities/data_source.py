@@ -105,13 +105,11 @@ class AffectedPackage:
         ranges = ",".join(
             [f"{rng.operator}{rng.version.value}" for rng in self.affected_version_specifier.ranges]
         )
-        dct = {
+        return {
             "package": self.package,
             "affected_version_specifier": f"{scheme}:{ranges}",
+            "fixed_version": str(self.fixed_version) if self.fixed_version else None,
         }
-        if self.fixed_version:
-            dct["fixed_version"] = str(self.fixed_version)
-        return dct
 
     @staticmethod
     def from_dict(aff_pkg: dict):

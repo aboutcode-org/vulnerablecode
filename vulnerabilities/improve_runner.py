@@ -40,9 +40,18 @@ class ImproveRunner:
 
 @transaction.atomic
 def process_inferences(source: str, advisory: Advisory, inferences: List[Inference]):
+    """
+    An atomic transaction that updates both the Advisory (e.g. date_improved)
+    and processes the given inferences to create or update corresponding
+    database fields.
+
+    This avoids failing the entire improver when only a single inference is
+    erroneous. Also, the atomic transaction for every advisory and its
+    inferences makes sure that date_improved of advisory is consistent.
+    """
 
     if not inferences:
-        logger.debug("Nothing to improve")
+        logger.warn(f"Nothing to improve. Source: {source} Advisory id: {advisory.pk}")
         return
 
     advisory.date_improved = datetime.now(timezone.utc)

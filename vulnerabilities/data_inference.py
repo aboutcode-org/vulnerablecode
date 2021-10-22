@@ -54,8 +54,6 @@ class Improver:
     """
     Improvers are responsible to improve the already imported data by a datasource.
     Inferences regarding the data could be generated based on multiple factors.
-    All the inferences consist of a confidence score whose threshold could be tuned in user
-    settings (.env file)
     """
 
     @property

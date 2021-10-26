@@ -58,6 +58,11 @@ class IstioDataSource(GitDataSource):
         files = self._added_files.union(self._updated_files)
         advisories = []
         for f in files:
+            # Istio website has files with name starting with underscore, these contain metadata
+            # required for rendering the website. We're not interested in these.
+            # See also https://github.com/nexB/vulnerablecode/issues/563
+            if f.endswith("_index.md"):
+                continue
             processed_data = self.process_file(f)
             if processed_data:
                 advisories.extend(processed_data)

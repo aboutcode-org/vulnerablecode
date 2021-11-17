@@ -514,6 +514,7 @@ class HexVersionAPI(VersionAPI):
 class GoproxyVersionAPI(VersionAPI):
 
     package_type = "golang"
+    pkg_mappings = {}
 
     @staticmethod
     def trim_package_path(pkg: str) -> Optional[str]:
@@ -542,6 +543,7 @@ class GoproxyVersionAPI(VersionAPI):
     async def fetch(self, pkg: str, session: ClientSession):
         # escpe uppercase in module path
         escaped_pkg = GoproxyVersionAPI.escape_path(pkg)
+        trimmed_pkg = pkg
         resp_text = None
         err_pkgs = []
         while escaped_pkg is not None:
@@ -550,13 +552,15 @@ class GoproxyVersionAPI(VersionAPI):
                 response = await session.request(method="GET", url=url)
                 resp_text = await response.text()
             except:
-                err_pkgs.append(escaped_pkg)
+                err_pkgs.append(trimmed_pkg)
                 escaped_pkg = GoproxyVersionAPI.trim_package_path(escaped_pkg)
+                trimmed_pkg = GoproxyVersionAPI.trim_package_path(trimmed_pkg) or ""
                 continue
             break
         if resp_text is None:
             print("error fetch versions from goproxy: ", err_pkgs)
             return
+        self.pkg_mappings[pkg] = trimmed_pkg
         versions = set()
         for version_info in resp_text.split("\n"):
             v = version_info.split()

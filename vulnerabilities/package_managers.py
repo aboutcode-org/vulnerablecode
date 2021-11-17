@@ -26,9 +26,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 from json import JSONDecodeError
 from subprocess import check_output
-from typing import List
-from typing import Mapping
-from typing import Set
+from typing import Set, List, MutableMapping, Optional
 
 from aiohttp import ClientSession
 import aiohttp
@@ -41,7 +39,7 @@ from dateutil import parser as dateparser
 @dataclasses.dataclass(frozen=True)
 class Version:
     value: str
-    release_date: datetime = None
+    release_date: Optional[datetime] = None
 
 
 @dataclasses.dataclass
@@ -55,10 +53,10 @@ class GraphQLError(Exception):
 
 
 class VersionAPI:
-    def __init__(self, cache: Mapping[str, Set[Version]] = None):
+    def __init__(self, cache: MutableMapping[str, Set[Version]] = None):
         self.cache = cache or {}
 
-    def get(self, package_name, until=None) -> Set[str]:
+    def get(self, package_name, until=None) -> VersionResponse:
         new_versions = set()
         valid_versions = set()
         for version in self.cache.get(package_name, set()):
@@ -67,7 +65,9 @@ class VersionAPI:
                 continue
             valid_versions.add(version.value)
 
-        return VersionResponse(valid_versions=valid_versions, newer_versions=new_versions)
+        return VersionResponse(
+            valid_versions=valid_versions, newer_versions=new_versions
+        )
 
     async def load_api(self, pkg_set):
         async with client_session() as session:
@@ -104,7 +104,7 @@ class LaunchpadVersionAPI(VersionAPI):
                 response = await session.request(method="GET", url=url)
                 resp_json = await response.json()
                 if resp_json["entries"] == []:
-                    self.cache[pkg] = {}
+                    self.cache[pkg] = set()
                     break
                 for release in resp_json["entries"]:
                     all_versions.add(
@@ -118,8 +118,12 @@ class LaunchpadVersionAPI(VersionAPI):
                 else:
                     break
             self.cache[pkg] = all_versions
-        except (ClientResponseError, asyncio.exceptions.TimeoutError, ServerDisconnectedError):
-            self.cache[pkg] = {}
+        except (
+            ClientResponseError,
+            asyncio.exceptions.TimeoutError,
+            ServerDisconnectedError,
+        ):
+            self.cache[pkg] = set()
 
 
 class PypiVersionAPI(VersionAPI):
@@ -242,7 +246,7 @@ class DebianVersionAPI(VersionAPI):
             resp_json = await response.json()
 
             if resp_json.get("error") or not resp_json.get("versions"):
-                self.cache[pkg] = {}
+                self.cache[pkg] = set()
                 return
             for release in resp_json["versions"]:
                 all_versions.add(Version(value=release["version"].replace("0:", "")))
@@ -250,8 +254,12 @@ class DebianVersionAPI(VersionAPI):
             self.cache[pkg] = all_versions
         # TODO : Handle ServerDisconnectedError by using some sort of
         # retry mechanism
-        except (ClientResponseError, asyncio.exceptions.TimeoutError, ServerDisconnectedError):
-            self.cache[pkg] = {}
+        except (
+            ClientResponseError,
+            asyncio.exceptions.TimeoutError,
+            ServerDisconnectedError,
+        ):
+            self.cache[pkg] = set()
 
 
 class MavenVersionAPI(VersionAPI):
@@ -295,10 +303,10 @@ class MavenVersionAPI(VersionAPI):
         return endpoint
 
     @staticmethod
-    def extract_versions(xml_response: ET.ElementTree) -> Set[str]:
+    def extract_versions(xml_response: ET.ElementTree) -> Set[Version]:
         all_versions = set()
         for child in xml_response.getroot().iter():
-            if child.tag == "version":
+            if child.tag == "version" and child.text:
                 all_versions.add(Version(child.text))
 
         return all_versions
@@ -321,7 +329,7 @@ class NugetVersionAPI(VersionAPI):
         return base_url.format(pkg_name)
 
     @staticmethod
-    def extract_versions(resp: dict) -> Set[str]:
+    def extract_versions(resp: dict) -> Set[Version]:
         all_versions = set()
         try:
             for entry_group in resp["items"]:
@@ -329,7 +337,9 @@ class NugetVersionAPI(VersionAPI):
                     all_versions.add(
                         Version(
                             value=entry["catalogEntry"]["version"],
-                            release_date=dateparser.parse(entry["catalogEntry"]["published"]),
+                            release_date=dateparser.parse(
+                                entry["catalogEntry"]["published"]
+                            ),
                         )
                     )
         # FIXME: json response for YamlDotNet.Signed triggers this exception.
@@ -353,7 +363,7 @@ class ComposerVersionAPI(VersionAPI):
             self.cache[pkg] = self.extract_versions(resp, pkg)
 
     @staticmethod
-    def composer_url(pkg_name: str) -> str:
+    def composer_url(pkg_name: str) -> Optional[str]:
         try:
             vendor, name = pkg_name.split("/")
         except ValueError:
@@ -362,7 +372,7 @@ class ComposerVersionAPI(VersionAPI):
         return f"https://repo.packagist.org/p/{vendor}/{name}.json"
 
     @staticmethod
-    def extract_versions(resp: dict, pkg_name: str) -> Set[str]:
+    def extract_versions(resp: dict, pkg_name: str) -> Set[Version]:
         all_versions = set()
         for version in resp["packages"][pkg_name]:
             if "dev" in version:
@@ -374,7 +384,9 @@ class ComposerVersionAPI(VersionAPI):
             all_versions.add(
                 Version(
                     value=version.lstrip("v"),
-                    release_date=dateparser.parse(resp["packages"][pkg_name][version]["time"]),
+                    release_date=dateparser.parse(
+                        resp["packages"][pkg_name][version]["time"]
+                    ),
                 )
             )
         return all_versions
@@ -412,7 +424,7 @@ class GitHubTagsAPI(VersionAPI):
         }
     }"""
 
-    def __init__(self, cache: Mapping[str, Set[Version]] = None):
+    def __init__(self, cache: MutableMapping[str, Set[Version]] = None):
         self.gh_token = os.getenv("GH_TOKEN")
         super().__init__(cache=cache)
 
@@ -427,7 +439,10 @@ class GitHubTagsAPI(VersionAPI):
             session.headers["Authorization"] = "token " + self.gh_token
             endpoint = f"https://api.github.com/graphql"
             owner, name = owner_repo.split("/")
-            query = {"query": self.GQL_QUERY, "variables": {"name": name, "owner": owner}}
+            query = {
+                "query": self.GQL_QUERY,
+                "variables": {"name": name, "owner": owner},
+            }
 
             while True:
                 response = await session.post(endpoint, json=query)
@@ -451,7 +466,9 @@ class GitHubTagsAPI(VersionAPI):
                         # probably this only happened for linux. Github cannot even properly display it.
                         # https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/refs/tags/v2.6.11
                         release_date = None
-                    self.cache[owner_repo].add(Version(value=name, release_date=release_date))
+                    self.cache[owner_repo].add(
+                        Version(value=name, release_date=release_date)
+                    )
 
                 if not refs["pageInfo"]["hasNextPage"]:
                     break
@@ -464,7 +481,9 @@ class GitHubTagsAPI(VersionAPI):
             # this method is however not scalable for larger repo and the api is unresponsive
             # for repo with > 50 tags
             endpoint = f"https://github.com/{owner_repo}"
-            tags_xml = check_output(["svn", "ls", "--xml", f"{endpoint}/tags"], text=True)
+            tags_xml = check_output(
+                ["svn", "ls", "--xml", f"{endpoint}/tags"], text=True
+            )
             elements = ET.fromstring(tags_xml)
             for entry in elements.iter("entry"):
                 name = entry.find("name").text

@@ -44,6 +44,7 @@ from vulnerabilities.package_managers import MavenVersionAPI
 from vulnerabilities.package_managers import NugetVersionAPI
 from vulnerabilities.package_managers import ComposerVersionAPI
 from vulnerabilities.package_managers import PypiVersionAPI
+from vulnerabilities.package_managers import GoproxyVersionAPI
 from vulnerabilities.package_managers import RubyVersionAPI
 from vulnerabilities.severity_systems import scoring_systems
 from vulnerabilities.helpers import nearest_patched_package
@@ -206,6 +207,7 @@ class GitHubAPIDataSource(DataSource):
             "COMPOSER": ComposerVersionAPI,
             "PIP": PypiVersionAPI,
             "RUBYGEMS": RubyVersionAPI,
+            "GO": GoproxyVersionAPI,
         }
         versioner = versioners.get(ecosystem)
         if versioner:
@@ -229,7 +231,7 @@ class GitHubAPIDataSource(DataSource):
                 return None
             return vendor, name
 
-        if ecosystem == "NUGET" or ecosystem == "PIP" or ecosystem == "RUBYGEMS":
+        if ecosystem == "NUGET" or ecosystem == "PIP" or ecosystem == "RUBYGEMS" or ecosystem == "GO":
             return None, pkg_name
 
     @staticmethod
@@ -265,6 +267,8 @@ class GitHubAPIDataSource(DataSource):
                     unaffected_purls = []
                     if self.process_name(ecosystem, name):
                         ns, pkg_name = self.process_name(ecosystem, name)
+                        if hasattr(self.version_api, "pkg_mappings"):
+                            pkg_name = self.version_api.pkg_mappings.get(name, pkg_name)
                         aff_range = adv["node"]["vulnerableVersionRange"]
                         aff_vers, unaff_vers = self.categorize_versions(
                             self.version_api.package_type,

@@ -56,7 +56,7 @@ def exact_purls(aff_pkg: AffectedPackage) -> (List[PackageURL], PackageURL):
     vs = aff_pkg.affected_version_specifier
     aff_purls = []
     for rng in vs.ranges:
-        if "=" in rng.operator and not "!" in rng.operator:
+        if rng.operator in ("=", ">=", "<="):
             aff_purl = aff_pkg.package._replace(version=rng.version.value)
             aff_purls.append(aff_purl)
 

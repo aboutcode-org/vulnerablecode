@@ -87,7 +87,7 @@ class Vulnerability(models.Model):
     @property
     def vulnerable_to(self):
         """
-        Returns packages which are vulnerable to this vulnerability.
+        Return packages that are vulnerable to this vulnerability.
         """
         return self.packages.filter(vulnerabilities__packagerelatedvulnerability__fix=False)
 
@@ -145,6 +145,7 @@ class Package(PackageURLMixin):
     )
 
     @property
+    # TODO: consider renaming to "affected_by"
     def vulnerable_to(self):
         """
         Returns vulnerabilities which are affecting this package.
@@ -152,6 +153,7 @@ class Package(PackageURLMixin):
         return self.vulnerabilities.filter(packagerelatedvulnerability__fix=False)
 
     @property
+    # TODO: consider renaming to "fixes" or "fixing" ? (TBD) and updating the docstring
     def resolved_to(self):
         """
         Returns the vulnerabilities which this package is patched against.
@@ -225,6 +227,7 @@ class PackageRelatedVulnerability(models.Model):
                 existing.confidence = self.confidence
                 existing.fix = self.fix
                 existing.save()
+            # TODO: later we want these to be part of a log field in the DB
             logger.debug(
                 "Confidence improved for %s R %s, new confidence: %d",
                 self.package,
@@ -333,6 +336,9 @@ class Advisory(models.Model):
     date_improved = models.DateTimeField(
         null=True, help_text="Latest date on which the advisory was improved by an improver"
     )
+    # we use a JSON field here to avoid creating a complete relational model for data that
+    # is never queried directly; instead it is only retrieved and processed as a whole by
+    # an improver 
     data = models.JSONField(
         help_text="Contents of data_source.AdvisoryData serialized as a JSON object"
     )

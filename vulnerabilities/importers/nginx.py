@@ -154,6 +154,7 @@ def extract_fixed_pkg_versions(vuln_info):
         # The way this needs to be interpreted is unique for nginx advisories
         # More: https://github.com/nexB/vulnerablecode/issues/553
 
+        # TODO: create a version scheme that's specific to nginx... because this is not exactly semver
         versions.append(SemverVersion(rng.partition("+")[0].strip()))
 
     return versions

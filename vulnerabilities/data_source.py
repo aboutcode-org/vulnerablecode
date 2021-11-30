@@ -80,7 +80,7 @@ class Reference:
 class AffectedPackage:
     # TODO: Tweak after https://github.com/nexB/univers/issues/8
     """
-    Contains a range of affected versions and a fixed verison of a given package
+    Contains a range of affected versions and a fixed version of a given package
     The PackageURL supplied must *not* have a version
     """
     package: PackageURL

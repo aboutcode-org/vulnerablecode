@@ -68,7 +68,7 @@ class Command(BaseCommand):
         improvers = [
             f"{improver.__module__}.{improver.__qualname__}" for improver in IMPROVER_REGISTRY
         ]
-        self.stdout.write("Vulnerability data can be improved from the following sources:")
+        self.stdout.write("Vulnerability data can be processed by these available improvers:")
         self.stdout.write("\n".join(improvers))
 
     def improve_data(self, improvers):

@@ -95,12 +95,14 @@ def process_inferences(source: str, advisory: Advisory, inferences: List[Inferen
             ).update_or_create()
 
 
+# TODO: This likely may be best as a model or manager method.
 def _get_or_create_vulnerability(vulnerability_id, summary) -> Tuple[models.Vulnerability, bool]:
 
     vuln, created = models.Vulnerability.objects.get_or_create(
         vulnerability_id=vulnerability_id
     )  # nopep8
     # Eventually we only want to keep summary from NVD and ignore other descriptions.
+    # FIXME: it is really weird to update in a get or create function
     if summary and vuln.summary != summary:
         vuln.summary = summary
         vuln.save()
@@ -110,6 +112,7 @@ def _get_or_create_vulnerability(vulnerability_id, summary) -> Tuple[models.Vuln
 
 def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:
     query_kwargs = {}
+    # TODO: this should be revisited as this should best be a model or manager method... and possibly streamlined
     for key, val in p.to_dict().items():
         if not val:
             if key == "qualifiers":
@@ -123,6 +126,7 @@ def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:
 
 
 def _package_url_to_package(purl: PackageURL) -> models.Package:
+    # FIXME: this is is likely creating a package from a purl?
     p = models.Package()
     p.set_package_url(purl)
     return p

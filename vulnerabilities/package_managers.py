@@ -33,6 +33,7 @@ from aiohttp import ClientSession
 import aiohttp
 from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.client_exceptions import ServerDisconnectedError
+from aiohttp.web_exceptions import HTTPGone
 from bs4 import BeautifulSoup
 from dateutil import parser as dateparser
 
@@ -517,13 +518,14 @@ class GoproxyVersionAPI(VersionAPI):
     pkg_mappings = {}
 
     @staticmethod
-    def trim_package_path(pkg: str) -> Optional[str]:
+    def trim_url_path(url_path: str) -> Optional[str]:
         """github advisories for golang is using package names(e.g. https://github.com/advisories/GHSA-jp4j-47f9-2vc3), yet goproxy works with module names(see https://golang.org/ref/mod#goproxy-protocol).
         this method removes the last part of a package path, and returns the remaining as the module name.
         """
         # some advisories contains this prefix in package name, e.g. https://github.com/advisories/GHSA-7h6j-2268-fhcm
-        pkg = pkg.removeprefix("https://pkg.go.dev/")
-        parts = pkg.split("/")
+        if url_path.startswith("https://pkg.go.dev/"):
+            url_path = url_path.removeprefix("https://pkg.go.dev/")
+        parts = url_path.split("/")
         if len(parts) >= 2:
             return "/".join(parts[:-1])
         else:
@@ -531,53 +533,63 @@ class GoproxyVersionAPI(VersionAPI):
 
     @staticmethod
     def escape_path(path: str) -> str:
-        """escpe uppercase in module/version name"""
+        """escape uppercase in module/version name"""
         escaped_path = ""
         for c in path:
             if c >= "A" and c <= "Z":
+                # replace uppercase with !lowercase
                 escaped_path += "!" + chr(ord(c) + ord("a") - ord("A"))
             else:
                 escaped_path += c
         return escaped_path
 
+    @staticmethod
+    async def parse_version_info(
+        version_info: str, escaped_pkg: str, session: ClientSession
+    ) -> Optional[Version]:
+        v = version_info.split()
+        if len(v) > 0:
+            value = v[0]
+            if len(v) > 1:
+                release_date = parse_datetime(v[1])
+            else:
+                escaped_ver = GoproxyVersionAPI.escape_path(value)
+                try:
+                    response = await session.request(
+                        method="GET",
+                        url=f"https://proxy.golang.org/{escaped_pkg}/@v/{escaped_ver}.info",
+                    )
+                    resp_json = await response.json()
+                    release_date = parse_datetime(resp_json.get("Time", ""))
+                except:
+                    release_date = None
+            return Version(value=value, release_date=release_date)
+        return None
+
     async def fetch(self, pkg: str, session: ClientSession):
-        # escpe uppercase in module path
+        # escape uppercase in module path
         escaped_pkg = GoproxyVersionAPI.escape_path(pkg)
         trimmed_pkg = pkg
         resp_text = None
-        err_pkgs = []
         while escaped_pkg is not None:
             url = f"https://proxy.golang.org/{escaped_pkg}/@v/list"
             try:
                 response = await session.request(method="GET", url=url)
                 resp_text = await response.text()
-            except:
-                err_pkgs.append(trimmed_pkg)
-                escaped_pkg = GoproxyVersionAPI.trim_package_path(escaped_pkg)
-                trimmed_pkg = GoproxyVersionAPI.trim_package_path(trimmed_pkg) or ""
+            except HTTPGone:
+                escaped_pkg = GoproxyVersionAPI.trim_url_path(escaped_pkg)
+                trimmed_pkg = GoproxyVersionAPI.trim_url_path(trimmed_pkg) or ""
                 continue
             break
-        if resp_text is None:
-            print("error fetch versions from goproxy: ", err_pkgs)
+        if resp_text is None or escaped_pkg is None or trimmed_pkg is None:
+            print("error fetch versions from goproxy: ", pkg)
             return
         self.pkg_mappings[pkg] = trimmed_pkg
         versions = set()
         for version_info in resp_text.split("\n"):
-            v = version_info.split()
-            if len(v) > 0:
-                value = v[0]
-                if len(v) > 1:
-                    release_date = parse_datetime(v[1])
-                else:
-                    escaped_ver = GoproxyVersionAPI.escape_path(value)
-                    try:
-                        response = await session.request(
-                            method="GET",
-                            url=f"https://proxy.golang.org/{escaped_pkg}/@v/{escaped_ver}.info",
-                        )
-                        resp_json = await response.json()
-                        release_date = parse_datetime(resp_json.get("Time", ""))
-                    except:
-                        release_date = None
-                versions.add(Version(value=value, release_date=release_date))
+            version = await GoproxyVersionAPI.parse_version_info(
+                version_info, escaped_pkg, session
+            )
+            if version is not None:
+                versions.add(version)
         self.cache[pkg] = versions

@@ -24,7 +24,7 @@ class Inference:
     """
 
     vulnerability_id: str
-    confidence: int
+    confidence: int = MAX_CONFIDENCE
     summary: Optional[str] = None
     affected_purls: List[PackageURL] = dataclasses.field(default_factory=list)
     fixed_purls: List[PackageURL] = dataclasses.field(default_factory=list)

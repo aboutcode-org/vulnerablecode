@@ -70,8 +70,8 @@ class ImportRunner:
         data_source = self.importer.make_data_source(cutoff_date=cutoff_date)
         with data_source:
             advisory_data = data_source.advisory_data()
-            source = f"{data_source.__module__}.{data_source.__class__.__qualname__}"
-            process_advisories(source, advisory_data)
+            importer_name = f"{data_source.__module__}.{data_source.__class__.__qualname__}"
+            process_advisories(importer_name, advisory_data)
         self.importer.last_run = datetime.datetime.now(tz=datetime.timezone.utc)
         self.importer.data_source_cfg = dataclasses.asdict(data_source.config)
         self.importer.save()
@@ -92,7 +92,7 @@ def get_vuln_pkg_refs(vulnerability, package):
     )
 
 
-def process_advisories(source: str, advisory_data: Set[AdvisoryData]) -> None:
+def process_advisories(importer_name: str, advisory_data: Set[AdvisoryData]) -> None:
     """
     Insert advisories into the database
     """
@@ -103,7 +103,7 @@ def process_advisories(source: str, advisory_data: Set[AdvisoryData]) -> None:
             Advisory(
                 date_published=data.date_published,
                 date_collected=datetime.datetime.now(tz=datetime.timezone.utc),
-                source=source,
+                created_by=importer_name,
                 data=json.dumps(data.to_dict()),
             )
         )

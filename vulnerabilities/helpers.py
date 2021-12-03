@@ -33,7 +33,6 @@ import saneyaml
 import toml
 import urllib3
 from packageurl import PackageURL
-from univers.versions import version_class_by_package_type
 
 # TODO add logging here
 
@@ -191,13 +190,3 @@ def split_markdown_front_matter(text: str) -> Tuple[str, str]:
         return frontmatter, markdown
 
     return "", text
-
-
-# TODO: Remove after https://github.com/nexB/univers/issues/10
-from univers.versions import parse_version as univers_parse_version
-
-
-def parse_version(version):
-    if not version:
-        return None
-    return univers_parse_version(version)

@@ -26,7 +26,7 @@ import shutil
 import tempfile
 import traceback
 import xml.etree.ElementTree as ET
-from datetime import datetime
+import datetime
 from pathlib import Path
 from typing import Any
 from typing import ContextManager
@@ -41,9 +41,8 @@ from binaryornot.helpers import is_binary_string
 from git import DiffIndex
 from git import Repo
 from packageurl import PackageURL
-from univers.version_specifier import VersionSpecifier
-from univers.versions import BaseVersion
-from univers.versions import version_class_by_package_type
+from univers.version_range import VersionRange
+from univers.versions import Version
 from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import ScoringSystem
@@ -58,6 +57,12 @@ logger = logging.getLogger(__name__)
 class VulnerabilitySeverity:
     system: ScoringSystem
     value: str
+
+    def to_dict(self):
+        return {
+            "system": self.system.identifier,
+            "value": self.value,
+        }
 
 
 @dataclasses.dataclass(order=True)
@@ -75,53 +80,49 @@ class Reference:
         severities = sorted(self.severities)
         return Reference(reference_id=self.reference_id, url=self.url, severities=severities)
 
+    def to_dict(self):
+        return {
+            "reference_id": self.reference_id,
+            "url": self.url,
+            "severities": [severity.to_dict() for severity in self.severities],
+        }
+
 
 @dataclasses.dataclass(order=True, frozen=True)
 class AffectedPackage:
-    # TODO: Tweak after https://github.com/nexB/univers/issues/8
     """
     Contains a range of affected versions and a fixed version of a given package
     The PackageURL supplied must *not* have a version
     """
+
     package: PackageURL
-    affected_version_specifier: VersionSpecifier
-    fixed_version: Optional[BaseVersion] = None
+    affected_versions: VersionRange
+    fixed_version: Optional[Version] = None
 
     def __post_init__(self):
         if self.package.version:
             raise ValueError
 
-        if (
-            self.fixed_version
-            and self.affected_version_specifier.scheme != self.fixed_version.scheme
-        ):
-            raise ValueError
-
     def to_dict(self):
-        # TODO: VersionSpecifier.__str__ is not working
-        # https://github.com/nexB/univers/issues/7
-        # Adjust following code when it is fixed
-        scheme = self.affected_version_specifier.scheme
-        ranges = ",".join(
-            [f"{rng.operator}{rng.version.value}" for rng in self.affected_version_specifier.ranges]
-        )
         return {
             "package": self.package,
-            "affected_version_specifier": f"{scheme}:{ranges}",
+            "affected_versions": str(self.affected_versions),
             "fixed_version": str(self.fixed_version) if self.fixed_version else None,
         }
 
     @staticmethod
     def from_dict(aff_pkg: dict):
         package = PackageURL(*aff_pkg["package"])
-        affected_version_specifier = VersionSpecifier.from_version_spec_string(
-            aff_pkg["affected_version_specifier"]
-        )
+        affected_versions = VersionRange.from_string(aff_pkg["affected_versions"])
+        fixed_version = Version.aff_pkg["fixed_version"]
+        if fixed_version:
+            # TODO: revisit after https://github.com/nexB/univers/issues/10
+            fixed_version = Version(fixed_version)
 
         return AffectedPackage(
             package=package,
-            affected_version_specifier=affected_version_specifier,
-            fixed_version=parse_version(aff_pkg["fixed_version"]),
+            affected_versions=affected_versions,
+            fixed_version=fixed_version,
         )
 
 
@@ -129,17 +130,13 @@ class AffectedPackage:
 class AdvisoryData:
     """
     This data class expresses the contract between data sources and the import runner.
-
-    NB: There are two representations for package URLs that are commonly used by code consuming this
-        data class; PackageURL objects and strings. As a convention, the former is referred to in
-        variable names, etc. as "package_urls" and the latter as "purls".
     """
 
     vulnerability_id: Optional[str] = None
     summary: str = None
     affected_packages: List[AffectedPackage] = dataclasses.field(default_factory=list)
     references: List[Reference] = dataclasses.field(default_factory=list)
-    date_published: Optional[datetime.date] = None
+    date_published: Optional[datetime.datetime] = None
 
     def __post_init__(self):
         if self.vulnerability_id:
@@ -147,12 +144,15 @@ class AdvisoryData:
         else:
             assert self.affected_packages or self.references
 
+        if self.date_published:
+            assert self.date_published.tzinfo == datetime.timezone.utc
+
     def to_dict(self):
         return {
             "vulnerability_id": self.vulnerability_id,
             "summary": self.summary,
             "affected_packages": [pkg.to_dict() for pkg in self.affected_packages],
-            "references": [vars(ref) for ref in self.references],
+            "references": [ref.to_dict() for ref in self.references],
             "date_published": self.date_published.isoformat() if self.date_published else None,
         }
 
@@ -187,8 +187,8 @@ class DataSource(ContextManager):
 
     def __init__(
         self,
-        last_run_date: Optional[datetime] = None,
-        cutoff_date: Optional[datetime] = None,
+        last_run_date: Optional[datetime.datetime] = None,
+        cutoff_date: Optional[datetime.datetime] = None,
         config: Optional[Mapping[str, Any]] = None,
     ):
         """

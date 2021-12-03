@@ -22,13 +22,13 @@
 
 import asyncio
 import dataclasses
-from datetime import datetime
+import datetime
 from typing import List
 
 import requests
-from packageurl import PackageURL
 from bs4 import BeautifulSoup
-from univers.version_specifier import VersionSpecifier
+from packageurl import PackageURL
+from univers.version_range import NginxVersionRange
 from univers.versions import SemverVersion
 
 from vulnerabilities.data_source import AdvisoryData
@@ -36,9 +36,11 @@ from vulnerabilities.data_source import AffectedPackage
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
+from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import Version
-from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.severity_systems import scoring_systems
 
 
 @dataclasses.dataclass
@@ -68,152 +70,119 @@ class NginxDataSource(DataSource):
 
     def advisory_data(self) -> List[AdvisoryData]:
         adv_data = []
-        #        self.set_api()
         data = requests.get(self.url).content
-        adv_data.extend(self.to_advisories(data))
-        return adv_data
-
-    def to_advisories(self, data):
-        advisory_data = []
         soup = BeautifulSoup(data, features="lxml")
         vuln_list = soup.select("li p")
-
-        # Example value of `vuln_list` :
-        # ['Excessive CPU usage in HTTP/2 with small window updates',
-        #  <br/>,
-        #  'Severity: medium',
-        #  <br/>,
-        #  <a href="http://mailman.nginx.org/pipermail/nginx-announce/2019/000249.html">Advisory</a>,  # nopep8
-        #  <br/>,
-        #  <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9511">CVE-2019-9511</a>,
-        #  <br/>,
-        #  'Not vulnerable: 1.17.3+, 1.16.1+',
-        #  <br/>,
-        #  'Vulnerable: 1.9.5-1.17.2']
-
         for vuln_info in vuln_list:
-            references = []
-            for index, child in enumerate(vuln_info.children):
-                if index == 0:
-                    # type of this child is bs4.element.NavigableString.
-                    # Hence cast it into standard string
-                    summary = str(child)
-                    continue
+            adv_data.append(to_advisory_data(*parse_advisory_data_from_paragraph(vuln_info)))
 
-                #  hasattr(child, "attrs") == False for bs4.element.NavigableString
-                if hasattr(child, "attrs") and child.attrs.get("href"):
-                    link = child.attrs["href"]
-                    references.append(Reference(url=link))
-                    if "cve.mitre.org" in link:
-                        cve_id = child.text
-                    continue
+        return adv_data
 
-                if "Not vulnerable" in child:
-                    fixed_package_versions = extract_fixed_pkg_versions(child)
-                    continue
 
-                if "Vulnerable" in child:
-                    aff_pkgs = extract_vuln_pkgs(child)
-                    continue
+def to_advisory_data(
+    cve, summary, advisory_severity, not_vulnerable, vulnerable, references
+) -> AdvisoryData:
+    """
+    Return AdvisoryData formed by given parameters
+    """
 
-            # TODO: Change this after https://github.com/nexB/univers/issues/8 is fixed
-            purl = PackageURL(type="generic", name="nginx")
-            affected_packages = []
-            for pkg in aff_pkgs:
-                for fixed_version in fixed_package_versions:
-                    affected_packages.append(
-                        AffectedPackage(
-                            package=purl,
-                            affected_version_specifier=pkg.affected_version_specifier,
-                            fixed_version=fixed_version,
-                        )
-                    )
+    qualifiers = {}
 
-            advisory_data.append(
-                AdvisoryData(
-                    summary=summary,
-                    vulnerability_id=cve_id,
-                    affected_packages=affected_packages,
-                    references=references,
-                    date_published=datetime.now(),  # TODO: put real date here
+    affected_versions = vulnerable.partition(":")[2]
+    if "nginx/Windows" in affected_versions:
+        qualifiers["os"] = "windows"
+        affected_versions = affected_versions.replace("nginx/Windows", "")
+    affected_versions = NginxVersionRange.from_native(affected_versions)
+
+    affected_packages = []
+    branch = ["stable", "mainline"]
+    fixed_versions = not_vulnerable.partition(":")[2]
+    for fixed_version in fixed_versions.split(","):
+        fixed_version = fixed_version.rstrip("+")
+
+        # TODO: Mail nginx for this anomaly
+        if "none" in fixed_version:
+            affected_packages.append(
+                AffectedPackage(
+                    package=PackageURL(type="generic", name="nginx", qualifiers=qualifiers),
+                    affected_versions=affected_versions,
+                    fixed_version=fixed_version,
                 )
             )
+            break
 
-        return advisory_data
-
-
-def extract_fixed_pkg_versions(vuln_info):
-    vuln_status, version_info = vuln_info.split(": ")
-    if "none" in version_info:
-        return {}
-
-    raw_ranges = version_info.split(",")
-    versions = []
-    for rng in raw_ranges:
-        # Eg. "1.7.3+" gets converted to SemVersion(1.7.3)
-        # The way this needs to be interpreted is unique for nginx advisories
-        # More: https://github.com/nexB/vulnerablecode/issues/553
-
-        # TODO: create a version scheme that's specific to nginx... because this is not exactly semver
-        versions.append(SemverVersion(rng.partition("+")[0].strip()))
-
-    return versions
-
-
-def extract_vuln_pkgs(vuln_info) -> List[AffectedPackage]:
-    """
-    >>> vuln_info = "Vulnerable: nginx/Windows 0.7.52-1.3.0"
-    >>> vuln_info = "Vulnerable: 1.1.3-1.15.5, 1.0.7-1.0.15"
-    >>> vuln_info = "Vulnerable: 0.5.6-1.13.2"
-    >>> vuln_info = "Vulnerable: all"
-    """
-    # TODO: This method needs to be modified accordingy after
-    # https://github.com/nexB/univers/issues/8 is fixed
-
-    vuln_status, version_infos = vuln_info.split(": ")
-    if "none" in version_infos:
-        return {}
-
-    version_ranges = []
-    windows_only = False
-    for version_info in version_infos.split(", "):
-        if version_info == "all":
-            # This is misleading since eventually some version get fixed.
-            continue
-
-        if "-" not in version_info:
-            # These are discrete versions
-            version_ranges.append(
-                VersionSpecifier.from_scheme_version_spec_string("semver", version_info[0])
-            )
-            continue
-
-        windows_only = "nginx/Windows" in version_info
-        version_info = version_info.replace("nginx/Windows", "")
-        lower_bound, upper_bound = version_info.split("-")
-
-        version_ranges.append(
-            VersionSpecifier.from_scheme_version_spec_string(
-                "semver", f">={lower_bound},<={upper_bound}"
+        fixed_version = SemverVersion(fixed_version)
+        # Even number minors are stable, see https://www.nginx.com/blog/nginx-1-18-1-19-released/
+        qualifiers["branch"] = branch[fixed_version.value.minor % 2]
+        purl = PackageURL(type="generic", name="nginx", qualifiers=qualifiers)
+        affected_packages.append(
+            AffectedPackage(
+                package=purl,
+                affected_versions=affected_versions,
+                fixed_version=fixed_version,
             )
         )
 
-    qualifiers = {}
-    if windows_only:
-        qualifiers["os"] = "windows"
-
-    purl = PackageURL(type="generic", name="nginx", qualifiers=qualifiers)
-    return [
-        AffectedPackage(package=purl, affected_version_specifier=version_range)
-        for version_range in version_ranges
-    ]
+    return AdvisoryData(
+        vulnerability_id=cve,
+        summary=summary,
+        affected_packages=affected_packages,
+        references=references,
+        date_published=datetime.datetime.now(tz=datetime.timezone.utc),
+    )
 
 
-def find_valid_versions(versions, version_ranges):
-    valid_versions = set()
-    for version in versions:
-        version_obj = SemverVersion(version)
-        if any([version_obj in ver_range for ver_range in version_ranges]):
-            valid_versions.add(version)
+def parse_advisory_data_from_paragraph(vuln_info):
+    """
+    Return (summary, advisory_severity, not_vulnerable, vulnerable, references)
+    from bs4 paragraph
 
-    return valid_versions
+    For example:
+    >>> paragraph = '<p>1-byte memory overwrite in resolver<br/>Severity: medium<br/><a href="http://mailman.nginx.org/pipermail/nginx-announce/2021/000300.html">Advisory</a><br/><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-23017">CVE-2021-23017</a><br/>Not vulnerable: 1.21.0+, 1.20.1+<br/>Vulnerable: 0.6.18-1.20.0<br/><a href="/download/patch.2021.resolver.txt">The patch</a>  <a href="/download/patch.2021.resolver.txt.asc">pgp</a></p>'
+    >>> vuln_info = BeautifulSoup(paragraph).p
+    >>> parse_advisory_data_from_paragraph(vuln_info)
+    ('CVE-2021-23017', '1-byte memory overwrite in resolver', 'Severity: medium', 'Not vulnerable: 1.21.0+, 1.20.1+', 'Vulnerable: 0.6.18-1.20.0', [Reference(reference_id='', url='http://mailman.nginx.org/pipermail/nginx-announce/2021/000300.html', severities=[]), Reference(reference_id='CVE-2021-23017', url='http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-23017', severities=[VulnerabilitySeverity(system=ScoringSystem(identifier='generic_textual', name='Generic textual severity rating', url='', notes='Severity for unknown scoring systems. Contains generic textual values like High, Low etc'), value='Severity: medium')]), Reference(reference_id='', url='https://nginx.org/download/patch.2021.resolver.txt', severities=[]), Reference(reference_id='', url='https://nginx.org/download/patch.2021.resolver.txt.asc', severities=[])])
+    """
+    cve = summary = advisory_severity = not_vulnerable = vulnerable = None
+    references = []
+    for index, child in enumerate(vuln_info.children):
+        if index == 0:
+            summary = child
+            continue
+
+        if "Severity" in child:
+            advisory_severity = child
+            continue
+
+        #  hasattr(child, "attrs") == False for bs4.element.NavigableString
+        if hasattr(child, "attrs") and child.attrs.get("href"):
+            link = child.attrs["href"]
+            # Take care of relative urls
+            link = requests.compat.urljoin("https://nginx.org", link)
+            if "cve.mitre.org" in link:
+                cve = child.text
+                references.append(
+                    Reference(
+                        reference_id=cve,
+                        url=link,
+                        severities=[
+                            VulnerabilitySeverity(
+                                system=scoring_systems["generic_textual"],
+                                value=advisory_severity,
+                            )
+                        ],
+                    )
+                )
+            else:
+                references.append(Reference(url=link))
+            continue
+
+        if "Not vulnerable" in child:
+            not_vulnerable = child
+            continue
+
+        if "Vulnerable" in child:
+            vulnerable = child
+            continue
+
+    return cve, summary, advisory_severity, not_vulnerable, vulnerable, references

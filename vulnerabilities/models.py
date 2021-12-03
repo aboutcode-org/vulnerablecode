@@ -35,7 +35,6 @@ from django.core.validators import MinValueValidator
 from django.core.validators import MaxValueValidator
 from packageurl.contrib.django.models import PackageURLMixin
 from packageurl import PackageURL
-from univers.version_specifier import VersionSpecifier
 
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import AdvisoryData
@@ -126,7 +125,7 @@ class VulnerabilityReference(models.Model):
         unique_together = ("vulnerability", "reference_id", "url")
 
     def __str__(self):
-        return f"{self.source} {self.reference_id} {self.url}"
+        return f"{self.reference_id} {self.url}"
 
 
 class Package(PackageURLMixin):
@@ -200,11 +199,20 @@ class PackageRelatedVulnerability(models.Model):
 
     package = models.ForeignKey(Package, on_delete=models.CASCADE, related_name="package")
     vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
-    source = models.TextField(null=True)
-    confidence = models.PositiveIntegerField(
-        default=1, validators=[MinValueValidator(0), MaxValueValidator(MAX_CONFIDENCE)]
+    created_by = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Fully qualified name of the improver prefixed with the module name responsible for creating this relation. Eg: vulnerabilities.importers.nginx.NginxTimeTravel",
     )
-    fix = models.BooleanField(default=False)
+
+    confidence = models.PositiveIntegerField(
+        default=MAX_CONFIDENCE,
+        validators=[MinValueValidator(0), MaxValueValidator(MAX_CONFIDENCE)],
+        help_text="Confidence score for this relation",
+    )
+    fix = models.BooleanField(
+        default=False, help_text="Does this relation fix the specified vulnerability ?"
+    )
 
     def __str__(self):
         return f"{self.package.package_url} {self.vulnerability.vulnerability_id}"
@@ -223,7 +231,7 @@ class PackageRelatedVulnerability(models.Model):
                 vulnerability=self.vulnerability, package=self.package
             )
             if self.confidence > existing.confidence:
-                existing.source = self.source
+                existing.created_by = self.created_by
                 existing.confidence = self.confidence
                 existing.fix = self.fix
                 existing.save()
@@ -238,16 +246,11 @@ class PackageRelatedVulnerability(models.Model):
         except self.DoesNotExist:
             self.__class__.objects.create(
                 vulnerability=self.vulnerability,
-                source=self.source,
+                created_by=self.created_by,
                 package=self.package,
                 confidence=self.confidence,
                 fix=self.fix,
             )
-
-
-class ImportProblem(models.Model):
-
-    conflicting_model = models.JSONField()
 
 
 class Importer(models.Model):
@@ -329,7 +332,7 @@ class Advisory(models.Model):
 
     date_published = models.DateField(help_text="UTC Date of publication of the advisory")
     date_collected = models.DateField(help_text="UTC Date on which the advisory was collected")
-    source = models.CharField(
+    created_by = models.CharField(
         max_length=100,
         help_text="Fully qualified name of the importer prefixed with the module name importing the advisory. Eg: vulnerabilities.importers.nginx.NginxDataSource",
     )
@@ -338,7 +341,7 @@ class Advisory(models.Model):
     )
     # we use a JSON field here to avoid creating a complete relational model for data that
     # is never queried directly; instead it is only retrieved and processed as a whole by
-    # an improver 
+    # an improver
     data = models.JSONField(
         help_text="Contents of data_source.AdvisoryData serialized as a JSON object"
     )

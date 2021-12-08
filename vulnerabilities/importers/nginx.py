@@ -20,10 +20,9 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import asyncio
 import dataclasses
 import datetime
-from typing import List
+from typing import Iterable
 
 import requests
 from bs4 import BeautifulSoup
@@ -53,30 +52,12 @@ class NginxDataSource(DataSource):
 
     url = "http://nginx.org/en/security_advisories.html"
 
-    def set_api(self):
-        self.version_api = GitHubTagsAPI()
-        asyncio.run(self.version_api.load_api(["nginx/nginx"]))
-
-        # For some reason nginx tags it's releases are in the form of `release-1.2.3`
-        # Chop off the `release-` part here.
-        normalized_versions = set()
-        while self.version_api.cache["nginx/nginx"]:
-            version = self.version_api.cache["nginx/nginx"].pop()
-            normalized_version = Version(
-                version.value.replace("release-", ""), version.release_date
-            )
-            normalized_versions.add(normalized_version)
-        self.version_api.cache["nginx/nginx"] = normalized_versions
-
-    def advisory_data(self) -> List[AdvisoryData]:
-        adv_data = []
+    def advisory_data(self) -> Iterable[AdvisoryData]:
         data = requests.get(self.url).content
         soup = BeautifulSoup(data, features="lxml")
         vuln_list = soup.select("li p")
         for vuln_info in vuln_list:
-            adv_data.append(to_advisory_data(*parse_advisory_data_from_paragraph(vuln_info)))
-
-        return adv_data
+            yield to_advisory_data(**parse_advisory_data_from_paragraph(vuln_info))
 
 
 def to_advisory_data(
@@ -84,41 +65,48 @@ def to_advisory_data(
 ) -> AdvisoryData:
     """
     Return AdvisoryData formed by given parameters
+    An advisory paragraph, without html markup, looks like:
+
+    1-byte memory overwrite in resolver
+    Severity: medium
+    Advisory
+    CVE-2021-23017
+    Not vulnerable: 1.21.0+, 1.20.1+
+    Vulnerable: 0.6.18-1.20.0
+    The patch  pgp
     """
 
     qualifiers = {}
 
-    affected_versions = vulnerable.partition(":")[2]
-    if "nginx/Windows" in affected_versions:
+    affected_version_range = vulnerable.partition(":")[2]
+    if "nginx/Windows" in affected_version_range:
         qualifiers["os"] = "windows"
-        affected_versions = affected_versions.replace("nginx/Windows", "")
-    affected_versions = NginxVersionRange.from_native(affected_versions)
+        affected_version_range = affected_version_range.replace("nginx/Windows", "")
+    affected_version_range = NginxVersionRange.from_native(affected_version_range)
 
     affected_packages = []
-    branch = ["stable", "mainline"]
-    fixed_versions = not_vulnerable.partition(":")[2]
+    _, _, fixed_versions = not_vulnerable.partition(":")
     for fixed_version in fixed_versions.split(","):
         fixed_version = fixed_version.rstrip("+")
 
         # TODO: Mail nginx for this anomaly
         if "none" in fixed_version:
-            affected_packages.append(
-                AffectedPackage(
-                    package=PackageURL(type="generic", name="nginx", qualifiers=qualifiers),
-                    affected_versions=affected_versions,
-                    fixed_version=fixed_version,
-                )
-            )
+            # FIXME: This breaks because https://github.com/nexB/univers/issues/10
             break
+            # affected_packages.append(
+            #     AffectedPackage(
+            #         package=PackageURL(type="generic", name="nginx", qualifiers=qualifiers),
+            #         affected_version_range=affected_version_range,
+            #     )
+            # )
+            # break
 
         fixed_version = SemverVersion(fixed_version)
-        # Even number minors are stable, see https://www.nginx.com/blog/nginx-1-18-1-19-released/
-        qualifiers["branch"] = branch[fixed_version.value.minor % 2]
         purl = PackageURL(type="generic", name="nginx", qualifiers=qualifiers)
         affected_packages.append(
             AffectedPackage(
                 package=purl,
-                affected_versions=affected_versions,
+                affected_version_range=affected_version_range,
                 fixed_version=fixed_version,
             )
         )
@@ -165,6 +153,12 @@ def parse_advisory_data_from_paragraph(vuln_info):
                     Reference(
                         reference_id=cve,
                         url=link,
+                    )
+                )
+            elif "http://mailman.nginx.org" in link:
+                references.append(
+                    Reference(
+                        url=link,
                         severities=[
                             VulnerabilitySeverity(
                                 system=scoring_systems["generic_textual"],
@@ -185,4 +179,11 @@ def parse_advisory_data_from_paragraph(vuln_info):
             vulnerable = child
             continue
 
-    return cve, summary, advisory_severity, not_vulnerable, vulnerable, references
+    return {
+        "cve": cve,
+        "summary": summary,
+        "advisory_severity": advisory_severity,
+        "not_vulnerable": not_vulnerable,
+        "vulnerable": vulnerable,
+        "references": references,
+    }

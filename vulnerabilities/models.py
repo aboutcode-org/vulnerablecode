@@ -38,6 +38,8 @@ from packageurl import PackageURL
 
 from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import AdvisoryData
+from vulnerabilities.data_source import AffectedPackage
+from vulnerabilities.data_source import Reference
 from vulnerabilities.severity_systems import scoring_systems
 from vulnerabilities.data_inference import MAX_CONFIDENCE
 
@@ -112,20 +114,25 @@ class VulnerabilityReference(models.Model):
     """
 
     vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
-    reference_id = models.CharField(
-        max_length=50, help_text="Reference ID, eg:DSA-4465-1", blank=True
+    url = models.URLField(
+        max_length=1024, help_text="URL to the vulnerability reference", blank=True
     )
-    url = models.URLField(max_length=1024, help_text="URL of Vulnerability data", blank=True)
+    reference_id = models.CharField(
+        max_length=50,
+        help_text="An optional reference ID, such as DSA-4465-1 when available",
+        blank=True,
+        null=True,
+    )
 
     @property
     def scores(self):
         return VulnerabilitySeverity.objects.filter(reference=self.id)
 
     class Meta:
-        unique_together = ("vulnerability", "reference_id", "url")
+        unique_together = ("vulnerability", "url", "reference_id")
 
     def __str__(self):
-        return f"{self.reference_id} {self.url}"
+        return f"{self.url} {self.reference_id}"
 
 
 class Package(PackageURLMixin):
@@ -202,7 +209,9 @@ class PackageRelatedVulnerability(models.Model):
     created_by = models.CharField(
         max_length=100,
         blank=True,
-        help_text="Fully qualified name of the improver prefixed with the module name responsible for creating this relation. Eg: vulnerabilities.importers.nginx.NginxTimeTravel",
+        help_text="Fully qualified name of the improver prefixed with the"
+        "module name responsible for creating this relation. Eg:"
+        "vulnerabilities.importers.nginx.NginxTimeTravel",
     )
 
     confidence = models.PositiveIntegerField(
@@ -327,21 +336,42 @@ class VulnerabilitySeverity(models.Model):
 
 class Advisory(models.Model):
     """
-    An advisory directly obtained from upstream without any modifications.
+    An advisory represents data directly obtained from upstream transformed
+    into structured data
     """
 
-    date_published = models.DateField(help_text="UTC Date of publication of the advisory")
-    date_collected = models.DateField(help_text="UTC Date on which the advisory was collected")
-    created_by = models.CharField(
-        max_length=100,
-        help_text="Fully qualified name of the importer prefixed with the module name importing the advisory. Eg: vulnerabilities.importers.nginx.NginxDataSource",
-    )
-    date_improved = models.DateTimeField(
-        null=True, help_text="Latest date on which the advisory was improved by an improver"
-    )
+    vulnerability_id = models.CharField(max_length=50, null=True, blank=True)
+    summary = models.TextField(blank=True, null=True)
     # we use a JSON field here to avoid creating a complete relational model for data that
     # is never queried directly; instead it is only retrieved and processed as a whole by
     # an improver
-    data = models.JSONField(
-        help_text="Contents of data_source.AdvisoryData serialized as a JSON object"
+    affected_packages = models.JSONField(
+        blank=True, null=True, help_text="A list of serializabale AffectedPackage objects"
     )
+    references = models.JSONField(
+        blank=True, null=True, help_text="A list of serializabale Reference objects"
+    )
+    date_published = models.DateTimeField(
+        blank=True, null=True, help_text="UTC Date of publication of the advisory"
+    )
+    date_collected = models.DateTimeField(help_text="UTC Date on which the advisory was collected")
+    date_improved = models.DateTimeField(
+        blank=True,
+        null=True,
+        help_text="Latest date on which the advisory was improved by an improver",
+    )
+    created_by = models.CharField(
+        max_length=100,
+        help_text="Fully qualified name of the importer prefixed with the"
+                  "module name importing the advisory. Eg:"
+                  "vulnerabilities.importers.nginx.NginxDataSource",
+    )
+
+    def to_advisory_data(self) -> AdvisoryData:
+        return AdvisoryData(
+            vulnerability_id=self.vulnerability_id,
+            summary=self.summary,
+            affected_packages=[AffectedPackage.from_dict(pkg) for pkg in self.affected_packages],
+            references=[Reference.from_dict(ref) for ref in self.references],
+            date_published=self.date_published,
+        )

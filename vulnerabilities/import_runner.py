@@ -26,6 +26,7 @@ import datetime
 import json
 import logging
 from typing import Set
+from typing import Iterable
 
 
 from vulnerabilities import models
@@ -70,8 +71,8 @@ class ImportRunner:
         data_source = self.importer.make_data_source(cutoff_date=cutoff_date)
         with data_source:
             advisory_data = data_source.advisory_data()
-            importer_name = f"{data_source.__module__}.{data_source.__class__.__qualname__}"
-            process_advisories(importer_name, advisory_data)
+            importer_name = repr(data_source)
+            process_advisories(advisory_datas=advisory_data, importer_name=importer_name)
         self.importer.last_run = datetime.datetime.now(tz=datetime.timezone.utc)
         self.importer.data_source_cfg = dataclasses.asdict(data_source.config)
         self.importer.save()
@@ -92,20 +93,25 @@ def get_vuln_pkg_refs(vulnerability, package):
     )
 
 
-def process_advisories(importer_name: str, advisory_data: Set[AdvisoryData]) -> None:
+def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: str) -> None:
     """
     Insert advisories into the database
     """
 
-    advisories = []
-    for data in advisory_data:
-        advisories.append(
-            Advisory(
-                date_published=data.date_published,
-                date_collected=datetime.datetime.now(tz=datetime.timezone.utc),
-                created_by=importer_name,
-                data=json.dumps(data.to_dict()),
-            )
+    for data in advisory_datas:
+        obj, created = Advisory.objects.get_or_create(
+            vulnerability_id=data.vulnerability_id,
+            summary=data.summary,
+            affected_packages=[pkg.to_dict() for pkg in data.affected_packages],
+            references=[ref.to_dict() for ref in data.references],
+            created_by=importer_name,
+            defaults={
+                "date_published": data.date_published,
+                "date_collected": datetime.datetime.now(tz=datetime.timezone.utc),
+            },
         )
-
-    Advisory.objects.bulk_create(advisories)  # TODO: handle conflicts, duplicates (update? ignore?)
+        if not created:
+            logger.warn(
+                f"Advisory with vulnerability_id: {obj.vulnerability_id},"
+                f"created_by: {obj.created_by} already exists"
+            )

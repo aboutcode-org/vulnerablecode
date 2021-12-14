@@ -2,6 +2,7 @@ import dataclasses
 import logging
 from typing import List
 from typing import Optional
+from uuid import uuid4
 
 from packageurl import PackageURL
 from django.db.models.query import QuerySet
@@ -19,6 +20,12 @@ class Inference:
     """
     This data class expresses the contract between data improvers and the improve runner.
 
+    If a vulnerability_id is present then:
+        summary or affected_purls or fixed_purl or references must be present
+    otherwise
+        either affected_purls or fixed_purl or references should be present and
+        a VULCOID will be assigned as the vulnerability_id
+
     Only inferences with highest confidence for one vulnerability <-> package
     relationship is to be inserted into the database
     """
@@ -27,7 +34,7 @@ class Inference:
     confidence: int = MAX_CONFIDENCE
     summary: Optional[str] = None
     affected_purls: List[PackageURL] = dataclasses.field(default_factory=list)
-    fixed_purls: List[PackageURL] = dataclasses.field(default_factory=list)
+    fixed_purl: PackageURL = dataclasses.field(default_factory=list)
     references: List[Reference] = dataclasses.field(default_factory=list)
 
     def __post_init__(self):
@@ -35,19 +42,24 @@ class Inference:
             raise ValueError
 
         if self.vulnerability_id:
-            assert self.summary or self.affected_purls or self.fixed_purls or self.references
+            assert self.summary or self.affected_purls or self.fixed_purl or self.references
         else:
             # TODO: Maybe only having summary
-            assert self.affected_purls or self.fixed_purls or self.references
+            assert self.affected_purls or self.fixed_purl or self.references
+            self.vulnerability_id = self.generate_vulcoid()
 
         versionless_purls = []
-        for purl in self.affected_purls + self.fixed_purls:
+        for purl in self.affected_purls + [self.fixed_purl]:
             if not purl.version:
                 versionless_purls.append(purl)
 
         assert (
             not versionless_purls
         ), f"Version-less purls are not supported in an Inference: {versionless_purls}"
+
+    @staticmethod
+    def generate_vulcoid():
+        return f"VULCOID-{uuid4()}"
 
 
 class Improver:
@@ -68,3 +80,10 @@ class Improver:
         Generate and return Inferences for the given advisory data
         """
         raise NotImplementedError
+
+    def __repr__(self):
+        """
+        Fully qualified name prefixed with the module name of the improver
+        used in logging.
+        """
+        return f"{self.__module__}.{self.__class__.__qualname__}"

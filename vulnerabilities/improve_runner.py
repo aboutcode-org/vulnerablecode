@@ -1,16 +1,14 @@
+import logging
 from datetime import datetime
 from datetime import timezone
-import json
-import logging
-from typing import Tuple
 from typing import List
+from typing import Tuple
 
 from django.db import transaction
 
 from vulnerabilities import models
-from vulnerabilities.data_source import PackageURL
-from vulnerabilities.data_source import AdvisoryData
 from vulnerabilities.data_inference import Inference
+from vulnerabilities.data_source import PackageURL
 from vulnerabilities.models import Advisory
 
 
@@ -27,19 +25,18 @@ class ImproveRunner:
         self.improver = improver
 
     def run(self) -> None:
-        logger.info("Improving using %s.", self.improver.__name__)
-        source = f"{self.improver.__module__}.{self.improver.__qualname__}"
         improver = self.improver()
+        logger.info(f"Running improver: {improver!r}")
         for advisory in improver.interesting_advisories:
-            inferences = improver.get_inferences(
-                advisory_data=AdvisoryData.from_dict(json.loads(advisory.data))
+            inferences = improver.get_inferences(advisory_data=advisory.to_advisory_data())
+            process_inferences(
+                inferences=inferences, advisory=advisory, improver_name=repr(improver)
             )
-            process_inferences(source=source, advisory=advisory, inferences=inferences)
         logger.info("Finished improving using %s.", self.improver.__name__)
 
 
 @transaction.atomic
-def process_inferences(source: str, advisory: Advisory, inferences: List[Inference]):
+def process_inferences(inferences: List[Inference], advisory: Advisory, improver_name: str):
     """
     An atomic transaction that updates both the Advisory (e.g. date_improved)
     and processes the given inferences to create or update corresponding
@@ -51,11 +48,10 @@ def process_inferences(source: str, advisory: Advisory, inferences: List[Inferen
     """
 
     if not inferences:
-        logger.warn(f"Nothing to improve. Source: {source} Advisory id: {advisory.pk}")
+        logger.warn(f"Nothing to improve. Source: {improver_name} Advisory id: {advisory.id}")
         return
 
-    advisory.date_improved = datetime.now(timezone.utc)
-    advisory.save()
+    logger.info(f"Improving advisory id: {advisory.id}")
 
     for inference in inferences:
         vuln, vuln_created = _get_or_create_vulnerability(
@@ -77,22 +73,24 @@ def process_inferences(source: str, advisory: Advisory, inferences: List[Inferen
         for pkg in inference.affected_purls:
             vulnerable_package, _ = _get_or_create_package(pkg)
             models.PackageRelatedVulnerability(
-                package=vulnerable_package,
                 vulnerability=vuln,
-                source=source,
+                package=vulnerable_package,
+                created_by=improver_name,
                 confidence=inference.confidence,
                 fix=False,
             ).update_or_create()
 
-        for pkg in inference.fixed_purls:
-            patched_package, _ = _get_or_create_package(pkg)
-            models.PackageRelatedVulnerability(
-                package=patched_package,
-                vulnerability=vuln,
-                source=source,
-                confidence=inference.confidence,
-                fix=True,
-            ).update_or_create()
+        fixed_package, _ = _get_or_create_package(inference.fixed_purl)
+        models.PackageRelatedVulnerability(
+            vulnerability=vuln,
+            package=fixed_package,
+            created_by=improver_name,
+            confidence=inference.confidence,
+            fix=True,
+        ).update_or_create()
+
+    advisory.date_improved = datetime.now(timezone.utc)
+    advisory.save()
 
 
 # TODO: This likely may be best as a model or manager method.

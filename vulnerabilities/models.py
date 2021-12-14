@@ -73,18 +73,6 @@ class Vulnerability(models.Model):
         blank=True,
     )
 
-    def save(self, *args, **kwargs):
-        if not self.vulnerability_id:
-            self.vulnerability_id = self.generate_vulcoid()
-        return super().save(*args, **kwargs)
-
-    @staticmethod
-    def generate_vulcoid(timestamp=None):
-        if not timestamp:
-            timestamp = datetime.now()
-        timestamp = timestamp.strftime("%Y%m%d-%H%M-%S%f")
-        return f"VULCOID-{timestamp}"
-
     @property
     def vulnerable_to(self):
         """
@@ -244,13 +232,11 @@ class PackageRelatedVulnerability(models.Model):
                 existing.confidence = self.confidence
                 existing.fix = self.fix
                 existing.save()
-            # TODO: later we want these to be part of a log field in the DB
-            logger.debug(
-                "Confidence improved for %s R %s, new confidence: %d",
-                self.package,
-                self.vulnerability,
-                self.confidence,
-            )
+                # TODO: later we want these to be part of a log field in the DB
+                logger.info(
+                    f"Confidence improved for {self.package} R {self.vulnerability}, "
+                    f"new confidence: {self.confidence}"
+                )
 
         except self.DoesNotExist:
             self.__class__.objects.create(
@@ -259,6 +245,10 @@ class PackageRelatedVulnerability(models.Model):
                 package=self.package,
                 confidence=self.confidence,
                 fix=self.fix,
+            )
+            logger.info(
+                f"New relationship {self.package} R {self.vulnerability}, "
+                f"fix: {self.fix}, confidence: {self.confidence}"
             )
 
 

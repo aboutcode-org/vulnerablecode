@@ -515,12 +515,12 @@ class HexVersionAPI(VersionAPI):
 class GoproxyVersionAPI(VersionAPI):
 
     package_type = "golang"
-    pkg_mappings = {}
+    module_name_by_package_name = {}
 
     @staticmethod
     def trim_url_path(url_path: str) -> Optional[str]:
         """github advisories for golang is using package names(e.g. https://github.com/advisories/GHSA-jp4j-47f9-2vc3), yet goproxy works with module names(see https://golang.org/ref/mod#goproxy-protocol).
-        this method removes the last part of a package path, and returns the remaining as the module name.
+        this method removes the last part of a package path, and returns the remaining as the module name. For example: trim_url_path("https://github.com/xx/a/b") returns "https://github.com/xx/a"
         """
         # some advisories contains this prefix in package name, e.g. https://github.com/advisories/GHSA-7h6j-2268-fhcm
         if url_path.startswith("https://pkg.go.dev/"):
@@ -533,7 +533,7 @@ class GoproxyVersionAPI(VersionAPI):
 
     @staticmethod
     def escape_path(path: str) -> str:
-        """escape uppercase in module/version name"""
+        """escape uppercase in module/version name. For example: escape_path("github.com/FerretDB/FerretDB") returns "github.com/!ferret!d!b/!ferret!d!b" """
         escaped_path = ""
         for c in path:
             if c >= "A" and c <= "Z":
@@ -571,6 +571,7 @@ class GoproxyVersionAPI(VersionAPI):
         escaped_pkg = GoproxyVersionAPI.escape_path(pkg)
         trimmed_pkg = pkg
         resp_text = None
+        # resolve module name from package name, see https://go.dev/ref/mod#resolve-pkg-mod
         while escaped_pkg is not None:
             url = f"https://proxy.golang.org/{escaped_pkg}/@v/list"
             try:
@@ -582,9 +583,9 @@ class GoproxyVersionAPI(VersionAPI):
                 continue
             break
         if resp_text is None or escaped_pkg is None or trimmed_pkg is None:
-            print("error fetch versions from goproxy: ", pkg)
+            print(f"error while fetching versions for {pkg} from goproxy")
             return
-        self.pkg_mappings[pkg] = trimmed_pkg
+        self.module_name_by_package_name[pkg] = trimmed_pkg
         versions = set()
         for version_info in resp_text.split("\n"):
             version = await GoproxyVersionAPI.parse_version_info(

@@ -56,7 +56,7 @@ def get_exact_purls(affected_package: AffectedPackage) -> (List[PackageURL], Pac
     ({PackageURL(type='turtle', namespace=None, name='green', version='2.0.0', qualifiers={}, subpath=None)}, PackageURL(type='turtle', namespace=None, name='green', version='5.0.0', qualifiers={}, subpath=None))
     """
     affected_purls = set()
-    all_constraints = set(chain.from_iterable(affected_package.affected_version_range.constraints))
+    all_constraints = affected_package.affected_version_range.constraints
     for constraint in all_constraints:
         if constraint.comparator in ["=", "<=", ">="]:
             affected_purl = affected_package.package._replace(version=str(constraint.version))

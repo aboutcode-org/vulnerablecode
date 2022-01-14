@@ -110,8 +110,13 @@ def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: st
                 "date_collected": datetime.datetime.now(tz=datetime.timezone.utc),
             },
         )
-        if not created:
-            logger.warn(
-                f"Advisory with vulnerability_id: {obj.vulnerability_id},"
+        if created:
+            logger.info(
+                f"[*] New Advisory with vulnerability_id: {obj.vulnerability_id}, "
+                f"created_by: {obj.created_by}"
+            )
+        else:
+            logger.debug(
+                f"Advisory with vulnerability_id: {obj.vulnerability_id}, "
                 f"created_by: {obj.created_by} already exists"
             )

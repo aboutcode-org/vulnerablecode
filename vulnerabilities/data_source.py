@@ -281,11 +281,15 @@ class DataSource(ContextManager):
         pass
 
     def __repr__(self):
+        return self.to_repr()
+
+    @classmethod
+    def to_repr(cls):
         """
         Fully qualified name prefixed with the module name of the data source
         used in logging.
         """
-        return f"{self.__module__}.{self.__class__.__qualname__}"
+        return f"{cls.__module__}.{cls.__qualname__}"
 
     @property
     def cutoff_timestamp(self) -> int:

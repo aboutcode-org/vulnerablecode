@@ -82,7 +82,7 @@ class PackageSearchView(View):
                     "vulnerabilities",
                     filter=Q(vulnerabilities__packagerelatedvulnerability__fix=False),
                 ),
-                #TODO: consider renaming to fixed in the future
+                # TODO: consider renaming to fixed in the future
                 patched_vulnerability_count=Count(
                     "vulnerabilities",
                     filter=Q(vulnerabilities__packagerelatedvulnerability__fix=True),

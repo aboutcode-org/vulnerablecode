@@ -9,106 +9,330 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Advisory',
+            name="Advisory",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('vulnerability_id', models.CharField(blank=True, max_length=50, null=True)),
-                ('summary', models.TextField(blank=True, null=True)),
-                ('affected_packages', models.TextField()),
-                ('references', models.TextField()),
-                ('date_published', models.DateField(blank=True, help_text='UTC Date of publication of the advisory', null=True)),
-                ('date_collected', models.DateField(help_text='UTC Date on which the advisory was collected')),
-                ('date_improved', models.DateTimeField(blank=True, help_text='Latest date on which the advisory was improved by an improver', null=True)),
-                ('created_by', models.CharField(help_text='Fully qualified name of the importer prefixed with the module name importing the advisory. Eg: vulnerabilities.importers.nginx.NginxDataSource', max_length=100)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("vulnerability_id", models.CharField(blank=True, max_length=50, null=True)),
+                ("summary", models.TextField(blank=True, null=True)),
+                ("affected_packages", models.TextField()),
+                ("references", models.TextField()),
+                (
+                    "date_published",
+                    models.DateField(
+                        blank=True, help_text="UTC Date of publication of the advisory", null=True
+                    ),
+                ),
+                (
+                    "date_collected",
+                    models.DateField(help_text="UTC Date on which the advisory was collected"),
+                ),
+                (
+                    "date_improved",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="Latest date on which the advisory was improved by an improver",
+                        null=True,
+                    ),
+                ),
+                (
+                    "created_by",
+                    models.CharField(
+                        help_text="Fully qualified name of the importer prefixed with the module name importing the advisory. Eg: vulnerabilities.importers.nginx.NginxDataSource",
+                        max_length=100,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Importer',
+            name="Importer",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Name of the importer', max_length=100, unique=True)),
-                ('license', models.CharField(blank=True, help_text='License of the vulnerability data', max_length=100)),
-                ('last_run', models.DateTimeField(help_text='UTC Timestamp of the last run', null=True)),
-                ('data_source', models.CharField(help_text='Name of the data source implementation importable from vulnerabilities.importers', max_length=100)),
-                ('data_source_cfg', models.JSONField(default=dict, help_text='Implementation-specific configuration for the data source')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(help_text="Name of the importer", max_length=100, unique=True),
+                ),
+                (
+                    "license",
+                    models.CharField(
+                        blank=True, help_text="License of the vulnerability data", max_length=100
+                    ),
+                ),
+                (
+                    "last_run",
+                    models.DateTimeField(help_text="UTC Timestamp of the last run", null=True),
+                ),
+                (
+                    "data_source",
+                    models.CharField(
+                        help_text="Name of the data source implementation importable from vulnerabilities.importers",
+                        max_length=100,
+                    ),
+                ),
+                (
+                    "data_source_cfg",
+                    models.JSONField(
+                        default=dict,
+                        help_text="Implementation-specific configuration for the data source",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Package',
+            name="Package",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('type', models.CharField(blank=True, help_text='A short code to identify the type of this package. For example: gem for a Rubygem, docker for a container, pypi for a Python Wheel or Egg, maven for a Maven Jar, deb for a Debian package, etc.', max_length=16)),
-                ('namespace', models.CharField(blank=True, help_text='Package name prefix, such as Maven groupid, Docker image owner, GitHub user or organization, etc.', max_length=255)),
-                ('name', models.CharField(blank=True, help_text='Name of the package.', max_length=100)),
-                ('version', models.CharField(blank=True, help_text='Version of the package.', max_length=100)),
-                ('subpath', models.CharField(blank=True, help_text='Extra subpath within a package, relative to the package root.', max_length=200)),
-                ('qualifiers', models.JSONField(blank=True, default=dict, help_text='Extra qualifying data for a package such as the name of an OS, architecture, distro, etc.')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "type",
+                    models.CharField(
+                        blank=True,
+                        help_text="A short code to identify the type of this package. For example: gem for a Rubygem, docker for a container, pypi for a Python Wheel or Egg, maven for a Maven Jar, deb for a Debian package, etc.",
+                        max_length=16,
+                    ),
+                ),
+                (
+                    "namespace",
+                    models.CharField(
+                        blank=True,
+                        help_text="Package name prefix, such as Maven groupid, Docker image owner, GitHub user or organization, etc.",
+                        max_length=255,
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(blank=True, help_text="Name of the package.", max_length=100),
+                ),
+                (
+                    "version",
+                    models.CharField(
+                        blank=True, help_text="Version of the package.", max_length=100
+                    ),
+                ),
+                (
+                    "subpath",
+                    models.CharField(
+                        blank=True,
+                        help_text="Extra subpath within a package, relative to the package root.",
+                        max_length=200,
+                    ),
+                ),
+                (
+                    "qualifiers",
+                    models.JSONField(
+                        blank=True,
+                        default=dict,
+                        help_text="Extra qualifying data for a package such as the name of an OS, architecture, distro, etc.",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Vulnerability',
+            name="Vulnerability",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('vulnerability_id', models.CharField(help_text="Unique identifier for a vulnerability: this is either a published CVE id (as in CVE-2020-7965) if it exists. Otherwise this is a VulnerableCode-assigned VULCOID (as in VULCOID-20210222-1315-16461541). When a vulnerability CVE is assigned later we replace this with the CVE and keep the 'old' VULCOID in the 'old_vulnerability_id' field to support redirection to the CVE id.", max_length=50, unique=True)),
-                ('old_vulnerability_id', models.CharField(blank=True, help_text='empty if no  CVE else VC id', max_length=50, null=True, unique=True)),
-                ('summary', models.TextField(blank=True, help_text='Summary of the vulnerability')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "vulnerability_id",
+                    models.CharField(
+                        help_text="Unique identifier for a vulnerability: this is either a published CVE id (as in CVE-2020-7965) if it exists. Otherwise this is a VulnerableCode-assigned VULCOID (as in VULCOID-20210222-1315-16461541). When a vulnerability CVE is assigned later we replace this with the CVE and keep the 'old' VULCOID in the 'old_vulnerability_id' field to support redirection to the CVE id.",
+                        max_length=50,
+                        unique=True,
+                    ),
+                ),
+                (
+                    "old_vulnerability_id",
+                    models.CharField(
+                        blank=True,
+                        help_text="empty if no  CVE else VC id",
+                        max_length=50,
+                        null=True,
+                        unique=True,
+                    ),
+                ),
+                ("summary", models.TextField(blank=True, help_text="Summary of the vulnerability")),
             ],
             options={
-                'verbose_name_plural': 'Vulnerabilities',
+                "verbose_name_plural": "Vulnerabilities",
             },
         ),
         migrations.CreateModel(
-            name='VulnerabilityReference',
+            name="VulnerabilityReference",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('url', models.URLField(blank=True, help_text='URL to the vulnerability reference', max_length=1024)),
-                ('reference_id', models.CharField(blank=True, help_text='An optional reference ID, such as DSA-4465-1 when available', max_length=50, null=True)),
-                ('vulnerability', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='vulnerabilities.vulnerability')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "url",
+                    models.URLField(
+                        blank=True, help_text="URL to the vulnerability reference", max_length=1024
+                    ),
+                ),
+                (
+                    "reference_id",
+                    models.CharField(
+                        blank=True,
+                        help_text="An optional reference ID, such as DSA-4465-1 when available",
+                        max_length=50,
+                        null=True,
+                    ),
+                ),
+                (
+                    "vulnerability",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="vulnerabilities.vulnerability",
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('vulnerability', 'url', 'reference_id')},
+                "unique_together": {("vulnerability", "url", "reference_id")},
             },
         ),
         migrations.CreateModel(
-            name='PackageRelatedVulnerability',
+            name="PackageRelatedVulnerability",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_by', models.CharField(blank=True, help_text='Fully qualified name of the improver prefixed with the module name responsible for creating this relation. Eg: vulnerabilities.importers.nginx.NginxTimeTravel', max_length=100)),
-                ('confidence', models.PositiveIntegerField(default=100, help_text='Confidence score for this relation', validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(100)])),
-                ('fix', models.BooleanField(default=False, help_text='Does this relation fix the specified vulnerability ?')),
-                ('package', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='package', to='vulnerabilities.package')),
-                ('vulnerability', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='vulnerabilities.vulnerability')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "created_by",
+                    models.CharField(
+                        blank=True,
+                        help_text="Fully qualified name of the improver prefixed with the module name responsible for creating this relation. Eg: vulnerabilities.importers.nginx.NginxTimeTravel",
+                        max_length=100,
+                    ),
+                ),
+                (
+                    "confidence",
+                    models.PositiveIntegerField(
+                        default=100,
+                        help_text="Confidence score for this relation",
+                        validators=[
+                            django.core.validators.MinValueValidator(0),
+                            django.core.validators.MaxValueValidator(100),
+                        ],
+                    ),
+                ),
+                (
+                    "fix",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Does this relation fix the specified vulnerability ?",
+                    ),
+                ),
+                (
+                    "package",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="package",
+                        to="vulnerabilities.package",
+                    ),
+                ),
+                (
+                    "vulnerability",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="vulnerabilities.vulnerability",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'PackageRelatedVulnerabilities',
-                'unique_together': {('package', 'vulnerability')},
+                "verbose_name_plural": "PackageRelatedVulnerabilities",
+                "unique_together": {("package", "vulnerability")},
             },
         ),
         migrations.AddField(
-            model_name='package',
-            name='vulnerabilities',
-            field=models.ManyToManyField(related_name='packages', through='vulnerabilities.PackageRelatedVulnerability', to='vulnerabilities.Vulnerability'),
+            model_name="package",
+            name="vulnerabilities",
+            field=models.ManyToManyField(
+                related_name="packages",
+                through="vulnerabilities.PackageRelatedVulnerability",
+                to="vulnerabilities.Vulnerability",
+            ),
         ),
         migrations.CreateModel(
-            name='VulnerabilitySeverity',
+            name="VulnerabilitySeverity",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('value', models.CharField(help_text='Example: 9.0, Important, High', max_length=50)),
-                ('scoring_system', models.CharField(choices=[('cvssv2', 'CVSSv2 Base Score'), ('cvssv2_vector', 'CVSSv2 Vector'), ('cvssv3', 'CVSSv3 Base Score'), ('cvssv3_vector', 'CVSSv3 Vector'), ('cvssv3.1', 'CVSSv3.1 Base Score'), ('cvssv3.1_vector', 'CVSSv3.1 Vector'), ('rhbs', 'RedHat Bugzilla severity'), ('rhas', 'RedHat Aggregate severity'), ('avgs', 'Archlinux Vulnerability Group Severity'), ('cvssv3.1_qr', 'CVSSv3.1 Qualitative Severity Rating'), ('generic_textual', 'Generic textual severity rating'), ('apache_httpd', 'Apache Httpd Severity')], help_text='identifier for the scoring system used. Available choices are: cvssv2 is vulnerability_id for CVSSv2 Base Score system, cvssv2_vector is vulnerability_id for CVSSv2 Vector system, cvssv3 is vulnerability_id for CVSSv3 Base Score system, cvssv3_vector is vulnerability_id for CVSSv3 Vector system, cvssv3.1 is vulnerability_id for CVSSv3.1 Base Score system, cvssv3.1_vector is vulnerability_id for CVSSv3.1 Vector system, rhbs is vulnerability_id for RedHat Bugzilla severity system, rhas is vulnerability_id for RedHat Aggregate severity system, avgs is vulnerability_id for Archlinux Vulnerability Group Severity system, cvssv3.1_qr is vulnerability_id for CVSSv3.1 Qualitative Severity Rating system, generic_textual is vulnerability_id for Generic textual severity rating system, apache_httpd is vulnerability_id for Apache Httpd Severity system ', max_length=50)),
-                ('reference', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='vulnerabilities.vulnerabilityreference')),
-                ('vulnerability', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='vulnerabilities.vulnerability')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "value",
+                    models.CharField(help_text="Example: 9.0, Important, High", max_length=50),
+                ),
+                (
+                    "scoring_system",
+                    models.CharField(
+                        choices=[
+                            ("cvssv2", "CVSSv2 Base Score"),
+                            ("cvssv2_vector", "CVSSv2 Vector"),
+                            ("cvssv3", "CVSSv3 Base Score"),
+                            ("cvssv3_vector", "CVSSv3 Vector"),
+                            ("cvssv3.1", "CVSSv3.1 Base Score"),
+                            ("cvssv3.1_vector", "CVSSv3.1 Vector"),
+                            ("rhbs", "RedHat Bugzilla severity"),
+                            ("rhas", "RedHat Aggregate severity"),
+                            ("avgs", "Archlinux Vulnerability Group Severity"),
+                            ("cvssv3.1_qr", "CVSSv3.1 Qualitative Severity Rating"),
+                            ("generic_textual", "Generic textual severity rating"),
+                            ("apache_httpd", "Apache Httpd Severity"),
+                        ],
+                        help_text="identifier for the scoring system used. Available choices are: cvssv2 is vulnerability_id for CVSSv2 Base Score system, cvssv2_vector is vulnerability_id for CVSSv2 Vector system, cvssv3 is vulnerability_id for CVSSv3 Base Score system, cvssv3_vector is vulnerability_id for CVSSv3 Vector system, cvssv3.1 is vulnerability_id for CVSSv3.1 Base Score system, cvssv3.1_vector is vulnerability_id for CVSSv3.1 Vector system, rhbs is vulnerability_id for RedHat Bugzilla severity system, rhas is vulnerability_id for RedHat Aggregate severity system, avgs is vulnerability_id for Archlinux Vulnerability Group Severity system, cvssv3.1_qr is vulnerability_id for CVSSv3.1 Qualitative Severity Rating system, generic_textual is vulnerability_id for Generic textual severity rating system, apache_httpd is vulnerability_id for Apache Httpd Severity system ",
+                        max_length=50,
+                    ),
+                ),
+                (
+                    "reference",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="vulnerabilities.vulnerabilityreference",
+                    ),
+                ),
+                (
+                    "vulnerability",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="vulnerabilities.vulnerability",
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('vulnerability', 'reference', 'scoring_system')},
+                "unique_together": {("vulnerability", "reference", "scoring_system")},
             },
         ),
         migrations.AlterUniqueTogether(
-            name='package',
-            unique_together={('name', 'namespace', 'type', 'version', 'qualifiers', 'subpath')},
+            name="package",
+            unique_together={("name", "namespace", "type", "version", "qualifiers", "subpath")},
         ),
     ]

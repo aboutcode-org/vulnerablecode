@@ -353,8 +353,8 @@ class Advisory(models.Model):
     created_by = models.CharField(
         max_length=100,
         help_text="Fully qualified name of the importer prefixed with the"
-                  "module name importing the advisory. Eg:"
-                  "vulnerabilities.importers.nginx.NginxDataSource",
+        "module name importing the advisory. Eg:"
+        "vulnerabilities.importers.nginx.NginxDataSource",
     )
 
     def to_advisory_data(self) -> AdvisoryData:

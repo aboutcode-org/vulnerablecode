@@ -130,6 +130,31 @@ class AffectedPackage:
         if self.package.version:
             raise ValueError
 
+    @staticmethod
+    def merge(affected_packages: Iterable):
+        """
+        Return a tuple with all attributes of AffectedPackage as a set
+        for all values in the given iterable of AffectedPackage
+
+        This is useful where an iterable of AffectedPackage needs to be
+        converted into one tuple of structure similar to AffectedPackage
+        but with multiple fixed_versions, ie
+            package: PackageURL
+            affected_version_range: VersionRange
+            fixed_versions: [Version]
+        """
+        affected_version_ranges = set()
+        fixed_versions = set()
+        purls = set()
+        for pkg in affected_packages:
+            affected_version_ranges.add(pkg.affected_version_range)
+            fixed_versions.add(pkg.fixed_version)
+            purls.add(pkg.package)
+        if len(purls) > 1:
+            print(affected_packages)
+            raise TypeError("Cannot merge with different purls", purls)
+        return purls.pop(), affected_version_ranges, fixed_versions
+
     def to_dict(self):
         """
         Return a serializable dict that can be converted back using self.from_dict
@@ -186,6 +211,22 @@ class AdvisoryData:
 
         if self.date_published:
             assert self.date_published.tzinfo
+
+    def to_inference(self, confidence, affected_purls, fixed_purl):
+        """
+        Convert to an Inference object while keeping the same values
+        for vulnerability_id, summary and references
+        """
+        from vulnerabilities.data_inference import Inference
+
+        return Inference(
+            vulnerability_id=self.vulnerability_id,
+            confidence=confidence,
+            summary=self.summary,
+            affected_purls=affected_purls,
+            fixed_purl=fixed_purl,
+            references=self.references,
+        )
 
 
 class InvalidConfigurationError(Exception):

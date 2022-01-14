@@ -23,12 +23,15 @@
 import dataclasses
 import datetime
 from typing import Iterable
+import logging
 
+import asyncio
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
 from univers.version_range import NginxVersionRange
 from univers.versions import SemverVersion
+from django.db.models.query import QuerySet
 
 from vulnerabilities.data_source import AdvisoryData
 from vulnerabilities.data_source import AffectedPackage
@@ -36,10 +39,15 @@ from vulnerabilities.data_source import DataSource
 from vulnerabilities.data_source import DataSourceConfiguration
 from vulnerabilities.data_source import Reference
 from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.data_inference import Inference
+from vulnerabilities.data_inference import Improver
 from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.models import Advisory
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import Version
 from vulnerabilities.severity_systems import scoring_systems
+
+logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass

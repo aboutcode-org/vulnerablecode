@@ -100,23 +100,19 @@ def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: st
 
     for data in advisory_datas:
         obj, created = Advisory.objects.get_or_create(
-            vulnerability_id=data.vulnerability_id,
+            aliases=data.aliases,
             summary=data.summary,
             affected_packages=[pkg.to_dict() for pkg in data.affected_packages],
             references=[ref.to_dict() for ref in data.references],
-            created_by=importer_name,
+            date_published=data.date_published,
             defaults={
-                "date_published": data.date_published,
+                "created_by": importer_name,
                 "date_collected": datetime.datetime.now(tz=datetime.timezone.utc),
             },
         )
         if created:
             logger.info(
-                f"[*] New Advisory with vulnerability_id: {obj.vulnerability_id}, "
-                f"created_by: {obj.created_by}"
+                f"[*] New Advisory with aliases: {obj.aliases!r}, created_by: {obj.created_by}"
             )
         else:
-            logger.debug(
-                f"Advisory with vulnerability_id: {obj.vulnerability_id}, "
-                f"created_by: {obj.created_by} already exists"
-            )
+            logger.debug(f"Advisory with aliases: {obj.aliases!r} already exists. Skipped.")

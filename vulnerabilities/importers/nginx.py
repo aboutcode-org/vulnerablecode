@@ -45,7 +45,7 @@ from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.models import Advisory
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import Version
-from vulnerabilities.severity_systems import scoring_systems
+from vulnerabilities.severity_systems import SCORING_SYSTEMS
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +69,7 @@ class NginxDataSource(DataSource):
 
 
 def to_advisory_data(
-    cve, summary, advisory_severity, not_vulnerable, vulnerable, references
+    aliases, summary, advisory_severity, not_vulnerable, vulnerable, references
 ) -> AdvisoryData:
     """
     Return AdvisoryData formed by given parameters
@@ -97,10 +97,8 @@ def to_advisory_data(
     for fixed_version in fixed_versions.split(","):
         fixed_version = fixed_version.rstrip("+")
 
-        # TODO: Mail nginx for this anomaly
+        # TODO: Mail nginx for this anomaly (create ticket on our side)
         if "none" in fixed_version:
-            # FIXME: Fix after https://github.com/nexB/univers/pull/31
-            break
             affected_packages.append(
                 AffectedPackage(
                     package=PackageURL(type="generic", name="nginx", qualifiers=qualifiers),
@@ -120,18 +118,17 @@ def to_advisory_data(
         )
 
     return AdvisoryData(
-        vulnerability_id=cve,
+        aliases=aliases,
         summary=summary,
         affected_packages=affected_packages,
         references=references,
-        date_published=datetime.datetime.now(tz=datetime.timezone.utc),
     )
 
 
 def parse_advisory_data_from_paragraph(vuln_info):
     """
-    Return (summary, advisory_severity, not_vulnerable, vulnerable, references)
-    from bs4 paragraph
+    Return a dict with keys (aliases, summary, advisory_severity,
+    not_vulnerable, vulnerable, references) from bs4 paragraph
 
     For example:
     >>> paragraph = '<p>1-byte memory overwrite in resolver<br/>Severity: medium<br/><a href="http://mailman.nginx.org/pipermail/nginx-announce/2021/000300.html">Advisory</a><br/><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-23017">CVE-2021-23017</a><br/>Not vulnerable: 1.21.0+, 1.20.1+<br/>Vulnerable: 0.6.18-1.20.0<br/><a href="/download/patch.2021.resolver.txt">The patch</a>  <a href="/download/patch.2021.resolver.txt.asc">pgp</a></p>'
@@ -139,56 +136,50 @@ def parse_advisory_data_from_paragraph(vuln_info):
     >>> parse_advisory_data_from_paragraph(vuln_info)
     ('CVE-2021-23017', '1-byte memory overwrite in resolver', 'Severity: medium', 'Not vulnerable: 1.21.0+, 1.20.1+', 'Vulnerable: 0.6.18-1.20.0', [Reference(reference_id='', url='http://mailman.nginx.org/pipermail/nginx-announce/2021/000300.html', severities=[]), Reference(reference_id='CVE-2021-23017', url='http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-23017', severities=[VulnerabilitySeverity(system=ScoringSystem(identifier='generic_textual', name='Generic textual severity rating', url='', notes='Severity for unknown scoring systems. Contains generic textual values like High, Low etc'), value='Severity: medium')]), Reference(reference_id='', url='https://nginx.org/download/patch.2021.resolver.txt', severities=[]), Reference(reference_id='', url='https://nginx.org/download/patch.2021.resolver.txt.asc', severities=[])])
     """
-    cve = summary = advisory_severity = not_vulnerable = vulnerable = None
+    aliases = []
+    summary = advisory_severity = not_vulnerable = vulnerable = None
     references = []
-    for index, child in enumerate(vuln_info.children):
-        if index == 0:
+    is_first = True
+    for child in vuln_info.children:
+        if is_first:
             summary = child
-            continue
+            is_first = False
 
-        if "Severity" in child:
-            advisory_severity = child
-            continue
+        elif child.text.startswith(
+            (
+                "CVE-",
+                "CORE-",
+                "VU#",
+            )
+        ):
+            aliases.append(child.text)
 
-        #  hasattr(child, "attrs") == False for bs4.element.NavigableString
-        if hasattr(child, "attrs") and child.attrs.get("href"):
+        elif "severity" in child.text.lower():
+            advisory_severity = child.text
+
+        elif "not vulnerable" in child.text.lower():
+            not_vulnerable = child.text
+
+        elif "vulnerable" in child.text.lower():
+            vulnerable = child.text
+
+        elif hasattr(child, "attrs") and child.attrs.get("href"):
             link = child.attrs["href"]
             # Take care of relative urls
             link = requests.compat.urljoin("https://nginx.org", link)
             if "cve.mitre.org" in link:
-                cve = child.text
-                references.append(
-                    Reference(
-                        reference_id=cve,
-                        url=link,
-                    )
-                )
+                cve = child.text.strip()
+                reference = Reference(reference_id=cve, url=link)
+                references.append(reference)
             elif "http://mailman.nginx.org" in link:
-                references.append(
-                    Reference(
-                        url=link,
-                        severities=[
-                            VulnerabilitySeverity(
-                                system=scoring_systems["generic_textual"],
-                                value=advisory_severity,
-                            )
-                        ],
-                    )
-                )
+                ss = SCORING_SYSTEMS["generic_textual"]
+                severity = VulnerabilitySeverity(system=ss, value=advisory_severity)
+                references.append(Reference(url=link, severities=[severity]))
             else:
                 references.append(Reference(url=link))
-            continue
-
-        if "Not vulnerable" in child:
-            not_vulnerable = child
-            continue
-
-        if "Vulnerable" in child:
-            vulnerable = child
-            continue
 
     return {
-        "cve": cve,
+        "aliases": aliases,
         "summary": summary,
         "advisory_severity": advisory_severity,
         "not_vulnerable": not_vulnerable,
@@ -231,7 +222,8 @@ class NginxBasicImprover(Improver):
             # TODO: This also yields with a lower fixed version, maybe we should
             # only yield fixes that are upgrades ?
             fixed_purl = purl._replace(version=fixed_version)
-            yield advisory_data.to_inference(
+            yield Inference.from_advisory_data(
+                advisory_data,
                 confidence=90,  # TODO: Decide properly
                 affected_purls=affected_purls,
                 fixed_purl=fixed_purl,
@@ -264,7 +256,6 @@ def is_vulnerable(version, affected_version_range, fixed_versions):
     # else the version is vulnerable.
     #
     # See: https://marc.info/?l=nginx&m=164070162912710&w=2
-
     if version in NginxVersionRange.from_string(affected_version_range.to_string()):
         for fixed_version in fixed_versions:
             if version.value.minor == fixed_version.value.minor and version >= fixed_version:

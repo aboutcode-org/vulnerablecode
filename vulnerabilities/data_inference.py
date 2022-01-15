@@ -20,17 +20,12 @@ class Inference:
     """
     This data class expresses the contract between data improvers and the improve runner.
 
-    If a vulnerability_id is present then:
-        summary or affected_purls or fixed_purl or references must be present
-    otherwise
-        either affected_purls or fixed_purl or references should be present and
-        a VULCOID will be assigned as the vulnerability_id
-
     Only inferences with highest confidence for one vulnerability <-> package
     relationship is to be inserted into the database
     """
 
-    vulnerability_id: str
+    vulnerability_id: str = None
+    aliases: List[str] = dataclasses.field(default_factory=list)
     confidence: int = MAX_CONFIDENCE
     summary: Optional[str] = None
     affected_purls: List[PackageURL] = dataclasses.field(default_factory=list)
@@ -41,12 +36,14 @@ class Inference:
         if self.confidence > MAX_CONFIDENCE or self.confidence < 0:
             raise ValueError
 
-        if self.vulnerability_id:
-            assert self.summary or self.affected_purls or self.fixed_purl or self.references
-        else:
-            # TODO: Maybe only having summary
-            assert self.affected_purls or self.fixed_purl or self.references
-            self.vulnerability_id = self.generate_vulcoid()
+        assert (
+            self.vulnerability_id
+            or self.aliases
+            or self.summary
+            or self.affected_purls
+            or self.fixed_purl
+            or self.references
+        )
 
         versionless_purls = []
         for purl in self.affected_purls + [self.fixed_purl]:
@@ -57,9 +54,20 @@ class Inference:
             not versionless_purls
         ), f"Version-less purls are not supported in an Inference: {versionless_purls}"
 
-    @staticmethod
-    def generate_vulcoid():
-        return f"VULCOID-{uuid4()}"
+    @classmethod
+    def from_advisory_data(cls, advisory_data, confidence, affected_purls, fixed_purl):
+        """
+        Return an Inference object while keeping the same values as of advisory_data
+        for vulnerability_id, summary and references
+        """
+        return cls(
+            aliases=advisory_data.aliases,
+            confidence=confidence,
+            summary=advisory_data.summary,
+            affected_purls=affected_purls,
+            fixed_purl=fixed_purl,
+            references=advisory_data.references,
+        )
 
 
 class Improver:

@@ -23,7 +23,7 @@ class ScoringSystem:
         raise NotImplementedError
 
 
-scoring_systems = {
+SCORING_SYSTEMS = {
     "cvssv2": ScoringSystem(
         identifier="cvssv2",
         name="CVSSv2 Base Score",

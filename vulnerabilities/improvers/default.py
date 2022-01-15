@@ -29,7 +29,7 @@ class DefaultImprover(Improver):
         for affected_package in advisory_data.affected_packages:
             affected_purls, fixed_purl = get_exact_purls(affected_package)
             yield Inference(
-                vulnerability_id=advisory_data.vulnerability_id,
+                aliases=advisory_data.aliases,
                 confidence=MAX_CONFIDENCE,
                 summary=advisory_data.summary,
                 affected_purls=affected_purls,

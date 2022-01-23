@@ -28,6 +28,7 @@ from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
 
 from vulnerabilities.models import Importer
+from vulnerabilities.importer_yielder import IMPORTER_REGISTRY
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.importer_yielder import load_importers
 
@@ -73,9 +74,9 @@ class Command(BaseCommand):
         self.import_data(sources, options["cutoff_date"])
 
     def list_sources(self):
-        importers = Importer.objects.all()
+        importers = IMPORTER_REGISTRY
         self.stdout.write("Vulnerability data can be imported from the following sources:")
-        self.stdout.write(", ".join([i.name for i in importers]))
+        self.stdout.write(", ".join([i["name"] for i in importers]))
 
     def import_data(self, names, cutoff_date):
         importers = []

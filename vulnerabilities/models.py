@@ -63,6 +63,7 @@ class Vulnerability(models.Model):
 
     summary = models.TextField(
         help_text="Summary of the vulnerability",
+        null=True,
         blank=True,
     )
 
@@ -359,8 +360,6 @@ class Alias(models.Model):
         Vulnerability,
         on_delete=models.CASCADE,
         related_name="aliases",
-        null=True,
-        blank=True,
     )
 
     def __str__(self):

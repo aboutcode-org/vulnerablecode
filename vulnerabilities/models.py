@@ -31,7 +31,6 @@ import uuid
 
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MinValueValidator
 from django.core.validators import MaxValueValidator
 from packageurl.contrib.django.models import PackageURLMixin
@@ -140,10 +139,8 @@ class Package(PackageURLMixin):
     # gets merged
     qualifiers = models.JSONField(
         default=dict,
-        help_text=_(
-            "Extra qualifying data for a package such as the name of an OS, "
-            "architecture, distro, etc."
-        ),
+        help_text="Extra qualifying data for a package such as the name of an OS, "
+        "architecture, distro, etc.",
         blank=True,
         null=False,
     )
@@ -187,7 +184,7 @@ class Package(PackageURLMixin):
             model_field = self._meta.get_field(field_name)
 
             if value and len(value) > model_field.max_length:
-                raise ValidationError(_('Value too long for field "{}".'.format(field_name)))
+                raise ValidationError(f'Value too long for field "{field_name}".')
 
             setattr(self, field_name, value or None)
 

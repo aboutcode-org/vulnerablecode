@@ -194,7 +194,7 @@ class NginxBasicImprover(Improver):
 
     @property
     def interesting_advisories(self) -> QuerySet:
-        return Advisory.objects.filter(created_by=NginxDataSource.to_repr())
+        return Advisory.objects.filter(created_by=NginxDataSource.qualified_name())
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         """

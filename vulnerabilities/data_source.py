@@ -260,11 +260,8 @@ class DataSource(ContextManager):
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
 
-    def __repr__(self):
-        return self.to_repr()
-
     @classmethod
-    def to_repr(cls):
+    def qualified_name(cls):
         """
         Fully qualified name prefixed with the module name of the data source
         used in logging.

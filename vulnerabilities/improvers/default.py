@@ -46,14 +46,14 @@ def get_exact_purls(affected_package: AffectedPackage) -> (List[PackageURL], Pac
     Only exact version constraints (ie with an equality) are considered
     For eg:
     >>> purl = {"type": "turtle", "name": "green"}
-    >>> vers = "vers:npm/>=2.0.0,<3.0.0 | <1.0.0"
+    >>> vers = "vers:npm/<1.0.0 | >=2.0.0 | <3.0.0"
     >>> affected_package = AffectedPackage.from_dict({
     ...     "package": purl,
     ...     "affected_version_range": vers,
     ...     "fixed_version": "5.0.0"
     ... })
     >>> get_exact_purls(affected_package)
-    ({PackageURL(type='turtle', namespace=None, name='green', version='2.0.0', qualifiers={}, subpath=None)}, PackageURL(type='turtle', namespace=None, name='green', version='5.0.0', qualifiers={}, subpath=None))
+    ([PackageURL(type='turtle', namespace=None, name='green', version='2.0.0', qualifiers={}, subpath=None)], PackageURL(type='turtle', namespace=None, name='green', version='5.0.0', qualifiers={}, subpath=None))
     """
     affected_purls = set()
     all_constraints = affected_package.affected_version_range.constraints

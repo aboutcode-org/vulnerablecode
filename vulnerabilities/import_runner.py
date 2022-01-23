@@ -71,7 +71,7 @@ class ImportRunner:
         data_source = self.importer.make_data_source(cutoff_date=cutoff_date)
         with data_source:
             advisory_data = data_source.advisory_data()
-            importer_name = repr(data_source)
+            importer_name = data_source.qualified_name()
             process_advisories(advisory_datas=advisory_data, importer_name=importer_name)
         self.importer.last_run = datetime.datetime.now(tz=datetime.timezone.utc)
         self.importer.data_source_cfg = dataclasses.asdict(data_source.config)

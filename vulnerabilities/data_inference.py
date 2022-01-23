@@ -89,9 +89,10 @@ class Improver:
         """
         raise NotImplementedError
 
-    def __repr__(self):
+    @classmethod
+    def qualified_name(cls):
         """
         Fully qualified name prefixed with the module name of the improver
         used in logging.
         """
-        return f"{self.__module__}.{self.__class__.__qualname__}"
+        return f"{cls.__module__}.{cls.__qualname__}"

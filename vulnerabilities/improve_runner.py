@@ -58,6 +58,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
             inference.vulnerability_id, inference.aliases, inference.summary
         )
         if not vuln:
+            logger.warn(f"Unable to get vulnerability for inference: {inference!r}")
             continue
 
         for ref in inference.references:
@@ -120,23 +121,20 @@ def _package_url_to_package(purl: PackageURL) -> models.Package:
     return p
 
 
-def get_or_create_vulnerability_and_aliases(vulnerability_id, aliases, summary):
+def get_or_create_vulnerability_and_aliases(vulnerability_id, alias_names, summary):
     """
     Get or create vulnerabilitiy and aliases such that all existing and new
     aliases point to the same vulnerability
     """
     existing_vulns = set()
-    aliases = set(aliases)
-    existing_aliases = set()
-    new_aliases = set()
-    for alias in aliases:
-        alias, created = models.Alias.objects.get_or_create(alias=alias)
-        if created:
-            new_aliases.add(alias)
-        else:
-            existing_aliases.add(alias)
-            if alias.vulnerability:
-                existing_vulns.add(alias.vulnerability)
+    alias_names = set(alias_names)
+    new_alias_names = set()
+    for alias_name in alias_names:
+        try:
+            alias = models.Alias.objects.get(alias=alias_name)
+            existing_vulns.add(alias.vulnerability)
+        except models.Alias.DoesNotExist:
+            new_alias_names.add(alias_name)
 
     # If given set of aliases point to different vulnerabilities in the
     # database, request is malformed
@@ -144,55 +142,47 @@ def get_or_create_vulnerability_and_aliases(vulnerability_id, aliases, summary):
     # the same at data level, figure out a way to merge them
     if len(existing_vulns) > 1:
         logger.warn(
-            f"Given aliases {existing_aliases} already exist and do not point "
-            "to a single vulnerability. Cannot improve. Skipped."
+            f"Given aliases {alias_names} already exist and do not point "
+            f"to a single vulnerability. Cannot improve. Skipped."
         )
-        return None
+        return
 
     existing_alias_vuln = existing_vulns.pop() if existing_vulns else None
 
-    # If we have been supplied with a vulnerability_id and existing aliases do
-    # not have vulnerability_id then create one for all aliases, otherwise use
-    # the vulnerability_id from the existing aliases
-    if vulnerability_id:
-        if not existing_alias_vuln:
-            vuln = models.Vulnerability(summary=summary)
-            vuln.save()
-            for alias in existing_aliases | new_aliases:
-                alias.vulnerability = vuln
-                alias.save()
-            return vuln
-
-        if existing_alias_vuln.vulnerability_id == vulnerability_id:
-            # TODO: What to do with the new summary ?
-            for alias in new_aliases:
-                alias.vulnerability = existing_alias_vuln
-                alias.save()
-            return existing_alias_vuln
-
+    if (
+        existing_alias_vuln
+        and vulnerability_id
+        and existing_alias_vuln.vulnerability_id != vulnerability_id
+    ):
         logger.warn(
-            f"Given aliases {existing_aliases!r} already exist and point to existing"
-            "vulnerability {existing_alias_vuln}. Unable to create Vulnerability "
-            "with vulnerability_id {vulnerability_id}. Skipped"
+            f"Given aliases {alias_names!r} already exist and point to existing"
+            f"vulnerability {existing_alias_vuln}. Unable to create Vulnerability "
+            f"with vulnerability_id {vulnerability_id}. Skipped"
         )
-        return None
+        return
 
-    # No vulnerability_id is present, infer one from aliases
-
-    # If all existing aliases point to one vulnerability then point new aliases
-    # to that vulnerbility and vulnerability is found
-    # TODO: What to do with the new summary ?
     if existing_alias_vuln:
-        for alias in new_aliases:
-            alias.vulnerability = existing_alias_vuln
-            alias.save()
-        return existing_alias_vuln
+        vulnerability = existing_alias_vuln
+    elif vulnerability_id:
+        try:
+            vulnerability = models.Vulnerability.objects.get(vulnerability_id=vulnerability_id)
+        except models.Vulnerability.DoesNotExist:
+            logger.warn(
+                f"Given vulnerability_id: {vulnerability_id} does not exist in the database"
+            )
+            return
+    else:
+        vulnerability = models.Vulnerability(summary=summary)
+        vulnerability.save()
 
-    # No vulnerability already exists for given aliases, create one and
-    # point all aliases to this vulnerability
-    vuln = models.Vulnerability(summary=summary)
-    vuln.save()
-    for alias in existing_aliases | new_aliases:
-        alias.vulnerability = vuln
+    if summary and summary != vulnerability.summary:
+        logger.warn(
+            f"Inconsistent summary for {vulnerability!r}. "
+            f"Existing: {vulnerability.summary}, provided: {summary}"
+        )
+
+    for alias_name in new_alias_names:
+        alias = models.Alias(alias=alias_name, vulnerability=vulnerability)
         alias.save()
-    return vuln
+
+    return vulnerability

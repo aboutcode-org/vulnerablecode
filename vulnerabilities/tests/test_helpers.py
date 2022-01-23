@@ -42,7 +42,7 @@ class TestHelpers(TestCase):
     @classmethod
     def setUpClass(cls):
         data_source_cfg = {"etags": {}}
-        cls.data_source = DummyDataSource(batch_size=1, config=data_source_cfg)
+        cls.data_source = DummyDataSource(config=data_source_cfg)
 
     def test_create_etag(self):
         assert self.data_source.config.etags == {}

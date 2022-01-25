@@ -77,7 +77,7 @@ class PackageSearchView(View):
         return list(
             models.Package.objects.all()
             # FIXME: This filter is wrong and ignoring most of the fields needed for a
-            # proper package lookup: type/namespace/name@version?qualifiers and so on 
+            # proper package lookup: type/namespace/name@version?qualifiers and so on
             .filter(name__icontains=package_name, type__icontains=package_type)
             .annotate(
                 vulnerability_count=Count(

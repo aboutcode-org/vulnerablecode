@@ -1,5 +1,5 @@
-from . import default
-from .. import importers
+from vulnerabilities.improvers import default
+from vulnerabilities import importers
 
 IMPROVER_REGISTRY = [default.DefaultImprover, importers.nginx.NginxBasicImprover]
 

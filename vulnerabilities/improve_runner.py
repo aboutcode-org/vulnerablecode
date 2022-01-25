@@ -16,7 +16,8 @@ logger = logging.getLogger(__name__)
 
 
 class ImproveRunner:
-    """ImproveRunner is responsible for populating the database with any
+    """
+    ImproveRunner is responsible for populating the database with any
     consumable data. It does so in its ``run`` method by invoking the given
     improver and parsing the returned Inferences into proper database fields
     """
@@ -102,14 +103,14 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
 def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:
     query_kwargs = {}
     # TODO: this should be revisited as this should best be a model or manager method... and possibly streamlined
-    for key, val in p.to_dict().items():
-        if not val:
-            if key == "qualifiers":
-                query_kwargs[key] = {}
-            else:
-                query_kwargs[key] = ""
-        else:
-            query_kwargs[key] = val
+    query_kwargs = dict(
+        type=p.type or "",
+        namespace=p.namespace or "",
+        name=p.name or "",
+        version=p.version or "",
+        qualifiers=p.qualifiers or {},
+        subpath=p.subpath or "",
+    )
 
     return models.Package.objects.get_or_create(**query_kwargs)
 

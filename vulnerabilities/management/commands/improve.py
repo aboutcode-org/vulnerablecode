@@ -65,10 +65,8 @@ class Command(BaseCommand):
         self.improve_data(valid_sources(sources))
 
     def list_sources(self):
-        improvers = [
-            f"{improver.__module__}.{improver.__qualname__}" for improver in IMPROVER_REGISTRY
-        ]
-        self.stdout.write("Vulnerability data can be processed by these available improvers:")
+        improvers = [improver.qualified_name() for improver in IMPROVER_REGISTRY]
+        self.stdout.write("Vulnerability data can be processed by these available improvers:\n")
         self.stdout.write("\n".join(improvers))
 
     def improve_data(self, improvers):

@@ -158,7 +158,6 @@ class AffectedPackage:
                 fixed_versions.add(pkg.fixed_version)
             purls.add(pkg.package)
         if len(purls) > 1:
-            print(affected_packages)
             raise TypeError("Cannot merge with different purls", purls)
         return purls.pop(), affected_version_ranges, fixed_versions
 

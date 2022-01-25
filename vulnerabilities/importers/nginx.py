@@ -58,7 +58,7 @@ class NginxDataSourceConfiguration(DataSourceConfiguration):
 class NginxDataSource(DataSource):
     CONFIG_CLASS = NginxDataSourceConfiguration
 
-    url = "http://nginx.org/en/security_advisories.html"
+    url = "https://nginx.org/en/security_advisories.html"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         data = requests.get(self.url).content
@@ -239,7 +239,7 @@ class NginxBasicImprover(Improver):
         while self.version_api.cache["nginx/nginx"]:
             version = self.version_api.cache["nginx/nginx"].pop()
             normalized_version = Version(
-                version.value.replace("release-", ""), version.release_date
+                value=version.value.replace("release-", ""), release_date=version.release_date
             )
             normalized_versions.add(normalized_version)
         self.version_api.cache["nginx/nginx"] = normalized_versions

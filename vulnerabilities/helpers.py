@@ -33,7 +33,6 @@ import saneyaml
 import toml
 import urllib3
 from packageurl import PackageURL
-from univers.versions import version_class_by_package_type
 
 # TODO add logging here
 

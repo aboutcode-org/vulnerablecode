@@ -86,7 +86,7 @@ def to_advisory_data(
 
     qualifiers = {}
 
-    affected_version_range = vulnerable.partition(":")[2]
+    _, _, affected_version_range = vulnerable.partition(":")
     if "nginx/Windows" in affected_version_range:
         qualifiers["os"] = "windows"
         affected_version_range = affected_version_range.replace("nginx/Windows", "")

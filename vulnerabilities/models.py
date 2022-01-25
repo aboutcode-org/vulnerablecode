@@ -48,8 +48,8 @@ logger = logging.getLogger(__name__)
 
 class Vulnerability(models.Model):
     """
-    A software vulnerability with minimal information. Identifiers other than CVE ID are stored as
-    VulnerabilityReference.
+    A software vulnerability with minimal information. Unique identifiers are
+    stored as ``Alias``.
     """
 
     vulnerability_id = models.UUIDField(
@@ -114,7 +114,11 @@ class VulnerabilityReference(models.Model):
         return VulnerabilitySeverity.objects.filter(reference=self.id)
 
     class Meta:
-        unique_together = ("vulnerability", "url", "reference_id")
+        unique_together = (
+            "vulnerability",
+            "url",
+            "reference_id",
+        )
 
     def __str__(self):
         reference_id = " {self.reference_id}" if self.reference_id else ""
@@ -229,7 +233,7 @@ class PackageRelatedVulnerability(models.Model):
         Create if doesn't exist
         """
         try:
-            existing = self.__class__.objects.get(
+            existing = PackageRelatedVulnerability.objects.get(
                 vulnerability=self.vulnerability, package=self.package
             )
             if self.confidence > existing.confidence:
@@ -244,7 +248,7 @@ class PackageRelatedVulnerability(models.Model):
                 )
 
         except self.DoesNotExist:
-            self.__class__.objects.create(
+            PackageRelatedVulnerability.objects.create(
                 vulnerability=self.vulnerability,
                 created_by=self.created_by,
                 package=self.package,

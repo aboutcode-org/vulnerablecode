@@ -40,7 +40,7 @@ class DefaultImprover(Improver):
 
 def get_exact_purls(affected_package: AffectedPackage) -> (List[PackageURL], PackageURL):
     """
-    Return purls for fixed and affected packages contained in the given
+    Return a list of affected purls and the fixed package found in the ``affected_package``
     AffectedPackage disregarding any ranges.
 
     Only exact version constraints (ie with an equality) are considered
@@ -52,18 +52,26 @@ def get_exact_purls(affected_package: AffectedPackage) -> (List[PackageURL], Pac
     ...     "affected_version_range": vers,
     ...     "fixed_version": "5.0.0"
     ... })
-    >>> get_exact_purls(affected_package)
-    ([PackageURL(type='turtle', namespace=None, name='green', version='2.0.0', qualifiers={}, subpath=None)], PackageURL(type='turtle', namespace=None, name='green', version='5.0.0', qualifiers={}, subpath=None))
+    >>> got = get_exact_purls(affected_package)
+    >>> expected = (
+    ...     [PackageURL(type='turtle', namespace=None, name='green', version='2.0.0', qualifiers={}, subpath=None)],
+    ...      PackageURL(type='turtle', namespace=None, name='green', version='5.0.0', qualifiers={}, subpath=None)
+    ... )
+    >>> assert expected == got
     """
-    affected_purls = set()
-    all_constraints = affected_package.affected_version_range.constraints
-    for constraint in all_constraints:
-        if constraint.comparator in ["=", "<=", ">="]:
-            affected_purl = affected_package.package._replace(version=str(constraint.version))
-            affected_purls.add(affected_purl)
-    affected_purls = list(affected_purls)
 
-    fixed_version = affected_package.fixed_version
-    fixed_purl = affected_package.package._replace(version=str(fixed_version))
+    vr = affected_package.affected_version_range
+    # We need ``if c`` below because univers returns None as version
+    # in case of vers:nginx/*
+    # TODO: Revisit after https://github.com/nexB/univers/issues/33
+    range_versions = [c.version for c in vr.constraints if c]
+    resolved_versions = [v for v in range_versions if v and v in vr]
+
+    affected_purls = []
+    for version in resolved_versions:
+        affected_purl = affected_package.package._replace(version=str(version))
+        affected_purls.append(affected_purl)
+
+    fixed_purl = affected_package.get_fixed_purl()
 
     return affected_purls, fixed_purl

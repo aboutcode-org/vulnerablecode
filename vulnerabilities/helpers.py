@@ -27,6 +27,7 @@ import re
 from typing import List
 from typing import Optional
 from typing import Tuple
+from unittest.mock import MagicMock
 
 import requests
 import saneyaml
@@ -67,32 +68,8 @@ def fetch_yaml(url):
     return saneyaml.load(response.content)
 
 
-# FIXME: this is NOT how etags work .
-# We should instead send the proper HTTP header
-# https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match
-# and integrate this finely in the processing as this typically needs to use
-# streaming=True requests, and proper handling of the HTTP return code
-# In all cases this ends up being a single request, not a HEADD followed
-# by another real request
-def create_etag(data_src, url, etag_key):
-    """
-    Etags are like hashes of web responses. For a data source `data_src`,
-    we maintain (url, etag) mappings in the DB.  `create_etag`  creates
-    (`url`, etag) pair. If a (`url`, etag) already exists then the code
-    skips processing the response further to avoid duplicate work.
-
-    `etag_key` is the name of header which contains the etag for the url.
-    """
-    etag = requests.head(url).headers.get(etag_key)
-    if not etag:
-        return True
-
-    elif url in data_src.config.etags:
-        if data_src.config.etags[url] == etag:
-            return False
-
-    data_src.config.etags[url] = etag
-    return True
+# FIXME: Remove this entirely after complete importer-improver migration
+create_etag = MagicMock()
 
 
 def contains_alpha(string):

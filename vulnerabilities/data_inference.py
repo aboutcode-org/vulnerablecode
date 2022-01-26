@@ -90,6 +90,7 @@ class Improver:
         raise NotImplementedError
 
     @classmethod
+    @property
     def qualified_name(cls):
         """
         Fully qualified name prefixed with the module name of the improver

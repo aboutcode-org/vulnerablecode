@@ -21,15 +21,12 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from datetime import datetime
 import traceback
 
 from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
 
-from vulnerabilities.models import Importer
 from vulnerabilities.import_runner import ImportRunner
-from vulnerabilities.importer_yielder import load_importers
 from vulnerabilities.improvers import IMPROVER_REGISTRY
 from vulnerabilities.improvers import improver_mapping
 from vulnerabilities.improve_runner import ImproveRunner
@@ -65,7 +62,7 @@ class Command(BaseCommand):
         self.improve_data(valid_sources(sources))
 
     def list_sources(self):
-        improvers = [improver.qualified_name() for improver in IMPROVER_REGISTRY]
+        improvers = [improver.qualified_name for improver in IMPROVER_REGISTRY]
         self.stdout.write("Vulnerability data can be processed by these available improvers:\n")
         self.stdout.write("\n".join(improvers))
 
@@ -73,17 +70,21 @@ class Command(BaseCommand):
         failed_improvers = []
 
         for improver in improvers:
-            self.stdout.write(f"Improving data using {improver.__name__}")
+            self.stdout.write(f"Improving data using {improver.qualified_name}")
             try:
                 ImproveRunner(improver).run()
                 self.stdout.write(
-                    self.style.SUCCESS(f"Successfully improved data using {improver.__name__}")
+                    self.style.SUCCESS(
+                        f"Successfully improved data using {improver.qualified_name}"
+                    )
                 )
             except Exception:
-                failed_improvers.append(improver.__name__)
+                failed_improvers.append(improver.qualified_name)
                 traceback.print_exc()
                 self.stdout.write(
-                    self.style.ERROR(f"Failed to run improver {improver.__name__}. Continuing...")
+                    self.style.ERROR(
+                        f"Failed to run improver {improver.qualified_name}. Continuing..."
+                    )
                 )
 
         if failed_improvers:

@@ -21,16 +21,14 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from datetime import datetime
 import traceback
 
 from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
 
-from vulnerabilities.models import Importer
-from vulnerabilities.importer_yielder import IMPORTER_REGISTRY
+from vulnerabilities.importers import IMPORTER_REGISTRY
+from vulnerabilities.importers import importer_mapping
 from vulnerabilities.import_runner import ImportRunner
-from vulnerabilities.importer_yielder import load_importers
 
 
 class Command(BaseCommand):
@@ -47,22 +45,16 @@ class Command(BaseCommand):
         )
 
         parser.add_argument(
-            "--cutoff-date",
-            type=datetime.fromisoformat,
-            help="ISO8601 formatted timestamp denoting the maximum age of vulnerability "
-            "information to import.",
+            "sources", nargs="*", help="Fully qualified data source name from where to import"
         )
-        parser.add_argument("sources", nargs="*", help="Data sources from which to import")
 
     def handle(self, *args, **options):
-        # load_importers() seeds the DB with Importers
-        load_importers()
         if options["list"]:
             self.list_sources()
             return
 
         if options["all"]:
-            self._import_data(Importer.objects.all(), options["cutoff_date"])
+            self.import_data(IMPORTER_REGISTRY)
             return
 
         sources = options["sources"]
@@ -71,44 +63,47 @@ class Command(BaseCommand):
                 'Please provide at least one data source to import from or use "--all".'
             )
 
-        self.import_data(sources, options["cutoff_date"])
+        self.import_data(valid_sources(sources))
 
     def list_sources(self):
-        importers = IMPORTER_REGISTRY
+        importers = [importer.qualified_name for importer in IMPORTER_REGISTRY]
         self.stdout.write("Vulnerability data can be imported from the following sources:")
-        self.stdout.write(", ".join([i["name"] for i in importers]))
+        self.stdout.write("\n".join(importers))
 
-    def import_data(self, names, cutoff_date):
-        importers = []
-        unknown_importers = set()
-        # make sure all arguments are valid before running any importers
-        for name in names:
-            try:
-                importers.append(Importer.objects.get(name=name))
-            except Importer.DoesNotExist:
-                unknown_importers.add(name)
-
-        if unknown_importers:
-            unknown_importers = ", ".join(unknown_importers)
-            raise CommandError(f"Unknown data sources: {unknown_importers}")
-
-        self._import_data(importers, cutoff_date)
-
-    def _import_data(self, importers, cutoff_date):
+    def import_data(self, importers):
         failed_importers = []
 
         for importer in importers:
-            self.stdout.write(f"Importing data from {importer.name}")
+            self.stdout.write(f"Importing data using {importer.qualified_name}")
             try:
-                ImportRunner(importer).run(cutoff_date=cutoff_date)
+                ImportRunner(importer).run()
                 self.stdout.write(
-                    self.style.SUCCESS(f"Successfully imported data from {importer.name}")
+                    self.style.SUCCESS(
+                        f"Successfully imported data using {importer.qualified_name}"
+                    )
                 )
             except Exception:
-                failed_importers.append(importer.name)
+                failed_importers.append(importer.qualified_name)
                 traceback.print_exc()
                 self.stdout.write(
-                    self.style.ERROR(f"Failure to import data from {importer.name}. Continuing...")
+                    self.style.ERROR(
+                        f"Failed to run importer {importer.qualified_name}. Continuing..."
+                    )
                 )
+
         if failed_importers:
             raise CommandError(f"{len(failed_importers)} failed!: {','.join(failed_importers)}")
+
+
+def valid_sources(sources):
+    importers = []
+    unknown_sources = []
+    for source in sources:
+        try:
+            importers.append(importer_mapping[source])
+        except KeyError:
+            unknown_sources.append(source)
+    if unknown_sources:
+        raise CommandError(f"Unknown sources: {unknown_sources}")
+
+    return importers

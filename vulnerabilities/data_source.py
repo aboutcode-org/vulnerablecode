@@ -28,15 +28,13 @@ import traceback
 import xml.etree.ElementTree as ET
 import datetime
 from pathlib import Path
-from typing import Any
-from typing import ContextManager
-from typing import Iterable
 from typing import List
 from typing import Mapping
 from typing import Optional
 from typing import Set
 from typing import Iterable
 from typing import Tuple
+import warnings
 
 from binaryornot.helpers import is_binary_string
 from git import DiffIndex
@@ -214,58 +212,25 @@ class AdvisoryData:
             logger.warn(f"AdvisoryData with no tzinfo: {self!r}")
 
 
-class InvalidConfigurationError(Exception):
+class NoLicenseWarning(Warning):
     pass
 
 
-@dataclasses.dataclass
-class DataSourceConfiguration:
-    pass
-
-
-class DataSource(ContextManager):
+class DataSource:
     """
-    This class defines how importers consume advisories from a data source.
-
-    It makes a distinction between newly added records since the last run and modified records. This
-    allows the import logic to pick appropriate database operations.
+    A DataSource collects data from various upstreams and returns corresponding
+    AdvisoryData objects in its advisory_data method.
+    Subclass this class to implement an importer
     """
 
-    CONFIG_CLASS = DataSourceConfiguration
+    license = ""
 
-    def __init__(
-        self,
-        last_run_date: Optional[datetime.datetime] = None,
-        cutoff_date: Optional[datetime.datetime] = None,
-        config: Optional[Mapping[str, Any]] = None,
-    ):
-        """
-        Create a DataSource instance.
-
-        :param last_run_date: Optional timestamp when this data source was last inspected
-        :param cutoff_date: Optional timestamp, records older than this will be ignored
-        :param config: Optional dictionary with subclass-specific configuration
-        """
-        config = config or {}
-        try:
-            self.config = self.__class__.CONFIG_CLASS(**config)
-            # These really should be declared in DataSourceConfiguration above but that would
-            # prevent DataSource subclasses from declaring mandatory parameters (i.e. positional
-            # arguments)
-            setattr(self.config, "last_run_date", last_run_date)
-            setattr(self.config, "cutoff_date", cutoff_date)
-        except Exception as e:
-            raise InvalidConfigurationError(str(e))
-
-        self.validate_configuration()
-
-    def __enter__(self):
-        pass
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
+    def __init__(self):
+        if not self.license:
+            warnings.warn(f"Running importer {self!r} without a license", NoLicenseWarning)
 
     @classmethod
+    @property
     def qualified_name(cls):
         """
         Fully qualified name prefixed with the module name of the data source
@@ -273,45 +238,16 @@ class DataSource(ContextManager):
         """
         return f"{cls.__module__}.{cls.__qualname__}"
 
-    @property
-    def cutoff_timestamp(self) -> int:
-        """
-        :return: An integer Unix timestamp of the last time this data source was queried or the
-        cutoff date passed in the constructor, whichever is more recent.
-        """
-        if not hasattr(self, "_cutoff_timestamp"):
-            last_run = 0
-            if self.config.last_run_date is not None:
-                last_run = int(self.config.last_run_date.timestamp())
-
-            cutoff = 0
-            if self.config.cutoff_date is not None:
-                cutoff = int(self.config.cutoff_date.timestamp())
-
-            setattr(self, "_cutoff_timestamp", max(last_run, cutoff))
-
-        return self._cutoff_timestamp
-
-    def validate_configuration(self) -> None:
-        """
-        Subclasses can perform more complex validation than what is handled by data classes and
-        their type annotations.
-
-        This method is called in the constructor. It should raise InvalidConfigurationError with a
-        human-readable message.
-        """
-
     def advisory_data(self) -> Iterable[AdvisoryData]:
         """
-        Subclasses return AdvisoryData objects
+        Return AdvisoryData objects corresponding to the data being imported
         """
         raise NotImplementedError
 
-    def error(self, msg: str) -> None:
-        """
-        Helper method for raising InvalidConfigurationError with the class name in the message.
-        """
-        raise InvalidConfigurationError(f"{type(self).__name__}: {msg}")
+
+# TODO: Adopt the same design as that for DataSource
+class DataSourceConfiguration:
+    pass
 
 
 @dataclasses.dataclass

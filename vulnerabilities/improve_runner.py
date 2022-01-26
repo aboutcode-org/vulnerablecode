@@ -27,13 +27,13 @@ class ImproveRunner:
 
     def run(self) -> None:
         improver = self.improver()
-        logger.info(f"Running improver: {improver.qualified_name()}")
+        logger.info(f"Running improver: {improver.qualified_name}")
         for advisory in improver.interesting_advisories:
             inferences = improver.get_inferences(advisory_data=advisory.to_advisory_data())
             process_inferences(
-                inferences=inferences, advisory=advisory, improver_name=improver.qualified_name()
+                inferences=inferences, advisory=advisory, improver_name=improver.qualified_name
             )
-        logger.info("Finished improving using %s.", self.improver.__name__)
+        logger.info("Finished improving using %s.", self.improver.qualified_name)
 
 
 @transaction.atomic

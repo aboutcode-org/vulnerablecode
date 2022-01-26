@@ -50,13 +50,7 @@ from vulnerabilities.severity_systems import SCORING_SYSTEMS
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass
-class NginxDataSourceConfiguration(DataSourceConfiguration):
-    etags: dict
-
-
 class NginxDataSource(DataSource):
-    CONFIG_CLASS = NginxDataSourceConfiguration
 
     url = "https://nginx.org/en/security_advisories.html"
 
@@ -194,7 +188,7 @@ class NginxBasicImprover(Improver):
 
     @property
     def interesting_advisories(self) -> QuerySet:
-        return Advisory.objects.filter(created_by=NginxDataSource.qualified_name())
+        return Advisory.objects.filter(created_by=NginxDataSource.qualified_name)
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         """

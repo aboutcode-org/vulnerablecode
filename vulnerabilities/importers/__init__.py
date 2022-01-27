@@ -21,6 +21,6 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 from vulnerabilities.importers import nginx
 
-IMPORTER_REGISTRY = [nginx.NginxDataSource]
+IMPORTERS = [nginx.NginxDataSource]
 
-importer_mapping = {x.qualified_name: x for x in IMPORTER_REGISTRY}
+IMPORTER_REGISTRY = {x.qualified_name: x for x in IMPORTERS}

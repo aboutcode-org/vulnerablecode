@@ -25,7 +25,7 @@ import dataclasses
 import datetime
 import json
 import logging
-from typing import Set
+from typing import List
 from typing import Iterable
 
 
@@ -55,18 +55,22 @@ class ImportRunner:
         """
         Create a data source for the given importer and store the data retrieved in the database.
         """
-        logger.info(f"Starting import for {self.importer.qualified_name}")
-        advisory_datas = self.importer().advisory_data()
         importer_name = self.importer.qualified_name
-        process_advisories(advisory_datas=advisory_datas, importer_name=importer_name)
-        logger.info(f"Finished import for {self.importer.qualified_name}.")
+        importer_class = self.importer
+        logger.info(f"Starting import for {importer_name}")
+        advisory_datas = importer_class().advisory_data()
+        count = process_advisories(advisory_datas=advisory_datas, importer_name=importer_name)
+        logger.info(
+            f"Finished import for {importer_name}. Imported {count} advisories."
+        )
 
 
-def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: str) -> None:
+def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: str) -> List:
     """
     Insert advisories into the database
+    Return list of ids of inserted advisories
     """
-
+    count = 0
     for data in advisory_datas:
         obj, created = Advisory.objects.get_or_create(
             aliases=data.aliases,
@@ -83,5 +87,8 @@ def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: st
             logger.info(
                 f"[*] New Advisory with aliases: {obj.aliases!r}, created_by: {obj.created_by}"
             )
+            count += 1
         else:
             logger.debug(f"Advisory with aliases: {obj.aliases!r} already exists. Skipped.")
+
+    return count

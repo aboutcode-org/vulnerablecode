@@ -27,7 +27,6 @@ from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
 
 from vulnerabilities.importers import IMPORTER_REGISTRY
-from vulnerabilities.importers import importer_mapping
 from vulnerabilities.import_runner import ImportRunner
 
 
@@ -54,7 +53,7 @@ class Command(BaseCommand):
             return
 
         if options["all"]:
-            self.import_data(IMPORTER_REGISTRY)
+            self.import_data(IMPORTER_REGISTRY.values())
             return
 
         sources = options["sources"]
@@ -63,14 +62,18 @@ class Command(BaseCommand):
                 'Please provide at least one data source to import from or use "--all".'
             )
 
-        self.import_data(valid_sources(sources))
+        self.import_data(validate_importers(sources))
 
     def list_sources(self):
-        importers = [importer.qualified_name for importer in IMPORTER_REGISTRY]
+        importers = list(IMPORTER_REGISTRY)
         self.stdout.write("Vulnerability data can be imported from the following sources:")
         self.stdout.write("\n".join(importers))
 
     def import_data(self, importers):
+        """
+        Run the given ``importers``. The ``importers`` are expected to be class
+        names for the importers.
+        """
         failed_importers = []
 
         for importer in importers:
@@ -95,12 +98,12 @@ class Command(BaseCommand):
             raise CommandError(f"{len(failed_importers)} failed!: {','.join(failed_importers)}")
 
 
-def valid_sources(sources):
+def validate_importers(sources):
     importers = []
     unknown_sources = []
     for source in sources:
         try:
-            importers.append(importer_mapping[source])
+            importers.append(IMPORTER_REGISTRY[source])
         except KeyError:
             unknown_sources.append(source)
     if unknown_sources:

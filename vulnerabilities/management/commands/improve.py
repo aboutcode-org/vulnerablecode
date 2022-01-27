@@ -28,7 +28,6 @@ from django.core.management.base import CommandError
 
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.improvers import IMPROVER_REGISTRY
-from vulnerabilities.improvers import improver_mapping
 from vulnerabilities.improve_runner import ImproveRunner
 
 
@@ -52,17 +51,17 @@ class Command(BaseCommand):
             return
 
         if options["all"]:
-            self.improve_data(IMPROVER_REGISTRY)
+            self.improve_data(IMPROVER_REGISTRY.values())
             return
 
         sources = options["sources"]
         if not sources:
             raise CommandError('Please provide at least one improver to run use "--all".')
 
-        self.improve_data(valid_sources(sources))
+        self.improve_data(validate_improvers(sources))
 
     def list_sources(self):
-        improvers = [improver.qualified_name for improver in IMPROVER_REGISTRY]
+        improvers = list(IMPROVER_REGISTRY)
         self.stdout.write("Vulnerability data can be processed by these available improvers:\n")
         self.stdout.write("\n".join(improvers))
 
@@ -91,12 +90,12 @@ class Command(BaseCommand):
             raise CommandError(f"{len(failed_improvers)} failed!: {','.join(failed_improvers)}")
 
 
-def valid_sources(sources):
+def validate_improvers(sources):
     improvers = []
     unknown_sources = []
     for source in sources:
         try:
-            improvers.append(improver_mapping[source])
+            improvers.append(IMPROVER_REGISTRY[source])
         except KeyError:
             unknown_sources.append(source)
     if unknown_sources:

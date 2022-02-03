@@ -1,4 +1,4 @@
-Vulneribility Sources
+Vulnerability Sources
 =====================
 
 .. include:: ../../../SOURCES.rst

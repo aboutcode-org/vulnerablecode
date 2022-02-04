@@ -53,6 +53,9 @@ class NginxImporter(Importer):
 
     url = "https://nginx.org/en/security_advisories.html"
 
+    # TODO: Populate this properly
+    spdx_license_expression = "TODO"
+
     def advisory_data(self) -> Iterable[AdvisoryData]:
         data = requests.get(self.url).content
         soup = BeautifulSoup(data, features="lxml")

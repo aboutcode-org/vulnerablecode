@@ -37,15 +37,11 @@ class Command(BaseCommand):
         parser.add_argument(
             "--list",
             action="store_true",
-            help="List available data sources",
+            help="List available importers",
         )
-        parser.add_argument(
-            "--all", action="store_true", help="Import data from all available sources"
-        )
+        parser.add_argument("--all", action="store_true", help="Run all available importers")
 
-        parser.add_argument(
-            "sources", nargs="*", help="Fully qualified data source name from where to import"
-        )
+        parser.add_argument("sources", nargs="*", help="Fully qualified importer name to run")
 
     def handle(self, *args, **options):
         if options["list"]:
@@ -58,15 +54,13 @@ class Command(BaseCommand):
 
         sources = options["sources"]
         if not sources:
-            raise CommandError(
-                'Please provide at least one data source to import from or use "--all".'
-            )
+            raise CommandError('Please provide at least one importer to run or use "--all".')
 
         self.import_data(validate_importers(sources))
 
     def list_sources(self):
         importers = list(IMPORTER_REGISTRY)
-        self.stdout.write("Vulnerability data can be imported from the following sources:")
+        self.stdout.write("Vulnerability data can be imported from the following importers:")
         self.stdout.write("\n".join(importers))
 
     def import_data(self, importers):

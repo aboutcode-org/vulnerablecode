@@ -53,7 +53,7 @@ MOCK_VERSION_API = NpmVersionAPI(
 )
 
 
-@patch("vulnerabilities.importers.NpmDataSource._update_from_remote")
+@patch("vulnerabilities.importers.NpmImporter._update_from_remote")
 class NpmImportTest(TestCase):
 
     tempdir = None
@@ -70,7 +70,7 @@ class NpmImportTest(TestCase):
             name="npm_unittests",
             license="",
             last_run=None,
-            data_source="NpmDataSource",
+            data_source="NpmImporter",
             data_source_cfg={
                 "repository_url": "https://example.git",
                 "working_directory": os.path.join(cls.tempdir, "npm/npm_test"),
@@ -88,8 +88,8 @@ class NpmImportTest(TestCase):
     def test_import(self, _):
         runner = ImportRunner(self.importer, 5)
 
-        with patch("vulnerabilities.importers.NpmDataSource.versions", new=MOCK_VERSION_API):
-            with patch("vulnerabilities.importers.NpmDataSource.set_api"):
+        with patch("vulnerabilities.importers.NpmImporter.versions", new=MOCK_VERSION_API):
+            with patch("vulnerabilities.importers.NpmImporter.set_api"):
                 runner.run()
 
         assert models.Vulnerability.objects.count() == 3

@@ -7,8 +7,8 @@ from uuid import uuid4
 from packageurl import PackageURL
 from django.db.models.query import QuerySet
 
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import AdvisoryData
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import AdvisoryData
 
 logger = logging.getLogger(__name__)
 

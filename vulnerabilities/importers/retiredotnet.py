@@ -27,15 +27,15 @@ from typing import List
 
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import GitDataSource
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import AffectedPackage
 
 
-class RetireDotnetDataSource(GitDataSource):
+class RetireDotnetImporter(GitImporter):
     def __enter__(self):
-        super(RetireDotnetDataSource, self).__enter__()
+        super(RetireDotnetImporter, self).__enter__()
 
         if not getattr(self, "_added_files", None):
             self._added_files, self._updated_files = self.file_changes(

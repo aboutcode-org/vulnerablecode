@@ -26,9 +26,9 @@ from collections import OrderedDict
 
 from packageurl import PackageURL
 
-from vulnerabilities.importers.openssl import OpenSSLDataSource
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importers.openssl import OpenSSLImporter
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -478,7 +478,7 @@ class TestOpenSSL(unittest.TestCase):
             ),
         ]
 
-        found_advisories = OpenSSLDataSource.to_advisories(data)
+        found_advisories = OpenSSLImporter.to_advisories(data)
 
         found_advisories = list(map(Advisory.normalized, found_advisories))
         expected_advisories = list(map(Advisory.normalized, expected_advisories))

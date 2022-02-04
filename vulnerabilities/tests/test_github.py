@@ -29,10 +29,10 @@ from unittest.mock import call
 
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
-from vulnerabilities.importers.github import GitHubAPIDataSource
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.importers.github import GitHubAPIImporter
 from vulnerabilities.package_managers import MavenVersionAPI, Version
 from vulnerabilities.package_managers import NugetVersionAPI
 from vulnerabilities.package_managers import ComposerVersionAPI
@@ -45,7 +45,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")
 
 
-class TestGitHubAPIDataSource(TestCase):
+class TestGitHubAPIImporter(TestCase):
     @classmethod
     def setUpClass(cls):
         data_source_cfg = {
@@ -53,7 +53,7 @@ class TestGitHubAPIDataSource(TestCase):
             "ecosystems": ["MAVEN"],
         }
         with patch.dict(os.environ, {"GH_TOKEN": "abc"}):
-            cls.data_src = GitHubAPIDataSource(1, config=data_source_cfg)
+            cls.data_src = GitHubAPIImporter(1, config=data_source_cfg)
 
     def tearDown(self):
         setattr(self.data_src, "version_api", None)
@@ -95,7 +95,7 @@ class TestGitHubAPIDataSource(TestCase):
             # has_next_page is to obtain different MockCorrectResponse objects
             # the first one should have `has_next_page = True` and other should
             # have  `has_next_page = False`. This is required to test whether
-            # GitHubAPIDataSource.fetch stops as expected.
+            # GitHubAPIImporter.fetch stops as expected.
 
             def json(self):
                 self.has_next_page = not self.has_next_page
@@ -125,8 +125,8 @@ class TestGitHubAPIDataSource(TestCase):
 
     def test_set_version_api(self):
 
-        with patch("vulnerabilities.importers.github.GitHubAPIDataSource.set_api"):
-            with patch("vulnerabilities.importers.github.GitHubAPIDataSource.collect_packages"):
+        with patch("vulnerabilities.importers.github.GitHubAPIImporter.set_api"):
+            with patch("vulnerabilities.importers.github.GitHubAPIImporter.collect_packages"):
                 assert getattr(self.data_src, "version_api", None) is None
 
                 self.data_src.set_version_api("MAVEN")
@@ -300,7 +300,7 @@ class TestGitHubAPIDataSource(TestCase):
         with patch(
             "vulnerabilities.importers.github.MavenVersionAPI", return_value=mock_version_api
         ):
-            with patch("vulnerabilities.importers.github.GitHubAPIDataSource.set_api"):
+            with patch("vulnerabilities.importers.github.GitHubAPIImporter.set_api"):
                 found_advisories = self.data_src.process_response()
 
         found_advisories = list(map(Advisory.normalized, found_advisories))

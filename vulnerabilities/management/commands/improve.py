@@ -38,7 +38,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--list",
             action="store_true",
-            help="List available data improvers",
+            help="List available improvers",
         )
         parser.add_argument(
             "--all", action="store_true", help="Improve data from all available improvers"

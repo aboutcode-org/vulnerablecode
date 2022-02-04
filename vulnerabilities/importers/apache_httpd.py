@@ -30,24 +30,17 @@ from packageurl import PackageURL
 from univers.versions import SemverVersion
 from univers.version_specifier import VersionSpecifier
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import DataSourceConfiguration
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.severity_systems import scoring_systems
 from vulnerabilities.helpers import nearest_patched_package
 
 
-@dataclasses.dataclass
-class ApacheHTTPDDataSourceConfiguration(DataSourceConfiguration):
-    etags: dict
+class ApacheHTTPDImporter(Importer):
 
-
-class ApacheHTTPDDataSource(DataSource):
-
-    CONFIG_CLASS = ApacheHTTPDDataSourceConfiguration
     base_url = "https://httpd.apache.org/security/json/"
 
     def set_api(self):

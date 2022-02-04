@@ -27,22 +27,22 @@ from unittest.mock import patch
 
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
-from vulnerabilities.importers import ProjectKBMSRDataSource
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
+from vulnerabilities.importers import ProjectKBMSRImporter
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/kbmsr2019", "test_msr_data.csv")
 
 
-class TestProjectKBMSRDataSource(TestCase):
+class TestProjectKBMSRImporter(TestCase):
     def test_to_advisories(self):
         with open(TEST_DATA) as f:
             lines = [l for l in f.readlines()]
             test_data = csv.reader(lines)
 
-        found_advisories = ProjectKBMSRDataSource.to_advisories(test_data)
+        found_advisories = ProjectKBMSRImporter.to_advisories(test_data)
         found_advisories = list(map(Advisory.normalized, found_advisories))
         expected_advisories = [
             Advisory(

@@ -33,14 +33,13 @@ from univers.version_range import NginxVersionRange
 from univers.versions import SemverVersion
 from django.db.models.query import QuerySet
 
-from vulnerabilities.data_source import AdvisoryData
-from vulnerabilities.data_source import AffectedPackage
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import DataSourceConfiguration
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
-from vulnerabilities.data_inference import Inference
-from vulnerabilities.data_inference import Improver
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.improver import Inference
+from vulnerabilities.improver import Improver
 from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.models import Advisory
 from vulnerabilities.package_managers import GitHubTagsAPI
@@ -50,7 +49,7 @@ from vulnerabilities.severity_systems import SCORING_SYSTEMS
 logger = logging.getLogger(__name__)
 
 
-class NginxDataSource(DataSource):
+class NginxImporter(Importer):
 
     url = "https://nginx.org/en/security_advisories.html"
 
@@ -188,7 +187,7 @@ class NginxBasicImprover(Improver):
 
     @property
     def interesting_advisories(self) -> QuerySet:
-        return Advisory.objects.filter(created_by=NginxDataSource.qualified_name)
+        return Advisory.objects.filter(created_by=NginxImporter.qualified_name)
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         """

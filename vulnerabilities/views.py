@@ -22,7 +22,7 @@
 
 from urllib.parse import urlencode
 
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger
 from django.db.models import Count
 from django.http import HttpResponse
 from django.http.response import HttpResponseNotAllowed
@@ -49,8 +49,11 @@ class PackageSearchView(View):
         if request.GET:
             packages = self.request_to_queryset(request)
             result_size = len(packages)
-            page_no = int(request.GET.get("page", 1))
-            packages = Paginator(packages, 50).get_page(page_no)
+            try:
+                page_no = request.GET.get("page", 1)
+                packages = Paginator(packages, 50).get_page(page_no)
+            except PageNotAnInteger:
+                packages = Paginator(packages, 50).get_page(1)
             context["packages"] = packages
             context["searched_for"] = urlencode(
                 {param: request.GET[param] for param in request.GET if param != "page"}

@@ -5,7 +5,7 @@ import pytest
 
 from vulnerabilities import importers
 from vulnerabilities.importer import Advisory
-from vulnerabilities.importer_yielder import IMPORTER_REGISTRY
+from vulnerabilities.importer_yielder import IMPORTERS_REGISTRY
 
 MAX_ADVISORIES = 1
 
@@ -18,7 +18,7 @@ class MaxAdvisoriesCreatedInterrupt(BaseException):
 @pytest.mark.webtest
 @pytest.mark.parametrize(
     ("data_source", "config"),
-    ((data["data_source"], data["data_source_cfg"]) for data in IMPORTER_REGISTRY),
+    ((data["data_source"], data["data_source_cfg"]) for data in IMPORTERS_REGISTRY),
 )
 def test_updated_advisories(data_source, config):
     if not data_source == "GitHubAPIImporter":

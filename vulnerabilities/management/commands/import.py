@@ -26,7 +26,7 @@ import traceback
 from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
 
-from vulnerabilities.importers import IMPORTER_REGISTRY
+from vulnerabilities.importers import IMPORTERS_REGISTRY
 from vulnerabilities.import_runner import ImportRunner
 
 
@@ -49,7 +49,7 @@ class Command(BaseCommand):
             return
 
         if options["all"]:
-            self.import_data(IMPORTER_REGISTRY.values())
+            self.import_data(IMPORTERS_REGISTRY.values())
             return
 
         sources = options["sources"]
@@ -59,7 +59,7 @@ class Command(BaseCommand):
         self.import_data(validate_importers(sources))
 
     def list_sources(self):
-        importers = list(IMPORTER_REGISTRY)
+        importers = list(IMPORTERS_REGISTRY)
         self.stdout.write("Vulnerability data can be imported from the following importers:")
         self.stdout.write("\n".join(importers))
 
@@ -97,7 +97,7 @@ def validate_importers(sources):
     unknown_sources = []
     for source in sources:
         try:
-            importers.append(IMPORTER_REGISTRY[source])
+            importers.append(IMPORTERS_REGISTRY[source])
         except KeyError:
             unknown_sources.append(source)
     if unknown_sources:

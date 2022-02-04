@@ -26,22 +26,12 @@ import saneyaml
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import DataSourceConfiguration
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
 from vulnerabilities.helpers import create_etag
 
 
-@dataclasses.dataclass
-class SUSEBackportsConfiguration(DataSourceConfiguration):
-    url: str
-    etags: dict
-
-
-class SUSEBackportsDataSource(DataSource):
-
-    CONFIG_CLASS = SUSEBackportsConfiguration
-
+class SUSEBackportsImporter(Importer):
     @staticmethod
     def get_all_urls_of_backports(url):
         r = requests.get(url)

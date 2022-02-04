@@ -96,7 +96,7 @@
             "name": "github",
             "license": "",
             "last_run": "2021-03-06T09:09:01.523Z",
-            "data_source": "GitHubAPIDataSource",
+            "data_source": "GitHubAPIImporter",
             "data_source_cfg": {
                 "endpoint": "https://api.github.com/graphql",
                 "ecosystems": [

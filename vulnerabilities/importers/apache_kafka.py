@@ -28,9 +28,9 @@ from packageurl import PackageURL
 from univers.versions import MavenVersion
 from univers.version_specifier import VersionSpecifier
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.helpers import nearest_patched_package
 
@@ -38,7 +38,7 @@ GH_PAGE_URL = "https://raw.githubusercontent.com/apache/kafka-site/asf-site/cve-
 ASF_PAGE_URL = "https://kafka.apache.org/cve-list"
 
 
-class ApacheKafkaDataSource(DataSource):
+class ApacheKafkaImporter(Importer):
     @staticmethod
     def fetch_advisory_page():
         page = requests.get(GH_PAGE_URL)

@@ -36,12 +36,12 @@ from django.core.validators import MaxValueValidator
 from packageurl.contrib.django.models import PackageURLMixin
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import AdvisoryData
-from vulnerabilities.data_source import AffectedPackage
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import Reference
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
-from vulnerabilities.data_inference import MAX_CONFIDENCE
+from vulnerabilities.improver import MAX_CONFIDENCE
 
 logger = logging.getLogger(__name__)
 
@@ -350,7 +350,7 @@ class Advisory(models.Model):
         max_length=100,
         help_text="Fully qualified name of the importer prefixed with the"
         "module name importing the advisory. Eg:"
-        "vulnerabilities.importers.nginx.NginxDataSource",
+        "vulnerabilities.importers.nginx.NginxImporter",
     )
 
     class Meta:

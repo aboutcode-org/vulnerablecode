@@ -31,8 +31,8 @@ from typing import Iterable
 
 from vulnerabilities import models
 from vulnerabilities.models import Advisory
-from vulnerabilities.data_source import AdvisoryData
-from vulnerabilities.data_source import DataSource
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import Importer
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ class ImportRunner:
         - No valid data from the data source must be skipped or truncated.
     """
 
-    def __init__(self, importer: DataSource):
+    def __init__(self, importer: Importer):
         self.importer = importer
 
     def run(self) -> None:
@@ -60,9 +60,7 @@ class ImportRunner:
         logger.info(f"Starting import for {importer_name}")
         advisory_datas = importer_class().advisory_data()
         count = process_advisories(advisory_datas=advisory_datas, importer_name=importer_name)
-        logger.info(
-            f"Finished import for {importer_name}. Imported {count} advisories."
-        )
+        logger.info(f"Finished import for {importer_name}. Imported {count} advisories.")
 
 
 def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: str) -> List:

@@ -29,7 +29,7 @@ from django.core.management.base import BaseCommand
 
 from vulnerabilities import models
 from vulnerabilities.importers.nvd import BASE_URL as nvd_base_url
-from vulnerabilities.importers.nvd import NVDDataSource as nvd_utils
+from vulnerabilities.importers.nvd import NVDImporter as nvd_utils
 
 
 class Command(BaseCommand):

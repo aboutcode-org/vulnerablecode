@@ -7,8 +7,8 @@ from typing import Tuple
 from django.db import transaction
 
 from vulnerabilities import models
-from vulnerabilities.data_inference import Inference
-from vulnerabilities.data_source import PackageURL
+from vulnerabilities.improver import Inference
+from vulnerabilities.importer import PackageURL
 from vulnerabilities.models import Advisory
 
 

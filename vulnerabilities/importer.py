@@ -212,22 +212,22 @@ class AdvisoryData:
             logger.warn(f"AdvisoryData with no tzinfo: {self!r}")
 
 
-class NoLicenseWarning(Warning):
+class NoLicenseError(Exception):
     pass
 
 
-class DataSource:
+class Importer:
     """
-    A DataSource collects data from various upstreams and returns corresponding
+    An Importer collects data from various upstreams and returns corresponding
     AdvisoryData objects in its advisory_data method.
     Subclass this class to implement an importer
     """
 
-    license = ""
+    spdx_license_expression = ""
 
     def __init__(self):
-        if not self.license:
-            warnings.warn(f"Running importer {self!r} without a license", NoLicenseWarning)
+        if not self.spdx_license_expression:
+            raise Exception(f"Cannot run importer {self!r} without a license")
 
     @classmethod
     @property
@@ -245,23 +245,8 @@ class DataSource:
         raise NotImplementedError
 
 
-# TODO: Adopt the same design as that for DataSource
-class DataSourceConfiguration:
-    pass
-
-
-@dataclasses.dataclass
-class GitDataSourceConfiguration(DataSourceConfiguration):
-    repository_url: str
-    branch: Optional[str] = None
-    create_working_directory: bool = True
-    remove_working_directory: bool = True
-    working_directory: Optional[str] = None
-
-
-class GitDataSource(DataSource):
-    CONFIG_CLASS = GitDataSourceConfiguration
-
+# TODO: Needs rewrite
+class GitImporter(Importer):
     def validate_configuration(self) -> None:
 
         if not self.config.create_working_directory and self.config.working_directory is None:
@@ -449,7 +434,8 @@ def _include_file(
     return match
 
 
-class OvalDataSource(DataSource):
+# TODO: Needs rewrite
+class OvalImporter(Importer):
     """
     All data sources which collect data from OVAL files must inherit from this
     `OvalDataSource` class. Subclasses must implement the methods `_fetch` and `set_api`.

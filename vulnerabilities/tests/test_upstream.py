@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 
 from vulnerabilities import importers
-from vulnerabilities.data_source import Advisory
+from vulnerabilities.importer import Advisory
 from vulnerabilities.importer_yielder import IMPORTER_REGISTRY
 
 MAX_ADVISORIES = 1
@@ -21,7 +21,7 @@ class MaxAdvisoriesCreatedInterrupt(BaseException):
     ((data["data_source"], data["data_source_cfg"]) for data in IMPORTER_REGISTRY),
 )
 def test_updated_advisories(data_source, config):
-    if not data_source == "GitHubAPIDataSource":
+    if not data_source == "GitHubAPIImporter":
         data_src = getattr(importers, data_source)
         data_src = data_src(batch_size=MAX_ADVISORIES, config=config)
         advisory_counter = 0
@@ -39,7 +39,7 @@ def test_updated_advisories(data_source, config):
         module_members = [m[0] for m in inspect.getmembers(module)]
         advisory_class = f"{module.__name__}.Advisory"
         if "Advisory" not in module_members:
-            advisory_class = "vulnerabilities.data_source.Advisory"
+            advisory_class = "vulnerabilities.importer.Advisory"
 
         # Either
         # 1) Advisory class is successfully patched and MaxAdvisoriesCreatedInterrupt is thrown when

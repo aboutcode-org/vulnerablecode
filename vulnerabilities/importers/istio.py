@@ -30,9 +30,9 @@ from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 from univers.versions import SemverVersion
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import GitDataSource
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.helpers import split_markdown_front_matter
 from vulnerabilities.package_managers import GitHubTagsAPI
@@ -40,9 +40,9 @@ from vulnerabilities.package_managers import GitHubTagsAPI
 is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match
 
 
-class IstioDataSource(GitDataSource):
+class IstioImporter(GitImporter):
     def __enter__(self):
-        super(IstioDataSource, self).__enter__()
+        super(IstioImporter, self).__enter__()
 
         if not getattr(self, "_added_files", None):
             self._added_files, self._updated_files = self.file_changes(

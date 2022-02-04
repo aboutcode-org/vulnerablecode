@@ -25,17 +25,17 @@ from copy import deepcopy
 from datetime import datetime
 
 from vulnerabilities import models
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import PackageURL
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import PackageURL
+from vulnerabilities.importer import Reference
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.helpers import AffectedPackage
 
 # from vulnerabilities.import_runner import _insert_vulnerabilities_and_references
 
 
-class MockDataSource(DataSource):
+class MockImporter(Importer):
     def __init__(self, *args, **kwargs):
         self.added_advs = kwargs.pop("added_advs", [])
         self.updated_advs = kwargs.pop("updated_advs", [])
@@ -55,7 +55,7 @@ class MockDataSource(DataSource):
 
 @dataclasses.dataclass
 class MockImporter:
-    data_source: MockDataSource
+    data_source: MockImporter
     last_run: datetime = None
     name: str = "mock_importer"
     license: str = "license to test"
@@ -88,7 +88,7 @@ def make_import_runner(added_advs=None, updated_advs=None):
     updated_advs = updated_advs or []
 
     importer = MockImporter(
-        data_source=MockDataSource(2, added_advs=added_advs, updated_advs=updated_advs)
+        data_source=MockImporter(2, added_advs=added_advs, updated_advs=updated_advs)
     )
 
     return ImportRunner(importer, 5)

@@ -25,11 +25,11 @@ from unittest import TestCase
 from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
 from vulnerabilities.importers.rust import categorize_versions
 from vulnerabilities.importers.rust import get_advisory_data
-from vulnerabilities.importers.rust import RustDataSource
+from vulnerabilities.importers.rust import RustImporter
 from vulnerabilities.package_managers import Version
 from vulnerabilities.package_managers import CratesVersionAPI
 from vulnerabilities.helpers import AffectedPackage
@@ -142,7 +142,7 @@ class RustImportTest(TestCase):
         data_source_cfg = {
             "repository_url": "",
         }
-        cls.data_src = RustDataSource(1, config=data_source_cfg)
+        cls.data_src = RustImporter(1, config=data_source_cfg)
         cls.data_src._crates_api = MOCKED_CRATES_API_VERSIONS
 
     def test_load_advisory(self):

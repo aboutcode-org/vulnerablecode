@@ -43,6 +43,7 @@ from packageurl import PackageURL
 from univers.version_range import VersionRange
 from univers.versions import Version
 from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.helpers import classproperty
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
@@ -218,9 +219,8 @@ class NoLicenseError(Exception):
 
 class Importer:
     """
-    An Importer collects data from various upstreams and returns corresponding
-    AdvisoryData objects in its advisory_data method.
-    Subclass this class to implement an importer
+    An Importer collects data from various upstreams and returns corresponding AdvisoryData objects
+    in its advisory_data method.  Subclass this class to implement an importer
     """
 
     spdx_license_expression = ""
@@ -229,14 +229,12 @@ class Importer:
         if not self.spdx_license_expression:
             raise Exception(f"Cannot run importer {self!r} without a license")
 
-    @classmethod
-    @property
-    def qualified_name(cls):
+    @classproperty
+    def qualified_name(self):
         """
-        Fully qualified name prefixed with the module name of the data source
-        used in logging.
+        Fully qualified name prefixed with the module name of the improver used in logging.
         """
-        return f"{cls.__module__}.{cls.__qualname__}"
+        return f"{self.__module__}.{self.__qualname__}"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         """

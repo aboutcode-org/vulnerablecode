@@ -1,6 +1,7 @@
 import dataclasses
 import logging
 from typing import List
+from typing import Iterable
 from typing import Optional
 from uuid import uuid4
 
@@ -72,8 +73,11 @@ class Inference:
 
 class Improver:
     """
-    Improvers are responsible to improve the already imported data by a datasource.
-    Inferences regarding the data could be generated based on multiple factors.
+    Improvers are responsible to improve already imported data by an importer.
+    An improver is required to override the ``interesting_advisories`` property method to return a
+    QuerySet of ``Advisory`` objects. These advisories are then passed to ``get_inferences`` method
+    which is responsible for returning an iterable of ``Inferences`` for that particular
+    ``Advisory``
     """
 
     @property
@@ -83,7 +87,7 @@ class Improver:
         """
         raise NotImplementedError
 
-    def get_inferences(self, advisory_data: AdvisoryData) -> List[Inference]:
+    def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         """
         Generate and return Inferences for the given advisory data
         """

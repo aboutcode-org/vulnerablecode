@@ -56,7 +56,7 @@ class Command(BaseCommand):
 
         sources = options["sources"]
         if not sources:
-            raise CommandError('Please provide at least one improver to run use "--all".')
+            raise CommandError('Please provide at least one improver to run or use "--all".')
 
         self.improve_data(validate_improvers(sources))
 

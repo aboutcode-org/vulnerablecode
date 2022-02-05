@@ -10,6 +10,7 @@ from django.db.models.query import QuerySet
 
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.helpers import classproperty
 
 logger = logging.getLogger(__name__)
 
@@ -73,12 +74,18 @@ class Inference:
 
 class Improver:
     """
-    Improvers are responsible to improve already imported data by an importer.
-    An improver is required to override the ``interesting_advisories`` property method to return a
-    QuerySet of ``Advisory`` objects. These advisories are then passed to ``get_inferences`` method
-    which is responsible for returning an iterable of ``Inferences`` for that particular
-    ``Advisory``
+    Improvers are responsible to improve already imported data by an importer.  An improver is
+    required to override the ``interesting_advisories`` property method to return a QuerySet of
+    ``Advisory`` objects. These advisories are then passed to ``get_inferences`` method which is
+    responsible for returning an iterable of ``Inferences`` for that particular ``Advisory``
     """
+
+    @classproperty
+    def qualified_name(self):
+        """
+        Fully qualified name prefixed with the module name of the improver used in logging.
+        """
+        return f"{self.__module__}.{self.__qualname__}"
 
     @property
     def interesting_advisories(self) -> QuerySet:
@@ -92,12 +99,3 @@ class Improver:
         Generate and return Inferences for the given advisory data
         """
         raise NotImplementedError
-
-    @classmethod
-    @property
-    def qualified_name(cls):
-        """
-        Fully qualified name prefixed with the module name of the improver
-        used in logging.
-        """
-        return f"{cls.__module__}.{cls.__qualname__}"

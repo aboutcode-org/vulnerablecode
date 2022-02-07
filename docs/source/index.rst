@@ -1,4 +1,4 @@
-Welcome to nexb-skeleton's documentation!
+Welcome to VulnerableCode documentation!
 =========================================
 
 .. toctree::

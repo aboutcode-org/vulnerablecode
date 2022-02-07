@@ -72,7 +72,7 @@ valid: black
 
 clean:
 	@echo "-> Clean the Python env"
-	rm -rm ${VENV}
+	rm -rf ${VENV}
 
 migrate:
 	@echo "-> Apply database migrations"

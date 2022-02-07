@@ -28,6 +28,7 @@ from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
 
 from vulnerabilities.models import Importer
+from vulnerabilities.importer_yielder import IMPORTER_REGISTRY
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.importer_yielder import load_importers
 
@@ -53,19 +54,12 @@ class Command(BaseCommand):
         )
         parser.add_argument("sources", nargs="*", help="Data sources from which to import")
 
-        parser.add_argument(
-            "--batch_size", help="The batch size to be used for bulk inserting data"
-        )
-
     def handle(self, *args, **options):
         # load_importers() seeds the DB with Importers
         load_importers()
         if options["list"]:
             self.list_sources()
             return
-
-        if options["batch_size"]:
-            self.batch_size = options["batch_size"]
 
         if options["all"]:
             self._import_data(Importer.objects.all(), options["cutoff_date"])
@@ -80,9 +74,9 @@ class Command(BaseCommand):
         self.import_data(sources, options["cutoff_date"])
 
     def list_sources(self):
-        importers = Importer.objects.all()
+        importers = IMPORTER_REGISTRY
         self.stdout.write("Vulnerability data can be imported from the following sources:")
-        self.stdout.write(", ".join([i.name for i in importers]))
+        self.stdout.write(", ".join([i["name"] for i in importers]))
 
     def import_data(self, names, cutoff_date):
         importers = []
@@ -105,9 +99,8 @@ class Command(BaseCommand):
 
         for importer in importers:
             self.stdout.write(f"Importing data from {importer.name}")
-            batch_size = int(getattr(self, "batch_size", 10))
             try:
-                ImportRunner(importer, batch_size).run(cutoff_date=cutoff_date)
+                ImportRunner(importer).run(cutoff_date=cutoff_date)
                 self.stdout.write(
                     self.style.SUCCESS(f"Successfully imported data from {importer.name}")
                 )

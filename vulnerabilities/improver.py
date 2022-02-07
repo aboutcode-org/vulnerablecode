@@ -81,11 +81,11 @@ class Improver:
     """
 
     @classproperty
-    def qualified_name(self):
+    def qualified_name(cls):
         """
         Fully qualified name prefixed with the module name of the improver used in logging.
         """
-        return f"{self.__module__}.{self.__qualname__}"
+        return f"{cls.__module__}.{cls.__qualname__}"
 
     @property
     def interesting_advisories(self) -> QuerySet:

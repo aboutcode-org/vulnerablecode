@@ -540,9 +540,7 @@ class GoproxyVersionAPI(VersionAPI):
     @staticmethod
     def escape_path(path: str) -> str:
         """
-        escape uppercase in module/version name. For example: 
-        escape_path("github.com/FerretDB/FerretDB") returns 
-        "github.com/!ferret!d!b/!ferret!d!b" 
+        escape uppercase in module/version name.
         """
         escaped_path = ""
         for c in path:

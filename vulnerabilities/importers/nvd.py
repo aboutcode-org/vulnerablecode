@@ -28,27 +28,18 @@ from datetime import date
 
 import requests
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import DataSourceConfiguration
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.helpers import create_etag
 from vulnerabilities.severity_systems import scoring_systems
-
-
-@dataclasses.dataclass
-class NVDDataSourceConfiguration(DataSourceConfiguration):
-    etags: dict
 
 
 BASE_URL = "https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-{}.json.gz"
 
 
-class NVDDataSource(DataSource):
-
-    CONFIG_CLASS = NVDDataSourceConfiguration
-
+class NVDImporter(Importer):
     def updated_advisories(self):
         current_year = date.today().year
         # NVD json feeds start from 2002.

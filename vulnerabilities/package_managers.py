@@ -19,16 +19,19 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
+import os
 import asyncio
 import dataclasses
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from json import JSONDecodeError
+from subprocess import check_output
 from typing import List
 from typing import Mapping
 from typing import Set
 
 from aiohttp import ClientSession
+import aiohttp
 from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.client_exceptions import ServerDisconnectedError
 from bs4 import BeautifulSoup
@@ -47,8 +50,12 @@ class VersionResponse:
     newer_versions: Set[str] = dataclasses.field(default_factory=set)
 
 
+class GraphQLError(Exception):
+    pass
+
+
 class VersionAPI:
-    def __init__(self, cache: Mapping[str, Set[str]] = None):
+    def __init__(self, cache: Mapping[str, Set[Version]] = None):
         self.cache = cache or {}
 
     def get(self, package_name, until=None) -> Set[str]:
@@ -75,8 +82,10 @@ class VersionAPI:
         raise NotImplementedError
 
 
-def client_session():
-    return ClientSession(raise_for_status=True, trust_env=True)
+def client_session(**kwargs):
+    # trust_env is important so that https_proxy environment variable is used
+    # in proxy protected environments
+    return ClientSession(raise_for_status=True, trust_env=True, **kwargs)
 
 
 class LaunchpadVersionAPI(VersionAPI):
@@ -220,9 +229,7 @@ class DebianVersionAPI(VersionAPI):
     async def load_api(self, pkg_set):
         # Need to set the headers, because the Debian API upgrades
         # the connection to HTTP 2.0
-        async with ClientSession(
-            raise_for_status=True, headers={"Connection": "keep-alive"}
-        ) as session:
+        async with client_session(headers={"Connection": "keep-alive"}) as session:
             await asyncio.gather(
                 *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
             )
@@ -376,42 +383,92 @@ class ComposerVersionAPI(VersionAPI):
 class GitHubTagsAPI(VersionAPI):
 
     package_type = "github"
+    GQL_QUERY = """
+    query getTags($name: String!, $owner: String!, $after: String)
+    {
+        repository(name: $name, owner: $owner) {
+            refs(refPrefix: "refs/tags/", first: 100, after: $after) {
+                totalCount
+                pageInfo {
+                    endCursor
+                    hasNextPage
+                }
+                nodes {
+                    name
+                    target {
+                        ... on Commit {
+                            committedDate
+                        }
+                        ... on Tag {
+                                target {
+                                ... on Commit {
+                                    committedDate
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }"""
 
-    async def fetch(self, owner_repo: str, session, endpoint=None) -> None:
+    def __init__(self, cache: Mapping[str, Set[Version]] = None):
+        self.gh_token = os.getenv("GH_TOKEN")
+        super().__init__(cache=cache)
+
+    async def fetch(self, owner_repo: str, session: aiohttp.ClientSession) -> None:
         """
         owner_repo is a string of format "{repo_owner}/{repo_name}"
         Example value of owner_repo = "nexB/scancode-toolkit"
         """
         self.cache[owner_repo] = set()
-        if not endpoint:
-            endpoint = f"https://github.com/{owner_repo}/tags"
-        resp = await session.get(endpoint)
-        resp = await resp.read()
+        if self.gh_token:
+            # graphql api cannot work without api token
+            session.headers["Authorization"] = "token " + self.gh_token
+            endpoint = f"https://api.github.com/graphql"
+            owner, name = owner_repo.split("/")
+            query = {"query": self.GQL_QUERY, "variables": {"name": name, "owner": owner}}
 
-        soup = BeautifulSoup(resp, features="lxml")
-        for release_entry in soup.find_all("div", {"class": "commit"}):
-            version = None
-            for links in release_entry.find_all("a"):
-                if f"/{owner_repo}/releases/tag/" in links["href"].lower():
-                    prefix, _slash, version = links["href"].rpartition("/")
-                    version = version.lstrip("v")
+            while True:
+                response = await session.post(endpoint, json=query)
+                resp_json = await response.json()
+
+                if "errors" in resp_json:
+                    raise GraphQLError(resp_json["errors"])
+
+                refs = resp_json["data"]["repository"]["refs"]
+
+                for entry in refs["nodes"]:
+                    name = entry["name"]
+                    target = entry["target"]
+                    # in case the tag is a signed tag, then the commit info is in target['target']
+                    if "committedDate" not in target:
+                        target = target["target"]
+                    if "committedDate" in target:
+                        release_date = dateparser.parse(target["committedDate"])
+                    else:
+                        # but tags can actually point to tree and not commit, so there is no date
+                        # probably this only happened for linux. Github cannot even properly display it.
+                        # https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/refs/tags/v2.6.11
+                        release_date = None
+                    self.cache[owner_repo].add(Version(value=name, release_date=release_date))
+
+                if not refs["pageInfo"]["hasNextPage"]:
                     break
+                # to fetch next page, we just set the after variable to endCursor
+                query["variables"]["after"] = refs["pageInfo"]["endCursor"]
 
-            release_date = release_entry.find("relative-time")["datetime"]
-            self.cache[owner_repo].add(
-                Version(value=version, release_date=dateparser.parse(release_date))
-            )
-
-        url = None
-        pagination_links = soup.find("div", {"class": "paginate-container"}).find_all("a")
-        for link in pagination_links:
-            if link.text == "Next":
-                url = link["href"]
-                break
-
-        if url:
-            # FIXME: this could be asynced to improve performance
-            await self.fetch(owner_repo, session, url)
+        else:
+            # In case we don't have GH_TOKEN, we use the svn ls method to get the tags
+            # It allows to get all the information needed in one request without any rate limiting
+            # this method is however not scalable for larger repo and the api is unresponsive
+            # for repo with > 50 tags
+            endpoint = f"https://github.com/{owner_repo}"
+            tags_xml = check_output(["svn", "ls", "--xml", f"{endpoint}/tags"], text=True)
+            elements = ET.fromstring(tags_xml)
+            for entry in elements.iter("entry"):
+                name = entry.find("name").text
+                release_date = dateparser.parse(entry.find("commit/date").text)
 
 
 class HexVersionAPI(VersionAPI):

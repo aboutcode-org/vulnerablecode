@@ -31,22 +31,13 @@ from typing import Set
 import requests
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import DataSourceConfiguration
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import nearest_patched_package
 
 
-@dataclasses.dataclass
-class DebianConfiguration(DataSourceConfiguration):
-    debian_tracker_url: str
-
-
-class DebianDataSource(DataSource):
-
-    CONFIG_CLASS = DebianConfiguration
-
+class DebianImporter(Importer):
     def __enter__(self):
         if self.response_is_new():
             self._api_response = self._fetch()
@@ -131,7 +122,12 @@ class DebianDataSource(DataSource):
         return advisories
 
     def response_is_new(self):
-        date_str = requests.head(self.config.debian_tracker_url).headers.get("last-modified")
+        """
+        Return True if a request response is for new data likely changed or
+        updated since we last checked.
+        """
+        head = requests.head(self.config.debian_tracker_url)
+        date_str = head.headers.get("last-modified")
         last_modified_date = dateparser.parse(date_str)
         if self.config.last_run_date:
             return self.config.last_run_date < last_modified_date

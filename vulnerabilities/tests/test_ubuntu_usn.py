@@ -30,8 +30,8 @@ from unittest.mock import patch
 
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
 import vulnerabilities.importers.ubuntu_usn as ubuntu_usn
 
 
@@ -39,11 +39,11 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/", "ubuntu_usn_db", "database-all.json.bz2")
 
 
-class TestUbuntuUSNDataSource(TestCase):
+class TestUbuntuUSNImporter(TestCase):
     @classmethod
     def setUpClass(cls):
         data_src_cfg = {"etags": {}, "db_url": "http://exampledb.com"}
-        cls.data_src = ubuntu_usn.UbuntuUSNDataSource(batch_size=1, config=data_src_cfg)
+        cls.data_src = ubuntu_usn.UbuntuUSNImporter(batch_size=1, config=data_src_cfg)
         with open(TEST_DATA, "rb") as f:
             cls.raw_data = f.read()
             cls.db = json.loads(bz2.decompress(cls.raw_data))

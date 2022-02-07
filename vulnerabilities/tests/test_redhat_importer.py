@@ -28,9 +28,9 @@ from collections import OrderedDict
 from packageurl import PackageURL
 
 import vulnerabilities.importers.redhat as redhat
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.severity_systems import scoring_systems
 from vulnerabilities.helpers import AffectedPackage

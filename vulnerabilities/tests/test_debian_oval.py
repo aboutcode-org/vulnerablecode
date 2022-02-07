@@ -5,9 +5,9 @@ import xml.etree.ElementTree as ET
 
 from packageurl import PackageURL
 
-from vulnerabilities.importers.debian_oval import DebianOvalDataSource
+from vulnerabilities.importers.debian_oval import DebianOvalImporter
 from vulnerabilities.package_managers import VersionResponse
-from vulnerabilities.data_source import Advisory
+from vulnerabilities.importer import Advisory
 from vulnerabilities.helpers import AffectedPackage
 
 
@@ -23,11 +23,11 @@ def return_adv(_, a):
     return a
 
 
-class TestDebianOvalDataSource(unittest.TestCase):
+class TestDebianOvalImporter(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         data_source_cfg = {"releases": "eg-debian_oval", "etags": {}}
-        cls.debian_oval_data_src = DebianOvalDataSource(batch_size=1, config=data_source_cfg)
+        cls.debian_oval_data_src = DebianOvalImporter(batch_size=1, config=data_source_cfg)
 
     @patch(
         "vulnerabilities.importers.debian_oval.DebianVersionAPI.get",
@@ -108,7 +108,7 @@ class TestDebianOvalDataSource(unittest.TestCase):
         xml_doc = ET.parse(os.path.join(TEST_DATA, "debian_oval_data.xml"))
         # Dirty quick patch to mock batch_advisories
         with patch(
-            "vulnerabilities.importers.debian_oval.DebianOvalDataSource.batch_advisories",
+            "vulnerabilities.importers.debian_oval.DebianOvalImporter.batch_advisories",
             new=return_adv,
         ):
             found_advisories = [

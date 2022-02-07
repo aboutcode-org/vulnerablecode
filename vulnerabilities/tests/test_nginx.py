@@ -26,8 +26,8 @@ from unittest.mock import patch
 
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.importers.nginx import NginxDataSource
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importers.nginx import NginxImporter
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import Version
 from vulnerabilities.helpers import AffectedPackage
@@ -37,13 +37,13 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/nginx", "security_advisories.html")
 
 
-class TestNginxDataSource(TestCase):
+class TestNginxImporter(TestCase):
     @classmethod
     def setUpClass(cls):
         with open(TEST_DATA) as f:
             cls.data = f.read()
         data_source_cfg = {"etags": {}}
-        cls.data_src = NginxDataSource(1, config=data_source_cfg)
+        cls.data_src = NginxImporter(1, config=data_source_cfg)
         cls.data_src.version_api = GitHubTagsAPI(
             cache={
                 "nginx/nginx": {

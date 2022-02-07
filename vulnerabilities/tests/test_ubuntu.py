@@ -9,10 +9,10 @@ import asyncio
 from packageurl import PackageURL
 
 from vulnerabilities.oval_parser import OvalParser
-from vulnerabilities.importers.ubuntu import UbuntuDataSource
+from vulnerabilities.importers.ubuntu import UbuntuImporter
 from vulnerabilities.package_managers import VersionResponse
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import AffectedPackage
 
 
@@ -175,11 +175,11 @@ def return_adv(_, a):
     return a
 
 
-class TestUbuntuDataSource(unittest.TestCase):
+class TestUbuntuImporter(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         data_source_cfg = {"releases": "eg-ubuntu", "etags": {}}
-        cls.ubuntu_data_src = UbuntuDataSource(batch_size=1, config=data_source_cfg)
+        cls.ubuntu_data_src = UbuntuImporter(batch_size=1, config=data_source_cfg)
 
     @patch(
         "vulnerabilities.importers.ubuntu.LaunchpadVersionAPI.get",
@@ -290,7 +290,7 @@ class TestUbuntuDataSource(unittest.TestCase):
         xml_doc = ET.parse(os.path.join(TEST_DATA, "ubuntu_oval_data.xml"))
         # Dirty quick patch to mock batch_advisories
         with patch(
-            "vulnerabilities.importers.ubuntu.UbuntuDataSource.batch_advisories", new=return_adv
+            "vulnerabilities.importers.ubuntu.UbuntuImporter.batch_advisories", new=return_adv
         ):
             found_advisories = [
                 i for i in self.ubuntu_data_src.get_data_from_xml_doc(xml_doc, {"type": "deb"})

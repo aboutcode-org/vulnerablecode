@@ -19,34 +19,8 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
+from vulnerabilities.importers import nginx
 
+IMPORTERS_REGISTRY = [nginx.NginxImporter]
 
-from vulnerabilities.importers.alpine_linux import AlpineDataSource
-from vulnerabilities.importers.apache_httpd import ApacheHTTPDDataSource
-from vulnerabilities.importers.apache_kafka import ApacheKafkaDataSource
-from vulnerabilities.importers.apache_tomcat import ApacheTomcatDataSource
-from vulnerabilities.importers.archlinux import ArchlinuxDataSource
-from vulnerabilities.importers.debian import DebianDataSource
-from vulnerabilities.importers.debian_oval import DebianOvalDataSource
-from vulnerabilities.importers.elixir_security import ElixirSecurityDataSource
-from vulnerabilities.importers.gentoo import GentooDataSource
-from vulnerabilities.importers.github import GitHubAPIDataSource
-from vulnerabilities.importers.kaybee import KaybeeDataSource
-from vulnerabilities.importers.nginx import NginxDataSource
-from vulnerabilities.importers.npm import NpmDataSource
-from vulnerabilities.importers.nvd import NVDDataSource
-from vulnerabilities.importers.openssl import OpenSSLDataSource
-from vulnerabilities.importers.postgresql import PostgreSQLDataSource
-from vulnerabilities.importers.project_kb_msr2019 import ProjectKBMSRDataSource
-from vulnerabilities.importers.redhat import RedhatDataSource
-from vulnerabilities.importers.retiredotnet import RetireDotnetDataSource
-from vulnerabilities.importers.ruby import RubyDataSource
-from vulnerabilities.importers.rust import RustDataSource
-from vulnerabilities.importers.safety_db import SafetyDbDataSource
-from vulnerabilities.importers.suse_scores import SUSESeverityScoreDataSource
-from vulnerabilities.importers.ubuntu import UbuntuDataSource
-from vulnerabilities.importers.ubuntu_usn import UbuntuUSNDataSource
-from vulnerabilities.importers.istio import IstioDataSource
-from vulnerabilities.importers.xen import XenDataSource
-
-# from vulnerabilities.importers.suse_backports import SUSEBackportsDataSource
+IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

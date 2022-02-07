@@ -66,7 +66,7 @@ class ImportRunner:
 def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: str) -> List:
     """
     Insert advisories into the database
-    Return list of ids of inserted advisories
+    Return the number of inserted advisories.
     """
     count = 0
     for data in advisory_datas:

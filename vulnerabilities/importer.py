@@ -34,7 +34,6 @@ from typing import Optional
 from typing import Set
 from typing import Iterable
 from typing import Tuple
-import warnings
 
 from binaryornot.helpers import is_binary_string
 from git import DiffIndex
@@ -230,11 +229,11 @@ class Importer:
             raise Exception(f"Cannot run importer {self!r} without a license")
 
     @classproperty
-    def qualified_name(self):
+    def qualified_name(cls):
         """
         Fully qualified name prefixed with the module name of the improver used in logging.
         """
-        return f"{self.__module__}.{self.__qualname__}"
+        return f"{cls.__module__}.{cls.__qualname__}"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         """

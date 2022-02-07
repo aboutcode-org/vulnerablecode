@@ -519,8 +519,14 @@ class GoproxyVersionAPI(VersionAPI):
 
     @staticmethod
     def trim_url_path(url_path: str) -> Optional[str]:
-        """github advisories for golang is using package names(e.g. https://github.com/advisories/GHSA-jp4j-47f9-2vc3), yet goproxy works with module names(see https://golang.org/ref/mod#goproxy-protocol).
-        this method removes the last part of a package path, and returns the remaining as the module name. For example: trim_url_path("https://github.com/xx/a/b") returns "https://github.com/xx/a"
+        """
+        github advisories for golang is using package names(e.g. 
+        https://github.com/advisories/GHSA-jp4j-47f9-2vc3), 
+        yet goproxy works with module names(see 
+        https://golang.org/ref/mod#goproxy-protocol).
+        this method removes the last part of a package path, and returns the 
+        remaining as the module name. For example: trim_url_path(
+        "https://github.com/xx/a/b") returns "https://github.com/xx/a"
         """
         # some advisories contains this prefix in package name, e.g. https://github.com/advisories/GHSA-7h6j-2268-fhcm
         if url_path.startswith("https://pkg.go.dev/"):
@@ -533,7 +539,11 @@ class GoproxyVersionAPI(VersionAPI):
 
     @staticmethod
     def escape_path(path: str) -> str:
-        """escape uppercase in module/version name. For example: escape_path("github.com/FerretDB/FerretDB") returns "github.com/!ferret!d!b/!ferret!d!b" """
+        """
+        escape uppercase in module/version name. For example: 
+        escape_path("github.com/FerretDB/FerretDB") returns 
+        "github.com/!ferret!d!b/!ferret!d!b" 
+        """
         escaped_path = ""
         for c in path:
             if c >= "A" and c <= "Z":

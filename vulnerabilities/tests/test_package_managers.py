@@ -28,12 +28,13 @@ from unittest.case import SkipTest
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from aiohttp.client import ClientSession
-from dateutil.tz import tzlocal
+from dateutil.tz import tzlocal, tzutc
 from pytz import UTC
 from unittest import TestCase
 from unittest.mock import AsyncMock
 
 from vulnerabilities.package_managers import ComposerVersionAPI
+from vulnerabilities.package_managers import GoproxyVersionAPI
 from vulnerabilities.package_managers import MavenVersionAPI
 from vulnerabilities.package_managers import NugetVersionAPI
 from vulnerabilities.package_managers import GitHubTagsAPI
@@ -53,6 +54,7 @@ class MockClientSession:
         mock_response = AsyncMock()
         mock_response.json = self.json
         mock_response.read = self.read
+        mock_response.text = self.text
         return mock_response
 
     def get(self, *args, **kwargs):
@@ -67,6 +69,9 @@ class MockClientSession:
         return self.return_val
 
     async def read(self):
+        return self.return_val
+
+    async def text(self):
         return self.return_val
 
 
@@ -446,6 +451,59 @@ class TestMavenVersionAPI(TestCase):
         client_session = MockClientSession(self.content)
         asyncio.run(self.version_api.fetch("org.apache:kafka", client_session))
         assert self.version_api.get("org.apache:kafka") == VersionResponse(valid_versions=expected)
+
+
+class TestGoproxyVersionAPI(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.version_api = GoproxyVersionAPI()
+        with open(os.path.join(TEST_DATA, "goproxy_api", "ferretdb_versions")) as f:
+            cls.vlist = f.read()
+        with open(os.path.join(TEST_DATA, "goproxy_api", "version_info")) as f:
+            cls.vinfo = json.load(f)
+        cls.expected_versions = {
+            Version(value="v0.0.1"),
+            Version(value="v0.0.2"),
+            Version(value="v0.0.3"),
+            Version(value="v0.0.4"),
+            Version(value="v0.0.5"),
+        }
+
+    def test_trim_url_path(self):
+        url1 = "https://pkg.go.dev/github.com/containous/traefik/v2"
+        url2 = "github.com/FerretDB/FerretDB/cmd/ferretdb"
+        url3 = self.version_api.trim_url_path(url2)
+        assert "github.com/containous/traefik" == self.version_api.trim_url_path(url1)
+        assert "github.com/FerretDB/FerretDB/cmd" == url3
+        assert "github.com/FerretDB/FerretDB" == self.version_api.trim_url_path(url3)
+
+    def test_escape_path(self):
+        path = "github.com/FerretDB/FerretDB"
+        assert "github.com/!ferret!d!b/!ferret!d!b" == self.version_api.escape_path(
+            path
+        )
+
+    def test_parse_version_info(self):
+        client_session = MockClientSession(self.vinfo)
+        assert asyncio.run(
+            self.version_api.parse_version_info(
+                "v0.0.5", "github.com/!ferret!d!b/!ferret!d!b", client_session
+            )
+        ) == Version(
+            value="v0.0.5",
+            release_date=datetime(2022, 1, 4, 13, 54, 1, tzinfo=tzutc()),
+        )
+
+    def test_fetch(self):
+        assert self.version_api.get("github.com/FerretDB/FerretDB") == VersionResponse()
+        client_session = MockClientSession(self.vlist)
+        asyncio.run(
+            self.version_api.fetch("github.com/FerretDB/FerretDB", client_session)
+        )
+        assert (
+            self.version_api.cache["github.com/FerretDB/FerretDB"]
+            == self.expected_versions
+        )
 
 
 class TestNugetVersionAPI(TestCase):

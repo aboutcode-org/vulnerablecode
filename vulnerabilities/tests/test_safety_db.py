@@ -27,9 +27,9 @@ from unittest import TestCase
 from packageurl import PackageURL
 
 from vulnerabilities.importers.safety_db import categorize_versions
-from vulnerabilities.importers.safety_db import SafetyDbDataSource
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importers.safety_db import SafetyDbImporter
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import PypiVersionAPI
 from vulnerabilities.package_managers import Version
 from vulnerabilities.helpers import AffectedPackage
@@ -55,7 +55,7 @@ MOCK_VERSION_API = PypiVersionAPI(
 
 class SafetyDbtTest(TestCase):
     def test_import(self):
-        data_src = SafetyDbDataSource(1, config={"url": "https://gmail.com/", "etags": ""})
+        data_src = SafetyDbImporter(1, config={"url": "https://gmail.com/", "etags": ""})
         with open(os.path.join(TEST_DATA, "insecure_full.json")) as f:
             raw_data = json.load(f)
         data_src._api_response = raw_data

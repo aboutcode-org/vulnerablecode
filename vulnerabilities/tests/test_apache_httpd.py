@@ -27,24 +27,24 @@ from unittest import TestCase
 from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import Version
 from vulnerabilities.severity_systems import scoring_systems
-from vulnerabilities.importers.apache_httpd import ApacheHTTPDDataSource
+from vulnerabilities.importers.apache_httpd import ApacheHTTPDImporter
 from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "apache_httpd", "CVE-1999-1199.json")
 
 
-class TestApacheHTTPDDataSource(TestCase):
+class TestApacheHTTPDImporter(TestCase):
     @classmethod
     def setUpClass(cls):
         data_source_cfg = {"etags": {}}
-        cls.data_src = ApacheHTTPDDataSource(1, config=data_source_cfg)
+        cls.data_src = ApacheHTTPDImporter(1, config=data_source_cfg)
         known_versions = [Version("1.3.2"), Version("1.3.1"), Version("1.3.0")]
         cls.data_src.version_api = GitHubTagsAPI(cache={"apache/httpd": known_versions})
         with open(TEST_DATA) as f:
@@ -69,13 +69,13 @@ class TestApacheHTTPDDataSource(TestCase):
 
         # Check fixed packages
         assert [
-            VersionSpecifier.from_scheme_version_spec_string("maven", ">=1.3.2")
+            VersionSpecifier.from_scheme_version_spec_string("semver", ">=1.3.2")
         ] == fixed_version_ranges
 
         # Check vulnerable packages
         assert [
-            VersionSpecifier.from_scheme_version_spec_string("maven", "==1.3.0"),
-            VersionSpecifier.from_scheme_version_spec_string("maven", "==1.3.1"),
+            VersionSpecifier.from_scheme_version_spec_string("semver", "==1.3.0"),
+            VersionSpecifier.from_scheme_version_spec_string("semver", "==1.3.1"),
         ] == affected_version_ranges
 
     def test_to_advisory(self):

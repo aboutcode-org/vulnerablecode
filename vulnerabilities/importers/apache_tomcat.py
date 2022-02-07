@@ -32,23 +32,16 @@ from univers.versions import MavenVersion
 from univers.versions import SemverVersion
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import DataSourceConfiguration
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import create_etag
 from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.package_managers import MavenVersionAPI
 
 
-@dataclasses.dataclass
-class ApacheTomcatDataSourceConfiguration(DataSourceConfiguration):
-    etags: dict
+class ApacheTomcatImporter(Importer):
 
-
-class ApacheTomcatDataSource(DataSource):
-
-    CONFIG_CLASS = ApacheTomcatDataSourceConfiguration
     base_url = "https://tomcat.apache.org/security-{}"
 
     def __init__(self, *args, **kwargs):

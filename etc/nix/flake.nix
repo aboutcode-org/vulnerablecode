@@ -61,6 +61,20 @@
           pypiDataSha256 =
             "0499zl39aia74f0i7fkn5dsy8244dkmcw4vzd5nf4kai605j2jli";
         });
+      # This wrapper allows to setup both the production as well as the
+      # development Python environments in the same way (albeit having
+      # different requirements.txt).
+      getPythonEnv = system: requirements:
+        machnixFor.${system}.mkPython {
+          requirements = ''
+            ${requirements}
+          '';
+          # Fix an issue with an upstream dep of GitPython.
+          # https://github.com/DavHau/mach-nix/issues/287
+          # See https://github.com/DavHau/mach-nix/issues/318
+          _.gitpython.propagatedBuildInputs.mod = pySelf: self: oldVal:
+            oldVal ++ [ pySelf.typing-extensions ];
+        };
 
     in {
 
@@ -68,23 +82,19 @@
       overlay = final: prev:
         with final.pkgs; {
 
-          pythonEnv = machnixFor.${system}.mkPython {
-            requirements = ''
-              ${requirements}
-            '';
-          };
+          pythonEnv = getPythonEnv system requirements;
 
           vulnerablecode = stdenv.mkDerivation {
             inherit version;
             name = "vulnerablecode-${version}";
             src = vulnerablecode-src;
-            dontConfigure = true; # do not use ./configure
+            dontBuild = true; # do not use Makefile
             propagatedBuildInputs = [ pythonEnv postgresql gitMinimal ];
 
             postPatch = ''
-              # Make sure the pycodestyle binary in $PATH is used.
-              substituteInPlace vulnerabilities/tests/test_basics.py \
-                --replace 'join(bin_dir, "pycodestyle")' '"pycodestyle"'
+              # Do not use absolute path.
+              substituteInPlace vulnerablecode/settings.py \
+                --replace 'STATIC_ROOT = "/var/vulnerablecode/static"' 'STATIC_ROOT = "./static"'
             '';
 
             installPhase = ''
@@ -117,12 +127,10 @@
       # Tests run by 'nix flake check' and by Hydra.
       checks = forAllSystems (system:
         let
-          pythonEnvDev = machnixFor.${system}.mkPython {
-            requirements = ''
-              ${requirements}
-              ${requirementsDev}
-            '';
-          };
+          pythonEnvDev = getPythonEnv system ''
+            ${requirements}
+            ${requirementsDev}
+          '';
 
         in {
           inherit (self.packages.${system}) vulnerablecode;
@@ -138,7 +146,8 @@
               buildPhase = ''
                 source ${libSh}
                 initPostgres $(pwd)
-                export DJANGO_DEV=1
+                export SECRET_KEY=REALLY_SECRET
+                ${vulnerablecode}/manage.py collectstatic --no-input
                 ${vulnerablecode}/manage.py migrate
               '';
 

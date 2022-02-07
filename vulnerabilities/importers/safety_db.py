@@ -39,26 +39,16 @@ from univers.versions import PYPIVersion
 from univers.versions import InvalidVersion
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import DataSourceConfiguration
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import PypiVersionAPI
 from vulnerabilities.helpers import nearest_patched_package
 
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass
-class SafetyDbConfiguration(DataSourceConfiguration):
-    url: str
-    etags: dict
-
-
-class SafetyDbDataSource(DataSource):
-
-    CONFIG_CLASS = SafetyDbConfiguration
-
+class SafetyDbImporter(Importer):
     def __enter__(self):
         self._api_response = self._fetch()
         self._versions = PypiVersionAPI()

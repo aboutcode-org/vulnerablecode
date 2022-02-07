@@ -27,17 +27,17 @@ from packageurl import PackageURL
 import requests
 import urllib.parse as urlparse
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.severity_systems import scoring_systems
 
 BASE_URL = "https://www.postgresql.org/"
 
 
-class PostgreSQLDataSource(DataSource):
+class PostgreSQLImporter(Importer):
 
     root_url = "https://www.postgresql.org/support/security/"
 

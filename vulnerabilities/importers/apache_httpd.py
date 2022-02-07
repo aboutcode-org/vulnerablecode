@@ -27,32 +27,31 @@ import urllib
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
-from univers.versions import MavenVersion
+from univers.versions import SemverVersion
 from univers.version_specifier import VersionSpecifier
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import DataSourceConfiguration
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.severity_systems import scoring_systems
 from vulnerabilities.helpers import nearest_patched_package
 
 
-@dataclasses.dataclass
-class ApacheHTTPDDataSourceConfiguration(DataSourceConfiguration):
-    etags: dict
+class ApacheHTTPDImporter(Importer):
 
-
-class ApacheHTTPDDataSource(DataSource):
-
-    CONFIG_CLASS = ApacheHTTPDDataSourceConfiguration
     base_url = "https://httpd.apache.org/security/json/"
 
     def set_api(self):
         self.version_api = GitHubTagsAPI()
         asyncio.run(self.version_api.load_api(["apache/httpd"]))
+        self.version_api.cache["apache/httpd"] = set(
+            filter(
+                lambda version: version.value not in ignore_tags,
+                self.version_api.cache["apache/httpd"],
+            )
+        )
 
     def updated_advisories(self):
         links = fetch_links(self.base_url)
@@ -106,7 +105,7 @@ class ApacheHTTPDDataSource(DataSource):
                 [
                     PackageURL(type="apache", name="httpd", version=version)
                     for version in self.version_api.get("apache/httpd").valid_versions
-                    if MavenVersion(version) in version_range
+                    if SemverVersion(version) in version_range
                 ]
             )
 
@@ -115,7 +114,7 @@ class ApacheHTTPDDataSource(DataSource):
                 [
                     PackageURL(type="apache", name="httpd", version=version)
                     for version in self.version_api.get("apache/httpd").valid_versions
-                    if MavenVersion(version) in version_range
+                    if SemverVersion(version) in version_range
                 ]
             )
 
@@ -135,13 +134,13 @@ class ApacheHTTPDDataSource(DataSource):
             if range_expression == "<":
                 fixed_version_ranges.append(
                     VersionSpecifier.from_scheme_version_spec_string(
-                        "maven", ">={}".format(version_value)
+                        "semver", ">={}".format(version_value)
                     )
                 )
             elif range_expression == "=" or range_expression == "?=":
                 affected_version_ranges.append(
                     VersionSpecifier.from_scheme_version_spec_string(
-                        "maven", "{}".format(version_value)
+                        "semver", "{}".format(version_value)
                     )
                 )
 
@@ -158,3 +157,67 @@ def fetch_links(url):
             continue
         links.append(urllib.parse.urljoin(url, link))
     return links
+
+
+ignore_tags = {
+    "AGB_BEFORE_AAA_CHANGES",
+    "APACHE_1_2b1",
+    "APACHE_1_2b10",
+    "APACHE_1_2b11",
+    "APACHE_1_2b2",
+    "APACHE_1_2b3",
+    "APACHE_1_2b4",
+    "APACHE_1_2b5",
+    "APACHE_1_2b6",
+    "APACHE_1_2b7",
+    "APACHE_1_2b8",
+    "APACHE_1_2b9",
+    "APACHE_1_3_PRE_NT",
+    "APACHE_1_3a1",
+    "APACHE_1_3b1",
+    "APACHE_1_3b2",
+    "APACHE_1_3b3",
+    "APACHE_1_3b5",
+    "APACHE_1_3b6",
+    "APACHE_1_3b7",
+    "APACHE_2_0_2001_02_09",
+    "APACHE_2_0_52_WROWE_RC1",
+    "APACHE_2_0_ALPHA",
+    "APACHE_2_0_ALPHA_2",
+    "APACHE_2_0_ALPHA_3",
+    "APACHE_2_0_ALPHA_4",
+    "APACHE_2_0_ALPHA_5",
+    "APACHE_2_0_ALPHA_6",
+    "APACHE_2_0_ALPHA_7",
+    "APACHE_2_0_ALPHA_8",
+    "APACHE_2_0_ALPHA_9",
+    "APACHE_2_0_BETA_CANDIDATE_1",
+    "APACHE_BIG_SYMBOL_RENAME_POST",
+    "APACHE_BIG_SYMBOL_RENAME_PRE",
+    "CHANGES",
+    "HTTPD_LDAP_1_0_0",
+    "INITIAL",
+    "MOD_SSL_2_8_3",
+    "PCRE_3_9",
+    "POST_APR_SPLIT",
+    "PRE_APR_CHANGES",
+    "STRIKER_2_0_51_RC1",
+    "STRIKER_2_0_51_RC2",
+    "STRIKER_2_1_0_RC1",
+    "WROWE_2_0_43_PRE1",
+    "apache-1_3-merge-1-post",
+    "apache-1_3-merge-1-pre",
+    "apache-1_3-merge-2-post",
+    "apache-1_3-merge-2-pre",
+    "apache-apr-merge-3",
+    "apache-doc-split-01",
+    "dg_last_1_2_doc_merge",
+    "djg-apache-nspr-07",
+    "djg_nspr_split",
+    "moving_to_httpd_module",
+    "mpm-3",
+    "mpm-merge-1",
+    "mpm-merge-2",
+    "post_ajp_proxy",
+    "pre_ajp_proxy",
+}

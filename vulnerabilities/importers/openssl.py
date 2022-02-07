@@ -28,21 +28,14 @@ import xml.etree.ElementTree as ET
 from packageurl import PackageURL
 import requests
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import DataSourceConfiguration
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import create_etag
 from vulnerabilities.helpers import nearest_patched_package
 
 
-@dataclasses.dataclass
-class OpenSSLDataSourceConfiguration(DataSourceConfiguration):
-    etags: dict
-
-
-class OpenSSLDataSource(DataSource):
-    CONFIG_CLASS = OpenSSLDataSourceConfiguration
+class OpenSSLImporter(Importer):
 
     url = "https://www.openssl.org/news/vulnerabilities.xml"
 

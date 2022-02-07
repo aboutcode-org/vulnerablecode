@@ -25,9 +25,9 @@ from unittest import TestCase
 
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers.postgresql import to_advisories
 from vulnerabilities.helpers import AffectedPackage
 from vulnerabilities.severity_systems import ScoringSystem
@@ -37,7 +37,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/postgresql", "advisories.html")
 
 
-class TestPostgreSQLDataSource(TestCase):
+class TestPostgreSQLImporter(TestCase):
     def test_to_advisories(self):
 
         with open(TEST_DATA) as f:

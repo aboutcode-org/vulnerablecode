@@ -26,21 +26,21 @@ from collections import OrderedDict
 
 from packageurl import PackageURL
 
-from vulnerabilities.importers.retiredotnet import RetireDotnetDataSource
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importers.retiredotnet import RetireDotnetImporter
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-class TestRetireDotnetDataSource(TestCase):
+class TestRetireDotnetImporter(TestCase):
     @classmethod
     def setUpClass(cls):
         data_source_cfg = {
             "repository_url": "https://test.net",
         }
-        cls.data_src = RetireDotnetDataSource(1, config=data_source_cfg)
+        cls.data_src = RetireDotnetImporter(1, config=data_source_cfg)
 
     def test_vuln_id_from_desc(self):
 

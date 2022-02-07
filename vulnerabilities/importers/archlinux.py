@@ -30,24 +30,15 @@ from urllib.request import urlopen
 
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import DataSourceConfiguration
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.severity_systems import scoring_systems
 
 
-@dataclasses.dataclass
-class ArchlinuxConfiguration(DataSourceConfiguration):
-    archlinux_tracker_url: str
-
-
-class ArchlinuxDataSource(DataSource):
-
-    CONFIG_CLASS = ArchlinuxConfiguration
-
+class ArchlinuxImporter(Importer):
     def __enter__(self):
         self._api_response = self._fetch()
 

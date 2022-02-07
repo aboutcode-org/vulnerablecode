@@ -28,60 +28,58 @@ from django.core.management.base import CommandError
 from django.test import TestCase
 import pytest
 
-from vulnerabilities.models import Importer
+from vulnerabilities.improver import Improver
+from vulnerabilities.improver import Inference
+from vulnerabilities.models import Advisory
 
 
-class TestListSources(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        for name in ("npm", "debian", "ubuntu", "archlinux"):
-            name += "_import_cmd_test"
+class DummyImprover(Improver):
+    @property
+    def interesting_advisories(self):
+        return Advisory.objects.none()
 
-            Importer.objects.create(
-                name=name,
-                license="fakelicense",
-                last_run=None,
-                data_source="fakesource",
-                data_source_cfg={},
-            )
+    def get_inferences(self):
+        return []
 
+
+MOCK_IMPROVERS_REGISTRY = [DummyImprover]
+MOCK_IMPROVERS_REGISTRY = {
+    improver.qualified_name: improver for improver in MOCK_IMPROVERS_REGISTRY
+}
+
+
+@patch("vulnerabilities.improvers.IMPROVERS_REGISTRY", MOCK_IMPROVERS_REGISTRY)
+class TestImproveCommand(TestCase):
     def test_list_sources(self):
         buf = StringIO()
-        with patch("vulnerabilities.importer_yielder.load_importers"):
-            call_command("import", "--list", stdout=buf)
+        call_command("improve", "--list", stdout=buf)
         out = buf.getvalue()
-        assert "npm" in out
-        assert "debian" in out
-        assert "ubuntu" in out
-        assert "archlinux" in out
+        assert DummyImprover.qualified_name in out
 
+    def test_missing_sources(self):
+        with pytest.raises(CommandError) as cm:
+            call_command("improve", stdout=StringIO())
 
-def test_missing_sources():
-
-    with pytest.raises(CommandError) as cm:
-        call_command("import", stdout=StringIO())
-
-    err = str(cm)
-    assert "Please provide at least one data source" in err
-
-
-class TestUnknownSources(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        Importer.objects.create(
-            name="debian_import_cmd_test",
-            license="fakelicense",
-            last_run=None,
-            data_source="fakesource",
-            data_source_cfg={},
-        )
+        err = str(cm)
+        assert 'Please provide at least one improver to run or use "--all"' in err
 
     def test_error_message_includes_unknown_sources(self):
-
         with pytest.raises(CommandError) as cm:
-            call_command("import", "debian_import_cmd_test", "foo", "bar", stdout=StringIO())
+            call_command(
+                "improve",
+                DummyImprover.qualified_name,
+                "foo",
+                "bar",
+                stdout=StringIO(),
+            )
 
         err = str(cm)
         assert "bar" in err
         assert "foo" in err
-        assert "debian_import_cmd_test" not in err
+        assert DummyImprover.qualified_name not in err
+
+    def test_improve_run(self):
+        buf = StringIO()
+        call_command("improve", DummyImprover.qualified_name, stdout=buf)
+        out = buf.getvalue()
+        assert "Successfully improved data using" in out

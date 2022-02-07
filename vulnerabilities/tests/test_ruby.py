@@ -27,9 +27,9 @@ from unittest import TestCase
 
 from packageurl import PackageURL
 
-from vulnerabilities.importers.ruby import RubyDataSource
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importers.ruby import RubyImporter
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import RubyVersionAPI
 from vulnerabilities.package_managers import VersionResponse
 from vulnerabilities.helpers import AffectedPackage
@@ -43,13 +43,13 @@ for filepath in pathlib.Path(TEST_DATA).glob("**/*.yml"):
     MOCK_ADDED_FILES.append(filepath.absolute())
 
 
-class RubyDataSourceTest(TestCase):
+class RubyImporterTest(TestCase):
     @classmethod
     def setUpClass(cls):
         data_source_cfg = {
             "repository_url": "https://github.com/rubysec/ruby-advisory-db.git",
         }
-        cls.data_src = RubyDataSource(1, config=data_source_cfg)
+        cls.data_src = RubyImporter(1, config=data_source_cfg)
         cls.data_src.pkg_manager_api = RubyVersionAPI()
 
     @patch(

@@ -1,14 +1,16 @@
 import dataclasses
 import logging
 from typing import List
+from typing import Iterable
 from typing import Optional
 from uuid import uuid4
 
 from packageurl import PackageURL
 from django.db.models.query import QuerySet
 
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import AdvisoryData
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.helpers import classproperty
 
 logger = logging.getLogger(__name__)
 
@@ -72,9 +74,18 @@ class Inference:
 
 class Improver:
     """
-    Improvers are responsible to improve the already imported data by a datasource.
-    Inferences regarding the data could be generated based on multiple factors.
+    Improvers are responsible to improve already imported data by an importer.  An improver is
+    required to override the ``interesting_advisories`` property method to return a QuerySet of
+    ``Advisory`` objects. These advisories are then passed to ``get_inferences`` method which is
+    responsible for returning an iterable of ``Inferences`` for that particular ``Advisory``
     """
+
+    @classproperty
+    def qualified_name(cls):
+        """
+        Fully qualified name prefixed with the module name of the improver used in logging.
+        """
+        return f"{cls.__module__}.{cls.__qualname__}"
 
     @property
     def interesting_advisories(self) -> QuerySet:
@@ -83,16 +94,8 @@ class Improver:
         """
         raise NotImplementedError
 
-    def get_inferences(self, advisory_data: AdvisoryData) -> List[Inference]:
+    def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         """
         Generate and return Inferences for the given advisory data
         """
         raise NotImplementedError
-
-    @classmethod
-    def qualified_name(cls):
-        """
-        Fully qualified name prefixed with the module name of the improver
-        used in logging.
-        """
-        return f"{cls.__module__}.{cls.__qualname__}"

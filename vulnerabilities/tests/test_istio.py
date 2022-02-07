@@ -26,8 +26,8 @@ from unittest import TestCase
 
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory, Reference
-from vulnerabilities.importers.istio import IstioDataSource
+from vulnerabilities.importer import Advisory, Reference
+from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import Version
 from vulnerabilities.helpers import AffectedPackage
@@ -35,13 +35,13 @@ from vulnerabilities.helpers import AffectedPackage
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-class TestIstioDataSource(TestCase):
+class TestIstioImporter(TestCase):
     @classmethod
     def setUpClass(cls):
         data_source_cfg = {
             "repository_url": "",
         }
-        cls.data_src = IstioDataSource(1, config=data_source_cfg)
+        cls.data_src = IstioImporter(1, config=data_source_cfg)
         cls.data_src.version_api = GitHubTagsAPI(
             {
                 "istio/istio": [

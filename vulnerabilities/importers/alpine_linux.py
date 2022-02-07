@@ -29,15 +29,15 @@ import requests
 import saneyaml
 from bs4 import BeautifulSoup
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import is_cve
 
 BASE_URL = "https://secdb.alpinelinux.org/"
 
 
-class AlpineDataSource(DataSource):
+class AlpineImporter(Importer):
     @staticmethod
     def fetch_advisory_links():
         index_page = BeautifulSoup(requests.get(BASE_URL).content, features="lxml")

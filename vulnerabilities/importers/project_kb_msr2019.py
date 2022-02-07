@@ -28,22 +28,14 @@ import urllib.request
 # Use `urllib.request` for that purpose.
 
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import DataSourceConfiguration
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import create_etag
 from vulnerabilities.helpers import is_cve
 
 
-@dataclasses.dataclass
-class ProjectKBDataSourceConfiguration(DataSourceConfiguration):
-    etags: dict
-
-
-class ProjectKBMSRDataSource(DataSource):
-
-    CONFIG_CLASS = ProjectKBDataSourceConfiguration
+class ProjectKBMSRImporter(Importer):
 
     url = "https://raw.githubusercontent.com/SAP/project-kb/master/MSR2019/dataset/vulas_db_msr2019_release.csv"
 

@@ -27,22 +27,14 @@ import json
 import requests
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import create_etag
 from vulnerabilities.helpers import is_cve
 
 
-@dataclasses.dataclass
-class USNDBConfiguration:
-    etags: list
-    db_url: str
-
-
-class UbuntuUSNDataSource(DataSource):
-    CONFIG_CLASS = USNDBConfiguration
-
+class UbuntuUSNImporter(Importer):
     def updated_advisories(self):
         advisories = []
         if create_etag(data_src=self, url=self.config.db_url, etag_key="etag"):

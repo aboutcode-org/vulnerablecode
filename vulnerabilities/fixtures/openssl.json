@@ -40538,7 +40538,7 @@
             "name": "rust",
             "license": "cc0-1.0",
             "last_run": "2020-09-14T12:47:17.451Z",
-            "data_source": "RustDataSource",
+            "data_source": "RustImporter",
             "data_source_cfg": {
                 "branch": null,
                 "repository_url": "https://github.com/RustSec/advisory-db",
@@ -40555,7 +40555,7 @@
             "name": "alpine",
             "license": "",
             "last_run": null,
-            "data_source": "AlpineDataSource",
+            "data_source": "AlpineImporter",
             "data_source_cfg": {
                 "branch": null,
                 "repository_url": "https://gitlab.alpinelinux.org/alpine/infra/alpine-secdb"
@@ -40569,7 +40569,7 @@
             "name": "archlinux",
             "license": "mit",
             "last_run": null,
-            "data_source": "ArchlinuxDataSource",
+            "data_source": "ArchlinuxImporter",
             "data_source_cfg": {
                 "archlinux_tracker_url": "https://security.archlinux.org/json"
             }
@@ -40582,7 +40582,7 @@
             "name": "debian",
             "license": "mit",
             "last_run": null,
-            "data_source": "DebianDataSource",
+            "data_source": "DebianImporter",
             "data_source_cfg": {
                 "debian_tracker_url": "https://security-tracker.debian.org/tracker/data/json"
             }
@@ -40595,7 +40595,7 @@
             "name": "safetydb",
             "license": "cc-by-nc-4.0",
             "last_run": null,
-            "data_source": "SafetyDbDataSource",
+            "data_source": "SafetyDbImporter",
             "data_source_cfg": {
                 "url": "https://raw.githubusercontent.com/pyupio/safety-db/master/data/insecure_full.json",
                 "etags": {}
@@ -40609,7 +40609,7 @@
             "name": "npm",
             "license": "mit",
             "last_run": null,
-            "data_source": "NpmDataSource",
+            "data_source": "NpmImporter",
             "data_source_cfg": {
                 "repository_url": "https://github.com/nodejs/security-wg.git"
             }
@@ -40622,7 +40622,7 @@
             "name": "ruby",
             "license": "",
             "last_run": null,
-            "data_source": "RubyDataSource",
+            "data_source": "RubyImporter",
             "data_source_cfg": {
                 "repository_url": "https://github.com/rubysec/ruby-advisory-db.git"
             }
@@ -40635,7 +40635,7 @@
             "name": "ubuntu",
             "license": "gpl-2.0",
             "last_run": null,
-            "data_source": "UbuntuDataSource",
+            "data_source": "UbuntuImporter",
             "data_source_cfg": {
                 "etags": {},
                 "releases": [
@@ -40655,7 +40655,7 @@
             "name": "retiredotnet",
             "license": "mit",
             "last_run": null,
-            "data_source": "RetireDotnetDataSource",
+            "data_source": "RetireDotnetImporter",
             "data_source_cfg": {
                 "repository_url": "https://github.com/RetireNet/Packages.git"
             }
@@ -40668,7 +40668,7 @@
             "name": "suse_backports",
             "license": "",
             "last_run": null,
-            "data_source": "SUSEBackportsDataSource",
+            "data_source": "SUSEBackportsImporter",
             "data_source_cfg": {
                 "url": "http://ftp.suse.com/pub/projects/security/yaml/",
                 "etags": {}
@@ -40682,7 +40682,7 @@
             "name": "debian_oval",
             "license": "",
             "last_run": null,
-            "data_source": "DebianOvalDataSource",
+            "data_source": "DebianOvalImporter",
             "data_source_cfg": {
                 "etags": {},
                 "releases": [
@@ -40701,7 +40701,7 @@
             "name": "redhat",
             "license": "cc-by-4.0",
             "last_run": null,
-            "data_source": "RedhatDataSource",
+            "data_source": "RedhatImporter",
             "data_source_cfg": {}
         }
     },
@@ -40712,7 +40712,7 @@
             "name": "gentoo",
             "license": "",
             "last_run": null,
-            "data_source": "GentooDataSource",
+            "data_source": "GentooImporter",
             "data_source_cfg": {
                 "repository_url": "https://anongit.gentoo.org/git/data/glsa.git"
             }
@@ -40725,7 +40725,7 @@
             "name": "openssl",
             "license": "",
             "last_run": "2020-09-14T12:52:58.762Z",
-            "data_source": "OpenSSLDataSource",
+            "data_source": "OpenSSLImporter",
             "data_source_cfg": {
                 "etags": {
                     "https://www.openssl.org/news/vulnerabilities.xml": "\"513bd-5aee0a1c716f0-gzip\""
@@ -40740,7 +40740,7 @@
             "name": "ubuntu_usn",
             "license": "gpl-2.0",
             "last_run": null,
-            "data_source": "UbuntuUSNDataSource",
+            "data_source": "UbuntuUSNImporter",
             "data_source_cfg": {
                 "etags": {},
                 "db_url": "https://usn.ubuntu.com/usn-db/database-all.json.bz2"
@@ -40754,7 +40754,7 @@
             "name": "github",
             "license": "",
             "last_run": null,
-            "data_source": "GitHubAPIDataSource",
+            "data_source": "GitHubAPIImporter",
             "data_source_cfg": {
                 "endpoint": "https://api.github.com/graphql",
                 "ecosystems": [

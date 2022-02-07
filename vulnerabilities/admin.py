@@ -25,7 +25,6 @@ from django.contrib import admin
 
 from vulnerabilities.models import (
     PackageRelatedVulnerability,
-    Importer,
     Package,
     Vulnerability,
     VulnerabilityReference,
@@ -53,11 +52,6 @@ class PackageAdmin(admin.ModelAdmin):
 class PackageRelatedVulnerabilityAdmin(admin.ModelAdmin):
     list_filter = ("package__type", "package__namespace")
     search_fields = ["vulnerability__vulnerability_id", "package__name"]
-
-
-@admin.register(Importer)
-class ImporterAdmin(admin.ModelAdmin):
-    pass
 
 
 @admin.register(VulnerabilitySeverity)

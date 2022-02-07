@@ -28,9 +28,9 @@ from collections import OrderedDict
 
 from packageurl import PackageURL
 
-from vulnerabilities.importers.gentoo import GentooDataSource
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importers.gentoo import GentooImporter
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import AffectedPackage
 
 
@@ -38,13 +38,13 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/gentoo/glsa-201709-09.xml")
 
 
-class TestGentooDataSource(unittest.TestCase):
+class TestGentooImporter(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         data_source_cfg = {
             "repository_url": "https://example.git",
         }
-        cls.data_src = GentooDataSource(1, config=data_source_cfg)
+        cls.data_src = GentooImporter(1, config=data_source_cfg)
         cls.xml_doc = ET.parse(TEST_DATA)
         cls.references = []
         for child in cls.xml_doc.getroot():
@@ -77,7 +77,7 @@ class TestGentooDataSource(unittest.TestCase):
             )
         }
 
-        aff, safe = GentooDataSource.affected_and_safe_purls(self.affected)
+        aff, safe = GentooImporter.affected_and_safe_purls(self.affected)
 
         assert aff == exp_affected
         assert safe == exp_safe
@@ -87,7 +87,7 @@ class TestGentooDataSource(unittest.TestCase):
         exp_cves = {"CVE-2017-9800"}
         found_cves = set()
         for ref in self.references:
-            found_cves.update(GentooDataSource.cves_from_reference(ref))
+            found_cves.update(GentooImporter.cves_from_reference(ref))
 
         assert exp_cves == found_cves
 

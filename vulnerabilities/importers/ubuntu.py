@@ -28,22 +28,13 @@ import logging
 import xml.etree.ElementTree as ET
 import requests
 
-from vulnerabilities.data_source import OvalDataSource, DataSourceConfiguration
+from vulnerabilities.importer import OvalImporter
 from vulnerabilities.package_managers import LaunchpadVersionAPI
 
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass
-class UbuntuConfiguration(DataSourceConfiguration):
-    releases: list
-    etags: dict
-
-
-class UbuntuDataSource(OvalDataSource):
-
-    CONFIG_CLASS = UbuntuConfiguration
-
+class UbuntuImporter(OvalImporter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # we could avoid setting translations, and have it

@@ -21,17 +21,13 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from datetime import datetime
 import traceback
 
 from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
 
-from vulnerabilities.models import Importer
 from vulnerabilities.import_runner import ImportRunner
-from vulnerabilities.importer_yielder import load_importers
-from vulnerabilities.improvers import IMPROVER_REGISTRY
-from vulnerabilities.improvers import improver_mapping
+from vulnerabilities.improvers import IMPROVERS_REGISTRY
 from vulnerabilities.improve_runner import ImproveRunner
 
 
@@ -42,7 +38,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--list",
             action="store_true",
-            help="List available data improvers",
+            help="List available improvers",
         )
         parser.add_argument(
             "--all", action="store_true", help="Improve data from all available improvers"
@@ -55,17 +51,17 @@ class Command(BaseCommand):
             return
 
         if options["all"]:
-            self.improve_data(IMPROVER_REGISTRY)
+            self.improve_data(IMPROVERS_REGISTRY.values())
             return
 
         sources = options["sources"]
         if not sources:
-            raise CommandError('Please provide at least one improver to run use "--all".')
+            raise CommandError('Please provide at least one improver to run or use "--all".')
 
-        self.improve_data(valid_sources(sources))
+        self.improve_data(validate_improvers(sources))
 
     def list_sources(self):
-        improvers = [improver.qualified_name() for improver in IMPROVER_REGISTRY]
+        improvers = list(IMPROVERS_REGISTRY)
         self.stdout.write("Vulnerability data can be processed by these available improvers:\n")
         self.stdout.write("\n".join(improvers))
 
@@ -73,29 +69,33 @@ class Command(BaseCommand):
         failed_improvers = []
 
         for improver in improvers:
-            self.stdout.write(f"Improving data using {improver.__name__}")
+            self.stdout.write(f"Improving data using {improver.qualified_name}")
             try:
                 ImproveRunner(improver).run()
                 self.stdout.write(
-                    self.style.SUCCESS(f"Successfully improved data using {improver.__name__}")
+                    self.style.SUCCESS(
+                        f"Successfully improved data using {improver.qualified_name}"
+                    )
                 )
             except Exception:
-                failed_improvers.append(improver.__name__)
+                failed_improvers.append(improver.qualified_name)
                 traceback.print_exc()
                 self.stdout.write(
-                    self.style.ERROR(f"Failed to run improver {improver.__name__}. Continuing...")
+                    self.style.ERROR(
+                        f"Failed to run improver {improver.qualified_name}. Continuing..."
+                    )
                 )
 
         if failed_improvers:
             raise CommandError(f"{len(failed_improvers)} failed!: {','.join(failed_improvers)}")
 
 
-def valid_sources(sources):
+def validate_improvers(sources):
     improvers = []
     unknown_sources = []
     for source in sources:
         try:
-            improvers.append(improver_mapping[source])
+            improvers.append(IMPROVERS_REGISTRY[source])
         except KeyError:
             unknown_sources.append(source)
     if unknown_sources:

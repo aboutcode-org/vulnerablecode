@@ -30,17 +30,17 @@ from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 from univers.versions import SemverVersion
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import GitDataSource
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import RubyVersionAPI
 from vulnerabilities.helpers import load_yaml
 from vulnerabilities.helpers import nearest_patched_package
 
 
-class RubyDataSource(GitDataSource):
+class RubyImporter(GitImporter):
     def __enter__(self):
-        super(RubyDataSource, self).__enter__()
+        super(RubyImporter, self).__enter__()
 
         if not getattr(self, "_added_files", None):
             self._added_files, self._updated_files = self.file_changes(

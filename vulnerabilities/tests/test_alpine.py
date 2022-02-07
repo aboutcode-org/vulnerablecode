@@ -25,9 +25,9 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
-from vulnerabilities.importers.alpine_linux import AlpineDataSource
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
+from vulnerabilities.importers.alpine_linux import AlpineImporter
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -37,7 +37,7 @@ TEST_DATA = os.path.join(BASE_DIR, "test_data", "alpine", "v3.11")
 class AlpineImportTest(TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.data_source = AlpineDataSource(batch_size=1)
+        cls.data_source = AlpineImporter(batch_size=1)
 
     def test__process_link(self):
         expected_advisories = [

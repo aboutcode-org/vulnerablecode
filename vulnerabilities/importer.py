@@ -28,9 +28,6 @@ import traceback
 import xml.etree.ElementTree as ET
 import datetime
 from pathlib import Path
-from typing import Any
-from typing import ContextManager
-from typing import Iterable
 from typing import List
 from typing import Mapping
 from typing import Optional
@@ -45,6 +42,7 @@ from packageurl import PackageURL
 from univers.version_range import VersionRange
 from univers.versions import Version
 from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.helpers import classproperty
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
@@ -214,118 +212,38 @@ class AdvisoryData:
             logger.warn(f"AdvisoryData with no tzinfo: {self!r}")
 
 
-class InvalidConfigurationError(Exception):
+class NoLicenseError(Exception):
     pass
 
 
-@dataclasses.dataclass
-class DataSourceConfiguration:
-    pass
-
-
-class DataSource(ContextManager):
+class Importer:
     """
-    This class defines how importers consume advisories from a data source.
-
-    It makes a distinction between newly added records since the last run and modified records. This
-    allows the import logic to pick appropriate database operations.
+    An Importer collects data from various upstreams and returns corresponding AdvisoryData objects
+    in its advisory_data method.  Subclass this class to implement an importer
     """
 
-    CONFIG_CLASS = DataSourceConfiguration
+    spdx_license_expression = ""
 
-    def __init__(
-        self,
-        last_run_date: Optional[datetime.datetime] = None,
-        cutoff_date: Optional[datetime.datetime] = None,
-        config: Optional[Mapping[str, Any]] = None,
-    ):
-        """
-        Create a DataSource instance.
+    def __init__(self):
+        if not self.spdx_license_expression:
+            raise Exception(f"Cannot run importer {self!r} without a license")
 
-        :param last_run_date: Optional timestamp when this data source was last inspected
-        :param cutoff_date: Optional timestamp, records older than this will be ignored
-        :param config: Optional dictionary with subclass-specific configuration
-        """
-        config = config or {}
-        try:
-            self.config = self.__class__.CONFIG_CLASS(**config)
-            # These really should be declared in DataSourceConfiguration above but that would
-            # prevent DataSource subclasses from declaring mandatory parameters (i.e. positional
-            # arguments)
-            setattr(self.config, "last_run_date", last_run_date)
-            setattr(self.config, "cutoff_date", cutoff_date)
-        except Exception as e:
-            raise InvalidConfigurationError(str(e))
-
-        self.validate_configuration()
-
-    def __enter__(self):
-        pass
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
-
-    @classmethod
+    @classproperty
     def qualified_name(cls):
         """
-        Fully qualified name prefixed with the module name of the data source
-        used in logging.
+        Fully qualified name prefixed with the module name of the improver used in logging.
         """
         return f"{cls.__module__}.{cls.__qualname__}"
 
-    @property
-    def cutoff_timestamp(self) -> int:
-        """
-        :return: An integer Unix timestamp of the last time this data source was queried or the
-        cutoff date passed in the constructor, whichever is more recent.
-        """
-        if not hasattr(self, "_cutoff_timestamp"):
-            last_run = 0
-            if self.config.last_run_date is not None:
-                last_run = int(self.config.last_run_date.timestamp())
-
-            cutoff = 0
-            if self.config.cutoff_date is not None:
-                cutoff = int(self.config.cutoff_date.timestamp())
-
-            setattr(self, "_cutoff_timestamp", max(last_run, cutoff))
-
-        return self._cutoff_timestamp
-
-    def validate_configuration(self) -> None:
-        """
-        Subclasses can perform more complex validation than what is handled by data classes and
-        their type annotations.
-
-        This method is called in the constructor. It should raise InvalidConfigurationError with a
-        human-readable message.
-        """
-
     def advisory_data(self) -> Iterable[AdvisoryData]:
         """
-        Subclasses return AdvisoryData objects
+        Return AdvisoryData objects corresponding to the data being imported
         """
         raise NotImplementedError
 
-    def error(self, msg: str) -> None:
-        """
-        Helper method for raising InvalidConfigurationError with the class name in the message.
-        """
-        raise InvalidConfigurationError(f"{type(self).__name__}: {msg}")
 
-
-@dataclasses.dataclass
-class GitDataSourceConfiguration(DataSourceConfiguration):
-    repository_url: str
-    branch: Optional[str] = None
-    create_working_directory: bool = True
-    remove_working_directory: bool = True
-    working_directory: Optional[str] = None
-
-
-class GitDataSource(DataSource):
-    CONFIG_CLASS = GitDataSourceConfiguration
-
+# TODO: Needs rewrite
+class GitImporter(Importer):
     def validate_configuration(self) -> None:
 
         if not self.config.create_working_directory and self.config.working_directory is None:
@@ -513,7 +431,8 @@ def _include_file(
     return match
 
 
-class OvalDataSource(DataSource):
+# TODO: Needs rewrite
+class OvalImporter(Importer):
     """
     All data sources which collect data from OVAL files must inherit from this
     `OvalDataSource` class. Subclasses must implement the methods `_fetch` and `set_api`.

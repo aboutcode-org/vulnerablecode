@@ -23,7 +23,7 @@ class ScoringSystem:
         raise NotImplementedError
 
 
-scoring_systems = {
+SCORING_SYSTEMS = {
     "cvssv2": ScoringSystem(
         identifier="cvssv2",
         name="CVSSv2 Base Score",
@@ -79,7 +79,7 @@ scoring_systems = {
         identifier="cvssv3.1_qr",
         name="CVSSv3.1 Qualitative Severity Rating",
         url="https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale",
-        notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",
+        notes="A textual interpretation of severity. Has values like HIGH, MEDIUM etc",
     ),
     "generic_textual": ScoringSystem(
         identifier="generic_textual",

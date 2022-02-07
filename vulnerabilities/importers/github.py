@@ -231,7 +231,7 @@ class GitHubAPIDataSource(DataSource):
                 return None
             return vendor, name
 
-        if ecosystem == "NUGET" or ecosystem == "PIP" or ecosystem == "RUBYGEMS" or ecosystem == "GO":
+        if ecosystem in ("NUGET", "PIP", "RUBYGEMS", "GO"):
             return None, pkg_name
 
     @staticmethod

@@ -74,4 +74,5 @@ collect_ignore = [
     "test_importer_yielder.py",
     "test_upstream.py",
     "test_istio.py",
+    "test_mozilla.py",
 ]

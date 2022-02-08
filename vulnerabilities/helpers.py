@@ -72,7 +72,6 @@ def fetch_yaml(url):
 create_etag = MagicMock()
 
 
-
 def split_markdown_front_matter(lines: str) -> Tuple[str, str]:
     """
     This function splits lines into markdown front matter and the markdown body
@@ -106,6 +105,7 @@ def split_markdown_front_matter(lines: str) -> Tuple[str, str]:
             splitter.append(line)
 
     return "\n".join(fmlines), "\n".join(mdlines)
+
 
 def contains_alpha(string):
     """

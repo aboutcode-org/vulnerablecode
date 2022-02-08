@@ -23,7 +23,7 @@
 import asyncio
 import os
 import dataclasses
-import json
+from dateutil import parser as dateparser
 from typing import Set
 from typing import Tuple
 from typing import List
@@ -31,20 +31,21 @@ from typing import Mapping
 from typing import Optional
 
 import requests
-from dephell_specifier import RangeSpecifier
 from packageurl import PackageURL
+from univers.version_specifier import VersionSpecifier
+from univers.versions import version_class_by_package_type
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import DataSourceConfiguration
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.package_managers import MavenVersionAPI
 from vulnerabilities.package_managers import NugetVersionAPI
 from vulnerabilities.package_managers import ComposerVersionAPI
 from vulnerabilities.package_managers import PypiVersionAPI
 from vulnerabilities.package_managers import RubyVersionAPI
 from vulnerabilities.severity_systems import scoring_systems
+from vulnerabilities.helpers import nearest_patched_package
 
 # set of all possible values of first '%s' = {'MAVEN','COMPOSER', 'NUGET', 'RUBYGEMS', 'PYPI'}
 # second '%s' is interesting, it will have the value '' for the first request,
@@ -65,6 +66,7 @@ query = """
                     url
                 }
                 severity
+                publishedAt
                 }
                 package {
                 name
@@ -80,21 +82,75 @@ query = """
         }
         """
 
+# See https://github.com/nexB/vulnerablecode/issues/486
+IGNORE_VERSIONS = {
+    "0.1-bulbasaur",
+    "0.1-charmander",
+    "0.3m1",
+    "0.3m2",
+    "0.3m3",
+    "0.3m4",
+    "0.3m5",
+    "0.4m1",
+    "0.4m2",
+    "0.4m3",
+    "0.4m4",
+    "0.4m5",
+    "0.5m1",
+    "0.5m2",
+    "0.5m3",
+    "0.5m4",
+    "0.5m5",
+    "0.6m1",
+    "0.6m2",
+    "0.6m3",
+    "0.6m4",
+    "0.6m5",
+    "0.6m6",
+    "0.7.10p1",
+    "0.7.11p1",
+    "0.7.11p2",
+    "0.7.11p3",
+    "0.8.1p1",
+    "0.8.3p1",
+    "0.8.4p1",
+    "0.8.4p2",
+    "0.8.6p1",
+    "0.8.7p1",
+    "0.9-doduo",
+    "0.9-eevee",
+    "0.9-fearow",
+    "0.9-gyarados",
+    "0.9-horsea",
+    "0.9-ivysaur",
+    "2013-01-21T20:33:09+0100",
+    "2013-01-23T17:11:52+0100",
+    "2013-02-01T20:50:46+0100",
+    "2013-02-02T19:59:03+0100",
+    "2013-02-02T20:23:17+0100",
+    "2013-02-08T17:40:57+0000",
+    "2013-03-27T16:32:26+0100",
+    "2013-05-09T12:47:53+0200",
+    "2013-05-10T17:55:56+0200",
+    "2013-05-14T20:16:05+0200",
+    "2013-06-01T10:32:51+0200",
+    "2013-07-19T09:11:08+0000",
+    "2013-08-12T21:48:56+0200",
+    "2013-09-11T19-27-10",
+    "2013-12-23T17-51-15",
+    "2014-01-12T15-52-10",
+    "2.0.1rc2-git",
+    "3.0.0b3-",
+    "3.0b6dev-r41684",
+    "-class.-jw.util.version.Version-",
+}
+
 
 class GitHubTokenError(Exception):
     pass
 
 
-@dataclasses.dataclass
-class GitHubAPIDataSourceConfiguration(DataSourceConfiguration):
-    endpoint: str
-    ecosystems: list
-
-
-class GitHubAPIDataSource(DataSource):
-
-    CONFIG_CLASS = GitHubAPIDataSourceConfiguration
-
+class GitHubAPIImporter(Importer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         try:
@@ -120,7 +176,6 @@ class GitHubAPIDataSource(DataSource):
             end_cursor_exp = ""
 
             while True:
-
                 query_json = {"query": query % (ecosystem, end_cursor_exp)}
                 resp = requests.post(self.config.endpoint, headers=headers, json=query_json).json()
                 if resp.get("message") == "Bad credentials":
@@ -195,26 +250,26 @@ class GitHubAPIDataSource(DataSource):
             for resp_page in self.advisories[ecosystem]:
                 for adv in resp_page["data"]["securityVulnerabilities"]["edges"]:
                     name = adv["node"]["package"]["name"]
-
+                    cutoff_time = dateparser.parse(adv["node"]["advisory"]["publishedAt"])
+                    affected_purls = []
+                    unaffected_purls = []
                     if self.process_name(ecosystem, name):
                         ns, pkg_name = self.process_name(ecosystem, name)
                         aff_range = adv["node"]["vulnerableVersionRange"]
                         aff_vers, unaff_vers = self.categorize_versions(
-                            aff_range, self.version_api.get(name)
+                            self.version_api.package_type,
+                            aff_range,
+                            self.version_api.get(name, until=cutoff_time).valid_versions,
                         )
-                        affected_purls = {
+                        affected_purls = [
                             PackageURL(name=pkg_name, namespace=ns, version=version, type=pkg_type)
                             for version in aff_vers
-                        }
+                        ]
 
-                        unaffected_purls = {
+                        unaffected_purls = [
                             PackageURL(name=pkg_name, namespace=ns, version=version, type=pkg_type)
                             for version in unaff_vers
-                        }
-                    else:
-                        affected_purls = set()
-                        unaffected_purls = set()
-
+                        ]
                     cve_ids = set()
                     references = self.extract_references(adv["node"]["advisory"]["references"])
                     vuln_desc = adv["node"]["advisory"]["summary"]
@@ -243,8 +298,9 @@ class GitHubAPIDataSource(DataSource):
                             Advisory(
                                 vulnerability_id=cve_id,
                                 summary=vuln_desc,
-                                impacted_package_urls=affected_purls,
-                                resolved_package_urls=unaffected_purls,
+                                affected_packages=nearest_patched_package(
+                                    affected_purls, unaffected_purls
+                                ),
                                 references=references,
                             )
                         )
@@ -252,8 +308,21 @@ class GitHubAPIDataSource(DataSource):
 
     @staticmethod
     def categorize_versions(
-        version_range: str, all_versions: Set[str]
-    ) -> Tuple[Set[str], Set[str]]:  # nopep8
-        version_range = RangeSpecifier(version_range)
-        affected_versions = {version for version in all_versions if version in version_range}
-        return (affected_versions, all_versions - affected_versions)
+        package_type: str, version_range: str, all_versions: Set[str]
+    ) -> Tuple[List[str], List[str]]:
+        version_class = version_class_by_package_type[package_type]
+        version_scheme = version_class.scheme
+        version_range = VersionSpecifier.from_scheme_version_spec_string(
+            version_scheme, version_range
+        )
+        affected_versions = []
+        unaffected_versions = []
+        for version in all_versions:
+            if version in IGNORE_VERSIONS:
+                continue
+
+            if version_class(version) in version_range:
+                affected_versions.append(version)
+            else:
+                unaffected_versions.append(version)
+        return (affected_versions, unaffected_versions)

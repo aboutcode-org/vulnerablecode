@@ -20,17 +20,17 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.helpers import fetch_yaml
 from vulnerabilities.severity_systems import scoring_systems
 
 URL = "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml"
 
 
-class SUSESeverityScoreDataSource(DataSource):
+class SUSESeverityScoreImporter(Importer):
     def updated_advisories(self):
         advisories = []
         score_data = fetch_yaml(URL)
@@ -45,7 +45,7 @@ class SUSESeverityScoreDataSource(DataSource):
             for cvss_score in score_data[cve_id]["cvss"]:
                 score = None
                 vector = None
-                if cvss_score["version"] == 2.0:
+                if cvss_score["version"] == "2.0":
                     score = VulnerabilitySeverity(
                         system=scoring_systems["cvssv2"], value=str(cvss_score["score"])
                     )
@@ -53,7 +53,7 @@ class SUSESeverityScoreDataSource(DataSource):
                         system=scoring_systems["cvssv2_vector"], value=str(cvss_score["vector"])
                     )
 
-                elif cvss_score["version"] == 3:
+                elif cvss_score["version"] == "3":
                     score = VulnerabilitySeverity(
                         system=scoring_systems["cvssv3"], value=str(cvss_score["score"])
                     )
@@ -61,7 +61,7 @@ class SUSESeverityScoreDataSource(DataSource):
                         system=scoring_systems["cvssv3_vector"], value=str(cvss_score["vector"])
                     )
 
-                elif cvss_score["version"] == 3.1:
+                elif cvss_score["version"] == "3.1":
                     score = VulnerabilitySeverity(
                         system=scoring_systems["cvssv3.1"], value=str(cvss_score["score"])
                     )
@@ -75,7 +75,6 @@ class SUSESeverityScoreDataSource(DataSource):
                 Advisory(
                     vulnerability_id=cve_id,
                     summary="",
-                    impacted_package_urls=[],
                     references=[Reference(url=URL, severities=severities)],
                 )
             )

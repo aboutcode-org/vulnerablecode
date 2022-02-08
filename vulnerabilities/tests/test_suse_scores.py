@@ -23,10 +23,10 @@
 import os
 from unittest import TestCase
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
-from vulnerabilities.importers.suse_scores import SUSESeverityScoreDataSource
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.importers.suse_scores import SUSESeverityScoreImporter
 from vulnerabilities.helpers import load_yaml
 from vulnerabilities.severity_systems import ScoringSystem
 
@@ -34,14 +34,12 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/suse_scores", "suse-cvss-scores.yaml")
 
 
-class TestSUSESeverityScoreDataSource(TestCase):
+class TestSUSESeverityScoreImporter(TestCase):
     def test_to_advisory(self):
         raw_data = load_yaml(TEST_DATA)
         expected_data = [
             Advisory(
                 summary="",
-                impacted_package_urls=[],
-                resolved_package_urls=[],
                 references=[
                     Reference(
                         reference_id="",
@@ -90,8 +88,6 @@ class TestSUSESeverityScoreDataSource(TestCase):
             ),
             Advisory(
                 summary="",
-                impacted_package_urls=[],
-                resolved_package_urls=[],
                 references=[
                     Reference(
                         reference_id="",
@@ -122,7 +118,7 @@ class TestSUSESeverityScoreDataSource(TestCase):
             ),
         ]
 
-        found_data = SUSESeverityScoreDataSource.to_advisory(raw_data)
+        found_data = SUSESeverityScoreImporter.to_advisory(raw_data)
         found_advisories = list(map(Advisory.normalized, found_data))
         expected_advisories = list(map(Advisory.normalized, expected_data))
         assert sorted(found_advisories) == sorted(expected_advisories)

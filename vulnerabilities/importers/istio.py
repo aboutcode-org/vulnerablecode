@@ -19,24 +19,30 @@
 #  for any legal advice.
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-
 import asyncio
+import pytz
 import re
-from typing import List, Set
+from dateutil import parser
+from typing import Set
 
-import yaml
-
-from dephell_specifier import RangeSpecifier
+import saneyaml
 from packageurl import PackageURL
-from vulnerabilities.data_source import Advisory, GitDataSource, Reference
+from univers.version_specifier import VersionSpecifier
+from univers.versions import SemverVersion
+
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Reference
+from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.helpers import split_markdown_front_matter
 from vulnerabilities.package_managers import GitHubTagsAPI
 
 is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match
 
 
-class IstioDataSource(GitDataSource):
+class IstioImporter(GitImporter):
     def __enter__(self):
-        super(IstioDataSource, self).__enter__()
+        super(IstioImporter, self).__enter__()
 
         if not getattr(self, "_added_files", None):
             self._added_files, self._updated_files = self.file_changes(
@@ -52,80 +58,56 @@ class IstioDataSource(GitDataSource):
         files = self._added_files.union(self._updated_files)
         advisories = []
         for f in files:
+            # Istio website has files with name starting with underscore, these contain metadata
+            # required for rendering the website. We're not interested in these.
+            # See also https://github.com/nexB/vulnerablecode/issues/563
+            if f.endswith("_index.md"):
+                continue
             processed_data = self.process_file(f)
             if processed_data:
                 advisories.extend(processed_data)
         return self.batch_advisories(advisories)
 
-    def get_pkg_versions_from_ranges(self, version_range_list):
+    def get_pkg_versions_from_ranges(self, version_range_list, release_date):
         """Takes a list of version ranges(affected) of a package
         as parameter and returns a tuple of safe package versions and
         vulnerable package versions"""
-        all_version = self.version_api.get("istio/istio")
+        all_version = self.version_api.get("istio/istio", release_date).valid_versions
         safe_pkg_versions = []
         vuln_pkg_versions = []
-        version_ranges = [RangeSpecifier(r) for r in version_range_list]
+        version_ranges = [
+            VersionSpecifier.from_scheme_version_spec_string("semver", r)
+            for r in version_range_list
+        ]
         for version in all_version:
-            if any([version in v for v in version_ranges]):
+            version_obj = SemverVersion(version)
+            if any([version_obj in v for v in version_ranges]):
                 vuln_pkg_versions.append(version)
 
         safe_pkg_versions = set(all_version) - set(vuln_pkg_versions)
         return safe_pkg_versions, vuln_pkg_versions
-
-    def get_data_from_yaml_lines(self, yaml_lines):
-        """Return a mapping of data from a iterable of yaml_lines
-        for example :
-            ['title: ISTIO-SECURITY-2019-001',
-            'description: Incorrect access control.','cves: [CVE-2019-12243]']
-
-            would give {'title':'ISTIO-SECURITY-2019-001',
-            'description': 'Incorrect access control.',
-            'cves': '[CVE-2019-12243]'}
-        """
-
-        return yaml.safe_load("\n".join(yaml_lines))
-
-    def get_yaml_lines(self, lines):
-        """The istio advisory file contains lines similar to yaml format .
-        This function extracts those lines and return an iterable of lines
-
-        for example :
-            lines =
-            ---
-            title: ISTIO-SECURITY-2019-001
-            description: Incorrect access control.
-            cves: [CVE-2019-12243]
-            ---
-
-        get_yaml_lines(lines) would return
-        ['title: ISTIO-SECURITY-2019-001','description: Incorrect access control.'
-        ,'cves: [CVE-2019-12243]']
-        """
-
-        for index, line in enumerate(lines):
-            line = line.strip()
-            if line.startswith("---") and index == 0:
-                continue
-            elif line.endswith("---"):
-                break
-            else:
-                yield line
 
     def process_file(self, path):
 
         advisories = []
 
         data = self.get_data_from_md(path)
+        release_date = parser.parse(data["publishdate"]).replace(tzinfo=pytz.UTC)
 
         releases = []
         if data.get("releases"):
             for release in data["releases"]:
-                # If it is of form "All versions prior to x"
-                if "All releases" in release:
+                # If it is of form "All releases prior to x"
+                if "All releases prior" in release:
                     release = release.strip()
                     release = release.split(" ")
                     releases.append("<" + release[4])
-                # If it is of form "a to b"
+
+                # Eg. 'All releases 1.5 and later'
+                elif "All releases" in release and "and later" in release:
+                    release = release.split()[2].strip()
+                    releases.append(f">={release}")
+
                 elif "to" in release:
                     release = release.strip()
                     release = release.split(" ")
@@ -153,47 +135,54 @@ class IstioDataSource(GitDataSource):
                 data["release_ranges"] = []
 
             safe_pkg_versions, vuln_pkg_versions = self.get_pkg_versions_from_ranges(
-                data["release_ranges"]
+                data["release_ranges"], release_date
             )
 
-            safe_purls_golang = {
+            affected_packages = []
+
+            safe_purls_golang = [
                 PackageURL(type="golang", name="istio", version=version)
                 for version in safe_pkg_versions
-            }
+            ]
 
-            safe_purls_github = {
-                PackageURL(type="github", name="istio", version=version)
-                for version in safe_pkg_versions
-            }
-            safe_purls = safe_purls_github.union(safe_purls_golang)
-
-            vuln_purls_golang = {
+            vuln_purls_golang = [
                 PackageURL(type="golang", name="istio", version=version)
                 for version in vuln_pkg_versions
-            }
+            ]
 
-            vuln_purls_github = {
+            affected_packages.extend(nearest_patched_package(vuln_purls_golang, safe_purls_golang))
+
+            safe_purls_github = [
+                PackageURL(type="github", name="istio", version=version)
+                for version in safe_pkg_versions
+            ]
+
+            vuln_purls_github = [
                 PackageURL(type="github", name="istio", version=version)
                 for version in vuln_pkg_versions
-            }
-            vuln_purls = vuln_purls_github.union(vuln_purls_golang)
+            ]
+
+            affected_packages.extend(nearest_patched_package(vuln_purls_github, safe_purls_github))
 
             advisories.append(
                 Advisory(
-                    summary=data["description"],
-                    impacted_package_urls=vuln_purls,
-                    resolved_package_urls=safe_purls,
                     vulnerability_id=cve_id,
+                    summary=data["description"],
+                    affected_packages=affected_packages,
+                    references=[
+                        Reference(
+                            reference_id=data["title"],
+                            url=f"https://istio.io/latest/news/security/{data['title']}/",
+                        )
+                    ],
                 )
             )
 
         return advisories
 
     def get_data_from_md(self, path):
-        """Return a mapping of vulnerability data from istio . The data is
-        in the form of yaml_lines inside a .md file.
-        """
+        """Return a mapping of vulnerability data extracted from an advisory."""
 
         with open(path) as f:
-            yaml_lines = self.get_yaml_lines(f)
-            return self.get_data_from_yaml_lines(yaml_lines)
+            front_matter, _ = split_markdown_front_matter(f.read())
+            return saneyaml.load(front_matter)

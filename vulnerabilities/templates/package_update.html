@@ -40,7 +40,7 @@
         <div class="tags mx-3">
             {% for vulnerability in impacted_vuln %}
                 <span class="tag is-danger is-medium">
-                  <a href="{% url 'vulnerability_view' vulnerability.pk %}" class="has-text-white">{{vulnerability}}</a>
+                  <a href="{% url 'vulnerability_view' vulnerability.pk %}" class="has-text-white">{{vulnerability.vulnerability_id}}</a>
                   {% if enable_curation %}
                     <form method="POST" action="{% url 'impacted_package_delete' object.pk vulnerability.pk %}"">
                       {% csrf_token %}<button class="delete is-small" type="submit"></button>
@@ -74,7 +74,7 @@
                <div class="tags mx-3">
             {% for vulnerability in resolved_vuln %}
             <span class="tag is-primary is-medium">
-              <a href="{% url 'vulnerability_view' vulnerability.pk %}" class="has-text-white">{{vulnerability}}</a>
+              <a href="{% url 'vulnerability_view' vulnerability.pk %}" class="has-text-white">{{vulnerability.vulnerability_id}}</a>
 
             {% if enable_curation %}
             <form method="POST" action="{% url 'resolved_package_delete' object.pk vulnerability.pk %}">

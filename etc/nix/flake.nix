@@ -20,6 +20,10 @@
     let
 
       vulnerablecode-src = ./../..;
+      requirements =
+        builtins.readFile (vulnerablecode-src + "/requirements.txt");
+      requirementsDev =
+        builtins.readFile (vulnerablecode-src + "/requirements-dev.txt");
 
       # Extract version from setup.py.
       version = builtins.head (builtins.match ''.*version=["']?([^"',]+).*''
@@ -53,10 +57,24 @@
           # mach-nix release) is usually insufficient. Use
           # ./get-latest-pypi-deps-db.sh to obtain the data rev & hash.
           pypiDataRev =
-            "e9b0fc6b92cd6efbca7ba3b3d4a551bcc13a73c5"; # 2021-03-27T08:13:04Z
+            "8dcec158c51f8a96f316630679222e436c1b078c"; # 2021-06-16T08:41:20Z
           pypiDataSha256 =
-            "1ssa48l2iz8kncby1gfrbds79mg114dkhpxrridwcq6q2c37p62s";
+            "0499zl39aia74f0i7fkn5dsy8244dkmcw4vzd5nf4kai605j2jli";
         });
+      # This wrapper allows to setup both the production as well as the
+      # development Python environments in the same way (albeit having
+      # different requirements.txt).
+      getPythonEnv = system: requirements:
+        machnixFor.${system}.mkPython {
+          requirements = ''
+            ${requirements}
+          '';
+          # Fix an issue with an upstream dep of GitPython.
+          # https://github.com/DavHau/mach-nix/issues/287
+          # See https://github.com/DavHau/mach-nix/issues/318
+          _.gitpython.propagatedBuildInputs.mod = pySelf: self: oldVal:
+            oldVal ++ [ pySelf.typing-extensions ];
+        };
 
     in {
 
@@ -64,22 +82,19 @@
       overlay = final: prev:
         with final.pkgs; {
 
-          pythonEnv = machnixFor.${system}.mkPython {
-            requirements =
-              builtins.readFile (vulnerablecode-src + "/requirements.txt");
-          };
+          pythonEnv = getPythonEnv system requirements;
 
           vulnerablecode = stdenv.mkDerivation {
             inherit version;
             name = "vulnerablecode-${version}";
             src = vulnerablecode-src;
-            dontConfigure = true; # do not use ./configure
-            propagatedBuildInputs = [ pythonEnv postgresql ];
+            dontBuild = true; # do not use Makefile
+            propagatedBuildInputs = [ pythonEnv postgresql gitMinimal ];
 
             postPatch = ''
-              # Make sure the pycodestyle binary in $PATH is used.
-              substituteInPlace vulnerabilities/tests/test_basics.py \
-                --replace 'join(bin_dir, "pycodestyle")' '"pycodestyle"'
+              # Do not use absolute path.
+              substituteInPlace vulnerablecode/settings.py \
+                --replace 'STATIC_ROOT = "/var/vulnerablecode/static"' 'STATIC_ROOT = "./static"'
             '';
 
             installPhase = ''
@@ -110,44 +125,52 @@
         forAllSystems (system: self.packages.${system}.vulnerablecode);
 
       # Tests run by 'nix flake check' and by Hydra.
-      checks = forAllSystems (system: {
-        inherit (self.packages.${system}) vulnerablecode;
+      checks = forAllSystems (system:
+        let
+          pythonEnvDev = getPythonEnv system ''
+            ${requirements}
+            ${requirementsDev}
+          '';
 
-        vulnerablecode-test = with nixpkgsFor.${system};
-          stdenv.mkDerivation {
-            name = "${vulnerablecode.name}-test";
+        in {
+          inherit (self.packages.${system}) vulnerablecode;
 
-            buildInputs = [ wget vulnerablecode ];
+          vulnerablecode-test = with nixpkgsFor.${system};
+            stdenv.mkDerivation {
+              name = "${vulnerablecode.name}-test";
 
-            # Used by pygit2.
-            # See https://github.com/NixOS/nixpkgs/pull/72544#issuecomment-582674047.
-            SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+              buildInputs = [ wget vulnerablecode pythonEnvDev ];
 
-            unpackPhase = "true";
+              unpackPhase = "true";
 
-            buildPhase = ''
-              source ${libSh}
-              initPostgres $(pwd)
-              export DJANGO_DEV=1
-              ${vulnerablecode}/manage.py migrate
-            '';
+              buildPhase = ''
+                source ${libSh}
+                initPostgres $(pwd)
+                export SECRET_KEY=REALLY_SECRET
+                ${vulnerablecode}/manage.py collectstatic --no-input
+                ${vulnerablecode}/manage.py migrate
+              '';
 
-            doCheck = true;
-            checkPhase = ''
-              # Run pytest on the installed version. A running postgres
-              # database server is needed.
-              (cd ${vulnerablecode} && pytest)
+              doCheck = true;
+              checkPhase = ''
+                # Run pytest on the installed version. A running postgres
+                # database server is needed.
+                (
+                  cd ${vulnerablecode}
+                  black -l 100 --check .
+                  pytest -m "not webtest"
+                )
 
-              # Launch the webserver and call the API.
-              ${vulnerablecode}/manage.py runserver &
-              sleep 2
-              wget http://127.0.0.1:8000/api/
-              kill %1 # kill background task (i.e. webserver)
-            '';
+                # Launch the webserver and call the API.
+                ${vulnerablecode}/manage.py runserver &
+                sleep 2
+                wget http://127.0.0.1:8000/api/
+                kill %1 # kill background task (i.e. webserver)
+              '';
 
-            installPhase =
-              "mkdir -p $out"; # make this derivation return success
-          };
-      });
+              installPhase =
+                "mkdir -p $out"; # make this derivation return success
+            };
+        });
     };
 }

@@ -28,10 +28,12 @@ from collections import OrderedDict
 from packageurl import PackageURL
 
 import vulnerabilities.importers.redhat as redhat
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
-from vulnerabilities.severity_systems import scoring_systems, ScoringSystem
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.severity_systems import ScoringSystem
+from vulnerabilities.severity_systems import scoring_systems
+from vulnerabilities.helpers import AffectedPackage
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -53,8 +55,6 @@ class TestRedhat(unittest.TestCase):
             namespace="redhat",
             name="kernel",
             version="2.6.32-754.el6",
-            qualifiers=OrderedDict(),
-            subpath=None,
         )
 
     def test_to_advisory(self):
@@ -62,56 +62,48 @@ class TestRedhat(unittest.TestCase):
         expected_advisories = [
             Advisory(
                 summary="CVE-2016-9401 bash: popd controlled free",
-                impacted_package_urls=[
-                    PackageURL(
-                        type="rpm",
-                        namespace="redhat",
-                        name="bash",
-                        version="4.2.46-28.el7",
-                        qualifiers={},
-                        subpath=None,
+                vulnerability_id="CVE-2016-9401",
+                affected_packages=[
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="rpm",
+                            namespace="redhat",
+                            name="bash",
+                            version="4.1.2-48.el6",
+                        ),
+                        patched_package=None,
                     ),
-                    PackageURL(
-                        type="rpm",
-                        namespace="redhat",
-                        name="bash",
-                        version="4.1.2-48.el6",
-                        qualifiers={},
-                        subpath=None,
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="rpm",
+                            namespace="redhat",
+                            name="bash",
+                            version="4.2.46-28.el7",
+                        ),
+                        patched_package=None,
                     ),
                 ],
-                resolved_package_urls=[],
                 references=[
                     Reference(
-                        reference_id="RHSA-2017:0725",
-                        url="https://access.redhat.com/errata/RHSA-2017:0725",
-                        severities=[
-                            VulnerabilitySeverity(
-                                system=scoring_systems["rhas"],
-                                value=2.2,
-                            )
-                        ],
-                    ),
-                    Reference(
-                        reference_id="RHSA-2017:1931",
-                        url="https://access.redhat.com/errata/RHSA-2017:1931",
-                        severities=[
-                            VulnerabilitySeverity(
-                                system=scoring_systems["rhas"],
-                                value=2.2,
-                            )
-                        ],
-                    ),
-                    Reference(
                         reference_id="",
-                        url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-9401.json",  # nopep8
+                        url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-9401.json",
                         severities=[
                             VulnerabilitySeverity(
-                                system=scoring_systems["cvssv3"],
+                                system=ScoringSystem(
+                                    identifier="cvssv3",
+                                    name="CVSSv3 Base Score",
+                                    url="https://www.first.org/cvss/v3-0/",
+                                    notes="cvssv3 base score",
+                                ),
                                 value="3.3",
                             ),
                             VulnerabilitySeverity(
-                                system=scoring_systems["cvssv3_vector"],
+                                system=ScoringSystem(
+                                    identifier="cvssv3_vector",
+                                    name="CVSSv3 Vector",
+                                    url="https://www.first.org/cvss/v3-0/",
+                                    notes="cvssv3 vector, used to get additional info about nature and severity of vulnerability",
+                                ),
                                 value="CVSS:3.0/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L",
                             ),
                         ],
@@ -121,16 +113,49 @@ class TestRedhat(unittest.TestCase):
                         url="https://bugzilla.redhat.com/show_bug.cgi?id=1396383",
                         severities=[
                             VulnerabilitySeverity(
-                                system=scoring_systems["rhbs"],
+                                system=ScoringSystem(
+                                    identifier="rhbs",
+                                    name="RedHat Bugzilla severity",
+                                    url="https://bugzilla.redhat.com/page.cgi?id=fields.html#bug_severity",
+                                    notes="",
+                                ),
                                 value=2.0,
                             )
                         ],
                     ),
+                    Reference(
+                        reference_id="RHSA-2017:0725",
+                        url="https://access.redhat.com/errata/RHSA-2017:0725",
+                        severities=[
+                            VulnerabilitySeverity(
+                                system=ScoringSystem(
+                                    identifier="rhas",
+                                    name="RedHat Aggregate severity",
+                                    url="https://access.redhat.com/security/updates/classification/",
+                                    notes="",
+                                ),
+                                value=2.2,
+                            )
+                        ],
+                    ),
+                    Reference(
+                        reference_id="RHSA-2017:1931",
+                        url="https://access.redhat.com/errata/RHSA-2017:1931",
+                        severities=[
+                            VulnerabilitySeverity(
+                                system=ScoringSystem(
+                                    identifier="rhas",
+                                    name="RedHat Aggregate severity",
+                                    url="https://access.redhat.com/security/updates/classification/",
+                                    notes="",
+                                ),
+                                value=2.2,
+                            )
+                        ],
+                    ),
                 ],
-                vulnerability_id="CVE-2016-9401",
             )
         ]
-
         found_advisories = []
         mock_resp = unittest.mock.MagicMock()
         mock_resp.json = lambda: {
@@ -139,7 +164,7 @@ class TestRedhat(unittest.TestCase):
         }
         for adv in data:
             with unittest.mock.patch(
-                "vulnerabilities.importers.redhat.requests.get", return_value=mock_resp
+                "vulnerabilities.importers.redhat.requests_session.get", return_value=mock_resp
             ):
                 adv = redhat.to_advisory(adv)
                 found_advisories.append(adv)

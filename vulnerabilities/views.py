@@ -23,7 +23,10 @@
 from urllib.parse import urlencode
 
 from django.core.paginator import Paginator
+from django.db.models import Count
+from django.db.models import Q
 from django.http import HttpResponse
+from django.http.response import HttpResponseNotAllowed
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
@@ -46,7 +49,7 @@ class PackageSearchView(View):
 
         if request.GET:
             packages = self.request_to_queryset(request)
-            result_size = packages.count()
+            result_size = len(packages)
             page_no = int(request.GET.get("page", 1))
             packages = Paginator(packages, 50).get_page(page_no)
             context["packages"] = packages
@@ -68,9 +71,23 @@ class PackageSearchView(View):
         if len(request.GET["name"]):
             package_name = request.GET["name"]
 
-        return models.Package.objects.all().filter(
-            name__icontains=package_name,
-            type__icontains=package_type,
+        return list(
+            models.Package.objects.all()
+            # FIXME: This filter is wrong and ignoring most of the fields needed for a
+            # proper package lookup: type/namespace/name@version?qualifiers and so on
+            .filter(name__icontains=package_name, type__icontains=package_type)
+            .annotate(
+                vulnerability_count=Count(
+                    "vulnerabilities",
+                    filter=Q(vulnerabilities__packagerelatedvulnerability__fix=False),
+                ),
+                # TODO: consider renaming to fixed in the future
+                patched_vulnerability_count=Count(
+                    "vulnerabilities",
+                    filter=Q(vulnerabilities__packagerelatedvulnerability__fix=True),
+                ),
+            )
+            .prefetch_related()
         )
 
 
@@ -81,8 +98,8 @@ class VulnerabilitySearchView(View):
     def get(self, request):
         context = {"form": forms.CVEForm(request.GET or None)}
         if request.GET:
-            vulnerabilities = self.request_to_queryset(request)
-            result_size = vulnerabilities.count()
+            vulnerabilities = self.request_to_vulnerabilities(request)
+            result_size = len(vulnerabilities)
             pages = Paginator(vulnerabilities, 50)
             vulnerabilities = pages.get_page(int(self.request.GET.get("page", 1)))
             context["vulnerabilities"] = vulnerabilities
@@ -91,9 +108,18 @@ class VulnerabilitySearchView(View):
         return render(request, self.template_name, context)
 
     @staticmethod
-    def request_to_queryset(request):
+    def request_to_vulnerabilities(request):
         vuln_id = request.GET["vuln_id"]
-        return models.Vulnerability.objects.filter(vulnerability_id__icontains=vuln_id)
+        return list(
+            models.Vulnerability.objects.filter(vulnerability_id__icontains=vuln_id).annotate(
+                vulnerable_package_count=Count(
+                    "packages", filter=Q(packagerelatedvulnerability__fix=False)
+                ),
+                patched_package_count=Count(
+                    "packages", filter=Q(packagerelatedvulnerability__fix=True)
+                ),
+            )
+        )
 
 
 class PackageUpdate(UpdateView):
@@ -112,16 +138,11 @@ class PackageUpdate(UpdateView):
         return context
 
     def _package_vulnerabilities(self, package_pk):
-
-        ip = models.PackageRelatedVulnerability.objects.filter(
-            package_id=package_pk, is_vulnerable=True
-        ).select_related()
-        rp = models.PackageRelatedVulnerability.objects.filter(
-            package_id=package_pk, is_vulnerable=False
-        ).select_related()
-
-        resolved_vuln = [i.vulnerability for i in rp]
-        unresolved_vuln = [i.vulnerability for i in ip]
+        # This can be further optimised by caching get_object result first time it
+        # is called
+        package = self.get_object()
+        resolved_vuln = [i for i in package.resolved_to.values("vulnerability_id", "pk")]
+        unresolved_vuln = [i for i in package.vulnerable_to.values("vulnerability_id", "pk")]
 
         return resolved_vuln, unresolved_vuln
 
@@ -221,9 +242,10 @@ class PackageRelatedVulnerablityCreate(View):
     @staticmethod
     def create_relationship_instance(vulnerability_id, package_id, is_vulnerable):
         package = models.Package.objects.get(id=package_id)
+        # FIXME: Handle the case when  vuln_created=True
         vulnerability, vuln_created = models.Vulnerability.objects.get_or_create(
             vulnerability_id=vulnerability_id
-        )  # nopep8
+        )
         return models.PackageRelatedVulnerability(
             vulnerability=vulnerability, package=package, is_vulnerable=is_vulnerable
         )
@@ -241,3 +263,9 @@ class VulnerabilityReferenceCreate(CreateView):
 
     def get_success_url(self):
         return reverse("vulnerability_view", kwargs={"pk": self.kwargs["vid"]})
+
+
+def schema_view(request):
+    if request.method != "GET":
+        return HttpResponseNotAllowed()
+    return render(request, "api_doc.html")

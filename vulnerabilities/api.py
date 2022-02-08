@@ -23,10 +23,7 @@
 
 from urllib.parse import unquote
 
-from django.db.models import Q
-from django.urls import reverse
 from django_filters import rest_framework as filters
-from drf_spectacular.utils import extend_schema, inline_serializer
 from packageurl import PackageURL
 
 from rest_framework import serializers, viewsets
@@ -36,10 +33,6 @@ from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
-
-# This serializer is used for the bulk apis, to prevent wrong auto documentation
-# TODO: Fix the swagger documentation for bulk apis
-placeholder_serializer = inline_serializer(name="Placeholder", fields={})
 
 
 class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
@@ -53,7 +46,7 @@ class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = VulnerabilityReference
-        fields = ["source", "reference_id", "url", "scores"]
+        fields = ["reference_id", "url", "scores"]
 
 
 class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
@@ -77,7 +70,7 @@ class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Vulnerability
-        fields = ["url", "vulnerability_id", "references"]
+        fields = ["url", "vulnerability_id", "references", "summary"]
 
 
 class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
@@ -137,7 +130,6 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = PackageFilterSet
 
     # TODO: Fix the swagger documentation for this endpoint
-    @extend_schema(request=placeholder_serializer, responses=placeholder_serializer)
     @action(detail=False, methods=["post"])
     def bulk_search(self, request):
         """

@@ -23,31 +23,16 @@
 
 import asyncio
 import dataclasses
-from typing import Iterable
-from typing import List
-from typing import Mapping
-from typing import Set
 import xml.etree.ElementTree as ET
 
-from aiohttp import ClientSession
-from aiohttp.client_exceptions import ClientResponseError, ServerDisconnectedError
 import requests
 
-from vulnerabilities.data_source import OvalDataSource, DataSourceConfiguration
+from vulnerabilities.importer import OvalImporter
 from vulnerabilities.package_managers import DebianVersionAPI
 from vulnerabilities.helpers import create_etag
 
 
-@dataclasses.dataclass
-class DebianOvalConfiguration(DataSourceConfiguration):
-    releases: list
-    etags: dict
-
-
-class DebianOvalDataSource(OvalDataSource):
-
-    CONFIG_CLASS = DebianOvalConfiguration
-
+class DebianOvalImporter(OvalImporter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # we could avoid setting translations, and have it

@@ -29,47 +29,18 @@ from typing import Set
 from urllib.request import urlopen
 
 from packageurl import PackageURL
-from schema import Regex, Schema, Or
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import DataSourceConfiguration
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.severity_systems import scoring_systems
 
 
-def validate_schema(advisory_dict):
-    scheme = {
-        "advisories": list,
-        "affected": str,
-        "fixed": Or(None, str),
-        "issues": [Regex(r"CVE-\d+-\d+")],
-        "name": str,
-        "packages": [str],
-        "status": str,
-        "ticket": object,
-        "type": str,
-        "severity": str,
-    }
-
-    Schema(scheme).validate(advisory_dict)
-
-
-@dataclasses.dataclass
-class ArchlinuxConfiguration(DataSourceConfiguration):
-    archlinux_tracker_url: str
-
-
-class ArchlinuxDataSource(DataSource):
-
-    CONFIG_CLASS = ArchlinuxConfiguration
-
+class ArchlinuxImporter(Importer):
     def __enter__(self):
         self._api_response = self._fetch()
-
-        for record in self._api_response:
-            validate_schema(record)
 
     def updated_advisories(self) -> Set[Advisory]:
         advisories = []
@@ -87,9 +58,10 @@ class ArchlinuxDataSource(DataSource):
         advisories = []
 
         for cve_id in record["issues"]:
-            impacted_purls, resolved_purls = set(), set()
+            affected_packages = []
             for name in record["packages"]:
-                impacted_purls.add(
+                impacted_purls, resolved_purls = [], []
+                impacted_purls.append(
                     PackageURL(
                         name=name,
                         type="pacman",
@@ -99,7 +71,7 @@ class ArchlinuxDataSource(DataSource):
                 )
 
                 if record["fixed"]:
-                    resolved_purls.add(
+                    resolved_purls.append(
                         PackageURL(
                             name=name,
                             type="pacman",
@@ -107,6 +79,7 @@ class ArchlinuxDataSource(DataSource):
                             version=record["fixed"],
                         )
                     )
+                affected_packages.extend(nearest_patched_package(impacted_purls, resolved_purls))
 
             references = []
             references.append(
@@ -133,8 +106,7 @@ class ArchlinuxDataSource(DataSource):
                 Advisory(
                     vulnerability_id=cve_id,
                     summary="",
-                    impacted_package_urls=impacted_purls,
-                    resolved_package_urls=resolved_purls,
+                    affected_packages=affected_packages,
                     references=references,
                 )
             )

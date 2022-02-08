@@ -27,15 +27,15 @@ from typing import List
 
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import GitDataSource
-from vulnerabilities.data_source import GitDataSourceConfiguration
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
+from vulnerabilities.helpers import AffectedPackage
 
 
-class RetireDotnetDataSource(GitDataSource):
+class RetireDotnetImporter(GitImporter):
     def __enter__(self):
-        super(RetireDotnetDataSource, self).__enter__()
+        super(RetireDotnetImporter, self).__enter__()
 
         if not getattr(self, "_added_files", None):
             self._added_files, self._updated_files = self.file_changes(
@@ -43,16 +43,7 @@ class RetireDotnetDataSource(GitDataSource):
             )
 
     def updated_advisories(self) -> Set[Advisory]:
-        files = self._updated_files
-        advisories = []
-        for f in files:
-            processed_data = self.process_file(f)
-            if processed_data:
-                advisories.append(processed_data)
-        return self.batch_advisories(advisories)
-
-    def added_advisories(self) -> Set[Advisory]:
-        files = self._added_files
+        files = self._updated_files.union(self._added_files)
         advisories = []
         for f in files:
             processed_data = self.process_file(f)
@@ -77,15 +68,18 @@ class RetireDotnetDataSource(GitDataSource):
             else:
                 return
 
-            affected_purls = set()
-            fixed_purls = set()
-
+            affected_packages = []
             for pkg in json_doc["packages"]:
-                affected_purls.add(
-                    PackageURL(name=pkg["id"], version=pkg["affected"], type="nuget")
+                affected_packages.append(
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            name=pkg["id"], version=pkg["affected"], type="nuget"
+                        ),
+                        patched_package=PackageURL(
+                            name=pkg["id"], version=pkg["fix"], type="nuget"
+                        ),
+                    )
                 )
-
-                fixed_purls.add(PackageURL(name=pkg["id"], version=pkg["fix"], type="nuget"))
 
             vuln_reference = [
                 Reference(
@@ -94,9 +88,8 @@ class RetireDotnetDataSource(GitDataSource):
             ]
 
             return Advisory(
-                summary=json_doc["description"],
-                impacted_package_urls=affected_purls,
-                resolved_package_urls=fixed_purls,
                 vulnerability_id=vuln_id,
+                summary=json_doc["description"],
+                affected_packages=affected_packages,
                 references=vuln_reference,
             )

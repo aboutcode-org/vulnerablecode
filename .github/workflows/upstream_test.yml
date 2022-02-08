@@ -1,0 +1,33 @@
+on:
+  workflow_dispatch: # allow manual execution
+  schedule:
+    # run on every 9 o'clock
+    - cron: '0 9 * * *'
+
+jobs:
+  unit_tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.8.11
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8.11
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y postgresql python3-dev libpq-dev build-essential
+          make dev envfile
+
+      - name: Setup database
+        run: |
+          sudo systemctl start postgresql
+          make postgres
+    
+      - name: Run upstream tests
+        run: make webtest
+        env:
+          GH_TOKEN: 1 

@@ -13,7 +13,6 @@
         "pk": 136,
         "fields": {
             "vulnerability": 60,
-            "source": "",
             "reference_id": "GHSA-2cxf-6567-7pp6",
             "url": "https://github.com/DataDog/datadog-api-client-java/security/advisories/GHSA-2cxf-6567-7pp6"
         }
@@ -23,7 +22,6 @@
         "pk": 137,
         "fields": {
             "vulnerability": 60,
-            "source": "",
             "reference_id": "",
             "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-21331"
         }
@@ -33,7 +31,6 @@
         "pk": 138,
         "fields": {
             "vulnerability": 60,
-            "source": "",
             "reference_id": "GHSA-2cxf-6567-7pp6",
             "url": "https://github.com/advisories/GHSA-2cxf-6567-7pp6"
         }
@@ -76,20 +73,11 @@
     },
     {
         "model": "vulnerabilities.packagerelatedvulnerability",
-        "pk": 3844,
-        "fields": {
-            "package": 3469,
-            "vulnerability": 60,
-            "is_vulnerable": false
-        }
-    },
-    {
-        "model": "vulnerabilities.packagerelatedvulnerability",
         "pk": 3845,
         "fields": {
             "package": 3467,
             "vulnerability": 60,
-            "is_vulnerable": true
+            "patched_package": 3469
         }
     },
     {
@@ -98,7 +86,7 @@
         "fields": {
             "package": 3468,
             "vulnerability": 60,
-            "is_vulnerable": true
+            "patched_package": 3469
         }
     },
     {
@@ -108,7 +96,7 @@
             "name": "github",
             "license": "",
             "last_run": "2021-03-06T09:09:01.523Z",
-            "data_source": "GitHubAPIDataSource",
+            "data_source": "GitHubAPIImporter",
             "data_source_cfg": {
                 "endpoint": "https://api.github.com/graphql",
                 "ecosystems": [

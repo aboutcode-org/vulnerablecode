@@ -67,9 +67,7 @@ class VersionAPI:
                 continue
             valid_versions.add(version.value)
 
-        return VersionResponse(
-            valid_versions=valid_versions, newer_versions=new_versions
-        )
+        return VersionResponse(valid_versions=valid_versions, newer_versions=new_versions)
 
     async def load_api(self, pkg_set):
         async with client_session() as session:
@@ -339,9 +337,7 @@ class NugetVersionAPI(VersionAPI):
                     all_versions.add(
                         Version(
                             value=entry["catalogEntry"]["version"],
-                            release_date=dateparser.parse(
-                                entry["catalogEntry"]["published"]
-                            ),
+                            release_date=dateparser.parse(entry["catalogEntry"]["published"]),
                         )
                     )
         # FIXME: json response for YamlDotNet.Signed triggers this exception.
@@ -386,9 +382,7 @@ class ComposerVersionAPI(VersionAPI):
             all_versions.add(
                 Version(
                     value=version.lstrip("v"),
-                    release_date=dateparser.parse(
-                        resp["packages"][pkg_name][version]["time"]
-                    ),
+                    release_date=dateparser.parse(resp["packages"][pkg_name][version]["time"]),
                 )
             )
         return all_versions
@@ -468,9 +462,7 @@ class GitHubTagsAPI(VersionAPI):
                         # probably this only happened for linux. Github cannot even properly display it.
                         # https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/refs/tags/v2.6.11
                         release_date = None
-                    self.cache[owner_repo].add(
-                        Version(value=name, release_date=release_date)
-                    )
+                    self.cache[owner_repo].add(Version(value=name, release_date=release_date))
 
                 if not refs["pageInfo"]["hasNextPage"]:
                     break
@@ -483,9 +475,7 @@ class GitHubTagsAPI(VersionAPI):
             # this method is however not scalable for larger repo and the api is unresponsive
             # for repo with > 50 tags
             endpoint = f"https://github.com/{owner_repo}"
-            tags_xml = check_output(
-                ["svn", "ls", "--xml", f"{endpoint}/tags"], text=True
-            )
+            tags_xml = check_output(["svn", "ls", "--xml", f"{endpoint}/tags"], text=True)
             elements = ET.fromstring(tags_xml)
             for entry in elements.iter("entry"):
                 name = entry.find("name").text
@@ -520,11 +510,11 @@ class GoproxyVersionAPI(VersionAPI):
     @staticmethod
     def trim_url_path(url_path: str) -> Optional[str]:
         """
-        github advisories for golang is using package names(e.g. 
-        https://github.com/advisories/GHSA-jp4j-47f9-2vc3), 
-        yet goproxy works with module names(see 
+        github advisories for golang is using package names(e.g.
+        https://github.com/advisories/GHSA-jp4j-47f9-2vc3),
+        yet goproxy works with module names(see
         https://golang.org/ref/mod#goproxy-protocol).
-        this method removes the last part of a package path, and returns the 
+        this method removes the last part of a package path, and returns the
         remaining as the module name. For example: trim_url_path(
         "https://github.com/xx/a/b") returns "https://github.com/xx/a"
         """
@@ -596,9 +586,7 @@ class GoproxyVersionAPI(VersionAPI):
         self.module_name_by_package_name[pkg] = trimmed_pkg
         versions = set()
         for version_info in resp_text.split("\n"):
-            version = await GoproxyVersionAPI.parse_version_info(
-                version_info, escaped_pkg, session
-            )
+            version = await GoproxyVersionAPI.parse_version_info(version_info, escaped_pkg, session)
             if version is not None:
                 versions.add(version)
         self.cache[pkg] = versions

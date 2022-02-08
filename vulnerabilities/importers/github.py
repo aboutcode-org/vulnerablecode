@@ -268,7 +268,9 @@ class GitHubAPIDataSource(DataSource):
                     if self.process_name(ecosystem, name):
                         ns, pkg_name = self.process_name(ecosystem, name)
                         if hasattr(self.version_api, "module_name_by_package_name"):
-                            pkg_name = self.version_api.module_name_by_package_name.get(name, pkg_name)
+                            pkg_name = self.version_api.module_name_by_package_name.get(
+                                name, pkg_name
+                            )
                         aff_range = adv["node"]["vulnerableVersionRange"]
                         aff_vers, unaff_vers = self.categorize_versions(
                             self.version_api.package_type,

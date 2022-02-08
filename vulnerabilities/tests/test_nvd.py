@@ -25,10 +25,10 @@ import json
 from dateutil import parser as dateparser
 
 from unittest import TestCase
-from vulnerabilities.importers import NVDDataSource
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.importers import NVDImporter
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import scoring_systems
 
 
@@ -36,11 +36,11 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/nvd/nvd_test.json")
 
 
-class TestNVDDataSource(TestCase):
+class TestNVDImporter(TestCase):
     @classmethod
     def setUpClass(cls):
         data_source_cfg = {"etags": {}}
-        cls.data_src = NVDDataSource(1, config=data_source_cfg)
+        cls.data_src = NVDImporter(1, config=data_source_cfg)
         with open(TEST_DATA) as f:
             cls.nvd_data = json.load(f)
 
@@ -54,7 +54,7 @@ class TestNVDDataSource(TestCase):
 
         found_cpes = set()
         for cve_item in self.nvd_data["CVE_Items"]:
-            found_cpes.update(NVDDataSource.extract_cpes(cve_item))
+            found_cpes.update(NVDImporter.extract_cpes(cve_item))
 
         assert expected_cpes == found_cpes
 
@@ -74,7 +74,7 @@ class TestNVDDataSource(TestCase):
         )
         cve_item = self.nvd_data["CVE_Items"][0]
         assert len(cve_item["cve"]["description"]["description_data"]) == 1
-        found_summary = NVDDataSource.extract_summary(cve_item)
+        found_summary = NVDImporter.extract_summary(cve_item)
         assert found_summary == expected_summary
 
     def test_extract_summary_with_multiple_summary(self):
@@ -87,7 +87,7 @@ class TestNVDDataSource(TestCase):
         )
         cve_item = self.nvd_data["CVE_Items"][1]
         assert len(cve_item["cve"]["description"]["description_data"]) > 1
-        found_summary = NVDDataSource.extract_summary(cve_item)
+        found_summary = NVDImporter.extract_summary(cve_item)
         assert found_summary == expected_summary
 
     def test_is_outdated(self):
@@ -136,8 +136,6 @@ class TestNVDDataSource(TestCase):
                     "attacks such as buffer overflows via a large size value, which causes less memory to "  # nopep8
                     "be allocated than expected."
                 ),
-                impacted_package_urls=[],
-                resolved_package_urls=[],
                 references=[
                     Reference(
                         url="http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",  # nopep8

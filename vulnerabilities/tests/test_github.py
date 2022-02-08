@@ -26,49 +26,47 @@ from unittest import TestCase
 from unittest.mock import patch
 from unittest.mock import MagicMock
 from unittest.mock import call
-import xml.etree.ElementTree as ET
-from collections import OrderedDict
 
-from requests.models import Response
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
-from vulnerabilities.importers.github import GitHubAPIDataSource
-from vulnerabilities.package_managers import MavenVersionAPI
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.importers.github import GitHubAPIImporter
+from vulnerabilities.package_managers import MavenVersionAPI, Version
 from vulnerabilities.package_managers import NugetVersionAPI
 from vulnerabilities.package_managers import ComposerVersionAPI
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.importers.github import GitHubTokenError
 from vulnerabilities.importers.github import query
-
+from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")
 
 
-class TestGitHubAPIDataSource(TestCase):
+class TestGitHubAPIImporter(TestCase):
     @classmethod
     def setUpClass(cls):
         data_source_cfg = {
             "endpoint": "https://api.example.com/graphql",
             "ecosystems": ["MAVEN"],
         }
-        # os.environ = {'GH_TOKEN':'abc'}
         with patch.dict(os.environ, {"GH_TOKEN": "abc"}):
-            cls.data_src = GitHubAPIDataSource(1, config=data_source_cfg)
+            cls.data_src = GitHubAPIImporter(1, config=data_source_cfg)
 
     def tearDown(self):
         setattr(self.data_src, "version_api", None)
 
     def test_categorize_versions(self):
         eg_version_range = ">= 3.3.0, < 3.3.5"
-        eg_versions = {"3.3.6", "3.3.0", "3.3.4", "3.2.0"}
+        eg_versions = ["3.3.6", "3.3.0", "3.3.4", "3.2.0"]
 
-        aff_vers, safe_vers = self.data_src.categorize_versions(eg_version_range, eg_versions)
-        exp_safe_vers = {"3.3.6", "3.2.0"}
-        exp_aff_vers = {"3.3.0", "3.3.4"}
+        aff_vers, safe_vers = self.data_src.categorize_versions(
+            "pypi", eg_version_range, eg_versions
+        )
+        exp_safe_vers = ["3.3.6", "3.2.0"]
+        exp_aff_vers = ["3.3.0", "3.3.4"]
 
         assert aff_vers == exp_aff_vers
         assert safe_vers == exp_safe_vers
@@ -97,7 +95,7 @@ class TestGitHubAPIDataSource(TestCase):
             # has_next_page is to obtain different MockCorrectResponse objects
             # the first one should have `has_next_page = True` and other should
             # have  `has_next_page = False`. This is required to test whether
-            # GitHubAPIDataSource.fetch stops as expected.
+            # GitHubAPIImporter.fetch stops as expected.
 
             def json(self):
                 self.has_next_page = not self.has_next_page
@@ -127,8 +125,8 @@ class TestGitHubAPIDataSource(TestCase):
 
     def test_set_version_api(self):
 
-        with patch("vulnerabilities.importers.github.GitHubAPIDataSource.set_api"):
-            with patch("vulnerabilities.importers.github.GitHubAPIDataSource.collect_packages"):
+        with patch("vulnerabilities.importers.github.GitHubAPIImporter.set_api"):
+            with patch("vulnerabilities.importers.github.GitHubAPIImporter.collect_packages"):
                 assert getattr(self.data_src, "version_api", None) is None
 
                 self.data_src.set_version_api("MAVEN")
@@ -167,25 +165,6 @@ class TestGitHubAPIDataSource(TestCase):
         expected_advisories = [
             Advisory(
                 summary="Denial of Service in Tomcat",
-                impacted_package_urls=set(),
-                resolved_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="9.0.2",
-                        qualifiers={},
-                        subpath=None,
-                    ),
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="1.2.0",
-                        qualifiers={},
-                        subpath=None,
-                    ),
-                },
                 references=[
                     Reference(
                         reference_id="GHSA-qcxh-w3j9-58qr",
@@ -207,26 +186,18 @@ class TestGitHubAPIDataSource(TestCase):
             ),
             Advisory(
                 summary="Denial of Service in Tomcat",
-                impacted_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="9.0.2",
-                        qualifiers={},
-                        subpath=None,
+                affected_packages=[
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="maven",
+                            namespace="org.apache.tomcat.embed",
+                            name="tomcat-embed-core",
+                            version="9.0.2",
+                            qualifiers={},
+                            subpath=None,
+                        )
                     )
-                },
-                resolved_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="1.2.0",
-                        qualifiers={},
-                        subpath=None,
-                    )
-                },
+                ],
                 references=[
                     Reference(
                         reference_id="GHSA-qcxh-w3j9-58qr",
@@ -248,25 +219,6 @@ class TestGitHubAPIDataSource(TestCase):
             ),
             Advisory(
                 summary="Improper Input Validation in Tomcat",
-                impacted_package_urls=set(),
-                resolved_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="9.0.2",
-                        qualifiers={},
-                        subpath=None,
-                    ),
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="1.2.0",
-                        qualifiers={},
-                        subpath=None,
-                    ),
-                },
                 references=[
                     Reference(
                         reference_id="GHSA-c9hw-wf7x-jp9j",
@@ -288,25 +240,6 @@ class TestGitHubAPIDataSource(TestCase):
             ),
             Advisory(
                 summary="Improper Input Validation in Tomcat",
-                impacted_package_urls=set(),
-                resolved_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="9.0.2",
-                        qualifiers={},
-                        subpath=None,
-                    ),
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="1.2.0",
-                        qualifiers={},
-                        subpath=None,
-                    ),
-                },
                 references=[
                     Reference(
                         reference_id="GHSA-c9hw-wf7x-jp9j",
@@ -328,26 +261,16 @@ class TestGitHubAPIDataSource(TestCase):
             ),
             Advisory(
                 summary="Improper Input Validation in Tomcat",
-                impacted_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="9.0.2",
-                        qualifiers={},
-                        subpath=None,
+                affected_packages=[
+                    AffectedPackage(
+                        vulnerable_package=PackageURL(
+                            type="maven",
+                            namespace="org.apache.tomcat.embed",
+                            name="tomcat-embed-core",
+                            version="9.0.2",
+                        )
                     )
-                },
-                resolved_package_urls={
-                    PackageURL(
-                        type="maven",
-                        namespace="org.apache.tomcat.embed",
-                        name="tomcat-embed-core",
-                        version="1.2.0",
-                        qualifiers={},
-                        subpath=None,
-                    )
-                },
+                ],
                 references=[
                     Reference(
                         reference_id="GHSA-c9hw-wf7x-jp9j",
@@ -369,13 +292,15 @@ class TestGitHubAPIDataSource(TestCase):
             ),
         ]
 
-        mock_version_api = MagicMock()
-        mock_version_api.package_type = "maven"
-        mock_version_api.get = lambda x: {"1.2.0", "9.0.2"}
+        mock_version_api = MavenVersionAPI(
+            cache={
+                "org.apache.tomcat.embed:tomcat-embed-core": {Version("1.2.0"), Version("9.0.2")}
+            }
+        )
         with patch(
             "vulnerabilities.importers.github.MavenVersionAPI", return_value=mock_version_api
-        ):  # nopep8
-            with patch("vulnerabilities.importers.github.GitHubAPIDataSource.set_api"):
+        ):
+            with patch("vulnerabilities.importers.github.GitHubAPIImporter.set_api"):
                 found_advisories = self.data_src.process_response()
 
         found_advisories = list(map(Advisory.normalized, found_advisories))

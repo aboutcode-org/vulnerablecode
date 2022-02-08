@@ -20,64 +20,24 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-from re import IGNORECASE
 from typing import Any
-from typing import Iterable
 from typing import List
 from typing import Mapping
 from typing import Set
 
 import requests
-import yaml
+import saneyaml
 from bs4 import BeautifulSoup
-from packageurl import PackageURL
-from schema import Or
-from schema import Regex
-from schema import Schema
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import is_cve
 
 BASE_URL = "https://secdb.alpinelinux.org/"
 
 
-# def validate_schema(advisory_dict):
-#     scheme = {
-#         "distroversion": Regex(r"v\d.\d*"),
-#         "reponame": str,
-#         "archs": list,
-#         "packages": [
-#             {
-#                 "pkg": {
-#                     "name": str,
-#                     "secfixes": {
-#                         str: Or(
-#                             [
-#                                 Or(
-#                                     Regex(r"CVE.\d+-\d+", flags=IGNORECASE),
-#                                     Regex(r"XSA-\d{3}"),
-#                                     Regex(r"ZBX-\d{4}"),
-#                                     Regex(r"wnpa-sec-\d{4}-\d{2}"),
-#                                     Regex(r"GHSA-.{4}-.{4}-.{4}"),
-#                                 )
-#                             ],
-#                             "",
-#                             # FIXME: Remove the None when below issue gets fixed
-#                             # https://gitlab.alpinelinux.org/alpine/infra/alpine-secdb/-/issues/1
-#                             None,
-#                         ),
-#                     },
-#                 }
-#             }
-#         ],
-#         object: object,
-#     }
-#     Schema(scheme).validate(advisory_dict)
-
-
-class AlpineDataSource(DataSource):
+class AlpineImporter(Importer):
     @staticmethod
     def fetch_advisory_links():
         index_page = BeautifulSoup(requests.get(BASE_URL).content, features="lxml")
@@ -113,7 +73,7 @@ class AlpineDataSource(DataSource):
     def _process_link(self, link) -> List[Advisory]:
         advisories = []
         yaml_response = requests.get(link).content
-        record = yaml.safe_load(yaml_response)
+        record = saneyaml.load(yaml_response)
 
         if record["packages"] is None:
             return advisories
@@ -122,38 +82,22 @@ class AlpineDataSource(DataSource):
             advisories.extend(
                 self._load_advisories(
                     p["pkg"],
-                    record["distroversion"],
-                    record["reponame"],
-                    record["archs"],
                 )
             )
 
         return advisories
 
+    @staticmethod
     def _load_advisories(
-        self,
         pkg_infos: Mapping[str, Any],
-        distroversion: str,
-        reponame: str,
-        archs: Iterable[str],
     ) -> List[Advisory]:
 
         advisories = []
 
-        for version, fixed_vulns in pkg_infos["secfixes"].items():
+        for fixed_vulns in pkg_infos["secfixes"].values():
 
             if fixed_vulns is None:
                 continue
-
-            resolved_purls = {
-                PackageURL(
-                    name=pkg_infos["name"],
-                    type="alpine",
-                    version=version,
-                    qualifiers={"arch": arch, "distroversion": distroversion, "reponame": reponame},
-                )
-                for arch in archs
-            }
 
             for vuln_ids in fixed_vulns:
                 vuln_ids = vuln_ids.split()
@@ -191,8 +135,6 @@ class AlpineDataSource(DataSource):
                 advisories.append(
                     Advisory(
                         summary="",
-                        impacted_package_urls=[],
-                        resolved_package_urls=resolved_purls,
                         references=references,
                         vulnerability_id=vuln_ids[0] if is_cve(vuln_ids[0]) else "",
                     )

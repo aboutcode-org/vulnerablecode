@@ -25,33 +25,16 @@ import asyncio
 import bz2
 import dataclasses
 import logging
-from typing import Iterable
-from typing import List
-from typing import Mapping
-from typing import Set
 import xml.etree.ElementTree as ET
-
-from aiohttp import ClientSession
-from aiohttp.client_exceptions import ClientResponseError
 import requests
 
-from vulnerabilities.data_source import OvalDataSource, DataSourceConfiguration
+from vulnerabilities.importer import OvalImporter
 from vulnerabilities.package_managers import LaunchpadVersionAPI
-from vulnerabilities.helpers import create_etag
 
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass
-class UbuntuConfiguration(DataSourceConfiguration):
-    releases: list
-    etags: dict
-
-
-class UbuntuDataSource(OvalDataSource):
-
-    CONFIG_CLASS = UbuntuConfiguration
-
+class UbuntuImporter(OvalImporter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # we could avoid setting translations, and have it

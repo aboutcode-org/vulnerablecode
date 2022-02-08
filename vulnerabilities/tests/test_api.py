@@ -258,9 +258,9 @@ class TestBulkAPIResponse(TestCase):
 
         expected_response = [
             {
-                "purl": "pkg:deb/debian/doesnotexist@0.9.7-10?distro=jessie",
                 "name": "doesnotexist",
                 "namespace": "debian",
+                "purl": "pkg:deb/debian/doesnotexist@0.9.7-10?distro=jessie",
                 "qualifiers": {"distro": "jessie"},
                 "resolved_vulnerabilities": [],
                 "subpath": None,
@@ -282,22 +282,20 @@ class TestBulkAPIResponse(TestCase):
                             {
                                 "reference_id": "",
                                 "scores": [],
-                                "source": "",
                                 "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-21331",
                             },
                             {
                                 "reference_id": "GHSA-2cxf-6567-7pp6",
                                 "scores": [{"scoring_system": "cvssv3.1_qr", "value": "LOW"}],
-                                "source": "",
                                 "url": "https://github.com/DataDog/datadog-api-client-java/security/advisories/GHSA-2cxf-6567-7pp6",
                             },
                             {
                                 "reference_id": "GHSA-2cxf-6567-7pp6",
                                 "scores": [],
-                                "source": "",
                                 "url": "https://github.com/advisories/GHSA-2cxf-6567-7pp6",
                             },
                         ],
+                        "summary": "Local Information Disclosure " "Vulnerability",
                         "url": "http://testserver/api/vulnerabilities/60",
                         "vulnerability_id": "CVE-2021-21331",
                     }
@@ -306,6 +304,7 @@ class TestBulkAPIResponse(TestCase):
                 "version": "1.0.0-beta.7",
             },
         ]
+
         assert cleaned_response(expected_response) == cleaned_response(response)
 
     def test_invalid_request_bulk_packages(self):

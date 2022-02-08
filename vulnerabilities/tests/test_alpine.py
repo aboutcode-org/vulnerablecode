@@ -20,16 +20,14 @@
 #  for any legal advice.
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-
 import os
-import yaml
 from unittest import TestCase
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
-from packageurl import PackageURL
-
-from vulnerabilities.data_source import Advisory, Reference
-from vulnerabilities.importers.alpine_linux import AlpineDataSource
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
+from vulnerabilities.importers.alpine_linux import AlpineImporter
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -39,103 +37,37 @@ TEST_DATA = os.path.join(BASE_DIR, "test_data", "alpine", "v3.11")
 class AlpineImportTest(TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.data_source = AlpineDataSource(batch_size=1)
+        cls.data_source = AlpineImporter(batch_size=1)
 
     def test__process_link(self):
         expected_advisories = [
             Advisory(
                 summary="",
-                impacted_package_urls=[],
-                resolved_package_urls={
-                    PackageURL(
-                        type="alpine",
-                        namespace=None,
-                        name="ansible",
-                        version="2.9.3-r0",
-                        qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
-                        subpath=None,
-                    )
-                },
                 references=[],
                 vulnerability_id="CVE-2019-14904",
             ),
             Advisory(
                 summary="",
-                impacted_package_urls=[],
-                resolved_package_urls={
-                    PackageURL(
-                        type="alpine",
-                        namespace=None,
-                        name="ansible",
-                        version="2.9.3-r0",
-                        qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
-                        subpath=None,
-                    )
-                },
                 references=[],
                 vulnerability_id="CVE-2019-14905",
             ),
             Advisory(
                 summary="",
-                impacted_package_urls=[],
-                resolved_package_urls={
-                    PackageURL(
-                        type="alpine",
-                        namespace=None,
-                        name="ansible",
-                        version="2.8.6-r0",
-                        qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
-                        subpath=None,
-                    )
-                },
                 references=[],
                 vulnerability_id="CVE-2019-14846",
             ),
             Advisory(
                 summary="",
-                impacted_package_urls=[],
-                resolved_package_urls={
-                    PackageURL(
-                        type="alpine",
-                        namespace=None,
-                        name="ansible",
-                        version="2.8.6-r0",
-                        qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
-                        subpath=None,
-                    )
-                },
                 references=[],
                 vulnerability_id="CVE-2019-14856",
             ),
             Advisory(
                 summary="",
-                impacted_package_urls=[],
-                resolved_package_urls={
-                    PackageURL(
-                        type="alpine",
-                        namespace=None,
-                        name="ansible",
-                        version="2.8.6-r0",
-                        qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
-                        subpath=None,
-                    )
-                },
                 references=[],
                 vulnerability_id="CVE-2019-14858",
             ),
             Advisory(
                 summary="",
-                impacted_package_urls=[],
-                resolved_package_urls={
-                    PackageURL(
-                        type="alpine",
-                        namespace=None,
-                        name="xen",
-                        version="4.12.1-r0",
-                        qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
-                        subpath=None,
-                    )
-                },
                 references=[
                     Reference(
                         url="https://xenbits.xen.org/xsa/advisory-295.html", reference_id="XSA-295"

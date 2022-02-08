@@ -22,27 +22,29 @@
 
 import asyncio
 from itertools import chain
-import re
-from typing import Optional, Mapping
+from typing import Optional
+from typing import List
 from typing import Set
 from typing import Tuple
-from urllib.error import HTTPError
-from urllib.request import urlopen
+from dateutil.parser import parse
 
-from dephell_specifier import RangeSpecifier
-from packageurl import PackageURL
 import toml
+import pytz
+from univers.version_specifier import VersionSpecifier
+from univers.versions import SemverVersion
+from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import GitDataSource
-from vulnerabilities.data_source import Reference
+
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import CratesVersionAPI
-from vulnerabilities.helpers import load_toml
+from vulnerabilities.helpers import nearest_patched_package
 
 
-class RustDataSource(GitDataSource):
+class RustImporter(GitImporter):
     def __enter__(self):
-        super(RustDataSource, self).__enter__()
+        super(RustImporter, self).__enter__()
 
         if not getattr(self, "_added_files", None):
             self._added_files, self._updated_files = self.file_changes(
@@ -60,11 +62,8 @@ class RustDataSource(GitDataSource):
     def set_api(self, packages):
         asyncio.run(self.crates_api.load_api(packages))
 
-    def added_advisories(self) -> Set[Advisory]:
-        return self._load_advisories(self._added_files)
-
     def updated_advisories(self) -> Set[Advisory]:
-        return self._load_advisories(self._updated_files)
+        return self._load_advisories(self._updated_files.union(self._added_files))
 
     def _load_advisories(self, files) -> Set[Advisory]:
         # per @tarcieri It will always be named RUSTSEC-0000-0000.md
@@ -98,24 +97,34 @@ class RustDataSource(GitDataSource):
         if advisory.get("url"):
             references.append(Reference(url=advisory["url"]))
 
-        all_versions = self.crates_api.get(crate_name)
+        publish_date = parse(advisory["date"]).replace(tzinfo=pytz.UTC)
+        all_versions = self.crates_api.get(crate_name, publish_date).valid_versions
 
-        affected_ranges = {
-            RangeSpecifier(r)
+        # FIXME: Avoid wildcard version ranges for now.
+        # See https://github.com/RustSec/advisory-db/discussions/831
+        affected_ranges = [
+            VersionSpecifier.from_scheme_version_spec_string("semver", r)
             for r in chain.from_iterable(record.get("affected", {}).get("functions", {}).values())
-        }
+            if r != "*"
+        ]
 
-        unaffected_ranges = {
-            RangeSpecifier(r) for r in record.get("versions", {}).get("unaffected", [])
-        }
-        resolved_ranges = {RangeSpecifier(r) for r in record.get("versions", {}).get("patched", [])}
+        unaffected_ranges = [
+            VersionSpecifier.from_scheme_version_spec_string("semver", r)
+            for r in record.get("versions", {}).get("unaffected", [])
+            if r != "*"
+        ]
+        resolved_ranges = [
+            VersionSpecifier.from_scheme_version_spec_string("semver", r)
+            for r in record.get("versions", {}).get("patched", [])
+            if r != "*"
+        ]
 
         unaffected, affected = categorize_versions(
             all_versions, unaffected_ranges, affected_ranges, resolved_ranges
         )
 
-        impacted_purls = {PackageURL(type="cargo", name=crate_name, version=v) for v in affected}
-        resolved_purls = {PackageURL(type="cargo", name=crate_name, version=v) for v in unaffected}
+        impacted_purls = [PackageURL(type="cargo", name=crate_name, version=v) for v in affected]
+        resolved_purls = [PackageURL(type="cargo", name=crate_name, version=v) for v in unaffected]
 
         cve_id = None
         if "aliases" in advisory:
@@ -133,8 +142,7 @@ class RustDataSource(GitDataSource):
 
         return Advisory(
             summary=advisory.get("description", ""),
-            impacted_package_urls=impacted_purls,
-            resolved_package_urls=resolved_purls,
+            affected_packages=nearest_patched_package(impacted_purls, resolved_purls),
             vulnerability_id=cve_id,
             references=references,
         )
@@ -142,33 +150,42 @@ class RustDataSource(GitDataSource):
 
 def categorize_versions(
     all_versions: Set[str],
-    unaffected_versions: Set[RangeSpecifier],
-    affected_versions: Set[RangeSpecifier],
-    resolved_versions: Set[RangeSpecifier],
+    unaffected_version_ranges: List[VersionSpecifier],
+    affected_version_ranges: List[VersionSpecifier],
+    resolved_version_ranges: List[VersionSpecifier],
 ) -> Tuple[Set[str], Set[str]]:
     """
     Categorize all versions of a crate according to the given version ranges.
 
     :return: unaffected versions, affected versions
     """
+
     unaffected, affected = set(), set()
 
-    if not any(unaffected_versions.union(affected_versions).union(resolved_versions)):
+    if (
+        not unaffected_version_ranges
+        and not affected_version_ranges
+        and not resolved_version_ranges
+    ):
         return unaffected, affected
 
+    # TODO: This is probably wrong
     for version in all_versions:
-        if affected_versions and all([version in av for av in affected_versions]):
+        version_obj = SemverVersion(version)
+        if affected_version_ranges and all([version_obj in av for av in affected_version_ranges]):
             affected.add(version)
-        elif unaffected_versions and all([version in av for av in unaffected_versions]):
+        elif unaffected_version_ranges and all(
+            [version_obj in av for av in unaffected_version_ranges]
+        ):
             unaffected.add(version)
-        elif resolved_versions and all([version in av for av in resolved_versions]):
+        elif resolved_version_ranges and all([version_obj in av for av in resolved_version_ranges]):
             unaffected.add(version)
 
     # If some versions were not classified above, one or more of the given ranges might be empty, so
     # the remaining versions default to either affected or unaffected.
     uncategorized_versions = all_versions - unaffected.union(affected)
     if uncategorized_versions:
-        if not affected_versions:
+        if not affected_version_ranges:
             affected.update(uncategorized_versions)
         else:
             unaffected.update(uncategorized_versions)

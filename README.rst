@@ -77,7 +77,7 @@ compromise.
 
 Recent presentations:
 
-- `Open Source Summit 2020 <docs/Why-Is-There-No-Free-Software-Vulnerability-Database-v1.0.pdf>`__
+- `Open Source Summit 2020 <docs/Presentations/Why-Is-There-No-Free-Software-Vulnerability-Database-v1.0.pdf>`__
 
 
 

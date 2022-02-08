@@ -27,20 +27,14 @@ import json
 import requests
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import create_etag
 from vulnerabilities.helpers import is_cve
 
 
-@dataclasses.dataclass
-class XenDBConfiguration:
-    etags: list
-    db_url: str
-
-
-class XenDataSource(DataSource):
+class XenImporter(Importer):
     CONFIG_CLASS = XenDBConfiguration
 
     def updated_advisories(self):
@@ -83,7 +77,11 @@ class XenDataSource(DataSource):
 
 
 def get_xen_references(xsa_id):
-    return Reference(reference_id="XSA-" + xsa_id, url="https://xenbits.xen.org/xsa/advisory-{}.html".format(xsa_id))
+    return Reference(
+        reference_id="XSA-" + xsa_id,
+        url="https://xenbits.xen.org/xsa/advisory-{}.html".format(xsa_id),
+    )
+
 
 def fetch(url):
     response = requests.get(url).content

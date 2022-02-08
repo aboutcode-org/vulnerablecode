@@ -72,6 +72,41 @@ def fetch_yaml(url):
 create_etag = MagicMock()
 
 
+def split_markdown_front_matter(lines: str) -> Tuple[str, str]:
+    """
+    This function splits lines into markdown front matter and the markdown body
+    and returns list of lines for both
+
+    for example :
+        lines =
+        ---
+        title: ISTIO-SECURITY-2019-001
+        description: Incorrect access control.
+        cves: [CVE-2019-12243]
+        ---
+        # Markdown starts here
+
+    split_markdown_front_matter(lines) would return
+    ['title: ISTIO-SECURITY-2019-001','description: Incorrect access control.'
+    ,'cves: [CVE-2019-12243]'],
+    ["# Markdown starts here"]
+    """
+
+    fmlines = []
+    mdlines = []
+    splitter = mdlines
+
+    for index, line in enumerate(lines.split("\n")):
+        if index == 0 and line.strip().startswith("---"):
+            splitter = fmlines
+        elif line.strip().startswith("---"):
+            splitter = mdlines
+        else:
+            splitter.append(line)
+
+    return "\n".join(fmlines), "\n".join(mdlines)
+
+
 def contains_alpha(string):
     """
     Return True if the input 'string' contains any alphabet

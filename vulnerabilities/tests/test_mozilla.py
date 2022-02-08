@@ -14,7 +14,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")
 
 
-@patch("vulnerabilities.importers.MozillaDataSource._update_from_remote")
+@patch("vulnerabilities.importers.MozillaImporter._update_from_remote")
 class MozillaImportTest(TestCase):
 
     tempdir = None
@@ -31,7 +31,7 @@ class MozillaImportTest(TestCase):
             name="mozilla_unittests",
             license="",
             last_run=None,
-            data_source="MozillaDataSource",
+            data_source="MozillaImporter",
             data_source_cfg={
                 "repository_url": "https://example.git",
                 "working_directory": os.path.join(cls.tempdir, "mozilla_test"),
@@ -48,9 +48,9 @@ class MozillaImportTest(TestCase):
     def test_import(self, _):
         runner = ImportRunner(self.importer, 100)
 
-        # Remove if we don't need set_api in MozillaDataSource
-        # with patch("vulnerabilities.importers.MozillaDataSource.versions", new=MOCK_VERSION_API):
-        #     with patch("vulnerabilities.importers.MozillaDataSource.set_api"):
+        # Remove if we don't need set_api in MozillaImporter
+        # with patch("vulnerabilities.importers.MozillaImporter.versions", new=MOCK_VERSION_API):
+        #     with patch("vulnerabilities.importers.MozillaImporter.set_api"):
         #         runner.run()
         runner.run()
 

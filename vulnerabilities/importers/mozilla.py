@@ -7,21 +7,21 @@ from bs4 import BeautifulSoup
 from markdown import markdown
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import GitDataSource
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.helpers import is_cve
 from vulnerabilities.helpers import split_markdown_front_matter
-from vulnerabilities.severity_systems import scoring_systems
+from vulnerabilities.severity_systems import SCORING_SYSTEMS
 
 REPOSITORY = "mozilla/foundation-security-advisories"
 MFSA_FILENAME_RE = re.compile(r"mfsa(\d{4}-\d{2,3})\.(md|yml)$")
 
 
-class MozillaDataSource(GitDataSource):
+class MozillaImporter(GitImporter):
     def __enter__(self):
-        super(MozillaDataSource, self).__enter__()
+        super(MozillaImporter, self).__enter__()
 
         if not getattr(self, "_added_files", None):
             self._added_files, self._updated_files = self.file_changes(

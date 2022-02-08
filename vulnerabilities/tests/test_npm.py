@@ -20,7 +20,6 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-import json
 import os
 import shutil
 import tempfile
@@ -32,6 +31,7 @@ from django.test import TestCase
 from vulnerabilities import models
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.package_managers import NpmVersionAPI
+from vulnerabilities.package_managers import Version
 from vulnerabilities.importers.npm import categorize_versions
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -40,14 +40,20 @@ TEST_DATA = os.path.join(BASE_DIR, "test_data/")
 
 MOCK_VERSION_API = NpmVersionAPI(
     cache={
-        "jquery": {"3.4", "3.8"},
-        "kerberos": {"0.5.8", "1.2"},
-        "@hapi/subtext": {"3.7", "4.1.1", "6.1.3", "7.0.0", "7.0.5"},
+        "jquery": {Version("3.4.0"), Version("3.8.0")},
+        "kerberos": {Version("0.5.8"), Version("1.2.0")},
+        "@hapi/subtext": {
+            Version("3.7.0"),
+            Version("4.1.1"),
+            Version("6.1.3"),
+            Version("7.0.0"),
+            Version("7.0.5"),
+        },
     }
 )
 
 
-@patch("vulnerabilities.importers.NpmDataSource._update_from_remote")
+@patch("vulnerabilities.importers.NpmImporter._update_from_remote")
 class NpmImportTest(TestCase):
 
     tempdir = None
@@ -64,10 +70,10 @@ class NpmImportTest(TestCase):
             name="npm_unittests",
             license="",
             last_run=None,
-            data_source="NpmDataSource",
+            data_source="NpmImporter",
             data_source_cfg={
                 "repository_url": "https://example.git",
-                "working_directory": os.path.join(cls.tempdir, "npm_test"),
+                "working_directory": os.path.join(cls.tempdir, "npm/npm_test"),
                 "create_working_directory": False,
                 "remove_working_directory": False,
             },
@@ -82,24 +88,21 @@ class NpmImportTest(TestCase):
     def test_import(self, _):
         runner = ImportRunner(self.importer, 5)
 
-        with patch("vulnerabilities.importers.NpmDataSource.versions", new=MOCK_VERSION_API):
-            with patch("vulnerabilities.importers.NpmDataSource.set_api"):
+        with patch("vulnerabilities.importers.NpmImporter.versions", new=MOCK_VERSION_API):
+            with patch("vulnerabilities.importers.NpmImporter.set_api"):
                 runner.run()
 
         assert models.Vulnerability.objects.count() == 3
         assert models.VulnerabilityReference.objects.count() == 3
-        assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=False).count() == 5
+        assert models.PackageRelatedVulnerability.objects.all().count() == 4
 
-        assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=True).count() == 4
-
-        expected_package_count = sum([len(v) for v in MOCK_VERSION_API.cache.values()])
-        assert models.Package.objects.count() == expected_package_count
+        assert models.Package.objects.count() == 8
 
         self.assert_for_package(
-            "jquery", {"3.4"}, {"3.8"}, "1518", vulnerability_id="CVE-2020-11022"
+            "jquery", {"3.4.0"}, {"3.8.0"}, "1518", vulnerability_id="CVE-2020-11022"
         )  # nopep8
-        self.assert_for_package("kerberos", {"0.5.8"}, {"1.2"}, "1514")
-        self.assert_for_package("subtext", {"4.1.1", "7.0.0"}, {"3.7", "6.1.3", "7.0.5"}, "1476")
+        self.assert_for_package("kerberos", {"0.5.8"}, {"1.2.0"}, "1514")
+        self.assert_for_package("subtext", {"4.1.1", "7.0.0"}, {"6.1.3", "7.0.5"}, "1476")
 
     def assert_for_package(
         self,
@@ -125,12 +128,12 @@ class NpmImportTest(TestCase):
         for version in resolved_versions:
             pkg = models.Package.objects.get(name=package_name, version=version)
             assert models.PackageRelatedVulnerability.objects.filter(
-                package=pkg, vulnerability=vuln, is_vulnerable=False
+                patched_package=pkg, vulnerability=vuln
             )
 
 
 def test_categorize_versions_simple_ranges():
-    all_versions = {"3.4", "3.8"}
+    all_versions = {"3.4.0", "3.8.0"}
     impacted_ranges = "<3.5.0"
     resolved_ranges = ">=3.5.0"
 
@@ -138,12 +141,12 @@ def test_categorize_versions_simple_ranges():
         all_versions, impacted_ranges, resolved_ranges
     )
 
-    assert impacted_versions == {"3.4"}
-    assert resolved_versions == {"3.8"}
+    assert impacted_versions == {"3.4.0"}
+    assert resolved_versions == {"3.8.0"}
 
 
 def test_categorize_versions_complex_ranges():
-    all_versions = {"3.7", "4.1.1", "6.1.3", "7.0.0", "7.0.5"}
+    all_versions = {"3.7.0", "4.1.1", "6.1.3", "7.0.0", "7.0.5"}
     impacted_ranges = ">=4.1.0 <6.1.3 || >= 7.0.0 <7.0.3"
     resolved_ranges = ">=6.1.3 <7.0.0 || >=7.0.3"
 
@@ -152,4 +155,4 @@ def test_categorize_versions_complex_ranges():
     )
 
     assert impacted_versions == {"4.1.1", "7.0.0"}
-    assert resolved_versions == {"3.7", "6.1.3", "7.0.5"}
+    assert resolved_versions == {"3.7.0", "6.1.3", "7.0.5"}

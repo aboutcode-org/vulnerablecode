@@ -4,7 +4,7 @@ VulnerableCode
 |Build Status| |License| |Python 3.8| |stability-wip| |Gitter chat|
 
 
-.. |Build Status| image:: https://github.com/nexB/vulnerablecode/workflows/CI/badge.svg
+.. |Build Status| image:: https://github.com/nexB/vulnerablecode/actions/workflows/main.yml/badge.svg?branch=main
    :target: https://github.com/nexB/vulnerablecode/actions?query=workflow%3ACI
 .. |License| image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
    :target: https://opensource.org/licenses/Apache-2.0
@@ -57,7 +57,7 @@ incarnations of a package. Being specific increases the accuracy and validity
 of the data as the same version of an upstream package across different
 ecosystems may or may not be vulnerable to the same vulnerability.
 
-The packages are identified using Package URL `PURL 
+The packages are identified using Package URL `PURL
 <https://github.com/package-url/purl-spec>`__ as primary identifiers rather than
 CPEs. This makes answers to questions such as "Is package foo vulnerable
 to vulnerability bar?"  much more accurate and easy to interpret.
@@ -68,7 +68,7 @@ The primary access to the data is through a REST API.
 In addition, an emerging web interface goal is to support vulnerabilities data
 browsing and search and progressively to enable community curation of the data
 with the addition of new packages and vulnerabilities, and reviewing and
-updating their relationships. 
+updating their relationships.
 
 We also plan to mine for vulnerabilities which didn't receive any
 exposure due to various reasons like but not limited to the complicated
@@ -90,25 +90,22 @@ First clone the source code::
     cd vulnerablecode
 
 
-
-
 Using Docker Compose
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
 
-An easy way to set up VulnerableCode is with docker containers and docker
-compose. For this you need to have the following installed.
+Please find the docker documentation in `Docker Installation <https://vulnerablecode.readthedocs.io/en/latest/getting-started/docker_installation.html>`__
 
-- Docker Engine. Find instructions to install it
-  `here <https://docs.docker.com/get-docker/>`__
-- Docker Compose. Find instructions to install it
-  `here <https://docs.docker.com/compose/install/#install-compose>`__
+TL;DR
+""""""
 
-Use ``sudo docker-compose up`` to start VulnerableCode. Then access
-VulnerableCode at http://localhost:8000/ or at http://127.0.0.1:8000/
+.. code-block:: bash
 
-Use ``sudo docker-compose exec web bash`` to access the VulnerableCode
-container. From here you can access ``manage.py`` and run management commands
-to import data as specified below.
+    git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
+    make envfile
+    docker-compose build
+    docker-compose up
+
+Go to http://localhost:8000/ on a web browser to access the web UI.
 
 
 Without Docker Compose
@@ -125,7 +122,7 @@ On Debian-based distros, these can be installed with::
     sudo apt-get install python3-venv python3-dev postgresql libpq-dev build-essential
 
 
-**Database configuration** 
+**Database configuration**
 
 - Create a user named ``vulnerablecode``. Use ``vulnerablecode`` as password
   when prompted::
@@ -143,16 +140,12 @@ On Debian-based distros, these can be installed with::
 
 Create a virtualenv, install dependencies, generate static files and run the database migrations::
 
+    make envfile
     python3 -m venv venv
     source venv/bin/activate
     pip install -r requirements.txt
-    DJANGO_DEV=1 python manage.py collectstatic
-    DJANGO_DEV=1 python manage.py migrate
-
-The environment variable ``DJANGO_DEV`` is used to load settings suitable for
-development,  defined in ``vulnerablecode/dev.py``. If you
-don't want to type it every time use ``export DJANGO_DEV=1`` instead.
-Do not use `DJANGO_DEV` in a production environment.
+    python manage.py collectstatic
+    python manage.py migrate
 
 
 For a production mode, an environment variable named ``SECRET_KEY`` needs to be
@@ -161,20 +154,22 @@ for this purpose::
 
     SECRET_KEY=$(python -c "from django.core.management import utils; print(utils.get_random_secret_key())")
 
-You will also need to setup the VC_ALLOWED_HOSTS environment variable to match the hostname where the app is deployed::
+You will also need to setup the `ALLOWED_HOSTS` array inside `vulnerablecode/settings.py` according to
+[django specifications](https://docs.djangoproject.com/en/3.2/ref/settings/#allowed-hosts). One example would be:
+.. code-block:: python
 
-    VC_ALLOWED_HOSTS=vulnerablecode.your.domain.example.com
+    ALLOWED_HOSTS = ['vulnerablecode.your.domain.example.com']
 
-You can specify several host by separating them with a colon `:`
+You can specify several hosts by separating them with a comma (`,`)
 
 Using Nix
 ~~~~~~~~~
 
-You can install VulnerableCode with `Nix <https://nixos.org/download.html>`__ 
+You can install VulnerableCode with `Nix <https://nixos.org/download.html>`__
 (`Flake <https://nixos.wiki/wiki/Flakes>`__ support is needed)::
 
     cd etc/nix
-    nix-shell -p nixFlakes --run "nix --print-build-logs flake check " # build & run tests 
+    nix-shell -p nixFlakes --run "nix --print-build-logs flake check " # build & run tests
 
 There are several options to use the Nix version::
 
@@ -208,12 +203,14 @@ Non-Python dependencies are curated in::
 
 Run Tests
 ---------
-
+Make sure to install dev dependencies by running ``pip install -r requirements-dev.txt``
 Use these commands to run code style checks and the test suite::
 
     black -l 100 --check .
-    DJANGO_DEV=1 python -m pytest
+    python -m pytest
 
+
+.. _Data import:
 
 Data import
 -----------
@@ -223,22 +220,25 @@ environment variable with::
 
     export GH_TOKEN=yourgithubtoken
 
+If you are running behind a proxy, you will need to setup the standard ``https_proxy`` variable.
 
-See `GitHub docs  
-<https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token>`_ 
+    export https_proxy=https?://<proxy>:<port>
+
+See `GitHub docs
+<https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token>`_
 for instructions on how to obtain your GitHub token.
 
 To run all data importers use::
 
-    DJANGO_DEV=1 python manage.py import --all
+    python manage.py import --all
 
 To list available importers use::
 
-    DJANGO_DEV=1 python manage.py import --list
+    python manage.py import --list
 
 To run specific importers::
 
-    DJANGO_DEV=1 python manage.py import rust npm 
+    python manage.py import rust npm
 
 
 REST API access
@@ -246,7 +246,7 @@ REST API access
 
 Start the webserver::
 
-    DJANGO_DEV=1 python manage.py runserver
+    python manage.py runserver
 
 
 For full documentation about API endpoints use this URL::
@@ -268,7 +268,6 @@ If you want to run the import periodically, you can use a systemd timer::
 
     [Service]
     Type=oneshot
-    Environment="DJANGO_DEV=1"
     ExecStart=/path/to/venv/bin/python /path/to/vulnerablecode/manage.py import --all
 
     $ cat ~/.config/systemd/user/vulnerablecode.timer

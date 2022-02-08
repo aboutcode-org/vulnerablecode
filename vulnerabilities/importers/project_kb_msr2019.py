@@ -22,30 +22,20 @@
 
 import csv
 import dataclasses
-import re
 import urllib.request
 
 # Reading CSV file from  a url using `requests` is bit too complicated.
 # Use `urllib.request` for that purpose.
-from packageurl import PackageURL
 
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import DataSourceConfiguration
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import create_etag
 from vulnerabilities.helpers import is_cve
 
 
-@dataclasses.dataclass
-class ProjectKBDataSourceConfiguration(DataSourceConfiguration):
-    etags: dict
-
-
-class ProjectKBMSRDataSource(DataSource):
-
-    CONFIG_CLASS = ProjectKBDataSourceConfiguration
+class ProjectKBMSRImporter(Importer):
 
     url = "https://raw.githubusercontent.com/SAP/project-kb/master/MSR2019/dataset/vulas_db_msr2019_release.csv"
 
@@ -80,7 +70,7 @@ class ProjectKBMSRDataSource(DataSource):
             advisories.append(
                 Advisory(
                     summary="",
-                    impacted_package_urls=[],
+                    affected_packages=[],
                     references=[reference],
                     vulnerability_id=vuln_id,
                 )

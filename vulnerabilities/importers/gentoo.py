@@ -26,14 +26,15 @@ from typing import Set
 
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import GitDataSource
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
+from vulnerabilities.helpers import nearest_patched_package
 
 
-class GentooDataSource(GitDataSource):
+class GentooImporter(GitImporter):
     def __enter__(self):
-        super(GentooDataSource, self).__enter__()
+        super(GentooImporter, self).__enter__()
 
         if not getattr(self, "_added_files", None):
             self._added_files, self._updated_files = self.file_changes(
@@ -71,6 +72,8 @@ class GentooDataSource(GitDataSource):
                     xml_data["affected_purls"],
                     xml_data["unaffected_purls"],
                 ) = self.affected_and_safe_purls(child)
+                xml_data["unaffected_purls"] = list(xml_data["unaffected_purls"])
+                xml_data["affected_purls"] = list(xml_data["affected_purls"])
 
         advisory_list = []
         # It is very inefficient, to create new Advisory for each CVE
@@ -79,8 +82,9 @@ class GentooDataSource(GitDataSource):
             advisory = Advisory(
                 vulnerability_id=cve,
                 summary=xml_data["description"],
-                impacted_package_urls=xml_data["affected_purls"],
-                resolved_package_urls=xml_data["unaffected_purls"],
+                affected_packages=nearest_patched_package(
+                    xml_data["affected_purls"], xml_data["unaffected_purls"]
+                ),
                 references=vuln_reference,
             )
             advisory_list.append(advisory)
@@ -101,9 +105,11 @@ class GentooDataSource(GitDataSource):
     def affected_and_safe_purls(affected_elem):
         safe_purls = set()
         affected_purls = set()
-
+        skip_versions = {"1.3*", "7.3*", "7.4*"}
         for pkg in affected_elem:
             for info in pkg:
+                if info.text in skip_versions:
+                    continue
                 pkg_ns, pkg_name, = pkg.attrib[
                     "name"
                 ].split("/")

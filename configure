@@ -1,7 +1,0 @@
-#!/bin/bash
-#
-# Copyright (c) nexB Inc. and others. All rights reserved.
-
-python3 -m venv .
-source bin/activate
-pip install -e .

@@ -28,20 +28,14 @@ import xml.etree.ElementTree as ET
 from packageurl import PackageURL
 import requests
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import DataSourceConfiguration
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import create_etag
+from vulnerabilities.helpers import nearest_patched_package
 
 
-@dataclasses.dataclass
-class OpenSSLDataSourceConfiguration(DataSourceConfiguration):
-    etags: dict
-
-
-class OpenSSLDataSource(DataSource):
-    CONFIG_CLASS = OpenSSLDataSourceConfiguration
+class OpenSSLImporter(Importer):
 
     url = "https://www.openssl.org/news/vulnerabilities.xml"
 
@@ -82,6 +76,11 @@ class OpenSSLDataSource(DataSource):
                         else:
                             continue
 
+                    if cve_id == "CVE-2007-5502":
+                        # This CVE has weird version "fips-1.1.2".This is
+                        # probably a submodule. Skip this for now.
+                        continue
+
                     if info.tag == "affects":
                         # Vulnerable package versions
                         vuln_pkg_versions.append(info.attrib.get("version"))
@@ -101,20 +100,19 @@ class OpenSSLDataSource(DataSource):
                         # Description
                         summary = re.sub(r"\s+", " ", info.text).strip()
 
-                safe_purls = {
+                safe_purls = [
                     PackageURL(name=pkg_name, type=pkg_type, version=version)
                     for version in safe_pkg_versions
-                }
-                vuln_purls = {
+                ]
+                vuln_purls = [
                     PackageURL(name=pkg_name, type=pkg_type, version=version)
                     for version in vuln_pkg_versions
-                }
+                ]
 
                 advisory = Advisory(
                     vulnerability_id=cve_id,
                     summary=summary,
-                    impacted_package_urls=vuln_purls,
-                    resolved_package_urls=safe_purls,
+                    affected_packages=nearest_patched_package(vuln_purls, safe_purls),
                     references=ref_urls,
                 )
                 advisories.append(advisory)

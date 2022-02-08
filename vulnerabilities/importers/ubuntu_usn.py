@@ -27,21 +27,14 @@ import json
 import requests
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import create_etag
+from vulnerabilities.helpers import is_cve
 
 
-@dataclasses.dataclass
-class USNDBConfiguration:
-    etags: list
-    db_url: str
-
-
-class UbuntuUSNDataSource(DataSource):
-    CONFIG_CLASS = USNDBConfiguration
-
+class UbuntuUSNImporter(Importer):
     def updated_advisories(self):
         advisories = []
         if create_etag(data_src=self, url=self.config.db_url, etag_key="etag"):
@@ -66,22 +59,16 @@ class UbuntuUSNDataSource(DataSource):
         advisories = []
         for usn in usn_db:
             reference = get_usn_references(usn_db[usn]["id"])
-            for release in usn_db[usn]["releases"]:
-                pkg_dict = usn_db[usn]["releases"][release]
-                safe_purls = get_purls(pkg_dict)
-
             for cve in usn_db[usn].get("cves", [""]):
                 # The db sometimes contains entries like
                 # {'cves': ['python-pgsql vulnerabilities', 'CVE-2006-2313', 'CVE-2006-2314']}
                 # This `if` filters entries like 'python-pgsql vulnerabilities'
-                if not cve.startswith("CVE-"):
-                    continue
+                if not is_cve(cve):
+                    cve = ""
 
                 advisories.append(
                     Advisory(
                         vulnerability_id=cve,
-                        impacted_package_urls=[],
-                        resolved_package_urls=safe_purls,
                         summary="",
                         references=[reference],
                     )
@@ -99,39 +86,3 @@ def fetch(url):
     raw_data = bz2.decompress(response)
 
     return json.loads(raw_data)
-
-
-def get_purls(pkg_dict):
-    purls = set()
-    for pkg_name in pkg_dict.get("sources", []):
-        version = pkg_dict["sources"][pkg_name]["version"]
-        # The db sometimes contains entries like {'postgresql': {'version': ''}}
-        # This `if` ignores such entries
-        if not version:
-            continue
-
-        purls.add(
-            PackageURL(
-                name=pkg_name,
-                version=version,
-                type="deb",
-                namespace="ubuntu",
-            )
-        )
-
-    for pkg_name in pkg_dict["binaries"]:
-        version = pkg_dict["binaries"][pkg_name]["version"]
-        # The db sometimes contains entries like {'postgresql': {'version': ''}}
-        # This `if` ignores such entries
-        if not version:
-            continue
-
-        purls.add(
-            PackageURL(
-                name=pkg_name,
-                version=version,
-                type="deb",
-                namespace="ubuntu",
-            )
-        )
-    return purls

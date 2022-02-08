@@ -26,20 +26,21 @@ from collections import OrderedDict
 
 from packageurl import PackageURL
 
-from vulnerabilities.importers.retiredotnet import RetireDotnetDataSource
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importers.retiredotnet import RetireDotnetImporter
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
+from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-class TestRetireDotnetDataSource(TestCase):
+class TestRetireDotnetImporter(TestCase):
     @classmethod
     def setUpClass(cls):
         data_source_cfg = {
             "repository_url": "https://test.net",
         }
-        cls.data_src = RetireDotnetDataSource(1, config=data_source_cfg)
+        cls.data_src = RetireDotnetImporter(1, config=data_source_cfg)
 
     def test_vuln_id_from_desc(self):
 
@@ -55,82 +56,101 @@ class TestRetireDotnetDataSource(TestCase):
 
         path = os.path.join(BASE_DIR, "test_data/retiredotnet/test_file.json")
         expected_data = Advisory(
-            summary=(
-                "Microsoft Security Advisory CVE-2019-0982: "
-                "ASP.NET Core Denial of Service Vulnerability"
-            ),
-            impacted_package_urls={
-                PackageURL(
-                    type="nuget",
-                    namespace=None,
-                    name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
-                    version="1.0.4",
-                    qualifiers=OrderedDict(),
-                    subpath=None,
-                ),
-                PackageURL(
-                    type="nuget",
-                    namespace=None,
-                    name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
-                    version="1.0.0",
-                    qualifiers=OrderedDict(),
-                    subpath=None,
-                ),
-                PackageURL(
-                    type="nuget",
-                    namespace=None,
-                    name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
-                    version="1.0.2",
-                    qualifiers=OrderedDict(),
-                    subpath=None,
-                ),
-                PackageURL(
-                    type="nuget",
-                    namespace=None,
-                    name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
-                    version="1.0.3",
-                    qualifiers=OrderedDict(),
-                    subpath=None,
-                ),
-                PackageURL(
-                    type="nuget",
-                    namespace=None,
-                    name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
-                    version="1.1.0",
-                    qualifiers=OrderedDict(),
-                    subpath=None,
-                ),
-                PackageURL(
-                    type="nuget",
-                    namespace=None,
-                    name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
-                    version="1.0.1",
-                    qualifiers=OrderedDict(),
-                    subpath=None,
-                ),
-            },
-            resolved_package_urls={
-                PackageURL(
-                    type="nuget",
-                    namespace=None,
-                    name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
-                    version="1.0.11",
-                    qualifiers=OrderedDict(),
-                    subpath=None,
-                ),
-                PackageURL(
-                    type="nuget",
-                    namespace=None,
-                    name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
-                    version="1.1.5",
-                    qualifiers=OrderedDict(),
-                    subpath=None,
-                ),
-            },
-            references=[
-                Reference(url="https://github.com/aspnet/Announcements/issues/359", reference_id="")
-            ],
+            summary="Microsoft Security Advisory CVE-2019-0982: ASP.NET Core Denial of Service Vulnerability",
             vulnerability_id="CVE-2019-0982",
+            affected_packages=[
+                AffectedPackage(
+                    vulnerable_package=PackageURL(
+                        type="nuget",
+                        namespace=None,
+                        name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
+                        version="1.0.0",
+                    ),
+                    patched_package=PackageURL(
+                        type="nuget",
+                        namespace=None,
+                        name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
+                        version="1.0.11",
+                    ),
+                ),
+                AffectedPackage(
+                    vulnerable_package=PackageURL(
+                        type="nuget",
+                        namespace=None,
+                        name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
+                        version="1.0.1",
+                    ),
+                    patched_package=PackageURL(
+                        type="nuget",
+                        namespace=None,
+                        name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
+                        version="1.0.11",
+                    ),
+                ),
+                AffectedPackage(
+                    vulnerable_package=PackageURL(
+                        type="nuget",
+                        namespace=None,
+                        name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
+                        version="1.0.2",
+                    ),
+                    patched_package=PackageURL(
+                        type="nuget",
+                        namespace=None,
+                        name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
+                        version="1.0.11",
+                    ),
+                ),
+                AffectedPackage(
+                    vulnerable_package=PackageURL(
+                        type="nuget",
+                        namespace=None,
+                        name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
+                        version="1.0.3",
+                    ),
+                    patched_package=PackageURL(
+                        type="nuget",
+                        namespace=None,
+                        name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
+                        version="1.0.11",
+                    ),
+                ),
+                AffectedPackage(
+                    vulnerable_package=PackageURL(
+                        type="nuget",
+                        namespace=None,
+                        name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
+                        version="1.0.4",
+                    ),
+                    patched_package=PackageURL(
+                        type="nuget",
+                        namespace=None,
+                        name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
+                        version="1.0.11",
+                    ),
+                ),
+                AffectedPackage(
+                    vulnerable_package=PackageURL(
+                        type="nuget",
+                        namespace=None,
+                        name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
+                        version="1.1.0",
+                    ),
+                    patched_package=PackageURL(
+                        type="nuget",
+                        namespace=None,
+                        name="Microsoft.AspNetCore.SignalR.Protocols.MessagePack",
+                        version="1.1.5",
+                    ),
+                ),
+            ],
+            references=[
+                Reference(
+                    reference_id="",
+                    url="https://github.com/aspnet/Announcements/issues/359",
+                    severities=[],
+                )
+            ],
         )
 
         found_data = self.data_src.process_file(path)

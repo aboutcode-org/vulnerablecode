@@ -44,7 +44,7 @@ class ArchlinuxImportTest(TestCase):
             name="archlinux_unittests",
             license="",
             last_run=None,
-            data_source="ArchlinuxDataSource",
+            data_source="ArchlinuxImporter",
             data_source_cfg={
                 "archlinux_tracker_url": "https://security.example.com/json",
             },
@@ -58,13 +58,16 @@ class ArchlinuxImportTest(TestCase):
         runner = ImportRunner(self.importer, 5)
 
         with patch(
-            "vulnerabilities.importers.ArchlinuxDataSource._fetch", return_value=self.mock_response
+            "vulnerabilities.importers.ArchlinuxImporter._fetch", return_value=self.mock_response
         ):
             runner.run()
         assert models.Vulnerability.objects.count() == 6
         assert models.VulnerabilityReference.objects.count() == 10
-        assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=True).count() == 12
-        assert models.PackageRelatedVulnerability.objects.filter(is_vulnerable=False).count() == 8
+        assert models.PackageRelatedVulnerability.objects.all().count() == 12
+        assert (
+            models.PackageRelatedVulnerability.objects.filter(patched_package__isnull=False).count()
+            == 8
+        )
         assert models.Package.objects.count() == 10
 
         self.assert_for_package(

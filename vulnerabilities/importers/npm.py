@@ -22,31 +22,30 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
-from typing import Any
+import pytz
 from typing import List
-from typing import Mapping
 from typing import Set
 from typing import Tuple
-from urllib.error import HTTPError
 from urllib.parse import quote
-from urllib.request import urlopen
 
 from dateutil.parser import parse
-from dephell_specifier import RangeSpecifier
+from univers.version_specifier import VersionSpecifier
+from univers.versions import SemverVersion
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import GitDataSource
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import NpmVersionAPI
 from vulnerabilities.helpers import load_json
+from vulnerabilities.helpers import nearest_patched_package
 
 NPM_URL = "https://registry.npmjs.org{}"
 
 
-class NpmDataSource(GitDataSource):
+class NpmImporter(GitImporter):
     def __enter__(self):
-        super(NpmDataSource, self).__enter__()
+        super(NpmImporter, self).__enter__()
         if not getattr(self, "_added_files", None):
             self._added_files, self._updated_files = self.file_changes(
                 recursive=True, file_ext="json", subdir="./vuln/npm"
@@ -85,9 +84,20 @@ class NpmDataSource(GitDataSource):
         record = load_json(file)
         advisories = []
         package_name = record["module_name"].strip()
-        all_versions = self.versions.get(package_name)
-        aff_range = record.get("vulnerable_versions", "")
-        fixed_range = record.get("patched_versions", "")
+
+        publish_date = parse(record["updated_at"])
+        publish_date = publish_date.replace(tzinfo=pytz.UTC)
+
+        all_versions = self.versions.get(package_name, until=publish_date).valid_versions
+        aff_range = record.get("vulnerable_versions")
+        if not aff_range:
+            aff_range = ""
+        fixed_range = record.get("patched_versions")
+        if not fixed_range:
+            fixed_range = ""
+
+        if aff_range == "*" or fixed_range == "*":
+            return []
 
         impacted_versions, resolved_versions = categorize_versions(
             all_versions, aff_range, fixed_range
@@ -107,8 +117,7 @@ class NpmDataSource(GitDataSource):
                 Advisory(
                     summary=record.get("overview", ""),
                     vulnerability_id=cve_id,
-                    impacted_package_urls=impacted_purls,
-                    resolved_package_urls=resolved_purls,
+                    affected_packages=nearest_patched_package(impacted_purls, resolved_purls),
                     references=vuln_reference,
                 )
             )
@@ -117,7 +126,39 @@ class NpmDataSource(GitDataSource):
 
 def _versions_to_purls(package_name, versions):
     purls = {f"pkg:npm/{quote(package_name)}@{v}" for v in versions}
-    return {PackageURL.from_string(s) for s in purls}
+    return [PackageURL.from_string(s) for s in purls]
+
+
+def normalize_ranges(version_range_string):
+    """
+    - Splits version range strings with "||" operator into separate ranges.
+    - Removes spaces between range operator and range operands
+    - Normalizes 'x' ranges
+    Example:
+    >>> z = normalize_ranges(">=6.1.3 < 7.0.0 || >=7.0.3")
+    >>> assert z == [">=6.1.3,<7.0.0", ">=7.0.3"]
+    """
+
+    version_ranges = version_range_string.split("||")
+    version_ranges = list(map(str.strip, version_ranges))
+    for id, version_range in enumerate(version_ranges):
+
+        # TODO: This is cryptic, simplify this if possible
+        version_ranges[id] = ",".join(version_range.split())
+        version_ranges[id] = version_ranges[id].replace(">=,", ">=")
+        version_ranges[id] = version_ranges[id].replace("<=,", "<=")
+        version_ranges[id] = version_ranges[id].replace("<=,", "<=")
+        version_ranges[id] = version_ranges[id].replace("<,", "<")
+        version_ranges[id] = version_ranges[id].replace(">,", ">")
+
+        # "x" is interpretted as wild card character here. These are not part of semver
+        # spec. We replace the "x" with aribitarily large number to simulate the effect.
+        if ".x." in version_ranges[id]:
+            version_ranges[id] = version_ranges[id].replace(".x", ".10000.0")
+        if ".x" in version_ranges[id]:
+            version_ranges[id] = version_ranges[id].replace(".x", ".10000")
+
+    return version_ranges
 
 
 def categorize_versions(
@@ -135,14 +176,33 @@ def categorize_versions(
         # NPM registry has no data regarding this package, we skip these
         return set(), set()
 
-    aff_spec = RangeSpecifier(affected_version_range)
-    fix_spec = RangeSpecifier(fixed_version_range)
-    aff_ver, fix_ver = set(), set()
+    aff_spec = []
+    fix_spec = []
 
+    if affected_version_range:
+        aff_specs = normalize_ranges(affected_version_range)
+        aff_spec = [
+            VersionSpecifier.from_scheme_version_spec_string("semver", spec)
+            for spec in aff_specs
+            if len(spec) >= 3
+        ]
+
+    if fixed_version_range:
+        fix_specs = normalize_ranges(fixed_version_range)
+        fix_spec = [
+            VersionSpecifier.from_scheme_version_spec_string("semver", spec)
+            for spec in fix_specs
+            if len(spec) >= 3
+        ]
+    aff_ver, fix_ver = set(), set()
     # Unaffected version is that version which is in the fixed_version_range
     # or which is absent in the affected_version_range
     for ver in all_versions:
-        if ver in fix_spec or ver not in aff_spec:
+        ver_obj = SemverVersion(ver)
+
+        if not any([ver_obj in spec for spec in aff_spec]) or any(
+            [ver_obj in spec for spec in fix_spec]
+        ):
             fix_ver.add(ver)
         else:
             aff_ver.add(ver)

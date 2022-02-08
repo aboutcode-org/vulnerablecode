@@ -125,3 +125,12 @@ Pipfile
 
 # VSCode
 .vscode
+
+# Various junk and temp files
+.DS_Store
+*~
+.*.sw[po]
+.build
+.ve
+*.bak
+/.cache/

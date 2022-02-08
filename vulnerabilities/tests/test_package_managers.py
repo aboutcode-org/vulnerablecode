@@ -479,9 +479,7 @@ class TestGoproxyVersionAPI(TestCase):
 
     def test_escape_path(self):
         path = "github.com/FerretDB/FerretDB"
-        assert "github.com/!ferret!d!b/!ferret!d!b" == self.version_api.escape_path(
-            path
-        )
+        assert "github.com/!ferret!d!b/!ferret!d!b" == self.version_api.escape_path(path)
 
     def test_parse_version_info(self):
         client_session = MockClientSession(self.vinfo)
@@ -497,13 +495,8 @@ class TestGoproxyVersionAPI(TestCase):
     def test_fetch(self):
         assert self.version_api.get("github.com/FerretDB/FerretDB") == VersionResponse()
         client_session = MockClientSession(self.vlist)
-        asyncio.run(
-            self.version_api.fetch("github.com/FerretDB/FerretDB", client_session)
-        )
-        assert (
-            self.version_api.cache["github.com/FerretDB/FerretDB"]
-            == self.expected_versions
-        )
+        asyncio.run(self.version_api.fetch("github.com/FerretDB/FerretDB", client_session))
+        assert self.version_api.cache["github.com/FerretDB/FerretDB"] == self.expected_versions
 
 
 class TestNugetVersionAPI(TestCase):

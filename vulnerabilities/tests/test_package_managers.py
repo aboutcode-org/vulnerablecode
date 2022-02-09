@@ -454,37 +454,24 @@ class TestMavenVersionAPI(TestCase):
 
 
 class TestGoproxyVersionAPI(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.version_api = GoproxyVersionAPI()
-        with open(os.path.join(TEST_DATA, "goproxy_api", "ferretdb_versions")) as f:
-            cls.vlist = f.read()
-        with open(os.path.join(TEST_DATA, "goproxy_api", "version_info")) as f:
-            cls.vinfo = json.load(f)
-        cls.expected_versions = {
-            Version(value="v0.0.1"),
-            Version(value="v0.0.2"),
-            Version(value="v0.0.3"),
-            Version(value="v0.0.4"),
-            Version(value="v0.0.5"),
-        }
-
     def test_trim_url_path(self):
         url1 = "https://pkg.go.dev/github.com/containous/traefik/v2"
         url2 = "github.com/FerretDB/FerretDB/cmd/ferretdb"
-        url3 = self.version_api.trim_url_path(url2)
-        assert "github.com/containous/traefik" == self.version_api.trim_url_path(url1)
+        url3 = GoproxyVersionAPI.trim_url_path(url2)
+        assert "github.com/containous/traefik" == GoproxyVersionAPI.trim_url_path(url1)
         assert "github.com/FerretDB/FerretDB/cmd" == url3
-        assert "github.com/FerretDB/FerretDB" == self.version_api.trim_url_path(url3)
+        assert "github.com/FerretDB/FerretDB" == GoproxyVersionAPI.trim_url_path(url3)
 
     def test_escape_path(self):
         path = "github.com/FerretDB/FerretDB"
-        assert "github.com/!ferret!d!b/!ferret!d!b" == self.version_api.escape_path(path)
+        assert "github.com/!ferret!d!b/!ferret!d!b" == GoproxyVersionAPI.escape_path(path)
 
     def test_parse_version_info(self):
-        client_session = MockClientSession(self.vinfo)
+        with open(os.path.join(TEST_DATA, "goproxy_api", "version_info")) as f:
+            vinfo = json.load(f)
+        client_session = MockClientSession(vinfo)
         assert asyncio.run(
-            self.version_api.parse_version_info(
+            GoproxyVersionAPI.parse_version_info(
                 "v0.0.5", "github.com/!ferret!d!b/!ferret!d!b", client_session
             )
         ) == Version(
@@ -493,10 +480,19 @@ class TestGoproxyVersionAPI(TestCase):
         )
 
     def test_fetch(self):
-        assert self.version_api.get("github.com/FerretDB/FerretDB") == VersionResponse()
-        client_session = MockClientSession(self.vlist)
-        asyncio.run(self.version_api.fetch("github.com/FerretDB/FerretDB", client_session))
-        assert self.version_api.cache["github.com/FerretDB/FerretDB"] == self.expected_versions
+        version_api = GoproxyVersionAPI()
+        assert version_api.get("github.com/FerretDB/FerretDB") == VersionResponse()
+        with open(os.path.join(TEST_DATA, "goproxy_api", "ferretdb_versions")) as f:
+            vlist = f.read()
+        client_session = MockClientSession(vlist)
+        asyncio.run(version_api.fetch("github.com/FerretDB/FerretDB", client_session))
+        assert version_api.cache["github.com/FerretDB/FerretDB"] == {
+            Version(value="v0.0.1"),
+            Version(value="v0.0.2"),
+            Version(value="v0.0.3"),
+            Version(value="v0.0.4"),
+            Version(value="v0.0.5"),
+        }
 
 
 class TestNugetVersionAPI(TestCase):

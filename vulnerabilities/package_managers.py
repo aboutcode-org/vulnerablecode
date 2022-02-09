@@ -510,13 +510,21 @@ class GoproxyVersionAPI(VersionAPI):
     @staticmethod
     def trim_url_path(url_path: str) -> Optional[str]:
         """
-        github advisories for golang is using package names(e.g.
-        https://github.com/advisories/GHSA-jp4j-47f9-2vc3),
-        yet goproxy works with module names(see
-        https://golang.org/ref/mod#goproxy-protocol).
-        this method removes the last part of a package path, and returns the
-        remaining as the module name. For example: trim_url_path(
-        "https://github.com/xx/a/b") returns "https://github.com/xx/a"
+        Return a trimmed Go `url_path` removing trailing
+        package references and keeping only the module
+        references.
+
+        Github advisories for Go are using package names
+        such as "https://github.com/nats-io/nats-server/v2/server"
+        (e.g., https://github.com/advisories/GHSA-jp4j-47f9-2vc3 ),
+        yet goproxy works with module names instead such as
+        "https://github.com/nats-io/nats-server" (see for details
+        https://golang.org/ref/mod#goproxy-protocol ).
+        This functions trims the trailing part(s) of a package URL
+        and returns the remaining the module name.
+        For example:
+        >>> module = "https://github.com/xx/a"
+        >>> assert trim_url_path("https://github.com/xx/a/b") == module
         """
         # some advisories contains this prefix in package name, e.g. https://github.com/advisories/GHSA-7h6j-2268-fhcm
         if url_path.startswith("https://pkg.go.dev/"):
@@ -530,7 +538,12 @@ class GoproxyVersionAPI(VersionAPI):
     @staticmethod
     def escape_path(path: str) -> str:
         """
-        escape uppercase in module/version name.
+        Return an case-encoded module path or version name.
+
+        This is done by replacing every uppercase letter with an exclamation
+        mark followed by the corresponding lower-case letter, in order to
+        avoid ambiguity when serving from case-insensitive file systems.
+        Refer to https://golang.org/ref/mod#goproxy-protocol.
         """
         escaped_path = ""
         for c in path:

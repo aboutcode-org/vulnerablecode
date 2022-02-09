@@ -559,23 +559,24 @@ class GoproxyVersionAPI(VersionAPI):
         version_info: str, escaped_pkg: str, session: ClientSession
     ) -> Optional[Version]:
         v = version_info.split()
-        if len(v) > 0:
-            value = v[0]
-            if len(v) > 1:
-                release_date = parse_datetime(v[1])
-            else:
-                escaped_ver = GoproxyVersionAPI.escape_path(value)
-                try:
-                    response = await session.request(
-                        method="GET",
-                        url=f"https://proxy.golang.org/{escaped_pkg}/@v/{escaped_ver}.info",
-                    )
-                    resp_json = await response.json()
-                    release_date = parse_datetime(resp_json.get("Time", ""))
-                except:
-                    release_date = None
-            return Version(value=value, release_date=release_date)
-        return None
+        if not v:
+            return None
+        value = v[0]
+        if len(v) > 1:
+            # get release date from the second part. see https://github.com/golang/go/blob/master/src/cmd/go/internal/modfetch/proxy.go#latest()
+            release_date = parse_datetime(v[1])
+        else:
+            escaped_ver = GoproxyVersionAPI.escape_path(value)
+            try:
+                response = await session.request(
+                    method="GET",
+                    url=f"https://proxy.golang.org/{escaped_pkg}/@v/{escaped_ver}.info",
+                )
+                resp_json = await response.json()
+                release_date = parse_datetime(resp_json.get("Time", ""))
+            except:
+                release_date = None
+        return Version(value=value, release_date=release_date)
 
     async def fetch(self, pkg: str, session: ClientSession):
         # escape uppercase in module path

@@ -26,9 +26,9 @@ from unittest import TestCase
 
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
-from vulnerabilities.importers.apache_tomcat import ApacheTomcatDataSource
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
+from vulnerabilities.importers.apache_tomcat import ApacheTomcatImporter
 from vulnerabilities.helpers import AffectedPackage
 from vulnerabilities.package_managers import Version
 from vulnerabilities.package_managers import MavenVersionAPI
@@ -37,7 +37,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "apache_tomcat", "security-9.html")
 
 
-class TestApacheTomcatDataSource(TestCase):
+class TestApacheTomcatImporter(TestCase):
     @classmethod
     def setUpClass(cls):
         data_source_cfg = {"etags": {}}
@@ -53,7 +53,7 @@ class TestApacheTomcatDataSource(TestCase):
         )
         with patch("vulnerabilities.importers.apache_tomcat.MavenVersionAPI"):
             with patch("vulnerabilities.importers.apache_tomcat.asyncio"):
-                cls.data_src = ApacheTomcatDataSource(1, config=data_source_cfg)
+                cls.data_src = ApacheTomcatImporter(1, config=data_source_cfg)
         cls.data_src.version_api = mock_api
 
     def test_to_advisories(self):

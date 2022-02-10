@@ -27,8 +27,8 @@
 
 # from packageurl import PackageURL
 
-# from vulnerabilities.importers.suse_backports import SUSEBackportsDataSource
-# from vulnerabilities.data_source import Advisory
+# from vulnerabilities.importers.suse_backports import SUSEBackportsImporter
+# from vulnerabilities.importer import Advisory
 
 # BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -42,11 +42,11 @@
 #     return yaml_files
 
 
-# class TestSUSEBackportsDataSource(TestCase):
+# class TestSUSEBackportsImporter(TestCase):
 #     @classmethod
 #     def setUpClass(cls):
 #         data_source_cfg = {"url": "https://endpoint.com", "etags": {}}
-#         cls.data_src = SUSEBackportsDataSource(1, config=data_source_cfg)
+#         cls.data_src = SUSEBackportsImporter(1, config=data_source_cfg)
 
 #     def test_process_file(self):
 #         parsed_yamls = yaml_loader()

@@ -5,11 +5,11 @@ from itertools import chain
 from django.db.models.query import QuerySet
 from packageurl import PackageURL
 
-from vulnerabilities.data_inference import Improver
-from vulnerabilities.data_inference import Inference
-from vulnerabilities.data_inference import MAX_CONFIDENCE
-from vulnerabilities.data_source import AdvisoryData
-from vulnerabilities.data_source import AffectedPackage
+from vulnerabilities.improver import Improver
+from vulnerabilities.improver import Inference
+from vulnerabilities.improver import MAX_CONFIDENCE
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.models import Advisory
 
 

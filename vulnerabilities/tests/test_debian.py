@@ -31,7 +31,7 @@ from django.test import TestCase
 
 from vulnerabilities import models
 from vulnerabilities.import_runner import ImportRunner
-from vulnerabilities.importers import DebianDataSource
+from vulnerabilities.importers import DebianImporter
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")
@@ -48,7 +48,7 @@ class DebianImportTest(TestCase):
             name="debian_unittests",
             license="",
             last_run=dateparser.parse("2019-08-05 13:14:17.733232+05:30"),
-            data_source="DebianDataSource",
+            data_source="DebianImporter",
             data_source_cfg={"debian_tracker_url": "https://security.example.com/json"},
         )
         return super().setUpClass()
@@ -62,10 +62,10 @@ class DebianImportTest(TestCase):
         runner = ImportRunner(self.importer, 5)
 
         with patch(
-            "vulnerabilities.importers.DebianDataSource._fetch", return_value=self.mock_response
+            "vulnerabilities.importers.DebianImporter._fetch", return_value=self.mock_response
         ):
             with patch(
-                "vulnerabilities.importers.DebianDataSource.response_is_new", return_value=True
+                "vulnerabilities.importers.DebianImporter.response_is_new", return_value=True
             ):
                 runner.run()
 

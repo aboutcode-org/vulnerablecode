@@ -525,7 +525,7 @@ class GoproxyVersionAPI(VersionAPI):
         and returns the remaining the module name.
         For example:
         >>> module = "https://github.com/xx/a"
-        >>> assert trim_url_path("https://github.com/xx/a/b") == module
+        >>> assert GoproxyVersionAPI.trim_url_path("https://github.com/xx/a/b") == module
         """
         # some advisories contains this prefix in package name, e.g. https://github.com/advisories/GHSA-7h6j-2268-fhcm
         if url_path.startswith("https://pkg.go.dev/"):

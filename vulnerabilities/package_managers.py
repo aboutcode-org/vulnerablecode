@@ -19,6 +19,7 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
+import traceback
 import os
 import asyncio
 import dataclasses
@@ -575,6 +576,10 @@ class GoproxyVersionAPI(VersionAPI):
                 resp_json = await response.json()
                 release_date = parse_datetime(resp_json.get("Time", ""))
             except:
+                traceback.print_exc()
+                print(
+                    f"error while fetching version info for {escaped_pkg}/{escaped_ver} from goproxy"
+                )
                 release_date = None
         return Version(value=value, release_date=release_date)
 

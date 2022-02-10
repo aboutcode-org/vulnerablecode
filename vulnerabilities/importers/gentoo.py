@@ -26,15 +26,15 @@ from typing import Set
 
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import GitDataSource
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import nearest_patched_package
 
 
-class GentooDataSource(GitDataSource):
+class GentooImporter(GitImporter):
     def __enter__(self):
-        super(GentooDataSource, self).__enter__()
+        super(GentooImporter, self).__enter__()
 
         if not getattr(self, "_added_files", None):
             self._added_files, self._updated_files = self.file_changes(

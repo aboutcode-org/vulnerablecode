@@ -26,9 +26,9 @@ from unittest import TestCase
 
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
-from vulnerabilities.importers.elixir_security import ElixirSecurityDataSource
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
+from vulnerabilities.importers.elixir_security import ElixirSecurityImporter
 from vulnerabilities.package_managers import HexVersionAPI
 from vulnerabilities.package_managers import Version
 from vulnerabilities.helpers import AffectedPackage
@@ -36,13 +36,13 @@ from vulnerabilities.helpers import AffectedPackage
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-class TestElixirSecurityDataSource(TestCase):
+class TestElixirSecurityImporter(TestCase):
     @classmethod
     def setUpClass(cls):
         data_source_cfg = {
             "repository_url": "https://github.com/dependabot/elixir-security-advisories",
         }
-        cls.data_src = ElixirSecurityDataSource(1, config=data_source_cfg)
+        cls.data_src = ElixirSecurityImporter(1, config=data_source_cfg)
         cls.data_src.pkg_manager_api = HexVersionAPI(
             {
                 "coherence": [

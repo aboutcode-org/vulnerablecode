@@ -69,11 +69,10 @@ collect_ignore = [
     "test_github.py",
     "test_suse_backports.py",
     "test_suse_scores.py",
-    "test_import_cmd.py",
     "test_ubuntu.py",
-    "test_import_runner.py",
     "test_ubuntu_usn.py",
     "test_importer_yielder.py",
     "test_upstream.py",
     "test_istio.py",
+    "test_mozilla.py",
 ]

@@ -34,8 +34,8 @@ import git
 import pytest
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import GitDataSource, _include_file, OvalDataSource
-from vulnerabilities.data_source import InvalidConfigurationError
+from vulnerabilities.importer import GitImporter, _include_file, OvalImporter
+from vulnerabilities.importer import InvalidConfigurationError
 from vulnerabilities.oval_parser import OvalParser
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -90,18 +90,18 @@ def mk_ds(**kwargs):
     cutoff_date = kwargs.pop("cutoff_date", None)
 
     # batch_size is a required parameter of the base class, unrelated to these tests
-    return GitDataSource(
+    return GitImporter(
         batch_size=100, last_run_date=last_run_date, cutoff_date=cutoff_date, config=kwargs
     )
 
 
-def test_GitDataSource_repository_url_required(no_mkdir, no_rmtree):
+def test_GitImporter_repository_url_required(no_mkdir, no_rmtree):
 
     with pytest.raises(InvalidConfigurationError):
-        GitDataSource(batch_size=100)
+        GitImporter(batch_size=100)
 
 
-def test_GitDataSource_validate_configuration_create_working_directory_must_be_set_when_working_directory_is_default(
+def test_GitImporter_validate_configuration_create_working_directory_must_be_set_when_working_directory_is_default(
     no_mkdir, no_rmtree
 ):
 
@@ -109,7 +109,7 @@ def test_GitDataSource_validate_configuration_create_working_directory_must_be_s
         mk_ds(create_working_directory=False)
 
 
-def test_GitDataSource_validate_configuration_remove_working_directory_must_be_set_when_working_directory_is_default(
+def test_GitImporter_validate_configuration_remove_working_directory_must_be_set_when_working_directory_is_default(
     no_mkdir, no_rmtree
 ):
 
@@ -118,7 +118,7 @@ def test_GitDataSource_validate_configuration_remove_working_directory_must_be_s
 
 
 @patch("os.path.exists", return_value=True)
-def test_GitDataSource_validate_configuration_remove_working_directory_is_applied(
+def test_GitImporter_validate_configuration_remove_working_directory_is_applied(
     no_mkdir, no_rmtree
 ):
 
@@ -127,7 +127,7 @@ def test_GitDataSource_validate_configuration_remove_working_directory_is_applie
     assert not ds.config.remove_working_directory
 
 
-def test_GitDataSource_validate_configuration_working_directory_must_exist_when_create_working_directory_is_not_set(
+def test_GitImporter_validate_configuration_working_directory_must_exist_when_create_working_directory_is_not_set(
     no_mkdir, no_rmtree
 ):
 
@@ -135,7 +135,7 @@ def test_GitDataSource_validate_configuration_working_directory_must_exist_when_
         mk_ds(working_directory="/does/not/exist", create_working_directory=False)
 
 
-def test_GitDataSource_contextmgr_working_directory_is_created_and_removed(tmp_path, clone_url):
+def test_GitImporter_contextmgr_working_directory_is_created_and_removed(tmp_path, clone_url):
 
     wd = tmp_path / "working"
     ds = mk_ds(
@@ -154,7 +154,7 @@ def test_GitDataSource_contextmgr_working_directory_is_created_and_removed(tmp_p
 
 
 @patch("tempfile.mkdtemp")
-def test_GitDataSource_contextmgr_calls_mkdtemp_if_working_directory_is_not_set(
+def test_GitImporter_contextmgr_calls_mkdtemp_if_working_directory_is_not_set(
     mkdtemp, tmp_path, clone_url
 ):
 
@@ -166,7 +166,7 @@ def test_GitDataSource_contextmgr_calls_mkdtemp_if_working_directory_is_not_set(
         assert ds.config.working_directory == str(tmp_path / "working")
 
 
-def test_GitDataSource_contextmgr_uses_existing_repository(
+def test_GitImporter_contextmgr_uses_existing_repository(
     clone_url,
     clone_url2,
     no_mkdir,
@@ -199,7 +199,7 @@ def test__include_file():
     assert not _include_file("bar/foo/baz.json", subdir="foo", recursive=True, file_ext="json")
 
 
-class GitDataSourceTest(TestCase):
+class GitImporterTest(TestCase):
 
     tempdir = None
 
@@ -218,7 +218,7 @@ class GitDataSourceTest(TestCase):
     def setUp(self) -> None:
         self.repodir = os.path.join(self.tempdir, "advisory-db")
 
-    def mk_ds(self, **kwargs) -> GitDataSource:
+    def mk_ds(self, **kwargs) -> GitImporter:
         kwargs["working_directory"] = self.repodir
         kwargs["create_working_directory"] = False
         kwargs["remove_working_directory"] = False
@@ -295,10 +295,10 @@ class GitDataSourceTest(TestCase):
         assert os.path.join(self.repodir, "crates/hyper/RUSTSEC-2020-0008.toml") in updated_files
 
 
-class TestOvalDataSource(TestCase):
+class TestOvalImporter(TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.oval_data_src = OvalDataSource(1)
+        cls.oval_data_src = OvalImporter(1)
 
     def test_create_purl(self):
         purl1 = PackageURL(name="ffmpeg", type="test", version="1.2.0")

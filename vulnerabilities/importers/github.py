@@ -35,11 +35,10 @@ from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 from univers.versions import version_class_by_package_type
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import DataSourceConfiguration
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.package_managers import MavenVersionAPI
 from vulnerabilities.package_managers import NugetVersionAPI
 from vulnerabilities.package_managers import ComposerVersionAPI
@@ -152,16 +151,7 @@ class GitHubTokenError(Exception):
     pass
 
 
-@dataclasses.dataclass
-class GitHubAPIDataSourceConfiguration(DataSourceConfiguration):
-    endpoint: str
-    ecosystems: list
-
-
-class GitHubAPIDataSource(DataSource):
-
-    CONFIG_CLASS = GitHubAPIDataSourceConfiguration
-
+class GitHubAPIImporter(Importer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         try:

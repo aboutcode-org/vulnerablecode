@@ -31,22 +31,13 @@ from typing import Set
 import requests
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import DataSourceConfiguration
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import nearest_patched_package
 
 
-@dataclasses.dataclass
-class DebianConfiguration(DataSourceConfiguration):
-    debian_tracker_url: str
-
-
-class DebianDataSource(DataSource):
-
-    CONFIG_CLASS = DebianConfiguration
-
+class DebianImporter(Importer):
     def __enter__(self):
         if self.response_is_new():
             self._api_response = self._fetch()

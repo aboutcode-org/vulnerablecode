@@ -27,6 +27,7 @@ import re
 from typing import List
 from typing import Optional
 from typing import Tuple
+from unittest.mock import MagicMock
 
 import requests
 import saneyaml
@@ -67,32 +68,43 @@ def fetch_yaml(url):
     return saneyaml.load(response.content)
 
 
-# FIXME: this is NOT how etags work .
-# We should instead send the proper HTTP header
-# https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match
-# and integrate this finely in the processing as this typically needs to use
-# streaming=True requests, and proper handling of the HTTP return code
-# In all cases this ends up being a single request, not a HEADD followed
-# by another real request
-def create_etag(data_src, url, etag_key):
+# FIXME: Remove this entirely after complete importer-improver migration
+create_etag = MagicMock()
+
+
+def split_markdown_front_matter(lines: str) -> Tuple[str, str]:
     """
-    Etags are like hashes of web responses. For a data source `data_src`,
-    we maintain (url, etag) mappings in the DB.  `create_etag`  creates
-    (`url`, etag) pair. If a (`url`, etag) already exists then the code
-    skips processing the response further to avoid duplicate work.
+    This function splits lines into markdown front matter and the markdown body
+    and returns list of lines for both
 
-    `etag_key` is the name of header which contains the etag for the url.
+    for example :
+        lines =
+        ---
+        title: ISTIO-SECURITY-2019-001
+        description: Incorrect access control.
+        cves: [CVE-2019-12243]
+        ---
+        # Markdown starts here
+
+    split_markdown_front_matter(lines) would return
+    ['title: ISTIO-SECURITY-2019-001','description: Incorrect access control.'
+    ,'cves: [CVE-2019-12243]'],
+    ["# Markdown starts here"]
     """
-    etag = requests.head(url).headers.get(etag_key)
-    if not etag:
-        return True
 
-    elif url in data_src.config.etags:
-        if data_src.config.etags[url] == etag:
-            return False
+    fmlines = []
+    mdlines = []
+    splitter = mdlines
 
-    data_src.config.etags[url] = etag
-    return True
+    for index, line in enumerate(lines.split("\n")):
+        if index == 0 and line.strip().startswith("---"):
+            splitter = fmlines
+        elif line.strip().startswith("---"):
+            splitter = mdlines
+        else:
+            splitter.append(line)
+
+    return "\n".join(fmlines), "\n".join(mdlines)
 
 
 def contains_alpha(string):
@@ -190,3 +202,12 @@ def split_markdown_front_matter(text: str) -> Tuple[str, str]:
         return frontmatter, markdown
 
     return "", text
+
+
+# TODO: Replace this with combination of @classmethod and @property after upgrading to python 3.9
+class classproperty(object):
+    def __init__(self, fget):
+        self.fget = fget
+
+    def __get__(self, owner_self, owner_cls):
+        return self.fget(owner_cls)

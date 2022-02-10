@@ -26,11 +26,11 @@ from unittest import TestCase
 from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import Reference
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import Version
-from vulnerabilities.importers.apache_kafka import ApacheKafkaDataSource
+from vulnerabilities.importers.apache_kafka import ApacheKafkaImporter
 from vulnerabilities.importers.apache_kafka import to_version_ranges
 from vulnerabilities.helpers import AffectedPackage
 
@@ -38,7 +38,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "apache_kafka", "cve-list.html")
 
 
-class TestApacheKafkaDataSource(TestCase):
+class TestApacheKafkaImporter(TestCase):
     def test_to_version_ranges(self):
         # Check single version
         assert [
@@ -63,7 +63,7 @@ class TestApacheKafkaDataSource(TestCase):
         ] == to_version_ranges("3.2.2 and later, 3.2.2 to 3.2.3, 3.2.2")
 
     def test_to_advisory(self):
-        data_source = ApacheKafkaDataSource(batch_size=1)
+        data_source = ApacheKafkaImporter(batch_size=1)
         data_source.version_api = GitHubTagsAPI(
             cache={"apache/kafka": [Version("2.1.2"), Version("0.10.2.2")]}
         )

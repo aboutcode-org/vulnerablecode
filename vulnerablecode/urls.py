@@ -22,22 +22,22 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include
+from django.urls import path
 from rest_framework.routers import DefaultRouter
-
 
 from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
 from vulnerabilities.views import HomePage
+from vulnerabilities.views import PackageCreate
+from vulnerabilities.views import PackageRelatedVulnerablityCreate
+from vulnerabilities.views import PackageRelatedVulnerablityDelete
 from vulnerabilities.views import PackageSearchView
 from vulnerabilities.views import PackageUpdate
-from vulnerabilities.views import PackageCreate
-from vulnerabilities.views import PackageRelatedVulnerablityDelete
-from vulnerabilities.views import PackageRelatedVulnerablityCreate
-from vulnerabilities.views import VulnerabilityDetails
-from vulnerabilities.views import VulnerabilitySearchView
 from vulnerabilities.views import VulnerabilityCreate
+from vulnerabilities.views import VulnerabilityDetails
 from vulnerabilities.views import VulnerabilityReferenceCreate
+from vulnerabilities.views import VulnerabilitySearchView
 from vulnerabilities.views import schema_view
 from vulnerablecode.settings import ENABLE_CURATION
 

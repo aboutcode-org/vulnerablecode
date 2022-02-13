@@ -26,6 +26,7 @@ import bz2
 import dataclasses
 import logging
 import xml.etree.ElementTree as ET
+
 import requests
 
 from vulnerabilities.importer import OvalImporter

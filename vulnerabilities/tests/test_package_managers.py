@@ -24,19 +24,20 @@ import asyncio
 import distutils.spawn
 import json
 import os
-from unittest.case import SkipTest
 import xml.etree.ElementTree as ET
 from datetime import datetime
+from unittest import TestCase
+from unittest.case import SkipTest
+from unittest.mock import AsyncMock
+
 from aiohttp.client import ClientSession
 from dateutil.tz import tzlocal
 from pytz import UTC
-from unittest import TestCase
-from unittest.mock import AsyncMock
 
 from vulnerabilities.package_managers import ComposerVersionAPI
+from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import MavenVersionAPI
 from vulnerabilities.package_managers import NugetVersionAPI
-from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import Version
 from vulnerabilities.package_managers import VersionResponse
 from vulnerabilities.package_managers import client_session

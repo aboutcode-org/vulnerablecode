@@ -21,21 +21,21 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
-from typing import Set
 from typing import List
-from dateutil.parser import parse
-from pytz import UTC
+from typing import Set
 
+from dateutil.parser import parse
 from packageurl import PackageURL
+from pytz import UTC
 from univers.version_specifier import VersionSpecifier
 from univers.versions import SemverVersion
 
+from vulnerabilities.helpers import load_yaml
+from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import RubyVersionAPI
-from vulnerabilities.helpers import load_yaml
-from vulnerabilities.helpers import nearest_patched_package
 
 
 class RubyImporter(GitImporter):

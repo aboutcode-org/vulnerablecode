@@ -22,23 +22,23 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
-import pytz
 from typing import List
 from typing import Set
 from typing import Tuple
 from urllib.parse import quote
 
+import pytz
 from dateutil.parser import parse
+from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 from univers.versions import SemverVersion
-from packageurl import PackageURL
 
+from vulnerabilities.helpers import load_json
+from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import NpmVersionAPI
-from vulnerabilities.helpers import load_json
-from vulnerabilities.helpers import nearest_patched_package
 
 NPM_URL = "https://registry.npmjs.org{}"
 

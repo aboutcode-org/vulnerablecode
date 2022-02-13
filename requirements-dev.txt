@@ -1,5 +1,6 @@
-pytest
-pytest-django
-freezegun
-ipython
-black
+black==22.1.0
+freezegun==1.1.0
+ipython==8.0.1
+isort==5.10.1
+pytest==7.0.0
+pytest-django==4.5.2

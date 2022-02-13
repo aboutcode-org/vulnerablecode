@@ -93,12 +93,11 @@ TODO:
     - Redo getter/setter for OvalRepository status elements.
 """
 
-import os, xml.etree
+import datetime
+import os
+import xml.etree
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
-
-import datetime
-
 
 # __docformat__ = "Epytext en"
 

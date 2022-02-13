@@ -20,27 +20,27 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import asyncio
 import dataclasses
 import datetime
-from typing import Iterable
 import logging
+from typing import Iterable
 
-import asyncio
 import requests
 from bs4 import BeautifulSoup
+from django.db.models.query import QuerySet
 from packageurl import PackageURL
 from univers.version_range import NginxVersionRange
 from univers.versions import SemverVersion
-from django.db.models.query import QuerySet
 
+from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.improver import Inference
 from vulnerabilities.improver import Improver
-from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import Version

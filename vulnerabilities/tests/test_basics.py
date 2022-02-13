@@ -23,7 +23,8 @@
 import subprocess
 import sys
 import unittest
-from os.path import dirname, join
+from os.path import dirname
+from os.path import join
 
 root_dir = dirname(dirname(dirname(__file__)))
 bin_dir = dirname(sys.executable)

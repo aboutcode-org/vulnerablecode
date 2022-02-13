@@ -25,14 +25,13 @@ import dataclasses
 import datetime
 import json
 import logging
-from typing import List
 from typing import Iterable
-
+from typing import List
 
 from vulnerabilities import models
-from vulnerabilities.models import Advisory
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
+from vulnerabilities.models import Advisory
 
 logger = logging.getLogger(__name__)
 

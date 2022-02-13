@@ -7,10 +7,9 @@ from typing import Tuple
 from django.db import transaction
 
 from vulnerabilities import models
-from vulnerabilities.improver import Inference
 from vulnerabilities.importer import PackageURL
+from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
-
 
 logger = logging.getLogger(__name__)
 

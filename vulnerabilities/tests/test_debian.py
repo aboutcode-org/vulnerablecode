@@ -23,10 +23,10 @@
 
 import json
 import os
-from dateutil import parser as dateparser
-from unittest.mock import patch
 from unittest.mock import MagicMock
+from unittest.mock import patch
 
+from dateutil import parser as dateparser
 from django.test import TestCase
 
 from vulnerabilities import models

@@ -20,11 +20,11 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+from vulnerabilities.helpers import fetch_yaml
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.helpers import fetch_yaml
 from vulnerabilities.severity_systems import scoring_systems
 
 URL = "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml"

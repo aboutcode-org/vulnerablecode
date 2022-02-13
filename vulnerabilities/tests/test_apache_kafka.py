@@ -26,13 +26,13 @@ from unittest import TestCase
 from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 
+from vulnerabilities.helpers import AffectedPackage
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Reference
-from vulnerabilities.package_managers import GitHubTagsAPI
-from vulnerabilities.package_managers import Version
 from vulnerabilities.importers.apache_kafka import ApacheKafkaImporter
 from vulnerabilities.importers.apache_kafka import to_version_ranges
-from vulnerabilities.helpers import AffectedPackage
+from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.package_managers import Version
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "apache_kafka", "cve-list.html")

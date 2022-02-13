@@ -26,10 +26,10 @@ from collections import OrderedDict
 
 from packageurl import PackageURL
 
-from vulnerabilities.importers.openssl import OpenSSLImporter
+from vulnerabilities.helpers import AffectedPackage
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Reference
-from vulnerabilities.helpers import AffectedPackage
+from vulnerabilities.importers.openssl import OpenSSLImporter
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/", "openssl_xml_data.xml")

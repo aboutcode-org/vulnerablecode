@@ -19,9 +19,9 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-import os
 import asyncio
 import dataclasses
+import os
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from json import JSONDecodeError
@@ -30,8 +30,8 @@ from typing import List
 from typing import Mapping
 from typing import Set
 
-from aiohttp import ClientSession
 import aiohttp
+from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.client_exceptions import ServerDisconnectedError
 from bs4 import BeautifulSoup

@@ -31,7 +31,6 @@ from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Reference
 from vulnerabilities.importers import ProjectKBMSRImporter
 
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/kbmsr2019", "test_msr_data.csv")
 

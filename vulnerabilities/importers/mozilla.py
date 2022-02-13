@@ -7,12 +7,12 @@ from bs4 import BeautifulSoup
 from markdown import markdown
 from packageurl import PackageURL
 
+from vulnerabilities.helpers import is_cve
+from vulnerabilities.helpers import split_markdown_front_matter
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.helpers import is_cve
-from vulnerabilities.helpers import split_markdown_front_matter
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 
 REPOSITORY = "mozilla/foundation-security-advisories"

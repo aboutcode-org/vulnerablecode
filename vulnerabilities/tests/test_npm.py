@@ -23,16 +23,16 @@
 import os
 import shutil
 import tempfile
-from unittest.mock import patch
 import zipfile
+from unittest.mock import patch
 
 from django.test import TestCase
 
 from vulnerabilities import models
 from vulnerabilities.import_runner import ImportRunner
+from vulnerabilities.importers.npm import categorize_versions
 from vulnerabilities.package_managers import NpmVersionAPI
 from vulnerabilities.package_managers import Version
-from vulnerabilities.importers.npm import categorize_versions
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")

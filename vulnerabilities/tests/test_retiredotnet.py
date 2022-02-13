@@ -21,15 +21,15 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import os
-from unittest import TestCase
 from collections import OrderedDict
+from unittest import TestCase
 
 from packageurl import PackageURL
 
-from vulnerabilities.importers.retiredotnet import RetireDotnetImporter
+from vulnerabilities.helpers import AffectedPackage
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Reference
-from vulnerabilities.helpers import AffectedPackage
+from vulnerabilities.importers.retiredotnet import RetireDotnetImporter
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 

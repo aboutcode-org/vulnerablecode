@@ -25,14 +25,14 @@ from unittest import TestCase
 from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 
+from vulnerabilities.helpers import AffectedPackage
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Reference
+from vulnerabilities.importers.rust import RustImporter
 from vulnerabilities.importers.rust import categorize_versions
 from vulnerabilities.importers.rust import get_advisory_data
-from vulnerabilities.importers.rust import RustImporter
-from vulnerabilities.package_managers import Version
 from vulnerabilities.package_managers import CratesVersionAPI
-from vulnerabilities.helpers import AffectedPackage
+from vulnerabilities.package_managers import Version
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/rust")

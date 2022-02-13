@@ -22,19 +22,19 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import dataclasses
-from dateutil import parser as dateparser
 from typing import Any
 from typing import List
 from typing import Mapping
 from typing import Set
 
 import requests
+from dateutil import parser as dateparser
 from packageurl import PackageURL
 
+from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
-from vulnerabilities.helpers import nearest_patched_package
 
 
 class DebianImporter(Importer):

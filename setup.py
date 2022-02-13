@@ -4,7 +4,6 @@
 from setuptools import find_packages
 from setuptools import setup
 
-
 requirements = [
     r.strip() for r in open("requirements.txt") if r.strip() and not r.strip().startswith("#")
 ]

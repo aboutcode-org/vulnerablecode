@@ -26,9 +26,9 @@ import saneyaml
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
 
+from vulnerabilities.helpers import create_etag
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Importer
-from vulnerabilities.helpers import create_etag
 
 
 class SUSEBackportsImporter(Importer):

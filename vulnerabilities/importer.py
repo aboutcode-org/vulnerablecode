@@ -20,19 +20,19 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 import dataclasses
+import datetime
 import logging
 import os
 import shutil
 import tempfile
 import traceback
 import xml.etree.ElementTree as ET
-import datetime
 from pathlib import Path
+from typing import Iterable
 from typing import List
 from typing import Mapping
 from typing import Optional
 from typing import Set
-from typing import Iterable
 from typing import Tuple
 
 from binaryornot.helpers import is_binary_string
@@ -41,11 +41,12 @@ from git import Repo
 from packageurl import PackageURL
 from univers.version_range import VersionRange
 from univers.versions import Version
-from vulnerabilities.helpers import nearest_patched_package
+
 from vulnerabilities.helpers import classproperty
+from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.oval_parser import OvalParser
-from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.severity_systems import ScoringSystem
 
 logger = logging.getLogger(__name__)
 

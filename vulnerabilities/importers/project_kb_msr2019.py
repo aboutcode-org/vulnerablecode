@@ -24,15 +24,14 @@ import csv
 import dataclasses
 import urllib.request
 
-# Reading CSV file from  a url using `requests` is bit too complicated.
-# Use `urllib.request` for that purpose.
-
-
+from vulnerabilities.helpers import create_etag
+from vulnerabilities.helpers import is_cve
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
-from vulnerabilities.helpers import create_etag
-from vulnerabilities.helpers import is_cve
+
+# Reading CSV file from  a url using `requests` is bit too complicated.
+# Use `urllib.request` for that purpose.
 
 
 class ProjectKBMSRImporter(Importer):

@@ -23,18 +23,17 @@
 import dataclasses
 import gzip
 import json
-from dateutil import parser as dateparser
 from datetime import date
 
 import requests
+from dateutil import parser as dateparser
 
+from vulnerabilities.helpers import create_etag
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.helpers import create_etag
 from vulnerabilities.severity_systems import scoring_systems
-
 
 BASE_URL = "https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-{}.json.gz"
 

@@ -26,8 +26,8 @@ import traceback
 from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
 
-from vulnerabilities.importers import IMPORTERS_REGISTRY
 from vulnerabilities.import_runner import ImportRunner
+from vulnerabilities.importers import IMPORTERS_REGISTRY
 
 
 class Command(BaseCommand):

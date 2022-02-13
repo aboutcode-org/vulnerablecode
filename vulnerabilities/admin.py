@@ -23,13 +23,11 @@
 
 from django.contrib import admin
 
-from vulnerabilities.models import (
-    PackageRelatedVulnerability,
-    Package,
-    Vulnerability,
-    VulnerabilityReference,
-    VulnerabilitySeverity,
-)
+from vulnerabilities.models import Package
+from vulnerabilities.models import PackageRelatedVulnerability
+from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityReference
+from vulnerabilities.models import VulnerabilitySeverity
 
 
 @admin.register(Vulnerability)

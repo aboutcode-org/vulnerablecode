@@ -27,8 +27,8 @@ from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
 
 from vulnerabilities.import_runner import ImportRunner
-from vulnerabilities.improvers import IMPROVERS_REGISTRY
 from vulnerabilities.improve_runner import ImproveRunner
+from vulnerabilities.improvers import IMPROVERS_REGISTRY
 
 
 class Command(BaseCommand):

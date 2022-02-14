@@ -20,9 +20,9 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 import traceback
-import os
 import asyncio
 import dataclasses
+import os
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from json import JSONDecodeError
@@ -30,8 +30,8 @@ from subprocess import check_output
 from typing import Set, List, MutableMapping, Optional
 from django.utils.dateparse import parse_datetime
 
-from aiohttp import ClientSession
 import aiohttp
+from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.client_exceptions import ServerDisconnectedError
 from aiohttp.web_exceptions import HTTPGone

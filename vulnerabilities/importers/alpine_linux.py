@@ -29,10 +29,10 @@ import requests
 import saneyaml
 from bs4 import BeautifulSoup
 
+from vulnerabilities.helpers import is_cve
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
-from vulnerabilities.helpers import is_cve
 
 BASE_URL = "https://secdb.alpinelinux.org/"
 

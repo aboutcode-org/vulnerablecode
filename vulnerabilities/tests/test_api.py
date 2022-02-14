@@ -29,12 +29,11 @@ from urllib.parse import quote
 
 from django.test import TestCase
 from django.test.client import RequestFactory
+from rest_framework.test import APIClient
+from rest_framework.test import APIRequestFactory
 
 from vulnerabilities.api import PackageSerializer
 from vulnerabilities.models import Package
-from rest_framework.test import APIRequestFactory
-from rest_framework.test import APIClient
-
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")

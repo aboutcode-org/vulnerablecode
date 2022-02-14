@@ -26,11 +26,11 @@ from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 from univers.versions import SemverVersion
 
+from vulnerabilities.helpers import load_yaml
+from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
-from vulnerabilities.helpers import load_yaml
-from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.package_managers import HexVersionAPI
 
 

@@ -20,26 +20,27 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import os
 import json
+import os
 from unittest import TestCase
-from unittest.mock import patch
 from unittest.mock import MagicMock
 from unittest.mock import call
+from unittest.mock import patch
 
 from packageurl import PackageURL
 
+from vulnerabilities.helpers import AffectedPackage
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers.github import GitHubAPIImporter
-from vulnerabilities.package_managers import MavenVersionAPI, Version
-from vulnerabilities.package_managers import NugetVersionAPI
-from vulnerabilities.package_managers import ComposerVersionAPI
-from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.importers.github import GitHubTokenError
 from vulnerabilities.importers.github import query
-from vulnerabilities.helpers import AffectedPackage
+from vulnerabilities.package_managers import ComposerVersionAPI
+from vulnerabilities.package_managers import MavenVersionAPI
+from vulnerabilities.package_managers import NugetVersionAPI
+from vulnerabilities.package_managers import Version
+from vulnerabilities.severity_systems import ScoringSystem
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")

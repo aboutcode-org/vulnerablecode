@@ -40764,5 +40764,19 @@
                 ]
             }
         }
+    },
+    {
+        "model": "vulnerabilities.importer",
+        "pk": 17,
+        "fields": {
+            "name": "xen",
+            "license": "gplv2",
+            "last_run": null,
+            "data_source": "XenDataSource",
+            "data_source_cfg": {
+                "etags": {},
+                "db_url": "https://xenbits.xen.org/xsa/xsa.json"
+            }
+        }
     }
 ]

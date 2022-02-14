@@ -22,24 +22,23 @@
 
 import asyncio
 from itertools import chain
-from typing import Optional
 from typing import List
+from typing import Optional
 from typing import Set
 from typing import Tuple
-from dateutil.parser import parse
 
-import toml
 import pytz
+import toml
+from dateutil.parser import parse
+from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 from univers.versions import SemverVersion
-from packageurl import PackageURL
 
-
+from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import CratesVersionAPI
-from vulnerabilities.helpers import nearest_patched_package
 
 
 class RustImporter(GitImporter):

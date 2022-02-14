@@ -26,10 +26,10 @@ from typing import Set
 
 from packageurl import PackageURL
 
-from vulnerabilities.importer import GitImporter
-from vulnerabilities.importer import Advisory
-from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Reference
 
 
 class GentooImporter(GitImporter):

@@ -27,6 +27,7 @@ VENV=venv
 ACTIVATE?=. ${VENV}/bin/activate;
 VIRTUALENV_PYZ=etc/thirdparty/virtualenv.pyz
 BLACK_ARGS=-l 100 .
+ISORT_ARGS=.
 # Do not depend on Python to generate the SECRET_KEY
 GET_SECRET_KEY=`base64 /dev/urandom | head -c50`
 # Customize with `$ make envfile ENV_FILE=/etc/vulnerablecode/.env`
@@ -61,6 +62,8 @@ envfile:
 	@echo SECRET_KEY=\"${GET_SECRET_KEY}\" > ${ENV_FILE}
 
 check:
+	@echo "-> Run isort validation"
+	@${ACTIVATE} isort --check-only ${ISORT_ARGS}
 	@echo "-> Run black validation"
 	@${ACTIVATE} black --check ${BLACK_ARGS}
 
@@ -68,7 +71,11 @@ black:
 	@echo "-> Apply black code formatter"
 	${VENV}/bin/black ${BLACK_ARGS}
 
-valid: black
+isort:
+	@echo "-> Apply isort code formatter"
+	${VENV}/bin/isort ${ISORT_ARGS}
+
+valid: isort black
 
 clean:
 	@echo "-> Clean the Python env"

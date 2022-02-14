@@ -23,19 +23,20 @@ import datetime
 import os
 import shutil
 import tempfile
+import xml.etree.ElementTree as ET
 import zipfile
 from unittest import TestCase
 from unittest.mock import MagicMock
 from unittest.mock import patch
-import xml.etree.ElementTree as ET
 
 import git
-
 import pytest
 from packageurl import PackageURL
 
-from vulnerabilities.importer import GitImporter, _include_file, OvalImporter
+from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import InvalidConfigurationError
+from vulnerabilities.importer import OvalImporter
+from vulnerabilities.importer import _include_file
 from vulnerabilities.oval_parser import OvalParser
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))

@@ -20,17 +20,17 @@
 #  VulnerableCode is a free software from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import os
 import json
+import os
+from unittest import TestCase
+
 from dateutil import parser as dateparser
 
-from unittest import TestCase
-from vulnerabilities.importers import NVDImporter
-from vulnerabilities.importer import Reference
 from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.importers import NVDImporter
 from vulnerabilities.severity_systems import scoring_systems
-
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/nvd/nvd_test.json")

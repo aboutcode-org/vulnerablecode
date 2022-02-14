@@ -26,13 +26,13 @@ from datetime import timezone
 from univers.version_range import VersionRange
 
 from vulnerabilities import models
+from vulnerabilities.import_runner import ImportRunner
+from vulnerabilities.import_runner import process_advisories
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import PackageURL
 from vulnerabilities.importer import Reference
-from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.import_runner import ImportRunner
-from vulnerabilities.import_runner import process_advisories
 
 ADVISORY_DATAS = [
     AdvisoryData(

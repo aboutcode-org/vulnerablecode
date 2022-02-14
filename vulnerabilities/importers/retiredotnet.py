@@ -22,15 +22,15 @@
 
 import json
 import re
-from typing import Set
 from typing import List
+from typing import Set
 
 from packageurl import PackageURL
 
-from vulnerabilities.importer import GitImporter
-from vulnerabilities.importer import Advisory
-from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import AffectedPackage
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Reference
 
 
 class RetireDotnetImporter(GitImporter):

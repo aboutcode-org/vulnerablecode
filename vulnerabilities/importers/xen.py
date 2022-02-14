@@ -34,7 +34,9 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 
 
-class UbuntuUSNImporter(Importer):
+class XenImporter(Importer):
+    CONFIG_CLASS = XenDBConfiguration
+
     def updated_advisories(self):
         advisories = []
         if create_etag(data_src=self, url=self.config.db_url, etag_key="etag"):
@@ -55,34 +57,32 @@ class UbuntuUSNImporter(Importer):
         return True
 
     @staticmethod
-    def to_advisories(usn_db):
+    def to_advisories(xen_db):
         advisories = []
-        for usn in usn_db:
-            reference = get_usn_references(usn_db[usn]["id"])
-            for cve in usn_db[usn].get("cves", [""]):
-                # The db sometimes contains entries like
-                # {'cves': ['python-pgsql vulnerabilities', 'CVE-2006-2313', 'CVE-2006-2314']}
-                # This `if` filters entries like 'python-pgsql vulnerabilities'
+        for xsa in xen_db[0]["xsas"]:
+            reference = get_xen_references(xsa["xsa"])
+            title = xsa.get("title", [""])
+            for cve in xsa.get("cve", [""]):
                 if not is_cve(cve):
                     cve = ""
 
                 advisories.append(
                     Advisory(
                         vulnerability_id=cve,
-                        summary="",
+                        summary=title,
                         references=[reference],
                     )
                 )
-
         return advisories
 
 
-def get_usn_references(usn_id):
-    return Reference(reference_id="USN-" + usn_id, url="https://usn.ubuntu.com/{}/".format(usn_id))
+def get_xen_references(xsa_id):
+    return Reference(
+        reference_id="XSA-" + xsa_id,
+        url="https://xenbits.xen.org/xsa/advisory-{}.html".format(xsa_id),
+    )
 
 
 def fetch(url):
     response = requests.get(url).content
-    raw_data = bz2.decompress(response)
-
-    return json.loads(raw_data)
+    return json.loads(response)

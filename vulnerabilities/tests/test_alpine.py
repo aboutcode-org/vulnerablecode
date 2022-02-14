@@ -29,7 +29,6 @@ from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Reference
 from vulnerabilities.importers.alpine_linux import AlpineImporter
 
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "alpine", "v3.11")
 

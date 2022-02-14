@@ -20,21 +20,21 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 import asyncio
-import pytz
 import re
-from dateutil import parser
 from typing import Set
 
+import pytz
 import saneyaml
+from dateutil import parser
 from packageurl import PackageURL
 from univers.version_specifier import VersionSpecifier
 from univers.versions import SemverVersion
 
+from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.helpers import split_markdown_front_matter
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
-from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.helpers import split_markdown_front_matter
 from vulnerabilities.package_managers import GitHubTagsAPI
 
 is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match

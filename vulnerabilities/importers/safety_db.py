@@ -25,8 +25,8 @@
 
 import asyncio
 import dataclasses
-import re
 import logging
+import re
 from typing import Any
 from typing import Iterable
 from typing import Mapping
@@ -34,16 +34,16 @@ from typing import Set
 from typing import Tuple
 
 import requests
-from univers.version_specifier import VersionSpecifier
-from univers.versions import PYPIVersion
-from univers.versions import InvalidVersion
 from packageurl import PackageURL
+from univers.version_specifier import VersionSpecifier
+from univers.versions import InvalidVersion
+from univers.versions import PYPIVersion
 
+from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import PypiVersionAPI
-from vulnerabilities.helpers import nearest_patched_package
 
 logger = logging.getLogger(__name__)
 

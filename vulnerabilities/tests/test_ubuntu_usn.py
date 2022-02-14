@@ -21,19 +21,18 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import bz2
-from collections import OrderedDict
 import json
 import os
+from collections import OrderedDict
 from unittest import TestCase
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
 from packageurl import PackageURL
 
+import vulnerabilities.importers.ubuntu_usn as ubuntu_usn
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Reference
-import vulnerabilities.importers.ubuntu_usn as ubuntu_usn
-
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/", "ubuntu_usn_db", "database-all.json.bz2")

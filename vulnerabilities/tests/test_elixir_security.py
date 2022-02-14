@@ -26,12 +26,12 @@ from unittest import TestCase
 
 from packageurl import PackageURL
 
+from vulnerabilities.helpers import AffectedPackage
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Reference
 from vulnerabilities.importers.elixir_security import ElixirSecurityImporter
 from vulnerabilities.package_managers import HexVersionAPI
 from vulnerabilities.package_managers import Version
-from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 

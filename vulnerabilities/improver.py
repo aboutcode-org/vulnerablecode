@@ -1,16 +1,16 @@
 import dataclasses
 import logging
-from typing import List
 from typing import Iterable
+from typing import List
 from typing import Optional
 from uuid import uuid4
 
-from packageurl import PackageURL
 from django.db.models.query import QuerySet
+from packageurl import PackageURL
 
-from vulnerabilities.importer import Reference
-from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.helpers import classproperty
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import Reference
 
 logger = logging.getLogger(__name__)
 

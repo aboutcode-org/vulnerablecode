@@ -21,12 +21,12 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import re
-from typing import Optional
-from typing import List
-from typing import Dict
-from typing import Tuple
-from typing import Set
 import xml.etree.ElementTree as ET
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Set
+from typing import Tuple
 
 from vulnerabilities.lib_oval import OvalDefinition
 from vulnerabilities.lib_oval import OvalDocument

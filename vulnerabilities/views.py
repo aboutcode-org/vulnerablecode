@@ -27,14 +27,14 @@ from django.db.models import Count
 from django.db.models import Q
 from django.http import HttpResponse
 from django.http.response import HttpResponseNotAllowed
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
+from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
-from django.views.generic.list import ListView
-from django.views.generic.edit import UpdateView
 from django.views.generic.edit import CreateView
 from django.views.generic.edit import DeleteView
-
+from django.views.generic.edit import UpdateView
+from django.views.generic.list import ListView
 
 from vulnerabilities import forms
 from vulnerabilities import models

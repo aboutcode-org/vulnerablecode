@@ -21,17 +21,17 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import os
-from unittest.mock import patch
 from unittest import TestCase
+from unittest.mock import patch
 
 from packageurl import PackageURL
 
+from vulnerabilities.helpers import AffectedPackage
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Reference
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatImporter
-from vulnerabilities.helpers import AffectedPackage
-from vulnerabilities.package_managers import Version
 from vulnerabilities.package_managers import MavenVersionAPI
+from vulnerabilities.package_managers import Version
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "apache_tomcat", "security-9.html")

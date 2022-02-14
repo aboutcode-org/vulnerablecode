@@ -2,9 +2,7 @@ import os
 import unittest
 import xml.etree.ElementTree as ET
 
-
 from vulnerabilities.oval_parser import OvalParser
-
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")

@@ -1,4 +1,5 @@
-from django.test import TestCase, Client
+from django.test import Client
+from django.test import TestCase
 
 
 class PackageSearchTestCase(TestCase):

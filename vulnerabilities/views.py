@@ -19,10 +19,10 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-
 from urllib.parse import urlencode
 
-from django.core.paginator import Paginator, PageNotAnInteger
+from django.core.paginator import PageNotAnInteger
+from django.core.paginator import Paginator
 from django.db.models import Count
 from django.db.models import Q
 from django.http import HttpResponse

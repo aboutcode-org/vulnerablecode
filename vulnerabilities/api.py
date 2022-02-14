@@ -25,10 +25,11 @@ from urllib.parse import unquote
 
 from django_filters import rest_framework as filters
 from packageurl import PackageURL
-
-from rest_framework import serializers, viewsets
+from rest_framework import serializers
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference

@@ -30,11 +30,11 @@ from urllib.request import urlopen
 
 from packageurl import PackageURL
 
+from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.severity_systems import scoring_systems
 
 

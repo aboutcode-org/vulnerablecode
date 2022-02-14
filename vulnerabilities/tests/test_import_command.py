@@ -20,16 +20,16 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-from unittest.mock import patch
 from io import StringIO
+from unittest.mock import patch
 
+import pytest
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import TestCase
-import pytest
 
-from vulnerabilities.importer import Importer
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import Importer
 
 
 class DummyImporter(Importer):

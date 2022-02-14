@@ -26,11 +26,12 @@ from unittest import TestCase
 
 from packageurl import PackageURL
 
-from vulnerabilities.importer import Advisory, Reference
+from vulnerabilities.helpers import AffectedPackage
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Reference
 from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import Version
-from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 

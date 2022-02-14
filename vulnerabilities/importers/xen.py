@@ -27,11 +27,11 @@ import json
 import requests
 from packageurl import PackageURL
 
-from vulnerabilities.importer import Importer
-from vulnerabilities.importer import Advisory
-from vulnerabilities.importer import Reference
 from vulnerabilities.helpers import create_etag
 from vulnerabilities.helpers import is_cve
+from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
 
 
 class XenImporter(Importer):

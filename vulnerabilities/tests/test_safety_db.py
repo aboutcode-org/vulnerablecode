@@ -26,13 +26,13 @@ from unittest import TestCase
 
 from packageurl import PackageURL
 
-from vulnerabilities.importers.safety_db import categorize_versions
-from vulnerabilities.importers.safety_db import SafetyDbImporter
+from vulnerabilities.helpers import AffectedPackage
 from vulnerabilities.importer import Advisory
 from vulnerabilities.importer import Reference
+from vulnerabilities.importers.safety_db import SafetyDbImporter
+from vulnerabilities.importers.safety_db import categorize_versions
 from vulnerabilities.package_managers import PypiVersionAPI
 from vulnerabilities.package_managers import Version
-from vulnerabilities.helpers import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "safety_db")

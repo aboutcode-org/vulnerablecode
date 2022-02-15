@@ -41,10 +41,10 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.package_managers import ComposerVersionAPI
+from vulnerabilities.package_managers import GoproxyVersionAPI
 from vulnerabilities.package_managers import MavenVersionAPI
 from vulnerabilities.package_managers import NugetVersionAPI
 from vulnerabilities.package_managers import PypiVersionAPI
-from vulnerabilities.package_managers import GoproxyVersionAPI
 from vulnerabilities.package_managers import RubyVersionAPI
 from vulnerabilities.severity_systems import scoring_systems
 

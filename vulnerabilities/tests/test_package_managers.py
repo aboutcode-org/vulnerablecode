@@ -31,12 +31,13 @@ from unittest.case import SkipTest
 from unittest.mock import AsyncMock
 
 from aiohttp.client import ClientSession
-from dateutil.tz import tzlocal, tzutc
+from dateutil.tz import tzlocal
+from dateutil.tz import tzutc
 from pytz import UTC
 
 from vulnerabilities.package_managers import ComposerVersionAPI
-from vulnerabilities.package_managers import GoproxyVersionAPI
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.package_managers import GoproxyVersionAPI
 from vulnerabilities.package_managers import MavenVersionAPI
 from vulnerabilities.package_managers import NugetVersionAPI
 from vulnerabilities.package_managers import Version

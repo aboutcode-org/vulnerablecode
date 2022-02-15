@@ -1,26 +1,42 @@
-Welcome to VulnerableCode documentation!
-=========================================
+VulnerableCode documentation
+=============================
+
+Welcome to VulnerableCode! In this documentation you’ll find information on:
+
+- An overview of VulnerableCode
+- Installation instructions
+- How to make technical contributions to the project and the community
+
+.. toctree::
+    :maxdepth: 2
+    :caption: Getting Started
+
+    introduction
+    installation
+    contributing
+    faq
+    misc
 
 .. toctree::
    :maxdepth: 2
-   :caption: Getting Started:
+   :caption: Tutorial
 
-   getting-started/docker_installation.rst
-   getting-started/sources.rst
+   tutorial_add_new_importer
 
-.. toctree::
-   :maxdepth: 2
-   :caption: How-To Guides:
-
-   how-to-guides/add_new_importer.rst
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contribute:
+    :maxdepth: 2
+    :caption: Reference Documentation
 
-   contribute/index
+    reference_importer_concepts
+    reference_improver_concepts
+    command-line-interface
 
-.. include:: ../../README.rst
+.. toctree::
+   :maxdepth: 1
+   :caption: Summer of Codes
+
+   soc_gsoc21
 
 Indices and tables
 ==================

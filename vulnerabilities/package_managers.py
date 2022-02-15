@@ -22,26 +22,30 @@
 import asyncio
 import dataclasses
 import os
+import traceback
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from json import JSONDecodeError
 from subprocess import check_output
 from typing import List
-from typing import Mapping
+from typing import MutableMapping
+from typing import Optional
 from typing import Set
 
 import aiohttp
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientResponseError
 from aiohttp.client_exceptions import ServerDisconnectedError
+from aiohttp.web_exceptions import HTTPGone
 from bs4 import BeautifulSoup
 from dateutil import parser as dateparser
+from django.utils.dateparse import parse_datetime
 
 
 @dataclasses.dataclass(frozen=True)
 class Version:
     value: str
-    release_date: datetime = None
+    release_date: Optional[datetime] = None
 
 
 @dataclasses.dataclass
@@ -55,10 +59,10 @@ class GraphQLError(Exception):
 
 
 class VersionAPI:
-    def __init__(self, cache: Mapping[str, Set[Version]] = None):
+    def __init__(self, cache: MutableMapping[str, Set[Version]] = None):
         self.cache = cache or {}
 
-    def get(self, package_name, until=None) -> Set[str]:
+    def get(self, package_name, until=None) -> VersionResponse:
         new_versions = set()
         valid_versions = set()
         for version in self.cache.get(package_name, set()):
@@ -104,7 +108,7 @@ class LaunchpadVersionAPI(VersionAPI):
                 response = await session.request(method="GET", url=url)
                 resp_json = await response.json()
                 if resp_json["entries"] == []:
-                    self.cache[pkg] = {}
+                    self.cache[pkg] = set()
                     break
                 for release in resp_json["entries"]:
                     all_versions.add(
@@ -118,8 +122,12 @@ class LaunchpadVersionAPI(VersionAPI):
                 else:
                     break
             self.cache[pkg] = all_versions
-        except (ClientResponseError, asyncio.exceptions.TimeoutError, ServerDisconnectedError):
-            self.cache[pkg] = {}
+        except (
+            ClientResponseError,
+            asyncio.exceptions.TimeoutError,
+            ServerDisconnectedError,
+        ):
+            self.cache[pkg] = set()
 
 
 class PypiVersionAPI(VersionAPI):
@@ -242,7 +250,7 @@ class DebianVersionAPI(VersionAPI):
             resp_json = await response.json()
 
             if resp_json.get("error") or not resp_json.get("versions"):
-                self.cache[pkg] = {}
+                self.cache[pkg] = set()
                 return
             for release in resp_json["versions"]:
                 all_versions.add(Version(value=release["version"].replace("0:", "")))
@@ -250,8 +258,12 @@ class DebianVersionAPI(VersionAPI):
             self.cache[pkg] = all_versions
         # TODO : Handle ServerDisconnectedError by using some sort of
         # retry mechanism
-        except (ClientResponseError, asyncio.exceptions.TimeoutError, ServerDisconnectedError):
-            self.cache[pkg] = {}
+        except (
+            ClientResponseError,
+            asyncio.exceptions.TimeoutError,
+            ServerDisconnectedError,
+        ):
+            self.cache[pkg] = set()
 
 
 class MavenVersionAPI(VersionAPI):
@@ -295,10 +307,10 @@ class MavenVersionAPI(VersionAPI):
         return endpoint
 
     @staticmethod
-    def extract_versions(xml_response: ET.ElementTree) -> Set[str]:
+    def extract_versions(xml_response: ET.ElementTree) -> Set[Version]:
         all_versions = set()
         for child in xml_response.getroot().iter():
-            if child.tag == "version":
+            if child.tag == "version" and child.text:
                 all_versions.add(Version(child.text))
 
         return all_versions
@@ -321,7 +333,7 @@ class NugetVersionAPI(VersionAPI):
         return base_url.format(pkg_name)
 
     @staticmethod
-    def extract_versions(resp: dict) -> Set[str]:
+    def extract_versions(resp: dict) -> Set[Version]:
         all_versions = set()
         try:
             for entry_group in resp["items"]:
@@ -353,7 +365,7 @@ class ComposerVersionAPI(VersionAPI):
             self.cache[pkg] = self.extract_versions(resp, pkg)
 
     @staticmethod
-    def composer_url(pkg_name: str) -> str:
+    def composer_url(pkg_name: str) -> Optional[str]:
         try:
             vendor, name = pkg_name.split("/")
         except ValueError:
@@ -362,7 +374,7 @@ class ComposerVersionAPI(VersionAPI):
         return f"https://repo.packagist.org/p/{vendor}/{name}.json"
 
     @staticmethod
-    def extract_versions(resp: dict, pkg_name: str) -> Set[str]:
+    def extract_versions(resp: dict, pkg_name: str) -> Set[Version]:
         all_versions = set()
         for version in resp["packages"][pkg_name]:
             if "dev" in version:
@@ -412,7 +424,7 @@ class GitHubTagsAPI(VersionAPI):
         }
     }"""
 
-    def __init__(self, cache: Mapping[str, Set[Version]] = None):
+    def __init__(self, cache: MutableMapping[str, Set[Version]] = None):
         self.gh_token = os.getenv("GH_TOKEN")
         super().__init__(cache=cache)
 
@@ -427,7 +439,10 @@ class GitHubTagsAPI(VersionAPI):
             session.headers["Authorization"] = "token " + self.gh_token
             endpoint = f"https://api.github.com/graphql"
             owner, name = owner_repo.split("/")
-            query = {"query": self.GQL_QUERY, "variables": {"name": name, "owner": owner}}
+            query = {
+                "query": self.GQL_QUERY,
+                "variables": {"name": name, "owner": owner},
+            }
 
             while True:
                 response = await session.post(endpoint, json=query)
@@ -488,4 +503,112 @@ class HexVersionAPI(VersionAPI):
         except (ClientResponseError, JSONDecodeError):
             pass
 
+        self.cache[pkg] = versions
+
+
+class GoproxyVersionAPI(VersionAPI):
+
+    package_type = "golang"
+    module_name_by_package_name = {}
+
+    @staticmethod
+    def trim_url_path(url_path: str) -> Optional[str]:
+        """
+        Return a trimmed Go `url_path` removing trailing
+        package references and keeping only the module
+        references.
+
+        Github advisories for Go are using package names
+        such as "https://github.com/nats-io/nats-server/v2/server"
+        (e.g., https://github.com/advisories/GHSA-jp4j-47f9-2vc3 ),
+        yet goproxy works with module names instead such as
+        "https://github.com/nats-io/nats-server" (see for details
+        https://golang.org/ref/mod#goproxy-protocol ).
+        This functions trims the trailing part(s) of a package URL
+        and returns the remaining the module name.
+        For example:
+        >>> module = "https://github.com/xx/a"
+        >>> assert GoproxyVersionAPI.trim_url_path("https://github.com/xx/a/b") == module
+        """
+        # some advisories contains this prefix in package name, e.g. https://github.com/advisories/GHSA-7h6j-2268-fhcm
+        if url_path.startswith("https://pkg.go.dev/"):
+            url_path = url_path.removeprefix("https://pkg.go.dev/")
+        parts = url_path.split("/")
+        if len(parts) >= 2:
+            return "/".join(parts[:-1])
+        else:
+            return None
+
+    @staticmethod
+    def escape_path(path: str) -> str:
+        """
+        Return an case-encoded module path or version name.
+
+        This is done by replacing every uppercase letter with an exclamation
+        mark followed by the corresponding lower-case letter, in order to
+        avoid ambiguity when serving from case-insensitive file systems.
+        Refer to https://golang.org/ref/mod#goproxy-protocol.
+        """
+        escaped_path = ""
+        for c in path:
+            if c >= "A" and c <= "Z":
+                # replace uppercase with !lowercase
+                escaped_path += "!" + chr(ord(c) + ord("a") - ord("A"))
+            else:
+                escaped_path += c
+        return escaped_path
+
+    @staticmethod
+    async def parse_version_info(
+        version_info: str, escaped_pkg: str, session: ClientSession
+    ) -> Optional[Version]:
+        v = version_info.split()
+        if not v:
+            return None
+        value = v[0]
+        if len(v) > 1:
+            # get release date from the second part. see https://github.com/golang/go/blob/master/src/cmd/go/internal/modfetch/proxy.go#latest()
+            release_date = parse_datetime(v[1])
+        else:
+            escaped_ver = GoproxyVersionAPI.escape_path(value)
+            try:
+                response = await session.request(
+                    method="GET",
+                    url=f"https://proxy.golang.org/{escaped_pkg}/@v/{escaped_ver}.info",
+                )
+                resp_json = await response.json()
+                release_date = parse_datetime(resp_json.get("Time", ""))
+            except:
+                traceback.print_exc()
+                print(
+                    f"error while fetching version info for {escaped_pkg}/{escaped_ver} from goproxy"
+                )
+                release_date = None
+        return Version(value=value, release_date=release_date)
+
+    async def fetch(self, pkg: str, session: ClientSession):
+        # escape uppercase in module path
+        escaped_pkg = GoproxyVersionAPI.escape_path(pkg)
+        trimmed_pkg = pkg
+        resp_text = None
+        # resolve module name from package name, see https://go.dev/ref/mod#resolve-pkg-mod
+        while escaped_pkg is not None:
+            url = f"https://proxy.golang.org/{escaped_pkg}/@v/list"
+            try:
+                response = await session.request(method="GET", url=url)
+                resp_text = await response.text()
+            except HTTPGone:
+                escaped_pkg = GoproxyVersionAPI.trim_url_path(escaped_pkg)
+                trimmed_pkg = GoproxyVersionAPI.trim_url_path(trimmed_pkg) or ""
+                continue
+            break
+        if resp_text is None or escaped_pkg is None or trimmed_pkg is None:
+            print(f"error while fetching versions for {pkg} from goproxy")
+            return
+        self.module_name_by_package_name[pkg] = trimmed_pkg
+        versions = set()
+        for version_info in resp_text.split("\n"):
+            version = await GoproxyVersionAPI.parse_version_info(version_info, escaped_pkg, session)
+            if version is not None:
+                versions.add(version)
         self.cache[pkg] = versions

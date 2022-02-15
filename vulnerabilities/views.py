@@ -19,9 +19,9 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-
 from urllib.parse import urlencode
 
+from django.core.paginator import PageNotAnInteger
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django.db.models import Q
@@ -50,7 +50,11 @@ class PackageSearchView(View):
         if request.GET:
             packages = self.request_to_queryset(request)
             result_size = len(packages)
-            page_no = int(request.GET.get("page", 1))
+            try:
+                page_no = request.GET.get("page", 1)
+                packages = Paginator(packages, 50).get_page(page_no)
+            except PageNotAnInteger:
+                packages = Paginator(packages, 50).get_page(1)
             packages = Paginator(packages, 50).get_page(page_no)
             context["packages"] = packages
             context["searched_for"] = urlencode(

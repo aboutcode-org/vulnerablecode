@@ -41,6 +41,7 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.package_managers import ComposerVersionAPI
+from vulnerabilities.package_managers import GoproxyVersionAPI
 from vulnerabilities.package_managers import MavenVersionAPI
 from vulnerabilities.package_managers import NugetVersionAPI
 from vulnerabilities.package_managers import PypiVersionAPI
@@ -196,6 +197,7 @@ class GitHubAPIImporter(Importer):
             "COMPOSER": ComposerVersionAPI,
             "PIP": PypiVersionAPI,
             "RUBYGEMS": RubyVersionAPI,
+            "GO": GoproxyVersionAPI,
         }
         versioner = versioners.get(ecosystem)
         if versioner:
@@ -219,7 +221,7 @@ class GitHubAPIImporter(Importer):
                 return None
             return vendor, name
 
-        if ecosystem == "NUGET" or ecosystem == "PIP" or ecosystem == "RUBYGEMS":
+        if ecosystem in ("NUGET", "PIP", "RUBYGEMS", "GO"):
             return None, pkg_name
 
     @staticmethod
@@ -255,6 +257,10 @@ class GitHubAPIImporter(Importer):
                     unaffected_purls = []
                     if self.process_name(ecosystem, name):
                         ns, pkg_name = self.process_name(ecosystem, name)
+                        if hasattr(self.version_api, "module_name_by_package_name"):
+                            pkg_name = self.version_api.module_name_by_package_name.get(
+                                name, pkg_name
+                            )
                         aff_range = adv["node"]["vulnerableVersionRange"]
                         aff_vers, unaff_vers = self.categorize_versions(
                             self.version_api.package_type,

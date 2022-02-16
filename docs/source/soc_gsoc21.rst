@@ -4,7 +4,7 @@ Google Summer of Code 2021 Final Report
 Organization - `AboutCode <https://www.aboutcode.org>`_
 -----------------------------------------------------------
 | `Hritik Vijay <https://github.com/hritik14>`_
-| Project: `VulnerableCode <github.com/nexB/vulnerablecode>`_
+| Project: `VulnerableCode <https://github.com/nexB/vulnerablecode>`_
 
 Overview
 ---------

@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = "vulnerablecode"
+project = "VulnerableCode"
 copyright = "nexb Inc. and others"
 author = "nexb Inc. and others"
 

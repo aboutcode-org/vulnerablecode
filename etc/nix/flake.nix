@@ -29,9 +29,6 @@
       version = builtins.head (builtins.match ''.*version=["']?([^"',]+).*''
         (builtins.readFile (vulnerablecode-src + "/setup.py")));
 
-      # Common shell code.
-      libSh = ./lib.sh;
-
       # System types to support.
       supportedSystems = [ "x86_64-linux" ];
 
@@ -145,24 +142,14 @@
                 cd ./vulnerablecode
                 chmod -R +w .
 
-                # Make sure postgres uses a local socket file. The posgres
-                # commands (initd,b createdb, createuser, etc.) honor these
-                # settings.
-                export PGHOST=$PWD
-                export PGDATA=./pgdata
-                # Start postgres.
-                initdb -E utf-8
-                pg_ctl -o "-k $PGHOST" -l ./logfile start
+                source ./etc/nix/lib.sh
 
-                # Setup dev environment.
-                export PYTHON_EXE=${pythonEnvDev}/bin/python3 # use correct python
-                export ACTIVATE= # no venv
-                sed -i 's/sudo -u postgres//' Makefile # no extra user
-                make envfile postgres
+                setupDevEnv
               '';
 
               doCheck = true;
               checkPhase = ''
+                export PYTHON_EXE=${pythonEnvDev}/bin/python3 # use correct python
                 make check
                 make test
 

@@ -140,25 +140,34 @@
               unpackPhase = "true";
 
               buildPhase = ''
-                source ${libSh}
-                initPostgres $(pwd)
-                export SECRET_KEY=REALLY_SECRET
-                ${vulnerablecode}/manage.py collectstatic --no-input
-                ${vulnerablecode}/manage.py migrate
+                # Work on a local copy.
+                cp -r ${vulnerablecode} ./vulnerablecode
+                cd ./vulnerablecode
+                chmod -R +w .
+
+                # Make sure postgres uses a local socket file. The posgres
+                # commands (initd,b createdb, createuser, etc.) honor these
+                # settings.
+                export PGHOST=$PWD
+                export PGDATA=./pgdata
+                # Start postgres.
+                initdb -E utf-8
+                pg_ctl -o "-k $PGHOST" -l ./logfile start
+
+                # Setup dev environment.
+                export PYTHON_EXE=${pythonEnvDev}/bin/python3 # use correct python
+                export ACTIVATE= # no venv
+                sed -i 's/sudo -u postgres//' Makefile # no extra user
+                make envfile postgres
               '';
 
               doCheck = true;
               checkPhase = ''
-                # Run pytest on the installed version. A running postgres
-                # database server is needed.
-                (
-                  cd ${vulnerablecode}
-                  black -l 100 --check .
-                  pytest -m "not webtest"
-                )
+                make check
+                make test
 
                 # Launch the webserver and call the API.
-                ${vulnerablecode}/manage.py runserver &
+                make run &
                 sleep 2
                 wget http://127.0.0.1:8000/api/
                 kill %1 # kill background task (i.e. webserver)

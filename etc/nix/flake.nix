@@ -84,12 +84,6 @@
             dontBuild = true; # do not use Makefile
             propagatedBuildInputs = [ pythonEnv postgresql gitMinimal ];
 
-            postPatch = ''
-              # Do not use absolute path.
-              substituteInPlace vulnerablecode/settings.py \
-                --replace 'STATIC_ROOT = "/var/vulnerablecode/static"' 'STATIC_ROOT = "./static"'
-            '';
-
             installPhase = ''
               cp -r . $out
             '';

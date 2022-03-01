@@ -86,14 +86,15 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                 fix=False,
             ).update_or_create()
 
-        fixed_package, _ = _get_or_create_package(inference.fixed_purl)
-        models.PackageRelatedVulnerability(
-            vulnerability=vuln,
-            package=fixed_package,
-            created_by=improver_name,
-            confidence=inference.confidence,
-            fix=True,
-        ).update_or_create()
+        if inference.fixed_purl:
+            fixed_package, _ = _get_or_create_package(inference.fixed_purl)
+            models.PackageRelatedVulnerability(
+                vulnerability=vuln,
+                package=fixed_package,
+                created_by=improver_name,
+                confidence=inference.confidence,
+                fix=True,
+            ).update_or_create()
 
     advisory.date_improved = datetime.now(timezone.utc)
     advisory.save()

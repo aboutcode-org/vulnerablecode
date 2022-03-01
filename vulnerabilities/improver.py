@@ -31,7 +31,7 @@ class Inference:
     confidence: int = MAX_CONFIDENCE
     summary: Optional[str] = None
     affected_purls: List[PackageURL] = dataclasses.field(default_factory=list)
-    fixed_purl: PackageURL = dataclasses.field(default_factory=list)
+    fixed_purl: PackageURL = None
     references: List[Reference] = dataclasses.field(default_factory=list)
 
     def __post_init__(self):
@@ -49,7 +49,7 @@ class Inference:
 
         versionless_purls = []
         for purl in self.affected_purls + [self.fixed_purl]:
-            if not purl.version:
+            if purl and not purl.version:
                 versionless_purls.append(purl)
 
         assert (

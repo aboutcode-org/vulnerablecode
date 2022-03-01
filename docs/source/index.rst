@@ -22,14 +22,16 @@ Welcome to VulnerableCode! In this documentation you’ll find information on:
    :caption: Tutorial
 
    tutorial_add_new_importer
+   tutorial_add_new_improver
 
 
 .. toctree::
     :maxdepth: 2
     :caption: Reference Documentation
 
-    reference_importer_concepts
-    reference_improver_concepts
+    reference_importer_overview
+    reference_improver_overview
+    reference_framework_overview
     command-line-interface
 
 .. toctree::

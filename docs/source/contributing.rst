@@ -18,7 +18,7 @@ Do Your Homework
 
 Before adding a contribution or create a new issue, take a look at the project’s
 `README <https://github.com/nexB/vulnerablecode>`_, read through our
-`documentation <vulnerablecode.readthedocs.io/en/latest/>`_,
+`documentation <https://vulnerablecode.readthedocs.io/en/latest/>`_,
 and browse existing `issues <https://github.com/nexB/vulnerablecode/issues>`_,
 to develop some understanding of the project and confirm whether a given
 issue/feature has previously been discussed.

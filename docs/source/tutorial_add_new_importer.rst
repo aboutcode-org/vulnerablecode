@@ -1,3 +1,5 @@
+.. _tutorial_add_a_new_importer:
+
 Add a new importer
 ====================
 
@@ -5,7 +7,7 @@ This tutorial contains all the things one should know to quickly
 implement an importer.
 A lot of internal sausage about importers could be found inside the
 :file:`vulnerabilites/importer.py` file.
-Make sure to go through :ref:`importer-concepts` before you begin writing one.
+Make sure to go through :ref:`importer-overview` before you begin writing one.
 
 TL;DR
 -------
@@ -17,6 +19,8 @@ TL;DR
 #. Implement the ``advisory_data`` method to process the data source you're writing an importer for.
 #. Add the newly created importer to the importers registry at
    ``vulnerabilites/importers/__init__.py``
+
+.. _tutorial_add_a_new_importer_prerequisites:
 
 Prerequisites
 --------------
@@ -215,6 +219,9 @@ version management from `univers <https://github.com/nexB/univers>`_
 
    | Use ``make valid`` to format your new code using black and isort automatically.
    | Use ``make check`` to check for formatting errrors.
+
+Register the Importer
+^^^^^^^^^^^^^^^^^^^^^^
 
 Finally, register your importer in the importer registry at
 :file:`vulnerabilites/importers/__init__.py`

@@ -184,5 +184,6 @@ def get_or_create_vulnerability_and_aliases(vulnerability_id, alias_names, summa
     for alias_name in new_alias_names:
         alias = models.Alias(alias=alias_name, vulnerability=vulnerability)
         alias.save()
+        logger.info(f"New alias for {vulnerability!r}: {alias_name}")
 
     return vulnerability

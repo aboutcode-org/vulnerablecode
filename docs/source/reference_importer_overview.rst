@@ -1,6 +1,6 @@
-.. _importer-concepts:
+.. _importer-overview:
 
-Importer Concepts
+Importer Overview
 ==================
 
 Importers are responsible to scrape vulnerability data from various data sources without creating
@@ -17,7 +17,8 @@ processed and inserted into the ``Advisory`` model.
 
 While implementing an importer, it is important to make sure that the importer does not alter the
 upstream data at all. Its only job is to convert the data from a data source into structured - yet
-non relational - data.
+non relational - data. The importers must **not** be smart or performing trickeries
+under the hood.
 This ensures that we always have a *true* copy of an advisory without any speculations or
 improvements.
 
@@ -28,7 +29,7 @@ library whose development goes hand in hand with VulnerableCode.
 
 The data imported by importers is not useful by itself, it must be processed into a relational
 model. The version ranges are required to be dissolved into concrete ranges. These are achieved by
-``Improvers``. For more, see: :ref:`improver-concepts`
+``Improvers``. For more, see: :ref:`improver-overview`
 
 As of now, the following importers have been implemented in VulnerableCode
 

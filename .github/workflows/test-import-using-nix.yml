@@ -27,4 +27,4 @@ jobs:
           cd etc/nix
           ./get-latest-pypi-deps-db.sh --in-place
           nix --print-build-logs flake check
-          ./test-import-using-nix.sh alpine
+          nix-shell --run ./test-import-using-nix.sh

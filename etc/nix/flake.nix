@@ -13,7 +13,7 @@
     type = "github";
     owner = "DavHau";
     repo = "mach-nix";
-    ref = "235a0a81d05a043bca2a93442f2560946266fc73";
+    ref = "fe5255e6fd8df57e9507b7af82fc59dda9e9ff2b"; # 3.4.0
   };
 
   outputs = { self, nixpkgs, machnix }:
@@ -28,9 +28,6 @@
       # Extract version from setup.py.
       version = builtins.head (builtins.match ''.*version=["']?([^"',]+).*''
         (builtins.readFile (vulnerablecode-src + "/setup.py")));
-
-      # Common shell code.
-      libSh = ./lib.sh;
 
       # System types to support.
       supportedSystems = [ "x86_64-linux" ];
@@ -57,9 +54,10 @@
           # mach-nix release) is usually insufficient. Use
           # ./get-latest-pypi-deps-db.sh to obtain the data rev & hash.
           pypiDataRev =
-            "8dcec158c51f8a96f316630679222e436c1b078c"; # 2021-06-16T08:41:20Z
+            "897a7471aa4e83aab21d2c501e00fee3f440e0fe"; # 2022-02-21T08:57:22Z
           pypiDataSha256 =
-            "0499zl39aia74f0i7fkn5dsy8244dkmcw4vzd5nf4kai605j2jli";
+            "03gnaq687gg9afb6i6czw4kzr1gbnzna15lfb26f9nszyfq3iyaj";
+
         });
       # This wrapper allows to setup both the production as well as the
       # development Python environments in the same way (albeit having
@@ -69,11 +67,6 @@
           requirements = ''
             ${requirements}
           '';
-          # Fix an issue with an upstream dep of GitPython.
-          # https://github.com/DavHau/mach-nix/issues/287
-          # See https://github.com/DavHau/mach-nix/issues/318
-          _.gitpython.propagatedBuildInputs.mod = pySelf: self: oldVal:
-            oldVal ++ [ pySelf.typing-extensions ];
         };
 
     in {
@@ -90,12 +83,6 @@
             src = vulnerablecode-src;
             dontBuild = true; # do not use Makefile
             propagatedBuildInputs = [ pythonEnv postgresql gitMinimal ];
-
-            postPatch = ''
-              # Do not use absolute path.
-              substituteInPlace vulnerablecode/settings.py \
-                --replace 'STATIC_ROOT = "/var/vulnerablecode/static"' 'STATIC_ROOT = "./static"'
-            '';
 
             installPhase = ''
               cp -r . $out
@@ -144,25 +131,24 @@
               unpackPhase = "true";
 
               buildPhase = ''
-                source ${libSh}
-                initPostgres $(pwd)
-                export SECRET_KEY=REALLY_SECRET
-                ${vulnerablecode}/manage.py collectstatic --no-input
-                ${vulnerablecode}/manage.py migrate
+                # Work on a local copy.
+                cp -r ${vulnerablecode} ./vulnerablecode
+                cd ./vulnerablecode
+                chmod -R +w .
+
+                source ./etc/nix/lib.sh
+
+                setupDevEnv
               '';
 
               doCheck = true;
               checkPhase = ''
-                # Run pytest on the installed version. A running postgres
-                # database server is needed.
-                (
-                  cd ${vulnerablecode}
-                  black -l 100 --check .
-                  pytest -m "not webtest"
-                )
+                export PYTHON_EXE=${pythonEnvDev}/bin/python3 # use correct python
+                make check
+                make test
 
                 # Launch the webserver and call the API.
-                ${vulnerablecode}/manage.py runserver &
+                make run &
                 sleep 2
                 wget http://127.0.0.1:8000/api/
                 kill %1 # kill background task (i.e. webserver)

@@ -64,14 +64,14 @@ def get_exact_purls(affected_package: AffectedPackage) -> (List[PackageURL], Pac
     # We need ``if c`` below because univers returns None as version
     # in case of vers:nginx/*
     # TODO: Revisit after https://github.com/nexB/univers/issues/33
-    range_versions = [c.version for c in vr.constraints if c]
-    resolved_versions = [v for v in range_versions if v and v in vr]
-
     affected_purls = []
-    for version in resolved_versions:
-        affected_purl = affected_package.package._replace(version=str(version))
-        affected_purls.append(affected_purl)
+    if vr:
+        range_versions = [c.version for c in vr.constraints if c]
+        resolved_versions = [v for v in range_versions if v and v in vr]
+        for version in resolved_versions:
+            affected_purl = affected_package.package._replace(version=str(version))
+            affected_purls.append(affected_purl)
 
-    fixed_purl = affected_package.get_fixed_purl()
+    fixed_purl = affected_package.get_fixed_purl() if affected_package.fixed_version else None
 
     return affected_purls, fixed_purl

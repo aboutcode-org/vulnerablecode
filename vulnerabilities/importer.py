@@ -188,7 +188,10 @@ class AffectedPackage:
         """
         package = PackageURL(**affected_pkg["package"])
         affected_version_range = None
-        if affected_pkg["affected_version_range"]:
+        if (
+            affected_pkg["affected_version_range"]
+            and affected_pkg["affected_version_range"] != "None"
+        ):
             affected_version_range = VersionRange.from_string(
                 affected_pkg["affected_version_range"]
             )

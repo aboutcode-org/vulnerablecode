@@ -76,15 +76,16 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                 if updated:
                     logger.info("Severity updated for reference {ref!r} to {severity.value!r}")
 
-        for pkg in inference.affected_purls:
-            vulnerable_package, _ = _get_or_create_package(pkg)
-            models.PackageRelatedVulnerability(
-                vulnerability=vuln,
-                package=vulnerable_package,
-                created_by=improver_name,
-                confidence=inference.confidence,
-                fix=False,
-            ).update_or_create()
+        if inference.affected_purls:
+            for pkg in inference.affected_purls:
+                vulnerable_package, _ = _get_or_create_package(pkg)
+                models.PackageRelatedVulnerability(
+                    vulnerability=vuln,
+                    package=vulnerable_package,
+                    created_by=improver_name,
+                    confidence=inference.confidence,
+                    fix=False,
+                ).update_or_create()
 
         if inference.fixed_purl:
             fixed_package, _ = _get_or_create_package(inference.fixed_purl)

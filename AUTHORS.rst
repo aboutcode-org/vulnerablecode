@@ -13,3 +13,4 @@ The following organizations or individuals have contributed to this repo:
 - Navonil Das @NavonilDas
 - Tushar Upadhyay @tushar912
 - Hritik Vijay @hritik14
+- Tushar Goel @TG1999

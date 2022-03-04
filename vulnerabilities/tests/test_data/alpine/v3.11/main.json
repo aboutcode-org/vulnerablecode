@@ -1,0 +1,44 @@
+{
+    "apkurl": "{{urlprefix}}/{{distroversion}}/{{reponame}}/{{arch}}/{{pkg.name}}-{{pkg.ver}}.apk",
+    "archs": [
+      "aarch64",
+      "armhf",
+      "armv7",
+      "ppc64le",
+      "s390x",
+      "x86",
+      "x86_64"
+    ],
+    "reponame": "main",
+    "urlprefix": "https://dl-cdn.alpinelinux.org/alpine",
+    "distroversion": "v3.11",
+    "packages": [
+      {
+        "pkg": {
+          "name": "xen",
+          "secfixes": {
+            "4.10.0-r1": [
+              "XSA-248"
+            ],
+            "4.10-1-r1": [
+              "XSA-252"
+            ],
+            "4.10.0-r2": [
+              "CVE-2018-7540 XSA-252"
+            ]
+          }
+        }
+      },
+      {
+        "pkg": {
+          "name": "apk-tools",
+          "secfixes": {
+            "2.7.2-r0": [
+              "CVE-2017-9669",
+              "CVE-2017-9671"
+            ]
+          }
+        }
+      }
+    ]
+  }

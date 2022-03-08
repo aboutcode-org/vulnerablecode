@@ -127,6 +127,6 @@ install: virtualenv
 
 typecheck:
 	@echo "-> Run type checking"
-	@${ACTIVATE} ${PYTHON_EXE} -m mypy .
+	@${ACTIVATE} ${PYTHON_EXE} -m mypy --ignore-missing-imports .
 
 .PHONY: virtualenv conf dev envfile install check valid clean migrate postgres sqlite run test package

@@ -49,7 +49,6 @@ collect_ignore = [
     "test_apache_kafka.py",
     "test_nvd.py",
     "test_apache_tomcat.py",
-    "test_openssl.py",
     "test_api.py",
     "test_package_managers.py",
     "test_archlinux.py",

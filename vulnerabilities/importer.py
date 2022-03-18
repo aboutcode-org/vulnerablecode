@@ -230,6 +230,15 @@ class AdvisoryData:
         if self.date_published and not self.date_published.tzinfo:
             logger.warn(f"AdvisoryData with no tzinfo: {self!r}")
 
+    def to_dict(self):
+        return {
+            "aliases": self.aliases,
+            "summary": self.summary,
+            "affected_packages": [pkg.to_dict() for pkg in self.affected_packages],
+            "references": [ref.to_dict() for ref in self.references],
+            "date_published": self.date_published.isoformat() if self.date_published else None,
+        }
+
 
 class NoLicenseError(Exception):
     pass

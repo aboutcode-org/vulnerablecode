@@ -20,466 +20,108 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+
+import datetime
+import json
 import os
 import unittest
-from collections import OrderedDict
+from typing import Iterable
 
+import defusedxml.ElementTree as DET
 from packageurl import PackageURL
+from univers.version_constraint import VersionConstraint
+from univers.version_range import OpensslVersionRange
+from univers.versions import OpensslVersion
 
-from vulnerabilities.helpers import AffectedPackage
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
-from vulnerabilities.importers.openssl import OpenSSLImporter
+from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.importers.openssl import parse_vulnerabilities
+from vulnerabilities.importers.openssl import to_advisory_data
+from vulnerabilities.severity_systems import SCORING_SYSTEMS
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "test_data/", "openssl_xml_data.xml")
+TEST_DATA = os.path.join(BASE_DIR, "test_data", "openssl")
 
 
-def load_test_data():
-    with open(TEST_DATA) as f:
-        return f.read()
+class TestOpenssl(unittest.TestCase):
+    # use regen flag to generates the expected_file
+    def test_parse_vulnerabilities(self, regen=True):
+        xml_page = os.path.join(TEST_DATA, "openssl_xml_data.xml")
+        with open(xml_page) as f:
+            xml_response = f.read()
+        result = [data.to_dict() for data in parse_vulnerabilities(xml_response)]
 
+        expected_file = os.path.join(TEST_DATA, "openssl-expected.json")
+        if regen:
+            with open(expected_file, "w") as f:
+                json.dump(result, f, indent=2)
+            expected = result
+        else:
+            with open(expected_file) as f:
+                expected = json.load(f)
+        assert result == expected
 
-class TestOpenSSL(unittest.TestCase):
-    def test_to_advisory(self):
-        data = load_test_data()
-        expected_advisories = [
-            Advisory(
-                summary='Server or client applications that call the SSL_check_chain() function during or after a TLS 1.3 handshake may crash due to a NULL pointer dereference as a result of incorrect handling of the "signature_algorithms_cert" TLS extension. The crash occurs if an invalid or unrecognised signature algorithm is received from the peer. This could be exploited by a malicious peer in a Denial of Service attack. OpenSSL version 1.1.1d, 1.1.1e, and 1.1.1f are affected by this issue. This issue did not affect OpenSSL versions prior to 1.1.1d.',
-                vulnerability_id="CVE-2020-1967",
-                affected_packages=[
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.1.1d",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.1.1g",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.1.1e",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.1.1g",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.1.1f",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.1.1g",
-                        ),
-                    ),
-                ],
-                references=[
-                    Reference(
-                        reference_id="",
-                        url="https://github.com/openssl/openssl/commit/eb563247aef3e83dda7679c43f9649270462e5b1",
-                        severities=[],
-                    )
-                ],
-            ),
-            Advisory(
-                summary="There is an overflow bug in the x64_64 Montgomery squaring procedure used in exponentiation with 512-bit moduli. No EC algorithms are affected. Analysis suggests that attacks against 2-prime RSA1024, 3-prime RSA1536, and DSA1024 as a result of this defect would be very difficult to perform and are not believed likely. Attacks against DH512 are considered just feasible. However, for an attack the target would have to re-use the DH512 private key, which is not recommended anyway. Also applications directly using the low level API BN_mod_exp may be affected if they use BN_FLG_CONSTTIME.",
-                vulnerability_id="CVE-2019-1551",
-                affected_packages=[
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.1.1e",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2a",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2b",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2c",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2d",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2e",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2f",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2g",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2h",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2i",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2j",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2k",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2l",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2m",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2n",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2o",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2p",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2q",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2r",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2s",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2t",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.0.2u",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.1.1",
-                        ),
-                        patched_package=None,
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.1.1a",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.1.1e",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.1.1b",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.1.1e",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.1.1c",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.1.1e",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.1.1d",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="openssl",
-                            version="1.1.1e",
-                        ),
-                    ),
-                ],
-                references=[
-                    Reference(
-                        reference_id="",
-                        url="https://github.com/openssl/openssl/commit/419102400a2811582a7a3d4a4e317d72e5ce0a8f",
-                        severities=[],
-                    ),
-                    Reference(
-                        reference_id="",
-                        url="https://github.com/openssl/openssl/commit/f1c5eea8a817075d31e43f5876993c6710238c98",
-                        severities=[],
-                    ),
-                ],
-            ),
-        ]
+    def test_to_advisory_data(self):
+        issue_string = """<issue public="20171207">
+            <cve name="2017-3737"/>
+            <affects base="1.0.2" version="1.0.2b"/>
+            <affects base="1.0.2" version="1.0.2c"/>
+            <fixed base="1.0.2" version="1.0.2n" date="20171207">
+                <git hash="898fb884b706aaeb283de4812340bb0bde8476dc"/>
+            </fixed>
+            <problemtype>Unauthenticated read/unencrypted write</problemtype>
+            <title>Read/write after SSL object in error state</title>
+            <description> OpenSSL 1.0.2 (starting from version 1.0.2b) introduced an "error state"</description>
+            <advisory url="/news/secadv/20171207.txt"/>
+            <reported source="David Benjamin (Google)"/>
+        </issue>"""
 
-        found_advisories = OpenSSLImporter.to_advisories(data)
-
-        found_advisories = list(map(Advisory.normalized, found_advisories))
-        expected_advisories = list(map(Advisory.normalized, expected_advisories))
-        assert sorted(found_advisories) == sorted(expected_advisories)
+        expected = AdvisoryData(
+            aliases=["CVE-2017-3737", "VC-OPENSSL-20171207-CVE-2017-3737"],
+            summary='OpenSSL 1.0.2 (starting from version 1.0.2b) introduced an "error state"',
+            affected_packages=[
+                AffectedPackage(
+                    package=PackageURL(
+                        type="openssl",
+                        namespace=None,
+                        name="openssl",
+                        version=None,
+                        qualifiers={},
+                        subpath=None,
+                    ),
+                    affected_version_range=OpensslVersionRange(
+                        constraints=(
+                            VersionConstraint(
+                                comparator="=", version=OpensslVersion(string="1.0.2b")
+                            ),
+                            VersionConstraint(
+                                comparator="=", version=OpensslVersion(string="1.0.2c")
+                            ),
+                        )
+                    ),
+                    fixed_version=OpensslVersion(string="1.0.2n"),
+                )
+            ],
+            references=[
+                Reference(
+                    reference_id="CVE-2017-3737",
+                    url="",
+                    severities=[],
+                ),
+                Reference(
+                    reference_id="",
+                    url="https://github.com/openssl/openssl/commit/898fb884b706aaeb283de4812340bb0bde8476dc",
+                    severities=[],
+                ),
+                Reference(
+                    reference_id="",
+                    url="https://www.openssl.org/news/secadv/20171207.txt",
+                    severities=[],
+                ),
+            ],
+            date_published=datetime.datetime(2017, 12, 7, 0, 0, tzinfo=datetime.timezone.utc),
+        )
+        issue_parsed = DET.fromstring(issue_string)
+        assert expected == to_advisory_data(issue_parsed)

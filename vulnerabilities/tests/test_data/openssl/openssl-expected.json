@@ -1,0 +1,246 @@
+[
+  {
+    "aliases": [
+      "CVE-2021-3712",
+      "VC-OPENSSL-20210824-CVE-2021-3712"
+    ],
+    "summary": "ASN.1 strings are represented internally within OpenSSL as an ASN1_STRING structure which contains a buffer holding the string data and a field holding the buffer length. This contrasts with normal C strings which are repesented as a buffer for the string data which is terminated with a NUL (0) byte. Although not a strict requirement, ASN.1 strings that are parsed using OpenSSL's own \"d2i\" functions (and other similar parsing functions) as well as any string whose value has been set with the ASN1_STRING_set() function will additionally NUL terminate the byte array in the ASN1_STRING structure. However, it is possible for applications to directly construct valid ASN1_STRING structures which do not NUL terminate the byte array by directly setting the \"data\" and \"length\" fields in the ASN1_STRING array. This can also happen by using the ASN1_STRING_set0() function. Numerous OpenSSL functions that print ASN.1 data have been found to assume that the ASN1_STRING byte array will be NUL terminated, even though this is not guaranteed for strings that have been directly constructed. Where an application requests an ASN.1 structure to be printed, and where that ASN.1 structure contains ASN1_STRINGs that have been directly constructed by the application without NUL terminating the \"data\" field, then a read buffer overrun can occur. The same thing can also occur during name constraints processing of certificates (for example if a certificate has been directly constructed by the application instead of loading it via the OpenSSL parsing functions, and the certificate contains non NUL terminated ASN1_STRING structures). It can also occur in the X509_get1_email(), X509_REQ_get1_email() and X509_get1_ocsp() functions. If a malicious actor can cause an application to directly construct an ASN1_STRING and then process it through one of the affected OpenSSL functions then this issue could be hit. This might result in a crash (causing a Denial of Service attack). It could also result in the disclosure of private memory contents (such as private keys, or sensitive plaintext).",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": null,
+          "name": "openssl",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c|1.1.1d|1.1.1e|1.1.1f|1.1.1g|1.1.1h|1.1.1i|1.1.1j|1.1.1k",
+        "fixed_version": "1.1.1l"
+      },
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": null,
+          "name": "openssl",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:openssl/1.0.2|1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2w|1.0.2x|1.0.2y",
+        "fixed_version": "1.0.2za"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2021-3712",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/94d23fcff9b2a7a8368dfe52214d5c2569882c11",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/ccb0a11145ee72b042d10593a64eaf9e8a55ec12",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.openssl.org/news/secadv/20210824.txt",
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "Moderate"
+          }
+        ]
+      }
+    ],
+    "date_published": "2021-08-24T00:00:00+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2019-1551",
+      "VC-OPENSSL-20191206-CVE-2019-1551"
+    ],
+    "summary": "There is an overflow bug in the x64_64 Montgomery squaring procedure used in exponentiation with 512-bit moduli. No EC algorithms are affected. Analysis suggests that attacks against 2-prime RSA1024, 3-prime RSA1536, and DSA1024 as a result of this defect would be very difficult to perform and are not believed likely. Attacks against DH512 are considered just feasible. However, for an attack the target would have to re-use the DH512 private key, which is not recommended anyway. Also applications directly using the low level API BN_mod_exp may be affected if they use BN_FLG_CONSTTIME.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": null,
+          "name": "openssl",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c|1.1.1d",
+        "fixed_version": "1.1.1e"
+      },
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": null,
+          "name": "openssl",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t",
+        "fixed_version": "1.0.2u"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2019-1551",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/419102400a2811582a7a3d4a4e317d72e5ce0a8f",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/f1c5eea8a817075d31e43f5876993c6710238c98",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.openssl.org/news/secadv/20191206.txt",
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "Low"
+          }
+        ]
+      }
+    ],
+    "date_published": "2019-12-06T00:00:00+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2009-1379",
+      "VC-OPENSSL-20090512-CVE-2009-1379"
+    ],
+    "summary": "Use-after-free vulnerability in the dtls1_retrieve_buffered_fragment function could cause a client accessing a malicious DTLS server to crash.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": null,
+          "name": "openssl",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l",
+        "fixed_version": "0.9.8m"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2009-1379",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/561cbe567846a376153bea7f1f2d061e78029c2d",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://web.archive.org/web/20100824233642/http://rt.openssl.org/Ticket/Display.html?id=1923&user=guest&pass=guest",
+        "severities": []
+      }
+    ],
+    "date_published": "2009-05-12T00:00:00+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2019-1552",
+      "VC-OPENSSL-20190730-CVE-2019-1552"
+    ],
+    "summary": "OpenSSL has internal defaults for a directory tree where it can find a configuration file as well as certificates used for verification in TLS. This directory is most commonly referred to as OPENSSLDIR, and is configurable with the --prefix / --openssldir configuration options. For OpenSSL versions 1.1.0 and 1.1.1, the mingw configuration targets assume that resulting programs and libraries are installed in a Unix-like environment and the default prefix for program installation as well as for OPENSSLDIR should be '/usr/local'. However, mingw programs are Windows programs, and as such, find themselves looking at sub-directories of 'C:/usr/local', which may be world writable, which enables untrusted users to modify OpenSSL's default configuration, insert CA certificates, modify (or even replace) existing engine modules, etc. For OpenSSL 1.0.2, '/usr/local/ssl' is used as default for OPENSSLDIR on all Unix and Windows targets, including Visual C builds. However, some build instructions for the diverse Windows targets on 1.0.2 encourage you to specify your own --prefix. OpenSSL versions 1.1.1, 1.1.0 and 1.0.2 are affected by this issue. Due to the limited scope of affected deployments this has been assessed as low severity and therefore we are not creating new releases at this time.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": null,
+          "name": "openssl",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c",
+        "fixed_version": "1.1.1d"
+      },
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": null,
+          "name": "openssl",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c|1.1.0d|1.1.0e|1.1.0f|1.1.0g|1.1.0h|1.1.0i|1.1.0j|1.1.0k",
+        "fixed_version": "1.1.0l"
+      },
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": null,
+          "name": "openssl",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s",
+        "fixed_version": "1.0.2t"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2019-1552",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/54aa9d51b09d67e90db443f682cface795f5af9e",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/e32bc855a81a2d48d215c506bdeb4f598045f7e9",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/b15a19c148384e73338aa7c5b12652138e35ed28",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/d333ebaf9c77332754a9d5e111e2f53e1de54fdd",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.openssl.org/news/secadv/20190730.txt",
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "Low"
+          }
+        ]
+      }
+    ],
+    "date_published": "2019-07-30T00:00:00+00:00"
+  }
+]

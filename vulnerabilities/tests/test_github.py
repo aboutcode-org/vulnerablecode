@@ -22,288 +22,315 @@
 
 import json
 import os
-from unittest import TestCase
-from unittest.mock import MagicMock
-from unittest.mock import call
-from unittest.mock import patch
+from datetime import datetime
+from unittest import mock
 
+import pytest
+import pytz
 from packageurl import PackageURL
+from univers.version_constraint import VersionConstraint
+from univers.version_range import GemVersionRange
+from univers.versions import RubygemsVersion
 
-from vulnerabilities.helpers import AffectedPackage
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers.github import GitHubAPIImporter
+from vulnerabilities.importers.github import GitHubBasicImprover
 from vulnerabilities.importers.github import GitHubTokenError
-from vulnerabilities.importers.github import query
-from vulnerabilities.package_managers import ComposerVersionAPI
-from vulnerabilities.package_managers import MavenVersionAPI
-from vulnerabilities.package_managers import NugetVersionAPI
-from vulnerabilities.package_managers import Version
+from vulnerabilities.importers.github import process_response
+from vulnerabilities.importers.github import resolve_version_range
+from vulnerabilities.package_managers import Version as PackageVersion
 from vulnerabilities.severity_systems import ScoringSystem
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "test_data")
+TEST_DATA = os.path.join(BASE_DIR, "test_data", "github_api")
 
 
-class TestGitHubAPIImporter(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        data_source_cfg = {
-            "endpoint": "https://api.example.com/graphql",
-            "ecosystems": ["MAVEN"],
-        }
-        with patch.dict(os.environ, {"GH_TOKEN": "abc"}):
-            cls.data_src = GitHubAPIImporter(1, config=data_source_cfg)
+@pytest.mark.parametrize("pkg_type", ["maven", "nuget", "gem", "golang", "composer", "pypi"])
+def test_process_response_github_importer(pkg_type, regen=False):
+    response_file = os.path.join(TEST_DATA, f"{pkg_type}.json")
+    expected_file = os.path.join(TEST_DATA, f"{pkg_type}-expected.json")
+    with open(response_file) as f:
+        response = json.load(f)
 
-    def tearDown(self):
-        setattr(self.data_src, "version_api", None)
+    result = [data.to_dict() for data in process_response(resp=response, package_type=pkg_type)]
 
-    def test_categorize_versions(self):
-        eg_version_range = ">= 3.3.0, < 3.3.5"
-        eg_versions = ["3.3.6", "3.3.0", "3.3.4", "3.2.0"]
+    if regen:
+        with open(expected_file, "w") as f:
+            json.dump(result, f, indent=2)
+        expected = result
+    else:
+        with open(expected_file) as f:
+            expected = json.load(f)
 
-        aff_vers, safe_vers = self.data_src.categorize_versions(
-            "pypi", eg_version_range, eg_versions
-        )
-        exp_safe_vers = ["3.3.6", "3.2.0"]
-        exp_aff_vers = ["3.3.0", "3.3.4"]
+    assert result == expected
 
-        assert aff_vers == exp_aff_vers
-        assert safe_vers == exp_safe_vers
 
-    def test_fetch_withinvalidtoken(self):
-        class MockErrorResponse(MagicMock):
-            @staticmethod
-            def json():
-                return {"message": "Bad credentials"}
-
-        # This test checks whether `fetch` raises an error when there is an Authentication
-        # failure.
-        exp_headers = {"Authorization": "token abc"}
-        first_query = {"query": query % ("MAVEN", "")}
-        mock = MockErrorResponse()
-        with patch("vulnerabilities.importers.github.requests.post", new=mock):
-            self.assertRaises(GitHubTokenError, self.data_src.fetch)
-            mock.assert_called_with(
-                self.data_src.config.endpoint, headers=exp_headers, json=first_query
+def test_resolve_version_range():
+    assert (["1.0.0", "2.0.0"], ["10.0.0"]) == resolve_version_range(
+        GemVersionRange(
+            constraints=(
+                VersionConstraint(comparator="<", version=RubygemsVersion(string="9.0.0")),
             )
+        ),
+        [
+            "1.0.0",
+            "2.0.0",
+            "10.0.0",
+        ],
+    )
 
-    def test_fetch_withvalidtoken(self):
-        class MockCorrectResponse(MagicMock):
-            has_next_page = False
-            # This owes an explanation. The intent of having
-            # has_next_page is to obtain different MockCorrectResponse objects
-            # the first one should have `has_next_page = True` and other should
-            # have  `has_next_page = False`. This is required to test whether
-            # GitHubAPIImporter.fetch stops as expected.
 
-            def json(self):
-                self.has_next_page = not self.has_next_page
-                return {
-                    "data": {
-                        "securityVulnerabilities": {
-                            "pageInfo": {
-                                "endCursor": "page=2",
-                                "hasNextPage": self.has_next_page,
-                            }
-                        }
-                    }
-                }
+def test_resolve_version_range_failure(caplog):
+    assert ([], []) == resolve_version_range(
+        None,
+        [
+            PackageVersion(value="1.0.0"),
+            PackageVersion(value="2.0.0"),
+            PackageVersion(value="10.0.0"),
+        ],
+    )
+    assert "affected version range is" in caplog.text
 
-        exp_headers = {"Authorization": "token abc"}
-        first_query = {"query": query % ("MAVEN", "")}
-        second_query = {"query": query % ("MAVEN", 'after: "page=2"')}
-        mock = MockCorrectResponse()
-        with patch("vulnerabilities.importers.github.requests.post", new=mock):
-            resp = self.data_src.fetch()
 
-        call_1 = call(self.data_src.config.endpoint, headers=exp_headers, json=first_query)
-        call_2 = call(self.data_src.config.endpoint, headers=exp_headers, json=second_query)
+def test_process_response_with_empty_vulnaribilities(caplog):
+    list(process_response({"data": {"securityVulnerabilities": {"edges": []}}}, "maven"))
+    assert "No vulnerabilities found for package_type: 'maven'" in caplog.text
 
-        assert mock.call_args_list[0] == call_1
-        assert mock.call_args_list[1] == call_2
 
-    def test_set_version_api(self):
-
-        with patch("vulnerabilities.importers.github.GitHubAPIImporter.set_api"):
-            with patch("vulnerabilities.importers.github.GitHubAPIImporter.collect_packages"):
-                assert getattr(self.data_src, "version_api", None) is None
-
-                self.data_src.set_version_api("MAVEN")
-                assert isinstance(self.data_src.version_api, MavenVersionAPI)
-
-                self.data_src.set_version_api("NUGET")
-                assert isinstance(self.data_src.version_api, NugetVersionAPI)
-
-                self.data_src.set_version_api("COMPOSER")
-                assert isinstance(self.data_src.version_api, ComposerVersionAPI)
-
-    def test_process_name(self):
-
-        expected_1 = ("org.apache", "kafka")
-        result_1 = self.data_src.process_name("MAVEN", "org.apache:kafka")
-        assert result_1 == expected_1
-
-        expected_2 = (None, "WindowS.nUget.ExIsts")
-        result_2 = self.data_src.process_name("NUGET", "WindowS.nUget.ExIsts")
-        assert result_2 == expected_2
-
-        expected_3 = ("psf", "black")
-        result_3 = self.data_src.process_name("COMPOSER", "psf/black")
-        assert result_3 == expected_3
-
-        expected_4 = None
-        result_4 = self.data_src.process_name("SAMPLE", "sample?example=True")
-        assert result_4 == expected_4
-
-    def test_process_response(self):
-
-        with open(os.path.join(TEST_DATA, "github_api", "response.json")) as f:
-            resp = json.load(f)
-            self.data_src.advisories = resp
-
-        expected_advisories = [
-            Advisory(
-                summary="Denial of Service in Tomcat",
-                references=[
-                    Reference(
-                        reference_id="GHSA-qcxh-w3j9-58qr",
-                        url="https://github.com/advisories/GHSA-qcxh-w3j9-58qr",
-                        severities=[
-                            VulnerabilitySeverity(
-                                system=ScoringSystem(
-                                    identifier="cvssv3.1_qr",
-                                    name="CVSSv3.1 Qualitative Severity Rating",
-                                    url="https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale",
-                                    notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",  # nopep8
-                                ),
-                                value="MODERATE",
-                            )
-                        ],
-                    )
-                ],
-                vulnerability_id="CVE-2019-0199",
-            ),
-            Advisory(
-                summary="Denial of Service in Tomcat",
-                affected_packages=[
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="maven",
-                            namespace="org.apache.tomcat.embed",
-                            name="tomcat-embed-core",
-                            version="9.0.2",
-                            qualifiers={},
-                            subpath=None,
-                        )
-                    )
-                ],
-                references=[
-                    Reference(
-                        reference_id="GHSA-qcxh-w3j9-58qr",
-                        url="https://github.com/advisories/GHSA-qcxh-w3j9-58qr",
-                        severities=[
-                            VulnerabilitySeverity(
-                                system=ScoringSystem(
-                                    identifier="cvssv3.1_qr",
-                                    name="CVSSv3.1 Qualitative Severity Rating",
-                                    url="https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale",
-                                    notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",  # nopep8
-                                ),
-                                value="HIGH",
-                            )
-                        ],
-                    )
-                ],
-                vulnerability_id="CVE-2019-0199",
-            ),
-            Advisory(
-                summary="Improper Input Validation in Tomcat",
-                references=[
-                    Reference(
-                        reference_id="GHSA-c9hw-wf7x-jp9j",
-                        url="https://github.com/advisories/GHSA-c9hw-wf7x-jp9j",
-                        severities=[
-                            VulnerabilitySeverity(
-                                system=ScoringSystem(
-                                    identifier="cvssv3.1_qr",
-                                    name="CVSSv3.1 Qualitative Severity Rating",
-                                    url="https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale",
-                                    notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",  # nopep8
-                                ),
-                                value="LOW",
-                            )
-                        ],
-                    )
-                ],
-                vulnerability_id="CVE-2020-1938",
-            ),
-            Advisory(
-                summary="Improper Input Validation in Tomcat",
-                references=[
-                    Reference(
-                        reference_id="GHSA-c9hw-wf7x-jp9j",
-                        url="https://github.com/advisories/GHSA-c9hw-wf7x-jp9j",
-                        severities=[
-                            VulnerabilitySeverity(
-                                system=ScoringSystem(
-                                    identifier="cvssv3.1_qr",
-                                    name="CVSSv3.1 Qualitative Severity Rating",
-                                    url="https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale",
-                                    notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",  # nopep8
-                                ),
-                                value="MODERATE",
-                            )
-                        ],
-                    )
-                ],
-                vulnerability_id="CVE-2020-1938",
-            ),
-            Advisory(
-                summary="Improper Input Validation in Tomcat",
-                affected_packages=[
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="maven",
-                            namespace="org.apache.tomcat.embed",
-                            name="tomcat-embed-core",
-                            version="9.0.2",
-                        )
-                    )
-                ],
-                references=[
-                    Reference(
-                        reference_id="GHSA-c9hw-wf7x-jp9j",
-                        url="https://github.com/advisories/GHSA-c9hw-wf7x-jp9j",
-                        severities=[
-                            VulnerabilitySeverity(
-                                system=ScoringSystem(
-                                    identifier="cvssv3.1_qr",
-                                    name="CVSSv3.1 Qualitative Severity Rating",
-                                    url="https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale",
-                                    notes="A textual interpretation of severity. Has values like HIGH, MODERATE etc",  # nopep8
-                                ),
-                                value="LOW",
-                            )
-                        ],
-                    )
-                ],
-                vulnerability_id="CVE-2020-1938",
-            ),
-        ]
-
-        mock_version_api = MavenVersionAPI(
-            cache={
-                "org.apache.tomcat.embed:tomcat-embed-core": {Version("1.2.0"), Version("9.0.2")}
-            }
+def test_process_response_with_empty_vulnaribilities(caplog):
+    list(
+        process_response(
+            {"data": {"securityVulnerabilities": {"edges": [{"node": {}}, None]}}}, "maven"
         )
-        with patch(
-            "vulnerabilities.importers.github.MavenVersionAPI", return_value=mock_version_api
-        ):
-            with patch("vulnerabilities.importers.github.GitHubAPIImporter.set_api"):
-                found_advisories = self.data_src.process_response()
+    )
+    assert "No node found" in caplog.text
 
-        found_advisories = list(map(Advisory.normalized, found_advisories))
-        expected_advisories = list(map(Advisory.normalized, expected_advisories))
-        assert sorted(found_advisories) == sorted(expected_advisories)
+
+def test_github_importer_with_missing_credentials():
+    with pytest.raises(GitHubTokenError) as e:
+        with mock.patch.dict(os.environ, {}, clear=True):
+            importer = GitHubAPIImporter()
+            importer.advisory_data()
+
+
+@mock.patch("vulnerabilities.importers.github.get_response")
+def test_github_importer_with_missing_credentials(mock_response):
+    mock_response.return_value = {"message": "Bad credentials"}
+    with pytest.raises(GitHubTokenError) as e:
+        with mock.patch.dict(os.environ, {"GH_TOKEN": "BAD"}, clear=True):
+            importer = GitHubAPIImporter()
+            importer.advisory_data()
+
+
+def valid_versions():
+    return [
+        "5.2.4.1",
+        "6.1.4.3",
+        "6.0.2",
+        "5.2.1",
+        "6.0.3",
+        "7.0.2",
+        "6.1.4.6",
+        "5.2.0.beta2",
+        "6.0.0.beta3",
+        "5.2.0.beta1",
+        "5.2.4.4",
+        "5.2.0",
+        "6.1.3",
+        "6.0.0",
+        "5.2.3.rc1",
+        "6.0.3.5",
+        "5.2.6.2",
+        "6.1.0.rc1",
+        "5.2.7",
+        "6.1.2.1",
+        "7.0.0.rc3",
+        "6.0.4.7",
+        "5.2.1.rc1",
+        "7.0.2.1",
+        "6.1.4.4",
+        "5.2.5",
+        "5.2.4.5",
+        "7.0.2.2",
+        "6.0.3.7",
+        "6.0.4.2",
+        "6.0.2.2",
+        "5.2.2.1",
+        "6.1.4",
+        "7.0.0.rc2",
+        "6.0.0.beta2",
+        "5.2.1.1",
+        "6.1.4.5",
+        "6.0.3.1",
+        "6.0.4.1",
+        "6.0.2.1",
+        "5.2.6.1",
+        "5.2.6.3",
+        "6.1.5",
+        "6.0.3.3",
+        "6.0.3.2",
+        "5.2.2.rc1",
+        "6.0.1",
+        "7.0.0.alpha1",
+        "5.2.6",
+        "6.1.3.2",
+        "6.0.4.6",
+        "6.1.0.rc2",
+        "5.2.4.3",
+        "7.0.1",
+        "7.0.2.3",
+        "6.0.4",
+        "7.0.0.rc1",
+        "6.1.2",
+        "5.2.4.6",
+        "5.2.3",
+        "6.1.4.2",
+        "6.0.3.6",
+        "6.0.4.4",
+        "7.0.0",
+        "6.0.4.3",
+        "6.0.0.rc2",
+        "5.2.4.rc1",
+        "0.1",
+        "6.1.0",
+        "6.0.1.rc1",
+        "5.2.4.2",
+        "6.0.0.beta1",
+        "5.2.4",
+        "6.0.4.5",
+        "6.1.3.1",
+        "7.0.0.alpha2",
+        "6.1.1",
+        "6.0.0.rc1",
+        "5.2.0.rc2",
+        "6.1.4.1",
+        "6.1.4.7",
+        "5.2.2",
+        "6.0.2.rc1",
+        "5.2.0.rc1",
+        "6.0.3.4",
+        "6.0.3.rc1",
+        "6.0.2.rc2",
+    ]
+
+
+@mock.patch("vulnerabilities.importers.github.GitHubBasicImprover.get_package_versions")
+def test_github_improver(mock_response, regen=False):
+    advisory_data = AdvisoryData(
+        aliases=["CVE-2022-21831", "GHSA-w749-p3v6-hccq"],
+        summary="Possible code injection vulnerability in Rails / Active Storage",
+        affected_packages=[
+            AffectedPackage(
+                package=PackageURL(
+                    type="gem",
+                    namespace=None,
+                    name="activestorage",
+                    version=None,
+                    qualifiers={},
+                    subpath=None,
+                ),
+                affected_version_range=GemVersionRange(
+                    constraints=(
+                        VersionConstraint(comparator=">=", version=RubygemsVersion(string="5.2.0")),
+                        VersionConstraint(
+                            comparator="<=", version=RubygemsVersion(string="5.2.6.2")
+                        ),
+                        VersionConstraint(comparator=">=", version=RubygemsVersion(string="6.0.1")),
+                        VersionConstraint(
+                            comparator="<=", version=RubygemsVersion(string="6.0.4.3")
+                        ),
+                    )
+                ),
+                fixed_version=None,
+            )
+        ],
+        references=[
+            Reference(
+                reference_id="",
+                url="https://nvd.nist.gov/vuln/detail/CVE-2022-21831",
+                severities=[],
+            ),
+            Reference(
+                reference_id="",
+                url="https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e",
+                severities=[],
+            ),
+            Reference(
+                reference_id="",
+                url="https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI",
+                severities=[],
+            ),
+            Reference(
+                reference_id="",
+                url="https://rubysec.com/advisories/CVE-2022-21831/",
+                severities=[],
+            ),
+            Reference(
+                reference_id="GHSA-w749-p3v6-hccq",
+                url="https://github.com/advisories/GHSA-w749-p3v6-hccq",
+                severities=[
+                    VulnerabilitySeverity(
+                        system=ScoringSystem(
+                            identifier="cvssv3.1_qr",
+                            name="CVSSv3.1 Qualitative Severity Rating",
+                            url="https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale",
+                            notes="A textual interpretation of severity. Has values like HIGH, MEDIUM etc",
+                        ),
+                        value="HIGH",
+                    )
+                ],
+            ),
+        ],
+        date_published=datetime.now(),
+    )
+    mock_response.return_value = list(valid_versions())
+    improver = GitHubBasicImprover()
+    expected_file = os.path.join(TEST_DATA, f"inference-expected.json")
+
+    result = [data.to_dict() for data in improver.get_inferences(advisory_data=advisory_data)]
+
+    if regen:
+        with open(expected_file, "w") as f:
+            json.dump(result, f, indent=2)
+        expected = result
+    else:
+        with open(expected_file) as f:
+            expected = json.load(f)
+
+    assert result == expected
+
+
+@mock.patch("vulnerabilities.package_managers_2.get_response")
+def test_get_package_versions(mock_response):
+    with open(os.path.join(BASE_DIR, "test_data", "package_manager_data", "pypi.json"), "r") as f:
+        mock_response.return_value = json.load(f)
+    improver = GitHubBasicImprover()
+    valid_versions = {
+        "1.1.3",
+        "1.1.4",
+        "1.10",
+        "1.10.1",
+        "1.10.2",
+        "1.10.3",
+        "1.10.4",
+        "1.10.5",
+        "1.10.6",
+        "1.10.7",
+        "1.10.8",
+        "1.10a1",
+        "1.10b1",
+        "1.10rc1",
+    }
+    assert (
+        improver.get_package_versions(package_url=PackageURL(type="pypi", name="django"))
+        == valid_versions
+    )
+    mock_response.return_value = None
+    assert not improver.get_package_versions(package_url=PackageURL(type="gem", name="foo"))
+    assert not improver.get_package_versions(package_url=PackageURL(type="pypi", name="foo"))
+    assert "django" in improver.version_api_by_purl_type["pypi"].cache
+    assert "foo" in improver.version_api_by_purl_type["gem"].cache
+    assert "foo" in improver.version_api_by_purl_type["pypi"].cache

@@ -1,0 +1,230 @@
+{
+  "data": {
+    "securityVulnerabilities": {
+      "edges": [
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-6mq2-37j5-w6r6"
+                },
+                {
+                  "type": "CVE",
+                  "value": "CVE-2009-4492"
+                }
+              ],
+              "summary": "Moderate severity vulnerability that affects webrick",
+              "references": [
+                {
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-4492"
+                },
+                {
+                  "url": "https://github.com/advisories/GHSA-6mq2-37j5-w6r6"
+                },
+                {
+                  "url": "http://secunia.com/advisories/37949"
+                },
+                {
+                  "url": "http://securitytracker.com/id?1023429"
+                },
+                {
+                  "url": "http://www.redhat.com/support/errata/RHSA-2011-0908.html"
+                },
+                {
+                  "url": "http://www.redhat.com/support/errata/RHSA-2011-0909.html"
+                },
+                {
+                  "url": "http://www.ruby-lang.org/en/news/2010/01/10/webrick-escape-sequence-injection"
+                },
+                {
+                  "url": "http://www.securityfocus.com/archive/1/508830/100/0/threaded"
+                },
+                {
+                  "url": "http://www.securityfocus.com/bid/37710"
+                },
+                {
+                  "url": "http://www.ush.it/team/ush/hack_httpd_escape/adv.txt"
+                },
+                {
+                  "url": "http://www.vupen.com/english/advisories/2010/0089"
+                }
+              ],
+              "severity": "MODERATE",
+              "publishedAt": "2017-10-24T18:33:38Z"
+            },
+            "package": {
+              "name": "webrick"
+            },
+            "vulnerableVersionRange": "<= 1.3.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-w749-p3v6-hccq"
+                },
+                {
+                  "type": "CVE",
+                  "value": "CVE-2022-21831"
+                }
+              ],
+              "summary": "Possible code injection vulnerability in Rails / Active Storage",
+              "references": [
+                {
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831"
+                },
+                {
+                  "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e"
+                },
+                {
+                  "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI"
+                },
+                {
+                  "url": "https://rubysec.com/advisories/CVE-2022-21831/"
+                },
+                {
+                  "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq"
+                }
+              ],
+              "severity": "HIGH",
+              "publishedAt": "2022-03-08T21:25:54Z"
+            },
+            "package": {
+              "name": "activestorage"
+            },
+            "vulnerableVersionRange": ">= 7.0.0, <= 7.0.2.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-w749-p3v6-hccq"
+                },
+                {
+                  "type": "CVE",
+                  "value": "CVE-2022-21831"
+                }
+              ],
+              "summary": "Possible code injection vulnerability in Rails / Active Storage",
+              "references": [
+                {
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831"
+                },
+                {
+                  "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e"
+                },
+                {
+                  "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI"
+                },
+                {
+                  "url": "https://rubysec.com/advisories/CVE-2022-21831/"
+                },
+                {
+                  "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq"
+                }
+              ],
+              "severity": "HIGH",
+              "publishedAt": "2022-03-08T21:25:54Z"
+            },
+            "package": {
+              "name": "activestorage"
+            },
+            "vulnerableVersionRange": ">= 6.1.0, <= 6.1.4.6"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-w749-p3v6-hccq"
+                },
+                {
+                  "type": "CVE",
+                  "value": "CVE-2022-21831"
+                }
+              ],
+              "summary": "Possible code injection vulnerability in Rails / Active Storage",
+              "references": [
+                {
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831"
+                },
+                {
+                  "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e"
+                },
+                {
+                  "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI"
+                },
+                {
+                  "url": "https://rubysec.com/advisories/CVE-2022-21831/"
+                },
+                {
+                  "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq"
+                }
+              ],
+              "severity": "HIGH",
+              "publishedAt": "2022-03-08T21:25:54Z"
+            },
+            "package": {
+              "name": "activestorage"
+            },
+            "vulnerableVersionRange": ">= 6.0.0, <= 6.0.4.6"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-w749-p3v6-hccq"
+                },
+                {
+                  "type": "CVE",
+                  "value": "CVE-2022-21831"
+                }
+              ],
+              "summary": "Possible code injection vulnerability in Rails / Active Storage",
+              "references": [
+                {
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831"
+                },
+                {
+                  "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e"
+                },
+                {
+                  "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI"
+                },
+                {
+                  "url": "https://rubysec.com/advisories/CVE-2022-21831/"
+                },
+                {
+                  "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq"
+                }
+              ],
+              "severity": "HIGH",
+              "publishedAt": "2022-03-08T21:25:54Z"
+            },
+            "package": {
+              "name": "activestorage"
+            },
+            "vulnerableVersionRange": ">= 5.2.0, <= 5.2.6.2"
+          }
+        }
+      ],
+      "pageInfo": {
+        "hasNextPage": true,
+        "endCursor": "Y3Vyc29yOnYyOpK5MjAyMS0wOS0xNFQwMDozNzowNyswNTozMM1NJA=="
+      }
+    }
+  }
+}

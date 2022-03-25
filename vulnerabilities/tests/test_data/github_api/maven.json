@@ -1,4 +1,4 @@
-{"MAVEN":[{
+{
   "data": {
     "securityVulnerabilities": {
       "edges": [
@@ -149,5 +149,4 @@
       }
     }
   }
-}]
 }

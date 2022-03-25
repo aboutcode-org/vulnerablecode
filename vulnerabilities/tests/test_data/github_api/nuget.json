@@ -1,0 +1,145 @@
+{
+  "data": {
+    "securityVulnerabilities": {
+      "edges": [
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-ph3v-2hq5-5qfq"
+                },
+                {
+                  "type": "CVE",
+                  "value": "CVE-2021-46703"
+                }
+              ],
+              "summary": "Code injection in RazorEngine",
+              "references": [
+                {
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-46703"
+                },
+                {
+                  "url": "https://github.com/Antaris/RazorEngine/issues/585"
+                },
+                {
+                  "url": "https://github.com/advisories/GHSA-ph3v-2hq5-5qfq"
+                }
+              ],
+              "severity": "MODERATE",
+              "publishedAt": "2022-03-07T00:00:41Z"
+            },
+            "package": {
+              "name": "RazorEngine"
+            },
+            "vulnerableVersionRange": "<= 4.5.1-alpha001"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-gcx5-3p5f-f8vp"
+                },
+                {
+                  "type": "CVE",
+                  "value": "CVE-2022-23395"
+                }
+              ],
+              "summary": "Prototype Pollution in jquery.cookie",
+              "references": [
+                {
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-23395"
+                },
+                {
+                  "url": "https://snyk.io/test/npm/jquery.cookie/1.4.1?tab=issues"
+                },
+                {
+                  "url": "https://github.com/advisories/GHSA-gcx5-3p5f-f8vp"
+                }
+              ],
+              "severity": "MODERATE",
+              "publishedAt": "2022-03-03T00:00:51Z"
+            },
+            "package": {
+              "name": "jquery.cookie"
+            },
+            "vulnerableVersionRange": "<= 1.4.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-vv6j-ww6x-54gx"
+                },
+                {
+                  "type": "CVE",
+                  "value": "CVE-2022-0609"
+                }
+              ],
+              "summary": "Use after free in Animation",
+              "references": [
+                {
+                  "url": "https://github.com/cefsharp/CefSharp/security/advisories/GHSA-vv6j-ww6x-54gx"
+                },
+                {
+                  "url": "https://github.com/advisories/GHSA-vv6j-ww6x-54gx"
+                }
+              ],
+              "severity": "HIGH",
+              "publishedAt": "2022-02-22T21:51:19Z"
+            },
+            "package": {
+              "name": "CefSharp.Wpf.NETCore"
+            },
+            "vulnerableVersionRange": "<= 98.1.190"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-j8f4-2w4p-mhjc"
+                },
+                {
+                  "type": "CVE",
+                  "value": "CVE-2017-0256"
+                }
+              ],
+              "summary": "Moderate severity vulnerability that affects Microsoft.AspNetCore.Mvc",
+              "references": [
+                {
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-0256"
+                },
+                {
+                  "url": "https://github.com/aspnet/Announcements/issues/239"
+                },
+                {
+                  "url": "https://github.com/advisories/GHSA-j8f4-2w4p-mhjc"
+                }
+              ],
+              "severity": "MODERATE",
+              "publishedAt": "2018-10-16T19:57:48Z"
+            },
+            "package": {
+              "name": "Microsoft.AspNetCore.Mvc.Razor.Host"
+            },
+            "vulnerableVersionRange": ">= 1.1.0, < 1.1.3"
+          }
+        }
+      ],
+      "pageInfo": {
+        "hasNextPage": true,
+        "endCursor": "Y3Vyc29yOnYyOpK5MjAyMS0wNC0wNVQyMToyNzo0MiswNTozMM0Y8A=="
+      }
+    }
+  }
+}

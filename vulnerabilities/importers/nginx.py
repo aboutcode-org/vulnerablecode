@@ -37,6 +37,7 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
+from vulnerabilities.importer import UnMergeablePackageError
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
@@ -199,8 +200,10 @@ class NginxBasicImprover(Improver):
             purl, affected_version_ranges, fixed_versions = AffectedPackage.merge(
                 advisory_data.affected_packages
             )
-        except KeyError:
+        except UnMergeablePackageError:
+            logger.error(f"Cannot merge with different purls {advisory_data.affected_packages!r}")
             return iter([])
+
         all_versions = self.version_api.get("nginx/nginx").valid_versions
         affected_purls = []
         for affected_version_range in affected_version_ranges:

@@ -1,0 +1,302 @@
+[
+  {
+    "aliases": [
+      "CVE-2009-4492",
+      "GHSA-6mq2-37j5-w6r6"
+    ],
+    "summary": "Moderate severity vulnerability that affects webrick",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "gem",
+          "namespace": null,
+          "name": "webrick",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:gem/<=1.3.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-4492",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-6mq2-37j5-w6r6",
+        "url": "https://github.com/advisories/GHSA-6mq2-37j5-w6r6",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE"
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "http://secunia.com/advisories/37949",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://securitytracker.com/id?1023429",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.redhat.com/support/errata/RHSA-2011-0908.html",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.redhat.com/support/errata/RHSA-2011-0909.html",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.ruby-lang.org/en/news/2010/01/10/webrick-escape-sequence-injection",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.securityfocus.com/archive/1/508830/100/0/threaded",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.securityfocus.com/bid/37710",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.ush.it/team/ush/hack_httpd_escape/adv.txt",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.vupen.com/english/advisories/2010/0089",
+        "severities": []
+      }
+    ],
+    "date_published": "2017-10-24T18:33:38+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-21831",
+      "GHSA-w749-p3v6-hccq"
+    ],
+    "summary": "Possible code injection vulnerability in Rails / Active Storage",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "gem",
+          "namespace": null,
+          "name": "activestorage",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:gem/>=7.0.0|<=7.0.2.2",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://rubysec.com/advisories/CVE-2022-21831/",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-w749-p3v6-hccq",
+        "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH"
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-03-08T21:25:54+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-21831",
+      "GHSA-w749-p3v6-hccq"
+    ],
+    "summary": "Possible code injection vulnerability in Rails / Active Storage",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "gem",
+          "namespace": null,
+          "name": "activestorage",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:gem/>=6.1.0|<=6.1.4.6",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://rubysec.com/advisories/CVE-2022-21831/",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-w749-p3v6-hccq",
+        "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH"
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-03-08T21:25:54+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-21831",
+      "GHSA-w749-p3v6-hccq"
+    ],
+    "summary": "Possible code injection vulnerability in Rails / Active Storage",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "gem",
+          "namespace": null,
+          "name": "activestorage",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:gem/>=6.0.0|<=6.0.4.6",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://rubysec.com/advisories/CVE-2022-21831/",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-w749-p3v6-hccq",
+        "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH"
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-03-08T21:25:54+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-21831",
+      "GHSA-w749-p3v6-hccq"
+    ],
+    "summary": "Possible code injection vulnerability in Rails / Active Storage",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "gem",
+          "namespace": null,
+          "name": "activestorage",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:gem/>=5.2.0|<=5.2.6.2",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://rubysec.com/advisories/CVE-2022-21831/",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-w749-p3v6-hccq",
+        "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH"
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-03-08T21:25:54+00:00"
+  }
+]

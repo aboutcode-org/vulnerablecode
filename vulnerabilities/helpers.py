@@ -23,7 +23,9 @@
 import bisect
 import dataclasses
 import json
+import logging
 import re
+from functools import total_ordering
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -34,8 +36,9 @@ import saneyaml
 import toml
 import urllib3
 from packageurl import PackageURL
+from univers.version_range import RANGE_CLASS_BY_SCHEMES
 
-# TODO add logging here
+LOGGER = logging.getLogger(__name__)
 
 cve_regex = re.compile(r"CVE-\d{4}-\d{4,7}", re.IGNORECASE)
 is_cve = cve_regex.match
@@ -133,32 +136,36 @@ def requests_with_5xx_retry(max_retries=5, backoff_factor=0.5):
     return session
 
 
+@total_ordering
+class VersionedPackage:
+    """
+    A PackageURL with a Version class.
+    This class is used to  get around bisect module's lack of supplying custom
+    comparator. Get rid of this once we use python 3.10 which supports this.
+    See https://github.com/python/cpython/pull/20556
+    """
+
+    def __init__(self, purl: PackageURL):
+        self.purl = purl
+        vrc = RANGE_CLASS_BY_SCHEMES.get(purl.type)
+        self.version = vrc.version_class(purl.version)
+
+    def __eq__(self, other):
+        return self.version == other.version
+
+    def __lt__(self, other):
+        return self.version < other.version
+
+
 def nearest_patched_package(
     vulnerable_packages: List[PackageURL], resolved_packages: List[PackageURL]
 ) -> List[AffectedPackage]:
-    class PackageURLWithVersionComparator:
-        """
-        This class is used to  get around bisect module's lack of supplying custom
-        compartor. Get rid of this once we use python 3.10 which supports this.
-        See https://github.com/python/cpython/pull/20556
-        """
+    """
+    Return a list of Affected Packages for each Patched package.
+    """
 
-        def __init__(self, package):
-            self.package = package
-            self.version_object = version_class_by_package_type[package.type](package.version)
-
-        def __eq__(self, other):
-            return self.version_object == other.version_object
-
-        def __lt__(self, other):
-            return self.version_object < other.version_object
-
-    vulnerable_packages = sorted(
-        [PackageURLWithVersionComparator(package) for package in vulnerable_packages]
-    )
-    resolved_packages = sorted(
-        [PackageURLWithVersionComparator(package) for package in resolved_packages]
-    )
+    vulnerable_packages = sorted([VersionedPackage(package) for package in vulnerable_packages])
+    resolved_packages = sorted([VersionedPackage(package) for package in resolved_packages])
 
     resolved_package_count = len(resolved_packages)
     affected_package_with_patched_package_objects = []
@@ -167,11 +174,11 @@ def nearest_patched_package(
         patched_package_index = bisect.bisect_right(resolved_packages, vulnerable_package)
         patched_package = None
         if patched_package_index < resolved_package_count:
-            patched_package = resolved_packages[patched_package_index].package
+            patched_package = resolved_packages[patched_package_index]
 
         affected_package_with_patched_package_objects.append(
             AffectedPackage(
-                vulnerable_package=vulnerable_package.package, patched_package=patched_package
+                vulnerable_package=vulnerable_package.purl, patched_package=patched_package.purl
             )
         )
 
@@ -211,3 +218,26 @@ class classproperty(object):
 
     def __get__(self, owner_self, owner_cls):
         return self.fget(owner_cls)
+
+
+def get_item(object: dict, *attributes):
+    """
+    Return `item` by going through all the `attributes` present in the `json_object`
+
+    Do a DFS for the `item` in the `json_object` by traversing the `attributes`
+    and return None if can not traverse through the `attributes`
+    For example:
+    >>> get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'c')
+    'd'
+    >>> assert(get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'e')) == None
+    """
+    if not object:
+        LOGGER.error(f"Object is empty: {object}")
+        return
+    item = object
+    for attribute in attributes:
+        if attribute not in item:
+            LOGGER.error(f"Missing attribute {attribute} in {item}")
+            return None
+        item = item[attribute]
+    return item

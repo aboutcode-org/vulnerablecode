@@ -1,0 +1,178 @@
+[
+  {
+    "aliases": [
+      "CVE-2021-46703",
+      "GHSA-ph3v-2hq5-5qfq"
+    ],
+    "summary": "Code injection in RazorEngine",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "nuget",
+          "namespace": null,
+          "name": "RazorEngine",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:nuget/<=4.5.1-alpha001",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-46703",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/Antaris/RazorEngine/issues/585",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-ph3v-2hq5-5qfq",
+        "url": "https://github.com/advisories/GHSA-ph3v-2hq5-5qfq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE"
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-03-07T00:00:41+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-23395",
+      "GHSA-gcx5-3p5f-f8vp"
+    ],
+    "summary": "Prototype Pollution in jquery.cookie",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "nuget",
+          "namespace": null,
+          "name": "jquery.cookie",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:nuget/<=1.4.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-23395",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://snyk.io/test/npm/jquery.cookie/1.4.1?tab=issues",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-gcx5-3p5f-f8vp",
+        "url": "https://github.com/advisories/GHSA-gcx5-3p5f-f8vp",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE"
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-03-03T00:00:51+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-0609",
+      "GHSA-vv6j-ww6x-54gx"
+    ],
+    "summary": "Use after free in Animation",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "nuget",
+          "namespace": null,
+          "name": "CefSharp.Wpf.NETCore",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:nuget/<=98.1.190",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-vv6j-ww6x-54gx",
+        "url": "https://github.com/cefsharp/CefSharp/security/advisories/GHSA-vv6j-ww6x-54gx",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH"
+          }
+        ]
+      },
+      {
+        "reference_id": "GHSA-vv6j-ww6x-54gx",
+        "url": "https://github.com/advisories/GHSA-vv6j-ww6x-54gx",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH"
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-02-22T21:51:19+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2017-0256",
+      "GHSA-j8f4-2w4p-mhjc"
+    ],
+    "summary": "Moderate severity vulnerability that affects Microsoft.AspNetCore.Mvc",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "nuget",
+          "namespace": null,
+          "name": "Microsoft.AspNetCore.Mvc.Razor.Host",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:nuget/>=1.1.0|<1.1.3",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-0256",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/aspnet/Announcements/issues/239",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-j8f4-2w4p-mhjc",
+        "url": "https://github.com/advisories/GHSA-j8f4-2w4p-mhjc",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE"
+          }
+        ]
+      }
+    ],
+    "date_published": "2018-10-16T19:57:48+00:00"
+  }
+]

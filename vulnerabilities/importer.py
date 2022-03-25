@@ -113,6 +113,18 @@ class Reference:
         )
 
 
+class UnMergeablePackageError(Exception):
+    """
+    Raised when a package cannot be merged with another one.
+    """
+
+
+class NoAffectedPackages(Exception):
+    """
+    Raised when there were no affected packages found.
+    """
+
+
 @dataclasses.dataclass(order=True, frozen=True)
 class AffectedPackage:
     """
@@ -155,18 +167,23 @@ class AffectedPackage:
             affected_version_range: set(VersionRange)
             fixed_versions: set(Version)
         """
-        affected_version_ranges = set()
-        fixed_versions = set()
+        affected_packages = list(affected_packages)
+        if not affected_packages:
+            raise NoAffectedPackages("No affected packages found")
+        affected_version_ranges = list()
+        fixed_versions = list()
         purls = set()
         for pkg in affected_packages:
             if pkg.affected_version_range:
-                affected_version_ranges.add(pkg.affected_version_range)
+                if pkg.affected_version_range not in affected_version_ranges:
+                    affected_version_ranges.append(pkg.affected_version_range)
             if pkg.fixed_version:
-                fixed_versions.add(pkg.fixed_version)
+                if pkg.fixed_version not in fixed_versions:
+                    fixed_versions.append(pkg.fixed_version)
             purls.add(pkg.package)
         if len(purls) > 1:
-            raise TypeError("Cannot merge with different purls", purls)
-        return purls.pop(), affected_version_ranges, fixed_versions
+            raise UnMergeablePackageError("Cannot merge with different purls", purls)
+        return purls.pop(), sorted(affected_version_ranges), sorted(fixed_versions)
 
     def to_dict(self):
         """
@@ -229,6 +246,15 @@ class AdvisoryData:
     def __post_init__(self):
         if self.date_published and not self.date_published.tzinfo:
             logger.warn(f"AdvisoryData with no tzinfo: {self!r}")
+
+    def to_dict(self):
+        return {
+            "aliases": self.aliases,
+            "summary": self.summary,
+            "affected_packages": [pkg.to_dict() for pkg in self.affected_packages],
+            "references": [ref.to_dict() for ref in self.references],
+            "date_published": self.date_published.isoformat() if self.date_published else None,
+        }
 
 
 class NoLicenseError(Exception):

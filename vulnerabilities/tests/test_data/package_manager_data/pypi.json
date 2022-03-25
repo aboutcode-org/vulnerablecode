@@ -1,0 +1,560 @@
+{
+    "releases": {
+      "1.0.1": [],
+      "1.0.2": [],
+      "1.0.3": [],
+      "1.0.4": [],
+      "1.1": [],
+      "1.1.1": [],
+      "1.1.2": [],
+      "1.1.3": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "52848c23dbc120fe0b2a8e7189b20306",
+            "sha256": "0e5034cf8046ba77c62e95a45d776d2c59998b26f181ceaf5cec516115e3f85a"
+          },
+          "downloads": -1,
+          "filename": "Django-1.1.3.tar.gz",
+          "has_sig": false,
+          "md5_digest": "52848c23dbc120fe0b2a8e7189b20306",
+          "packagetype": "sdist",
+          "python_version": "source",
+          "requires_python": null,
+          "size": 5748608,
+          "upload_time": "2010-12-23T05:14:23",
+          "upload_time_iso_8601": "2010-12-23T05:14:23.509436Z",
+          "url": "https://files.pythonhosted.org/packages/8f/1f/74aa91b56dea5847b62e11ce6737db82c6446561bddc20ca80fa5df025cc/Django-1.1.3.tar.gz",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ],
+      "1.1.4": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "e818668acc4de944f85e494ac80f1e7d",
+            "sha256": "1f9d48a741f98951e65818e167c84c407d1c322efcfd4cb419384773ea793dee"
+          },
+          "downloads": -1,
+          "filename": "Django-1.1.4.tar.gz",
+          "has_sig": false,
+          "md5_digest": "e818668acc4de944f85e494ac80f1e7d",
+          "packagetype": "sdist",
+          "python_version": "source",
+          "requires_python": null,
+          "size": 5750441,
+          "upload_time": "2011-02-09T04:13:07",
+          "upload_time_iso_8601": "2011-02-09T04:13:07.000075Z",
+          "url": "https://files.pythonhosted.org/packages/00/01/c29275c88671d5e4089388c54ecbd72ed64f8d472067f765e52f767d472a/Django-1.1.4.tar.gz",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ],
+      "1.10": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "36e17cd1a0255258e1dec1bbb8808040",
+            "sha256": "9c60f4a801bf7c26bd6824c1062550c12c373344116703461c18cc258f8c9320"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10-py2.py3-none-any.whl",
+          "has_sig": true,
+          "md5_digest": "36e17cd1a0255258e1dec1bbb8808040",
+          "packagetype": "bdist_wheel",
+          "python_version": "py2.py3",
+          "requires_python": null,
+          "size": 6795167,
+          "upload_time": "2016-08-01T18:32:07",
+          "upload_time_iso_8601": "2016-08-01T18:32:07.351674Z",
+          "url": "https://files.pythonhosted.org/packages/4b/4c/059f68d8f029f7054e4e6bb0b1ed2fde7f28d07a3727325727d5a95ae1b8/Django-1.10-py2.py3-none-any.whl",
+          "yanked": false,
+          "yanked_reason": null
+        },
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "939e4d989b93a4e12e4ec5d98fcdb4f5",
+            "sha256": "46b868d68e5fd69dd9e05a0a7900df91786097e30b2aa6f065dd7fa3b22f7005"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10.tar.gz",
+          "has_sig": true,
+          "md5_digest": "939e4d989b93a4e12e4ec5d98fcdb4f5",
+          "packagetype": "sdist",
+          "python_version": "source",
+          "requires_python": null,
+          "size": 7691063,
+          "upload_time": "2016-08-01T18:32:16",
+          "upload_time_iso_8601": "2016-08-01T18:32:16.280614Z",
+          "url": "https://files.pythonhosted.org/packages/18/5c/3cd8989b2226c55a1faf66f1a110e76cba6e6ca5d9dd15fb469fb636f378/Django-1.10.tar.gz",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ],
+      "1.10.1": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "6b50546050424bf01fd9687de3096855",
+            "sha256": "3d689905cd0635bbb33b87f9a5df7ca70a3db206faae4ec58cda5e7f5f47050d"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10.1-py2.py3-none-any.whl",
+          "has_sig": true,
+          "md5_digest": "6b50546050424bf01fd9687de3096855",
+          "packagetype": "bdist_wheel",
+          "python_version": "py2.py3",
+          "requires_python": null,
+          "size": 6796229,
+          "upload_time": "2016-09-01T23:17:41",
+          "upload_time_iso_8601": "2016-09-01T23:17:41.185068Z",
+          "url": "https://files.pythonhosted.org/packages/6c/cf/d6ab0edb891865ef86b3e3d7290c162f57c363cf880099bbe94229806f56/Django-1.10.1-py2.py3-none-any.whl",
+          "yanked": false,
+          "yanked_reason": null
+        },
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "037d07e126eecc15a5fbf5221dd4081b",
+            "sha256": "d6e6c5b25cb67f46afd7c82f536529b11981183423dad8932e15bce93d1a24f3"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10.1.tar.gz",
+          "has_sig": true,
+          "md5_digest": "037d07e126eecc15a5fbf5221dd4081b",
+          "packagetype": "sdist",
+          "python_version": "source",
+          "requires_python": null,
+          "size": 7700057,
+          "upload_time": "2016-09-01T23:18:18",
+          "upload_time_iso_8601": "2016-09-01T23:18:18.672706Z",
+          "url": "https://files.pythonhosted.org/packages/0a/9e/e76cca958089cd0317ab46cb91f0ed36274900e48829c949b2e33d2a4469/Django-1.10.1.tar.gz",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ],
+      "1.10.2": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "0b29f13cc5907dcf6f06649ce77be7c2",
+            "sha256": "4d48ab8e84a7c8b2bc4b2f4f199bc3a8bfcc9cbdbc29e355ac5c44a501d73a1a"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10.2-py2.py3-none-any.whl",
+          "has_sig": true,
+          "md5_digest": "0b29f13cc5907dcf6f06649ce77be7c2",
+          "packagetype": "bdist_wheel",
+          "python_version": "py2.py3",
+          "requires_python": null,
+          "size": 6832895,
+          "upload_time": "2016-10-01T20:05:18",
+          "upload_time_iso_8601": "2016-10-01T20:05:18.594291Z",
+          "url": "https://files.pythonhosted.org/packages/8a/09/46f790104abca7eb93786139d3adde9366b1afd59a77b583a1f310dc8cbd/Django-1.10.2-py2.py3-none-any.whl",
+          "yanked": false,
+          "yanked_reason": null
+        },
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "5342e77374b2acd2eafa86d2bb68f8c9",
+            "sha256": "e127f12a0bfb34843b6e8c82f91e26fff6445a7ca91d222c0794174cf97cbce1"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10.2.tar.gz",
+          "has_sig": true,
+          "md5_digest": "5342e77374b2acd2eafa86d2bb68f8c9",
+          "packagetype": "sdist",
+          "python_version": "source",
+          "requires_python": null,
+          "size": 7724987,
+          "upload_time": "2016-10-01T20:05:31",
+          "upload_time_iso_8601": "2016-10-01T20:05:31.330942Z",
+          "url": "https://files.pythonhosted.org/packages/57/9e/59444485f092b6ed4f1931e7d2e13b67fdab967c041d02f58a0d1dab8c23/Django-1.10.2.tar.gz",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ],
+      "1.10.3": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "dd66eaec09d7a3810c40b01c53535b37",
+            "sha256": "94426cc28d8721fbf13c333053f08d32427671a4ca7986f7030fc82bdf9c88c1"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10.3-py2.py3-none-any.whl",
+          "has_sig": true,
+          "md5_digest": "dd66eaec09d7a3810c40b01c53535b37",
+          "packagetype": "bdist_wheel",
+          "python_version": "py2.py3",
+          "requires_python": null,
+          "size": 6833335,
+          "upload_time": "2016-11-01T13:56:54",
+          "upload_time_iso_8601": "2016-11-01T13:56:54.139706Z",
+          "url": "https://files.pythonhosted.org/packages/0e/ab/16abddb9ab7ee46a26e04a0c8ba1f02b9412a77927dec699c1af6d0070f8/Django-1.10.3-py2.py3-none-any.whl",
+          "yanked": false,
+          "yanked_reason": null
+        },
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "70e4e0e6b2b38e782436e4eb7eb6ff39",
+            "sha256": "6f92f08dee8a1bd7680e098a91bf5acd08b5cdfe74137f695b60fd79f4478c30"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10.3.tar.gz",
+          "has_sig": true,
+          "md5_digest": "70e4e0e6b2b38e782436e4eb7eb6ff39",
+          "packagetype": "sdist",
+          "python_version": "source",
+          "requires_python": null,
+          "size": 7733727,
+          "upload_time": "2016-11-01T13:57:16",
+          "upload_time_iso_8601": "2016-11-01T13:57:16.055061Z",
+          "url": "https://files.pythonhosted.org/packages/4d/6b/cf3edad0526851d1fd6dd56c9cc94f2be090489c39d9666ca4ad980312e2/Django-1.10.3.tar.gz",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ],
+      "1.10.4": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "28f2a0607bb52dac9c1b168b374de1cd",
+            "sha256": "a8e1a552205cda15023c39ecf17f7e525e96c5b0142e7879e8bd0c445351f2cc"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10.4-py2.py3-none-any.whl",
+          "has_sig": true,
+          "md5_digest": "28f2a0607bb52dac9c1b168b374de1cd",
+          "packagetype": "bdist_wheel",
+          "python_version": "py2.py3",
+          "requires_python": null,
+          "size": 6833471,
+          "upload_time": "2016-12-01T23:46:26",
+          "upload_time_iso_8601": "2016-12-01T23:46:26.502027Z",
+          "url": "https://files.pythonhosted.org/packages/71/37/581a00bbc4571526ce88ef517c0c02ca7575ac2ae8a3671161d2aa14b740/Django-1.10.4-py2.py3-none-any.whl",
+          "yanked": false,
+          "yanked_reason": null
+        },
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "65aa2a1bd3b3f08b16a4cd368472d520",
+            "sha256": "fff7f062e510d812badde7cfc57745b7779edb4d209b2bc5ea8d954c22305c2b"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10.4.tar.gz",
+          "has_sig": true,
+          "md5_digest": "65aa2a1bd3b3f08b16a4cd368472d520",
+          "packagetype": "sdist",
+          "python_version": "source",
+          "requires_python": null,
+          "size": 7735213,
+          "upload_time": "2016-12-01T23:46:50",
+          "upload_time_iso_8601": "2016-12-01T23:46:50.215935Z",
+          "url": "https://files.pythonhosted.org/packages/3b/14/6c1e7508b1342afde8e80f50a55d6b305c0755c702f741db6094924f7499/Django-1.10.4.tar.gz",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ],
+      "1.10.5": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "6892778eea81f14acd58d883f10f3d9f",
+            "sha256": "4541a60834f28f308ee7b6e96400feca905fb0de473eb9dad6847e98a36d86d4"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10.5-py2.py3-none-any.whl",
+          "has_sig": true,
+          "md5_digest": "6892778eea81f14acd58d883f10f3d9f",
+          "packagetype": "bdist_wheel",
+          "python_version": "py2.py3",
+          "requires_python": null,
+          "size": 6833796,
+          "upload_time": "2017-01-04T19:22:17",
+          "upload_time_iso_8601": "2017-01-04T19:22:17.889078Z",
+          "url": "https://files.pythonhosted.org/packages/45/60/faa28a1d17f879f9dbef28f249e4e9a8dd1d29ae78409516b4b8b6c3ebab/Django-1.10.5-py2.py3-none-any.whl",
+          "yanked": false,
+          "yanked_reason": null
+        },
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "3fce02f1e6461fec21f1f15ea7489924",
+            "sha256": "0db89374b691b9c8b057632a6cd64b18d08db2f4d63b4d4af6024267ab965f8b"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10.5.tar.gz",
+          "has_sig": true,
+          "md5_digest": "3fce02f1e6461fec21f1f15ea7489924",
+          "packagetype": "sdist",
+          "python_version": "source",
+          "requires_python": null,
+          "size": 7734715,
+          "upload_time": "2017-01-04T19:23:00",
+          "upload_time_iso_8601": "2017-01-04T19:23:00.596664Z",
+          "url": "https://files.pythonhosted.org/packages/c3/c2/6096bf5d0caa4e3d5b985ac72e3a0c795e37fa7407d6c85460b2a105b467/Django-1.10.5.tar.gz",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ],
+      "1.10.6": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "31a63e4c21a4e12d5ebbafc137523e40",
+            "sha256": "2cfb83859bfaa10e2bd586340bead27c69fdcaa21fa683a008cc712482c26726"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10.6-py2.py3-none-any.whl",
+          "has_sig": true,
+          "md5_digest": "31a63e4c21a4e12d5ebbafc137523e40",
+          "packagetype": "bdist_wheel",
+          "python_version": "py2.py3",
+          "requires_python": null,
+          "size": 6833948,
+          "upload_time": "2017-03-01T13:37:27",
+          "upload_time_iso_8601": "2017-03-01T13:37:27.613779Z",
+          "url": "https://files.pythonhosted.org/packages/b9/bb/723f78e6f6aea78590331eba4e42b8a09c33ce154204a942525a91101d0b/Django-1.10.6-py2.py3-none-any.whl",
+          "yanked": false,
+          "yanked_reason": null
+        },
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "aaf0e61104bca75f2dea179d666537cf",
+            "sha256": "7a6ebe254ab126510da143628d019ca8d6da2de49d7682bf046c03713a3c2c61"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10.6.tar.gz",
+          "has_sig": true,
+          "md5_digest": "aaf0e61104bca75f2dea179d666537cf",
+          "packagetype": "sdist",
+          "python_version": "source",
+          "requires_python": null,
+          "size": 7734864,
+          "upload_time": "2017-03-01T13:37:40",
+          "upload_time_iso_8601": "2017-03-01T13:37:40.243134Z",
+          "url": "https://files.pythonhosted.org/packages/1d/07/fb81c7ed26abbfadd84185be80b5b949219948c4bfd7c30c5c1436d5fd7d/Django-1.10.6.tar.gz",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ],
+      "1.10.7": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "ed23475695d32c176e12b6e2a1fbe1aa",
+            "sha256": "e68fd450154ad7ee2c88472bb812350490232462adc6e3c6bcb544abe5212134"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10.7-py2.py3-none-any.whl",
+          "has_sig": true,
+          "md5_digest": "ed23475695d32c176e12b6e2a1fbe1aa",
+          "packagetype": "bdist_wheel",
+          "python_version": "py2.py3",
+          "requires_python": null,
+          "size": 6834495,
+          "upload_time": "2017-04-04T14:27:40",
+          "upload_time_iso_8601": "2017-04-04T14:27:40.297406Z",
+          "url": "https://files.pythonhosted.org/packages/e5/e7/bdcc0837a2e7ccb1a37be9e5e6e6da642cec5fe9fc1f9ac37dd397c91f74/Django-1.10.7-py2.py3-none-any.whl",
+          "yanked": false,
+          "yanked_reason": null
+        },
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "693dfeabad62c561cb205900d32c2a98",
+            "sha256": "593d779dbc2350a245c4f76d26bdcad58a39895e87304fe6d725bbdf84b5b0b8"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10.7.tar.gz",
+          "has_sig": true,
+          "md5_digest": "693dfeabad62c561cb205900d32c2a98",
+          "packagetype": "sdist",
+          "python_version": "source",
+          "requires_python": null,
+          "size": 7737654,
+          "upload_time": "2017-04-04T14:27:54",
+          "upload_time_iso_8601": "2017-04-04T14:27:54.235551Z",
+          "url": "https://files.pythonhosted.org/packages/15/b4/d4bb7313e02386bd23a60e1eb5670321313fb67289c6f36ec43bce747aff/Django-1.10.7.tar.gz",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ],
+      "1.10.8": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "76640241d7aa59c87a5095fbebc7e2a1",
+            "sha256": "ffdc7e938391ae3c2ee8ff82e0b4444e4e6bb15c99d00770285233d42aaf33d6"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10.8-py2.py3-none-any.whl",
+          "has_sig": true,
+          "md5_digest": "76640241d7aa59c87a5095fbebc7e2a1",
+          "packagetype": "bdist_wheel",
+          "python_version": "py2.py3",
+          "requires_python": null,
+          "size": 6834486,
+          "upload_time": "2017-09-05T15:31:48",
+          "upload_time_iso_8601": "2017-09-05T15:31:48.077227Z",
+          "url": "https://files.pythonhosted.org/packages/bb/9f/2c20639ac635a83123ddffd91ba15001cb0d04e74fbb08f31fb57e490dab/Django-1.10.8-py2.py3-none-any.whl",
+          "yanked": false,
+          "yanked_reason": null
+        },
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "d140e63b9f704ab375d052c40f9d8e76",
+            "sha256": "d4ef83bd326573c00972cb9429beb396d210341a636e4b816fc9b3f505c498bb"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10.8.tar.gz",
+          "has_sig": true,
+          "md5_digest": "d140e63b9f704ab375d052c40f9d8e76",
+          "packagetype": "sdist",
+          "python_version": "source",
+          "requires_python": null,
+          "size": 7739226,
+          "upload_time": "2017-09-05T15:31:58",
+          "upload_time_iso_8601": "2017-09-05T15:31:58.221021Z",
+          "url": "https://files.pythonhosted.org/packages/09/17/13a0cd29f603a4a51b06f7cdc9466fd7bfc48aa20ae2aa80f79d3ad9ba7d/Django-1.10.8.tar.gz",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ],
+      "1.10a1": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "2e29930f401031ecf33e36bfa4739245",
+            "sha256": "1a8b6ad1f8fabbbd2e1ef8fb54dfe5f9a0b4908c642cccee20d58cfd7c0a3f7e"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10a1-py2.py3-none-any.whl",
+          "has_sig": true,
+          "md5_digest": "2e29930f401031ecf33e36bfa4739245",
+          "packagetype": "bdist_wheel",
+          "python_version": "py2.py3",
+          "requires_python": null,
+          "size": 6600566,
+          "upload_time": "2016-05-20T12:16:44",
+          "upload_time_iso_8601": "2016-05-20T12:16:44.951411Z",
+          "url": "https://files.pythonhosted.org/packages/02/50/b210dc6206e9c61a25a05acb76fc2f09101d9031ff0fb4d137f746e2e419/Django-1.10a1-py2.py3-none-any.whl",
+          "yanked": false,
+          "yanked_reason": null
+        },
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "25f3210c15f3bf9bb7e4c33adfbcb952",
+            "sha256": "a53bbf8be7be60a9479295ab2bef375c1e25ae777d00ff0fea5ac2e347aa5c76"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10a1.tar.gz",
+          "has_sig": true,
+          "md5_digest": "25f3210c15f3bf9bb7e4c33adfbcb952",
+          "packagetype": "sdist",
+          "python_version": "source",
+          "requires_python": null,
+          "size": 7543001,
+          "upload_time": "2016-05-20T12:24:59",
+          "upload_time_iso_8601": "2016-05-20T12:24:59.952686Z",
+          "url": "https://files.pythonhosted.org/packages/ae/98/3b27e0a3c53ec0d6727eb19da46eed5705fa9250ed28ec0d1df48778c401/Django-1.10a1.tar.gz",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ],
+      "1.10b1": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "907c0f7f7b6ac716e46312015dfa9e1a",
+            "sha256": "3dee9e77e12d3edc30aed96e5522632d8ded656845c4e3e804dab8c60a937478"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10b1-py2.py3-none-any.whl",
+          "has_sig": true,
+          "md5_digest": "907c0f7f7b6ac716e46312015dfa9e1a",
+          "packagetype": "bdist_wheel",
+          "python_version": "py2.py3",
+          "requires_python": null,
+          "size": 6641407,
+          "upload_time": "2016-06-22T01:15:05",
+          "upload_time_iso_8601": "2016-06-22T01:15:05.240779Z",
+          "url": "https://files.pythonhosted.org/packages/e6/8c/142b08d2dc89aec2b74ad1d37f943ec50c73d4afce12ea6c0c568403ab22/Django-1.10b1-py2.py3-none-any.whl",
+          "yanked": false,
+          "yanked_reason": null
+        },
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "c2f10b2d1453adc68e37132c3304317a",
+            "sha256": "d8ef9aef259d68a452d5ae1a6f60793e8c10c609dbbe9e7412d47ac21e6d4245"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10b1.tar.gz",
+          "has_sig": true,
+          "md5_digest": "c2f10b2d1453adc68e37132c3304317a",
+          "packagetype": "sdist",
+          "python_version": "source",
+          "requires_python": null,
+          "size": 7600640,
+          "upload_time": "2016-06-22T01:15:17",
+          "upload_time_iso_8601": "2016-06-22T01:15:17.267637Z",
+          "url": "https://files.pythonhosted.org/packages/02/be/d10613977c37674ca3b7f6db7105fac9a104b7765ede4a2f1445fabc2873/Django-1.10b1.tar.gz",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ],
+      "1.10rc1": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "c951d6a11587d5e9f2b5e0a5cca96915",
+            "sha256": "ccb60ae7804bc451e42b39e6863fc916de8c1fd9a681426e4d9fc9a1abf8bd44"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10rc1-py2.py3-none-any.whl",
+          "has_sig": true,
+          "md5_digest": "c951d6a11587d5e9f2b5e0a5cca96915",
+          "packagetype": "bdist_wheel",
+          "python_version": "py2.py3",
+          "requires_python": null,
+          "size": 6785247,
+          "upload_time": "2016-07-18T18:04:51",
+          "upload_time_iso_8601": "2016-07-18T18:04:51.589122Z",
+          "url": "https://files.pythonhosted.org/packages/79/a2/988b57157526dcbdf78501c68ba6409b7863381a6cc6bc06424e07e134a2/Django-1.10rc1-py2.py3-none-any.whl",
+          "yanked": false,
+          "yanked_reason": null
+        },
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "daf478a2459e54ba28e5ec600d669960",
+            "sha256": "26d08f62284d838598bc45671af6e6dba880d54fff3c14aa6aa78ba5519aeac0"
+          },
+          "downloads": -1,
+          "filename": "Django-1.10rc1.tar.gz",
+          "has_sig": true,
+          "md5_digest": "daf478a2459e54ba28e5ec600d669960",
+          "packagetype": "sdist",
+          "python_version": "source",
+          "requires_python": null,
+          "size": 7687388,
+          "upload_time": "2016-07-18T18:05:05",
+          "upload_time_iso_8601": "2016-07-18T18:05:05.503584Z",
+          "url": "https://files.pythonhosted.org/packages/32/0b/a54e4d4922545b0deb6808d4af0bb78010c0ca4d3109608ce6675f4f0ea1/Django-1.10rc1.tar.gz",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ],
+    "vulnerabilities": []
+  }
+}

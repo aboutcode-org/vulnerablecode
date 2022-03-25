@@ -1,0 +1,626 @@
+{
+  "@id": "https://api.nuget.org/v3/registration5-semver1/razorengine/index.json",
+  "@type": [
+    "catalog:CatalogRoot",
+    "PackageRegistration",
+    "catalog:Permalink"
+  ],
+  "commitId": "63ff8119-d8af-49a0-9906-28cba30dd479",
+  "commitTimeStamp": "2022-03-11T23:18:21.9196828+00:00",
+  "count": 2,
+  "items": [
+    {
+      "@id": "https://api.nuget.org/v3/registration5-semver1/razorengine/index.json#page/2.1.0/4.1.5-beta1",
+      "@type": "catalog:CatalogPage",
+      "commitId": "63ff8119-d8af-49a0-9906-28cba30dd479",
+      "commitTimeStamp": "2022-03-11T23:18:21.9196828+00:00",
+      "count": 64,
+      "items": [
+        {
+          "@id": "https://api.nuget.org/v3/registration5-semver1/razorengine/2.1.0.json",
+          "@type": "Package",
+          "commitId": "63ff8119-d8af-49a0-9906-28cba30dd479",
+          "commitTimeStamp": "2022-03-11T23:18:21.9196828+00:00",
+          "catalogEntry": {
+            "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.2.1.0.json",
+            "@type": "PackageDetails",
+            "authors": "Matthew Abbott, Ben Dornis",
+            "description": "A templating engine built upon Microsoft's Razor parsing technology. RazorEngine allows you to use Razor syntax to build robust templates.",
+            "iconUrl": "",
+            "id": "RazorEngine",
+            "language": "en-US",
+            "licenseExpression": "",
+            "licenseUrl": "http://razorengine.codeplex.com/license",
+            "listed": true,
+            "minClientVersion": "",
+            "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/2.1.0/razorengine.2.1.0.nupkg",
+            "projectUrl": "http://razorengine.codeplex.com/",
+            "published": "2011-01-22T13:34:08.55+00:00",
+            "requireLicenseAcceptance": false,
+            "summary": "",
+            "tags": [
+              "razor",
+              "razorengine",
+              "templating"
+            ],
+            "title": "RazorEngine",
+            "version": "2.1.0"
+          },
+          "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/2.1.0/razorengine.2.1.0.nupkg",
+          "registration": "https://api.nuget.org/v3/registration5-semver1/razorengine/index.json"
+        },
+        {
+          "@id": "https://api.nuget.org/v3/registration5-semver1/razorengine/3.0.0.json",
+          "@type": "Package",
+          "commitId": "63ff8119-d8af-49a0-9906-28cba30dd479",
+          "commitTimeStamp": "2022-03-11T23:18:21.9196828+00:00",
+          "catalogEntry": {
+            "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.0.0.json",
+            "@type": "PackageDetails",
+            "authors": "Matthew Abbott,Ben Dornis",
+            "description": "A templating engine built upon Microsoft's Razor parsing technology. RazorEngine allows you to use Razor syntax to build robust templates.",
+            "iconUrl": "",
+            "id": "RazorEngine",
+            "language": "en-US",
+            "licenseExpression": "",
+            "licenseUrl": "http://razorengine.codeplex.com/license",
+            "listed": true,
+            "minClientVersion": "",
+            "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.0.0/razorengine.3.0.0.nupkg",
+            "projectUrl": "http://razorengine.codeplex.com/",
+            "published": "2011-11-24T00:26:02.527+00:00",
+            "requireLicenseAcceptance": false,
+            "summary": "",
+            "tags": [
+              "razor",
+              "razorengine",
+              "templating"
+            ],
+            "title": "RazorEngine v3.0.0beta",
+            "version": "3.0.0"
+          },
+          "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.0.0/razorengine.3.0.0.nupkg",
+          "registration": "https://api.nuget.org/v3/registration5-semver1/razorengine/index.json"
+        },
+        {
+          "@id": "https://api.nuget.org/v3/registration5-semver1/razorengine/3.0.3.json",
+          "@type": "Package",
+          "commitId": "63ff8119-d8af-49a0-9906-28cba30dd479",
+          "commitTimeStamp": "2022-03-11T23:18:21.9196828+00:00",
+          "catalogEntry": {
+            "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.0.3.json",
+            "@type": "PackageDetails",
+            "authors": "Matthew Abbott,Ben Dornis",
+            "description": "A templating engine built upon Microsoft's Razor parsing technology. RazorEngine allows you to use Razor syntax to build robust templates.",
+            "iconUrl": "",
+            "id": "RazorEngine",
+            "language": "en-US",
+            "licenseExpression": "",
+            "licenseUrl": "http://razorengine.codeplex.com/license",
+            "listed": true,
+            "minClientVersion": "",
+            "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.0.3/razorengine.3.0.3.nupkg",
+            "projectUrl": "http://razorengine.codeplex.com/",
+            "published": "2011-11-27T13:50:02.063+00:00",
+            "requireLicenseAcceptance": false,
+            "summary": "",
+            "tags": [
+              "razor",
+              "razorengine",
+              "templating"
+            ],
+            "title": "RazorEngine v3.0.3beta",
+            "version": "3.0.3"
+          },
+          "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.0.3/razorengine.3.0.3.nupkg",
+          "registration": "https://api.nuget.org/v3/registration5-semver1/razorengine/index.json"
+        },
+        {
+          "@id": "https://api.nuget.org/v3/registration5-semver1/razorengine/3.0.4.json",
+          "@type": "Package",
+          "commitId": "63ff8119-d8af-49a0-9906-28cba30dd479",
+          "commitTimeStamp": "2022-03-11T23:18:21.9196828+00:00",
+          "catalogEntry": {
+            "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.0.4.json",
+            "@type": "PackageDetails",
+            "authors": "Matthew Abbott,Ben Dornis",
+            "description": "A templating engine built upon Microsoft's Razor parsing technology. RazorEngine allows you to use Razor syntax to build robust templates.",
+            "iconUrl": "",
+            "id": "RazorEngine",
+            "language": "en-US",
+            "licenseExpression": "",
+            "licenseUrl": "http://razorengine.codeplex.com/license",
+            "listed": true,
+            "minClientVersion": "",
+            "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.0.4/razorengine.3.0.4.nupkg",
+            "projectUrl": "http://razorengine.codeplex.com/",
+            "published": "2011-12-12T10:18:33.38+00:00",
+            "requireLicenseAcceptance": false,
+            "summary": "",
+            "tags": [
+              "razor",
+              "razorengine",
+              "templating"
+            ],
+            "title": "RazorEngine v3.0.4beta",
+            "version": "3.0.4"
+          },
+          "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.0.4/razorengine.3.0.4.nupkg",
+          "registration": "https://api.nuget.org/v3/registration5-semver1/razorengine/index.json"
+        },
+        {
+          "@id": "https://api.nuget.org/v3/registration5-semver1/razorengine/3.0.5.json",
+          "@type": "Package",
+          "commitId": "63ff8119-d8af-49a0-9906-28cba30dd479",
+          "commitTimeStamp": "2022-03-11T23:18:21.9196828+00:00",
+          "catalogEntry": {
+            "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.0.5.json",
+            "@type": "PackageDetails",
+            "authors": "Matthew Abbott,Ben Dornis",
+            "description": "A templating engine built upon Microsoft's Razor parsing technology. RazorEngine allows you to use Razor syntax to build robust templates.",
+            "iconUrl": "",
+            "id": "RazorEngine",
+            "language": "en-US",
+            "licenseExpression": "",
+            "licenseUrl": "http://razorengine.codeplex.com/license",
+            "listed": true,
+            "minClientVersion": "",
+            "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.0.5/razorengine.3.0.5.nupkg",
+            "projectUrl": "http://razorengine.codeplex.com/",
+            "published": "2011-12-12T12:00:25.947+00:00",
+            "requireLicenseAcceptance": false,
+            "summary": "",
+            "tags": [
+              "razor",
+              "razorengine",
+              "templating"
+            ],
+            "title": "RazorEngine v3.0.5beta",
+            "version": "3.0.5"
+          },
+          "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.0.5/razorengine.3.0.5.nupkg",
+          "registration": "https://api.nuget.org/v3/registration5-semver1/razorengine/index.json"
+        },
+        {
+          "@id": "https://api.nuget.org/v3/registration5-semver1/razorengine/3.0.6.json",
+          "@type": "Package",
+          "commitId": "63ff8119-d8af-49a0-9906-28cba30dd479",
+          "commitTimeStamp": "2022-03-11T23:18:21.9196828+00:00",
+          "catalogEntry": {
+            "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.0.6.json",
+            "@type": "PackageDetails",
+            "authors": "Matthew Abbott,Ben Dornis",
+            "description": "A templating engine built upon Microsoft's Razor parsing technology. RazorEngine allows you to use Razor syntax to build robust templates.",
+            "iconUrl": "",
+            "id": "RazorEngine",
+            "language": "en-US",
+            "licenseExpression": "",
+            "licenseUrl": "http://razorengine.codeplex.com/license",
+            "listed": true,
+            "minClientVersion": "",
+            "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.0.6/razorengine.3.0.6.nupkg",
+            "projectUrl": "http://razorengine.codeplex.com/",
+            "published": "2012-01-02T21:10:43.403+00:00",
+            "requireLicenseAcceptance": false,
+            "summary": "",
+            "tags": [
+              "razor",
+              "razorengine",
+              "templating"
+            ],
+            "title": "RazorEngine v3.0.6beta",
+            "version": "3.0.6"
+          },
+          "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.0.6/razorengine.3.0.6.nupkg",
+          "registration": "https://api.nuget.org/v3/registration5-semver1/razorengine/index.json"
+        },
+        {
+          "@id": "https://api.nuget.org/v3/registration5-semver1/razorengine/3.4.0.json",
+          "@type": "Package",
+          "commitId": "63ff8119-d8af-49a0-9906-28cba30dd479",
+          "commitTimeStamp": "2022-03-11T23:18:21.9196828+00:00",
+          "catalogEntry": {
+            "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.4.0.json",
+            "@type": "PackageDetails",
+            "authors": "Matthew Abbott,Ben Dornis",
+            "dependencyGroups": [
+              {
+                "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.4.0.json#dependencygroup",
+                "@type": "PackageDependencyGroup",
+                "dependencies": [
+                  {
+                    "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.4.0.json#dependencygroup/microsoft.aspnet.razor",
+                    "@type": "PackageDependency",
+                    "id": "Microsoft.AspNet.Razor",
+                    "range": "[3.0.0, )",
+                    "registration": "https://api.nuget.org/v3/registration5-semver1/microsoft.aspnet.razor/index.json"
+                  }
+                ]
+              }
+            ],
+            "description": "Simple templating using Razor syntax.",
+            "iconUrl": "",
+            "id": "RazorEngine",
+            "language": "",
+            "licenseExpression": "",
+            "licenseUrl": "",
+            "listed": true,
+            "minClientVersion": "",
+            "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.4.0/razorengine.3.4.0.nupkg",
+            "projectUrl": "",
+            "published": "2013-10-20T13:32:30.837+00:00",
+            "requireLicenseAcceptance": false,
+            "summary": "",
+            "tags": [
+              ""
+            ],
+            "title": "RazorEngine",
+            "version": "3.4.0"
+          },
+          "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.4.0/razorengine.3.4.0.nupkg",
+          "registration": "https://api.nuget.org/v3/registration5-semver1/razorengine/index.json"
+        },
+        {
+          "@id": "https://api.nuget.org/v3/registration5-semver1/razorengine/3.4.1.json",
+          "@type": "Package",
+          "commitId": "63ff8119-d8af-49a0-9906-28cba30dd479",
+          "commitTimeStamp": "2022-03-11T23:18:21.9196828+00:00",
+          "catalogEntry": {
+            "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.4.1.json",
+            "@type": "PackageDetails",
+            "authors": "Matthew Abbott,Ben Dornis",
+            "dependencyGroups": [
+              {
+                "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.4.1.json#dependencygroup",
+                "@type": "PackageDependencyGroup",
+                "dependencies": [
+                  {
+                    "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.4.1.json#dependencygroup/microsoft.aspnet.razor",
+                    "@type": "PackageDependency",
+                    "id": "Microsoft.AspNet.Razor",
+                    "range": "[3.0.0, )",
+                    "registration": "https://api.nuget.org/v3/registration5-semver1/microsoft.aspnet.razor/index.json"
+                  }
+                ]
+              }
+            ],
+            "description": "Simple templating using Razor syntax.",
+            "iconUrl": "",
+            "id": "RazorEngine",
+            "language": "",
+            "licenseExpression": "",
+            "licenseUrl": "",
+            "listed": true,
+            "minClientVersion": "",
+            "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.4.1/razorengine.3.4.1.nupkg",
+            "projectUrl": "https://github.com/Antaris/RazorEngine/wiki",
+            "published": "2014-01-17T09:17:43.68+00:00",
+            "requireLicenseAcceptance": false,
+            "summary": "",
+            "tags": [
+              ""
+            ],
+            "title": "RazorEngine",
+            "version": "3.4.1"
+          },
+          "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.4.1/razorengine.3.4.1.nupkg",
+          "registration": "https://api.nuget.org/v3/registration5-semver1/razorengine/index.json"
+        },
+        {
+          "@id": "https://api.nuget.org/v3/registration5-semver1/razorengine/3.5.0-beta2.json",
+          "@type": "Package",
+          "commitId": "63ff8119-d8af-49a0-9906-28cba30dd479",
+          "commitTimeStamp": "2022-03-11T23:18:21.9196828+00:00",
+          "catalogEntry": {
+            "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.0-beta2.json",
+            "@type": "PackageDetails",
+            "authors": "Matthew Abbott, Ben Dornis, Matthias Dittrich",
+            "dependencyGroups": [
+              {
+                "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.0-beta2.json#dependencygroup/.netframework4.0",
+                "@type": "PackageDependencyGroup",
+                "dependencies": [
+                  {
+                    "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.0-beta2.json#dependencygroup/.netframework4.0/microsoft.aspnet.razor",
+                    "@type": "PackageDependency",
+                    "id": "Microsoft.AspNet.Razor",
+                    "range": "[2.0.30506, 2.0.30506]",
+                    "registration": "https://api.nuget.org/v3/registration5-semver1/microsoft.aspnet.razor/index.json"
+                  }
+                ],
+                "targetFramework": ".NETFramework4.0"
+              },
+              {
+                "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.0-beta2.json#dependencygroup/.netframework4.5",
+                "@type": "PackageDependencyGroup",
+                "dependencies": [
+                  {
+                    "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.0-beta2.json#dependencygroup/.netframework4.5/microsoft.aspnet.razor",
+                    "@type": "PackageDependency",
+                    "id": "Microsoft.AspNet.Razor",
+                    "range": "[3.0.0, )",
+                    "registration": "https://api.nuget.org/v3/registration5-semver1/microsoft.aspnet.razor/index.json"
+                  }
+                ],
+                "targetFramework": ".NETFramework4.5"
+              }
+            ],
+            "description": "RazorEngine - A Templating Engine based on the Razor parser.",
+            "iconUrl": "",
+            "id": "RazorEngine",
+            "language": "",
+            "licenseExpression": "",
+            "licenseUrl": "https://github.com/Antaris/RazorEngine/blob/master/doc/LICENSE.md",
+            "listed": true,
+            "minClientVersion": "",
+            "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.5.0-beta2/razorengine.3.5.0-beta2.nupkg",
+            "projectUrl": "https://github.com/Antaris/RazorEngine",
+            "published": "2015-01-01T14:09:28.71+00:00",
+            "requireLicenseAcceptance": false,
+            "summary": "Simple templating using Razor syntax.",
+            "tags": [
+              "C#",
+              "razor",
+              "template",
+              "engine",
+              "programming"
+            ],
+            "title": "RazorEngine",
+            "version": "3.5.0-beta2"
+          },
+          "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.5.0-beta2/razorengine.3.5.0-beta2.nupkg",
+          "registration": "https://api.nuget.org/v3/registration5-semver1/razorengine/index.json"
+        },
+        {
+          "@id": "https://api.nuget.org/v3/registration5-semver1/razorengine/3.5.0-beta3.json",
+          "@type": "Package",
+          "commitId": "63ff8119-d8af-49a0-9906-28cba30dd479",
+          "commitTimeStamp": "2022-03-11T23:18:21.9196828+00:00",
+          "catalogEntry": {
+            "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.0-beta3.json",
+            "@type": "PackageDetails",
+            "authors": "Matthew Abbott, Ben Dornis, Matthias Dittrich",
+            "dependencyGroups": [
+              {
+                "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.0-beta3.json#dependencygroup/.netframework4.0",
+                "@type": "PackageDependencyGroup",
+                "dependencies": [
+                  {
+                    "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.0-beta3.json#dependencygroup/.netframework4.0/microsoft.aspnet.razor",
+                    "@type": "PackageDependency",
+                    "id": "Microsoft.AspNet.Razor",
+                    "range": "[2.0.30506, 2.0.30506]",
+                    "registration": "https://api.nuget.org/v3/registration5-semver1/microsoft.aspnet.razor/index.json"
+                  }
+                ],
+                "targetFramework": ".NETFramework4.0"
+              },
+              {
+                "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.0-beta3.json#dependencygroup/.netframework4.5",
+                "@type": "PackageDependencyGroup",
+                "dependencies": [
+                  {
+                    "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.0-beta3.json#dependencygroup/.netframework4.5/microsoft.aspnet.razor",
+                    "@type": "PackageDependency",
+                    "id": "Microsoft.AspNet.Razor",
+                    "range": "[3.0.0, )",
+                    "registration": "https://api.nuget.org/v3/registration5-semver1/microsoft.aspnet.razor/index.json"
+                  }
+                ],
+                "targetFramework": ".NETFramework4.5"
+              }
+            ],
+            "description": "RazorEngine - A Templating Engine based on the Razor parser.",
+            "iconUrl": "",
+            "id": "RazorEngine",
+            "language": "",
+            "licenseExpression": "",
+            "licenseUrl": "https://github.com/Antaris/RazorEngine/blob/master/doc/LICENSE.md",
+            "listed": true,
+            "minClientVersion": "",
+            "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.5.0-beta3/razorengine.3.5.0-beta3.nupkg",
+            "projectUrl": "https://github.com/Antaris/RazorEngine",
+            "published": "2015-01-06T17:39:25.147+00:00",
+            "requireLicenseAcceptance": false,
+            "summary": "Simple templating using Razor syntax.",
+            "tags": [
+              "C#",
+              "razor",
+              "template",
+              "engine",
+              "programming"
+            ],
+            "title": "RazorEngine",
+            "version": "3.5.0-beta3"
+          },
+          "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.5.0-beta3/razorengine.3.5.0-beta3.nupkg",
+          "registration": "https://api.nuget.org/v3/registration5-semver1/razorengine/index.json"
+        },
+        {
+          "@id": "https://api.nuget.org/v3/registration5-semver1/razorengine/3.5.0.json",
+          "@type": "Package",
+          "commitId": "63ff8119-d8af-49a0-9906-28cba30dd479",
+          "commitTimeStamp": "2022-03-11T23:18:21.9196828+00:00",
+          "catalogEntry": {
+            "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.0.json",
+            "@type": "PackageDetails",
+            "authors": "Matthew Abbott, Ben Dornis, Matthias Dittrich",
+            "dependencyGroups": [
+              {
+                "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.0.json#dependencygroup/.netframework4.0",
+                "@type": "PackageDependencyGroup",
+                "dependencies": [
+                  {
+                    "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.0.json#dependencygroup/.netframework4.0/microsoft.aspnet.razor",
+                    "@type": "PackageDependency",
+                    "id": "Microsoft.AspNet.Razor",
+                    "range": "[2.0.30506, 2.0.30506]",
+                    "registration": "https://api.nuget.org/v3/registration5-semver1/microsoft.aspnet.razor/index.json"
+                  }
+                ],
+                "targetFramework": ".NETFramework4.0"
+              },
+              {
+                "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.0.json#dependencygroup/.netframework4.5",
+                "@type": "PackageDependencyGroup",
+                "dependencies": [
+                  {
+                    "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.0.json#dependencygroup/.netframework4.5/microsoft.aspnet.razor",
+                    "@type": "PackageDependency",
+                    "id": "Microsoft.AspNet.Razor",
+                    "range": "[3.0.0, )",
+                    "registration": "https://api.nuget.org/v3/registration5-semver1/microsoft.aspnet.razor/index.json"
+                  }
+                ],
+                "targetFramework": ".NETFramework4.5"
+              }
+            ],
+            "description": "RazorEngine - A Templating Engine based on the Razor parser.",
+            "iconUrl": "",
+            "id": "RazorEngine",
+            "language": "",
+            "licenseExpression": "",
+            "licenseUrl": "https://github.com/Antaris/RazorEngine/blob/master/doc/LICENSE.md",
+            "listed": true,
+            "minClientVersion": "",
+            "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.5.0/razorengine.3.5.0.nupkg",
+            "projectUrl": "https://github.com/Antaris/RazorEngine",
+            "published": "2015-01-14T02:01:58.853+00:00",
+            "requireLicenseAcceptance": false,
+            "summary": "Simple templating using Razor syntax.",
+            "tags": [
+              "C#",
+              "razor",
+              "template",
+              "engine",
+              "programming"
+            ],
+            "title": "RazorEngine",
+            "version": "3.5.0"
+          },
+          "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.5.0/razorengine.3.5.0.nupkg",
+          "registration": "https://api.nuget.org/v3/registration5-semver1/razorengine/index.json"
+        },
+        {
+          "@id": "https://api.nuget.org/v3/registration5-semver1/razorengine/3.5.1.json",
+          "@type": "Package",
+          "commitId": "63ff8119-d8af-49a0-9906-28cba30dd479",
+          "commitTimeStamp": "2022-03-11T23:18:21.9196828+00:00",
+          "catalogEntry": {
+            "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.1.json",
+            "@type": "PackageDetails",
+            "authors": "Matthew Abbott, Ben Dornis, Matthias Dittrich",
+            "dependencyGroups": [
+              {
+                "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.1.json#dependencygroup/.netframework4.0",
+                "@type": "PackageDependencyGroup",
+                "dependencies": [
+                  {
+                    "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.1.json#dependencygroup/.netframework4.0/microsoft.aspnet.razor",
+                    "@type": "PackageDependency",
+                    "id": "Microsoft.AspNet.Razor",
+                    "range": "[2.0.30506, 2.0.30506]",
+                    "registration": "https://api.nuget.org/v3/registration5-semver1/microsoft.aspnet.razor/index.json"
+                  }
+                ],
+                "targetFramework": ".NETFramework4.0"
+              },
+              {
+                "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.1.json#dependencygroup/.netframework4.5",
+                "@type": "PackageDependencyGroup",
+                "dependencies": [
+                  {
+                    "@id": "https://api.nuget.org/v3/catalog0/data/2022.03.11.23.17.27/razorengine.3.5.1.json#dependencygroup/.netframework4.5/microsoft.aspnet.razor",
+                    "@type": "PackageDependency",
+                    "id": "Microsoft.AspNet.Razor",
+                    "range": "[3.0.0, )",
+                    "registration": "https://api.nuget.org/v3/registration5-semver1/microsoft.aspnet.razor/index.json"
+                  }
+                ],
+                "targetFramework": ".NETFramework4.5"
+              }
+            ],
+            "description": "RazorEngine - A Templating Engine based on the Razor parser.",
+            "iconUrl": "",
+            "id": "RazorEngine",
+            "language": "",
+            "licenseExpression": "",
+            "licenseUrl": "https://github.com/Antaris/RazorEngine/blob/master/doc/LICENSE.md",
+            "listed": true,
+            "minClientVersion": "",
+            "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.5.1/razorengine.3.5.1.nupkg",
+            "projectUrl": "https://github.com/Antaris/RazorEngine",
+            "published": "2015-01-23T01:05:44.447+00:00",
+            "requireLicenseAcceptance": false,
+            "summary": "Simple templating using Razor syntax.",
+            "tags": [
+              "C#",
+              "razor",
+              "template",
+              "engine",
+              "programming"
+            ],
+            "title": "RazorEngine",
+            "version": "3.5.1"
+          },
+          "packageContent": "https://api.nuget.org/v3-flatcontainer/razorengine/3.5.1/razorengine.3.5.1.nupkg",
+          "registration": "https://api.nuget.org/v3/registration5-semver1/razorengine/index.json"
+        }
+      ],
+      "parent": "https://api.nuget.org/v3/registration5-semver1/razorengine/index.json",
+      "lower": "2.1.0",
+      "upper": "4.1.5-beta1"
+    }
+  ],
+  "@context": {
+    "@vocab": "http://schema.nuget.org/schema#",
+    "catalog": "http://schema.nuget.org/catalog#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "items": {
+      "@id": "catalog:item",
+      "@container": "@set"
+    },
+    "commitTimeStamp": {
+      "@id": "catalog:commitTimeStamp",
+      "@type": "xsd:dateTime"
+    },
+    "commitId": {
+      "@id": "catalog:commitId"
+    },
+    "count": {
+      "@id": "catalog:count"
+    },
+    "parent": {
+      "@id": "catalog:parent",
+      "@type": "@id"
+    },
+    "tags": {
+      "@id": "tag",
+      "@container": "@set"
+    },
+    "reasons": {
+      "@container": "@set"
+    },
+    "packageTargetFrameworks": {
+      "@id": "packageTargetFramework",
+      "@container": "@set"
+    },
+    "dependencyGroups": {
+      "@id": "dependencyGroup",
+      "@container": "@set"
+    },
+    "dependencies": {
+      "@id": "dependency",
+      "@container": "@set"
+    },
+    "packageContent": {
+      "@type": "@id"
+    },
+    "published": {
+      "@type": "xsd:dateTime"
+    },
+    "registration": {
+      "@type": "@id"
+    }
+  }
+}

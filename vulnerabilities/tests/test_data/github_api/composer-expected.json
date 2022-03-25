@@ -1,0 +1,203 @@
+[
+  {
+    "aliases": [
+      "CVE-2022-0832",
+      "GHSA-6qcc-whgp-pjj2"
+    ],
+    "summary": "Cross-site Scripting in Pimcore",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "composer",
+          "namespace": "pimcore",
+          "name": "pimcore",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:composer/<=10.3.2",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0832",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/pimcore/pimcore/commit/8ab06bfbb5a05a1b190731d9c7476ec45f5ee878",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://huntr.dev/bounties/be450b60-bc8f-4585-96a5-3c4069f1186a",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-6qcc-whgp-pjj2",
+        "url": "https://github.com/advisories/GHSA-6qcc-whgp-pjj2",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE"
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-03-05T00:00:45+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-0831",
+      "GHSA-q67f-3jq4-mww2"
+    ],
+    "summary": "Cross-site Scripting in Pimcore",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "composer",
+          "namespace": "pimcore",
+          "name": "pimcore",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:composer/<=10.3.2",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0831",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/pimcore/pimcore/commit/e786fd44aac46febdbf916ed6c328fbe645d80bf",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://huntr.dev/bounties/4152e3a7-27a1-49eb-a6eb-a57506af104f",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-q67f-3jq4-mww2",
+        "url": "https://github.com/advisories/GHSA-q67f-3jq4-mww2",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE"
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-03-05T00:00:45+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-0895",
+      "GHSA-x28w-hvwc-mp75"
+    ],
+    "summary": "Static Code Injection in Microweber",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "composer",
+          "namespace": "microweber",
+          "name": "microweber",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:composer/<1.3.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0895",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/microweber/microweber/commit/b2baab6e582b2efe63788d367a2bb61a2fa26470",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://huntr.dev/bounties/3c070828-fd00-476c-be33-9c877172363d",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-x28w-hvwc-mp75",
+        "url": "https://github.com/advisories/GHSA-x28w-hvwc-mp75",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH"
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-03-11T00:02:35+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-0589",
+      "GHSA-gj26-g5qf-jrh7"
+    ],
+    "summary": "Cross-site Scripting in librenms",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "composer",
+          "namespace": "librenms",
+          "name": "librenms",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:composer/<22.1.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0589",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/librenms/librenms/commit/4c9d4eefd8064a0285f9718ef38f5617d7f9d6fa",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://huntr.dev/bounties/d943d95c-076f-441a-ab21-cbf6b15f6768",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://notes.netbytesec.com/2022/02/multiple-vulnerabilities-in-librenms.html",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-gj26-g5qf-jrh7",
+        "url": "https://github.com/advisories/GHSA-gj26-g5qf-jrh7",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE"
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-02-16T00:01:51+00:00"
+  }
+]

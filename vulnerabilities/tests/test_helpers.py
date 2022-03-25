@@ -19,11 +19,51 @@
 #  for any legal advice.
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
+from unittest import result
 
-from unittest import TestCase
-from unittest.mock import MagicMock
-from unittest.mock import patch
+from packageurl import PackageURL
+
+from vulnerabilities.helpers import AffectedPackage as LegacyAffectedPackage
+from vulnerabilities.helpers import nearest_patched_package
 
 
-class TestHelpers(TestCase):
-    ...
+def test_nearest_patched_package():
+
+    result = nearest_patched_package(
+        vulnerable_packages=[
+            PackageURL(type="npm", name="foo", version="2.0.0"),
+            PackageURL(type="npm", name="foo", version="2.0.1"),
+            PackageURL(type="npm", name="foo", version="1.9.8"),
+        ],
+        resolved_packages=[
+            PackageURL(type="npm", name="foo", version="2.0.2"),
+            PackageURL(type="npm", name="foo", version="1.9.9"),
+        ],
+    )
+
+    assert [
+        LegacyAffectedPackage(
+            vulnerable_package=PackageURL(
+                type="npm", namespace=None, name="foo", version="1.9.8", qualifiers={}, subpath=None
+            ),
+            patched_package=PackageURL(
+                type="npm", namespace=None, name="foo", version="1.9.9", qualifiers={}, subpath=None
+            ),
+        ),
+        LegacyAffectedPackage(
+            vulnerable_package=PackageURL(
+                type="npm", namespace=None, name="foo", version="2.0.0", qualifiers={}, subpath=None
+            ),
+            patched_package=PackageURL(
+                type="npm", namespace=None, name="foo", version="2.0.2", qualifiers={}, subpath=None
+            ),
+        ),
+        LegacyAffectedPackage(
+            vulnerable_package=PackageURL(
+                type="npm", namespace=None, name="foo", version="2.0.1", qualifiers={}, subpath=None
+            ),
+            patched_package=PackageURL(
+                type="npm", namespace=None, name="foo", version="2.0.2", qualifiers={}, subpath=None
+            ),
+        ),
+    ] == result

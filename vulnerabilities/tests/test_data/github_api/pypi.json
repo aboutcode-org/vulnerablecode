@@ -1,0 +1,165 @@
+{
+  "data": {
+    "securityVulnerabilities": {
+      "edges": [
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-4fx9-vc88-q2xc"
+                }
+              ],
+              "summary": "Infinite loop in Pillow",
+              "references": [
+                {
+                  "url": "https://github.com/python-pillow/Pillow/commit/baae9ec4b67c68e3adaf1208cf54e8de5e38a6fd"
+                },
+                {
+                  "url": "https://pillow.readthedocs.io/en/stable/releasenotes/9.0.0.html#ensure-jpegimageplugin-stops-at-the-end-of-a-truncated-file"
+                },
+                {
+                  "url": "https://github.com/advisories/GHSA-4fx9-vc88-q2xc"
+                }
+              ],
+              "severity": "LOW",
+              "publishedAt": "2022-03-11T23:39:27Z"
+            },
+            "package": {
+              "name": "Pillow"
+            },
+            "vulnerableVersionRange": "< 9.0.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-8vj2-vxx3-667w"
+                },
+                {
+                  "type": "CVE",
+                  "value": "CVE-2022-22817"
+                }
+              ],
+              "summary": "Arbitrary expression injection in Pillow",
+              "references": [
+                {
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-22817"
+                },
+                {
+                  "url": "https://pillow.readthedocs.io/en/stable/releasenotes/9.0.0.html#restrict-builtins-available-to-imagemath-eval"
+                },
+                {
+                  "url": "https://lists.debian.org/debian-lts-announce/2022/01/msg00018.html"
+                },
+                {
+                  "url": "https://www.debian.org/security/2022/dsa-5053"
+                },
+                {
+                  "url": "https://github.com/python-pillow/Pillow/commit/8531b01d6cdf0b70f256f93092caa2a5d91afc11"
+                },
+                {
+                  "url": "https://pillow.readthedocs.io/en/stable/releasenotes/9.0.1.html#security"
+                },
+                {
+                  "url": "https://github.com/advisories/GHSA-8vj2-vxx3-667w"
+                }
+              ],
+              "severity": "CRITICAL",
+              "publishedAt": "2022-01-12T20:07:33Z"
+            },
+            "package": {
+              "name": "Pillow"
+            },
+            "vulnerableVersionRange": "< 9.0.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-9j59-75qj-795w"
+                },
+                {
+                  "type": "CVE",
+                  "value": "CVE-2022-24303"
+                }
+              ],
+              "summary": "Path traversal in Pillow",
+              "references": [
+                {
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-24303"
+                },
+                {
+                  "url": "https://github.com/python-pillow/Pillow/commit/427221ef5f19157001bf8b1ad7cfe0b905ca8c26"
+                },
+                {
+                  "url": "https://pillow.readthedocs.io/en/stable/releasenotes/9.0.1.html#security"
+                },
+                {
+                  "url": "https://github.com/advisories/GHSA-9j59-75qj-795w"
+                }
+              ],
+              "severity": "MODERATE",
+              "publishedAt": "2022-03-11T23:10:32Z"
+            },
+            "package": {
+              "name": "Pillow"
+            },
+            "vulnerableVersionRange": "< 9.0.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                {
+                  "type": "GHSA",
+                  "value": "GHSA-8r7c-3cm2-3h8f"
+                },
+                {
+                  "type": "CVE",
+                  "value": "CVE-2022-23578"
+                }
+              ],
+              "summary": "Memory leak in Tensorflow",
+              "references": [
+                {
+                  "url": "https://github.com/tensorflow/tensorflow/security/advisories/GHSA-8r7c-3cm2-3h8f"
+                },
+                {
+                  "url": "https://github.com/tensorflow/tensorflow/commit/c79ccba517dbb1a0ccb9b01ee3bd2a63748b60dd"
+                },
+                {
+                  "url": "https://github.com/tensorflow/tensorflow/blob/a1320ec1eac186da1d03f033109191f715b2b130/tensorflow/core/common_runtime/immutable_executor_state.cc#L84-L262"
+                },
+                {
+                  "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-23578"
+                },
+                {
+                  "url": "https://github.com/advisories/GHSA-8r7c-3cm2-3h8f"
+                }
+              ],
+              "severity": "MODERATE",
+              "publishedAt": "2022-02-10T00:33:13Z"
+            },
+            "package": {
+              "name": "tensorflow"
+            },
+            "vulnerableVersionRange": "< 2.5.3"
+          }
+        }
+      ],
+      "pageInfo": {
+        "hasNextPage": true,
+        "endCursor": "Y3Vyc29yOnYyOpK5MjAyMi0wMi0wNVQwMTo0NTowNCswNTozMM1V5g=="
+      }
+    }
+  }
+}

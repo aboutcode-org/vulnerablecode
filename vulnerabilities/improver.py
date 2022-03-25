@@ -61,6 +61,20 @@ class Inference:
             not versionless_purls
         ), f"Version-less purls are not supported in an Inference: {versionless_purls}"
 
+    def to_dict(self):
+        """
+        Return a dict representation of this Inference
+        """
+        return {
+            "vulnerability_id": self.vulnerability_id,
+            "aliases": [alias for alias in self.aliases],
+            "confidence": self.confidence,
+            "summary": self.summary,
+            "affected_purls": [affected_purl.to_dict() for affected_purl in self.affected_purls],
+            "fixed_purl": self.fixed_purl.to_dict(),
+            "references": [ref.to_dict() for ref in self.references],
+        }
+
     @classmethod
     def from_advisory_data(cls, advisory_data, confidence, fixed_purl, affected_purls=None):
         """

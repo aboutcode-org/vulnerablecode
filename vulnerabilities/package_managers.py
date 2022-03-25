@@ -68,12 +68,15 @@ class VersionAPI:
         for version in self.cache.get(package_name, set()):
             if until and version.release_date and version.release_date > until:
                 new_versions.add(version.value)
-                continue
-            valid_versions.add(version.value)
+            else:
+                valid_versions.add(version.value)
 
         return VersionResponse(valid_versions=valid_versions, newer_versions=new_versions)
 
     async def load_api(self, pkg_set):
+        """
+        Populate the cache with the versions of the packages in pkg_set
+        """
         async with client_session() as session:
             await asyncio.gather(
                 *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
@@ -509,7 +512,10 @@ class HexVersionAPI(VersionAPI):
 class GoproxyVersionAPI(VersionAPI):
 
     package_type = "golang"
-    module_name_by_package_name = {}
+
+    def __init__(self, cache: MutableMapping[str, Set[Version]] = None):
+        super().__init__(cache)
+        self.module_name_by_package_name = {}
 
     @staticmethod
     def trim_url_path(url_path: str) -> Optional[str]:

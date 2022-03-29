@@ -35,3 +35,6 @@ jobs:
         run: make test
         env:
           GH_TOKEN: 1 
+
+      - name: Type Checking
+        run: make typecheck

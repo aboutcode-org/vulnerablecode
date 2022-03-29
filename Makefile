@@ -125,4 +125,8 @@ install: virtualenv
 	@echo "-> Install and configure the Python env with base dependencies, offline"
 	${VENV}/bin/pip install --upgrade --no-index --no-cache-dir --find-links=thirdparty -e .
 
+typecheck:
+	@echo "-> Run type checking"
+	@${ACTIVATE} ${PYTHON_EXE} -m mypy --ignore-missing-imports .
+
 .PHONY: virtualenv conf dev envfile install check valid clean migrate postgres sqlite run test package

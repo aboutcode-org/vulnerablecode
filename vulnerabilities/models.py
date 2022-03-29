@@ -21,6 +21,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import dataclasses
+import hashlib
 import importlib
 import json
 import logging
@@ -326,6 +327,15 @@ class Advisory(models.Model):
     into structured data
     """
 
+    def save(self, *args, **kwargs):
+        checksum = hashlib.md5()
+        for field in (self.summary, self.affected_packages, self.references):
+            value = json.dumps(field, separators=(",", ":")).encode("utf-8")
+            checksum.update(value)
+        self.unique_content_id = checksum.hexdigest()
+        super().save(*args, **kwargs)
+
+    unique_content_id = models.CharField(max_length=32, blank=True, null=True)
     aliases = models.JSONField(blank=True, default=list, help_text="A list of alias strings")
     summary = models.TextField(blank=True, null=True)
     # we use a JSON field here to avoid creating a complete relational model for data that
@@ -356,9 +366,7 @@ class Advisory(models.Model):
     class Meta:
         unique_together = (
             "aliases",
-            "summary",
-            "affected_packages",
-            "references",
+            "unique_content_id",
             "date_published",
         )
 

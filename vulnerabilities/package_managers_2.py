@@ -13,6 +13,7 @@ import requests
 from dateutil import parser as dateparser
 from django.utils.dateparse import parse_datetime
 
+from vulnerabilities.helpers import get_item
 from vulnerabilities.package_managers import VersionResponse
 
 LOGGER = logging.getLogger(__name__)
@@ -31,7 +32,11 @@ class VersionResponse:
 
 
 def get_response(url, type="json"):
-    resp = requests.get(url=url)
+    try:
+        resp = requests.get(url=url)
+    except:
+        LOGGER.error(traceback.format_exc())
+        return None
     if not resp.status_code == 200:
         LOGGER.error(f"Error while fetching {url}: {resp.status_code}")
         return None
@@ -86,20 +91,23 @@ class PypiVersionAPI(VersionAPI):
             self.cache[pkg] = versions
             return
 
-        for version, download_items in response["releases"].items() or {}:
+        releases = response.get("releases") or {}
+        for version, download_items in releases.items():
             if download_items:
                 latest_download_item = max(
                     download_items,
                     key=lambda download_item: dateparser.parse(
                         download_item["upload_time_iso_8601"]
-                        if "upload_time_iso_8601" in download_item
-                        else LOGGER.error(f"{download_item} has no upload_time_iso_8601")
-                    ),
+                    )
+                    if download_item.get("upload_time_iso_8601")
+                    else None,
                 )
                 versions.add(
                     LegacyVersion(
                         value=version,
-                        release_date=dateparser.parse(latest_download_item["upload_time_iso_8601"]),
+                        release_date=dateparser.parse(latest_download_item["upload_time_iso_8601"])
+                        if latest_download_item.get("upload_time_iso_8601")
+                        else None,
                     )
                 )
         self.cache[pkg] = versions
@@ -117,8 +125,13 @@ class RubyVersionAPI(VersionAPI):
             self.cache[pkg] = versions
             return
         for release in response:
-            if release["number"] and release["published_at"]:
+            if release.get("published_at"):
                 release_date = dateparser.parse(release["published_at"])
+            elif release.get("created_at"):
+                release_date = dateparser.parse(release["created_at"])
+            else:
+                release_date = None
+            if release.get("number"):
                 versions.add(LegacyVersion(value=release["number"], release_date=release_date))
             else:
                 LOGGER.error(f"Failed to parse release {release}")
@@ -196,12 +209,16 @@ class NugetVersionAPI(VersionAPI):
     @staticmethod
     def extract_versions(resp: dict) -> Set[LegacyVersion]:
         all_versions = set()
-        for entry_group in resp["items"] or []:
-            for entry in entry_group["items"] or []:
-                catalog_entry = entry["catalogEntry"] or {}
+        for entry_group in resp.get("items") or []:
+            for entry in entry_group.get("items") or []:
+                catalog_entry = entry.get("catalogEntry") or {}
                 version = catalog_entry.get("version")
-                release_date = dateparser.parse(catalog_entry.get("published"))
-                if version and release_date:
+                release_date = (
+                    dateparser.parse(catalog_entry["published"])
+                    if catalog_entry.get("published")
+                    else None
+                )
+                if version:
                     all_versions.add(
                         LegacyVersion(
                             value=version,
@@ -345,17 +362,18 @@ class ComposerVersionAPI(VersionAPI):
     @staticmethod
     def extract_versions(resp: dict, pkg_name: str) -> Set[LegacyVersion]:
         all_versions = set()
-        for version in resp["packages"][pkg_name]:
+        for version in get_item(resp, "packages", pkg_name) or []:
             if "dev" in version:
                 continue
 
             # This if statement ensures, that all_versions contains only released versions
             # See https://github.com/composer/composer/blob/44a4429978d1b3c6223277b875762b2930e83e8c/doc/articles/versions.md#tags  # nopep8
             # for explanation of removing 'v'
+            time = get_item(resp, "packages", pkg_name, version, "time")
             all_versions.add(
                 LegacyVersion(
                     value=version.lstrip("v"),
-                    release_date=dateparser.parse(resp["packages"][pkg_name][version]["time"]),
+                    release_date=dateparser.parse(time) if time else None,
                 )
             )
         return all_versions

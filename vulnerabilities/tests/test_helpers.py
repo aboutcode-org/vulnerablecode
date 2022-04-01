@@ -19,7 +19,6 @@
 #  for any legal advice.
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-from unittest import result
 
 from packageurl import PackageURL
 
@@ -31,6 +30,7 @@ def test_nearest_patched_package():
 
     result = nearest_patched_package(
         vulnerable_packages=[
+            PackageURL(type="npm", name="foo", version="2.0.4"),
             PackageURL(type="npm", name="foo", version="2.0.0"),
             PackageURL(type="npm", name="foo", version="2.0.1"),
             PackageURL(type="npm", name="foo", version="1.9.8"),
@@ -65,5 +65,11 @@ def test_nearest_patched_package():
             patched_package=PackageURL(
                 type="npm", namespace=None, name="foo", version="2.0.2", qualifiers={}, subpath=None
             ),
+        ),
+        LegacyAffectedPackage(
+            vulnerable_package=PackageURL(
+                type="npm", namespace=None, name="foo", version="2.0.4", qualifiers={}, subpath=None
+            ),
+            patched_package=None,
         ),
     ] == result

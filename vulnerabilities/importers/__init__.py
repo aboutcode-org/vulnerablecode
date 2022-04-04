@@ -25,6 +25,7 @@ from vulnerabilities.importers import nginx
 from vulnerabilities.importers import nvd
 from vulnerabilities.importers import openssl
 
+
 IMPORTERS_REGISTRY = [
     nginx.NginxImporter,
     alpine_linux.AlpineImporter,

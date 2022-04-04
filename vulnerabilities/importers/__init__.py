@@ -22,7 +22,13 @@
 from vulnerabilities.importers import alpine_linux
 from vulnerabilities.importers import github
 from vulnerabilities.importers import nginx
+from vulnerabilities.importers import nvd
 
-IMPORTERS_REGISTRY = [nginx.NginxImporter, alpine_linux.AlpineImporter, github.GitHubAPIImporter]
+IMPORTERS_REGISTRY = [
+    nginx.NginxImporter,
+    alpine_linux.AlpineImporter,
+    github.GitHubAPIImporter,
+    nvd.NVDImporter,
+]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

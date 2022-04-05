@@ -41,7 +41,7 @@ from vulnerabilities.severity_systems import SCORING_SYSTEMS
 
 
 class NVDImporter(Importer):
-    spdx_license_expression = "TBD"
+    spdx_license_expression = "LicenseRef-scancode-unknown"
 
     def advisory_data(self):
         advisory_data = []

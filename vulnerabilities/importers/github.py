@@ -530,7 +530,7 @@ def resolve_version_range(
         # Remove whitespace
         package_version = package_version.replace(" ", "")
         # Remove leading 'v'
-        package_version = package_version.lstrip("v").lstrip("V")
+        package_version = package_version.lstrip("vV")
         try:
             version = affected_version_range.version_class(package_version)
         except Exception:

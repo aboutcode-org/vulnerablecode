@@ -43,7 +43,7 @@ class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
 
 
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
-    scores = VulnerabilitySeveritySerializer(many=True)
+    scores = VulnerabilitySeveritySerializer(many=True, source="vulnerabilityseverity_set")
 
     class Meta:
         model = VulnerabilityReference

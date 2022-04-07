@@ -6,7 +6,7 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects
 
-FROM python:3.8
+FROM python:3.9
 
 
 WORKDIR /app

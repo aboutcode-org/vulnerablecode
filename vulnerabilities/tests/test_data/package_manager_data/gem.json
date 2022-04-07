@@ -1,0 +1,54 @@
+[
+  {
+    "authors": "David Heinemeier Hansson",
+    "built_at": "2022-03-08T00:00:00.000Z",
+    "published_at": "2022-03-08T17:50:52.496Z",
+    "description": "Ruby on Rails is a full-stack web framework optimized for programmer happiness and sustainable productivity. It encourages beautiful code by favoring convention over configuration.",
+    "downloads_count": 295102,
+    "metadata": {
+      "changelog_uri": "https://github.com/rails/rails/releases/tag/v7.0.2.3",
+      "bug_tracker_uri": "https://github.com/rails/rails/issues",
+      "source_code_uri": "https://github.com/rails/rails/tree/v7.0.2.3",
+      "mailing_list_uri": "https://discuss.rubyonrails.org/c/rubyonrails-talk",
+      "documentation_uri": "https://api.rubyonrails.org/v7.0.2.3/",
+      "rubygems_mfa_required": true
+    },
+    "number": "7.0.2.3",
+    "summary": "Full-stack web application framework.",
+    "platform": "ruby",
+    "rubygems_version": ">= 1.8.11",
+    "ruby_version": ">= 2.7.0",
+    "prerelease": false,
+    "licenses": [
+      "MIT"
+    ],
+    "requirements": [],
+    "sha": "ee4e24075c72dec6e02e3fcddec86399c2b4eb0466efe4ccb5f78f96d3daa283"
+  },
+  {
+    "authors": "David Heinemeier Hansson",
+    "built_at": "2022-02-11T00:00:00.000Z",
+    "created_at": "2022-02-11T19:44:19.017Z",
+    "description": "Ruby on Rails is a full-stack web framework optimized for programmer happiness and sustainable productivity. It encourages beautiful code by favoring convention over configuration.",
+    "downloads_count": 347689,
+    "metadata": {
+      "changelog_uri": "https://github.com/rails/rails/releases/tag/v7.0.2.2",
+      "bug_tracker_uri": "https://github.com/rails/rails/issues",
+      "source_code_uri": "https://github.com/rails/rails/tree/v7.0.2.2",
+      "mailing_list_uri": "https://discuss.rubyonrails.org/c/rubyonrails-talk",
+      "documentation_uri": "https://api.rubyonrails.org/v7.0.2.2/",
+      "rubygems_mfa_required": true
+    },
+    "number": "7.0.2.2",
+    "summary": "Full-stack web application framework.",
+    "platform": "ruby",
+    "rubygems_version": ">= 1.8.11",
+    "ruby_version": ">= 2.7.0",
+    "prerelease": false,
+    "licenses": [
+      "MIT"
+    ],
+    "requirements": [],
+    "sha": "3393e21131e2120a42cf634416033e587b5dfdccdc84d1a2d2c176b847f6f17f"
+  }
+]

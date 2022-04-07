@@ -21,7 +21,6 @@ services:
     volumes:
       - /etc/vulnerablecode/:/etc/vulnerablecode/
       - static:/var/vulnerablecode/static/
-    restart: on-failure
     depends_on:
       - db
 

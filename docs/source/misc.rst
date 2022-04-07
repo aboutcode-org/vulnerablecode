@@ -7,7 +7,8 @@ Continuous periodic Data import
 -------------------------------
 
 
-If you want to run the import periodically, you can use a systemd timer. Here is an example::
+If you want to run the import periodically, you can use a systemd timer.
+Here is an example::
 
     $ cat ~/.config/systemd/user/vulnerablecode.service
 

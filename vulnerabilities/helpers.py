@@ -178,7 +178,8 @@ def nearest_patched_package(
 
         affected_package_with_patched_package_objects.append(
             AffectedPackage(
-                vulnerable_package=vulnerable_package.purl, patched_package=patched_package.purl
+                vulnerable_package=vulnerable_package.purl,
+                patched_package=patched_package.purl if patched_package else None,
             )
         )
 

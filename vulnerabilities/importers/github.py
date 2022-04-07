@@ -527,11 +527,10 @@ def resolve_version_range(
     for package_version in package_versions or []:
         if package_version in ignorable_versions:
             continue
-        # Remove leading 'v'
-        if package_version.startswith("v") or package_version.startswith("V"):
-            package_version = package_version.replace("V", "").replace("v", "")
         # Remove whitespace
         package_version = package_version.replace(" ", "")
+        # Remove leading 'v'
+        package_version = package_version.lstrip("vV")
         try:
             version = affected_version_range.version_class(package_version)
         except Exception:

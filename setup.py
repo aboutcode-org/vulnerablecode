@@ -12,7 +12,7 @@ desc = "Software package vulnerabilities database."
 
 setup(
     name="vulnerablecode",
-    version="20.10",
+    version="30.0.0",
     license="Apache-2.0",
     description=desc,
     long_description=desc,

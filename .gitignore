@@ -11,7 +11,6 @@ __pycache__/
 build/
 develop-eggs/
 dist/
-downloads/
 eggs/
 .eggs/
 lib/
@@ -24,15 +23,11 @@ wheels/
 .installed.cfg
 *.egg
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
 
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
+pip-selfcheck.json
 
 # Unit test / coverage reports
 htmlcov/
@@ -40,10 +35,8 @@ htmlcov/
 .coverage
 .coverage.*
 .cache
-nosetests.xml
 coverage.xml
 *.cover
-.hypothesis/
 
 # Translations
 *.mo
@@ -52,13 +45,6 @@ coverage.xml
 # Django stuff:
 *.log
 local_settings.py
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
 
 # Sphinx documentation
 docs/_build/
@@ -69,17 +55,10 @@ target/
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# pyenv
+# pyenv and pip
 .python-version
 pyvenv.cfg
 bin/
-pip-selfcheck.json
-
-# celery beat schedule file
-celerybeat-schedule
-
-# SageMath parsed files
-*.sage.py
 
 # Environments
 .env
@@ -88,21 +67,10 @@ env/
 venv/
 ENV/
 
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
 
 # mypy
 .mypy_cache/
 
-# PyCharm
-.idea/
 
 # Database
 *.sqlite3*
@@ -118,13 +86,13 @@ share
 Pipfile
 
 # editors
-.vscode/
+.vscode
+# PyCharm
+.idea/
 
 # pytest
 .pytest_cache
 
-# VSCode
-.vscode
 
 # Various junk and temp files
 .DS_Store

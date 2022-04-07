@@ -135,6 +135,6 @@ docker-images:
 	docker-compose pull
 	@echo "-> Save the service images to a compressed tar archive in the dist/ directory"
 	@mkdir -p dist/
-	@docker save postgres vulnerablecode_web nginx | gzip > dist/vulnerablecode-images-`git describe --tags`.tar.gz
+	@docker save postgres vulnerablecode_vulnerablecode nginx | gzip > dist/vulnerablecode-images-`git describe --tags`.tar.gz
 
 .PHONY: virtualenv conf dev envfile install check valid isort clean migrate postgres sqlite run test bump docs docker-images

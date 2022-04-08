@@ -20,8 +20,6 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 import asyncio
-import dataclasses
-import datetime
 import logging
 from typing import Iterable
 
@@ -32,7 +30,6 @@ from packageurl import PackageURL
 from univers.version_range import NginxVersionRange
 from univers.versions import SemverVersion
 
-from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
@@ -45,6 +42,7 @@ from vulnerabilities.models import Advisory
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import Version
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.severity_systems import ScoringSystem
 
 logger = logging.getLogger(__name__)
 
@@ -127,10 +125,46 @@ def parse_advisory_data_from_paragraph(vuln_info):
     not_vulnerable, vulnerable, references) from bs4 paragraph
 
     For example:
-    >>> paragraph = '<p>1-byte memory overwrite in resolver<br/>Severity: medium<br/><a href="http://mailman.nginx.org/pipermail/nginx-announce/2021/000300.html">Advisory</a><br/><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-23017">CVE-2021-23017</a><br/>Not vulnerable: 1.21.0+, 1.20.1+<br/>Vulnerable: 0.6.18-1.20.0<br/><a href="/download/patch.2021.resolver.txt">The patch</a>  <a href="/download/patch.2021.resolver.txt.asc">pgp</a></p>'
+    >>> paragraph = ('<p>1-byte memory overwrite in resolver<br/>Severity: medium<br/>'
+    ... '<a href="http://mailman.nginx.org/pipermail/nginx-announce/2021/000300.html">'
+    ... 'Advisory</a><br/><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?'
+    ... 'name=CVE-2021-23017">CVE-2021-23017</a><br/>Not vulnerable: 1.21.0+, 1.20.1+<br/>'
+    ... 'Vulnerable: 0.6.18-1.20.0<br/><a href="/download/patch.2021.resolver.txt">'
+    ... 'The patch</a>  <a href="/download/patch.2021.resolver.txt.asc">pgp</a></p>')
     >>> vuln_info = BeautifulSoup(paragraph, features="lxml").p
-    >>> parse_advisory_data_from_paragraph(vuln_info)
-    {'aliases': ['CVE-2021-23017'], 'summary': '1-byte memory overwrite in resolver', 'advisory_severity': 'Severity: medium', 'not_vulnerable': 'Not vulnerable: 1.21.0+, 1.20.1+', 'vulnerable': 'Vulnerable: 0.6.18-1.20.0', 'references': [Reference(reference_id='', url='http://mailman.nginx.org/pipermail/nginx-announce/2021/000300.html', severities=[VulnerabilitySeverity(system=ScoringSystem(identifier='generic_textual', name='Generic textual severity rating', url='', notes='Severity for unknown scoring systems. Contains generic textual values like High, Low etc'), value='Severity: medium')]), Reference(reference_id='', url='https://nginx.org/download/patch.2021.resolver.txt', severities=[]), Reference(reference_id='', url='https://nginx.org/download/patch.2021.resolver.txt.asc', severities=[])]}
+    >>> expected = {
+    ...    'aliases': ['CVE-2021-23017'],
+    ...    'summary': '1-byte memory overwrite in resolver',
+    ...    'advisory_severity': 'Severity: medium',
+    ...    'not_vulnerable': 'Not vulnerable: 1.21.0+, 1.20.1+',
+    ...    'vulnerable': 'Vulnerable: 0.6.18-1.20.0',
+    ...    'references': [
+    ...        Reference(
+    ...            reference_id='',
+    ...            url='http://mailman.nginx.org/pipermail/nginx-announce/2021/000300.html',
+    ...            severities=[VulnerabilitySeverity(
+    ...                system=ScoringSystem(
+    ...                identifier='generic_textual',
+    ...                name='Generic textual severity rating',
+    ...                url='',
+    ...                notes='Severity for unknown scoring systems. '
+    ...                      'Contains generic textual values like High, Low etc'),
+    ...                value='Severity: medium'
+    ...            )]
+    ...        ),
+    ...        Reference(
+    ...            reference_id='',
+    ...            url='https://nginx.org/download/patch.2021.resolver.txt',
+    ...            severities=[]
+    ...        ),
+    ...        Reference(
+    ...            reference_id='',
+    ...            url='https://nginx.org/download/patch.2021.resolver.txt.asc',
+    ...            severities=[]
+    ...        )
+    ...    ]
+    ... }
+    >>> assert parse_advisory_data_from_paragraph(vuln_info) == expected
     """
     aliases = []
     summary = advisory_severity = not_vulnerable = vulnerable = None
@@ -236,24 +270,25 @@ class NginxBasicImprover(Improver):
         normalized_versions = set()
         while self.version_api.cache["nginx/nginx"]:
             version = self.version_api.cache["nginx/nginx"].pop()
-            normalized_version = Version(
-                value=version.value.replace("release-", ""), release_date=version.release_date
-            )
+            cleaned = version.value.replace("release-", "")
+            normalized_version = Version(value=cleaned, release_date=version.release_date)
             normalized_versions.add(normalized_version)
         self.version_api.cache["nginx/nginx"] = normalized_versions
 
 
 def is_vulnerable(version, affected_version_range, fixed_versions):
-    # Check if the version is in "Vulnerable" range.  If it's not, the
-    # version is not vulnerable.
-    #
-    # If it is, check if the branch is explicitly listed in the "Not
-    # vulnerable".  If it's not, the version is vulnerable.  If it
-    # is, check the minor number: if it's greater or equal to the
-    # version listed as not vulnerable, the version is not vulnerable,
-    # else the version is vulnerable.
-    #
-    # See: https://marc.info/?l=nginx&m=164070162912710&w=2
+    """
+    Check if the version is in "Vulnerable" range.  If it's not, the
+    version is not vulnerable.
+
+    If it is, check if the branch is explicitly listed in the "Not
+    vulnerable".  If it's not, the version is vulnerable.  If it
+    is, check the minor number: if it's greater or equal to the
+    version listed as not vulnerable, the version is not vulnerable,
+    else the version is vulnerable.
+
+    See: https://marc.info/?l=nginx&m=164070162912710&w=2
+    """
     if version in NginxVersionRange.from_string(affected_version_range.to_string()):
         for fixed_version in fixed_versions:
             if version.value.minor == fixed_version.value.minor and version >= fixed_version:

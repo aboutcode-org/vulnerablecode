@@ -2,7 +2,6 @@ from vulnerabilities import importers
 from vulnerabilities.improvers import default
 
 IMPROVERS_REGISTRY = [
-    importers.example.ExampleAliasImprover,
     default.DefaultImprover,
     importers.nginx.NginxBasicImprover,
     importers.alpine_linux.AlpineBasicImprover,

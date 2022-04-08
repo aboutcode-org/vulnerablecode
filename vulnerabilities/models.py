@@ -99,7 +99,10 @@ class VulnerabilityReference(models.Model):
     package manager.
     """
 
-    vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
+    vulnerability = models.ForeignKey(
+        Vulnerability,
+        on_delete=models.CASCADE,
+    )
     url = models.URLField(
         max_length=1024, help_text="URL to the vulnerability reference", blank=True
     )

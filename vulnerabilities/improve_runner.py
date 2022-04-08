@@ -21,18 +21,18 @@ class ImproveRunner:
     improver and parsing the returned Inferences into proper database fields
     """
 
-    def __init__(self, improver):
-        self.improver = improver
+    def __init__(self, improver_class):
+        self.improver_class = improver_class
 
     def run(self) -> None:
-        improver = self.improver()
+        improver = self.improver_class()
         logger.info(f"Running improver: {improver.qualified_name}")
         for advisory in improver.interesting_advisories:
             inferences = improver.get_inferences(advisory_data=advisory.to_advisory_data())
             process_inferences(
                 inferences=inferences, advisory=advisory, improver_name=improver.qualified_name
             )
-        logger.info("Finished improving using %s.", self.improver.qualified_name)
+        logger.info("Finished improving using %s.", self.improver_class.qualified_name)
 
 
 @transaction.atomic

@@ -1,27 +1,35 @@
+# Ignore the Docker files themselves to avoid that all layers are invalidated if the Dockerfiles are changed during development.
+.dockerignore
+Dockerfile
+docker.env
+docker-compose.yml
+
+
+# Ignore Git directory and files and github directory.
 **/.git
 **/.gitignore
+**/.gitattributes
+**/.gitmodules
 **/.github
+
+
+# Ignore IDE artifacts and various common tools .dot files
 **/.vscode
 **/.idea
-**/coverage
-**/.aws
 **/.ssh
 **/.DS_Store
-**/.aof
-**/venv
-**/env
-**/bin
+
+
+# Ignore etc, docs and build dirs
 **/docs
 **/dist
+**/build
 **/etc
-**/lib
-**/var
-**/*.egg-info
-.dockerignore
 .readthedocs.yaml
-docker.env
 CHANGELOG.rst
-Dockerfile
 README.rst
-docker-compose.yml
-pyvenv.cfg
+
+
+# Ignore virtualenv and local Python build files
+**/venv
+**/*.egg-info

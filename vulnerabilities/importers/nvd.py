@@ -111,7 +111,7 @@ def to_advisories(nvd_data):
         yield AdvisoryData(
             aliases=aliases,
             summary=summary,
-            references=references,
+            references=sorted(references),
             date_published=dateparser.parse(cve_item.get("publishedDate")),
         )
 
@@ -127,7 +127,12 @@ def extract_reference_urls(cve_item):
         if not ref_url:
             continue
 
-        if ref_url.startswith("http") or ref_url.startswith("ftp"):
+        if ref_url.startswith(
+            (
+                "http",
+                "ftp",
+            )
+        ):
             urls.add(ref_url)
 
     return urls
@@ -153,8 +158,9 @@ def extract_cpes(cve_item):
     cpes = set()
     for node in get_item(cve_item, "configurations", "nodes") or []:
         for cpe_data in node.get("cpe_match") or []:
-            if cpe_data.get("cpe23Uri"):
-                cpes.add(cpe_data["cpe23Uri"])
+            cpe23_uri = cpe_data.get("cpe23Uri")
+            if cpe23_uri:
+                cpes.add(cpe23_uri)
     return cpes
 
 
@@ -162,24 +168,31 @@ def extract_severity_scores(cve_item):
     """
     Yield a vulnerability severity for each `cve_item`.
     """
-    if get_item(cve_item, "impact", "baseMetricV3"):
+    if not isinstance(cve_item, dict):
+        return None
+    impact = cve_item.get("impact") or {}
+    base_metric_v3 = impact.get("baseMetricV3") or {}
+    if base_metric_v3:
+        cvss_v3 = get_item(base_metric_v3, "cvssV3")
         yield VulnerabilitySeverity(
             system=SCORING_SYSTEMS["cvssv3"],
-            value=str(get_item(cve_item, "impact", "baseMetricV3", "cvssV3", "baseScore")),
+            value=str(cvss_v3.get("baseScore") or ""),
         )
         yield VulnerabilitySeverity(
             system=SCORING_SYSTEMS["cvssv3_vector"],
-            value=str(get_item(cve_item, "impact", "baseMetricV3", "cvssV3", "vectorString")),
+            value=str(cvss_v3.get("vectorString") or ""),
         )
 
-    if get_item(cve_item, "impact", "baseMetricV2"):
+    base_metric_v2 = impact.get("baseMetricV2") or {}
+    if base_metric_v2:
+        cvss_v2 = base_metric_v2.get("cvssV2") or {}
         yield VulnerabilitySeverity(
             system=SCORING_SYSTEMS["cvssv2"],
-            value=str(get_item(cve_item, "impact", "baseMetricV2", "cvssV2", "baseScore")),
+            value=str(cvss_v2.get("baseScore") or ""),
         )
         yield VulnerabilitySeverity(
             system=SCORING_SYSTEMS["cvssv2_vector"],
-            value=str(get_item(cve_item, "impact", "baseMetricV2", "cvssV2", "vectorString")),
+            value=str(cvss_v2.get("vectorString") or ""),
         )
 
 

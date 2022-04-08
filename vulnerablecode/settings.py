@@ -158,5 +158,3 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 100,
 }
 
-# Set this to true to enable community curation, ie users will be able to edit data
-ENABLE_CURATION = False

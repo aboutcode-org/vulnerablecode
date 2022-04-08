@@ -1,16 +1,26 @@
 [build-system]
-requires = ["setuptools >= 50", "wheel"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 
 [tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "vulnerablecode.settings"
+
+markers = [
+    "webtest",
+]
 
 norecursedirs = [
    ".git",
    "dist",
    "build",
    "_build",
+   "local",
+   "ci",
    "docs",
+   "man",
+   "share",
+   "samples",
    ".cache",
    ".settings",
    "thirdparty",
@@ -21,24 +31,57 @@ norecursedirs = [
    "src/*/data",
    "tests/*/data"
 ]
-    
+
 python_files = "*.py"
 
-python_classes="Test"
-python_functions="test"
+python_classes = "Test"
+python_functions = "test"
 
 addopts = [
     "-rfExXw",
     "--strict-markers",
-    "--doctest-modules"
+    "--doctest-modules",
+    # Ignore the following doctests until these files are migrated to
+    # import-improve structure
+    "--ignore=vulnerabilities/importers/alpine_linux.py",
+    "--ignore=vulnerabilities/importers/apache_httpd.py",
+    "--ignore=vulnerabilities/importers/apache_kafka.py",
+    "--ignore=vulnerabilities/importers/apache_tomcat.py",
+    "--ignore=vulnerabilities/importers/archlinux.py",
+    "--ignore=vulnerabilities/importers/debian.py",
+    "--ignore=vulnerabilities/importers/elixir_security.py",
+    "--ignore=vulnerabilities/importers/gentoo.py",
+    "--ignore=vulnerabilities/importers/github.py",
+    "--ignore=vulnerabilities/importers/istio.py",
+    "--ignore=vulnerabilities/importers/kaybee.py",
+    "--ignore=vulnerabilities/importers/npm.py",
+    "--ignore=vulnerabilities/importers/nvd.py",
+    "--ignore=vulnerabilities/importers/openssl.py",
+    "--ignore=vulnerabilities/importers/postgresql.py",
+    "--ignore=vulnerabilities/importers/project_kb_msr2019.py",
+    "--ignore=vulnerabilities/importers/redhat.py",
+    "--ignore=vulnerabilities/importers/retiredotnet.py",
+    "--ignore=vulnerabilities/importers/ruby.py",
+    "--ignore=vulnerabilities/importers/rust.py",
+    "--ignore=vulnerabilities/importers/safety_db.py",
+    "--ignore=vulnerabilities/importers/suse_backports.py",
+    "--ignore=vulnerabilities/importers/suse_scores.py",
+    "--ignore=vulnerabilities/importers/ubuntu_usn.py",
+    "--ignore=vulnerabilities/importers/mozilla.py",
+    "--ignore=vulnerabilities/importers/mattermost.py",
+    "--ignore=vulnerabilities/importers/xen.py",
+    "--ignore=vulnerabilities/management/commands/create_cpe_to_purl_map.py",
+    "--ignore=vulnerabilities/lib_oval.py",
 ]
+
+[tool.black]
+line-length = 100
+include = '\.pyi?$'
+skip_gitignore = true
+extend-exclude = "migrations|data|venv"
 
 [tool.isort]
 profile = "black"
 line_length = 100
 force_single_line = true
 skip_gitignore = true
-
-
-
-

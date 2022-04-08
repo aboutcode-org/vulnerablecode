@@ -7,18 +7,13 @@
     "affected_packages": [],
     "references": [
       {
-        "reference_id": "cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*",
-        "url": "",
+        "reference_id": "",
+        "url": "http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",
         "severities": []
       },
       {
-        "reference_id": "cpe:2.3:a:csilvers:gperftools:0.2:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:a:csilvers:gperftools:0.1:*:*:*:*:*:*:*",
-        "url": "",
+        "reference_id": "",
+        "url": "http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",
         "severities": []
       },
       {
@@ -36,13 +31,18 @@
         ]
       },
       {
-        "reference_id": "",
-        "url": "http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",
+        "reference_id": "cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*",
+        "url": "",
         "severities": []
       },
       {
-        "reference_id": "",
-        "url": "http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",
+        "reference_id": "cpe:2.3:a:csilvers:gperftools:0.1:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:a:csilvers:gperftools:0.2:*:*:*:*:*:*:*",
+        "url": "",
         "severities": []
       }
     ],
@@ -56,188 +56,78 @@
     "affected_packages": [],
     "references": [
       {
-        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.3:*:*:*:*:*:*:*",
-        "url": "",
+        "reference_id": "",
+        "url": "http://archives.neohapsis.com/archives/vulnwatch/2003-q1/0016.html",
         "severities": []
       },
       {
-        "reference_id": "cpe:2.3:o:microsoft:windows_2000:*:sp2:*:*:*:*:*:*",
-        "url": "",
+        "reference_id": "",
+        "url": "http://marc.info/?l=bugtraq&m=104222046632243&w=2",
         "severities": []
       },
       {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.1:*:*:*:*:*:*:*",
-        "url": "",
+        "reference_id": "",
+        "url": "http://secunia.com/advisories/7996",
         "severities": []
       },
       {
-        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.7:*:*:*:*:*:*:*",
-        "url": "",
+        "reference_id": "",
+        "url": "http://www.atstake.com/research/advisories/2003/a010603-1.txt",
         "severities": []
       },
       {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.20:*:*:*:*:*:*:*",
-        "url": "",
+        "reference_id": "",
+        "url": "http://www.atstake.com/research/advisories/2003/atstake_etherleak_report.pdf",
         "severities": []
       },
       {
-        "reference_id": "cpe:2.3:o:netbsd:netbsd:1.5.1:*:*:*:*:*:*:*",
-        "url": "",
+        "reference_id": "",
+        "url": "http://www.kb.cert.org/vuls/id/412115",
         "severities": []
       },
       {
-        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.4:*:*:*:*:*:*:*",
-        "url": "",
+        "reference_id": "",
+        "url": "http://www.oracle.com/technetwork/topics/security/cpujan2015-1972971.html",
         "severities": []
       },
       {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.15:*:*:*:*:*:*:*",
-        "url": "",
+        "reference_id": "",
+        "url": "http://www.osvdb.org/9962",
         "severities": []
       },
       {
-        "reference_id": "cpe:2.3:o:microsoft:windows_2000_terminal_services:*:sp1:*:*:*:*:*:*",
-        "url": "",
+        "reference_id": "",
+        "url": "http://www.redhat.com/support/errata/RHSA-2003-025.html",
         "severities": []
       },
       {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.13:*:*:*:*:*:*:*",
-        "url": "",
+        "reference_id": "",
+        "url": "http://www.redhat.com/support/errata/RHSA-2003-088.html",
         "severities": []
       },
       {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.5:*:*:*:*:*:*:*",
-        "url": "",
+        "reference_id": "",
+        "url": "http://www.securityfocus.com/archive/1/305335/30/26420/threaded",
         "severities": []
       },
       {
-        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.6:*:*:*:*:*:*:*",
-        "url": "",
+        "reference_id": "",
+        "url": "http://www.securityfocus.com/archive/1/307564/30/26270/threaded",
         "severities": []
       },
       {
-        "reference_id": "cpe:2.3:o:netbsd:netbsd:1.5:*:*:*:*:*:*:*",
-        "url": "",
+        "reference_id": "",
+        "url": "http://www.securitytracker.com/id/1031583",
         "severities": []
       },
       {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.12:*:*:*:*:*:*:*",
-        "url": "",
+        "reference_id": "",
+        "url": "http://www.securitytracker.com/id/1040185",
         "severities": []
       },
       {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.10:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.6:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.5:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.2:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.4:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.11:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:netbsd:netbsd:1.5.2:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:microsoft:windows_2000:*:sp1:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.3:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.14:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.7:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.9:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:microsoft:windows_2000_terminal_services:*:sp2:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.17:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.16:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.2:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:microsoft:windows_2000:*:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.8:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:netbsd:netbsd:1.5.3:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:microsoft:windows_2000_terminal_services:*:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.19:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.18:*:*:*:*:*:*:*",
-        "url": "",
-        "severities": []
-      },
-      {
-        "reference_id": "cpe:2.3:o:netbsd:netbsd:1.6:*:*:*:*:*:*:*",
-        "url": "",
+        "reference_id": "",
+        "url": "https://oval.cisecurity.org/repository/search/definition/oval%3Aorg.mitre.oval%3Adef%3A2665",
         "severities": []
       },
       {
@@ -255,78 +145,188 @@
         ]
       },
       {
-        "reference_id": "",
-        "url": "http://www.atstake.com/research/advisories/2003/atstake_etherleak_report.pdf",
+        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.2:*:*:*:*:*:*:*",
+        "url": "",
         "severities": []
       },
       {
-        "reference_id": "",
-        "url": "http://www.oracle.com/technetwork/topics/security/cpujan2015-1972971.html",
+        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.3:*:*:*:*:*:*:*",
+        "url": "",
         "severities": []
       },
       {
-        "reference_id": "",
-        "url": "https://oval.cisecurity.org/repository/search/definition/oval%3Aorg.mitre.oval%3Adef%3A2665",
+        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.4:*:*:*:*:*:*:*",
+        "url": "",
         "severities": []
       },
       {
-        "reference_id": "",
-        "url": "http://archives.neohapsis.com/archives/vulnwatch/2003-q1/0016.html",
+        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.5:*:*:*:*:*:*:*",
+        "url": "",
         "severities": []
       },
       {
-        "reference_id": "",
-        "url": "http://www.atstake.com/research/advisories/2003/a010603-1.txt",
+        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.6:*:*:*:*:*:*:*",
+        "url": "",
         "severities": []
       },
       {
-        "reference_id": "",
-        "url": "http://www.securitytracker.com/id/1040185",
+        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.7:*:*:*:*:*:*:*",
+        "url": "",
         "severities": []
       },
       {
-        "reference_id": "",
-        "url": "http://www.securityfocus.com/archive/1/305335/30/26420/threaded",
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.10:*:*:*:*:*:*:*",
+        "url": "",
         "severities": []
       },
       {
-        "reference_id": "",
-        "url": "http://www.redhat.com/support/errata/RHSA-2003-025.html",
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.11:*:*:*:*:*:*:*",
+        "url": "",
         "severities": []
       },
       {
-        "reference_id": "",
-        "url": "http://www.redhat.com/support/errata/RHSA-2003-088.html",
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.12:*:*:*:*:*:*:*",
+        "url": "",
         "severities": []
       },
       {
-        "reference_id": "",
-        "url": "http://www.kb.cert.org/vuls/id/412115",
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.13:*:*:*:*:*:*:*",
+        "url": "",
         "severities": []
       },
       {
-        "reference_id": "",
-        "url": "http://www.securitytracker.com/id/1031583",
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.14:*:*:*:*:*:*:*",
+        "url": "",
         "severities": []
       },
       {
-        "reference_id": "",
-        "url": "http://www.osvdb.org/9962",
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.15:*:*:*:*:*:*:*",
+        "url": "",
         "severities": []
       },
       {
-        "reference_id": "",
-        "url": "http://marc.info/?l=bugtraq&m=104222046632243&w=2",
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.16:*:*:*:*:*:*:*",
+        "url": "",
         "severities": []
       },
       {
-        "reference_id": "",
-        "url": "http://secunia.com/advisories/7996",
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.17:*:*:*:*:*:*:*",
+        "url": "",
         "severities": []
       },
       {
-        "reference_id": "",
-        "url": "http://www.securityfocus.com/archive/1/307564/30/26270/threaded",
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.18:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.19:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.1:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.20:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.2:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.3:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.4:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.5:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.6:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.7:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.8:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.9:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:microsoft:windows_2000:*:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:microsoft:windows_2000:*:sp1:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:microsoft:windows_2000:*:sp2:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:microsoft:windows_2000_terminal_services:*:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:microsoft:windows_2000_terminal_services:*:sp1:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:microsoft:windows_2000_terminal_services:*:sp2:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:netbsd:netbsd:1.5.1:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:netbsd:netbsd:1.5.2:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:netbsd:netbsd:1.5.3:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:netbsd:netbsd:1.5:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:netbsd:netbsd:1.6:*:*:*:*:*:*:*",
+        "url": "",
         "severities": []
       }
     ],

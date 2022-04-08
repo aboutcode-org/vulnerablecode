@@ -1,5 +1,3 @@
-import sys
-import tempfile
 from pathlib import Path
 
 import environ
@@ -11,10 +9,10 @@ ROOT_DIR = PROJECT_DIR.parent
 
 ENV_FILE = "/etc/vulnerablecode/.env"
 if not Path(ENV_FILE).exists():
-    ENV_FILE = ROOT_DIR(".env")
+    ENV_FILE = ROOT_DIR / ".env"
 
 env = environ.Env()
-environ.Env.read_env(ENV_FILE)
+environ.Env.read_env(str(ENV_FILE))
 
 # Security
 
@@ -24,7 +22,6 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[".localhost", "127.0.0.1", "[
 
 # SECURITY WARNING: don't run with debug turned on in production
 DEBUG = env.bool("VULNERABLECODE_DEBUG", default=False)
-
 
 # Application definition
 
@@ -58,7 +55,6 @@ MIDDLEWARE = (
 ROOT_URLCONF = "vulnerablecode.urls"
 
 WSGI_APPLICATION = "vulnerablecode.wsgi.application"
-
 
 # Database
 
@@ -96,7 +92,6 @@ TEMPLATES = [
     },
 ]
 
-
 # Passwords
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -117,7 +112,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 
 LANGUAGE_CODE = "en-us"
@@ -133,7 +127,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = "/static/"
-#STATIC_ROOT = "/var/vulnerablecode/static/"
+# STATIC_ROOT = "/var/vulnerablecode/static/"
 STATIC_ROOT = env.str("VULNERABLECODE_STATIC_ROOT", "./")
 
 STATICFILES_DIRS = [

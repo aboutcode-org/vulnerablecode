@@ -1,0 +1,28 @@
+{% extends "rest_framework/base.html" %}
+
+{% block style %}
+    {{ block.super }}
+    <style>
+        body {background: none;}
+        .navbar {background: #363636; border-top: 3px solid #f7bf3c;}
+        .navbar-inverse .navbar-brand {color: white;}
+        .nexb-orange {color: #f7bf3c;}
+    </style>
+{% endblock %}
+
+{% block title %}
+    VulnerableCode REST API
+{% endblock %}
+
+{% block branding %}
+    <span class="navbar-brand">
+        Vulnerable<span class="nexb-orange">Code</span> REST API
+    </span>
+{% endblock %}
+
+{% block userlinks %}
+    <li class="navbar-link">
+        <a href="/">Back to app</a>
+    </li>
+    {{ block.super }}
+{% endblock %}

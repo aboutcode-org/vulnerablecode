@@ -25,20 +25,15 @@ from django.core.paginator import PageNotAnInteger
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django.db.models import Q
-from django.http import HttpResponse
 from django.http.response import HttpResponseNotAllowed
-from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
-from django.views.generic.edit import CreateView
-from django.views.generic.edit import DeleteView
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 
 from vulnerabilities import forms
 from vulnerabilities import models
-from vulnerablecode.settings import ENABLE_CURATION
 
 
 class PackageSearchView(View):
@@ -137,7 +132,6 @@ class PackageUpdate(UpdateView):
         resolved_vuln, unresolved_vuln = self._package_vulnerabilities(self.kwargs["pk"])
         context["resolved_vuln"] = resolved_vuln
         context["impacted_vuln"] = unresolved_vuln
-        context["enable_curation"] = ENABLE_CURATION
 
         return context
 
@@ -161,46 +155,10 @@ class VulnerabilityDetails(ListView):
     def get_context_data(self, **kwargs):
         context = super(VulnerabilityDetails, self).get_context_data(**kwargs)
         context["vulnerability"] = models.Vulnerability.objects.get(id=self.kwargs["pk"])
-        context["enable_curation"] = ENABLE_CURATION
         return context
 
     def get_queryset(self):
         return models.VulnerabilityReference.objects.filter(vulnerability_id=self.kwargs["pk"])
-
-
-class VulnerabilityCreate(CreateView):
-
-    template_name = "vulnerability_create.html"
-    model = models.Vulnerability
-    fields = ["vulnerability_id", "summary"]
-
-    def get_success_url(self):
-
-        return reverse("vulnerability_view", kwargs={"pk": self.object.id})
-
-
-class PackageCreate(CreateView):
-
-    template_name = "package_create.html"
-    model = models.Package
-    fields = ["name", "namespace", "type", "version"]
-
-    def get_success_url(self):
-        return reverse("package_view", kwargs={"pk": self.object.id})
-
-
-class PackageRelatedVulnerablityDelete(DeleteView):
-    model = models.PackageRelatedVulnerability
-
-    def get_object(self):
-        package_id = self.kwargs.get("pid")
-        vulnerability_id = self.kwargs.get("vid")
-        return models.PackageRelatedVulnerability.objects.get(
-            package_id=package_id, vulnerability_id=vulnerability_id
-        )
-
-    def get_success_url(self):
-        return reverse("package_view", kwargs={"pk": self.kwargs.get("pid")})
 
 
 class HomePage(View):
@@ -208,65 +166,7 @@ class HomePage(View):
     template_name = "index.html"
 
     def get(self, request):
-        return render(request, self.template_name, context={"enable_curation": ENABLE_CURATION})
-
-
-class PackageRelatedVulnerablityCreate(View):
-
-    template_name = "packagerelatedvulnerability_create.html"
-
-    def get(self, request, *args, **kwargs):
-        context = {"form": forms.CVEForm()}
-        return render(request, self.template_name, context=context)
-
-    def post(self, request, *args, **kwargs):
-        if "vuln_id" in self.request.POST:
-            is_vulnerable = "impacted" in self.request.headers["Referer"]
-            relation = self.create_relationship_instance(
-                vulnerability_id=self.request.POST["vuln_id"],
-                package_id=kwargs["pid"],
-                is_vulnerable=is_vulnerable,
-            )
-
-            if self.relationship_already_exists(relation):
-                return HttpResponse(
-                    "The package already has relationship with the provided vulnerability"
-                )
-
-            relation.save()
-            return redirect(reverse("package_view", kwargs={"pk": self.kwargs.get("pid")}))
-
-    @staticmethod
-    def relationship_already_exists(relationship):
-        existing_relation = models.PackageRelatedVulnerability.objects.filter(
-            package=relationship.package, vulnerability=relationship.vulnerability
-        )
-        return existing_relation.exists()
-
-    @staticmethod
-    def create_relationship_instance(vulnerability_id, package_id, is_vulnerable):
-        package = models.Package.objects.get(id=package_id)
-        # FIXME: Handle the case when  vuln_created=True
-        vulnerability, vuln_created = models.Vulnerability.objects.get_or_create(
-            vulnerability_id=vulnerability_id
-        )
-        return models.PackageRelatedVulnerability(
-            vulnerability=vulnerability, package=package, is_vulnerable=is_vulnerable
-        )
-
-
-class VulnerabilityReferenceCreate(CreateView):
-
-    template_name = "vulnerability_reference_create.html"
-    model = models.VulnerabilityReference
-    fields = ["reference_id", "url"]
-
-    def form_valid(self, form):
-        form.instance.vulnerability = models.Vulnerability.objects.get(id=self.kwargs["vid"])
-        return super(VulnerabilityReferenceCreate, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse("vulnerability_view", kwargs={"pk": self.kwargs["vid"]})
+        return render(request, self.template_name)
 
 
 def schema_view(request):

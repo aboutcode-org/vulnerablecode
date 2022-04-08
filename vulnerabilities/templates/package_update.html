@@ -22,11 +22,6 @@
             {% render_field field|append_attr:"readonly:readonly" class="input is-primary" %}
         </div>
         {% endfor %}
-      {% if enable_curation %}
-        <button class="button is-success mb-3", type="submit">
-          Update
-        </button>
-      {% endif %}
     </form>
   </div>
 
@@ -41,26 +36,11 @@
             {% for vulnerability in impacted_vuln %}
                 <span class="tag is-danger is-medium">
                   <a href="{% url 'vulnerability_view' vulnerability.pk %}" class="has-text-white">{{vulnerability.vulnerability_id}}</a>
-                  {% if enable_curation %}
-                    <form method="POST" action="{% url 'impacted_package_delete' object.pk vulnerability.pk %}"">
-                      {% csrf_token %}<button class="delete is-small" type="submit"></button>
-                    </form>
-                  {% endif %}
               </span>
             {% endfor %}
         </div>
 
         <div class="field is-centered">
-            {% if enable_curation %}
-            <p class="control pb-3">
-                <a class="button is-success" href = "{% url 'impacted_package_create' object.pk %}">
-                    <span>Add</span>
-                    <span class="icon is-small">
-                        <i class="fa fa-plus"></i>
-                    </span>
-                </a>
-            </p>
-            {% endif %}
         </div>
 
     </div>
@@ -75,27 +55,8 @@
             {% for vulnerability in resolved_vuln %}
             <span class="tag is-primary is-medium">
               <a href="{% url 'vulnerability_view' vulnerability.pk %}" class="has-text-white">{{vulnerability.vulnerability_id}}</a>
-
-            {% if enable_curation %}
-            <form method="POST" action="{% url 'resolved_package_delete' object.pk vulnerability.pk %}">
-              {% csrf_token %}<button class="delete is-small" type="submit"></button>
-            </form>
-            {% endif %}
             </span>
             {% endfor %}
-        </div>
-
-        <div class="field is-centered">
-          {% if enable_curation %}
-            <p class="control pb-3">
-                <a class="button is-success" href= "{% url 'resolved_package_create' object.pk %}" >
-                    <span>Add</span>
-                    <span class="icon is-small">
-                        <i class="fa fa-plus"></i>
-                    </span>
-                </a>
-            </p>
-            {% endif %}
         </div>
     </div>
 </div>

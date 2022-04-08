@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     # Third-party apps
     "django_filters",
     "rest_framework",
+    "rest_framework.authtoken",
     "widget_tweaks",
 )
 
@@ -130,7 +131,7 @@ STATIC_URL = "/static/"
 STATIC_ROOT = env.str("VULNERABLECODE_STATIC_ROOT", "./")
 
 STATICFILES_DIRS = [
-    str(PROJECT_DIR.joinpath("static")),
+    str(PROJECT_DIR / "static"),
 ]
 
 # Third-party apps
@@ -138,8 +139,20 @@ STATICFILES_DIRS = [
 # Django restframework
 
 REST_FRAMEWORK = {
-    "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    #"DEFAULT_AUTHENTICATION_CLASSES": (
+    #    "rest_framework.authentication.TokenAuthentication",
+    #),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
+    "DEFAULT_RENDERER_CLASSES": (
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    #    "rest_framework.renderers.AdminRenderer",
+    ),
+    "DEFAULT_FILTER_BACKENDS": (
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter",
+    ),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 100,
 }
 

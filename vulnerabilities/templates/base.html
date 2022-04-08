@@ -17,49 +17,12 @@
                 <a class="navbar-item" href="{% url 'redoc' %}">
                     API Docs
                 </a>
-                {% if enable_curation %}
-                <div class="navbar-item has-dropdown is-hoverable">
-
-                    <a class="navbar-link">
-                        Vulnerabilities
-                    </a>
-                    <div class="navbar-dropdown">
-                        <a class ="navbar-item" href = "{% url 'vulnerability_search' %}" >
-                            Explore
-                        </a>
-                        
-                            <a class ="navbar-item" href = "{% url 'vulnerability_create' %}">
-                                Create
-                            </a>
-                    </div>
-                </div>
-                {% else %}
-                        <a class="navbar-item" href="{% url 'vulnerability_search' %}">
-                            Vulnerabilities
-                        </a>
-                {% endif %}
-                
-                {% if enable_curation %}
-                <div class="navbar-item has-dropdown is-hoverable">
-
-                    <a class="navbar-link">
-                        Packages
-                    </a>
-                    <div class="navbar-dropdown">
-                        <a class ="navbar-item" href = "{% url 'package_search' %}" >
-                            Explore
-                        </a>
-                            <a class ="navbar-item" href = "{% url 'package_create' %}" >
-                                Create
-                            </a>
-                    </div>
-                </div>
-                {% else %}
-                    <a class="navbar-item" href="{% url 'package_search' %}">
-                        Packages
-                    </a>
-                {% endif %}
-
+                <a class="navbar-item" href="{% url 'package_search' %}">
+                    Packages
+                </a>
+                <a class="navbar-item" href="{% url 'vulnerability_search' %}">
+                    Vulnerabilities
+                </a>
             </div>
         </div>
     </nav>
@@ -78,7 +41,7 @@
     <footer class="footer">
       <div class="content has-text-centered">
         <p>
-          <strong>VulnerableCode</strong> by <a href="https://github.com/nexB"> nexB Inc. and others</a>. The source code is licensed
+          <strong>VulnerableCode</strong> by <a href="https://github.com/nexB/vulnerablecode"> nexB Inc. and others</a>. The source code is licensed
           <a href="https://github.com/nexB/vulnerablecode/blob/develop/LICENSE">Apache 2.0</a>
         </p>
       </div>

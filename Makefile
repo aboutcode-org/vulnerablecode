@@ -27,7 +27,6 @@ VENV=venv
 MANAGE=${VENV}/bin/python manage.py
 ACTIVATE?=. ${VENV}/bin/activate;
 VIRTUALENV_PYZ=etc/thirdparty/virtualenv.pyz
-BLACK_ARGS=-l 100 --exclude="migrations|data|venv" .
 # Do not depend on Python to generate the SECRET_KEY
 GET_SECRET_KEY=`base64 /dev/urandom | head -c50`
 # Customize with `$ make envfile ENV_FILE=/etc/vulnerablecode/.env`
@@ -49,11 +48,11 @@ virtualenv:
 
 conf: virtualenv
 	@echo "-> Install dependencies"
-	@${ACTIVATE} pip install -e .
+	@${ACTIVATE} pip install -e . -c requirements.txt
 
 dev: virtualenv
 	@echo "-> Configure and install development dependencies"
-	@${ACTIVATE} pip install -e . -r requirements.txt -r requirements-dev.txt
+	@${ACTIVATE} pip install -e .[dev] -c requirements.txt
 
 envfile:
 	@echo "-> Create the .env file and generate a secret key"
@@ -67,7 +66,7 @@ isort:
 
 black:
 	@echo "-> Apply black code formatter"
-	${VENV}/bin/black ${BLACK_ARGS}
+	${VENV}/bin/black .
 
 doc8:
 	@echo "-> Run doc8 validation"

@@ -2,36 +2,24 @@
 requires = ["setuptools >= 50", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools_scm]
 
 [tool.pytest.ini_options]
+
 norecursedirs = [
    ".git",
-   "bin",
    "dist",
    "build",
    "_build",
-   "dist",
-   "etc",
-   "local",
-   "ci",
    "docs",
-   "man",
-   "share",
-   "samples",
    ".cache",
    ".settings",
-   "Include",
-   "include",
-   "Lib",
-   "lib",
-   "lib64",
-   "Lib64",
-   "Scripts",
    "thirdparty",
    "tmp",
-   "tests/data",
-   ".eggs"
+   "venv",
+   "*/tests/test_data",
+   ".eggs",
+   "src/*/data",
+   "tests/*/data"
 ]
     
 python_files = "*.py"
@@ -41,7 +29,7 @@ python_functions="test"
 
 addopts = [
     "-rfExXw",
-    "--strict",
+    "--strict-markers",
     "--doctest-modules"
 ]
 
@@ -50,3 +38,7 @@ profile = "black"
 line_length = 100
 force_single_line = true
 skip_gitignore = true
+
+
+
+

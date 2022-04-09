@@ -24,10 +24,9 @@
 # Python version can be specified with `$ PYTHON_EXE=python3.x make conf`
 PYTHON_EXE?=python3
 VENV=venv
+MANAGE=${VENV}/bin/python manage.py
 ACTIVATE?=. ${VENV}/bin/activate;
 VIRTUALENV_PYZ=etc/thirdparty/virtualenv.pyz
-BLACK_ARGS=-l 100 .
-ISORT_ARGS=.
 # Do not depend on Python to generate the SECRET_KEY
 GET_SECRET_KEY=`base64 /dev/urandom | head -c50`
 # Customize with `$ make envfile ENV_FILE=/etc/vulnerablecode/.env`
@@ -49,11 +48,11 @@ virtualenv:
 
 conf: virtualenv
 	@echo "-> Install dependencies"
-	@${ACTIVATE} pip install -r requirements.txt
+	@${ACTIVATE} pip install -e . -c requirements.txt
 
-dev: conf
+dev: virtualenv
 	@echo "-> Configure and install development dependencies"
-	@${ACTIVATE} pip install -r requirements-dev.txt
+	@${ACTIVATE} pip install -e .[dev] -c requirements.txt
 
 envfile:
 	@echo "-> Create the .env file and generate a secret key"
@@ -61,29 +60,36 @@ envfile:
 	@mkdir -p $(shell dirname ${ENV_FILE}) && touch ${ENV_FILE}
 	@echo SECRET_KEY=\"${GET_SECRET_KEY}\" > ${ENV_FILE}
 
-check:
-	@echo "-> Run isort validation"
-	@${ACTIVATE} isort --check-only ${ISORT_ARGS}
-	@echo "-> Run black validation"
-	@${ACTIVATE} black --check ${BLACK_ARGS}
+isort:
+	@echo "-> Apply isort changes to ensure proper imports ordering"
+	${VENV}/bin/isort .
 
 black:
 	@echo "-> Apply black code formatter"
-	${VENV}/bin/black ${BLACK_ARGS}
+	${VENV}/bin/black .
 
-isort:
-	@echo "-> Apply isort code formatter"
-	${VENV}/bin/isort ${ISORT_ARGS}
+doc8:
+	@echo "-> Run doc8 validation"
+	@${ACTIVATE} doc8 --max-line-length 100 --ignore-path docs/_build/ --quiet docs/
 
 valid: isort black
 
+check:
+	@echo "-> Run pycodestyle (PEP8) validation"
+	@${ACTIVATE} pycodestyle --max-line-length=100 --exclude=venv,lib,thirdparty,docs,migrations,settings.py .
+	@echo "-> Run isort imports ordering validation"
+	@${ACTIVATE} isort --check-only .
+	@echo "-> Run black validation"
+	@${ACTIVATE} black --check ${BLACK_ARGS}
+
 clean:
 	@echo "-> Clean the Python env"
-	rm -rf ${VENV}
+	rm -rf ${VENV} build/ dist/ vulnerablecode.egg-info/ docs/_build/ pip-selfcheck.json
+	find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
 
 migrate:
 	@echo "-> Apply database migrations"
-	${ACTIVATE} ./manage.py migrate
+	${MANAGE} migrate
 
 postgres:
 	@echo "-> Configure PostgreSQL database"
@@ -103,26 +109,31 @@ sqlite:
 	@$(MAKE) migrate
 
 run:
-	${ACTIVATE} ./manage.py runserver
+	${MANAGE} runserver 8001 --noreload --insecure
 
 test:
-	@echo "-> Run offline tests"
-	${ACTIVATE} ${PYTHON_EXE} -m pytest -v -m "not webtest"
+	@echo "-> Run the test suite"
+	${ACTIVATE} ${PYTHON_EXE} -m pytest -vvs -m "not webtest"
 
 webtest:
 	@echo "-> Run web tests"
-	${ACTIVATE} ${PYTHON_EXE} -m pytest -v -m "webtest"
+	${ACTIVATE} ${PYTHON_EXE} -m pytest -vvs -m "webtest"
 
-package: conf
-	@echo "-> Create a VulnerableCode package for offline installation"
-	@echo "-> Fetch dependencies in thirdparty/ for offline installation"
-	rm -rf thirdparty && mkdir thirdparty
-	${VENV}/bin/pip download -r requirements.txt --no-cache-dir --dest thirdparty
-	@echo "-> Create package in dist/ for offline installation"
-	${VENV}/bin/python setup.py sdist
+bump:
+	@echo "-> Bump the version"
+	bin/bumpver update --no-fetch --patch
 
-install: virtualenv
-	@echo "-> Install and configure the Python env with base dependencies, offline"
-	${VENV}/bin/pip install --upgrade --no-index --no-cache-dir --find-links=thirdparty -e .
+docs:
+	rm -rf docs/_build/
+	@${ACTIVATE} sphinx-build docs/ docs/_build/
 
-.PHONY: virtualenv conf dev envfile install check valid clean migrate postgres sqlite run test package
+docker-images:
+	@echo "-> Build Docker services"
+	docker-compose build
+	@echo "-> Pull service images"
+	docker-compose pull
+	@echo "-> Save the service images to a compressed tar archive in the dist/ directory"
+	@mkdir -p dist/
+	@docker save postgres vulnerablecode_vulnerablecode nginx | gzip > dist/vulnerablecode-images-`git describe --tags`.tar.gz
+
+.PHONY: virtualenv conf dev envfile install check valid isort clean migrate postgres sqlite run test bump docs docker-images

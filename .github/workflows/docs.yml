@@ -1,4 +1,4 @@
-name: CI Documentation
+name: generate Documentation
 
 on: [push, pull_request]
 

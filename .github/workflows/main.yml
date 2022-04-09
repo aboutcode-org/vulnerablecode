@@ -1,37 +1,57 @@
-name: CI
-on:
-  push:
-    branches: [ main ]
+name: run tests
 
-  pull_request:
-    types: [opened, synchronize]
+on: [push, pull_request]
+
+env:
+  DB_NAME: vulnerablecode
+  DB_USER: vulnerablecode
+  DB_PASSWORD: vulnerablecode
+
 jobs:
-  unit_tests:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-20.04
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: ${{ env.DB_NAME }}
+          POSTGRES_USER: ${{ env.DB_USER }}
+          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python 3.8.11
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8.11
+          python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: |
-          sudo apt-get install -y postgresql python3-dev libpq-dev build-essential
-          make dev envfile
+        run: make dev envfile
 
       - name: Validate code format
         run: make check
-
-      - name: Setup database
-        run: |
-          sudo systemctl start postgresql
-          make postgres
 
       - name: Run tests
         run: make test
         env:
           GH_TOKEN: 1 
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          VULNERABLECODE_DB_NAME: ${{ env.DB_NAME }}
+          VULNERABLECODE_DB_USER: ${{ env.DB_USER }}
+          VULNERABLECODE_DB_PASSWORD: ${{ env.DB_PASSWORD }}

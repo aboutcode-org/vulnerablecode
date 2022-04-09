@@ -10,7 +10,7 @@ Version v30.0.0
 
 - Refactor core processing with Importers that import data and Improvers that
   get the imported data and convert that in Vulnerabilities and Packages and can
-  also improve abd refine imported and existing data. The migration to this new
+  also improve and refine imported and existing data. The migration to this new
   architecture is under way.
 
 

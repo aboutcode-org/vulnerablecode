@@ -21,18 +21,18 @@ class ImproveRunner:
     improver and parsing the returned Inferences into proper database fields
     """
 
-    def __init__(self, improver):
-        self.improver = improver
+    def __init__(self, improver_class):
+        self.improver_class = improver_class
 
     def run(self) -> None:
-        improver = self.improver()
+        improver = self.improver_class()
         logger.info(f"Running improver: {improver.qualified_name}")
         for advisory in improver.interesting_advisories:
             inferences = improver.get_inferences(advisory_data=advisory.to_advisory_data())
             process_inferences(
                 inferences=inferences, advisory=advisory, improver_name=improver.qualified_name
             )
-        logger.info("Finished improving using %s.", self.improver.qualified_name)
+        logger.info("Finished improving using %s.", self.improver_class.qualified_name)
 
 
 @transaction.atomic
@@ -62,7 +62,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
             continue
 
         for ref in inference.references:
-            ref, _ = models.VulnerabilityReference.objects.get_or_create(
+            reference, _ = models.VulnerabilityReference.objects.get_or_create(
                 vulnerability=vuln, reference_id=ref.reference_id, url=ref.url
             )
 
@@ -70,7 +70,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                 obj, updated = models.VulnerabilitySeverity.objects.update_or_create(
                     vulnerability=vuln,
                     scoring_system=severity.system.identifier,
-                    reference=ref,
+                    reference=reference,
                     defaults={"value": str(severity.value)},
                 )
                 if updated:

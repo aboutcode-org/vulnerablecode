@@ -1,10 +1,8 @@
 on:
   workflow_dispatch: # allow manual execution
-  push:
-  pull_request:
   schedule:
-    # run on the 3rd each month at 10:00am
-    - cron: '0 10 3 * *'
+    # run daily at 10:00am
+    - cron: '0 10 * * *'
 
 jobs:
   nix-check-and-import:

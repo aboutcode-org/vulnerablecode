@@ -4,7 +4,9 @@ Installation
 ============
 
 .. warning::
-   VulnerableCode is going through a major structural change and the installations are likely to not produce enough results. This is being tracked in https://github.com/nexB/vulnerablecode/issues/597
+   VulnerableCode is going through a major structural change and the
+   installations are likely to not produce enough results.
+   This is tracked in https://github.com/nexB/vulnerablecode/issues/597
 
 Welcome to **VulnerableCode** installation guide! This guide describes how to install
 VulnerableCode on various platforms.
@@ -39,9 +41,7 @@ VulnerableCode is distributed with ``Dockerfile`` and ``docker-compose.yml`` fil
 required for the creation of the Docker image.
 
 Clone the git `VulnerableCode repo <https://github.com/nexB/vulnerablecode>`_,
-create an environment file, and build the Docker image:
-
-.. code-block:: bash
+create an environment file, and build the Docker image::
 
     git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
     make envfile
@@ -56,9 +56,7 @@ create an environment file, and build the Docker image:
 Run the App
 ^^^^^^^^^^^
 
-**Run your image** as a container
-
-.. code-block:: bash
+**Run your image** as a container::
 
     docker-compose up
 
@@ -88,9 +86,7 @@ Execute a Command
 ^^^^^^^^^^^^^^^^^
 
 You can execute a one of ``manage.py`` commands through the Docker command line
-interface, for example
-
-.. code-block:: bash
+interface, for example::
 
     docker-compose run vulnerablecode ./manage.py import --list
 
@@ -98,15 +94,14 @@ interface, for example
     Refer to the :ref:`command_line_interface` section for the full list of commands.
 
 Alternatively, you can connect to the Docker container ``bash`` and run commands
-from there
-
-.. code-block:: bash
+from there::
 
     docker-compose run vulnerablecode bash
     ./manage.py import --list
 
 
 .. _local_development_installation:
+
 
 Local development installation
 ------------------------------
@@ -120,16 +115,16 @@ Supported Platforms
     #. **macOS** 12.1 and up
 
 .. warning::
-     On **Windows** VulnerableCode can **only** be :ref:`run_with_docker` and is not supported.
+     On **Windows** VulnerableCode can **only** :ref:`run_with_docker` and is not supported.
 
 Pre-installation Checklist
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Before you install VulnerableCode, make sure you have the following prerequisites:
 
- * **Python: 3.8* found at https://www.python.org/downloads/
+ * **Python: 3.8+* found at https://www.python.org/downloads/
  * **Git**: most recent release available at https://git-scm.com/
- * **PostgreSQL**: release 9 or later found at https://www.postgresql.org/ or
+ * **PostgreSQL**: release 10 or later found at https://www.postgresql.org/ or
    https://postgresapp.com/ on macOS
 
 .. _system_dependencies:
@@ -141,12 +136,10 @@ In addition to the above pre-installation checklist, there might be some OS-spec
 system packages that need to be installed before installing VulnerableCode.
 
 On **Debian-based distros**, several **system packages are required** by VulnerableCode.
-Make sure those are installed
+Make sure those are installed::
 
-.. code-block:: bash
+    sudo apt-get install python3-venv python3-dev postgresql libpq-dev build-essential
 
-    sudo apt-get install \
-        python3-venv python3-dev postgresql libpq-dev build-essential
 
 Clone and Configure
 ^^^^^^^^^^^^^^^^^^^
@@ -173,6 +166,7 @@ Create an environment file::
 
     make envfile
 
+
 Database
 ^^^^^^^^
 
@@ -194,12 +188,14 @@ production servers.
     <https://docs.djangoproject.com/en/dev/ref/databases/#sqlite-notes>`_
     for more details.
 
+
 Tests
 ^^^^^
 
 You can validate your VulnerableCode installation by running the tests suite::
 
     make test
+
 
 Web Application
 ^^^^^^^^^^^^^^^
@@ -218,6 +214,7 @@ application.
 
 An overview of the web application usage is available at :ref:`user_interface`.
 
+
 Upgrading
 ^^^^^^^^^
 
@@ -228,6 +225,7 @@ with::
     git pull
     make dev
     make migrate
+
 
 Using Nix
 -----------

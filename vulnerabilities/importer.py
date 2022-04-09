@@ -245,7 +245,7 @@ class AdvisoryData:
 
     def __post_init__(self):
         if self.date_published and not self.date_published.tzinfo:
-            logger.warn(f"AdvisoryData with no tzinfo: {self!r}")
+            logger.warning(f"AdvisoryData with no tzinfo: {self!r}")
 
     def to_dict(self):
         return {

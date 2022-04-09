@@ -1,8 +1,8 @@
-version: '3'
+version: "3"
 
 services:
   db:
-    image: postgres
+    image: postgres:13
     env_file:
       - docker.env
     volumes:
@@ -11,31 +11,34 @@ services:
   vulnerablecode:
     build: .
     command: /bin/sh -c "
-      ./manage.py migrate &&
-      ./manage.py collectstatic --no-input --clear &&
-      gunicorn vulnerablecode.wsgi:application -u nobody -g nogroup --bind :8000 --timeout 600 --workers 2"
+        ./manage.py migrate &&
+        ./manage.py collectstatic --no-input --verbosity 0 --clear &&
+        gunicorn vulnerablecode.wsgi:application -u nobody -g nogroup --bind :8000 --timeout 600 --workers 8"
     env_file:
       - docker.env
+    expose:
+      - 8000
     volumes:
+      - /etc/vulnerablecode/:/etc/vulnerablecode/
       - static:/var/vulnerablecode/static/
-    restart: on-failure
     depends_on:
       - db
 
   nginx:
     image: nginx
+    ports:
+      - 80:80
+      - 443:443
     env_file:
       - docker.env
     volumes:
+      - ./etc/nginx/conf.d/:/etc/nginx/conf.d/
       - static:/var/vulnerablecode/static/
-      - ./etc/nginx/templates/:/etc/nginx/templates/
-    ports:
-      - ${NGINX_PORT:-8000}:80
     depends_on:
       - vulnerablecode
 
 
 volumes:
-  static:
   db_data:
+  static:
 

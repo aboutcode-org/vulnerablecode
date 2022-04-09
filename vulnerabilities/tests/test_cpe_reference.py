@@ -1,4 +1,4 @@
-# Copyright (c) 2017 nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. and others. All rights reserved.
 # http://nexb.com and https://github.com/nexB/vulnerablecode/
 # The VulnerableCode software is licensed under the Apache License version 2.0.
 # Data generated with VulnerableCode require an acknowledgment.
@@ -6,29 +6,32 @@
 # You may not use this software except in compliance with the License.
 # You may obtain a copy of the License at: http://apache.org/licenses/LICENSE-2.0
 # Unless required by applicable law or agreed to in writing, software distributed
-# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+# under the License is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES OR
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
 # When you publish or redistribute any data created with VulnerableCode or any VulnerableCode
 # derivative work, you must accompany this data with the following acknowledgment:
 #
-#  Generated with VulnerableCode and provided on an "AS IS" BASIS, WITHOUT WARRANTIES
+#  Generated with VulnerableCode and provided on an 'AS IS' BASIS, WITHOUT WARRANTIES
 #  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
 #  VulnerableCode should be considered or used as legal advice. Consult an Attorney
 #  for any legal advice.
-#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
+#  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-from vulnerabilities.importers import alpine_linux
-from vulnerabilities.importers import github
-from vulnerabilities.importers import nginx
-from vulnerabilities.importers import nvd
+import pytest
 
-IMPORTERS_REGISTRY = [
-    nginx.NginxImporter,
-    alpine_linux.AlpineImporter,
-    github.GitHubAPIImporter,
-    nvd.NVDImporter,
-]
+from vulnerabilities.improve_runner import get_or_create_vulnerability_and_aliases
+from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityReference
 
-IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}
+
+@pytest.mark.django_db
+def test_cpe_as_reference_id_in_db():
+    vulnerability = Vulnerability(summary="lorem ipsum" * 10)
+    vulnerability.save()
+    VulnerabilityReference.objects.get_or_create(
+        reference_id="cpe:2.3:a:microsoft:windows_10:10.0.17134:*:*:*:*:*:*:*" * 3,
+        url="https://foo.com",
+        vulnerability=vulnerability,
+    )

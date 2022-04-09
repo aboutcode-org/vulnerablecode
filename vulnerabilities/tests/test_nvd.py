@@ -22,148 +22,167 @@
 
 import json
 import os
-from unittest import TestCase
 
-from dateutil import parser as dateparser
-
-from vulnerabilities.importer import Advisory
-from vulnerabilities.importer import Reference
-from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.importers import NVDImporter
-from vulnerabilities.severity_systems import scoring_systems
+from vulnerabilities.importers.nvd import extract_cpes
+from vulnerabilities.importers.nvd import extract_reference_urls
+from vulnerabilities.importers.nvd import extract_summary
+from vulnerabilities.importers.nvd import related_to_hardware
+from vulnerabilities.importers.nvd import to_advisories
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/nvd/nvd_test.json")
 
 
-class TestNVDImporter(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        data_source_cfg = {"etags": {}}
-        cls.data_src = NVDImporter(1, config=data_source_cfg)
-        with open(TEST_DATA) as f:
-            cls.nvd_data = json.load(f)
+def load_test_data():
+    with open(TEST_DATA) as f:
+        return json.load(f)
 
-    def test_extract_cpes(self):
-        expected_cpes = {
-            "cpe:2.3:a:csilvers:gperftools:0.1:*:*:*:*:*:*:*",
-            "cpe:2.3:a:csilvers:gperftools:0.2:*:*:*:*:*:*:*",
-            "cpe:2.3:h:google:chrome:*:*:*:*:*:*:*:*",
-            "cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*",
-        }
 
-        found_cpes = set()
-        for cve_item in self.nvd_data["CVE_Items"]:
-            found_cpes.update(NVDImporter.extract_cpes(cve_item))
+def test_nvd_importer_with_hardware(regen=False):
+    expected_file = os.path.join(BASE_DIR, "test_data/nvd/nvd-expected.json")
 
-        assert expected_cpes == found_cpes
+    result = [data.to_dict() for data in list(to_advisories(load_test_data()))]
 
-    def test_related_to_hardware(self):
-        # Only CVE-2005-4900 is supposed to be a hardware related
-        # vulnerability.
-        for cve_item in self.nvd_data["CVE_Items"]:
-            expected_result = "CVE-2005-4900" == cve_item["cve"]["CVE_data_meta"]["ID"]
-            assert self.data_src.related_to_hardware(cve_item) == expected_result
+    if regen:
+        with open(expected_file, "w") as f:
+            json.dump(result, f, indent=2)
+        expected = result
+    else:
+        with open(expected_file) as f:
+            expected = json.load(f)
 
-    def test_extract_summary_with_single_summary(self):
-        expected_summary = (
-            "Multiple integer overflows in TCMalloc (tcmalloc.cc) in gperftools "
-            "before 0.4 make it easier for context-dependent attackers to perform memory-related "
-            "attacks such as buffer overflows via a large size value, which causes less memory to "
-            "be allocated than expected."
+    assert result == expected
+
+
+def get_cve_item():
+
+    return {
+        "cve": {
+            "data_type": "CVE",
+            "data_format": "MITRE",
+            "data_version": "4.0",
+            "CVE_data_meta": {"ID": "CVE-2005-4895", "ASSIGNER": "cve@mitre.org"},
+            "problemtype": {
+                "problemtype_data": [{"description": [{"lang": "en", "value": "CWE-189"}]}]
+            },
+            "references": {
+                "reference_data": [
+                    {
+                        "url": "http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",
+                        "name": "http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",
+                        "refsource": "CONFIRM",
+                        "tags": [],
+                    },
+                    {
+                        "url": "http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",
+                        "name": "http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",
+                        "refsource": "MISC",
+                        "tags": [],
+                    },
+                ]
+            },
+            "description": {
+                "description_data": [
+                    {
+                        "lang": "en",
+                        "value": "Multiple integer overflows in TCMalloc (tcmalloc.cc) in gperftools before 0.4 make it easier for context-dependent attackers to perform memory-related attacks such as buffer overflows via a large size value, which causes less memory to be allocated than expected.",
+                    }
+                ]
+            },
+        },
+        "configurations": {
+            "CVE_data_version": "4.0",
+            "nodes": [
+                {
+                    "operator": "OR",
+                    "cpe_match": [
+                        {
+                            "vulnerable": True,
+                            "cpe23Uri": "cpe:2.3:a:csilvers:gperftools:0.1:*:*:*:*:*:*:*",
+                        },
+                        {
+                            "vulnerable": True,
+                            "cpe23Uri": "cpe:2.3:a:csilvers:gperftools:0.2:*:*:*:*:*:*:*",
+                        },
+                        {
+                            "vulnerable": True,
+                            "cpe23Uri": "cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*",
+                            "versionEndIncluding": "0.3",
+                        },
+                    ],
+                }
+            ],
+        },
+        "impact": {
+            "baseMetricV2": {
+                "cvssV2": {
+                    "version": "2.0",
+                    "vectorString": "AV:N/AC:L/Au:N/C:N/I:N/A:P",
+                    "accessVector": "NETWORK",
+                    "accessComplexity": "LOW",
+                    "authentication": "NONE",
+                    "confidentialityImpact": "NONE",
+                    "integrityImpact": "NONE",
+                    "availabilityImpact": "PARTIAL",
+                    "baseScore": 5.0,
+                },
+                "severity": "MEDIUM",
+                "exploitabilityScore": 10.0,
+                "impactScore": 2.9,
+                "obtainAllPrivilege": False,
+                "obtainUserPrivilege": False,
+                "obtainOtherPrivilege": False,
+                "userInteractionRequired": False,
+            }
+        },
+        "publishedDate": "2012-07-25T19:55Z",
+        "lastModifiedDate": "2012-08-09T04:00Z",
+    }
+
+
+def test_extract_cpes():
+    expected_cpes = {
+        "cpe:2.3:a:csilvers:gperftools:0.1:*:*:*:*:*:*:*",
+        "cpe:2.3:a:csilvers:gperftools:0.2:*:*:*:*:*:*:*",
+        "cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*",
+    }
+
+    found_cpes = set()
+    found_cpes.update(extract_cpes(get_cve_item()))
+
+    assert found_cpes == expected_cpes
+
+
+def test_related_to_hardware():
+    assert (
+        related_to_hardware(
+            cpes=[
+                "cpe:2.3:a:csilvers:gperftools:0.1:*:*:*:*:*:*:*",
+                "cpe:2.3:h:csilvers:gperftools:0.2:*:*:*:*:*:*:*",
+                "cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*",
+            ]
         )
-        cve_item = self.nvd_data["CVE_Items"][0]
-        assert len(cve_item["cve"]["description"]["description_data"]) == 1
-        found_summary = NVDImporter.extract_summary(cve_item)
-        assert found_summary == expected_summary
+        == True
+    )
 
-    def test_extract_summary_with_multiple_summary(self):
-        expected_summary = (
-            "SHA-1 is not collision resistant, which makes it easier for context-dependent "
-            "attackers to conduct spoofing attacks, as demonstrated by attacks on the use of SHA-1"
-            " in TLS 1.2.  NOTE: this CVE exists to provide a common identifier for referencing "
-            "this SHA-1 issue; the existence of an identifier is not, by itself, a technology "
-            "recommendation."
-        )
-        cve_item = self.nvd_data["CVE_Items"][1]
-        assert len(cve_item["cve"]["description"]["description_data"]) > 1
-        found_summary = NVDImporter.extract_summary(cve_item)
-        assert found_summary == expected_summary
 
-    def test_is_outdated(self):
-        cve_item = self.nvd_data["CVE_Items"][0]
-        assert self.data_src.is_outdated(cve_item) is False
+def test_extract_summary_with_single_summary():
+    expected_summary = (
+        "Multiple integer overflows in TCMalloc (tcmalloc.cc) in gperftools "
+        "before 0.4 make it easier for context-dependent attackers to perform memory-related "
+        "attacks such as buffer overflows via a large size value, which causes less memory to "
+        "be allocated than expected."
+    )
+    found_summary = extract_summary(get_cve_item())
+    assert found_summary == expected_summary
 
-        self.data_src.config.cutoff_date = dateparser.parse("2019-08-05 13:14:17.733232+05:30")
-        assert self.data_src.is_outdated(cve_item)
-        self.data_src.config.cutoff_date = None  # cleanup
 
-        assert self.data_src.is_outdated(cve_item) is False
+def test_extract_reference_urls():
+    expected_urls = {
+        "http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",
+        "http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",
+    }
 
-        self.data_src.config.last_run_date = dateparser.parse("2019-08-05 13:14:17.733232+05:30")
-        assert self.data_src.is_outdated(cve_item)
+    found_urls = extract_reference_urls(get_cve_item())
 
-        self.data_src.config.last_run_date = dateparser.parse("2000-08-05 13:14:17.733232+05:30")
-        assert self.data_src.is_outdated(cve_item) is False
-        self.data_src.config.last_run_date = None  # cleanup
-
-    def test_extract_reference_urls(self):
-        cve_item = self.nvd_data["CVE_Items"][1]
-        expected_urls = {
-            "http://ia.cr/2007/474",
-            "http://shattered.io/",
-            "http://www.cwi.nl/news/2017/cwi-and-google-announce-first-collision-industry-security-standard-sha-1",  # nopep8
-            "http://www.securityfocus.com/bid/12577",
-            "https://arstechnica.com/security/2017/02/at-deaths-door-for-years-widely-used-sha1-function-is-now-dead/",  # nopep8
-            "https://security.googleblog.com/2015/12/an-update-on-sha-1-certificates-in.html",
-            "https://security.googleblog.com/2017/02/announcing-first-sha1-collision.html",
-            "https://sites.google.com/site/itstheshappening",
-            "https://www.schneier.com/blog/archives/2005/02/sha1_broken.html",
-            "https://www.schneier.com/blog/archives/2005/08/new_cryptanalyt.html",
-        }
-
-        found_urls = self.data_src.extract_reference_urls(cve_item)
-
-        assert found_urls == expected_urls
-
-    def test_to_advisories(self):
-
-        expected_advisories = [
-            Advisory(
-                summary=(
-                    "Multiple integer overflows in TCMalloc (tcmalloc.cc) in gperftools "
-                    "before 0.4 make it easier for context-dependent attackers to perform memory-related "  # nopep8
-                    "attacks such as buffer overflows via a large size value, which causes less memory to "  # nopep8
-                    "be allocated than expected."
-                ),
-                references=[
-                    Reference(
-                        url="http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",  # nopep8
-                    ),
-                    Reference(
-                        url="http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",  # nopep8
-                    ),
-                    Reference(
-                        url="https://nvd.nist.gov/vuln/detail/CVE-2005-4895",
-                        severities=[
-                            VulnerabilitySeverity(
-                                system=scoring_systems["cvssv2"],
-                                value="5.0",
-                            ),
-                            VulnerabilitySeverity(
-                                system=scoring_systems["cvssv2_vector"],
-                                value="AV:N/AC:L/Au:N/C:N/I:N/A:P",
-                            ),
-                        ],
-                        reference_id="CVE-2005-4895",
-                    ),
-                ],
-                vulnerability_id="CVE-2005-4895",
-            )
-        ]
-        assert len(self.nvd_data["CVE_Items"]) == 2
-
-        found_advisories = list(self.data_src.to_advisories(self.nvd_data))
-        found_advisories = list(map(Advisory.normalized, found_advisories))
-        expected_advisories = list(map(Advisory.normalized, expected_advisories))
-        assert sorted(found_advisories) == sorted(expected_advisories)
+    assert found_urls == expected_urls

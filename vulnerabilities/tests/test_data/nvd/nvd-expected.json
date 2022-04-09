@@ -1,0 +1,335 @@
+[
+  {
+    "aliases": [
+      "CVE-2005-4895"
+    ],
+    "summary": "Multiple integer overflows in TCMalloc (tcmalloc.cc) in gperftools before 0.4 make it easier for context-dependent attackers to perform memory-related attacks such as buffer overflows via a large size value, which causes less memory to be allocated than expected.",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2005-4895",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2005-4895",
+        "severities": [
+          {
+            "system": "cvssv2",
+            "value": "5.0"
+          },
+          {
+            "system": "cvssv2_vector",
+            "value": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+          }
+        ]
+      },
+      {
+        "reference_id": "cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:a:csilvers:gperftools:0.1:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:a:csilvers:gperftools:0.2:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      }
+    ],
+    "date_published": "2012-07-25T19:55:00+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2003-0001"
+    ],
+    "summary": "Multiple ethernet Network Interface Card (NIC) device drivers do not pad frames with null bytes, which allows remote attackers to obtain information from previous packets or kernel memory by using malformed packets, as demonstrated by Etherleak.",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "http://archives.neohapsis.com/archives/vulnwatch/2003-q1/0016.html",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://marc.info/?l=bugtraq&m=104222046632243&w=2",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://secunia.com/advisories/7996",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.atstake.com/research/advisories/2003/a010603-1.txt",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.atstake.com/research/advisories/2003/atstake_etherleak_report.pdf",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.kb.cert.org/vuls/id/412115",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.oracle.com/technetwork/topics/security/cpujan2015-1972971.html",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.osvdb.org/9962",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.redhat.com/support/errata/RHSA-2003-025.html",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.redhat.com/support/errata/RHSA-2003-088.html",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.securityfocus.com/archive/1/305335/30/26420/threaded",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.securityfocus.com/archive/1/307564/30/26270/threaded",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.securitytracker.com/id/1031583",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.securitytracker.com/id/1040185",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://oval.cisecurity.org/repository/search/definition/oval%3Aorg.mitre.oval%3Adef%3A2665",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2003-0001",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2003-0001",
+        "severities": [
+          {
+            "system": "cvssv2",
+            "value": "5.0"
+          },
+          {
+            "system": "cvssv2_vector",
+            "value": "AV:N/AC:L/Au:N/C:P/I:N/A:N"
+          }
+        ]
+      },
+      {
+        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.2:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.3:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.4:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.5:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.6:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:freebsd:freebsd:4.7:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.10:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.11:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.12:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.13:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.14:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.15:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.16:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.17:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.18:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.19:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.1:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.20:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.2:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.3:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.4:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.5:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.6:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.7:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.8:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.9:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:microsoft:windows_2000:*:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:microsoft:windows_2000:*:sp1:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:microsoft:windows_2000:*:sp2:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:microsoft:windows_2000_terminal_services:*:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:microsoft:windows_2000_terminal_services:*:sp1:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:microsoft:windows_2000_terminal_services:*:sp2:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:netbsd:netbsd:1.5.1:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:netbsd:netbsd:1.5.2:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:netbsd:netbsd:1.5.3:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:netbsd:netbsd:1.5:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      },
+      {
+        "reference_id": "cpe:2.3:o:netbsd:netbsd:1.6:*:*:*:*:*:*:*",
+        "url": "",
+        "severities": []
+      }
+    ],
+    "date_published": "2003-01-17T05:00:00+00:00"
+  }
+]

@@ -41,6 +41,7 @@ from vulnerabilities.severity_systems import SCORING_SYSTEMS
 
 
 class NVDImporter(Importer):
+    # See https://github.com/nexB/vulnerablecode/issues/665 for follow up
     spdx_license_expression = "LicenseRef-scancode-unknown"
 
     def advisory_data(self):

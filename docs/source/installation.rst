@@ -4,8 +4,8 @@ Installation
 ============
 
 .. warning::
-   VulnerableCode is going through a major structural change and the 
-   installations are likely to not produce enough results. 
+   VulnerableCode is going through a major structural change and the
+   installations are likely to not produce enough results.
    This is tracked in https://github.com/nexB/vulnerablecode/issues/597
 
 Welcome to **VulnerableCode** installation guide! This guide describes how to install

@@ -104,7 +104,7 @@ class VulnerabilityReference(models.Model):
         max_length=1024, help_text="URL to the vulnerability reference", blank=True
     )
     reference_id = models.CharField(
-        max_length=50,
+        max_length=200,
         help_text="An optional reference ID, such as DSA-4465-1 when available",
         blank=True,
         null=True,

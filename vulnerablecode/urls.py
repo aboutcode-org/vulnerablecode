@@ -38,7 +38,6 @@ from vulnerabilities.views import schema_view
 
 # See the comment at https://stackoverflow.com/a/46163870.
 class OptionalSlashRouter(DefaultRouter):
-
     def __init__(self, *args, **kwargs):
         super(DefaultRouter, self).__init__(*args, **kwargs)
         self.trailing_slash = "/?"
@@ -59,4 +58,3 @@ urlpatterns = [
     path("", HomePage.as_view(), name="home"),
     path(r"api/", include(api_router.urls)),
 ]
-

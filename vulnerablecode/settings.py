@@ -139,16 +139,12 @@ STATICFILES_DIRS = [
 # Django restframework
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
-    ),
-    "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.AllowAny",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.SessionAuthentication",),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
-    #    "rest_framework.renderers.AdminRenderer",
+        #    "rest_framework.renderers.AdminRenderer",
     ),
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
@@ -157,4 +153,3 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 100,
 }
-

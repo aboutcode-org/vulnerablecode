@@ -47,15 +47,15 @@ class ImportRunner:
         - No valid data from the data source must be skipped or truncated.
     """
 
-    def __init__(self, importer: Importer):
-        self.importer = importer
+    def __init__(self, importer_class: Importer):
+        self.importer_class = importer_class
 
     def run(self) -> None:
         """
         Create a data source for the given importer and store the data retrieved in the database.
         """
-        importer_name = self.importer.qualified_name
-        importer_class = self.importer
+        importer_name = self.importer_class.qualified_name
+        importer_class = self.importer_class
         logger.info(f"Starting import for {importer_name}")
         advisory_datas = importer_class().advisory_data()
         count = process_advisories(advisory_datas=advisory_datas, importer_name=importer_name)

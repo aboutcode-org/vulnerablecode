@@ -20,172 +20,121 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import os
-from unittest import TestCase
-from unittest.mock import patch
+from pathlib import Path
 
-from packageurl import PackageURL
+from bs4 import BeautifulSoup
+from commoncode import testcase
 
-from vulnerabilities.helpers import AffectedPackage
-from vulnerabilities.importer import Advisory
-from vulnerabilities.importers.nginx import NginxImporter
-from vulnerabilities.package_managers import GitHubTagsAPI
-from vulnerabilities.package_managers import Version
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "test_data/nginx", "security_advisories.html")
+from vulnerabilities import severity_systems
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.importers import nginx
+from vulnerabilities.tests import util_tests
 
 
-class TestNginxImporter(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        with open(TEST_DATA) as f:
-            cls.data = f.read()
-        data_source_cfg = {"etags": {}}
-        cls.data_src = NginxImporter(1, config=data_source_cfg)
-        cls.data_src.version_api = GitHubTagsAPI(
-            cache={
-                "nginx/nginx": {
-                    Version("1.2.3"),
-                    Version("1.7.0"),
-                    Version("1.3.9"),
-                    Version("0.7.52"),
-                }
-            }
+class TestNginxImporter(testcase.FileBasedTesting):
+    test_data_dir = str(Path(__file__).resolve().parent / "test_data" / "nginx")
+
+    def test_is_vulnerable(self):
+        # Not vulnerable: 1.17.3+, 1.16.1+
+        # Vulnerable: 1.9.5-1.17.2
+
+        vcls = nginx.NginxVersionRange.version_class
+        affected_version_range = nginx.NginxVersionRange.from_native("1.9.5-1.17.2")
+        fixed_versions = [vcls("1.17.3"), vcls("1.16.1")]
+
+        version = vcls("1.9.4")
+        assert not nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+
+        version = vcls("1.9.5")
+        assert nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+
+        version = vcls("1.9.6")
+        assert nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+
+        version = vcls("1.16.0")
+        assert nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+
+        version = vcls("1.16.1")
+        assert not nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+
+        version = vcls("1.16.2")
+        assert not nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+
+        version = vcls("1.16.99")
+        assert not nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+
+        version = vcls("1.17.0")
+        assert nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+
+        version = vcls("1.17.1")
+        assert nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+
+        version = vcls("1.17.2")
+        assert nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+
+        version = vcls("1.17.3")
+        assert not nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+
+        version = vcls("1.17.4")
+        assert not nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+
+        version = vcls("1.18.0")
+        assert not nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+
+    def test_parse_advisory_data_from_paragraph(self):
+        paragraph = (
+            "<p>1-byte memory overwrite in resolver"
+            "<br/>Severity: medium<br/>"
+            '<a href="http://mailman.nginx.org/pipermail/nginx-announce/2021/000300.html">Advisory</a>'
+            "<br/>"
+            '<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-23017">CVE-2021-23017</a>'
+            "<br/>Not vulnerable: 1.21.0+, 1.20.1+<br/>"
+            "Vulnerable: 0.6.18-1.20.0<br/>"
+            '<a href="/download/patch.2021.resolver.txt">'
+            'The patch</a>  <a href="/download/patch.2021.resolver.txt.asc">pgp</a>'
+            "</p>"
         )
+        vuln_info = BeautifulSoup(paragraph, features="lxml").p
+        expected = {
+            "aliases": ["CVE-2021-23017"],
+            "summary": "1-byte memory overwrite in resolver",
+            "advisory_severity": VulnerabilitySeverity(
+                system=severity_systems.GENERIC, value="medium"
+            ),
+            "not_vulnerable": "Not vulnerable: 1.21.0+, 1.20.1+",
+            "vulnerable": "Vulnerable: 0.6.18-1.20.0",
+            "references": [
+                Reference(
+                    reference_id="",
+                    url="http://mailman.nginx.org/pipermail/nginx-announce/2021/000300.html",
+                    severities=[
+                        VulnerabilitySeverity(system=severity_systems.GENERIC, value="medium")
+                    ],
+                ),
+                Reference(
+                    reference_id="CVE-2021-23017",
+                    url="https://nvd.nist.gov/vuln/detail/CVE-2021-23017",
+                ),
+                Reference(
+                    reference_id="",
+                    url="https://nginx.org/download/patch.2021.resolver.txt",
+                ),
+                Reference(
+                    reference_id="", url="https://nginx.org/download/patch.2021.resolver.txt.asc"
+                ),
+            ],
+        }
 
-    def test_to_advisories(self):
-        expected_advisories = [
-            Advisory(
-                summary="An error log data are not sanitized",
-                vulnerability_id="CVE-2009-4487",
-                affected_packages=[],
-                references=[],
-            ),
-            Advisory(
-                summary="Directory traversal vulnerability",
-                vulnerability_id="CVE-2009-3898",
-                affected_packages=[
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="0.7.52",
-                            qualifiers={},
-                            subpath=None,
-                        ),
-                        patched_package=None,
-                    )
-                ],
-                references=[],
-            ),
-            Advisory(
-                summary="Stack-based buffer overflow with specially crafted request",
-                vulnerability_id="CVE-2013-2028",
-                affected_packages=[
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="1.3.9",
-                            qualifiers={},
-                            subpath=None,
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="1.7.0",
-                            qualifiers={},
-                            subpath=None,
-                        ),
-                    )
-                ],
-                references=[],
-            ),
-            Advisory(
-                summary="The renegotiation vulnerability in SSL protocol",
-                vulnerability_id="CVE-2009-3555",
-                affected_packages=[
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="0.7.52",
-                            qualifiers={},
-                            subpath=None,
-                        ),
-                        patched_package=None,
-                    )
-                ],
-                references=[],
-            ),
-            Advisory(
-                summary="Vulnerabilities with Windows directory aliases",
-                vulnerability_id="CVE-2011-4963",
-                affected_packages=[
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="0.7.52",
-                            qualifiers={"os": "windows"},
-                            subpath=None,
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="1.2.3",
-                            qualifiers={},
-                            subpath=None,
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="1.2.3",
-                            qualifiers={"os": "windows"},
-                            subpath=None,
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="1.3.9",
-                            qualifiers={},
-                            subpath=None,
-                        ),
-                    ),
-                ],
-                references=[],
-            ),
-            Advisory(
-                summary="Vulnerabilities with invalid UTF-8 sequence on Windows",
-                vulnerability_id="CVE-2010-2266",
-                affected_packages=[
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            namespace=None,
-                            name="nginx",
-                            version="0.7.52",
-                            qualifiers={"os": "windows"},
-                            subpath=None,
-                        ),
-                        patched_package=None,
-                    )
-                ],
-                references=[],
-            ),
-        ]
-        found_data = self.data_src.to_advisories(self.data)
-        expected_advisories = list(map(Advisory.normalized, expected_advisories))
-        found_data = list(map(Advisory.normalized, found_data))
-        assert sorted(found_data) == sorted(expected_advisories)
+        result = nginx.parse_advisory_data_from_paragraph(vuln_info)
+        assert result.to_dict() == expected
+
+    def test_advisory_data_from_text(self):
+        test_file = self.get_test_loc("security_advisories.html")
+        with open(test_file) as tf:
+            test_text = tf.read()
+
+        expected_file = self.get_test_loc("security_advisories.json", must_exist=False)
+
+        results = [na.to_dict() for na in nginx.advisory_data_from_text(test_text)]
+        util_tests.check_results_against_json(results, expected_file)

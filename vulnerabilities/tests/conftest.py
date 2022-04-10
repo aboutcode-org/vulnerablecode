@@ -21,8 +21,6 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import os
-
 import pytest
 
 
@@ -43,7 +41,6 @@ def no_rmtree(monkeypatch):
 collect_ignore = [
     "test_models.py",
     "test_msr2019.py",
-    "test_nginx.py",
     "test_apache_httpd.py",
     "test_npm.py",
     "test_apache_kafka.py",

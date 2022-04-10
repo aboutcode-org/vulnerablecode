@@ -22,10 +22,13 @@
 
 from pathlib import Path
 
+import pytest
 from bs4 import BeautifulSoup
 from commoncode import testcase
 
+from vulnerabilities import models
 from vulnerabilities import severity_systems
+from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers import nginx
@@ -134,7 +137,42 @@ class TestNginxImporter(testcase.FileBasedTesting):
         with open(test_file) as tf:
             test_text = tf.read()
 
-        expected_file = self.get_test_loc("security_advisories.json", must_exist=False)
+        expected_file = self.get_test_loc(
+            "security_advisories-advisory_data-expected.json", must_exist=False
+        )
 
         results = [na.to_dict() for na in nginx.advisory_data_from_text(test_text)]
+        util_tests.check_results_against_json(results, expected_file)
+
+    @pytest.mark.django_db(transaction=True)
+    def test_NginxImporter(self):
+        class MockNginxImporter(nginx.NginxImporter):
+            """
+            A mocked NginxImporter that loads content from a file rather than
+            making a network call.
+            """
+
+            def fetch(self):
+                with open(test_file) as tf:
+                    return tf.read()
+
+        test_file = self.get_test_loc("security_advisories.html")
+
+        ImportRunner(MockNginxImporter).run()
+
+        results = list(
+            models.Advisory.objects.all().values(
+                "unique_content_id",
+                "aliases",
+                "summary",
+                "affected_packages",
+                "references",
+                "date_published",
+                "created_by",
+            )
+        )
+
+        expected_file = self.get_test_loc(
+            "security_advisories-importer-expected.json", must_exist=False
+        )
         util_tests.check_results_against_json(results, expected_file)

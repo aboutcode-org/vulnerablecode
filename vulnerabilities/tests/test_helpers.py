@@ -22,8 +22,9 @@
 
 from packageurl import PackageURL
 
-from vulnerabilities.helpers import AffectedPackage as LegacyAffectedPackage
+from vulnerabilities.helpers import AffectedPackage
 from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.helpers import split_markdown_front_matter
 
 
 def test_nearest_patched_package():
@@ -42,7 +43,7 @@ def test_nearest_patched_package():
     )
 
     assert [
-        LegacyAffectedPackage(
+        AffectedPackage(
             vulnerable_package=PackageURL(
                 type="npm", namespace=None, name="foo", version="1.9.8", qualifiers={}, subpath=None
             ),
@@ -50,7 +51,7 @@ def test_nearest_patched_package():
                 type="npm", namespace=None, name="foo", version="1.9.9", qualifiers={}, subpath=None
             ),
         ),
-        LegacyAffectedPackage(
+        AffectedPackage(
             vulnerable_package=PackageURL(
                 type="npm", namespace=None, name="foo", version="2.0.0", qualifiers={}, subpath=None
             ),
@@ -58,7 +59,7 @@ def test_nearest_patched_package():
                 type="npm", namespace=None, name="foo", version="2.0.2", qualifiers={}, subpath=None
             ),
         ),
-        LegacyAffectedPackage(
+        AffectedPackage(
             vulnerable_package=PackageURL(
                 type="npm", namespace=None, name="foo", version="2.0.1", qualifiers={}, subpath=None
             ),
@@ -66,10 +67,30 @@ def test_nearest_patched_package():
                 type="npm", namespace=None, name="foo", version="2.0.2", qualifiers={}, subpath=None
             ),
         ),
-        LegacyAffectedPackage(
+        AffectedPackage(
             vulnerable_package=PackageURL(
                 type="npm", namespace=None, name="foo", version="2.0.4", qualifiers={}, subpath=None
             ),
             patched_package=None,
         ),
     ] == result
+
+
+def test_split_markdown_front_matter():
+    text = """---
+title: DUMMY-SECURITY-2019-001
+description: Incorrect access control.
+cves: [CVE-2042-1337]
+---
+# Markdown starts here
+"""
+
+    expected = (
+        """title: DUMMY-SECURITY-2019-001
+description: Incorrect access control.
+cves: [CVE-2042-1337]""",
+        "# Markdown starts here",
+    )
+
+    results = split_markdown_front_matter(text)
+    assert results == expected

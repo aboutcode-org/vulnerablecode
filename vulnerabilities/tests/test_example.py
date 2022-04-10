@@ -15,11 +15,11 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import ScoringSystem
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.importers.example import ExampleAliasImprover
-from vulnerabilities.importers.example import ExampleImporter
-from vulnerabilities.importers.example import parse_advisory_data
 from vulnerabilities.improve_runner import ImproveRunner
 from vulnerabilities.improvers.default import DefaultImprover
+from vulnerabilities.tests.example_importer_improver import ExampleAliasImprover
+from vulnerabilities.tests.example_importer_improver import ExampleImporter
+from vulnerabilities.tests.example_importer_improver import parse_advisory_data
 
 
 def mock_fetch_advisory_data():
@@ -43,8 +43,13 @@ def mock_fetch_additional_aliases(alias):
     return alias_map.get(alias)
 
 
-@patch("vulnerabilities.importers.example.fetch_advisory_data", mock_fetch_advisory_data)
-@patch("vulnerabilities.importers.example.fetch_additional_aliases", mock_fetch_additional_aliases)
+@patch(
+    "vulnerabilities.tests.example_importer_improver.fetch_advisory_data", mock_fetch_advisory_data
+)
+@patch(
+    "vulnerabilities.tests.example_importer_improver.fetch_additional_aliases",
+    mock_fetch_additional_aliases,
+)
 class TestExampleImporter(TestCase):
     def test_parse_advisory_data(self):
         raw_data = mock_fetch_advisory_data()[0]

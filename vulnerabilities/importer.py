@@ -44,6 +44,7 @@ from univers.version_range import VersionRange
 from univers.versions import Version
 
 from vulnerabilities.helpers import classproperty
+from vulnerabilities.helpers import evolve_purl
 from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
@@ -145,7 +146,7 @@ class AffectedPackage:
         """
         if not self.fixed_version:
             raise ValueError(f"Affected Package {self.package!r} does not have a fixed version")
-        fixed_purl = self.package._replace(version=str(self.fixed_version))
+        fixed_purl = evolve_purl(purl=self.package, version=str(self.fixed_version))
         return fixed_purl
 
     @classmethod

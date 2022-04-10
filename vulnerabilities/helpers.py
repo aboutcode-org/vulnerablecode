@@ -141,6 +141,30 @@ class VersionedPackage:
         return self.version < other.version
 
 
+def evolve_purl(purl, **kwargs):
+    """
+    Return a new PackageURL derived from the ``purl`` PackageURL where any of
+    the provided kwarg replaces the corresponding attribute of this PackageURL.
+    Qaulifiers if provided must be a mapping
+    For example::
+    >>> purl = PackageURL.from_string("pkg:generic/this@1.2.3")
+    >>> evolved = PackageURL.from_string("pkg:npm/@baz/that@2.2.3?foo=bar")
+    >>> evolve_purl(purl,
+    ...   type="npm", namespace="@baz", name="that",
+    ...   version="2.2.3", qualifiers={"foo": "bar"}
+    ... ) == evolved
+    True
+
+    """
+    if not kwargs:
+        return PackageURL.from_string(str(purl))
+
+    kwargs = {name: value for name, value in kwargs.items() if hasattr(purl, name)}
+    merged = purl.to_dict()
+    merged.update(kwargs)
+    return PackageURL(**merged)
+
+
 def nearest_patched_package(
     vulnerable_packages: List[PackageURL], resolved_packages: List[PackageURL]
 ) -> List[AffectedPackage]:
@@ -172,7 +196,6 @@ def nearest_patched_package(
 
 # TODO: Replace this with combination of @classmethod and @property after upgrading to python 3.9
 class classproperty(object):
-
     def __init__(self, fget):
         self.fget = fget
 

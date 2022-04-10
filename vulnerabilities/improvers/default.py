@@ -1,10 +1,10 @@
-from itertools import chain
 from typing import Iterable
 from typing import List
 
 from django.db.models.query import QuerySet
 from packageurl import PackageURL
 
+from vulnerabilities.helpers import evolve_purl
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.improver import MAX_CONFIDENCE
@@ -69,7 +69,7 @@ def get_exact_purls(affected_package: AffectedPackage) -> (List[PackageURL], Pac
         range_versions = [c.version for c in vr.constraints if c]
         resolved_versions = [v for v in range_versions if v and v in vr]
         for version in resolved_versions:
-            affected_purl = affected_package.package._replace(version=str(version))
+            affected_purl = evolve_purl(purl=affected_package.package, version=str(version))
             affected_purls.append(affected_purl)
 
     fixed_purl = affected_package.get_fixed_purl() if affected_package.fixed_version else None

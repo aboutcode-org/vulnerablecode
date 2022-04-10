@@ -54,11 +54,9 @@ def check_results_against_json(
         expected = results
     else:
         with open(expected_file) as exp:
-            expected = exp.read()
+            expected = json.load(exp)
 
     # NOTE we redump the JSON as a YAML string for easier display of
     # the failures comparison/diff
     if results != expected:
-        expected = saneyaml.dump(expected)
-        results = saneyaml.dump(results)
-        assert results == expected
+        assert saneyaml.dump(results) == saneyaml.dump(expected)

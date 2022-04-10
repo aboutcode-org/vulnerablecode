@@ -21,7 +21,6 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 import pytest
 
-from vulnerabilities.improve_runner import get_or_create_vulnerability_and_aliases
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 

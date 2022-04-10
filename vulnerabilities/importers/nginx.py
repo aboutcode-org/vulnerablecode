@@ -57,8 +57,11 @@ class NginxImporter(Importer):
     spdx_license_expression = "TODO"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
-        text = requests.get(self.url).content
+        text = self.fetch()
         yield from advisory_data_from_text(text)
+
+    def fetch(self):
+        return requests.get(self.url).content
 
 
 def advisory_data_from_text(text):

@@ -75,39 +75,23 @@ def fetch_yaml(url):
 create_etag = MagicMock()
 
 
-def split_markdown_front_matter(lines: str) -> Tuple[str, str]:
+def split_markdown_front_matter(text: str) -> Tuple[str, str]:
     """
-    This function splits lines into markdown front matter and the markdown body
-    and returns list of lines for both
-
-    for example :
-        lines =
-        ---
-        title: ISTIO-SECURITY-2019-001
-        description: Incorrect access control.
-        cves: [CVE-2019-12243]
-        ---
-        # Markdown starts here
-
-    split_markdown_front_matter(lines) would return
-    ['title: ISTIO-SECURITY-2019-001','description: Incorrect access control.'
-    ,'cves: [CVE-2019-12243]'],
-    ["# Markdown starts here"]
+    Return a tuple of (front matter, markdown body) strings split from a
+    ``text`` string. Each can be an empty string. This is used when security
+    advisories are provided in this format.
     """
+    lines = text.splitlines()
+    if not lines:
+        return "", ""
 
-    fmlines = []
-    mdlines = []
-    splitter = mdlines
+    if lines[0] == "---":
+        lines = lines[1:]
+        text = "\n".join(lines)
+        frontmatter, _, markdown = text.partition("\n---\n")
+        return frontmatter, markdown
 
-    for index, line in enumerate(lines.split("\n")):
-        if index == 0 and line.strip().startswith("---"):
-            splitter = fmlines
-        elif line.strip().startswith("---"):
-            splitter = mdlines
-        else:
-            splitter.append(line)
-
-    return "\n".join(fmlines), "\n".join(mdlines)
+    return "", text
 
 
 def contains_alpha(string):
@@ -123,7 +107,7 @@ def requests_with_5xx_retry(max_retries=5, backoff_factor=0.5):
     Returns a requests sessions which retries on 5xx errors with
     a backoff_factor
     """
-    retries = urllib3.util.Retry(
+    retries = urllib3.Retry(
         total=max_retries,
         backoff_factor=backoff_factor,
         raise_on_status=True,
@@ -186,34 +170,9 @@ def nearest_patched_package(
     return affected_package_with_patched_package_objects
 
 
-def split_markdown_front_matter(text: str) -> Tuple[str, str]:
-    r"""
-    Return a tuple of (front matter, markdown body) strings split from ``text``.
-    Each can be an empty string.
-
-    >>> text='''---
-    ... title: DUMMY-SECURITY-2019-001
-    ... description: Incorrect access control.
-    ... cves: [CVE-2042-1337]
-    ... ---
-    ... # Markdown starts here
-    ... '''
-    >>> split_markdown_front_matter(text)
-    ('title: DUMMY-SECURITY-2019-001\ndescription: Incorrect access control.\ncves: [CVE-2042-1337]', '# Markdown starts here')
-    """
-    # The doctest contains \n and for the sake of clarity I chose raw strings than escaping those.
-    lines = text.splitlines()
-    if lines[0] == "---":
-        lines = lines[1:]
-        text = "\n".join(lines)
-        frontmatter, _, markdown = text.partition("\n---\n")
-        return frontmatter, markdown
-
-    return "", text
-
-
 # TODO: Replace this with combination of @classmethod and @property after upgrading to python 3.9
 class classproperty(object):
+
     def __init__(self, fget):
         self.fget = fget
 

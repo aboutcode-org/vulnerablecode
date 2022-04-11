@@ -1,0 +1,615 @@
+{
+  "data": {
+    "repository": {
+      "refs": {
+        "totalCount": 547,
+        "pageInfo": {
+          "endCursor": "MTAw",
+          "hasNextPage": true
+        },
+        "nodes": [
+          {
+            "name": "release-0.1.0",
+            "target": {
+              "committedDate": "2004-10-04T15:04:06Z"
+            }
+          },
+          {
+            "name": "release-0.1.1",
+            "target": {
+              "committedDate": "2004-10-11T15:07:03Z"
+            }
+          },
+          {
+            "name": "release-0.1.2",
+            "target": {
+              "committedDate": "2004-10-21T15:34:38Z"
+            }
+          },
+          {
+            "name": "release-0.1.3",
+            "target": {
+              "committedDate": "2004-10-25T15:29:23Z"
+            }
+          },
+          {
+            "name": "release-0.1.4",
+            "target": {
+              "committedDate": "2004-10-26T06:27:24Z"
+            }
+          },
+          {
+            "name": "release-0.1.5",
+            "target": {
+              "committedDate": "2004-11-11T14:07:14Z"
+            }
+          },
+          {
+            "name": "release-0.1.6",
+            "target": {
+              "committedDate": "2004-11-11T20:58:09Z"
+            }
+          },
+          {
+            "name": "release-0.1.7",
+            "target": {
+              "committedDate": "2004-11-12T14:35:09Z"
+            }
+          },
+          {
+            "name": "release-0.1.8",
+            "target": {
+              "committedDate": "2004-11-20T19:52:20Z"
+            }
+          },
+          {
+            "name": "release-0.1.9",
+            "target": {
+              "committedDate": "2004-11-25T16:17:31Z"
+            }
+          },
+          {
+            "name": "release-0.1.10",
+            "target": {
+              "committedDate": "2004-11-26T09:33:59Z"
+            }
+          },
+          {
+            "name": "release-0.1.11",
+            "target": {
+              "committedDate": "2004-12-02T18:40:46Z"
+            }
+          },
+          {
+            "name": "release-0.1.12",
+            "target": {
+              "committedDate": "2004-12-06T14:45:08Z"
+            }
+          },
+          {
+            "name": "release-0.1.13",
+            "target": {
+              "committedDate": "2004-12-21T12:30:30Z"
+            }
+          },
+          {
+            "name": "release-0.1.14",
+            "target": {
+              "committedDate": "2005-01-18T13:03:58Z"
+            }
+          },
+          {
+            "name": "release-0.1.15",
+            "target": {
+              "committedDate": "2005-01-19T13:10:56Z"
+            }
+          },
+          {
+            "name": "release-0.1.16",
+            "target": {
+              "committedDate": "2005-01-25T12:27:35Z"
+            }
+          },
+          {
+            "name": "release-0.1.17",
+            "target": {
+              "committedDate": "2005-02-03T19:33:37Z"
+            }
+          },
+          {
+            "name": "release-0.1.18",
+            "target": {
+              "committedDate": "2005-02-09T14:31:07Z"
+            }
+          },
+          {
+            "name": "release-0.1.19",
+            "target": {
+              "committedDate": "2005-02-16T13:40:36Z"
+            }
+          },
+          {
+            "name": "release-0.1.20",
+            "target": {
+              "committedDate": "2005-02-17T11:59:36Z"
+            }
+          },
+          {
+            "name": "release-0.1.21",
+            "target": {
+              "committedDate": "2005-02-22T14:40:13Z"
+            }
+          },
+          {
+            "name": "release-0.1.22",
+            "target": {
+              "committedDate": "2005-02-24T12:29:09Z"
+            }
+          },
+          {
+            "name": "release-0.1.23",
+            "target": {
+              "committedDate": "2005-03-01T15:20:36Z"
+            }
+          },
+          {
+            "name": "release-0.1.24",
+            "target": {
+              "committedDate": "2005-03-04T14:06:57Z"
+            }
+          },
+          {
+            "name": "release-0.1.25",
+            "target": {
+              "committedDate": "2005-03-19T12:38:37Z"
+            }
+          },
+          {
+            "name": "release-0.1.26",
+            "target": {
+              "committedDate": "2005-03-22T16:02:46Z"
+            }
+          },
+          {
+            "name": "release-0.1.27",
+            "target": {
+              "committedDate": "2005-03-28T14:43:02Z"
+            }
+          },
+          {
+            "name": "release-0.1.28",
+            "target": {
+              "committedDate": "2005-04-08T15:18:55Z"
+            }
+          },
+          {
+            "name": "release-0.1.29",
+            "target": {
+              "committedDate": "2005-05-12T14:58:06Z"
+            }
+          },
+          {
+            "name": "release-0.1.30",
+            "target": {
+              "committedDate": "2005-05-14T18:42:03Z"
+            }
+          },
+          {
+            "name": "release-0.1.31",
+            "target": {
+              "committedDate": "2005-05-16T13:53:20Z"
+            }
+          },
+          {
+            "name": "release-0.1.32",
+            "target": {
+              "committedDate": "2005-05-19T13:25:22Z"
+            }
+          },
+          {
+            "name": "release-0.1.33",
+            "target": {
+              "committedDate": "2005-05-23T12:07:45Z"
+            }
+          },
+          {
+            "name": "release-0.1.34",
+            "target": {
+              "committedDate": "2005-05-26T18:12:40Z"
+            }
+          },
+          {
+            "name": "release-0.1.35",
+            "target": {
+              "committedDate": "2005-06-07T15:56:31Z"
+            }
+          },
+          {
+            "name": "release-0.1.36",
+            "target": {
+              "committedDate": "2005-06-15T18:33:41Z"
+            }
+          },
+          {
+            "name": "release-0.1.37",
+            "target": {
+              "committedDate": "2005-06-23T13:41:06Z"
+            }
+          },
+          {
+            "name": "release-0.1.38",
+            "target": {
+              "committedDate": "2005-07-08T14:34:20Z"
+            }
+          },
+          {
+            "name": "release-0.1.39",
+            "target": {
+              "committedDate": "2005-07-14T12:51:53Z"
+            }
+          },
+          {
+            "name": "release-0.1.40",
+            "target": {
+              "committedDate": "2005-07-25T09:41:38Z"
+            }
+          },
+          {
+            "name": "release-0.1.41",
+            "target": {
+              "committedDate": "2005-08-19T08:54:17Z"
+            }
+          },
+          {
+            "name": "release-0.1.42",
+            "target": {
+              "committedDate": "2005-08-23T15:36:54Z"
+            }
+          },
+          {
+            "name": "release-0.1.43",
+            "target": {
+              "committedDate": "2005-08-30T10:55:07Z"
+            }
+          },
+          {
+            "name": "release-0.1.44",
+            "target": {
+              "committedDate": "2005-09-06T16:09:32Z"
+            }
+          },
+          {
+            "name": "release-0.1.45",
+            "target": {
+              "committedDate": "2005-09-08T14:36:09Z"
+            }
+          },
+          {
+            "name": "release-0.2.0",
+            "target": {
+              "committedDate": "2005-09-23T11:02:22Z"
+            }
+          },
+          {
+            "name": "release-0.2.1",
+            "target": {
+              "committedDate": "2005-09-23T14:43:49Z"
+            }
+          },
+          {
+            "name": "release-0.2.2",
+            "target": {
+              "committedDate": "2005-09-30T14:41:25Z"
+            }
+          },
+          {
+            "name": "release-0.2.3",
+            "target": {
+              "committedDate": "2005-09-30T16:02:34Z"
+            }
+          },
+          {
+            "name": "release-0.2.4",
+            "target": {
+              "committedDate": "2005-10-03T12:53:14Z"
+            }
+          },
+          {
+            "name": "release-0.2.5",
+            "target": {
+              "committedDate": "2005-10-04T10:38:53Z"
+            }
+          },
+          {
+            "name": "release-0.2.6",
+            "target": {
+              "committedDate": "2005-10-05T14:46:21Z"
+            }
+          },
+          {
+            "name": "release-0.3.0",
+            "target": {
+              "committedDate": "2005-10-07T13:30:52Z"
+            }
+          },
+          {
+            "name": "release-0.3.1",
+            "target": {
+              "committedDate": "2005-10-10T12:59:41Z"
+            }
+          },
+          {
+            "name": "release-0.3.2",
+            "target": {
+              "committedDate": "2005-10-12T13:50:36Z"
+            }
+          },
+          {
+            "name": "release-0.3.3",
+            "target": {
+              "committedDate": "2005-10-19T12:33:58Z"
+            }
+          },
+          {
+            "name": "release-0.3.4",
+            "target": {
+              "committedDate": "2005-10-19T13:34:28Z"
+            }
+          },
+          {
+            "name": "release-0.3.5",
+            "target": {
+              "committedDate": "2005-10-21T19:12:18Z"
+            }
+          },
+          {
+            "name": "release-0.3.6",
+            "target": {
+              "committedDate": "2005-10-24T15:09:41Z"
+            }
+          },
+          {
+            "name": "release-0.3.7",
+            "target": {
+              "committedDate": "2005-10-27T15:46:13Z"
+            }
+          },
+          {
+            "name": "release-0.3.8",
+            "target": {
+              "committedDate": "2005-11-09T17:25:55Z"
+            }
+          },
+          {
+            "name": "release-0.3.9",
+            "target": {
+              "committedDate": "2005-11-10T07:44:53Z"
+            }
+          },
+          {
+            "name": "release-0.3.10",
+            "target": {
+              "committedDate": "2005-11-15T13:30:52Z"
+            }
+          },
+          {
+            "name": "release-0.3.11",
+            "target": {
+              "committedDate": "2005-11-15T14:49:57Z"
+            }
+          },
+          {
+            "name": "release-0.3.12",
+            "target": {
+              "committedDate": "2005-11-26T10:11:11Z"
+            }
+          },
+          {
+            "name": "release-0.3.13",
+            "target": {
+              "committedDate": "2005-12-05T13:18:09Z"
+            }
+          },
+          {
+            "name": "release-0.3.14",
+            "target": {
+              "committedDate": "2005-12-05T16:59:05Z"
+            }
+          },
+          {
+            "name": "release-0.3.15",
+            "target": {
+              "committedDate": "2005-12-07T14:51:31Z"
+            }
+          },
+          {
+            "name": "release-0.3.16",
+            "target": {
+              "committedDate": "2005-12-16T15:07:08Z"
+            }
+          },
+          {
+            "name": "release-0.3.17",
+            "target": {
+              "committedDate": "2005-12-18T16:02:44Z"
+            }
+          },
+          {
+            "name": "release-0.3.18",
+            "target": {
+              "committedDate": "2005-12-26T17:07:48Z"
+            }
+          },
+          {
+            "name": "release-0.3.19",
+            "target": {
+              "committedDate": "2005-12-28T14:23:52Z"
+            }
+          },
+          {
+            "name": "release-0.3.20",
+            "target": {
+              "committedDate": "2006-01-11T15:26:57Z"
+            }
+          },
+          {
+            "name": "release-0.3.21",
+            "target": {
+              "committedDate": "2006-01-16T14:56:53Z"
+            }
+          },
+          {
+            "name": "release-0.3.22",
+            "target": {
+              "committedDate": "2006-01-17T20:04:32Z"
+            }
+          },
+          {
+            "name": "release-0.3.23",
+            "target": {
+              "committedDate": "2006-01-24T16:08:27Z"
+            }
+          },
+          {
+            "name": "release-0.3.24",
+            "target": {
+              "committedDate": "2006-02-01T18:22:15Z"
+            }
+          },
+          {
+            "name": "release-0.3.25",
+            "target": {
+              "committedDate": "2006-02-01T20:01:51Z"
+            }
+          },
+          {
+            "name": "release-0.3.26",
+            "target": {
+              "committedDate": "2006-02-03T12:58:48Z"
+            }
+          },
+          {
+            "name": "release-0.3.27",
+            "target": {
+              "committedDate": "2006-02-08T15:33:12Z"
+            }
+          },
+          {
+            "name": "release-0.3.28",
+            "target": {
+              "committedDate": "2006-02-16T15:26:46Z"
+            }
+          },
+          {
+            "name": "release-0.3.29",
+            "target": {
+              "committedDate": "2006-02-20T16:48:17Z"
+            }
+          },
+          {
+            "name": "release-0.3.30",
+            "target": {
+              "committedDate": "2006-02-22T19:41:39Z"
+            }
+          },
+          {
+            "name": "release-0.3.31",
+            "target": {
+              "committedDate": "2006-03-10T12:51:52Z"
+            }
+          },
+          {
+            "name": "release-0.3.32",
+            "target": {
+              "committedDate": "2006-03-11T06:40:30Z"
+            }
+          },
+          {
+            "name": "release-0.3.33",
+            "target": {
+              "committedDate": "2006-03-15T09:53:04Z"
+            }
+          },
+          {
+            "name": "release-0.3.34",
+            "target": {
+              "committedDate": "2006-03-21T08:20:41Z"
+            }
+          },
+          {
+            "name": "release-0.3.35",
+            "target": {
+              "committedDate": "2006-03-28T12:24:47Z"
+            }
+          },
+          {
+            "name": "release-0.3.36",
+            "target": {
+              "committedDate": "2006-04-05T13:40:54Z"
+            }
+          },
+          {
+            "name": "release-0.3.37",
+            "target": {
+              "committedDate": "2006-04-07T14:08:04Z"
+            }
+          },
+          {
+            "name": "release-0.3.38",
+            "target": {
+              "committedDate": "2006-04-14T09:53:38Z"
+            }
+          },
+          {
+            "name": "release-0.3.39",
+            "target": {
+              "committedDate": "2006-04-17T19:55:41Z"
+            }
+          },
+          {
+            "name": "release-0.3.40",
+            "target": {
+              "committedDate": "2006-04-19T15:30:56Z"
+            }
+          },
+          {
+            "name": "release-0.3.41",
+            "target": {
+              "committedDate": "2006-04-21T12:06:44Z"
+            }
+          },
+          {
+            "name": "release-0.3.42",
+            "target": {
+              "committedDate": "2006-04-26T09:52:47Z"
+            }
+          },
+          {
+            "name": "release-0.3.43",
+            "target": {
+              "committedDate": "2006-04-26T15:21:08Z"
+            }
+          },
+          {
+            "name": "release-0.3.44",
+            "target": {
+              "committedDate": "2006-05-04T15:32:46Z"
+            }
+          },
+          {
+            "name": "release-0.3.45",
+            "target": {
+              "committedDate": "2006-05-06T16:28:56Z"
+            }
+          },
+          {
+            "name": "release-0.3.46",
+            "target": {
+              "committedDate": "2006-05-11T14:43:47Z"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

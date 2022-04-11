@@ -20,7 +20,6 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import asyncio
 import logging
 from typing import Iterable
 from typing import NamedTuple
@@ -43,7 +42,7 @@ from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.package_managers import GitHubTagsAPI
-from vulnerabilities.package_managers import Version
+from vulnerabilities.package_managers import PackageVersion
 from vulnerabilities.severity_systems import GENERIC
 
 logger = logging.getLogger(__name__)
@@ -239,29 +238,33 @@ def build_severity(severity):
 
 
 class NginxBasicImprover(Improver):
-    def __init__(self):
-        self.set_api()
+    """
+    Improve Nginx data by fetching the its GitHub repo versions and resolving
+    the vulnerable ranges.
+    """
 
     @property
     def interesting_advisories(self) -> QuerySet:
         return Advisory.objects.filter(created_by=NginxImporter.qualified_name)
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
-        """
-        Yield Inference from the ``advisory data`` AdvisoryData.
-        """
         try:
             purl, affected_version_ranges, fixed_versions = AffectedPackage.merge(
                 advisory_data.affected_packages
             )
         except UnMergeablePackageError:
-            logger.error(f"Cannot merge with different purls {advisory_data.affected_packages!r}")
+            logger.error(
+                f"NginxBasicImprover: Cannot merge with different purls: "
+                f"{advisory_data.affected_packages!r}"
+            )
             return iter([])
 
-        all_versions = self.version_api.get("nginx/nginx").valid_versions
+        all_versions = list(self.fetch_nginx_version_from_git_tags())
+
         affected_purls = []
         for affected_version_range in affected_version_ranges:
             for version in all_versions:
+                # FIXME: we should reference an NginxVersion tbd in univers
                 version = SemverVersion(version)
                 if is_vulnerable(
                     version=version,
@@ -271,28 +274,27 @@ class NginxBasicImprover(Improver):
                     new_purl = evolve_purl(purl=purl, version=version)
                     affected_purls.append(new_purl)
 
+        # TODO: This also yields with a lower fixed version, maybe we should
+        # only yield fixes that are upgrades ?
         for fixed_version in fixed_versions:
-            # TODO: This also yields with a lower fixed version, maybe we should
-            # only yield fixes that are upgrades ?
             fixed_purl = evolve_purl(purl=purl, version=fixed_version)
+
             yield Inference.from_advisory_data(
                 advisory_data,
-                confidence=90,  # TODO: Decide properly
+                # TODO: is 90 a correct confidence??
+                confidence=90,
                 affected_purls=affected_purls,
                 fixed_purl=fixed_purl,
             )
 
-    def set_api(self):
-        self.version_api = GitHubTagsAPI()
-        asyncio.run(self.version_api.load_api(["nginx/nginx"]))
-
-        normalized_versions = set()
-        while self.version_api.cache["nginx/nginx"]:
-            version = self.version_api.cache["nginx/nginx"].pop()
+    def fetch_nginx_version_from_git_tags(self):
+        """
+        Yield all nginx PackageVersion from its git tags.
+        """
+        nginx_versions = GitHubTagsAPI().fetch("nginx/nginx")
+        for version in nginx_versions:
             cleaned = clean_nginx_git_tag(version.value)
-            normalized_version = Version(value=cleaned, release_date=version.release_date)
-            normalized_versions.add(normalized_version)
-        self.version_api.cache["nginx/nginx"] = normalized_versions
+            yield PackageVersion(value=cleaned, release_date=version.release_date)
 
 
 def clean_nginx_git_tag(tag):

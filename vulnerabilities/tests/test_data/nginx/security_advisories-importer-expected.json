@@ -58,8 +58,7 @@
         "reference_id": ""
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "836975e8910970e6adbef6643c714424",
@@ -110,8 +109,7 @@
         "reference_id": "CVE-2019-9511"
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "0ac8c5b8bbd51df34fcb6e027d5ea044",
@@ -162,8 +160,7 @@
         "reference_id": "CVE-2019-9513"
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "7d85553ab2c402dc0f68469d0789ec2c",
@@ -214,8 +211,7 @@
         "reference_id": "CVE-2019-9516"
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "7dd33f5c92c595292d689401ae2e2e5e",
@@ -266,8 +262,7 @@
         "reference_id": "CVE-2018-16843"
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "3f512172cf08fbf37eed94073722c0d1",
@@ -318,8 +313,7 @@
         "reference_id": "CVE-2018-16844"
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "65afa9db838c6440788e944c0c841e14",
@@ -380,8 +374,7 @@
         "reference_id": ""
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "b228b252bfacba385255fa39b0ab8a24",
@@ -442,8 +435,7 @@
         "reference_id": ""
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "55c06fb39c2060ebd4286f059a2de757",
@@ -514,8 +506,7 @@
         "reference_id": ""
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "cc7df0e8e72511288d97344b777f34ba",
@@ -566,8 +557,7 @@
         "reference_id": "CVE-2016-0742"
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "3dd9fdd76b336623770856c554207c25",
@@ -618,8 +608,7 @@
         "reference_id": "CVE-2016-0746"
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "efde3660cac695e0cf1a2641d85fc960",
@@ -670,8 +659,7 @@
         "reference_id": "CVE-2016-0747"
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "de51a68688d1254c7b923c4d553673d7",
@@ -722,8 +710,7 @@
         "reference_id": "CVE-2014-3616"
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "be04a26546034f1bf6dc81fe3f196d21",
@@ -784,8 +771,7 @@
         "reference_id": ""
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "0c5952c29a54fdbc5526988c898e639d",
@@ -841,8 +827,7 @@
         "reference_id": ""
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "55dccce79c4247faa1ed8db0f8fbd44f",
@@ -886,8 +871,7 @@
         "reference_id": ""
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "233d69f66b16829cd2563a8d4544c4fc",
@@ -948,8 +932,7 @@
         "reference_id": ""
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "bf07c722836da87901a6a99186aa1451",
@@ -1032,8 +1015,7 @@
         "reference_id": ""
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "e35afe5b1aadcb66c5ad82c8894dff17",
@@ -1089,8 +1071,7 @@
         "reference_id": ""
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "899ece25ddf860b11ce3408d7e1e8eed",
@@ -1145,8 +1126,7 @@
         "reference_id": "CVE-2011-4963"
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "b0a336b612b378d72e93193756b3e376",
@@ -1202,8 +1182,7 @@
         "reference_id": ""
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "aff5af1bcc53f6fa1a49917e044acf79",
@@ -1259,8 +1238,7 @@
         "reference_id": ""
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "56a7ea32d809aa1a3181ab87eea4fe43",
@@ -1301,8 +1279,7 @@
         "reference_id": "CVE-2011-4315"
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "646911f1d2f21611b0a3720f3523b3b2",
@@ -1347,8 +1324,7 @@
         "reference_id": "CVE-2010-2266"
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "20cecfba57d0a66b04e1b4b6fb4efb26",
@@ -1393,8 +1369,7 @@
         "reference_id": "CVE-2010-2263"
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "9c968129f10b424807b830f0219b8d4c",
@@ -1433,8 +1408,7 @@
       }
     ],
     "references": [],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "480c77ca27341a47f11299017c7660b7",
@@ -1463,8 +1437,7 @@
         "reference_id": "CVE-2009-4487"
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "34b7ff4154010452c4dd186b7cbbcc5d",
@@ -1516,8 +1489,7 @@
         "reference_id": ""
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "5df3f01df0d85143bc51ddbb453c1581",
@@ -1558,8 +1530,7 @@
         "reference_id": "CVE-2009-3898"
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "cef6afb87317112ea248571bd6991994",
@@ -1635,8 +1606,7 @@
         "reference_id": ""
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   },
   {
     "unique_content_id": "b55c336a480792ece857368101645c0c",
@@ -1711,7 +1681,6 @@
         "reference_id": ""
       }
     ],
-    "date_published": null,
-    "created_by": "vulnerabilities.tests.test_nginx.TestNginxImporter.test_NginxImporter.<locals>.MockNginxImporter"
+    "date_published": null
   }
 ]

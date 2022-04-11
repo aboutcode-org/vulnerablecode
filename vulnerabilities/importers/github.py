@@ -21,7 +21,6 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import logging
-import os
 from datetime import datetime
 from typing import Iterable
 from typing import List
@@ -29,13 +28,14 @@ from typing import Mapping
 from typing import Optional
 from typing import Tuple
 
-import requests
 from dateutil import parser as dateparser
 from django.db.models.query import QuerySet
 from packageurl import PackageURL
 from univers.version_range import VersionRange
 from univers.version_range import build_range_from_github_advisory_constraint
 
+from vulnerabilities import helpers
+from vulnerabilities import severity_systems
 from vulnerabilities.helpers import AffectedPackage as LegacyAffectedPackage
 from vulnerabilities.helpers import get_item
 from vulnerabilities.helpers import nearest_patched_package
@@ -48,16 +48,15 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
-from vulnerabilities.package_managers_2 import ComposerVersionAPI
-from vulnerabilities.package_managers_2 import GoproxyVersionAPI
-from vulnerabilities.package_managers_2 import MavenVersionAPI
-from vulnerabilities.package_managers_2 import NugetVersionAPI
-from vulnerabilities.package_managers_2 import PypiVersionAPI
-from vulnerabilities.package_managers_2 import RubyVersionAPI
-from vulnerabilities.package_managers_2 import VersionAPI
-from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.package_managers import ComposerVersionAPI
+from vulnerabilities.package_managers import GoproxyVersionAPI
+from vulnerabilities.package_managers import MavenVersionAPI
+from vulnerabilities.package_managers import NugetVersionAPI
+from vulnerabilities.package_managers import PypiVersionAPI
+from vulnerabilities.package_managers import RubyVersionAPI
+from vulnerabilities.package_managers import VersionAPI
 
-LOGGER = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 WEIRD_IGNORABLE_VERSIONS = frozenset(
     [
@@ -132,7 +131,6 @@ PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM = {
     "GO": "golang",
 }
 
-
 GITHUB_ECOSYSTEM_BY_PACKAGE_TYPE = {
     value: key for (key, value) in PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM.items()
 }
@@ -141,34 +139,34 @@ GITHUB_ECOSYSTEM_BY_PACKAGE_TYPE = {
 # Check https://github.com/nexB/vulnerablecode/issues/645
 # set of all possible values of first '%s' = {'MAVEN','COMPOSER', 'NUGET', 'RUBYGEMS', 'PYPI'}
 # second '%s' is interesting, it will have the value '' for the first request,
-GRAPHQL_VULNERABILITY_QUERY_TEMPLATE = """
+GRAPHQL_QUERY_TEMPLATE = """
 query{
-securityVulnerabilities(first: 100, ecosystem: %s, %s) {
-    edges {
-    node {
-        advisory {
-        identifiers {
-            type
-            value
+    securityVulnerabilities(first: 100, ecosystem: %s, %s) {
+        edges {
+            node {
+                advisory {
+                    identifiers {
+                        type
+                        value
+                    }
+                    summary
+                    references {
+                        url
+                    }
+                    severity
+                    publishedAt
+                }
+                package {
+                    name
+                }
+                vulnerableVersionRange
+            }
         }
-        summary
-        references {
-            url
+        pageInfo {
+            hasNextPage
+            endCursor
         }
-        severity
-        publishedAt
-        }
-        package {
-        name
-        }
-        vulnerableVersionRange
     }
-    }
-    pageInfo {
-    hasNextPage
-    endCursor
-    }
-}
 }
 """
 
@@ -184,49 +182,26 @@ VERSION_API_CLASSES = [
 VERSION_API_CLASSES_BY_PACKAGE_TYPE = {cls.package_type: cls for cls in VERSION_API_CLASSES}
 
 
-class GitHubTokenError(Exception):
-    pass
-
-
-# Isolated network call for simplicity of testing
-def get_response(endpoint: str, headers: dict, query: dict):
-    return requests.post(endpoint, headers=headers, json=query).json()
-
-
 class GitHubAPIImporter(Importer):
     spdx_license_expression = "CC-BY-4.0"
-    endpoint = "https://api.github.com/graphql"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
-        """
-        Return a list of AdvisoryData objects
-        """
-        try:
-            token = os.environ["GH_TOKEN"]
-        except Exception as e:
-            LOGGER.error("No GitHub token found. Please set the GH_TOKEN environment variable.")
-            raise GitHubTokenError(e)
-        headers = {"Authorization": f"token {token}"}
-        advisories = []
         for ecosystem, package_type in PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM.items():
             end_cursor_exp = ""
             while True:
-                query = {
-                    "query": GRAPHQL_VULNERABILITY_QUERY_TEMPLATE % (ecosystem, end_cursor_exp)
-                }
-                resp = get_response(endpoint=self.endpoint, headers=headers, query=query)
-                message = resp.get("message")
-                if message and message == "Bad credentials":
-                    raise GitHubTokenError("Invalid GitHub token")
-                page_info = get_item(resp, "data", "securityVulnerabilities", "pageInfo")
+                graphql_query = {"query": GRAPHQL_QUERY_TEMPLATE % (ecosystem, end_cursor_exp)}
+                response = helpers.fetch_github_graphql_query(graphql_query)
+
+                page_info = get_item(response, "data", "securityVulnerabilities", "pageInfo")
                 end_cursor = get_item(page_info, "endCursor")
                 if end_cursor:
                     end_cursor = f'"{end_cursor}"'
                     end_cursor_exp = f"after: {end_cursor}"
-                advisories.extend(process_response(resp, package_type=package_type))
+
+                yield from process_response(response, package_type=package_type)
+
                 if not get_item(page_info, "hasNextPage"):
                     break
-        return advisories
 
 
 def get_reference_id(url: str):
@@ -252,7 +227,7 @@ def extract_references(reference_data: List[dict]) -> Iterable[Reference]:
     for ref in reference_data:
         url = ref["url"]
         if not isinstance(url, str):
-            LOGGER.error(f"extract_references: url is not of type `str`: {url}")
+            logger.error(f"extract_references: url is not of type `str`: {url}")
             continue
         if "GHSA-" in url.upper():
             reference = Reference(url=url, reference_id=get_reference_id(url))
@@ -272,14 +247,14 @@ def get_purl(pkg_type: str, github_name: str) -> Optional[PackageURL]:
     """
     if pkg_type == "maven":
         if ":" not in github_name:
-            LOGGER.error(f"get_purl: Invalid maven package name {github_name}")
+            logger.error(f"get_purl: Invalid maven package name {github_name}")
             return
         ns, _, name = github_name.partition(":")
         return PackageURL(type=pkg_type, namespace=ns, name=name)
 
     if pkg_type == "composer":
         if "/" not in github_name:
-            LOGGER.error(f"get_purl: Invalid composer package name {github_name}")
+            logger.error(f"get_purl: Invalid composer package name {github_name}")
             return
         vendor, _, name = github_name.partition("/")
         return PackageURL(type=pkg_type, namespace=vendor, name=name)
@@ -287,7 +262,7 @@ def get_purl(pkg_type: str, github_name: str) -> Optional[PackageURL]:
     if pkg_type in ("nuget", "pypi", "gem", "golang"):
         return PackageURL(type=pkg_type, name=github_name)
 
-    LOGGER.error(f"get_purl: Unknown package type {pkg_type}")
+    logger.error(f"get_purl: Unknown package type {pkg_type}")
 
 
 class InvalidVersionRange(Exception):
@@ -313,17 +288,16 @@ def get_api_package_name(purl: PackageURL) -> str:
     if purl.type in ("nuget", "pypi", "gem", "golang"):
         return purl.name
 
-    LOGGER.error(f"get_api_package_name: Unknown PURL {purl!r}")
+    logger.error(f"get_api_package_name: Unknown PURL {purl!r}")
 
 
 def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
     """
-    Yield `AdvisoryData` by taking
-    `resp` and `ecosystem` as input
+    Yield `AdvisoryData` by taking `resp` and `ecosystem` as input
     """
     vulnerabilities = get_item(resp, "data", "securityVulnerabilities", "edges") or []
     if not vulnerabilities:
-        LOGGER.error(
+        logger.error(
             f"No vulnerabilities found for package_type: {package_type!r} in response: {resp!r}"
         )
         return
@@ -333,12 +307,12 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
         aliases = set()
         github_advisory = get_item(vulnerability, "node")
         if not github_advisory:
-            LOGGER.error(f"No node found in {vulnerability!r}")
+            logger.error(f"No node found in {vulnerability!r}")
             continue
 
         name = get_item(github_advisory, "package", "name")
         if not name:
-            LOGGER.error(f"No name found in {github_advisory!r}")
+            logger.error(f"No name found in {github_advisory!r}")
             continue
 
         purl = get_purl(pkg_type=package_type, github_name=name)
@@ -347,7 +321,7 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
 
         vulnerable_range = get_item(github_advisory, "vulnerableVersionRange")
         if not vulnerable_range:
-            LOGGER.error(f"No affected range found in {github_advisory!r}")
+            logger.error(f"No affected range found in {github_advisory!r}")
             continue
 
         affected_range = None
@@ -356,7 +330,7 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
                 package_type, vulnerable_range
             )
         except InvalidVersionRange:
-            LOGGER.error(f"Could not parse affected range {vulnerable_range!r}")
+            logger.error(f"Could not parse affected range {vulnerable_range!r}")
             continue
 
         if affected_range != NotImplementedError:
@@ -369,7 +343,7 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
 
         advisory = get_item(github_advisory, "advisory")
         if not advisory:
-            LOGGER.error(f"No advisory found in {github_advisory!r}")
+            logger.error(f"No advisory found in {github_advisory!r}")
             continue
 
         references = get_item(advisory, "references") or []
@@ -392,7 +366,7 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
                         if severity:
                             ref.severities = [
                                 VulnerabilitySeverity(
-                                    system=SCORING_SYSTEMS["cvssv3.1_qr"],
+                                    system=severity_systems.CVSS31_QUALITY,
                                     value=severity,
                                 )
                             ]
@@ -400,7 +374,7 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
             elif identifier_type == "CVE":
                 pass
             else:
-                LOGGER.error(f"Unknown identifier type {identifier_type!r} and value {value!r}")
+                logger.error(f"Unknown identifier type {identifier_type!r} and value {value!r}")
 
         date_published = get_item(advisory, "publishedAt")
         if date_published:
@@ -417,7 +391,7 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
 
 class GitHubBasicImprover(Improver):
     def __init__(self) -> None:
-        self.version_api_by_purl_type: Mapping[str, VersionAPI] = {}
+        self.versions_fetcher_by_purl: Mapping[str, VersionAPI] = {}
 
     @property
     def interesting_advisories(self) -> QuerySet:
@@ -431,16 +405,17 @@ class GitHubBasicImprover(Improver):
         """
         api_name = get_api_package_name(package_url)
         if not api_name:
-            LOGGER.error(f"Could not get versions for {package_url!r}")
+            logger.error(f"Could not get versions for {package_url!r}")
             return []
-        version_api = self.version_api_by_purl_type.get(package_url.type)
-        if not version_api:
-            version_api: VersionAPI = VERSION_API_CLASSES_BY_PACKAGE_TYPE[package_url.type]
-            self.version_api_by_purl_type[package_url.type] = version_api()
-        api_object = self.version_api_by_purl_type[package_url.type]
-        api_object.load_api([api_name])
-        self.version_api_by_purl_type[package_url.type] = api_object
-        return api_object.get(package_name=api_name, until=until).valid_versions
+        versions_fetcher = self.versions_fetcher_by_purl.get(package_url)
+        if not versions_fetcher:
+            versions_fetcher: VersionAPI = VERSION_API_CLASSES_BY_PACKAGE_TYPE[package_url.type]
+            self.versions_fetcher_by_purl[package_url] = versions_fetcher()
+
+        versions_fetcher = self.versions_fetcher_by_purl[package_url]
+
+        self.versions_fetcher_by_purl[package_url] = versions_fetcher
+        return versions_fetcher.get_until(package_name=api_name, until=until).valid_versions
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         """
@@ -453,7 +428,7 @@ class GitHubBasicImprover(Improver):
                 advisory_data.affected_packages
             )
         except UnMergeablePackageError:
-            LOGGER.error(f"Cannot merge with different purls {advisory_data.affected_packages!r}")
+            logger.error(f"Cannot merge with different purls {advisory_data.affected_packages!r}")
             return iter([])
 
         pkg_type = purl.type
@@ -462,11 +437,11 @@ class GitHubBasicImprover(Improver):
         if purl.type == "golang":
             # Problem with the Golang and Go that they provide full path
             # FIXME: We need to get the PURL subpath for Go module
-            version_api_object = self.version_api_by_purl_type.get(purl.type)
-            if not version_api_object:
-                version_api_object = GoproxyVersionAPI()
-                self.version_api_by_purl_type[purl.type] = version_api_object
-            pkg_name = version_api_object.module_name_by_package_name.get(pkg_name, pkg_name)
+            versions_fetcher = self.versions_fetcher_by_purl.get(purl)
+            if not versions_fetcher:
+                versions_fetcher = GoproxyVersionAPI()
+                self.versions_fetcher_by_purl[purl] = versions_fetcher
+            pkg_name = versions_fetcher.module_name_by_package_name.get(pkg_name, pkg_name)
 
         valid_versions = self.get_package_versions(
             package_url=purl, until=advisory_data.date_published
@@ -516,11 +491,12 @@ def resolve_version_range(
     ignorable_versions=WEIRD_IGNORABLE_VERSIONS,
 ) -> Tuple[List[str], List[str]]:
     """
-    Given an affected version range and a list of `package_versions`, resolve which versions are in this range
-    and return a tuple of two lists of `affected_versions` and `unaffected_versions`.
+    Given an affected version range and a list of `package_versions`, resolve
+    which versions are in this range and return a tuple of two lists of
+    `affected_versions` and `unaffected_versions`.
     """
     if not affected_version_range:
-        LOGGER.error(f"affected version range is {affected_version_range!r}")
+        logger.error(f"affected version range is {affected_version_range!r}")
         return [], []
     affected_versions = []
     unaffected_versions = []
@@ -534,7 +510,7 @@ def resolve_version_range(
         try:
             version = affected_version_range.version_class(package_version)
         except Exception:
-            LOGGER.error(f"Could not parse version {package_version!r}")
+            logger.error(f"Could not parse version {package_version!r}")
             continue
         if version in affected_version_range:
             affected_versions.append(package_version)

@@ -24,6 +24,7 @@ import bisect
 import dataclasses
 import json
 import logging
+import os
 import re
 from functools import total_ordering
 from typing import List
@@ -38,7 +39,7 @@ import urllib3
 from packageurl import PackageURL
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 
-LOGGER = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 cve_regex = re.compile(r"CVE-\d{4}-\d{4,7}", re.IGNORECASE)
 is_cve = cve_regex.match
@@ -215,12 +216,55 @@ def get_item(object: dict, *attributes):
     >>> assert(get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'e')) == None
     """
     if not object:
-        LOGGER.error(f"Object is empty: {object}")
+        logger.error(f"Object is empty: {object}")
         return
     item = object
     for attribute in attributes:
         if attribute not in item:
-            LOGGER.error(f"Missing attribute {attribute} in {item}")
+            logger.error(f"Missing attribute {attribute} in {item}")
             return None
         item = item[attribute]
     return item
+
+
+class GitHubTokenError(Exception):
+    pass
+
+
+class GraphQLError(Exception):
+    pass
+
+
+def fetch_github_graphql_query(graphql_query: dict):
+    """
+    Return results from calling the Github graphql API with the ``graphql_query`` mapping.
+    Raise a GitHubTokenError if the "GH_TOKEN" environment variable is not set.
+    Raise a GraphQLError on query errors.
+    """
+    gh_token = os.environ.get("GH_TOKEN", None)
+    # graphql api cannot work without api token
+    if not gh_token:
+        msg = "Cannot call GitHub API without a token set in the GH_TOKEN environment variable."
+        logger.error(msg)
+        raise GitHubTokenError(msg)
+
+    response = _get_gh_response(gh_token=gh_token, graphql_query=graphql_query)
+
+    message = response.get("message")
+    if message and message == "Bad credentials":
+        raise GitHubTokenError(f"Invalid GitHub token: {message}")
+
+    errors = response.get("errors")
+    if errors:
+        raise GraphQLError(errors)
+
+    return response
+
+
+def _get_gh_response(gh_token, graphql_query):
+    """
+    Convenience functiosn to easy mocking in tests
+    """
+    endpoint = "https://api.github.com/graphql"
+    headers = {"Authorization": f"bearer {gh_token}"}
+    return requests.post(endpoint, headers=headers, json=graphql_query).json()

@@ -20,101 +20,152 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import dataclasses
-import re
-import xml.etree.ElementTree as ET
-from typing import Set
+import logging
+from datetime import timezone
+from typing import Iterable
+from urllib.parse import urljoin
 
+import defusedxml.ElementTree as DET
 import requests
+from dateutil import parser as dateparser
 from packageurl import PackageURL
+from univers.version_range import OpensslVersionRange
+from univers.versions import OpensslVersion
 
-from vulnerabilities.helpers import create_etag
-from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.severity_systems import SCORING_SYSTEMS
+
+logger = logging.getLogger(__name__)
 
 
-class OpenSSLImporter(Importer):
-
+class OpensslImporter(Importer):
+    spdx_license_expression = "Apache-2.0"
+    license_url = "https://github.com/openssl/openssl/blob/master/LICENSE.txt"
     url = "https://www.openssl.org/news/vulnerabilities.xml"
 
-    def updated_advisories(self) -> Set[Advisory]:
-        # Etags are like hashes of web responses. We maintain
-        # (url, etag) mappings in the DB. `create_etag`  creates
-        # (url, etag) pair. If a (url, etag) already exists then the code
-        # skips processing the response further to avoid duplicate work
-        if create_etag(data_src=self, url=self.url, etag_key="ETag"):
-            raw_data = self.fetch()
-            advisories = self.to_advisories(raw_data)
-            return self.batch_advisories(advisories)
-
-        return []
-
     def fetch(self):
-        return requests.get(self.url).content
+        response = requests.get(url=self.url)
+        if not response.status_code == 200:
+            logger.error(f"Error while fetching {self.url}: {response.status_code}")
+            return
+        return response.content
 
-    @staticmethod
-    def to_advisories(xml_response: str) -> Set[Advisory]:
-        advisories = []
-        pkg_name = "openssl"
-        pkg_type = "generic"
-        root = ET.fromstring(xml_response)
-        for element in root:
-            if element.tag == "issue":
-                cve_id = ""
-                summary = ""
-                safe_pkg_versions = []
-                vuln_pkg_versions = []
-                ref_urls = []
-                for info in element:
+    def advisory_data(self) -> Iterable[AdvisoryData]:
+        xml_response = self.fetch()
+        return parse_vulnerabilities(xml_response)
 
-                    if info.tag == "cve":
-                        if info.attrib.get("name"):
-                            cve_id = "CVE-" + info.attrib.get("name")
 
-                        else:
-                            continue
+def parse_vulnerabilities(xml_response) -> Iterable[AdvisoryData]:
+    root = DET.fromstring(xml_response)
+    for xml_issue in root:
+        if xml_issue.tag == "issue":
+            advisory = to_advisory_data(xml_issue)
+            if advisory:
+                yield advisory
 
-                    if cve_id == "CVE-2007-5502":
-                        # This CVE has weird version "fips-1.1.2".This is
-                        # probably a submodule. Skip this for now.
-                        continue
 
-                    if info.tag == "affects":
-                        # Vulnerable package versions
-                        vuln_pkg_versions.append(info.attrib.get("version"))
+def to_advisory_data(xml_issue) -> AdvisoryData:
+    """
+    Return AdvisoryData from given xml_issue
+    """
 
-                    if info.tag == "fixed":
-                        # Fixed package versions
-                        safe_pkg_versions.append(info.attrib.get("version"))
+    purl = PackageURL(type="openssl", name="openssl")
+    cve = advisory_url = severity = summary = None
+    safe_pkg_versions = {}
+    vuln_pkg_versions_by_base_version = {}
+    aliases = []
+    references = []
+    affected_packages = []
+    date_published = xml_issue.attrib["public"].strip()
 
-                        if info:
-                            commit_hash = info[0].attrib["hash"]
-                            ref_urls.append(
-                                Reference(
-                                    url="https://github.com/openssl/openssl/commit/" + commit_hash
-                                )
-                            )
-                    if info.tag == "description":
-                        # Description
-                        summary = re.sub(r"\s+", " ", info.text).strip()
+    for info in xml_issue:
+        if info.tag == "impact":
+            severity = VulnerabilitySeverity(
+                system=SCORING_SYSTEMS["generic_textual"], value=info.attrib["severity"]
+            )
 
-                safe_purls = [
-                    PackageURL(name=pkg_name, type=pkg_type, version=version)
-                    for version in safe_pkg_versions
-                ]
-                vuln_purls = [
-                    PackageURL(name=pkg_name, type=pkg_type, version=version)
-                    for version in vuln_pkg_versions
-                ]
+        elif info.tag == "advisory":
+            advisory_url = info.attrib["url"]
+            if not advisory_url.startswith("https://web.archive.org"):
+                advisory_url = urljoin("https://www.openssl.org", advisory_url)
 
-                advisory = Advisory(
-                    vulnerability_id=cve_id,
-                    summary=summary,
-                    affected_packages=nearest_patched_package(vuln_purls, safe_purls),
-                    references=ref_urls,
+        elif info.tag == "cve":
+            cve = info.attrib.get("name")
+            # use made up alias to compensate for case when advisory doesn't have CVE-ID
+            madeup_alias = f"VC-OPENSSL-{date_published}"
+            if cve:
+                cve = f"CVE-{cve}"
+                madeup_alias = f"{madeup_alias}-{cve}"
+                aliases.append(cve)
+                references.append(Reference(reference_id=cve))
+            aliases.append(madeup_alias)
+
+        elif info.tag == "affects":
+            affected_base = info.attrib["base"]
+            affected_version = info.attrib["version"]
+            if affected_base.startswith("fips"):
+                logger.error(
+                    f"{affected_base!r} is a OpenSSL-FIPS Object Module and isn't supported by OpensslImporter. Use a different importer."
                 )
-                advisories.append(advisory)
+                return
+            if affected_base in vuln_pkg_versions_by_base_version:
+                vuln_pkg_versions_by_base_version[affected_base].append(affected_version)
+            else:
+                vuln_pkg_versions_by_base_version[affected_base] = [affected_version]
 
-        return advisories
+        elif info.tag == "fixed":
+            fixed_base = info.attrib["base"]
+            fixed_version = info.attrib["version"]
+            safe_pkg_versions[fixed_base] = fixed_version
+            for commit in info:
+                commit_hash = commit.attrib["hash"]
+                references.append(
+                    Reference(
+                        url=urljoin("https://github.com/openssl/openssl/commit/", commit_hash)
+                    )
+                )
+
+        elif info.tag == "description":
+            summary = " ".join(info.text.split())
+
+        elif info.tag in ("reported", "problemtype", "title"):
+            # as of now, these info isn't useful for AdvisoryData
+            # for more see: https://github.com/nexB/vulnerablecode/issues/688
+            continue
+        else:
+            logger.error(
+                f"{info.tag!r} is a newly introduced tag. Modify the importer to make use of this new info."
+            )
+
+    for base_version, affected_versions in vuln_pkg_versions_by_base_version.items():
+        affected_version_range = OpensslVersionRange.from_versions(affected_versions)
+        fixed_version = None
+        if base_version in safe_pkg_versions:
+            fixed_version = OpensslVersion(safe_pkg_versions[base_version])
+        affected_package = AffectedPackage(
+            package=purl,
+            affected_version_range=affected_version_range,
+            fixed_version=fixed_version,
+        )
+        affected_packages.append(affected_package)
+
+    if severity and advisory_url:
+        references.append(Reference(url=advisory_url, severities=[severity]))
+    elif advisory_url:
+        references.append(Reference(url=advisory_url))
+
+    parsed_date_published = dateparser.parse(date_published, yearfirst=True).replace(
+        tzinfo=timezone.utc
+    )
+
+    return AdvisoryData(
+        aliases=aliases,
+        summary=summary,
+        affected_packages=affected_packages,
+        references=references,
+        date_published=parsed_date_published,
+    )

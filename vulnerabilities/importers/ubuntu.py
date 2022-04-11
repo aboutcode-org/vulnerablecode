@@ -23,7 +23,6 @@
 
 import asyncio
 import bz2
-import dataclasses
 import logging
 import xml.etree.ElementTree as ET
 

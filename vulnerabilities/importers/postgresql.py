@@ -20,21 +20,18 @@
 #  VulnerableCode is a free software from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import dataclasses
 import urllib.parse as urlparse
 
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
 
+from vulnerabilities import severity_systems
 from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.severity_systems import scoring_systems
-
-BASE_URL = "https://www.postgresql.org/"
 
 
 class PostgreSQLImporter(Importer):
@@ -105,7 +102,7 @@ def to_advisories(data):
             if link.startswith("/"):
                 # Convert relative urls to absolute url.
                 # All links qualify this criteria, so this `if` statement is kind of a defensive mechanism
-                link = urlparse.urljoin(BASE_URL, link)
+                link = urlparse.urljoin("https://www.postgresql.org/", link)
                 severities = []
                 if "support/security/CVE" in link and vector_link_tag:
                     parsed_link = urlparse.urlparse(vector_link_tag["href"])
@@ -114,17 +111,17 @@ def to_advisories(data):
                     severities.extend(
                         [
                             VulnerabilitySeverity(
-                                system=scoring_systems["cvssv3"], value=cvss3_base_score
+                                system=severity_systems.CVSSV3, value=cvss3_base_score
                             ),
                             VulnerabilitySeverity(
-                                system=scoring_systems["cvssv3_vector"], value=cvss3_vector
+                                system=severity_systems.CVSSV3_VECTOR, value=cvss3_vector
                             ),
                         ]
                     )
             references.append(Reference(url=link, severities=severities))
 
         advisories.append(
-            Advisory(
+            AdvisoryData(
                 vulnerability_id=cve_id,
                 summary=summary,
                 references=references,
@@ -137,4 +134,7 @@ def to_advisories(data):
 
 def find_advisory_urls(page_data):
     soup = BeautifulSoup(page_data)
-    return {urlparse.urljoin(BASE_URL, a_tag.attrs["href"]) for a_tag in soup.select("h3+ p a")}
+    return {
+        urlparse.urljoin("https://www.postgresql.org/", a_tag.attrs["href"])
+        for a_tag in soup.select("h3+ p a")
+    }

@@ -8,7 +8,6 @@ from django.test import TestCase
 
 from vulnerabilities import models
 from vulnerabilities.import_runner import ImportRunner
-from vulnerabilities.importers.npm import categorize_versions
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")
@@ -76,7 +75,6 @@ class MozillaImportTest(TestCase):
         vulnerability_id=None,
         impacted_version=None,
     ):
-        vuln = None
 
         pkg = models.Package.objects.get(name=package_name, version=resolved_version)
         vuln = pkg.vulnerabilities.first()

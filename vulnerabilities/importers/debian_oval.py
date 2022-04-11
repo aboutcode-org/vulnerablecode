@@ -22,7 +22,6 @@
 
 
 import asyncio
-import dataclasses
 import xml.etree.ElementTree as ET
 
 import requests

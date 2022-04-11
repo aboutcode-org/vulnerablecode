@@ -28,7 +28,7 @@ from typing import Set
 from packageurl import PackageURL
 
 from vulnerabilities.helpers import AffectedPackage
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 
@@ -42,7 +42,7 @@ class RetireDotnetImporter(GitImporter):
                 recursive=True, file_ext="json", subdir="./Content"
             )
 
-    def updated_advisories(self) -> Set[Advisory]:
+    def updated_advisories(self) -> Set[AdvisoryData]:
         files = self._updated_files.union(self._added_files)
         advisories = []
         for f in files:
@@ -60,7 +60,7 @@ class RetireDotnetImporter(GitImporter):
         else:
             return None
 
-    def process_file(self, path) -> List[Advisory]:
+    def process_file(self, path) -> List[AdvisoryData]:
         with open(path) as f:
             json_doc = json.load(f)
             if self.vuln_id_from_desc(json_doc["description"]):
@@ -87,7 +87,7 @@ class RetireDotnetImporter(GitImporter):
                 )
             ]
 
-            return Advisory(
+            return AdvisoryData(
                 vulnerability_id=vuln_id,
                 summary=json_doc["description"],
                 affected_packages=affected_packages,

@@ -21,19 +21,18 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
-import dataclasses
 import re
 
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
-from univers.version_specifier import VersionSpecifier
+from univers.version_range import MavenVersionRange
 from univers.versions import MavenVersion
 from univers.versions import SemverVersion
 
 from vulnerabilities.helpers import create_etag
 from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import MavenVersionAPI
@@ -113,7 +112,7 @@ class ApacheTomcatImporter(Importer):
                 ]
 
                 advisories.append(
-                    Advisory(
+                    AdvisoryData(
                         summary="",
                         affected_packages=nearest_patched_package(affected_packages, fixed_package),
                         vulnerability_id=cve_id,
@@ -126,19 +125,19 @@ class ApacheTomcatImporter(Importer):
 
 def parse_version_ranges(string):
     """
-    This method yields VersionSpecifier objects obtained by
+    This method yields VersionRange objects obtained by
     parsing `string`.
     >>> list(parse_version_ranges("Affects: 9.0.0.M1 to 9.0.0.M9")) == [
-    ...     VersionSpecifier.from_scheme_version_spec_string('maven','<=9.0.0.M9,>=9.0.0.M1')
+    ...     VersionRange.from_scheme_version_spec_string('maven','<=9.0.0.M9,>=9.0.0.M1')
     ...  ]
     True
     >>> list(parse_version_ranges("Affects: 9.0.0.M1")) == [
-    ...     VersionSpecifier.from_scheme_version_spec_string('maven','>=9.0.0.M1,<=9.0.0.M1')
+    ...     VersionRange.from_scheme_version_spec_string('maven','>=9.0.0.M1,<=9.0.0.M1')
     ...  ]
     True
     >>> list(parse_version_ranges("Affects: 9.0.0.M1 to 9.0.0.M9, 1.2.3 to 3.4.5")) == [
-    ...     VersionSpecifier.from_scheme_version_spec_string('maven','<=9.0.0.M9,>=9.0.0.M1'),
-    ...     VersionSpecifier.from_scheme_version_spec_string('maven','<=3.4.5,>=1.2.3')
+    ...     VersionRange.from_scheme_version_spec_string('maven','<=9.0.0.M9,>=9.0.0.M1'),
+    ...     VersionRange.from_scheme_version_spec_string('maven','<=3.4.5,>=1.2.3')
     ...  ]
     True
     """
@@ -152,6 +151,4 @@ def parse_version_ranges(string):
         else:
             lower_bound = upper_bound = version_range
 
-        yield VersionSpecifier.from_scheme_version_spec_string(
-            "maven", f">={lower_bound},<={upper_bound}"
-        )
+        yield MavenVersionRange.from_native(f">={lower_bound},<={upper_bound}")

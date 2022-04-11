@@ -24,7 +24,6 @@
 # Data Imported from https://github.com/pyupio/safety-db
 
 import asyncio
-import dataclasses
 import logging
 import re
 from typing import Any
@@ -35,12 +34,12 @@ from typing import Tuple
 
 import requests
 from packageurl import PackageURL
-from univers.version_specifier import VersionSpecifier
+from univers.version_range import PypiVersionRange
 from univers.versions import InvalidVersion
-from univers.versions import PYPIVersion
+from univers.versions import PypiVersion
 
 from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import PypiVersionAPI
@@ -69,7 +68,7 @@ class SafetyDbImporter(Importer):
     def collect_packages(self):
         return {pkg for pkg in self._api_response}
 
-    def updated_advisories(self) -> Set[Advisory]:
+    def updated_advisories(self) -> Set[AdvisoryData]:
         for package_name in self._api_response:
             if package_name == "$meta" or package_name == "cumin":
                 # This is the first entry in the data feed. It contains metadata of the feed.
@@ -96,7 +95,7 @@ class SafetyDbImporter(Importer):
                 advisories = []
                 for cve_id in cve_ids:
                     advisories.append(
-                        Advisory(
+                        AdvisoryData(
                             vulnerability_id=cve_id,
                             summary=advisory["advisory"],
                             references=reference,
@@ -134,12 +133,12 @@ def categorize_versions(
     impacted_versions, impacted_purls = set(), []
     vurl_specs = []
     for version_spec in version_specs:
-        vurl_specs.append(VersionSpecifier.from_scheme_version_spec_string("pypi", version_spec))
+        vurl_specs.append(PypiVersionRange.from_native(version_spec))
 
     invalid_versions = set()
     for version in all_versions:
         try:
-            version_object = PYPIVersion(version)
+            version_object = PypiVersion(version)
         except InvalidVersion:
             invalid_versions.add(version)
             continue

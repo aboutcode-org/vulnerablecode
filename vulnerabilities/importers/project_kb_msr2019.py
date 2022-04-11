@@ -21,12 +21,11 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import csv
-import dataclasses
 import urllib.request
 
 from vulnerabilities.helpers import create_etag
 from vulnerabilities.helpers import is_cve
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 
@@ -67,7 +66,7 @@ class ProjectKBMSRImporter(Importer):
                 vuln_id = ""
 
             advisories.append(
-                Advisory(
+                AdvisoryData(
                     summary="",
                     affected_packages=[],
                     references=[reference],

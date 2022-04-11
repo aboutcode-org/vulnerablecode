@@ -8,12 +8,12 @@ from univers.version_constraint import VersionConstraint
 from univers.version_range import MavenVersionRange
 from univers.versions import MavenVersion
 
+from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.models import Advisory
-from vulnerabilities.severity_systems import ScoringSystem
 
 data = AdvisoryData(
     aliases=["CVE-2020-8908", "GHSA-5mg8-w23w-74h3"],
@@ -403,12 +403,7 @@ data = AdvisoryData(
             url="https://github.com/advisories/GHSA-5mg8-w23w-74h3",
             severities=[
                 VulnerabilitySeverity(
-                    system=ScoringSystem(
-                        identifier="cvssv3.1_qr",
-                        name="CVSSv3.1 Qualitative Severity Rating",
-                        url="https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale",
-                        notes="A textual interpretation of severity. Has values like HIGH, MEDIUM etc",
-                    ),
+                    system=severity_systems.CVSS31_QUALITY,
                     value="LOW",
                 )
             ],

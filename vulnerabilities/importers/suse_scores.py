@@ -20,12 +20,12 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+from vulnerabilities import severity_systems
 from vulnerabilities.helpers import fetch_yaml
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.severity_systems import scoring_systems
 
 URL = "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml"
 
@@ -47,32 +47,32 @@ class SUSESeverityScoreImporter(Importer):
                 vector = None
                 if cvss_score["version"] == "2.0":
                     score = VulnerabilitySeverity(
-                        system=scoring_systems["cvssv2"], value=str(cvss_score["score"])
+                        system=severity_systems.CVSSV2, value=str(cvss_score["score"])
                     )
                     vector = VulnerabilitySeverity(
-                        system=scoring_systems["cvssv2_vector"], value=str(cvss_score["vector"])
+                        system=severity_systems.CVSSV2_VECTOR, value=str(cvss_score["vector"])
                     )
 
                 elif cvss_score["version"] == "3":
                     score = VulnerabilitySeverity(
-                        system=scoring_systems["cvssv3"], value=str(cvss_score["score"])
+                        system=severity_systems.CVSSV3, value=str(cvss_score["score"])
                     )
                     vector = VulnerabilitySeverity(
-                        system=scoring_systems["cvssv3_vector"], value=str(cvss_score["vector"])
+                        system=severity_systems.CVSSV3_VECTOR, value=str(cvss_score["vector"])
                     )
 
                 elif cvss_score["version"] == "3.1":
                     score = VulnerabilitySeverity(
-                        system=scoring_systems["cvssv3.1"], value=str(cvss_score["score"])
+                        system=severity_systems.CVSSV31, value=str(cvss_score["score"])
                     )
                     vector = VulnerabilitySeverity(
-                        system=scoring_systems["cvssv3.1_vector"], value=str(cvss_score["vector"])
+                        system=severity_systems.CVSSV31_VECTOR, value=str(cvss_score["vector"])
                     )
 
                 severities.extend([score, vector])
 
             advisories.append(
-                Advisory(
+                AdvisoryData(
                     vulnerability_id=cve_id,
                     summary="",
                     references=[Reference(url=URL, severities=severities)],

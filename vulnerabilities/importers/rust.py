@@ -31,11 +31,11 @@ import pytz
 import toml
 from dateutil.parser import parse
 from packageurl import PackageURL
-from univers.version_specifier import VersionSpecifier
+from univers.version_range import VersionRange
 from univers.versions import SemverVersion
 
 from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import CratesVersionAPI
@@ -61,10 +61,10 @@ class RustImporter(GitImporter):
     def set_api(self, packages):
         asyncio.run(self.crates_api.load_api(packages))
 
-    def updated_advisories(self) -> Set[Advisory]:
+    def updated_advisories(self) -> Set[AdvisoryData]:
         return self._load_advisories(self._updated_files.union(self._added_files))
 
-    def _load_advisories(self, files) -> Set[Advisory]:
+    def _load_advisories(self, files) -> Set[AdvisoryData]:
         # per @tarcieri It will always be named RUSTSEC-0000-0000.md
         # https://github.com/nexB/vulnerablecode/pull/281/files#r528899864
         files = [f for f in files if not f.endswith("-0000.md")]  # skip temporary files
@@ -88,7 +88,7 @@ class RustImporter(GitImporter):
 
         return packages
 
-    def _load_advisory(self, path: str) -> Optional[Advisory]:
+    def _load_advisory(self, path: str) -> Optional[AdvisoryData]:
         record = get_advisory_data(path)
         advisory = record.get("advisory", {})
         crate_name = advisory["package"]
@@ -102,18 +102,18 @@ class RustImporter(GitImporter):
         # FIXME: Avoid wildcard version ranges for now.
         # See https://github.com/RustSec/advisory-db/discussions/831
         affected_ranges = [
-            VersionSpecifier.from_scheme_version_spec_string("semver", r)
+            VersionRange.from_scheme_version_spec_string("semver", r)
             for r in chain.from_iterable(record.get("affected", {}).get("functions", {}).values())
             if r != "*"
         ]
 
         unaffected_ranges = [
-            VersionSpecifier.from_scheme_version_spec_string("semver", r)
+            VersionRange.from_scheme_version_spec_string("semver", r)
             for r in record.get("versions", {}).get("unaffected", [])
             if r != "*"
         ]
         resolved_ranges = [
-            VersionSpecifier.from_scheme_version_spec_string("semver", r)
+            VersionRange.from_scheme_version_spec_string("semver", r)
             for r in record.get("versions", {}).get("patched", [])
             if r != "*"
         ]
@@ -139,7 +139,7 @@ class RustImporter(GitImporter):
             )
         )
 
-        return Advisory(
+        return AdvisoryData(
             summary=advisory.get("description", ""),
             affected_packages=nearest_patched_package(impacted_purls, resolved_purls),
             vulnerability_id=cve_id,
@@ -149,9 +149,9 @@ class RustImporter(GitImporter):
 
 def categorize_versions(
     all_versions: Set[str],
-    unaffected_version_ranges: List[VersionSpecifier],
-    affected_version_ranges: List[VersionSpecifier],
-    resolved_version_ranges: List[VersionSpecifier],
+    unaffected_version_ranges: List[VersionRange],
+    affected_version_ranges: List[VersionRange],
+    resolved_version_ranges: List[VersionRange],
 ) -> Tuple[Set[str], Set[str]]:
     """
     Categorize all versions of a crate according to the given version ranges.

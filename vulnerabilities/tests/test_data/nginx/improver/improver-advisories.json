@@ -1,0 +1,112 @@
+[
+  {
+    "aliases": [
+      "CVE-2021-23017"
+    ],
+    "summary": "1-byte memory overwrite in resolver",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "nginx",
+          "namespace": null,
+          "name": "nginx",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:nginx/>=0.6.18|<=1.20.0",
+        "fixed_version": "1.21.0"
+      },
+      {
+        "package": {
+          "type": "nginx",
+          "namespace": null,
+          "name": "nginx",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:nginx/>=0.6.18|<=1.20.0",
+        "fixed_version": "1.20.1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2021/000300.html",
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "medium"
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2021-23017",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-23017",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://nginx.org/download/patch.2021.resolver.txt",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://nginx.org/download/patch.2021.resolver.txt.asc",
+        "severities": []
+      }
+    ],
+    "date_published": null
+  },
+  {
+    "aliases": [
+      "CVE-2019-9511"
+    ],
+    "summary": "Excessive CPU usage in HTTP/2 with small window updates",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "nginx",
+          "namespace": null,
+          "name": "nginx",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:nginx/>=1.9.5|<=1.17.2",
+        "fixed_version": "1.17.3"
+      },
+      {
+        "package": {
+          "type": "nginx",
+          "namespace": null,
+          "name": "nginx",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:nginx/>=1.9.5|<=1.17.2",
+        "fixed_version": "1.16.1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2019/000249.html",
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "medium"
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2019-9511",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-9511",
+        "severities": []
+      }
+    ],
+    "date_published": null
+  }
+]

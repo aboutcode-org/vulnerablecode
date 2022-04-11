@@ -251,6 +251,20 @@ class AdvisoryData:
             "date_published": self.date_published.isoformat() if self.date_published else None,
         }
 
+    @classmethod
+    def from_dict(cls, advisory_data):
+        date_published = advisory_data["date_published"]
+        transformed = {
+            "aliases": advisory_data["aliases"],
+            "summary": advisory_data["summary"],
+            "affected_packages": [
+                AffectedPackage.from_dict(pkg) for pkg in advisory_data["affected_packages"]
+            ],
+            "references": [Reference.from_dict(ref) for ref in advisory_data["references"]],
+            "date_published": date_published.isoformat() if date_published else None,
+        }
+        return cls(**transformed)
+
 
 class NoLicenseError(Exception):
     pass

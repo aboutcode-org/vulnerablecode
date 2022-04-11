@@ -21,22 +21,21 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
-import dataclasses
 import urllib
 
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
-from univers.version_specifier import VersionSpecifier
+from univers.version_range import VersionRange
 from univers.versions import SemverVersion
 
 from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.package_managers import GitHubTagsAPI
-from vulnerabilities.severity_systems import scoring_systems
+from vulnerabilities.severity_systems import APACHE_HTTPD
 
 
 class ApacheHTTPDImporter(Importer):
@@ -78,7 +77,7 @@ class ApacheHTTPDImporter(Importer):
             if value:
                 severities.append(
                     VulnerabilitySeverity(
-                        system=scoring_systems["apache_httpd"],
+                        system=APACHE_HTTPD,
                         value=value,
                     )
                 )
@@ -118,7 +117,7 @@ class ApacheHTTPDImporter(Importer):
                 ]
             )
 
-        return Advisory(
+        return AdvisoryData(
             vulnerability_id=cve,
             summary=description,
             affected_packages=nearest_patched_package(affected_packages, fixed_packages),
@@ -133,13 +132,13 @@ class ApacheHTTPDImporter(Importer):
             range_expression = version_data["version_affected"]
             if range_expression == "<":
                 fixed_version_ranges.append(
-                    VersionSpecifier.from_scheme_version_spec_string(
+                    VersionRange.from_scheme_version_spec_string(
                         "semver", ">={}".format(version_value)
                     )
                 )
             elif range_expression == "=" or range_expression == "?=":
                 affected_version_ranges.append(
-                    VersionSpecifier.from_scheme_version_spec_string(
+                    VersionRange.from_scheme_version_spec_string(
                         "semver", "{}".format(version_value)
                     )
                 )

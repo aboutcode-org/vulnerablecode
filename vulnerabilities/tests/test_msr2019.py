@@ -27,7 +27,7 @@ from unittest.mock import patch
 
 from packageurl import PackageURL
 
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
 from vulnerabilities.importers import ProjectKBMSRImporter
 

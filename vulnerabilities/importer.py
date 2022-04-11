@@ -587,7 +587,7 @@ class OvalImporter(Importer):
                     version_class = version_class_by_package_type[pkg_metadata["type"]]
                     version_scheme = version_class.scheme
 
-                    affected_version_range = VersionSpecifier.from_scheme_version_spec_string(
+                    affected_version_range = VersionRange.from_scheme_version_spec_string(
                         version_scheme, affected_version_range
                     )
                     all_versions = self.pkg_manager_api.get(package_name).valid_versions
@@ -618,7 +618,7 @@ class OvalImporter(Importer):
                     )
 
             all_adv.append(
-                Advisory(
+                AdvisoryData(
                     summary=description,
                     affected_packages=affected_packages,
                     vulnerability_id=vuln_id,

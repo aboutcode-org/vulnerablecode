@@ -6,14 +6,16 @@ from typing import Tuple
 import requests
 from bs4 import BeautifulSoup
 from dephell_specifier import RangeSpecifier
+
+# from univers.version_range import VersionRange
 from packageurl import PackageURL
 
-from vulnerabilities.data_source import Advisory
-from vulnerabilities.data_source import DataSource
-from vulnerabilities.data_source import Reference
-from vulnerabilities.data_source import VulnerabilitySeverity
+from vulnerabilities import severity_systems
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.package_managers import GitHubTagsAPI
-from vulnerabilities.severity_systems import scoring_systems
 
 SECURITY_UPDATES_URL = "https://mattermost.com/security-updates"
 MM_REPO = {
@@ -23,7 +25,7 @@ MM_REPO = {
 }
 
 
-class MattermostDataSource(DataSource):
+class MattermostDataSource(Importer):
     def updated_advisories(self):
         # FIXME: Change after this https://forum.mattermost.org/t/mattermost-website-returning-403-when-headers-contain-the-word-python/11412
         self.set_api()
@@ -94,7 +96,7 @@ class MattermostDataSource(DataSource):
                     url=SECURITY_UPDATES_URL,
                     severities=[
                         VulnerabilitySeverity(
-                            system=scoring_systems["cvssv3.1_qr"], value=severity_col.text
+                            system=severity_systems.CVSS31_QUALITY, value=severity_col.text
                         )
                     ]
                     if severity_col.text.lower() != "na"
@@ -110,7 +112,7 @@ class MattermostDataSource(DataSource):
                     )
                 )
             advisories.append(
-                Advisory(
+                AdvisoryData(
                     vulnerability_id="",
                     summary=desc_col.text,
                     references=references,

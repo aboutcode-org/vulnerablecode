@@ -20,7 +20,6 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import dataclasses
 import re
 import xml.etree.ElementTree as ET
 from typing import Set
@@ -30,7 +29,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.helpers import create_etag
 from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 
@@ -39,7 +38,7 @@ class OpenSSLImporter(Importer):
 
     url = "https://www.openssl.org/news/vulnerabilities.xml"
 
-    def updated_advisories(self) -> Set[Advisory]:
+    def updated_advisories(self) -> Set[AdvisoryData]:
         # Etags are like hashes of web responses. We maintain
         # (url, etag) mappings in the DB. `create_etag`  creates
         # (url, etag) pair. If a (url, etag) already exists then the code
@@ -55,7 +54,7 @@ class OpenSSLImporter(Importer):
         return requests.get(self.url).content
 
     @staticmethod
-    def to_advisories(xml_response: str) -> Set[Advisory]:
+    def to_advisories(xml_response: str) -> Set[AdvisoryData]:
         advisories = []
         pkg_name = "openssl"
         pkg_type = "generic"

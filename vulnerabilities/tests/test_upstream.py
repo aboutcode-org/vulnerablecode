@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 
 from vulnerabilities import importers
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer_yielder import IMPORTERS_REGISTRY
 
 MAX_ADVISORIES = 1

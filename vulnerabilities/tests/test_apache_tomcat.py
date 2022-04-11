@@ -27,11 +27,11 @@ from unittest.mock import patch
 from packageurl import PackageURL
 
 from vulnerabilities.helpers import AffectedPackage
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatImporter
 from vulnerabilities.package_managers import MavenVersionAPI
-from vulnerabilities.package_managers import Version
+from vulnerabilities.package_managers import PackageVersion
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "apache_tomcat", "security-9.html")
@@ -44,10 +44,10 @@ class TestApacheTomcatImporter(TestCase):
         mock_api = MavenVersionAPI(
             cache={
                 "org.apache.tomcat:tomcat": [
-                    Version("9.0.0.M1"),
-                    Version("9.0.0.M2"),
-                    Version("8.0.0.M1"),
-                    Version("6.0.0M2"),
+                    PackageVersion("9.0.0.M1"),
+                    PackageVersion("9.0.0.M2"),
+                    PackageVersion("8.0.0.M1"),
+                    PackageVersion("6.0.0M2"),
                 ]
             }
         )
@@ -58,7 +58,7 @@ class TestApacheTomcatImporter(TestCase):
 
     def test_to_advisories(self):
         expected_advisories = [
-            Advisory(
+            AdvisoryData(
                 summary="",
                 vulnerability_id="CVE-2015-5351",
                 affected_packages=[
@@ -127,7 +127,7 @@ class TestApacheTomcatImporter(TestCase):
                     ),
                 ],
             ),
-            Advisory(
+            AdvisoryData(
                 summary="",
                 vulnerability_id="CVE-2016-0706",
                 affected_packages=[
@@ -159,7 +159,7 @@ class TestApacheTomcatImporter(TestCase):
                     ),
                 ],
             ),
-            Advisory(
+            AdvisoryData(
                 summary="",
                 vulnerability_id="CVE-2016-0714",
                 affected_packages={},
@@ -181,7 +181,7 @@ class TestApacheTomcatImporter(TestCase):
                     ),
                 ],
             ),
-            Advisory(
+            AdvisoryData(
                 summary="",
                 vulnerability_id="CVE-2016-0763",
                 affected_packages=[
@@ -232,6 +232,6 @@ class TestApacheTomcatImporter(TestCase):
         with open(TEST_DATA) as f:
             found_advisories = self.data_src.to_advisories(f)
 
-        found_advisories = list(map(Advisory.normalized, found_advisories))
-        expected_advisories = list(map(Advisory.normalized, expected_advisories))
+        found_advisories = list(map(AdvisoryData.normalized, found_advisories))
+        expected_advisories = list(map(AdvisoryData.normalized, expected_advisories))
         assert sorted(found_advisories) == sorted(expected_advisories)

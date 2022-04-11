@@ -32,7 +32,7 @@ from dateutil import parser as dateparser
 from packageurl import PackageURL
 
 from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 
@@ -45,7 +45,7 @@ class DebianImporter(Importer):
         else:
             self._api_response = {}
 
-    def updated_advisories(self) -> Set[Advisory]:
+    def updated_advisories(self) -> Set[AdvisoryData]:
         advisories = []
 
         for pkg_name, records in self._api_response.items():
@@ -56,7 +56,7 @@ class DebianImporter(Importer):
     def _fetch(self) -> Mapping[str, Any]:
         return requests.get(self.config.debian_tracker_url).json()
 
-    def _parse(self, pkg_name: str, records: Mapping[str, Any]) -> List[Advisory]:
+    def _parse(self, pkg_name: str, records: Mapping[str, Any]) -> List[AdvisoryData]:
         advisories = []
         ignored_versions = {"3.8.20-4."}
 
@@ -111,7 +111,7 @@ class DebianImporter(Importer):
                 bug_url = f"https://bugs.debian.org/cgi-bin/bugreport.cgi?bug={debianbug}"
                 references.append(Reference(url=bug_url, reference_id=debianbug))
             advisories.append(
-                Advisory(
+                AdvisoryData(
                     vulnerability_id=cve_id,
                     affected_packages=nearest_patched_package(impacted_purls, resolved_purls),
                     summary=record.get("description", ""),

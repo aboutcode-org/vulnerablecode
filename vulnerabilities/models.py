@@ -119,7 +119,7 @@ class VulnerabilityReference(models.Model):
         )
 
     def __str__(self):
-        reference_id = " {self.reference_id}" if self.reference_id else ""
+        reference_id = f" {self.reference_id}" if self.reference_id else ""
         return f"{self.url}{reference_id}"
 
 

@@ -22,6 +22,7 @@
 
 import logging
 from typing import Iterable
+from typing import List
 from typing import NamedTuple
 
 import requests
@@ -248,6 +249,19 @@ class NginxBasicImprover(Improver):
         return Advisory.objects.filter(created_by=NginxImporter.qualified_name)
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
+        all_versions = list(self.fetch_nginx_version_from_git_tags())
+        yield from self.get_inferences_from_versions(
+            advisory_data=advisory_data, all_versions=all_versions
+        )
+
+    def get_inferences_from_versions(
+        self, advisory_data: AdvisoryData, all_versions: List[PackageVersion]
+    ) -> Iterable[Inference]:
+        """
+        Yield inferences given an ``advisory_data`` and a ``all_versions`` of
+        PackageVersion.
+        """
+
         try:
             purl, affected_version_ranges, fixed_versions = AffectedPackage.merge(
                 advisory_data.affected_packages
@@ -259,25 +273,23 @@ class NginxBasicImprover(Improver):
             )
             return iter([])
 
-        all_versions = list(self.fetch_nginx_version_from_git_tags())
-
         affected_purls = []
         for affected_version_range in affected_version_ranges:
-            for version in all_versions:
+            for package_version in all_versions:
                 # FIXME: we should reference an NginxVersion tbd in univers
-                version = SemverVersion(version)
+                version = SemverVersion(package_version.value)
                 if is_vulnerable(
                     version=version,
                     affected_version_range=affected_version_range,
                     fixed_versions=fixed_versions,
                 ):
-                    new_purl = evolve_purl(purl=purl, version=version)
+                    new_purl = evolve_purl(purl=purl, version=str(version))
                     affected_purls.append(new_purl)
 
         # TODO: This also yields with a lower fixed version, maybe we should
         # only yield fixes that are upgrades ?
         for fixed_version in fixed_versions:
-            fixed_purl = evolve_purl(purl=purl, version=fixed_version)
+            fixed_purl = evolve_purl(purl=purl, version=str(fixed_version))
 
             yield Inference.from_advisory_data(
                 advisory_data,

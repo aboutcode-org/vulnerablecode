@@ -32,10 +32,12 @@ from django.db.models.query import QuerySet
 from vulnerabilities import models
 from vulnerabilities import severity_systems
 from vulnerabilities.import_runner import ImportRunner
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers import nginx
 from vulnerabilities.models import Advisory
+from vulnerabilities.package_managers import PackageVersion
 from vulnerabilities.tests import util_tests
 
 ADVISORY_FIELDS_TO_TEST = (
@@ -227,4 +229,30 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
             pv.to_dict() for pv in nginx.NginxBasicImprover().fetch_nginx_version_from_git_tags()
         ]
         expected_file = self.get_test_loc("improver/nginx-versions-expected.json", must_exist=False)
+        util_tests.check_results_against_json(results, expected_file)
+
+    @pytest.mark.django_db(transaction=True)
+    def test_NginxBasicImprover__get_inferences_from_versions_end_to_end(self):
+
+        with open(self.get_test_loc("improver/improver-advisories.json")) as vf:
+            advisories_data = json.load(vf)
+
+        with open(self.get_test_loc("improver/improver-versions.json")) as vf:
+            all_versions = [PackageVersion(**vd) for vd in json.load(vf)]
+
+        results = []
+        improver = nginx.NginxBasicImprover()
+        for advdata in advisories_data:
+            advisory_data = AdvisoryData.from_dict(advdata)
+
+            inferences = improver.get_inferences_from_versions(
+                advisory_data=advisory_data, all_versions=all_versions
+            )
+            for i in inferences:
+                i.vulnerability_id = "PLAIN-ID-FOR-TESTING"
+                results.append(i.to_dict())
+
+        expected_file = self.get_test_loc(
+            "improver/improver-inferences-expected.json", must_exist=False
+        )
         util_tests.check_results_against_json(results, expected_file)

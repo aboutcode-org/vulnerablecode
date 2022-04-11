@@ -67,14 +67,14 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
             )
 
             for severity in ref.severities:
-                obj, updated = models.VulnerabilitySeverity.objects.update_or_create(
+                _vs, updated = models.VulnerabilitySeverity.objects.update_or_create(
                     vulnerability=vuln,
                     scoring_system=severity.system.identifier,
                     reference=reference,
                     defaults={"value": str(severity.value)},
                 )
                 if updated:
-                    logger.info("Severity updated for reference {ref!r} to {severity.value!r}")
+                    logger.info(f"Severity updated for reference {ref!r} to {severity.value!r}")
 
         if inference.affected_purls:
             for pkg in inference.affected_purls:

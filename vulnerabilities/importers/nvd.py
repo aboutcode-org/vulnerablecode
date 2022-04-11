@@ -29,6 +29,7 @@ import requests
 from dateutil import parser as dateparser
 from django.db.models.query import QuerySet
 
+from vulnerabilities import severity_systems
 from vulnerabilities.helpers import get_item
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
@@ -37,7 +38,6 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
-from vulnerabilities.severity_systems import SCORING_SYSTEMS
 
 
 class NVDImporter(Importer):
@@ -176,11 +176,11 @@ def extract_severity_scores(cve_item):
     if base_metric_v3:
         cvss_v3 = get_item(base_metric_v3, "cvssV3")
         yield VulnerabilitySeverity(
-            system=SCORING_SYSTEMS["cvssv3"],
+            system=severity_systems.CVSSV3,
             value=str(cvss_v3.get("baseScore") or ""),
         )
         yield VulnerabilitySeverity(
-            system=SCORING_SYSTEMS["cvssv3_vector"],
+            system=severity_systems.CVSSV3_VECTOR,
             value=str(cvss_v3.get("vectorString") or ""),
         )
 
@@ -188,11 +188,11 @@ def extract_severity_scores(cve_item):
     if base_metric_v2:
         cvss_v2 = base_metric_v2.get("cvssV2") or {}
         yield VulnerabilitySeverity(
-            system=SCORING_SYSTEMS["cvssv2"],
+            system=severity_systems.CVSSV2,
             value=str(cvss_v2.get("baseScore") or ""),
         )
         yield VulnerabilitySeverity(
-            system=SCORING_SYSTEMS["cvssv2_vector"],
+            system=severity_systems.CVSSV2_VECTOR,
             value=str(cvss_v2.get("vectorString") or ""),
         )
 

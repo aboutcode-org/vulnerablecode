@@ -20,11 +20,14 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import json
 from pathlib import Path
+from unittest import mock
 
 import pytest
 from bs4 import BeautifulSoup
 from commoncode import testcase
+from django.db.models.query import QuerySet
 
 from vulnerabilities import models
 from vulnerabilities import severity_systems
@@ -32,10 +35,20 @@ from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers import nginx
+from vulnerabilities.models import Advisory
 from vulnerabilities.tests import util_tests
 
+ADVISORY_FIELDS_TO_TEST = (
+    "unique_content_id",
+    "aliases",
+    "summary",
+    "affected_packages",
+    "references",
+    "date_published",
+)
 
-class TestNginxImporter(testcase.FileBasedTesting):
+
+class TestNginxImporterAndImprover(testcase.FileBasedTesting):
     test_data_dir = str(Path(__file__).resolve().parent / "test_data" / "nginx")
 
     def test_is_vulnerable(self):
@@ -146,7 +159,25 @@ class TestNginxImporter(testcase.FileBasedTesting):
 
     @pytest.mark.django_db(transaction=True)
     def test_NginxImporter(self):
-        class MockNginxImporter(nginx.NginxImporter):
+
+        expected_file = self.get_test_loc(
+            "security_advisories-importer-expected.json", must_exist=False
+        )
+
+        results, _cls = self.run_import()
+        util_tests.check_results_against_json(results, expected_file)
+
+        # run again as there should be no duplicates
+        results, _cls = self.run_import()
+        util_tests.check_results_against_json(results, expected_file)
+
+    def run_import(self):
+        """
+        Return a list of imported Advisory model objects and the MockImporter
+        used.
+        """
+
+        class MockImporter(nginx.NginxImporter):
             """
             A mocked NginxImporter that loads content from a file rather than
             making a network call.
@@ -158,21 +189,42 @@ class TestNginxImporter(testcase.FileBasedTesting):
 
         test_file = self.get_test_loc("security_advisories.html")
 
-        ImportRunner(MockNginxImporter).run()
+        ImportRunner(MockImporter).run()
+        return list(models.Advisory.objects.all().values(*ADVISORY_FIELDS_TO_TEST)), MockImporter
 
-        results = list(
-            models.Advisory.objects.all().values(
-                "unique_content_id",
-                "aliases",
-                "summary",
-                "affected_packages",
-                "references",
-                "date_published",
-                "created_by",
-            )
-        )
+    @pytest.mark.django_db(transaction=True)
+    def test_NginxBasicImprover__interesting_advisories(self):
+        advisories, importer_class = self.run_import()
 
-        expected_file = self.get_test_loc(
-            "security_advisories-importer-expected.json", must_exist=False
+        class MockNginxBasicImprover(nginx.NginxBasicImprover):
+            @property
+            def interesting_advisories(self) -> QuerySet:
+                return Advisory.objects.filter(created_by=importer_class.qualified_name)
+
+        improver = MockNginxBasicImprover()
+        interesting_advisories = list(
+            improver.interesting_advisories.values(*ADVISORY_FIELDS_TO_TEST)
         )
+        assert interesting_advisories == advisories
+
+    @mock.patch("vulnerabilities.helpers.fetch_github_graphql_query")
+    def test_NginxBasicImprover_fetch_nginx_version_from_git_tags(self, mock_fetcher):
+        reponse_files = [
+            "github-nginx-nginx-0.json",
+            "github-nginx-nginx-1.json",
+            "github-nginx-nginx-2.json",
+            "github-nginx-nginx-3.json",
+            "github-nginx-nginx-4.json",
+            "github-nginx-nginx-5.json",
+        ]
+        side_effects = []
+        for response_file in reponse_files:
+            with open(self.get_test_loc(f"improver/{response_file}")) as f:
+                side_effects.append(json.load(f))
+        mock_fetcher.side_effect = side_effects
+
+        results = [
+            pv.to_dict() for pv in nginx.NginxBasicImprover().fetch_nginx_version_from_git_tags()
+        ]
+        expected_file = self.get_test_loc("improver/nginx-versions-expected.json", must_exist=False)
         util_tests.check_results_against_json(results, expected_file)

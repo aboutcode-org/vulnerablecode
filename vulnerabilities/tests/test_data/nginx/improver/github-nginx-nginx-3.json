@@ -1,0 +1,615 @@
+{
+  "data": {
+    "repository": {
+      "refs": {
+        "totalCount": 547,
+        "pageInfo": {
+          "endCursor": "NDAw",
+          "hasNextPage": true
+        },
+        "nodes": [
+          {
+            "name": "release-0.8.21",
+            "target": {
+              "committedDate": "2009-10-26T14:09:25Z"
+            }
+          },
+          {
+            "name": "release-0.8.22",
+            "target": {
+              "committedDate": "2009-11-03T18:52:37Z"
+            }
+          },
+          {
+            "name": "release-0.8.23",
+            "target": {
+              "committedDate": "2009-11-11T11:05:22Z"
+            }
+          },
+          {
+            "name": "release-0.8.24",
+            "target": {
+              "committedDate": "2009-11-11T14:53:17Z"
+            }
+          },
+          {
+            "name": "release-0.8.25",
+            "target": {
+              "committedDate": "2009-11-16T13:47:10Z"
+            }
+          },
+          {
+            "name": "release-0.8.26",
+            "target": {
+              "committedDate": "2009-11-16T19:25:37Z"
+            }
+          },
+          {
+            "name": "release-0.8.27",
+            "target": {
+              "committedDate": "2009-11-17T16:53:17Z"
+            }
+          },
+          {
+            "name": "release-0.8.28",
+            "target": {
+              "committedDate": "2009-11-23T15:53:12Z"
+            }
+          },
+          {
+            "name": "release-0.8.29",
+            "target": {
+              "committedDate": "2009-11-30T13:28:12Z"
+            }
+          },
+          {
+            "name": "release-0.8.30",
+            "target": {
+              "committedDate": "2009-12-15T14:34:09Z"
+            }
+          },
+          {
+            "name": "release-0.8.31",
+            "target": {
+              "committedDate": "2009-12-23T15:44:31Z"
+            }
+          },
+          {
+            "name": "release-0.8.32",
+            "target": {
+              "committedDate": "2010-01-11T15:35:44Z"
+            }
+          },
+          {
+            "name": "release-0.8.33",
+            "target": {
+              "committedDate": "2010-02-01T13:36:31Z"
+            }
+          },
+          {
+            "name": "release-0.8.34",
+            "target": {
+              "committedDate": "2010-03-03T17:00:09Z"
+            }
+          },
+          {
+            "name": "release-0.8.35",
+            "target": {
+              "committedDate": "2010-04-01T15:44:11Z"
+            }
+          },
+          {
+            "name": "release-0.8.36",
+            "target": {
+              "committedDate": "2010-04-22T17:37:21Z"
+            }
+          },
+          {
+            "name": "release-0.8.37",
+            "target": {
+              "committedDate": "2010-05-17T06:08:52Z"
+            }
+          },
+          {
+            "name": "release-0.8.38",
+            "target": {
+              "committedDate": "2010-05-24T12:47:49Z"
+            }
+          },
+          {
+            "name": "release-0.8.39",
+            "target": {
+              "committedDate": "2010-05-31T15:10:04Z"
+            }
+          },
+          {
+            "name": "release-0.8.40",
+            "target": {
+              "committedDate": "2010-06-07T12:38:32Z"
+            }
+          },
+          {
+            "name": "release-0.8.41",
+            "target": {
+              "committedDate": "2010-06-15T09:45:06Z"
+            }
+          },
+          {
+            "name": "release-0.8.42",
+            "target": {
+              "committedDate": "2010-06-21T10:16:24Z"
+            }
+          },
+          {
+            "name": "release-0.8.43",
+            "target": {
+              "committedDate": "2010-06-30T15:11:43Z"
+            }
+          },
+          {
+            "name": "release-0.8.44",
+            "target": {
+              "committedDate": "2010-07-05T15:23:55Z"
+            }
+          },
+          {
+            "name": "release-0.8.45",
+            "target": {
+              "committedDate": "2010-07-13T11:59:36Z"
+            }
+          },
+          {
+            "name": "release-0.8.46",
+            "target": {
+              "committedDate": "2010-07-19T11:31:30Z"
+            }
+          },
+          {
+            "name": "release-0.8.47",
+            "target": {
+              "committedDate": "2010-07-28T16:16:48Z"
+            }
+          },
+          {
+            "name": "release-0.8.48",
+            "target": {
+              "committedDate": "2010-08-03T15:10:56Z"
+            }
+          },
+          {
+            "name": "release-0.8.49",
+            "target": {
+              "committedDate": "2010-08-09T08:24:13Z"
+            }
+          },
+          {
+            "name": "release-0.8.50",
+            "target": {
+              "committedDate": "2010-09-02T14:59:18Z"
+            }
+          },
+          {
+            "name": "release-0.8.51",
+            "target": {
+              "committedDate": "2010-09-27T13:08:40Z"
+            }
+          },
+          {
+            "name": "release-0.8.52",
+            "target": {
+              "committedDate": "2010-09-28T06:59:58Z"
+            }
+          },
+          {
+            "name": "release-0.8.53",
+            "target": {
+              "committedDate": "2010-10-18T12:03:26Z"
+            }
+          },
+          {
+            "name": "release-0.8.54",
+            "target": {
+              "committedDate": "2010-12-14T10:55:48Z"
+            }
+          },
+          {
+            "name": "release-0.8.55",
+            "target": {
+              "committedDate": "2011-07-19T13:59:47Z"
+            }
+          },
+          {
+            "name": "release-0.9.0",
+            "target": {
+              "committedDate": "2010-11-29T15:29:31Z"
+            }
+          },
+          {
+            "name": "release-0.9.1",
+            "target": {
+              "committedDate": "2010-11-30T13:10:32Z"
+            }
+          },
+          {
+            "name": "release-0.9.2",
+            "target": {
+              "committedDate": "2010-12-06T11:36:30Z"
+            }
+          },
+          {
+            "name": "release-0.9.3",
+            "target": {
+              "committedDate": "2010-12-13T11:05:52Z"
+            }
+          },
+          {
+            "name": "release-0.9.4",
+            "target": {
+              "committedDate": "2011-01-21T11:04:39Z"
+            }
+          },
+          {
+            "name": "release-0.9.5",
+            "target": {
+              "committedDate": "2011-02-21T09:43:57Z"
+            }
+          },
+          {
+            "name": "release-0.9.6",
+            "target": {
+              "committedDate": "2011-03-21T15:33:26Z"
+            }
+          },
+          {
+            "name": "release-0.9.7",
+            "target": {
+              "committedDate": "2011-04-04T12:50:22Z"
+            }
+          },
+          {
+            "name": "release-1.0.0",
+            "target": {
+              "committedDate": "2011-04-12T09:04:32Z"
+            }
+          },
+          {
+            "name": "release-1.0.1",
+            "target": {
+              "committedDate": "2011-05-03T12:12:04Z"
+            }
+          },
+          {
+            "name": "release-1.0.2",
+            "target": {
+              "committedDate": "2011-05-10T12:27:52Z"
+            }
+          },
+          {
+            "name": "release-1.0.3",
+            "target": {
+              "committedDate": "2011-05-25T14:50:50Z"
+            }
+          },
+          {
+            "name": "release-1.0.4",
+            "target": {
+              "committedDate": "2011-06-01T09:29:58Z"
+            }
+          },
+          {
+            "name": "release-1.0.5",
+            "target": {
+              "committedDate": "2011-07-19T13:38:37Z"
+            }
+          },
+          {
+            "name": "release-1.0.6",
+            "target": {
+              "committedDate": "2011-08-29T14:28:23Z"
+            }
+          },
+          {
+            "name": "release-1.0.7",
+            "target": {
+              "committedDate": "2011-09-30T15:35:23Z"
+            }
+          },
+          {
+            "name": "release-1.0.8",
+            "target": {
+              "committedDate": "2011-10-01T06:00:42Z"
+            }
+          },
+          {
+            "name": "release-1.0.9",
+            "target": {
+              "committedDate": "2011-11-01T14:51:19Z"
+            }
+          },
+          {
+            "name": "release-1.0.10",
+            "target": {
+              "committedDate": "2011-11-15T08:24:03Z"
+            }
+          },
+          {
+            "name": "release-1.0.11",
+            "target": {
+              "committedDate": "2011-12-15T14:04:39Z"
+            }
+          },
+          {
+            "name": "release-1.0.12",
+            "target": {
+              "committedDate": "2012-02-06T14:08:59Z"
+            }
+          },
+          {
+            "name": "release-1.0.13",
+            "target": {
+              "committedDate": "2012-03-05T15:19:49Z"
+            }
+          },
+          {
+            "name": "release-1.0.14",
+            "target": {
+              "committedDate": "2012-03-15T11:50:53Z"
+            }
+          },
+          {
+            "name": "release-1.0.15",
+            "target": {
+              "committedDate": "2012-04-12T13:00:53Z"
+            }
+          },
+          {
+            "name": "release-1.1.0",
+            "target": {
+              "committedDate": "2011-08-01T14:47:40Z"
+            }
+          },
+          {
+            "name": "release-1.1.1",
+            "target": {
+              "committedDate": "2011-08-22T13:56:08Z"
+            }
+          },
+          {
+            "name": "release-1.1.2",
+            "target": {
+              "committedDate": "2011-09-05T13:14:27Z"
+            }
+          },
+          {
+            "name": "release-1.1.3",
+            "target": {
+              "committedDate": "2011-09-14T15:00:43Z"
+            }
+          },
+          {
+            "name": "release-1.1.4",
+            "target": {
+              "committedDate": "2011-09-20T11:18:24Z"
+            }
+          },
+          {
+            "name": "release-1.1.5",
+            "target": {
+              "committedDate": "2011-10-05T14:44:11Z"
+            }
+          },
+          {
+            "name": "release-1.1.6",
+            "target": {
+              "committedDate": "2011-10-17T15:10:23Z"
+            }
+          },
+          {
+            "name": "release-1.1.7",
+            "target": {
+              "committedDate": "2011-10-31T14:52:46Z"
+            }
+          },
+          {
+            "name": "release-1.1.8",
+            "target": {
+              "committedDate": "2011-11-14T15:37:54Z"
+            }
+          },
+          {
+            "name": "release-1.1.9",
+            "target": {
+              "committedDate": "2011-11-28T15:02:38Z"
+            }
+          },
+          {
+            "name": "release-1.1.10",
+            "target": {
+              "committedDate": "2011-11-30T10:00:50Z"
+            }
+          },
+          {
+            "name": "release-1.1.11",
+            "target": {
+              "committedDate": "2011-12-12T14:17:49Z"
+            }
+          },
+          {
+            "name": "release-1.1.12",
+            "target": {
+              "committedDate": "2011-12-26T15:05:17Z"
+            }
+          },
+          {
+            "name": "release-1.1.13",
+            "target": {
+              "committedDate": "2012-01-16T15:14:37Z"
+            }
+          },
+          {
+            "name": "release-1.1.14",
+            "target": {
+              "committedDate": "2012-01-30T13:52:10Z"
+            }
+          },
+          {
+            "name": "release-1.1.15",
+            "target": {
+              "committedDate": "2012-02-15T13:26:06Z"
+            }
+          },
+          {
+            "name": "release-1.1.16",
+            "target": {
+              "committedDate": "2012-02-29T13:45:18Z"
+            }
+          },
+          {
+            "name": "release-1.1.17",
+            "target": {
+              "committedDate": "2012-03-15T11:32:18Z"
+            }
+          },
+          {
+            "name": "release-1.1.18",
+            "target": {
+              "committedDate": "2012-03-28T13:29:29Z"
+            }
+          },
+          {
+            "name": "release-1.1.19",
+            "target": {
+              "committedDate": "2012-04-12T12:42:46Z"
+            }
+          },
+          {
+            "name": "release-1.2.0",
+            "target": {
+              "committedDate": "2012-04-23T13:06:47Z"
+            }
+          },
+          {
+            "name": "release-1.2.2",
+            "target": {
+              "committedDate": "2012-07-03T10:48:31Z"
+            }
+          },
+          {
+            "name": "release-1.2.3",
+            "target": {
+              "committedDate": "2012-08-07T12:35:56Z"
+            }
+          },
+          {
+            "name": "release-1.2.4",
+            "target": {
+              "committedDate": "2012-09-25T13:42:43Z"
+            }
+          },
+          {
+            "name": "release-1.2.5",
+            "target": {
+              "committedDate": "2012-11-13T13:34:59Z"
+            }
+          },
+          {
+            "name": "release-1.2.6",
+            "target": {
+              "committedDate": "2012-12-11T14:24:23Z"
+            }
+          },
+          {
+            "name": "release-1.2.7",
+            "target": {
+              "committedDate": "2013-02-12T13:40:16Z"
+            }
+          },
+          {
+            "name": "release-1.2.8",
+            "target": {
+              "committedDate": "2013-04-02T12:34:21Z"
+            }
+          },
+          {
+            "name": "release-1.2.9",
+            "target": {
+              "committedDate": "2013-05-13T10:41:51Z"
+            }
+          },
+          {
+            "name": "release-1.3.0",
+            "target": {
+              "committedDate": "2012-05-15T14:23:49Z"
+            }
+          },
+          {
+            "name": "release-1.3.1",
+            "target": {
+              "committedDate": "2012-06-05T13:47:29Z"
+            }
+          },
+          {
+            "name": "release-1.3.2",
+            "target": {
+              "committedDate": "2012-06-26T13:46:23Z"
+            }
+          },
+          {
+            "name": "release-1.3.3",
+            "target": {
+              "committedDate": "2012-07-10T12:20:10Z"
+            }
+          },
+          {
+            "name": "release-1.3.4",
+            "target": {
+              "committedDate": "2012-07-31T12:38:37Z"
+            }
+          },
+          {
+            "name": "release-1.3.5",
+            "target": {
+              "committedDate": "2012-08-21T13:05:02Z"
+            }
+          },
+          {
+            "name": "release-1.3.6",
+            "target": {
+              "committedDate": "2012-09-12T10:41:36Z"
+            }
+          },
+          {
+            "name": "release-1.3.7",
+            "target": {
+              "committedDate": "2012-10-02T13:33:37Z"
+            }
+          },
+          {
+            "name": "release-1.3.8",
+            "target": {
+              "committedDate": "2012-10-30T13:34:23Z"
+            }
+          },
+          {
+            "name": "release-1.3.9",
+            "target": {
+              "committedDate": "2012-11-27T13:55:34Z"
+            }
+          },
+          {
+            "name": "release-1.3.10",
+            "target": {
+              "committedDate": "2012-12-25T14:23:45Z"
+            }
+          },
+          {
+            "name": "release-1.3.11",
+            "target": {
+              "committedDate": "2013-01-10T13:17:04Z"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

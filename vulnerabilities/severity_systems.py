@@ -108,7 +108,7 @@ REDHAT_AGGREGATE = ScoringSystem(
 )
 
 ARCHLINUX = ScoringSystem(
-    identifier="avgs",
+    identifier="archlinux",
     name="Archlinux Vulnerability Group Severity",
     url="https://wiki.archlinux.org/index.php/Bug_reporting_guidelines#Severity",
 )
@@ -143,7 +143,7 @@ SCORING_SYSTEMS = {
     "cvssv3.1_vector": CVSSV31_VECTOR,
     "rhbs": REDHAT_BUGZILLA,
     "rhas": REDHAT_AGGREGATE,
-    "avgs": ARCHLINUX,
+    "archlinux": ARCHLINUX,
     "cvssv3.1_qr": CVSS31_QUALITY,
     "generic_textual": GENERIC,
     "apache_httpd": APACHE_HTTPD,

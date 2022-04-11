@@ -321,7 +321,7 @@ components:
       - cvssv3.1_vector
       - rhbs
       - rhas
-      - avgs
+      - archlinux
       - cvssv3.1_qr
       - generic_textual
       - apache_httpd
@@ -405,7 +405,7 @@ components:
             Vector system, cvssv3.1 is vulnerability_id for CVSSv3.1 Base Score system,
             cvssv3.1_vector is vulnerability_id for CVSSv3.1 Vector system, rhbs is
             vulnerability_id for RedHat Bugzilla severity system, rhas is vulnerability_id
-            for RedHat Aggregate severity system, avgs is vulnerability_id for Archlinux
+            for RedHat Aggregate severity system, archlinux is vulnerability_id for Archlinux
             Vulnerability Group Severity system, cvssv3.1_qr is vulnerability_id for
             CVSSv3.1 Qualitative Severity Rating system, generic_textual is vulnerability_id
             for Generic textual severity rating system, apache_httpd is vulnerability_id

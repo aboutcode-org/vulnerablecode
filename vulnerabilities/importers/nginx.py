@@ -53,8 +53,8 @@ class NginxImporter(Importer):
 
     url = "https://nginx.org/en/security_advisories.html"
 
-    # TODO: Populate this properly
-    spdx_license_expression = "TODO"
+    spdx_license_expression = "BSD-2-Clause"
+    license_url = "https://nginx.org/LICENSE"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         text = self.fetch()

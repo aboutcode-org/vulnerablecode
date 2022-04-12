@@ -20,13 +20,12 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-
 import datetime
-import json
 import os
-import unittest
+from pathlib import Path
 
 import defusedxml.ElementTree as DET
+from commoncode import testcase
 from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
 from univers.version_range import OpensslVersionRange
@@ -37,28 +36,19 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
 from vulnerabilities.importers.openssl import parse_vulnerabilities
 from vulnerabilities.importers.openssl import to_advisory_data
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "test_data", "openssl")
+from vulnerabilities.tests import util_tests
 
 
-class TestOpenssl(unittest.TestCase):
-    # use regen flag to generates the expected_file
-    def test_parse_vulnerabilities(self, regen=False):
-        xml_page = os.path.join(TEST_DATA, "openssl_xml_data.xml")
+class TestOpenssl(testcase.FileBasedTesting):
+    test_data_dir = str(Path(__file__).resolve().parent / "test_data" / "openssl")
+
+    def test_parse_vulnerabilities(self):
+        xml_page = self.get_test_loc("openssl_xml_data.xml")
         with open(xml_page) as f:
             xml_response = f.read()
-        result = [data.to_dict() for data in parse_vulnerabilities(xml_response)]
-
-        expected_file = os.path.join(TEST_DATA, "openssl-expected.json")
-        if regen:
-            with open(expected_file, "w") as f:
-                json.dump(result, f, indent=2)
-            expected = result
-        else:
-            with open(expected_file) as f:
-                expected = json.load(f)
-        assert result == expected
+        results = [data.to_dict() for data in parse_vulnerabilities(xml_response)]
+        expected_file = self.get_test_loc("openssl-expected.json")
+        util_tests.check_results_against_json(results, expected_file)
 
     def test_to_advisory_data(self):
         issue_string = """<issue public="20171207">

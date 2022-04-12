@@ -135,16 +135,19 @@ APACHE_HTTPD = ScoringSystem(
 )
 
 SCORING_SYSTEMS = {
-    "cvssv2": CVSSV2,
-    "cvssv2_vector": CVSSV2_VECTOR,
-    "cvssv3": CVSSV3,
-    "cvssv3_vector": CVSSV3_VECTOR,
-    "cvssv3.1": CVSSV31,
-    "cvssv3.1_vector": CVSSV31_VECTOR,
-    "rhbs": REDHAT_BUGZILLA,
-    "rhas": REDHAT_AGGREGATE,
-    "archlinux": ARCHLINUX,
-    "cvssv3.1_qr": CVSS31_QUALITY,
-    "generic_textual": GENERIC,
-    "apache_httpd": APACHE_HTTPD,
+    system.identifier: system
+    for system in (
+        CVSSV2,
+        CVSSV2_VECTOR,
+        CVSSV3,
+        CVSSV3_VECTOR,
+        CVSSV31,
+        CVSSV31_VECTOR,
+        REDHAT_BUGZILLA,
+        REDHAT_AGGREGATE,
+        ARCHLINUX,
+        CVSS31_QUALITY,
+        GENERIC,
+        APACHE_HTTPD,
+    )
 }

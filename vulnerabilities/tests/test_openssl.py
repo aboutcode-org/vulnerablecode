@@ -25,7 +25,6 @@ import datetime
 import json
 import os
 import unittest
-from typing import Iterable
 
 import defusedxml.ElementTree as DET
 from packageurl import PackageURL
@@ -36,10 +35,8 @@ from univers.versions import OpensslVersion
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
-from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers.openssl import parse_vulnerabilities
 from vulnerabilities.importers.openssl import to_advisory_data
-from vulnerabilities.severity_systems import SCORING_SYSTEMS
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "openssl")

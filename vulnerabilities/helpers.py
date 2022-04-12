@@ -216,7 +216,6 @@ def get_item(object: dict, *attributes):
     >>> assert(get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'e')) == None
     """
     if not object:
-        logger.error(f"Object is empty: {object}")
         return
     item = object
     for attribute in attributes:

@@ -263,7 +263,7 @@ def fetch_github_graphql_query(graphql_query: dict):
 
 def _get_gh_response(gh_token, graphql_query):
     """
-    Convenience functiosn to easy mocking in tests
+    Convenience function to easy mocking in tests
     """
     endpoint = "https://api.github.com/graphql"
     headers = {"Authorization": f"bearer {gh_token}"}

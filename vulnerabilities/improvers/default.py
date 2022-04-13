@@ -23,6 +23,7 @@
 
 from typing import Iterable
 from typing import List
+from typing import Tuple
 
 from django.db.models.query import QuerySet
 from packageurl import PackageURL
@@ -61,7 +62,7 @@ class DefaultImprover(Improver):
             )
 
 
-def get_exact_purls(affected_package: AffectedPackage) -> (List[PackageURL], PackageURL):
+def get_exact_purls(affected_package: AffectedPackage) -> Tuple[List[PackageURL], PackageURL]:
     """
     Return a list of affected purls and the fixed package found in the ``affected_package``
     AffectedPackage disregarding any ranges.

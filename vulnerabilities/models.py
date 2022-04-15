@@ -57,7 +57,6 @@ class Vulnerability(models.Model):
 
     summary = models.TextField(
         help_text="Summary of the vulnerability",
-        null=True,
         blank=True,
     )
 
@@ -104,7 +103,6 @@ class VulnerabilityReference(models.Model):
         max_length=200,
         help_text="An optional reference ID, such as DSA-4465-1 when available",
         blank=True,
-        null=True,
     )
 
     @property
@@ -324,9 +322,14 @@ class Advisory(models.Model):
     into structured data
     """
 
-    unique_content_id = models.CharField(max_length=32, blank=True, null=True)
+    unique_content_id = models.CharField(
+        max_length=32,
+        blank=True,
+    )
     aliases = models.JSONField(blank=True, default=list, help_text="A list of alias strings")
-    summary = models.TextField(blank=True, null=True)
+    summary = models.TextField(
+        blank=True,
+    )
     # we use a JSON field here to avoid creating a complete relational model for data that
     # is never queried directly; instead it is only retrieved and processed as a whole by
     # an improver

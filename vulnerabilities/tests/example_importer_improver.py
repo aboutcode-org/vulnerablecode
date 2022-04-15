@@ -54,6 +54,9 @@ def fetch_advisory_data():
 
 
 def parse_advisory_data(raw_data) -> AdvisoryData:
+    """
+    Return AdvisoryData build from a mapping of ``raw_data`` example advisory.
+    """
     purl = PackageURL(type="example", name="dummy_package")
     affected_version_range = NginxVersionRange.from_native(raw_data["vulnerable"])
     fixed_version = SemverVersion(raw_data["fixed"])
@@ -64,6 +67,7 @@ def parse_advisory_data(raw_data) -> AdvisoryData:
         system=SCORING_SYSTEMS["generic_textual"], value=raw_data["advisory_severity"]
     )
     references = [Reference(url=raw_data["reference"], severities=[severity])]
+    # The original format is "06-10-2021 UTC" and we convert this a
     date_published = datetime.strptime(raw_data["published_on"], "%d-%m-%Y %Z").replace(
         tzinfo=timezone.utc
     )

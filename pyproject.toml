@@ -88,3 +88,4 @@ profile = "black"
 line_length = 100
 force_single_line = true
 skip_gitignore = true
+skip_glob = "*/migrations/*"

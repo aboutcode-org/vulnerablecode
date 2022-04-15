@@ -43,7 +43,7 @@ def test_process_record(caplog):
     expected_advisories = [
         AdvisoryData(
             aliases=[],
-            summary=None,
+            summary="",
             affected_packages=[
                 AffectedPackage(
                     package=PackageURL(
@@ -149,7 +149,7 @@ def test_process_record(caplog):
         ),
         AdvisoryData(
             aliases=["CVE-2018-7540"],
-            summary=None,
+            summary="",
             affected_packages=[
                 AffectedPackage(
                     package=PackageURL(
@@ -255,7 +255,7 @@ def test_process_record(caplog):
         ),
         AdvisoryData(
             aliases=["CVE-2017-9669"],
-            summary=None,
+            summary="",
             affected_packages=[
                 AffectedPackage(
                     package=PackageURL(
@@ -355,7 +355,7 @@ def test_process_record(caplog):
         ),
         AdvisoryData(
             aliases=["CVE-2017-9671"],
-            summary=None,
+            summary="",
             affected_packages=[
                 AffectedPackage(
                     package=PackageURL(

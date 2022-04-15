@@ -233,7 +233,7 @@ class AdvisoryData:
     """
 
     aliases: List[str] = dataclasses.field(default_factory=list)
-    summary: Optional[str] = None
+    summary: Optional[str] = ""
     affected_packages: List[AffectedPackage] = dataclasses.field(default_factory=list)
     references: List[Reference] = dataclasses.field(default_factory=list)
     date_published: Optional[datetime.datetime] = None

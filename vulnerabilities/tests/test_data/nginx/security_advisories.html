@@ -1,28 +1,88 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>nginx security advisories</title><style type="text/css">body { background: white; color: black; font-family: sans-serif; line-height: 1.4em; text-align: center; margin: 0; padding: 0; } #banner { background: black; color: #F2F2F2; line-height: 1.2em; padding: .3em 0; box-shadow: 0 5px 10px black; } #banner a { color: #00B140; } #main { text-align: left; margin: 0 auto; min-width: 32em; max-width: 64em; } #menu { float: right; width: 11em; padding: 0 .5em 1em .5em; border-left: 2px solid #DDD; } #content { margin-right: 13.5em; padding: 0 .2em 0 1.5em; } h1 { display: block; font-size: 3em; text-align: left; height: .7em; margin: 0; margin-bottom: .5em; } h1 img { width: 100%; } h2 { text-align: center; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #F2F2F2; line-height: 1em; margin: 1em 0 1em -1em; padding: .7em .7em .7em 1em; border-top: 2px solid #DDD; } div.directive th { padding-left: 0; padding-right: .5em; vertical-align: baseline; text-align: left; font-weight: normal; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: .5em 0 0 .1em; font-size: .8em; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} ul, ol { margin: .5em 0 1em 1em; padding: 0 .5em; } ol { list-style-position: inside; } li { text-align: justify; padding: .5em 0 0 1px; } .compact li { padding-top: 0; } dl { margin: .5em 0 1em 0; } dt { margin: .5em 0; } .compact dt { margin-bottom: .2em; } dd { margin-left: 1.5em; padding-left: 1px; text-align: justify; } td.list { background: #F2F2F2; } blockquote { margin: 1em 0 1em 1em; padding: .5em; } li blockquote, dd blockquote { margin: .7em 0; } blockquote.note { border: 1px dotted #999; line-height: 1.2em; text-align: justify; } blockquote.example { line-height: 1em; border-left: 1px solid #BBB; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; } .video { position: relative; padding-bottom: 56.25%; overflow: hidden; } .video iframe, .video object, .video embed { position: absolute; top:0; left:0; width:100%; height:100%; }</style><script>
+        (function(w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({
+                'gtm.start': new Date().getTime(),
+                event: 'gtm.js'
+            });
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s),
+                dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src = '//www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-TPSP33');
+    </script></head><body><div id="banner">
+        Registration is now open for the free Microservices March Kubernetes event.<br><a href="https://www.nginx.com/c/microservices-march-2022-kubernetes-networking/">Click here</a> to enroll.
+    </div><div id="main"><div id="menu"><h1><a href="/"><img src="/nginx.png" alt="nginx"></a></h1><div>english<br><a class="notrans">русский</a><br><br><a href="../">news</a><br><a href="./">about</a><br><a href="download.html">download</a><br>security<br><a href="docs/">documentation</a><br><a href="docs/faq.html">faq</a><br><a href="books.html">books</a><br><a href="support.html">support</a><br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="https://www.nginx.com/blog/">blog</a><br><br><a href="https://unit.nginx.org/">unit</a><br><a href="docs/njs/">njs</a><br></div></div><div id="content"><h2>nginx security advisories</h2><p>
+All nginx security issues should be reported to
+<a href="mailto:security-alert@nginx.org">security-alert@nginx.org</a>.
 </p><p>
 Patches are signed using one of the
 <a href="pgp_keys.html">PGP public keys</a>.
 </p><ul>
 
+<li><p>1-byte memory overwrite in resolver<br>Severity: medium<br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2021/000300.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-23017">CVE-2021-23017</a><br>Not vulnerable: 1.21.0+, 1.20.1+<br>Vulnerable: 0.6.18-1.20.0<br><a href="/download/patch.2021.resolver.txt">The patch</a>  <a href="/download/patch.2021.resolver.txt.asc">pgp</a></p></li>
+
+<li><p>Excessive CPU usage in HTTP/2 with small window updates<br>Severity: medium<br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2019/000249.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9511">CVE-2019-9511</a><br>Not vulnerable: 1.17.3+, 1.16.1+<br>Vulnerable: 1.9.5-1.17.2</p></li>
+
+<li><p>Excessive CPU usage in HTTP/2 with priority changes<br>Severity: low<br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2019/000249.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9513">CVE-2019-9513</a><br>Not vulnerable: 1.17.3+, 1.16.1+<br>Vulnerable: 1.9.5-1.17.2</p></li>
+
+<li><p>Excessive memory usage in HTTP/2 with zero length headers<br>Severity: low<br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2019/000249.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9516">CVE-2019-9516</a><br>Not vulnerable: 1.17.3+, 1.16.1+<br>Vulnerable: 1.9.5-1.17.2</p></li>
+
+<li><p>Excessive memory usage in HTTP/2<br>Severity: low<br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2018/000220.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-16843">CVE-2018-16843</a><br>Not vulnerable: 1.15.6+, 1.14.1+<br>Vulnerable: 1.9.5-1.15.5</p></li>
+
+<li><p>Excessive CPU usage in HTTP/2<br>Severity: low<br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2018/000220.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-16844">CVE-2018-16844</a><br>Not vulnerable: 1.15.6+, 1.14.1+<br>Vulnerable: 1.9.5-1.15.5</p></li>
+
+<li><p>Memory disclosure in the ngx_http_mp4_module<br>Severity: medium<br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2018/000221.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-16845">CVE-2018-16845</a><br>Not vulnerable: 1.15.6+, 1.14.1+<br>Vulnerable: 1.1.3-1.15.5, 1.0.7-1.0.15<br><a href="/download/patch.2018.mp4.txt">The patch</a>  <a href="/download/patch.2018.mp4.txt.asc">pgp</a></p></li>
+
+<li><p>Integer overflow in the range filter<br>Severity: medium<br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2017/000200.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-7529">CVE-2017-7529</a><br>Not vulnerable: 1.13.3+, 1.12.1+<br>Vulnerable: 0.5.6-1.13.2<br><a href="/download/patch.2017.ranges.txt">The patch</a>  <a href="/download/patch.2017.ranges.txt.asc">pgp</a></p></li>
+
+<li><p>NULL pointer dereference while writing client request body<br>Severity: medium<br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2016/000179.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-4450">CVE-2016-4450</a><br>Not vulnerable: 1.11.1+, 1.10.1+<br>Vulnerable: 1.3.9-1.11.0<br><a href="/download/patch.2016.write.txt">The patch</a>  <a href="/download/patch.2016.write.txt.asc">pgp</a>  (for 1.9.13-1.11.0)<br><a href="/download/patch.2016.write2.txt">The patch</a>  <a href="/download/patch.2016.write2.txt.asc">pgp</a>  (for 1.3.9-1.9.12)</p></li>
+
+<li><p>Invalid pointer dereference in resolver<br>Severity: medium<br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2016/000169.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0742">CVE-2016-0742</a><br>Not vulnerable: 1.9.10+, 1.8.1+<br>Vulnerable: 0.6.18-1.9.9</p></li>
+
+<li><p>Use-after-free during CNAME response processing in resolver<br>Severity: medium<br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2016/000169.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0746">CVE-2016-0746</a><br>Not vulnerable: 1.9.10+, 1.8.1+<br>Vulnerable: 0.6.18-1.9.9</p></li>
+
+<li><p>Insufficient limits of CNAME resolution in resolver<br>Severity: medium<br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2016/000169.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0747">CVE-2016-0747</a><br>Not vulnerable: 1.9.10+, 1.8.1+<br>Vulnerable: 0.6.18-1.9.9</p></li>
+
+<li><p>SSL session reuse vulnerability<br>Severity: medium<br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2014/000147.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-3616">CVE-2014-3616</a><br>Not vulnerable: 1.7.5+, 1.6.2+<br>Vulnerable: 0.5.6-1.7.4</p></li>
+
+<li><p>STARTTLS command injection<br>Severity: medium<br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2014/000144.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-3556">CVE-2014-3556</a><br>Not vulnerable: 1.7.4+, 1.6.1+<br>Vulnerable: 1.5.6-1.7.3<br><a href="/download/patch.2014.starttls.txt">The patch</a>  <a href="/download/patch.2014.starttls.txt.asc">pgp</a></p></li>
+
+<li><p>SPDY heap buffer overflow<br>Severity: <b>major</b><br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2014/000135.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-0133">CVE-2014-0133</a><br>Not vulnerable: 1.5.12+, 1.4.7+<br>Vulnerable: 1.3.15-1.5.11<br><a href="/download/patch.2014.spdy2.txt">The patch</a>  <a href="/download/patch.2014.spdy2.txt.asc">pgp</a></p></li>
+
+<li><p>SPDY memory corruption<br>Severity: <b>major</b><br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2014/000132.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-0088">CVE-2014-0088</a><br>Not vulnerable: 1.5.11+<br>Vulnerable: 1.5.10<br><a href="/download/patch.2014.spdy.txt">The patch</a>  <a href="/download/patch.2014.spdy.txt.asc">pgp</a></p></li>
+
+<li><p>Request line parsing vulnerability<br>Severity: medium<br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2013/000125.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-4547">CVE-2013-4547</a><br>Not vulnerable: 1.5.7+, 1.4.4+<br>Vulnerable: 0.8.41-1.5.6<br><a href="/download/patch.2013.space.txt">The patch</a>  <a href="/download/patch.2013.space.txt.asc">pgp</a></p></li>
+
+<li><p>Memory disclosure with specially crafted HTTP backend responses<br>Severity: medium<br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2013/000114.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-2070">CVE-2013-2070</a><br>Not vulnerable: 1.5.0+, 1.4.1+, 1.2.9+<br>Vulnerable: 1.1.4-1.2.8, 1.3.9-1.4.0<br><a href="/download/patch.2013.chunked.txt">The patch</a>  <a href="/download/patch.2013.chunked.txt.asc">pgp</a>  (for 1.3.9-1.4.0)<br><a href="/download/patch.2013.proxy.txt">The patch</a>  <a href="/download/patch.2013.proxy.txt.asc">pgp</a>  (for 1.1.4-1.2.8)</p></li>
 
 <li><p>Stack-based buffer overflow with specially crafted request<br>Severity: <b>major</b><br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2013/000112.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-2028">CVE-2013-2028</a><br>Not vulnerable: 1.5.0+, 1.4.1+<br>Vulnerable: 1.3.9-1.4.0<br><a href="/download/patch.2013.chunked.txt">The patch</a>  <a href="/download/patch.2013.chunked.txt.asc">pgp</a></p></li>
 
-<!-- Use this -->
 <li><p>Vulnerabilities with Windows directory aliases<br>Severity: medium<br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2012/000086.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-4963">CVE-2011-4963</a><br>Not vulnerable: 1.3.1+, 1.2.1+<br>Vulnerable: nginx/Windows 0.7.52-1.3.0</p></li>
 
+<li><p>Buffer overflow in the ngx_http_mp4_module<br>Severity: <b>major</b><br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2012/000080.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2089">CVE-2012-2089</a><br>Not vulnerable: 1.1.19+, 1.0.15+<br>Vulnerable: 1.1.3-1.1.18, 1.0.7-1.0.14<br><a href="/download/patch.2012.mp4.txt">The patch</a>  <a href="/download/patch.2012.mp4.txt.asc">pgp</a></p></li>
 
-<!-- Use this -->
+<li><p>Memory disclosure with specially crafted backend responses<br>Severity: <b>major</b><br><a href="http://mailman.nginx.org/pipermail/nginx-announce/2012/000076.html">Advisory</a><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-1180">CVE-2012-1180</a><br>Not vulnerable: 1.1.17+, 1.0.14+<br>Vulnerable: 0.1.0-1.1.16<br><a href="/download/patch.2012.memory.txt">The patch</a>  <a href="/download/patch.2012.memory.txt.asc">pgp</a></p></li>
+
+<li><p>Buffer overflow in resolver<br>Severity: medium<br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-4315">CVE-2011-4315</a><br>Not vulnerable: 1.1.8+, 1.0.10+<br>Vulnerable: 0.6.18-1.1.7</p></li>
+
 <li><p>Vulnerabilities with invalid UTF-8 sequence on Windows<br>Severity: <b>major</b><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-2266">CVE-2010-2266</a><br>Not vulnerable: 0.8.41+, 0.7.67+<br>Vulnerable: nginx/Windows 0.7.52-0.8.40</p></li>
 
+<li><p>Vulnerabilities with Windows file default stream<br>Severity: <b>major</b><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-2263">CVE-2010-2263</a><br>Not vulnerable: 0.8.40+, 0.7.66+<br>Vulnerable: nginx/Windows 0.7.52-0.8.39</p></li>
 
-<!-- Use this -->
+<li><p>Vulnerabilities with Windows 8.3 filename pseudonyms<br>Severity: <b>major</b><br><a href="http://www.coresecurity.com/content/filename-pseudonyms-vulnerabilities">CORE-2010-0121</a><br>Not vulnerable: 0.8.33+, 0.7.65+<br>Vulnerable: nginx/Windows 0.7.52-0.8.32</p></li>
+
 <li><p>An error log data are not sanitized<br>Severity: none<br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-4487">CVE-2009-4487</a><br>Not vulnerable: none<br>Vulnerable: all</p></li>
-
 
 <li><p>The renegotiation vulnerability in SSL protocol<br>Severity: <b>major</b><br><a href="http://www.kb.cert.org/vuls/id/120541">VU#120541</a>  <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3555">CVE-2009-3555</a><br>Not vulnerable: 0.8.23+, 0.7.64+<br>Vulnerable: 0.1.0-0.8.22<br><a href="/download/patch.cve-2009-3555.txt">The patch</a>  <a href="/download/patch.cve-2009-3555.txt.asc">pgp</a></p></li>
 
 <li><p>Directory traversal vulnerability<br>Severity: minor<br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3898">CVE-2009-3898</a><br>Not vulnerable: 0.8.17+, 0.7.63+<br>Vulnerable: 0.1.0-0.8.16</p></li>
-/patch.null.pointer.txt">The patch</a>  <a href="/download/patch.null.pointer.txt.asc">pgp</a></p></li>
+
+<li><p>Buffer underflow vulnerability<br>Severity: <b>major</b><br><a href="http://www.kb.cert.org/vuls/id/180065">VU#180065</a>  <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-2629">CVE-2009-2629</a><br>Not vulnerable: 0.8.15+, 0.7.62+, 0.6.39+, 0.5.38+<br>Vulnerable: 0.1.0-0.8.14<br><a href="/download/patch.180065.txt">The patch</a>  <a href="/download/patch.180065.txt.asc">pgp</a></p></li>
+
+<li><p>Null pointer dereference vulnerability<br>Severity: <b>major</b><br><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3896">CVE-2009-3896</a><br>Not vulnerable: 0.8.14+, 0.7.62+, 0.6.39+, 0.5.38+<br>Vulnerable: 0.1.0-0.8.13<br><a href="/download/patch.null.pointer.txt">The patch</a>  <a href="/download/patch.null.pointer.txt.asc">pgp</a></p></li>
 
 </ul></div></div></body></html>

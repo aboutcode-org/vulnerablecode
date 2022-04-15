@@ -24,7 +24,7 @@ from packageurl import PackageURL
 
 from vulnerabilities.helpers import load_yaml
 from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 
@@ -67,7 +67,7 @@ def yaml_file_to_advisory(yaml_path):
         for commit in fix["commits"]:
             references.append(Reference(url=f"{commit['repository']}/{commit['id']}"))
 
-    return Advisory(
+    return AdvisoryData(
         vulnerability_id=vuln_id,
         summary=summary,
         affected_packages=nearest_patched_package(impacted_packages, resolved_packages),

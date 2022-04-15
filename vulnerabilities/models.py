@@ -20,15 +20,10 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import dataclasses
 import hashlib
-import importlib
 import json
 import logging
 import uuid
-from datetime import datetime
-from typing import List
-from typing import Optional
 
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
@@ -39,7 +34,6 @@ from packageurl.contrib.django.models import PackageURLMixin
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
@@ -125,7 +119,7 @@ class VulnerabilityReference(models.Model):
         )
 
     def __str__(self):
-        reference_id = " {self.reference_id}" if self.reference_id else ""
+        reference_id = f" {self.reference_id}" if self.reference_id else ""
         return f"{self.url}{reference_id}"
 
 
@@ -330,14 +324,6 @@ class Advisory(models.Model):
     into structured data
     """
 
-    def save(self, *args, **kwargs):
-        checksum = hashlib.md5()
-        for field in (self.summary, self.affected_packages, self.references):
-            value = json.dumps(field, separators=(",", ":")).encode("utf-8")
-            checksum.update(value)
-        self.unique_content_id = checksum.hexdigest()
-        super().save(*args, **kwargs)
-
     unique_content_id = models.CharField(max_length=32, blank=True, null=True)
     aliases = models.JSONField(blank=True, default=list, help_text="A list of alias strings")
     summary = models.TextField(blank=True, null=True)
@@ -372,6 +358,14 @@ class Advisory(models.Model):
             "unique_content_id",
             "date_published",
         )
+
+    def save(self, *args, **kwargs):
+        checksum = hashlib.md5()
+        for field in (self.summary, self.affected_packages, self.references):
+            value = json.dumps(field, separators=(",", ":")).encode("utf-8")
+            checksum.update(value)
+        self.unique_content_id = checksum.hexdigest()
+        super().save(*args, **kwargs)
 
     def to_advisory_data(self) -> AdvisoryData:
         return AdvisoryData(

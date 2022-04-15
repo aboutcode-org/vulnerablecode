@@ -147,7 +147,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
             try:
                 purl_string = purl
                 purl = PackageURL.from_string(purl).to_dict()
-            except ValueError as ve:
+            except ValueError:
                 return Response(status=400, data={"Error": f"Invalid Package URL: {purl}"})
             purl_data = Package.objects.filter(
                 **{key: value for key, value in purl.items() if value}

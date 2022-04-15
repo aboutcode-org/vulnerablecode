@@ -23,17 +23,15 @@
 import json
 import os
 import unittest
-from collections import OrderedDict
 
 from packageurl import PackageURL
 
 import vulnerabilities.importers.redhat as redhat
+from vulnerabilities import severity_systems
 from vulnerabilities.helpers import AffectedPackage
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.severity_systems import ScoringSystem
-from vulnerabilities.severity_systems import scoring_systems
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/", "redhat.json")
@@ -59,7 +57,7 @@ class TestRedhat(unittest.TestCase):
     def test_to_advisory(self):
         data = load_test_data()
         expected_advisories = [
-            Advisory(
+            AdvisoryData(
                 summary="CVE-2016-9401 bash: popd controlled free",
                 vulnerability_id="CVE-2016-9401",
                 affected_packages=[
@@ -88,21 +86,11 @@ class TestRedhat(unittest.TestCase):
                         url="https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-9401.json",
                         severities=[
                             VulnerabilitySeverity(
-                                system=ScoringSystem(
-                                    identifier="cvssv3",
-                                    name="CVSSv3 Base Score",
-                                    url="https://www.first.org/cvss/v3-0/",
-                                    notes="cvssv3 base score",
-                                ),
+                                system=severity_systems.CVSSV3,
                                 value="3.3",
                             ),
                             VulnerabilitySeverity(
-                                system=ScoringSystem(
-                                    identifier="cvssv3_vector",
-                                    name="CVSSv3 Vector",
-                                    url="https://www.first.org/cvss/v3-0/",
-                                    notes="cvssv3 vector, used to get additional info about nature and severity of vulnerability",
-                                ),
+                                system=severity_systems.CVSSV3_VECTOR,
                                 value="CVSS:3.0/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L",
                             ),
                         ],
@@ -112,12 +100,7 @@ class TestRedhat(unittest.TestCase):
                         url="https://bugzilla.redhat.com/show_bug.cgi?id=1396383",
                         severities=[
                             VulnerabilitySeverity(
-                                system=ScoringSystem(
-                                    identifier="rhbs",
-                                    name="RedHat Bugzilla severity",
-                                    url="https://bugzilla.redhat.com/page.cgi?id=fields.html#bug_severity",
-                                    notes="",
-                                ),
+                                system=severity_systems.REDHAT_BUGZILLA,
                                 value=2.0,
                             )
                         ],
@@ -127,12 +110,7 @@ class TestRedhat(unittest.TestCase):
                         url="https://access.redhat.com/errata/RHSA-2017:0725",
                         severities=[
                             VulnerabilitySeverity(
-                                system=ScoringSystem(
-                                    identifier="rhas",
-                                    name="RedHat Aggregate severity",
-                                    url="https://access.redhat.com/security/updates/classification/",
-                                    notes="",
-                                ),
+                                system=severity_systems.REDHAT_AGGREGATE,
                                 value=2.2,
                             )
                         ],
@@ -142,12 +120,7 @@ class TestRedhat(unittest.TestCase):
                         url="https://access.redhat.com/errata/RHSA-2017:1931",
                         severities=[
                             VulnerabilitySeverity(
-                                system=ScoringSystem(
-                                    identifier="rhas",
-                                    name="RedHat Aggregate severity",
-                                    url="https://access.redhat.com/security/updates/classification/",
-                                    notes="",
-                                ),
+                                system=severity_systems.REDHAT_AGGREGATE,
                                 value=2.2,
                             )
                         ],
@@ -168,6 +141,6 @@ class TestRedhat(unittest.TestCase):
                 adv = redhat.to_advisory(adv)
                 found_advisories.append(adv)
 
-        found_advisories = list(map(Advisory.normalized, found_advisories))
-        expected_advisories = list(map(Advisory.normalized, expected_advisories))
+        found_advisories = list(map(AdvisoryData.normalized, found_advisories))
+        expected_advisories = list(map(AdvisoryData.normalized, expected_advisories))
         assert sorted(found_advisories) == sorted(expected_advisories)

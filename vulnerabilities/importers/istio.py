@@ -27,12 +27,12 @@ import pytz
 import saneyaml
 from dateutil import parser
 from packageurl import PackageURL
-from univers.version_specifier import VersionSpecifier
+from univers.version_range import VersionRange
 from univers.versions import SemverVersion
 
 from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.helpers import split_markdown_front_matter
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
@@ -54,7 +54,7 @@ class IstioImporter(GitImporter):
     def set_api(self):
         asyncio.run(self.version_api.load_api(["istio/istio"]))
 
-    def updated_advisories(self) -> Set[Advisory]:
+    def updated_advisories(self) -> Set[AdvisoryData]:
         files = self._added_files.union(self._updated_files)
         advisories = []
         for f in files:
@@ -76,8 +76,7 @@ class IstioImporter(GitImporter):
         safe_pkg_versions = []
         vuln_pkg_versions = []
         version_ranges = [
-            VersionSpecifier.from_scheme_version_spec_string("semver", r)
-            for r in version_range_list
+            VersionRange.from_scheme_version_spec_string("semver", r) for r in version_range_list
         ]
         for version in all_version:
             version_obj = SemverVersion(version)
@@ -165,7 +164,7 @@ class IstioImporter(GitImporter):
             affected_packages.extend(nearest_patched_package(vuln_purls_github, safe_purls_github))
 
             advisories.append(
-                Advisory(
+                AdvisoryData(
                     vulnerability_id=cve_id,
                     summary=data["description"],
                     affected_packages=affected_packages,

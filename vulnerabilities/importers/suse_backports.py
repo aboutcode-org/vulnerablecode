@@ -19,7 +19,6 @@
 #  for any legal advice.
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-import dataclasses
 
 import requests
 import saneyaml
@@ -27,7 +26,7 @@ from bs4 import BeautifulSoup
 from packageurl import PackageURL
 
 from vulnerabilities.helpers import create_etag
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 
 
@@ -71,7 +70,7 @@ class SUSEBackportsImporter(Importer):
                             PackageURL(name=pkg, type="rpm", version=version, namespace="opensuse")
                         ]
                         advisories.append(
-                            Advisory(
+                            AdvisoryData(
                                 vulnerability_id=vuln,
                                 resolved_package_urls=purl,
                                 summary="",

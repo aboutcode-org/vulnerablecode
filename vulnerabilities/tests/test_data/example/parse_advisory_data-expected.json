@@ -1,0 +1,33 @@
+{
+  "aliases": [
+    "CVE-2021-12341337"
+  ],
+  "summary": "Dummy advisory",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "example",
+        "namespace": null,
+        "name": "dummy_package",
+        "version": null,
+        "qualifiers": null,
+        "subpath": null
+      },
+      "affected_version_range": "vers:nginx/>=0.6.18|<=1.20.0",
+      "fixed_version": "1.20.1"
+    }
+  ],
+  "references": [
+    {
+      "reference_id": "",
+      "url": "http://example.com/cve-2021-1234",
+      "severities": [
+        {
+          "system": "generic_textual",
+          "value": "high"
+        }
+      ]
+    }
+  ],
+  "date_published": "2021-10-06T00:00:00+00:00"
+}

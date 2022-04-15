@@ -23,12 +23,12 @@ import asyncio
 from typing import Set
 
 from packageurl import PackageURL
-from univers.version_specifier import VersionSpecifier
+from univers.version_range import VersionRange
 from univers.versions import SemverVersion
 
 from vulnerabilities.helpers import load_yaml
 from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import HexVersionAPI
@@ -48,7 +48,7 @@ class ElixirSecurityImporter(GitImporter):
     def set_api(self, packages):
         asyncio.run(self.pkg_manager_api.load_api(packages))
 
-    def updated_advisories(self) -> Set[Advisory]:
+    def updated_advisories(self) -> Set[AdvisoryData]:
         files = self._updated_files.union(self._added_files)
         advisories = []
         for f in files:
@@ -78,8 +78,7 @@ class ElixirSecurityImporter(GitImporter):
         if not version_range_list:
             return [], all_version_list
         version_ranges = [
-            VersionSpecifier.from_scheme_version_spec_string("semver", r)
-            for r in version_range_list
+            VersionRange.from_scheme_version_spec_string("semver", r) for r in version_range_list
         ]
         for version in all_version_list:
             version_obj = SemverVersion(version)
@@ -130,7 +129,7 @@ class ElixirSecurityImporter(GitImporter):
             ),
         ]
 
-        return Advisory(
+        return AdvisoryData(
             summary=yaml_file["description"],
             affected_packages=nearest_patched_package(vuln_purls, safe_purls),
             vulnerability_id=cve_id,

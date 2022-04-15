@@ -25,11 +25,11 @@ import asyncio
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
-from univers.version_specifier import VersionSpecifier
+from univers.version_range import VersionRange
 from univers.versions import MavenVersion
 
 from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
@@ -93,7 +93,7 @@ class ApacheKafkaImporter(Importer):
             ]
 
             advisories.append(
-                Advisory(
+                AdvisoryData(
                     vulnerability_id=cve_id,
                     summary=cve_description_paragraph.text,
                     affected_packages=nearest_patched_package(affected_packages, fixed_packages),
@@ -119,7 +119,7 @@ def to_version_ranges(version_range_text):
             lower_bound = f">={lower_bound}"
             upper_bound = f"<={upper_bound}"
             version_ranges.append(
-                VersionSpecifier.from_scheme_version_spec_string(
+                VersionRange.from_scheme_version_spec_string(
                     "maven", f"{lower_bound},{upper_bound}"
                 )
             )
@@ -128,12 +128,12 @@ def to_version_ranges(version_range_text):
             # eg range_expression == "2.1.1 and later"
             range_expression = range_expression.replace("and later", "")
             version_ranges.append(
-                VersionSpecifier.from_scheme_version_spec_string("maven", f">={range_expression}")
+                VersionRange.from_scheme_version_spec_string("maven", f">={range_expression}")
             )
 
         else:
             # eg  range_expression == "3.0.0"
             version_ranges.append(
-                VersionSpecifier.from_scheme_version_spec_string("maven", range_expression)
+                VersionRange.from_scheme_version_spec_string("maven", range_expression)
             )
     return version_ranges

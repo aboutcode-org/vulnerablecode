@@ -21,14 +21,11 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import dataclasses
 import datetime
-import json
 import logging
 from typing import Iterable
 from typing import List
 
-from vulnerabilities import models
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.models import Advisory

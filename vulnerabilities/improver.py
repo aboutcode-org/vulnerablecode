@@ -109,12 +109,16 @@ class Improver:
     @property
     def interesting_advisories(self) -> QuerySet:
         """
-        Return QuerySet for the advisories this improver is interested in
+        Return QuerySet for the advisories this improver is interested in.
+
+        Subclasses must implement.
         """
         raise NotImplementedError
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         """
-        Generate and return Inferences for the given advisory data
+        Return an iterable of Inferences from the ``advisory data``.
+
+        Subclasses must implement.
         """
         raise NotImplementedError

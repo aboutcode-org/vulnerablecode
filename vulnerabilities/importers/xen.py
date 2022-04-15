@@ -20,22 +20,19 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import bz2
-import dataclasses
 import json
 
 import requests
-from packageurl import PackageURL
 
 from vulnerabilities.helpers import create_etag
 from vulnerabilities.helpers import is_cve
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 
 
 class XenImporter(Importer):
-    CONFIG_CLASS = XenDBConfiguration
+    # CONFIG_CLASS = XenDBConfiguration
 
     def updated_advisories(self):
         advisories = []
@@ -67,7 +64,7 @@ class XenImporter(Importer):
                     cve = ""
 
                 advisories.append(
-                    Advisory(
+                    AdvisoryData(
                         vulnerability_id=cve,
                         summary=title,
                         references=[reference],

@@ -31,7 +31,7 @@ from unittest.mock import patch
 from packageurl import PackageURL
 
 import vulnerabilities.importers.ubuntu_usn as ubuntu_usn
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))

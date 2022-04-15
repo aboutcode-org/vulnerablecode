@@ -27,7 +27,7 @@ from typing import Set
 from packageurl import PackageURL
 
 from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 
@@ -41,7 +41,7 @@ class GentooImporter(GitImporter):
                 recursive=True, file_ext="xml"
             )
 
-    def updated_advisories(self) -> Set[Advisory]:
+    def updated_advisories(self) -> Set[AdvisoryData]:
         files = self._updated_files.union(self._added_files)
         advisories = []
         for f in files:
@@ -79,7 +79,7 @@ class GentooImporter(GitImporter):
         # It is very inefficient, to create new Advisory for each CVE
         # this way, but there seems no alternative.
         for cve in xml_data["cves"]:
-            advisory = Advisory(
+            advisory = AdvisoryData(
                 vulnerability_id=cve,
                 summary=xml_data["description"],
                 affected_packages=nearest_patched_package(

@@ -26,23 +26,22 @@ from datetime import datetime
 from unittest import mock
 
 import pytest
-import pytz
 from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
 from univers.version_range import GemVersionRange
 from univers.versions import RubygemsVersion
 
+from vulnerabilities import severity_systems
+from vulnerabilities.helpers import GitHubTokenError
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers.github import GitHubAPIImporter
 from vulnerabilities.importers.github import GitHubBasicImprover
-from vulnerabilities.importers.github import GitHubTokenError
 from vulnerabilities.importers.github import process_response
 from vulnerabilities.importers.github import resolve_version_range
-from vulnerabilities.package_managers import Version as PackageVersion
-from vulnerabilities.severity_systems import ScoringSystem
+from vulnerabilities.package_managers import PackageVersion
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "github_api")
@@ -100,7 +99,7 @@ def test_process_response_with_empty_vulnaribilities(caplog):
     assert "No vulnerabilities found for package_type: 'maven'" in caplog.text
 
 
-def test_process_response_with_empty_vulnaribilities(caplog):
+def test_process_response_with_empty_vulnaribilities_2(caplog):
     list(
         process_response(
             {"data": {"securityVulnerabilities": {"edges": [{"node": {}}, None]}}}, "maven"
@@ -113,16 +112,16 @@ def test_github_importer_with_missing_credentials():
     with pytest.raises(GitHubTokenError) as e:
         with mock.patch.dict(os.environ, {}, clear=True):
             importer = GitHubAPIImporter()
-            importer.advisory_data()
+            list(importer.advisory_data())
 
 
-@mock.patch("vulnerabilities.importers.github.get_response")
-def test_github_importer_with_missing_credentials(mock_response):
+@mock.patch("vulnerabilities.helpers._get_gh_response")
+def test_github_importer_with_missing_credentials_2(mock_response):
     mock_response.return_value = {"message": "Bad credentials"}
     with pytest.raises(GitHubTokenError) as e:
-        with mock.patch.dict(os.environ, {"GH_TOKEN": "BAD"}, clear=True):
+        with mock.patch.dict(os.environ, {"GH_TOKEN": "FOOD"}, clear=True):
             importer = GitHubAPIImporter()
-            importer.advisory_data()
+            list(importer.advisory_data())
 
 
 def valid_versions():
@@ -273,12 +272,7 @@ def test_github_improver(mock_response, regen=False):
                 url="https://github.com/advisories/GHSA-w749-p3v6-hccq",
                 severities=[
                     VulnerabilitySeverity(
-                        system=ScoringSystem(
-                            identifier="cvssv3.1_qr",
-                            name="CVSSv3.1 Qualitative Severity Rating",
-                            url="https://www.first.org/cvss/specification-document#Qualitative-Severity-Rating-Scale",
-                            notes="A textual interpretation of severity. Has values like HIGH, MEDIUM etc",
-                        ),
+                        system=severity_systems.CVSS31_QUALITY,
                         value="HIGH",
                     )
                 ],
@@ -288,7 +282,7 @@ def test_github_improver(mock_response, regen=False):
     )
     mock_response.return_value = list(valid_versions())
     improver = GitHubBasicImprover()
-    expected_file = os.path.join(TEST_DATA, f"inference-expected.json")
+    expected_file = os.path.join(TEST_DATA, "inference-expected.json")
 
     result = [data.to_dict() for data in improver.get_inferences(advisory_data=advisory_data)]
 
@@ -303,10 +297,11 @@ def test_github_improver(mock_response, regen=False):
     assert result == expected
 
 
-@mock.patch("vulnerabilities.package_managers_2.get_response")
+@mock.patch("vulnerabilities.package_managers.get_response")
 def test_get_package_versions(mock_response):
     with open(os.path.join(BASE_DIR, "test_data", "package_manager_data", "pypi.json"), "r") as f:
         mock_response.return_value = json.load(f)
+
     improver = GitHubBasicImprover()
     valid_versions = {
         "1.1.3",
@@ -331,6 +326,7 @@ def test_get_package_versions(mock_response):
     mock_response.return_value = None
     assert not improver.get_package_versions(package_url=PackageURL(type="gem", name="foo"))
     assert not improver.get_package_versions(package_url=PackageURL(type="pypi", name="foo"))
-    assert "django" in improver.version_api_by_purl_type["pypi"].cache
-    assert "foo" in improver.version_api_by_purl_type["gem"].cache
-    assert "foo" in improver.version_api_by_purl_type["pypi"].cache
+
+    assert PackageURL(type="gem", name="foo") in improver.versions_fetcher_by_purl
+    assert PackageURL(type="pypi", name="django") in improver.versions_fetcher_by_purl
+    assert PackageURL(type="pypi", name="foo") in improver.versions_fetcher_by_purl

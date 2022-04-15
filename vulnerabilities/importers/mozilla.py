@@ -7,13 +7,13 @@ from bs4 import BeautifulSoup
 from markdown import markdown
 from packageurl import PackageURL
 
+from vulnerabilities import severity_systems
 from vulnerabilities.helpers import is_cve
 from vulnerabilities.helpers import split_markdown_front_matter
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.severity_systems import SCORING_SYSTEMS
 
 REPOSITORY = "mozilla/foundation-security-advisories"
 MFSA_FILENAME_RE = re.compile(r"mfsa(\d{4}-\d{2,3})\.(md|yml)$")
@@ -28,7 +28,7 @@ class MozillaImporter(GitImporter):
                 recursive=True, subdir="announce"
             )
 
-    def updated_advisories(self) -> Set[Advisory]:
+    def updated_advisories(self) -> Set[AdvisoryData]:
         files = self._updated_files.union(self._added_files)
         files = [
             f for f in files if f.endswith(".md") or f.endswith(".yml")
@@ -41,7 +41,7 @@ class MozillaImporter(GitImporter):
         return self.batch_advisories(advisories)
 
 
-def to_advisories(path: str) -> List[Advisory]:
+def to_advisories(path: str) -> List[AdvisoryData]:
     """
     Convert a file to corresponding advisories.
     This calls proper method to handle yml/md files.
@@ -59,7 +59,7 @@ def to_advisories(path: str) -> List[Advisory]:
     return []
 
 
-def get_advisories_from_yml(mfsa_id, lines) -> List[Advisory]:
+def get_advisories_from_yml(mfsa_id, lines) -> List[AdvisoryData]:
     advisories = []
     data = yaml.safe_load(lines)
     data["mfsa_id"] = mfsa_id
@@ -75,7 +75,7 @@ def get_advisories_from_yml(mfsa_id, lines) -> List[Advisory]:
         summary = BeautifulSoup(advisory.get("description", ""), features="lxml").get_text()
 
         advisories.append(
-            Advisory(
+            AdvisoryData(
                 summary=summary,
                 vulnerability_id=cve if is_cve(cve) else "",
                 impacted_package_urls=[],
@@ -87,7 +87,7 @@ def get_advisories_from_yml(mfsa_id, lines) -> List[Advisory]:
     return advisories
 
 
-def get_advisories_from_md(mfsa_id, lines) -> List[Advisory]:
+def get_advisories_from_md(mfsa_id, lines) -> List[AdvisoryData]:
     yamltext, mdtext = split_markdown_front_matter(lines.read())
     data = yaml.safe_load(yamltext)
     data["mfsa_id"] = mfsa_id
@@ -106,7 +106,7 @@ def get_advisories_from_md(mfsa_id, lines) -> List[Advisory]:
     description = html_get_p_under_h3(markdown(mdtext), "description")
 
     return [
-        Advisory(
+        AdvisoryData(
             summary=description,
             vulnerability_id="",
             impacted_package_urls=[],
@@ -175,6 +175,6 @@ def get_yml_references(data: any) -> List[Reference]:
         Reference(
             reference_id=data["mfsa_id"],
             url="https://www.mozilla.org/en-US/security/advisories/{}".format(data["mfsa_id"]),
-            severities=[VulnerabilitySeverity(scoring_systems["generic_textual"], severity)],
+            severities=[VulnerabilitySeverity(system=severity_systems.GENERIC, value=severity)],
         )
     ]

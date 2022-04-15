@@ -27,12 +27,12 @@ from typing import Set
 from dateutil.parser import parse
 from packageurl import PackageURL
 from pytz import UTC
-from univers.version_specifier import VersionSpecifier
+from univers.version_range import VersionRange
 from univers.versions import SemverVersion
 
 from vulnerabilities.helpers import load_yaml
 from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import RubyVersionAPI
@@ -53,7 +53,7 @@ class RubyImporter(GitImporter):
     def set_api(self, packages):
         asyncio.run(self.pkg_manager_api.load_api(packages))
 
-    def updated_advisories(self) -> Set[Advisory]:
+    def updated_advisories(self) -> Set[AdvisoryData]:
         files = self._updated_files.union(self._added_files)
         advisories = []
         for f in files:
@@ -72,7 +72,7 @@ class RubyImporter(GitImporter):
 
         return packages
 
-    def process_file(self, path) -> List[Advisory]:
+    def process_file(self, path) -> List[AdvisoryData]:
         record = load_yaml(path)
         package_name = record.get("gem")
         if not package_name:
@@ -119,7 +119,7 @@ class RubyImporter(GitImporter):
         if record.get("url"):
             references.append(Reference(url=record.get("url")))
 
-        return Advisory(
+        return AdvisoryData(
             summary=record.get("description", ""),
             affected_packages=nearest_patched_package(impacted_purls, resolved_purls),
             references=references,
@@ -130,7 +130,7 @@ class RubyImporter(GitImporter):
     def categorize_versions(all_versions, unaffected_version_ranges):
 
         for id, elem in enumerate(unaffected_version_ranges):
-            unaffected_version_ranges[id] = VersionSpecifier.from_scheme_version_spec_string(
+            unaffected_version_ranges[id] = VersionRange.from_scheme_version_spec_string(
                 "semver", elem
             )
 

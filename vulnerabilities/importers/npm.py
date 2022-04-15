@@ -30,12 +30,12 @@ from urllib.parse import quote
 import pytz
 from dateutil.parser import parse
 from packageurl import PackageURL
-from univers.version_specifier import VersionSpecifier
+from univers.version_range import VersionRange
 from univers.versions import SemverVersion
 
 from vulnerabilities.helpers import load_json
 from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import NpmVersionAPI
@@ -54,7 +54,7 @@ class NpmImporter(GitImporter):
         self._versions = NpmVersionAPI()
         self.set_api(self.collect_packages())
 
-    def updated_advisories(self) -> Set[Advisory]:
+    def updated_advisories(self) -> Set[AdvisoryData]:
         files = self._updated_files.union(self._added_files)
         advisories = []
         for f in files:
@@ -79,7 +79,7 @@ class NpmImporter(GitImporter):
     def versions(self):  # quick hack to make it patchable
         return self._versions
 
-    def process_file(self, file) -> List[Advisory]:
+    def process_file(self, file) -> List[AdvisoryData]:
 
         record = load_json(file)
         advisories = []
@@ -114,7 +114,7 @@ class NpmImporter(GitImporter):
 
         for cve_id in record.get("cves") or [""]:
             advisories.append(
-                Advisory(
+                AdvisoryData(
                     summary=record.get("overview", ""),
                     vulnerability_id=cve_id,
                     affected_packages=nearest_patched_package(impacted_purls, resolved_purls),
@@ -182,7 +182,7 @@ def categorize_versions(
     if affected_version_range:
         aff_specs = normalize_ranges(affected_version_range)
         aff_spec = [
-            VersionSpecifier.from_scheme_version_spec_string("semver", spec)
+            VersionRange.from_scheme_version_spec_string("semver", spec)
             for spec in aff_specs
             if len(spec) >= 3
         ]
@@ -190,7 +190,7 @@ def categorize_versions(
     if fixed_version_range:
         fix_specs = normalize_ranges(fixed_version_range)
         fix_spec = [
-            VersionSpecifier.from_scheme_version_spec_string("semver", spec)
+            VersionRange.from_scheme_version_spec_string("semver", spec)
             for spec in fix_specs
             if len(spec) >= 3
         ]

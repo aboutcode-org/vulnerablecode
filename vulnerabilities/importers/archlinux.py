@@ -30,19 +30,19 @@ from urllib.request import urlopen
 
 from packageurl import PackageURL
 
+from vulnerabilities import severity_systems
 from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.severity_systems import scoring_systems
 
 
 class ArchlinuxImporter(Importer):
     def __enter__(self):
         self._api_response = self._fetch()
 
-    def updated_advisories(self) -> Set[Advisory]:
+    def updated_advisories(self) -> Set[AdvisoryData]:
         advisories = []
 
         for record in self._api_response:
@@ -54,7 +54,7 @@ class ArchlinuxImporter(Importer):
         with urlopen(self.config.archlinux_tracker_url) as response:
             return json.load(response)
 
-    def _parse(self, record) -> List[Advisory]:
+    def _parse(self, record) -> List[AdvisoryData]:
         advisories = []
 
         for cve_id in record["issues"]:
@@ -88,7 +88,7 @@ class ArchlinuxImporter(Importer):
                     url="https://security.archlinux.org/{}".format(record["name"]),
                     severities=[
                         VulnerabilitySeverity(
-                            system=scoring_systems["avgs"], value=record["severity"]
+                            system=severity_systems.ARCHLINUX, value=record["severity"]
                         )
                     ],
                 )

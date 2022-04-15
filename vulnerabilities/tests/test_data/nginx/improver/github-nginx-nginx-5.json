@@ -1,0 +1,297 @@
+{
+  "data": {
+    "repository": {
+      "refs": {
+        "totalCount": 547,
+        "pageInfo": {
+          "endCursor": "NTQ3",
+          "hasNextPage": false
+        },
+        "nodes": [
+          {
+            "name": "release-1.15.1",
+            "target": {
+              "committedDate": "2018-07-03T15:07:43Z"
+            }
+          },
+          {
+            "name": "release-1.15.2",
+            "target": {
+              "committedDate": "2018-07-24T13:10:59Z"
+            }
+          },
+          {
+            "name": "release-1.15.3",
+            "target": {
+              "committedDate": "2018-08-28T15:36:00Z"
+            }
+          },
+          {
+            "name": "release-1.15.4",
+            "target": {
+              "committedDate": "2018-09-25T15:11:39Z"
+            }
+          },
+          {
+            "name": "release-1.15.5",
+            "target": {
+              "committedDate": "2018-10-02T15:13:51Z"
+            }
+          },
+          {
+            "name": "release-1.15.6",
+            "target": {
+              "committedDate": "2018-11-06T13:32:08Z"
+            }
+          },
+          {
+            "name": "release-1.15.7",
+            "target": {
+              "committedDate": "2018-11-27T14:40:20Z"
+            }
+          },
+          {
+            "name": "release-1.15.8",
+            "target": {
+              "committedDate": "2018-12-25T14:53:03Z"
+            }
+          },
+          {
+            "name": "release-1.15.9",
+            "target": {
+              "committedDate": "2019-02-26T15:29:22Z"
+            }
+          },
+          {
+            "name": "release-1.15.10",
+            "target": {
+              "committedDate": "2019-03-26T14:06:54Z"
+            }
+          },
+          {
+            "name": "release-1.15.11",
+            "target": {
+              "committedDate": "2019-04-09T13:00:30Z"
+            }
+          },
+          {
+            "name": "release-1.15.12",
+            "target": {
+              "committedDate": "2019-04-16T14:54:58Z"
+            }
+          },
+          {
+            "name": "release-1.16.0",
+            "target": {
+              "committedDate": "2019-04-23T13:12:57Z"
+            }
+          },
+          {
+            "name": "release-1.16.1",
+            "target": {
+              "committedDate": "2019-08-13T12:51:42Z"
+            }
+          },
+          {
+            "name": "release-1.17.0",
+            "target": {
+              "committedDate": "2019-05-21T14:23:57Z"
+            }
+          },
+          {
+            "name": "release-1.17.1",
+            "target": {
+              "committedDate": "2019-06-25T12:19:45Z"
+            }
+          },
+          {
+            "name": "release-1.17.2",
+            "target": {
+              "committedDate": "2019-07-23T12:01:47Z"
+            }
+          },
+          {
+            "name": "release-1.17.3",
+            "target": {
+              "committedDate": "2019-08-13T12:45:56Z"
+            }
+          },
+          {
+            "name": "release-1.17.4",
+            "target": {
+              "committedDate": "2019-09-24T15:08:48Z"
+            }
+          },
+          {
+            "name": "release-1.17.5",
+            "target": {
+              "committedDate": "2019-10-22T15:16:08Z"
+            }
+          },
+          {
+            "name": "release-1.17.6",
+            "target": {
+              "committedDate": "2019-11-19T14:18:58Z"
+            }
+          },
+          {
+            "name": "release-1.17.7",
+            "target": {
+              "committedDate": "2019-12-24T15:00:09Z"
+            }
+          },
+          {
+            "name": "release-1.17.8",
+            "target": {
+              "committedDate": "2020-01-21T13:39:41Z"
+            }
+          },
+          {
+            "name": "release-1.17.9",
+            "target": {
+              "committedDate": "2020-03-03T15:04:21Z"
+            }
+          },
+          {
+            "name": "release-1.17.10",
+            "target": {
+              "committedDate": "2020-04-14T14:19:26Z"
+            }
+          },
+          {
+            "name": "release-1.18.0",
+            "target": {
+              "committedDate": "2020-04-21T14:09:01Z"
+            }
+          },
+          {
+            "name": "release-1.19.0",
+            "target": {
+              "committedDate": "2020-05-26T15:00:20Z"
+            }
+          },
+          {
+            "name": "release-1.19.1",
+            "target": {
+              "committedDate": "2020-07-07T15:56:05Z"
+            }
+          },
+          {
+            "name": "release-1.19.2",
+            "target": {
+              "committedDate": "2020-08-11T14:52:30Z"
+            }
+          },
+          {
+            "name": "release-1.19.3",
+            "target": {
+              "committedDate": "2020-09-29T14:32:10Z"
+            }
+          },
+          {
+            "name": "release-1.19.4",
+            "target": {
+              "committedDate": "2020-10-27T15:09:20Z"
+            }
+          },
+          {
+            "name": "release-1.19.5",
+            "target": {
+              "committedDate": "2020-11-24T15:06:34Z"
+            }
+          },
+          {
+            "name": "release-1.19.6",
+            "target": {
+              "committedDate": "2020-12-15T14:41:39Z"
+            }
+          },
+          {
+            "name": "release-1.19.7",
+            "target": {
+              "committedDate": "2021-02-16T15:57:18Z"
+            }
+          },
+          {
+            "name": "release-1.19.8",
+            "target": {
+              "committedDate": "2021-03-09T15:27:50Z"
+            }
+          },
+          {
+            "name": "release-1.19.9",
+            "target": {
+              "committedDate": "2021-03-30T14:47:11Z"
+            }
+          },
+          {
+            "name": "release-1.19.10",
+            "target": {
+              "committedDate": "2021-04-13T15:13:58Z"
+            }
+          },
+          {
+            "name": "release-1.20.0",
+            "target": {
+              "committedDate": "2021-04-20T13:35:46Z"
+            }
+          },
+          {
+            "name": "release-1.20.1",
+            "target": {
+              "committedDate": "2021-05-25T12:35:38Z"
+            }
+          },
+          {
+            "name": "release-1.20.2",
+            "target": {
+              "committedDate": "2021-11-16T14:44:02Z"
+            }
+          },
+          {
+            "name": "release-1.21.0",
+            "target": {
+              "committedDate": "2021-05-25T12:28:55Z"
+            }
+          },
+          {
+            "name": "release-1.21.1",
+            "target": {
+              "committedDate": "2021-07-06T14:59:16Z"
+            }
+          },
+          {
+            "name": "release-1.21.2",
+            "target": {
+              "committedDate": "2021-08-31T15:13:46Z"
+            }
+          },
+          {
+            "name": "release-1.21.3",
+            "target": {
+              "committedDate": "2021-09-07T15:21:02Z"
+            }
+          },
+          {
+            "name": "release-1.21.4",
+            "target": {
+              "committedDate": "2021-11-02T14:49:22Z"
+            }
+          },
+          {
+            "name": "release-1.21.5",
+            "target": {
+              "committedDate": "2021-12-28T15:28:37Z"
+            }
+          },
+          {
+            "name": "release-1.21.6",
+            "target": {
+              "committedDate": "2022-01-25T15:03:51Z"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

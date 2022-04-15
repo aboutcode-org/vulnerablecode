@@ -24,10 +24,10 @@ import os
 from unittest import TestCase
 
 from packageurl import PackageURL
-from univers.version_specifier import VersionSpecifier
+from univers.version_range import VersionRange
 
 from vulnerabilities.helpers import AffectedPackage
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
 from vulnerabilities.importers.apache_kafka import ApacheKafkaImporter
 from vulnerabilities.importers.apache_kafka import to_version_ranges
@@ -42,24 +42,24 @@ class TestApacheKafkaImporter(TestCase):
     def test_to_version_ranges(self):
         # Check single version
         assert [
-            VersionSpecifier.from_scheme_version_spec_string("maven", "=3.2.2")
+            VersionRange.from_scheme_version_spec_string("maven", "=3.2.2")
         ] == to_version_ranges("3.2.2")
 
         # Check range with lower and upper bounds
         assert [
-            VersionSpecifier.from_scheme_version_spec_string("maven", ">=3.2.2, <=3.2.3")
+            VersionRange.from_scheme_version_spec_string("maven", ">=3.2.2, <=3.2.3")
         ] == to_version_ranges("3.2.2 to 3.2.3")
 
         # Check range with "and later"
         assert [
-            VersionSpecifier.from_scheme_version_spec_string("maven", ">=3.2.2")
+            VersionRange.from_scheme_version_spec_string("maven", ">=3.2.2")
         ] == to_version_ranges("3.2.2 and later")
 
         # Check combination of above cases
         assert [
-            VersionSpecifier.from_scheme_version_spec_string("maven", ">=3.2.2"),
-            VersionSpecifier.from_scheme_version_spec_string("maven", ">=3.2.2, <=3.2.3"),
-            VersionSpecifier.from_scheme_version_spec_string("maven", "==3.2.2"),
+            VersionRange.from_scheme_version_spec_string("maven", ">=3.2.2"),
+            VersionRange.from_scheme_version_spec_string("maven", ">=3.2.2, <=3.2.3"),
+            VersionRange.from_scheme_version_spec_string("maven", "==3.2.2"),
         ] == to_version_ranges("3.2.2 and later, 3.2.2 to 3.2.3, 3.2.2")
 
     def test_to_advisory(self):

@@ -21,15 +21,13 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import bz2
-import dataclasses
 import json
 
 import requests
-from packageurl import PackageURL
 
 from vulnerabilities.helpers import create_etag
 from vulnerabilities.helpers import is_cve
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 
@@ -67,7 +65,7 @@ class UbuntuUSNImporter(Importer):
                     cve = ""
 
                 advisories.append(
-                    Advisory(
+                    AdvisoryData(
                         vulnerability_id=cve,
                         summary="",
                         references=[reference],

@@ -27,7 +27,7 @@ from unittest import TestCase
 from packageurl import PackageURL
 
 from vulnerabilities.helpers import AffectedPackage
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
 from vulnerabilities.importers.retiredotnet import RetireDotnetImporter
 

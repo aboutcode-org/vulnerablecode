@@ -24,6 +24,7 @@ import bisect
 import dataclasses
 import json
 import logging
+import os
 import re
 from functools import total_ordering
 from typing import List
@@ -38,7 +39,7 @@ import urllib3
 from packageurl import PackageURL
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 
-LOGGER = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 cve_regex = re.compile(r"CVE-\d{4}-\d{4,7}", re.IGNORECASE)
 is_cve = cve_regex.match
@@ -75,39 +76,23 @@ def fetch_yaml(url):
 create_etag = MagicMock()
 
 
-def split_markdown_front_matter(lines: str) -> Tuple[str, str]:
+def split_markdown_front_matter(text: str) -> Tuple[str, str]:
     """
-    This function splits lines into markdown front matter and the markdown body
-    and returns list of lines for both
-
-    for example :
-        lines =
-        ---
-        title: ISTIO-SECURITY-2019-001
-        description: Incorrect access control.
-        cves: [CVE-2019-12243]
-        ---
-        # Markdown starts here
-
-    split_markdown_front_matter(lines) would return
-    ['title: ISTIO-SECURITY-2019-001','description: Incorrect access control.'
-    ,'cves: [CVE-2019-12243]'],
-    ["# Markdown starts here"]
+    Return a tuple of (front matter, markdown body) strings split from a
+    ``text`` string. Each can be an empty string. This is used when security
+    advisories are provided in this format.
     """
+    lines = text.splitlines()
+    if not lines:
+        return "", ""
 
-    fmlines = []
-    mdlines = []
-    splitter = mdlines
+    if lines[0] == "---":
+        lines = lines[1:]
+        text = "\n".join(lines)
+        frontmatter, _, markdown = text.partition("\n---\n")
+        return frontmatter, markdown
 
-    for index, line in enumerate(lines.split("\n")):
-        if index == 0 and line.strip().startswith("---"):
-            splitter = fmlines
-        elif line.strip().startswith("---"):
-            splitter = mdlines
-        else:
-            splitter.append(line)
-
-    return "\n".join(fmlines), "\n".join(mdlines)
+    return "", text
 
 
 def contains_alpha(string):
@@ -123,7 +108,7 @@ def requests_with_5xx_retry(max_retries=5, backoff_factor=0.5):
     Returns a requests sessions which retries on 5xx errors with
     a backoff_factor
     """
-    retries = urllib3.util.Retry(
+    retries = urllib3.Retry(
         total=max_retries,
         backoff_factor=backoff_factor,
         raise_on_status=True,
@@ -157,6 +142,30 @@ class VersionedPackage:
         return self.version < other.version
 
 
+def evolve_purl(purl, **kwargs):
+    """
+    Return a new PackageURL derived from the ``purl`` PackageURL where any of
+    the provided kwarg replaces the corresponding attribute of this PackageURL.
+    Qaulifiers if provided must be a mapping
+    For example::
+    >>> purl = PackageURL.from_string("pkg:generic/this@1.2.3")
+    >>> evolved = PackageURL.from_string("pkg:npm/@baz/that@2.2.3?foo=bar")
+    >>> evolve_purl(purl,
+    ...   type="npm", namespace="@baz", name="that",
+    ...   version="2.2.3", qualifiers={"foo": "bar"}
+    ... ) == evolved
+    True
+
+    """
+    if not kwargs:
+        return PackageURL.from_string(str(purl))
+
+    kwargs = {name: value for name, value in kwargs.items() if hasattr(purl, name)}
+    merged = purl.to_dict()
+    merged.update(kwargs)
+    return PackageURL(**merged)
+
+
 def nearest_patched_package(
     vulnerable_packages: List[PackageURL], resolved_packages: List[PackageURL]
 ) -> List[AffectedPackage]:
@@ -186,32 +195,6 @@ def nearest_patched_package(
     return affected_package_with_patched_package_objects
 
 
-def split_markdown_front_matter(text: str) -> Tuple[str, str]:
-    r"""
-    Return a tuple of (front matter, markdown body) strings split from ``text``.
-    Each can be an empty string.
-
-    >>> text='''---
-    ... title: DUMMY-SECURITY-2019-001
-    ... description: Incorrect access control.
-    ... cves: [CVE-2042-1337]
-    ... ---
-    ... # Markdown starts here
-    ... '''
-    >>> split_markdown_front_matter(text)
-    ('title: DUMMY-SECURITY-2019-001\ndescription: Incorrect access control.\ncves: [CVE-2042-1337]', '# Markdown starts here')
-    """
-    # The doctest contains \n and for the sake of clarity I chose raw strings than escaping those.
-    lines = text.splitlines()
-    if lines[0] == "---":
-        lines = lines[1:]
-        text = "\n".join(lines)
-        frontmatter, _, markdown = text.partition("\n---\n")
-        return frontmatter, markdown
-
-    return "", text
-
-
 # TODO: Replace this with combination of @classmethod and @property after upgrading to python 3.9
 class classproperty(object):
     def __init__(self, fget):
@@ -233,12 +216,54 @@ def get_item(object: dict, *attributes):
     >>> assert(get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'e')) == None
     """
     if not object:
-        LOGGER.error(f"Object is empty: {object}")
         return
     item = object
     for attribute in attributes:
         if attribute not in item:
-            LOGGER.error(f"Missing attribute {attribute} in {item}")
+            logger.error(f"Missing attribute {attribute} in {item}")
             return None
         item = item[attribute]
     return item
+
+
+class GitHubTokenError(Exception):
+    pass
+
+
+class GraphQLError(Exception):
+    pass
+
+
+def fetch_github_graphql_query(graphql_query: dict):
+    """
+    Return results from calling the Github graphql API with the ``graphql_query`` mapping.
+    Raise a GitHubTokenError if the "GH_TOKEN" environment variable is not set.
+    Raise a GraphQLError on query errors.
+    """
+    gh_token = os.environ.get("GH_TOKEN", None)
+    # graphql api cannot work without api token
+    if not gh_token:
+        msg = "Cannot call GitHub API without a token set in the GH_TOKEN environment variable."
+        logger.error(msg)
+        raise GitHubTokenError(msg)
+
+    response = _get_gh_response(gh_token=gh_token, graphql_query=graphql_query)
+
+    message = response.get("message")
+    if message and message == "Bad credentials":
+        raise GitHubTokenError(f"Invalid GitHub token: {message}")
+
+    errors = response.get("errors")
+    if errors:
+        raise GraphQLError(errors)
+
+    return response
+
+
+def _get_gh_response(gh_token, graphql_query):
+    """
+    Convenience function to easy mocking in tests
+    """
+    endpoint = "https://api.github.com/graphql"
+    headers = {"Authorization": f"bearer {gh_token}"}
+    return requests.post(endpoint, headers=headers, json=graphql_query).json()

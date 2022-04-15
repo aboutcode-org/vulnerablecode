@@ -28,7 +28,7 @@
 # from packageurl import PackageURL
 
 # from vulnerabilities.importers.suse_backports import SUSEBackportsImporter
-# from vulnerabilities.importer import Advisory
+# from vulnerabilities.importer import AdvisoryData
 
 # BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 

@@ -23,13 +23,13 @@
 import requests
 from packageurl import PackageURL
 
+from vulnerabilities import severity_systems
 from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.helpers import requests_with_5xx_retry
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.severity_systems import scoring_systems
 
 
 class RedhatImporter(Importer):
@@ -102,7 +102,7 @@ def to_advisory(advisory_data):
         ):
             bugzilla_severity_val = bugzilla_data["bugs"][0]["severity"]
             bugzilla_severity = VulnerabilitySeverity(
-                system=scoring_systems["rhbs"],
+                system=severity_systems.REDHAT_BUGZILLA,
                 value=bugzilla_severity_val,
             )
 
@@ -129,7 +129,7 @@ def to_advisory(advisory_data):
                 value = rhsa_data["cvrfdoc"]["aggregate_severity"]
                 rhsa_aggregate_severities.append(
                     VulnerabilitySeverity(
-                        system=scoring_systems["rhas"],
+                        system=severity_systems.REDHAT_AGGREGATE,
                         value=value,
                     )
                 )
@@ -150,7 +150,7 @@ def to_advisory(advisory_data):
     if cvssv3_score:
         redhat_scores.append(
             VulnerabilitySeverity(
-                system=scoring_systems["cvssv3"],
+                system=severity_systems.CVSSV3,
                 value=cvssv3_score,
             )
         )
@@ -159,13 +159,13 @@ def to_advisory(advisory_data):
     if cvssv3_vector:
         redhat_scores.append(
             VulnerabilitySeverity(
-                system=scoring_systems["cvssv3_vector"],
+                system=severity_systems.CVSSV3_VECTOR,
                 value=cvssv3_vector,
             )
         )
 
     references.append(Reference(severities=redhat_scores, url=advisory_data["resource_url"]))
-    return Advisory(
+    return AdvisoryData(
         vulnerability_id=advisory_data["CVE"],
         summary=advisory_data["bugzilla_description"],
         affected_packages=nearest_patched_package(affected_purls, []),
@@ -177,6 +177,7 @@ def rpm_to_purl(rpm_string):
     # FIXME: there is code in scancode to handle RPM conversion AND this should
     # be all be part of the packageurl library
 
+    # FIXME: the comment below is not correct, this is the Epoch in the RPM version and not redhat specific
     # Red Hat uses `-:0` instead of just `-` to separate
     # package name and version
     components = rpm_string.split("-0:")

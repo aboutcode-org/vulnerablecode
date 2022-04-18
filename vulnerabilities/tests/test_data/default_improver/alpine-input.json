@@ -1,0 +1,126 @@
+{
+  "aliases": [],
+  "summary": null,
+  "affected_packages": [
+    {
+      "package": {
+        "type": "alpine",
+        "namespace": null,
+        "name": "xen",
+        "version": null,
+        "qualifiers": {
+          "arch": "aarch64",
+          "distroversion": "v3.11",
+          "reponame": "main"
+        },
+        "subpath": null
+      },
+      "affected_version_range": null,
+      "fixed_version": "4.10.0-r1"
+    },
+    {
+      "package": {
+        "type": "alpine",
+        "namespace": null,
+        "name": "xen",
+        "version": null,
+        "qualifiers": {
+          "arch": "armhf",
+          "distroversion": "v3.11",
+          "reponame": "main"
+        },
+        "subpath": null
+      },
+      "affected_version_range": null,
+      "fixed_version": "4.10.0-r1"
+    },
+    {
+      "package": {
+        "type": "alpine",
+        "namespace": null,
+        "name": "xen",
+        "version": null,
+        "qualifiers": {
+          "arch": "armv7",
+          "distroversion": "v3.11",
+          "reponame": "main"
+        },
+        "subpath": null
+      },
+      "affected_version_range": null,
+      "fixed_version": "4.10.0-r1"
+    },
+    {
+      "package": {
+        "type": "alpine",
+        "namespace": null,
+        "name": "xen",
+        "version": null,
+        "qualifiers": {
+          "arch": "ppc64le",
+          "distroversion": "v3.11",
+          "reponame": "main"
+        },
+        "subpath": null
+      },
+      "affected_version_range": null,
+      "fixed_version": "4.10.0-r1"
+    },
+    {
+      "package": {
+        "type": "alpine",
+        "namespace": null,
+        "name": "xen",
+        "version": null,
+        "qualifiers": {
+          "arch": "s390x",
+          "distroversion": "v3.11",
+          "reponame": "main"
+        },
+        "subpath": null
+      },
+      "affected_version_range": null,
+      "fixed_version": "4.10.0-r1"
+    },
+    {
+      "package": {
+        "type": "alpine",
+        "namespace": null,
+        "name": "xen",
+        "version": null,
+        "qualifiers": {
+          "arch": "x86",
+          "distroversion": "v3.11",
+          "reponame": "main"
+        },
+        "subpath": null
+      },
+      "affected_version_range": null,
+      "fixed_version": "4.10.0-r1"
+    },
+    {
+      "package": {
+        "type": "alpine",
+        "namespace": null,
+        "name": "xen",
+        "version": null,
+        "qualifiers": {
+          "arch": "x86_64",
+          "distroversion": "v3.11",
+          "reponame": "main"
+        },
+        "subpath": null
+      },
+      "affected_version_range": null,
+      "fixed_version": "4.10.0-r1"
+    }
+  ],
+  "references": [
+    {
+      "reference_id": "XSA-248",
+      "url": "https://xenbits.xen.org/xsa/advisory-248.html",
+      "severities": []
+    }
+  ],
+  "date_published": null
+}

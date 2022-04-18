@@ -245,21 +245,3 @@ def load_advisories(
                 affected_packages=affected_packages,
                 aliases=aliases,
             )
-
-
-class AlpineBasicImprover(Improver):
-    @property
-    def interesting_advisories(self) -> QuerySet:
-        return Advisory.objects.filter(created_by=AlpineImporter.qualified_name)
-
-    def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
-        """
-        Generate and return Inferences for the given advisory data
-        """
-        for affected_package in advisory_data.affected_packages:
-            fixed_purl = affected_package.get_fixed_purl()
-            yield Inference.from_advisory_data(
-                advisory_data,
-                confidence=MAX_CONFIDENCE,
-                fixed_purl=fixed_purl,
-            )

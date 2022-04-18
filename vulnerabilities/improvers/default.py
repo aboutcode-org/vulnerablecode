@@ -50,15 +50,25 @@ class DefaultImprover(Improver):
         return Advisory.objects.all()
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
-        for affected_package in advisory_data.affected_packages:
-            affected_purls, fixed_purl = get_exact_purls(affected_package)
-            yield Inference(
-                aliases=advisory_data.aliases,
-                confidence=MAX_CONFIDENCE,
-                summary=advisory_data.summary,
-                affected_purls=affected_purls,
-                fixed_purl=fixed_purl,
-                references=advisory_data.references,
+
+        if not advisory_data:
+            return None
+
+        if advisory_data.affected_packages:
+            for affected_package in advisory_data.affected_packages:
+                affected_purls, fixed_purl = get_exact_purls(affected_package)
+                yield Inference(
+                    aliases=advisory_data.aliases,
+                    confidence=MAX_CONFIDENCE,
+                    summary=advisory_data.summary,
+                    affected_purls=affected_purls,
+                    fixed_purl=fixed_purl,
+                    references=advisory_data.references,
+                )
+
+        else:
+            yield Inference.from_advisory_data(
+                advisory_data, confidence=MAX_CONFIDENCE, fixed_purl=None
             )
 
 

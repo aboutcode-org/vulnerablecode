@@ -195,14 +195,3 @@ def extract_severity_scores(cve_item):
             system=severity_systems.CVSSV2_VECTOR,
             value=str(cvss_v2.get("vectorString") or ""),
         )
-
-
-class NVDBasicImprover(Improver):
-    @property
-    def interesting_advisories(self) -> QuerySet:
-        return Advisory.objects.filter(created_by=NVDImporter.qualified_name)
-
-    def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
-        yield Inference.from_advisory_data(
-            advisory_data=advisory_data, confidence=100, fixed_purl=None
-        )

@@ -1,3 +1,26 @@
+#
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# http://nexb.com and https://github.com/nexB/vulnerablecode/
+# The VulnerableCode software is licensed under the Apache License version 2.0.
+# Data generated with VulnerableCode require an acknowledgment.
+#
+# You may not use this software except in compliance with the License.
+# You may obtain a copy of the License at: http://apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software distributed
+# under the License is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES OR
+# CONDITIONS OF ANY KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations under the License.
+#
+# When you publish or redistribute any data created with VulnerableCode or any VulnerableCode
+# derivative work, you must accompany this data with the following acknowledgment:
+#
+#  Generated with VulnerableCode and provided on an 'AS IS' BASIS, WITHOUT WARRANTIES
+#  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
+#  VulnerableCode should be considered or used as legal advice. Consult an Attorney
+#  for any legal advice.
+#  VulnerableCode is a free software from nexB Inc. and others.
+#  Visit https://github.com/nexB/vulnerablecode/ for support and download.
+
 import json
 import os
 
@@ -12,7 +35,6 @@ from vulnerabilities.tests import util_tests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "default_improver")
-VULNERABLECODE_REGEN_TEST_FIXTURES = os.getenv("VULNERABLECODE_REGEN_TEST_FIXTURES", False)
 
 
 def test_default_improver_with_no_data():
@@ -45,7 +67,7 @@ def test_default_improver_with_empty_affected_packages():
         aliases=["CVE-2020-1234"],
         confidence=100,
         summary="Test summary",
-        affected_purls=None,
+        affected_purls=[],
         fixed_purl=None,
         references=[Reference(reference_id="", url="https://www.example.com/", severities=[])],
     )
@@ -100,13 +122,13 @@ def test_default_improver_with_affected_packages():
     assert result == expected
 
 
-def test_default_improver_with_alpine(regen=VULNERABLECODE_REGEN_TEST_FIXTURES):
+def test_default_improver_with_alpine():
     """
     Test that DefaultImprover.get_inferences() returns an empty list when given an advisory with alpine advisories
     """
     default_improver = DefaultImprover()
     response_file = os.path.join(TEST_DATA, f"alpine-input.json")
-    with open(response_file, "r") as f:
+    with open(response_file) as f:
         advisory_data = json.load(f)
     expected_file = os.path.join(TEST_DATA, f"alpine-expected.json")
     result = [
@@ -116,11 +138,11 @@ def test_default_improver_with_alpine(regen=VULNERABLECODE_REGEN_TEST_FIXTURES):
     util_tests.check_results_against_json(result, expected_file)
 
 
-def test_default_improver_with_nvd(regen=VULNERABLECODE_REGEN_TEST_FIXTURES):
+def test_default_improver_with_nvd():
     default_improver = DefaultImprover()
     response_file = os.path.join(TEST_DATA, f"nvd-input.json")
 
-    with open(response_file, "r") as f:
+    with open(response_file) as f:
         advisory_data = json.load(f)
     expected_file = os.path.join(TEST_DATA, f"nvd-expected.json")
     result = [

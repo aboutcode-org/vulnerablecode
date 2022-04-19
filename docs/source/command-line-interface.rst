@@ -11,7 +11,7 @@ The main entry point is Django's :guilabel:`manage.py` management commands.
 Lists all sub-commands available, including Django built-in commands.
 VulnerableCode's own commands are listed under the ``[vulnerabilities]`` section::
 
-    $ ./mange.py --help
+    $ ./manage.py --help
     ...
     [vulnerabilities]
         create_cpe_to_purl_map

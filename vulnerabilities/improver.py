@@ -67,14 +67,12 @@ class Inference:
         """
         return {
             "vulnerability_id": self.vulnerability_id,
-            "aliases": [alias for alias in self.aliases or []],
+            "aliases": [alias for alias in self.aliases],
             "confidence": self.confidence,
             "summary": self.summary,
-            "affected_purls": [
-                affected_purl.to_dict() for affected_purl in self.affected_purls or []
-            ],
+            "affected_purls": [affected_purl.to_dict() for affected_purl in self.affected_purls],
             "fixed_purl": self.fixed_purl.to_dict() if self.fixed_purl else None,
-            "references": [ref.to_dict() for ref in self.references or []],
+            "references": [ref.to_dict() for ref in self.references],
         }
 
     @classmethod
@@ -87,7 +85,7 @@ class Inference:
             aliases=advisory_data.aliases,
             confidence=confidence,
             summary=advisory_data.summary,
-            affected_purls=affected_purls,
+            affected_purls=affected_purls or [],
             fixed_purl=fixed_purl,
             references=advisory_data.references,
         )

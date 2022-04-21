@@ -52,7 +52,7 @@ class DefaultImprover(Improver):
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
 
         if not advisory_data:
-            return None
+            return []
 
         if advisory_data.affected_packages:
             for affected_package in advisory_data.affected_packages:

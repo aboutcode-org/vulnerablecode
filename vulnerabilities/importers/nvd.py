@@ -45,14 +45,12 @@ class NVDImporter(Importer):
     spdx_license_expression = "LicenseRef-scancode-unknown"
 
     def advisory_data(self):
-        advisory_data = []
         current_year = date.today().year
         # NVD json feeds start from 2002.
         for year in range(2002, current_year + 1):
             download_url = f"https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-{year}.json.gz"
             data = fetch(download_url)
-            advisory_data.extend(to_advisories(data))
-        return advisory_data
+            yield from to_advisories(data)
 
 
 # Isolating network calls for simplicity of testing

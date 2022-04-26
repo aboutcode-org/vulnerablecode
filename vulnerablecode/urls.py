@@ -26,6 +26,7 @@ from django.urls import include
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
+from vulnerabilities.api import CPEViewSet
 from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
 from vulnerabilities.views import HomePage
@@ -47,6 +48,7 @@ api_router = OptionalSlashRouter()
 api_router.register(r"packages", PackageViewSet)
 # `DefaultRouter` requires `basename` when registering viewsets that don't define a queryset.
 api_router.register(r"vulnerabilities", VulnerabilityViewSet, basename="vulnerability")
+api_router.register(r"cpes", CPEViewSet, basename="cpe")
 
 urlpatterns = [
     path("admin/", admin.site.urls),

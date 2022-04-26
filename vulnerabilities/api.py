@@ -177,3 +177,25 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     paginate_by = 50
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = VulnerabilityFilterSet
+
+
+class CPEFilterSet(filters.FilterSet):
+    cpe = filters.CharFilter(method="filter_cpe")
+
+    class Meta:
+        model = Vulnerability
+        fields = ["vulnerabilityreference__reference_id"]
+
+    def filter_cpe(self, queryset, name, value):
+        cpe = unquote(value)
+        return self.queryset.filter(vulnerabilityreference__reference_id__startswith=cpe).distinct()
+
+
+class CPEViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Vulnerability.objects.filter(
+        vulnerabilityreference__reference_id__startswith="cpe"
+    ).distinct()
+    serializer_class = VulnerabilitySerializer
+    paginate_by = 50
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = CPEFilterSet

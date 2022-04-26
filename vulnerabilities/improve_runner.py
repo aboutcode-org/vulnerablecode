@@ -63,7 +63,11 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
 
         for ref in inference.references:
             reference, _ = models.VulnerabilityReference.objects.get_or_create(
-                vulnerability=vuln, reference_id=ref.reference_id, url=ref.url
+                reference_id=ref.reference_id, url=ref.url
+            )
+
+            models.VulnerabilityRelatedReference.objects.update_or_create(
+                reference=reference, vulnerability=vuln
             )
 
             for severity in ref.severities:

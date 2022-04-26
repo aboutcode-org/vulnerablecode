@@ -19,6 +19,8 @@ Version v30.0.0
 
 - Add support for nix as a Linux deployemnet target.
 
+- Lookup vulnerabilities from CPE
+
 
 
 Version v20.10

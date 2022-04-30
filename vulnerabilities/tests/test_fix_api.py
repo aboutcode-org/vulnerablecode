@@ -25,6 +25,8 @@ from rest_framework import status
 
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityReference
+from vulnerabilities.models import VulnerabilityRelatedReference
 
 
 class APITestCaseVulnerability(TestCase):
@@ -85,3 +87,23 @@ class APITestCasePackage(TestCase):
         assert response["name"] == "test-vulnDB"
         assert response["version"] == "1.0"
         assert response["type"] == "generic"
+
+
+class CPEApi(TestCase):
+    def setUp(self):
+        self.vulnerability = Vulnerability.objects.create(summary="test")
+        for i in range(0, 10):
+            ref, _ = VulnerabilityReference.objects.get_or_create(
+                reference_id=f"cpe:/a:nginx:{i}",
+            )
+            VulnerabilityRelatedReference.objects.create(
+                reference=ref, vulnerability=self.vulnerability
+            )
+
+    def test_api_status(self):
+        response = self.client.get("/api/cpes/", format="json")
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_api_response(self):
+        response = self.client.get("/api/cpes/?cpe=cpe:/a:nginx:9", format="json").data
+        self.assertEqual(response["count"], 1)

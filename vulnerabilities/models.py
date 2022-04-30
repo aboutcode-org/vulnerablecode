@@ -60,6 +60,10 @@ class Vulnerability(models.Model):
         blank=True,
     )
 
+    references = models.ManyToManyField(
+        to="VulnerabilityReference", through="VulnerabilityRelatedReference"
+    )
+
     @property
     def vulcoid(self):
         return f"VULCOID-{self.vulnerability_id}"
@@ -92,10 +96,11 @@ class VulnerabilityReference(models.Model):
     package manager.
     """
 
-    vulnerability = models.ForeignKey(
-        Vulnerability,
-        on_delete=models.CASCADE,
+    vulnerabilities = models.ManyToManyField(
+        to="Vulnerability",
+        through="VulnerabilityRelatedReference",
     )
+
     url = models.URLField(
         max_length=1024, help_text="URL to the vulnerability reference", blank=True
     )
@@ -111,7 +116,6 @@ class VulnerabilityReference(models.Model):
 
     class Meta:
         unique_together = (
-            "vulnerability",
             "url",
             "reference_id",
         )
@@ -119,6 +123,25 @@ class VulnerabilityReference(models.Model):
     def __str__(self):
         reference_id = f" {self.reference_id}" if self.reference_id else ""
         return f"{self.url}{reference_id}"
+
+
+class VulnerabilityRelatedReference(models.Model):
+    """
+    A reference related to a vulnerability.
+    """
+
+    vulnerability = models.ForeignKey(
+        Vulnerability,
+        on_delete=models.CASCADE,
+    )
+
+    reference = models.ForeignKey(
+        VulnerabilityReference,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        unique_together = ("vulnerability", "reference")
 
 
 class Package(PackageURLMixin):

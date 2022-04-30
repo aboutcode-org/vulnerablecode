@@ -77,6 +77,47 @@ paths:
               schema:
                 $ref: '#/components/schemas/Package'
           description: ''
+  /api/cpes/:
+    get:
+      operationId: cpes_list
+      description: ''
+      tags:
+      - cpe
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPackageList'
+          description: ''
+  /api/cpes?cpe={cpe}:
+    get:
+      operationId: cpes_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: cpe
+        schema:
+          type: string
+        description: A CPE, more info on CPE can be found here https://nvd.nist.gov/products/cpe
+        required: true
+      tags:
+      - cpe
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Package'
+          description: ''
   /api/packages/bulk_search/:
     post:
       operationId: packages_bulk_search

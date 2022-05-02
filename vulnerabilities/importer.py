@@ -261,7 +261,9 @@ class AdvisoryData:
                 AffectedPackage.from_dict(pkg) for pkg in advisory_data["affected_packages"]
             ],
             "references": [Reference.from_dict(ref) for ref in advisory_data["references"]],
-            "date_published": date_published.isoformat() if date_published else None,
+            "date_published": datetime.datetime.fromisoformat(date_published)
+            if date_published
+            else None,
         }
         return cls(**transformed)
 

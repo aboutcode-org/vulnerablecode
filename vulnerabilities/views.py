@@ -78,12 +78,12 @@ class PackageSearchView(View):
             .annotate(
                 vulnerability_count=Count(
                     "vulnerabilities",
-                    filter=Q(vulnerabilities__packagerelatedvulnerability__fix=False),
+                    filter=Q(packagerelatedvulnerability__fix=False),
                 ),
                 # TODO: consider renaming to fixed in the future
                 patched_vulnerability_count=Count(
                     "vulnerabilities",
-                    filter=Q(vulnerabilities__packagerelatedvulnerability__fix=True),
+                    filter=Q(packagerelatedvulnerability__fix=True),
                 ),
             )
             .prefetch_related()
@@ -110,7 +110,7 @@ class VulnerabilitySearchView(View):
     def request_to_vulnerabilities(request):
         vuln_id = request.GET["vuln_id"]
         return list(
-            models.Vulnerability.objects.filter(vulnerability_id__icontains=vuln_id).annotate(
+            models.Vulnerability.objects.filter(vulnerability_id=vuln_id).annotate(
                 vulnerable_package_count=Count(
                     "packages", filter=Q(packagerelatedvulnerability__fix=False)
                 ),
@@ -129,18 +129,18 @@ class PackageUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(PackageUpdate, self).get_context_data(**kwargs)
-        resolved_vuln, unresolved_vuln = self._package_vulnerabilities(self.kwargs["pk"])
+        resolved_vuln, unresolved_vuln = self._package_vulnerabilities()
         context["resolved_vuln"] = resolved_vuln
         context["impacted_vuln"] = unresolved_vuln
 
         return context
 
-    def _package_vulnerabilities(self, package_pk):
+    def _package_vulnerabilities(self):
         # This can be further optimised by caching get_object result first time it
         # is called
         package = self.get_object()
-        resolved_vuln = [i for i in package.resolved_to.values("vulnerability_id", "pk")]
-        unresolved_vuln = [i for i in package.vulnerable_to.values("vulnerability_id", "pk")]
+        resolved_vuln = [i for i in package.resolved_to]
+        unresolved_vuln = [i for i in package.vulnerable_to]
 
         return resolved_vuln, unresolved_vuln
 
@@ -154,11 +154,15 @@ class VulnerabilityDetails(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(VulnerabilityDetails, self).get_context_data(**kwargs)
-        context["vulnerability"] = models.Vulnerability.objects.get(id=self.kwargs["pk"])
+        vulnerability = models.Vulnerability.objects.get(id=self.kwargs["pk"])
+        context["vulnerability"] = vulnerability
+        context["aliases"] = vulnerability.aliases.alias()
         return context
 
     def get_queryset(self):
-        return models.VulnerabilityReference.objects.filter(vulnerability_id=self.kwargs["pk"])
+        return models.VulnerabilityReference.objects.filter(
+            vulnerabilityrelatedreference__vulnerability__id=self.kwargs["pk"]
+        )
 
 
 class HomePage(View):

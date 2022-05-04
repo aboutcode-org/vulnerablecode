@@ -37,7 +37,7 @@ class VulnerabilityAdmin(admin.ModelAdmin):
 
 @admin.register(VulnerabilityReference)
 class VulnerabilityReferenceAdmin(admin.ModelAdmin):
-    search_fields = ["vulnerability__vulnerability_id", "reference_id", "url"]
+    search_fields = ["vulnerabilityrelatedreference__vulnerability__id", "reference_id", "url"]
 
 
 @admin.register(Package)

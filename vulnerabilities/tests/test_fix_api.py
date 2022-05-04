@@ -49,7 +49,15 @@ class APITestCaseVulnerability(TestCase):
         response = self.client.get(
             f"/api/vulnerabilities/{self.vulnerability.id}", format="json"
         ).data
-        assert response["summary"] == "test"
+        assert response == {
+            "url": f"http://testserver/api/vulnerabilities/{self.vulnerability.id}",
+            "vulnerability_id": "VULCOID-Y",
+            "summary": "test",
+            "aliases": [],
+            "fixed_packages": [],
+            "affected_packages": [],
+            "references": [],
+        }
 
 
 class APITestCasePackage(TestCase):
@@ -84,9 +92,18 @@ class APITestCasePackage(TestCase):
 
     def test_api_with_single_vulnerability(self):
         response = self.client.get(f"/api/packages/{self.package.id}", format="json").data
-        assert response["name"] == "test-vulnDB"
-        assert response["version"] == "1.0"
-        assert response["type"] == "generic"
+        assert response == {
+            "url": f"http://testserver/api/packages/{self.package.id}",
+            "purl": "pkg:generic/nginx/test-vulnDB@1.0",
+            "type": "generic",
+            "namespace": "nginx",
+            "name": "test-vulnDB",
+            "version": "1.0",
+            "qualifiers": {},
+            "subpath": "",
+            "affected_by_vulnerabilities": [],
+            "fixing_vulnerabilities": [],
+        }
 
 
 class CPEApi(TestCase):

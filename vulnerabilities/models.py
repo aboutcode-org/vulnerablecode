@@ -29,6 +29,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.utils.http import int_to_base36
 from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin
 
@@ -47,12 +48,12 @@ class Vulnerability(models.Model):
     stored as ``Alias``.
     """
 
-    vulnerability_id = models.UUIDField(
-        default=uuid.uuid4,
-        editable=False,
+    vulnerability_id = models.CharField(
         unique=True,
-        help_text="Unique identifier for a vulnerability in this database, assigned automatically. "
-        "In the external representation it is prefixed with VULCOID-",
+        blank=True,
+        max_length=20,
+        help_text="Unique identifier for a vulnerability in the external representation. "
+        "It is prefixed with VULCOID-",
     )
 
     summary = models.TextField(
@@ -63,17 +64,23 @@ class Vulnerability(models.Model):
     references = models.ManyToManyField(
         to="VulnerabilityReference", through="VulnerabilityRelatedReference"
     )
+    packages = models.ManyToManyField(
+        to="Package",
+        through="PackageRelatedVulnerability",
+    )
 
-    @property
-    def vulcoid(self):
-        return f"VULCOID-{self.vulnerability_id}"
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.vulnerability_id:
+            self.vulnerability_id = f"VULCOID-{int_to_base36(self.id).upper()}"
+            super().save(update_fields=["vulnerability_id"])
 
     @property
     def vulnerable_to(self):
         """
         Return packages that are vulnerable to this vulnerability.
         """
-        return self.packages.filter(vulnerabilities__packagerelatedvulnerability__fix=False)
+        return self.packages.filter(packagerelatedvulnerability__fix=False)
 
     @property
     def resolved_to(self):
@@ -81,10 +88,18 @@ class Vulnerability(models.Model):
         Returns packages that first received patch against this vulnerability
         in their particular version history.
         """
-        return self.packages.filter(vulnerabilities__packagerelatedvulnerability__fix=True)
+        return self.packages.filter(packagerelatedvulnerability__fix=True)
+
+    @property
+    def alias(self):
+        """
+        Returns packages that first received patch against this vulnerability
+        in their particular version history.
+        """
+        return self.aliases.all()
 
     def __str__(self):
-        return self.vulcoid
+        return self.vulnerability_id
 
     class Meta:
         verbose_name_plural = "Vulnerabilities"
@@ -150,10 +165,7 @@ class Package(PackageURLMixin):
     """
 
     vulnerabilities = models.ManyToManyField(
-        to="Vulnerability",
-        through="PackageRelatedVulnerability",
-        through_fields=("package", "vulnerability"),
-        related_name="packages",
+        to="Vulnerability", through="PackageRelatedVulnerability"
     )
 
     # Remove the `qualifers` and `set_package_url` overrides after
@@ -218,8 +230,14 @@ class Package(PackageURLMixin):
 class PackageRelatedVulnerability(models.Model):
 
     # TODO: Fix related_name
-    package = models.ForeignKey(Package, on_delete=models.CASCADE, related_name="package")
-    vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
+    package = models.ForeignKey(
+        Package,
+        on_delete=models.CASCADE,
+    )
+    vulnerability = models.ForeignKey(
+        Vulnerability,
+        on_delete=models.CASCADE,
+    )
     created_by = models.CharField(
         max_length=100,
         blank=True,

@@ -30,6 +30,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
@@ -44,10 +45,11 @@ class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
 
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
     scores = VulnerabilitySeveritySerializer(many=True, source="vulnerabilityseverity_set")
+    reference_url = serializers.CharField(source="url")
 
     class Meta:
         model = VulnerabilityReference
-        fields = ["reference_id", "url", "scores"]
+        fields = ["reference_url", "reference_id", "scores"]
 
 
 class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
@@ -71,36 +73,64 @@ class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Vulnerability
-        fields = ["url", "vulnerability_id", "references", "summary"]
+        fields = ["url", "vulnerability_id", "summary", "references"]
+
+
+class AliasSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Used for nesting inside package focused APIs.
+    """
+
+    class Meta:
+        model = Alias
+        fields = ["alias"]
 
 
 class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
 
-    resolved_packages = MinimalPackageSerializer(many=True, source="resolved_to", read_only=True)
-    unresolved_packages = MinimalPackageSerializer(
-        many=True, source="vulnerable_to", read_only=True
-    )
+    fixed_packages = MinimalPackageSerializer(many=True, source="resolved_to", read_only=True)
+    affected_packages = MinimalPackageSerializer(many=True, source="vulnerable_to", read_only=True)
 
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
+    aliases = AliasSerializer(many=True, source="alias")
 
     class Meta:
         model = Vulnerability
-        fields = "__all__"
+        fields = [
+            "url",
+            "vulnerability_id",
+            "summary",
+            "aliases",
+            "fixed_packages",
+            "affected_packages",
+            "references",
+        ]
 
 
 class PackageSerializer(serializers.HyperlinkedModelSerializer):
 
-    unresolved_vulnerabilities = MinimalVulnerabilitySerializer(
+    purl = serializers.CharField(source="package_url")
+    affected_by_vulnerabilities = MinimalVulnerabilitySerializer(
         many=True, source="vulnerable_to", read_only=True
     )
-    resolved_vulnerabilities = MinimalVulnerabilitySerializer(
+    fixing_vulnerabilities = MinimalVulnerabilitySerializer(
         many=True, source="resolved_to", read_only=True
     )
-    purl = serializers.CharField(source="package_url")
 
     class Meta:
         model = Package
-        exclude = ["vulnerabilities"]
+        fields = [
+            "url",
+            "purl",
+            "type",
+            "namespace",
+            "name",
+            "version",
+            "qualifiers",
+            "subpath",
+            "affected_by_vulnerabilities",
+            "fixing_vulnerabilities",
+        ]
 
 
 class PackageFilterSet(filters.FilterSet):

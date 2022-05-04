@@ -54,7 +54,6 @@ class AlpineImporter(Importer):
     license_url = "https://secdb.alpinelinux.org/license.txt"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
-        advisories = []
         page_response_content = fetch_response(BASE_URL).content
         advisory_directory_links = fetch_advisory_directory_links(page_response_content)
         advisory_links = []
@@ -68,8 +67,7 @@ class AlpineImporter(Importer):
             if not record["packages"]:
                 LOGGER.error(f'"packages" not found in {link!r}')
                 continue
-            advisories.extend(process_record(record))
-        return advisories
+            yield from process_record(record)
 
 
 def fetch_response(url):
@@ -127,7 +125,7 @@ def check_for_attributes(record) -> bool:
     return True
 
 
-def process_record(record: dict) -> List[AdvisoryData]:
+def process_record(record: dict) -> Iterable[AdvisoryData]:
     """
     Return a list of AdvisoryData objects by processing data
     present in that `record`
@@ -136,22 +134,18 @@ def process_record(record: dict) -> List[AdvisoryData]:
         LOGGER.error(f'"packages" not found in this record {record!r}')
         return []
 
-    advisories: List[AdvisoryData] = []
-
     for package in record["packages"]:
         if not package["pkg"]:
             LOGGER.error(f'"pkg" not found in this package {package!r}')
             continue
         if not check_for_attributes(record):
             continue
-        loaded_advisories = load_advisories(
+        yield from load_advisories(
             package["pkg"],
             record["distroversion"],
             record["reponame"],
             record["archs"],
         )
-        advisories.extend(loaded_advisories)
-    return advisories
 
 
 def load_advisories(

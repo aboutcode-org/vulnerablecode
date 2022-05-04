@@ -455,7 +455,7 @@ def test_process_record(caplog):
         ),
     ]
     with open(os.path.join(TEST_DATA, os.path.join(TEST_DATA, "v3.11", "main.json"))) as f:
-        found_advisories = process_record(json.loads(f.read()))
+        found_advisories = list(process_record(json.loads(f.read())))
         assert found_advisories == expected_advisories
     assert (
         "'4.10-1-r1' is not a valid AlpineVersion InvalidVersion(\"'4.10-1-r1' is not a valid <class 'univers.versions.AlpineLinuxVersion'>\")"
@@ -510,7 +510,7 @@ def test_fetch_advisory_links_failure(caplog):
 
 def test_process_record_without_packages(caplog):
     with open(os.path.join(TEST_DATA, os.path.join(TEST_DATA, "v3.3", "community.json"))) as f:
-        assert process_record(json.loads(f.read())) == []
+        assert list(process_record(json.loads(f.read()))) == []
         assert (
             "\"packages\" not found in this record {'apkurl': '{{urlprefix}}/{{distroversion}}/{{reponame}}/{{arch}}/{{pkg.name}}-{{pkg.ver}}.apk', 'archs': ['armhf', 'x86', 'x86_64'], 'reponame': 'community', 'urlprefix': 'https://dl-cdn.alpinelinux.org/alpine', 'distroversion': 'v3.3', 'packages': []}"
             in caplog.text

@@ -31,12 +31,12 @@ Explore Vulnerabilities
           <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
           <tr>
               <th>Vulnerability ID</th>
-              <th>Vulnerable packages</th>
-              <th>Patched packages</th>
+              <th>Affected packages</th>
+              <th>Fixed packages</th>
           </tr>
           {% for vulnerability in  vulnerabilities %}
               <tr>
-                  <td><a href="{% url 'vulnerability_view' vulnerability.pk %}">{{vulnerability.vulnerability_id}}</a></td>
+                  <td><a href="{% url 'vulnerability_view' vulnerability.pk %}">{{vulnerability.vulcoid}}</a></td>
                   <td>{{vulnerability.vulnerable_package_count}}</td>
                   <td>{{vulnerability.patched_package_count}}</td>
               </tr>

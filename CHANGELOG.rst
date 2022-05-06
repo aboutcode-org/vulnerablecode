@@ -11,13 +11,13 @@ Version v30.0.0
 
 - Add new data sources including OSV, GitHub and GitLab.
 
-- Improve documentation ncluding adding examples for importers and improvers
+- Improve documentation including adding examples for importers and improvers
 
 - Remove the ability to edit relationships from the UI. The UI is now read-only
   and we will need to design a different UI for proper review and curation of
   vulnerabilities.
 
-- Add support for nix as a Linux deployemnet target.
+- Add support for nix as a Linux deployment target.
 
 - Lookup vulnerabilities from CPE
 

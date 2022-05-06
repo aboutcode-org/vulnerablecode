@@ -300,6 +300,15 @@ class TestGoproxyVersionAPI:
         ]
         assert results == expected
 
+    @mock.patch("vulnerabilities.package_managers.get_response")
+    def test_fetch_with_responses_are_none(self, mock_fetcher):
+        # we have many calls made to get_response
+        responses = [None, None, None, None, None]
+        mock_fetcher.side_effect = responses
+
+        results = list(GoproxyVersionAPI().fetch("github.com/FerretDB/FerretDB"))
+        assert results == []
+
 
 class TestNugetVersionAPI:
     expected_versions = [

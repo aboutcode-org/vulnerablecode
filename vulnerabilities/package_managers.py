@@ -660,8 +660,12 @@ class GoproxyVersionAPI(VersionAPI):
             url = f"https://proxy.golang.org/{escaped_pkg}/@v/list"
             response = get_response(url=url, content_type="text")
             if not response:
-                escaped_pkg = self.trim_go_url_path(escaped_pkg)
+                trimmed_escaped_pkg = self.trim_go_url_path(escaped_pkg)
                 trimmed_pkg = self.trim_go_url_path(trimmed_pkg) or ""
+                if trimmed_escaped_pkg == escaped_pkg:
+                    break
+
+                escaped_pkg = trimmed_escaped_pkg
                 continue
 
             break

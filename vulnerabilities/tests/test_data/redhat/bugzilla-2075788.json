@@ -1,0 +1,176 @@
+{
+   "bugs" : [
+      {
+         "alias" : [
+            "CVE-2022-21426"
+         ],
+         "assigned_to" : "Red Hat Product Security",
+         "assigned_to_detail" : {
+            "email" : "security-response-team",
+            "id" : 164808,
+            "name" : "security-response-team",
+            "real_name" : "Red Hat Product Security"
+         },
+         "blocks" : [
+            2073424
+         ],
+         "cc" : [
+            "Andrew John Hughes",
+            "Chess Hazlett",
+            "dfitzmau",
+            "Jonathan Dowland",
+            "Jonathan Christison",
+            "jiri vanek",
+            "Nicole Baratta",
+            "Mario Torre",
+            "Paramvir jindal",
+            "Red Hat Product Security",
+            "Sangeeta Raghu Punnadi"
+         ],
+         "cc_detail" : [
+            {
+               "email" : "ahughes",
+               "id" : 271596,
+               "name" : "ahughes",
+               "real_name" : "Andrew John Hughes"
+            },
+            {
+               "email" : "chazlett",
+               "id" : 353328,
+               "name" : "chazlett",
+               "real_name" : "Chess Hazlett"
+            },
+            {
+               "email" : "dfitzmau",
+               "id" : 443232,
+               "name" : "dfitzmau",
+               "real_name" : ""
+            },
+            {
+               "email" : "jdowland",
+               "id" : 378860,
+               "name" : "jdowland",
+               "real_name" : "Jonathan Dowland"
+            },
+            {
+               "email" : "jochrist",
+               "id" : 378104,
+               "name" : "jochrist",
+               "real_name" : "Jonathan Christison"
+            },
+            {
+               "email" : "jvanek",
+               "id" : 301543,
+               "name" : "jvanek",
+               "real_name" : "jiri vanek"
+            },
+            {
+               "email" : "nengard",
+               "id" : 399494,
+               "name" : "nengard",
+               "real_name" : "Nicole Baratta"
+            },
+            {
+               "email" : "neugens",
+               "id" : 327997,
+               "name" : "neugens",
+               "real_name" : "Mario Torre"
+            },
+            {
+               "email" : "pjindal",
+               "id" : 360071,
+               "name" : "pjindal",
+               "real_name" : "Paramvir jindal"
+            },
+            {
+               "email" : "security-response-team",
+               "id" : 164808,
+               "name" : "security-response-team",
+               "real_name" : "Red Hat Product Security"
+            },
+            {
+               "email" : "sraghupu",
+               "id" : 442010,
+               "name" : "sraghupu",
+               "real_name" : "Sangeeta Raghu Punnadi"
+            }
+         ],
+         "cf_clone_of" : null,
+         "cf_doc_type" : "If docs needed, set a value",
+         "cf_environment" : "",
+         "cf_fixed_in" : "",
+         "cf_last_closed" : "2022-04-28T23:15:16Z",
+         "cf_release_notes" : "",
+         "classification" : "Other",
+         "component" : [
+            "vulnerability"
+         ],
+         "creation_time" : "2022-04-15T10:50:05Z",
+         "creator" : "Mauro Matteo Cascella",
+         "creator_detail" : {
+            "email" : "mcascell",
+            "id" : 441861,
+            "name" : "mcascell",
+            "real_name" : "Mauro Matteo Cascella"
+         },
+         "deadline" : null,
+         "depends_on" : [
+            2073577,
+            2073578,
+            2073579,
+            2073593,
+            2073594,
+            2073595,
+            2074646,
+            2074649,
+            2074650,
+            2073575,
+            2073576,
+            2073587,
+            2073589,
+            2073590,
+            2073591,
+            2073592,
+            2073601,
+            2074639,
+            2074641,
+            2074642,
+            2074643,
+            2074644,
+            2074645
+         ],
+         "docs_contact" : "",
+         "dupe_of" : null,
+         "groups" : [],
+         "id" : 2075788,
+         "is_cc_accessible" : true,
+         "is_confirmed" : true,
+         "is_creator_accessible" : true,
+         "is_open" : false,
+         "keywords" : [
+            "Security"
+         ],
+         "last_change_time" : "2022-05-09T14:02:55Z",
+         "op_sys" : "Linux",
+         "platform" : "All",
+         "priority" : "medium",
+         "product" : "Security Response",
+         "qa_contact" : "",
+         "resolution" : "ERRATA",
+         "see_also" : [],
+         "severity" : "medium",
+         "status" : "CLOSED",
+         "summary" : "CVE-2022-21426 OpenJDK: Unbounded memory allocation when compiling crafted XPath expressions (JAXP, 8270504)",
+         "target_milestone" : "---",
+         "target_release" : [
+            "---"
+         ],
+         "url" : "",
+         "version" : [
+            "unspecified"
+         ],
+         "whiteboard" : ""
+      }
+   ],
+   "faults" : []
+}

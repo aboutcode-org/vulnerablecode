@@ -1,0 +1,201 @@
+{
+    "bugs" : [
+       {
+          "alias" : [
+             "CVE-2022-24272"
+          ],
+          "assigned_to" : "Red Hat Product Security",
+          "assigned_to_detail" : {
+             "email" : "security-response-team",
+             "id" : 164808,
+             "name" : "security-response-team",
+             "real_name" : "Red Hat Product Security"
+          },
+          "blocks" : [
+             2077737
+          ],
+          "cc" : [
+             "amctagga",
+             "Brad Buckingham",
+             "Barnaby Court",
+             "Bryan Kearney",
+             "Bryan Totty",
+             "Eric Helms",
+             "Eran Tamir",
+             "Justin Sherrill",
+             "Lukas Zapletal",
+             "Marek Hulan",
+             "Mike McCune",
+             "mark yarborough",
+             "Nimrod Becker",
+             "Nikos Moumoulidis",
+             "OpenShift Container Storage bugs",
+             "orabin",
+             "Patrick Creech",
+             "Robin Chan"
+          ],
+          "cc_detail" : [
+             {
+                "email" : "amctagga",
+                "id" : 449751,
+                "name" : "amctagga",
+                "real_name" : ""
+             },
+             {
+                "email" : "bbuckingham",
+                "id" : 261736,
+                "name" : "bbuckingham",
+                "real_name" : "Brad Buckingham"
+             },
+             {
+                "email" : "bcourt",
+                "id" : 355916,
+                "name" : "bcourt",
+                "real_name" : "Barnaby Court"
+             },
+             {
+                "email" : "bkearney",
+                "id" : 196330,
+                "name" : "bkearney",
+                "real_name" : "Bryan Kearney"
+             },
+             {
+                "email" : "btotty",
+                "id" : 335894,
+                "name" : "btotty",
+                "real_name" : "Bryan Totty"
+             },
+             {
+                "email" : "ehelms",
+                "id" : 314605,
+                "name" : "ehelms",
+                "real_name" : "Eric Helms"
+             },
+             {
+                "email" : "etamir",
+                "id" : 433931,
+                "name" : "etamir",
+                "real_name" : "Eran Tamir"
+             },
+             {
+                "email" : "jsherril",
+                "id" : 179073,
+                "name" : "jsherril",
+                "real_name" : "Justin Sherrill"
+             },
+             {
+                "email" : "lzap",
+                "id" : 303294,
+                "name" : "lzap",
+                "real_name" : "Lukas Zapletal"
+             },
+             {
+                "email" : "mhulan",
+                "id" : 342559,
+                "name" : "mhulan",
+                "real_name" : "Marek Hulan"
+             },
+             {
+                "email" : "mmccune",
+                "id" : 161152,
+                "name" : "mmccune",
+                "real_name" : "Mike McCune"
+             },
+             {
+                "email" : "myarboro",
+                "id" : 209117,
+                "name" : "myarboro",
+                "real_name" : "mark yarborough"
+             },
+             {
+                "email" : "nbecker",
+                "id" : 434785,
+                "name" : "nbecker",
+                "real_name" : "Nimrod Becker"
+             },
+             {
+                "email" : "nmoumoul",
+                "id" : 414156,
+                "name" : "nmoumoul",
+                "real_name" : "Nikos Moumoulidis"
+             },
+             {
+                "email" : "ocs-bugs",
+                "id" : 436653,
+                "name" : "ocs-bugs",
+                "real_name" : "OpenShift Container Storage bugs"
+             },
+             {
+                "email" : "orabin",
+                "id" : 368399,
+                "name" : "orabin",
+                "real_name" : ""
+             },
+             {
+                "email" : "pcreech",
+                "id" : 390536,
+                "name" : "pcreech",
+                "real_name" : "Patrick Creech"
+             },
+             {
+                "email" : "rchan",
+                "id" : 412819,
+                "name" : "rchan",
+                "real_name" : "Robin Chan"
+             }
+          ],
+          "cf_clone_of" : null,
+          "cf_doc_type" : "If docs needed, set a value",
+          "cf_environment" : "",
+          "cf_fixed_in" : "",
+          "cf_last_closed" : "2022-05-09T20:15:38Z",
+          "cf_release_notes" : "",
+          "classification" : "Other",
+          "component" : [
+             "vulnerability"
+          ],
+          "creation_time" : "2022-04-22T04:42:53Z",
+          "creator" : "Sandipan Roy",
+          "creator_detail" : {
+             "email" : "saroy",
+             "id" : 464724,
+             "name" : "saroy",
+             "real_name" : "Sandipan Roy"
+          },
+          "deadline" : null,
+          "depends_on" : [],
+          "docs_contact" : "",
+          "dupe_of" : null,
+          "groups" : [],
+          "id" : 2077736,
+          "is_cc_accessible" : true,
+          "is_confirmed" : true,
+          "is_creator_accessible" : true,
+          "is_open" : false,
+          "keywords" : [
+             "Security"
+          ],
+          "last_change_time" : "2022-05-09T20:15:38Z",
+          "op_sys" : "Linux",
+          "platform" : "All",
+          "priority" : "medium",
+          "product" : "Security Response",
+          "qa_contact" : "",
+          "resolution" : "WONTFIX",
+          "see_also" : [],
+          "severity" : "medium",
+          "status" : "CLOSED",
+          "summary" : "CVE-2022-24272 mongodb: authenticated user may trigger an invariant assertion during command dispatch due to incorrect validation on the $external database",
+          "target_milestone" : "---",
+          "target_release" : [
+             "---"
+          ],
+          "url" : "",
+          "version" : [
+             "unspecified"
+          ],
+          "whiteboard" : ""
+       }
+    ],
+    "faults" : []
+ }

@@ -1,0 +1,256 @@
+{
+  "cvrfdoc": {
+    "document_title": "Red Hat Security Advisory: OpenJDK 11.0.15 security update for Windows Builds",
+    "document_distribution": "Copyright © 2022 Red Hat, Inc. All rights reserved.",
+    "document_references": {
+      "reference": [
+        {
+          "description": "https://access.redhat.com/errata/RHSA-2022:1439",
+          "type": "Self",
+          "url": "https://access.redhat.com/errata/RHSA-2022:1439"
+        },
+        {
+          "description": "https://access.redhat.com/security/updates/classification/#important",
+          "type": "External",
+          "url": "https://access.redhat.com/security/updates/classification/#important"
+        }
+      ]
+    },
+    "aggregate_severity": "Important",
+    "document_tracking": {
+      "initial_release_date": "2022-04-28T18:59:00Z",
+      "identification": {
+        "id": "RHSA-2022:1439"
+      },
+      "revision_history": {
+        "revision": {
+          "date": "2022-04-28T18:59:00Z",
+          "number": 1,
+          "description": "Current version"
+        }
+      },
+      "generator": {
+        "date": "2022-04-28T22:41:00Z",
+        "engine": "Red Hat SDEngine 3.4.5"
+      },
+      "current_release_date": "2022-04-28T18:59:00Z",
+      "version": 1,
+      "status": "Final"
+    },
+    "document_publisher": {
+      "issuing_authority": "Red Hat Product Security",
+      "contact_details": "secalert@redhat.com",
+      "type": "Vendor"
+    },
+    "vulnerability": [
+      {
+        "notes": {
+          "note": "OpenJDK: Unbounded memory allocation when compiling crafted XPath expressions (JAXP, 8270504)"
+        },
+        "cve": "CVE-2022-21426",
+        "references": {
+          "reference": [
+            {
+              "description": "CVE-2022-21426",
+              "url": "https://access.redhat.com/security/cve/CVE-2022-21426"
+            },
+            {
+              "description": "bz#2075788: CVE-2022-21426 OpenJDK: Unbounded memory allocation when compiling crafted XPath expressions (JAXP, 8270504)",
+              "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2075788"
+            }
+          ]
+        },
+        "release_date": "2022-04-19T20:00:00Z",
+        "involvements": {
+          "involvement": {
+            "party": "Vendor",
+            "status": "Completed"
+          }
+        },
+        "remediations": {
+          "remediation": {
+            "description": "Before applying this update, make sure all previously released errata relevant to your system have been applied.\nFor details on how to apply this update, refer to:\nhttps://access.redhat.com/documentation/en-us/openjdk/11/html/installing_and_using_openjdk_11_for_windows/index",
+            "type": "Vendor Fix",
+            "url": "https://access.redhat.com/errata/RHSA-2022:1439"
+          }
+        },
+        "threats": {
+          "threat": {
+            "description": "Moderate",
+            "type": "Impact"
+          }
+        },
+        "discovery_date": "2022-04-08T00:00:00Z",
+        "ordinal": 1
+      },
+      {
+        "notes": {
+          "note": "OpenJDK: Improper object-to-string conversion in AnnotationInvocationHandler (Libraries, 8277672)"
+        },
+        "cve": "CVE-2022-21434",
+        "references": {
+          "reference": [
+            {
+              "description": "CVE-2022-21434",
+              "url": "https://access.redhat.com/security/cve/CVE-2022-21434"
+            },
+            {
+              "description": "bz#2075836: CVE-2022-21434 OpenJDK: Improper object-to-string conversion in AnnotationInvocationHandler (Libraries, 8277672)",
+              "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2075836"
+            }
+          ]
+        },
+        "release_date": "2022-04-19T20:00:00Z",
+        "involvements": {
+          "involvement": {
+            "party": "Vendor",
+            "status": "Completed"
+          }
+        },
+        "remediations": {
+          "remediation": {
+            "description": "Before applying this update, make sure all previously released errata relevant to your system have been applied.\nFor details on how to apply this update, refer to:\nhttps://access.redhat.com/documentation/en-us/openjdk/11/html/installing_and_using_openjdk_11_for_windows/index",
+            "type": "Vendor Fix",
+            "url": "https://access.redhat.com/errata/RHSA-2022:1439"
+          }
+        },
+        "threats": {
+          "threat": {
+            "description": "Moderate",
+            "type": "Impact"
+          }
+        },
+        "discovery_date": "2022-04-08T00:00:00Z",
+        "ordinal": 2
+      },
+      {
+        "notes": {
+          "note": "OpenJDK: Missing check for negative ObjectIdentifier (Libraries, 8275151)"
+        },
+        "cve": "CVE-2022-21443",
+        "references": {
+          "reference": [
+            {
+              "description": "CVE-2022-21443",
+              "url": "https://access.redhat.com/security/cve/CVE-2022-21443"
+            },
+            {
+              "description": "bz#2075793: CVE-2022-21443 OpenJDK: Missing check for negative ObjectIdentifier (Libraries, 8275151)",
+              "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2075793"
+            }
+          ]
+        },
+        "release_date": "2022-04-19T20:00:00Z",
+        "involvements": {
+          "involvement": {
+            "party": "Vendor",
+            "status": "Completed"
+          }
+        },
+        "remediations": {
+          "remediation": {
+            "description": "Before applying this update, make sure all previously released errata relevant to your system have been applied.\nFor details on how to apply this update, refer to:\nhttps://access.redhat.com/documentation/en-us/openjdk/11/html/installing_and_using_openjdk_11_for_windows/index",
+            "type": "Vendor Fix",
+            "url": "https://access.redhat.com/errata/RHSA-2022:1439"
+          }
+        },
+        "threats": {
+          "threat": {
+            "description": "Moderate",
+            "type": "Impact"
+          }
+        },
+        "discovery_date": "2022-04-08T00:00:00Z",
+        "ordinal": 3
+      },
+      {
+        "notes": {
+          "note": "OpenJDK: Defective secure validation in Apache Santuario (Libraries, 8278008)"
+        },
+        "cve": "CVE-2022-21476",
+        "references": {
+          "reference": [
+            {
+              "description": "CVE-2022-21476",
+              "url": "https://access.redhat.com/security/cve/CVE-2022-21476"
+            },
+            {
+              "description": "bz#2075842: CVE-2022-21476 OpenJDK: Defective secure validation in Apache Santuario (Libraries, 8278008)",
+              "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2075842"
+            }
+          ]
+        },
+        "release_date": "2022-04-19T20:00:00Z",
+        "involvements": {
+          "involvement": {
+            "party": "Vendor",
+            "status": "Completed"
+          }
+        },
+        "remediations": {
+          "remediation": {
+            "description": "Before applying this update, make sure all previously released errata relevant to your system have been applied.\nFor details on how to apply this update, refer to:\nhttps://access.redhat.com/documentation/en-us/openjdk/11/html/installing_and_using_openjdk_11_for_windows/index",
+            "type": "Vendor Fix",
+            "url": "https://access.redhat.com/errata/RHSA-2022:1439"
+          }
+        },
+        "threats": {
+          "threat": {
+            "description": "Important",
+            "type": "Impact"
+          }
+        },
+        "discovery_date": "2022-04-08T00:00:00Z",
+        "ordinal": 4
+      },
+      {
+        "notes": {
+          "note": "OpenJDK: URI parsing inconsistencies (JNDI, 8278972)"
+        },
+        "cve": "CVE-2022-21496",
+        "references": {
+          "reference": [
+            {
+              "description": "CVE-2022-21496",
+              "url": "https://access.redhat.com/security/cve/CVE-2022-21496"
+            },
+            {
+              "description": "bz#2075849: CVE-2022-21496 OpenJDK: URI parsing inconsistencies (JNDI, 8278972)",
+              "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2075849"
+            }
+          ]
+        },
+        "release_date": "2022-04-19T20:00:00Z",
+        "involvements": {
+          "involvement": {
+            "party": "Vendor",
+            "status": "Completed"
+          }
+        },
+        "remediations": {
+          "remediation": {
+            "description": "Before applying this update, make sure all previously released errata relevant to your system have been applied.\nFor details on how to apply this update, refer to:\nhttps://access.redhat.com/documentation/en-us/openjdk/11/html/installing_and_using_openjdk_11_for_windows/index",
+            "type": "Vendor Fix",
+            "url": "https://access.redhat.com/errata/RHSA-2022:1439"
+          }
+        },
+        "threats": {
+          "threat": {
+            "description": "Moderate",
+            "type": "Impact"
+          }
+        },
+        "discovery_date": "2022-04-08T00:00:00Z",
+        "ordinal": 5
+      }
+    ],
+    "document_notes": {
+      "note": [
+        "The Red Hat Build of OpenJDK 11 (java-11-openjdk) is now available for Windows.\nRed Hat Product Security has rated this update as having a security impact of Important. A Common Vulnerability Scoring System (CVSS) base score, which gives a detailed severity rating, is available for each vulnerability from the CVE link(s) in the References section.",
+        "The OpenJDK 11 packages provide the OpenJDK 11 Java Runtime Environment and the OpenJDK 11 Java Software Development Kit.\nThis release of the Red Hat build of OpenJDK 11 (11.0.15) for Windows serves as a replacement for the Red Hat build of OpenJDK 11 (11.0.14) and includes security and bug fixes, and enhancements. For further information, refer to the release notes linked to in the References section.\nSecurity Fix(es):\n* OpenJDK: Unbounded memory allocation when compiling crafted XPath expressions (JAXP, 8270504) (CVE-2022-21426)\n* OpenJDK: Missing check for negative ObjectIdentifier (Libraries, 8275151) (CVE-2022-21443)\n* OpenJDK: Improper object-to-string conversion in AnnotationInvocationHandler (Libraries, 8277672) (CVE-2022-21434)\n* OpenJDK: Defective secure validation in Apache Santuario (Libraries, 8278008) (CVE-2022-21476)\n* OpenJDK: URI parsing inconsistencies (JNDI, 8278972) (CVE-2022-21496)\nFor more details about the security issue(s), including the impact, a CVSS score, acknowledgments, and other related information, refer to the CVE page(s) listed in the References section.",
+        "This content is licensed under the Creative Commons Attribution 4.0 International License (https://creativecommons.org/licenses/by/4.0/). If you distribute this content, or a modified version of it, you must provide attribution to Red Hat Inc. and provide a link to the original."
+      ]
+    },
+    "document_type": "Security Advisory"
+  }
+}

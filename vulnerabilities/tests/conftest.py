@@ -57,7 +57,6 @@ collect_ignore = [
     "test_npm.py",
     "test_package_managers.py",
     "test_postgresql.py",
-    "test_redhat_importer.py",
     "test_retiredotnet.py",
     "test_ruby.py",
     "test_rust.py",

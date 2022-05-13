@@ -20,81 +20,99 @@
 #  VulnerableCode is a free software code from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import logging
+from typing import Dict
+from typing import Iterable
+from typing import List
+
 import requests
 from packageurl import PackageURL
+from univers.version_range import RpmVersionRange
 
 from vulnerabilities import severity_systems
-from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities.helpers import get_item
 from vulnerabilities.helpers import requests_with_5xx_retry
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.rpm_utils import rpm_to_purl
 
-
-class RedhatImporter(Importer):
-    def __enter__(self):
-
-        self.redhat_cves = fetch()
-
-    def updated_advisories(self):
-        processed_advisories = list(map(to_advisory, self.redhat_cves))
-        return self.batch_advisories(processed_advisories)
-
+logger = logging.getLogger(__name__)
 
 requests_session = requests_with_5xx_retry(max_retries=5, backoff_factor=1)
 
 
-def fetch():
-    """
-    Return a list of CVE data mappings fetched from the RedHat API.
-    See:
-        https://access.redhat.com/documentation/en-us/red_hat_security_data_api/1.0/html/red_hat_security_data_api/index
-    """
-    cves = []
+def fetch_list_of_cves() -> Iterable[List[Dict]]:
     page_no = 1
-    url_template = "https://access.redhat.com/hydra/rest/securitydata/cve.json?per_page=10000&page={}"  # nopep8
-
     cve_data = None
     while True:
-        current_url = url_template.format(page_no)
+        current_url = f"https://access.redhat.com/hydra/rest/securitydata/cve.json?per_page=10000&page={page_no}"  # nopep8
         try:
-            print(f"Fetching: {current_url}")
             response = requests_session.get(current_url)
             if response.status_code != requests.codes.ok:
-                # TODO: log me
-                print(f"Failed to fetch results from {current_url}")
+                logger.error(f"Failed to fetch results from {current_url}")
                 break
             cve_data = response.json()
         except Exception as e:
-            # TODO: log me
-            msg = f"Failed to fetch results from {current_url}:\n{e}"
-            print(msg)
+            logger.error(f"Failed to fetch results from {current_url} {e}")
             break
-
         if not cve_data:
             break
-        cves.extend(cve_data)
         page_no += 1
+        yield cve_data
 
-    return cves
+
+def get_bugzilla_data(bugzilla):
+    return requests_session.get(f"https://bugzilla.redhat.com/rest/bug/{bugzilla}").json()
+
+
+def get_rhsa_data(rh_adv):
+    return requests_session.get(
+        f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json"
+    ).json()
+
+
+class RedhatImporter(Importer):
+
+    spdx_license_expression = "CC-BY-4.0"
+    license_url = "https://access.redhat.com/documentation/en-us/red_hat_security_data_api/1.0/html/red_hat_security_data_api/legal-notice"
+
+    def advisory_data(self) -> Iterable[AdvisoryData]:
+        for list_of_redhat_cves in fetch_list_of_cves():
+            for redhat_cve in list_of_redhat_cves:
+                yield to_advisory(redhat_cve)
 
 
 def to_advisory(advisory_data):
-    affected_purls = []
-    if advisory_data.get("affected_packages"):
-        for rpm in advisory_data["affected_packages"]:
-            purl = rpm_to_purl(rpm)
-            if purl:
-                affected_purls.append(purl)
+    affected_packages: List[AffectedPackage] = []
+    for rpm in advisory_data.get("affected_packages") or []:
+        purl = rpm_to_purl(rpm_string=rpm, namespace="redhat")
+        if purl:
+            try:
+                affected_version_range = RpmVersionRange.from_versions(sequence=[purl.version])
+                affected_packages.append(
+                    AffectedPackage(
+                        package=PackageURL(
+                            type=purl.type,
+                            name=purl.name,
+                            namespace=purl.namespace,
+                            qualifiers=purl.qualifiers,
+                            subpath=purl.subpath,
+                        ),
+                        affected_version_range=affected_version_range,
+                        fixed_version=None,
+                    )
+                )
+            except Exception as e:
+                logger.error(f"Failed to parse version range {purl.version} for {purl} {e}")
 
     references = []
     bugzilla = advisory_data.get("bugzilla")
     if bugzilla:
         url = "https://bugzilla.redhat.com/show_bug.cgi?id={}".format(bugzilla)
-        bugzilla_data = requests_session.get(
-            f"https://bugzilla.redhat.com/rest/bug/{bugzilla}"
-        ).json()
+        bugzilla_data = get_bugzilla_data(bugzilla)
         if (
             bugzilla_data.get("bugs")
             and len(bugzilla_data["bugs"])
@@ -114,25 +132,28 @@ def to_advisory(advisory_data):
                 )
             )
 
-    for rh_adv in advisory_data["advisories"]:
+    for rh_adv in advisory_data.get("advisories") or []:
         # RH provides 3 types of advisories RHSA, RHBA, RHEA. Only RHSA's contain severity score.
         # See https://access.redhat.com/articles/2130961 for more details.
 
+        if not isinstance(rh_adv, str):
+            logger.error(f"Invalid advisory type {rh_adv}")
+            continue
+
         if "RHSA" in rh_adv.upper():
-            rhsa_data = requests_session.get(
-                f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json"
-            ).json()  # nopep8
+            rhsa_data = get_rhsa_data(rh_adv)
 
             rhsa_aggregate_severities = []
             if rhsa_data.get("cvrfdoc"):
                 # not all RHSA errata have a corresponding CVRF document
-                value = rhsa_data["cvrfdoc"]["aggregate_severity"]
-                rhsa_aggregate_severities.append(
-                    VulnerabilitySeverity(
-                        system=severity_systems.REDHAT_AGGREGATE,
-                        value=value,
+                value = get_item(rhsa_data, "cvrfdoc", "aggregate_severity")
+                if value:
+                    rhsa_aggregate_severities.append(
+                        VulnerabilitySeverity(
+                            system=severity_systems.REDHAT_AGGREGATE,
+                            value=value,
+                        )
                     )
-                )
 
             references.append(
                 Reference(
@@ -164,27 +185,14 @@ def to_advisory(advisory_data):
             )
         )
 
+    aliases = []
+    alias = advisory_data.get("CVE")
+    if alias:
+        aliases.append(alias)
     references.append(Reference(severities=redhat_scores, url=advisory_data["resource_url"]))
     return AdvisoryData(
-        vulnerability_id=advisory_data["CVE"],
-        summary=advisory_data["bugzilla_description"],
-        affected_packages=nearest_patched_package(affected_purls, []),
+        aliases=aliases,
+        summary=advisory_data.get("bugzilla_description") or "",
+        affected_packages=affected_packages,
         references=references,
     )
-
-
-def rpm_to_purl(rpm_string):
-    # FIXME: there is code in scancode to handle RPM conversion AND this should
-    # be all be part of the packageurl library
-
-    # FIXME: the comment below is not correct, this is the Epoch in the RPM version and not redhat specific
-    # Red Hat uses `-:0` instead of just `-` to separate
-    # package name and version
-    components = rpm_string.split("-0:")
-    if len(components) != 2:
-        return
-
-    name, version = components
-
-    if version[0].isdigit():
-        return PackageURL(namespace="redhat", name=name, type="rpm", version=version)

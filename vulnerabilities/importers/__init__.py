@@ -24,6 +24,7 @@ from vulnerabilities.importers import github
 from vulnerabilities.importers import nginx
 from vulnerabilities.importers import nvd
 from vulnerabilities.importers import openssl
+from vulnerabilities.importers import redhat
 
 IMPORTERS_REGISTRY = [
     nginx.NginxImporter,
@@ -31,6 +32,7 @@ IMPORTERS_REGISTRY = [
     github.GitHubAPIImporter,
     nvd.NVDImporter,
     openssl.OpensslImporter,
+    redhat.RedhatImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

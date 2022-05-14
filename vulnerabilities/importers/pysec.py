@@ -65,7 +65,7 @@ class PyPIImporter(Importer):
                     logger.error(f"NotImplementedError PyPI package file_name: {file_name}")
                 else:
                     with zip_file.open(file_name) as f:
-                        vul_info = json.loads(f.read())
+                        vul_info = json.load(f)
                         yield parse_advisory_data(vul_info)
 
 

@@ -267,3 +267,16 @@ def _get_gh_response(gh_token, graphql_query):
     endpoint = "https://api.github.com/graphql"
     headers = {"Authorization": f"bearer {gh_token}"}
     return requests.post(endpoint, headers=headers, json=graphql_query).json()
+
+
+def dedupe(original: List) -> List:
+    """
+    Remove all duplicate items and return a new list preserving ordering
+    >>> dedupe(["z","i","a","a","d","d"])
+    ['z', 'i', 'a', 'd']
+    """
+    new_list = []
+    for i in original:
+        if i not in new_list:
+            new_list.append(i)
+    return new_list

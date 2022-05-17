@@ -300,7 +300,6 @@ class PackageRelatedVulnerability(models.Model):
 
 class VulnerabilitySeverity(models.Model):
 
-    vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
     reference = models.ForeignKey(VulnerabilityReference, on_delete=models.CASCADE)
 
     scoring_system_choices = tuple(
@@ -322,7 +321,6 @@ class VulnerabilitySeverity(models.Model):
 
     class Meta:
         unique_together = (
-            "vulnerability",
             "reference",
             "scoring_system",
             "value",

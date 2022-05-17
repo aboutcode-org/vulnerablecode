@@ -150,7 +150,9 @@ class AffectedPackage:
         return fixed_purl
 
     @classmethod
-    def merge(cls, affected_packages: Iterable):
+    def merge(
+        cls, affected_packages: Iterable
+    ) -> Tuple[PackageURL, List[VersionRange], List[Version]]:
         """
         Return a tuple with all attributes of AffectedPackage as a set
         for all values in the given iterable of AffectedPackage
@@ -284,6 +286,7 @@ class Importer:
 
     spdx_license_expression = ""
     license_url = ""
+    notice = ""
 
     def __init__(self):
         if not self.spdx_license_expression:

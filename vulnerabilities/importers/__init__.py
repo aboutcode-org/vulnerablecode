@@ -20,6 +20,7 @@
 #  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 from vulnerabilities.importers import alpine_linux
+from vulnerabilities.importers import debian
 from vulnerabilities.importers import github
 from vulnerabilities.importers import nginx
 from vulnerabilities.importers import nvd
@@ -35,6 +36,7 @@ IMPORTERS_REGISTRY = [
     openssl.OpensslImporter,
     redhat.RedhatImporter,
     pysec.PyPIImporter,
+    debian.DebianImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

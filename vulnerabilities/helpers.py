@@ -26,6 +26,7 @@ import json
 import logging
 import os
 import re
+from collections import defaultdict
 from functools import total_ordering
 from typing import List
 from typing import Optional
@@ -275,8 +276,19 @@ def dedupe(original: List) -> List:
     >>> dedupe(["z","i","a","a","d","d"])
     ['z', 'i', 'a', 'd']
     """
-    new_list = []
-    for i in original:
-        if i not in new_list:
-            new_list.append(i)
-    return new_list
+    return list(dict.fromkeys(original))
+
+
+def get_affected_packages_by_patched_package(
+    affected_packages: List[AffectedPackage],
+):
+    """
+    Return a mapping of list of vulnerable purls keyed by
+    purl which fix those vulnerable package.
+    """
+    affected_packages_by_patched_package = defaultdict(list)
+    for package in affected_packages:
+        affected_packages_by_patched_package[package.patched_package].append(
+            package.vulnerable_package
+        )
+    return affected_packages_by_patched_package

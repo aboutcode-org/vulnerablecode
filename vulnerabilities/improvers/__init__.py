@@ -28,6 +28,7 @@ IMPROVERS_REGISTRY = [
     default.DefaultImprover,
     importers.nginx.NginxBasicImprover,
     importers.github.GitHubBasicImprover,
+    importers.debian.DebianBasicImprover,
 ]
 
 IMPROVERS_REGISTRY = {x.qualified_name: x for x in IMPROVERS_REGISTRY}

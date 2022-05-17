@@ -72,6 +72,31 @@ class DebianImporter(Importer):
 
     [1] - https://github.com/nexB/vulnerablecode
     [2] - https://github.com/nexB/vulnerablecode/pull/723
+
+    Regards,
+
+    From: Moritz Mühlenhoff <jmm@inutil.org>
+    Date: Wed, May 17, 2022, 19:12 PM +00:00
+    Subject: Re: Usage of Debian Security Data in VulnerableCode
+    To: Tushar Goel <tgoel@nexb.com>
+    Cc: <team@security.debian.org>
+
+
+    Am Thu, May 12, 2022 at 05:12:48PM +0530 schrieb Tushar Goel:
+    > Hey,
+    >
+    > We would like to integrate the debian security data in vulnerablecode
+    > [1][2] which is a FOSS db of FOSS vulnerability data. We were not able
+    > to know under which license the debian security data comes. We would
+    > be grateful to have your acknowledgement over usage of the debian
+    > security data in vulnerablecode and have some kind of licensing
+    > declaration from your side.
+
+    We don't have a specific license, but you have our endorsemen to
+    reuse the data by all means :-)
+
+    Cheers,
+        Moritz
     """
 
     api_url = "https://security-tracker.debian.org/tracker/data/json"

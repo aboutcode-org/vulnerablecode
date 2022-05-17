@@ -1,0 +1,77 @@
+[
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2019-1010083"
+    ],
+    "confidence": 100,
+    "summary": "Denial of service. Denial of Service due to unexpected memory usage in the Pallets Project Flask",
+    "affected_purls": [
+      {
+        "type": "pypi",
+        "namespace": null,
+        "name": "flask",
+        "version": "0.8",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "pypi",
+        "namespace": null,
+        "name": "flask",
+        "version": "0.9",
+        "qualifiers": null,
+        "subpath": null
+      }
+    ],
+    "fixed_purl": {
+      "type": "pypi",
+      "namespace": null,
+      "name": "flask",
+      "version": "1.0",
+      "qualifiers": null,
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "CVE-2019-1010083",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-1010083",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.palletsprojects.com/blog/flask-1-0-released/",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2019-1010083"
+    ],
+    "confidence": 100,
+    "summary": "Denial of service. Denial of Service due to unexpected memory usage in the Pallets Project Flask",
+    "affected_purls": [],
+    "fixed_purl": {
+      "type": "pypi",
+      "namespace": null,
+      "name": "flask",
+      "version": "1.0",
+      "qualifiers": null,
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "CVE-2019-1010083",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-1010083",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.palletsprojects.com/blog/flask-1-0-released/",
+        "severities": []
+      }
+    ]
+  }
+]

@@ -1,0 +1,38 @@
+---
+identifier: "GMS-2021-107"
+identifiers:
+- "GHSA-x5c7-x7m2-rhmf"
+- "GMS-2021-107"
+package_slug: "go/go.mozilla.org/sops/v3"
+title: "Local directory executable lookup in sops (Windows-only)"
+description: "### Impact\nWindows users using the sops direct editor option (`sops
+  file.yaml`) can have a local executable named either `vi`, `vim`, or `nano` executed
+  if running sops from `cmd.exe`\n\nThis attack is only viable if an attacker is able
+  to place a malicious binary within the directory you are running sops from. As well,
+  this attack will only work when using `cmd.exe` or the Windows C library [SearchPath
+  function](https://docs.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-searchpatha).
+  This is a result of these Windows tools including `.` within their `PATH` by default.\n\n**If
+  you are using sops within untrusted directories on Windows via `cmd.exe`, please
+  upgrade immediately** \n\n**As well, if you have `.` within your default $PATH,
+  please upgrade immediately.**\n\nMore information can be found on the official Go
+  blog: https://blog.golang.org/path-security\n\n### Patches\nThe problem has been
+  resolved in v3.7.1\n\nNow, if Windows users using cmd.exe run into this issue, a
+  warning message will be printed:\n`vim resolves to executable in current directory
+  (.\\vim.exe)`\n\n### References\n* https://blog.golang.org/path-security\n\n###
+  For more information\nIf you have any questions or comments about this advisory:\n*
+  Open a discussion in [sops](https://github.com/mozilla/sops/discussions)"
+date: "2021-05-20"
+pubdate: "2021-05-20"
+affected_range: "<3.7.1"
+fixed_versions:
+- "3.7.1"
+affected_versions: "All versions before 3.7.1"
+not_impacted: "All versions starting from 3.7.1"
+solution: "Upgrade to version 3.7.1 or above."
+urls:
+- "https://github.com/mozilla/sops/security/advisories/GHSA-x5c7-x7m2-rhmf"
+- "https://github.com/advisories/GHSA-x5c7-x7m2-rhmf"
+uuid: "16047f63-02b7-4677-a3f3-9ea909d9aecb"
+cwe_ids:
+- "CWE-1035"
+- "CWE-937"

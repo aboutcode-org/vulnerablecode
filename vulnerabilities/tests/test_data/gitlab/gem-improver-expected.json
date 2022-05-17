@@ -1,0 +1,68 @@
+[
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "OSVDB-112347"
+    ],
+    "confidence": 100,
+    "summary": "Object Injection. A flaw in Active Job that can allow string arguments to be deserialized as if they were Global IDs. This may allow a remote attacker to inject arbitrary objects.",
+    "affected_purls": [
+      {
+        "type": "gem",
+        "namespace": null,
+        "name": "activejob",
+        "version": "4.2.0.beta1",
+        "qualifiers": null,
+        "subpath": null
+      }
+    ],
+    "fixed_purl": {
+      "type": "gem",
+      "namespace": null,
+      "name": "activejob",
+      "version": "4.2.0.beta2",
+      "qualifiers": null,
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "",
+        "url": "http://weblog.rubyonrails.org/2014/9/29/Rails-4-2-0-beta2-has-been-released/",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "OSVDB-112347"
+    ],
+    "confidence": 100,
+    "summary": "Object Injection. A flaw in Active Job that can allow string arguments to be deserialized as if they were Global IDs. This may allow a remote attacker to inject arbitrary objects.",
+    "affected_purls": [
+      {
+        "type": "gem",
+        "namespace": null,
+        "name": "activejob",
+        "version": "4.2.0.beta1",
+        "qualifiers": null,
+        "subpath": null
+      }
+    ],
+    "fixed_purl": {
+      "type": "gem",
+      "namespace": null,
+      "name": "activejob",
+      "version": "4.2.0.beta2",
+      "qualifiers": null,
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "",
+        "url": "http://weblog.rubyonrails.org/2014/9/29/Rails-4-2-0-beta2-has-been-released/",
+        "severities": []
+      }
+    ]
+  }
+]

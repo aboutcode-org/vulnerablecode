@@ -105,6 +105,15 @@ class Reference:
             ],
         )
 
+    @classmethod
+    def from_url(cls, url):
+        reference_id = get_reference_id(url)
+        if "GHSA-" in reference_id.upper():
+            return cls(reference_id=reference_id, url=url)
+        if is_cve(reference_id):
+            return cls(url=url, reference_id=reference_id.upper())
+        return cls(url=url)
+
 
 class UnMergeablePackageError(Exception):
     """

@@ -1,0 +1,29 @@
+---
+identifier: "CVE-2021-43045"
+identifiers:
+- "CVE-2021-43045"
+- "GHSA-868x-rg4c-cjqg"
+package_slug: "nuget/Apache.Avro"
+title: "Allocation of Resources Without Limits or Throttling in Apache Avro"
+description: "A vulnerability in the .NET SDK of Apache Avro allows an attacker to
+  allocate excessive resources, potentially causing a denial-of-service attack. This
+  issue affects .NET applications using Apache Avro and prior versions. Users should
+  update to which addresses this issue."
+date: "2022-01-14"
+pubdate: "2022-01-08"
+affected_range: "(,1.11.0)"
+fixed_versions:
+- "1.11.0"
+affected_versions: "All versions before 1.11.0"
+not_impacted: "All versions starting from 1.11.0"
+solution: "Upgrade to version 1.11.0 or above."
+urls:
+- "https://nvd.nist.gov/vuln/detail/CVE-2021-43045"
+- "https://github.com/advisories/GHSA-868x-rg4c-cjqg"
+cvss_v2: "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+cvss_v3: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+uuid: "e9601be5-733a-4ed5-8d3c-ecb3d2cb3c11"
+cwe_ids:
+- "CWE-1035"
+- "CWE-770"
+- "CWE-937"

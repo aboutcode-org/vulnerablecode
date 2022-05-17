@@ -72,7 +72,6 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
 
             for severity in ref.severities:
                 _vs, updated = models.VulnerabilitySeverity.objects.update_or_create(
-                    vulnerability=vuln,
                     scoring_system=severity.system.identifier,
                     reference=reference,
                     defaults={"value": str(severity.value)},

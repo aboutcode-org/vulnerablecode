@@ -1,0 +1,89 @@
+[
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "GHSA-w42g-7vfc-xf37",
+      "GMS-2020-65"
+    ],
+    "confidence": 100,
+    "summary": "Introspection in schema validation in Apollo Server. If `subscriptions: false` is passed to the `ApolloServer` constructor options, there is no impact. If implementors were not expecting validation rules to be enforced on the WebSocket subscriptions transport **and** are unconcerned about introspection being enabled on the WebSocket subscriptions transport (or were not expecting that), then this advisory is not applicable. If `introspection: true` is passed to the `ApolloServer` constructor options, the impact is limited to user-provided validation rules (i.e., using `validationRules`) since\u00a0there would be no expectation that introspection was disabled.",
+    "affected_purls": [
+      {
+        "type": "npm",
+        "namespace": null,
+        "name": "apollo-server-express",
+        "version": "2.11.2",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "npm",
+        "namespace": null,
+        "name": "apollo-server-express",
+        "version": "2.13.2",
+        "qualifiers": null,
+        "subpath": null
+      }
+    ],
+    "fixed_purl": {
+      "type": "npm",
+      "namespace": null,
+      "name": "apollo-server-express",
+      "version": "2.14.2",
+      "qualifiers": null,
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "GHSA-w42g-7vfc-xf37",
+        "url": "https://github.com/apollographql/apollo-server/security/advisories/GHSA-w42g-7vfc-xf37",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/apollographql/apollo-server/commit/e2e816316f5c28a03de2ee1589edb2b10c358114",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-w42g-7vfc-xf37",
+        "url": "https://github.com/advisories/GHSA-w42g-7vfc-xf37",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "GHSA-w42g-7vfc-xf37",
+      "GMS-2020-65"
+    ],
+    "confidence": 100,
+    "summary": "Introspection in schema validation in Apollo Server. If `subscriptions: false` is passed to the `ApolloServer` constructor options, there is no impact. If implementors were not expecting validation rules to be enforced on the WebSocket subscriptions transport **and** are unconcerned about introspection being enabled on the WebSocket subscriptions transport (or were not expecting that), then this advisory is not applicable. If `introspection: true` is passed to the `ApolloServer` constructor options, the impact is limited to user-provided validation rules (i.e., using `validationRules`) since\u00a0there would be no expectation that introspection was disabled.",
+    "affected_purls": [],
+    "fixed_purl": {
+      "type": "npm",
+      "namespace": null,
+      "name": "apollo-server-express",
+      "version": "2.14.2",
+      "qualifiers": null,
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "GHSA-w42g-7vfc-xf37",
+        "url": "https://github.com/apollographql/apollo-server/security/advisories/GHSA-w42g-7vfc-xf37",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/apollographql/apollo-server/commit/e2e816316f5c28a03de2ee1589edb2b10c358114",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-w42g-7vfc-xf37",
+        "url": "https://github.com/advisories/GHSA-w42g-7vfc-xf37",
+        "severities": []
+      }
+    ]
+  }
+]

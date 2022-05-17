@@ -1,0 +1,28 @@
+{
+  "aliases": [
+    "GMS-2018-26"
+  ],
+  "summary": "Incorrect header injection check. amphp/http isn't properly protected against HTTP header injection.",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "composer",
+        "namespace": "amphp",
+        "name": "http",
+        "version": null,
+        "qualifiers": null,
+        "subpath": null
+      },
+      "affected_version_range": "vers:composer/<1.0.1",
+      "fixed_version": "1.0.1"
+    }
+  ],
+  "references": [
+    {
+      "reference_id": "",
+      "url": "https://github.com/amphp/http/pull/4",
+      "severities": []
+    }
+  ],
+  "date_published": "2018-03-15T00:00:00+00:00"
+}

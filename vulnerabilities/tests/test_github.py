@@ -39,9 +39,8 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers.github import GitHubAPIImporter
 from vulnerabilities.importers.github import GitHubBasicImprover
 from vulnerabilities.importers.github import process_response
-from vulnerabilities.importers.github import resolve_version_range
 from vulnerabilities.package_managers import PackageVersion
-from vulnerabilities.utils import GitHubTokenError
+from vulnerabilities.utils import GitHubTokenError, resolve_version_range
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "github_api")
@@ -79,6 +78,7 @@ def test_resolve_version_range():
             "2.0.0",
             "10.0.0",
         ],
+        [],
     )
 
 
@@ -90,6 +90,7 @@ def test_resolve_version_range_failure(caplog):
             PackageVersion(value="2.0.0"),
             PackageVersion(value="10.0.0"),
         ],
+        [],
     )
     assert "affected version range is" in caplog.text
 

@@ -1,0 +1,71 @@
+[
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2021-43045",
+      "GHSA-868x-rg4c-cjqg"
+    ],
+    "confidence": 100,
+    "summary": "Allocation of Resources Without Limits or Throttling in Apache Avro. A vulnerability in the .NET SDK of Apache Avro allows an attacker to allocate excessive resources, potentially causing a denial-of-service attack. This issue affects .NET applications using Apache Avro and prior versions. Users should update to which addresses this issue.",
+    "affected_purls": [
+      {
+        "type": "nuget",
+        "namespace": null,
+        "name": "Apache.Avro",
+        "version": "1.09.1",
+        "qualifiers": null,
+        "subpath": null
+      }
+    ],
+    "fixed_purl": {
+      "type": "nuget",
+      "namespace": null,
+      "name": "Apache.Avro",
+      "version": "1.11.0",
+      "qualifiers": null,
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "CVE-2021-43045",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-43045",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-868x-rg4c-cjqg",
+        "url": "https://github.com/advisories/GHSA-868x-rg4c-cjqg",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2021-43045",
+      "GHSA-868x-rg4c-cjqg"
+    ],
+    "confidence": 100,
+    "summary": "Allocation of Resources Without Limits or Throttling in Apache Avro. A vulnerability in the .NET SDK of Apache Avro allows an attacker to allocate excessive resources, potentially causing a denial-of-service attack. This issue affects .NET applications using Apache Avro and prior versions. Users should update to which addresses this issue.",
+    "affected_purls": [],
+    "fixed_purl": {
+      "type": "nuget",
+      "namespace": null,
+      "name": "Apache.Avro",
+      "version": "1.11.0",
+      "qualifiers": null,
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "CVE-2021-43045",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-43045",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-868x-rg4c-cjqg",
+        "url": "https://github.com/advisories/GHSA-868x-rg4c-cjqg",
+        "severities": []
+      }
+    ]
+  }
+]

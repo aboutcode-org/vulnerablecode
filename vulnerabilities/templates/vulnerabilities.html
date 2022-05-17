@@ -36,7 +36,7 @@ Explore Vulnerabilities
           </tr>
           {% for vulnerability in  vulnerabilities %}
               <tr>
-                  <td><a href="{% url 'vulnerability_view' vulnerability.pk %}">{{vulnerability.vulcoid}}</a></td>
+                  <td><a href="{% url 'vulnerability_view' vulnerability.pk %}">{{vulnerability.vulnerability_id}}</a></td>
                   <td>{{vulnerability.vulnerable_package_count}}</td>
                   <td>{{vulnerability.patched_package_count}}</td>
               </tr>

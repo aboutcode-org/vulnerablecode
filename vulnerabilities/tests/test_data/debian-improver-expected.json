@@ -1,0 +1,519 @@
+[
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2009-1382"
+    ],
+    "confidence": 100,
+    "summary": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX",
+    "affected_purls": [],
+    "fixed_purl": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "mimetex",
+      "version": "1.50-1.1",
+      "qualifiers": {
+        "distro": "buster"
+      },
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "537254",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2009-1382"
+    ],
+    "confidence": 100,
+    "summary": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX",
+    "affected_purls": [],
+    "fixed_purl": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "mimetex",
+      "version": "1.74-1",
+      "qualifiers": {
+        "distro": "buster"
+      },
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "537254",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2009-1382"
+    ],
+    "confidence": 100,
+    "summary": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX",
+    "affected_purls": [],
+    "fixed_purl": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "mimetex",
+      "version": "1.76-1",
+      "qualifiers": {
+        "distro": "buster"
+      },
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "537254",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2009-2459"
+    ],
+    "confidence": 100,
+    "summary": "Multiple unspecified vulnerabilities in mimeTeX",
+    "affected_purls": [],
+    "fixed_purl": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "mimetex",
+      "version": "1.50-1.1",
+      "qualifiers": {
+        "distro": "buster"
+      },
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "537254",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2009-2459"
+    ],
+    "confidence": 100,
+    "summary": "Multiple unspecified vulnerabilities in mimeTeX",
+    "affected_purls": [],
+    "fixed_purl": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "mimetex",
+      "version": "1.74-1",
+      "qualifiers": {
+        "distro": "buster"
+      },
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "537254",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2009-2459"
+    ],
+    "confidence": 100,
+    "summary": "Multiple unspecified vulnerabilities in mimeTeX",
+    "affected_purls": [],
+    "fixed_purl": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "mimetex",
+      "version": "1.76-1",
+      "qualifiers": {
+        "distro": "buster"
+      },
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "537254",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2021-37231"
+    ],
+    "confidence": 100,
+    "summary": "A stack-buffer-overflow occurs in Atomicparsley 20210124.204813.840499f through APar_readX() in src/util.cpp while parsing a crafted mp4 file because of the missing boundary check.",
+    "affected_purls": [
+      {
+        "type": "deb",
+        "namespace": "debian",
+        "name": "atomicparsley",
+        "version": "0.9.6-1",
+        "qualifiers": {
+          "distro": "stretch"
+        },
+        "subpath": null
+      },
+      {
+        "type": "deb",
+        "namespace": "debian",
+        "name": "atomicparsley",
+        "version": "0.9.6-2",
+        "qualifiers": {
+          "distro": "stretch"
+        },
+        "subpath": null
+      }
+    ],
+    "fixed_purl": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "atomicparsley",
+      "version": "20210715.151551.e7ad03a-1",
+      "qualifiers": {
+        "distro": "stretch"
+      },
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "993372",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=993372",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2021-37232"
+    ],
+    "confidence": 100,
+    "summary": "A stack overflow vulnerability occurs in Atomicparsley 20210124.204813.840499f through APar_read64() in src/util.cpp due to the lack of buffer size of uint32_buffer while reading more bytes in APar_read64.",
+    "affected_purls": [
+      {
+        "type": "deb",
+        "namespace": "debian",
+        "name": "atomicparsley",
+        "version": "0.9.6-1",
+        "qualifiers": {
+          "distro": "stretch"
+        },
+        "subpath": null
+      },
+      {
+        "type": "deb",
+        "namespace": "debian",
+        "name": "atomicparsley",
+        "version": "0.9.6-2",
+        "qualifiers": {
+          "distro": "stretch"
+        },
+        "subpath": null
+      }
+    ],
+    "fixed_purl": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "atomicparsley",
+      "version": "20210715.151551.e7ad03a-1",
+      "qualifiers": {
+        "distro": "stretch"
+      },
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "993366",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=993366",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2014-8242"
+    ],
+    "confidence": 100,
+    "summary": "librsync before 1.0.0 uses a truncated MD4 checksum to match blocks",
+    "affected_purls": [],
+    "fixed_purl": null,
+    "references": [
+      {
+        "reference_id": "776246",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=776246",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2009-1382"
+    ],
+    "confidence": 100,
+    "summary": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX",
+    "affected_purls": [],
+    "fixed_purl": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "mimetex",
+      "version": "1.74-1",
+      "qualifiers": {
+        "distro": "buster"
+      },
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "537254",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2009-1382"
+    ],
+    "confidence": 100,
+    "summary": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX",
+    "affected_purls": [],
+    "fixed_purl": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "mimetex",
+      "version": "1.50-1.1",
+      "qualifiers": {
+        "distro": "buster"
+      },
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "537254",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2009-1382"
+    ],
+    "confidence": 100,
+    "summary": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX",
+    "affected_purls": [],
+    "fixed_purl": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "mimetex",
+      "version": "1.76-1",
+      "qualifiers": {
+        "distro": "buster"
+      },
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "537254",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2009-2459"
+    ],
+    "confidence": 100,
+    "summary": "Multiple unspecified vulnerabilities in mimeTeX",
+    "affected_purls": [],
+    "fixed_purl": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "mimetex",
+      "version": "1.74-1",
+      "qualifiers": {
+        "distro": "buster"
+      },
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "537254",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2009-2459"
+    ],
+    "confidence": 100,
+    "summary": "Multiple unspecified vulnerabilities in mimeTeX",
+    "affected_purls": [],
+    "fixed_purl": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "mimetex",
+      "version": "1.50-1.1",
+      "qualifiers": {
+        "distro": "buster"
+      },
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "537254",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2009-2459"
+    ],
+    "confidence": 100,
+    "summary": "Multiple unspecified vulnerabilities in mimeTeX",
+    "affected_purls": [],
+    "fixed_purl": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "mimetex",
+      "version": "1.76-1",
+      "qualifiers": {
+        "distro": "buster"
+      },
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "537254",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2021-37231"
+    ],
+    "confidence": 100,
+    "summary": "A stack-buffer-overflow occurs in Atomicparsley 20210124.204813.840499f through APar_readX() in src/util.cpp while parsing a crafted mp4 file because of the missing boundary check.",
+    "affected_purls": [
+      {
+        "type": "deb",
+        "namespace": "debian",
+        "name": "atomicparsley",
+        "version": "0.9.6-1",
+        "qualifiers": {
+          "distro": "stretch"
+        },
+        "subpath": null
+      },
+      {
+        "type": "deb",
+        "namespace": "debian",
+        "name": "atomicparsley",
+        "version": "0.9.6-2",
+        "qualifiers": {
+          "distro": "stretch"
+        },
+        "subpath": null
+      }
+    ],
+    "fixed_purl": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "atomicparsley",
+      "version": "20210715.151551.e7ad03a-1",
+      "qualifiers": {
+        "distro": "stretch"
+      },
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "993372",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=993372",
+        "severities": []
+      }
+    ]
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2021-37232"
+    ],
+    "confidence": 100,
+    "summary": "A stack overflow vulnerability occurs in Atomicparsley 20210124.204813.840499f through APar_read64() in src/util.cpp due to the lack of buffer size of uint32_buffer while reading more bytes in APar_read64.",
+    "affected_purls": [
+      {
+        "type": "deb",
+        "namespace": "debian",
+        "name": "atomicparsley",
+        "version": "0.9.6-1",
+        "qualifiers": {
+          "distro": "stretch"
+        },
+        "subpath": null
+      },
+      {
+        "type": "deb",
+        "namespace": "debian",
+        "name": "atomicparsley",
+        "version": "0.9.6-2",
+        "qualifiers": {
+          "distro": "stretch"
+        },
+        "subpath": null
+      }
+    ],
+    "fixed_purl": {
+      "type": "deb",
+      "namespace": "debian",
+      "name": "atomicparsley",
+      "version": "20210715.151551.e7ad03a-1",
+      "qualifiers": {
+        "distro": "stretch"
+      },
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "993366",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=993366",
+        "severities": []
+      }
+    ]
+  }
+]

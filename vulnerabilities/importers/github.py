@@ -37,6 +37,7 @@ from univers.version_range import build_range_from_github_advisory_constraint
 from vulnerabilities import helpers
 from vulnerabilities import severity_systems
 from vulnerabilities.helpers import AffectedPackage as LegacyAffectedPackage
+from vulnerabilities.helpers import get_affected_packages_by_patched_package
 from vulnerabilities.helpers import get_item
 from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.importer import AdvisoryData
@@ -465,18 +466,10 @@ class GitHubBasicImprover(Improver):
                 vulnerable_packages=affected_purls, resolved_packages=unaffected_purls
             )
 
-            unique_patched_packages_with_affected_packages = {}
-            for package in affected_packages:
-                if package.patched_package not in unique_patched_packages_with_affected_packages:
-                    unique_patched_packages_with_affected_packages[package.patched_package] = []
-                unique_patched_packages_with_affected_packages[package.patched_package].append(
-                    package.vulnerable_package
-                )
-
             for (
                 fixed_package,
                 affected_packages,
-            ) in unique_patched_packages_with_affected_packages.items():
+            ) in get_affected_packages_by_patched_package(affected_packages).items():
                 yield Inference.from_advisory_data(
                     advisory_data,
                     confidence=100,  # We are getting all valid versions to get this inference

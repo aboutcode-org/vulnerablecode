@@ -46,7 +46,6 @@ collect_ignore = [
     "test_archlinux.py",
     "test_data_source.py",
     "test_debian_oval.py",
-    "test_debian.py",
     "test_elixir_security.py",
     "test_gentoo.py",
     "test_importer_yielder.py",

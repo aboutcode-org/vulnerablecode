@@ -30,7 +30,7 @@ from typing import Mapping
 from typing import Optional
 
 import pytz
-import yaml
+import saneyaml
 from dateutil import parser as dateparser
 from django.db.models.query import QuerySet
 from fetchcode.vcs import fetch_via_vcs
@@ -41,6 +41,7 @@ from univers.version_range import from_gitlab_native
 from univers.versions import Version
 
 from vulnerabilities.helpers import AffectedPackage as LegacyAffectedPackage
+from vulnerabilities.helpers import get_affected_packages_by_patched_package
 from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.helpers import resolve_version_range
 from vulnerabilities.importer import AdvisoryData
@@ -67,6 +68,7 @@ PURL_TYPE_BY_GITLAB_SCHEME = {
     "nuget": "nuget",
     "pypi": "pypi",
     "packagist": "composer",
+    # "conan": "conan",
 }
 
 
@@ -91,32 +93,27 @@ class GitLabAPIImporter(Importer):
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         try:
-            fork_directory = fork_and_get_dir(self.gitlab_url)
+            fork_directory = fork_and_get_dir(url=self.gitlab_url)
         except Exception as e:
             logger.error(f"Can't clone url {self.gitlab_url}")
             raise ForkError(self.gitlab_url) from e
-        ecosystems = ["nuget", "maven", "gem", "npm", "go", "packagist", "pypi"]
-        for ecosystem in ecosystems:
-            for file in get_files(os.path.join(fork_directory, ecosystem)):
-                yield parse_yaml_file(file)
-
-
-def get_files(dir):
-    for root, _, files in os.walk(dir):
-        for file in files:
-            yield os.path.join(root, file)
-
-
-def not_empty(value):
-    return value is not None and value != ""
+        for root_dir in os.listdir(fork_directory):
+            # skip well known files and directories that contain no advisory data
+            if root_dir in ("ci", "CODEOWNERS", "README.md", "LICENSE", ".git"):
+                continue
+            if root_dir not in PURL_TYPE_BY_GITLAB_SCHEME:
+                logger.error(f"Unknown package type: {root_dir}")
+                continue
+            for root, _, files in os.walk(os.path.join(fork_directory, root_dir)):
+                for file in files:
+                    yield parse_gitlab_advisory(file=os.path.join(root, file))
 
 
 def get_purl(package_slug):
     """
     Return a PackageURL object from a package slug
     """
-    parts = package_slug.split("/")
-    parts = list(filter(not_empty, parts))
+    parts = [p for p in package_slug.strip("/").split("/") if p]
     gitlab_scheme = parts[0]
     purl_type = PURL_TYPE_BY_GITLAB_SCHEME[gitlab_scheme]
     if gitlab_scheme == "go":
@@ -130,12 +127,11 @@ def get_purl(package_slug):
     # if package slug is of the form:
     # "nuget/github/user/abc/NuGet.Core"
     if len(parts) >= 3:
-        gitlab_scheme = parts[0]
         name = parts[-1]
         namespace = "/".join(parts[1:-1])
         return PackageURL(type=purl_type, namespace=namespace, name=name)
     logger.error(f"get_purl: package_slug can not be parsed: {package_slug!r}")
-    return None
+    return
 
 
 def extract_affected_packages(
@@ -144,7 +140,12 @@ def extract_affected_packages(
     purl: PackageURL,
 ) -> Iterable[AffectedPackage]:
     """
-    Yield a list of AffectedPackage objects
+    Yield AffectedPackage objects, one for each fixed_version
+
+    In case of gitlab advisory data we get a list of fixed_versions and a affected_version_range.
+    Since we can not determine which package fixes which range.
+    We store the all the fixed_versions with the same affected_version_range in the advisory.
+    Later the advisory data is used to be infered in the GitLabBasicImprover.
     """
     for fixed_version in fixed_versions:
         yield AffectedPackage(
@@ -154,10 +155,11 @@ def extract_affected_packages(
         )
 
 
-def parse_yaml_file(file):
+def parse_gitlab_advisory(file):
     """
-    Take file name as input and parse the yaml file
-    to get AdvisoryData object
+    Parse a Gitlab advisory file and return an AdvisoryData or None.
+    These files are YAML. There is a JSON schema documented at
+    https://gitlab.com/gitlab-org/advisories-community/-/blob/main/ci/schema/schema.json
 
     Sample YAML file:
     ---
@@ -178,7 +180,7 @@ def parse_yaml_file(file):
     - "GMS-2018-26"
     """
     with open(file, "r") as f:
-        gitlab_advisory = yaml.safe_load(f)
+        gitlab_advisory = saneyaml.load(f)
     if not isinstance(gitlab_advisory, dict):
         logger.error(f"parse_yaml_file: yaml_file is not of type `dict`: {gitlab_advisory!r}")
         return
@@ -190,46 +192,52 @@ def parse_yaml_file(file):
     references = [Reference.from_url(u) for u in urls]
     date_published = dateparser.parse(gitlab_advisory.get("pubdate"))
     date_published = pytz.utc.localize(date_published)
-    fixed_versions = gitlab_advisory.get("fixed_versions")
-    affected_version_range = None
-    affected_range = gitlab_advisory.get("affected_range")
-    purl: PackageURL = get_purl(gitlab_advisory.get("package_slug"))
+    package_slug = gitlab_advisory.get("package_slug")
+    purl: PackageURL = get_purl(package_slug=package_slug)
     if not purl:
-        logger.error(f"parse_yaml_file: purl is not valid: {file!r}")
+        logger.error(f"parse_yaml_file: purl is not valid: {file!r} {package_slug!r}")
         return AdvisoryData(
             aliases=aliases,
             summary=summary,
             references=references,
             date_published=date_published,
         )
+    affected_version_range = None
+    fixed_versions = gitlab_advisory.get("fixed_versions") or []
+    affected_range = gitlab_advisory.get("affected_range")
+    gitlab_native_schemes = set(["pypi", "gem", "npm", "go", "packagist"])
     vrc: VersionRange = RANGE_CLASS_BY_SCHEMES[purl.type]
-    version_class = vrc.version_class
-    gitlab_native_schemes = ["pypi", "gem", "npm", "go", "packagist"]
     gitlab_scheme = GITLAB_SCHEME_BY_PURL_TYPE[purl.type]
     try:
-        if gitlab_scheme in gitlab_native_schemes:
-            if affected_range:
+        if affected_range:
+            if gitlab_scheme in gitlab_native_schemes:
                 affected_version_range = from_gitlab_native(
                     gitlab_scheme=gitlab_scheme, string=affected_range
                 )
-        else:
-            affected_version_range = vrc.from_native(affected_range) if affected_range else None
+            else:
+                affected_version_range = vrc.from_native(affected_range)
     except Exception as e:
         logger.error(
-            f"parse_yaml_file: affected_range is not parsable: {affected_range!r} type:{purl.type} {e} {traceback.format_exc()}"
+            f"parse_yaml_file: affected_range is not parsable: {affected_range!r} type:{purl.type!r} error: {e!r}\n {traceback.format_exc()}"
         )
 
     parsed_fixed_versions = []
-    for fixed_version in fixed_versions or []:
+    for fixed_version in fixed_versions:
         try:
-            fixed_version = version_class(fixed_version)
+            fixed_version = vrc.version_class(fixed_version)
             parsed_fixed_versions.append(fixed_version)
         except Exception as e:
-            logger.error(f"parse_yaml_file: fixed_version is not parsable`: {fixed_version!r}")
+            logger.error(
+                f"parse_yaml_file: fixed_version is not parsable`: {fixed_version!r} error: {e!r}\n {traceback.format_exc()}"
+            )
 
     if parsed_fixed_versions:
         affected_packages = list(
-            extract_affected_packages(affected_version_range, parsed_fixed_versions, purl)
+            extract_affected_packages(
+                affected_version_range=affected_version_range,
+                fixed_versions=parsed_fixed_versions,
+                purl=purl,
+            )
         )
     else:
         if not affected_version_range:
@@ -251,6 +259,14 @@ def parse_yaml_file(file):
 
 
 class GitLabBasicImprover(Improver):
+    """
+    Get the nearest fixed_version and then resolve the version range with the help of all valid versions.
+    Generate inference between all the affected packages and the fixed_version that fixes all those affected packages.
+
+    In case of gitlab advisory data we get a list of fixed_versions and a affected_version_range.
+    Since we can not determine which package fixes which range.
+    """
+
     def __init__(self) -> None:
         self.versions_fetcher_by_purl: Mapping[str, VersionAPI] = {}
 
@@ -264,7 +280,7 @@ class GitLabBasicImprover(Improver):
         """
         Return a list of `valid_versions` for the `package_url`
         """
-        api_name = get_api_package_name(package_url)
+        api_name = get_api_package_name(purl=package_url)
         if not api_name:
             logger.error(f"Could not get versions for {package_url!r}")
             return []
@@ -327,21 +343,13 @@ class GitLabBasicImprover(Improver):
                 vulnerable_packages=affected_purls, resolved_packages=unaffected_purls
             )
 
-            unique_patched_packages_with_affected_packages = {}
-            for package in affected_packages:
-                if package.patched_package not in unique_patched_packages_with_affected_packages:
-                    unique_patched_packages_with_affected_packages[package.patched_package] = []
-                unique_patched_packages_with_affected_packages[package.patched_package].append(
-                    package.vulnerable_package
-                )
-
             for (
                 fixed_package,
                 affected_packages,
-            ) in unique_patched_packages_with_affected_packages.items():
+            ) in get_affected_packages_by_patched_package(affected_packages).items():
                 yield Inference.from_advisory_data(
-                    advisory_data,
-                    confidence=100,  # We are getting all valid versions to get this inference
+                    advisory_data,  # We are getting all valid versions to get this inference
+                    confidence=100,
                     affected_purls=affected_packages,
                     fixed_purl=fixed_package,
                 )

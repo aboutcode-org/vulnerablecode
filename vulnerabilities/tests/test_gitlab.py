@@ -28,7 +28,7 @@ import pytest
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importers.gitlab import GitLabBasicImprover
-from vulnerabilities.importers.gitlab import parse_yaml_file
+from vulnerabilities.importers.gitlab import parse_gitlab_advisory
 from vulnerabilities.improvers.default import DefaultImprover
 from vulnerabilities.tests import util_tests
 
@@ -40,7 +40,7 @@ TEST_DATA = os.path.join(BASE_DIR, "test_data", "gitlab")
 def test_parse_yaml_file(pkg_type):
     response_file = os.path.join(TEST_DATA, f"{pkg_type}.yaml")
     expected_file = os.path.join(TEST_DATA, f"{pkg_type}-expected.json")
-    advisory = parse_yaml_file(response_file)
+    advisory = parse_gitlab_advisory(response_file)
     util_tests.check_results_against_json(advisory.to_dict(), expected_file)
 
 

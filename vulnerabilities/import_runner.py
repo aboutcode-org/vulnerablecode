@@ -66,6 +66,9 @@ def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: st
     """
     count = 0
     for data in advisory_datas:
+        # https://nvd.nist.gov/vuln/detail/CVE-2013-4314
+        # https://github.com/cms-dev/cms/issues/888#issuecomment-516977572
+        data.summary = data.summary.replace("\x00", "\uFFFD")
         obj, created = Advisory.objects.get_or_create(
             aliases=data.aliases,
             summary=data.summary,

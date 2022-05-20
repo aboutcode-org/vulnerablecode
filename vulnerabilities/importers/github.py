@@ -34,12 +34,8 @@ from packageurl import PackageURL
 from univers.version_range import VersionRange
 from univers.version_range import build_range_from_github_advisory_constraint
 
-from vulnerabilities import helpers
 from vulnerabilities import severity_systems
-from vulnerabilities.helpers import AffectedPackage as LegacyAffectedPackage
-from vulnerabilities.helpers import get_affected_packages_by_patched_package
-from vulnerabilities.helpers import get_item
-from vulnerabilities.helpers import nearest_patched_package
+from vulnerabilities import utils
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
@@ -56,6 +52,10 @@ from vulnerabilities.package_managers import NugetVersionAPI
 from vulnerabilities.package_managers import PypiVersionAPI
 from vulnerabilities.package_managers import RubyVersionAPI
 from vulnerabilities.package_managers import VersionAPI
+from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
+from vulnerabilities.utils import get_affected_packages_by_patched_package
+from vulnerabilities.utils import get_item
+from vulnerabilities.utils import nearest_patched_package
 
 logger = logging.getLogger(__name__)
 
@@ -191,7 +191,7 @@ class GitHubAPIImporter(Importer):
             end_cursor_exp = ""
             while True:
                 graphql_query = {"query": GRAPHQL_QUERY_TEMPLATE % (ecosystem, end_cursor_exp)}
-                response = helpers.fetch_github_graphql_query(graphql_query)
+                response = utils.fetch_github_graphql_query(graphql_query)
 
                 page_info = get_item(response, "data", "securityVulnerabilities", "pageInfo")
                 end_cursor = get_item(page_info, "endCursor")

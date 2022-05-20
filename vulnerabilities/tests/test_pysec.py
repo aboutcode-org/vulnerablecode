@@ -24,7 +24,9 @@ import json
 import os
 from unittest import TestCase
 
+import pytz
 from packageurl import PackageURL
+from univers.version_constraint import VersionConstraint
 from univers.version_range import PypiVersionRange
 from univers.versions import PypiVersion
 
@@ -35,7 +37,6 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers.pysec import fixed_filter
 from vulnerabilities.importers.pysec import get_affected_purl
 from vulnerabilities.importers.pysec import get_affected_version_range
-from vulnerabilities.importers.pysec import get_aliases
 from vulnerabilities.importers.pysec import get_fixed_version
 from vulnerabilities.importers.pysec import get_published_date
 from vulnerabilities.importers.pysec import get_references
@@ -43,239 +44,28 @@ from vulnerabilities.importers.pysec import get_severities
 from vulnerabilities.importers.pysec import parse_advisory_data
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.severity_systems import ScoringSystem
+from vulnerabilities.tests import util_tests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "test_data/pysec", "pysec_test.json")
+TEST_DATA = os.path.join(BASE_DIR, "test_data/pysec")
 
 
 class TestPyPIImporter(TestCase):
-    def test_to_advisories(self):
-        first_aff_range = [
-            "0.2.4",
-            "0.2.9",
-            "0.3.0",
-            "1.0.2",
-            "1.0.3",
-            "1.0.5",
-            "1.0.6",
-            "1.1.0",
-            "1.2.0",
-            "1.2.1",
-            "1.3.0",
-            "1.3.1",
-            "1.3.2",
-            "1.4.0",
-            "1.5.0",
-            "1.5.1",
-            "1.5.10",
-            "1.5.11",
-            "1.5.12",
-            "1.5.13",
-            "1.5.14",
-            "1.5.15",
-            "1.5.16",
-            "1.5.17",
-            "1.5.18",
-            "1.5.2",
-            "1.5.3",
-            "1.5.4",
-            "1.5.5",
-            "1.5.6",
-            "1.5.7",
-            "1.5.8",
-            "1.6.0",
-            "1.6.1",
-            "1.6.2",
-        ]
-        second_aff_range = [
-            "1.0",
-            "1.1",
-            "1.2",
-            "1.3",
-            "1.4",
-            "1.5",
-            "1.6",
-            "1.7.0",
-            "1.7.1",
-            "1.7.2",
-            "1.7.3",
-            "1.7.4",
-            "1.7.5",
-            "1.7.6",
-            "1.7.7",
-            "1.7.8",
-            "2.0.0",
-            "2.1.0",
-            "2.2.0",
-            "2.2.1",
-            "2.2.2",
-            "2.3.0",
-            "2.3.1",
-            "2.3.2",
-            "2.4.0",
-            "2.5.0",
-            "2.5.1",
-            "2.5.2",
-            "2.5.3",
-            "2.6.0",
-            "2.6.1",
-            "2.6.2",
-            "2.7.0",
-            "2.8.0",
-            "2.8.1",
-            "2.8.2",
-            "2.9.0",
-            "3.0.0",
-            "3.1.0",
-            "3.1.0.rc1",
-            "3.1.0rc1",
-            "3.1.1",
-            "3.1.2",
-            "3.2.0",
-            "3.3.0",
-            "3.3.1",
-            "3.3.2",
-            "3.3.3",
-            "3.4.0",
-            "3.4.1",
-            "3.4.2",
-            "4.0.0",
-            "4.1.0",
-            "4.1.1",
-            "4.2.0",
-            "4.2.1",
-            "4.3.0",
-            "5.0.0",
-            "5.1.0",
-            "5.2.0",
-            "5.3.0",
-            "5.4.0",
-            "5.4.0.dev0",
-            "5.4.1",
-            "6.0.0",
-            "6.1.0",
-            "6.2.0",
-            "6.2.1",
-            "6.2.2",
-            "7.0.0",
-            "7.1.0",
-            "7.1.1",
-            "7.1.2",
-            "7.2.0",
-            "8.0.0",
-            "8.0.1",
-            "8.1.0",
-            "8.1.1",
-            "8.1.2",
-            "8.2.0",
-            "8.3.0",
-            "8.3.1",
-            "8.3.2",
-            "8.4.0",
-        ]
-        with open(TEST_DATA) as f:
+    def test_to_advisories_with_summary(self):
+        with open(os.path.join(TEST_DATA, "pysec_test_1.json")) as f:
             mock_response = json.load(f)
+        expected_file = os.path.join(TEST_DATA, f"pysec-expected-1.json")
+        imported_data = parse_advisory_data(mock_response)
+        result = imported_data.to_dict()
+        util_tests.check_results_against_json(result, expected_file)
 
-        expected_advisories = [
-            AdvisoryData(
-                aliases=["CVE-2021-40831", "GHSA-j3f7-7rmc-6wqj"],
-                summary="Improper certificate management in AWS IoT Device SDK v2",
-                affected_packages=[
-                    AffectedPackage(
-                        package=PackageURL.from_string("pkg:pypi/awsiotsdk"),
-                        affected_version_range=PypiVersionRange(first_aff_range),
-                        fixed_version=PypiVersion("1.7.0"),
-                    ),
-                ],
-                references=[
-                    Reference(
-                        url="https://nvd.nist.gov/vuln/detail/CVE-2021-40831",
-                        severities=[
-                            VulnerabilitySeverity(
-                                system=SCORING_SYSTEMS["cvssv3.1_vector"],
-                                value="CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N",
-                            )
-                        ],
-                    ),
-                    Reference(
-                        url="https://github.com/aws/aws-iot-device-sdk-cpp-v2",
-                        severities=[
-                            VulnerabilitySeverity(
-                                system=SCORING_SYSTEMS["cvssv3.1_vector"],
-                                value="CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N",
-                            )
-                        ],
-                    ),
-                ],
-                date_published=datetime.datetime(2021, 11, 24, 20, 35, 3, 0).replace(
-                    tzinfo=datetime.timezone.utc
-                ),
-            ),
-            AdvisoryData(
-                aliases=["CVE-2022-22817", "GHSA-8vj2-vxx3-667w", "PYSEC-2022-10"],
-                summary="",
-                affected_packages=[
-                    AffectedPackage(
-                        package=PackageURL.from_string("pkg:pypi/pillow"),
-                        affected_version_range=PypiVersionRange(second_aff_range),
-                        fixed_version=PypiVersion("9.0.0"),
-                    )
-                ],
-                references=[
-                    Reference(
-                        url="https://pillow.readthedocs.io/en/stable/releasenotes/9.0.0.html#restrict-builtins"
-                        "-available-to-imagemath-eval",
-                        severities=[
-                            VulnerabilitySeverity(
-                                system=ScoringSystem(
-                                    identifier="generic_textual",
-                                    name="Generic textual severity rating",
-                                    url="",
-                                    notes="Severity for generic scoring systems. Contains generic textual values like High, Low etc",
-                                ),
-                                value="HIGH",
-                            )
-                        ],
-                    ),
-                    Reference(
-                        url="https://lists.debian.org/debian-lts-announce/2022/01/msg00018.html",
-                        severities=[
-                            VulnerabilitySeverity(
-                                system=ScoringSystem(
-                                    identifier="generic_textual",
-                                    name="Generic textual severity rating",
-                                    url="",
-                                    notes="Severity for generic scoring systems. Contains generic textual values like High, Low etc",
-                                ),
-                                value="HIGH",
-                            )
-                        ],
-                    ),
-                    Reference(
-                        url="https://github.com/advisories/GHSA-8vj2-vxx3-667w",
-                        severities=[
-                            VulnerabilitySeverity(
-                                system=ScoringSystem(
-                                    identifier="generic_textual",
-                                    name="Generic textual severity rating",
-                                    url="",
-                                    notes="Severity for generic scoring systems. Contains generic textual values like High, Low etc",
-                                ),
-                                value="HIGH",
-                            )
-                        ],
-                    ),
-                ],
-                date_published=datetime.datetime(2022, 1, 10, 14, 12, 0, 853348).replace(
-                    tzinfo=datetime.timezone.utc
-                ),
-            ),
-        ]
-        found_data = []
-        for response in mock_response:
-            found_data.append(parse_advisory_data(response))
-
-        assert expected_advisories == found_data
+    def test_to_advisories_without_summary(self):
+        with open(os.path.join(TEST_DATA, "pysec_test_2.json")) as f:
+            mock_response = json.load(f)
+        expected_file = os.path.join(TEST_DATA, f"pysec-expected-2.json")
+        imported_data = parse_advisory_data(mock_response)
+        result = imported_data.to_dict()
+        util_tests.check_results_against_json(result, expected_file)
 
     def test_fixed_filter(self):
         assert list(
@@ -309,23 +99,6 @@ class TestPyPIImporter(TestCase):
                 }
             )
         ) == ["1.5.0", "9.0g0", "10.8"]
-
-    def test_get_aliases(self):
-        assert get_aliases({"id": "GHSA-j3f7-7rmc-6wqj"}) == ["GHSA-j3f7-7rmc-6wqj"]
-        assert get_aliases({"aliases": ["CVE-2021-40831"]}) == ["CVE-2021-40831"]
-        self.assertCountEqual(
-            get_aliases({"aliases": ["CVE-2021-40831"], "id": "GHSA-j3f7-7rmc-6wqj"}),
-            [
-                "CVE-2021-40831",
-                "GHSA-j3f7-7rmc-6wqj",
-            ],
-        )
-        self.assertCountEqual(
-            get_aliases(
-                {"aliases": ["CVE-2022-22817", "GHSA-8vj2-vxx3-667w"], "id": "GHSA-j3f7-7rmc-6wqj"}
-            ),
-            ["CVE-2022-22817", "GHSA-8vj2-vxx3-667w", "GHSA-j3f7-7rmc-6wqj"],
-        )
 
     def test_get_published_date(self):
         assert get_published_date(
@@ -491,7 +264,47 @@ class TestPyPIImporter(TestCase):
         ]
         assert get_affected_version_range(
             {"versions": aff_version_range}, "GHSA-j3f7-7rmc-6wqj"
-        ) == (PypiVersionRange(aff_version_range))
+        ) == (
+            PypiVersionRange(
+                constraints=[
+                    VersionConstraint(comparator="=", version=PypiVersion(string="0.2.4")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="0.2.9")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="0.3.0")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.0.2")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.0.3")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.0.5")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.0.6")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.1.0")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.2.0")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.2.1")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.3.0")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.3.1")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.3.2")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.4.0")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.0")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.1")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.2")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.3")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.4")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.5")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.6")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.7")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.8")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.10")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.11")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.12")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.13")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.14")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.15")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.16")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.17")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.5.18")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.6.0")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.6.1")),
+                    VersionConstraint(comparator="=", version=PypiVersion(string="1.6.2")),
+                ]
+            )
+        )
 
     def test_get_fixed_version(self):
         assert get_fixed_version({}, "GHSA-j3f7-7rmc-6wqj") == []

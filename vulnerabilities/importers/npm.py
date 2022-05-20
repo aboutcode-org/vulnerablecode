@@ -33,12 +33,12 @@ from packageurl import PackageURL
 from univers.version_range import VersionRange
 from univers.versions import SemverVersion
 
-from vulnerabilities.helpers import load_json
-from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import NpmVersionAPI
+from vulnerabilities.utils import load_json
+from vulnerabilities.utils import nearest_patched_package
 
 NPM_URL = "https://registry.npmjs.org{}"
 

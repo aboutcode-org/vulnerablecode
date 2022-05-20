@@ -33,11 +33,6 @@ from packageurl import PackageURL
 from univers.version_range import DebianVersionRange
 from univers.versions import DebianVersion
 
-from vulnerabilities.helpers import AffectedPackage as LegacyAffectedPackage
-from vulnerabilities.helpers import dedupe
-from vulnerabilities.helpers import get_affected_packages_by_patched_package
-from vulnerabilities.helpers import get_item
-from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
@@ -47,6 +42,11 @@ from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
+from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
+from vulnerabilities.utils import dedupe
+from vulnerabilities.utils import get_affected_packages_by_patched_package
+from vulnerabilities.utils import get_item
+from vulnerabilities.utils import nearest_patched_package
 
 logger = logging.getLogger(__name__)
 

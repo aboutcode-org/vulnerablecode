@@ -28,13 +28,13 @@ from packageurl import PackageURL
 from univers.version_range import VersionRange
 
 from vulnerabilities import severity_systems
-from vulnerabilities.helpers import AffectedPackage
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDImporter
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import PackageVersion
+from vulnerabilities.utils import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "apache_httpd", "CVE-1999-1199.json")

@@ -8,9 +8,9 @@ from uuid import uuid4
 from django.db.models.query import QuerySet
 from packageurl import PackageURL
 
-from vulnerabilities.helpers import classproperty
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
+from vulnerabilities.utils import classproperty
 
 logger = logging.getLogger(__name__)
 

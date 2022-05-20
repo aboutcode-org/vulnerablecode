@@ -33,7 +33,6 @@ from django.db.models.query import QuerySet
 from packageurl import PackageURL
 from univers.versions import AlpineLinuxVersion
 
-from vulnerabilities.helpers import is_cve
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
@@ -44,6 +43,7 @@ from vulnerabilities.models import Advisory
 from vulnerabilities.references import WireSharkReference
 from vulnerabilities.references import XsaReference
 from vulnerabilities.references import ZbxReference
+from vulnerabilities.utils import is_cve
 
 LOGGER = logging.getLogger(__name__)
 BASE_URL = "https://secdb.alpinelinux.org/"

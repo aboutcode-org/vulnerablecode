@@ -31,11 +31,11 @@ from urllib.request import urlopen
 from packageurl import PackageURL
 
 from vulnerabilities import severity_systems
-from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.utils import nearest_patched_package
 
 
 class ArchlinuxImporter(Importer):

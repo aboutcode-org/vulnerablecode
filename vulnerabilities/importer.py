@@ -43,12 +43,12 @@ from packageurl import PackageURL
 from univers.version_range import VersionRange
 from univers.versions import Version
 
-from vulnerabilities.helpers import classproperty
-from vulnerabilities.helpers import evolve_purl
-from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.severity_systems import ScoringSystem
+from vulnerabilities.utils import classproperty
+from vulnerabilities.utils import evolve_purl
+from vulnerabilities.utils import nearest_patched_package
 
 logger = logging.getLogger(__name__)
 

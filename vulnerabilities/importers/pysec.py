@@ -23,25 +23,27 @@ import json
 import logging
 from io import BytesIO
 from typing import Iterable
+from typing import List
 from typing import Optional
 from zipfile import ZipFile
 
 import dateparser
 import requests
 from packageurl import PackageURL
-from univers.version_range import InvalidVersionRange
 from univers.version_range import PypiVersionRange
 from univers.versions import InvalidVersion
 from univers.versions import PypiVersion
 from univers.versions import SemverVersion
+from univers.versions import Version
 
-from vulnerabilities.helpers import dedupe
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.utils import build_description
+from vulnerabilities.utils import dedupe
 
 logger = logging.getLogger(__name__)
 
@@ -70,9 +72,13 @@ class PyPIImporter(Importer):
 
 
 def parse_advisory_data(raw_data: dict) -> Optional[AdvisoryData]:
-    raw_id = raw_data["id"]
+    raw_id = raw_data.get("id") or ""
     summary = raw_data.get("summary") or ""
-    aliases = get_aliases(raw_data)
+    details = raw_data.get("details") or ""
+    summary = build_description(summary=summary, description=details)
+    aliases = raw_data.get("aliases") or []
+    if raw_id:
+        aliases.append(raw_id)
     date_published = get_published_date(raw_data)
     severity = list(get_severities(raw_data))
     references = get_references(raw_data, severity)
@@ -80,7 +86,13 @@ def parse_advisory_data(raw_data: dict) -> Optional[AdvisoryData]:
     affected_packages = []
     if "affected" not in raw_data:
         logger.error(f"affected_packages not found - {raw_id !r}")
-        return
+        return AdvisoryData(
+            aliases=aliases,
+            summary=summary,
+            references=references,
+            affected_packages=[],
+            date_published=date_published,
+        )
 
     for affected_pkg in raw_data.get("affected") or []:
         purl = get_affected_purl(affected_pkg, raw_id)
@@ -110,7 +122,7 @@ def parse_advisory_data(raw_data: dict) -> Optional[AdvisoryData]:
     )
 
 
-def fixed_filter(fixed_range) -> []:
+def fixed_filter(fixed_range) -> Iterable[str]:
     """
     Return a list of fixed version strings given a ``fixed_range`` mapping of OSV data.
     >>> list(fixed_filter({"type": "SEMVER", "events": [{"introduced": "0"}, {"fixed": "1.6.0"}]}))
@@ -124,30 +136,12 @@ def fixed_filter(fixed_range) -> []:
             yield fixed
 
 
-def get_aliases(raw_data) -> []:
-    """
-    aliases field is optional , id is required and these are all aliases from our perspective
-    converting list of two fields to a dict then , convert it to a list to make sure a list is unique
-    >>> get_aliases({"id": "GHSA-j3f7-7rmc-6wqj"})
-    ['GHSA-j3f7-7rmc-6wqj']
-    >>> get_aliases({"aliases": ["CVE-2021-40831"]})
-    ['CVE-2021-40831']
-    >>> get_aliases({"aliases": ["CVE-2022-22817", "GHSA-8vj2-vxx3-667w"], "id": "GHSA-j3f7-7rmc-6wqj"})
-    ['CVE-2022-22817', 'GHSA-8vj2-vxx3-667w', 'GHSA-j3f7-7rmc-6wqj']
-    """
-    vulnerability_id = raw_data.get("id")
-    vulnerability_aliases = raw_data.get("aliases") or []
-    if vulnerability_id:
-        vulnerability_aliases.append(vulnerability_id)
-    return vulnerability_aliases
-
-
 def get_published_date(raw_data):
     published = raw_data.get("published")
     return published and dateparser.parse(published)
 
 
-def get_severities(raw_data) -> []:
+def get_severities(raw_data) -> Iterable[VulnerabilitySeverity]:
     for sever_list in raw_data.get("severity") or []:
         if sever_list.get("type") == "CVSS_V3":
             yield VulnerabilitySeverity(
@@ -173,7 +167,7 @@ def get_severities(raw_data) -> []:
         )
 
 
-def get_references(raw_data, severities) -> []:
+def get_references(raw_data, severities) -> List[Reference]:
     references = raw_data.get("references") or []
     return [Reference(url=ref["url"], severities=severities) for ref in references if ref]
 
@@ -199,14 +193,16 @@ def get_affected_version_range(affected_pkg, raw_id):
     affected_versions = affected_pkg.get("versions")
     if affected_versions:
         try:
-            return PypiVersionRange(affected_versions)
-        except InvalidVersionRange:
-            logger.error(f"InvalidVersionRange affected_pkg_version_range Error - {raw_id !r} ")
-    else:
-        logger.error(f"affected_pkg_version_range not found - {raw_id !r} ")
+            return PypiVersionRange.from_versions(affected_versions)
+        except Exception as e:
+            logger.error(
+                f"InvalidVersionRange affected_pkg_version_range Error - {raw_id !r} {e!r}"
+            )
+    # else:
+    #     logger.error(f"affected_pkg_version_range not found - {raw_id !r} ")
 
 
-def get_fixed_version(fixed_range, raw_id) -> []:
+def get_fixed_version(fixed_range, raw_id) -> List[Version]:
     """
     Return a list of fixed versions, using fixed_filter we get the list of fixed version strings,
     then we pass every element to their univers.versions , then we dedupe the result

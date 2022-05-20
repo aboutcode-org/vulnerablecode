@@ -26,9 +26,9 @@ import xml.etree.ElementTree as ET
 
 import requests
 
-from vulnerabilities.helpers import create_etag
 from vulnerabilities.importer import OvalImporter
 from vulnerabilities.package_managers import DebianVersionAPI
+from vulnerabilities.utils import create_etag
 
 
 class DebianOvalImporter(OvalImporter):

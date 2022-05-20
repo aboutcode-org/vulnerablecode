@@ -24,11 +24,11 @@ import json
 
 import requests
 
-from vulnerabilities.helpers import create_etag
-from vulnerabilities.helpers import is_cve
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
+from vulnerabilities.utils import create_etag
+from vulnerabilities.utils import is_cve
 
 
 class XenImporter(Importer):

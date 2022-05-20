@@ -209,7 +209,7 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
         )
         assert interesting_advisories == advisories
 
-    @mock.patch("vulnerabilities.helpers.fetch_github_graphql_query")
+    @mock.patch("vulnerabilities.utils.fetch_github_graphql_query")
     def test_NginxBasicImprover_fetch_nginx_version_from_git_tags(self, mock_fetcher):
         reponse_files = [
             "github-nginx-nginx-0.json",

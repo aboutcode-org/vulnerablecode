@@ -345,7 +345,7 @@ class TestNugetVersionAPI:
 
 
 class TestGitHubTagsAPI:
-    @mock.patch("vulnerabilities.helpers.fetch_github_graphql_query")
+    @mock.patch("vulnerabilities.utils.fetch_github_graphql_query")
     def test_fetch_large_repo(self, mock_fetcher):
         reponse_files = [
             "github-torvalds-linux-0.json",
@@ -366,7 +366,7 @@ class TestGitHubTagsAPI:
         results = list(GitHubTagsAPI().fetch("torvalds/linux"))
         assert len(results) == 739
 
-    @mock.patch("vulnerabilities.helpers.fetch_github_graphql_query")
+    @mock.patch("vulnerabilities.utils.fetch_github_graphql_query")
     def test_fetch_small_repo_1(self, mock_graphql_response):
         with open(os.path.join(TEST_DATA, "github", "github-nexb-scancode-toolkit-0.json")) as f:
             mock_graphql_response.return_value = json.load(f)
@@ -430,7 +430,7 @@ class TestGitHubTagsAPI:
         ]
         assert results == expected
 
-    @mock.patch("vulnerabilities.helpers.fetch_github_graphql_query")
+    @mock.patch("vulnerabilities.utils.fetch_github_graphql_query")
     def test_fetch_small_repo_2(self, mock_graphql_response):
         with open(os.path.join(TEST_DATA, "github", "github-nexb-vulnerablecode-0.json")) as f:
             mock_graphql_response.return_value = json.load(f)

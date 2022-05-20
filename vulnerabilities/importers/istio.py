@@ -30,12 +30,12 @@ from packageurl import PackageURL
 from univers.version_range import VersionRange
 from univers.versions import SemverVersion
 
-from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.helpers import split_markdown_front_matter
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.utils import nearest_patched_package
+from vulnerabilities.utils import split_markdown_front_matter
 
 is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match
 

@@ -32,7 +32,6 @@ from univers.version_range import GemVersionRange
 from univers.versions import RubygemsVersion
 
 from vulnerabilities import severity_systems
-from vulnerabilities.helpers import GitHubTokenError
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
@@ -42,6 +41,7 @@ from vulnerabilities.importers.github import GitHubBasicImprover
 from vulnerabilities.importers.github import process_response
 from vulnerabilities.importers.github import resolve_version_range
 from vulnerabilities.package_managers import PackageVersion
+from vulnerabilities.utils import GitHubTokenError
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "github_api")
@@ -115,7 +115,7 @@ def test_github_importer_with_missing_credentials():
             list(importer.advisory_data())
 
 
-@mock.patch("vulnerabilities.helpers._get_gh_response")
+@mock.patch("vulnerabilities.utils._get_gh_response")
 def test_github_importer_with_missing_credentials_2(mock_response):
     mock_response.return_value = {"message": "Bad credentials"}
     with pytest.raises(GitHubTokenError) as e:

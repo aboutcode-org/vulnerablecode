@@ -29,13 +29,13 @@ from packageurl import PackageURL
 from univers.version_range import VersionRange
 from univers.versions import SemverVersion
 
-from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.severity_systems import APACHE_HTTPD
+from vulnerabilities.utils import nearest_patched_package
 
 
 class ApacheHTTPDImporter(Importer):

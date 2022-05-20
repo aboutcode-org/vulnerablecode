@@ -8,12 +8,12 @@ from markdown import markdown
 from packageurl import PackageURL
 
 from vulnerabilities import severity_systems
-from vulnerabilities.helpers import is_cve
-from vulnerabilities.helpers import split_markdown_front_matter
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.utils import is_cve
+from vulnerabilities.utils import split_markdown_front_matter
 
 REPOSITORY = "mozilla/foundation-security-advisories"
 MFSA_FILENAME_RE = re.compile(r"mfsa(\d{4}-\d{2,3})\.(md|yml)$")

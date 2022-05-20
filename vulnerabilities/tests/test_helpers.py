@@ -22,9 +22,9 @@
 
 from packageurl import PackageURL
 
-from vulnerabilities.helpers import AffectedPackage
-from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.helpers import split_markdown_front_matter
+from vulnerabilities.utils import AffectedPackage
+from vulnerabilities.utils import nearest_patched_package
+from vulnerabilities.utils import split_markdown_front_matter
 
 
 def test_nearest_patched_package():

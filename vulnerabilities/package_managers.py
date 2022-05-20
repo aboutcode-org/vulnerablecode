@@ -36,8 +36,8 @@ import requests
 from dateutil import parser as dateparser
 from django.utils.dateparse import parse_datetime
 
-from vulnerabilities import helpers
-from vulnerabilities.helpers import get_item
+from vulnerabilities import utils
+from vulnerabilities.utils import get_item
 
 logger = logging.getLogger(__name__)
 
@@ -520,7 +520,7 @@ class GitHubTagsAPI(VersionAPI):
 
         idx = 0
         while True:
-            response = helpers.fetch_github_graphql_query(graphql_query)
+            response = utils.fetch_github_graphql_query(graphql_query)
 
             # this is a convenience for testing to dump results to a file
             if _DUMP_TO_FILE:

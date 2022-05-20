@@ -36,13 +36,14 @@ from univers.versions import PypiVersion
 from univers.versions import SemverVersion
 from univers.versions import Version
 
-from vulnerabilities.helpers import dedupe
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.utils import build_description
+from vulnerabilities.utils import dedupe
 
 logger = logging.getLogger(__name__)
 
@@ -74,12 +75,7 @@ def parse_advisory_data(raw_data: dict) -> Optional[AdvisoryData]:
     raw_id = raw_data.get("id") or ""
     summary = raw_data.get("summary") or ""
     details = raw_data.get("details") or ""
-    summary_and_details = []
-    if summary:
-        summary_and_details.append(summary)
-    if details:
-        summary_and_details.append(details)
-    summary = ".".join(summary_and_details)
+    summary = build_description(summary=summary, description=details)
     aliases = raw_data.get("aliases") or []
     if raw_id:
         aliases.append(raw_id)
@@ -202,8 +198,8 @@ def get_affected_version_range(affected_pkg, raw_id):
             logger.error(
                 f"InvalidVersionRange affected_pkg_version_range Error - {raw_id !r} {e!r}"
             )
-    else:
-        logger.error(f"affected_pkg_version_range not found - {raw_id !r} ")
+    # else:
+    #     logger.error(f"affected_pkg_version_range not found - {raw_id !r} ")
 
 
 def get_fixed_version(fixed_range, raw_id) -> List[Version]:

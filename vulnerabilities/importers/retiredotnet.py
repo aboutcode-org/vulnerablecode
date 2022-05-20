@@ -27,10 +27,10 @@ from typing import Set
 
 from packageurl import PackageURL
 
-from vulnerabilities.helpers import AffectedPackage
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
+from vulnerabilities.utils import AffectedPackage
 
 
 class RetireDotnetImporter(GitImporter):

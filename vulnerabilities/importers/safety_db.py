@@ -38,11 +38,11 @@ from univers.version_range import PypiVersionRange
 from univers.versions import InvalidVersion
 from univers.versions import PypiVersion
 
-from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import PypiVersionAPI
+from vulnerabilities.utils import nearest_patched_package
 
 logger = logging.getLogger(__name__)
 

@@ -24,11 +24,11 @@ import os
 from unittest import TestCase
 
 from vulnerabilities import severity_systems
-from vulnerabilities.helpers import load_yaml
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers.suse_scores import SUSESeverityScoreImporter
+from vulnerabilities.utils import load_yaml
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/suse_scores", "suse-cvss-scores.yaml")

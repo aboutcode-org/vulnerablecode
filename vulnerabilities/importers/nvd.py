@@ -30,7 +30,6 @@ from dateutil import parser as dateparser
 from django.db.models.query import QuerySet
 
 from vulnerabilities import severity_systems
-from vulnerabilities.helpers import get_item
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
@@ -38,6 +37,7 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
+from vulnerabilities.utils import get_item
 
 
 class NVDImporter(Importer):

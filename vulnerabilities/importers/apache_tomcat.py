@@ -30,12 +30,12 @@ from univers.version_range import MavenVersionRange
 from univers.versions import MavenVersion
 from univers.versions import SemverVersion
 
-from vulnerabilities.helpers import create_etag
-from vulnerabilities.helpers import nearest_patched_package
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import MavenVersionAPI
+from vulnerabilities.utils import create_etag
+from vulnerabilities.utils import nearest_patched_package
 
 
 class ApacheTomcatImporter(Importer):

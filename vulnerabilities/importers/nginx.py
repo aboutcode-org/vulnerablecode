@@ -32,7 +32,6 @@ from packageurl import PackageURL
 from univers.version_range import NginxVersionRange
 from univers.versions import SemverVersion
 
-from vulnerabilities.helpers import evolve_purl
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
@@ -45,6 +44,7 @@ from vulnerabilities.models import Advisory
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import PackageVersion
 from vulnerabilities.severity_systems import GENERIC
+from vulnerabilities.utils import evolve_purl
 
 logger = logging.getLogger(__name__)
 

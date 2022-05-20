@@ -30,14 +30,14 @@ from packageurl import PackageURL
 from univers.version_range import RpmVersionRange
 
 from vulnerabilities import severity_systems
-from vulnerabilities.helpers import get_item
-from vulnerabilities.helpers import requests_with_5xx_retry
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.rpm_utils import rpm_to_purl
+from vulnerabilities.utils import get_item
+from vulnerabilities.utils import requests_with_5xx_retry
 
 logger = logging.getLogger(__name__)
 

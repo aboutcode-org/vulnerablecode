@@ -21,7 +21,7 @@
     ],
     "references": [
       {
-        "reference_id": "",
+        "reference_id": "CVE-2021-46703",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-46703",
         "severities": []
       },
@@ -65,7 +65,7 @@
     ],
     "references": [
       {
-        "reference_id": "",
+        "reference_id": "CVE-2022-23395",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-23395",
         "severities": []
       },
@@ -153,7 +153,7 @@
     ],
     "references": [
       {
-        "reference_id": "",
+        "reference_id": "CVE-2017-0256",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-0256",
         "severities": []
       },

@@ -21,6 +21,7 @@
 #  VulnerableCode is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import logging
 from typing import Iterable
 from typing import List
 from typing import Tuple
@@ -35,6 +36,8 @@ from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.utils import evolve_purl
+
+logger = logging.getLogger(__name__)
 
 
 class DefaultImprover(Improver):
@@ -98,14 +101,18 @@ def get_exact_purls(affected_package: AffectedPackage) -> Tuple[List[PackageURL]
     # We need ``if c`` below because univers returns None as version
     # in case of vers:nginx/*
     # TODO: Revisit after https://github.com/nexB/univers/issues/33
-    affected_purls = []
-    if vr:
-        range_versions = [c.version for c in vr.constraints if c]
-        resolved_versions = [v for v in range_versions if v and v in vr]
-        for version in resolved_versions:
-            affected_purl = evolve_purl(purl=affected_package.package, version=str(version))
-            affected_purls.append(affected_purl)
+    try:
+        affected_purls = []
+        if vr:
+            range_versions = [c.version for c in vr.constraints if c]
+            resolved_versions = [v for v in range_versions if v and v in vr]
+            for version in resolved_versions:
+                affected_purl = evolve_purl(purl=affected_package.package, version=str(version))
+                affected_purls.append(affected_purl)
 
-    fixed_purl = affected_package.get_fixed_purl() if affected_package.fixed_version else None
+        fixed_purl = affected_package.get_fixed_purl() if affected_package.fixed_version else None
 
-    return affected_purls, fixed_purl
+        return affected_purls, fixed_purl
+    except Exception as e:
+        logger.error(f"Failed to get exact purls for {affected_package} {e}")
+        return [], None

@@ -30,7 +30,7 @@ from bs4 import BeautifulSoup
 from django.db.models.query import QuerySet
 from packageurl import PackageURL
 from univers.version_range import NginxVersionRange
-from univers.versions import SemverVersion
+from univers.versions import NginxVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -121,7 +121,7 @@ def to_advisory_data(ngnx_adv: NginxAdvisory) -> AdvisoryData:
             )
             break
 
-        fixed_version = SemverVersion(fixed_version)
+        fixed_version = NginxVersion(fixed_version)
         affected_packages.append(
             AffectedPackage(
                 package=purl,
@@ -277,7 +277,7 @@ class NginxBasicImprover(Improver):
         for affected_version_range in affected_version_ranges:
             for package_version in all_versions:
                 # FIXME: we should reference an NginxVersion tbd in univers
-                version = SemverVersion(package_version.value)
+                version = NginxVersion(package_version.value)
                 if is_vulnerable(
                     version=version,
                     affected_version_range=affected_version_range,

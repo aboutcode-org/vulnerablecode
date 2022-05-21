@@ -107,10 +107,11 @@ toml==0.10.2
 tomli==2.0.1
 traitlets==5.1.1
 typing_extensions==4.1.1
-univers==30.5.1
+univers==30.7.0
 urllib3==1.26.9
 wcwidth==0.2.5
 websocket-client==0.59.0
 yarl==1.7.2
 zipp==3.8.0
 dateparser==1.1.1
+fetchcode==0.1.0

@@ -15,7 +15,7 @@
           "subpath": null
         },
         "affected_version_range": "vers:pypi/<9.0.0",
-        "fixed_version": null
+        "fixed_version": "9.0.0"
       }
     ],
     "references": [
@@ -44,8 +44,8 @@
   },
   {
     "aliases": [
-      "CVE-2022-22817",
-      "GHSA-8vj2-vxx3-667w"
+      "GHSA-8vj2-vxx3-667w",
+      "CVE-2022-22817"
     ],
     "summary": "Arbitrary expression injection in Pillow",
     "affected_packages": [
@@ -108,8 +108,8 @@
   },
   {
     "aliases": [
-      "CVE-2022-24303",
-      "GHSA-9j59-75qj-795w"
+      "GHSA-9j59-75qj-795w",
+      "CVE-2022-24303"
     ],
     "summary": "Path traversal in Pillow",
     "affected_packages": [
@@ -157,8 +157,8 @@
   },
   {
     "aliases": [
-      "CVE-2022-23578",
-      "GHSA-8r7c-3cm2-3h8f"
+      "GHSA-8r7c-3cm2-3h8f",
+      "CVE-2022-23578"
     ],
     "summary": "Memory leak in Tensorflow",
     "affected_packages": [

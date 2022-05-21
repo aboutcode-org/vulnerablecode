@@ -295,7 +295,7 @@ def get_affected_packages_by_patched_package(
 
 
 # This code has been vendored from scancode.
-# https://github.com/nexB/scancode-toolkit/blob/develop/src/packagedcode/utils.py#L111
+# https://github.com/nexB/scancode-toolkit/blob/aba31126dcb3ab57f2b885090f7145f69b67351a/src/packagedcode/utils.py#L111
 def build_description(summary, description):
     """
     Return a description string from a summary and description

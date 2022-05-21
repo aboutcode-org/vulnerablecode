@@ -208,8 +208,7 @@ def get_purl(pkg_type: str, github_name: str) -> Optional[PackageURL]:
 
     if pkg_type == "composer":
         if "/" not in github_name:
-            logger.error(f"get_purl: Invalid composer package name {github_name}")
-            return
+            return PackageURL(type=pkg_type, name=github_name)
         vendor, _, name = github_name.partition("/")
         return PackageURL(type=pkg_type, namespace=vendor, name=name)
 

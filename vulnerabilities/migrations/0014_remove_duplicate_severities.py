@@ -61,4 +61,5 @@ class Migration(migrations.Migration):
                 .delete()
             )
 
-    operations = [migrations.RunPython(remove_duplicate_rows)]
+    # sepecifying migrations.RunPython.noop as reverse_code
+    operations = [migrations.RunPython(remove_duplicate_rows, migrations.RunPython.noop)]

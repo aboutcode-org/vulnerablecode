@@ -21,6 +21,7 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 from django.test import TestCase
+from django.utils.http import int_to_base36
 from rest_framework import status
 
 from vulnerabilities.models import Package
@@ -31,7 +32,7 @@ from vulnerabilities.models import VulnerabilityRelatedReference
 
 class APITestCaseVulnerability(TestCase):
     def setUp(self):
-        for i in range(0, 10):
+        for i in range(0, 200):
             Vulnerability.objects.create(
                 summary=str(i),
             )
@@ -43,7 +44,7 @@ class APITestCaseVulnerability(TestCase):
 
     def test_api_response(self):
         response = self.client.get("/api/vulnerabilities/", format="json").data
-        self.assertEqual(response["count"], 11)
+        self.assertEqual(response["count"], 201)
 
     def test_api_with_single_vulnerability(self):
         response = self.client.get(
@@ -51,7 +52,7 @@ class APITestCaseVulnerability(TestCase):
         ).data
         assert response == {
             "url": f"http://testserver/api/vulnerabilities/{self.vulnerability.id}",
-            "vulnerability_id": "VULCOID-Y",
+            "vulnerability_id": f"VULCOID-{int_to_base36(self.vulnerability.id).upper()}",
             "summary": "test",
             "aliases": [],
             "fixed_packages": [],

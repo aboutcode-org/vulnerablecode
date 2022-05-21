@@ -66,7 +66,6 @@ def test_redhat_importer(bugzilla, rhsa, fetcher):
         json.load(open(rhsa_1437)),
         json.load(open(rhsa_1439)),
     ]
-    print(fetcher.return_value)
     expected_file = os.path.join(TEST_DATA, f"redhat-expected.json")
     imported_data = list(redhat_importer.advisory_data())
     result = [data.to_dict() for data in imported_data]

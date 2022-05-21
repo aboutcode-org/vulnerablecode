@@ -46,11 +46,12 @@ from vulnerabilities.models import Advisory
 from vulnerabilities.package_managers import VERSION_API_CLASSES_BY_PACKAGE_TYPE
 from vulnerabilities.package_managers import GoproxyVersionAPI
 from vulnerabilities.package_managers import VersionAPI
-from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage, resolve_version_range
+from vulnerabilities.package_managers import get_api_package_name
+from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
 from vulnerabilities.utils import get_affected_packages_by_patched_package
 from vulnerabilities.utils import get_item
 from vulnerabilities.utils import nearest_patched_package
-from vulnerabilities.package_managers import get_api_package_name
+from vulnerabilities.utils import resolve_version_range
 
 logger = logging.getLogger(__name__)
 
@@ -124,7 +125,7 @@ PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM = {
     "COMPOSER": "composer",
     "PIP": "pypi",
     "RUBYGEMS": "gem",
-    "GO": "golang",
+    # "GO": "golang",
 }
 
 GITHUB_ECOSYSTEM_BY_PACKAGE_TYPE = {

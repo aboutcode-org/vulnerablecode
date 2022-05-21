@@ -48,6 +48,8 @@ from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.utils import classproperty
 from vulnerabilities.utils import evolve_purl
+from vulnerabilities.utils import get_reference_id
+from vulnerabilities.utils import is_cve
 from vulnerabilities.utils import nearest_patched_package
 
 logger = logging.getLogger(__name__)

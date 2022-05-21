@@ -5,7 +5,7 @@
       "OSVDB-112347"
     ],
     "confidence": 100,
-    "summary": "Object Injection. A flaw in Active Job that can allow string arguments to be deserialized as if they were Global IDs. This may allow a remote attacker to inject arbitrary objects.",
+    "summary": "Object Injection\nA flaw in Active Job that can allow string arguments to be deserialized as if they were Global IDs. This may allow a remote attacker to inject arbitrary objects.",
     "affected_purls": [
       {
         "type": "gem",
@@ -38,7 +38,7 @@
       "OSVDB-112347"
     ],
     "confidence": 100,
-    "summary": "Object Injection. A flaw in Active Job that can allow string arguments to be deserialized as if they were Global IDs. This may allow a remote attacker to inject arbitrary objects.",
+    "summary": "Object Injection\nA flaw in Active Job that can allow string arguments to be deserialized as if they were Global IDs. This may allow a remote attacker to inject arbitrary objects.",
     "affected_purls": [
       {
         "type": "gem",

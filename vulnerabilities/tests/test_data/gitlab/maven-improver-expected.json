@@ -6,7 +6,7 @@
       "GHSA-p9m8-27x8-rg87"
     ],
     "confidence": 100,
-    "summary": "Improper Control of Generation of Code ('Code Injection'). cron-utils is a Java library to define, parse, validate, migrate crons as well as get human readable descriptions for them. leading to unauthenticated Remote Code Execution (RCE) vulnerability. Versions up to are susceptible to this vulnerability.",
+    "summary": "Improper Control of Generation of Code ('Code Injection')\ncron-utils is a Java library to define, parse, validate, migrate crons as well as get human readable descriptions for them. leading to unauthenticated Remote Code Execution (RCE) vulnerability. Versions up to are susceptible to this vulnerability.",
     "affected_purls": [
       {
         "type": "maven",
@@ -108,7 +108,7 @@
       "GHSA-p9m8-27x8-rg87"
     ],
     "confidence": 100,
-    "summary": "Improper Control of Generation of Code ('Code Injection'). cron-utils is a Java library to define, parse, validate, migrate crons as well as get human readable descriptions for them. leading to unauthenticated Remote Code Execution (RCE) vulnerability. Versions up to are susceptible to this vulnerability.",
+    "summary": "Improper Control of Generation of Code ('Code Injection')\ncron-utils is a Java library to define, parse, validate, migrate crons as well as get human readable descriptions for them. leading to unauthenticated Remote Code Execution (RCE) vulnerability. Versions up to are susceptible to this vulnerability.",
     "affected_purls": [],
     "fixed_purl": {
       "type": "maven",

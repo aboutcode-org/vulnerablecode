@@ -310,7 +310,6 @@ class Package(PackageURLMixin):
 
 
 class PackageRelatedVulnerability(models.Model):
-
     # TODO: Fix related_name
     package = models.ForeignKey(
         Package,
@@ -385,7 +384,6 @@ class PackageRelatedVulnerability(models.Model):
 
 
 class VulnerabilitySeverity(models.Model):
-
     reference = models.ForeignKey(VulnerabilityReference, on_delete=models.CASCADE)
 
     scoring_system_choices = tuple(
@@ -404,6 +402,14 @@ class VulnerabilitySeverity(models.Model):
     )
 
     value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
+
+    scoring_elements = models.CharField(
+        max_length=150,
+        null=True,
+        help_text="Supporting a scoring elements as a string "
+        "For example a CVSS vector Important, High, Medium ,Low."
+        "Typically used to compute the value",
+    )
 
     class Meta:
         unique_together = ["reference", "scoring_system", "value"]

@@ -8,6 +8,10 @@
 #
 
 import dataclasses
+from decimal import Decimal
+
+from cvss import CVSS2
+from cvss import CVSS3
 
 """
 Vulnerability scoring systems define scales, values and approach to score a
@@ -17,7 +21,6 @@ vulnerability severity.
 
 @dataclasses.dataclass(order=True)
 class ScoringSystem:
-
     # a short identifier for the scoring system.
     identifier: str
     # a name which represents the scoring system such as `RedHat bug severity`.
@@ -28,13 +31,28 @@ class ScoringSystem:
     # notes about that scoring system
     notes: str = ""
 
-    def as_score(self, value):
+    def as_score(self, value) -> Decimal:
         """
         Return a normalized numeric score for this scoring system  given a raw
         value. For instance this can be used to convert a CVSS vector to a base
         score.
+
+        >>> SCORING_SYSTEMS["cvssv2_vector"].as_score("AV:L/AC:L/Au:M/C:N/I:P/A:C/E:U/RL:W/RC:ND/CDP:L/TD:H/CR:ND/IR:ND/AR:M")
+        Decimal('5.0')
+        >>> SCORING_SYSTEMS["cvssv3_vector"].as_score('CVSS:3.0/S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/E:H/RL:O/RC:R/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X')
+        Decimal('6.5')
+        >>> SCORING_SYSTEMS["cvssv3.1_vector"].as_score("CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:H")
+        Decimal('8.6')
         """
-        raise NotImplementedError
+
+        if self.identifier == "cvssv2_vector":
+            c = CVSS2(value)
+            return c.base_score
+        elif self.identifier in ["cvssv3_vector", "cvssv3.1_vector"]:
+            c = CVSS3(value)
+            return c.base_score
+        else:
+            raise NotImplementedError("Can't compute a score")
 
 
 CVSSV2 = ScoringSystem(

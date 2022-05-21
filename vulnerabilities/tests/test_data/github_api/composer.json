@@ -150,6 +150,9 @@
             "package": {
               "name": "librenms/librenms"
             },
+            "firstPatchedVersion": {
+              "identifier" :"22.1.0"
+            },
             "vulnerableVersionRange": "< 22.1.0"
           }
         }

@@ -1,8 +1,8 @@
 [
   {
     "aliases": [
-      "CVE-2014-9356",
-      "GHSA-vj3f-3286-r4pf"
+      "GHSA-vj3f-3286-r4pf",
+      "CVE-2014-9356"
     ],
     "summary": "Path Traversal in Docker",
     "affected_packages": [
@@ -16,7 +16,7 @@
           "subpath": null
         },
         "affected_version_range": "vers:golang/<1.3.3",
-        "fixed_version": null
+        "fixed_version": "1.3.3"
       }
     ],
     "references": [
@@ -65,8 +65,8 @@
   },
   {
     "aliases": [
-      "CVE-2014-9356",
-      "GHSA-vj3f-3286-r4pf"
+      "GHSA-vj3f-3286-r4pf",
+      "CVE-2014-9356"
     ],
     "summary": "Path Traversal in Docker",
     "affected_packages": [
@@ -129,8 +129,8 @@
   },
   {
     "aliases": [
-      "CVE-2021-39183",
-      "GHSA-2hfj-cxw7-g45p"
+      "GHSA-2hfj-cxw7-g45p",
+      "CVE-2021-39183"
     ],
     "summary": "Unsafe inline XSS in pasting DOM element into chat",
     "affected_packages": [

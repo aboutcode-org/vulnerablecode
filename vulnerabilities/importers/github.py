@@ -26,12 +26,10 @@ from typing import Iterable
 from typing import List
 from typing import Mapping
 from typing import Optional
-from typing import Tuple
 
 from dateutil import parser as dateparser
 from django.db.models.query import QuerySet
 from packageurl import PackageURL
-from univers.version_range import VersionRange
 from univers.version_range import build_range_from_github_advisory_constraint
 
 from vulnerabilities import severity_systems
@@ -45,17 +43,15 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
-from vulnerabilities.package_managers import ComposerVersionAPI
+from vulnerabilities.package_managers import VERSION_API_CLASSES_BY_PACKAGE_TYPE
 from vulnerabilities.package_managers import GoproxyVersionAPI
-from vulnerabilities.package_managers import MavenVersionAPI
-from vulnerabilities.package_managers import NugetVersionAPI
-from vulnerabilities.package_managers import PypiVersionAPI
-from vulnerabilities.package_managers import RubyVersionAPI
 from vulnerabilities.package_managers import VersionAPI
+from vulnerabilities.package_managers import get_api_package_name
 from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
 from vulnerabilities.utils import get_affected_packages_by_patched_package
 from vulnerabilities.utils import get_item
 from vulnerabilities.utils import nearest_patched_package
+from vulnerabilities.utils import resolve_version_range
 
 logger = logging.getLogger(__name__)
 
@@ -129,7 +125,7 @@ PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM = {
     "COMPOSER": "composer",
     "PIP": "pypi",
     "RUBYGEMS": "gem",
-    "GO": "golang",
+    # "GO": "golang",
 }
 
 GITHUB_ECOSYSTEM_BY_PACKAGE_TYPE = {
@@ -171,17 +167,6 @@ query{
 }
 """
 
-VERSION_API_CLASSES = [
-    MavenVersionAPI,
-    NugetVersionAPI,
-    ComposerVersionAPI,
-    PypiVersionAPI,
-    RubyVersionAPI,
-    GoproxyVersionAPI,
-]
-
-VERSION_API_CLASSES_BY_PACKAGE_TYPE = {cls.package_type: cls for cls in VERSION_API_CLASSES}
-
 
 class GitHubAPIImporter(Importer):
     spdx_license_expression = "CC-BY-4.0"
@@ -205,38 +190,6 @@ class GitHubAPIImporter(Importer):
                     break
 
 
-def get_reference_id(url: str):
-    """
-    Return the reference id from a URL
-    For example:
-    >>> get_reference_id("https://github.com/advisories/GHSA-c9hw-wf7x-jp9j")
-    'GHSA-c9hw-wf7x-jp9j'
-    """
-    url_parts = url.split("/")
-    last_url_part = url_parts[-1]
-    return last_url_part
-
-
-def extract_references(reference_data: List[dict]) -> Iterable[Reference]:
-    """
-    Yield `reference` by iterating over `reference_data`
-    >>> list(extract_references([{'url': "https://github.com/advisories/GHSA-c9hw-wf7x-jp9j"}]))
-    [Reference(url="https://github.com/advisories/GHSA-c9hw-wf7x-jp9j"), reference_id = "GHSA-c9hw-wf7x-jp9j" ]
-    >>> list(extract_references([{'url': "https://github.com/advisories/c9hw-wf7x-jp9j"}]))
-    [Reference(url="https://github.com/advisories/c9hw-wf7x-jp9j")]
-    """
-    for ref in reference_data:
-        url = ref["url"]
-        if not isinstance(url, str):
-            logger.error(f"extract_references: url is not of type `str`: {url}")
-            continue
-        if "GHSA-" in url.upper():
-            reference = Reference(url=url, reference_id=get_reference_id(url))
-        else:
-            reference = Reference(url=url)
-        yield reference
-
-
 def get_purl(pkg_type: str, github_name: str) -> Optional[PackageURL]:
     """
     Return a PackageURL by splitting the `github_name` using the `pkg_type` convention.
@@ -255,8 +208,7 @@ def get_purl(pkg_type: str, github_name: str) -> Optional[PackageURL]:
 
     if pkg_type == "composer":
         if "/" not in github_name:
-            logger.error(f"get_purl: Invalid composer package name {github_name}")
-            return
+            return PackageURL(type=pkg_type, name=github_name)
         vendor, _, name = github_name.partition("/")
         return PackageURL(type=pkg_type, namespace=vendor, name=name)
 
@@ -270,26 +222,6 @@ class InvalidVersionRange(Exception):
     """
     Raises exception when the version range is invalid
     """
-
-
-def get_api_package_name(purl: PackageURL) -> str:
-    """
-    Return the package name expected by the GitHub API given a PackageURL
-    >>> get_api_package_name(PackageURL(type="maven", namespace="org.apache.commons", name="commons-lang3"))
-    "org.apache.commons:commons-lang3"
-    >>> get_api_package_name(PackageURL(type="composer", namespace="foo", name="bar"))
-    "foo/bar"
-    """
-    if purl.type == "maven":
-        return f"{purl.namespace}:{purl.name}"
-
-    if purl.type == "composer":
-        return f"{purl.namespace}/{purl.name}"
-
-    if purl.type in ("nuget", "pypi", "gem", "golang"):
-        return purl.name
-
-    logger.error(f"get_api_package_name: Unknown PURL {purl!r}")
 
 
 def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
@@ -349,7 +281,8 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
 
         references = get_item(advisory, "references") or []
         if references:
-            references: List[Reference] = list(extract_references(references))
+            urls = (ref["url"] for ref in references)
+            references = [Reference.from_url(u) for u in urls]
 
         summary = get_item(advisory, "summary")
         identifiers = get_item(advisory, "identifiers") or []
@@ -451,6 +384,7 @@ class GitHubBasicImprover(Improver):
             aff_vers, unaff_vers = resolve_version_range(
                 affected_version_range=affected_version_range,
                 package_versions=valid_versions,
+                ignorable_versions=WEIRD_IGNORABLE_VERSIONS,
             )
             affected_purls = [
                 PackageURL(type=pkg_type, namespace=pkg_namespace, name=pkg_name, version=version)
@@ -476,37 +410,3 @@ class GitHubBasicImprover(Improver):
                     affected_purls=affected_packages,
                     fixed_purl=fixed_package,
                 )
-
-
-def resolve_version_range(
-    affected_version_range: VersionRange,
-    package_versions: List[str],
-    ignorable_versions=WEIRD_IGNORABLE_VERSIONS,
-) -> Tuple[List[str], List[str]]:
-    """
-    Given an affected version range and a list of `package_versions`, resolve
-    which versions are in this range and return a tuple of two lists of
-    `affected_versions` and `unaffected_versions`.
-    """
-    if not affected_version_range:
-        logger.error(f"affected version range is {affected_version_range!r}")
-        return [], []
-    affected_versions = []
-    unaffected_versions = []
-    for package_version in package_versions or []:
-        if package_version in ignorable_versions:
-            continue
-        # Remove whitespace
-        package_version = package_version.replace(" ", "")
-        # Remove leading 'v'
-        package_version = package_version.lstrip("vV")
-        try:
-            version = affected_version_range.version_class(package_version)
-        except Exception:
-            logger.error(f"Could not parse version {package_version!r}")
-            continue
-        if version in affected_version_range:
-            affected_versions.append(package_version)
-        else:
-            unaffected_versions.append(package_version)
-    return affected_versions, unaffected_versions

@@ -35,6 +35,7 @@ from urllib.parse import urlparse
 import requests
 from dateutil import parser as dateparser
 from django.utils.dateparse import parse_datetime
+from packageurl import PackageURL
 
 from vulnerabilities import utils
 from vulnerabilities.utils import get_item
@@ -274,6 +275,9 @@ class NpmVersionAPI(VersionAPI):
     def fetch(self, pkg):
         url = f"https://registry.npmjs.org/{pkg}"
         response = get_response(url=url, content_type="json")
+        if not response:
+            logger.error(f"Failed to fetch {url}")
+            return
         for version in response.get("versions") or []:
             release_date = response.get("time", {}).get(version)
             release_date = release_date and dateparser.parse(release_date) or None
@@ -380,7 +384,7 @@ def cleaned_version(version):
     """
     Return a ``version`` string stripped from leading "v" prefix.
     """
-    return (version.lstrip("vV"),)
+    return version.lstrip("vV")
 
 
 class ComposerVersionAPI(VersionAPI):
@@ -678,3 +682,41 @@ class GoproxyVersionAPI(VersionAPI):
             version = self.fetch_version_info(version_info, escaped_pkg)
             if version:
                 yield version
+
+
+VERSION_API_CLASSES = {
+    MavenVersionAPI,
+    NugetVersionAPI,
+    ComposerVersionAPI,
+    PypiVersionAPI,
+    RubyVersionAPI,
+    GoproxyVersionAPI,
+    NpmVersionAPI,
+    HexVersionAPI,
+    LaunchpadVersionAPI,
+    CratesVersionAPI,
+    DebianVersionAPI,
+    GitHubTagsAPI,
+}
+
+VERSION_API_CLASSES_BY_PACKAGE_TYPE = {cls.package_type: cls for cls in VERSION_API_CLASSES}
+
+
+def get_api_package_name(purl: PackageURL) -> str:
+    """
+    Return the package name expected by the GitHub API given a PackageURL
+    >>> get_api_package_name(PackageURL(type="maven", namespace="org.apache.commons", name="commons-lang3"))
+    'org.apache.commons:commons-lang3'
+    >>> get_api_package_name(PackageURL(type="composer", namespace="foo", name="bar"))
+    'foo/bar'
+    """
+    if not purl.name:
+        return None
+    if purl.type in ("nuget", "pypi", "gem") or not purl.namespace:
+        return purl.name
+    if purl.type == "maven":
+        return f"{purl.namespace}:{purl.name}"
+    if purl.type in ("composer", "golang", "npm"):
+        return f"{purl.namespace}/{purl.name}"
+
+    logger.error(f"get_api_package_name: Unknown PURL {purl!r}")

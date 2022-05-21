@@ -29,6 +29,7 @@ IMPROVERS_REGISTRY = [
     importers.nginx.NginxBasicImprover,
     importers.github.GitHubBasicImprover,
     importers.debian.DebianBasicImprover,
+    importers.gitlab.GitLabBasicImprover,
 ]
 
 IMPROVERS_REGISTRY = {x.qualified_name: x for x in IMPROVERS_REGISTRY}

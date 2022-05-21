@@ -1,0 +1,25 @@
+---
+identifier: "CVE-2019-1010083"
+package_slug: "pypi/Flask"
+title: "Denial of service"
+description: "Denial of Service due to unexpected memory usage in the Pallets Project
+  Flask"
+date: "2019-08-25"
+pubdate: "2019-07-17"
+affected_range: "<1.0"
+fixed_versions:
+- "1.0"
+affected_versions: "All versions before 1.0"
+not_impacted: "All versions starting from 1.0"
+solution: "Upgrade to version 1.0 or above."
+urls:
+- "https://nvd.nist.gov/vuln/detail/CVE-2019-1010083"
+- "https://www.palletsprojects.com/blog/flask-1-0-released/"
+cvss_v2: "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+cvss_v3: "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+uuid: "4f2b96cf-8f4b-4782-82d9-e7561c5e3839"
+cwe_ids:
+- "CWE-1035"
+- "CWE-937"
+identifiers:
+- "CVE-2019-1010083"

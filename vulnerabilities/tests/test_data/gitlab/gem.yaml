@@ -1,0 +1,20 @@
+---
+identifier: "OSVDB-112347"
+package_slug: "gem/activejob"
+title: "Object Injection"
+description: "A flaw in Active Job that can allow string arguments to be deserialized
+  as if they were Global IDs. This may allow a remote attacker to inject arbitrary
+  objects."
+date: "2014-09-29"
+pubdate: "2014-09-29"
+affected_range: "=4.2.0.beta1"
+fixed_versions:
+- "4.2.0.beta2"
+affected_versions: "Version 4.2.0.beta1"
+not_impacted: "All versions before 4.2.0.beta1, all versions after 4.2.0.beta1"
+solution: "Upgrade to version 4.2.0.beta2 or above."
+urls:
+- "http://weblog.rubyonrails.org/2014/9/29/Rails-4-2-0-beta2-has-been-released/"
+uuid: "a5939986-2994-4350-b1e5-db5506c136d1"
+identifiers:
+- "OSVDB-112347"

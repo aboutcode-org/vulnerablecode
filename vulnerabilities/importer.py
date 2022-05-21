@@ -48,6 +48,8 @@ from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.utils import classproperty
 from vulnerabilities.utils import evolve_purl
+from vulnerabilities.utils import get_reference_id
+from vulnerabilities.utils import is_cve
 from vulnerabilities.utils import nearest_patched_package
 
 logger = logging.getLogger(__name__)
@@ -104,6 +106,15 @@ class Reference:
                 VulnerabilitySeverity.from_dict(severity) for severity in ref["severities"]
             ],
         )
+
+    @classmethod
+    def from_url(cls, url):
+        reference_id = get_reference_id(url)
+        if "GHSA-" in reference_id.upper():
+            return cls(reference_id=reference_id, url=url)
+        if is_cve(reference_id):
+            return cls(url=url, reference_id=reference_id.upper())
+        return cls(url=url)
 
 
 class UnMergeablePackageError(Exception):

@@ -1,0 +1,49 @@
+{
+  "aliases": [
+    "CVE-2021-41269",
+    "GHSA-p9m8-27x8-rg87"
+  ],
+  "summary": "Improper Control of Generation of Code ('Code Injection')\ncron-utils is a Java library to define, parse, validate, migrate crons as well as get human readable descriptions for them. leading to unauthenticated Remote Code Execution (RCE) vulnerability. Versions up to are susceptible to this vulnerability.",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "maven",
+        "namespace": "com.cronutils",
+        "name": "cron-utils",
+        "version": null,
+        "qualifiers": null,
+        "subpath": null
+      },
+      "affected_version_range": "vers:maven/<9.1.6",
+      "fixed_version": "9.1.6"
+    }
+  ],
+  "references": [
+    {
+      "reference_id": "CVE-2021-41269",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-41269",
+      "severities": []
+    },
+    {
+      "reference_id": "",
+      "url": "https://github.com/jmrozanec/cron-utils/issues/461",
+      "severities": []
+    },
+    {
+      "reference_id": "",
+      "url": "https://github.com/jmrozanec/cron-utils/commit/d6707503ec2f20947f79e38f861dba93b39df9da",
+      "severities": []
+    },
+    {
+      "reference_id": "GHSA-p9m8-27x8-rg87",
+      "url": "https://github.com/jmrozanec/cron-utils/security/advisories/GHSA-p9m8-27x8-rg87",
+      "severities": []
+    },
+    {
+      "reference_id": "",
+      "url": "https://github.com/jmrozanec/cron-utils/commit/cfd2880f80e62ea74b92fa83474c2aabdb9899da",
+      "severities": []
+    }
+  ],
+  "date_published": "2021-11-15T00:00:00+00:00"
+}

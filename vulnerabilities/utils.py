@@ -39,6 +39,7 @@ import toml
 import urllib3
 from packageurl import PackageURL
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
+from univers.version_range import VersionRange
 
 logger = logging.getLogger(__name__)
 
@@ -205,26 +206,25 @@ class classproperty(object):
         return self.fget(owner_cls)
 
 
-def get_item(object: dict, *attributes):
+def get_item(dictionary: dict, *attributes):
     """
-    Return `item` by going through all the `attributes` present in the `json_object`
+    Return `item` by going through all the `attributes` present in the `dictionary`
 
-    Do a DFS for the `item` in the `json_object` by traversing the `attributes`
+    Do a DFS for the `item` in the `dictionary` by traversing the `attributes`
     and return None if can not traverse through the `attributes`
     For example:
     >>> get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'c')
     'd'
     >>> assert(get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'e')) == None
     """
-    if not object:
+    if not dictionary:
         return
-    item = object
     for attribute in attributes:
-        if attribute not in item:
-            logger.error(f"Missing attribute {attribute} in {item}")
+        if attribute not in dictionary:
+            logger.error(f"Missing attribute {attribute} in {dictionary}")
             return None
-        item = item[attribute]
-    return item
+        dictionary = dictionary[attribute]
+    return dictionary
 
 
 class GitHubTokenError(Exception):
@@ -310,3 +310,54 @@ def build_description(summary, description):
             description = "\n".join([summary, description])
 
     return description
+
+
+def get_reference_id(url: str):
+    """
+    Return the reference id from a URL
+    For example:
+    >>> get_reference_id("https://github.com/advisories/GHSA-c9hw-wf7x-jp9j")
+    'GHSA-c9hw-wf7x-jp9j'
+    """
+    _url, _, ref_id = url.strip("/").rpartition("/")
+    return ref_id
+
+
+def resolve_version_range(
+    affected_version_range: VersionRange,
+    package_versions: List[str],
+    ignorable_versions: List[str],
+) -> Tuple[List[str], List[str]]:
+    """
+    Given an affected version range and a list of `package_versions`, resolve
+    which versions are in this range and return a tuple of two lists of
+    `affected_versions` and `unaffected_versions`.
+    """
+    if not affected_version_range:
+        logger.error(f"affected version range is {affected_version_range!r}")
+        return [], []
+    affected_versions = []
+    unaffected_versions = []
+    for package_version in package_versions or []:
+        if package_version in ignorable_versions:
+            continue
+        # Remove whitespace
+        package_version = package_version.replace(" ", "")
+        # Remove leading 'v'
+        package_version = package_version.lstrip("vV")
+        try:
+            version = affected_version_range.version_class(package_version)
+        except Exception:
+            logger.error(f"Could not parse version {package_version!r}")
+            continue
+        try:
+            if version in affected_version_range:
+                affected_versions.append(package_version)
+            else:
+                unaffected_versions.append(package_version)
+        except Exception:
+            logger.error(
+                f"Invalid version range constraints {affected_version_range.constraints!r}"
+            )
+            continue
+    return affected_versions, unaffected_versions

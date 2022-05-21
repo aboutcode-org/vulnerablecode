@@ -2,7 +2,7 @@
   "aliases": [
     "GMS-2018-26"
   ],
-  "summary": "Incorrect header injection check. amphp/http isn't properly protected against HTTP header injection.",
+  "summary": "Incorrect header injection check\namphp/http isn't properly protected against HTTP header injection.",
   "affected_packages": [
     {
       "package": {

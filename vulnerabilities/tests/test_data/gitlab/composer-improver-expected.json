@@ -5,7 +5,7 @@
       "GMS-2018-26"
     ],
     "confidence": 100,
-    "summary": "Incorrect header injection check. amphp/http isn't properly protected against HTTP header injection.",
+    "summary": "Incorrect header injection check\namphp/http isn't properly protected against HTTP header injection.",
     "affected_purls": [],
     "fixed_purl": {
       "type": "composer",

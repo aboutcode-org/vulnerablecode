@@ -710,13 +710,13 @@ def get_api_package_name(purl: PackageURL) -> str:
     >>> get_api_package_name(PackageURL(type="composer", namespace="foo", name="bar"))
     'foo/bar'
     """
+    if not purl.name:
+        return None
+    if purl.type in ("nuget", "pypi", "gem") or not purl.namespace:
+        return purl.name
     if purl.type == "maven":
         return f"{purl.namespace}:{purl.name}"
-
-    if purl.type == "composer":
+    if purl.type in ("composer", "golang", "npm"):
         return f"{purl.namespace}/{purl.name}"
-
-    if purl.type in ("nuget", "pypi", "gem", "golang", "npm"):
-        return purl.name
 
     logger.error(f"get_api_package_name: Unknown PURL {purl!r}")

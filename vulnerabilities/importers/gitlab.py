@@ -40,10 +40,6 @@ from univers.version_range import VersionRange
 from univers.version_range import from_gitlab_native
 from univers.versions import Version
 
-from vulnerabilities.helpers import AffectedPackage as LegacyAffectedPackage
-from vulnerabilities.helpers import get_affected_packages_by_patched_package
-from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.helpers import resolve_version_range
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
@@ -56,19 +52,25 @@ from vulnerabilities.package_managers import VERSION_API_CLASSES_BY_PACKAGE_TYPE
 from vulnerabilities.package_managers import GoproxyVersionAPI
 from vulnerabilities.package_managers import VersionAPI
 from vulnerabilities.package_managers import get_api_package_name
+from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
+from vulnerabilities.utils import build_description
+from vulnerabilities.utils import get_affected_packages_by_patched_package
+from vulnerabilities.utils import nearest_patched_package
+from vulnerabilities.utils import resolve_version_range
 
 logger = logging.getLogger(__name__)
 
 
 PURL_TYPE_BY_GITLAB_SCHEME = {
+    # "conan": "conan",
     "gem": "gem",
-    "go": "golang",
+    # Entering issue to parse go package names https://github.com/nexB/vulnerablecode/issues/742
+    # "go": "golang",
     "maven": "maven",
     "npm": "npm",
     "nuget": "nuget",
-    "pypi": "pypi",
     "packagist": "composer",
-    # "conan": "conan",
+    "pypi": "pypi",
 }
 
 
@@ -125,7 +127,7 @@ def get_purl(package_slug):
         name = parts[1]
         return PackageURL(type=purl_type, name=name)
     # if package slug is of the form:
-    # "nuget/github/user/abc/NuGet.Core"
+    # "nuget/github.com/beego/beego/v2/nuget"
     if len(parts) >= 3:
         name = parts[-1]
         namespace = "/".join(parts[1:-1])
@@ -187,11 +189,11 @@ def parse_gitlab_advisory(file):
 
     # refer to schema here https://gitlab.com/gitlab-org/advisories-community/-/blob/main/ci/schema/schema.json
     aliases = gitlab_advisory.get("identifiers")
-    summary = ". ".join([gitlab_advisory.get("title"), gitlab_advisory.get("description")])
+    summary = build_description(gitlab_advisory.get("title"), gitlab_advisory.get("description"))
     urls = gitlab_advisory.get("urls")
     references = [Reference.from_url(u) for u in urls]
     date_published = dateparser.parse(gitlab_advisory.get("pubdate"))
-    date_published = pytz.utc.localize(date_published)
+    date_published = date_published.replace(tzinfo=pytz.UTC)
     package_slug = gitlab_advisory.get("package_slug")
     purl: PackageURL = get_purl(package_slug=package_slug)
     if not purl:

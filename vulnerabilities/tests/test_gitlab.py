@@ -36,7 +36,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "gitlab")
 
 
-@pytest.mark.parametrize("pkg_type", ["maven", "nuget", "gem", "golang", "composer", "pypi", "npm"])
+@pytest.mark.parametrize("pkg_type", ["maven", "nuget", "gem", "composer", "pypi", "npm"])
 def test_parse_yaml_file(pkg_type):
     response_file = os.path.join(TEST_DATA, f"{pkg_type}.yaml")
     expected_file = os.path.join(TEST_DATA, f"{pkg_type}-expected.json")
@@ -84,7 +84,7 @@ def valid_versions(pkg_type):
 
 
 @mock.patch("vulnerabilities.importers.gitlab.GitLabBasicImprover.get_package_versions")
-@pytest.mark.parametrize("pkg_type", ["maven", "nuget", "gem", "golang", "composer", "pypi", "npm"])
+@pytest.mark.parametrize("pkg_type", ["maven", "nuget", "gem", "composer", "pypi", "npm"])
 def test_gitlab_improver(mock_response, pkg_type):
     advisory_file = os.path.join(TEST_DATA, f"{pkg_type}-expected.json")
     expected_file = os.path.join(TEST_DATA, f"{pkg_type}-improver-expected.json")

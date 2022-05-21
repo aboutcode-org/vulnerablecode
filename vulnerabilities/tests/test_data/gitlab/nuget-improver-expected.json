@@ -6,7 +6,7 @@
       "GHSA-868x-rg4c-cjqg"
     ],
     "confidence": 100,
-    "summary": "Allocation of Resources Without Limits or Throttling in Apache Avro. A vulnerability in the .NET SDK of Apache Avro allows an attacker to allocate excessive resources, potentially causing a denial-of-service attack. This issue affects .NET applications using Apache Avro and prior versions. Users should update to which addresses this issue.",
+    "summary": "Allocation of Resources Without Limits or Throttling in Apache Avro\nA vulnerability in the .NET SDK of Apache Avro allows an attacker to allocate excessive resources, potentially causing a denial-of-service attack. This issue affects .NET applications using Apache Avro and prior versions. Users should update to which addresses this issue.",
     "affected_purls": [
       {
         "type": "nuget",
@@ -45,7 +45,7 @@
       "GHSA-868x-rg4c-cjqg"
     ],
     "confidence": 100,
-    "summary": "Allocation of Resources Without Limits or Throttling in Apache Avro. A vulnerability in the .NET SDK of Apache Avro allows an attacker to allocate excessive resources, potentially causing a denial-of-service attack. This issue affects .NET applications using Apache Avro and prior versions. Users should update to which addresses this issue.",
+    "summary": "Allocation of Resources Without Limits or Throttling in Apache Avro\nA vulnerability in the .NET SDK of Apache Avro allows an attacker to allocate excessive resources, potentially causing a denial-of-service attack. This issue affects .NET applications using Apache Avro and prior versions. Users should update to which addresses this issue.",
     "affected_purls": [],
     "fixed_purl": {
       "type": "nuget",

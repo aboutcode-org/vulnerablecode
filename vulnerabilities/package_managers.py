@@ -395,9 +395,6 @@ class ComposerVersionAPI(VersionAPI):
     package_type = "composer"
 
     def fetch(self, pkg: str) -> Iterable[PackageVersion]:
-        if "/" not in pkg:
-            raise Exception(f"Composer package: {pkg!r} does not have a vendor/name structure.")
-
         response = get_response(url=f"https://repo.packagist.org/p/{pkg}.json")
         if response:
             yield from self.extract_versions(response, pkg)

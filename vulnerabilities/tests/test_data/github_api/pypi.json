@@ -29,6 +29,9 @@
             "package": {
               "name": "Pillow"
             },
+            "firstPatchedVersion": {
+              "identifier" :"9.0.0"
+            },
             "vulnerableVersionRange": "< 9.0.0"
           }
         },

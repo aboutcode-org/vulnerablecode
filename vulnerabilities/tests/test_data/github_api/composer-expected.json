@@ -163,7 +163,7 @@
           "subpath": null
         },
         "affected_version_range": "vers:composer/<22.1.0",
-        "fixed_version": null
+        "fixed_version": "22.1.0"
       }
     ],
     "references": [

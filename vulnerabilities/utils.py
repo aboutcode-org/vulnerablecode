@@ -217,12 +217,15 @@ def get_item(dictionary: dict, *attributes):
     'd'
     >>> assert(get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'e')) == None
     """
-    if not dictionary:
-        return
     for attribute in attributes:
+        if not dictionary:
+            return
+        if not isinstance(dictionary, dict):
+            logger.error("dictionary must be of type `dict`")
+            return
         if attribute not in dictionary:
             logger.error(f"Missing attribute {attribute} in {dictionary}")
-            return None
+            return
         dictionary = dictionary[attribute]
     return dictionary
 

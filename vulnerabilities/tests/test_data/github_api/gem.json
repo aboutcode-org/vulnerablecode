@@ -57,6 +57,9 @@
             "package": {
               "name": "webrick"
             },
+            "firstPatchedVersion": {
+              "identifier" :"1.3.2"
+            },
             "vulnerableVersionRange": "<= 1.3.1"
           }
         },

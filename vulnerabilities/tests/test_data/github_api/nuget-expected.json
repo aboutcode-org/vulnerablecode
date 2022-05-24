@@ -1,8 +1,8 @@
 [
   {
     "aliases": [
-      "GHSA-ph3v-2hq5-5qfq",
-      "CVE-2021-46703"
+      "CVE-2021-46703",
+      "GHSA-ph3v-2hq5-5qfq"
     ],
     "summary": "Code injection in RazorEngine",
     "affected_packages": [
@@ -45,8 +45,8 @@
   },
   {
     "aliases": [
-      "GHSA-gcx5-3p5f-f8vp",
-      "CVE-2022-23395"
+      "CVE-2022-23395",
+      "GHSA-gcx5-3p5f-f8vp"
     ],
     "summary": "Prototype Pollution in jquery.cookie",
     "affected_packages": [
@@ -89,8 +89,8 @@
   },
   {
     "aliases": [
-      "GHSA-vv6j-ww6x-54gx",
-      "CVE-2022-0609"
+      "CVE-2022-0609",
+      "GHSA-vv6j-ww6x-54gx"
     ],
     "summary": "Use after free in Animation",
     "affected_packages": [
@@ -133,8 +133,8 @@
   },
   {
     "aliases": [
-      "GHSA-j8f4-2w4p-mhjc",
-      "CVE-2017-0256"
+      "CVE-2017-0256",
+      "GHSA-j8f4-2w4p-mhjc"
     ],
     "summary": "Moderate severity vulnerability that affects Microsoft.AspNetCore.Mvc",
     "affected_packages": [

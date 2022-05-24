@@ -1,8 +1,8 @@
 [
   {
     "aliases": [
-      "GHSA-6mq2-37j5-w6r6",
-      "CVE-2009-4492"
+      "CVE-2009-4492",
+      "GHSA-6mq2-37j5-w6r6"
     ],
     "summary": "Moderate severity vulnerability that affects webrick",
     "affected_packages": [
@@ -85,8 +85,8 @@
   },
   {
     "aliases": [
-      "GHSA-w749-p3v6-hccq",
-      "CVE-2022-21831"
+      "CVE-2022-21831",
+      "GHSA-w749-p3v6-hccq"
     ],
     "summary": "Possible code injection vulnerability in Rails / Active Storage",
     "affected_packages": [
@@ -139,8 +139,8 @@
   },
   {
     "aliases": [
-      "GHSA-w749-p3v6-hccq",
-      "CVE-2022-21831"
+      "CVE-2022-21831",
+      "GHSA-w749-p3v6-hccq"
     ],
     "summary": "Possible code injection vulnerability in Rails / Active Storage",
     "affected_packages": [
@@ -193,8 +193,8 @@
   },
   {
     "aliases": [
-      "GHSA-w749-p3v6-hccq",
-      "CVE-2022-21831"
+      "CVE-2022-21831",
+      "GHSA-w749-p3v6-hccq"
     ],
     "summary": "Possible code injection vulnerability in Rails / Active Storage",
     "affected_packages": [
@@ -247,8 +247,8 @@
   },
   {
     "aliases": [
-      "GHSA-w749-p3v6-hccq",
-      "CVE-2022-21831"
+      "CVE-2022-21831",
+      "GHSA-w749-p3v6-hccq"
     ],
     "summary": "Possible code injection vulnerability in Rails / Active Storage",
     "affected_packages": [

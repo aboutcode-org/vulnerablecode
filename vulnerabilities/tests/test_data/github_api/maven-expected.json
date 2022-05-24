@@ -1,8 +1,8 @@
 [
   {
     "aliases": [
-      "GHSA-qcxh-w3j9-58qr",
-      "CVE-2019-0199"
+      "CVE-2019-0199",
+      "GHSA-qcxh-w3j9-58qr"
     ],
     "summary": "Denial of Service in Tomcat",
     "affected_packages": [
@@ -35,8 +35,8 @@
   },
   {
     "aliases": [
-      "GHSA-qcxh-w3j9-58qr",
-      "CVE-2019-0199"
+      "CVE-2019-0199",
+      "GHSA-qcxh-w3j9-58qr"
     ],
     "summary": "Denial of Service in Tomcat",
     "affected_packages": [
@@ -69,8 +69,8 @@
   },
   {
     "aliases": [
-      "GHSA-c9hw-wf7x-jp9j",
-      "CVE-2020-1938"
+      "CVE-2020-1938",
+      "GHSA-c9hw-wf7x-jp9j"
     ],
     "summary": "Improper Input Validation in Tomcat",
     "affected_packages": [
@@ -103,8 +103,8 @@
   },
   {
     "aliases": [
-      "GHSA-c9hw-wf7x-jp9j",
-      "CVE-2020-1938"
+      "CVE-2020-1938",
+      "GHSA-c9hw-wf7x-jp9j"
     ],
     "summary": "Improper Input Validation in Tomcat",
     "affected_packages": [
@@ -137,8 +137,8 @@
   },
   {
     "aliases": [
-      "GHSA-c9hw-wf7x-jp9j",
-      "CVE-2020-1938"
+      "CVE-2020-1938",
+      "GHSA-c9hw-wf7x-jp9j"
     ],
     "summary": "Improper Input Validation in Tomcat",
     "affected_packages": [

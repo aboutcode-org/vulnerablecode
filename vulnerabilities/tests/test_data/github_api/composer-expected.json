@@ -1,8 +1,8 @@
 [
   {
     "aliases": [
-      "GHSA-6qcc-whgp-pjj2",
-      "CVE-2022-0832"
+      "CVE-2022-0832",
+      "GHSA-6qcc-whgp-pjj2"
     ],
     "summary": "Cross-site Scripting in Pimcore",
     "affected_packages": [
@@ -50,8 +50,8 @@
   },
   {
     "aliases": [
-      "GHSA-q67f-3jq4-mww2",
-      "CVE-2022-0831"
+      "CVE-2022-0831",
+      "GHSA-q67f-3jq4-mww2"
     ],
     "summary": "Cross-site Scripting in Pimcore",
     "affected_packages": [
@@ -99,8 +99,8 @@
   },
   {
     "aliases": [
-      "GHSA-x28w-hvwc-mp75",
-      "CVE-2022-0895"
+      "CVE-2022-0895",
+      "GHSA-x28w-hvwc-mp75"
     ],
     "summary": "Static Code Injection in Microweber",
     "affected_packages": [
@@ -148,8 +148,8 @@
   },
   {
     "aliases": [
-      "GHSA-gj26-g5qf-jrh7",
-      "CVE-2022-0589"
+      "CVE-2022-0589",
+      "GHSA-gj26-g5qf-jrh7"
     ],
     "summary": "Cross-site Scripting in librenms",
     "affected_packages": [

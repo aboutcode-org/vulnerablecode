@@ -30,6 +30,7 @@ from typing import Optional
 from dateutil import parser as dateparser
 from django.db.models.query import QuerySet
 from packageurl import PackageURL
+from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import build_range_from_github_advisory_constraint
 
 from vulnerabilities import severity_systems
@@ -48,6 +49,7 @@ from vulnerabilities.package_managers import GoproxyVersionAPI
 from vulnerabilities.package_managers import VersionAPI
 from vulnerabilities.package_managers import get_api_package_name
 from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
+from vulnerabilities.utils import dedupe
 from vulnerabilities.utils import get_affected_packages_by_patched_package
 from vulnerabilities.utils import get_item
 from vulnerabilities.utils import nearest_patched_package
@@ -153,6 +155,9 @@ query{
                     severity
                     publishedAt
                 }
+                firstPatchedVersion{
+                    identifier
+                }
                 package {
                     name
                 }
@@ -236,60 +241,64 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
         return
 
     for vulnerability in vulnerabilities:
+        aliases = []
         affected_packages = []
-        aliases = set()
         github_advisory = get_item(vulnerability, "node")
         if not github_advisory:
             logger.error(f"No node found in {vulnerability!r}")
             continue
-
-        name = get_item(github_advisory, "package", "name")
-        if not name:
-            logger.error(f"No name found in {github_advisory!r}")
-            continue
-
-        purl = get_purl(pkg_type=package_type, github_name=name)
-        if not purl:
-            continue
-
-        vulnerable_range = get_item(github_advisory, "vulnerableVersionRange")
-        if not vulnerable_range:
-            logger.error(f"No affected range found in {github_advisory!r}")
-            continue
-
-        affected_range = None
-        try:
-            affected_range = build_range_from_github_advisory_constraint(
-                package_type, vulnerable_range
-            )
-        except InvalidVersionRange:
-            logger.error(f"Could not parse affected range {vulnerable_range!r}")
-            continue
-
-        if affected_range != NotImplementedError:
-            affected_packages.append(
-                AffectedPackage(
-                    package=purl,
-                    affected_version_range=affected_range,
-                )
-            )
 
         advisory = get_item(github_advisory, "advisory")
         if not advisory:
             logger.error(f"No advisory found in {github_advisory!r}")
             continue
 
+        summary = get_item(advisory, "summary") or ""
+
         references = get_item(advisory, "references") or []
         if references:
             urls = (ref["url"] for ref in references)
             references = [Reference.from_url(u) for u in urls]
 
-        summary = get_item(advisory, "summary")
+        date_published = get_item(advisory, "publishedAt")
+        if date_published:
+            date_published = dateparser.parse(date_published)
+
+        name = get_item(github_advisory, "package", "name")
+        if name:
+            purl = get_purl(pkg_type=package_type, github_name=name)
+        if purl:
+            affected_range = get_item(github_advisory, "vulnerableVersionRange")
+            fixed_version = get_item(github_advisory, "firstPatchedVersion", "identifier")
+            if affected_range:
+                try:
+                    affected_range = build_range_from_github_advisory_constraint(
+                        package_type, affected_range
+                    )
+                except InvalidVersionRange as e:
+                    logger.error(f"Could not parse affected range {affected_range!r} {e!r}")
+                    affected_range = None
+            if fixed_version:
+                try:
+                    fixed_version = RANGE_CLASS_BY_SCHEMES[package_type].version_class(
+                        fixed_version
+                    )
+                except Exception as e:
+                    logger.error(f"Invalid fixed version {fixed_version!r} {e!r}")
+                    fixed_version = None
+            if affected_range or fixed_version:
+                affected_packages.append(
+                    AffectedPackage(
+                        package=purl,
+                        affected_version_range=affected_range,
+                        fixed_version=fixed_version,
+                    )
+                )
         identifiers = get_item(advisory, "identifiers") or []
         for identifier in identifiers:
             value = identifier["value"]
             identifier_type = identifier["type"]
-            aliases.add(value)
+            aliases.append(value)
             # attach the GHSA with severity score
             if identifier_type == "GHSA":
                 # Each Node has only one GHSA, hence exit after attaching
@@ -310,12 +319,8 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
             else:
                 logger.error(f"Unknown identifier type {identifier_type!r} and value {value!r}")
 
-        date_published = get_item(advisory, "publishedAt")
-        if date_published:
-            date_published = dateparser.parse(date_published)
-
         yield AdvisoryData(
-            aliases=sorted(list(aliases)),
+            aliases=sorted(dedupe(aliases)),
             summary=summary,
             references=references,
             affected_packages=affected_packages,

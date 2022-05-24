@@ -16,7 +16,7 @@
           "subpath": null
         },
         "affected_version_range": "vers:golang/<1.3.3",
-        "fixed_version": null
+        "fixed_version": "1.3.3"
       }
     ],
     "references": [

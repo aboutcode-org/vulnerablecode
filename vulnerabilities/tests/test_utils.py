@@ -23,6 +23,7 @@
 from packageurl import PackageURL
 
 from vulnerabilities.utils import AffectedPackage
+from vulnerabilities.utils import get_item
 from vulnerabilities.utils import nearest_patched_package
 from vulnerabilities.utils import split_markdown_front_matter
 
@@ -94,3 +95,17 @@ cves: [CVE-2042-1337]""",
 
     results = split_markdown_front_matter(text)
     assert results == expected
+
+
+def test_get_item():
+    d1 = {"a": {"b": {"c": None}}}
+    assert get_item(d1, "a", "b", "c", "d") == None
+    d2 = {"a": {"b": {"c": {"d": None}}}}
+    assert get_item(d2, "a", "b", "c", "e") == None
+    d3 = ["a", "b", "c", "d"]
+    assert get_item(d3, "a", "b") == None
+    d4 = {"a": {"b": {"c": {"d": []}}}}
+    assert get_item(d4, "a", "b", "c", "d", "e") == None
+    d5 = {"a": {"b": {"c": "d"}}}
+    assert get_item(d5, "a", "b", "c", "d") == None
+    assert get_item(d5, "a", "b", "c") == "d"

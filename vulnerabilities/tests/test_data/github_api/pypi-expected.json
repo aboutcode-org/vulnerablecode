@@ -15,7 +15,7 @@
           "subpath": null
         },
         "affected_version_range": "vers:pypi/<9.0.0",
-        "fixed_version": null
+        "fixed_version": "9.0.0"
       }
     ],
     "references": [

@@ -152,7 +152,7 @@
           "subpath": null
         },
         "affected_version_range": "vers:maven/>=9.0.0|<9.0.31",
-        "fixed_version": null
+        "fixed_version": "9.0.1"
       }
     ],
     "references": [

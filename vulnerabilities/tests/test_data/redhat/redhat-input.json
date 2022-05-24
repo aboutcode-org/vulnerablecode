@@ -20,7 +20,8 @@
     "public_date": "2022-04-19T20:00:00Z",
     "advisories": [
       "RHSA-2022:1439",
-      "RHSA-2022:1437"
+      "RHSA-2022:1437",
+      "RHSA-2022:1436"
     ],
     "bugzilla": 2075788,
     "bugzilla_description": "CVE-2022-21426 OpenJDK: Unbounded memory allocation when compiling crafted XPath expressions (JAXP, 8270504)",

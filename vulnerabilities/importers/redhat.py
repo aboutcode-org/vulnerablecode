@@ -64,14 +64,12 @@ def fetch_list_of_cves() -> Iterable[List[Dict]]:
         yield cve_data
 
 
-def get_bugzilla_data(bugzilla):
-    return requests_session.get(f"https://bugzilla.redhat.com/rest/bug/{bugzilla}").json()
-
-
-def get_rhsa_data(rh_adv):
-    return requests_session.get(
-        f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json"
-    ).json()
+def get_data_from_url(url):
+    try:
+        return requests_session.get(url).json()
+    except Exception as e:
+        logger.error(f"Failed to fetch results from {url} {e!r}")
+        return
 
 
 class RedhatImporter(Importer):
@@ -112,9 +110,11 @@ def to_advisory(advisory_data):
     bugzilla = advisory_data.get("bugzilla")
     if bugzilla:
         url = "https://bugzilla.redhat.com/show_bug.cgi?id={}".format(bugzilla)
-        bugzilla_data = get_bugzilla_data(bugzilla)
+        bugzilla_url = f"https://bugzilla.redhat.com/rest/bug/{bugzilla}"
+        bugzilla_data = get_data_from_url(bugzilla_url)
         if (
-            bugzilla_data.get("bugs")
+            bugzilla_data
+            and bugzilla_data.get("bugs")
             and len(bugzilla_data["bugs"])
             and bugzilla_data["bugs"][0].get("severity")
         ):
@@ -141,8 +141,10 @@ def to_advisory(advisory_data):
             continue
 
         if "RHSA" in rh_adv.upper():
-            rhsa_data = get_rhsa_data(rh_adv)
-
+            rhsa_url = f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json"
+            rhsa_data = get_data_from_url(rhsa_url)
+            if not rhsa_data:
+                continue
             rhsa_aggregate_severities = []
             if rhsa_data.get("cvrfdoc"):
                 # not all RHSA errata have a corresponding CVRF document

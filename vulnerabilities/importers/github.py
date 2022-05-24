@@ -320,7 +320,7 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
                 logger.error(f"Unknown identifier type {identifier_type!r} and value {value!r}")
 
         yield AdvisoryData(
-            aliases=dedupe(aliases),
+            aliases=sorted(dedupe(aliases)),
             summary=summary,
             references=references,
             affected_packages=affected_packages,

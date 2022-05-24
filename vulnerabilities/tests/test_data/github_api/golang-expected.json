@@ -1,8 +1,8 @@
 [
   {
     "aliases": [
-      "GHSA-vj3f-3286-r4pf",
-      "CVE-2014-9356"
+      "CVE-2014-9356",
+      "GHSA-vj3f-3286-r4pf"
     ],
     "summary": "Path Traversal in Docker",
     "affected_packages": [
@@ -65,8 +65,8 @@
   },
   {
     "aliases": [
-      "GHSA-vj3f-3286-r4pf",
-      "CVE-2014-9356"
+      "CVE-2014-9356",
+      "GHSA-vj3f-3286-r4pf"
     ],
     "summary": "Path Traversal in Docker",
     "affected_packages": [
@@ -129,8 +129,8 @@
   },
   {
     "aliases": [
-      "GHSA-2hfj-cxw7-g45p",
-      "CVE-2021-39183"
+      "CVE-2021-39183",
+      "GHSA-2hfj-cxw7-g45p"
     ],
     "summary": "Unsafe inline XSS in pasting DOM element into chat",
     "affected_packages": [

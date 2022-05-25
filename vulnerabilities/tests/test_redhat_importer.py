@@ -47,7 +47,7 @@ def test_rpm_to_purl():
 
 @patch("vulnerabilities.importers.redhat.fetch_list_of_cves")
 @patch("vulnerabilities.importers.redhat.get_data_from_url")
-def test_redhat_importer(get_data_from_url, fetcher, caplog):
+def test_redhat_importer(get_data_from_url, fetcher):
     redhat_importer = redhat.RedhatImporter()
     response_file = os.path.join(TEST_DATA, f"redhat-input.json")
 

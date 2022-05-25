@@ -48,7 +48,7 @@ def fetch_list_of_cves() -> Iterable[List[Dict]]:
     page_no = 1
     cve_data = None
     while True:
-        current_url = f"https://access.redhat.com/hydra/rest/securitydata/cve.json?per_page=10000&page={page_no}"  # nopep8
+        current_url = f"https://access.redhat.com/hydra/rest/securitydata/cve.json?per_page=1000&page={page_no}"  # nopep8
         try:
             response = requests_session.get(current_url)
             if response.status_code != requests.codes.ok:
@@ -69,7 +69,7 @@ def get_data_from_url(url):
         return requests_session.get(url).json()
     except Exception as e:
         logger.error(f"Failed to fetch results from {url} {e!r}")
-        return
+        return {}
 
 
 class RedhatImporter(Importer):
@@ -112,25 +112,22 @@ def to_advisory(advisory_data):
         url = "https://bugzilla.redhat.com/show_bug.cgi?id={}".format(bugzilla)
         bugzilla_url = f"https://bugzilla.redhat.com/rest/bug/{bugzilla}"
         bugzilla_data = get_data_from_url(bugzilla_url)
-        if (
-            bugzilla_data
-            and bugzilla_data.get("bugs")
-            and len(bugzilla_data["bugs"])
-            and bugzilla_data["bugs"][0].get("severity")
-        ):
-            bugzilla_severity_val = bugzilla_data["bugs"][0]["severity"]
-            bugzilla_severity = VulnerabilitySeverity(
-                system=severity_systems.REDHAT_BUGZILLA,
-                value=bugzilla_severity_val,
-            )
-
-            references.append(
-                Reference(
-                    severities=[bugzilla_severity],
-                    url=url,
-                    reference_id=bugzilla,
+        bugs = bugzilla_data.get("bugs") or []
+        if bugs:
+            # why [0] only here?
+            severity = bugs[0].get("severity")
+            if severity:
+                bugzilla_severity = VulnerabilitySeverity(
+                    system=severity_systems.REDHAT_BUGZILLA,
+                    value=severity,
                 )
-            )
+                references.append(
+                    Reference(
+                        severities=[bugzilla_severity],
+                        url=url,
+                        reference_id=bugzilla,
+                    )
+                )
 
     for rh_adv in advisory_data.get("advisories") or []:
         # RH provides 3 types of advisories RHSA, RHBA, RHEA. Only RHSA's contain severity score.
@@ -191,7 +188,9 @@ def to_advisory(advisory_data):
     alias = advisory_data.get("CVE")
     if alias:
         aliases.append(alias)
-    references.append(Reference(severities=redhat_scores, url=advisory_data["resource_url"]))
+    resource_url = advisory_data.get("resource_url")
+    if resource_url:
+        references.append(Reference(severities=redhat_scores, url=resource_url))
     return AdvisoryData(
         aliases=aliases,
         summary=advisory_data.get("bugzilla_description") or "",

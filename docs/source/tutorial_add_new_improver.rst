@@ -34,7 +34,7 @@ Importer
 Importers are responsible for scraping vulnerability data from various data sources without creating
 a complete relational model between vulnerabilites, their fixes and store them in a structured
 fashion. These data are stored in the ``Advisory`` model and can be converted to an equivalent
-``AdvioryData`` for various use cases.
+``AdvisoryData`` for various use cases.
 See :ref:`importer-overview` for a brief overview on importers.
 
 Importer Prerequisites

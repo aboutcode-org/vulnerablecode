@@ -42,12 +42,12 @@ VulnerableCode extensively uses Package URLs to identify a package. See the
     purl = PackageURL(name="ffmpeg", type="deb", version="1.2.3")
 
 
-AdvioryData
+AdvisoryData
 ^^^^^^^^^^^^^
 
 ``AdvisoryData`` is an intermediate data-format,
 it is expected, that your importer converts the raw scraped data into ``AdvisoryData`` objects.
-All the fields in ``AdvioryData`` dataclass are optional, it is the importer's resposibility to
+All the fields in ``AdvisoryData`` dataclass are optional, it is the importer's resposibility to
 ensure that it must contain meaningful information about a vulnerability.
 
 AffectedPackage

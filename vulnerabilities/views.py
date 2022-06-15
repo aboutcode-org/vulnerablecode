@@ -110,7 +110,9 @@ class VulnerabilitySearchView(View):
     def request_to_vulnerabilities(request):
         vuln_id = request.GET["vuln_id"]
         return list(
-            models.Vulnerability.objects.filter(vulnerability_id=vuln_id).annotate(
+            models.Vulnerability.objects.filter(
+                Q(vulnerability_id=vuln_id) | Q(aliases__alias__icontains=vuln_id)
+            ).annotate(
                 vulnerable_package_count=Count(
                     "packages", filter=Q(packagerelatedvulnerability__fix=False)
                 ),

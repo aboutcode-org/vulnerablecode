@@ -1,6 +1,7 @@
 from django.test import Client
 from django.test import TestCase
 
+from vulnerabilities.models import Alias
 from vulnerabilities.models import Vulnerability
 
 
@@ -26,6 +27,8 @@ class VulnerabilitySearchTestCase(TestCase):
     def setUp(self):
         vulnerability = Vulnerability(summary="test")
         vulnerability.save()
+        alias = Alias(alias="TEST-2022", vulnerability=vulnerability)
+        alias.save()
         self.id = vulnerability.id
         self.client = Client()
 
@@ -36,9 +39,16 @@ class VulnerabilitySearchTestCase(TestCase):
         response = self.client.get(f"/vulnerabilities/{self.id}")
         self.assertEqual(response.status_code, 200)
 
-    def test_vulnerabilties(self):
+    def test_vulnerabilties_search(self):
         """
         Test Vulnerability Search View
         """
         response = self.client.get(f"/vulnerabilities/search")
+        self.assertEqual(response.status_code, 200)
+
+    def test_alias(self):
+        """
+        Test Vulnerability Search View
+        """
+        response = self.client.get(f"/vulnerabilities/search?vuln_id=TEST-2022")
         self.assertEqual(response.status_code, 200)

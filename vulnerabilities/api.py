@@ -213,10 +213,6 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
 class CPEFilterSet(filters.FilterSet):
     cpe = filters.CharFilter(method="filter_cpe")
 
-    class Meta:
-        model = Vulnerability
-        fields = ["vulnerabilityreference__reference_id"]
-
     def filter_cpe(self, queryset, name, value):
         cpe = unquote(value)
         return self.queryset.filter(vulnerabilityreference__reference_id__startswith=cpe).distinct()

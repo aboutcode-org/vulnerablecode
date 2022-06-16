@@ -9,6 +9,7 @@
 
 from vulnerabilities import importers
 from vulnerabilities.improvers import default
+from vulnerabilities.improvers import oval
 
 IMPROVERS_REGISTRY = [
     default.DefaultImprover,
@@ -16,6 +17,7 @@ IMPROVERS_REGISTRY = [
     importers.github.GitHubBasicImprover,
     importers.debian.DebianBasicImprover,
     importers.gitlab.GitLabBasicImprover,
+    oval.OvalBasicImprover,
 ]
 
 IMPROVERS_REGISTRY = {x.qualified_name: x for x in IMPROVERS_REGISTRY}

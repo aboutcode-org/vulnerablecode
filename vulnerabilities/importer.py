@@ -23,8 +23,11 @@ from typing import Set
 from typing import Tuple
 
 from fetchcode.vcs import fetch_via_vcs
+import pytz
+from dateutil import parser as dateparser
 from license_expression import Licensing
 from packageurl import PackageURL
+from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import VersionRange
 from univers.versions import Version
 
@@ -350,13 +353,13 @@ class OvalImporter(Importer):
     """
 
     @staticmethod
-    def create_purl(pkg_name: str, pkg_version: str, pkg_data: Mapping) -> PackageURL:
+    def create_purl(pkg_name: str, pkg_data: Mapping) -> PackageURL:
         """
         Helper method for creating different purls for subclasses without them reimplementing
         get_data_from_xml_doc  method
         Note: pkg_data must include 'type' of package
         """
-        return PackageURL(name=pkg_name, version=pkg_version, **pkg_data)
+        return PackageURL(name=pkg_name, **pkg_data)
 
     @staticmethod
     def _collect_pkgs(parsed_oval_data: Mapping) -> Set:
@@ -390,7 +393,7 @@ class OvalImporter(Importer):
         for metadata, oval_file in self._fetch():
             try:
                 oval_data = self.get_data_from_xml_doc(oval_file, metadata)
-                yield oval_data
+                yield from oval_data
             except Exception:
                 logger.error(
                     f"Failed to get updated_advisories: {oval_file!r} "
@@ -398,20 +401,9 @@ class OvalImporter(Importer):
                 )
                 continue
 
-    def set_api(self, all_pkgs: Iterable[str]):
-        """
-        This method loads the self.pkg_manager_api with the specified packages.
-        It fetches and caches all the versions of these packages and exposes
-        them through self.pkg_manager_api.get(<package_name>). Example
-
-        >> self.set_api(['electron'])
-        Assume 'electron' has only versions 1.0.0 and 1.2.0
-        >> assert  self.pkg_manager_api.get('electron') == {'1.0.0','1.2.0'}
-
-        """
-        raise NotImplementedError
-
-    def get_data_from_xml_doc(self, xml_doc: ET.ElementTree, pkg_metadata={}) -> List[AdvisoryData]:
+    def get_data_from_xml_doc(
+        self, xml_doc: ET.ElementTree, pkg_metadata={}
+    ) -> Iterable[AdvisoryData]:
         """
         The orchestration method of the OvalDataSource. This method breaks an
         OVAL xml ElementTree into a list of `Advisory`.
@@ -422,12 +414,10 @@ class OvalImporter(Importer):
         Example value of pkg_metadata:
                 {"type":"deb","qualifiers":{"distro":"buster"} }
         """
-
-        all_adv = []
-        oval_doc = OvalParser(self.translations, xml_doc)
-        raw_data = oval_doc.get_data()
-        all_pkgs = self._collect_pkgs(raw_data)
-        self.set_api(all_pkgs)
+        oval_parsed_data = OvalParser(self.translations, xml_doc)
+        raw_data = oval_parsed_data.get_data()
+        oval_doc = oval_parsed_data.oval_document
+        timestamp = oval_doc.getGenerator().getTimestamp()
 
         # convert definition_data to Advisory objects
         for definition_data in raw_data:
@@ -439,49 +429,31 @@ class OvalImporter(Importer):
             affected_packages = []
             for test_data in definition_data["test_data"]:
                 for package_name in test_data["package_list"]:
-                    if package_name and len(package_name) >= 50:
-                        continue
-
-                    affected_version_range = test_data["version_ranges"] or set()
-                    version_class = version_class_by_package_type[pkg_metadata["type"]]
-                    version_scheme = version_class.scheme
-
-                    affected_version_range = VersionRange.from_scheme_version_spec_string(
-                        version_scheme, affected_version_range
-                    )
-                    all_versions = self.pkg_manager_api.get(package_name).valid_versions
-
-                    # FIXME: what is this 50 DB limit? that's too small for versions
-                    # FIXME: we should not drop data this way
-                    # This filter is for filtering out long versions.
-                    # 50 is limit because that's what db permits atm.
-                    all_versions = [version for version in all_versions if len(version) < 50]
-                    if not all_versions:
-                        continue
-
-                    affected_purls = []
-                    safe_purls = []
-                    for version in all_versions:
-                        purl = self.create_purl(
-                            pkg_name=package_name,
-                            pkg_version=version,
-                            pkg_data=pkg_metadata,
+                    affected_version_range = test_data["version_ranges"]
+                    vrc = RANGE_CLASS_BY_SCHEMES[pkg_metadata["type"]]
+                    if affected_version_range:
+                        try:
+                            affected_version_range = vrc.from_native(affected_version_range)
+                        except Exception as e:
+                            logger.error(
+                                f"Failed to parse version range {affected_version_range!r} "
+                                f"for package {package_name!r}:\n{e}"
+                            )
+                            continue
+                    if package_name:
+                        affected_packages.append(
+                            AffectedPackage(
+                                package=self.create_purl(package_name, pkg_metadata),
+                                affected_version_range=affected_version_range,
+                            )
                         )
-                        if version_class(version) in affected_version_range:
-                            affected_purls.append(purl)
-                        else:
-                            safe_purls.append(purl)
-
-                    affected_packages.extend(
-                        nearest_patched_package(affected_purls, safe_purls),
-                    )
-
-            all_adv.append(
-                AdvisoryData(
-                    summary=description,
-                    affected_packages=affected_packages,
-                    vulnerability_id=vuln_id,
-                    references=references,
-                )
+            date_published = dateparser.parse(timestamp)
+            if not date_published.tzinfo:
+                date_published = date_published.replace(tzinfo=pytz.UTC)
+            yield AdvisoryData(
+                aliases=[vuln_id],
+                summary=description,
+                affected_packages=affected_packages,
+                references=sorted(references),
+                date_published=date_published,
             )
-        return all_adv

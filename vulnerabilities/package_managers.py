@@ -695,7 +695,7 @@ def get_api_package_name(purl: PackageURL) -> str:
     """
     if not purl.name:
         return None
-    if purl.type in ("nuget", "pypi", "gem") or not purl.namespace:
+    if purl.type in ("nuget", "pypi", "gem", "deb") or not purl.namespace:
         return purl.name
     if purl.type == "maven":
         return f"{purl.namespace}:{purl.name}"

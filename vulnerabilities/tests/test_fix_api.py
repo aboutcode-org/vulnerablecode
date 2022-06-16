@@ -24,6 +24,7 @@ from django.test import TestCase
 from django.utils.http import int_to_base36
 from rest_framework import status
 
+from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
@@ -124,4 +125,19 @@ class CPEApi(TestCase):
 
     def test_api_response(self):
         response = self.client.get("/api/cpes/?cpe=cpe:/a:nginx:9", format="json").data
+        self.assertEqual(response["count"], 1)
+
+
+class AliasApi(TestCase):
+    def setUp(self):
+        self.vulnerability = Vulnerability.objects.create(summary="test")
+        for i in range(0, 10):
+            Alias.objects.create(alias=f"CVE-{i}", vulnerability=self.vulnerability)
+
+    def test_api_status(self):
+        response = self.client.get("/api/alias/", format="json")
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_api_response(self):
+        response = self.client.get("/api/alias?alias=CVE-9", format="json").data
         self.assertEqual(response["count"], 1)

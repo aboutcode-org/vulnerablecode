@@ -157,6 +157,7 @@ class PackageFilterSet(filters.FilterSet):
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
+    paginate_by = 50
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageFilterSet
 
@@ -229,3 +230,19 @@ class CPEViewSet(viewsets.ReadOnlyModelViewSet):
     paginate_by = 50
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = CPEFilterSet
+
+
+class AliasFilterSet(filters.FilterSet):
+    alias = filters.CharFilter(method="filter_alias")
+
+    def filter_alias(self, queryset, name, value):
+        alias = unquote(value)
+        return self.queryset.filter(aliases__alias__icontains=alias)
+
+
+class AliasViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Vulnerability.objects.all()
+    serializer_class = VulnerabilitySerializer
+    paginate_by = 50
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = AliasFilterSet

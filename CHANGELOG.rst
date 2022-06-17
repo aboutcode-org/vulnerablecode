@@ -19,7 +19,21 @@ Version v30.0.0
 
 - Add support for nix as a Linux deployment target.
 
-- Lookup vulnerabilities from CPE
+- Lookup vulnerabilities from CPE through API
+
+- Breaking Changes at API level
+  - /api/vulnerabilities 
+    - Replace `resolved_packages` by `fixed_packages` 
+    - Replace `unresolved_packages` by `affected_packages`
+    - Replace `url` by `reference_url` in the reference list
+  - /api/packages
+    - Replace `unresolved_vulnerabilities` by `affected_by_vulnerabilities`
+    - Replace  `resolved_vulnerabilities` by `fixing_vulnerabilities`
+    - Replace `url` by `reference_url` in the reference list
+
+- Add alias to the /api/vulnerabilities
+
+- Lookup vulnerabilities from aliases
 
 
 

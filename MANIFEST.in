@@ -1,0 +1,27 @@
+graft vulnerabilities
+graft vulnerablecode
+graft docs
+graft etc
+recursive-include etc/thirdparty *
+
+include *.LICENSE
+include NOTICE
+include *.toml
+include *.yml
+include *.rst
+include *.png
+include setup.*
+include configure*
+include requirements*
+include .dockerignore
+include .gitignore
+include .readthedocs.yml
+include manage.py
+include Dockerfile
+include Makefile
+include MANIFEST.in
+
+include .VERSION
+
+global-exclude *.py[co] __pycache__ *.*~
+

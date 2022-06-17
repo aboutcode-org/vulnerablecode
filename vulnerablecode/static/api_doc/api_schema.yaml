@@ -262,12 +262,12 @@ components:
           type: string
           format: uri
           readOnly: true
-        unresolved_vulnerabilities:
+        affected_by_vulnerabilities:
           type: array
           items:
             $ref: '#/components/schemas/MinimalVulnerability'
           readOnly: true
-        resolved_vulnerabilities:
+        fixing_vulnerabilities:
           type: array
           items:
             $ref: '#/components/schemas/MinimalVulnerability'
@@ -306,10 +306,10 @@ components:
       - name
       - namespace
       - purl
-      - resolved_vulnerabilities
+      - fixing_vulnerabilities
       - subpath
       - type
-      - unresolved_vulnerabilities
+      - affected_by_vulnerabilities
       - url
       - version
     PaginatedPackageList:
@@ -374,12 +374,12 @@ components:
           type: string
           format: uri
           readOnly: true
-        resolved_packages:
+        fixed_packages:
           type: array
           items:
             $ref: '#/components/schemas/MinimalPackage'
           readOnly: true
-        unresolved_packages:
+        affected_packages:
           type: array
           items:
             $ref: '#/components/schemas/MinimalPackage'
@@ -407,8 +407,8 @@ components:
           description: Summary of the vulnerability
       required:
       - references
-      - resolved_packages
-      - unresolved_packages
+      - fixed_packages
+      - affected_packages
       - url
       - vulnerability_id
     VulnerabilityReference:
@@ -418,7 +418,7 @@ components:
           type: string
           description: Reference ID, eg:DSA-4465-1
           maxLength: 50
-        url:
+        reference_url:
           type: string
           format: uri
           description: URL of Vulnerability data

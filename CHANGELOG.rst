@@ -4,37 +4,50 @@ Release notes
 Version v30.0.0
 ----------------
 
-- Refactor core processing with Importers that import data and Improvers that
-  get the imported data and convert that in Vulnerabilities and Packages and can
-  also improve and refine imported and existing data. The migration to this new
-  architecture is under way.
+- We refactored the core processing with Importers that import data and Improvers that
+  transform imported data and convert that in Vulnerabilities and Packages. Improvers can
+  also improve and refine imported and existing data as well as enrich data using external
+  data sources. The migration to this new architecture is under way and not all importers
+  are available. You can track the progress in this issue: https://github.com/nexB/vulnerablecode/issues/597 
+  Because of these extensive changes, it is not possible to migrate existing imported
+  data to the new schema. You will need instead to restart imports from an empty database
+  or request access to the new vulnerablecode.io live instance.
 
-- Add new data sources including OSV, GitHub and GitLab.
+- We added new data sources including PYSEC, GitHub and GitLab.
 
-- Improve documentation including adding examples for importers and improvers
+- We improved the documentation including adding development examples for importers and improvers.
 
-- Remove the ability to edit relationships from the UI. The UI is now read-only
-  and we will need to design a different UI for proper review and curation of
-  vulnerabilities.
+- We removed the ability to edit relationships from the UI. The UI is now read-only
+  and we will need to design a different UI for proper review and curation of vulnerabilities.
 
-- Add support for nix as a Linux deployment target.
+- We added support for NixOS as a Linux deployment target.
 
-- Lookup vulnerabilities from CPE through API
+- The aliases of a vulnerabily are reported in the API vulnerabilities/ endpoint
 
-- Breaking Changes at API level
-  - /api/vulnerabilities 
-    - Replace `resolved_packages` by `fixed_packages` 
-    - Replace `unresolved_packages` by `affected_packages`
-    - Replace `url` by `reference_url` in the reference list
-  - /api/packages
-    - Replace `unresolved_vulnerabilities` by `affected_by_vulnerabilities`
-    - Replace  `resolved_vulnerabilities` by `fixing_vulnerabilities`
-    - Replace `url` by `reference_url` in the reference list
 
-- Add alias to the /api/vulnerabilities
+- There are breaking Changes at API level with changes in the data structure:
 
-- Lookup vulnerabilities from aliases
+  - in the /api/vulnerabilities/ endpoint:
 
+    - Rename `resolved_packages` to `fixed_packages` 
+    - Rename `unresolved_packages` to `affected_packages`
+    - Rename `url` to `reference_url` in the reference list
+
+  - in the /api/packages/ endpoint:
+
+    - Rename `unresolved_vulnerabilities` to `affected_by_vulnerabilities`
+    - Rename  `resolved_vulnerabilities` to `fixing_vulnerabilities`
+    - Rename `url` to `reference_url` in the reference list
+
+- There is a new experimental cpe/ API endpoint to lookup for vulnerabilities by CPE and 
+  another aliases/ endpoint to lookup for vulnerabilities by aliases. These two endpoints will be
+  replaced by query parameters on the main vulnerabilities/ endpoint when stabilized.
+
+
+Other:
+
+- we dropped calver to use a plain semver.
+- we adopted vers and the new univers library to handle version ranges.
 
 
 Version v20.10

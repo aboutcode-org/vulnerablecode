@@ -1,4 +1,14 @@
 #!/usr/bin/env/ python3
+
+#
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
+#
+
 # Copyright (c) 2010 United States Government. All Rights Reserved.
 
 # Redistribution and use in source and binary forms, with or without

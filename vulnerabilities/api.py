@@ -35,7 +35,7 @@ class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = VulnerabilityReference
-        fields = ["reference_url", "reference_id", "scores"]
+        fields = ["reference_url", "reference_id", "scores", "url"]
 
 
 class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
@@ -94,6 +94,10 @@ class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
 
 
 class PackageSerializer(serializers.HyperlinkedModelSerializer):
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["unresolved_vulnerabilities"] = data["affected_by_vulnerabilities"]
+        return data
 
     purl = serializers.CharField(source="package_url")
     affected_by_vulnerabilities = MinimalVulnerabilitySerializer(

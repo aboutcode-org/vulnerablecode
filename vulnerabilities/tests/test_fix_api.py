@@ -88,6 +88,7 @@ class APITestCasePackage(TestCase):
             "namespace": "nginx",
             "name": "test-vulnDB",
             "version": "1.0",
+            "unresolved_vulnerabilities": [],
             "qualifiers": {},
             "subpath": "",
             "affected_by_vulnerabilities": [],

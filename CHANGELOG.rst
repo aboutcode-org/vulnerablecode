@@ -39,6 +39,8 @@ Version v30.0.0
     - Rename  `resolved_vulnerabilities` to `fixing_vulnerabilities`
     - Rename `url` to `reference_url` in the reference list
 
+- We have provided backward compatibility for `url` and `unresolved_vulnerabilities` for now
+
 - There is a new experimental cpe/ API endpoint to lookup for vulnerabilities by CPE and 
   another aliases/ endpoint to lookup for vulnerabilities by aliases. These two endpoints will be
   replaced by query parameters on the main vulnerabilities/ endpoint when stabilized.

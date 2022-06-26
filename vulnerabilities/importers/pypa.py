@@ -27,7 +27,7 @@ class PyPaImporter(Importer):
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         for file in fork_and_get_files(self.url):
-            yield parse_advisory_data(file)
+            yield parse_advisory_data(file, supported_ecosystem='pypi')
 
 
 class ForkError(Exception):

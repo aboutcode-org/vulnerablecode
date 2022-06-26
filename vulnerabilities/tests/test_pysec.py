@@ -22,7 +22,7 @@ class TestPyPIImporter(TestCase):
         with open(os.path.join(TEST_DATA, "pysec_test_1.json")) as f:
             mock_response = json.load(f)
         expected_file = os.path.join(TEST_DATA, f"pysec-expected-1.json")
-        imported_data = parse_advisory_data(mock_response)
+        imported_data = parse_advisory_data(mock_response, "pypi")
         result = imported_data.to_dict()
         util_tests.check_results_against_json(result, expected_file)
 
@@ -30,6 +30,6 @@ class TestPyPIImporter(TestCase):
         with open(os.path.join(TEST_DATA, "pysec_test_2.json")) as f:
             mock_response = json.load(f)
         expected_file = os.path.join(TEST_DATA, f"pysec-expected-2.json")
-        imported_data = parse_advisory_data(mock_response)
+        imported_data = parse_advisory_data(mock_response, "pypi")
         result = imported_data.to_dict()
         util_tests.check_results_against_json(result, expected_file)

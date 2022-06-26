@@ -57,10 +57,14 @@ def parse_advisory_data(raw_data: dict, supported_ecosystem) -> Optional[Advisor
     for affected_pkg in raw_data.get("affected") or []:
         purl = get_affected_purl(affected_pkg, raw_id)
         if purl.type != supported_ecosystem:
-            logger.error(f"un supported ecosystem package found in the advisories: {purl} - from: {raw_id !r}")
+            logger.error(
+                f"un supported ecosystem package found in the advisories: {purl} - from: {raw_id !r}"
+            )
             continue
 
-        affected_version_range = get_affected_version_range(affected_pkg, raw_id, supported_ecosystem)
+        affected_version_range = get_affected_version_range(
+            affected_pkg, raw_id, supported_ecosystem
+        )
         for fixed_range in affected_pkg.get("ranges", []):
             fixed_version = get_fixed_version(fixed_range, raw_id)
 

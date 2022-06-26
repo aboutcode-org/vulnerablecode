@@ -14,7 +14,7 @@ from typing import Optional
 
 import dateparser
 from packageurl import PackageURL
-from univers.version_range import PypiVersionRange
+from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.versions import InvalidVersion
 from univers.versions import PypiVersion
 from univers.versions import SemverVersion
@@ -31,7 +31,7 @@ from vulnerabilities.utils import dedupe
 logger = logging.getLogger(__name__)
 
 
-def parse_advisory_data(raw_data: dict) -> Optional[AdvisoryData]:
+def parse_advisory_data(raw_data: dict, supported_ecosystem) -> Optional[AdvisoryData]:
     raw_id = raw_data.get("id") or ""
     summary = raw_data.get("summary") or ""
     details = raw_data.get("details") or ""
@@ -56,11 +56,11 @@ def parse_advisory_data(raw_data: dict) -> Optional[AdvisoryData]:
 
     for affected_pkg in raw_data.get("affected") or []:
         purl = get_affected_purl(affected_pkg, raw_id)
-        if purl.type != "pypi":
-            logger.error(f"Non PyPI package found in PYSEC advisories: {purl} - from: {raw_id !r}")
+        if purl.type != supported_ecosystem:
+            logger.error(f"un supported ecosystem package found in the advisories: {purl} - from: {raw_id !r}")
             continue
 
-        affected_version_range = get_affected_version_range(affected_pkg, raw_id)
+        affected_version_range = get_affected_version_range(affected_pkg, raw_id, supported_ecosystem)
         for fixed_range in affected_pkg.get("ranges", []):
             fixed_version = get_fixed_version(fixed_range, raw_id)
 
@@ -149,11 +149,11 @@ def get_affected_purl(affected_pkg, raw_id):
         logger.error(f"purl affected_pkg not found - {raw_id !r}")
 
 
-def get_affected_version_range(affected_pkg, raw_id):
+def get_affected_version_range(affected_pkg, raw_id, supported_ecosystem):
     affected_versions = affected_pkg.get("versions")
     if affected_versions:
         try:
-            return PypiVersionRange.from_versions(affected_versions)
+            return RANGE_CLASS_BY_SCHEMES[supported_ecosystem].from_versions(affected_versions)
         except Exception as e:
             logger.error(
                 f"InvalidVersionRange affected_pkg_version_range Error - {raw_id !r} {e!r}"

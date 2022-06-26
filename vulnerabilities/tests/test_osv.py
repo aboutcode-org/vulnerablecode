@@ -223,7 +223,7 @@ class TestOSVImporter(TestCase):
             "1.6.2",
         ]
         assert get_affected_version_range(
-            {"versions": aff_version_range}, "GHSA-j3f7-7rmc-6wqj"
+            {"versions": aff_version_range}, "GHSA-j3f7-7rmc-6wqj", "pypi"
         ) == (
             PypiVersionRange(
                 constraints=[

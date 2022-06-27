@@ -193,6 +193,23 @@ class Package(PackageURLMixin):
         """
         return self.vulnerabilities.filter(packagerelatedvulnerability__fix=True)
 
+    @property
+    def fixed_packages(self):
+        """
+        Returns vulnerabilities which are affecting this package.
+        """
+        return (
+            Package.objects.filter(
+                name=self.name,
+                namespace=self.namespace,
+                type=self.type,
+                qualifiers=self.qualifiers,
+                subpath=self.subpath,
+            )
+            .filter(packagerelatedvulnerability__fix=True)
+            .distinct()
+        )
+
     def set_package_url(self, package_url):
         """
         Set each field values to the values of the provided `package_url` string

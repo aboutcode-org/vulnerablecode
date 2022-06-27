@@ -106,6 +106,7 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
     fixing_vulnerabilities = MinimalVulnerabilitySerializer(
         many=True, source="resolved_to", read_only=True
     )
+    fixed_packages = MinimalPackageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Package
@@ -119,6 +120,7 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
             "qualifiers",
             "subpath",
             "affected_by_vulnerabilities",
+            "fixed_packages",
             "fixing_vulnerabilities",
         ]
 

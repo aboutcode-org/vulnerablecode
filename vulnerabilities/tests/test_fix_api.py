@@ -91,6 +91,7 @@ class APITestCasePackage(TestCase):
             "unresolved_vulnerabilities": [],
             "qualifiers": {},
             "subpath": "",
+            "fixed_packages": [],
             "affected_by_vulnerabilities": [],
             "fixing_vulnerabilities": [],
         }

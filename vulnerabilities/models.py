@@ -198,17 +198,14 @@ class Package(PackageURLMixin):
         """
         Returns vulnerabilities which are affecting this package.
         """
-        return (
-            Package.objects.filter(
-                name=self.name,
-                namespace=self.namespace,
-                type=self.type,
-                qualifiers=self.qualifiers,
-                subpath=self.subpath,
-            )
-            .filter(packagerelatedvulnerability__fix=True)
-            .distinct()
-        )
+        return Package.objects.filter(
+            name=self.name,
+            namespace=self.namespace,
+            type=self.type,
+            qualifiers=self.qualifiers,
+            subpath=self.subpath,
+            packagerelatedvulnerability__fix=True,
+        ).distinct()
 
     def set_package_url(self, package_url):
         """

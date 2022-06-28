@@ -45,7 +45,6 @@ def parse_advisory_data(raw_data: dict, supported_ecosystem) -> Optional[Advisor
 
     affected_packages = []
     if "affected" not in raw_data:
-        logger.error(f"affected_packages not found - {raw_id !r}")
         return AdvisoryData(
             aliases=aliases,
             summary=summary,
@@ -192,8 +191,7 @@ def get_fixed_version(fixed_range, raw_id) -> List[Version]:
                     fixed_version.append(SemverVersion(i))
                 except InvalidVersion:
                     logger.error(f"Invalid Version - SemverVersion - {raw_id !r} - {i !r}")
-            if fixed_range_type == "GIT":
+            # if fixed_range_type == "GIT":
                 # TODO add GitHubVersion univers fix_version
-                logger.error(f"NotImplementedError GIT Version - {raw_id !r} - {i !r}")
-
+            #     logger.error(f"NotImplementedError GIT Version - {raw_id !r} - {i !r}")
     return dedupe(fixed_version)

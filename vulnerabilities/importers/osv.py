@@ -39,6 +39,7 @@ def parse_advisory_data(raw_data: dict, supported_ecosystem) -> Optional[Advisor
     aliases = raw_data.get("aliases") or []
     if raw_id:
         aliases.append(raw_id)
+        aliases = dedupe(aliases)
     date_published = get_published_date(raw_data)
     severity = list(get_severities(raw_data))
     references = get_references(raw_data, severity)
@@ -192,6 +193,6 @@ def get_fixed_version(fixed_range, raw_id) -> List[Version]:
                 except InvalidVersion:
                     logger.error(f"Invalid Version - SemverVersion - {raw_id !r} - {i !r}")
             # if fixed_range_type == "GIT":
-                # TODO add GitHubVersion univers fix_version
+            # TODO add GitHubVersion univers fix_version
             #     logger.error(f"NotImplementedError GIT Version - {raw_id !r} - {i !r}")
     return dedupe(fixed_version)

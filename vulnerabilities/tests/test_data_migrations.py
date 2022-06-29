@@ -13,8 +13,6 @@ from django.db.migrations.executor import MigrationExecutor
 from django.test import TestCase
 
 from vulnerabilities import severity_systems
-from vulnerabilities.models import VulnerabilityReference
-from vulnerabilities.models import VulnerabilitySeverity
 
 
 class TestMigrations(TestCase):
@@ -115,3 +113,25 @@ class DropVulnerabilityFromSeverityTestCase(TestMigrations):
             reference=reference,
             defaults={"value": str("TEST")},
         )
+
+
+class UpdateCPEURL(TestMigrations):
+
+    migrate_from = "0015_alter_vulnerabilityseverity_unique_together_and_more"
+    migrate_to = "0016_update_cpe_url"
+
+    def setUpBeforeMigration(self, apps):
+        # using get_model to avoid circular import
+        VulnerabilityReference = apps.get_model("vulnerabilities", "VulnerabilityReference")
+
+        reference = VulnerabilityReference.objects.create(
+            reference_id="cpe:2.3:a:f5:nginx:*:*:*:*:*:*:*:*", url=""
+        )
+        reference.save()
+        self.reference = reference
+
+    def test_cpe_url_updation(self):
+        # using get_model to avoid circular import
+        VulnerabilityReference = self.apps.get_model("vulnerabilities", "VulnerabilityReference")
+        ref = VulnerabilityReference.objects.get(reference_id = self.reference.reference_id)
+        assert ref.url == "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:f5:nginx:*:*:*:*:*:*:*:*"

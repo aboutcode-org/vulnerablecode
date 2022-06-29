@@ -13,6 +13,7 @@ from rest_framework import status
 
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
+from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
@@ -51,25 +52,40 @@ class APITestCaseVulnerability(TestCase):
 
 class APITestCasePackage(TestCase):
     def setUp(self):
+        vuln = Vulnerability.objects.create(
+            summary="test-vuln",
+        )
+        self.vuln = vuln
         for i in range(0, 10):
             query_kwargs = dict(
                 type="generic",
                 namespace="nginx",
-                name=f"test-{i}",
+                name="test",
                 version=str(i),
                 qualifiers={},
                 subpath="",
             )
-            Package.objects.create(**query_kwargs)
+            vuln_package = Package.objects.create(**query_kwargs)
+            PackageRelatedVulnerability.objects.create(
+                package=vuln_package,
+                vulnerability=vuln,
+                fix=False,
+            )
+        self.vuln_package = vuln_package
         query_kwargs = dict(
             type="generic",
             namespace="nginx",
-            name="test-vulnDB",
-            version="1.0",
+            name="test",
+            version="11",
             qualifiers={},
             subpath="",
         )
         self.package = Package.objects.create(**query_kwargs)
+        PackageRelatedVulnerability.objects.create(
+            package=self.package,
+            vulnerability=vuln,
+            fix=True,
+        )
 
     def test_api_status(self):
         response = self.client.get("/api/packages/", format="json")
@@ -79,20 +95,80 @@ class APITestCasePackage(TestCase):
         response = self.client.get("/api/packages/", format="json").data
         self.assertEqual(response["count"], 11)
 
-    def test_api_with_single_vulnerability(self):
+    def test_api_with_single_vulnerability_and_fixed_package(self):
         response = self.client.get(f"/api/packages/{self.package.id}", format="json").data
         assert response == {
             "url": f"http://testserver/api/packages/{self.package.id}",
-            "purl": "pkg:generic/nginx/test-vulnDB@1.0",
+            "purl": "pkg:generic/nginx/test@11",
             "type": "generic",
             "namespace": "nginx",
-            "name": "test-vulnDB",
-            "version": "1.0",
+            "name": "test",
+            "version": "11",
             "unresolved_vulnerabilities": [],
             "qualifiers": {},
             "subpath": "",
-            "fixed_packages": [],
+            "fixed_packages": [
+                {
+                    "url": f"http://testserver/api/packages/{self.package.id}",
+                    "purl": "pkg:generic/nginx/test@11",
+                    "fixing_vulnerabilities": [
+                        {
+                            "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
+                            "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln.id).upper()}",
+                        }
+                    ],
+                }
+            ],
             "affected_by_vulnerabilities": [],
+            "fixing_vulnerabilities": [
+                {
+                    "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
+                    "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln.id).upper()}",
+                    "summary": "test-vuln",
+                    "references": [],
+                }
+            ],
+        }
+
+    def test_api_with_single_vulnerability_and_vulnerable_package(self):
+        response = self.client.get(f"/api/packages/{self.vuln_package.id}", format="json").data
+        assert response == {
+            "url": f"http://testserver/api/packages/{self.vuln_package.id}",
+            "purl": "pkg:generic/nginx/test@9",
+            "type": "generic",
+            "namespace": "nginx",
+            "name": "test",
+            "version": "9",
+            "unresolved_vulnerabilities": [
+                {
+                    "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
+                    "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln.id).upper()}",
+                    "summary": "test-vuln",
+                    "references": [],
+                }
+            ],
+            "qualifiers": {},
+            "subpath": "",
+            "fixed_packages": [
+                {
+                    "url": f"http://testserver/api/packages/{self.package.id}",
+                    "purl": "pkg:generic/nginx/test@11",
+                    "fixing_vulnerabilities": [
+                        {
+                            "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
+                            "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln.id).upper()}",
+                        }
+                    ],
+                }
+            ],
+            "affected_by_vulnerabilities": [
+                {
+                    "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
+                    "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln.id).upper()}",
+                    "summary": "test-vuln",
+                    "references": [],
+                }
+            ],
             "fixing_vulnerabilities": [],
         }
 

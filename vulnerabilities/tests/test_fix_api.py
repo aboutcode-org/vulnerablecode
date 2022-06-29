@@ -26,6 +26,12 @@ class APITestCaseVulnerability(TestCase):
                 summary=str(i),
             )
         self.vulnerability = Vulnerability.objects.create(summary="test")
+        self.pkg1 = Package.objects.create(name="flask", type="pypi", version="0.1.2")
+        self.pkg2 = Package.objects.create(name="flask", type="debian", version="0.1.2")
+        for pkg in [self.pkg1, self.pkg2]:
+            PackageRelatedVulnerability.objects.create(
+                package=pkg, vulnerability=self.vulnerability, fix=True
+            )
 
     def test_api_status(self):
         response = self.client.get("/api/vulnerabilities/", format="json")
@@ -44,7 +50,35 @@ class APITestCaseVulnerability(TestCase):
             "vulnerability_id": f"VULCOID-{int_to_base36(self.vulnerability.id).upper()}",
             "summary": "test",
             "aliases": [],
-            "fixed_packages": [],
+            "fixed_packages": [
+                {
+                    "url": f"http://testserver/api/packages/{self.pkg1.id}",
+                    "purl": "pkg:pypi/flask@0.1.2",
+                },
+                {
+                    "url": f"http://testserver/api/packages/{self.pkg2.id}",
+                    "purl": "pkg:debian/flask@0.1.2",
+                },
+            ],
+            "affected_packages": [],
+            "references": [],
+        }
+
+    def test_api_with_single_vulnerability_with_filters(self):
+        response = self.client.get(
+            f"/api/vulnerabilities/{self.vulnerability.id}?type=pypi", format="json"
+        ).data
+        assert response == {
+            "url": f"http://testserver/api/vulnerabilities/{self.vulnerability.id}",
+            "vulnerability_id": f"VULCOID-{int_to_base36(self.vulnerability.id).upper()}",
+            "summary": "test",
+            "aliases": [],
+            "fixed_packages": [
+                {
+                    "url": f"http://testserver/api/packages/{self.pkg1.id}",
+                    "purl": "pkg:pypi/flask@0.1.2",
+                },
+            ],
             "affected_packages": [],
             "references": [],
         }

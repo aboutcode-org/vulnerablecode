@@ -26,6 +26,9 @@ from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.utils import get_item
 
+BASE_URL = "https://nvd.nist.gov/vuln/search/results"
+PARAMS = "?adv_search=true&isCpeNameSearch=true"
+
 
 class NVDImporter(Importer):
     # See https://github.com/nexB/vulnerablecode/issues/665 for follow up
@@ -76,9 +79,11 @@ def to_advisories(nvd_data):
         references = []
         severity_scores = list(extract_severity_scores(cve_item))
         for cpe in cpes:
+            cpe_url = f"{BASE_URL}{PARAMS}&query={cpe}"
             references.append(
                 Reference(
                     reference_id=cpe,
+                    url=cpe_url,
                 )
             )
         references.append(

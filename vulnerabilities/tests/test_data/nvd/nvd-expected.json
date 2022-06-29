@@ -32,17 +32,17 @@
       },
       {
         "reference_id": "cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:a:csilvers:gperftools:0.1:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:csilvers:gperftools:0.1:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:a:csilvers:gperftools:0.2:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:csilvers:gperftools:0.2:*:*:*:*:*:*:*",
         "severities": []
       }
     ],
@@ -146,187 +146,187 @@
       },
       {
         "reference_id": "cpe:2.3:o:freebsd:freebsd:4.2:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:freebsd:freebsd:4.2:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:freebsd:freebsd:4.3:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:freebsd:freebsd:4.3:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:freebsd:freebsd:4.4:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:freebsd:freebsd:4.4:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:freebsd:freebsd:4.5:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:freebsd:freebsd:4.5:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:freebsd:freebsd:4.6:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:freebsd:freebsd:4.6:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:freebsd:freebsd:4.7:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:freebsd:freebsd:4.7:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.10:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.10:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.11:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.11:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.12:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.12:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.13:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.13:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.14:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.14:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.15:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.15:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.16:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.16:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.17:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.17:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.18:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.18:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.19:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.19:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.1:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.1:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.20:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.20:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.2:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.2:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.3:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.3:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.4:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.4:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.5:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.5:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.6:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.6:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.7:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.7:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.8:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.8:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:linux:linux_kernel:2.4.9:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:linux:linux_kernel:2.4.9:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:microsoft:windows_2000:*:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_2000:*:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:microsoft:windows_2000:*:sp1:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_2000:*:sp1:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:microsoft:windows_2000:*:sp2:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_2000:*:sp2:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:microsoft:windows_2000_terminal_services:*:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_2000_terminal_services:*:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:microsoft:windows_2000_terminal_services:*:sp1:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_2000_terminal_services:*:sp1:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:microsoft:windows_2000_terminal_services:*:sp2:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_2000_terminal_services:*:sp2:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:netbsd:netbsd:1.5.1:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:netbsd:netbsd:1.5.1:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:netbsd:netbsd:1.5.2:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:netbsd:netbsd:1.5.2:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:netbsd:netbsd:1.5.3:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:netbsd:netbsd:1.5.3:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:netbsd:netbsd:1.5:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:netbsd:netbsd:1.5:*:*:*:*:*:*:*",
         "severities": []
       },
       {
         "reference_id": "cpe:2.3:o:netbsd:netbsd:1.6:*:*:*:*:*:*:*",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:netbsd:netbsd:1.6:*:*:*:*:*:*:*",
         "severities": []
       }
     ],

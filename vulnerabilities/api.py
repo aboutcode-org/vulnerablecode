@@ -10,7 +10,6 @@
 from urllib.parse import unquote
 
 from django.db.models import Prefetch
-from django.db.models import Q
 from django_filters import rest_framework as filters
 from packageurl import PackageURL
 from rest_framework import serializers
@@ -159,7 +158,7 @@ class PackageFilterSet(filters.FilterSet):
 
     class Meta:
         model = Package
-        fields = ["name", "type", "version", "subpath", "purl"]
+        fields = ["name", "type", "version", "subpath", "purl", "packagerelatedvulnerability__fix"]
 
     def filter_purl(self, queryset, name, value):
         purl = unquote(value)
@@ -224,26 +223,33 @@ class VulnerabilityFilterSet(filters.FilterSet):
 
 
 class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
+    def get_fixed_packages_qs(self):
+        """
+        Filter the packages that fixes a vulnerability
+        on fields like name, namespace and type.
+        """
+        package_filter_data = {"packagerelatedvulnerability__fix": True}
+
+        query_params = self.request.query_params
+        for field_name in ["name", "namespace", "type"]:
+            value = query_params.get(field_name)
+            if value:
+                package_filter_data[field_name] = value
+
+        return PackageFilterSet(package_filter_data).qs
+
     def get_queryset(self):
-        params = self.request.query_params
-        query = Q()
-        name = params.get("name")
-        if name:
-            query &= Q(name=name)
-        namespace = params.get("namespace")
-        if namespace:
-            query &= Q(namespace=namespace)
-        type = params.get("type")
-        if type:
-            query &= Q(type=type)
-        queryset = Vulnerability.objects.prefetch_related(
+        """
+        Assign filtered packages queryset from `get_fixed_packages_qs`
+        to a custom attribute `filtered_fixed_packages`
+        """
+        return Vulnerability.objects.prefetch_related(
             Prefetch(
                 "packages",
-                queryset=Package.objects.filter(query, packagerelatedvulnerability__fix=True),
+                queryset=self.get_fixed_packages_qs(),
                 to_attr="filtered_fixed_packages",
             )
         )
-        return queryset
 
     serializer_class = VulnerabilitySerializer
     paginate_by = 50

@@ -45,6 +45,13 @@ Version v30.0.0
   another aliases/ endpoint to lookup for vulnerabilities by aliases. These two endpoints will be
   replaced by query parameters on the main vulnerabilities/ endpoint when stabilized.
 
+- Added filters for vulnerabilities endpoint to get fixed packages in accordance to the details given in filters:
+  For example:
+  - /api/vulnerabilities?type=pypi&namespace=foo&name=bar 
+    will give only fixed versioned purls of this type `pkg:pypi/foo/bar`
+
+- Package endpoint will give fixed packages of only those that
+  matches type, name, namespace, subpath and qualifiers of the package queried.
 
 Other:
 

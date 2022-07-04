@@ -9,6 +9,7 @@
 
 from urllib.parse import unquote
 
+from django.db.models import Prefetch
 from django_filters import rest_framework as filters
 from packageurl import PackageURL
 from rest_framework import serializers
@@ -50,7 +51,7 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
         fields = ["url", "purl"]
 
 
-class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
+class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
     """
     Used for nesting inside package focused APIs.
     """
@@ -60,6 +61,31 @@ class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Vulnerability
         fields = ["url", "vulnerability_id", "summary", "references"]
+
+
+class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Used for nesting inside package focused APIs.
+    """
+
+    class Meta:
+        model = Vulnerability
+        fields = ["url", "vulnerability_id"]
+
+
+class PackageSerializerFixedVulns(serializers.HyperlinkedModelSerializer):
+    """
+    Used for nesting inside vulnerability focused APIs.
+    """
+
+    purl = serializers.CharField(source="package_url")
+    fixing_vulnerabilities = MinimalVulnerabilitySerializer(
+        many=True, source="resolved_to", read_only=True
+    )
+
+    class Meta:
+        model = Package
+        fields = ["url", "purl", "fixing_vulnerabilities"]
 
 
 class AliasSerializer(serializers.HyperlinkedModelSerializer):
@@ -74,7 +100,9 @@ class AliasSerializer(serializers.HyperlinkedModelSerializer):
 
 class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
 
-    fixed_packages = MinimalPackageSerializer(many=True, source="resolved_to", read_only=True)
+    fixed_packages = MinimalPackageSerializer(
+        many=True, source="filtered_fixed_packages", read_only=True
+    )
     affected_packages = MinimalPackageSerializer(many=True, source="vulnerable_to", read_only=True)
 
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
@@ -100,12 +128,13 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
         return data
 
     purl = serializers.CharField(source="package_url")
-    affected_by_vulnerabilities = MinimalVulnerabilitySerializer(
+    affected_by_vulnerabilities = VulnSerializerRefsAndSummary(
         many=True, source="vulnerable_to", read_only=True
     )
-    fixing_vulnerabilities = MinimalVulnerabilitySerializer(
+    fixing_vulnerabilities = VulnSerializerRefsAndSummary(
         many=True, source="resolved_to", read_only=True
     )
+    fixed_packages = PackageSerializerFixedVulns(many=True, read_only=True)
 
     class Meta:
         model = Package
@@ -119,6 +148,7 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
             "qualifiers",
             "subpath",
             "affected_by_vulnerabilities",
+            "fixed_packages",
             "fixing_vulnerabilities",
         ]
 
@@ -128,7 +158,7 @@ class PackageFilterSet(filters.FilterSet):
 
     class Meta:
         model = Package
-        fields = ["name", "type", "version", "subpath", "purl"]
+        fields = ["name", "type", "version", "subpath", "purl", "packagerelatedvulnerability__fix"]
 
     def filter_purl(self, queryset, name, value):
         purl = unquote(value)
@@ -193,7 +223,34 @@ class VulnerabilityFilterSet(filters.FilterSet):
 
 
 class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Vulnerability.objects.all()
+    def get_fixed_packages_qs(self):
+        """
+        Filter the packages that fixes a vulnerability
+        on fields like name, namespace and type.
+        """
+        package_filter_data = {"packagerelatedvulnerability__fix": True}
+
+        query_params = self.request.query_params
+        for field_name in ["name", "namespace", "type"]:
+            value = query_params.get(field_name)
+            if value:
+                package_filter_data[field_name] = value
+
+        return PackageFilterSet(package_filter_data).qs
+
+    def get_queryset(self):
+        """
+        Assign filtered packages queryset from `get_fixed_packages_qs`
+        to a custom attribute `filtered_fixed_packages`
+        """
+        return Vulnerability.objects.prefetch_related(
+            Prefetch(
+                "packages",
+                queryset=self.get_fixed_packages_qs(),
+                to_attr="filtered_fixed_packages",
+            )
+        )
+
     serializer_class = VulnerabilitySerializer
     paginate_by = 50
     filter_backends = (filters.DjangoFilterBackend,)

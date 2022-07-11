@@ -1,0 +1,9 @@
+{
+  "aliases": [
+    "CVE-2019-7245 ", " FEYE-2019-0002"
+  ],
+  "summary": "GPU-Z.sys, part of the GPU-Z package from TechPowerUp, exposes the wrmsr instruction to user-mode callers without properly validating the target Model Specific Register (MSR). This can result in arbitrary unsigned code being executed in Ring 0.",
+  "affected_packages": [],
+  "references": [],
+  "date_published":""
+}

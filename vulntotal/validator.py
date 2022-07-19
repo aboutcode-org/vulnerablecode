@@ -31,7 +31,6 @@ from vulnerabilities.utils import classproperty
 
 @dataclasses.dataclass(order=True)
 class VendorData:
-    raw_dump: str = ""
     aliases: List[str] = dataclasses.field(default_factory=list)
     affected_versions: List[str] = dataclasses.field(default_factory=list)
     fixed_versions: List[str] = dataclasses.field(default_factory=list)
@@ -41,13 +40,18 @@ class VendorData:
             "affected_versions": self.affected_versions,
             "fixed_versions": self.fixed_versions,
             "aliases": self.aliases,
-            "raw_dump": self.raw_dump,
         }
 
 
 class Validator:
+    _raw_dump = []
+
     def validator_advisory(self, purl) -> Iterable[VendorData]:
         """
         Yield VendorData object corresponding to vendor
         """
         return NotImplementedError
+
+    @property
+    def raw_dump(self):
+        return self._raw_dump

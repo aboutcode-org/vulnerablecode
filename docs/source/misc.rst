@@ -17,7 +17,7 @@ Here is an example::
 
     [Service]
     Type=oneshot
-    ExecStart=/path/to/venv/bin/python /path/to/vulnerablecode/manage.py import --all
+    ExecStart=/path/to/venv/bin/python /path/to/vulnerablecode/manage.py import --all && /path/to/venv/bin/python /path/to/vulnerablecode/manage.py improve --all
 
     $ cat ~/.config/systemd/user/vulnerablecode.timer
 

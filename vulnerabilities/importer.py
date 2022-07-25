@@ -312,10 +312,28 @@ class Importer:
         raise NotImplementedError
 
 
+@dataclasses.dataclass
+class GitConfig:
+    repository_url: str
+    branch: Optional[str] = None
+    create_working_directory: bool = True
+    remove_working_directory: bool = True
+    working_directory: Optional[str] = ""
+    last_run_date: Optional[str] = None
+    cutoff_date: Optional[str] = None
+
+
 # TODO: Needs rewrite
 class GitImporter(Importer):
-    def validate_configuration(self) -> None:
+    def __init__(self, config, cutoff_timestamp):
+        super().__init__()
+        self.config = config
+        self.cutoff_timestamp = cutoff_timestamp
 
+        self._ensure_working_directory()
+        self._ensure_repository()
+
+    def validate_configuration(self) -> None:
         if not self.config.create_working_directory and self.config.working_directory is None:
             self.error(
                 '"create_working_directory" is not set but "working_directory" is set to '
@@ -336,10 +354,6 @@ class GitImporter(Importer):
                 "the default, which calls tempfile.mkdtemp()"
             )
 
-    def __enter__(self):
-        self._ensure_working_directory()
-        self._ensure_repository()
-
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.config.remove_working_directory:
             shutil.rmtree(self.config.working_directory)
@@ -353,7 +367,6 @@ class GitImporter(Importer):
         """
         Returns all added and modified files since last_run_date or cutoff_date (whichever is more
         recent).
-
         :param subdir: filter by files in this directory
         :param recursive: whether to include files in subdirectories
         :param file_ext: filter files by this extension
@@ -476,6 +489,12 @@ class GitImporter(Importer):
         branch = self._repo.branches[branch]
         branch.set_reference(remote.refs[branch.name])
         self._repo.head.reset(index=True, working_tree=True)
+
+    def advisory_data(self):
+        raise NotImplementedError
+
+    def error(self, param):
+        pass
 
 
 def _include_file(

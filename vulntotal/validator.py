@@ -52,6 +52,16 @@ class Validator:
         """
         return NotImplementedError
 
+    @classmethod
+    def support_ecosystem(cls):
+        """
+        Return dictionary containing supported ecosystem
+        {
+           "PURL equivalent ecosystem" : "Validator ecosystem",
+        }
+        """
+        return NotImplementedError
+
     @property
     def raw_dump(self):
         return self._raw_dump

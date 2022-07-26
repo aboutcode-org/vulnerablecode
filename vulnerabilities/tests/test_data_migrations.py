@@ -118,7 +118,7 @@ class DropVulnerabilityFromSeverityTestCase(TestMigrations):
 class UpdateCPEURL(TestMigrations):
 
     migrate_from = "0015_alter_vulnerabilityseverity_unique_together_and_more"
-    migrate_to = "0016_update_cpe_url"
+    migrate_to = "0016_update_cpe_url_and_remove_duplicate_ref_ids"
 
     def setUpBeforeMigration(self, apps):
         # using get_model to avoid circular import
@@ -128,10 +128,16 @@ class UpdateCPEURL(TestMigrations):
             reference_id="cpe:2.3:a:f5:nginx:*:*:*:*:*:*:*:*", url=""
         )
         reference.save()
+        reference1 = VulnerabilityReference.objects.create(
+            reference_id="cpe:2.3:a:f5:nginx:*:*:*:*:*:*:*:*", url="https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:f5:nginx:*:*:*:*:*:*:*:*"
+        )
+        reference1.save()
         self.reference = reference
 
     def test_cpe_url_updation(self):
         # using get_model to avoid circular import
         VulnerabilityReference = self.apps.get_model("vulnerabilities", "VulnerabilityReference")
-        ref = VulnerabilityReference.objects.get(reference_id = self.reference.reference_id)
-        assert ref.url == "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:f5:nginx:*:*:*:*:*:*:*:*"
+        refs = VulnerabilityReference.objects.filter(reference_id = self.reference.reference_id)
+        assert refs.count() == 1
+        assert refs[0].url == "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:f5:nginx:*:*:*:*:*:*:*:*"
+        assert refs[0].reference_id == "cpe:2.3:a:f5:nginx:*:*:*:*:*:*:*:*"

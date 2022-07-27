@@ -30,7 +30,8 @@ SECRET_KEY = env.str("SECRET_KEY")
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[".localhost", "127.0.0.1", "[::1]"])
 
 # SECURITY WARNING: don't run with debug turned on in production
-DEBUG = env.bool("VULNERABLECODE_DEBUG", default=False)
+# DEBUG = env.bool("VULNERABLECODE_DEBUG", default=False)
+DEBUG = env.bool("VULNERABLECODE_DEBUG", default=True)
 
 # Application definition
 
@@ -50,6 +51,7 @@ INSTALLED_APPS = (
     "rest_framework",
     "rest_framework.authtoken",
     "widget_tweaks",
+    "django_extensions",
 )
 
 MIDDLEWARE = (

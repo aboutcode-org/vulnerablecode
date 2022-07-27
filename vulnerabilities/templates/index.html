@@ -2,13 +2,18 @@
 
 {% block title %}
 <h1 class="title">
-Welcome to VulnerableCode!
+    Welcome to VulnerableCode!
 </h1>
 {% endblock %}
 
 {% block content %}
-<div class = "hero is-large has-text-centered">
-    <a class="button is-medium has-background-light has-text-link"  href="{% url 'vulnerability_search' %}"> Search Vulnerabilities</a>
+<div class="hero is-large has-text-centered">
+    <a class="button is-medium has-background-light has-text-link" href="{% url 'vulnerability_search' %}"> Search Vulnerabilities</a>
     <a class="button is-medium has-background-light has-text-link" href="{% url 'package_search' %}"> Search Packages</a>
+</div>
+<div class="box" style="margin-top: 150px; margin-left: auto; margin-right: auto; border: solid 1px #d8d8d8; padding: 20px; width: 500px;">
+    <div style="padding: 10px; text-align: center;">
+        <span style="font-weight: bold;">New landing page: </span><a href="index_new/" target="_blank">index_new.html</a>
+    </div>
 </div>
 {% endblock %}

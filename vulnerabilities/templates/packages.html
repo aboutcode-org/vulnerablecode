@@ -1,63 +1,64 @@
-{% extends 'base.html' %} 
-{% block title %} 
+{% extends 'base.html' %}
+{% block title %}
 <h1 class="title">
-Explore Vulnerable packages
+    Explore Vulnerable packages
 </h1>
 {% endblock %}
 {% block content %}
 {% load widget_tweaks %}
 
 <div class="columns">
-  <div class="column is-one-third is-offset-one-third">
-    <form action="{% url 'package_search' %}" method="get">
-    {% load widget_tweaks %}
-      <div class="field is-horizontal pd-3">
-        <div class="select">
-        {{form.type}}
-        </div>
-        {{form.name|add_class:"input"}}
-        <button class="button is-success", type="submit">
-          Search
-        </button>
-      </div>
-    </form>
-    {% if result_size %}
-      <p class="has-text-centered" id="result_count">{{result_size}} results</p>
-    {% elif result_size == 0 %}
-      <p class="has-text-centered" id="result_count">No results found</p>
-    {% endif %}
-  </div>
+    <div class="column is-one-third is-offset-one-third">
+        <form action="{% url 'package_search' %}" method="get">
+            {% load widget_tweaks %}
+            <div class="field is-horizontal pd-3">
+                <div class="select">
+                    {{form.type}}
+                </div>
+                {{form.name|add_class:"input"}}
+                <button class="button is-success" , type="submit">
+                    Search
+                </button>
+            </div>
+        </form>
+        {% if result_size %}
+        <p class="has-text-centered" id="result_count">{{result_size}} results</p>
+        {% elif result_size == 0 %}
+        <p class="has-text-centered" id="result_count">No results found</p>
+        {% endif %}
+        <span class="current01">(page {{ packages.number }} of {{ packages.paginator.num_pages }})</span>
+    </div>
 </div>
 
 {% if packages %}
 
 <section class="section">
-  <div class="content is-medium">
-    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-      <tr>
-        <th>Package URL</th>
-        <th>Affected By Vulnerabilities</th>
-        <th>Fixing Vulnerabilities</th>
-      </tr>
-      {% for package in packages %}
-      <tr>
-        <td><a href="{% url 'package_view' package.pk %}">{{package.package_url}}</a></td>
-        <td>{{package.vulnerability_count}}</td>
-        <td>{{package.patched_vulnerability_count}}</td>
-      </tr>
-      {% endfor %}
-    </table>
-  </div>
-  
-  <div class="is-field is-horizontal">
-    {% if packages.has_previous %}
-      <a class="button" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">Previous Page</a>
-    {% endif %}
-  
-    {% if packages.has_next %}
-      <a class="button" href="?{{ searched_for }}&page={{ packages.next_page_number}}">Next Page</a>
-    {% endif %}
-  </div>
+    <div class="content is-medium">
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+            <tr>
+                <th>Package URL</th>
+                <th>Affected By Vulnerabilities</th>
+                <th>Fixing Vulnerabilities</th>
+            </tr>
+            {% for package in packages %}
+            <tr>
+                <td><a href="{% url 'package_view' package.pk %}">{{package.package_url}}</a></td>
+                <td>{{package.vulnerability_count}}</td>
+                <td>{{package.patched_vulnerability_count}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="is-field is-horizontal">
+        {% if packages.has_previous %}
+        <a class="button" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">Previous Page</a>
+        {% endif %}
+
+        {% if packages.has_next %}
+        <a class="button" href="?{{ searched_for }}&page={{ packages.next_page_number}}">Next Page</a>
+        {% endif %}
+    </div>
 </section>
 
 {% endif %}

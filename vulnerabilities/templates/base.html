@@ -1,15 +1,17 @@
 <!DOCTYPE html class="has-navbar-fixed-top">
 {% load static %}
+
 <head>
     <title>VulnerableCode</title>
 </head>
-<link rel="stylesheet" href="{% static 'css/bulma.css' %}"/>
-<link rel="stylesheet" href="{% static 'css/custom.css' %}"/>
-<link rel="stylesheet" href="{% static 'css/font-awesome.css' %}"/>
+<link rel="stylesheet" href="{% static 'css/bulma.css' %}" />
+<link rel="stylesheet" href="{% static 'css/custom.css' %}" />
+<link rel="stylesheet" href="{% static 'css/font-awesome.css' %}" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <body class="Site">
     <nav class="navbar is-light" role="navigation" aria-label="main navigation">
-        <div  class="navbar-menu">
+        <div class="navbar-menu">
             <div class="navbar-start">
                 <a class="navbar-item" href="{% url 'home' %}">
                     Home
@@ -28,26 +30,27 @@
     </nav>
     <main class="Site-content">
 
-    <section class="section is-small  has-text-centered">
-        <div class="container ">
-            {% block title %}
-            {% endblock %}
-        </div>
-    </section>
-    {% block content %}
-    {% endblock %}
+        <section class="section is-small  has-text-centered">
+            <div class="container ">
+                {% block title %}
+                {% endblock %}
+            </div>
+        </section>
+        {% block content %}
+        {% endblock %}
 
     </main>
-    <footer class="footer">
-      <div class="content has-text-centered">
-        <p>
-          <strong>VulnerableCode</strong> is free software by <a href="https://github.com/nexB/vulnerablecode"> nexB Inc. and others</a>.
-          The source code is licensed under <a href="https://github.com/nexB/vulnerablecode/blob/main/apache-2.0.LICENSE">Apache-2.0</a>.
-          The data is licensed under <a href="https://github.com/nexB/vulnerablecode/blob/main/cc-by-sa-4.0.LICENSE">CC-BY-SA-4.0</a>.
-        </p>
-      </div>
+    <footer class="footer" style="margin-left: auto; margin-right: auto;">
+        <div class="content has-text-centered">
+            <p>
+                <strong>VulnerableCode</strong> is free software by <a href="https://github.com/nexB/vulnerablecode"> nexB Inc. and others</a>.
+                The source code is licensed under <a href="https://github.com/nexB/vulnerablecode/blob/main/apache-2.0.LICENSE">Apache-2.0</a>.
+                The data is licensed under <a href="https://github.com/nexB/vulnerablecode/blob/main/cc-by-sa-4.0.LICENSE">CC-BY-SA-4.0</a>.
+            </p>
+        </div>
     </footer>
 </body>
 {% block javascript %}
 {% endblock %}
+
 </html>

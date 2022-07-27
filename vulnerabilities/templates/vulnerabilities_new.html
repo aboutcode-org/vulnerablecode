@@ -1,0 +1,78 @@
+{% extends 'base_new.html' %}
+
+{% block title %}
+VCIO Vulnerability Results
+{% endblock %}
+
+{% block content %}
+
+{% include 'navbar01.html' %}
+
+<section class="section01">
+
+    <div class="columns">
+        <div class="column is-four-fifths">
+            <span class="tag01">Search by vuln_id:</span>
+            <span class="tag02">{{ vuln_id }}</span>
+        </div>
+        <div class="column" style="text-align: right;">
+            <a class="button is-link" href="/index_new">Return to search</a>
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column" style="text-align: center;">
+            Total records: {{ result_size }}
+            <br />
+            <span class="current01">(page {{ vulnerabilities.number }} of {{ vulnerabilities.paginator.num_pages }})</span>
+        </div>
+    </div>
+
+</section>
+
+{% if vulnerabilities %}
+<section class="section01">
+    <div class="content">
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+            <tr>
+                <th>Vulnerability ID</th>
+                <th>Affected packages</th>
+                <th>Fixed packages</th>
+            </tr>
+            {% for vulnerability in vulnerabilities %}
+            <tr>
+                <td>
+                    {{vulnerability.vulnerability_id}}
+                    <span style="font-size: 13px;">
+                        (
+                        <a href="{% url 'vulnerability_view' vulnerability.pk %}" target="_blank">old HTML</a>
+                        |
+                        <a href="{% url 'vulnerability_view_new' vulnerability.pk %}" target="_blank">new HTML</a>
+                        )
+                    </span>
+                </td>
+                <td>{{vulnerability.vulnerable_package_count}}</td>
+                <td>{{vulnerability.patched_package_count}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="is-field is-horizontal">
+        {% if vulnerabilities.has_previous %}
+        <a class="button" href="?vuln_id={{ searched_for }}&page={{ vulnerabilities.previous_page_number }}">Previous Page</a>
+        {% endif %}
+
+        <span class="current02">
+            (page {{ vulnerabilities.number }} of {{ vulnerabilities.paginator.num_pages }})
+        </span>
+
+        {% if vulnerabilities.has_next %}
+        <a class="button" href="?vuln_id={{ searched_for }}&page={{ vulnerabilities.next_page_number}}">Next Page</a>
+        {% endif %}
+    </div>
+
+</section>
+
+{% endif %}
+
+{% endblock %}

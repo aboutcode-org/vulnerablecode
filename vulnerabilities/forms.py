@@ -40,4 +40,9 @@ class PackageForm(forms.Form):
 
 class CVEForm(forms.Form):
 
-    vuln_id = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "vulnerability id"}))
+    # vuln_id = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "vulnerability id"}))
+    # 7/28/2022 Thursday 1:38:12 PM.  This allows an empty search box, needed to add a popup
+    # warning -- rather than the simple browser-created warning -- when no value has been entered.
+    vuln_id = forms.CharField(
+        required=False, widget=forms.TextInput(attrs={"placeholder": "vulnerability id"})
+    )

@@ -23,7 +23,6 @@ defusedxml==0.7.1
 distro==1.7.0
 Django==4.0.6
 django-environ==0.8.1
-django-extensions==3.2.0
 django-filter==21.1
 django-widget-tweaks==1.4.12
 djangorestframework==3.13.1

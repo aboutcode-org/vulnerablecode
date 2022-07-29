@@ -50,6 +50,22 @@ a {
     font-weight: 400;
 }
 
+/* =================== */
+a.button.paging {
+    color: #0066ff;
+}
+
+a.button.paging:hover {
+    color: #0066ff;
+    text-decoration: underline;
+}
+
+a.button.paging:visited {
+    color: #0066ff;
+}
+
+/* =================== */
+
 .container.is-fullheight {
     min-height: 100vh;
     flex: 1;

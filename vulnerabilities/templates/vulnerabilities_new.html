@@ -12,8 +12,13 @@ VCIO Vulnerability Results
 
     <div class="columns">
         <div class="column is-four-fifths">
-            <span class="tag01">Search by vuln_id:</span>
-            <span class="tag02">{{ vuln_id }}</span>
+            <!-- <span class="tag01">Search by vuln_id:</span>
+            <span class="tag02">{{ vuln_id }}</span> -->
+            <!-- <span class="tag is-warning is-large">Search by vuln_id: {{ vuln_id }}</span> -->
+            <div class="tags has-addons">
+                <span class="tag is-medium is-light is-search-label-left">Search vulnerabilities by vuln_id: </span>
+                <span class="tag is-medium is-white is-search-label-right">"{{vuln_id}}"</span>
+            </div>
         </div>
         <div class="column" style="text-align: right;">
             <a class="button is-link" href="/index_new">Return to search</a>
@@ -57,7 +62,7 @@ VCIO Vulnerability Results
         </table>
     </div>
 
-    <div class="is-field is-horizontal">
+    <!-- <div class="is-field is-horizontal">
         {% if vulnerabilities.has_previous %}
         <a class="button" href="?vuln_id={{ searched_for }}&page={{ vulnerabilities.previous_page_number }}">Previous Page</a>
         {% endif %}
@@ -68,6 +73,20 @@ VCIO Vulnerability Results
 
         {% if vulnerabilities.has_next %}
         <a class="button" href="?vuln_id={{ searched_for }}&page={{ vulnerabilities.next_page_number}}">Next Page</a>
+        {% endif %}
+    </div> -->
+
+    <div class="is-field is-horizontal">
+        {% if vulnerabilities.has_previous %}
+        <a class="button" href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.previous_page_number }}">Previous Page</a>
+        {% endif %}
+
+        <span class="current02">
+            (page {{ vulnerabilities.number }} of {{ vulnerabilities.paginator.num_pages }})
+        </span>
+
+        {% if vulnerabilities.has_next %}
+        <a class="button" href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.next_page_number}}">Next Page</a>
         {% endif %}
     </div>
 

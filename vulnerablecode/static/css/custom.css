@@ -195,6 +195,10 @@ code {
     border: 0;
 }
 
+.table th {
+    border-color: #000000;
+}
+
 .two-col-left {
     width: 150px;
     text-align: right !important;
@@ -294,6 +298,18 @@ ul li {
     /* font-weight: normal; */
 }
 
+.tag:not(body).is-search-label-left {
+    box-shadow: 5px 5px 5px #cccccc;
+    border: solid 1px #b8b8b8;
+    font-weight: bold;
+}
+
+.tag:not(body).is-search-label-right {
+    box-shadow: 5px 5px 5px #cccccc;
+    border: solid 1px #b8b8b8;
+    border-left: 0;
+}
+
 .tag01 {
     color: #000000;
     font-size: 24px;
@@ -309,6 +325,8 @@ ul li {
 
 .tag02 {
     color: #000000;
+    /* background-color: #ffff66; */
+    /* padding: 0px 5px 0px 5px; */
     font-size: 24px;
     font-weight: 400;
 }

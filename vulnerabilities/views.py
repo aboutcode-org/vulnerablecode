@@ -31,6 +31,10 @@ from django.views.generic.list import ListView
 from packageurl import PackageURL
 
 from vulnerabilities import forms
+
+# to test 2+ forms in 1 template, try SCIO approach:
+from vulnerabilities.forms import CVEForm
+from vulnerabilities.forms import PackageForm
 from vulnerabilities import models
 
 
@@ -64,6 +68,82 @@ class PackageSearchView(View):
             context["result_size"] = result_size
 
         return render(request, self.template_name, context)
+
+    @staticmethod
+    def request_to_queryset(request):
+        package_type = ""
+        package_name = ""
+
+        if len(request.GET["type"]):
+            package_type = request.GET["type"]
+
+        if len(request.GET["name"]):
+            package_name = request.GET["name"]
+
+        return list(
+            models.Package.objects.all()
+            # FIXME: This filter is wrong and ignoring most of the fields needed for a
+            # proper package lookup: type/namespace/name@version?qualifiers and so on
+            .filter(name__icontains=package_name, type__icontains=package_type)
+            .annotate(
+                vulnerability_count=Count(
+                    "vulnerabilities",
+                    filter=Q(packagerelatedvulnerability__fix=False),
+                ),
+                # TODO: consider renaming to fixed in the future
+                patched_vulnerability_count=Count(
+                    "vulnerabilities",
+                    filter=Q(packagerelatedvulnerability__fix=True),
+                ),
+            )
+            .prefetch_related()
+        )
+
+
+class PackageSearchView_new(View):
+    template_name = "packages_new.html"
+
+    def get(self, request):
+        # Do we still need this?  We now have the search form in index_new.html
+        context = {"form": forms.PackageForm(request.GET or None)}
+        # context = {"form-pkg": forms.PackageForm(request.GET or None)}
+
+        if request.GET:
+            packages = self.request_to_queryset(request)
+            result_size = len(packages)
+            try:
+                page_no = request.GET.get("page", 1)
+                packages = Paginator(packages, 50).get_page(page_no)
+            except PageNotAnInteger:
+                packages = Paginator(packages, 50).get_page(1)
+            packages = Paginator(packages, 50).get_page(page_no)
+            context["packages"] = packages
+            context["searched_for"] = urlencode(
+                {param: request.GET[param] for param in request.GET if param != "page"}
+            )
+            context["result_size"] = result_size
+
+        # if not len(request.GET["name"]):
+        if request.GET["name"].strip() == "":
+            context = {
+                "package_search": "Please add a value in the search box.",
+                "vuln_form": CVEForm(),
+                "package_form": PackageForm(),
+            }
+            return render(request, "index_new.html", context)
+        elif result_size == 0:
+            context = {
+                "package_search": "The VCIO DB does not contain a record of the package you entered -- "
+                + request.GET["name"]
+                + ".",
+                "vuln_form": CVEForm(),
+                "package_form": PackageForm(),
+            }
+            return render(request, "index_new.html", context)
+        else:
+            return render(request, self.template_name, context)
+
+        # return render(request, self.template_name, context)
 
     @staticmethod
     def request_to_queryset(request):
@@ -134,22 +214,40 @@ class VulnerabilitySearchView_new(View):
     def get(self, request):
         # without this we get an occasional error: "UnboundLocalError: local variable 'result_size' referenced before assignment"
         result_size = ""
+        # Do we still need this?  We now have the search form in index_new.html
         context = {"form": forms.CVEForm(request.GET or None)}
+
         if request.GET:
             vulnerabilities = self.request_to_vulnerabilities(request)
             result_size = len(vulnerabilities)
             pages = Paginator(vulnerabilities, 50)
             vulnerabilities = pages.get_page(int(self.request.GET.get("page", 1)))
+            vuln_id = request.GET["vuln_id"]
             context["vulnerabilities"] = vulnerabilities
             context["result_size"] = result_size
-            context["vuln_id"] = request.GET["vuln_id"]
+            # context["vuln_id"] = request.GET["vuln_id"]
+            context["vuln_id"] = vuln_id
 
-        if result_size == 0:
+        # if not len(request.GET["vuln_id"]):
+        # if request.GET["vuln_id"].strip() == "":
+        if vuln_id == "":
             context = {
-                "form": forms.CVEForm(request.GET or None),
+                # don't think we need this first form key/value pair any longer
+                # "form": forms.CVEForm(request.GET or None),
+                "vuln_search": "Please add a value in the search box.",
+                "vuln_form": CVEForm(),
+                "package_form": PackageForm(),
+            }
+            return render(request, "index_new.html", context)
+        elif result_size == 0:
+            context = {
+                # don't think we need this first form key/value pair any longer
+                # "form": forms.CVEForm(request.GET or None),
                 "vuln_search": "The VCIO DB does not contain a record of the vulnerability you entered -- "
                 + request.GET["vuln_id"]
                 + ".",
+                "vuln_form": CVEForm(),
+                "package_form": PackageForm(),
             }
             return render(request, "index_new.html", context)
         else:
@@ -257,7 +355,21 @@ class HomePage_new(View):
     template_name = "index_new.html"
 
     def get(self, request):
-        context = {"form": forms.CVEForm(request.GET or None)}
+        # context = {"form": forms.CVEForm(request.GET or None)}
+        # 7/27/2022 Wednesday 11:39:26 PM.  This is a way to pass 2+ forms to 1 template --
+        # define them separately here, then by reference in context below -- and it works!
+        # ===
+        # 7/28/2022 Thursday 11:47:16 AM.  Replace above with SCIO import approach (see 2 new form imports at top)
+        # package_form = forms.PackageForm(request.GET or None)
+        # vuln_form = forms.CVEForm(request.GET or None)
+        context = {
+            # # "form": forms.CVEForm(request.GET or None),
+            # # "form": forms.PackageForm(request.GET or None),
+            # "vuln_form": vuln_form,
+            # "package_form": package_form,
+            "vuln_form": CVEForm(),
+            "package_form": PackageForm(),
+        }
         return render(request, self.template_name, context)
 
 
@@ -334,7 +446,10 @@ class PurlSearchView02(View):
                         "index_new.html",
                         {
                             "your_search": self.your_search,
+                            # don't think we need this 1st form key/value pair any longer
                             "form": forms.CVEForm(request.GET or None),
+                            "vuln_form": CVEForm(),
+                            "package_form": PackageForm(),
                         },
                     )
 
@@ -347,7 +462,10 @@ class PurlSearchView02(View):
                     "index_new.html",
                     {
                         "your_search": self.your_search,
+                        # don't think we need this 1st form key/value pair any longer
                         "form": forms.CVEForm(request.GET or None),
+                        "vuln_form": CVEForm(),
+                        "package_form": PackageForm(),
                     },
                 )
             self.all_packages_results = self.all_packages["results"]
@@ -375,13 +493,16 @@ class PurlSearchView02(View):
         if "purl_string" in request.GET:
             self.purl_string = request.GET["purl_string"]
             if len(self.purl_string) == 0:
-                self.your_search = "Please add a value to the search box."
+                self.your_search = "Please add a value in the search box."
                 return render(
                     request,
                     "index_new.html",
                     {
                         "your_search": self.your_search,
+                        # don't think we need this 1st form key/value pair any longer
                         "form": forms.CVEForm(request.GET or None),
+                        "vuln_form": CVEForm(),
+                        "package_form": PackageForm(),
                     },
                 )
             else:
@@ -401,7 +522,10 @@ class PurlSearchView02(View):
                         "index_new.html",
                         {
                             "your_search": self.your_search,
+                            # don't think we need this 1st form key/value pair any longer
                             "form": forms.CVEForm(request.GET or None),
+                            "vuln_form": CVEForm(),
+                            "package_form": PackageForm(),
                         },
                     )
 
@@ -422,7 +546,10 @@ class PurlSearchView02(View):
                                 "index_new.html",
                                 {
                                     "your_search": self.your_search,
+                                    # don't think we need this 1st form key/value pair any longer
                                     "form": forms.CVEForm(request.GET or None),
+                                    "vuln_form": CVEForm(),
+                                    "package_form": PackageForm(),
                                 },
                             )
                         elif self.all_purls_count == 1:

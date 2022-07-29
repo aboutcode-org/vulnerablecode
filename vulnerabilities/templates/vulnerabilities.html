@@ -1,60 +1,60 @@
 {% extends 'base.html' %}
 {% block title %}
 <h1 class="title">
-Explore Vulnerabilities
+    Explore Vulnerabilities
 </h1>
 {% endblock %}
 {% block content %}
 
 <div class="columns">
     <div class="column is-one-third is-offset-one-third">
-    <form action="{% url 'vulnerability_search' %}" method="get">
-      {% load widget_tweaks %}
-      <div class="field is-horizontal">
-          {% render_field form.vuln_id class="input"%}
-        <button class="button is-success", type="submit">
-          Search
-        </button>
-      </div>
-    </form>
-    {% if result_size %}
-      <p class="has-text-centered" id="result_count">{{result_size}} results</p>
-    {% elif result_size == 0 %}
-      <p class="has-text-centered" id="result_count">No results found</p>
-    {% endif %}
+        <form action="{% url 'vulnerability_search' %}" method="get">
+            {% load widget_tweaks %}
+            <div class="field is-horizontal">
+                {% render_field form.vuln_id class="input"%}
+                <button class="button is-success" , type="submit">
+                    Search
+                </button>
+            </div>
+        </form>
+        {% if result_size %}
+        <p class="has-text-centered" id="result_count">{{result_size}} results</p>
+        {% elif result_size == 0 %}
+        <p class="has-text-centered" id="result_count">No results found</p>
+        {% endif %}
     </div>
 </div>
 
 {% if vulnerabilities %}
-    <section class="section">
-        <div class="content is-large">
-          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-          <tr>
-              <th>Vulnerability ID</th>
-              <th>Affected packages</th>
-              <th>Fixed packages</th>
-          </tr>
-          {% for vulnerability in  vulnerabilities %}
-              <tr>
-                  <td><a href="{% url 'vulnerability_view' vulnerability.pk %}">{{vulnerability.vulnerability_id}}</a></td>
-                  <td>{{vulnerability.vulnerable_package_count}}</td>
-                  <td>{{vulnerability.patched_package_count}}</td>
-              </tr>
-          {% endfor %}
-          </table>
-        </div>
+<section class="section">
+    <div class="content is-large">
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+            <tr>
+                <th>Vulnerability ID</th>
+                <th>Affected packages</th>
+                <th>Fixed packages</th>
+            </tr>
+            {% for vulnerability in vulnerabilities %}
+            <tr>
+                <td><a href="{% url 'vulnerability_view' vulnerability.pk %}">{{vulnerability.vulnerability_id}}</a></td>
+                <td>{{vulnerability.vulnerable_package_count}}</td>
+                <td>{{vulnerability.patched_package_count}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 
-        <div class="is-field is-horizontal">
-          {% if vulnerabilities.has_previous %}
-            <a class="button" href="?vuln_id={{ searched_for }}&page={{ vulnerabilities.previous_page_number }}">Previous Page</a>
-          {% endif %}
+    <div class="is-field is-horizontal">
+        {% if vulnerabilities.has_previous %}
+        <a class="button" href="?vuln_id={{ searched_for }}&page={{ vulnerabilities.previous_page_number }}">Previous Page</a>
+        {% endif %}
 
-          {% if vulnerabilities.has_next %}
-            <a class="button" href="?vuln_id={{ searched_for }}&page={{ vulnerabilities.next_page_number}}">Next Page</a>
-          {% endif %}
-        </div>
+        {% if vulnerabilities.has_next %}
+        <a class="button" href="?vuln_id={{ searched_for }}&page={{ vulnerabilities.next_page_number}}">Next Page</a>
+        {% endif %}
+    </div>
 
-    </section>
+</section>
 
 {% endif %}
 

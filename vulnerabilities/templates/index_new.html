@@ -74,20 +74,25 @@ VCIO Home
             <p>Search for vulnerable packages <span style="font-weight: normal;">(API-to-DB transition<span style="color: #00ff00;"> -- coming soon</span>)</span></p>
         </div>
         <div class="message-body">
-            <form>
+            <!-- <form> -->
+            <form action="{% url 'package_search_new' %}" method="get">
                 <div style="margin: 0px 0px 0px 0px;">
                 </div>
                 <div class="field has-addons" style="margin: 10px 0px 0px 0px;">
                     <div class="control">
                         <div class="select">
                             <select name="type">
-                                <option>purl</option>
-                                <option>package</option>
+                                <!-- <option>purl</option>
+                                <option>package</option> -->
+                                <option>nginx</option>
+                                <option>pypi</option>
+                                <option>Any type</option>
                             </select>
                         </div>
                     </div>
                     <div class="control" style="width: 100%;">
-                        <input class="input" type="text" name="purl_string" placeholder="Add a purl or package name . . .">
+                        <!-- <input class="input" type="text" name="purl_string" placeholder="Add a purl or package name . . ."> -->
+                        <input class="input" type="text" name="name" placeholder="Add a purl or package name . . .">
                     </div>
                     <div class="control">
                         <button class="button is-link has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is a test tooltip.">Search</button>
@@ -96,6 +101,39 @@ VCIO Home
                 <div style="height: 10px; padding-top: 10px; padding-bottom: 0px; color: #000000;">
                 </div>
             </form>
+        </div>
+        <div>
+            <!-- <form action="{% url 'package_search' %}" method="get"> -->
+            <form action="{% url 'package_search_new' %}" method="get">
+                {% load widget_tweaks %}
+                <div class="field is-horizontal pd-3">
+                    <div class="select">
+                        {{package_form.type}}
+                    </div>
+                    {{package_form.name|add_class:"input"}}
+                    <button class="button is-success" , type="submit">
+                        Search
+                    </button>
+                </div>
+            </form>
+            <!-- <div>
+                {% if vuln_search %}
+                <div class="notification" style="border: solid 1px #ff0000; padding: 20px; background-color: #ffe6e6; z-index: 100;">
+                    <button class=" delete"></button>
+                    <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #000000; font-weight: bold;">Search for vulnerabilities:</span></h6>
+                    {{ vuln_search }}
+                </div>
+                {% endif %}
+            </div> -->
+            <div>
+                {% if package_search %}
+                <div class="notification" style="border: solid 1px #ff0000; padding: 20px; background-color: #ffe6e6; z-index: 100;">
+                    <button class=" delete"></button>
+                    <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #000000; font-weight: bold;">Search for packages:</span></h6>
+                    {{ package_search }}
+                </div>
+                {% endif %}
+            </div>
         </div>
     </article>
 
@@ -124,7 +162,7 @@ VCIO Home
             <form action="{% url 'vulnerability_search_new' %}" method="get">
                 {% load widget_tweaks %}
                 <div class="field is-horizontal">
-                    {% render_field form.vuln_id class="input"%}
+                    {% render_field vuln_form.vuln_id class="input"%}
                     <button class="button is-link has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is a test tooltip." , type="submit">
                         Search
                     </button>

@@ -111,12 +111,19 @@ class PackageSearchView_new(View):
         if request.GET:
             packages = self.request_to_queryset(request)
             result_size = len(packages)
-            try:
-                page_no = request.GET.get("page", 1)
-                packages = Paginator(packages, 50).get_page(page_no)
-            except PageNotAnInteger:
-                packages = Paginator(packages, 50).get_page(1)
-            packages = Paginator(packages, 50).get_page(page_no)
+            # ================================================
+            # try:
+            #     page_no = request.GET.get("page", 1)
+            #     packages = Paginator(packages, 50).get_page(page_no)
+            # except PageNotAnInteger:
+            #     packages = Paginator(packages, 50).get_page(1)
+            # packages = Paginator(packages, 50).get_page(page_no)
+            # ================================================
+            # 7/28/2022 Thursday 6:52:30 PM.  This is adapted from the corresponding vuln search
+            # view -- and unlike the above block, this works!
+            pages = Paginator(packages, 50)
+            packages = pages.get_page(int(self.request.GET.get("page", 1)))
+            # ================================================
             context["packages"] = packages
             context["searched_for"] = urlencode(
                 {param: request.GET[param] for param in request.GET if param != "page"}

@@ -17,19 +17,174 @@ VCIO Home
     </div>
 
     <article class="message is-info">
+
+        <!-- <div class="message-header" style="background-color: #000000;"> -->
         <div class="message-header">
-            <p>Search for vulnerable packages <span style="font-weight: normal;">(currently API-based)</span></p>
+            <p>Search for vulnerable packages</p>
+        </div>
+
+        <!-- <div class="message-body">
+            <form action="{% url 'package_search_new' %}" method="get">
+                <div style="margin: 0px 0px 0px 0px;">
+                </div>
+                <div class="field has-addons" style="margin: 10px 0px 0px 0px;">
+                    <div class="control">
+                        <div class="select">
+                            <select name="type">
+                                <option>nginx</option>
+                                <option>pypi</option>
+                                <option>Any type</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control" style="width: 100%;">
+                        <input class="input" type="text" name="name" placeholder="Add a purl or package name . . .">
+                    </div>
+                    <div class="control">
+                        <button class="button is-link has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is a test tooltip.">Search</button>
+                    </div>
+                </div>
+                <div style="height: 10px; padding-top: 10px; padding-bottom: 0px; color: #000000;">
+                </div>
+            </form>
+        </div> -->
+
+
+        <!-- <div>
+            <form action="{% url 'package_search_new' %}" method="get">
+                {% load widget_tweaks %}
+                <div class="field is-horizontal pd-3">
+                    <div class="select">
+                        {{package_form.type}}
+                    </div>
+                    {{package_form.name|add_class:"input"}}
+                    <button class="button is-success" , type="submit">
+                        Search
+                    </button>
+                </div>
+            </form>
+            <div>
+                {% if package_search %}
+                <div class="notification" style="border: solid 1px #ff0000; padding: 20px; background-color: #ffe6e6; z-index: 100;">
+                    <button class=" delete"></button>
+                    <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #000000; font-weight: bold;">Search for packages:</span></h6>
+                    {{ package_search }}
+                </div>
+                {% endif %}
+            </div>
+        </div> -->
+
+
+        <!-- <div> -->
+        <div class="message-body">
+            <div style="margin: 0px 0px 0px 0px;">
+                <div style="margin-top: 0px;">Search for currently known Vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_blank">Package-URL</a> (aka <span class="inline-code01">purl</span>) or a Package <span class="inline-code01">name</span>.</div>
+                <ul>
+                    <li>
+                        Search by Package <span class="inline-code01">name</span> -- type the <span class="inline-code01">name</span> in the search box and, if relevant to your search, select the Package <span class="inline-code01">type</span> from the dropdown.
+                    </li>
+                    <li>
+                        Search by <span class="inline-code01">purl</span> -- type the <span class="inline-code01">purl</span> in the search box. (The <span class="inline-code01">type</span> dropdown does not apply to a <span class="inline-code01">purl</span> search.)
+                    </li>
+
+                </ul>
+            </div>
+            <form action="{% url 'package_search_new' %}" method="get">
+                {% load widget_tweaks %}
+                <div class="field has-addons" style="margin: 10px 0px 0px 0px;">
+                    <!-- <div class="field is-horizontal pd-3"> -->
+                    <div class="control">
+                        <div class="select">
+                            {{package_form.type}}
+                        </div>
+                    </div>
+                    <div class="control" style="width: 100%;">
+                        {{package_form.name|add_class:"input"}}
+                    </div>
+                    <div class="control">
+                        <button class="button is-link" , type="submit">
+                            <!-- <button class="button is-link" type="submit" id="submit"> -->
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <div>
+                {% if package_search %}
+                <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 100;">
+                    <button class=" delete"></button>
+                    <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #ff0000; font-weight: bold;">Search for packages:</span></h6>
+                    {{ package_search }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+
+    </article>
+
+
+    <div style="height: 10px;"></div>
+
+
+    <article class="message is-info">
+        <div class="message-header">
+            <p>Search for vulnerabilities</p>
+        </div>
+        <div class="message-body">
+            <div style="margin: 0px 0px 15px 0px;">Search for comprehensive information for a <span class="inline-code01">VULCOID</span> (VulnerableCode Database ID). (Only the first of these methods requires that the input be all uppercase.)
+                <ul>
+                    <li>
+                        Search for a specific <span class="inline-code01">VULCOID</span> (e.g., "VULCOID-1").
+                    </li>
+                    <li>
+                        Search for all <span class="inline-code01">VULCOID</span>s that are associated with a specific <span class="inline-code01">CVE</span> (e.g., "CVE-2009-3898") or <span class="inline-code01">GHSA</span> (e.g., "GHSA-2qrg-x229-3v8q").
+                    </li>
+                    <li>
+                        Search for "CVE" or "GHSA" -- this will return all <span class="inline-code01">VULCOID</span>s that are associated with one or more <span class="inline-code01">CVE</span>s or <span class="inline-code01">GHSA</span>s, respectively.
+                    </li>
+                </ul>
+            </div>
+            <form action="{% url 'vulnerability_search_new' %}" method="get">
+                {% load widget_tweaks %}
+                <div class="field is-horizontal">
+                    {% render_field vuln_form.vuln_id class="input"%}
+                    <button class="button is-link has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is a test tooltip." , type="submit">
+                        Search
+                    </button>
+                </div>
+            </form>
+            <div>
+                {% if vuln_search %}
+                <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 100;">
+                    <button class=" delete"></button>
+                    <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #ff0000; font-weight: bold;">Search for vulnerabilities:</span></h6>
+                    {{ vuln_search }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </article>
+
+    <!-- <div style="height: 10px;"></div> -->
+
+    <hr style="margin: 50px 0px 50px 0px; background-color: #f14668;">
+
+    <article class="message is-danger">
+        <div class="message-header">
+            <!-- <div class="message-header" style="background-color: #000000;"> -->
+            <p>API search for vulnerable packages</p>
         </div>
         <div class="message-body">
             <form method="get" action="{% url 'purl_search02' %}">
                 <div style="margin: 0px 0px 0px 0px;">
-                    <div style="margin-top: 0px;">Search for currently known Vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_blank">Package-URL</a> or a Package name:</div>
+                    <div style="margin-top: 0px;">Search for currently known Vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_blank">Package-URL</a> (aka <span class="inline-code01">purl</span>) or a Package <span class="inline-code01">name</span>.</div>
                     <ul>
                         <li>
-                            select <b>purl</b> or <b>package</b> from the dropdown,
+                            Select <span class="inline-code01">purl</span> or <span class="inline-code01">package</span> from the dropdown,
                         </li>
                         <li>
-                            add your Package-URL or Package name to the search box, and
+                            add your <span class="inline-code01">purl</span> or Package <span class="inline-code01">name</span> to the search box, and
                         </li>
                         <li>
                             click "Search".
@@ -46,10 +201,10 @@ VCIO Home
                         </div>
                     </div>
                     <div class="control" style="width: 100%;">
-                        <input class="input" type="text" name="purl_string" placeholder="Add a purl or package name . . .">
+                        <input class="input" type="text" name="purl_string" placeholder="purl or Package name">
                     </div>
                     <div class="control">
-                        <button class="button is-link has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is a test tooltip.">Search</button>
+                        <button class="button is-danger has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is a test tooltip.">Search</button>
                     </div>
                 </div>
                 <div style="height: 10px; padding-top: 10px; padding-bottom: 0px; color: #000000;">
@@ -66,119 +221,6 @@ VCIO Home
     </article>
 
 
-    <div style="height: 10px;"></div>
-
-
-    <article class="message is-info">
-        <div class="message-header" style="background-color: #000000;">
-            <p>Search for vulnerable packages <span style="font-weight: normal;">(API-to-DB transition<span style="color: #00ff00;"> -- coming soon</span>)</span></p>
-        </div>
-        <div class="message-body">
-            <!-- <form> -->
-            <form action="{% url 'package_search_new' %}" method="get">
-                <div style="margin: 0px 0px 0px 0px;">
-                </div>
-                <div class="field has-addons" style="margin: 10px 0px 0px 0px;">
-                    <div class="control">
-                        <div class="select">
-                            <select name="type">
-                                <!-- <option>purl</option>
-                                <option>package</option> -->
-                                <option>nginx</option>
-                                <option>pypi</option>
-                                <option>Any type</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="control" style="width: 100%;">
-                        <!-- <input class="input" type="text" name="purl_string" placeholder="Add a purl or package name . . ."> -->
-                        <input class="input" type="text" name="name" placeholder="Add a purl or package name . . .">
-                    </div>
-                    <div class="control">
-                        <button class="button is-link has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is a test tooltip.">Search</button>
-                    </div>
-                </div>
-                <div style="height: 10px; padding-top: 10px; padding-bottom: 0px; color: #000000;">
-                </div>
-            </form>
-        </div>
-        <div>
-            <!-- <form action="{% url 'package_search' %}" method="get"> -->
-            <form action="{% url 'package_search_new' %}" method="get">
-                {% load widget_tweaks %}
-                <div class="field is-horizontal pd-3">
-                    <div class="select">
-                        {{package_form.type}}
-                    </div>
-                    {{package_form.name|add_class:"input"}}
-                    <button class="button is-success" , type="submit">
-                        Search
-                    </button>
-                </div>
-            </form>
-            <!-- <div>
-                {% if vuln_search %}
-                <div class="notification" style="border: solid 1px #ff0000; padding: 20px; background-color: #ffe6e6; z-index: 100;">
-                    <button class=" delete"></button>
-                    <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #000000; font-weight: bold;">Search for vulnerabilities:</span></h6>
-                    {{ vuln_search }}
-                </div>
-                {% endif %}
-            </div> -->
-            <div>
-                {% if package_search %}
-                <div class="notification" style="border: solid 1px #ff0000; padding: 20px; background-color: #ffe6e6; z-index: 100;">
-                    <button class=" delete"></button>
-                    <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #000000; font-weight: bold;">Search for packages:</span></h6>
-                    {{ package_search }}
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    </article>
-
-
-    <div style="height: 10px;"></div>
-
-
-    <article class="message is-info">
-        <div class="message-header">
-            <p>Search for vulnerabilities <span style="font-weight: normal;">(DB-based -- work-in-progress)</span></p>
-        </div>
-        <div class="message-body">
-            <div style="margin: 0px 0px 15px 0px;">Search for complete information for a VULCOID (VulnerableCode Database ID):
-                <ul>
-                    <li>
-                        search for a specific VULCOID (e.g., "VULCOID-1") (must be all uppercase)
-                    </li>
-                    <li>
-                        search for all VULCOIDs that are associated with a specific CVE (e.g., "CVE-2009-3898") or GHSA (e.g., "GHSA-2qrg-x229-3v8q") (both uppercase and lowercase work)
-                    </li>
-                    <li>
-                        search for "CVE" or "GHSA" -- this will return all VULCOIDs that are associated with a CVE or GHSA, respectively (both uppercase and lowercase work)
-                    </li>
-                </ul>
-            </div>
-            <form action="{% url 'vulnerability_search_new' %}" method="get">
-                {% load widget_tweaks %}
-                <div class="field is-horizontal">
-                    {% render_field vuln_form.vuln_id class="input"%}
-                    <button class="button is-link has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is a test tooltip." , type="submit">
-                        Search
-                    </button>
-                </div>
-            </form>
-            <div>
-                {% if vuln_search %}
-                <div class="notification" style="border: solid 1px #ff0000; padding: 20px; background-color: #ffe6e6; z-index: 100;">
-                    <button class=" delete"></button>
-                    <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #000000; font-weight: bold;">Search for vulnerabilities:</span></h6>
-                    {{ vuln_search }}
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    </article>
 
 </section>
 

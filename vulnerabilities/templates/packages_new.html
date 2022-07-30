@@ -12,29 +12,40 @@ VCIO -- DB package search
 
     <div class="columns">
         <div class="column is-four-fifths">
-            <div class="tags has-addons">
+            <!-- <div class="tags has-addons">
                 <span class="tag is-medium is-light is-search-label-left">Search packages by type and name: </span>
                 <span class="tag is-medium is-white is-search-label-right">"{{searched_for}}"</span>
+            </div>
+        </div> -->
+            <div>
+                <span>Search packages by type and name: </span>
+                <!-- <span>"{{searched_for}}"</span> -->
+                <br />
+                <!-- <span class="tag is-medium is-warning" style="margin-top: 10px;">"{{searched_for}}"</span> -->
+                <span style="margin-top: 10px;">"{{searched_for}}"</span>
             </div>
         </div>
         <div class="column" style="text-align: right;">
             <a class="button is-link" href="/index_new">Return to search</a>
         </div>
     </div>
-    <div class="columns">
-        <div class="column" style="text-align: center; padding: 0px;">
+    <!-- <div class="columns"> -->
+    <div class="columns" style="padding-top: 0px !important;">
+        <!-- <div class="column" style="text-align: center; padding: 0px 0px 0px 0px;"> -->
+        <div class="column">
             Total records: {{ result_size }}
         </div>
     </div>
 
-    <div class="is-field is-horizontal" style="text-align: center;">
+    <!-- <div class="is-field is-horizontal" style="text-align: center;"> -->
+    <div class="is-field is-horizontal">
         <span class="step-links">
             {% if packages.has_previous %}
-            <a class="button paging" href="?{{ searched_for }}&page=1">&laquo; first</a>
-            <a class="button paging" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">previous</a>
+            <a class="button paging is-normal" href="?{{ searched_for }}&page=1">&laquo; first</a>
+            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">previous</a>
             {% else %}
-            <button class="button" title="disabled" disabled>&laquo; first</button>
-            <button class="button" title="disabled" disabled>previous</button>
+            <button class="button is-normal" title="disabled" disabled>&laquo; first</button>
+            <button class="button is-normal" title="disabled" disabled>previous</button>
             {% endif %}
 
             <span class="current02">
@@ -42,11 +53,11 @@ VCIO -- DB package search
             </span>
 
             {% if packages.has_next %}
-            <a class="button paging" href="?{{ searched_for }}&page={{ packages.next_page_number }}">next</a>
-            <a class="button paging" href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}">last &raquo;</a>
+            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.next_page_number }}">next</a>
+            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}">last &raquo;</a>
             {% else %}
-            <button class="button" title="disabled" disabled>next</button>
-            <button class="button" title="disabled" disabled>last &raquo;</button>
+            <button class="button is-normal" title="disabled" disabled>next</button>
+            <button class="button is-normal" title="disabled" disabled>last &raquo;</button>
             {% endif %}
         </span>
     </div>
@@ -77,7 +88,10 @@ VCIO -- DB package search
         </table>
     </div>
 
-    <div class="is-field is-horizontal" style="text-align: center;">
+    <!-- <div style="height: 50px;"></div> -->
+
+    <!-- <div class="is-field is-horizontal" style="text-align: center;"> -->
+    <!-- <div class="is-field is-horizontal">
         <span class="step-links">
             {% if packages.has_previous %}
             <a class="button paging" href="?{{ searched_for }}&page=1">&laquo; first</a>
@@ -97,6 +111,30 @@ VCIO -- DB package search
             {% else %}
             <button class="button" title="disabled" disabled>next</button>
             <button class="button" title="disabled" disabled>last &raquo;</button>
+            {% endif %}
+        </span>
+    </div> -->
+
+    <div class="is-field is-horizontal">
+        <span class="step-links">
+            {% if packages.has_previous %}
+            <a class="button paging is-normal" href="?{{ searched_for }}&page=1">&laquo; first</a>
+            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">previous</a>
+            {% else %}
+            <button class="button is-normal" title="disabled" disabled>&laquo; first</button>
+            <button class="button is-normal" title="disabled" disabled>previous</button>
+            {% endif %}
+
+            <span class="current02">
+                (page {{ packages.number }} of {{ packages.paginator.num_pages }})
+            </span>
+
+            {% if packages.has_next %}
+            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.next_page_number }}">next</a>
+            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}">last &raquo;</a>
+            {% else %}
+            <button class="button is-normal" title="disabled" disabled>next</button>
+            <button class="button is-normal" title="disabled" disabled>last &raquo;</button>
             {% endif %}
         </span>
     </div>

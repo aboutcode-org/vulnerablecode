@@ -130,15 +130,16 @@ class PackageSearchView_new(View):
             )
             context["result_size"] = result_size
 
-        # if not len(request.GET["name"]):
-        if request.GET["name"].strip() == "":
-            context = {
-                "package_search": "Please add a value in the search box.",
-                "vuln_form": CVEForm(),
-                "package_form": PackageForm(),
-            }
-            return render(request, "index_new.html", context)
-        elif result_size == 0:
+        # if request.GET["name"].strip() == "":
+        #     context = {
+        #         "package_search": "Please add a value in the search box.",
+        #         "vuln_form": CVEForm(),
+        #         "package_form": PackageForm(),
+        #     }
+        #     return render(request, "index_new.html", context)
+
+        # elif result_size == 0:
+        if result_size == 0:
             context = {
                 "package_search": "The VCIO DB does not contain a record of the package you entered -- "
                 + request.GET["name"]
@@ -156,12 +157,36 @@ class PackageSearchView_new(View):
     def request_to_queryset(request):
         package_type = ""
         package_name = ""
+        purl = ""
 
         if len(request.GET["type"]):
             package_type = request.GET["type"]
 
         if len(request.GET["name"]):
             package_name = request.GET["name"]
+
+        try:
+            purl = PackageURL.from_string(package_name)
+            return list(
+                models.Package.objects.all()
+                # FIXME: This filter is wrong and ignoring most of the fields needed for a
+                # proper package lookup: type/namespace/name@version?qualifiers and so on
+                .filter(Q(type=purl.type, name=purl.name, version=purl.version))
+                .annotate(
+                    vulnerability_count=Count(
+                        "vulnerabilities",
+                        filter=Q(packagerelatedvulnerability__fix=False),
+                    ),
+                    # TODO: consider renaming to fixed in the future
+                    patched_vulnerability_count=Count(
+                        "vulnerabilities",
+                        filter=Q(packagerelatedvulnerability__fix=True),
+                    ),
+                )
+                .prefetch_related()
+            )
+        except:
+            pass
 
         return list(
             models.Package.objects.all()
@@ -235,18 +260,18 @@ class VulnerabilitySearchView_new(View):
             # context["vuln_id"] = request.GET["vuln_id"]
             context["vuln_id"] = vuln_id
 
-        # if not len(request.GET["vuln_id"]):
-        # if request.GET["vuln_id"].strip() == "":
-        if vuln_id == "":
-            context = {
-                # don't think we need this first form key/value pair any longer
-                # "form": forms.CVEForm(request.GET or None),
-                "vuln_search": "Please add a value in the search box.",
-                "vuln_form": CVEForm(),
-                "package_form": PackageForm(),
-            }
-            return render(request, "index_new.html", context)
-        elif result_size == 0:
+        # if vuln_id == "":
+        #     context = {
+        #         # don't think we need this first form key/value pair any longer
+        #         # "form": forms.CVEForm(request.GET or None),
+        #         "vuln_search": "Please add a value in the search box.",
+        #         "vuln_form": CVEForm(),
+        #         "package_form": PackageForm(),
+        #     }
+        #     return render(request, "index_new.html", context)
+        # elif result_size == 0:
+
+        if result_size == 0:
             context = {
                 # don't think we need this first form key/value pair any longer
                 # "form": forms.CVEForm(request.GET or None),

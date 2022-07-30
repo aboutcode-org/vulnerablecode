@@ -33,9 +33,10 @@ def get_package_namespaces():
 class PackageForm(forms.Form):
 
     type = forms.ChoiceField(choices=get_package_types)
-    name = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"placeholder": "package name"})
-    )
+    # name = forms.CharField(
+    #     required=False, widget=forms.TextInput(attrs={"placeholder": "Package name or purl"})
+    # )
+    name = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Package name or purl"}))
 
 
 class CVEForm(forms.Form):
@@ -44,5 +45,6 @@ class CVEForm(forms.Form):
     # 7/28/2022 Thursday 1:38:12 PM.  This allows an empty search box, needed to add a popup
     # warning -- rather than the simple browser-created warning -- when no value has been entered.
     vuln_id = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"placeholder": "vulnerability id"})
+        # required=False, widget=forms.TextInput(attrs={"placeholder": "vulnerability id"})
+        widget=forms.TextInput(attrs={"placeholder": "vulnerability id or CVE/GHSA"})
     )

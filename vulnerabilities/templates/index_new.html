@@ -16,6 +16,34 @@ VCIO Home
         </div>
     </div>
 
+
+
+
+    <article class="panel is-info">
+        <!-- <p class="panel-heading"> -->
+        <p class="panel-heading py-2 is-size-6">
+            Search for vulnerable packages
+        </p>
+        <div class="panel-block">
+            xxx
+        </div>
+    </article>
+
+
+    <article class="panel is-info">
+        <!-- <p class="panel-heading"> -->
+        <p class="panel-heading py-2 is-size-6">
+            Search for vulnerabilities
+        </p>
+        <div class="panel-block">
+            xxx
+        </div>
+    </article>
+
+
+
+
+
     <article class="message is-info">
 
         <!-- <div class="message-header" style="background-color: #000000;"> -->
@@ -102,8 +130,8 @@ VCIO Home
                         {{package_form.name|add_class:"input"}}
                     </div>
                     <div class="control">
-                        <button class="button is-link" , type="submit">
-                            <!-- <button class="button is-link" type="submit" id="submit"> -->
+                        <!-- <button class="button is-link" , type="submit"> -->
+                        <button class="button is-link is-outlined" type="submit" id="submit_pkg">
                             Search
                         </button>
                     </div>
@@ -147,11 +175,25 @@ VCIO Home
             </div>
             <form action="{% url 'vulnerability_search_new' %}" method="get">
                 {% load widget_tweaks %}
-                <div class="field is-horizontal">
+                <!-- <div class="field is-horizontal">
                     {% render_field vuln_form.vuln_id class="input"%}
                     <button class="button is-link has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is a test tooltip." , type="submit">
                         Search
                     </button>
+                </div> -->
+                <div class="field has-addons" style="margin: 10px 0px 0px 0px;">
+                    <!-- <div class="field is-horizontal"> -->
+                    <div class="control" style="width: 100%;">
+                        {% render_field vuln_form.vuln_id class="input"%}
+                    </div>
+                    <div class="control">
+                        <!-- <button class="button is-link has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is a test tooltip." , type="submit" id="submit_vuln">
+                            Search
+                        </button> -->
+                        <button class="button is-link is-outlined" type="submit" id="submit_vuln">
+                            Search
+                        </button>
+                    </div>
                 </div>
             </form>
             <div>
@@ -168,12 +210,12 @@ VCIO Home
 
     <!-- <div style="height: 10px;"></div> -->
 
-    <hr style="margin: 50px 0px 50px 0px; background-color: #f14668;">
+    <hr style="margin: 50px 0px 50px 0px; background-color: #4a4a4a;">
 
-    <article class="message is-danger">
+    <article class="message">
         <div class="message-header">
             <!-- <div class="message-header" style="background-color: #000000;"> -->
-            <p>API search for vulnerable packages</p>
+            <p>API search for vulnerable packages <span style="font-weight: normal;">(temporary)</span></p>
         </div>
         <div class="message-body">
             <form method="get" action="{% url 'purl_search02' %}">
@@ -201,13 +243,14 @@ VCIO Home
                         </div>
                     </div>
                     <div class="control" style="width: 100%;">
-                        <input class="input" type="text" name="purl_string" placeholder="purl or Package name">
+                        <input class="input" type="text" id="purl_string" placeholder="purl or Package name">
                     </div>
                     <div class="control">
-                        <button class="button is-danger has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is a test tooltip.">Search</button>
+                        <!-- <button id="submit_api_pkg" class="button is-link has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is a test tooltip.">Search</button> -->
+                        <button id="submit_api_pkg" class="button is-link">Search</button>
                     </div>
                 </div>
-                <div style="height: 10px; padding-top: 10px; padding-bottom: 0px; color: #000000;">
+                <!-- <div style="height: 10px; padding-top: 10px; padding-bottom: 0px; color: #000000;">
                     {% if your_search %}
                     <div class="notification" style="border: solid 1px #ff0000; padding: 20px; background-color: #ffe6e6; z-index: 100;">
                         <button class=" delete"></button>
@@ -215,8 +258,18 @@ VCIO Home
                         {{ your_search }}
                     </div>
                     {% endif %}
-                </div>
+                </div> -->
             </form>
+            <!-- <div style="height: 10px; padding-top: 10px; padding-bottom: 0px; color: #000000;"> -->
+            <div>
+                {% if your_search %}
+                <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; z-index: 100;">
+                    <button class=" delete"></button>
+                    <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #000000; font-weight: bold;">Search for vulnerable packages:</span></h6>
+                    {{ your_search }}
+                </div>
+                {% endif %}
+            </div>
         </div>
     </article>
 
@@ -227,6 +280,7 @@ VCIO Home
 {% endblock %}
 
 {% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <!-- From https://bulma.io/documentation/elements/notification/ -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -238,5 +292,41 @@ VCIO Home
             });
         });
     });
+
+    $(document).ready(function () {
+        $('#submit_pkg').click(function () {
+            //if ($('#id_name').val().length === 0) {
+            if ($('#id_name').val().trim().length === 0) {
+                //alert('Enter your name!');
+                $('#id_name').val('');
+                return false;
+            }
+        })
+    });
+
+    $(document).ready(function () {
+        $('#submit_vuln').click(function () {
+            //if ($('#id_vuln_id').val().length === 0) {
+            if ($('#id_vuln_id').val().trim().length === 0) {
+                //alert('Enter your name!');
+                $('#id_vuln_id').val('');
+                return false;
+            }
+        })
+    });
+
+    $(document).ready(function () {
+        $('#submit_api_pkg').click(function () {
+            //if ($('#purl_string').val().length === 0) {
+            if ($('#purl_string').val().trim().length === 0) {
+                //alert('Enter your name!');
+                $('#purl_string').val('');
+                return false;
+            }
+        })
+    });
+
+
+
 </script>
 {% endblock %}

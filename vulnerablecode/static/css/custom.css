@@ -65,6 +65,12 @@ a.button.paging:visited {
 }
 
 /* =================== */
+/* from SCIO */
+.button.is-link {
+    background-color: #485fc7;
+    border-color: transparent;
+    color: #fff;
+}
 
 .container.is-fullheight {
     min-height: 100vh;
@@ -433,6 +439,7 @@ ul li {
 
 .message.is-info .message-header {
     background-color: #3298dc;
+    background-color: #3e8ed0;
     color: #fff;
 }
 

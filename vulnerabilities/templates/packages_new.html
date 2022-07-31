@@ -10,23 +10,71 @@ VCIO -- DB package search
 
 <section class="section01">
 
+    <!-- <div class="container mx-5 mb-5">
+        <div class="field is-grouped is-grouped-multiline">
+            <div class="control">
+                <div class="tags has-addons">
+                    <span class="tag is-dark">type</span>
+                    <span class="tag is-info">{{searched_for}}</span>
+                </div>
+            </div>
+            <div class="control">
+                <div class="tags has-addons">
+                    <span class="tag is-dark">name</span>
+                    <span class="tag is-info">{{searched_for}}</span>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+
     <div class="columns">
+
         <div class="column is-four-fifths">
+            <span style="font-size: 20px;">Search Packages</span>
+
+            <div class="field is-grouped is-grouped-multiline" style="margin-top: 10px;">
+                <div class="control">
+                    <div class="tags has-addons">
+                        <span class="tag is-dark">type</span>
+                        <span class="tag is-info">{{searched_for}}</span>
+                    </div>
+                </div>
+                <div class="control">
+                    <div class="tags has-addons">
+                        <span class="tag is-dark">name</span>
+                        <span class="tag is-info">{{searched_for}}</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- <div class="tags has-addons" style="margin-top: 10px;">
+                <span class="tag is-dark">type</span>
+                <span class="tag is-info">{{searched_for}}</span>
+            </div>
+            <div class="tags has-addons" style="margin-top: 10px;">
+                <span class="tag is-dark">name</span>
+                <span class="tag is-info">{{searched_for}}</span>
+            </div> -->
+
             <!-- <div class="tags has-addons">
                 <span class="tag is-medium is-light is-search-label-left">Search packages by type and name: </span>
                 <span class="tag is-medium is-white is-search-label-right">"{{searched_for}}"</span>
             </div>
         </div> -->
-            <div>
+            <!-- <div>
                 <span>Search packages by type and name: </span>
-                <!-- <span>"{{searched_for}}"</span> -->
+
                 <br />
-                <!-- <span class="tag is-medium is-warning" style="margin-top: 10px;">"{{searched_for}}"</span> -->
+
                 <span style="margin-top: 10px;">"{{searched_for}}"</span>
-            </div>
+            </div> -->
         </div>
         <div class="column" style="text-align: right;">
-            <a class="button is-link" href="/index_new">Return to search</a>
+            <!-- <a class="button is-link is-outlined" href="/index_new">Return to search</a> -->
+            <a class="button is-success is-outlined" href="/index_new">Return to search</a>
         </div>
     </div>
     <!-- <div class="columns"> -->

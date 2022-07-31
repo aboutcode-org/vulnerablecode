@@ -12,13 +12,39 @@ VCIO -- vulnerability search
 
     <div class="columns">
         <div class="column is-four-fifths">
-            <div class="tags has-addons">
+            <span style="font-size: 20px;">Search Vulnerabilities</span>
+            <div class="tags has-addons" style="margin-top: 10px;">
+                <span class="tag is-dark">vuln_id</span>
+                <span class="tag is-info">{{vuln_id}}</span>
+            </div>
+            <!-- <div class="tags has-addons">
                 <span class="tag is-medium is-light is-search-label-left">Search vulnerabilities by vuln_id: </span>
                 <span class="tag is-medium is-white is-search-label-right">"{{vuln_id}}"</span>
-            </div>
+            </div> -->
+
+            <!-- <div class="container mx-5 mb-5">
+                <div class="field is-grouped is-grouped-multiline">
+                    <div class="control">
+                        <div class="tags has-addons">
+                            <span class="tag is-dark">UUID</span>
+                            <span class="tag is-info">156ad045-21f6-4888-924e-fd95c9511ce4</span>
+                        </div>
+                    </div>
+                    <div class="control">
+                        <div class="tags has-addons">
+                            <span class="tag is-dark">Work directory</span>
+                            <span class="tag is-info">/var/scancodeio/workspace/projects/asdasdasd-156ad045</span>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
         </div>
         <div class="column" style="text-align: right;">
-            <a class="button is-link" href="/index_new">Return to search</a>
+            <!-- <a class="button is-link is-outlined" href="/index_new">Return to search</a> -->
+            <a class="button is-success is-outlined" href="/index_new">Return to search</a>
+            <!-- <br />
+            <button class="button is-link is-outlined">Outlined</button> -->
         </div>
     </div>
     <div class="columns">

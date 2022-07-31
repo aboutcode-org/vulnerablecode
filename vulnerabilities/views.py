@@ -117,6 +117,15 @@ class PackageSearchView_new(View):
             )
             context["result_size"] = result_size
 
+            # Can we add package_type and Package_name to context?
+            if len(request.GET["type"]):
+                package_type = request.GET["type"]
+                context["package_type"] = package_type
+
+            if len(request.GET["name"]):
+                package_name = request.GET["name"]
+                context["package_name"] = package_name
+
         if result_size == 0:
             context = {
                 "package_search": "The VCIO DB does not contain a record of the package you entered -- "

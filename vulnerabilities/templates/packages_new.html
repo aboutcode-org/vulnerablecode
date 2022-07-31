@@ -30,10 +30,26 @@ VCIO -- DB package search
 
     <div class="columns">
 
-        <div class="column is-four-fifths">
+        <!-- <div class="column is-four-fifths" style="padding-top: 0px; padding-bottom: 0px;"> -->
+        <div class="column is-four-fifths" style="padding-bottom: 0px;">
             <span style="font-size: 20px;">Search Packages</span>
 
             <div class="field is-grouped is-grouped-multiline" style="margin-top: 10px;">
+                <div class="control">
+                    <div class="tags has-addons">
+                        <span class="tag is-dark">type</span>
+                        <span class="tag is-info">{{package_type}}</span>
+                    </div>
+                </div>
+                <div class="control">
+                    <div class="tags has-addons">
+                        <span class="tag is-dark">name</span>
+                        <span class="tag is-info">{{package_name}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="field is-grouped is-grouped-multiline" style="margin-top: 10px;">
                 <div class="control">
                     <div class="tags has-addons">
                         <span class="tag is-dark">type</span>
@@ -46,7 +62,7 @@ VCIO -- DB package search
                         <span class="tag is-info">{{searched_for}}</span>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
 
 
@@ -72,15 +88,20 @@ VCIO -- DB package search
                 <span style="margin-top: 10px;">"{{searched_for}}"</span>
             </div> -->
         </div>
-        <div class="column" style="text-align: right;">
-            <!-- <a class="button is-link is-outlined" href="/index_new">Return to search</a> -->
-            <a class="button is-success is-outlined" href="/index_new">Return to search</a>
+        <div class="column" style="text-align: right; padding-top: 20px;">
+            <a class="button is-link is-outlined" href="/index_new">Return to search</a>
+            <!-- <a class="button is-link" href="/index_new">Return to search</a> -->
+            <!-- <a class="button is-success is-outlined" href="/index_new">Return to search</a> -->
         </div>
     </div>
-    <!-- <div class="columns"> -->
-    <div class="columns" style="padding-top: 0px !important;">
+
+    <hr>
+
+    <div class="columns">
+        <!-- <div class="columns" style="padding-top: 0px !important;"> -->
         <!-- <div class="column" style="text-align: center; padding: 0px 0px 0px 0px;"> -->
-        <div class="column">
+        <!-- <div class="column" style="padding-top: 0px;"> -->
+        <div class="column" style="padding-top: 0px; padding-bottom: 0px;">
             Total records: {{ result_size }}
         </div>
     </div>

@@ -11,7 +11,8 @@ VCIO -- vulnerability search
 <section class="section01">
 
     <div class="columns">
-        <div class="column is-four-fifths">
+        <!-- <div class="column is-four-fifths"> -->
+        <div class="column is-four-fifths" style="padding-bottom: 0px;">
             <span style="font-size: 20px;">Search Vulnerabilities</span>
             <div class="tags has-addons" style="margin-top: 10px;">
                 <span class="tag is-dark">vuln_id</span>
@@ -40,20 +41,28 @@ VCIO -- vulnerability search
             </div> -->
 
         </div>
-        <div class="column" style="text-align: right;">
-            <!-- <a class="button is-link is-outlined" href="/index_new">Return to search</a> -->
-            <a class="button is-success is-outlined" href="/index_new">Return to search</a>
+        <!-- <div class="column" style="text-align: right;"> -->
+        <div class="column" style="text-align: right; padding-top: 20px;">
+            <a class="button is-link is-outlined" href="/index_new">Return to search</a>
+            <!-- <a class="button is-link" href="/index_new">Return to search</a> -->
+            <!-- <a class="button is-success is-outlined" href="/index_new">Return to search</a> -->
             <!-- <br />
             <button class="button is-link is-outlined">Outlined</button> -->
         </div>
     </div>
+
+    <hr>
+
     <div class="columns">
-        <div class="column" style="text-align: center; padding: 0px;">
+        <!-- <div class="column" style="text-align: center; padding: 0px;"> -->
+        <!-- <div class="column" style="padding-top: 0px;"> -->
+        <div class="column" style="padding-top: 0px; padding-bottom: 0px;">
             Total records: {{ result_size }}
         </div>
     </div>
 
-    <div class="is-field is-horizontal" style="text-align: center;">
+    <!-- <div class="is-field is-horizontal" style="text-align: center;"> -->
+    <div class="is-field is-horizontal">
         <span class="step-links">
             {% if vulnerabilities.has_previous %}
             <a class="button paging" href="?vuln_id={{ vuln_id }}&page=1">&laquo; first</a>
@@ -107,9 +116,10 @@ VCIO -- vulnerability search
         </table>
     </div>
 
-    <div style="height: 50px;"></div>
+    <!-- <div style="height: 50px;"></div> -->
 
-    <div class="is-field is-horizontal" style="text-align: center;">
+    <!-- <div class="is-field is-horizontal" style="text-align: center;"> -->
+    <div class="is-field is-horizontal">
         <span class="step-links">
             {% if vulnerabilities.has_previous %}
             <a class="button paging" href="?vuln_id={{ vuln_id }}&page=1">&laquo; first</a>

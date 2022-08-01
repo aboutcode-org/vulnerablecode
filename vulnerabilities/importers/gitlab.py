@@ -29,6 +29,8 @@ from univers.versions import Version
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import GitConfig
+from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import UnMergeablePackageError
@@ -75,27 +77,23 @@ class ForkError(Exception):
     pass
 
 
-class GitLabAPIImporter(Importer):
+class GitLabAPIImporter(GitImporter):
     spdx_license_expression = "MIT"
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
-    gitlab_url = "git+https://gitlab.com/gitlab-org/advisories-community/"
+    config = GitConfig(
+        repo_url="git+https://gitlab.com/gitlab-org/advisories-community/",
+    )
+
+    def __init__(self):
+        super().__init__(config=self.config)
+        self.files = self.collect_files(recursive=True, file_ext="yml")
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
-        try:
-            fork_directory = fork_and_get_dir(url=self.gitlab_url)
-        except Exception as e:
-            logger.error(f"Can't clone url {self.gitlab_url}")
-            raise ForkError(self.gitlab_url) from e
-        for root_dir in os.listdir(fork_directory):
-            # skip well known files and directories that contain no advisory data
-            if root_dir in ("ci", "CODEOWNERS", "README.md", "LICENSE", ".git"):
-                continue
-            if root_dir not in PURL_TYPE_BY_GITLAB_SCHEME:
-                logger.error(f"Unknown package type: {root_dir}")
-                continue
-            for root, _, files in os.walk(os.path.join(fork_directory, root_dir)):
-                for file in files:
-                    yield parse_gitlab_advisory(file=os.path.join(root, file))
+        for file in self.files:
+            # split a file name /tmp/tmpi1klhpmd/pypi/gradio/CVE-2021-43831.yml
+            # to ('/', 'tmp', 'tmpi1klhpmd', 'pypi', 'gradio', 'CVE-2021-43831.yml')
+            if file.parts[3] in PURL_TYPE_BY_GITLAB_SCHEME:
+                yield parse_gitlab_advisory(file)
 
 
 def get_purl(package_slug):

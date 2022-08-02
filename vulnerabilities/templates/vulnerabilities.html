@@ -1,42 +1,79 @@
 {% extends 'base.html' %}
+
 {% block title %}
-<h1 class="title">
-    Explore Vulnerabilities
-</h1>
+VCIO -- vulnerability search
 {% endblock %}
+
 {% block content %}
 
-<div class="columns">
-    <div class="column is-one-third is-offset-one-third">
-        <form action="{% url 'vulnerability_search' %}" method="get">
-            {% load widget_tweaks %}
-            <div class="field is-horizontal">
-                {% render_field form.vuln_id class="input"%}
-                <button class="button is-success" , type="submit">
-                    Search
-                </button>
+{% include 'navbar.html' %}
+
+<section class="section01">
+
+    <div class="columns">
+        <div class="column is-four-fifths" style="padding-bottom: 0px;">
+            <span style="font-size: 20px; font-weight: 500;">Search Vulnerabilities</span>
+            <div class="tags has-addons" style="margin-top: 10px;">
+                <span class="tag is-dark">vuln_id</span>
+                <span class="tag is-info">{{vuln_id}}</span>
             </div>
-        </form>
-        {% if result_size %}
-        <p class="has-text-centered" id="result_count">{{result_size}} results</p>
-        {% elif result_size == 0 %}
-        <p class="has-text-centered" id="result_count">No results found</p>
-        {% endif %}
+        </div>
+        <div class="column" style="text-align: right;">
+
+        </div>
     </div>
-</div>
+
+    <hr>
+
+    <div class="columns">
+        <div class="column" style="padding-top: 0px; padding-bottom: 0px;">
+            Total records: {{ result_size }}
+        </div>
+    </div>
+
+    <div class="is-field is-horizontal">
+        <span class="step-links">
+            {% if vulnerabilities.has_previous %}
+            <a class="button paging" href="?vuln_id={{ vuln_id }}&page=1">&laquo; first</a>
+            <a class="button paging" href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.previous_page_number }}">previous</a>
+            {% else %}
+            <button class="button" title="disabled" disabled>&laquo; first</button>
+            <button class="button" title="disabled" disabled>previous</button>
+            {% endif %}
+
+            <span class="current02">
+                (page {{ vulnerabilities.number }} of {{ vulnerabilities.paginator.num_pages }})
+            </span>
+
+            {% if vulnerabilities.has_next %}
+            <a class="button paging" href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.next_page_number }}">next</a>
+            <a class="button paging" href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.paginator.num_pages }}">last &raquo;</a>
+            {% else %}
+            <button class="button" title="disabled" disabled>next</button>
+            <button class="button" title="disabled" disabled>last &raquo;</button>
+            {% endif %}
+        </span>
+    </div>
+
+</section>
 
 {% if vulnerabilities %}
-<section class="section">
-    <div class="content is-large">
+<section class="section01">
+    <div class="content">
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
             <tr>
-                <th>Vulnerability ID</th>
-                <th>Affected packages</th>
-                <th>Fixed packages</th>
+                <th><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="Tooltip coming soon!">Vulnerability ID</span></th>
+                <th style="width: 225px;"><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="Tooltip coming soon!">Affected packages</span></th>
+                <th style="width: 225px;"><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="Tooltip coming soon!">Fixed packages</span></th>
             </tr>
             {% for vulnerability in vulnerabilities %}
             <tr>
-                <td><a href="{% url 'vulnerability_view' vulnerability.pk %}">{{vulnerability.vulnerability_id}}</a></td>
+                <td style="word-break: break-all;">
+                    {{vulnerability.vulnerability_id}}
+                    <span style="font-size: 13px;">
+                        (<a href="{% url 'vulnerability_view' vulnerability.pk %}" target="_blank">HTML</a>)
+                    </span>
+                </td>
                 <td>{{vulnerability.vulnerable_package_count}}</td>
                 <td>{{vulnerability.patched_package_count}}</td>
             </tr>
@@ -45,13 +82,27 @@
     </div>
 
     <div class="is-field is-horizontal">
-        {% if vulnerabilities.has_previous %}
-        <a class="button" href="?vuln_id={{ searched_for }}&page={{ vulnerabilities.previous_page_number }}">Previous Page</a>
-        {% endif %}
+        <span class="step-links">
+            {% if vulnerabilities.has_previous %}
+            <a class="button paging" href="?vuln_id={{ vuln_id }}&page=1">&laquo; first</a>
+            <a class="button paging" href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.previous_page_number }}">previous</a>
+            {% else %}
+            <button class="button" title="disabled" disabled>&laquo; first</button>
+            <button class="button" title="disabled" disabled>previous</button>
+            {% endif %}
 
-        {% if vulnerabilities.has_next %}
-        <a class="button" href="?vuln_id={{ searched_for }}&page={{ vulnerabilities.next_page_number}}">Next Page</a>
-        {% endif %}
+            <span class="current02">
+                (page {{ vulnerabilities.number }} of {{ vulnerabilities.paginator.num_pages }})
+            </span>
+
+            {% if vulnerabilities.has_next %}
+            <a class="button paging" href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.next_page_number }}">next</a>
+            <a class="button paging" href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.paginator.num_pages }}">last &raquo;</a>
+            {% else %}
+            <button class="button" title="disabled" disabled>next</button>
+            <button class="button" title="disabled" disabled>last &raquo;</button>
+            {% endif %}
+        </span>
     </div>
 
 </section>

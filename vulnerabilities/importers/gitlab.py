@@ -29,7 +29,6 @@ from univers.versions import Version
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import GitConfig
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
@@ -80,12 +79,9 @@ class ForkError(Exception):
 class GitLabAPIImporter(GitImporter):
     spdx_license_expression = "MIT"
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
-    config = GitConfig(
-        repo_url="git+https://gitlab.com/gitlab-org/advisories-community/",
-    )
 
     def __init__(self):
-        super().__init__(config=self.config)
+        super().__init__(repo_url="git+https://gitlab.com/gitlab-org/advisories-community/")
         self.files = self.collect_files(recursive=True, file_ext="yml")
 
     def advisory_data(self) -> Iterable[AdvisoryData]:

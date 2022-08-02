@@ -313,28 +313,23 @@ class Importer:
         raise NotImplementedError
 
 
-@dataclasses.dataclass
-class GitConfig:
-    repo_url: str
-    save_working_directory: bool = True
-
-
 class ForkError(Exception):
     pass
 
 
 class GitImporter(Importer):
-    def __init__(self, config):
+    def __init__(self, repo_url, save_working_directory=True):
         super().__init__()
-        self.config = config
+        self.repo_url = repo_url
+        self.save_working_directory = save_working_directory
         try:
-            self.vcs_response = fetch_via_vcs(self.config.repo_url)
+            self.vcs_response = fetch_via_vcs(self.repo_url)
         except Exception as e:
-            logger.error(f"Can't clone url {self.config.repo_url} - {e}")
+            logger.error(f"Can't clone url {self.repo_url} - {e}")
             raise ForkError
 
     def __exit__(self):
-        if not self.config.save_working_directory:
+        if not self.save_working_directory:
             shutil.rmtree(self.vcs_response.dest_dir)
 
     def collect_files(

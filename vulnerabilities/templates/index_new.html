@@ -46,7 +46,6 @@ VCIO Home
                             {{package_form.name|add_class:"input"}}
                         </div>
                         <div class="control">
-                            <!-- <button class="button is-link is-outlined" type="submit" id="submit_pkg"> -->
                             <button class="button is-link" type="submit" id="submit_pkg">
                                 Search
                             </button>
@@ -93,7 +92,6 @@ VCIO Home
                             {% render_field vuln_form.vuln_id class="input"%}
                         </div>
                         <div class="control">
-                            <!-- <button class="button is-link is-outlined" type="submit" id="submit_vuln"> -->
                             <button class="button is-link" type="submit" id="submit_vuln">
                                 Search
                             </button>
@@ -112,109 +110,6 @@ VCIO Home
             </div>
         </div>
     </article>
-
-
-
-
-
-    <!-- <article class="message is-info">
-
-        <div class="message-header">
-            <p>Search for vulnerable packages</p>
-        </div>
-
-        <div class="message-body">
-            <div style="margin: 0px 0px 0px 0px;">
-                <div style="margin-top: 0px;">Search for currently known Vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_blank">Package-URL</a> (aka <span class="inline-code01">purl</span>) or a Package <span class="inline-code01">name</span>.</div>
-                <ul>
-                    <li>
-                        Search by Package <span class="inline-code01">name</span> -- type the <span class="inline-code01">name</span> in the search box and, if relevant to your search, select the Package <span class="inline-code01">type</span> from the dropdown.
-                    </li>
-                    <li>
-                        Search by <span class="inline-code01">purl</span> -- type the <span class="inline-code01">purl</span> in the search box. (The <span class="inline-code01">type</span> dropdown does not apply to a <span class="inline-code01">purl</span> search.)
-                    </li>
-
-                </ul>
-            </div>
-            <form action="{% url 'package_search_new' %}" method="get">
-                {% load widget_tweaks %}
-                <div class="field has-addons" style="margin: 10px 0px 0px 0px;">
-                    <div class="control">
-                        <div class="select">
-                            {{package_form.type}}
-                        </div>
-                    </div>
-                    <div class="control" style="width: 100%;">
-                        {{package_form.name|add_class:"input"}}
-                    </div>
-                    <div class="control">
-                        <button class="button is-link is-outlined" type="submit" id="submit_pkg">
-                            Search
-                        </button>
-                    </div>
-                </div>
-            </form>
-            <div>
-                {% if package_search %}
-                <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 100;">
-                    <button class=" delete"></button>
-                    <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #ff0000; font-weight: bold;">Search for packages:</span></h6>
-                    {{ package_search }}
-                </div>
-                {% endif %}
-            </div>
-        </div>
-
-    </article> -->
-
-
-    <!-- <div style="height: 10px;"></div> -->
-
-
-    <!-- <article class="message is-info">
-        <div class="message-header">
-            <p>Search for vulnerabilities</p>
-        </div>
-        <div class="message-body">
-            <div style="margin: 0px 0px 15px 0px;">Search for comprehensive information for a <span class="inline-code01">VULCOID</span> (VulnerableCode Database ID). (Only the first of these methods requires that the input be all uppercase.)
-                <ul>
-                    <li>
-                        Search for a specific <span class="inline-code01">VULCOID</span> (e.g., "VULCOID-1").
-                    </li>
-                    <li>
-                        Search for all <span class="inline-code01">VULCOID</span>s that are associated with a specific <span class="inline-code01">CVE</span> (e.g., "CVE-2009-3898") or <span class="inline-code01">GHSA</span> (e.g., "GHSA-2qrg-x229-3v8q").
-                    </li>
-                    <li>
-                        Search for "CVE" or "GHSA" -- this will return all <span class="inline-code01">VULCOID</span>s that are associated with one or more <span class="inline-code01">CVE</span>s or <span class="inline-code01">GHSA</span>s, respectively.
-                    </li>
-                </ul>
-            </div>
-            <form action="{% url 'vulnerability_search_new' %}" method="get">
-                {% load widget_tweaks %}
-                <div class="field has-addons" style="margin: 10px 0px 0px 0px;">
-                    <div class="control" style="width: 100%;">
-                        {% render_field vuln_form.vuln_id class="input"%}
-                    </div>
-                    <div class="control">
-                        <button class="button is-link is-outlined" type="submit" id="submit_vuln">
-                            Search
-                        </button>
-                    </div>
-                </div>
-            </form>
-            <div>
-                {% if vuln_search %}
-                <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 100;">
-                    <button class=" delete"></button>
-                    <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #ff0000; font-weight: bold;">Search for vulnerabilities:</span></h6>
-                    {{ vuln_search }}
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    </article> -->
-
-
 
     <hr style="margin: 50px 0px 50px 0px; background-color: #4a4a4a;">
 
@@ -294,9 +189,7 @@ VCIO Home
 
     $(document).ready(function () {
         $('#submit_pkg').click(function () {
-            //if ($('#id_name').val().length === 0) {
             if ($('#id_name').val().trim().length === 0) {
-                //alert('Enter your name!');
                 $('#id_name').val('');
                 return false;
             }
@@ -305,9 +198,7 @@ VCIO Home
 
     $(document).ready(function () {
         $('#submit_vuln').click(function () {
-            //if ($('#id_vuln_id').val().length === 0) {
             if ($('#id_vuln_id').val().trim().length === 0) {
-                //alert('Enter your name!');
                 $('#id_vuln_id').val('');
                 return false;
             }
@@ -316,16 +207,11 @@ VCIO Home
 
     $(document).ready(function () {
         $('#submit_api_pkg').click(function () {
-            //if ($('#purl_string').val().length === 0) {
             if ($('#purl_string').val().trim().length === 0) {
-                //alert('Enter your name!');
                 $('#purl_string').val('');
                 return false;
             }
         })
     });
-
-
-
 </script>
 {% endblock %}

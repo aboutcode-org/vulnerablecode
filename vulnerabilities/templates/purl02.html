@@ -129,10 +129,18 @@ VCIO Package Details
                             {% for vulcoid in affected_html_list %}
                             {% for key, value in vulcoid.items %}
                             {% if key == vuln.vulnerability_id %}
-                            <span style="font-size: 13px;">(<a href={{ vcio_url_vulnerabilities_string }}{{ value }} target="_blank">old HTML</a> | new HTML)</span>
+                            <span style="font-size: 13px;">
+                                (
+                                <a href="/vulnerabilities/{{ value }}" target="_blank">old HTML</a>
+                                |
+                                new HTML
+                                )
+                            </span>
+
                             {% endif %}
                             {% endfor %}
                             {% endfor %}
+
                         </td>
                         <td>
                             {{ vuln.summary }}
@@ -186,7 +194,13 @@ VCIO Package Details
                             {% for vulcoid in fixing_html_list %}
                             {% for key, value in vulcoid.items %}
                             {% if key == vuln.vulnerability_id %}
-                            <span style="font-size: 13px;">(<a href={{ vcio_url_vulnerabilities_string }}{{ value }} target="_blank">old HTML</a> | new HTML)</span>
+                            <span style="font-size: 13px;">
+                                (
+                                <a href="/vulnerabilities/{{ value }}" target="_blank">old HTML</a>
+                                |
+                                new HTML
+                                )
+                            </span>
                             {% endif %}
                             {% endfor %}
                             {% endfor %}

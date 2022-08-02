@@ -10,27 +10,8 @@ VCIO -- DB package search
 
 <section class="section01">
 
-    <!-- <div class="container mx-5 mb-5">
-        <div class="field is-grouped is-grouped-multiline">
-            <div class="control">
-                <div class="tags has-addons">
-                    <span class="tag is-dark">type</span>
-                    <span class="tag is-info">{{searched_for}}</span>
-                </div>
-            </div>
-            <div class="control">
-                <div class="tags has-addons">
-                    <span class="tag is-dark">name</span>
-                    <span class="tag is-info">{{searched_for}}</span>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
-
     <div class="columns">
 
-        <!-- <div class="column is-four-fifths" style="padding-top: 0px; padding-bottom: 0px;"> -->
         <div class="column is-four-fifths" style="padding-bottom: 0px;">
             <span style="font-size: 20px; font-weight: 500;">Search Packages</span>
 
@@ -48,65 +29,20 @@ VCIO -- DB package search
                     </div>
                 </div>
             </div>
-
-            <!-- <div class="field is-grouped is-grouped-multiline" style="margin-top: 10px;">
-                <div class="control">
-                    <div class="tags has-addons">
-                        <span class="tag is-dark">type</span>
-                        <span class="tag is-info">{{searched_for}}</span>
-                    </div>
-                </div>
-                <div class="control">
-                    <div class="tags has-addons">
-                        <span class="tag is-dark">name</span>
-                        <span class="tag is-info">{{searched_for}}</span>
-                    </div>
-                </div>
-            </div> -->
-
-
-
-            <!-- <div class="tags has-addons" style="margin-top: 10px;">
-                <span class="tag is-dark">type</span>
-                <span class="tag is-info">{{searched_for}}</span>
-            </div>
-            <div class="tags has-addons" style="margin-top: 10px;">
-                <span class="tag is-dark">name</span>
-                <span class="tag is-info">{{searched_for}}</span>
-            </div> -->
-
-            <!-- <div class="tags has-addons">
-                <span class="tag is-medium is-light is-search-label-left">Search packages by type and name: </span>
-                <span class="tag is-medium is-white is-search-label-right">"{{searched_for}}"</span>
-            </div>
-        </div> -->
-            <!-- <div>
-                <span>Search packages by type and name: </span>
-
-                <br />
-
-                <span style="margin-top: 10px;">"{{searched_for}}"</span>
-            </div> -->
         </div>
         <div class="column" style="text-align: right;">
-            <!-- <a class="button is-link is-outlined" href="/index_new">Return to search</a> -->
             <a class="button is-link" href="/index_new">Return to search</a>
-            <!-- <a class="button is-success is-outlined" href="/index_new">Return to search</a> -->
         </div>
     </div>
 
     <hr>
 
     <div class="columns">
-        <!-- <div class="columns" style="padding-top: 0px !important;"> -->
-        <!-- <div class="column" style="text-align: center; padding: 0px 0px 0px 0px;"> -->
-        <!-- <div class="column" style="padding-top: 0px;"> -->
         <div class="column" style="padding-top: 0px; padding-bottom: 0px;">
             Total records: {{ result_size }}
         </div>
     </div>
 
-    <!-- <div class="is-field is-horizontal" style="text-align: center;"> -->
     <div class="is-field is-horizontal">
         <span class="step-links">
             {% if packages.has_previous %}
@@ -149,7 +85,6 @@ VCIO -- DB package search
                 {% for package in packages %}
                 <tr>
                     <td style="word-break: break-all;">
-                        <!-- <a href="{% url 'package_view' package.pk %}">{{package.package_url}}</a> -->
                         {{package.package_url}}
                         <span style="font-size: 13px;">
                             (
@@ -167,33 +102,6 @@ VCIO -- DB package search
             </tbody>
         </table>
     </div>
-
-    <!-- <div style="height: 50px;"></div> -->
-
-    <!-- <div class="is-field is-horizontal" style="text-align: center;"> -->
-    <!-- <div class="is-field is-horizontal">
-        <span class="step-links">
-            {% if packages.has_previous %}
-            <a class="button paging" href="?{{ searched_for }}&page=1">&laquo; first</a>
-            <a class="button paging" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">previous</a>
-            {% else %}
-            <button class="button" title="disabled" disabled>&laquo; first</button>
-            <button class="button" title="disabled" disabled>previous</button>
-            {% endif %}
-
-            <span class="current02">
-                (page {{ packages.number }} of {{ packages.paginator.num_pages }})
-            </span>
-
-            {% if packages.has_next %}
-            <a class="button paging" href="?{{ searched_for }}&page={{ packages.next_page_number }}">next</a>
-            <a class="button paging" href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}">last &raquo;</a>
-            {% else %}
-            <button class="button" title="disabled" disabled>next</button>
-            <button class="button" title="disabled" disabled>last &raquo;</button>
-            {% endif %}
-        </span>
-    </div> -->
 
     <div class="is-field is-horizontal">
         <span class="step-links">

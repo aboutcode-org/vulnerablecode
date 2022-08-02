@@ -176,6 +176,7 @@ code {
     border-bottom: solid 2px #e8e8e8;
     border-bottom: solid 2px #0066ff;
     border-bottom: solid 2px #000000;
+    border-bottom: 0;
     margin-bottom: 50px;
     padding-bottom: 50px;
 }

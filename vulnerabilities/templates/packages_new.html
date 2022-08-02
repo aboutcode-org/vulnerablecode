@@ -32,7 +32,7 @@ VCIO -- DB package search
 
         <!-- <div class="column is-four-fifths" style="padding-top: 0px; padding-bottom: 0px;"> -->
         <div class="column is-four-fifths" style="padding-bottom: 0px;">
-            <span style="font-size: 20px;">Search Packages</span>
+            <span style="font-size: 20px; font-weight: 500;">Search Packages</span>
 
             <div class="field is-grouped is-grouped-multiline" style="margin-top: 10px;">
                 <div class="control">
@@ -43,7 +43,7 @@ VCIO -- DB package search
                 </div>
                 <div class="control">
                     <div class="tags has-addons">
-                        <span class="tag is-dark">name</span>
+                        <span class="tag is-dark">name or purl</span>
                         <span class="tag is-info">{{package_name}}</span>
                     </div>
                 </div>
@@ -88,9 +88,9 @@ VCIO -- DB package search
                 <span style="margin-top: 10px;">"{{searched_for}}"</span>
             </div> -->
         </div>
-        <div class="column" style="text-align: right; padding-top: 20px;">
-            <a class="button is-link is-outlined" href="/index_new">Return to search</a>
-            <!-- <a class="button is-link" href="/index_new">Return to search</a> -->
+        <div class="column" style="text-align: right;">
+            <!-- <a class="button is-link is-outlined" href="/index_new">Return to search</a> -->
+            <a class="button is-link" href="/index_new">Return to search</a>
             <!-- <a class="button is-success is-outlined" href="/index_new">Return to search</a> -->
         </div>
     </div>
@@ -148,7 +148,18 @@ VCIO -- DB package search
             <tbody>
                 {% for package in packages %}
                 <tr>
-                    <td style="word-break: break-all;"><a href="{% url 'package_view' package.pk %}">{{package.package_url}}</a></td>
+                    <td style="word-break: break-all;">
+                        <!-- <a href="{% url 'package_view' package.pk %}">{{package.package_url}}</a> -->
+                        {{package.package_url}}
+                        <span style="font-size: 13px;">
+                            (
+                            <a href="{% url 'package_view' package.pk %}" target="_blank">old HTML</a>
+                            |
+                            <a href="{% url 'package_view_new' package.pk %}" target="_blank">new HTML</a>
+                            )
+
+                        </span>
+                    </td>
                     <td>{{package.vulnerability_count}}</td>
                     <td>{{package.patched_vulnerability_count}}</td>
                 </tr>

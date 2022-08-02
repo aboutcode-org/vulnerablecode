@@ -29,7 +29,7 @@ VCIO Home
                             Search by Package <span class="inline-code01">name</span> -- type the <span class="inline-code01">name</span> in the search box and, if relevant to your search, select the Package <span class="inline-code01">type</span> from the dropdown.
                         </li>
                         <li>
-                            Search by <span class="inline-code01">purl</span> -- type the <span class="inline-code01">purl</span> in the search box. (The <span class="inline-code01">type</span> dropdown does not apply to a <span class="inline-code01">purl</span> search.)
+                            Search by <span class="inline-code01">purl</span> -- type the <span class="inline-code01">purl</span> in the search box. <span style="font-style: italic;">(The <span class="inline-code01">type</span> dropdown does not apply to a <span class="inline-code01">purl</span> search.)</span>
                         </li>
 
                     </ul>
@@ -46,7 +46,8 @@ VCIO Home
                             {{package_form.name|add_class:"input"}}
                         </div>
                         <div class="control">
-                            <button class="button is-link is-outlined" type="submit" id="submit_pkg">
+                            <!-- <button class="button is-link is-outlined" type="submit" id="submit_pkg"> -->
+                            <button class="button is-link" type="submit" id="submit_pkg">
                                 Search
                             </button>
                         </div>
@@ -72,7 +73,7 @@ VCIO Home
         </p>
         <div class="panel-block">
             <div style="padding: 10px;">
-                <div style="margin: 0px 0px 15px 0px;">Search for comprehensive information for a <span class="inline-code01">VULCOID</span> (VulnerableCode Database ID). (Only the first of these methods requires that the input be all uppercase.)
+                <div style="margin: 0px 0px 15px 0px;">Search for comprehensive information for a <span class="inline-code01">VULCOID</span> (VulnerableCode Database ID). <span style="font-style: italic;">(Only the first of these methods requires that the input be all uppercase.)</span>
                     <ul>
                         <li>
                             Search for a specific <span class="inline-code01">VULCOID</span> (e.g., "VULCOID-1").
@@ -92,7 +93,8 @@ VCIO Home
                             {% render_field vuln_form.vuln_id class="input"%}
                         </div>
                         <div class="control">
-                            <button class="button is-link is-outlined" type="submit" id="submit_vuln">
+                            <!-- <button class="button is-link is-outlined" type="submit" id="submit_vuln"> -->
+                            <button class="button is-link" type="submit" id="submit_vuln">
                                 Search
                             </button>
                         </div>
@@ -246,7 +248,7 @@ VCIO Home
                         </div>
                     </div>
                     <div class="control" style="width: 100%;">
-                        <input class="input" type="text" id="purl_string" placeholder="purl or Package name">
+                        <input class="input" type="text" name="purl_string" id="purl_string" placeholder="purl or Package name">
                     </div>
                     <div class="control">
                         <button id="submit_api_pkg" class="button is-link">Search</button>
@@ -273,7 +275,8 @@ VCIO Home
 
 {% block scripts %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<!-- From https://bulma.io/documentation/elements/notification/ -->
+<!-- The 1st script below is from https://bulma.io/documentation/elements/notification/ and
+    handles error notifications -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
@@ -281,6 +284,10 @@ VCIO Home
 
             $delete.addEventListener('click', () => {
                 $notification.parentNode.removeChild($notification);
+                //8/1/2022 Monday 10:50:20 AM.  JMH test: this clears the package and vulnerability
+                //search boxes when the Bulma alert is closed
+                document.getElementById('id_name').value = '';
+                document.getElementById('id_vuln_id').value = '';
             });
         });
     });

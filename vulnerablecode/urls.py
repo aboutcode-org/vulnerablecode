@@ -21,6 +21,7 @@ from vulnerabilities.views import HomePage_new
 from vulnerabilities.views import PackageSearchView
 from vulnerabilities.views import PackageSearchView_new
 from vulnerabilities.views import PackageUpdate
+from vulnerabilities.views import PackageUpdate_new
 from vulnerabilities.views import PurlSearchView02
 from vulnerabilities.views import VulnerabilityDetails
 from vulnerabilities.views import VulnerabilityDetails_new
@@ -50,6 +51,7 @@ urlpatterns = [
     path("packages/search", PackageSearchView.as_view(), name="package_search"),
     path("packages/search_new", PackageSearchView_new.as_view(), name="package_search_new"),
     path("packages/<int:pk>", PackageUpdate.as_view(), name="package_view"),
+    path("packages_new/<int:pk>", PackageUpdate_new.as_view(), name="package_view_new"),
     path("purl_search02/", PurlSearchView02.as_view(), name="purl_search02"),
     path("vulnerabilities/<int:pk>", VulnerabilityDetails.as_view(), name="vulnerability_view"),
     path(

@@ -1,67 +1,236 @@
 {% extends 'base.html' %}
-{% load widget_tweaks %}
+
 {% block title %}
-<h1 class="title">
-{{object}}
-</h1>
+VCIO Package Details
 {% endblock %}
 
 {% block content %}
-<div class="columns is-5 is-variable mx-6 mb-6">
-  <div class="column is-half has-text-centered has-background-success-light">
-     <form method="post" class="card has-background-success-light m">
-      <header class="card-header mb-3">
-        <p class="card-header-title">
-          Package Details 
-        </p>
-      </header>
-        {% csrf_token %}
-        {% for field in form %}
-        <div class="field px-3">
-            <label class="label">{{field.label}}</label>
-            {% render_field field|append_attr:"readonly:readonly" class="input is-primary" %}
-        </div>
-        {% endfor %}
-    </form>
-  </div>
 
-  <div class="column is-half has-text-centered has-background-danger-light">
-    <div class="columns is-variable is-5 is-multiline">
-        <div class="column is-full">
-        <div class="card has-background-danger-light">
-        <header class="card-header mb-3">
-            <p class="card-header-title">Affected By</p>
-        </header>
-        <div class="tags mx-3">
-            {% for vulnerability in impacted_vuln %}
-                <span class="tag is-danger is-medium">
-                  <a href="{% url 'vulnerability_view' vulnerability.pk %}" class="has-text-white">{{vulnerability.vulnerability_id}}</a>
-              </span>
-            {% endfor %}
+{% include 'navbar.html' %}
+
+<section class="section01">
+
+    <div class="columns">
+        <div class="column is-four-fifths">
+            <span style="font-size: 20px; font-weight: 500;">Package Details</span>
+            <div class="tags has-addons" style="margin-top: 10px;">
+                <span class="tag is-dark">purl</span>
+                <span class="tag is-info">{{package.package_url}}</span>
+            </div>
+        </div>
+        <div class="column" style="text-align: right;">
+
+        </div>
+    </div>
+
+</section>
+
+
+<section class="section01">
+
+    <div class="tabs is-boxed" id="tabs">
+        <ul>
+            <li class="is-active" data-tab="1">
+                <a>
+                    <span>Essentials</span>
+                </a>
+            </li>
+            <li data-tab="2">
+                <a>
+                    <span>Affected By Vulnerabilities</span>
+                </a>
+            </li>
+            <li data-tab="3">
+                <a>
+                    <span>Fixing Vulnerabilities</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div id="tab-content">
+        <div class="tab-div is-active" data-content="1">
+            <table class="table nexb-table" style="width: 100%; margin-top: 10px;">
+                <tbody>
+                    <tr>
+                        <td class="two-col-left"><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="The package url or purl is a URL string used to identify and locate a software package.">purl</span></td>
+                        <td class="two-col-right">
+                            {{package.package_url}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="two-col-left">type</td>
+                        <td class="two-col-right">
+                            {{package.type}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="two-col-left">namespace</td>
+                        <td class="two-col-right">
+                            {{package.namespace}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="two-col-left">name</td>
+                        <td class="two-col-right">
+                            {{package.name}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="two-col-left">version</td>
+                        <td class="two-col-right">
+                            {{package.version}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="two-col-left">qualifiers</td>
+                        <td class="two-col-right">
+                            {% for key, value in package.qualifiers.items %}
+                            {{key}} = {{value}}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="two-col-left">subpath</td>
+                        <td class="two-col-right">
+                            {{package.subpath}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="two-col-left">Affected By Vulnerabilities</td>
+                        <td class="two-col-right">
+                            {{impacted_vuln|length}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="two-col-left">Fixing Vulnerabilities</td>
+                        <td class="two-col-right">
+                            {{resolved_vuln|length}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
         </div>
 
-        <div class="field is-centered">
+        <div class="tab-div" data-content="2">
+
+            <table class="table is-narrow" style="width: 100%; border-bottom: solid 1px #d8d8d8;">
+                <thead>
+                    <tr>
+                        <th style="width: 200px;">Vulnerability</th>
+                        <th>Summary</th>
+                        <th style="width: 200px;">Aliases</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% if impacted_vuln %}
+
+                    {% for vuln in impacted_vuln %}
+                    <tr>
+                        <td>
+                            {{ vuln.vulnerability_id }}
+                            <span style="font-size: 13px;">
+                                (<a href="{% url 'vulnerability_view' vuln.pk %}" target="_blank">HTML</a>)
+                            </span>
+
+                        </td>
+                        <td>
+                            {{ vuln.summary }}
+                        </td>
+                        <td>
+                            {% for alias in vuln.alias %}
+                            {{alias}}
+                            <br />
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                    {% else %}
+                    <tr>
+                        <td>
+                            none
+                        </td>
+                        <td>
+                            --
+                        </td>
+                        <td>
+                            --
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tab-div" data-content="3">
+            <table class="table is-narrow" style="width: 100%; border-bottom: solid 1px #d8d8d8;">
+                <thead>
+                    <tr>
+                        <th style="width: 200px;">Vulnerability</th>
+                        <th>Summary</th>
+                        <th style="width: 200px;">Aliases</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if resolved_vuln %}
+
+                    {% for vuln in resolved_vuln %}
+                    <tr>
+                        <td>
+                            {{ vuln.vulnerability_id }}
+                            <span style="font-size: 13px;">
+                                (<a href="{% url 'vulnerability_view' vuln.pk %}" target="_blank">HTML</a>)
+                            </span>
+                        </td>
+                        <td>
+                            {{ vuln.summary }}
+                        </td>
+                        <td>
+                            {% for alias in vuln.alias %}
+                            {{alias}}
+                            <br />
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                    {% else %}
+                    <tr>
+                        <td>
+                            none
+                        </td>
+                        <td>
+                            --
+                        </td>
+                        <td>
+                            --
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
         </div>
 
     </div>
-    </div>
 
-    <div class="column is-full">
-        <div class="card has-background-danger-light">
-        <header class="card-header mb-3">
-             <p class="card-header-title">Fixing</p>
-        </header>
-               <div class="tags mx-3">
-            {% for vulnerability in resolved_vuln %}
-            <span class="tag is-primary is-medium">
-              <a href="{% url 'vulnerability_view' vulnerability.pk %}" class="has-text-white">{{vulnerability.vulnerability_id}}</a>
-            </span>
-            {% endfor %}
-        </div>
-    </div>
-</div>
+</section>
 
-  </div>
 
-</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#tabs li').on('click', function () {
+            var tab = $(this).data('tab');
+
+            $('#tabs li').removeClass('is-active');
+            $(this).addClass('is-active');
+
+            $('#tab-content div').removeClass('is-active');
+            $('div[data-content="' + tab + '"]').addClass('is-active');
+        });
+    });
+</script>
+
 {% endblock %}

@@ -1,19 +1,149 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block title %}
-<h1 class="title">
-    Welcome to VulnerableCode!
-</h1>
+VCIO Home
 {% endblock %}
 
 {% block content %}
-<div class="hero is-large has-text-centered">
-    <a class="button is-medium has-background-light has-text-link" href="{% url 'vulnerability_search' %}"> Search Vulnerabilities</a>
-    <a class="button is-medium has-background-light has-text-link" href="{% url 'package_search' %}"> Search Packages</a>
-</div>
-<div class="box" style="margin-top: 150px; margin-left: auto; margin-right: auto; border: solid 1px #d8d8d8; padding: 20px; width: 500px;">
-    <div style="padding: 10px; text-align: center;">
-        <span style="font-weight: bold;">New landing page: </span><a href="index_new/" target="_blank">index_new.html</a>
+
+{% include 'navbar.html' %}
+
+<section class="section01">
+
+    <div class="columns">
+        <div class="column">
+            <span class="tag01">Welcome to VulnerableCode<span class="nexb-orange">.</span>io.</span>
+        </div>
     </div>
-</div>
+
+    <article class="panel is-info">
+        <p class="panel-heading py-2 is-size-6">
+            Search for vulnerable packages
+        </p>
+        <div class="panel-block">
+            <div style="padding: 10px;">
+                <div style="margin: 0px 0px 0px 0px;">
+                    <div style="margin-top: 0px;">Search for currently known Vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_blank">Package-URL</a> (aka <span class="inline-code01">purl</span>) or a Package <span class="inline-code01">name</span>.</div>
+                    <ul>
+                        <li>
+                            Search by Package <span class="inline-code01">name</span> -- type the <span class="inline-code01">name</span> in the search box and, if relevant to your search, select the Package <span class="inline-code01">type</span> from the dropdown.
+                        </li>
+                        <li>
+                            Search by <span class="inline-code01">purl</span> -- type the <span class="inline-code01">purl</span> in the search box. <span style="font-style: italic;">(The <span class="inline-code01">type</span> dropdown does not apply to a <span class="inline-code01">purl</span> search.)</span>
+                        </li>
+
+                    </ul>
+                </div>
+                <form action="{% url 'package_search' %}" method="get">
+                    {% load widget_tweaks %}
+                    <div class="field has-addons" style="margin: 10px 0px 0px 0px;">
+                        <div class="control">
+                            <div class="select">
+                                {{package_form.type}}
+                            </div>
+                        </div>
+                        <div class="control" style="width: 100%;">
+                            {{package_form.name|add_class:"input"}}
+                        </div>
+                        <div class="control">
+                            <button class="button is-link" type="submit" id="submit_pkg">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div>
+                    {% if package_search %}
+                    <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 100;">
+                        <button class=" delete"></button>
+                        <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #ff0000; font-weight: bold;">Search for packages:</span></h6>
+                        {{ package_search }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </article>
+
+
+    <article class="panel is-info">
+        <p class="panel-heading py-2 is-size-6">
+            Search for vulnerabilities
+        </p>
+        <div class="panel-block">
+            <div style="padding: 10px;">
+                <div style="margin: 0px 0px 15px 0px;">Search for comprehensive information for a <span class="inline-code01">VULCOID</span> (VulnerableCode Database ID). <span style="font-style: italic;">(Only the first of these methods requires that the input be all uppercase.)</span>
+                    <ul>
+                        <li>
+                            Search for a specific <span class="inline-code01">VULCOID</span> (e.g., "VULCOID-1").
+                        </li>
+                        <li>
+                            Search for all <span class="inline-code01">VULCOID</span>s that are associated with a specific <span class="inline-code01">CVE</span> (e.g., "CVE-2009-3898") or <span class="inline-code01">GHSA</span> (e.g., "GHSA-2qrg-x229-3v8q").
+                        </li>
+                        <li>
+                            Search for "CVE" or "GHSA" -- this will return all <span class="inline-code01">VULCOID</span>s that are associated with one or more <span class="inline-code01">CVE</span>s or <span class="inline-code01">GHSA</span>s, respectively.
+                        </li>
+                    </ul>
+                </div>
+                <form action="{% url 'vulnerability_search' %}" method="get">
+                    {% load widget_tweaks %}
+                    <div class="field has-addons" style="margin: 10px 0px 0px 0px;">
+                        <div class="control" style="width: 100%;">
+                            {% render_field vuln_form.vuln_id class="input"%}
+                        </div>
+                        <div class="control">
+                            <button class="button is-link" type="submit" id="submit_vuln">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div>
+                    {% if vuln_search %}
+                    <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 100;">
+                        <button class=" delete"></button>
+                        <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #ff0000; font-weight: bold;">Search for vulnerabilities:</span></h6>
+                        {{ vuln_search }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </article>
+
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- The 1st script below is from https://bulma.io/documentation/elements/notification/ and
+    handles error notifications -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+            const $notification = $delete.parentNode;
+
+            $delete.addEventListener('click', () => {
+                $notification.parentNode.removeChild($notification);
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        $('#submit_pkg').click(function () {
+            if ($('#id_name').val().trim().length === 0) {
+                return false;
+            }
+        })
+    });
+
+    $(document).ready(function () {
+        $('#submit_vuln').click(function () {
+            if ($('#id_vuln_id').val().trim().length === 0) {
+                return false;
+            }
+        })
+    });
+</script>
 {% endblock %}

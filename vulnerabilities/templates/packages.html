@@ -1,65 +1,130 @@
 {% extends 'base.html' %}
-{% block title %}
-<h1 class="title">
-    Explore Vulnerable packages
-</h1>
-{% endblock %}
-{% block content %}
-{% load widget_tweaks %}
 
-<div class="columns">
-    <div class="column is-one-third is-offset-one-third">
-        <form action="{% url 'package_search' %}" method="get">
-            {% load widget_tweaks %}
-            <div class="field is-horizontal pd-3">
-                <div class="select">
-                    {{form.type}}
+{% block title %}
+VCIO -- DB package search
+{% endblock %}
+
+{% block content %}
+
+{% include 'navbar.html' %}
+
+<section class="section01">
+
+    <div class="columns">
+
+        <div class="column is-four-fifths" style="padding-bottom: 0px;">
+            <span style="font-size: 20px; font-weight: 500;">Search Packages</span>
+
+            <div class="field is-grouped is-grouped-multiline" style="margin-top: 10px;">
+                <div class="control">
+                    <div class="tags has-addons">
+                        <span class="tag is-dark">type</span>
+                        <span class="tag is-info">{{package_type}}</span>
+                    </div>
                 </div>
-                {{form.name|add_class:"input"}}
-                <button class="button is-success" , type="submit">
-                    Search
-                </button>
+                <div class="control">
+                    <div class="tags has-addons">
+                        <span class="tag is-dark">name or purl</span>
+                        <span class="tag is-info">{{package_name}}</span>
+                    </div>
+                </div>
             </div>
-        </form>
-        {% if result_size %}
-        <p class="has-text-centered" id="result_count">{{result_size}} results</p>
-        {% elif result_size == 0 %}
-        <p class="has-text-centered" id="result_count">No results found</p>
-        {% endif %}
-        <span class="current01">(page {{ packages.number }} of {{ packages.paginator.num_pages }})</span>
+        </div>
+        <div class="column" style="text-align: right;">
+            <!-- <a class="button is-link" href="/index">Return to search</a> -->
+            <!-- <a class="button is-link" href="/">Return to search</a> -->
+        </div>
     </div>
-</div>
+
+    <hr>
+
+    <div class="columns">
+        <div class="column" style="padding-top: 0px; padding-bottom: 0px;">
+            Total records: {{ result_size }}
+        </div>
+    </div>
+
+    <div class="is-field is-horizontal">
+        <span class="step-links">
+            {% if packages.has_previous %}
+            <a class="button paging is-normal" href="?{{ searched_for }}&page=1">&laquo; first</a>
+            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">previous</a>
+            {% else %}
+            <button class="button is-normal" title="disabled" disabled>&laquo; first</button>
+            <button class="button is-normal" title="disabled" disabled>previous</button>
+            {% endif %}
+
+            <span class="current02">
+                (page {{ packages.number }} of {{ packages.paginator.num_pages }})
+            </span>
+
+            {% if packages.has_next %}
+            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.next_page_number }}">next</a>
+            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}">last &raquo;</a>
+            {% else %}
+            <button class="button is-normal" title="disabled" disabled>next</button>
+            <button class="button is-normal" title="disabled" disabled>last &raquo;</button>
+            {% endif %}
+        </span>
+    </div>
+
+</section>
 
 {% if packages %}
 
-<section class="section">
-    <div class="content is-medium">
+<section class="section01">
+    <div class="content">
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-            <tr>
-                <th>Package URL</th>
-                <th>Affected By Vulnerabilities</th>
-                <th>Fixing Vulnerabilities</th>
-            </tr>
-            {% for package in packages %}
-            <tr>
-                <td><a href="{% url 'package_view' package.pk %}">{{package.package_url}}</a></td>
-                <td>{{package.vulnerability_count}}</td>
-                <td>{{package.patched_vulnerability_count}}</td>
-            </tr>
-            {% endfor %}
+            <thead>
+                <tr>
+                    <th><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="The package url or purl is a URL string used to identify and locate a software package.">Package URL</span></th>
+                    <th style="width: 225px;"><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is the number of vulnerabilities that affect the package.">Affected By Vulnerabilities</span></th>
+                    <th style="width: 225px;"><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is the number of vulnerabilities fixed by the package.">Fixing Vulnerabilities</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for package in packages %}
+                <tr>
+                    <td style="word-break: break-all;">
+                        {{package.package_url}}
+                        <span style="font-size: 13px;">
+                            (<a href="{% url 'package_view' package.pk %}" target="_blank">HTML</a>)
+                        </span>
+                    </td>
+                    <td>{{package.vulnerability_count}}</td>
+                    <td>{{package.patched_vulnerability_count}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </div>
 
     <div class="is-field is-horizontal">
-        {% if packages.has_previous %}
-        <a class="button" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">Previous Page</a>
-        {% endif %}
+        <span class="step-links">
+            {% if packages.has_previous %}
+            <a class="button paging is-normal" href="?{{ searched_for }}&page=1">&laquo; first</a>
+            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">previous</a>
+            {% else %}
+            <button class="button is-normal" title="disabled" disabled>&laquo; first</button>
+            <button class="button is-normal" title="disabled" disabled>previous</button>
+            {% endif %}
 
-        {% if packages.has_next %}
-        <a class="button" href="?{{ searched_for }}&page={{ packages.next_page_number}}">Next Page</a>
-        {% endif %}
+            <span class="current02">
+                (page {{ packages.number }} of {{ packages.paginator.num_pages }})
+            </span>
+
+            {% if packages.has_next %}
+            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.next_page_number }}">next</a>
+            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}">last &raquo;</a>
+            {% else %}
+            <button class="button is-normal" title="disabled" disabled>next</button>
+            <button class="button is-normal" title="disabled" disabled>last &raquo;</button>
+            {% endif %}
+        </span>
     </div>
+
 </section>
 
 {% endif %}
+
 {% endblock %}

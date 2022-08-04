@@ -22,6 +22,6 @@
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 
-VALIDATORS_REGISTRY = []
+DATASOURCE_REGISTRY = []
 
-VALIDATORS_REGISTRY = {x.__module__.split(".")[-1]: x for x in VALIDATORS_REGISTRY}
+DATASOURCE_REGISTRY = {x.__module__.split(".")[-1]: x for x in DATASOURCE_REGISTRY}

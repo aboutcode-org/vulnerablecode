@@ -19,26 +19,33 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
-
 from packageurl import PackageURL
 
 from vulnerabilities import forms
+from vulnerabilities import models
 from vulnerabilities.forms import CVEForm
 from vulnerabilities.forms import PackageForm
-from vulnerabilities import models
 
 
 class PackageSearchView(View):
     template_name = "packages.html"
 
     def get(self, request):
+        result_size = ""
         context = {}
 
         if request.GET:
             packages = self.request_to_queryset(request)
             result_size = len(packages)
-            pages = Paginator(packages, 50)
-            packages = pages.get_page(int(self.request.GET.get("page", 1)))
+            # replace code based on vulnerability search code with original package search code -- fixes failing paginator test:
+            # pages = Paginator(packages, 50)
+            # packages = pages.get_page(int(self.request.GET.get("page", 1)))
+            try:
+                page_no = request.GET.get("page", 1)
+                packages = Paginator(packages, 50).get_page(page_no)
+            except PageNotAnInteger:
+                packages = Paginator(packages, 50).get_page(1)
+            packages = Paginator(packages, 50).get_page(page_no)
             context["packages"] = packages
             context["searched_for"] = urlencode(
                 {param: request.GET[param] for param in request.GET if param != "page"}
@@ -63,6 +70,13 @@ class PackageSearchView(View):
             }
             return render(request, "index.html", context)
         else:
+            # added per 8/3/22 huddle with Tushar, but the failed test was a vulnerability test -- do we need?
+            # actually, this disrupts the regular package search so we definitely do not want this
+            # context = {
+            #     "packages": [],
+            #     "result_size": 0,
+            #     "searched_for": "",
+            # }
             return render(request, self.template_name, context)
 
     @staticmethod
@@ -126,28 +140,67 @@ class VulnerabilitySearchView(View):
     def get(self, request):
         result_size = ""
         context = {}
+        # maybe define vulnerabilities up here as an empty list?
+        # vulnerabilities = []
 
         if request.GET:
+            print("\n1 HELLO\n")
             vulnerabilities = self.request_to_vulnerabilities(request)
+            print("\n1. vulnerabilities = {}\n".format(vulnerabilities))
             result_size = len(vulnerabilities)
             pages = Paginator(vulnerabilities, 50)
             vulnerabilities = pages.get_page(int(self.request.GET.get("page", 1)))
+            print("\n1A. vulnerabilities = {}\n".format(vulnerabilities))
             vuln_id = request.GET["vuln_id"]
             context["vulnerabilities"] = vulnerabilities
             context["result_size"] = result_size
             context["vuln_id"] = vuln_id
 
-        if result_size == 0:
-            context = {
-                "vuln_search": "The VCIO DB does not contain a record of the vulnerability you entered -- "
-                + request.GET["vuln_id"]
-                + ".",
-                "vuln_form": CVEForm(request.GET or None),
-                "package_form": PackageForm(request.GET or None),
-            }
-            return render(request, "index.html", context)
-        else:
-            return render(request, self.template_name, context)
+            if result_size == 0:
+                print("\n2 HELLO\n")
+                context = {
+                    "vuln_search": "The VCIO DB does not contain a record of the vulnerability you entered -- "
+                    + request.GET["vuln_id"]
+                    + ".",
+                    "vuln_form": CVEForm(request.GET or None),
+                    "package_form": PackageForm(request.GET or None),
+                    # added per 8/3/22 huddle with Tushar -- not clear what this accomplishes -- does not affect failing tests
+                    # "vuln_id": vuln_id,
+                }
+                return render(request, "index.html", context)
+            elif result_size is None:
+                print("\n2A result_size is None!\n")
+                context = {
+                    "vuln_search": "Something strange occurred.  The VCIO DB does not contain a record of the vulnerability you entered -- "
+                    + request.GET["vuln_id"]
+                    + ".",
+                    "vuln_form": CVEForm(request.GET or None),
+                    "package_form": PackageForm(request.GET or None),
+                    # added per 8/3/22 huddle with Tushar -- not clear what this accomplishes -- does not affect failing tests
+                    # "vuln_id": vuln_id,
+                }
+                return render(request, "index.html", context)
+            else:
+                # all of the following is new except the return render()
+                # does the next line fix the referenced-before-assignment error?
+                # vulnerabilities = self.request_to_vulnerabilities(request)
+                # vuln_id = request.GET["vuln_id"]
+                # added per 8/3/22 huddle with Tushar, but this does not fix the failing test and this disrupts a proper VULCOID-1 search!?
+                # context = {
+                #     "vulnerabilities": [],
+                #     "result_size": 0,
+                #     "vuln_id": "",
+                # }
+
+                # but this fixes the failing 'def test_alias(self)' test:
+                # context = {
+                #     "vulnerabilities": vulnerabilities,
+                #     "result_size": result_size,
+                #     "vuln_id": vuln_id,
+                # }
+                print("\n3 -- context = {}\n".format(context))
+                print("\n3. vulnerabilities = {}\n".format(vulnerabilities))
+                return render(request, self.template_name, context)
 
     @staticmethod
     def request_to_vulnerabilities(request):

@@ -5,7 +5,7 @@ class Migration(migrations.Migration):
     def update_cpe_url(apps, schema_editor):
         Reference = apps.get_model("vulnerabilities", "VulnerabilityReference")
         cpe_qs = Reference.objects.filter(reference_id__startswith="cpe")
-        for index,reference in enumerate(cpe_qs.iterator()):
+        for index, reference in enumerate(cpe_qs.iterator()):
             if index % 100 == 0:
                 print(f"Processing reference {index}")
 

@@ -56,7 +56,7 @@ VCIO Home
                             {{package_form.name|add_class:"input"}}
                         </div>
                         <div class="control">
-                            <button class="button is-link" type="submit" id="submit_pkg">
+                            <button class="button is-link" type="submit" id="submit_pkg" name="template" value="index">
                                 Search
                             </button>
                         </div>
@@ -64,9 +64,9 @@ VCIO Home
                 </form>
                 <div>
                     {% if package_search %}
-                    <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 100;">
+                    <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 10;">
                         <button class=" delete"></button>
-                        <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #ff0000; font-weight: bold;">Search for packages:</span></h6>
+                        <!-- <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #ff0000; font-weight: bold;">Search for packages:</span></h6> -->
                         {{ package_search }}
                     </div>
                     {% endif %}
@@ -122,9 +122,9 @@ VCIO Home
                 </form>
                 <div>
                     {% if vuln_search %}
-                    <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 100;">
+                    <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 10;">
                         <button class=" delete"></button>
-                        <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #ff0000; font-weight: bold;">Search for vulnerabilities:</span></h6>
+                        <!-- <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #ff0000; font-weight: bold;">Search for vulnerabilities:</span></h6> -->
                         {{ vuln_search }}
                     </div>
                     {% endif %}

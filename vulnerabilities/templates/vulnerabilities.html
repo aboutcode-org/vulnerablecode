@@ -8,11 +8,13 @@ VCIO -- vulnerability search
 
 {% include 'navbar.html' %}
 
+{% if vuln_id %}
+
 <section class="section01">
 
     <div class="columns">
         <div class="column is-four-fifths" style="padding-bottom: 0px;">
-            <span style="font-size: 20px; font-weight: 500;">Search Vulnerabilities</span>
+            <span style="font-size: 20px; font-weight: 500;">Search Vulnerabilities, dude</span>
             <div class="tags has-addons" style="margin-top: 10px;">
                 <span class="tag is-dark">vuln_id</span>
                 <span class="tag is-info">{{vuln_id}}</span>
@@ -109,4 +111,91 @@ VCIO -- vulnerability search
 
 {% endif %}
 
+{% else %}
+
+<!-- <div style="color: #ff0000; font-size: 50px;">Help me!</div> -->
+
+<article class='panel is-info'>
+    <div class='panel-heading py-2 is-size-6'>
+        Search for vulnerabilities
+        <div class="dropdown is-hoverable" style="font-weight: normal;">
+            <div class="dropdown-trigger" style="text-align: right;">
+                <i class="fa fa-question-circle" style="font-size:20px; margin-left: 10px;"></i>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu4" role="menu" style="width: 600px;">
+                <div class="dropdown-content" style="box-shadow: 0px 8px 16px 0px #808080;">
+                    <div class="dropdown-item" style="font-size: 14px;">
+                        <div style="margin: 0px 0px 0px 0px;">Search for comprehensive information for a <span class="inline-code01">VULCOID</span> (VulnerableCode Database ID). <span style="font-style: italic;">(Only the first of these methods requires that the input be all uppercase.)</span>
+                            <ul>
+                                <li>
+                                    Search for a specific <span class="inline-code01">VULCOID</span> (e.g., "VULCOID-1").
+                                </li>
+                                <li>
+                                    Search for all <span class="inline-code01">VULCOID</span>s that are associated with a specific <span class="inline-code01">CVE</span> (e.g., "CVE-2009-3898") or <span class="inline-code01">GHSA</span> (e.g., "GHSA-2qrg-x229-3v8q").
+                                </li>
+                                <li>
+                                    Search for "CVE" or "GHSA" -- this will return all <span class="inline-code01">VULCOID</span>s that are associated with one or more <span class="inline-code01">CVE</span>s or <span class="inline-code01">GHSA</span>s, respectively.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-block">
+        <div style="padding-bottom: 10px; width: 100%;">
+            <form action="{% url 'vulnerability_search' %}" method="get">
+                {% load widget_tweaks %}
+                <div class="field has-addons" style="margin: 10px 0px 0px 0px;">
+                    <div class="control" style="width: 100%;">
+                        {% render_field vuln_form.vuln_id class="input"%}
+                    </div>
+                    <div class="control">
+                        <button class="button is-link" type="submit" id="submit_vuln">
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <div>
+                {% if vuln_search %}
+                <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 10;">
+                    <button class=" delete"></button>
+                    <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #ff0000; font-weight: bold;">Search for vulnerabilities:</span></h6>
+                    {{ vuln_search }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</article>
+
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- The 1st script below is from https://bulma.io/documentation/elements/notification/ and
+    handles error notifications -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+            const $notification = $delete.parentNode;
+
+            $delete.addEventListener('click', () => {
+                $notification.parentNode.removeChild($notification);
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        $('#submit_vuln').click(function () {
+            if ($('#id_vuln_id').val().trim().length === 0) {
+                return false;
+            }
+        })
+    });
+</script>
 {% endblock %}

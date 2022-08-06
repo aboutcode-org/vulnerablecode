@@ -10,48 +10,145 @@ VCIO -- DB package search
 
 <section class="section01">
 
-    <div class="columns">
+    <!-- packages = {{packages}}
+    packages.number = {{packages.number}}
+    packages.paginator.num_pages = {{packages.paginator.num_pages}} -->
 
-        <div class="column is-four-fifths" style="padding-bottom: 0px;">
-            <span style="font-size: 20px; font-weight: 500;">Search Packages</span>
-
-            <div class="field is-grouped is-grouped-multiline" style="margin-top: 10px;">
-                <div class="control">
-                    <div class="tags has-addons">
-                        <span class="tag is-dark">type</span>
-                        <span class="tag is-info">{{package_type}}</span>
-                    </div>
+    <!-- <div id="content-header">
+        <section>
+            <div class="is-flex" style="justify-content: space-between;">
+                <div>
+                    <strong>Total records:</strong> {{ result_size }}
                 </div>
-                <div class="control">
-                    <div class="tags has-addons">
-                        <span class="tag is-dark">name or purl</span>
-                        <span class="tag is-info">{{package_name}}</span>
+                <div>
+                    {% if packages.has_previous %}
+                    <a href="?page={{ packages.previous_page_number }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}">&laquo;</a>
+                    {% else %}
+                    <span>&laquo;</span>
+                    {% endif %}
+                    Page {{ packages.number }} of {{ packages.paginator.num_pages }}
+                    {% if packages.has_next %}
+                    <a href="?page={{ packages.next_page_number }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}">&raquo;</a>
+                    {% else %}
+                    <span>&raquo;</span>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </div> -->
+
+    <article class='panel is-info'>
+        <div class='panel-heading py-2 is-size-6'>
+            Search for vulnerable packages
+            <div class="dropdown is-hoverable" style="font-weight: normal;">
+                <div class="dropdown-trigger" style="text-align: right;">
+                    <i class="fa fa-question-circle" style="font-size:20px; margin-left: 10px;"></i>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu4" role="menu" style="width: 600px;">
+                    <div class="dropdown-content" style="box-shadow: 0px 8px 16px 0px #808080;">
+                        <div class="dropdown-item" style="font-size: 14px;">
+                            <div style="margin: 0px 0px 0px 0px;">
+                                <div style="margin-top: 0px;">Search for currently known Vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_blank">Package-URL</a> (aka <span class="inline-code01">purl</span>) or a Package <span class="inline-code01">name</span>.</div>
+                                <ul>
+                                    <li>
+                                        Search by Package <span class="inline-code01">name</span> -- type the <span class="inline-code01">name</span> in the search box and, if relevant to your search, select the Package <span class="inline-code01">type</span> from the dropdown.
+                                    </li>
+                                    <li>
+                                        Search by <span class="inline-code01">purl</span> -- type the <span class="inline-code01">purl</span> in the search box. <span style="font-style: italic;">(The <span class="inline-code01">type</span> dropdown does not apply to a <span class="inline-code01">purl</span> search.)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="column" style="text-align: right;">
-            <!-- <a class="button is-link" href="/index">Return to search</a> -->
-            <!-- <a class="button is-link" href="/">Return to search</a> -->
+        <div class="panel-block">
+            <div style="padding-bottom: 10px; width: 100%;">
+                <form action="{% url 'package_search' %}" method="get">
+                    {% load widget_tweaks %}
+                    <div class="field has-addons" style="margin: 10px 0px 0px 0px;">
+                        <div class="control">
+                            <div class="select">
+                                {{package_form.type}}
+                            </div>
+                        </div>
+                        <div class="control" style="width: 100%;">
+                            {{package_form.name|add_class:"input"}}
+                        </div>
+                        <div class="control">
+                            <button class="button is-link" type="submit" id="submit_pkg" name="template" value="packages">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div>
+                    {% if package_search %}
+                    <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 10;">
+                        <button class=" delete"></button>
+                        <!-- <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #ff0000; font-weight: bold;">Search for packages:</span></h6> -->
+                        {{ package_search }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-    </div>
+    </article>
 
-    <hr>
+</section>
 
-    <div class="columns">
+{% if package_name %}
+
+<!-- <div class="columns">
         <div class="column" style="padding-top: 0px; padding-bottom: 0px;">
             Total records: {{ result_size }}
         </div>
-    </div>
+    </div> -->
 
-    <div class="is-field is-horizontal">
+<!-- <div id="content-header" class="container is-max-desktop mb-3"> -->
+<div class="is-max-desktop mb-3">
+    <!-- <div id="content-header"> -->
+    <!-- <section> -->
+    <section class="mx-5">
+        <div class="is-flex" style="justify-content: space-between;">
+            <div>
+                <!-- <strong>{{ verbose_name }}:</strong> {{ paginator.count }} results -->
+                <strong>Total records:</strong> {{ result_size }}
+            </div>
+            <div>
+                {% if packages.has_previous %}
+                <a class="small_page_button" href="?{{ searched_for }}&page=1">1</a>
+                <!-- <a href="?page={{ packages.previous_page_number }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}">&laquo;</a> -->
+                <a class="page_arrow_spacing" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">&laquo;</a>
+                {% else %}
+                <span class="small_page_button">1</span>
+                <span class="page_arrow_spacing">&laquo;</span>
+                {% endif %}
+                Page {{ packages.number }} of {{ packages.paginator.num_pages }}
+                {% if packages.has_next %}
+                <!-- <a href="?page={{ packages.next_page_number }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}">&raquo;</a> -->
+                <a class="page_arrow_spacing" href="?{{ searched_for }}&page={{ packages.next_page_number }}">&raquo;</a>
+                <a class="small_page_button" href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}">{{packages.paginator.num_pages}}</a>
+                {% else %}
+                <span class="page_arrow_spacing">&raquo;</span>
+                <span class="small_page_button">{{packages.paginator.num_pages}}</span>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- <div class="is-field is-horizontal">
         <span class="step-links">
             {% if packages.has_previous %}
             <a class="button paging is-normal" href="?{{ searched_for }}&page=1">&laquo; first</a>
             <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">previous</a>
+            <a href="?{{ searched_for }}&page={{ packages.previous_page_number }}">&laquo;</a>
             {% else %}
             <button class="button is-normal" title="disabled" disabled>&laquo; first</button>
             <button class="button is-normal" title="disabled" disabled>previous</button>
+            &laquo;
             {% endif %}
 
             <span class="current02">
@@ -61,14 +158,23 @@ VCIO -- DB package search
             {% if packages.has_next %}
             <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.next_page_number }}">next</a>
             <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}">last &raquo;</a>
+            <a href="?{{ searched_for }}&page={{ packages.next_page_number }}">&raquo;</a>
             {% else %}
             <button class="button is-normal" title="disabled" disabled>next</button>
             <button class="button is-normal" title="disabled" disabled>last &raquo;</button>
+            &raquo;
             {% endif %}
         </span>
-    </div>
+    </div> -->
 
-</section>
+<!-- close section was here and prevented footer from staying at visible page bottom -->
+
+<!-- {% if packages %}
+<div>This is packages: {{packages}}</div>
+{% for package in packages %}
+<div>This is a package: {{package}} | {{package.version}}</div>
+{% endfor %}
+{% endif %} -->
 
 {% if packages %}
 
@@ -99,7 +205,7 @@ VCIO -- DB package search
         </table>
     </div>
 
-    <div class="is-field is-horizontal">
+    <!-- <div class="is-field is-horizontal">
         <span class="step-links">
             {% if packages.has_previous %}
             <a class="button paging is-normal" href="?{{ searched_for }}&page=1">&laquo; first</a>
@@ -121,10 +227,92 @@ VCIO -- DB package search
             <button class="button is-normal" title="disabled" disabled>last &raquo;</button>
             {% endif %}
         </span>
-    </div>
+    </div> -->
+
+
+    <nav class="pagination is-centered is-small" aria-label="pagination">
+        {% if packages.has_previous %}
+
+        <a href="?{{ searched_for }}&page={{ packages.previous_page_number }}" class="pagination-previous">Previous</a>
+        {% else %}
+        <a class="pagination-previous" disabled>Previous</a>
+
+        {% endif %}
+
+        {% if packages.has_next %}
+
+        <a href="?{{ searched_for }}&page={{ packages.next_page_number }}" class="pagination-next">Next</a>
+        {% else %}
+        <a class="pagination-next" disabled>Next</a>
+
+        {% endif %}
+
+        <ul class="pagination-list">
+            {% if packages.number != 1%}
+            <li>
+                <!-- <a href="?page=1{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page 1">1</a> -->
+                <a href="?{{ searched_for }}&page=1{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page 1">1</a>
+            </li>
+            {% if packages.number > 2 %}
+            <li>
+                <span class="pagination-ellipsis">&hellip;</span>
+            </li>
+            {% endif %}
+            {% endif %}
+            <li>
+                <a class="pagination-link is-current" aria-label="Page {{ packages.number }}" aria-current="page">{{ packages.number }}</a>
+                <!-- <a class="pagination-link is-current" aria-label="Page {{ packages.number }}" aria-current="page" disabled>{{ packages.number }}</a> -->
+            </li>
+            {% if packages.number != packages.paginator.num_pages %}
+            {% if packages.next_page_number != packages.paginator.num_pages %}
+            <li>
+                <span class="pagination-ellipsis">&hellip;</span>
+            </li>
+            {% endif %}
+            <li>
+                <!-- <a href="?page={{ packages.paginator.num_pages }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page {{ packages.paginator.num_pages }}">{{ packages.paginator.num_pages }}</a> -->
+                <a href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page {{ packages.paginator.num_pages }}">{{ packages.paginator.num_pages }}</a>
+            </li>
+            {% endif %}
+        </ul>
+
+    </nav>
+
+
 
 </section>
 
+{% else %}
+
 {% endif %}
 
+{% else %}
+
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- The 1st script below is from https://bulma.io/documentation/elements/notification/ and
+    handles error notifications -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+            const $notification = $delete.parentNode;
+
+            $delete.addEventListener('click', () => {
+                $notification.parentNode.removeChild($notification);
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        $('#submit_pkg').click(function () {
+            if ($('#id_name').val().trim().length === 0) {
+                return false;
+            }
+        })
+    });
+</script>
 {% endblock %}

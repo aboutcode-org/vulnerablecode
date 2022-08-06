@@ -130,7 +130,7 @@ class UpdateCPEURL(TestMigrations):
         reference.save()
         self.reference = reference
 
-    def test_cpe_url_updation(self):
+    def test_cpe_url_update(self):
         # using get_model to avoid circular import
         VulnerabilityReference = self.apps.get_model("vulnerabilities", "VulnerabilityReference")
         ref = VulnerabilityReference.objects.get(reference_id = self.reference.reference_id)

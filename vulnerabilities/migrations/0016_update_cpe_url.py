@@ -4,7 +4,11 @@ class Migration(migrations.Migration):
 
     def update_cpe_url(apps, schema_editor):
         Reference = apps.get_model("vulnerabilities", "VulnerabilityReference")
-        for reference in Reference.objects.filter(reference_id__startswith="cpe"):
+        cpe_qs = Reference.objects.filter(reference_id__startswith="cpe")
+        for index, reference in enumerate(cpe_qs.iterator()):
+            if index % 100 == 0:
+                print(f"Processing reference {index}")
+
             cpe = reference.reference_id
             base_url = 'https://nvd.nist.gov/vuln/search/results'
             params = '?adv_search=true&isCpeNameSearch=true'

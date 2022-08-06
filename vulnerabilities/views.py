@@ -29,6 +29,7 @@ from vulnerabilities.forms import PackageForm
 
 class PackageSearchView(View):
     template_name = "packages.html"
+    ordering = ["version"]
 
     def get(self, request):
         result_size = ""
@@ -37,17 +38,42 @@ class PackageSearchView(View):
         if request.GET:
             packages = self.request_to_queryset(request)
             result_size = len(packages)
+            # try:
+            #     page_no = request.GET.get("page", 1)
+            #     packages = Paginator(packages, 50).get_page(page_no)
+            # except PageNotAnInteger:
+            #     packages = Paginator(packages, 50).get_page(1)
+            # packages = Paginator(packages, 50).get_page(page_no)
+
+            # from vuln search
+            # pages = Paginator(packages, 50)
+            # packages = pages.get_page(int(self.request.GET.get("page", 1)))
+
+            # my revised
             try:
                 page_no = request.GET.get("page", 1)
+                pages = Paginator(packages, 50)
+                # packages = pages.get_page(int(self.request.GET.get("page", 1)))
                 packages = Paginator(packages, 50).get_page(page_no)
             except PageNotAnInteger:
                 packages = Paginator(packages, 50).get_page(1)
-            packages = Paginator(packages, 50).get_page(page_no)
+            # packages = pages.get_page(int(self.request.GET.get("page", 1)))
+            packages = pages.get_page(page_no)
+
+            # print("\ntype(packages) = {}\n".format(type(packages)))
+            # for package in packages:
+            #     print("\npackage = {}\n".format(package))
+            #     print("\ntype(package) = {}\n".format(type(package)))
+            #     print("\npackage.version = {}\n".format(package.version))
+            #     print("\ntype(package.version) = {}\n".format(type(package.version)))
+
             context["packages"] = packages
             context["searched_for"] = urlencode(
                 {param: request.GET[param] for param in request.GET if param != "page"}
             )
             context["result_size"] = result_size
+
+            print("\n1. context = {}\n".format(context))
 
             if len(request.GET["type"]):
                 package_type = request.GET["type"]
@@ -62,11 +88,26 @@ class PackageSearchView(View):
                 "package_search": "The VCIO DB does not contain a record of the package you entered -- "
                 + request.GET["name"]
                 + ".",
-                "vuln_form": CVEForm(request.GET or None),
-                "package_form": PackageForm(request.GET or None),
+                # "vuln_form": CVEForm(request.GET or None),
+                # "package_form": PackageForm(request.GET or None),
             }
-            return render(request, "index.html", context)
+            # return render(request, "index.html", context)
+
+            if request.GET.get("template") == "packages":
+                context["package_form"] = PackageForm(request.GET or None)
+                return render(request, "packages.html", context)
+            elif request.GET.get("template") == "index":
+                context["package_form"] = PackageForm(request.GET or None)
+                context["vuln_form"] = CVEForm(request.GET or None)
+                return render(request, "index.html", context)
+            else:
+                context["package_form"] = PackageForm(request.GET or None)
+                context["vuln_form"] = CVEForm(request.GET or None)
+                return render(request, "index.html", context)
+
         else:
+
+            context["package_form"] = PackageForm(request.GET or None)
             return render(request, self.template_name, context)
 
     @staticmethod
@@ -109,6 +150,8 @@ class PackageSearchView(View):
         return list(
             models.Package.objects.all()
             .filter(name__icontains=package_name, type__icontains=package_type)
+            # 8/5/2022 Friday 4:02:23 PM.  This works!
+            .order_by("type", "name", "version")
             .annotate(
                 vulnerability_count=Count(
                     "vulnerabilities",
@@ -129,6 +172,7 @@ class VulnerabilitySearchView(View):
 
     def get(self, request):
         context = {}
+        result_size = 0
 
         if request.GET:
             vulnerabilities = self.request_to_vulnerabilities(request)
@@ -141,25 +185,43 @@ class VulnerabilitySearchView(View):
             context["vuln_id"] = vuln_id
 
             if result_size == 0:
+
+                # This needs to distinguish between searches made from index.html, vulnerabilities.html
+                # and vulnerability.html so that we return render the originating template.
+
                 context = {
                     "vuln_search": "The VCIO DB does not contain a record of the vulnerability you entered -- "
-                    + request.GET["vuln_id"]
-                    + ".",
+                    + request.GET.get("vuln_id")
+                    or "" + ".",
                     "vuln_form": CVEForm(request.GET or None),
                     "package_form": PackageForm(request.GET or None),
                 }
                 return render(request, "index.html", context)
-            else:
-                print("\ncontext = {}\n".format(context))
-                return render(request, self.template_name, context)
+
+        context["vuln_form"] = CVEForm(request.GET or None)
+        return render(request, self.template_name, context)
 
     @staticmethod
     def request_to_vulnerabilities(request):
         vuln_id = request.GET["vuln_id"]
+        # return list(
+        #     models.Vulnerability.objects.filter(
+        #         Q(vulnerability_id=vuln_id) | Q(aliases__alias__icontains=vuln_id)
+        #     ).annotate(
+        #         vulnerable_package_count=Count(
+        #             "packages", filter=Q(packagerelatedvulnerability__fix=False)
+        #         ),
+        #         patched_package_count=Count(
+        #             "packages", filter=Q(packagerelatedvulnerability__fix=True)
+        #         ),
+        #     )
+        # )
         return list(
             models.Vulnerability.objects.filter(
                 Q(vulnerability_id=vuln_id) | Q(aliases__alias__icontains=vuln_id)
-            ).annotate(
+            )
+            # 8/5/2022 Friday 4:09:36 PM.Excellent -- this sorts by VULCOID!
+            .order_by("vulnerability_id").annotate(
                 vulnerable_package_count=Count(
                     "packages", filter=Q(packagerelatedvulnerability__fix=False)
                 ),
@@ -181,14 +243,21 @@ class PackageUpdate(UpdateView):
         context["resolved_vuln"] = resolved_vuln
         context["impacted_vuln"] = unresolved_vuln
 
+        print("\n1. context = {}\n".format(context))
+
         return context
 
     def _package_vulnerabilities(self):
         # This can be further optimised by caching get_object result first time it
         # is called
         package = self.get_object()
+
         resolved_vuln = [i for i in package.resolved_to]
         unresolved_vuln = [i for i in package.vulnerable_to]
+
+        # 8/5/2022 Friday 4:50:26 PM.  At 1st glance this works, sorts the vulnerabilities associated with each purl/unique package name etc.
+        resolved_vuln = sorted(resolved_vuln, key=lambda x: x.vulnerability_id)
+        unresolved_vuln = sorted(unresolved_vuln, key=lambda x: x.vulnerability_id)
 
         return resolved_vuln, unresolved_vuln
 
@@ -202,6 +271,9 @@ class VulnerabilityDetails(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(VulnerabilityDetails, self).get_context_data(**kwargs)
+        print("\nVulnerabilityDetails super context = {}\n".format(context))
+        for key, value in context.items():
+            print("{}: {}\n".format(key, value))
         vulnerability = models.Vulnerability.objects.get(id=self.kwargs["pk"])
         context["vulnerability"] = vulnerability
         context["aliases"] = vulnerability.aliases.alias()
@@ -210,14 +282,18 @@ class VulnerabilityDetails(ListView):
         vulnerability_list_count = len(vulnerability_list)
         context["vulnerability_list_count"] = vulnerability_list_count
 
-        vulnerability_ref = models.VulnerabilityReference.objects.get(id=self.kwargs["pk"])
+        # vulnerability_ref = models.VulnerabilityReference.objects.get(id=self.kwargs["pk"])
 
-        context["vulnerability_ref"] = vulnerability_ref
+        # context["vulnerability_ref"] = vulnerability_ref
 
         severity_list = []
         for ref in self.object_list.all():
             for obj in ref.severities:
                 severity_list.append(obj)
+
+        print("\nVulnerabilityDetails context = {}\n".format(context))
+        for key, value in context.items():
+            print("{}: {}\n".format(key, value))
 
         return context
 

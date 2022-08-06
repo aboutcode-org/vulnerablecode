@@ -141,6 +141,19 @@ VCIO Package Details
                         <td>
                             {% for alias in vuln.alias %}
                             {{alias}}
+
+                            <!-- {% if object_list %}
+                            {% for ref in object_list %}
+                            {% if ref.reference_id %}
+                            {% if ref.reference_id == alias %}
+                            {% if ref.url %}
+                            {{ref.url}}
+                            {% endif %}
+                            {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %} -->
+
                             <br />
                             {% endfor %}
                         </td>

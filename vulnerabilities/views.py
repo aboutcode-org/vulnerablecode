@@ -20,6 +20,7 @@ from django.views import View
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 from packageurl import PackageURL
+from packaging import version
 
 from vulnerabilities import forms
 from vulnerabilities import models
@@ -29,6 +30,7 @@ from vulnerabilities.forms import PackageForm
 
 class PackageSearchView(View):
     template_name = "packages.html"
+    # This does not handle version sorting correctly
     ordering = ["version"]
 
     def get(self, request):
@@ -37,43 +39,34 @@ class PackageSearchView(View):
 
         if request.GET:
             packages = self.request_to_queryset(request)
+            # Need to sort these correctly by version -- using order_by in request_to_queryset() does not sort versions correctly
+            # this throws error when version includes, e.g., 'alpha'
+            # packages.sort(key=lambda x: [int(u) for u in x.version.split(".")])
+
+            # no errors but doesn't sort 1.19 after 1.2 (and this test does not sort 1st by type, namespace and name ()and maybe qualifiers and subpath, too?), as it should)
+            # packages.sort(key=lambda x: [u for u in x.version.split(".")])
+
+            # try using version from packaging
+            # This failed for 1 version -- packaging.version.InvalidVersion: Invalid version: '4.0.0.alpha3.1'
+            # per https://packaging.pypa.io/en/latest/version.html:
+            # InvalidVersion – If the version does not conform to PEP 440 in any way then this exception will be raised.
+            # See https://peps.python.org/pep-0440/
+            # packages.sort(key=lambda x: version.Version(x.version))
+
             result_size = len(packages)
-            # try:
-            #     page_no = request.GET.get("page", 1)
-            #     packages = Paginator(packages, 50).get_page(page_no)
-            # except PageNotAnInteger:
-            #     packages = Paginator(packages, 50).get_page(1)
-            # packages = Paginator(packages, 50).get_page(page_no)
-
-            # from vuln search
-            # pages = Paginator(packages, 50)
-            # packages = pages.get_page(int(self.request.GET.get("page", 1)))
-
-            # my revised
             try:
                 page_no = request.GET.get("page", 1)
                 pages = Paginator(packages, 50)
-                # packages = pages.get_page(int(self.request.GET.get("page", 1)))
                 packages = Paginator(packages, 50).get_page(page_no)
             except PageNotAnInteger:
                 packages = Paginator(packages, 50).get_page(1)
-            # packages = pages.get_page(int(self.request.GET.get("page", 1)))
             packages = pages.get_page(page_no)
-
-            # print("\ntype(packages) = {}\n".format(type(packages)))
-            # for package in packages:
-            #     print("\npackage = {}\n".format(package))
-            #     print("\ntype(package) = {}\n".format(type(package)))
-            #     print("\npackage.version = {}\n".format(package.version))
-            #     print("\ntype(package.version) = {}\n".format(type(package.version)))
 
             context["packages"] = packages
             context["searched_for"] = urlencode(
                 {param: request.GET[param] for param in request.GET if param != "page"}
             )
             context["result_size"] = result_size
-
-            print("\n1. context = {}\n".format(context))
 
             if len(request.GET["type"]):
                 package_type = request.GET["type"]
@@ -88,26 +81,31 @@ class PackageSearchView(View):
                 "package_search": "The VCIO DB does not contain a record of the package you entered -- "
                 + request.GET["name"]
                 + ".",
-                # "vuln_form": CVEForm(request.GET or None),
-                # "package_form": PackageForm(request.GET or None),
             }
-            # return render(request, "index.html", context)
 
             if request.GET.get("template") == "packages":
                 context["package_form"] = PackageForm(request.GET or None)
+                context["template_name"] = "packages.html"
                 return render(request, "packages.html", context)
+            elif request.GET.get("template") == "package_details":
+                context["package_form"] = PackageForm(request.GET or None)
+                context["template_name"] = "package_update.html"
+                return render(request, "package_update.html", context)
             elif request.GET.get("template") == "index":
                 context["package_form"] = PackageForm(request.GET or None)
                 context["vuln_form"] = CVEForm(request.GET or None)
+                context["template_name"] = "index.html"
                 return render(request, "index.html", context)
             else:
                 context["package_form"] = PackageForm(request.GET or None)
                 context["vuln_form"] = CVEForm(request.GET or None)
+                context["template_name"] = "index.html"
                 return render(request, "index.html", context)
 
         else:
 
             context["package_form"] = PackageForm(request.GET or None)
+            context["template_name"] = self.template_name
             return render(request, self.template_name, context)
 
     @staticmethod
@@ -150,7 +148,7 @@ class PackageSearchView(View):
         return list(
             models.Package.objects.all()
             .filter(name__icontains=package_name, type__icontains=package_type)
-            # 8/5/2022 Friday 4:02:23 PM.  This works!
+            # this does not handle version sorting correctly
             .order_by("type", "name", "version")
             .annotate(
                 vulnerability_count=Count(
@@ -187,7 +185,7 @@ class VulnerabilitySearchView(View):
             if result_size == 0:
 
                 # This needs to distinguish between searches made from index.html, vulnerabilities.html
-                # and vulnerability.html so that we return render the originating template.
+                # and vulnerability.html so that we return render the originating template.  See how we did this for packages.
 
                 context = {
                     "vuln_search": "The VCIO DB does not contain a record of the vulnerability you entered -- "
@@ -195,32 +193,22 @@ class VulnerabilitySearchView(View):
                     or "" + ".",
                     "vuln_form": CVEForm(request.GET or None),
                     "package_form": PackageForm(request.GET or None),
+                    "template_name": "index.html",
                 }
                 return render(request, "index.html", context)
 
         context["vuln_form"] = CVEForm(request.GET or None)
+        context["template_name"] = self.template_name
         return render(request, self.template_name, context)
 
     @staticmethod
     def request_to_vulnerabilities(request):
         vuln_id = request.GET["vuln_id"]
-        # return list(
-        #     models.Vulnerability.objects.filter(
-        #         Q(vulnerability_id=vuln_id) | Q(aliases__alias__icontains=vuln_id)
-        #     ).annotate(
-        #         vulnerable_package_count=Count(
-        #             "packages", filter=Q(packagerelatedvulnerability__fix=False)
-        #         ),
-        #         patched_package_count=Count(
-        #             "packages", filter=Q(packagerelatedvulnerability__fix=True)
-        #         ),
-        #     )
-        # )
         return list(
             models.Vulnerability.objects.filter(
                 Q(vulnerability_id=vuln_id) | Q(aliases__alias__icontains=vuln_id)
             )
-            # 8/5/2022 Friday 4:09:36 PM.Excellent -- this sorts by VULCOID!
+            # this sorts by VULCOID
             .order_by("vulnerability_id").annotate(
                 vulnerable_package_count=Count(
                     "packages", filter=Q(packagerelatedvulnerability__fix=False)
@@ -243,8 +231,28 @@ class PackageUpdate(UpdateView):
         context["resolved_vuln"] = resolved_vuln
         context["impacted_vuln"] = unresolved_vuln
 
-        print("\n1. context = {}\n".format(context))
+        # Get related packages so we can check their vulnerabilities
+        related_packages = self._related_packages()
+        # Using order_by below in the method/function doesn't properly sort versions, so need to do that here
+        # but this can't handle, e.g., `alpha1` as part of a version, throws error -- `ValueError: invalid literal for int() with base 10: 'alpha1'`
+        # related_packages.sort(key=lambda x: [int(u) for u in x.version.split(".")])
+        context["related_packages"] = related_packages
 
+        # 8/7/2022 Sunday 11:45:54 AM.  Identify related_packages with 0 reported vulnerabilities
+        no_reported_vulns_packages = []
+        for pkg in related_packages:
+            if pkg.vulnerability_count == 0:
+                no_reported_vulns_packages.append(pkg)
+        # Sort the no_reported_vulns_packages by version
+        # This does not handle version sorting correctly, e.g., 1.2.27 is displayed above 1.2.4
+        no_reported_vulns_packages = sorted(no_reported_vulns_packages, key=lambda x: x.version)
+        # this seems to work -- no, like the other blocks that check package versions, this throws an
+        # error when the version includes alpha characters, e.g., `ValueError: invalid literal for int() with base 10: '2+bedrock-1'`
+        # no_reported_vulns_packages.sort(key=lambda x: [int(u) for u in x.version.split(".")])
+        context["no_reported_vulns_packages"] = no_reported_vulns_packages
+
+        context["package_form"] = PackageForm(self.request.GET or None)
+        context["template_name"] = self.template_name
         return context
 
     def _package_vulnerabilities(self):
@@ -255,11 +263,34 @@ class PackageUpdate(UpdateView):
         resolved_vuln = [i for i in package.resolved_to]
         unresolved_vuln = [i for i in package.vulnerable_to]
 
-        # 8/5/2022 Friday 4:50:26 PM.  At 1st glance this works, sorts the vulnerabilities associated with each purl/unique package name etc.
+        # Sort the vulnerabilities associated with each purl/unique package name etc.
         resolved_vuln = sorted(resolved_vuln, key=lambda x: x.vulnerability_id)
         unresolved_vuln = sorted(unresolved_vuln, key=lambda x: x.vulnerability_id)
 
         return resolved_vuln, unresolved_vuln
+
+    # get related packages
+    def _related_packages(self):
+        purl = self.get_object()
+        return list(
+            models.Package.objects.all()
+            # Try to match the type and name values but not the version value -- also want to match namespace!
+            .filter(Q(type=purl.type, namespace=purl.namespace, name=purl.name))
+            # This does not handle version sorting correctly so need to do that up above (and we do)
+            .order_by("version")
+            .annotate(
+                vulnerability_count=Count(
+                    "vulnerabilities",
+                    filter=Q(packagerelatedvulnerability__fix=False),
+                ),
+                # TODO: consider renaming to fixed in the future
+                patched_vulnerability_count=Count(
+                    "vulnerabilities",
+                    filter=Q(packagerelatedvulnerability__fix=True),
+                ),
+            )
+            .prefetch_related()
+        )
 
     def get_success_url(self):
         return reverse("package_view", kwargs={"pk": self.kwargs["pk"]})
@@ -271,9 +302,6 @@ class VulnerabilityDetails(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(VulnerabilityDetails, self).get_context_data(**kwargs)
-        print("\nVulnerabilityDetails super context = {}\n".format(context))
-        for key, value in context.items():
-            print("{}: {}\n".format(key, value))
         vulnerability = models.Vulnerability.objects.get(id=self.kwargs["pk"])
         context["vulnerability"] = vulnerability
         context["aliases"] = vulnerability.aliases.alias()
@@ -282,18 +310,15 @@ class VulnerabilityDetails(ListView):
         vulnerability_list_count = len(vulnerability_list)
         context["vulnerability_list_count"] = vulnerability_list_count
 
-        # vulnerability_ref = models.VulnerabilityReference.objects.get(id=self.kwargs["pk"])
+        context["template_name"] = self.template_name
 
+        # vulnerability_ref = models.VulnerabilityReference.objects.get(id=self.kwargs["pk"])
         # context["vulnerability_ref"] = vulnerability_ref
 
         severity_list = []
         for ref in self.object_list.all():
             for obj in ref.severities:
                 severity_list.append(obj)
-
-        print("\nVulnerabilityDetails context = {}\n".format(context))
-        for key, value in context.items():
-            print("{}: {}\n".format(key, value))
 
         return context
 
@@ -310,6 +335,7 @@ class HomePage(View):
         context = {
             "vuln_form": CVEForm(request.GET or None),
             "package_form": PackageForm(request.GET or None),
+            "template_name": self.template_name,
         }
         return render(request, self.template_name, context)
 

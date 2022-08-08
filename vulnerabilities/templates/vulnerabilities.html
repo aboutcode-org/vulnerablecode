@@ -14,7 +14,7 @@ VCIO -- vulnerability search
 
     <div class="columns">
         <div class="column is-four-fifths" style="padding-bottom: 0px;">
-            <span style="font-size: 20px; font-weight: 500;">Search Vulnerabilities, dude</span>
+            <span style="font-size: 20px; font-weight: 500;">Search Vulnerabilities</span>
             <div class="tags has-addons" style="margin-top: 10px;">
                 <span class="tag is-dark">vuln_id</span>
                 <span class="tag is-info">{{vuln_id}}</span>
@@ -73,7 +73,7 @@ VCIO -- vulnerability search
                 <td style="word-break: break-all;">
                     {{vulnerability.vulnerability_id}}
                     <span style="font-size: 13px;">
-                        (<a href="{% url 'vulnerability_view' vulnerability.pk %}" target="_blank">HTML</a>)
+                        (<a href="{% url 'vulnerability_view' vulnerability.pk %}" target="_self">HTML</a>)
                     </span>
                 </td>
                 <td>{{vulnerability.vulnerable_package_count}}</td>

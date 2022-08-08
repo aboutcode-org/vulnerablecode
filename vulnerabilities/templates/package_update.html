@@ -9,24 +9,83 @@ VCIO Package Details
 {% include 'navbar.html' %}
 
 <section class="section01">
-
-    <div class="columns">
-        <div class="column is-four-fifths">
-            <span style="font-size: 20px; font-weight: 500;">Package Details</span>
-            <div class="tags has-addons" style="margin-top: 10px;">
-                <span class="tag is-dark">purl</span>
-                <span class="tag is-info">{{package.package_url}}</span>
+    <article class='panel is-info'>
+        <div class='panel-heading py-2 is-size-6'>
+            Search for vulnerable packages
+            <div class="dropdown is-hoverable" style="font-weight: normal;">
+                <div class="dropdown-trigger" style="text-align: right;">
+                    <i class="fa fa-question-circle" style="font-size:20px; margin-left: 10px;"></i>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu4" role="menu" style="width: 600px;">
+                    <div class="dropdown-content" style="box-shadow: 0px 8px 16px 0px #808080;">
+                        <div class="dropdown-item" style="font-size: 14px;">
+                            <div style="margin: 0px 0px 0px 0px;">
+                                <div style="margin-top: 0px;">Search for currently known Vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_self">Package-URL</a> (aka <span class="inline-code01">purl</span>) or a Package <span class="inline-code01">name</span>.</div>
+                                <ul>
+                                    <li>
+                                        Search by Package <span class="inline-code01">name</span> -- type the <span class="inline-code01">name</span> in the search box and, if relevant to your search, select the Package <span class="inline-code01">type</span> from the dropdown.
+                                    </li>
+                                    <li>
+                                        Search by <span class="inline-code01">purl</span> -- type the <span class="inline-code01">purl</span> in the search box. <span style="font-style: italic;">(The <span class="inline-code01">type</span> dropdown does not apply to a <span class="inline-code01">purl</span> search.)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="column" style="text-align: right;">
-
+        <div class="panel-block">
+            <div style="padding-bottom: 10px; width: 100%;">
+                <form action="{% url 'package_search' %}" method="get">
+                    {% load widget_tweaks %}
+                    <div class="field has-addons" style="margin: 10px 0px 0px 0px;">
+                        <div class="control">
+                            <div class="select">
+                                {{package_form.type}}
+                            </div>
+                        </div>
+                        <div class="control" style="width: 100%;">
+                            {{package_form.name|add_class:"input"}}
+                        </div>
+                        <div class="control">
+                            <button class="button is-link" type="submit" id="submit_pkg" name="template" value="package_details">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div>
+                    {% if package_search %}
+                    <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 10;">
+                        <button class=" delete"></button>
+                        <!-- <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #ff0000; font-weight: bold;">Search for packages:</span></h6> -->
+                        {{ package_search }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-    </div>
-
+    </article>
 </section>
+
+<!-- 8/6/2022 Saturday 3:24:01 PM.  Add an if condition here to display this section only if there's a record; -- packages uses `if package_name` -->
+{% if package %}
+
+<!-- <section class="section01">
+    <h4 class="title is-4" style="margin-bottom: 0px;">Package Details</h4>
+</section> -->
 
 
 <section class="section01">
+    <!-- <div style="margin-bottom: 10px;">
+        <span class="tag is-info is-medium has-text-weight-bold" style="margin-right: 10px;">Package Details</span>
+    </div> -->
+    <article class="panel is-info panel-header-only">
+        <p class="panel-heading py-2 is-size-6">
+            Package Details
+        </p>
+    </article>
 
     <div class="tabs is-boxed" id="tabs">
         <ul>
@@ -107,6 +166,23 @@ VCIO Package Details
                             {{resolved_vuln|length}}
                         </td>
                     </tr>
+                    <tr>
+                        <td class="two-col-left">Packages with no reported unresolved vulnerabilities</td>
+                        <td class="two-col-right">
+                            <!-- {% if package %} -->
+                            {% if no_reported_vulns_packages|length > 0 %}
+                            {% for pkg in no_reported_vulns_packages %}
+                            <!-- {% if pkg %} -->
+                            <span><a href="{% url 'package_view' pkg.pk %}?type={{package_type}}&name={{pkg.package_url}}" target="_self">{{pkg.package_url}}</a></span>
+                            <br />
+                            <!-- {% endif %} -->
+                            {% endfor %}
+                            {% else %}
+                            We are unable to identify such a package.
+                            {% endif %}
+                            <!-- {% endif %} -->
+                        </td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -131,7 +207,7 @@ VCIO Package Details
                         <td>
                             {{ vuln.vulnerability_id }}
                             <span style="font-size: 13px;">
-                                (<a href="{% url 'vulnerability_view' vuln.pk %}" target="_blank">HTML</a>)
+                                (<a href="{% url 'vulnerability_view' vuln.pk %}" target="_self">HTML</a>)
                             </span>
 
                         </td>
@@ -194,7 +270,7 @@ VCIO Package Details
                         <td>
                             {{ vuln.vulnerability_id }}
                             <span style="font-size: 13px;">
-                                (<a href="{% url 'vulnerability_view' vuln.pk %}" target="_blank">HTML</a>)
+                                (<a href="{% url 'vulnerability_view' vuln.pk %}" target="_self">HTML</a>)
                             </span>
                         </td>
                         <td>
@@ -228,9 +304,168 @@ VCIO Package Details
 
     </div>
 
+    {% if package %}
+    <div class="columns">
+        <span class="tag is-danger is-medium" style="margin-bottom: 10px;">Test view query data</span>
+    </div>
+    <div class="columns">
+        <div class="column skinny" style="text-align: right;">
+            purl
+        </div>
+        <div class="column skinny is-four-fifths">
+            {{package.package_url}}
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column skinny" style="text-align: right;">
+            type
+        </div>
+        <div class="column skinny is-four-fifths">
+            {{package.type}}
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column skinny" style="text-align: right;">
+            namespace
+        </div>
+        <div class="column skinny is-four-fifths">
+            {{package.namespace}}
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column skinny" style="text-align: right;">
+            version
+        </div>
+        <div class="column skinny is-four-fifths">
+            {{package.version}}
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column skinny" style="text-align: right;">
+            qualifiers
+        </div>
+        <div class="column skinny is-four-fifths">
+            {% for key, value in package.qualifiers.items %}
+            {{key}} = {{value}}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column skinny" style="text-align: right;">
+            subpath
+        </div>
+        <div class="column skinny is-four-fifths">
+            {{package.subpath}}
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column skinny" style="text-align: right;">
+            Affected By Vulnerabilities
+        </div>
+        <div class="column skinny is-four-fifths">
+            {{impacted_vuln|length}}
+            <br /><br />
+            {{impacted_vuln}}
+            <br /><br />
+            {% for vuln in impacted_vuln %}
+            {{vuln}}
+            <br />
+            {{ vuln.vulnerability_id }}
+            <span style="font-size: 13px;">
+                (<a href="{% url 'vulnerability_view' vuln.pk %}" target="_self">HTML</a>)
+            </span>
+            <br />
+            {{ vuln.summary }}
+            <br />
+            {% for alias in vuln.alias %}
+            {{alias}}
+            <br />
+            {% endfor %}
+            <br />
+            {% endfor %}
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column skinny" style="text-align: right;">
+            Fixing Vulnerabilities
+        </div>
+        <div class="column skinny is-four-fifths">
+            {{resolved_vuln|length}}
+            <br /><br />
+            {{resolved_vuln}}
+            <br /><br />
+            {% for vuln in resolved_vuln %}
+            {{vuln}}
+            <br />
+            {{ vuln.vulnerability_id }}
+            <span style="font-size: 13px;">
+                (<a href="{% url 'vulnerability_view' vuln.pk %}" target="_self">HTML</a>)
+            </span>
+            <br />
+            {{ vuln.summary }}
+            <br />
+            {% for alias in vuln.alias %}
+            {{alias}}
+            <br />
+            {% endfor %}
+            <br />
+            {% endfor %}
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column skinny" style="text-align: right;">
+            related packages
+        </div>
+        <div class="column skinny is-four-fifths">
+            {% for pkg in related_packages %}
+            {% if pkg.version == package.version %}
+            <span style="background-color: #ffcccc;">{{pkg}} (vulnerability_count = {{pkg.vulnerability_count}} and fixed_count = {{pkg.patched_vulnerability_count}}) (version = {{pkg.version}})</span>
+            {% elif pkg.vulnerability_count == 0 %}
+            <span style="background-color: #ccffcc;">{{pkg}} (vulnerability_count = {{pkg.vulnerability_count}} and fixed_count = {{pkg.patched_vulnerability_count}}) (version = {{pkg.version}})</span>
+            {% else %}
+            <span>{{pkg}} (vulnerability_count = {{pkg.vulnerability_count}} and fixed_count = {{pkg.patched_vulnerability_count}})</span>
+            {% endif %}
+            <br />
+            {% endfor %}
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column skinny" style="text-align: right; background-color: #ccffcc;">
+            packages with 0 reported vulnerabilities
+        </div>
+        <div class="column skinny is-four-fifths" style="background-color: #ccffcc;">
+            {% for pkg in no_reported_vulns_packages %}
+            <span>{{pkg}} (vulnerability_count = {{pkg.vulnerability_count}} and fixed_count = {{pkg.patched_vulnerability_count}}) (version = {{pkg.version}})</span>
+            <br />
+            {% endfor %}
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column skinny" style="text-align: right;">
+            aaa
+        </div>
+        <div class="column skinny is-four-fifths">
+            bbb
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column skinny" style="text-align: right;">
+            aaa
+        </div>
+        <div class="column skinny is-four-fifths">
+            bbb
+        </div>
+    </div>
+    {% endif %}
+
+
 </section>
 
+{% endif %}
 
+{% endblock %}
+
+{% block scripts %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -243,6 +478,24 @@ VCIO Package Details
             $('#tab-content div').removeClass('is-active');
             $('div[data-content="' + tab + '"]').addClass('is-active');
         });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+            const $notification = $delete.parentNode;
+
+            $delete.addEventListener('click', () => {
+                $notification.parentNode.removeChild($notification);
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        $('#submit_pkg').click(function () {
+            if ($('#id_name').val().trim().length === 0) {
+                return false;
+            }
+        })
     });
 </script>
 

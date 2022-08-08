@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-VCIO -- DB package search
+VCIO Package Search Results
 {% endblock %}
 
 {% block content %}
@@ -48,7 +48,7 @@ VCIO -- DB package search
                     <div class="dropdown-content" style="box-shadow: 0px 8px 16px 0px #808080;">
                         <div class="dropdown-item" style="font-size: 14px;">
                             <div style="margin: 0px 0px 0px 0px;">
-                                <div style="margin-top: 0px;">Search for currently known Vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_blank">Package-URL</a> (aka <span class="inline-code01">purl</span>) or a Package <span class="inline-code01">name</span>.</div>
+                                <div style="margin-top: 0px;">Search for currently known Vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_self">Package-URL</a> (aka <span class="inline-code01">purl</span>) or a Package <span class="inline-code01">name</span>.</div>
                                 <ul>
                                     <li>
                                         Search by Package <span class="inline-code01">name</span> -- type the <span class="inline-code01">name</span> in the search box and, if relevant to your search, select the Package <span class="inline-code01">type</span> from the dropdown.
@@ -110,11 +110,21 @@ VCIO -- DB package search
 <div class="is-max-desktop mb-3">
     <!-- <div id="content-header"> -->
     <!-- <section> -->
+    <!-- <section class="section01"> -->
     <section class="mx-5">
+        <!-- <div style="margin-bottom: 10px;">
+            <span class="tag is-info is-medium has-text-weight-bold" style="margin-right: 10px;">Package Search Results</span>
+        </div> -->
+        <article class="panel is-info panel-header-only">
+            <p class="panel-heading py-2 is-size-6">
+                Package Search Results
+            </p>
+        </article>
         <div class="is-flex" style="justify-content: space-between;">
             <div>
                 <!-- <strong>{{ verbose_name }}:</strong> {{ paginator.count }} results -->
-                <strong>Total records:</strong> {{ result_size }}
+                <strong>Total records:</strong> {{ packages.paginator.count }}
+                <!-- <strong>Total records:</strong> {{ result_size }} -->
             </div>
             <div>
                 {% if packages.has_previous %}
@@ -194,7 +204,9 @@ VCIO -- DB package search
                     <td style="word-break: break-all;">
                         {{package.package_url}}
                         <span style="font-size: 13px;">
-                            (<a href="{% url 'package_view' package.pk %}" target="_blank">HTML</a>)
+                            <!-- (<a href="{% url 'package_view' package.pk %}" target="_self">HTML</a>) -->
+                            <!-- (<a href="{% url 'package_view' package.pk %}?type={{package_type}}&name={{package_name}}" target="_self">HTML</a>) -->
+                            (<a href="{% url 'package_view' package.pk %}?type={{package_type}}&name={{package.package_url}}" target="_self">HTML</a>)
                         </span>
                     </td>
                     <td>{{package.vulnerability_count}}</td>

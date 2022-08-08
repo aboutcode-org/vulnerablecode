@@ -8,7 +8,6 @@
 #
 
 import logging
-import os
 import traceback
 from datetime import datetime
 from typing import Iterable
@@ -30,7 +29,6 @@ from univers.versions import Version
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import GitImporter
-from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import UnMergeablePackageError
 from vulnerabilities.improver import Improver
@@ -70,10 +68,6 @@ def fork_and_get_dir(url):
     Fetch a clone of the gitlab repository at url and return the directory destination
     """
     return fetch_via_vcs(url).dest_dir
-
-
-class ForkError(Exception):
-    pass
 
 
 class GitLabAPIImporter(GitImporter):

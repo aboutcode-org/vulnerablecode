@@ -12,7 +12,6 @@ import datetime
 import logging
 import os
 import shutil
-import tempfile
 import traceback
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -23,10 +22,7 @@ from typing import Optional
 from typing import Set
 from typing import Tuple
 
-from binaryornot.helpers import is_binary_string
 from fetchcode.vcs import fetch_via_vcs
-from git import DiffIndex
-from git import Repo
 from license_expression import Licensing
 from packageurl import PackageURL
 from univers.version_range import VersionRange

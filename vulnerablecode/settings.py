@@ -160,5 +160,6 @@ REST_FRAMEWORK = {
         "rest_framework.filters.SearchFilter",
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 100,
+    # Reduce to 10 records per page to display data almost instantaneously https://github.com/nexB/vulnerablecode/issues/819
+    "PAGE_SIZE": 10,
 }

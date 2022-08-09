@@ -314,48 +314,26 @@ class ForkError(Exception):
 
 
 class GitImporter(Importer):
-    def __init__(self, repo_url, save_working_directory=True):
+    def __init__(self, repo_url):
         super().__init__()
         self.repo_url = repo_url
-        self.save_working_directory = save_working_directory
+        self.vcs_response = None
+
+    def __enter__(self):
+        super().__enter__()
+        self.clone()
+        return self
+
+    def __exit__(self):
+        self.vcs_response.delete()
+
+    def clone(self):
         try:
             self.vcs_response = fetch_via_vcs(self.repo_url)
         except Exception as e:
-            logger.error(f"Can't clone url {self.repo_url} - {e}")
-            raise ForkError
-
-    def __exit__(self):
-        if not self.save_working_directory:
-            shutil.rmtree(self.vcs_response.dest_dir)
-
-    def collect_files(
-        self,
-        subdir: str = None,
-        recursive: bool = False,
-        file_ext: Optional[str] = None,
-    ) -> Set[Path]:
-        """
-        Returns Set of all file names
-        :param subdir: filter by files in this directory
-        :param recursive: whether to include files in subdirectories
-        :param file_ext: filter files by this extension
-        """
-        if subdir is None:
-            working_dir = self.vcs_response.dest_dir
-        else:
-            working_dir = os.path.join(self.vcs_response.dest_dir, subdir)
-
-        path = Path(working_dir)
-
-        if recursive:
-            glob = "**/*"
-        else:
-            glob = "*"
-
-        if file_ext:
-            glob = f"{glob}.{file_ext}"
-
-        return {p for p in path.glob(glob) if p.is_file()}
+            msg = f"Failed to fetch {self.repo_url} via vcs: {e}"
+            logger.error(msg)
+            raise ForkError(msg) from e
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         """

@@ -10,6 +10,7 @@
 import logging
 import traceback
 from datetime import datetime
+from pathlib import Path
 from typing import Iterable
 from typing import List
 from typing import Mapping
@@ -70,20 +71,53 @@ def fork_and_get_dir(url):
     return fetch_via_vcs(url).dest_dir
 
 
-class GitLabAPIImporter(GitImporter):
+class GitLabGitImporter(GitImporter):
     spdx_license_expression = "MIT"
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
 
     def __init__(self):
         super().__init__(repo_url="git+https://gitlab.com/gitlab-org/advisories-community/")
-        self.files = self.collect_files(recursive=True, file_ext="yml")
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
-        for file in self.files:
-            # split a file name /tmp/tmpi1klhpmd/pypi/gradio/CVE-2021-43831.yml
-            # to ('/', 'tmp', 'tmpi1klhpmd', 'pypi', 'gradio', 'CVE-2021-43831.yml')
-            if file.parts[3] in PURL_TYPE_BY_GITLAB_SCHEME:
-                yield parse_gitlab_advisory(file)
+        try:
+            self.clone()
+            path = Path(self.vcs_response.dest_dir)
+
+            glob = "**/*.yml"
+            files = (p for p in path.glob(glob) if p.is_file())
+            for file in files:
+                # split a path according to gitlab conventions where package type and name are a part of path
+                # For example with this path:
+                # /tmp/tmpi1klhpmd/pypi/gradio/CVE-2021-43831.yml
+                # the package type is pypi and the package name is gradio
+                # to ('/', 'tmp', 'tmpi1klhpmd', 'pypi', 'gradio', 'CVE-2021-43831.yml')
+                purl_type = get_gitlab_package_type(path=file)
+                if not purl_type:
+                    logger.error(f"Unknow gitlab directory structure {file!r}")
+                    continue
+
+                if purl_type in PURL_TYPE_BY_GITLAB_SCHEME:
+                    yield parse_gitlab_advisory(file)
+
+                else:
+                    logger.error(f"Unknow package type {purl_type!r}")
+                    continue
+        finally:
+            if self.vcs_response:
+                self.vcs_response.delete()
+
+
+def get_gitlab_package_type(path: Path):
+    """
+    Return a package type extracted from a gitlab advisory path or None
+    """
+    parts = path.parts[-3:]
+
+    if len(parts) < 3:
+        return
+
+    type, _name, _vid = parts
+    return type
 
 
 def get_purl(package_slug):
@@ -156,10 +190,12 @@ def parse_gitlab_advisory(file):
     identifiers:
     - "GMS-2018-26"
     """
-    with open(file, "r") as f:
+    with open(file) as f:
         gitlab_advisory = saneyaml.load(f)
     if not isinstance(gitlab_advisory, dict):
-        logger.error(f"parse_yaml_file: yaml_file is not of type `dict`: {gitlab_advisory!r}")
+        logger.error(
+            f"parse_gitlab_advisory: unknown gitlab advisory format in {file!r} with data: {gitlab_advisory!r}"
+        )
         return
 
     # refer to schema here https://gitlab.com/gitlab-org/advisories-community/-/blob/main/ci/schema/schema.json
@@ -249,7 +285,7 @@ class GitLabBasicImprover(Improver):
 
     @property
     def interesting_advisories(self) -> QuerySet:
-        return Advisory.objects.filter(created_by=GitLabAPIImporter.qualified_name)
+        return Advisory.objects.filter(created_by=GitLabGitImporter.qualified_name)
 
     def get_package_versions(
         self, package_url: PackageURL, until: Optional[datetime] = None

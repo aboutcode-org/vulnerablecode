@@ -26,7 +26,7 @@ IMPORTERS_REGISTRY = [
     redhat.RedhatImporter,
     pysec.PyPIImporter,
     debian.DebianImporter,
-    gitlab.GitLabAPIImporter,
+    gitlab.GitLabGitImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

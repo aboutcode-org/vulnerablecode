@@ -332,6 +332,7 @@ class VulnerabilityDetails(ListView):
         vulnerability_list_count = len(vulnerability_list)
         context["vulnerability_list_count"] = vulnerability_list_count
 
+        context["vuln_form"] = CVEForm(self.request.GET or None)
         context["template_name"] = self.template_name
 
         # vulnerability_ref = models.VulnerabilityReference.objects.get(id=self.kwargs["pk"])

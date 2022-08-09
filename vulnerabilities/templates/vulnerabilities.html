@@ -2,7 +2,7 @@
 {% load humanize %}
 
 {% block title %}
-VCIO -- vulnerability search
+VCIO Vulnerability Search Results
 {% endblock %}
 
 {% block content %}
@@ -170,7 +170,8 @@ VCIO -- vulnerability search
                     <td style="word-break: break-all;">
                         {{vulnerability.vulnerability_id}}
                         <span style="font-size: 13px;">
-                            (<a href="{% url 'vulnerability_view' vulnerability.pk %}" target="_self">HTML</a>)
+                            <!-- (<a href="{% url 'vulnerability_view' vulnerability.pk %}" target="_self">HTML</a>) -->
+                            (<a href="{% url 'vulnerability_view' vulnerability.pk %}?vuln_id={{vulnerability.vulnerability_id}}" target="_self">HTML</a>)
                         </span>
                     </td>
                     <td>{{vulnerability.vulnerable_package_count}}</td>

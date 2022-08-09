@@ -55,6 +55,8 @@ Version v30.0.0
 - Paginated initial listings to display a small number of records 
   and provided page per size with a maximum limit of 100 records per page.
 
+- Add fixed packages in vulnerabilities details in packages endpoint.
+
 Other:
 
 - we dropped calver to use a plain semver.

@@ -177,7 +177,6 @@ class PackageFilterSet(filters.FilterSet):
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
-    paginate_by = 50
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageFilterSet
 
@@ -252,7 +251,6 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
         )
 
     serializer_class = VulnerabilitySerializer
-    paginate_by = 50
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = VulnerabilityFilterSet
 
@@ -270,7 +268,6 @@ class CPEViewSet(viewsets.ReadOnlyModelViewSet):
         vulnerabilityreference__reference_id__startswith="cpe"
     ).distinct()
     serializer_class = VulnerabilitySerializer
-    paginate_by = 50
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = CPEFilterSet
 
@@ -286,6 +283,5 @@ class AliasFilterSet(filters.FilterSet):
 class AliasViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Vulnerability.objects.all()
     serializer_class = VulnerabilitySerializer
-    paginate_by = 50
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AliasFilterSet

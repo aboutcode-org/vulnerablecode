@@ -9,6 +9,7 @@
 
 from django.test import TestCase
 from django.utils.http import int_to_base36
+from packageurl import PackageURL
 from rest_framework import status
 
 from vulnerabilities.models import Alias
@@ -240,3 +241,38 @@ class AliasApi(TestCase):
     def test_api_response(self):
         response = self.client.get("/api/alias?alias=CVE-9", format="json").data
         self.assertEqual(response["count"], 1)
+
+
+class BulkSearchAPI(TestCase):
+    def setUp(self):
+        packages = [
+            "pkg:nginx/nginx@0.6.18",
+            "pkg:nginx/nginx@1.20.0",
+            "pkg:nginx/nginx@1.21.0",
+            "pkg:nginx/nginx@1.20.1",
+            "pkg:nginx/nginx@1.9.5",
+            "pkg:nginx/nginx@1.17.2",
+            "pkg:nginx/nginx@1.17.3",
+            "pkg:nginx/nginx@1.16.1",
+            "pkg:nginx/nginx@1.15.5",
+            "pkg:nginx/nginx@1.15.6",
+            "pkg:nginx/nginx@1.14.1",
+            "pkg:nginx/nginx@1.0.7",
+            "pkg:nginx/nginx@1.0.15",
+        ]
+        self.packages = packages
+        for package in packages:
+            purl = PackageURL.from_string(package)
+            attrs = {k: v for k, v in purl.to_dict().items() if v}
+            Package.objects.create(**attrs)
+
+    def test_api_response(self):
+        request_body = {
+            "purls": self.packages,
+        }
+        response = self.client.post(
+            "/api/packages/bulk_search",
+            data=request_body,
+            content_type="application/json",
+        ).json()
+        assert len(response) == 13

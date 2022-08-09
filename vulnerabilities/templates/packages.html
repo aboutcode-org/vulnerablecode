@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block title %}
 VCIO Package Search Results
@@ -9,33 +10,6 @@ VCIO Package Search Results
 {% include 'navbar.html' %}
 
 <section class="section01">
-
-    <!-- packages = {{packages}}
-    packages.number = {{packages.number}}
-    packages.paginator.num_pages = {{packages.paginator.num_pages}} -->
-
-    <!-- <div id="content-header">
-        <section>
-            <div class="is-flex" style="justify-content: space-between;">
-                <div>
-                    <strong>Total records:</strong> {{ result_size }}
-                </div>
-                <div>
-                    {% if packages.has_previous %}
-                    <a href="?page={{ packages.previous_page_number }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}">&laquo;</a>
-                    {% else %}
-                    <span>&laquo;</span>
-                    {% endif %}
-                    Page {{ packages.number }} of {{ packages.paginator.num_pages }}
-                    {% if packages.has_next %}
-                    <a href="?page={{ packages.next_page_number }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}">&raquo;</a>
-                    {% else %}
-                    <span>&raquo;</span>
-                    {% endif %}
-                </div>
-            </div>
-        </section>
-    </div> -->
 
     <article class='panel is-info'>
         <div class='panel-heading py-2 is-size-6'>
@@ -100,21 +74,8 @@ VCIO Package Search Results
 
 {% if package_name %}
 
-<!-- <div class="columns">
-        <div class="column" style="padding-top: 0px; padding-bottom: 0px;">
-            Total records: {{ result_size }}
-        </div>
-    </div> -->
-
-<!-- <div id="content-header" class="container is-max-desktop mb-3"> -->
 <div class="is-max-desktop mb-3">
-    <!-- <div id="content-header"> -->
-    <!-- <section> -->
-    <!-- <section class="section01"> -->
     <section class="mx-5">
-        <!-- <div style="margin-bottom: 10px;">
-            <span class="tag is-info is-medium has-text-weight-bold" style="margin-right: 10px;">Package Search Results</span>
-        </div> -->
         <article class="panel is-info panel-header-only">
             <p class="panel-heading py-2 is-size-6">
                 Package Search Results
@@ -122,27 +83,23 @@ VCIO Package Search Results
         </article>
         <div class="is-flex" style="justify-content: space-between;">
             <div>
-                <!-- <strong>{{ verbose_name }}:</strong> {{ paginator.count }} results -->
-                <strong>Total records:</strong> {{ packages.paginator.count }}
-                <!-- <strong>Total records:</strong> {{ result_size }} -->
+                <strong>Total records:</strong> {{ packages.paginator.count|intcomma }}
             </div>
             <div>
                 {% if packages.has_previous %}
                 <a class="small_page_button" href="?{{ searched_for }}&page=1">1</a>
-                <!-- <a href="?page={{ packages.previous_page_number }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}">&laquo;</a> -->
                 <a class="page_arrow_spacing" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">&laquo;</a>
                 {% else %}
                 <span class="small_page_button">1</span>
                 <span class="page_arrow_spacing">&laquo;</span>
                 {% endif %}
-                Page {{ packages.number }} of {{ packages.paginator.num_pages }}
+                Page {{ packages.number|intcomma }} of {{ packages.paginator.num_pages|intcomma }}
                 {% if packages.has_next %}
-                <!-- <a href="?page={{ packages.next_page_number }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}">&raquo;</a> -->
                 <a class="page_arrow_spacing" href="?{{ searched_for }}&page={{ packages.next_page_number }}">&raquo;</a>
-                <a class="small_page_button" href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}">{{packages.paginator.num_pages}}</a>
+                <a class="small_page_button" href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}">{{packages.paginator.num_pages|intcomma}}</a>
                 {% else %}
                 <span class="page_arrow_spacing">&raquo;</span>
-                <span class="small_page_button">{{packages.paginator.num_pages}}</span>
+                <span class="small_page_button">{{packages.paginator.num_pages|intcomma}}</span>
                 {% endif %}
             </div>
         </div>
@@ -204,8 +161,6 @@ VCIO Package Search Results
                     <td style="word-break: break-all;">
                         {{package.package_url}}
                         <span style="font-size: 13px;">
-                            <!-- (<a href="{% url 'package_view' package.pk %}" target="_self">HTML</a>) -->
-                            <!-- (<a href="{% url 'package_view' package.pk %}?type={{package_type}}&name={{package_name}}" target="_self">HTML</a>) -->
                             (<a href="{% url 'package_view' package.pk %}?type={{package_type}}&name={{package.package_url}}" target="_self">HTML</a>)
                         </span>
                     </td>
@@ -217,52 +172,22 @@ VCIO Package Search Results
         </table>
     </div>
 
-    <!-- <div class="is-field is-horizontal">
-        <span class="step-links">
-            {% if packages.has_previous %}
-            <a class="button paging is-normal" href="?{{ searched_for }}&page=1">&laquo; first</a>
-            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">previous</a>
-            {% else %}
-            <button class="button is-normal" title="disabled" disabled>&laquo; first</button>
-            <button class="button is-normal" title="disabled" disabled>previous</button>
-            {% endif %}
-
-            <span class="current02">
-                (page {{ packages.number }} of {{ packages.paginator.num_pages }})
-            </span>
-
-            {% if packages.has_next %}
-            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.next_page_number }}">next</a>
-            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}">last &raquo;</a>
-            {% else %}
-            <button class="button is-normal" title="disabled" disabled>next</button>
-            <button class="button is-normal" title="disabled" disabled>last &raquo;</button>
-            {% endif %}
-        </span>
-    </div> -->
-
-
     <nav class="pagination is-centered is-small" aria-label="pagination">
         {% if packages.has_previous %}
-
         <a href="?{{ searched_for }}&page={{ packages.previous_page_number }}" class="pagination-previous">Previous</a>
         {% else %}
         <a class="pagination-previous" disabled>Previous</a>
-
         {% endif %}
 
         {% if packages.has_next %}
-
         <a href="?{{ searched_for }}&page={{ packages.next_page_number }}" class="pagination-next">Next</a>
         {% else %}
         <a class="pagination-next" disabled>Next</a>
-
         {% endif %}
 
         <ul class="pagination-list">
             {% if packages.number != 1%}
             <li>
-                <!-- <a href="?page=1{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page 1">1</a> -->
                 <a href="?{{ searched_for }}&page=1{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page 1">1</a>
             </li>
             {% if packages.number > 2 %}
@@ -272,8 +197,7 @@ VCIO Package Search Results
             {% endif %}
             {% endif %}
             <li>
-                <a class="pagination-link is-current" aria-label="Page {{ packages.number }}" aria-current="page">{{ packages.number }}</a>
-                <!-- <a class="pagination-link is-current" aria-label="Page {{ packages.number }}" aria-current="page" disabled>{{ packages.number }}</a> -->
+                <a class="pagination-link is-current" aria-label="Page {{ packages.number }}" aria-current="page">{{ packages.number|intcomma }}</a>
             </li>
             {% if packages.number != packages.paginator.num_pages %}
             {% if packages.next_page_number != packages.paginator.num_pages %}
@@ -282,23 +206,19 @@ VCIO Package Search Results
             </li>
             {% endif %}
             <li>
-                <!-- <a href="?page={{ packages.paginator.num_pages }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page {{ packages.paginator.num_pages }}">{{ packages.paginator.num_pages }}</a> -->
-                <a href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page {{ packages.paginator.num_pages }}">{{ packages.paginator.num_pages }}</a>
+                <a href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page {{ packages.paginator.num_pages }}">{{ packages.paginator.num_pages|intcomma }}</a>
             </li>
             {% endif %}
         </ul>
-
     </nav>
-
-
 
 </section>
 
-{% else %}
+<!-- else  -->
 
 {% endif %}
 
-{% else %}
+<!-- else  -->
 
 {% endif %}
 

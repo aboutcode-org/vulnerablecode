@@ -139,21 +139,8 @@ class APITestCasePackage(TestCase):
             "namespace": "nginx",
             "name": "test",
             "version": "11",
-            "unresolved_vulnerabilities": [],
             "qualifiers": {},
             "subpath": "",
-            "fixed_packages": [
-                {
-                    "url": f"http://testserver/api/packages/{self.package.id}",
-                    "purl": "pkg:generic/nginx/test@11",
-                    "fixing_vulnerabilities": [
-                        {
-                            "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
-                            "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln.id).upper()}",
-                        }
-                    ],
-                }
-            ],
             "affected_by_vulnerabilities": [],
             "fixing_vulnerabilities": [
                 {
@@ -161,8 +148,15 @@ class APITestCasePackage(TestCase):
                     "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln.id).upper()}",
                     "summary": "test-vuln",
                     "references": [],
-                }
+                    "fixed_packages": [
+                        {
+                            "url": f"http://testserver/api/packages/{self.package.id}",
+                            "purl": "pkg:generic/nginx/test@11",
+                        }
+                    ],
+                },
             ],
+            "unresolved_vulnerabilities": [],
         }
 
     def test_api_with_single_vulnerability_and_vulnerable_package(self):
@@ -174,37 +168,37 @@ class APITestCasePackage(TestCase):
             "namespace": "nginx",
             "name": "test",
             "version": "9",
-            "unresolved_vulnerabilities": [
-                {
-                    "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
-                    "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln.id).upper()}",
-                    "summary": "test-vuln",
-                    "references": [],
-                }
-            ],
             "qualifiers": {},
             "subpath": "",
-            "fixed_packages": [
-                {
-                    "url": f"http://testserver/api/packages/{self.package.id}",
-                    "purl": "pkg:generic/nginx/test@11",
-                    "fixing_vulnerabilities": [
-                        {
-                            "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
-                            "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln.id).upper()}",
-                        }
-                    ],
-                }
-            ],
             "affected_by_vulnerabilities": [
                 {
                     "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
                     "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln.id).upper()}",
                     "summary": "test-vuln",
                     "references": [],
+                    "fixed_packages": [
+                        {
+                            "url": f"http://testserver/api/packages/{self.package.id}",
+                            "purl": "pkg:generic/nginx/test@11",
+                        }
+                    ],
                 }
             ],
             "fixing_vulnerabilities": [],
+            "unresolved_vulnerabilities": [
+                {
+                    "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
+                    "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln.id).upper()}",
+                    "summary": "test-vuln",
+                    "references": [],
+                    "fixed_packages": [
+                        {
+                            "url": f"http://testserver/api/packages/{self.package.id}",
+                            "purl": "pkg:generic/nginx/test@11",
+                        }
+                    ],
+                }
+            ],
         }
 
 

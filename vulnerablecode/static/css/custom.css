@@ -486,11 +486,15 @@ ul li {
     margin: 0;
 }
 
-/* .pagination-link.is-current {
-    background-color: #f7bf3c;
-    border-color: #f7bf3c;
-    color: #000000;
-} */
+.pagination-link.is-current {
+    background-color: #e8e8e8;
+    border-color: #e8e8e8;
+    color: #999999;
+}
+
+.pagination-link.is-current:hover {
+    cursor: default;
+}
 
 .small_page_button {
     border: solid 1px #f2f2f2;
@@ -498,6 +502,7 @@ ul li {
     padding: 0px 6px 0px 6px;
     background-color: #f8f8f8;
     color: #cccccc;
+    font-size: 12px;
 }
 
 a.small_page_button {

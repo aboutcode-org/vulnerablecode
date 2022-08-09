@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.admin",
+    "django.contrib.humanize",
     # Third-party apps
     "django_filters",
     "rest_framework",

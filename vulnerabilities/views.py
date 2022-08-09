@@ -34,7 +34,7 @@ class PackageSearchView(View):
     ordering = ["version"]
 
     def get(self, request):
-        result_size = ""
+        result_size = 0
         context = {}
 
         if request.GET:
@@ -75,38 +75,39 @@ class PackageSearchView(View):
             if len(request.GET["name"]):
                 package_name = request.GET["name"]
                 context["package_name"] = package_name
+            # 8/8/2022 Monday 4:14:40 PM.  indent `if result_size == 0:` block 1 indent to test error -- vuln has such an indent
+            # 8/8/2022 Monday 4:17:43 PM.  Together with changes below, this works, error for `http://127.0.0.1:8001/packages/search` in browser disappears, and all 129 tests just passed!
+            if result_size == 0:
+                context = {
+                    "package_search": "The VCIO DB does not contain a record of the package you entered -- "
+                    + request.GET["name"]
+                    + ".",
+                }
 
-        if result_size == 0:
-            context = {
-                "package_search": "The VCIO DB does not contain a record of the package you entered -- "
-                + request.GET["name"]
-                + ".",
-            }
+                if request.GET.get("template") == "packages":
+                    context["package_form"] = PackageForm(request.GET or None)
+                    context["template_name"] = "packages.html"
+                    return render(request, "packages.html", context)
+                elif request.GET.get("template") == "package_details":
+                    context["package_form"] = PackageForm(request.GET or None)
+                    context["template_name"] = "package_update.html"
+                    return render(request, "package_update.html", context)
+                elif request.GET.get("template") == "index":
+                    context["package_form"] = PackageForm(request.GET or None)
+                    context["vuln_form"] = CVEForm(request.GET or None)
+                    context["template_name"] = "index.html"
+                    return render(request, "index.html", context)
+                else:
+                    context["package_form"] = PackageForm(request.GET or None)
+                    context["vuln_form"] = CVEForm(request.GET or None)
+                    context["template_name"] = "index.html"
+                    return render(request, "index.html", context)
+        # 8/8/2022 Monday 4:15:57 PM.  test removing else and 1 outdent for the block -- vuln has this structure
+        # else:
 
-            if request.GET.get("template") == "packages":
-                context["package_form"] = PackageForm(request.GET or None)
-                context["template_name"] = "packages.html"
-                return render(request, "packages.html", context)
-            elif request.GET.get("template") == "package_details":
-                context["package_form"] = PackageForm(request.GET or None)
-                context["template_name"] = "package_update.html"
-                return render(request, "package_update.html", context)
-            elif request.GET.get("template") == "index":
-                context["package_form"] = PackageForm(request.GET or None)
-                context["vuln_form"] = CVEForm(request.GET or None)
-                context["template_name"] = "index.html"
-                return render(request, "index.html", context)
-            else:
-                context["package_form"] = PackageForm(request.GET or None)
-                context["vuln_form"] = CVEForm(request.GET or None)
-                context["template_name"] = "index.html"
-                return render(request, "index.html", context)
-
-        else:
-
-            context["package_form"] = PackageForm(request.GET or None)
-            context["template_name"] = self.template_name
-            return render(request, self.template_name, context)
+        context["package_form"] = PackageForm(request.GET or None)
+        context["template_name"] = self.template_name
+        return render(request, self.template_name, context)
 
     @staticmethod
     def request_to_queryset(request):
@@ -191,11 +192,32 @@ class VulnerabilitySearchView(View):
                     "vuln_search": "The VCIO DB does not contain a record of the vulnerability you entered -- "
                     + request.GET.get("vuln_id")
                     or "" + ".",
-                    "vuln_form": CVEForm(request.GET or None),
-                    "package_form": PackageForm(request.GET or None),
-                    "template_name": "index.html",
+                    # "vuln_form": CVEForm(request.GET or None),
+                    # "package_form": PackageForm(request.GET or None),
+                    # "template_name": "index.html",
                 }
-                return render(request, "index.html", context)
+                # return render(request, "index.html", context)
+
+                if request.GET.get("template") == "vulnerabilities":
+                    # context["package_form"] = PackageForm(request.GET or None)
+                    context["vuln_form"] = CVEForm(request.GET or None)
+                    context["template_name"] = "vulnerabilities.html"
+                    return render(request, "vulnerabilities.html", context)
+                elif request.GET.get("template") == "vulnerability_details":
+                    # context["package_form"] = PackageForm(request.GET or None)
+                    context["vuln_form"] = CVEForm(request.GET or None)
+                    context["template_name"] = "vulnerability.html"
+                    return render(request, "vulnerability.html", context)
+                elif request.GET.get("template") == "index":
+                    context["package_form"] = PackageForm(request.GET or None)
+                    context["vuln_form"] = CVEForm(request.GET or None)
+                    context["template_name"] = "index.html"
+                    return render(request, "index.html", context)
+                else:
+                    context["package_form"] = PackageForm(request.GET or None)
+                    context["vuln_form"] = CVEForm(request.GET or None)
+                    context["template_name"] = "index.html"
+                    return render(request, "index.html", context)
 
         context["vuln_form"] = CVEForm(request.GET or None)
         context["template_name"] = self.template_name

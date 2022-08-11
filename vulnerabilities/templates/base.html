@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}" />
     <link rel="stylesheet" href="{% static 'css/bulma-tooltip.css' %}" />
 
+    <script type="text/javascript" src="{% static 'js/jquery-3.6.0.js' %}"></script>
+
     {% block extrahead %}{% endblock %}
 </head>
 
@@ -33,7 +35,9 @@
         </footer>
     </div>
 
-    {% block scripts %}{% endblock %}
+    {% block scripts %}
+
+    {% endblock %}
 </body>
 
 </html>

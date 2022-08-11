@@ -21,7 +21,7 @@ cryptography==36.0.2
 decorator==5.1.1
 defusedxml==0.7.1
 distro==1.7.0
-Django==4.0.6
+Django==4.0.7
 django-environ==0.8.1
 django-filter==21.1
 django-widget-tweaks==1.4.12

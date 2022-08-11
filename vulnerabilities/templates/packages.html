@@ -61,7 +61,6 @@ VCIO Package Search Results
                     {% if package_search %}
                     <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 10;">
                         <button class=" delete"></button>
-                        <!-- <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #ff0000; font-weight: bold;">Search for packages:</span></h6> -->
                         {{ package_search }}
                     </div>
                     {% endif %}
@@ -106,43 +105,6 @@ VCIO Package Search Results
     </section>
 </div>
 
-<!-- <div class="is-field is-horizontal">
-        <span class="step-links">
-            {% if packages.has_previous %}
-            <a class="button paging is-normal" href="?{{ searched_for }}&page=1">&laquo; first</a>
-            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">previous</a>
-            <a href="?{{ searched_for }}&page={{ packages.previous_page_number }}">&laquo;</a>
-            {% else %}
-            <button class="button is-normal" title="disabled" disabled>&laquo; first</button>
-            <button class="button is-normal" title="disabled" disabled>previous</button>
-            &laquo;
-            {% endif %}
-
-            <span class="current02">
-                (page {{ packages.number }} of {{ packages.paginator.num_pages }})
-            </span>
-
-            {% if packages.has_next %}
-            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.next_page_number }}">next</a>
-            <a class="button paging is-normal" href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}">last &raquo;</a>
-            <a href="?{{ searched_for }}&page={{ packages.next_page_number }}">&raquo;</a>
-            {% else %}
-            <button class="button is-normal" title="disabled" disabled>next</button>
-            <button class="button is-normal" title="disabled" disabled>last &raquo;</button>
-            &raquo;
-            {% endif %}
-        </span>
-    </div> -->
-
-<!-- close section was here and prevented footer from staying at visible page bottom -->
-
-<!-- {% if packages %}
-<div>This is packages: {{packages}}</div>
-{% for package in packages %}
-<div>This is a package: {{package}} | {{package.version}}</div>
-{% endfor %}
-{% endif %} -->
-
 {% if packages %}
 
 <section class="section01">
@@ -159,10 +121,7 @@ VCIO Package Search Results
                 {% for package in packages %}
                 <tr>
                     <td style="word-break: break-all;">
-                        {{package.package_url}}
-                        <span style="font-size: 13px;">
-                            (<a href="{% url 'package_view' package.pk %}?type={{package_type}}&name={{package.package_url}}" target="_self">HTML</a>)
-                        </span>
+                        <a href="{% url 'package_view' package.pk %}?type={{package_type}}&name={{package.package_url}}" target="_self">{{package.package_url}}</a>
                     </td>
                     <td>{{package.vulnerability_count}}</td>
                     <td>{{package.patched_vulnerability_count}}</td>
@@ -197,7 +156,7 @@ VCIO Package Search Results
             {% endif %}
             {% endif %}
             <li>
-                <a class="pagination-link is-current" aria-label="Page {{ packages.number }}" aria-current="page">{{ packages.number|intcomma }}</a>
+                <a class="pagination-link is-current" disabled aria-label="Page {{ packages.number }}" aria-current="page">{{ packages.number|intcomma }}</a>
             </li>
             {% if packages.number != packages.paginator.num_pages %}
             {% if packages.next_page_number != packages.paginator.num_pages %}
@@ -214,20 +173,13 @@ VCIO Package Search Results
 
 </section>
 
-<!-- else  -->
-
 {% endif %}
-
-<!-- else  -->
 
 {% endif %}
 
 {% endblock %}
 
 {% block scripts %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<!-- The 1st script below is from https://bulma.io/documentation/elements/notification/ and
-    handles error notifications -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {

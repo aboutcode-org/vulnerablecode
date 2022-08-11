@@ -58,7 +58,6 @@ VCIO Vulnerability Search Results
                     {% if vuln_search %}
                     <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 10;">
                         <button class=" delete"></button>
-                        <!-- <h6 class="title is-6" style="margin-bottom: 10px;"><span style="color: #ff0000; font-weight: bold;">Search for vulnerabilities:</span></h6> -->
                         {{ vuln_search }}
                     </div>
                     {% endif %}
@@ -103,55 +102,6 @@ VCIO Vulnerability Search Results
     </section>
 </div>
 
-<!-- <section class="section01">
-
-    <div class="columns">
-        <div class="column is-four-fifths" style="padding-bottom: 0px;">
-            <span style="font-size: 20px; font-weight: 500;">Search Vulnerabilities</span>
-            <div class="tags has-addons" style="margin-top: 10px;">
-                <span class="tag is-dark">vuln_id</span>
-                <span class="tag is-info">{{vuln_id}}</span>
-            </div>
-        </div>
-        <div class="column" style="text-align: right;">
-
-        </div>
-    </div>
-
-    <hr>
-
-    <div class="columns">
-        <div class="column" style="padding-top: 0px; padding-bottom: 0px;">
-            Total records: {{ result_size }}
-        </div>
-    </div>
-
-    <div class="is-field is-horizontal">
-        <span class="step-links">
-            {% if vulnerabilities.has_previous %}
-            <a class="button paging" href="?vuln_id={{ vuln_id }}&page=1">&laquo; first</a>
-            <a class="button paging" href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.previous_page_number }}">previous</a>
-            {% else %}
-            <button class="button" title="disabled" disabled>&laquo; first</button>
-            <button class="button" title="disabled" disabled>previous</button>
-            {% endif %}
-
-            <span class="current02">
-                (page {{ vulnerabilities.number }} of {{ vulnerabilities.paginator.num_pages }})
-            </span>
-
-            {% if vulnerabilities.has_next %}
-            <a class="button paging" href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.next_page_number }}">next</a>
-            <a class="button paging" href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.paginator.num_pages }}">last &raquo;</a>
-            {% else %}
-            <button class="button" title="disabled" disabled>next</button>
-            <button class="button" title="disabled" disabled>last &raquo;</button>
-            {% endif %}
-        </span>
-    </div>
-
-</section> -->
-
 {% if vulnerabilities %}
 
 <section class="section01">
@@ -168,11 +118,7 @@ VCIO Vulnerability Search Results
                 {% for vulnerability in vulnerabilities %}
                 <tr>
                     <td style="word-break: break-all;">
-                        {{vulnerability.vulnerability_id}}
-                        <span style="font-size: 13px;">
-                            <!-- (<a href="{% url 'vulnerability_view' vulnerability.pk %}" target="_self">HTML</a>) -->
-                            (<a href="{% url 'vulnerability_view' vulnerability.pk %}?vuln_id={{vulnerability.vulnerability_id}}" target="_self">HTML</a>)
-                        </span>
+                        <a href="{% url 'vulnerability_view' vulnerability.pk %}?vuln_id={{vulnerability.vulnerability_id}}" target="_self">{{vulnerability.vulnerability_id}}</a>
                     </td>
                     <td>{{vulnerability.vulnerable_package_count}}</td>
                     <td>{{vulnerability.patched_package_count}}</td>
@@ -207,7 +153,7 @@ VCIO Vulnerability Search Results
             {% endif %}
             {% endif %}
             <li>
-                <a class="pagination-link is-current" aria-label="Page {{ vulnerabilities.number }}" aria-current="page">{{ vulnerabilities.number|intcomma }}</a>
+                <a class="pagination-link is-current" disabled aria-label="Page {{ vulnerabilities.number }}" aria-current="page">{{ vulnerabilities.number|intcomma }}</a>
             </li>
             {% if vulnerabilities.number != vulnerabilities.paginator.num_pages %}
             {% if vulnerabilities.next_page_number != vulnerabilities.paginator.num_pages %}
@@ -226,18 +172,11 @@ VCIO Vulnerability Search Results
 
 {% endif %}
 
-<!-- else  -->
-
-<!-- <div style="color: #ff0000; font-size: 50px;">Vuln search used to be here in initial draft</div> -->
-
 {% endif %}
 
 {% endblock %}
 
 {% block scripts %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<!-- The 1st script below is from https://bulma.io/documentation/elements/notification/ and
-    handles error notifications -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {

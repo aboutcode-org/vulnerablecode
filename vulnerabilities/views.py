@@ -257,8 +257,6 @@ class PackageUpdate(UpdateView):
         purl = self.get_object()
         return list(
             models.Package.objects.all()
-            # We want to ID potential replacement packages -- do we need to also match subpath and qualifiers fields?
-            # .filter(Q(type=purl.type, namespace=purl.namespace, name=purl.name))
             .filter(
                 Q(
                     type=purl.type,
@@ -297,7 +295,6 @@ class VulnerabilityDetails(ListView):
         vulnerability = models.Vulnerability.objects.get(id=self.kwargs["pk"])
         context["vulnerability"] = vulnerability
         context["aliases"] = vulnerability.aliases.alias()
-        # TODO: can we get sort the related packages by version here?
 
         vulnerability_list = vulnerability.references.all()
         vulnerability_list_count = len(vulnerability_list)

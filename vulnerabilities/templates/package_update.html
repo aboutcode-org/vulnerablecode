@@ -86,12 +86,26 @@ VCIO Package Details
             </li>
             <li data-tab="2">
                 <a>
-                    <span>Affected By Vulnerabilities</span>
+                    <span>
+                        Affected By Vulnerabilities
+                        {% if impacted_vuln %}
+                        ({{impacted_vuln|length}})
+                        {% else %}
+                        (0)
+                        {% endif %}
+                    </span>
                 </a>
             </li>
             <li data-tab="3">
                 <a>
-                    <span>Fixing Vulnerabilities</span>
+                    <span>
+                        Fixing Vulnerabilities
+                        {% if resolved_vuln %}
+                        ({{resolved_vuln|length}})
+                        {% else %}
+                        (0)
+                        {% endif %}
+                    </span>
                 </a>
             </li>
         </ul>
@@ -106,56 +120,7 @@ VCIO Package Details
                             {{package.package_url}}
                         </td>
                     </tr>
-                    <tr>
-                        <td class="two-col-left">type</td>
-                        <td class="two-col-right">
-                            {{package.type}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="two-col-left">namespace</td>
-                        <td class="two-col-right">
-                            {{package.namespace}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="two-col-left">name</td>
-                        <td class="two-col-right">
-                            {{package.name}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="two-col-left">version</td>
-                        <td class="two-col-right">
-                            {{package.version}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="two-col-left">qualifiers</td>
-                        <td class="two-col-right">
-                            {% for key, value in package.qualifiers.items %}
-                            {{key}} = {{value}}
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="two-col-left">subpath</td>
-                        <td class="two-col-right">
-                            {{package.subpath}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="two-col-left">Affected By Vulnerabilities</td>
-                        <td class="two-col-right">
-                            {{impacted_vuln|length}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="two-col-left">Fixing Vulnerabilities</td>
-                        <td class="two-col-right">
-                            {{resolved_vuln|length}}
-                        </td>
-                    </tr>
+
                     {% if debug_ui %}
                     <tr>
                         <td class="two-col-left" style="color: #009900;">Packages with no reported unresolved vulnerabilities</td>
@@ -209,14 +174,8 @@ VCIO Package Details
 
                     {% else %}
                     <tr>
-                        <td>
-                            None
-                        </td>
-                        <td>
-
-                        </td>
-                        <td>
-
+                        <td colspan="3">
+                            This package does not fix any vulnerabilities.
                         </td>
                     </tr>
                     {% endif %}
@@ -255,14 +214,8 @@ VCIO Package Details
 
                     {% else %}
                     <tr>
-                        <td>
-                            None
-                        </td>
-                        <td>
-
-                        </td>
-                        <td>
-
+                        <td colspan="3">
+                            This package does not fix any vulnerabilities.
                         </td>
                     </tr>
                     {% endif %}
@@ -426,9 +379,10 @@ VCIO Package Details
         </div>
     </div>
     {% endif %}
+    {% endif %}
 </section>
 
-{% endif %}
+
 {% endif %}
 
 {% endblock %}

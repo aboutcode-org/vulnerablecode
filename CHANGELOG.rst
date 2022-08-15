@@ -57,6 +57,8 @@ Version v30.0.0
 
 - Add fixed packages in vulnerabilities details in packages endpoint.
 
+- Add bulk search support for CPEs.
+
 Other:
 
 - we dropped calver to use a plain semver.

@@ -52,6 +52,13 @@ Version v30.0.0
 - Package endpoint will give fixed packages of only those that
   matches type, name, namespace, subpath and qualifiers of the package queried.
 
+- Paginated initial listings to display a small number of records 
+  and provided page per size with a maximum limit of 100 records per page.
+
+- Add fixed packages in vulnerabilities details in packages endpoint.
+
+- Add bulk search support for CPEs.
+
 Other:
 
 - we dropped calver to use a plain semver.

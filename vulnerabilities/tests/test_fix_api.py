@@ -270,3 +270,37 @@ class BulkSearchAPI(TestCase):
             content_type="application/json",
         ).json()
         assert len(response) == 13
+
+
+class BulkSearchAPI(TestCase):
+    def setUp(self):
+        cpes = [
+            "cpe:/a:nginx:1.0.7",
+            "cpe:/a:nginx:1.0.15",
+            "cpe:/a:nginx:1.14.1",
+            "cpe:/a:nginx:1.15.5",
+            "cpe:/a:nginx:1.15.6",
+            "cpe:/a:nginx:1.16.1",
+            "cpe:/a:nginx:1.17.2",
+            "cpe:/a:nginx:1.17.3",
+            "cpe:/a:nginx:1.9.5",
+            "cpe:/a:nginx:1.20.1",
+            "cpe:/a:nginx:1.20.0",
+            "cpe:/a:nginx:1.21.0",
+        ]
+        self.cpes = cpes
+        vuln = Vulnerability.objects.create(summary="test")
+        for cpe in cpes:
+            ref = VulnerabilityReference.objects.create(reference_id=cpe)
+            VulnerabilityRelatedReference.objects.create(reference=ref, vulnerability=vuln)
+
+    def test_api_response_with_one_vulnerability(self):
+        request_body = {
+            "cpes": self.cpes,
+        }
+        response = self.client.post(
+            "/api/cpes/bulk_search",
+            data=request_body,
+            content_type="application/json",
+        ).json()
+        assert len(response) == 1

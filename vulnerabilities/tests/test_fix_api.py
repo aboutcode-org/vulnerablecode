@@ -270,3 +270,92 @@ class BulkSearchAPI(TestCase):
             content_type="application/json",
         ).json()
         assert len(response) == 13
+
+
+class BulkSearchAPI(TestCase):
+    def setUp(self):
+        self.exclusive_cpes = [
+            "cpe:/a:nginx:1.0.7",
+            "cpe:/a:nginx:1.0.15",
+            "cpe:/a:nginx:1.14.1",
+            "cpe:/a:nginx:1.15.5",
+            "cpe:/a:nginx:1.15.6",
+        ]
+        vuln = Vulnerability.objects.create(summary="test")
+        for cpe in self.exclusive_cpes:
+            ref = VulnerabilityReference.objects.create(reference_id=cpe)
+            VulnerabilityRelatedReference.objects.create(reference=ref, vulnerability=vuln)
+        second_vuln = Vulnerability.objects.create(summary="test-A")
+        self.non_exclusive_cpes = [
+            "cpe:/a:nginx:1.16.1",
+            "cpe:/a:nginx:1.17.2",
+            "cpe:/a:nginx:1.17.3",
+            "cpe:/a:nginx:1.9.5",
+            "cpe:/a:nginx:1.20.1",
+            "cpe:/a:nginx:1.20.0",
+            "cpe:/a:nginx:1.21.0",
+        ]
+        third_vuln = Vulnerability.objects.create(summary="test-B")
+        for cpe in self.non_exclusive_cpes:
+            ref = VulnerabilityReference.objects.create(reference_id=cpe)
+            VulnerabilityRelatedReference.objects.create(reference=ref, vulnerability=second_vuln)
+            VulnerabilityRelatedReference.objects.create(reference=ref, vulnerability=third_vuln)
+
+    def test_api_response_with_with_exclusive_cpes_associated_with_two_vulnerabilities(self):
+        request_body = {
+            "cpes": self.exclusive_cpes,
+        }
+        response = self.client.post(
+            "/api/cpes/bulk_search",
+            data=request_body,
+            content_type="application/json",
+        ).json()
+        assert len(response) == 1
+        assert response[0]["summary"] == "test"
+        references_in_vuln = response[0]["references"]
+        cpes = [ref["reference_id"] for ref in references_in_vuln]
+        assert set(cpes) == set(self.exclusive_cpes)
+
+    def test_api_response_with_no_cpe_associated(self):
+        request_body = {
+            "cpes": ["cpe:/a:nginx:1.10.7"],
+        }
+        response = self.client.post(
+            "/api/cpes/bulk_search",
+            data=request_body,
+            content_type="application/json",
+        ).json()
+        assert len(response) == 0
+
+    def test_api_response_with_with_non_exclusive_cpes_associated_with_two_vulnerabilities(self):
+        request_body = {
+            "cpes": self.non_exclusive_cpes,
+        }
+        response = self.client.post(
+            "/api/cpes/bulk_search",
+            data=request_body,
+            content_type="application/json",
+        ).json()
+        assert len(response) == 2
+
+    def test_with_empty_list(self):
+        request_body = {
+            "cpes": [],
+        }
+        response = self.client.post(
+            "/api/cpes/bulk_search",
+            data=request_body,
+            content_type="application/json",
+        ).json()
+        assert response == {"Error": "A non-empty 'cpe' list of package URLs is required."}
+
+    def test_with_invalid_cpes(self):
+        request_body = {
+            "cpes": ["CVE-2022-2022"],
+        }
+        response = self.client.post(
+            "/api/cpes/bulk_search",
+            data=request_body,
+            content_type="application/json",
+        ).json()
+        assert response == {"Error": "Invalid CPE: CVE-2022-2022"}

@@ -162,6 +162,7 @@ query{
 
 class GitHubAPIImporter(Importer):
     spdx_license_expression = "CC-BY-4.0"
+    license_url = "https://github.com/github/advisory-database/blob/main/LICENSE.md"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         for ecosystem, package_type in PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM.items():

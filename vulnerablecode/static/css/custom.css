@@ -97,17 +97,8 @@ code {
     background-color: #ffffff;
     border: 0;
     padding: 0;
-    font-size: 16px;
+    /* font-size: 16px; */
     font-family: Consolas;
-}
-
-.inline-code01 {
-    padding-left: 0px;
-    color: #cd0000;
-    border: 0;
-    padding: 0;
-    font-family: Consolas;
-    font-weight: 500;
 }
 
 #tab-content div,
@@ -230,21 +221,6 @@ ul li {
     border-left: 0;
 }
 
-.tag01 {
-    color: #000000;
-    font-size: 24px;
-    font-weight: 500;
-    border: 0;
-    background-color: #ffffff;
-    padding: 0px 3px 0px 3px;
-}
-
-.tag02 {
-    color: #000000;
-    font-size: 24px;
-    font-weight: 400;
-}
-
 .nexb-box {
     margin-top: 0px;
     margin-bottom: 30px;
@@ -289,10 +265,6 @@ ul li {
 .message.is-info .message-body {
     border-color: #3298dc;
     color: #000000;
-}
-
-.section01 {
-    padding: 0rem 1.5rem 1.5rem 1.5rem;
 }
 
 .current01 {
@@ -346,4 +318,25 @@ a.small_page_button {
     background-color: #ffffff;
     border: solid 1px #e8e8e8;
     font-size: 14px;
+}
+
+.dropdown-instructions-width {
+    width: 600px;
+}
+
+.dropdown-instructions-box-shadow {
+    box-shadow: 0px 8px 16px 0px #808080;
+}
+
+.width-100-pct {
+    width: 100%;
+}
+
+.search-alert {
+    border: solid 1px #ff9999;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #ffffff;
+    color: #ff0000;
+    z-index: 10;
 }

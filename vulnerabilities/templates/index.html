@@ -8,32 +8,39 @@ VCIO Home
 
 {% include 'navbar.html' %}
 
-<section class="section01">
-
+<section class="section pt-0">
     <div class="columns">
-        <div class="column">
-            <span class="tag01">Welcome to VulnerableCode<span class="nexb-orange">.</span>io.</span>
+        <div class="column is-size-4 has-text-weight-bold">
+            Welcome to VulnerableCode<span class="nexb-orange">.</span>io.
         </div>
     </div>
-
     <article class='panel is-info'>
         <div class='panel-heading py-2 is-size-6'>
             Search for vulnerable packages
-            <div class="dropdown is-hoverable" style="font-weight: normal;">
-                <div class="dropdown-trigger" style="text-align: right;">
-                    <i class="fa fa-question-circle" style="font-size:20px; margin-left: 10px;"></i>
+            <!-- <div class="dropdown is-hoverable" style="font-weight: normal;"> -->
+            <div class="dropdown is-hoverable has-text-weight-normal">
+                <!-- <div class="dropdown-trigger" style="text-align: right;"> -->
+                <div class="dropdown-trigger">
+                    <!-- <i class="fa fa-question-circle" style="font-size:20px; margin-left: 10px;"></i> -->
+                    <i class="fa fa-question-circle ml-2"></i>
                 </div>
-                <div class="dropdown-menu" id="dropdown-menu4" role="menu" style="width: 600px;">
-                    <div class="dropdown-content" style="box-shadow: 0px 8px 16px 0px #808080;">
-                        <div class="dropdown-item" style="font-size: 14px;">
-                            <div style="margin: 0px 0px 0px 0px;">
-                                <div style="margin-top: 0px;">Search for currently known Vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_blank">Package-URL</a> (aka <span class="inline-code01">purl</span>) or a Package <span class="inline-code01">name</span>.</div>
+                <!-- <div class="dropdown-menu" id="dropdown-menu4" role="menu" style="width: 600px;"> -->
+                <div class="dropdown-menu dropdown-instructions-width" id="dropdown-menu4" role="menu">
+                    <!-- <div class="dropdown-content" style="box-shadow: 0px 8px 16px 0px #808080;"> -->
+                    <div class="dropdown-content dropdown-instructions-box-shadow">
+                        <!-- <div class="dropdown-item" style="font-size: 14px;"> -->
+                        <div class="dropdown-item">
+                            <!-- <div style="margin: 0px 0px 0px 0px;"> -->
+                            <div>
+                                <!-- <div style="margin-top: 0px;">Search for currently known Vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_blank">Package-URL</a> (aka <span class="inline-code01">purl</span>) or a Package <span class="inline-code01">name</span>.</div> -->
+                                <div>Search for currently known Vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_blank">Package-URL</a> (aka <span class="inline-code">purl</span>) or a Package <span class="inline-code">name</span>.</div>
                                 <ul>
                                     <li>
-                                        Search by Package <span class="inline-code01">name</span> -- type the <span class="inline-code01">name</span> in the search box and, if relevant to your search, select the Package <span class="inline-code01">type</span> from the dropdown.
+                                        Search by Package <span class="inline-code">name</span> -- type the <span class="inline-code">name</span> in the search box and, if relevant to your search, select the Package <span class="inline-code">type</span> from the dropdown.
                                     </li>
                                     <li>
-                                        Search by <span class="inline-code01">purl</span> -- type the <span class="inline-code01">purl</span> in the search box. <span style="font-style: italic;">(The <span class="inline-code01">type</span> dropdown does not apply to a <span class="inline-code01">purl</span> search.)</span>
+                                        <!-- Search by <span class="inline-code">purl</span> -- type the <span class="inline-code">purl</span> in the search box. <span style="font-style: italic;">(The <span class="inline-code">type</span> dropdown does not apply to a <span class="inline-code">purl</span> search.)</span> -->
+                                        Search by <span class="inline-code">purl</span> -- type the <span class="inline-code">purl</span> in the search box. <span class="is-italic">(The <span class="inline-code">type</span> dropdown does not apply to a <span class="inline-code">purl</span> search.)</span>
                                     </li>
                                 </ul>
                             </div>
@@ -43,16 +50,19 @@ VCIO Home
             </div>
         </div>
         <div class="panel-block">
-            <div style="padding-bottom: 10px; width: 100%;">
+            <!-- <div style="padding-bottom: 10px; width: 100%;"> -->
+            <div class="pb-3 width-100-pct">
                 <form action="{% url 'package_search' %}" method="get">
                     {% load widget_tweaks %}
-                    <div class="field has-addons" style="margin: 10px 0px 0px 0px;">
+                    <!-- <div class="field has-addons" style="margin: 10px 0px 0px 0px;"> -->
+                    <div class="field has-addons mt-3">
                         <div class="control">
                             <div class="select">
                                 {{package_form.type}}
                             </div>
                         </div>
-                        <div class="control" style="width: 100%;">
+                        <!-- <div class="control" style="width: 100%;"> -->
+                        <div class="control width-100-pct">
                             {{package_form.name|add_class:"input"}}
                         </div>
                         <div class="control">
@@ -64,7 +74,8 @@ VCIO Home
                 </form>
                 <div>
                     {% if package_search %}
-                    <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 10;">
+                    <!-- <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 10;"> -->
+                    <div class="notification search-alert">
                         <button class=" delete"></button>
                         {{ package_search }}
                     </div>
@@ -74,28 +85,36 @@ VCIO Home
         </div>
     </article>
 
-    <div style="height: 20px;"></div>
+    <!-- <div style="height: 20px;"></div> -->
+    <div class="pt-5"></div>
 
     <article class='panel is-info'>
         <div class='panel-heading py-2 is-size-6'>
             Search for vulnerabilities
-            <div class="dropdown is-hoverable" style="font-weight: normal;">
-                <div class="dropdown-trigger" style="text-align: right;">
-                    <i class="fa fa-question-circle" style="font-size:20px; margin-left: 10px;"></i>
+            <!-- <div class="dropdown is-hoverable" style="font-weight: normal;"> -->
+            <div class="dropdown is-hoverable has-text-weight-normal">
+                <!-- <div class="dropdown-trigger" style="text-align: right;"> -->
+                <div class="dropdown-trigger">
+                    <!-- <i class="fa fa-question-circle" style="font-size:20px; margin-left: 10px;"></i> -->
+                    <i class="fa fa-question-circle ml-2"></i>
                 </div>
-                <div class="dropdown-menu" id="dropdown-menu4" role="menu" style="width: 600px;">
-                    <div class="dropdown-content" style="box-shadow: 0px 8px 16px 0px #808080;">
-                        <div class="dropdown-item" style="font-size: 14px;">
-                            <div style="margin: 0px 0px 0px 0px;">Search for comprehensive information for a <span class="inline-code01">VULCOID</span> (VulnerableCode Database ID). <span style="font-style: italic;">(Only the first of these methods requires that the input be all uppercase.)</span>
+                <!-- <div class="dropdown-menu" id="dropdown-menu4" role="menu" style="width: 600px;"> -->
+                <div class="dropdown-menu dropdown-instructions-width" id="dropdown-menu4" role="menu">
+                    <!-- <div class="dropdown-content" style="box-shadow: 0px 8px 16px 0px #808080;"> -->
+                    <div class="dropdown-content dropdown-instructions-box-shadow">
+                        <!-- <div class="dropdown-item" style="font-size: 14px;"> -->
+                        <div class="dropdown-item">
+                            <!-- <div style="margin: 0px 0px 0px 0px;">Search for comprehensive information for a <span class="inline-code">VULCOID</span> (VulnerableCode Database ID). <span style="font-style: italic;">(Only the first of these methods requires that the input be all uppercase.)</span> -->
+                            <div>Search for comprehensive information for a <span class="inline-code">VULCOID</span> (VulnerableCode Database ID). <span class="is-italic">(Only the first of these methods requires that the input be all uppercase.)</span>
                                 <ul>
                                     <li>
-                                        Search for a specific <span class="inline-code01">VULCOID</span> (e.g., "VULCOID-1").
+                                        Search for a specific <span class="inline-code">VULCOID</span> (e.g., "VULCOID-1").
                                     </li>
                                     <li>
-                                        Search for all <span class="inline-code01">VULCOID</span>s that are associated with a specific <span class="inline-code01">CVE</span> (e.g., "CVE-2009-3898") or <span class="inline-code01">GHSA</span> (e.g., "GHSA-2qrg-x229-3v8q").
+                                        Search for all <span class="inline-code">VULCOID</span>s that are associated with a specific <span class="inline-code">CVE</span> (e.g., "CVE-2009-3898") or <span class="inline-code">GHSA</span> (e.g., "GHSA-2qrg-x229-3v8q").
                                     </li>
                                     <li>
-                                        Search for "CVE" or "GHSA" -- this will return all <span class="inline-code01">VULCOID</span>s that are associated with one or more <span class="inline-code01">CVE</span>s or <span class="inline-code01">GHSA</span>s, respectively.
+                                        Search for "CVE" or "GHSA" -- this will return all <span class="inline-code">VULCOID</span>s that are associated with one or more <span class="inline-code">CVE</span>s or <span class="inline-code">GHSA</span>s, respectively.
                                     </li>
                                 </ul>
                             </div>
@@ -105,11 +124,14 @@ VCIO Home
             </div>
         </div>
         <div class="panel-block">
-            <div style="padding-bottom: 10px; width: 100%;">
+            <!-- <div style="padding-bottom: 10px; width: 100%;"> -->
+            <div class="pb-3 width-100-pct">
                 <form action="{% url 'vulnerability_search' %}" method="get">
                     {% load widget_tweaks %}
-                    <div class="field has-addons" style="margin: 10px 0px 0px 0px;">
-                        <div class="control" style="width: 100%;">
+                    <!-- <div class="field has-addons" style="margin: 10px 0px 0px 0px;"> -->
+                    <div class="field has-addons mt-3">
+                        <!-- <div class="control" style="width: 100%;"> -->
+                        <div class="control width-100-pct">
                             {% render_field vuln_form.vuln_id class="input"%}
                         </div>
                         <div class="control">
@@ -121,7 +143,8 @@ VCIO Home
                 </form>
                 <div>
                     {% if vuln_search %}
-                    <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 10;">
+                    <!-- <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 10;"> -->
+                    <div class="notification search-alert">
                         <button class=" delete"></button>
                         {{ vuln_search }}
                     </div>

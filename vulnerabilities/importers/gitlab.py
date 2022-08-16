@@ -86,11 +86,6 @@ class GitLabGitImporter(GitImporter):
             glob = "**/*.yml"
             files = (p for p in path.glob(glob) if p.is_file())
             for file in files:
-                # split a path according to gitlab conventions where package type and name are a part of path
-                # For example with this path:
-                # /tmp/tmpi1klhpmd/pypi/gradio/CVE-2021-43831.yml
-                # the package type is pypi and the package name is gradio
-                # to ('/', 'tmp', 'tmpi1klhpmd', 'pypi', 'gradio', 'CVE-2021-43831.yml')
                 purl_type = get_gitlab_package_type(path=file)
                 if not purl_type:
                     logger.error(f"Unknow gitlab directory structure {file!r}")
@@ -111,13 +106,12 @@ def get_gitlab_package_type(path: Path):
     """
     Return a package type extracted from a gitlab advisory path or None
     """
-    parts = path.parts[-3:]
+    parts = path.parts
 
     if len(parts) < 3:
         return
 
-    type, _name, _vid = parts
-    return type
+    return parts[3]
 
 
 def get_purl(package_slug):

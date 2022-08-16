@@ -9,12 +9,16 @@
 
 import json
 import os
+from pathlib import Path
 from unittest import mock
 
 import pytest
+from packageurl import PackageURL
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importers.gitlab import GitLabBasicImprover
+from vulnerabilities.importers.gitlab import get_gitlab_package_type
+from vulnerabilities.importers.gitlab import get_purl
 from vulnerabilities.importers.gitlab import parse_gitlab_advisory
 from vulnerabilities.improvers.default import DefaultImprover
 from vulnerabilities.tests import util_tests
@@ -84,3 +88,34 @@ def test_gitlab_improver(mock_response, pkg_type):
         inference = [data.to_dict() for data in improver.get_inferences(advisory)]
         result.extend(inference)
     util_tests.check_results_against_json(result, expected_file)
+
+
+def test_get_purl():
+    assert get_purl("nuget/MessagePack") == PackageURL(type="nuget", name="MessagePack")
+    assert get_purl("nuget/Microsoft.NETCore.App") == PackageURL(
+        type="nuget", name="Microsoft.NETCore.App"
+    )
+    assert get_purl("npm/fresh") == PackageURL(type="npm", name="fresh")
+
+
+def test_get_gitlab_package_type():
+    assert (
+        get_gitlab_package_type(Path("/tmp/tmp9317bd5i/maven/com.google.gwt/gwt/CVE-2013-4204.yml"))
+        == "maven"
+    )
+    assert (
+        get_gitlab_package_type(
+            Path(
+                "/tmp/tmp9317bd5i/maven/io.projectreactor.netty/reactor-netty-http/CVE-2020-5404.yml"
+            )
+        )
+        == "maven"
+    )
+    assert (
+        get_gitlab_package_type(
+            Path("/tmp/tmp9317bd5i/go/github.com/cloudflare/cfrpki/CVE-2021-3909.yml")
+        )
+        == "go"
+    )
+    assert get_gitlab_package_type(Path("/tmp/tmp9317bd5i/gem/rexml/CVE-2021-28965.yml")) == "gem"
+    assert get_gitlab_package_type(Path()) is None

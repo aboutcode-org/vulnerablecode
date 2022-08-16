@@ -9,8 +9,7 @@ VCIO Vulnerability Search Results
 
 {% include 'navbar.html' %}
 
-<section class="section01">
-
+<section class="section pt-0">
     <article class='panel is-info'>
         <div class='panel-heading py-2 is-size-6'>
             Search for vulnerabilities
@@ -21,16 +20,16 @@ VCIO Vulnerability Search Results
                 <div class="dropdown-menu" id="dropdown-menu4" role="menu" style="width: 600px;">
                     <div class="dropdown-content" style="box-shadow: 0px 8px 16px 0px #808080;">
                         <div class="dropdown-item" style="font-size: 14px;">
-                            <div style="margin: 0px 0px 0px 0px;">Search for comprehensive information for a <span class="inline-code01">VULCOID</span> (VulnerableCode Database ID). <span style="font-style: italic;">(Only the first of these methods requires that the input be all uppercase.)</span>
+                            <div style="margin: 0px 0px 0px 0px;">Search for comprehensive information for a <span class="inline-code">VULCOID</span> (VulnerableCode Database ID). <span style="font-style: italic;">(Only the first of these methods requires that the input be all uppercase.)</span>
                                 <ul>
                                     <li>
-                                        Search for a specific <span class="inline-code01">VULCOID</span> (e.g., "VULCOID-1").
+                                        Search for a specific <span class="inline-code">VULCOID</span> (e.g., "VULCOID-1").
                                     </li>
                                     <li>
-                                        Search for all <span class="inline-code01">VULCOID</span>s that are associated with a specific <span class="inline-code01">CVE</span> (e.g., "CVE-2009-3898") or <span class="inline-code01">GHSA</span> (e.g., "GHSA-2qrg-x229-3v8q").
+                                        Search for all <span class="inline-code">VULCOID</span>s that are associated with a specific <span class="inline-code">CVE</span> (e.g., "CVE-2009-3898") or <span class="inline-code">GHSA</span> (e.g., "GHSA-2qrg-x229-3v8q").
                                     </li>
                                     <li>
-                                        Search for "CVE" or "GHSA" -- this will return all <span class="inline-code01">VULCOID</span>s that are associated with one or more <span class="inline-code01">CVE</span>s or <span class="inline-code01">GHSA</span>s, respectively.
+                                        Search for "CVE" or "GHSA" -- this will return all <span class="inline-code">VULCOID</span>s that are associated with one or more <span class="inline-code">CVE</span>s or <span class="inline-code">GHSA</span>s, respectively.
                                     </li>
                                 </ul>
                             </div>
@@ -104,7 +103,7 @@ VCIO Vulnerability Search Results
 
 {% if vulnerabilities %}
 
-<section class="section01">
+<section class="section pt-0">
     <div class="content">
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
             <thead>

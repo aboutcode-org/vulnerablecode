@@ -9,6 +9,7 @@
 
 from urllib.parse import urlencode
 
+from django.conf import settings
 from django.core.paginator import PageNotAnInteger
 from django.core.paginator import Paginator
 from django.db.models import Count
@@ -26,7 +27,6 @@ from vulnerabilities import forms
 from vulnerabilities import models
 from vulnerabilities.forms import CVEForm
 from vulnerabilities.forms import PackageForm
-from vulnerablecode import settings
 
 
 class PackageSearchView(View):

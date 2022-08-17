@@ -23,6 +23,20 @@
                 <a class="navbar-item" href="{% url 'vulnerability_search' %}">
                     Vulnerabilities
                 </a>
+                {% if user.is_authenticated %}
+                <div class="navbar-item has-dropdown is-hoverable">
+                  <a class="navbar-link">
+                    {{ user.username }}
+                  </a>
+                  <div class="navbar-dropdown is-right">
+                    <a class="navbar-item" href="{% url 'account_profile' %}">
+                      Profile settings
+                    </a>
+                    <a class="navbar-item" href="{% url 'logout' %}">
+                      Sign out
+                    </a>
+                  </div>
+                {% endif %}
             </div>
         </div>
     </nav>

@@ -12,13 +12,16 @@ import json
 import logging
 import uuid
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.dispatch import receiver
 from django.utils.http import int_to_base36
 from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin
+from rest_framework.authtoken.models import Token
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -418,3 +421,12 @@ class Advisory(models.Model):
             references=[Reference.from_dict(ref) for ref in self.references],
             date_published=self.date_published,
         )
+
+
+@receiver(models.signals.post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    """
+    Creates an API key token on user creation, using the signal system.
+    """
+    if created:
+        Token.objects.create(user_id=instance.pk)

@@ -8,6 +8,7 @@
 #
 
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import include
 from django.urls import path
 from rest_framework.routers import DefaultRouter
@@ -16,6 +17,7 @@ from vulnerabilities.api import AliasViewSet
 from vulnerabilities.api import CPEViewSet
 from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
+from vulnerabilities.views import AccountProfileView
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import PackageSearchView
 from vulnerabilities.views import PackageUpdate
@@ -47,5 +49,12 @@ urlpatterns = [
     path("vulnerabilities/<int:pk>", VulnerabilityDetails.as_view(), name="vulnerability_view"),
     path("vulnerabilities/search", VulnerabilitySearchView.as_view(), name="vulnerability_search"),
     path("", HomePage.as_view(), name="home"),
+    path("accounts/profile/", AccountProfileView.as_view(), name="account_profile"),
+    path("accounts/login/", auth_views.LoginView.as_view(), name="login"),
+    path(
+        "accounts/logout/",
+        auth_views.LogoutView.as_view(next_page="login"),
+        name="logout",
+    ),
     path(r"api/", include(api_router.urls)),
 ]

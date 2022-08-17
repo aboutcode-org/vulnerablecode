@@ -22,17 +22,12 @@ from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
-from vulnerablecode.auth import ConditionalLoginRequired
 
 
 class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
     class Meta:
         model = VulnerabilitySeverity
         fields = ["value", "scoring_system"]
-
-
-class AuthenticatedAPIViewSet(ConditionalLoginRequired, viewsets.ReadOnlyModelViewSet):
-    pass
 
 
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
@@ -211,7 +206,7 @@ class PackageFilterSet(filters.FilterSet):
         return self.queryset.filter(**attrs)
 
 
-class PackageViewSet(AuthenticatedAPIViewSet):
+class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
     filter_backends = (filters.DjangoFilterBackend,)
@@ -258,7 +253,7 @@ class VulnerabilityFilterSet(filters.FilterSet):
         fields = ["vulnerability_id"]
 
 
-class VulnerabilityViewSet(AuthenticatedAPIViewSet):
+class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     def get_fixed_packages_qs(self):
         """
         Filter the packages that fixes a vulnerability
@@ -300,7 +295,7 @@ class CPEFilterSet(filters.FilterSet):
         return self.queryset.filter(vulnerabilityreference__reference_id__startswith=cpe).distinct()
 
 
-class CPEViewSet(AuthenticatedAPIViewSet):
+class CPEViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Vulnerability.objects.filter(
         vulnerabilityreference__reference_id__startswith="cpe"
     ).distinct()
@@ -341,7 +336,7 @@ class AliasFilterSet(filters.FilterSet):
         return self.queryset.filter(aliases__alias__icontains=alias)
 
 
-class AliasViewSet(AuthenticatedAPIViewSet):
+class AliasViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Vulnerability.objects.all()
     serializer_class = VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)

@@ -48,7 +48,7 @@ VCIO Package Search Results
         <div class="panel-block">
             <!-- <div style="padding-bottom: 10px; width: 100%;"> -->
             <div class="pb-3 width-100-pct">
-                <form action="{% url 'package_search' %}" method="get">
+                <form action="{% url 'package_search' %}" method="get" name="pkg_form" onsubmit="return validatePkgForm()">
                     {% load widget_tweaks %}
                     <!-- <div class="field has-addons" style="margin: 10px 0px 0px 0px;"> -->
                     <div class="field has-addons mt-3">
@@ -203,12 +203,12 @@ VCIO Package Search Results
         });
     });
 
-    $(document).ready(function () {
-        $('#submit_pkg').click(function () {
-            if ($('#id_name').val().trim().length === 0) {
-                return false;
-            }
-        })
-    });
+    function validatePkgForm() {
+        var x = document.forms["pkg_form"]["name"].value;
+        if (x.trim().length == "") {
+            return false;
+        }
+    }
+
 </script>
 {% endblock %}

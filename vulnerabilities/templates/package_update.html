@@ -37,7 +37,7 @@ VCIO Package Details
         </div>
         <div class="panel-block">
             <div style="padding-bottom: 10px; width: 100%;">
-                <form action="{% url 'package_search' %}" method="get">
+                <form action="{% url 'package_search' %}" method="get" name="pkg_form" onsubmit="return validatePkgForm()">
                     {% load widget_tweaks %}
                     <div class="field has-addons" style="margin: 10px 0px 0px 0px;">
                         <div class="control">
@@ -229,25 +229,25 @@ VCIO Package Details
         });
     });
 
-    $(document).ready(function () {
-        $('#tabs li').on('click', function () {
-            var tab = $(this).data('tab');
+    //    $(document).ready(function () {
+    //        $('#tabs li').on('click', function () {
+    //            var tab = $(this).data('tab');
 
-            $('#tabs li').removeClass('is-active');
-            $(this).addClass('is-active');
+    //            $('#tabs li').removeClass('is-active');
+    //            $(this).addClass('is-active');
 
-            $('#tab-content div').removeClass('is-active');
-            $('div[data-content="' + tab + '"]').addClass('is-active');
-        });
-    });
+    //            $('#tab-content div').removeClass('is-active');
+    //            $('div[data-content="' + tab + '"]').addClass('is-active');
+    //        });
+    //    });
 
-    $(document).ready(function () {
-        $('#submit_pkg').click(function () {
-            if ($('#id_name').val().trim().length === 0) {
-                return false;
-            }
-        })
-    });
+    function validatePkgForm() {
+        var x = document.forms["pkg_form"]["name"].value;
+        if (x.trim().length == "") {
+            return false;
+        }
+    }
+
 </script>
 
 {% endblock %}

@@ -8,14 +8,12 @@
 # This is copied from https://github.com/nexB/scancode.io/commit/eab8eeb13989c26a1600cc64e8b054f171341063
 #
 
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
-from django.test import override_settings
 from django.urls import reverse
-
-from vulnerablecode.auth import is_authenticated_when_required
 
 TEST_PASSWORD = "secret"
 
@@ -32,17 +30,6 @@ class VulnerableCodeAuthTest(TestCase):
     def setUp(self):
         self.anonymous_user = AnonymousUser()
         self.basic_user = User.objects.create_user(username="basic_user", password=TEST_PASSWORD)
-
-    def test_vulnerablecode_auth_is_authenticated_when_required(self):
-        with override_settings(VULNERABLECODEIO_REQUIRE_AUTHENTICATION=True):
-            self.assertFalse(self.anonymous_user.is_authenticated)
-            self.assertFalse(is_authenticated_when_required(user=self.anonymous_user))
-
-        self.assertTrue(self.basic_user.is_authenticated)
-        self.assertTrue(is_authenticated_when_required(user=self.basic_user))
-
-        with override_settings(VULNERABLECODEIO_REQUIRE_AUTHENTICATION=False):
-            self.assertTrue(is_authenticated_when_required(user=None))
 
     def test_vulnerablecode_auth_login_view(self):
         data = {"username": self.basic_user.username, "password": ""}
@@ -81,12 +68,10 @@ class VulnerableCodeAuthTest(TestCase):
         response = self.client.get(profile_url)
         expected = '<label class="label">API Key</label>'
         self.assertContains(response, expected, html=True)
-        expected = '<label class="label">API Key</label>'
         self.assertContains(response, self.basic_user.auth_token.key)
 
     def test_vulnerablecode_auth_api_required_authentication(self):
-        with override_settings(VULNERABLECODEIO_REQUIRE_AUTHENTICATION=True):
-            response = self.client.get(api_package_url)
-            expected = {"detail": "Authentication credentials were not provided."}
-            self.assertEqual(expected, response.json())
-            self.assertEqual(401, response.status_code)
+        response = self.client.get(api_package_url)
+        expected = {"detail": "Authentication credentials were not provided."}
+        self.assertEqual(expected, response.json())
+        self.assertEqual(401, response.status_code)

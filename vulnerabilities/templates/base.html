@@ -13,14 +13,13 @@
     <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}" />
     <link rel="stylesheet" href="{% static 'css/bulma-tooltip.css' %}" />
 
-    <script type="text/javascript" src="{% static 'js/jquery-3.6.0.js' %}"></script>
-
     {% block extrahead %}{% endblock %}
 </head>
 
 <body class="Site">
     <div class="container max-desktop-width is-fullheight">
         {% block content %}{% endblock %}
+        <script src="{% static 'js/main.js' %}" crossorigin="anonymous"></script>
 
         <div style="margin-top: 50px;"></div>
 

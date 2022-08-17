@@ -129,6 +129,13 @@ TIME_ZONE = env.str("TIME_ZONE", default="UTC")
 
 USE_I18N = True
 
+VULNERABLECODEIO_REQUIRE_AUTHENTICATION = env.bool(
+    "VULNERABLECODEIO_REQUIRE_AUTHENTICATION", default=False
+)
+
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+
 USE_L10N = True
 
 USE_TZ = True
@@ -163,3 +170,6 @@ REST_FRAMEWORK = {
     # Limit the load on the Database returning a small number of records by default. https://github.com/nexB/vulnerablecode/issues/819
     "PAGE_SIZE": 10,
 }
+
+if not VULNERABLECODEIO_REQUIRE_AUTHENTICATION:
+    REST_FRAMEWORK["DEFAULT_PERMISSION_CLASSES"] = ("rest_framework.permissions.AllowAny",)

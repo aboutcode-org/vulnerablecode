@@ -378,7 +378,7 @@ class BulkSearchAPICPE(TestCase):
             data=json.dumps(request_body),
             content_type="application/json",
         ).json()
-        assert response == {"Error": "A non-empty 'cpe' list of package URLs is required."}
+        assert response == {"Error": "A non-empty 'cpes' list of CPEs is required."}
 
     def test_with_invalid_cpes(self):
         request_body = {"cpes": ["CVE-2022-2022"]}

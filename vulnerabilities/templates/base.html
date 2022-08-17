@@ -38,6 +38,13 @@
                   </div>
                 {% endif %}
             </div>
+            <div class="navbar-end">
+              {% if not user.is_authenticated %}
+              <a class="navbar-item is-right" href="{% url 'login' %}">
+                Sign in
+              </a>
+              {% endif %}
+            </div>
         </div>
     </nav>
     <main class="Site-content">

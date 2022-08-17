@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import sys
 from pathlib import Path
 
 import environ
@@ -129,12 +130,20 @@ TIME_ZONE = env.str("TIME_ZONE", default="UTC")
 
 USE_I18N = True
 
+IS_TESTS = False
+
+if len(sys.argv) > 0:
+    IS_TESTS = "pytest" in sys.argv[0]
+
 VULNERABLECODEIO_REQUIRE_AUTHENTICATION = env.bool(
     "VULNERABLECODEIO_REQUIRE_AUTHENTICATION", default=False
 )
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
+
+if IS_TESTS:
+    VULNERABLECODEIO_REQUIRE_AUTHENTICATION = True
 
 USE_L10N = True
 

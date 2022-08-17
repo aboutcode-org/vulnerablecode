@@ -59,7 +59,13 @@ Version v30.0.0
 
 - Add bulk search support for CPEs.
 
-- Add authentication for API.
+- Add authentication for REST API endpoint.
+  The autentication is disabled by default and can be enabled using the
+  SCANCODEIO_REQUIRE_AUTHENTICATION settings.
+  When enabled, users have to authenticate through a login form in the Web UI, or using
+  their API Key in the REST API.
+  The API Key can be viewed in the Web UI "Profile settings" view once logged-in.
+  Users can be created using the Django "createsuperuser" management command.
 
 Other:
 

@@ -9,7 +9,6 @@
 
 from urllib.parse import urlencode
 
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import PageNotAnInteger
 from django.core.paginator import Paginator
 from django.db.models import Count
@@ -18,7 +17,6 @@ from django.http.response import HttpResponseNotAllowed
 from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
-from django.views import generic
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 
@@ -169,7 +167,3 @@ def schema_view(request):
     if request.method != "GET":
         return HttpResponseNotAllowed()
     return render(request, "api_doc.html")
-
-
-class AccountProfileView(LoginRequiredMixin, generic.TemplateView):
-    template_name = "accounts/profile.html"

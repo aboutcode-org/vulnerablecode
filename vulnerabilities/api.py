@@ -308,12 +308,11 @@ class CPEViewSet(viewsets.ReadOnlyModelViewSet):
         """
         This endpoint is used to search for vulnerabilities by more than one CPE.
         """
-        response = []
         cpes = request.data.get("cpes", []) or []
         if not cpes or not isinstance(cpes, list):
             return Response(
                 status=400,
-                data={"Error": "A non-empty 'cpe' list of package URLs is required."},
+                data={"Error": "A non-empty 'cpes' list of CPEs is required."},
             )
         for cpe in cpes:
             if not cpe.startswith("cpe"):

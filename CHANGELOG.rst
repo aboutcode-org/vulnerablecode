@@ -59,6 +59,8 @@ Version v30.0.0
 
 - Add bulk search support for CPEs.
 
+- Add authentication for API.
+
 Other:
 
 - we dropped calver to use a plain semver.

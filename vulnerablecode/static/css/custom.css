@@ -208,6 +208,18 @@ ul li {
     margin-left: 20px;
 }
 
+.is-clipped-list ul {
+    list-style-type: none;
+    padding-left: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+}
+
+.is-clipped-list ul li {
+    margin-left: 0px;
+    line-height: 18px;
+}
+
 .tag:not(body).is-search-label-left {
     box-shadow: 5px 5px 5px #cccccc;
     border: solid 1px #b8b8b8;

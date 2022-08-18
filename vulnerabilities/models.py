@@ -352,6 +352,9 @@ class Alias(models.Model):
         related_name="aliases",
     )
 
+    class Meta:
+        ordering = ["alias"]
+
     def __str__(self):
         return self.alias
 

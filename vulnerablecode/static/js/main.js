@@ -5,16 +5,17 @@
 'use strict';
 
 function setupTabs() {
-    //    const $tabLinks = getAll('.tabs a');
-    const $tabLinks = getAll('.tabs li');
+    const $tabLinks = getAll('.tabs a');
 
     $tabLinks.forEach(function ($el) {
         $el.addEventListener('click', function (event) {
-            const activeLink = document.querySelector('.tabs .is-active');
-            //            const activeTabContent = document.querySelector('.tab-content.is-active');
-            const activeTabContent = document.querySelector('.tab-div.is-active');
-            const target_id = $el.dataset.target;
-            const targetTabContent = document.getElementById(target_id);
+            const activeLink = document.querySelector('div.tabs.is-boxed li.is-active');
+            const activeTabContent = document.querySelector('div.tab-div.is-active');
+
+            //Get the target id of the clicked tab.
+            const target_id = $el.parentNode.getAttribute('data-tab')
+            // ID the target tab content.
+            const targetTabContent = document.querySelector("[data-content='" + target_id + "']");
 
             activeLink.classList.remove('is-active');
             $el.parentNode.classList.add('is-active');

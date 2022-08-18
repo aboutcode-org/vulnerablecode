@@ -109,15 +109,28 @@ VCIO Vulnerability Search Results
             <thead>
                 <tr>
                     <th>Vulnerability ID</th>
+                    <th style="width: 225px;">Aliases</th>
                     <th style="width: 225px;">Affected packages</th>
                     <th style="width: 225px;">Fixed packages</th>
                 </tr>
             </thead>
             <tbody>
                 {% for vulnerability in vulnerabilities %}
-                <tr>
+                <tr class="is-clipped-list">
                     <td style="word-break: break-all;">
                         <a href="{% url 'vulnerability_view' vulnerability.pk %}?vuln_id={{vulnerability.vulnerability_id}}" target="_self">{{vulnerability.vulnerability_id}}</a>
+                    </td>
+                    <td>
+                        <ul>
+                            {% for alias in vulnerability.alias %}
+                            <li>
+                                {{ alias }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% if vulnerability.alias|length > 3 %}
+                        <button class="button is-small is-fullwidth show-clipped">Show {{ vulnerability.alias|length }} Aliases</button>
+                        {% endif %}
                     </td>
                     <td>{{vulnerability.vulnerable_package_count}}</td>
                     <td>{{vulnerability.patched_package_count}}</td>
@@ -193,6 +206,19 @@ VCIO Vulnerability Search Results
             return false;
         }
     }
+
+    let $showClippedButton = getAll("button.show-clipped");
+
+    $showClippedButton.forEach(function ($el) {
+        $el.addEventListener("click", function () {
+            $el.parentNode.classList.toggle("is-clipped-list");
+            let text = $el.textContent;
+            if (text.startsWith("Show"))
+                $el.textContent = text.replace("Show", "Hide");
+            else
+                $el.textContent = text.replace("Hide", "Show");
+        });
+    });
 
 </script>
 {% endblock %}

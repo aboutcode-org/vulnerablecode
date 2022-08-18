@@ -159,12 +159,17 @@ code {
     color: #000000;
 }
 
-.table.nexb-table td {
+.table.vcio-table td {
     border: 0;
 }
 
 .table th {
     border-color: #000000;
+}
+
+.table td {
+    word-wrap: break-word;
+    word-break: break-all;
 }
 
 .two-col-left {
@@ -203,12 +208,6 @@ ul li {
     margin-left: 20px;
 }
 
-.tag:not(body).is-nexb {
-    background-color: #e8e8e8;
-    color: #000000;
-    font-weight: 500;
-}
-
 .tag:not(body).is-search-label-left {
     box-shadow: 5px 5px 5px #cccccc;
     border: solid 1px #b8b8b8;
@@ -219,26 +218,6 @@ ul li {
     box-shadow: 5px 5px 5px #cccccc;
     border: solid 1px #b8b8b8;
     border-left: 0;
-}
-
-.nexb-box {
-    margin-top: 0px;
-    margin-bottom: 30px;
-    background-color: #ffffff;
-    border: solid 1px #d8d8d8;
-    border-radius: 5px;
-    padding: 10px;
-    box-shadow: none;
-}
-
-.title.nexb-title-color {
-    color: #008888;
-}
-
-.nexb-title {
-    font-size: 24px;
-    color: #cc0000;
-    margin-bottom: 10px;
 }
 
 .message a:not(.button):not(.tag):not(.dropdown-item) {
@@ -283,7 +262,7 @@ ul li {
     padding: 7px 0px 0px 0px;
 }
 
-/* For some reason this is missing from our local bulma.css file, and is needed for the page-bottom pagination */
+/* This is missing from our local bulma.css file, and is needed for the page-bottom pagination */
 .pagination-list li {
     list-style: none;
     margin: 0;

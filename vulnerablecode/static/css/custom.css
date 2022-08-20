@@ -72,6 +72,8 @@ a.button.paging:visited {
     padding: 10px 10px 20px 10px;
     border-top: solid 1px #000000;
     font-size: 14px;
+    /* This keeps the footer at the bottom of a "short" page. */
+    margin-top: auto;
 }
 
 @media screen and (min-width: 1024px) {
@@ -116,7 +118,7 @@ code {
 }
 
 #tab-content div {
-    min-height: 300px;
+    /* min-height: 300px; */
     border-bottom: 0;
     margin-bottom: 50px;
     padding-bottom: 50px;
@@ -256,22 +258,6 @@ ul li {
 .message.is-info .message-body {
     border-color: #3298dc;
     color: #000000;
-}
-
-.current01 {
-    font-size: 15px;
-}
-
-.current02 {
-    font-size: 15px;
-    display: inline-block;
-    padding: 9px 10px 0px 10px;
-}
-
-.current03 {
-    font-size: 12px;
-    display: inline-block;
-    padding: 7px 0px 0px 0px;
 }
 
 /* This is missing from our local bulma.css file, and is needed for the page-bottom pagination */

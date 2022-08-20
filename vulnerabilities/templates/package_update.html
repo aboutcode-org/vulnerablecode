@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load humanize %}
+{% load widget_tweaks %}
 
 {% block title %}
 VCIO Package Details
@@ -12,21 +14,21 @@ VCIO Package Details
     <article class='panel is-info'>
         <div class='panel-heading py-2 is-size-6'>
             Search for vulnerable packages
-            <div class="dropdown is-hoverable" style="font-weight: normal;">
-                <div class="dropdown-trigger" style="text-align: right;">
-                    <i class="fa fa-question-circle" style="font-size:20px; margin-left: 10px;"></i>
+            <div class="dropdown is-hoverable has-text-weight-normal">
+                <div class="dropdown-trigger">
+                    <i class="fa fa-question-circle ml-2"></i>
                 </div>
-                <div class="dropdown-menu" id="dropdown-menu4" role="menu" style="width: 600px;">
-                    <div class="dropdown-content" style="box-shadow: 0px 8px 16px 0px #808080;">
-                        <div class="dropdown-item" style="font-size: 14px;">
-                            <div style="margin: 0px 0px 0px 0px;">
-                                <div style="margin-top: 0px;">Search for currently known Vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_self">Package-URL</a> (aka <span class="inline-code">purl</span>) or a Package <span class="inline-code">name</span>.</div>
+                <div class="dropdown-menu dropdown-instructions-width" id="dropdown-menu4" role="menu">
+                    <div class="dropdown-content dropdown-instructions-box-shadow">
+                        <div class="dropdown-item">
+                            <div>
+                                <div>Search for currently known vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_blank">Package-URL</a> (aka <span class="inline-code">purl</span>) or a package <span class="inline-code">name</span>.</div>
                                 <ul>
                                     <li>
-                                        Search by Package <span class="inline-code">name</span> -- type the <span class="inline-code">name</span> in the search box and, if relevant to your search, select the Package <span class="inline-code">type</span> from the dropdown.
+                                        Search by package <span class="inline-code">name</span> -- type the <span class="inline-code">name</span> in the search box and, if relevant to your search, select the package <span class="inline-code">type</span> from the dropdown.
                                     </li>
                                     <li>
-                                        Search by <span class="inline-code">purl</span> -- type the <span class="inline-code">purl</span> in the search box. <span style="font-style: italic;">(The <span class="inline-code">type</span> dropdown does not apply to a <span class="inline-code">purl</span> search.)</span>
+                                        Search by <span class="inline-code">purl</span> -- type the <span class="inline-code">purl</span> in the search box. <span class="is-italic">(The <span class="inline-code">type</span> dropdown does not apply to a <span class="inline-code">purl</span> search.)</span>
                                     </li>
                                 </ul>
                             </div>
@@ -36,17 +38,16 @@ VCIO Package Details
             </div>
         </div>
         <div class="panel-block">
-            <div style="padding-bottom: 10px; width: 100%;">
+            <div class="pb-3 width-100-pct">
                 <form action="{% url 'package_search' %}" method="get" name="pkg_form" onsubmit="return validatePkgForm()">
-                    {% load widget_tweaks %}
-                    <div class="field has-addons" style="margin: 10px 0px 0px 0px;">
+                    <div class="field has-addons mt-3">
                         <div class="control">
                             <div class="select">
-                                {{package_form.type}}
+                                {{ package_form.type }}
                             </div>
                         </div>
-                        <div class="control" style="width: 100%;">
-                            {{package_form.name|add_class:"input"}}
+                        <div class="control width-100-pct">
+                            {{ package_form.name|add_class:"input" }}
                         </div>
                         <div class="control">
                             <button class="button is-link" type="submit" id="submit_pkg" name="template" value="package_details">
@@ -57,10 +58,10 @@ VCIO Package Details
                 </form>
                 <div>
                     {% if package_search %}
-                    <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 10;">
-                        <button class=" delete"></button>
-                        {{ package_search }}
-                    </div>
+                        <div class="notification search-alert">
+                            <button class=" delete"></button>
+                            {{ package_search }}
+                        </div>
                     {% endif %}
                 </div>
             </div>
@@ -69,150 +70,139 @@ VCIO Package Details
 </section>
 
 {% if package %}
+    <section class="section pt-0">
+        <article class="panel is-info panel-header-only">
+            <p class="panel-heading py-2 is-size-6">
+                Package details
+            </p>
+        </article>
 
-<section class="section pt-0">
-    <article class="panel is-info panel-header-only">
-        <p class="panel-heading py-2 is-size-6">
-            Package Details
-        </p>
-    </article>
+        <div class="tabs is-boxed" id="tabs">
+            <ul>
+                <li class="is-active" data-tab="1">
+                    <a>
+                        <span>Essentials</span>
+                    </a>
+                </li>
+                <li data-tab="2">
+                    <a>
+                        <span>
+                            Affected by vulnerabilities
+                            {% if impacted_vuln %}
+                                ({{ impacted_vuln|length }})
+                            {% else %}
+                                (0)
+                            {% endif %}
+                        </span>
+                    </a>
+                </li>
+                <li data-tab="3">
+                    <a>
+                        <span>
+                            Fixing vulnerabilities
+                            {% if resolved_vuln %}
+                                ({{ resolved_vuln|length }})
+                            {% else %}
+                                (0)
+                            {% endif %}
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="tab-content">
+            <div class="tab-div is-active" data-content="1">
+                <table class="table vcio-table width-100-pct mt-2">
+                    <tbody>
+                        <tr>
+                            <td class="two-col-left"><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="The package url or purl is a URL string used to identify and locate a software package.">purl</span></td>
+                            <td class="two-col-right">
+                                {{ package.package_url }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-    <div class="tabs is-boxed" id="tabs">
-        <ul>
-            <li class="is-active" data-tab="1">
-                <a>
-                    <span>Essentials</span>
-                </a>
-            </li>
-            <li data-tab="2">
-                <a>
-                    <span>
-                        Affected By Vulnerabilities
+            <div class="tab-div content" data-content="2">
+                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th style="width: 200px;">Vulnerability</th>
+                            <th>Summary</th>
+                            <th style="width: 200px;">Aliases</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
                         {% if impacted_vuln %}
-                        ({{impacted_vuln|length}})
+                            {% for vuln in impacted_vuln %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'vulnerability_view' vuln.pk %}" target="_self">{{ vuln.vulnerability_id }}</a>
+                                    </td>
+                                    <td>
+                                        {{ vuln.summary }}
+                                    </td>
+                                    <td>
+                                        {% for alias in vuln.alias %}
+                                            {{ alias }}
+                                            <br />
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
                         {% else %}
-                        (0)
+                            <tr>
+                                <td colspan="3">
+                                    This package is not affected by any vulnerabilities.
+                                </td>
+                            </tr>
                         {% endif %}
-                    </span>
-                </a>
-            </li>
-            <li data-tab="3">
-                <a>
-                    <span>
-                        Fixing Vulnerabilities
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-div content" data-content="3">
+                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th style="width: 200px;">Vulnerability</th>
+                            <th>Summary</th>
+                            <th style="width: 200px;">Aliases</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         {% if resolved_vuln %}
-                        ({{resolved_vuln|length}})
+                            {% for vuln in resolved_vuln %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'vulnerability_view' vuln.pk %}" target="_self">{{ vuln.vulnerability_id }}</a>
+                                    </td>
+                                    <td>
+                                        {{ vuln.summary }}
+                                    </td>
+                                    <td>
+                                        {% for alias in vuln.alias %}
+                                            {{ alias }}
+                                            <br />
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
                         {% else %}
-                        (0)
+                            <tr>
+                                <td colspan="3">
+                                    This package does not fix any vulnerabilities.
+                                </td>
+                            </tr>
                         {% endif %}
-                    </span>
-                </a>
-            </li>
-        </ul>
-    </div>
-    <div id="tab-content">
-        <div class="tab-div is-active" data-content="1">
-            <table class="table vcio-table" style="width: 100%; margin-top: 10px;">
-                <tbody>
-                    <tr>
-                        <td class="two-col-left"><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="The package url or purl is a URL string used to identify and locate a software package.">purl</span></td>
-                        <td class="two-col-right">
-                            {{package.package_url}}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
 
         </div>
-
-        <div class="tab-div content" data-content="2">
-
-            <!-- <table class="table is-narrow" style="width: 100%; border-bottom: solid 1px #d8d8d8;"> -->
-            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-                <thead>
-                    <tr>
-                        <th style="width: 200px;">Vulnerability</th>
-                        <th>Summary</th>
-                        <th style="width: 200px;">Aliases</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    {% if impacted_vuln %}
-
-                    {% for vuln in impacted_vuln %}
-                    <tr>
-                        <td>
-                            <a href="{% url 'vulnerability_view' vuln.pk %}" target="_self">{{ vuln.vulnerability_id }}</a>
-                        </td>
-                        <td>
-                            {{ vuln.summary }}
-                        </td>
-                        <td>
-                            {% for alias in vuln.alias %}
-                            {{alias}}
-                            <br />
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-
-                    {% else %}
-                    <tr>
-                        <td colspan="3">
-                            This package is not affected by any vulnerabilities.
-                        </td>
-                    </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="tab-div content" data-content="3">
-            <!-- <table class="table is-narrow" style="width: 100%; border-bottom: solid 1px #d8d8d8;"> -->
-            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-                <thead>
-                    <tr>
-                        <th style="width: 200px;">Vulnerability</th>
-                        <th>Summary</th>
-                        <th style="width: 200px;">Aliases</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if resolved_vuln %}
-
-                    {% for vuln in resolved_vuln %}
-                    <tr>
-                        <td>
-                            <a href="{% url 'vulnerability_view' vuln.pk %}" target="_self">{{ vuln.vulnerability_id }}</a>
-                        </td>
-                        <td>
-                            {{ vuln.summary }}
-                        </td>
-                        <td>
-                            {% for alias in vuln.alias %}
-                            {{alias}}
-                            <br />
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-
-                    {% else %}
-                    <tr>
-                        <td colspan="3">
-                            This package does not fix any vulnerabilities.
-                        </td>
-                    </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>
-
-    </div>
-</section>
-
-
+    </section>
 {% endif %}
 
 {% endblock %}
@@ -228,18 +218,6 @@ VCIO Package Details
             });
         });
     });
-
-    //    $(document).ready(function () {
-    //        $('#tabs li').on('click', function () {
-    //            var tab = $(this).data('tab');
-
-    //            $('#tabs li').removeClass('is-active');
-    //            $(this).addClass('is-active');
-
-    //            $('#tab-content div').removeClass('is-active');
-    //            $('div[data-content="' + tab + '"]').addClass('is-active');
-    //        });
-    //    });
 
     function validatePkgForm() {
         var x = document.forms["pkg_form"]["name"].value;

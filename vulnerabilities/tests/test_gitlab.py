@@ -100,22 +100,31 @@ def test_get_purl():
 
 def test_get_gitlab_package_type():
     assert (
-        get_gitlab_package_type(Path("/tmp/tmp9317bd5i/maven/com.google.gwt/gwt/CVE-2013-4204.yml"))
+        get_gitlab_package_type(
+            Path("/tmp/tmp9317bd5i/maven/com.google.gwt/gwt/CVE-2013-4204.yml"),
+            Path("/tmp/tmp9317bd5i/"),
+        )
         == "maven"
     )
     assert (
         get_gitlab_package_type(
             Path(
                 "/tmp/tmp9317bd5i/maven/io.projectreactor.netty/reactor-netty-http/CVE-2020-5404.yml"
-            )
+            ),
+            Path("/tmp/tmp9317bd5i/"),
         )
         == "maven"
     )
     assert (
         get_gitlab_package_type(
-            Path("/tmp/tmp9317bd5i/go/github.com/cloudflare/cfrpki/CVE-2021-3909.yml")
+            Path("/tmp/tmp9317bd5i/go/github.com/cloudflare/cfrpki/CVE-2021-3909.yml"),
+            Path("/tmp/tmp9317bd5i/"),
         )
         == "go"
     )
-    assert get_gitlab_package_type(Path("/tmp/tmp9317bd5i/gem/rexml/CVE-2021-28965.yml")) == "gem"
-    assert get_gitlab_package_type(Path()) is None
+    assert (
+        get_gitlab_package_type(
+            Path("/tmp/tmp9317bd5i/gem/rexml/CVE-2021-28965.yml"), Path("/tmp/tmp9317bd5i/")
+        )
+        == "gem"
+    )

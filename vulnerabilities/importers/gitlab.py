@@ -17,7 +17,6 @@ from typing import Mapping
 from typing import Optional
 
 import pytz
-import saneyaml
 from dateutil import parser as dateparser
 from django.db.models.query import QuerySet
 from fetchcode.vcs import fetch_via_vcs
@@ -42,6 +41,7 @@ from vulnerabilities.package_managers import get_api_package_name
 from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
 from vulnerabilities.utils import build_description
 from vulnerabilities.utils import get_affected_packages_by_patched_package
+from vulnerabilities.utils import load_yaml
 from vulnerabilities.utils import nearest_patched_package
 from vulnerabilities.utils import resolve_version_range
 
@@ -86,7 +86,7 @@ class GitLabGitImporter(GitImporter):
             glob = "**/*.yml"
             files = (p for p in path.glob(glob) if p.is_file())
             for file in files:
-                purl_type = get_gitlab_package_type(path=file)
+                purl_type = get_gitlab_package_type(path=file, root=path)
                 if not purl_type:
                     logger.error(f"Unknow gitlab directory structure {file!r}")
                     continue
@@ -102,16 +102,14 @@ class GitLabGitImporter(GitImporter):
                 self.vcs_response.delete()
 
 
-def get_gitlab_package_type(path: Path):
+def get_gitlab_package_type(path: Path, root: Path):
     """
-    Return a package type extracted from a gitlab advisory path or None
+    Return a package type extracted from a gitlab advisory path
     """
-    parts = path.parts
-
-    if len(parts) < 3:
-        return
-
-    return parts[3]
+    relative = path.relative_to(root)
+    parts = relative.parts
+    gitlab_schema = parts[0]
+    return gitlab_schema
 
 
 def get_purl(package_slug):
@@ -184,8 +182,8 @@ def parse_gitlab_advisory(file):
     identifiers:
     - "GMS-2018-26"
     """
-    with open(file) as f:
-        gitlab_advisory = saneyaml.load(f)
+    gitlab_advisory = load_yaml(file)
+
     if not isinstance(gitlab_advisory, dict):
         logger.error(
             f"parse_gitlab_advisory: unknown gitlab advisory format in {file!r} with data: {gitlab_advisory!r}"

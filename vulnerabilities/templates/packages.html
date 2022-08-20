@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load humanize %}
+{% load widget_tweaks %}
 
 {% block title %}
 VCIO Package Search Results
@@ -13,29 +14,20 @@ VCIO Package Search Results
     <article class='panel is-info'>
         <div class='panel-heading py-2 is-size-6'>
             Search for vulnerable packages
-            <!-- <div class="dropdown is-hoverable" style="font-weight: normal;"> -->
             <div class="dropdown is-hoverable has-text-weight-normal">
-                <!-- <div class="dropdown-trigger" style="text-align: right;"> -->
                 <div class="dropdown-trigger">
-                    <!-- <i class="fa fa-question-circle" style="font-size:20px; margin-left: 10px;"></i> -->
                     <i class="fa fa-question-circle ml-2"></i>
                 </div>
-                <!-- <div class="dropdown-menu" id="dropdown-menu4" role="menu" style="width: 600px;"> -->
                 <div class="dropdown-menu dropdown-instructions-width" id="dropdown-menu4" role="menu">
-                    <!-- <div class="dropdown-content" style="box-shadow: 0px 8px 16px 0px #808080;"> -->
                     <div class="dropdown-content dropdown-instructions-box-shadow">
-                        <!-- <div class="dropdown-item" style="font-size: 14px;"> -->
                         <div class="dropdown-item">
-                            <!-- <div style="margin: 0px 0px 0px 0px;"> -->
                             <div>
-                                <!-- <div style="margin-top: 0px;">Search for currently known Vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_self">Package-URL</a> (aka <span class="inline-code">purl</span>) or a Package <span class="inline-code">name</span>.</div> -->
-                                <div>Search for currently known Vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_blank">Package-URL</a> (aka <span class="inline-code">purl</span>) or a Package <span class="inline-code">name</span>.</div>
+                                <div>Search for currently known vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_blank">Package-URL</a> (aka <span class="inline-code">purl</span>) or a package <span class="inline-code">name</span>.</div>
                                 <ul>
                                     <li>
-                                        Search by Package <span class="inline-code">name</span> -- type the <span class="inline-code">name</span> in the search box and, if relevant to your search, select the Package <span class="inline-code">type</span> from the dropdown.
+                                        Search by package <span class="inline-code">name</span> -- type the <span class="inline-code">name</span> in the search box and, if relevant to your search, select the package <span class="inline-code">type</span> from the dropdown.
                                     </li>
                                     <li>
-                                        <!-- Search by <span class="inline-code">purl</span> -- type the <span class="inline-code">purl</span> in the search box. <span style="font-style: italic;">(The <span class="inline-code">type</span> dropdown does not apply to a <span class="inline-code">purl</span> search.)</span> -->
                                         Search by <span class="inline-code">purl</span> -- type the <span class="inline-code">purl</span> in the search box. <span class="is-italic">(The <span class="inline-code">type</span> dropdown does not apply to a <span class="inline-code">purl</span> search.)</span>
                                     </li>
                                 </ul>
@@ -46,20 +38,16 @@ VCIO Package Search Results
             </div>
         </div>
         <div class="panel-block">
-            <!-- <div style="padding-bottom: 10px; width: 100%;"> -->
             <div class="pb-3 width-100-pct">
                 <form action="{% url 'package_search' %}" method="get" name="pkg_form" onsubmit="return validatePkgForm()">
-                    {% load widget_tweaks %}
-                    <!-- <div class="field has-addons" style="margin: 10px 0px 0px 0px;"> -->
                     <div class="field has-addons mt-3">
                         <div class="control">
                             <div class="select">
-                                {{package_form.type}}
+                                {{ package_form.type }}
                             </div>
                         </div>
-                        <!-- <div class="control" style="width: 100%;"> -->
                         <div class="control width-100-pct">
-                            {{package_form.name|add_class:"input"}}
+                            {{ package_form.name|add_class:"input" }}
                         </div>
                         <div class="control">
                             <button class="button is-link" type="submit" id="submit_pkg" name="template" value="packages">
@@ -70,11 +58,10 @@ VCIO Package Search Results
                 </form>
                 <div>
                     {% if package_search %}
-                    <!-- <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 10;"> -->
-                    <div class="notification search-alert">
-                        <button class=" delete"></button>
-                        {{ package_search }}
-                    </div>
+                        <div class="notification search-alert">
+                            <button class=" delete"></button>
+                            {{ package_search }}
+                        </div>
                     {% endif %}
                 </div>
             </div>
@@ -85,107 +72,108 @@ VCIO Package Search Results
 
 {% if package_name %}
 
-<div class="is-max-desktop mb-3">
-    <section class="mx-5">
-        <article class="panel is-info panel-header-only">
-            <p class="panel-heading py-2 is-size-6">
-                Package Search Results
-            </p>
-        </article>
-        <div class="is-flex" style="justify-content: space-between;">
-            <div>
-                <strong>Total records:</strong> {{ packages.paginator.count|intcomma }}
+    <div class="is-max-desktop mb-3">
+        <section class="mx-5">
+            <article class="panel is-info panel-header-only">
+                <p class="panel-heading py-2 is-size-6">
+                    Package search results
+                </p>
+            </article>
+            <div class="is-flex" style="justify-content: space-between;">
+                <div>
+                    <strong>Total records:</strong> {{ packages.paginator.count|intcomma }}
+                </div>
+                <div>
+                    {% if packages.has_previous %}
+                        <a class="small_page_button" href="?{{ searched_for }}&page=1">1</a>
+                        <a class="page_arrow_spacing" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">&laquo;</a>
+                    {% else %}
+                        <span class="small_page_button">1</span>
+                        <span class="page_arrow_spacing">&laquo;</span>
+                    {% endif %}
+                    Page {{ packages.number|intcomma }} of {{ packages.paginator.num_pages|intcomma }}
+                    {% if packages.has_next %}
+                        <a class="page_arrow_spacing" href="?{{ searched_for }}&page={{ packages.next_page_number }}">&raquo;</a>
+                        <a class="small_page_button" href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}">{{ packages.paginator.num_pages|intcomma }}</a>
+                    {% else %}
+                        <span class="page_arrow_spacing">&raquo;</span>
+                        <span class="small_page_button">{{ packages.paginator.num_pages|intcomma }}</span>
+                    {% endif %}
+                </div>
             </div>
-            <div>
-                {% if packages.has_previous %}
-                <a class="small_page_button" href="?{{ searched_for }}&page=1">1</a>
-                <a class="page_arrow_spacing" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">&laquo;</a>
-                {% else %}
-                <span class="small_page_button">1</span>
-                <span class="page_arrow_spacing">&laquo;</span>
-                {% endif %}
-                Page {{ packages.number|intcomma }} of {{ packages.paginator.num_pages|intcomma }}
-                {% if packages.has_next %}
-                <a class="page_arrow_spacing" href="?{{ searched_for }}&page={{ packages.next_page_number }}">&raquo;</a>
-                <a class="small_page_button" href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}">{{packages.paginator.num_pages|intcomma}}</a>
-                {% else %}
-                <span class="page_arrow_spacing">&raquo;</span>
-                <span class="small_page_button">{{packages.paginator.num_pages|intcomma}}</span>
-                {% endif %}
-            </div>
-        </div>
-    </section>
-</div>
-
-{% if packages %}
-
-<section class="section pt-0">
-    <div class="content">
-        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-            <thead>
-                <tr>
-                    <th><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="The package url or purl is a URL string used to identify and locate a software package.">Package URL</span></th>
-                    <th style="width: 225px;"><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is the number of vulnerabilities that affect the package.">Affected By Vulnerabilities</span></th>
-                    <th style="width: 225px;"><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is the number of vulnerabilities fixed by the package.">Fixing Vulnerabilities</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for package in packages %}
-                <tr>
-                    <td style="word-break: break-all;">
-                        <a href="{% url 'package_view' package.pk %}?type={{package_type}}&name={{package.package_url}}" target="_self">{{package.package_url}}</a>
-                    </td>
-                    <td>{{package.vulnerability_count}}</td>
-                    <td>{{package.patched_vulnerability_count}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        </section>
     </div>
 
-    <nav class="pagination is-centered is-small" aria-label="pagination">
-        {% if packages.has_previous %}
-        <a href="?{{ searched_for }}&page={{ packages.previous_page_number }}" class="pagination-previous">Previous</a>
-        {% else %}
-        <a class="pagination-previous" disabled>Previous</a>
-        {% endif %}
+    {% if packages %}
 
-        {% if packages.has_next %}
-        <a href="?{{ searched_for }}&page={{ packages.next_page_number }}" class="pagination-next">Next</a>
-        {% else %}
-        <a class="pagination-next" disabled>Next</a>
-        {% endif %}
+        <section class="section pt-0">
+            <div class="content">
+                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="The package url or purl is a URL string used to identify and locate a software package.">Package URL</span></th>
+                            <th style="width: 225px;"><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is the number of vulnerabilities that affect the package.">Affected by vulnerabilities</span></th>
+                            <th style="width: 225px;"><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is the number of vulnerabilities fixed by the package.">Fixing vulnerabilities</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for package in packages %}
+                            <tr>
+                                <td style="word-break: break-all;">
+                                    <a href="{% url 'package_view' package.pk %}?type={{ package_type }}&name={{ package.package_url }}" target="_self">{{ package.package_url }}</a>
+                                </td>
+                                <td>{{ package.vulnerability_count }}</td>
+                                <td>{{ package.patched_vulnerability_count }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
-        <ul class="pagination-list">
-            {% if packages.number != 1%}
-            <li>
-                <a href="?{{ searched_for }}&page=1{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page 1">1</a>
-            </li>
-            {% if packages.number > 2 %}
-            <li>
-                <span class="pagination-ellipsis">&hellip;</span>
-            </li>
-            {% endif %}
-            {% endif %}
-            <li>
-                <a class="pagination-link is-current" disabled aria-label="Page {{ packages.number }}" aria-current="page">{{ packages.number|intcomma }}</a>
-            </li>
-            {% if packages.number != packages.paginator.num_pages %}
-            {% if packages.next_page_number != packages.paginator.num_pages %}
-            <li>
-                <span class="pagination-ellipsis">&hellip;</span>
-            </li>
-            {% endif %}
-            <li>
-                <a href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page {{ packages.paginator.num_pages }}">{{ packages.paginator.num_pages|intcomma }}</a>
-            </li>
-            {% endif %}
-        </ul>
-    </nav>
+            <nav class="pagination is-centered is-small" aria-label="pagination">
+                {% if packages.has_previous %}
+                    <a href="?{{ searched_for }}&page={{ packages.previous_page_number }}" class="pagination-previous">Previous</a>
+                {% else %}
+                    <a class="pagination-previous" disabled>Previous</a>
+                {% endif %}
 
-</section>
+                {% if packages.has_next %}
+                    <a href="?{{ searched_for }}&page={{ packages.next_page_number }}" class="pagination-next">Next</a>
+                {% else %}
+                    <a class="pagination-next" disabled>Next</a>
+                {% endif %}
 
-{% endif %}
+                <ul class="pagination-list">
+                    {% if packages.number != 1%}
+                        <li>
+                            <a href="?{{ searched_for }}&page=1{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page 1">1</a>
+                        </li>
+                        {% if packages.number > 2 %}
+                            <li>
+                                <span class="pagination-ellipsis">&hellip;</span>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                    <li>
+                        <a class="pagination-link is-current" disabled aria-label="Page {{ packages.number }}" aria-current="page">{{ packages.number|intcomma }}</a>
+                    </li>
+                    {% if packages.number != packages.paginator.num_pages %}
+                        {% if packages.next_page_number != packages.paginator.num_pages %}
+                            <li>
+                                <span class="pagination-ellipsis">&hellip;</span>
+                            </li>
+                        {% endif %}
+                        <li>
+                            <a href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page {{ packages.paginator.num_pages }}">{{ packages.paginator.num_pages|intcomma }}</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+
+        </section>
+        <div>
+
+    {% endif %}
 
 {% endif %}
 

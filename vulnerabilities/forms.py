@@ -42,5 +42,5 @@ class CVEForm(forms.Form):
 
     vuln_id = forms.CharField(
         required=False,
-        widget=forms.TextInput(attrs={"placeholder": "vulnerability id or CVE/GHSA"}),
+        widget=forms.TextInput(attrs={"placeholder": "Vulnerability ID or CVE/GHSA"}),
     )

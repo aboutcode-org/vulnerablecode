@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load humanize %}
+{% load widget_tweaks %}
 
 {% block title %}
 VCIO Vulnerability Search Results
@@ -13,14 +14,14 @@ VCIO Vulnerability Search Results
     <article class='panel is-info'>
         <div class='panel-heading py-2 is-size-6'>
             Search for vulnerabilities
-            <div class="dropdown is-hoverable" style="font-weight: normal;">
-                <div class="dropdown-trigger" style="text-align: right;">
-                    <i class="fa fa-question-circle" style="font-size:20px; margin-left: 10px;"></i>
+            <div class="dropdown is-hoverable has-text-weight-normal">
+                <div class="dropdown-trigger">
+                    <i class="fa fa-question-circle ml-2"></i>
                 </div>
-                <div class="dropdown-menu" id="dropdown-menu4" role="menu" style="width: 600px;">
-                    <div class="dropdown-content" style="box-shadow: 0px 8px 16px 0px #808080;">
-                        <div class="dropdown-item" style="font-size: 14px;">
-                            <div style="margin: 0px 0px 0px 0px;">Search for comprehensive information for a <span class="inline-code">VULCOID</span> (VulnerableCode Database ID). <span style="font-style: italic;">(Only the first of these methods requires that the input be all uppercase.)</span>
+                <div class="dropdown-menu dropdown-instructions-width" id="dropdown-menu4" role="menu">
+                    <div class="dropdown-content dropdown-instructions-box-shadow">
+                        <div class="dropdown-item">
+                            <div>Search for comprehensive information for a <span class="inline-code">VULCOID</span> (VulnerableCode Database ID). <span class="is-italic">(Only the first of these methods requires that the input be all uppercase.)</span>
                                 <ul>
                                     <li>
                                         Search for a specific <span class="inline-code">VULCOID</span> (e.g., "VULCOID-1").
@@ -39,12 +40,11 @@ VCIO Vulnerability Search Results
             </div>
         </div>
         <div class="panel-block">
-            <div style="padding-bottom: 10px; width: 100%;">
+            <div class="pb-3 width-100-pct">
                 <form action="{% url 'vulnerability_search' %}" method="get" name="vuln_form" onsubmit="return validateVulnForm()">
-                    {% load widget_tweaks %}
-                    <div class="field has-addons" style="margin: 10px 0px 0px 0px;">
-                        <div class="control" style="width: 100%;">
-                            {% render_field vuln_form.vuln_id class="input"%}
+                    <div class="field has-addons mt-3">
+                        <div class="control width-100-pct">
+                            {% render_field vuln_form.vuln_id class="input" %}
                         </div>
                         <div class="control">
                             <button class="button is-link" type="submit" id="submit_vuln" name="template" value="vulnerabilities">
@@ -55,135 +55,129 @@ VCIO Vulnerability Search Results
                 </form>
                 <div>
                     {% if vuln_search %}
-                    <div class="notification" style="border: solid 1px #ff9999; padding: 20px; margin-top: 20px; background-color: #ffffff; color: #ff0000; z-index: 10;">
-                        <button class=" delete"></button>
-                        {{ vuln_search }}
-                    </div>
+                        <div class="notification search-alert">
+                            <button class=" delete"></button>
+                            {{ vuln_search }}
+                        </div>
                     {% endif %}
                 </div>
             </div>
         </div>
     </article>
-
 </section>
 
 {% if vuln_id %}
-
-<div class="is-max-desktop mb-3">
-    <section class="mx-5">
-        <article class="panel is-info panel-header-only">
-            <p class="panel-heading py-2 is-size-6">
-                Vulnerability Search Results
-            </p>
-        </article>
-        <div class="is-flex" style="justify-content: space-between;">
-            <div>
-                <strong>Total records:</strong> {{ vulnerabilities.paginator.count|intcomma }}
+    <div class="is-max-desktop mb-3">
+        <section class="mx-5">
+            <article class="panel is-info panel-header-only">
+                <p class="panel-heading py-2 is-size-6">
+                    Vulnerability search results
+                </p>
+            </article>
+            <div class="is-flex" style="justify-content: space-between;">
+                <div>
+                    <strong>Total records:</strong> {{ vulnerabilities.paginator.count|intcomma }}
+                </div>
+                <div>
+                    {% if vulnerabilities.has_previous %}
+                        <a class="small_page_button" href="?vuln_id={{ vuln_id }}&page=1">1</a>
+                        <a class="page_arrow_spacing" href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.previous_page_number }}">&laquo;</a>
+                    {% else %}
+                        <span class="small_page_button">1</span>
+                        <span class="page_arrow_spacing">&laquo;</span>
+                    {% endif %}
+                    Page {{ vulnerabilities.number|intcomma }} of {{ vulnerabilities.paginator.num_pages|intcomma }}
+                    {% if vulnerabilities.has_next %}
+                        <a class="page_arrow_spacing" href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.next_page_number }}">&raquo;</a>
+                        <a class="small_page_button" href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.paginator.num_pages }}">{{ vulnerabilities.paginator.num_pages|intcomma }}</a>
+                    {% else %}
+                        <span class="page_arrow_spacing">&raquo;</span>
+                        <span class="small_page_button">{{ vulnerabilities.paginator.num_pages|intcomma }}</span>
+                    {% endif %}
+                </div>
             </div>
-            <div>
-                {% if vulnerabilities.has_previous %}
-                <a class="small_page_button" href="?vuln_id={{ vuln_id }}&page=1">1</a>
-                <a class="page_arrow_spacing" href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.previous_page_number }}">&laquo;</a>
-                {% else %}
-                <span class="small_page_button">1</span>
-                <span class="page_arrow_spacing">&laquo;</span>
-                {% endif %}
-                Page {{ vulnerabilities.number|intcomma }} of {{ vulnerabilities.paginator.num_pages|intcomma }}
-                {% if vulnerabilities.has_next %}
-                <a class="page_arrow_spacing" href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.next_page_number }}">&raquo;</a>
-                <a class="small_page_button" href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.paginator.num_pages }}">{{vulnerabilities.paginator.num_pages|intcomma}}</a>
-                {% else %}
-                <span class="page_arrow_spacing">&raquo;</span>
-                <span class="small_page_button">{{vulnerabilities.paginator.num_pages|intcomma}}</span>
-                {% endif %}
-            </div>
-        </div>
-    </section>
-</div>
-
-{% if vulnerabilities %}
-
-<section class="section pt-0">
-    <div class="content">
-        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-            <thead>
-                <tr>
-                    <th>Vulnerability ID</th>
-                    <th style="width: 225px;">Aliases</th>
-                    <th style="width: 225px;">Affected packages</th>
-                    <th style="width: 225px;">Fixed packages</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for vulnerability in vulnerabilities %}
-                <tr class="is-clipped-list">
-                    <td style="word-break: break-all;">
-                        <a href="{% url 'vulnerability_view' vulnerability.pk %}?vuln_id={{vulnerability.vulnerability_id}}" target="_self">{{vulnerability.vulnerability_id}}</a>
-                    </td>
-                    <td>
-                        <ul>
-                            {% for alias in vulnerability.alias %}
-                            <li>
-                                {{ alias }}
-                            </li>
-                            {% endfor %}
-                        </ul>
-                        {% if vulnerability.alias|length > 3 %}
-                        <button class="button is-small is-fullwidth show-clipped">Show {{ vulnerability.alias|length }} Aliases</button>
-                        {% endif %}
-                    </td>
-                    <td>{{vulnerability.vulnerable_package_count}}</td>
-                    <td>{{vulnerability.patched_package_count}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        </section>
     </div>
 
-    <nav class="pagination is-centered is-small" aria-label="pagination">
-        {% if vulnerabilities.has_previous %}
-        <a href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.previous_page_number }}" class="pagination-previous">Previous</a>
-        {% else %}
-        <a class="pagination-previous" disabled>Previous</a>
-        {% endif %}
+    {% if vulnerabilities %}
+        <section class="section pt-0">
+            <div class="content">
+                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Vulnerability ID</th>
+                            <th style="width: 225px;">Aliases</th>
+                            <th style="width: 225px;">Affected packages</th>
+                            <th style="width: 225px;">Fixed packages</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vulnerability in vulnerabilities %}
+                            <tr class="is-clipped-list">
+                                <td style="word-break: break-all;">
+                                    <a href="{% url 'vulnerability_view' vulnerability.pk %}?vuln_id={{ vulnerability.vulnerability_id }}" target="_self">{{ vulnerability.vulnerability_id }}</a>
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% for alias in vulnerability.alias %}
+                                            <li>
+                                                {{ alias }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% if vulnerability.alias|length > 3 %}
+                                        <button class="button is-small is-fullwidth show-clipped">Show {{ vulnerability.alias|length }} Aliases</button>
+                                    {% endif %}
+                                </td>
+                                <td>{{ vulnerability.vulnerable_package_count }}</td>
+                                <td>{{ vulnerability.patched_package_count }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
-        {% if vulnerabilities.has_next %}
-        <a href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.next_page_number }}" class="pagination-next">Next</a>
-        {% else %}
-        <a class="pagination-next" disabled>Next</a>
-        {% endif %}
+            <nav class="pagination is-centered is-small" aria-label="pagination">
+                {% if vulnerabilities.has_previous %}
+                    <a href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.previous_page_number }}" class="pagination-previous">Previous</a>
+                {% else %}
+                    <a class="pagination-previous" disabled>Previous</a>
+                {% endif %}
 
-        <ul class="pagination-list">
-            {% if vulnerabilities.number != 1%}
-            <li>
-                <a href="?vuln_id={{ vuln_id }}&page=1{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page 1">1</a>
-            </li>
-            {% if vulnerabilities.number > 2 %}
-            <li>
-                <span class="pagination-ellipsis">&hellip;</span>
-            </li>
-            {% endif %}
-            {% endif %}
-            <li>
-                <a class="pagination-link is-current" disabled aria-label="Page {{ vulnerabilities.number }}" aria-current="page">{{ vulnerabilities.number|intcomma }}</a>
-            </li>
-            {% if vulnerabilities.number != vulnerabilities.paginator.num_pages %}
-            {% if vulnerabilities.next_page_number != vulnerabilities.paginator.num_pages %}
-            <li>
-                <span class="pagination-ellipsis">&hellip;</span>
-            </li>
-            {% endif %}
-            <li>
-                <a href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.paginator.num_pages }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page {{ vulnerabilities.paginator.num_pages }}">{{ vulnerabilities.paginator.num_pages|intcomma }}</a>
-            </li>
-            {% endif %}
-        </ul>
-    </nav>
+                {% if vulnerabilities.has_next %}
+                    <a href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.next_page_number }}" class="pagination-next">Next</a>
+                {% else %}
+                    <a class="pagination-next" disabled>Next</a>
+                {% endif %}
 
-</section>
-
-{% endif %}
-
+                <ul class="pagination-list">
+                    {% if vulnerabilities.number != 1 %}
+                        <li>
+                            <a href="?vuln_id={{ vuln_id }}&page=1{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page 1">1</a>
+                        </li>
+                        {% if vulnerabilities.number > 2 %}
+                            <li>
+                                <span class="pagination-ellipsis">&hellip;</span>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                    <li>
+                        <a class="pagination-link is-current" disabled aria-label="Page {{ vulnerabilities.number }}" aria-current="page">{{ vulnerabilities.number|intcomma }}</a>
+                    </li>
+                    {% if vulnerabilities.number != vulnerabilities.paginator.num_pages %}
+                        {% if vulnerabilities.next_page_number != vulnerabilities.paginator.num_pages %}
+                            <li>
+                                <span class="pagination-ellipsis">&hellip;</span>
+                            </li>
+                        {% endif %}
+                        <li>
+                            <a href="?vuln_id={{ vuln_id }}&page={{ vulnerabilities.paginator.num_pages }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page {{ vulnerabilities.paginator.num_pages }}">{{ vulnerabilities.paginator.num_pages|intcomma }}</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </section>
+    {% endif %}
 {% endif %}
 
 {% endblock %}

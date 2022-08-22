@@ -132,6 +132,7 @@ code {
 
 .tabs.is-boxed ul {
     padding-left: 20px;
+    border-color: #3298dc;
 }
 
 .tabs li {
@@ -151,6 +152,8 @@ code {
     border: solid 1px #e8e8e8;
     border-top-width: 3px;
     background-color: #ffffff;
+    border-color: #e8e8e8;
+    border-bottom-color: #3298dc;
 }
 
 .tabs.is-boxed li.is-active a,
@@ -159,6 +162,7 @@ code {
     border-top: solid 3px #3298dc;
     border-bottom-color: transparent !important;
     color: #000000;
+    border-color: #3298dc;
 }
 
 .table.vcio-table td {
@@ -316,4 +320,18 @@ a.small_page_button {
     background-color: #ffffff;
     color: #ff0000;
     z-index: 10;
+}
+
+.navbar-hover-div {
+    border: 0;
+    box-shadow: 0px 8px 16px 0px #808080;
+    min-width: 13rem;
+    padding: 0px;
+}
+
+.details-container {
+    border: solid 1px #e8e8e8;
+    border: 0;
+    border-radius: 6px;
+    box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
 }

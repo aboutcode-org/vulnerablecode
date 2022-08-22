@@ -71,136 +71,137 @@ VCIO Package Details
 
 {% if package %}
     <section class="section pt-0">
-        <article class="panel is-info panel-header-only">
-            <p class="panel-heading py-2 is-size-6">
-                Package details
-            </p>
-        </article>
+        <div class="details-container">
+            <article class="panel is-info panel-header-only">
+                <p class="panel-heading py-2 is-size-6">
+                    Package details
+                </p>
+            </article>
 
-        <div class="tabs is-boxed" id="tabs">
-            <ul>
-                <li class="is-active" data-tab="1">
-                    <a>
-                        <span>Essentials</span>
-                    </a>
-                </li>
-                <li data-tab="2">
-                    <a>
-                        <span>
-                            Affected by vulnerabilities
+            <div class="tabs is-boxed" id="tabs">
+                <ul>
+                    <li class="is-active" data-tab="1">
+                        <a>
+                            <span>Essentials</span>
+                        </a>
+                    </li>
+                    <li data-tab="2">
+                        <a>
+                            <span>
+                                Affected by vulnerabilities
+                                {% if impacted_vuln %}
+                                    ({{ impacted_vuln|length }})
+                                {% else %}
+                                    (0)
+                                {% endif %}
+                            </span>
+                        </a>
+                    </li>
+                    <li data-tab="3">
+                        <a>
+                            <span>
+                                Fixing vulnerabilities
+                                {% if resolved_vuln %}
+                                    ({{ resolved_vuln|length }})
+                                {% else %}
+                                    (0)
+                                {% endif %}
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div id="tab-content">
+                <div class="tab-div is-active" data-content="1">
+                    <table class="table vcio-table width-100-pct mt-2">
+                        <tbody>
+                            <tr>
+                                <td class="two-col-left"><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="The package url or purl is a URL string used to identify and locate a software package.">purl</span></td>
+                                <td class="two-col-right">
+                                    {{ package.package_url }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-div content" data-content="2">
+                    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                        <thead>
+                            <tr>
+                                <th style="width: 200px;">Vulnerability</th>
+                                <th>Summary</th>
+                                <th style="width: 200px;">Aliases</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
                             {% if impacted_vuln %}
-                                ({{ impacted_vuln|length }})
+                                {% for vuln in impacted_vuln %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'vulnerability_view' vuln.pk %}" target="_self">{{ vuln.vulnerability_id }}</a>
+                                        </td>
+                                        <td>
+                                            {{ vuln.summary }}
+                                        </td>
+                                        <td>
+                                            {% for alias in vuln.alias %}
+                                                {{ alias }}
+                                                <br />
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                             {% else %}
-                                (0)
+                                <tr>
+                                    <td colspan="3">
+                                        This package is not affected by any vulnerabilities.
+                                    </td>
+                                </tr>
                             {% endif %}
-                        </span>
-                    </a>
-                </li>
-                <li data-tab="3">
-                    <a>
-                        <span>
-                            Fixing vulnerabilities
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-div content" data-content="3">
+                    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                        <thead>
+                            <tr>
+                                <th style="width: 200px;">Vulnerability</th>
+                                <th>Summary</th>
+                                <th style="width: 200px;">Aliases</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             {% if resolved_vuln %}
-                                ({{ resolved_vuln|length }})
+                                {% for vuln in resolved_vuln %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'vulnerability_view' vuln.pk %}" target="_self">{{ vuln.vulnerability_id }}</a>
+                                        </td>
+                                        <td>
+                                            {{ vuln.summary }}
+                                        </td>
+                                        <td>
+                                            {% for alias in vuln.alias %}
+                                                {{ alias }}
+                                                <br />
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                             {% else %}
-                                (0)
+                                <tr>
+                                    <td colspan="3">
+                                        This package does not fix any vulnerabilities.
+                                    </td>
+                                </tr>
                             {% endif %}
-                        </span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div id="tab-content">
-            <div class="tab-div is-active" data-content="1">
-                <table class="table vcio-table width-100-pct mt-2">
-                    <tbody>
-                        <tr>
-                            <td class="two-col-left"><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="The package url or purl is a URL string used to identify and locate a software package.">purl</span></td>
-                            <td class="two-col-right">
-                                {{ package.package_url }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
-            <div class="tab-div content" data-content="2">
-                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-                    <thead>
-                        <tr>
-                            <th style="width: 200px;">Vulnerability</th>
-                            <th>Summary</th>
-                            <th style="width: 200px;">Aliases</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        {% if impacted_vuln %}
-                            {% for vuln in impacted_vuln %}
-                                <tr>
-                                    <td>
-                                        <a href="{% url 'vulnerability_view' vuln.pk %}" target="_self">{{ vuln.vulnerability_id }}</a>
-                                    </td>
-                                    <td>
-                                        {{ vuln.summary }}
-                                    </td>
-                                    <td>
-                                        {% for alias in vuln.alias %}
-                                            {{ alias }}
-                                            <br />
-                                        {% endfor %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="3">
-                                    This package is not affected by any vulnerabilities.
-                                </td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="tab-div content" data-content="3">
-                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-                    <thead>
-                        <tr>
-                            <th style="width: 200px;">Vulnerability</th>
-                            <th>Summary</th>
-                            <th style="width: 200px;">Aliases</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if resolved_vuln %}
-                            {% for vuln in resolved_vuln %}
-                                <tr>
-                                    <td>
-                                        <a href="{% url 'vulnerability_view' vuln.pk %}" target="_self">{{ vuln.vulnerability_id }}</a>
-                                    </td>
-                                    <td>
-                                        {{ vuln.summary }}
-                                    </td>
-                                    <td>
-                                        {% for alias in vuln.alias %}
-                                            {{ alias }}
-                                            <br />
-                                        {% endfor %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="3">
-                                    This package does not fix any vulnerabilities.
-                                </td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-
         </div>
     </section>
 {% endif %}

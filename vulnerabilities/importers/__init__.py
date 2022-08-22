@@ -16,6 +16,7 @@ from vulnerabilities.importers import nvd
 from vulnerabilities.importers import openssl
 from vulnerabilities.importers import pysec
 from vulnerabilities.importers import redhat
+from vulnerabilities.importers import rust
 
 IMPORTERS_REGISTRY = [
     nginx.NginxImporter,
@@ -27,6 +28,7 @@ IMPORTERS_REGISTRY = [
     pysec.PyPIImporter,
     debian.DebianImporter,
     gitlab.GitLabGitImporter,
+    rust.RustImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

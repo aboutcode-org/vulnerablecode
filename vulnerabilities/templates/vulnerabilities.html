@@ -118,16 +118,15 @@ VCIO Vulnerability Search Results
                                     <a href="{% url 'vulnerability_view' vulnerability.pk %}?vuln_id={{ vulnerability.vulnerability_id }}" target="_self">{{ vulnerability.vulnerability_id }}</a>
                                 </td>
                                 <td>
-                                    <ul>
-                                        {% for alias in vulnerability.alias %}
-                                            <li>
-                                                {{ alias }}
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                    {% if vulnerability.alias|length > 3 %}
-                                        <button class="button is-small is-fullwidth show-clipped">Show {{ vulnerability.alias|length }} Aliases</button>
-                                    {% endif %}
+                                    {% for alias in vulnerability.alias %}
+                                        {% if alias.url %}
+                                            <a href={{ alias.url }} target="_blank">{{ alias }}<i class="fa fa-external-link fa_link_custom"></i></a>
+                                            <br />
+                                        {% else %}
+                                            {{ alias }}
+                                            <br />
+                                        {% endif %}
+                                    {% endfor %}
                                 </td>
                                 <td>{{ vulnerability.vulnerable_package_count }}</td>
                                 <td>{{ vulnerability.patched_package_count }}</td>

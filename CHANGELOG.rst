@@ -59,6 +59,13 @@ Version v30.0.0
 
 - Add bulk search support for CPEs.
 
+- Add authentication for REST API endpoint.
+  The autentication is disabled by default and can be enabled using the
+  VULNERABLECODEIO_REQUIRE_AUTHENTICATION settings.
+  When enabled, users have to authenticate using 
+  their API Key in the REST API.
+  Users can be created using the Django "createsuperuser" management command.
+
 Other:
 
 - we dropped calver to use a plain semver.

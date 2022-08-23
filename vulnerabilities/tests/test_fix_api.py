@@ -7,10 +7,15 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
+
+from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.test import TransactionTestCase
 from django.utils.http import int_to_base36
 from packageurl import PackageURL
 from rest_framework import status
+from rest_framework.test import APIClient
 
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
@@ -19,9 +24,15 @@ from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 
+User = get_user_model()
 
-class APITestCaseVulnerability(TestCase):
+
+class APITestCaseVulnerability(TransactionTestCase):
     def setUp(self):
+        self.user = User.objects.create_user("username", "e@mail.com", "secret")
+        self.auth = f"Token {self.user.auth_token.key}"
+        self.csrf_client = APIClient(enforce_csrf_checks=True)
+        self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
         for i in range(0, 200):
             Vulnerability.objects.create(
                 summary=str(i),
@@ -35,15 +46,15 @@ class APITestCaseVulnerability(TestCase):
             )
 
     def test_api_status(self):
-        response = self.client.get("/api/vulnerabilities/", format="json")
+        response = self.csrf_client.get("/api/vulnerabilities/")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_api_response(self):
-        response = self.client.get("/api/vulnerabilities/", format="json").data
+        response = self.csrf_client.get("/api/vulnerabilities/").data
         self.assertEqual(response["count"], 201)
 
     def test_api_with_single_vulnerability(self):
-        response = self.client.get(
+        response = self.csrf_client.get(
             f"/api/vulnerabilities/{self.vulnerability.id}", format="json"
         ).data
         assert response == {
@@ -66,7 +77,7 @@ class APITestCaseVulnerability(TestCase):
         }
 
     def test_api_with_single_vulnerability_with_filters(self):
-        response = self.client.get(
+        response = self.csrf_client.get(
             f"/api/vulnerabilities/{self.vulnerability.id}?type=pypi", format="json"
         ).data
         assert response == {
@@ -87,6 +98,10 @@ class APITestCaseVulnerability(TestCase):
 
 class APITestCasePackage(TestCase):
     def setUp(self):
+        self.user = User.objects.create_user("username", "e@mail.com", "secret")
+        self.auth = f"Token {self.user.auth_token.key}"
+        self.csrf_client = APIClient(enforce_csrf_checks=True)
+        self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
         vuln = Vulnerability.objects.create(
             summary="test-vuln",
         )
@@ -123,15 +138,15 @@ class APITestCasePackage(TestCase):
         )
 
     def test_api_status(self):
-        response = self.client.get("/api/packages/", format="json")
+        response = self.csrf_client.get("/api/packages/", format="json")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_api_response(self):
-        response = self.client.get("/api/packages/", format="json").data
+        response = self.csrf_client.get("/api/packages/", format="json").data
         self.assertEqual(response["count"], 11)
 
     def test_api_with_single_vulnerability_and_fixed_package(self):
-        response = self.client.get(f"/api/packages/{self.package.id}", format="json").data
+        response = self.csrf_client.get(f"/api/packages/{self.package.id}", format="json").data
         assert response == {
             "url": f"http://testserver/api/packages/{self.package.id}",
             "purl": "pkg:generic/nginx/test@11",
@@ -160,7 +175,7 @@ class APITestCasePackage(TestCase):
         }
 
     def test_api_with_single_vulnerability_and_vulnerable_package(self):
-        response = self.client.get(f"/api/packages/{self.vuln_package.id}", format="json").data
+        response = self.csrf_client.get(f"/api/packages/{self.vuln_package.id}", format="json").data
         assert response == {
             "url": f"http://testserver/api/packages/{self.vuln_package.id}",
             "purl": "pkg:generic/nginx/test@9",
@@ -204,6 +219,10 @@ class APITestCasePackage(TestCase):
 
 class CPEApi(TestCase):
     def setUp(self):
+        self.user = User.objects.create_user("username", "e@mail.com", "secret")
+        self.auth = f"Token {self.user.auth_token.key}"
+        self.csrf_client = APIClient(enforce_csrf_checks=True)
+        self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
         self.vulnerability = Vulnerability.objects.create(summary="test")
         for i in range(0, 10):
             ref, _ = VulnerabilityReference.objects.get_or_create(
@@ -214,31 +233,39 @@ class CPEApi(TestCase):
             )
 
     def test_api_status(self):
-        response = self.client.get("/api/cpes/", format="json")
+        response = self.csrf_client.get("/api/cpes/", format="json")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_api_response(self):
-        response = self.client.get("/api/cpes/?cpe=cpe:/a:nginx:9", format="json").data
+        response = self.csrf_client.get("/api/cpes/?cpe=cpe:/a:nginx:9", format="json").data
         self.assertEqual(response["count"], 1)
 
 
 class AliasApi(TestCase):
     def setUp(self):
+        self.user = User.objects.create_user("username", "e@mail.com", "secret")
+        self.auth = f"Token {self.user.auth_token.key}"
+        self.csrf_client = APIClient(enforce_csrf_checks=True)
+        self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
         self.vulnerability = Vulnerability.objects.create(summary="test")
         for i in range(0, 10):
             Alias.objects.create(alias=f"CVE-{i}", vulnerability=self.vulnerability)
 
     def test_api_status(self):
-        response = self.client.get("/api/alias/", format="json")
+        response = self.csrf_client.get("/api/alias/", format="json")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_api_response(self):
-        response = self.client.get("/api/alias?alias=CVE-9", format="json").data
+        response = self.csrf_client.get("/api/alias?alias=CVE-9", format="json").data
         self.assertEqual(response["count"], 1)
 
 
-class BulkSearchAPI(TestCase):
+class BulkSearchAPIPackage(TestCase):
     def setUp(self):
+        self.user = User.objects.create_user("username", "e@mail.com", "secret")
+        self.auth = f"Token {self.user.auth_token.key}"
+        self.csrf_client = APIClient(enforce_csrf_checks=True)
+        self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
         packages = [
             "pkg:nginx/nginx@0.6.18",
             "pkg:nginx/nginx@1.20.0",
@@ -264,16 +291,20 @@ class BulkSearchAPI(TestCase):
         request_body = {
             "purls": self.packages,
         }
-        response = self.client.post(
+        response = self.csrf_client.post(
             "/api/packages/bulk_search",
-            data=request_body,
+            data=json.dumps(request_body),
             content_type="application/json",
         ).json()
         assert len(response) == 13
 
 
-class BulkSearchAPI(TestCase):
+class BulkSearchAPICPE(TestCase):
     def setUp(self):
+        self.user = User.objects.create_user("username", "e@mail.com", "secret")
+        self.auth = f"Token {self.user.auth_token.key}"
+        self.csrf_client = APIClient(enforce_csrf_checks=True)
+        self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
         self.exclusive_cpes = [
             "cpe:/a:nginx:1.0.7",
             "cpe:/a:nginx:1.0.15",
@@ -305,9 +336,9 @@ class BulkSearchAPI(TestCase):
         request_body = {
             "cpes": self.exclusive_cpes,
         }
-        response = self.client.post(
+        response = self.csrf_client.post(
             "/api/cpes/bulk_search",
-            data=request_body,
+            data=json.dumps(request_body),
             content_type="application/json",
         ).json()
         assert len(response) == 1
@@ -320,9 +351,9 @@ class BulkSearchAPI(TestCase):
         request_body = {
             "cpes": ["cpe:/a:nginx:1.10.7"],
         }
-        response = self.client.post(
+        response = self.csrf_client.post(
             "/api/cpes/bulk_search",
-            data=request_body,
+            data=json.dumps(request_body),
             content_type="application/json",
         ).json()
         assert len(response) == 0
@@ -331,9 +362,9 @@ class BulkSearchAPI(TestCase):
         request_body = {
             "cpes": self.non_exclusive_cpes,
         }
-        response = self.client.post(
+        response = self.csrf_client.post(
             "/api/cpes/bulk_search",
-            data=request_body,
+            data=json.dumps(request_body),
             content_type="application/json",
         ).json()
         assert len(response) == 2
@@ -342,20 +373,18 @@ class BulkSearchAPI(TestCase):
         request_body = {
             "cpes": [],
         }
-        response = self.client.post(
+        response = self.csrf_client.post(
             "/api/cpes/bulk_search",
-            data=request_body,
+            data=json.dumps(request_body),
             content_type="application/json",
         ).json()
-        assert response == {"Error": "A non-empty 'cpe' list of package URLs is required."}
+        assert response == {"Error": "A non-empty 'cpes' list of CPEs is required."}
 
     def test_with_invalid_cpes(self):
-        request_body = {
-            "cpes": ["CVE-2022-2022"],
-        }
-        response = self.client.post(
+        request_body = {"cpes": ["CVE-2022-2022"]}
+        response = self.csrf_client.post(
             "/api/cpes/bulk_search",
-            data=request_body,
+            data=json.dumps(request_body),
             content_type="application/json",
         ).json()
         assert response == {"Error": "Invalid CPE: CVE-2022-2022"}

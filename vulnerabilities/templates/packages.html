@@ -67,18 +67,39 @@ VCIO Package Search Results
             </div>
         </div>
     </article>
-
 </section>
 
 {% if package_name %}
-
     <div class="is-max-desktop mb-3">
         <section class="mx-5">
             <article class="panel is-info panel-header-only">
-                <p class="panel-heading py-2 is-size-6">
-                    Package search results
-                </p>
+                <div class="panel-heading py-2 is-size-6">
+                    <div class="field is-grouped is-grouped-multiline">
+                        Package search results:
+                        <div class="control">
+                            <div class="tags has-addons">
+                                <span class="tag is-dark custom">type</span>
+                                <span class="tag is-white custom">
+                                {% if package_type %}
+                                    {{ package_type }}
+                                {% else %}
+                                    any
+                                {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="control">
+                            <div class="tags has-addons">
+                                <span class="tag is-dark custom">name</span>
+                                <span class="tag is-white custom">
+                                    {{ package_name }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </article>
+
             <div class="is-flex" style="justify-content: space-between;">
                 <div>
                     <strong>Total records:</strong> {{ packages.paginator.count|intcomma }}

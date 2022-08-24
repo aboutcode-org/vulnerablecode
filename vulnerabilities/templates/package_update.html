@@ -73,9 +73,19 @@ VCIO Package Details
     <section class="section pt-0">
         <div class="details-container">
             <article class="panel is-info panel-header-only">
-                <p class="panel-heading py-2 is-size-6">
-                    Package details
-                </p>
+                <div class="panel-heading py-2 is-size-6">
+                    <div class="field is-grouped is-grouped-multiline">
+                        Package details:
+                        <div class="control">
+                            <div class="tags has-addons">
+                                <span class="tag is-black custom">purl</span>
+                                <span class="tag is-white custom">
+                                    {{ package.package_url }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </article>
 
             <div class="tabs is-boxed" id="tabs">
@@ -129,9 +139,9 @@ VCIO Package Details
                     <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                         <thead>
                             <tr>
-                                <th style="width: 200px;">Vulnerability</th>
+                                <th style="width: 175px;">Vulnerability</th>
                                 <th>Summary</th>
-                                <th style="width: 200px;">Aliases</th>
+                                <th style="width: 225px;">Aliases</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -140,15 +150,20 @@ VCIO Package Details
                                 {% for vuln in impacted_vuln %}
                                     <tr>
                                         <td>
-                                            <a href="{% url 'vulnerability_view' vuln.pk %}" target="_self">{{ vuln.vulnerability_id }}</a>
+                                            <a href="{% url 'vulnerability_view' vuln.pk %}?vuln_id={{ vuln.vulnerability_id }}" target="_self">{{ vuln.vulnerability_id }}</a>
                                         </td>
                                         <td>
                                             {{ vuln.summary }}
                                         </td>
                                         <td>
                                             {% for alias in vuln.alias %}
-                                                {{ alias }}
-                                                <br />
+                                                {% if alias.url %}
+                                                    <a href={{ alias.url }} target="_blank">{{ alias }}<i class="fa fa-external-link fa_link_custom"></i></a>
+                                                    <br />
+                                                {% else %}
+                                                    {{ alias }}
+                                                    <br />
+                                                {% endif %}
                                             {% endfor %}
                                         </td>
                                     </tr>
@@ -168,9 +183,9 @@ VCIO Package Details
                     <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                         <thead>
                             <tr>
-                                <th style="width: 200px;">Vulnerability</th>
+                                <th style="width: 175px;">Vulnerability</th>
                                 <th>Summary</th>
-                                <th style="width: 200px;">Aliases</th>
+                                <th style="width: 225px;">Aliases</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -178,15 +193,20 @@ VCIO Package Details
                                 {% for vuln in resolved_vuln %}
                                     <tr>
                                         <td>
-                                            <a href="{% url 'vulnerability_view' vuln.pk %}" target="_self">{{ vuln.vulnerability_id }}</a>
+                                            <a href="{% url 'vulnerability_view' vuln.pk %}?vuln_id={{ vuln.vulnerability_id }}" target="_self">{{ vuln.vulnerability_id }}</a>
                                         </td>
                                         <td>
                                             {{ vuln.summary }}
                                         </td>
                                         <td>
                                             {% for alias in vuln.alias %}
-                                                {{ alias }}
-                                                <br />
+                                                {% if alias.url %}
+                                                    <a href={{ alias.url }} target="_blank">{{ alias }}<i class="fa fa-external-link fa_link_custom"></i></a>
+                                                    <br />
+                                                {% else %}
+                                                    {{ alias }}
+                                                    <br />
+                                                {% endif %}
                                             {% endfor %}
                                         </td>
                                     </tr>

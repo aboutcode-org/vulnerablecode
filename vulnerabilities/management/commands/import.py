@@ -6,7 +6,6 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-import threading
 import traceback
 
 from django.core.management.base import BaseCommand
@@ -40,10 +39,6 @@ class Command(BaseCommand):
 
         if options["all"]:
             self.import_data(IMPORTERS_REGISTRY.values())
-            return
-
-        if options["all_in_parallel"]:
-            self.import_data_in_parallel(IMPORTERS_REGISTRY.values())
             return
 
         sources = options["sources"]
@@ -82,36 +77,6 @@ class Command(BaseCommand):
                     )
                 )
 
-        if failed_importers:
-            raise CommandError(f"{len(failed_importers)} failed!: {','.join(failed_importers)}")
-
-    def import_data_in_parallel(self, importers):
-        failed_importers = []
-        thread_list = []
-        for importer in importers:
-            self.stdout.write(f"Importing data using {importer.qualified_name}")
-            try:
-                thread = threading.Thread(
-                    target=ImportRunner(importer).run(), name=importer.qualified_name
-                )
-                thread.start()
-                thread_list.append(thread)
-            except Exception:
-                failed_importers.append(importer.qualified_name)
-                traceback.print_exc()
-                self.stdout.write(
-                    self.style.ERROR(
-                        f"Failed to run importer {importer.qualified_name}. Continuing..."
-                    )
-                )
-        for thread in thread_list:
-            thread.join()
-
-        success_list = {value for value in IMPORTERS_REGISTRY if value not in failed_importers}
-        if success_list:
-            self.stdout.write(
-                self.style.SUCCESS(f"Successfully imported data using {success_list} ")
-            )
         if failed_importers:
             raise CommandError(f"{len(failed_importers)} failed!: {','.join(failed_importers)}")
 

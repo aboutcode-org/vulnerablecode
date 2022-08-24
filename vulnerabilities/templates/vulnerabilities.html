@@ -70,9 +70,18 @@ VCIO Vulnerability Search Results
     <div class="is-max-desktop mb-3">
         <section class="mx-5">
             <article class="panel is-info panel-header-only">
-                <p class="panel-heading py-2 is-size-6">
-                    Vulnerability search results
-                </p>
+                <div class="panel-heading py-2 is-size-6">
+                    <div class="field is-grouped is-grouped-multiline">
+                        Vulnerability search results:
+                        <div class="control">
+                            <div class="tags">
+                                <span class="tag is-white custom">
+                                    {{ vuln_id }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </article>
             <div class="is-flex" style="justify-content: space-between;">
                 <div>

@@ -99,7 +99,6 @@ code {
     background-color: #ffffff;
     border: 0;
     padding: 0;
-    /* font-size: 16px; */
     font-family: Consolas;
 }
 
@@ -118,7 +117,6 @@ code {
 }
 
 #tab-content div {
-    /* min-height: 300px; */
     border-bottom: 0;
     margin-bottom: 50px;
     padding-bottom: 50px;
@@ -344,4 +342,23 @@ a.small_page_button {
     font-size: 10px !important;
     vertical-align: super;
     margin-left: 2px;
+}
+
+.panel-header-tag {
+    color: #000000;
+    color: #ffcc00;
+    color: #ffffff;
+    background-color: #ffffff;
+    background-color: #000000;
+    background-color: #008080;
+    background-color: #006666;
+    padding: 0px 7px 2px 7px;
+    margin-left: 5px;
+    border-radius: 5px;
+    line-height: 1;
+    font-weight: normal;
+}
+
+span.tag.custom {
+    margin: 0px 0px 6px 10px;
 }

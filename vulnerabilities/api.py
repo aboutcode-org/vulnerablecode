@@ -48,7 +48,7 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Package
-        fields = ["url", "purl"]
+        fields = ["url", "purl", "is_vulnerable"]
 
 
 class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):

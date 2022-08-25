@@ -1,4 +1,4 @@
-.Site {
+tab.Site {
     display: flex;
     min-height: 100vh;
     flex-direction: column;
@@ -102,6 +102,8 @@ code {
     font-family: Consolas;
 }
 
+/* start tabset */
+
 #tab-content div,
 #tab-content div>div {
     display: none;
@@ -120,6 +122,12 @@ code {
     border-bottom: 0;
     margin-bottom: 50px;
     padding-bottom: 50px;
+}
+
+#tab-content .tab-nested-div {
+    border-bottom: 0;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
 }
 
 .tab-div {
@@ -163,6 +171,8 @@ code {
     border-color: #3298dc;
 }
 
+/* end tabset */
+
 .table.vcio-table td {
     border: 0;
 }
@@ -171,9 +181,16 @@ code {
     border-color: #000000;
 }
 
+.table.gray-header-border th {
+    border-color: #dbdbdb;
+}
+
 .table td {
     word-wrap: break-word;
-    word-break: break-all;
+    /* 8/24/2022 Wednesday 4:56:57 PM.  We need this for just 1 table as I recall, displaying some sort of data with few/no word breaks
+    but this messes up the look of columns that need a word-break wrap
+    TODO: identify and create separate CSS class for that table */
+    /* word-break: break-all; */
 }
 
 .two-col-left {
@@ -182,6 +199,7 @@ code {
     font-weight: bold;
     padding-right: 20px !important;
     line-height: 20px;
+    border: solid 1px #e8e8e8 !important;
 }
 
 .two-col-right {
@@ -342,21 +360,6 @@ a.small_page_button {
     font-size: 10px !important;
     vertical-align: super;
     margin-left: 2px;
-}
-
-.panel-header-tag {
-    color: #000000;
-    color: #ffcc00;
-    color: #ffffff;
-    background-color: #ffffff;
-    background-color: #000000;
-    background-color: #008080;
-    background-color: #006666;
-    padding: 0px 7px 2px 7px;
-    margin-left: 5px;
-    border-radius: 5px;
-    line-height: 1;
-    font-weight: normal;
 }
 
 span.tag.custom {

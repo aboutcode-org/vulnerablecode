@@ -66,6 +66,8 @@ Version v30.0.0
   their API Key in the REST API.
   Users can be created using the Django "createsuperuser" management command.
 
+- Add is_vulnerable property in fixed and affected_packages.
+
 Other:
 
 - we dropped calver to use a plain semver.

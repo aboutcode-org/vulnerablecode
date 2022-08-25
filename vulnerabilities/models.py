@@ -211,6 +211,13 @@ class Package(PackageURLMixin):
             packagerelatedvulnerability__fix=True,
         ).distinct()
 
+    @property
+    def is_vulnerable(self):
+        """
+        Returns True if this package is vulnerable to any vulnerability.
+        """
+        return self.vulnerable_to.exists()
+
     def set_package_url(self, package_url):
         """
         Set each field values to the values of the provided `package_url` string

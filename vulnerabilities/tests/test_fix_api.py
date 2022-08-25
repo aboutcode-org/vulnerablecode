@@ -66,10 +66,12 @@ class APITestCaseVulnerability(TransactionTestCase):
                 {
                     "url": f"http://testserver/api/packages/{self.pkg1.id}",
                     "purl": "pkg:pypi/flask@0.1.2",
+                    "is_vulnerable": False,
                 },
                 {
                     "url": f"http://testserver/api/packages/{self.pkg2.id}",
                     "purl": "pkg:debian/flask@0.1.2",
+                    "is_vulnerable": False,
                 },
             ],
             "affected_packages": [],
@@ -89,6 +91,7 @@ class APITestCaseVulnerability(TransactionTestCase):
                 {
                     "url": f"http://testserver/api/packages/{self.pkg1.id}",
                     "purl": "pkg:pypi/flask@0.1.2",
+                    "is_vulnerable": False,
                 },
             ],
             "affected_packages": [],
@@ -136,6 +139,18 @@ class APITestCasePackage(TestCase):
             vulnerability=vuln,
             fix=True,
         )
+        vuln1 = Vulnerability.objects.create(
+            summary="test-vuln1",
+        )
+        self.vuln1 = vuln1
+        PackageRelatedVulnerability.objects.create(
+            package=self.package,
+            vulnerability=vuln1,
+            fix=False,
+        )
+
+    def test_is_vulnerable_attribute(self):
+        self.assertTrue(self.package.is_vulnerable)
 
     def test_api_status(self):
         response = self.csrf_client.get("/api/packages/", format="json")
@@ -156,7 +171,15 @@ class APITestCasePackage(TestCase):
             "version": "11",
             "qualifiers": {},
             "subpath": "",
-            "affected_by_vulnerabilities": [],
+            "affected_by_vulnerabilities": [
+                {
+                    "url": f"http://testserver/api/vulnerabilities/{self.vuln1.id}",
+                    "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln1.id).upper()}",
+                    "summary": "test-vuln1",
+                    "references": [],
+                    "fixed_packages": [],
+                }
+            ],
             "fixing_vulnerabilities": [
                 {
                     "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
@@ -167,11 +190,20 @@ class APITestCasePackage(TestCase):
                         {
                             "url": f"http://testserver/api/packages/{self.package.id}",
                             "purl": "pkg:generic/nginx/test@11",
+                            "is_vulnerable": True,
                         }
                     ],
                 },
             ],
-            "unresolved_vulnerabilities": [],
+            "unresolved_vulnerabilities": [
+                {
+                    "url": f"http://testserver/api/vulnerabilities/{self.vuln1.id}",
+                    "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln1.id).upper()}",
+                    "summary": "test-vuln1",
+                    "references": [],
+                    "fixed_packages": [],
+                }
+            ],
         }
 
     def test_api_with_single_vulnerability_and_vulnerable_package(self):
@@ -195,6 +227,7 @@ class APITestCasePackage(TestCase):
                         {
                             "url": f"http://testserver/api/packages/{self.package.id}",
                             "purl": "pkg:generic/nginx/test@11",
+                            "is_vulnerable": True,
                         }
                     ],
                 }
@@ -210,6 +243,7 @@ class APITestCasePackage(TestCase):
                         {
                             "url": f"http://testserver/api/packages/{self.package.id}",
                             "purl": "pkg:generic/nginx/test@11",
+                            "is_vulnerable": True,
                         }
                     ],
                 }

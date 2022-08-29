@@ -12,7 +12,10 @@ from django import forms
 from vulnerabilities.models import Package
 
 
-def get_package_types():
+def get_known_package_types():
+    """
+    Return a list of known package types.
+    """
     pkg_types = [(i.type, i.type) for i in Package.objects.distinct("type").all()]
     pkg_types.append((None, "Any type"))
     return pkg_types
@@ -30,7 +33,7 @@ def get_package_namespaces():
 
 class PackageForm(forms.Form):
 
-    type = forms.ChoiceField(choices=get_package_types)
+    type = forms.ChoiceField(choices=get_known_package_types)
     name = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"placeholder": "Package name or purl"})
     )

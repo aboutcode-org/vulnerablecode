@@ -17,8 +17,8 @@ from vulnerabilities.api import CPEViewSet
 from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
 from vulnerabilities.views import HomePage
+from vulnerabilities.views import PackageDetails
 from vulnerabilities.views import PackageSearchView
-from vulnerabilities.views import PackageUpdate
 from vulnerabilities.views import VulnerabilityDetails
 from vulnerabilities.views import VulnerabilitySearchView
 from vulnerabilities.views import schema_view
@@ -43,7 +43,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/docs", schema_view, name="redoc"),
     path("packages/search", PackageSearchView.as_view(), name="package_search"),
-    path("packages/<int:pk>", PackageUpdate.as_view(), name="package_view"),
+    path("packages/<int:pk>", PackageDetails.as_view(), name="package_view"),
     path("vulnerabilities/<int:pk>", VulnerabilityDetails.as_view(), name="vulnerability_view"),
     path("vulnerabilities/search", VulnerabilitySearchView.as_view(), name="vulnerability_search"),
     path("", HomePage.as_view(), name="home"),

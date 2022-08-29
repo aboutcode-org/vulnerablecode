@@ -41,10 +41,10 @@ VCIO Vulnerability Search Results
         </div>
         <div class="panel-block">
             <div class="pb-3 width-100-pct">
-                <form action="{% url 'vulnerability_search' %}" method="get" name="vuln_form" onsubmit="return validateVulnForm()">
+                <form action="{% url 'vulnerability_search' %}" method="get" name="vulnerability_form" onsubmit="return validateVulnForm()">
                     <div class="field has-addons mt-3">
                         <div class="control width-100-pct">
-                            {% render_field vuln_form.vuln_id class="input" %}
+                            {% render_field vulnerability_form.vuln_id class="input" %}
                         </div>
                         <div class="control">
                             <button class="button is-link" type="submit" id="submit_vuln" name="template" value="vulnerabilities">
@@ -203,7 +203,7 @@ VCIO Vulnerability Search Results
     });
 
     function validateVulnForm() {
-        var x = document.forms["vuln_form"]["vuln_id"].value;
+        var x = document.forms["vulnerability_form"]["vuln_id"].value;
         if (x.trim().length == "") {
             return false;
         }

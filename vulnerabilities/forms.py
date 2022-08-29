@@ -38,7 +38,7 @@ class PackageForm(forms.Form):
     )
 
 
-class CVEForm(forms.Form):
+class VulnerabilityForm(forms.Form):
 
     vuln_id = forms.CharField(
         required=False,

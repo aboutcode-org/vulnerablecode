@@ -25,7 +25,7 @@ from packaging import version
 
 from vulnerabilities import forms
 from vulnerabilities import models
-from vulnerabilities.forms import CVEForm
+from vulnerabilities.forms import VulnerabilityForm
 from vulnerabilities.forms import PackageForm
 
 
@@ -80,12 +80,12 @@ class PackageSearchView(View):
                     return render(request, "package_update.html", context)
                 elif request.GET.get("template") == "index":
                     context["package_form"] = PackageForm(request.GET or None)
-                    context["vuln_form"] = CVEForm(request.GET or None)
+                    context["vulnerability_form"] = VulnerabilityForm(request.GET or None)
                     context["template_name"] = "index.html"
                     return render(request, "index.html", context)
                 else:
                     context["package_form"] = PackageForm(request.GET or None)
-                    context["vuln_form"] = CVEForm(request.GET or None)
+                    context["vulnerability_form"] = VulnerabilityForm(request.GET or None)
                     context["template_name"] = "index.html"
                     return render(request, "index.html", context)
 
@@ -172,25 +172,25 @@ class VulnerabilitySearchView(View):
                 }
 
                 if request.GET.get("template") == "vulnerabilities":
-                    context["vuln_form"] = CVEForm(request.GET or None)
+                    context["vulnerability_form"] = VulnerabilityForm(request.GET or None)
                     context["template_name"] = "vulnerabilities.html"
                     return render(request, "vulnerabilities.html", context)
                 elif request.GET.get("template") == "vulnerability_details":
-                    context["vuln_form"] = CVEForm(request.GET or None)
+                    context["vulnerability_form"] = VulnerabilityForm(request.GET or None)
                     context["template_name"] = "vulnerability.html"
                     return render(request, "vulnerability.html", context)
                 elif request.GET.get("template") == "index":
                     context["package_form"] = PackageForm(request.GET or None)
-                    context["vuln_form"] = CVEForm(request.GET or None)
+                    context["vulnerability_form"] = VulnerabilityForm(request.GET or None)
                     context["template_name"] = "index.html"
                     return render(request, "index.html", context)
                 else:
                     context["package_form"] = PackageForm(request.GET or None)
-                    context["vuln_form"] = CVEForm(request.GET or None)
+                    context["vulnerability_form"] = VulnerabilityForm(request.GET or None)
                     context["template_name"] = "index.html"
                     return render(request, "index.html", context)
 
-        context["vuln_form"] = CVEForm(request.GET or None)
+        context["vulnerability_form"] = VulnerabilityForm(request.GET or None)
         context["template_name"] = self.template_name
         return render(request, self.template_name, context)
 
@@ -300,7 +300,7 @@ class VulnerabilityDetails(ListView):
         vulnerability_list_count = len(vulnerability_list)
         context["vulnerability_list_count"] = vulnerability_list_count
 
-        context["vuln_form"] = CVEForm(self.request.GET or None)
+        context["vulnerability_form"] = VulnerabilityForm(self.request.GET or None)
         context["template_name"] = self.template_name
 
         severity_list = []
@@ -322,7 +322,7 @@ class HomePage(View):
 
     def get(self, request):
         context = {
-            "vuln_form": CVEForm(request.GET or None),
+            "vulnerability_form": VulnerabilityForm(request.GET or None),
             "package_form": PackageForm(request.GET or None),
             "template_name": self.template_name,
             "debug_ui": settings.DEBUG_UI,

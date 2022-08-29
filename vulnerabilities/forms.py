@@ -10,8 +10,6 @@
 from django import forms
 
 from vulnerabilities.models import Package
-from vulnerabilities.models import PackageRelatedVulnerability
-from vulnerabilities.models import Vulnerability
 
 
 def get_package_types():

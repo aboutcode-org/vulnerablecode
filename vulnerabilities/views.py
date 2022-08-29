@@ -25,8 +25,8 @@ from packaging import version
 
 from vulnerabilities import forms
 from vulnerabilities import models
-from vulnerabilities.forms import VulnerabilityForm
 from vulnerabilities.forms import PackageForm
+from vulnerabilities.forms import VulnerabilityForm
 
 
 class PackageSearchView(View):

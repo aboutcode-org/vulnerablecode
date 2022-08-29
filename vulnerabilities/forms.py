@@ -21,16 +21,6 @@ def get_known_package_types():
     return pkg_types
 
 
-def get_package_namespaces():
-    pkg_namespaces = [
-        (i.namespace, i.namespace)
-        for i in Package.objects.distinct("namespace").all()
-        if i.namespace
-    ]
-    pkg_namespaces.append((None, "package namespace"))
-    return pkg_namespaces
-
-
 class PackageForm(forms.Form):
 
     type = forms.ChoiceField(choices=get_known_package_types)

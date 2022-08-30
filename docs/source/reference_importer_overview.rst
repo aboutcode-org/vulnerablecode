@@ -3,8 +3,8 @@
 Importer Overview
 ==================
 
-Importers are responsible for scraping vulnerability data such as vulnerabilities and their fixes and
-for storing the scraped information in a structured fashion. The structured data created by the
+Importers are responsible for scraping vulnerability data such as vulnerabilities and their fixes
+and for storing the scraped information in a structured fashion. The structured data created by the
 importer then provides input to an improver (see :ref:`improver-overview`), which is responsible
 for creating a relational model for vulnerabilities, affected packages and fixed packages.
 

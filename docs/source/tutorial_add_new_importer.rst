@@ -90,8 +90,8 @@ implementing the unimplemented methods.
 Specify the Importer License
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Importers scrape data off the internet.  In order to make sure the data is useable, a license must be
-provided.
+Importers scrape data off the internet.  In order to make sure the data is useable, a license
+must be provided.
 Populate the ``spdx_license_expression`` with the appropriate value.
 The SPDX license identifiers can be found at https://spdx.org/licenses/.
 
@@ -102,10 +102,10 @@ The SPDX license identifiers can be found at https://spdx.org/licenses/.
 Implement the ``advisory_data`` Method
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``advisory_data`` method scrapes the advisories from the data source this importer is targeted
-at.
-It is required to return an *Iterable of AdvisoryData objects*, and thus it is a good idea to yield from
-this method after creating each AdvisoryData object.
+The ``advisory_data`` method scrapes the advisories from the data source this importer is
+targeted at.
+It is required to return an *Iterable of AdvisoryData objects*, and thus it is a good idea to yield
+from this method after creating each AdvisoryData object.
 
 At this point, an example importer will look like this:
 

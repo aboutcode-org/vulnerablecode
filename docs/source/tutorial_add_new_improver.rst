@@ -68,10 +68,9 @@ Writing an improver
 Locate the Source File
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-If the improver will be working on data imported by a specific importer, it  will be located in the same
-file at :file:`vulnerabilites/importers/{importer-name.py}`.
-Otherwise, if it is a generic improver, create a new file
-:file:`vulnerabilites/improvers/{improver-name.py}`.
+If the improver will be working on data imported by a specific importer, it  will be located in
+the same file at :file:`vulnerabilites/importers/{importer-name.py}`.  Otherwise, if it is a
+generic improver, create a new file :file:`vulnerabilites/improvers/{improver-name.py}`.
 
 Explore Package Managers (Optional)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -107,10 +106,10 @@ the ``Advisory`` QuerySet returned by the ``interesting_advisories`` property.
 It is expected to return an iterable of ``Inference`` objects for the given ``AdvisoryData``. To
 avoid storing a lot of Inferences in memory, it is preferable to yield from this method.
 
-A very simple Improver that processes all Advisories to create the minimal relationships that can be
-obtained by existing data can be found at :file:`vulnerabilites/improvers/default.py`, which is an
-example of a generic improver.  For a more sophisticated and targeted example, you can look at an already
-implemented improver (e.g., :file:`vulnerabilites/importers/nginx.py`).
+A very simple Improver that processes all Advisories to create the minimal relationships that can
+be obtained by existing data can be found at :file:`vulnerabilites/improvers/default.py`, which is
+an example of a generic improver.  For a more sophisticated and targeted example, you can look
+at an already implemented improver (e.g., :file:`vulnerabilites/importers/nginx.py`).
 
 Improvers are not limited to improving discrete versions and may also improve ``aliases``.
 One such example, improving the importer written in the :ref:`importer tutorial

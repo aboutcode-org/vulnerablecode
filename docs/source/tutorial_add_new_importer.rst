@@ -3,8 +3,7 @@
 Add a new importer
 ====================
 
-This tutorial contains all the things one should know to quickly
-implement an importer.
+This tutorial contains all the things one should know to quickly implement an importer.
 Many internal details about importers can be found inside the
 :file:`vulnerabilites/importer.py` file.
 Make sure to go through :ref:`importer-overview` before you begin writing one.

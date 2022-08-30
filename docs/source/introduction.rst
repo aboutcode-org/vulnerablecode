@@ -32,7 +32,7 @@ How does it work ?
 
 VulnerableCode independently aggregates many software vulnerability data sources
 and supports data re-creation in a decentralized fashion. These data sources
-(see complete list `here <./SOURCES.rst>`_) include security advisories
+(see complete list :ref:`here <importers_link>`) include security advisories
 published by Linux and BSD distributions, application software package managers
 and package repositories, FOSS projects, GitHub and more. Thanks to this
 approach, the data is focused on specific ecosystems yet aggregated in a single

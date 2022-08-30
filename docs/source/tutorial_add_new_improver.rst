@@ -5,7 +5,7 @@ Add a new improver
 
 This tutorial contains all the things one should know to quickly
 implement an improver.
-A lot of internal sausage about improvers could be found inside the
+Many internal details about improvers can be found inside the
 :file:`vulnerabilites/improver.py` file.
 Make sure to go through :ref:`improver-overview` before you begin writing one.
 
@@ -19,9 +19,9 @@ TL;DR
 #. Implement the ``interesting_advisories`` property to return a QuerySet of imported data
    (``Advisory``) you are interested in.
 #. Implement the ``get_inferences`` method to return an iterable of ``Inference`` objects for the
-   given ``AdvisoryData``
+   given ``AdvisoryData``.
 #. Add the newly created improver to the improvers registry at
-   ``vulnerabilites/improvers/__init__.py``
+   ``vulnerabilites/improvers/__init__.py``.
 
 Prerequisites
 --------------
@@ -32,7 +32,7 @@ Importer
 ^^^^^^^^^^
 
 Importers are responsible for scraping vulnerability data from various data sources without creating
-a complete relational model between vulnerabilites, their fixes and store them in a structured
+a complete relational model between vulnerabilites and their fixes and storing them in a structured
 fashion. These data are stored in the ``Advisory`` model and can be converted to an equivalent
 ``AdvisoryData`` for various use cases.
 See :ref:`importer-overview` for a brief overview on importers.
@@ -40,21 +40,21 @@ See :ref:`importer-overview` for a brief overview on importers.
 Importer Prerequisites
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Improvers consume data produced by importers, thus it is important to familiarize yourself with
-:ref:`Importer Prerequisites <tutorial_add_a_new_importer_prerequisites>`
+Improvers consume data produced by importers, and thus it is important to familiarize yourself with
+:ref:`Importer Prerequisites <tutorial_add_a_new_importer_prerequisites>`.
 
 Inference
 ^^^^^^^^^^^
 
 Inferences express the contract between the improvers and the improve runner framework.
-An inference is supposed to contain data points about a vulnerability without any uncertainties,
-which means, one inference will target one vulnerability with the specific relevant affected and
-fixed packages (in the form of `PackageURLs <https://github.com/package-url/packageurl-python>`_)
-There is no notion of version ranges here, all package versions must be explicitly specified.
+An inference is intended to contain data points about a vulnerability without any uncertainties,
+which means that one inference will target one vulnerability with the specific relevant affected and
+fixed packages (in the form of `PackageURLs <https://github.com/package-url/packageurl-python>`_).
+There is no notion of version ranges here: all package versions must be explicitly specified.
 
-Because this concrete relationship is hardly available anywhere on the upstream, we have to *infer*
+Because this concrete relationship is rarely available anywhere upstream, we have to *infer*
 these values, thus the name.
-As infering something is not always perfect, an Inference also comes with a confidence score.
+As inferring something is not always perfect, an Inference also comes with a confidence score.
 
 Improver
 ^^^^^^^^^
@@ -68,26 +68,26 @@ Writing an improver
 Locate the Source File
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-If the improver will be working on data imported by an specific importer, it  will sit in the same
+If the improver will be working on data imported by a specific importer, it  will be located in the same
 file at :file:`vulnerabilites/importers/{importer-name.py}`.
 Otherwise, if it is a generic improver, create a new file
-:file:`vulnerabilites/improvers/{improver-name.py}`
+:file:`vulnerabilites/improvers/{improver-name.py}`.
 
 Explore Package Managers (Optional)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If your Improver depends on the discrete versions of a package, the package managers' VersionAPI
 located at :file:`vulnerabilites/package_managers.py` could come in handy.  You'll need to
-instantiate the relevant ``VersionAPI`` in the improver's constructor and use them later in the
+instantiate the relevant ``VersionAPI`` in the improver's constructor and use it later in the
 implemented methods. See an already implemented improver (NginxBasicImprover) for an example usage.
 
 Implement the ``interesting_advisories`` Property
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This property is supposed to return a QuerySet of ``Advisory`` on which the ``Improver`` is
-interested to work on.
+This property is intended to return a QuerySet of ``Advisory`` on which the ``Improver`` is
+designed to work.
 
-For example, if the improver is interested to work on Advisories imported by ``ExampleImporter``,
+For example, if the improver is designed to work on Advisories imported by ``ExampleImporter``,
 the property can be implemented as
 
 .. code-block:: python
@@ -105,14 +105,14 @@ The framework calls ``get_inferences`` method for every ``AdvisoryData`` that is
 the ``Advisory`` QuerySet returned by the ``interesting_advisories`` property.
 
 It is expected to return an iterable of ``Inference`` objects for the given ``AdvisoryData``. To
-avoid storing a lot of Inferences in memory, it is nicer to yield from this method.
+avoid storing a lot of Inferences in memory, it is preferable to yield from this method.
 
 A very simple Improver that processes all Advisories to create the minimal relationships that can be
-obtained by existing data can be found at :file:`vulnerabilites/improvers/default.py` It is an
-example of a generic improver, for more sophisticated and targetted one, you can look at an already
-implemented improver (for eg, in :file:`vulnerabilites/importers/nginx.py`).
+obtained by existing data can be found at :file:`vulnerabilites/improvers/default.py`, which is an
+example of a generic improver.  For a more sophisticated and targeted example, you can look at an already
+implemented improver (e.g., :file:`vulnerabilites/importers/nginx.py`).
 
-Improvers are not limited to improving discrete versions, they may also improve ``aliases``.
+Improvers are not limited to improving discrete versions and may also improve ``aliases``.
 One such example, improving the importer written in the :ref:`importer tutorial
 <tutorial_add_a_new_importer>`, is shown below.
 
@@ -169,7 +169,7 @@ Register the Improver
 ^^^^^^^^^^^^^^^^^^^^^^
 
 Finally, register your improver in the improver registry at
-:file:`vulnerabilites/improvers/__init__.py`
+:file:`vulnerabilites/improvers/__init__.py`.
 
 .. code-block:: python
    :emphasize-lines: 7
@@ -190,7 +190,7 @@ Congratulations! You've written your first improver.
 Run Your First Improver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If everything went fine, you'll see your improver in the list of available improvers
+If everything went well, you'll see your improver in the list of available improvers.
 
 .. code-block:: console
    :emphasize-lines: 6
@@ -212,7 +212,7 @@ there is nothing imported.
     Importing data using vulnerabilities.importers.example.ExampleImporter
     Successfully imported data using vulnerabilities.importers.example.ExampleImporter
 
-Now, run the improver
+Now, run the improver.
 
 .. code-block:: console
 
@@ -245,7 +245,7 @@ For more visibility, turn on debug logs in :file:`vulnerablecode/settings.py`.
         },
     }
 
-Invoke the improve command now and you'll see (in a fresh database, after importing)
+Invoke the improve command now and you'll see (in a fresh database, after importing):
 
 .. code-block:: console
 
@@ -266,7 +266,7 @@ Invoke the improve command now and you'll see (in a fresh database, after import
 
 .. note::
 
-   Even though CVE-2021-23017 and CVE-2021-1234 are not supplied by this improver yet it shows them
+   Even though CVE-2021-23017 and CVE-2021-1234 are not supplied by this improver, the output above shows them
    because we left out running the ``DefaultImprover`` in the example. The ``DefaultImprover``
-   inserts minimal data found via the importers in the database (Here, the above two CVEs). Run
+   inserts minimal data found via the importers in the database (here, the above two CVEs). Run
    importer, DefaultImprover and then your improver in this sequence to avoid this anomaly.

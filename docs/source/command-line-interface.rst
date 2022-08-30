@@ -6,7 +6,7 @@ Command Line Interface
 The main entry point is Django's :guilabel:`manage.py` management commands.
 
 ``$ ./manage.py --help``
------------------------
+------------------------
 
 Lists all sub-commands available, including Django built-in commands.
 VulnerableCode's own commands are listed under the ``[vulnerabilities]`` section::

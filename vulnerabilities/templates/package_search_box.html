@@ -1,0 +1,56 @@
+{% load widget_tweaks %}
+<article class='panel is-info'>
+    <div class='panel-heading py-2 is-size-6'>
+        Search for packages
+        <div class="dropdown is-hoverable has-text-weight-normal">
+            <div class="dropdown-trigger">
+                <i class="fa fa-question-circle ml-2"></i>
+            </div>
+            <div class="dropdown-menu dropdown-instructions-width" id="dropdown-menu4" role="menu">
+                <div class="dropdown-content dropdown-instructions-box-shadow">
+                    <div class="dropdown-item">
+                        <div>
+                            Search for vulnerable packages by
+                            <a
+                                href="https://github.com/package-url/purl-spec"
+                                target="_blank">
+                                Package URL
+                            </a>
+                            (aka. <strong>purl</strong>) such as <strong>pkg:maven/org.apache.logging.log4j/log4j@2.0</strong>
+                            or by package <strong>name</strong>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-block">
+        <div class="pb-3 width-100-pct">
+            <form
+                action="{% url 'package_search' %}"
+                method="get"
+                name="pkg_form"
+                onsubmit="return validatePkgForm()"
+            >
+                <div class="field has-addons mt-3">
+                    <div class="control width-100-pct">
+                        {{ package_form.package_name|add_class:"input" }}
+                    </div>
+                    <div class="control">
+                        <button class="button is-link" type="submit" id="submit_pkg">
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <div>
+                {% if package_search %}
+                    <div class="notification search-alert">
+                        <button class=" delete"></button>
+                        {{ package_search }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</article>

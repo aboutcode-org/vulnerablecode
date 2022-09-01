@@ -1,72 +1,17 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load humanize %}
 {% load widget_tweaks %}
 
 {% block title %}
-VCIO Package Details
+VulnerableCode Package Details
 {% endblock %}
 
 {% block content %}
 
-{% include 'navbar.html' %}
+{% include "navbar.html" %}
 
 <section class="section pt-0">
-    <article class='panel is-info'>
-        <div class='panel-heading py-2 is-size-6'>
-            Search for vulnerable packages
-            <div class="dropdown is-hoverable has-text-weight-normal">
-                <div class="dropdown-trigger">
-                    <i class="fa fa-question-circle ml-2"></i>
-                </div>
-                <div class="dropdown-menu dropdown-instructions-width" id="dropdown-menu4" role="menu">
-                    <div class="dropdown-content dropdown-instructions-box-shadow">
-                        <div class="dropdown-item">
-                            <div>
-                                <div>Search for currently known vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_blank">Package-URL</a> (aka <span class="inline-code">purl</span>) or a package <span class="inline-code">name</span>.</div>
-                                <ul>
-                                    <li>
-                                        Search by package <span class="inline-code">name</span> -- type the <span class="inline-code">name</span> in the search box and, if relevant to your search, select the package <span class="inline-code">type</span> from the dropdown.
-                                    </li>
-                                    <li>
-                                        Search by <span class="inline-code">purl</span> -- type the <span class="inline-code">purl</span> in the search box. <span class="is-italic">(The <span class="inline-code">type</span> dropdown does not apply to a <span class="inline-code">purl</span> search.)</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="panel-block">
-            <div class="pb-3 width-100-pct">
-                <form action="{% url 'package_search' %}" method="get" name="pkg_form" onsubmit="return validatePkgForm()">
-                    <div class="field has-addons mt-3">
-                        <div class="control">
-                            <div class="select">
-                                {{ package_form.type }}
-                            </div>
-                        </div>
-                        <div class="control width-100-pct">
-                            {{ package_form.name|add_class:"input" }}
-                        </div>
-                        <div class="control">
-                            <button class="button is-link" type="submit" id="submit_pkg" name="template" value="package_details">
-                                Search
-                            </button>
-                        </div>
-                    </div>
-                </form>
-                <div>
-                    {% if package_search %}
-                        <div class="notification search-alert">
-                            <button class=" delete"></button>
-                            {{ package_search }}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </article>
+   {% include "package_search_box.html"%}
 </section>
 
 {% if package %}
@@ -126,7 +71,7 @@ VCIO Package Details
                             {% for vuln in impacted_vuln %}
                                 <tr>
                                     <td>
-                                        <a href="{% url 'vulnerability_view' vuln.pk %}?vuln_id={{ vuln.vulnerability_id }}" target="_self">{{ vuln.vulnerability_id }}</a>
+                                        <a href="{% url 'vulnerability_view' vuln.pk %}?vulnerability_id={{ vuln.vulnerability_id }}" target="_self">{{ vuln.vulnerability_id }}</a>
                                     </td>
                                     <td>
                                         {{ vuln.summary }}
@@ -147,7 +92,7 @@ VCIO Package Details
                         {% else %}
                             <tr>
                                 <td colspan="3">
-                                    This package is not affected by any vulnerabilities.
+                                    This package is not affected by known vulnerabilities.
                                 </td>
                             </tr>
                         {% endif %}
@@ -178,7 +123,7 @@ VCIO Package Details
                             {% for vuln in resolved_vuln %}
                                 <tr>
                                     <td>
-                                        <a href="{% url 'vulnerability_view' vuln.pk %}?vuln_id={{ vuln.vulnerability_id }}" target="_self">{{ vuln.vulnerability_id }}</a>
+                                        <a href="{% url 'vulnerability_view' vuln.pk %}?vulnerability_id={{ vuln.vulnerability_id }}" target="_self">{{ vuln.vulnerability_id }}</a>
                                     </td>
                                     <td>
                                         {{ vuln.summary }}
@@ -213,23 +158,5 @@ VCIO Package Details
 {% endblock %}
 
 {% block scripts %}
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
-            const $notification = $delete.parentNode;
-
-            $delete.addEventListener('click', () => {
-                $notification.parentNode.removeChild($notification);
-            });
-        });
-    });
-
-    function validatePkgForm() {
-        var x = document.forms["pkg_form"]["name"].value;
-        if (x.trim().length == "") {
-            return false;
-        }
-    }
-</script>
-
+   {% include "validate_form_scripts.html" %}
 {% endblock %}

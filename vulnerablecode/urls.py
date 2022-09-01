@@ -38,14 +38,14 @@ api_router.register(r"vulnerabilities", VulnerabilityViewSet, basename="vulnerab
 api_router.register(r"cpes", CPEViewSet, basename="cpe")
 api_router.register(r"alias", AliasViewSet, basename="alias")
 
-
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("api/docs", schema_view, name="redoc"),
+    path("", HomePage.as_view(), name="home"),
     path("packages/search", PackageSearchView.as_view(), name="package_search"),
     path("packages/<int:pk>", PackageDetails.as_view(), name="package_view"),
-    path("vulnerabilities/<int:pk>", VulnerabilityDetails.as_view(), name="vulnerability_view"),
     path("vulnerabilities/search", VulnerabilitySearchView.as_view(), name="vulnerability_search"),
-    path("", HomePage.as_view(), name="home"),
+    path("vulnerabilities/<int:pk>", VulnerabilityDetails.as_view(), name="vulnerability_view"),
+    path("api/docs", schema_view, name="redoc"),
     path(r"api/", include(api_router.urls)),
+    # disabled for now
+    #    path("admin/", admin.site.urls),
 ]

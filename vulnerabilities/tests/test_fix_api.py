@@ -160,6 +160,14 @@ class APITestCasePackage(TestCase):
         response = self.csrf_client.get("/api/packages/", format="json").data
         self.assertEqual(response["count"], 11)
 
+    def test_api_with_namespace_filter(self):
+        response = self.csrf_client.get("/api/packages/?namespace=nginx", format="json").data
+        self.assertEqual(response["count"], 11)
+
+    def test_api_with_wrong_namespace_filter(self):
+        response = self.csrf_client.get("/api/packages/?namespace=foo-bar", format="json").data
+        self.assertEqual(response["count"], 0)
+
     def test_api_with_single_vulnerability_and_fixed_package(self):
         response = self.csrf_client.get(f"/api/packages/{self.package.id}", format="json").data
         assert response == {

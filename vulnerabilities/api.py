@@ -190,7 +190,15 @@ class PackageFilterSet(filters.FilterSet):
 
     class Meta:
         model = Package
-        fields = ["name", "type", "version", "subpath", "purl", "packagerelatedvulnerability__fix"]
+        fields = [
+            "name",
+            "type",
+            "version",
+            "subpath",
+            "purl",
+            "namespace",
+            "packagerelatedvulnerability__fix",
+        ]
 
     def filter_purl(self, queryset, name, value):
         purl = unquote(value)

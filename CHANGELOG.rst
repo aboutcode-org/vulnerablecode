@@ -68,6 +68,8 @@ Version v30.0.0
 
 - Add is_vulnerable property in fixed and affected_packages.
 
+- Add namespace filter in packages api endpoint.
+
 Other:
 
 - we dropped calver to use a plain semver.

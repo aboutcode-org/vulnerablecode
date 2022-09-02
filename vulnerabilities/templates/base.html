@@ -1,54 +1,40 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-{% load static %}
+
 <head>
-    <title>VulnerableCode</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}VulnerableCode.io{% endblock %}</title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" />
+
+    <link rel="stylesheet" href="{% static 'css/bulma.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bulma-tooltip.css' %}" />
+
+    {% block extrahead %}{% endblock %}
 </head>
-<link rel="stylesheet" href="{% static 'css/bulma.css' %}"/>
-<link rel="stylesheet" href="{% static 'css/custom.css' %}"/>
-<link rel="stylesheet" href="{% static 'css/font-awesome.css' %}"/>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <body class="Site">
-    <nav class="navbar is-light" role="navigation" aria-label="main navigation">
-        <div  class="navbar-menu">
-            <div class="navbar-start">
-                <a class="navbar-item" href="{% url 'home' %}">
-                    Home
-                </a>
-                <a class="navbar-item" href="{% url 'redoc' %}">
-                    API Docs
-                </a>
-                <a class="navbar-item" href="{% url 'package_search' %}">
-                    Packages
-                </a>
-                <a class="navbar-item" href="{% url 'vulnerability_search' %}">
-                    Vulnerabilities
-                </a>
+    <div class="container max-desktop-width is-fullheight">
+        {% block content %}{% endblock %}
+        <script src="{% static 'js/main.js' %}" crossorigin="anonymous"></script>
+
+        <footer class="footer">
+            <div class="content has-text-centered">
+                <p>
+                    <strong>VulnerableCode</strong> is free software by <a href="https://github.com/nexB/vulnerablecode"> nexB Inc. and others</a>.
+                    The source code is licensed under <a href="https://github.com/nexB/vulnerablecode/blob/main/apache-2.0.LICENSE">Apache-2.0</a>.
+                    The data is licensed under <a href="https://github.com/nexB/vulnerablecode/blob/main/cc-by-sa-4.0.LICENSE">CC-BY-SA-4.0</a>.
+                </p>
             </div>
-        </div>
-    </nav>
-    <main class="Site-content">
+        </footer>
+    </div>
 
-    <section class="section is-small  has-text-centered">
-        <div class="container ">
-            {% block title %}
-            {% endblock %}
-        </div>
-    </section>
-    {% block content %}
+    {% block scripts %}
+
     {% endblock %}
-
-    </main>
-    <footer class="footer">
-      <div class="content has-text-centered">
-        <p>
-          <strong>VulnerableCode</strong> is free software by <a href="https://github.com/nexB/vulnerablecode"> nexB Inc. and others</a>.
-          The source code is licensed under <a href="https://github.com/nexB/vulnerablecode/blob/main/apache-2.0.LICENSE">Apache-2.0</a>.
-          The data is licensed under <a href="https://github.com/nexB/vulnerablecode/blob/main/cc-by-sa-4.0.LICENSE">CC-BY-SA-4.0</a>.
-        </p>
-      </div>
-    </footer>
 </body>
-{% block javascript %}
-{% endblock %}
+
 </html>

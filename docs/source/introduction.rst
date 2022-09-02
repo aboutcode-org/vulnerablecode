@@ -7,8 +7,8 @@ VulnerableCode is a work-in-progress towards a free and open vulnerabilities
 database and the packages they impact and the tools to aggregate and correlate
 these vulnerabilities.
 
-Why VulnerableCode ?
----------------------
+Why VulnerableCode?
+-------------------
 
 The existing solutions are commercial proprietary vulnerability databases, which
 in itself does not make sense because the data is about FOSS (Free and Open
@@ -27,8 +27,8 @@ security issues because:
    fundamental questions "Is package foo vulnerable" and "Is package foo
    vulnerable to vulnerability bar?"
 
-How does it work ?
--------------------
+How does it work?
+-----------------
 
 VulnerableCode independently aggregates many software vulnerability data sources
 and supports data re-creation in a decentralized fashion. These data sources
@@ -59,14 +59,17 @@ exposure due to various reasons like but not limited to the complicated
 procedure to receive CVE ID or not able to classify a bug as a security
 compromise.
 
-Recent presentations:
+
+Is VulnerableCode being actively developed?
+-------------------------------------------
+
+Yes -- VulnerableCode is a work in progress! Please stay in touch on our `Gitter channel <https://gitter.im/aboutcode-org/vulnerablecode>`_; and if you have any feedback, feel free to `enter an issue in our GitHub repo <https://github.com/nexB/vulnerablecode/issues>`_.
+
+
+Recent presentations
+--------------------
 
 - `Open Source Summit 2020 <https://github.com/nexB/vulnerablecode/blob/main/docs/Presentations/Why-Is-There-No-Free-Software-Vulnerability-Database-v1.0.pdf>`_
-
-Should I use VulnerableCode ?
--------------------------------
-
-VulnerableCode is a work in progress project and will likely go through major changes. Please stay in touch on our `Gitter channel <https://gitter.im/aboutcode-org/vulnerablecode>`_
 
 .. Some of this documentation is borrowed from the metaflow documentation and is also
    under Apache-2.0

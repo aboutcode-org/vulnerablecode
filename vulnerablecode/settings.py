@@ -33,6 +33,9 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[".localhost", "127.0.0.1", "[
 # SECURITY WARNING: don't run with debug turned on in production
 DEBUG = env.bool("VULNERABLECODE_DEBUG", default=False)
 
+# SECURITY WARNING: don't run with debug turned on in production
+DEBUG_UI = env.bool("VULNERABLECODE_DEBUG_UI", default=False)
+
 # Application definition
 
 INSTALLED_APPS = (
@@ -46,6 +49,7 @@ INSTALLED_APPS = (
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.admin",
+    "django.contrib.humanize",
     # Third-party apps
     "django_filters",
     "rest_framework",
@@ -97,6 +101,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "django.template.context_processors.request",
                 "django.template.context_processors.static",
+                "vulnerablecode.context_processors.versions",
             ],
         },
     },

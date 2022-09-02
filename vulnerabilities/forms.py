@@ -34,10 +34,13 @@ class PackageForm(forms.Form):
 
     type = forms.ChoiceField(choices=get_package_types)
     name = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"placeholder": "package name"})
+        required=False, widget=forms.TextInput(attrs={"placeholder": "Package name or purl"})
     )
 
 
 class CVEForm(forms.Form):
 
-    vuln_id = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "vulnerability id"}))
+    vuln_id = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": "Vulnerability ID or CVE/GHSA"}),
+    )

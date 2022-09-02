@@ -124,6 +124,7 @@ class VulnerabilityReference(models.Model):
             "url",
             "reference_id",
         )
+        ordering = ["reference_id", "url"]
 
     def __str__(self):
         reference_id = f" {self.reference_id}" if self.reference_id else ""
@@ -361,6 +362,21 @@ class Alias(models.Model):
         on_delete=models.CASCADE,
         related_name="aliases",
     )
+
+    @property
+    def url(self):
+        """
+        Create a URL for the alias.
+        """
+        alias: str = self.alias
+        if alias.startswith("CVE"):
+            return f"https://nvd.nist.gov/vuln/detail/{alias}"
+
+        if alias.startswith("GHSA"):
+            return f"https://github.com/advisories/{alias}"
+
+    class Meta:
+        ordering = ["alias"]
 
     def __str__(self):
         return self.alias

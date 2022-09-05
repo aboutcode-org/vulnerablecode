@@ -59,7 +59,7 @@ class APITestCaseVulnerability(TransactionTestCase):
         ).data
         assert response == {
             "url": f"http://testserver/api/vulnerabilities/{self.vulnerability.id}",
-            "vulnerability_id": f"VULCOID-{int_to_base36(self.vulnerability.id).upper()}",
+            "vulnerability_id": self.vulnerability.vulnerability_id,
             "summary": "test",
             "aliases": [],
             "fixed_packages": [
@@ -84,7 +84,7 @@ class APITestCaseVulnerability(TransactionTestCase):
         ).data
         assert response == {
             "url": f"http://testserver/api/vulnerabilities/{self.vulnerability.id}",
-            "vulnerability_id": f"VULCOID-{int_to_base36(self.vulnerability.id).upper()}",
+            "vulnerability_id": self.vulnerability.vulnerability_id,
             "summary": "test",
             "aliases": [],
             "fixed_packages": [
@@ -182,7 +182,7 @@ class APITestCasePackage(TestCase):
             "affected_by_vulnerabilities": [
                 {
                     "url": f"http://testserver/api/vulnerabilities/{self.vuln1.id}",
-                    "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln1.id).upper()}",
+                    "vulnerability_id": self.vuln1.vulnerability_id,
                     "summary": "test-vuln1",
                     "references": [],
                     "fixed_packages": [],
@@ -191,7 +191,7 @@ class APITestCasePackage(TestCase):
             "fixing_vulnerabilities": [
                 {
                     "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
-                    "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln.id).upper()}",
+                    "vulnerability_id": self.vuln.vulnerability_id,
                     "summary": "test-vuln",
                     "references": [],
                     "fixed_packages": [
@@ -206,7 +206,7 @@ class APITestCasePackage(TestCase):
             "unresolved_vulnerabilities": [
                 {
                     "url": f"http://testserver/api/vulnerabilities/{self.vuln1.id}",
-                    "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln1.id).upper()}",
+                    "vulnerability_id": self.vuln1.vulnerability_id,
                     "summary": "test-vuln1",
                     "references": [],
                     "fixed_packages": [],
@@ -228,7 +228,7 @@ class APITestCasePackage(TestCase):
             "affected_by_vulnerabilities": [
                 {
                     "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
-                    "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln.id).upper()}",
+                    "vulnerability_id": self.vuln.vulnerability_id,
                     "summary": "test-vuln",
                     "references": [],
                     "fixed_packages": [
@@ -244,7 +244,7 @@ class APITestCasePackage(TestCase):
             "unresolved_vulnerabilities": [
                 {
                     "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
-                    "vulnerability_id": f"VULCOID-{int_to_base36(self.vuln.id).upper()}",
+                    "vulnerability_id": self.vuln.vulnerability_id,
                     "summary": "test-vuln",
                     "references": [],
                     "fixed_packages": [

@@ -26,10 +26,6 @@ class Command(BaseCommand):
         )
         parser.add_argument("--all", action="store_true", help="Run all available importers")
 
-        parser.add_argument(
-            "--all_in_parallel", action="store_true", help="Run all available importers in parallel"
-        )
-
         parser.add_argument("sources", nargs="*", help="Fully qualified importer name to run")
 
     def handle(self, *args, **options):

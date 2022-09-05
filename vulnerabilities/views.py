@@ -199,7 +199,7 @@ class VulnerabilitySearchView(View):
         vuln_id = request.GET["vuln_id"]
         return list(
             models.Vulnerability.objects.filter(
-                Q(vulnerability_id=vuln_id) | Q(aliases__alias__icontains=vuln_id)
+                Q(vulnerability_id__iexact=vuln_id) | Q(aliases__alias__icontains=vuln_id)
             )
             .order_by("vulnerability_id")
             .annotate(

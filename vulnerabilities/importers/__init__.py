@@ -7,7 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-from vulnerabilities.importers import alpine_linux
+from vulnerabilities.importers import alpine_linux, githubOSV
 from vulnerabilities.importers import debian
 from vulnerabilities.importers import github
 from vulnerabilities.importers import gitlab
@@ -27,6 +27,7 @@ IMPORTERS_REGISTRY = [
     pysec.PyPIImporter,
     debian.DebianImporter,
     gitlab.GitLabGitImporter,
+    githubOSV.GithubOSVImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

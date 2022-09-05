@@ -1,0 +1,50 @@
+[
+  {
+    "affected_versions": [
+      "<2.7.2"
+    ],
+    "fixed_versions": [
+      "2.7.2"
+    ],
+    "aliases": [
+      "CVE-2014-1402",
+      "GHSA-8r7q-cvjq-x353"
+    ]
+  },
+  {
+    "affected_versions": [
+      "<2.11.3"
+    ],
+    "fixed_versions": [
+      "2.11.3"
+    ],
+    "aliases": [
+      "CVE-2020-28493",
+      "GHSA-g3rq-g295-4j3m"
+    ]
+  },
+  {
+    "affected_versions": [
+      "<2.8.1"
+    ],
+    "fixed_versions": [
+      "2.8.1"
+    ],
+    "aliases": [
+      "CVE-2016-10745",
+      "GHSA-hj2j-77xm-mc5v"
+    ]
+  },
+  {
+    "affected_versions": [
+      "<2.10.1"
+    ],
+    "fixed_versions": [
+      "2.10.1"
+    ],
+    "aliases": [
+      "CVE-2019-10906",
+      "GHSA-462w-v97r-4m45"
+    ]
+  }
+]

@@ -1,0 +1,8 @@
+[
+  "pypi/jinja2",
+  "maven/org.apache.tomcat/tomcat",
+  "npm/semver-regex",
+  "go/github.com/mattermost/mattermost-server/v6/api4",
+  "packagist/bolt/core",
+  "nuget/moment.js"
+]

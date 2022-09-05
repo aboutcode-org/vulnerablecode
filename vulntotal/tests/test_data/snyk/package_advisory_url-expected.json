@@ -1,0 +1,13 @@
+[
+  "https://security.snyk.io/package/pip/jinja2",
+  "https://security.snyk.io/package/maven/org.apache.tomcat%3Atomcat",
+  "https://security.snyk.io/package/npm/semver-regex",
+  "https://security.snyk.io/package/golang/github.com%2Fmattermost%2Fmattermost-server%2Fv6%2Fapi4",
+  "https://security.snyk.io/package/composer/bolt%2Fcore",
+  "https://security.snyk.io/package/linux/debain:11/trafficserver",
+  "https://security.snyk.io/package/nuget/moment.js",
+  "https://security.snyk.io/package/cocoapods/ffmpeg",
+  "https://security.snyk.io/package/hex/coherence",
+  "https://security.snyk.io/package/rubygems/log4j-jars",
+  "https://security.snyk.io/api/listing?search=firefox&type=unmanaged"
+]

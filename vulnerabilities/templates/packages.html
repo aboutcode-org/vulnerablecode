@@ -1,64 +1,223 @@
-{% extends 'base.html' %} 
-{% block title %} 
-<h1 class="title">
-Explore Vulnerable packages
-</h1>
-{% endblock %}
-{% block content %}
+{% extends 'base.html' %}
+{% load humanize %}
 {% load widget_tweaks %}
 
-<div class="columns">
-  <div class="column is-one-third is-offset-one-third">
-    <form action="{% url 'package_search' %}" method="get">
-    {% load widget_tweaks %}
-      <div class="field is-horizontal pd-3">
-        <div class="select">
-        {{form.type}}
+{% block title %}
+VCIO Package Search Results
+{% endblock %}
+
+{% block content %}
+
+{% include 'navbar.html' %}
+
+<section class="section pt-0">
+    <article class='panel is-info'>
+        <div class='panel-heading py-2 is-size-6'>
+            Search for vulnerable packages
+            <div class="dropdown is-hoverable has-text-weight-normal">
+                <div class="dropdown-trigger">
+                    <i class="fa fa-question-circle ml-2"></i>
+                </div>
+                <div class="dropdown-menu dropdown-instructions-width" id="dropdown-menu4" role="menu">
+                    <div class="dropdown-content dropdown-instructions-box-shadow">
+                        <div class="dropdown-item">
+                            <div>
+                                <div>Search for currently known vulnerabilities for a <a href="https://github.com/package-url/purl-spec" target="_blank">Package-URL</a> (aka <span class="inline-code">purl</span>) or a package <span class="inline-code">name</span>.</div>
+                                <ul>
+                                    <li>
+                                        Search by package <span class="inline-code">name</span> -- type the <span class="inline-code">name</span> in the search box and, if relevant to your search, select the package <span class="inline-code">type</span> from the dropdown.
+                                    </li>
+                                    <li>
+                                        Search by <span class="inline-code">purl</span> -- type the <span class="inline-code">purl</span> in the search box. <span class="is-italic">(The <span class="inline-code">type</span> dropdown does not apply to a <span class="inline-code">purl</span> search.)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        {{form.name|add_class:"input"}}
-        <button class="button is-success", type="submit">
-          Search
-        </button>
-      </div>
-    </form>
-    {% if result_size %}
-      <p class="has-text-centered" id="result_count">{{result_size}} results</p>
-    {% elif result_size == 0 %}
-      <p class="has-text-centered" id="result_count">No results found</p>
-    {% endif %}
-  </div>
-</div>
-
-{% if packages %}
-
-<section class="section">
-  <div class="content is-medium">
-    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-      <tr>
-        <th>Package URL</th>
-        <th>Affected By Vulnerabilities</th>
-        <th>Fixing Vulnerabilities</th>
-      </tr>
-      {% for package in packages %}
-      <tr>
-        <td><a href="{% url 'package_view' package.pk %}">{{package.package_url}}</a></td>
-        <td>{{package.vulnerability_count}}</td>
-        <td>{{package.patched_vulnerability_count}}</td>
-      </tr>
-      {% endfor %}
-    </table>
-  </div>
-  
-  <div class="is-field is-horizontal">
-    {% if packages.has_previous %}
-      <a class="button" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">Previous Page</a>
-    {% endif %}
-  
-    {% if packages.has_next %}
-      <a class="button" href="?{{ searched_for }}&page={{ packages.next_page_number}}">Next Page</a>
-    {% endif %}
-  </div>
+        <div class="panel-block">
+            <div class="pb-3 width-100-pct">
+                <form action="{% url 'package_search' %}" method="get" name="pkg_form" onsubmit="return validatePkgForm()">
+                    <div class="field has-addons mt-3">
+                        <div class="control">
+                            <div class="select">
+                                {{ package_form.type }}
+                            </div>
+                        </div>
+                        <div class="control width-100-pct">
+                            {{ package_form.name|add_class:"input" }}
+                        </div>
+                        <div class="control">
+                            <button class="button is-link" type="submit" id="submit_pkg" name="template" value="packages">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div>
+                    {% if package_search %}
+                        <div class="notification search-alert">
+                            <button class=" delete"></button>
+                            {{ package_search }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </article>
 </section>
 
+{% if package_name %}
+    <div class="is-max-desktop mb-3">
+        <section class="mx-5">
+            <article class="panel is-info panel-header-only">
+                <div class="panel-heading py-2 is-size-6">
+                    <div class="field is-grouped is-grouped-multiline">
+                        Package search results:
+                        <div class="control">
+                            <div class="tags has-addons">
+                                <span class="tag is-dark custom">type</span>
+                                <span class="tag is-white custom">
+                                {% if package_type %}
+                                    {{ package_type }}
+                                {% else %}
+                                    any
+                                {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="control">
+                            <div class="tags has-addons">
+                                <span class="tag is-dark custom">name</span>
+                                <span class="tag is-white custom">
+                                    {{ package_name }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <div class="is-flex" style="justify-content: space-between;">
+                <div>
+                    <strong>Total records:</strong> {{ packages.paginator.count|intcomma }}
+                </div>
+                <div>
+                    {% if packages.has_previous %}
+                        <a class="small_page_button" href="?{{ searched_for }}&page=1">1</a>
+                        <a class="page_arrow_spacing" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">&laquo;</a>
+                    {% else %}
+                        <span class="small_page_button">1</span>
+                        <span class="page_arrow_spacing">&laquo;</span>
+                    {% endif %}
+                    Page {{ packages.number|intcomma }} of {{ packages.paginator.num_pages|intcomma }}
+                    {% if packages.has_next %}
+                        <a class="page_arrow_spacing" href="?{{ searched_for }}&page={{ packages.next_page_number }}">&raquo;</a>
+                        <a class="small_page_button" href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}">{{ packages.paginator.num_pages|intcomma }}</a>
+                    {% else %}
+                        <span class="page_arrow_spacing">&raquo;</span>
+                        <span class="small_page_button">{{ packages.paginator.num_pages|intcomma }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </div>
+
+    {% if packages %}
+
+        <section class="section pt-0">
+            <div class="content">
+                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="The package url or purl is a URL string used to identify and locate a software package.">Package URL</span></th>
+                            <th style="width: 225px;"><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is the number of vulnerabilities that affect the package.">Affected by vulnerabilities</span></th>
+                            <th style="width: 225px;"><span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" data-tooltip="This is the number of vulnerabilities fixed by the package.">Fixing vulnerabilities</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for package in packages %}
+                            <tr>
+                                <td style="word-break: break-all;">
+                                    <a href="{% url 'package_view' package.pk %}?type={{ package_type }}&name={{ package.package_url }}" target="_self">{{ package.package_url }}</a>
+                                </td>
+                                <td>{{ package.vulnerability_count }}</td>
+                                <td>{{ package.patched_vulnerability_count }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <nav class="pagination is-centered is-small" aria-label="pagination">
+                {% if packages.has_previous %}
+                    <a href="?{{ searched_for }}&page={{ packages.previous_page_number }}" class="pagination-previous">Previous</a>
+                {% else %}
+                    <a class="pagination-previous" disabled>Previous</a>
+                {% endif %}
+
+                {% if packages.has_next %}
+                    <a href="?{{ searched_for }}&page={{ packages.next_page_number }}" class="pagination-next">Next</a>
+                {% else %}
+                    <a class="pagination-next" disabled>Next</a>
+                {% endif %}
+
+                <ul class="pagination-list">
+                    {% if packages.number != 1%}
+                        <li>
+                            <a href="?{{ searched_for }}&page=1{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page 1">1</a>
+                        </li>
+                        {% if packages.number > 2 %}
+                            <li>
+                                <span class="pagination-ellipsis">&hellip;</span>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                    <li>
+                        <a class="pagination-link is-current" disabled aria-label="Page {{ packages.number }}" aria-current="page">{{ packages.number|intcomma }}</a>
+                    </li>
+                    {% if packages.number != packages.paginator.num_pages %}
+                        {% if packages.next_page_number != packages.paginator.num_pages %}
+                            <li>
+                                <span class="pagination-ellipsis">&hellip;</span>
+                            </li>
+                        {% endif %}
+                        <li>
+                            <a href="?{{ searched_for }}&page={{ packages.paginator.num_pages }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}" class="pagination-link" aria-label="Goto page {{ packages.paginator.num_pages }}">{{ packages.paginator.num_pages|intcomma }}</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+
+        </section>
+        <div>
+
+    {% endif %}
+
 {% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+            const $notification = $delete.parentNode;
+
+            $delete.addEventListener('click', () => {
+                $notification.parentNode.removeChild($notification);
+            });
+        });
+    });
+
+    function validatePkgForm() {
+        var x = document.forms["pkg_form"]["name"].value;
+        if (x.trim().length == "") {
+            return false;
+        }
+    }
+
+</script>
 {% endblock %}

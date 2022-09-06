@@ -48,7 +48,7 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Package
-        fields = ["url", "purl"]
+        fields = ["url", "purl", "is_vulnerable"]
 
 
 class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
@@ -190,7 +190,15 @@ class PackageFilterSet(filters.FilterSet):
 
     class Meta:
         model = Package
-        fields = ["name", "type", "version", "subpath", "purl", "packagerelatedvulnerability__fix"]
+        fields = [
+            "name",
+            "type",
+            "version",
+            "subpath",
+            "purl",
+            "namespace",
+            "packagerelatedvulnerability__fix",
+        ]
 
     def filter_purl(self, queryset, name, value):
         purl = unquote(value)
@@ -302,6 +310,29 @@ class CPEViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = CPEFilterSet
+
+    @action(detail=False, methods=["post"])
+    def bulk_search(self, request):
+        """
+        This endpoint is used to search for vulnerabilities by more than one CPE.
+        """
+        cpes = request.data.get("cpes", []) or []
+        if not cpes or not isinstance(cpes, list):
+            return Response(
+                status=400,
+                data={"Error": "A non-empty 'cpes' list of CPEs is required."},
+            )
+        for cpe in cpes:
+            if not cpe.startswith("cpe"):
+                return Response(status=400, data={"Error": f"Invalid CPE: {cpe}"})
+        vulnerabilitiesResponse = Vulnerability.objects.filter(
+            vulnerabilityreference__reference_id__in=cpes
+        ).distinct()
+        return Response(
+            VulnerabilitySerializer(
+                vulnerabilitiesResponse, many=True, context={"request": request}
+            ).data
+        )
 
 
 class AliasFilterSet(filters.FilterSet):

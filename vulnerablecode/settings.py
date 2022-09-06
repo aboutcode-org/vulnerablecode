@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import sys
 from pathlib import Path
 
 import environ
@@ -32,6 +33,9 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[".localhost", "127.0.0.1", "[
 # SECURITY WARNING: don't run with debug turned on in production
 DEBUG = env.bool("VULNERABLECODE_DEBUG", default=False)
 
+# SECURITY WARNING: don't run with debug turned on in production
+DEBUG_UI = env.bool("VULNERABLECODE_DEBUG_UI", default=False)
+
 # Application definition
 
 INSTALLED_APPS = (
@@ -45,6 +49,7 @@ INSTALLED_APPS = (
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.admin",
+    "django.contrib.humanize",
     # Third-party apps
     "django_filters",
     "rest_framework",
@@ -96,6 +101,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "django.template.context_processors.request",
                 "django.template.context_processors.static",
+                "vulnerablecode.context_processors.versions",
             ],
         },
     },
@@ -129,6 +135,21 @@ TIME_ZONE = env.str("TIME_ZONE", default="UTC")
 
 USE_I18N = True
 
+IS_TESTS = False
+
+if len(sys.argv) > 0:
+    IS_TESTS = "pytest" in sys.argv[0]
+
+VULNERABLECODEIO_REQUIRE_AUTHENTICATION = env.bool(
+    "VULNERABLECODEIO_REQUIRE_AUTHENTICATION", default=False
+)
+
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+
+if IS_TESTS:
+    VULNERABLECODEIO_REQUIRE_AUTHENTICATION = True
+
 USE_L10N = True
 
 USE_TZ = True
@@ -148,8 +169,8 @@ STATICFILES_DIRS = [
 # Django restframework
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.SessionAuthentication",),
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.TokenAuthentication",),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
@@ -163,3 +184,6 @@ REST_FRAMEWORK = {
     # Limit the load on the Database returning a small number of records by default. https://github.com/nexB/vulnerablecode/issues/819
     "PAGE_SIZE": 10,
 }
+
+if not VULNERABLECODEIO_REQUIRE_AUTHENTICATION:
+    REST_FRAMEWORK["DEFAULT_PERMISSION_CLASSES"] = ("rest_framework.permissions.AllowAny",)

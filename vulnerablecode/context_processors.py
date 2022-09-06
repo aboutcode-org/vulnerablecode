@@ -7,19 +7,10 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import os
-import sys
-import warnings
-from pathlib import Path
-
-__version__ = "30.0.0rc3"
+from vulnerablecode import __version__ as vulnerablecode_version
 
 
-def command_line():
-    """
-    Command line entry point.
-    """
-    from django.core.management import execute_from_command_line
-
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "vulnerablecode.settings")
-    execute_from_command_line(sys.argv)
+def versions(request):
+    return {
+        "VULNERABLECODE_VERSION": vulnerablecode_version,
+    }

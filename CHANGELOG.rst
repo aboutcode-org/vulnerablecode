@@ -8,22 +8,22 @@ Version v30.0.0
   transform imported data and convert that in Vulnerabilities and Packages. Improvers can
   also improve and refine imported and existing data as well as enrich data using external
   data sources. The migration to this new architecture is under way and not all importers
-  are available. You can track the progress in this issue: https://github.com/nexB/vulnerablecode/issues/597 
+  are available.
   Because of these extensive changes, it is not possible to migrate existing imported
   data to the new schema. You will need instead to restart imports from an empty database
   or request access to the new vulnerablecode.io live instance.
+  You can track the progress in this issue: https://github.com/nexB/vulnerablecode/issues/597 
 
 - We added new data sources including PYSEC, GitHub and GitLab.
 
 - We improved the documentation including adding development examples for importers and improvers.
 
-- We removed the ability to edit relationships from the UI. The UI is now read-only
-  and we will need to design a different UI for proper review and curation of vulnerabilities.
+- We removed the ability to edit relationships from the UI. The UI is now read-only.
+- We replace the web UI with a brand new UI based on the same overall look and feel as ScanCode.io.
 
 - We added support for NixOS as a Linux deployment target.
 
 - The aliases of a vulnerabily are reported in the API vulnerabilities/ endpoint
-
 
 - There are breaking Changes at API level with changes in the data structure:
 
@@ -32,12 +32,15 @@ Version v30.0.0
     - Rename `resolved_packages` to `fixed_packages` 
     - Rename `unresolved_packages` to `affected_packages`
     - Rename `url` to `reference_url` in the reference list
+    - Add is_vulnerable property in fixed and affected_packages.
 
   - in the /api/packages/ endpoint:
 
     - Rename `unresolved_vulnerabilities` to `affected_by_vulnerabilities`
     - Rename  `resolved_vulnerabilities` to `fixing_vulnerabilities`
     - Rename `url` to `reference_url` in the reference list
+    - Add new attribute `is_resolved`
+    - Add namespace filter
 
 - We have provided backward compatibility for `url` and `unresolved_vulnerabilities` for now
 
@@ -56,6 +59,15 @@ Version v30.0.0
   and provided page per size with a maximum limit of 100 records per page.
 
 - Add fixed packages in vulnerabilities details in packages endpoint.
+
+- Add bulk search support for CPEs.
+
+- Add authentication for REST API endpoint.
+  The autentication is disabled by default and can be enabled using the
+  VULNERABLECODEIO_REQUIRE_AUTHENTICATION settings.
+  When enabled, users have to authenticate using 
+  their API Key in the REST API.
+  Users can be created using the Django "createsuperuser" management command.
 
 Other:
 

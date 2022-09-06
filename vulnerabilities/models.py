@@ -12,13 +12,16 @@ import json
 import logging
 import uuid
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.dispatch import receiver
 from django.utils.http import int_to_base36
 from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin
+from rest_framework.authtoken.models import Token
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -121,6 +124,7 @@ class VulnerabilityReference(models.Model):
             "url",
             "reference_id",
         )
+        ordering = ["reference_id", "url"]
 
     def __str__(self):
         reference_id = f" {self.reference_id}" if self.reference_id else ""
@@ -206,6 +210,13 @@ class Package(PackageURLMixin):
             subpath=self.subpath,
             packagerelatedvulnerability__fix=True,
         ).distinct()
+
+    @property
+    def is_vulnerable(self):
+        """
+        Returns True if this package is vulnerable to any vulnerability.
+        """
+        return self.vulnerable_to.exists()
 
     def set_package_url(self, package_url):
         """
@@ -352,6 +363,21 @@ class Alias(models.Model):
         related_name="aliases",
     )
 
+    @property
+    def url(self):
+        """
+        Create a URL for the alias.
+        """
+        alias: str = self.alias
+        if alias.startswith("CVE"):
+            return f"https://nvd.nist.gov/vuln/detail/{alias}"
+
+        if alias.startswith("GHSA"):
+            return f"https://github.com/advisories/{alias}"
+
+    class Meta:
+        ordering = ["alias"]
+
     def __str__(self):
         return self.alias
 
@@ -418,3 +444,12 @@ class Advisory(models.Model):
             references=[Reference.from_dict(ref) for ref in self.references],
             date_published=self.date_published,
         )
+
+
+@receiver(models.signals.post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    """
+    Creates an API key token on user creation, using the signal system.
+    """
+    if created:
+        Token.objects.create(user_id=instance.pk)

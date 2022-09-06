@@ -71,8 +71,8 @@ class Reference:
     severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
 
     def __post_init__(self):
-        if not any([self.url, self.reference_id]):
-            raise TypeError
+        if not self.url:
+            raise TypeError("Reference must have a url")
 
     def normalized(self):
         severities = sorted(self.severities)

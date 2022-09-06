@@ -88,7 +88,9 @@ def to_advisory_data(xml_issue) -> AdvisoryData:
                 cve = f"CVE-{cve}"
                 madeup_alias = f"{madeup_alias}-{cve}"
                 aliases.append(cve)
-                references.append(Reference(reference_id=cve))
+                references.append(
+                    Reference(reference_id=cve, url=f"https://nvd.nist.gov/vuln/detail/{cve}")
+                )
             aliases.append(madeup_alias)
 
         elif info.tag == "affects":

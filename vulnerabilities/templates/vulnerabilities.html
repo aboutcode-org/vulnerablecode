@@ -37,13 +37,13 @@ VulnerableCode Vulnerability Search
                 </div>
                 <div>
                     {% if page_obj.has_previous %}
-                        <a 
-                            class="small_page_button" 
+                        <a
+                            class="small_page_button"
                             href="?vulnerability_id={{ vulnerability_id }}&page=1">
                             1
                         </a>
-                        <a 
-                            class="page_arrow_spacing" 
+                        <a
+                            class="page_arrow_spacing"
                             href="?vulnerability_id={{ vulnerability_id }}&page={{ page_obj.previous_page_number }}">
                             &laquo;
                         </a>
@@ -53,12 +53,12 @@ VulnerableCode Vulnerability Search
                     {% endif %}
                     Page {{ page_obj.number|intcomma }} of {{ page_obj.paginator.num_pages|intcomma }}
                     {% if page_obj.has_next %}
-                        <a 
+                        <a
                             class="page_arrow_spacing"
                             href="?vulnerability_id={{ vulnerability_id }}&page={{ page_obj.next_page_number }}">
                             &raquo;
                         </a>
-                        <a 
+                        <a
                             class="small_page_button"
                             href="?vulnerability_id={{ vulnerability_id }}&page={{ page_obj.paginator.num_pages }}">
                             {{ page_obj.paginator.num_pages|intcomma }}
@@ -71,7 +71,7 @@ VulnerableCode Vulnerability Search
             </div>
         </section>
     </div>
-    
+
     <section class="section pt-0">
         <div class="content">
             <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
@@ -80,15 +80,15 @@ VulnerableCode Vulnerability Search
                         <th>Vulnerability id</th>
                         <th style="width: 225px;">Aliases</th>
                         <th style="width: 225px;">Affected packages</th>
-                        <th style="width: 225px;">Fixed packages</th>
+                        <th style="width: 225px;">Fixed by packages</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for vulnerability in page_obj %}
                         <tr class="is-clipped-list">
                             <td style="word-break: break-all;">
-                                <a 
-                                    href="{% url 'vulnerability_view' vulnerability.pk %}?vulnerability_id={{ vulnerability.vulnerability_id }}" 
+                                <a
+                                    href="{% url 'vulnerability_view' vulnerability.pk %}?vulnerability_id={{ vulnerability.vulnerability_id }}"
                                     target="_self">{{ vulnerability.vulnerability_id }}
                                 </a>
                             </td>
@@ -117,7 +117,7 @@ VulnerableCode Vulnerability Search
                 </tbody>
             </table>
         </div>
-    
+
         <nav class="pagination is-centered is-small" aria-label="pagination">
             {% if page_obj.has_previous %}
                 <a
@@ -128,7 +128,7 @@ VulnerableCode Vulnerability Search
             {% else %}
                 <a class="pagination-previous" disabled>Previous</a>
             {% endif %}
-    
+
             {% if page_obj.has_next %}
                 <a href="?vulnerability_id={{ vulnerability_id }}&page={{ page_obj.next_page_number }}"
                     class="pagination-next">
@@ -137,7 +137,7 @@ VulnerableCode Vulnerability Search
             {% else %}
                 <a class="pagination-next" disabled>Next</a>
             {% endif %}
-    
+
             <ul class="pagination-list">
                 {% if page_obj.number != 1 %}
                     <li>
@@ -156,8 +156,8 @@ VulnerableCode Vulnerability Search
                 {% endif %}
                 <li>
                     <a
-                        class="pagination-link is-current" 
-                        disabled 
+                        class="pagination-link is-current"
+                        disabled
                         aria-label="Page {{ page_obj.number }}"
                         aria-current="page">
                         {{ page_obj.number|intcomma }}
@@ -190,7 +190,7 @@ VulnerableCode Vulnerability Search
 
     <script>
         let $showClippedButton = getAll("button.show-clipped");
-    
+
         $showClippedButton.forEach(function ($el) {
             $el.addEventListener("click", function () {
                 $el.parentNode.classList.toggle("is-clipped-list");

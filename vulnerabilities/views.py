@@ -7,7 +7,6 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-
 from django.db.models import Count
 from django.db.models import Q
 from django.http.response import HttpResponseNotAllowed
@@ -172,6 +171,7 @@ class VulnerabilityDetails(DetailView):
         context = super().get_context_data(**kwargs)
         context["vulnerability"] = self.object
         context["vulnerability_form"] = VulnerabilityForm(self.request.GET)
+        context["severities"] = list(self.object.severities)
         return context
 
 

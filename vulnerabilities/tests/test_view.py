@@ -18,14 +18,11 @@ class PackageSearchTestCase(TestCase):
     def setUp(self):
         self.client = Client()
 
-    def test_paginator(self):
-        """
-        Test PackageSearch paginator
-        """
+    def test_packages_search_view_paginator(self):
         response = self.client.get("/packages/search?type=deb&name=&page=1")
         self.assertEqual(response.status_code, 200)
         response = self.client.get("/packages/search?type=deb&name=&page=*")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 404)
         response = self.client.get("/packages/search?type=deb&name=&page=")
         self.assertEqual(response.status_code, 200)
         response = self.client.get("/packages/search?type=&name=&page=")
@@ -41,7 +38,7 @@ class VulnerabilitySearchTestCase(TestCase):
         self.id = vulnerability.id
         self.client = Client()
 
-    def test_vulnerabilties(self):
+    def test_vulnerabilties_search_view(self):
         """
         Test Vulnerability View
         """
@@ -55,9 +52,9 @@ class VulnerabilitySearchTestCase(TestCase):
         response = self.client.get(f"/vulnerabilities/search")
         self.assertEqual(response.status_code, 200)
 
-    def test_alias(self):
+    def test_vulnerabilities_alias(self):
         """
         Test Vulnerability Search View
         """
-        response = self.client.get(f"/vulnerabilities/search?vuln_id=TEST-2022")
+        response = self.client.get(f"/vulnerabilities/search?vulnerability_id=TEST-2022")
         self.assertEqual(response.status_code, 200)

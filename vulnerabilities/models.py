@@ -110,9 +110,7 @@ class VulnerabilityReference(models.Model):
         through="VulnerabilityRelatedReference",
     )
 
-    url = models.URLField(
-        max_length=1024, help_text="URL to the vulnerability reference", blank=True
-    )
+    url = models.URLField(max_length=1024, help_text="URL to the vulnerability reference")
     reference_id = models.CharField(
         max_length=200,
         help_text="An optional reference ID, such as DSA-4465-1 when available",

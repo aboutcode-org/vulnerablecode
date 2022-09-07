@@ -10,37 +10,29 @@
 from django import forms
 
 from vulnerabilities.models import Package
-from vulnerabilities.models import PackageRelatedVulnerability
-from vulnerabilities.models import Vulnerability
 
 
-def get_package_types():
+def get_known_package_types():
+    """
+    Return a list of known package types.
+    """
     pkg_types = [(i.type, i.type) for i in Package.objects.distinct("type").all()]
     pkg_types.append((None, "Any type"))
     return pkg_types
 
 
-def get_package_namespaces():
-    pkg_namespaces = [
-        (i.namespace, i.namespace)
-        for i in Package.objects.distinct("namespace").all()
-        if i.namespace
-    ]
-    pkg_namespaces.append((None, "package namespace"))
-    return pkg_namespaces
-
-
 class PackageForm(forms.Form):
 
-    type = forms.ChoiceField(choices=get_package_types)
-    name = forms.CharField(
+    package_name = forms.CharField(
         required=False, widget=forms.TextInput(attrs={"placeholder": "Package name or purl"})
     )
 
 
-class CVEForm(forms.Form):
+class VulnerabilityForm(forms.Form):
 
-    vuln_id = forms.CharField(
+    vulnerability_id = forms.CharField(
         required=False,
-        widget=forms.TextInput(attrs={"placeholder": "Vulnerability ID or CVE/GHSA"}),
+        widget=forms.TextInput(
+            attrs={"placeholder": "Vulnerability id or alias such as CVE or GHSA"}
+        ),
     )

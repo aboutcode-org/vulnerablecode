@@ -18,8 +18,8 @@
 # -- Project information -----------------------------------------------------
 
 project = "VulnerableCode"
-copyright = "nexb Inc. and others"
-author = "nexb Inc. and others"
+copyright = "nexB Inc. and others"
+author = "nexB Inc. and others"
 
 
 # -- General configuration ---------------------------------------------------

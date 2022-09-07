@@ -7,199 +7,133 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-from urllib.parse import urlencode
-
-from django.conf import settings
-from django.core.paginator import PageNotAnInteger
-from django.core.paginator import Paginator
 from django.db.models import Count
 from django.db.models import Q
 from django.http.response import HttpResponseNotAllowed
 from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
-from django.views.generic.edit import UpdateView
+from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from packageurl import PackageURL
-from packaging import version
 
-from vulnerabilities import forms
 from vulnerabilities import models
-from vulnerabilities.forms import CVEForm
 from vulnerabilities.forms import PackageForm
+from vulnerabilities.forms import VulnerabilityForm
+
+PAGE_SIZE = 50
 
 
-class PackageSearchView(View):
+class PackageSearchView(ListView):
+    model = models.Package
     template_name = "packages.html"
-    ordering = ["version"]
+    ordering = ["type", "namespace", "name", "version"]
+    paginate_by = PAGE_SIZE
 
-    def get(self, request):
-        result_size = 0
-        context = {"debug_ui": settings.DEBUG_UI}
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request_query = self.request.GET
+        context["package_form"] = PackageForm(request_query)
+        context["package_name"] = request_query.get("package_name")
+        return context
 
-        if request.GET:
-            packages = self.request_to_queryset(request)
-            result_size = len(packages)
+    def get_queryset(self, query=None):
+        """
+        Return a Package queryset for the ``query``.
+        Make a best effort approach to find matching packages either based
+        on exact purl, partial purl or just name and namespace.
+        """
+        qs = self.model.objects
+
+        query = query or self.request.GET.get("package_name") or ""
+        query = query.strip()
+        if not query:
+            return qs.none()
+
+        if not query.startswith("pkg:"):
+            # treat this as a plain search
+            qs = qs.filter(Q(name__icontains=query) | Q(namespace__icontains=query))
+        else:
+            # this looks like a purl: check if it quacks like a purl
+            purl_type = namespace = name = version = qualifiers = subpath = None
+
+            _, _scheme, remainder = query.partition("pkg:")
+            remainder = remainder.strip()
+            if not remainder:
+                return qs.none()
+
             try:
-                page_no = request.GET.get("page", 1)
-                pages = Paginator(packages, 50)
-                packages = Paginator(packages, 50).get_page(page_no)
-            except PageNotAnInteger:
-                packages = Paginator(packages, 50).get_page(1)
-            packages = pages.get_page(page_no)
-
-            context["packages"] = packages
-            context["searched_for"] = urlencode(
-                {param: request.GET[param] for param in request.GET if param != "page"}
-            )
-            context["result_size"] = result_size
-
-            if len(request.GET["type"]):
-                package_type = request.GET["type"]
-                context["package_type"] = package_type
-
-            if len(request.GET["name"]):
-                package_name = request.GET["name"]
-                context["package_name"] = package_name
-
-            if result_size == 0:
-                context = {
-                    "package_search": "The VCIO DB does not contain a record of the package you entered -- "
-                    + request.GET["name"]
-                    + ".",
-                    "debug_ui": settings.DEBUG_UI,
-                }
-
-                if request.GET.get("template") == "packages":
-                    context["package_form"] = PackageForm(request.GET or None)
-                    context["template_name"] = "packages.html"
-                    return render(request, "packages.html", context)
-                elif request.GET.get("template") == "package_details":
-                    context["package_form"] = PackageForm(request.GET or None)
-                    context["template_name"] = "package_update.html"
-                    return render(request, "package_update.html", context)
-                elif request.GET.get("template") == "index":
-                    context["package_form"] = PackageForm(request.GET or None)
-                    context["vuln_form"] = CVEForm(request.GET or None)
-                    context["template_name"] = "index.html"
-                    return render(request, "index.html", context)
+                # First, treat the query as a syntactically-correct purl
+                purl = PackageURL.from_string(query)
+                purl_type, namespace, name, version, qualifiers, subpath = purl.to_dict().values()
+            except ValueError:
+                # Otherwise, attempt a more lenient parsing of a possibly partial purl
+                if "/" in remainder:
+                    purl_type, _scheme, ns_name = remainder.partition("/")
+                    ns_name = ns_name.strip()
+                    if ns_name:
+                        if "/" in ns_name:
+                            namespace, _, name = ns_name.partition("/")
+                        else:
+                            name = ns_name
+                        name = name.strip()
+                        if name:
+                            if "@" in name:
+                                name, _, version = name.partition("@")
+                                version = version.strip()
+                                name = name.strip()
                 else:
-                    context["package_form"] = PackageForm(request.GET or None)
-                    context["vuln_form"] = CVEForm(request.GET or None)
-                    context["template_name"] = "index.html"
-                    return render(request, "index.html", context)
+                    purl_type = remainder
 
-        context["package_form"] = PackageForm(request.GET or None)
-        context["template_name"] = self.template_name
-        return render(request, self.template_name, context)
+            if purl_type:
+                qs = qs.filter(type__iexact=purl_type)
+            if namespace:
+                qs = qs.filter(namespace__iexact=namespace)
+            if name:
+                qs = qs.filter(name__iexact=name)
+            if version:
+                qs = qs.filter(version__iexact=version)
+            if qualifiers:
+                qs = qs.filter(qualifiers=qualifiers)
+            if subpath:
+                qs = qs.filter(subpath__iexact=subpath)
 
-    @staticmethod
-    def request_to_queryset(request):
-        package_type = ""
-        package_name = ""
-        purl = ""
-
-        if len(request.GET["type"]):
-            package_type = request.GET["type"]
-
-        if len(request.GET["name"]):
-            package_name = request.GET["name"]
-
-        # Check whether the input value is a syntactically-correct purl
-        try:
-            purl = PackageURL.from_string(package_name)
-            return list(
-                models.Package.objects.all()
-                .filter(Q(type=purl.type, name=purl.name, version=purl.version))
-                .annotate(
-                    vulnerability_count=Count(
-                        "vulnerabilities",
-                        filter=Q(packagerelatedvulnerability__fix=False),
-                    ),
-                    # TODO: consider renaming to fixed in the future
-                    patched_vulnerability_count=Count(
-                        "vulnerabilities",
-                        filter=Q(packagerelatedvulnerability__fix=True),
-                    ),
-                )
-                .prefetch_related()
-            )
-        except:
-            pass
-
-        return list(
-            models.Package.objects.all()
-            .filter(name__icontains=package_name, type__icontains=package_type)
-            .order_by("type", "namespace", "name", "version", "subpath", "qualifiers")
-            .annotate(
-                vulnerability_count=Count(
-                    "vulnerabilities",
-                    filter=Q(packagerelatedvulnerability__fix=False),
-                ),
-                # TODO: consider renaming to fixed in the future
-                patched_vulnerability_count=Count(
-                    "vulnerabilities",
-                    filter=Q(packagerelatedvulnerability__fix=True),
-                ),
-            )
-            .prefetch_related()
-        )
+        return qs.annotate(
+            vulnerability_count=Count(
+                "vulnerabilities",
+                filter=Q(packagerelatedvulnerability__fix=False),
+            ),
+            patched_vulnerability_count=Count(
+                "vulnerabilities",
+                filter=Q(packagerelatedvulnerability__fix=True),
+            ),
+        ).prefetch_related()
 
 
-class VulnerabilitySearchView(View):
+class VulnerabilitySearchView(ListView):
+    model = models.Vulnerability
     template_name = "vulnerabilities.html"
+    ordering = ["vulnerability_id"]
+    paginate_by = PAGE_SIZE
 
-    def get(self, request):
-        context = {"debug_ui": settings.DEBUG_UI}
-        result_size = 0
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request_query = self.request.GET
+        context["vulnerability_form"] = VulnerabilityForm(request_query)
+        context["vulnerability_id"] = request_query.get("vulnerability_id")
+        return context
 
-        if request.GET:
-            vulnerabilities = self.request_to_vulnerabilities(request)
-            result_size = len(vulnerabilities)
-            pages = Paginator(vulnerabilities, 50)
-            vulnerabilities = pages.get_page(int(self.request.GET.get("page", 1)))
-            vuln_id = request.GET["vuln_id"]
-            context["vulnerabilities"] = vulnerabilities
-            context["result_size"] = result_size
-            context["vuln_id"] = vuln_id
-
-            if result_size == 0:
-                context = {
-                    "vuln_search": "The VCIO DB does not contain a record of the vulnerability you entered -- "
-                    + request.GET.get("vuln_id")
-                    or "" + ".",
-                    "debug_ui": settings.DEBUG_UI,
-                }
-
-                if request.GET.get("template") == "vulnerabilities":
-                    context["vuln_form"] = CVEForm(request.GET or None)
-                    context["template_name"] = "vulnerabilities.html"
-                    return render(request, "vulnerabilities.html", context)
-                elif request.GET.get("template") == "vulnerability_details":
-                    context["vuln_form"] = CVEForm(request.GET or None)
-                    context["template_name"] = "vulnerability.html"
-                    return render(request, "vulnerability.html", context)
-                elif request.GET.get("template") == "index":
-                    context["package_form"] = PackageForm(request.GET or None)
-                    context["vuln_form"] = CVEForm(request.GET or None)
-                    context["template_name"] = "index.html"
-                    return render(request, "index.html", context)
-                else:
-                    context["package_form"] = PackageForm(request.GET or None)
-                    context["vuln_form"] = CVEForm(request.GET or None)
-                    context["template_name"] = "index.html"
-                    return render(request, "index.html", context)
-
-        context["vuln_form"] = CVEForm(request.GET or None)
-        context["template_name"] = self.template_name
-        return render(request, self.template_name, context)
-
-    @staticmethod
-    def request_to_vulnerabilities(request):
-        vuln_id = request.GET["vuln_id"]
-        return list(
-            models.Vulnerability.objects.filter(
-                Q(vulnerability_id__iexact=vuln_id) | Q(aliases__alias__icontains=vuln_id)
+    def get_queryset(self, query=None):
+        query = query or self.request.GET.get("vulnerability_id") or ""
+        qs = self.model.objects
+        if not query:
+            return qs.none()
+        qs = (
+            qs.filter(
+                Q(vulnerability_id__icontains=query)
+                | Q(aliases__alias__icontains=query)
+                | Q(references__id__icontains=query)
+                | Q(summary__icontains=query)
             )
             .order_by("vulnerability_id")
             .annotate(
@@ -210,127 +144,50 @@ class VulnerabilitySearchView(View):
                     "packages", filter=Q(packagerelatedvulnerability__fix=True), distinct=True
                 ),
             )
-        )
-
-
-class PackageUpdate(UpdateView):
-    template_name = "package_update.html"
-    model = models.Package
-    fields = ["name", "type", "version", "namespace"]
-
-    def get_context_data(self, **kwargs):
-        context = super(PackageUpdate, self).get_context_data(**kwargs)
-        context["debug_ui"] = settings.DEBUG_UI
-        resolved_vuln, unresolved_vuln = self._package_vulnerabilities()
-        context["resolved_vuln"] = resolved_vuln
-        context["impacted_vuln"] = unresolved_vuln
-
-        related_packages = self._related_packages()
-        context["related_packages"] = related_packages
-
-        no_reported_vulns_packages = []
-        for pkg in related_packages:
-            if pkg.vulnerability_count == 0:
-                no_reported_vulns_packages.append(pkg)
-
-        no_reported_vulns_packages = sorted(no_reported_vulns_packages, key=lambda x: x.version)
-        context["no_reported_vulns_packages"] = no_reported_vulns_packages
-
-        context["package_form"] = PackageForm(self.request.GET or None)
-        context["template_name"] = self.template_name
-        return context
-
-    def _package_vulnerabilities(self):
-        # This can be further optimised by caching get_object result first time it
-        # is called
-        package = self.get_object()
-
-        resolved_vuln = [i for i in package.resolved_to]
-        unresolved_vuln = [i for i in package.vulnerable_to]
-
-        resolved_vuln = sorted(resolved_vuln, key=lambda x: x.vulnerability_id)
-        unresolved_vuln = sorted(unresolved_vuln, key=lambda x: x.vulnerability_id)
-
-        return resolved_vuln, unresolved_vuln
-
-    def _related_packages(self):
-        purl = self.get_object()
-        return list(
-            models.Package.objects.all()
-            .filter(
-                Q(
-                    type=purl.type,
-                    namespace=purl.namespace,
-                    name=purl.name,
-                    subpath=purl.subpath,
-                    qualifiers=purl.qualifiers,
-                )
-            )
-            .order_by("version")
-            .annotate(
-                vulnerability_count=Count(
-                    "vulnerabilities",
-                    filter=Q(packagerelatedvulnerability__fix=False),
-                ),
-                # TODO: consider renaming to fixed in the future
-                patched_vulnerability_count=Count(
-                    "vulnerabilities",
-                    filter=Q(packagerelatedvulnerability__fix=True),
-                ),
-            )
             .prefetch_related()
         )
-
-    def get_success_url(self):
-        return reverse("package_view", kwargs={"pk": self.kwargs["pk"]})
+        return qs
 
 
-class VulnerabilityDetails(ListView):
-    template_name = "vulnerability.html"
-    model = models.VulnerabilityReference
+class PackageDetails(DetailView):
+    model = models.Package
+    template_name = "package_details.html"
 
     def get_context_data(self, **kwargs):
-        context = super(VulnerabilityDetails, self).get_context_data(**kwargs)
-        context["debug_ui"] = settings.DEBUG_UI
-        vulnerability = models.Vulnerability.objects.get(id=self.kwargs["pk"])
-        context["vulnerability"] = vulnerability
-        context["aliases"] = vulnerability.aliases.alias()
-
-        vulnerability_list = vulnerability.references.all()
-        vulnerability_list_count = len(vulnerability_list)
-        context["vulnerability_list_count"] = vulnerability_list_count
-
-        context["vuln_form"] = CVEForm(self.request.GET or None)
-        context["template_name"] = self.template_name
-
-        severity_list = []
-        for ref in self.object_list.all():
-            for obj in ref.severities:
-                severity_list.append(obj)
-        context["severity_list"] = severity_list
-
+        context = super().get_context_data(**kwargs)
+        package = self.object
+        context["package"] = package
+        context["impacted_vuln"] = package.vulnerable_to.order_by("vulnerability_id")
+        context["resolved_vuln"] = package.resolved_to.order_by("vulnerability_id")
+        context["package_form"] = PackageForm(self.request.GET)
         return context
 
-    def get_queryset(self):
-        return models.VulnerabilityReference.objects.filter(
-            vulnerabilityrelatedreference__vulnerability__id=self.kwargs["pk"]
-        )
+
+class VulnerabilityDetails(DetailView):
+    model = models.Vulnerability
+    template_name = "vulnerability_details.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["vulnerability"] = self.object
+        context["vulnerability_form"] = VulnerabilityForm(self.request.GET)
+        context["severities"] = list(self.object.severities)
+        return context
 
 
 class HomePage(View):
     template_name = "index.html"
 
     def get(self, request):
+        request_query = request.GET
         context = {
-            "vuln_form": CVEForm(request.GET or None),
-            "package_form": PackageForm(request.GET or None),
-            "template_name": self.template_name,
-            "debug_ui": settings.DEBUG_UI,
+            "vulnerability_form": VulnerabilityForm(request_query),
+            "package_form": PackageForm(request_query),
         }
-        return render(request, self.template_name, context)
+        return render(request=request, template_name=self.template_name, context=context)
 
 
 def schema_view(request):
     if request.method != "GET":
         return HttpResponseNotAllowed()
-    return render(request, "api_doc.html")
+    return render(request=request, template_name="api_doc.html")

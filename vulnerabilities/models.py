@@ -10,7 +10,6 @@
 import hashlib
 import json
 import logging
-import uuid
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -58,6 +57,11 @@ class Vulnerability(models.Model):
         to="Package",
         through="PackageRelatedVulnerability",
     )
+
+    @property
+    def severities(self):
+        for reference in self.references.all():
+            yield from VulnerabilitySeverity.objects.filter(reference=reference.id)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -112,10 +116,6 @@ class VulnerabilityReference(models.Model):
         help_text="An optional reference ID, such as DSA-4465-1 when available",
         blank=True,
     )
-
-    @property
-    def severities(self):
-        return VulnerabilitySeverity.objects.filter(reference=self.id)
 
     class Meta:
         unique_together = (

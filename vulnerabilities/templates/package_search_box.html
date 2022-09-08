@@ -30,11 +30,11 @@
             <form
                 action="{% url 'package_search' %}"
                 method="get"
-                name="package_form"
+                name="package_search_form"
             >
                 <div class="field has-addons mt-3">
                     <div class="control width-100-pct">
-                        {{ package_form.search|add_class:"input" }}
+                        {{ package_search_form.search|add_class:"input" }}
                     </div>
                     <div class="control">
                         <button class="button is-link" type="submit" id="submit_pkg">

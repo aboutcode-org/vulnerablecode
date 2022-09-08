@@ -3,7 +3,7 @@
 {% load widget_tweaks %}
 
 {% block title %}
-VulnerableCode Package Details
+VulnerableCode Package Details - {{ package.purl }}
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,7 @@ VulnerableCode Package Details
 {% include "navbar.html" %}
 
 <section class="section pt-0">
-   {% include "package_search_box.html"%}
+    {% include "package_search_box.html"%}
 </section>
 
 {% if package %}
@@ -19,7 +19,7 @@ VulnerableCode Package Details
         <div class="details-container">
             <article class="panel is-info panel-header-only">
                 <div class="panel-heading py-2 is-size-6">
-                        Package details:
+                Package details:
                 </div>
             </article>
 
@@ -29,14 +29,14 @@ VulnerableCode Package Details
                         <tr>
                             <td class="two-col-left">
                                 <span
-                                    class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left" 
+                                    class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
                                     data-tooltip="The package url or purl is a URL string used to identify and locate a software package."
                                 >
                                 purl
                                 </span>
                             </td>
                             <td class="two-col-right">
-                                {{ package.package_url }}
+                                {{ package.purl }}
                             </td>
                         </tr>
                     </tbody>
@@ -45,12 +45,7 @@ VulnerableCode Package Details
 
             <div class="content ml-3 mr-3">
                 <div class="has-text-weight-bold ml-1 mb-0">
-                    Affected by vulnerabilities
-                    {% if impacted_vuln %}
-                        ({{ impacted_vuln|length }})
-                    {% else %}
-                        (0)
-                    {% endif %}
+                    Affected by vulnerabilities ({{ affected_by_vulnerabilities|length }})
                 </div>
 
                 <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
@@ -61,48 +56,43 @@ VulnerableCode Package Details
                             <th style="width: 225px;">Aliases</th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        {% if impacted_vuln %}
-                            {% for vuln in impacted_vuln %}
-                                <tr>
-                                    <td>
-                                        <a href="{{ vulnerability.get_absolute_url }}" target="_self">{{ vuln.vulnerability_id }}</a>
-                                    </td>
-                                    <td>
-                                        {{ vuln.summary }}
-                                    </td>
-                                    <td>
-                                        {% for alias in vuln.alias %}
-                                            {% if alias.url %}
-                                                <a href={{ alias.url }} target="_blank">{{ alias }}<i class="fa fa-external-link fa_link_custom"></i></a>
-                                                <br />
-                                            {% else %}
-                                                {{ alias }}
-                                                <br />
-                                            {% endif %}
-                                        {% endfor %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        {% else %}
+                        {% for vulnerability in affected_by_vulnerabilities %}
                             <tr>
-                                <td colspan="3">
-                                    This package is not affected by known vulnerabilities.
+                                <td>
+                                    <a href="{{ vulnerability.get_absolute_url }}" target="_self">{{ vulnerability.vulnerability_id }}</a>
+                                </td>
+                                <td>
+                                    {{ vulnerability.summary }}
+                                </td>
+                                <td>
+                                    {% for alias in vulnerability.alias %}
+                                        {% if alias.url %}
+                                            <a href={{ alias.url }} target="_blank">{{ alias }}<i class="fa fa-external-link fa_link_custom"></i></a>
+                                            <br />
+                                        {% else %}
+                                            {{ alias }}
+                                            <br />
+                                        {% endif %}
+                                    {% endfor %}
                                 </td>
                             </tr>
-                        {% endif %}
+                        {% empty %}
+                            <tr>
+                                <td colspan="3">
+                                    This package is not known to be affected by vulnerabilities.
+                                </td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
+
                 </table>
             </div>
 
             <div class="content ml-3 mr-3">
                 <div class="has-text-weight-bold ml-1 mb-0">
-                    Fixing vulnerabilities
-                    {% if resolved_vuln %}
-                        ({{ resolved_vuln|length }})
-                    {% else %}
-                        (0)
-                    {% endif %}
+                    Fixing vulnerabilities ({{ fixing_vulnerabilities|length }})
                 </div>
 
                 <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
@@ -113,38 +103,39 @@ VulnerableCode Package Details
                             <th style="width: 225px;">Aliases</th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        {% if resolved_vuln %}
-                            {% for vuln in resolved_vuln %}
-                                <tr>
-                                    <td>
-                                        <a href="{{ vuln.get_absolute_url }}" target="_self">{{ vuln.vulnerability_id }}</a>
-                                    </td>
-                                    <td>
-                                        {{ vuln.summary }}
-                                    </td>
-                                    <td>
-                                        {% for alias in vuln.alias %}
-                                            {% if alias.url %}
-                                                <a href={{ alias.url }} target="_blank">{{ alias }}<i class="fa fa-external-link fa_link_custom"></i></a>
-                                                <br />
-                                            {% else %}
-                                                {{ alias }}
-                                                <br />
-                                            {% endif %}
-                                        {% endfor %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        {% else %}
+                        {% for vulnerability in fixing_vulnerabilities %}
+                            <tr>
+                                <td>
+                                    <a href="{{ vulnerability.get_absolute_url }}" target="_self">{{ vulnerability.vulnerability_id }}</a>
+                                </td>
+                                <td>
+                                    {{ vulnerability.summary }}
+                                </td>
+                                <td>
+                                    {% for alias in vulnerability.alias %}
+                                        {% if alias.url %}
+                                            <a href={{ alias.url }} target="_blank">{{ alias }}<i class="fa fa-external-link fa_link_custom"></i></a>
+                                            <br />
+                                        {% else %}
+                                            {{ alias }}
+                                            <br />
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% empty %}
                             <tr>
                                 <td colspan="3">
                                     This package is not known to fix vulnerabilities.
                                 </td>
                             </tr>
-                        {% endif %}
+                        {% endfor %}
                     </tbody>
                 </table>
+
+            <br/>
             </div>
         </div>
     </section>

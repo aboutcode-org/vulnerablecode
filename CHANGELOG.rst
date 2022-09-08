@@ -11,14 +11,17 @@ Version v30.0.0
   are available.
   Because of these extensive changes, it is not possible to migrate existing imported
   data to the new schema. You will need instead to restart imports from an empty database
-  or request access to the new vulnerablecode.io live instance.
-  You can track the progress in this issue: https://github.com/nexB/vulnerablecode/issues/597 
+  or access the new public.vulnerablecode.io live instance. We also provide a database dump.
+
+- You can track the progress of this refactoring in this issue:
+  https://github.com/nexB/vulnerablecode/issues/597 
 
 - We added new data sources including PYSEC, GitHub and GitLab.
 
 - We improved the documentation including adding development examples for importers and improvers.
 
 - We removed the ability to edit relationships from the UI. The UI is now read-only.
+
 - We replace the web UI with a brand new UI based on the same overall look and feel as ScanCode.io.
 
 - We added support for NixOS as a Linux deployment target.
@@ -42,15 +45,17 @@ Version v30.0.0
     - Add new attribute `is_resolved`
     - Add namespace filter
 
-- We have provided backward compatibility for `url` and `unresolved_vulnerabilities` for now
+- We have provided backward compatibility for `url` and `unresolved_vulnerabilities` for now.
+  These will be removed in the next major version and should be considered as deprecated.
 
-- There is a new experimental cpe/ API endpoint to lookup for vulnerabilities by CPE and 
+- There is a new experimental `cpe/` API endpoint to lookup for vulnerabilities by CPE and 
   another aliases/ endpoint to lookup for vulnerabilities by aliases. These two endpoints will be
   replaced by query parameters on the main vulnerabilities/ endpoint when stabilized.
 
-- Added filters for vulnerabilities endpoint to get fixed packages in accordance to the details given in filters:
-  For example, when you call the endpoint this way ``/api/vulnerabilities?type=pypi&namespace=foo&name=bar``,
-  you will receive only fixed versioned purls of the type ``pypi``, namespace ``foo`` and name ``bar``.
+- Added filters for vulnerabilities endpoint to get fixed packages in accordance
+  to the details given in filters: For example, when you call the endpoint this way
+  ``/api/vulnerabilities?type=pypi&namespace=foo&name=bar``, you will receive only
+  fixed versioned purls of the type ``pypi``, namespace ``foo`` and name ``bar``.
 
 - Package endpoint will give fixed packages of only those that
   matches type, name, namespace, subpath and qualifiers of the package queried.
@@ -71,8 +76,8 @@ Version v30.0.0
 
 Other:
 
-- we dropped calver to use a plain semver.
-- we adopted vers and the new univers library to handle version ranges.
+- We dropped calver to use a plain semver.
+- We adopted vers and the new univers library to handle version ranges.
 
 
 Version v20.10

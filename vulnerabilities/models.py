@@ -17,6 +17,7 @@ from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.dispatch import receiver
+from django.urls import reverse
 from django.utils.http import int_to_base36
 from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin
@@ -33,8 +34,7 @@ logger = logging.getLogger(__name__)
 
 class Vulnerability(models.Model):
     """
-    A software vulnerability with minimal information. Unique identifiers are
-    stored as ``Alias``.
+    A software vulnerability with a unique identifier and alternate ``aliases``.
     """
 
     vulnerability_id = models.CharField(
@@ -53,10 +53,17 @@ class Vulnerability(models.Model):
     references = models.ManyToManyField(
         to="VulnerabilityReference", through="VulnerabilityRelatedReference"
     )
+
     packages = models.ManyToManyField(
         to="Package",
         through="PackageRelatedVulnerability",
     )
+
+    class Meta:
+        verbose_name_plural = "Vulnerabilities"
+
+    def __str__(self):
+        return self.vulnerability_id
 
     @property
     def severities(self):
@@ -92,11 +99,11 @@ class Vulnerability(models.Model):
         """
         return self.aliases.all()
 
-    def __str__(self):
-        return self.vulnerability_id
-
-    class Meta:
-        verbose_name_plural = "Vulnerabilities"
+    def get_absolute_url(self):
+        """
+        Return this Vulnerability details URL.
+        """
+        return reverse("vulnerability_view", args=[self.vulnerability_id])
 
 
 class VulnerabilityReference(models.Model):
@@ -179,6 +186,9 @@ class Package(PackageURLMixin):
             "subpath",
         )
 
+    def __str__(self):
+        return self.package_url
+
     @property
     # TODO: consider renaming to "affected_by"
     def vulnerable_to(self):
@@ -233,8 +243,11 @@ class Package(PackageURLMixin):
 
             setattr(self, field_name, value or None)
 
-    def __str__(self):
-        return self.package_url
+    def get_absolute_url(self):
+        """
+        Return this Package details URL.
+        """
+        return reverse("package_view", args=[self.package_url])
 
 
 class PackageRelatedVulnerability(models.Model):
@@ -244,6 +257,7 @@ class PackageRelatedVulnerability(models.Model):
         Package,
         on_delete=models.CASCADE,
     )
+
     vulnerability = models.ForeignKey(
         Vulnerability,
         on_delete=models.CASCADE,
@@ -266,13 +280,13 @@ class PackageRelatedVulnerability(models.Model):
         default=False, help_text="Does this relation fix the specified vulnerability ?"
     )
 
-    def __str__(self):
-        return f"{self.package.package_url} {self.vulnerability.vulnerability_id}"
-
     class Meta:
         unique_together = ("package", "vulnerability")
         verbose_name_plural = "PackageRelatedVulnerabilities"
         indexes = [models.Index(fields=["fix"])]
+
+    def __str__(self):
+        return f"{self.package.package_url} {self.vulnerability.vulnerability_id}"
 
     def update_or_create(self):
         """
@@ -361,6 +375,12 @@ class Alias(models.Model):
         related_name="aliases",
     )
 
+    class Meta:
+        ordering = ["alias"]
+
+    def __str__(self):
+        return self.alias
+
     @property
     def url(self):
         """
@@ -372,12 +392,6 @@ class Alias(models.Model):
 
         if alias.startswith("GHSA"):
             return f"https://github.com/advisories/{alias}"
-
-    class Meta:
-        ordering = ["alias"]
-
-    def __str__(self):
-        return self.alias
 
 
 class Advisory(models.Model):

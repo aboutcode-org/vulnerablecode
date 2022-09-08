@@ -12,13 +12,11 @@ import json
 import logging
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.dispatch import receiver
 from django.urls import reverse
-from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin
 from rest_framework.authtoken.models import Token
 
@@ -98,7 +96,7 @@ class Vulnerability(models.Model):
         """
         Return this Vulnerability details URL.
         """
-        return reverse("vulnerability_view", args=[self.vulnerability_id])
+        return reverse("vulnerability_details", args=[self.vulnerability_id])
 
 
 class VulnerabilityReference(models.Model):
@@ -155,10 +153,6 @@ class Package(PackageURLMixin):
     A software package with related vulnerabilities.
     """
 
-    vulnerabilities = models.ManyToManyField(
-        to="Vulnerability", through="PackageRelatedVulnerability"
-    )
-
     # Remove the `qualifers` and `set_package_url` overrides after
     # https://github.com/package-url/packageurl-python/pull/35
     # https://github.com/package-url/packageurl-python/pull/67
@@ -170,6 +164,14 @@ class Package(PackageURLMixin):
         blank=True,
         null=False,
     )
+
+    vulnerabilities = models.ManyToManyField(
+        to="Vulnerability", through="PackageRelatedVulnerability"
+    )
+
+    @property
+    def purl(self):
+        return self.package_url
 
     class Meta:
         unique_together = (
@@ -221,28 +223,11 @@ class Package(PackageURLMixin):
         """
         return self.vulnerable_to.exists()
 
-    def set_package_url(self, package_url):
-        """
-        Set each field values to the values of the provided `package_url` string
-        or PackageURL object. Existing values are overwritten including setting
-        values to None for provided empty values.
-        """
-        if not isinstance(package_url, PackageURL):
-            package_url = PackageURL.from_string(package_url)
-
-        for field_name, value in package_url.to_dict().items():
-            model_field = self._meta.get_field(field_name)
-
-            if value and len(value) > model_field.max_length:
-                raise ValidationError(f'Value too long for field "{field_name}".')
-
-            setattr(self, field_name, value or None)
-
     def get_absolute_url(self):
         """
         Return this Package details URL.
         """
-        return reverse("package_view", args=[self.package_url])
+        return reverse("package_details", args=[self.purl])
 
 
 class PackageRelatedVulnerability(models.Model):

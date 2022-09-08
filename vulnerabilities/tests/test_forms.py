@@ -9,19 +9,27 @@
 
 from django.test import TestCase
 
-from vulnerabilities.forms import VulnerabilityForm
+from vulnerabilities.forms import VulnerabilitySearchForm
 from vulnerabilities.models import Vulnerability
 
 
-class TestVulnerabilityForm(TestCase):
+class TestVulnerabilitySearchForm(TestCase):
     def setUp(self) -> None:
-        vuln1 = Vulnerability.objects.create(summary="test-vuln1", vulnerability_id="VCID-1234")
-        self.id = vuln1.id
+        self.vulnerability = Vulnerability.objects.create(
+            vulnerability_id="VCID-1234",
+            summary="test-vuln1",
+        )
 
-    def test_VulnerabilityForm__is_valid_with_simple_input(self):
-        form = VulnerabilityForm(data={"vulnerability_id": "vcid-1234"})
+    def test_VulnerabilitySearchForm__is_valid_with_simple_input(self):
+        form = VulnerabilitySearchForm(data={"search": "vcid-1234"})
         assert form.is_valid()
 
-    def test_vulnerabilities_client(self):
-        response = self.client.get(f"/vulnerabilities/{self.id}?vuln_id=vcid-1234")
+    def test_vulnerabilities_search_view_can_lookup_by_vcid(self):
+        vcid = self.vulnerability.vulnerability_id
+        response = self.client.get(f"/vulnerabilities/{vcid}?search=vcid-1234")
         self.assertContains(response, "test-vuln1", status_code=200)
+
+    def test_vulnerabilities_search_view_does_not_work_by_pk(self):
+        pk = self.vulnerability.pk
+        response = self.client.get(f"/vulnerabilities/{pk}")
+        self.assertEqual(response.status_code, 404)

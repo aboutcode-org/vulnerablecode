@@ -9,19 +9,8 @@
 
 from django import forms
 
-from vulnerabilities.models import Package
 
-
-def get_known_package_types():
-    """
-    Return a list of known package types.
-    """
-    pkg_types = [(i.type, i.type) for i in Package.objects.distinct("type").all()]
-    pkg_types.append((None, "Any type"))
-    return pkg_types
-
-
-class PackageForm(forms.Form):
+class PackageSearchForm(forms.Form):
 
     search = forms.CharField(
         required=True,
@@ -31,7 +20,7 @@ class PackageForm(forms.Form):
     )
 
 
-class VulnerabilityForm(forms.Form):
+class VulnerabilitySearchForm(forms.Form):
 
     search = forms.CharField(
         required=True,

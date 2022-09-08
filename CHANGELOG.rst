@@ -74,6 +74,10 @@ Version v30.0.0
   their API Key in the REST API.
   Users can be created using the Django "createsuperuser" management command.
 
+- The data license is now CC-BY-SA-4.0 as this is the highest common
+  denominator license among all the data sources we collect and aggregate. 
+
+
 Other:
 
 - We dropped calver to use a plain semver.

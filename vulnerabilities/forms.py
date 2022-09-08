@@ -23,15 +23,18 @@ def get_known_package_types():
 
 class PackageForm(forms.Form):
 
-    package_name = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"placeholder": "Package name or purl"})
+    search = forms.CharField(
+        required=True,
+        widget=forms.TextInput(
+            attrs={"placeholder": "Package name, purl or purl fragment"},
+        ),
     )
 
 
 class VulnerabilityForm(forms.Form):
 
-    vulnerability_id = forms.CharField(
-        required=False,
+    search = forms.CharField(
+        required=True,
         widget=forms.TextInput(
             attrs={"placeholder": "Vulnerability id or alias such as CVE or GHSA"}
         ),

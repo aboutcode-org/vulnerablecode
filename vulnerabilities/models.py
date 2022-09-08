@@ -174,7 +174,7 @@ class Package(PackageURLMixin):
 
     class Meta:
         unique_together = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
-        ordering = ["purl"]
+        ordering = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
 
     def __str__(self):
         return self.package_url

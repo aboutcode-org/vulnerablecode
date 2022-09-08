@@ -1,3 +1,12 @@
+#
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
+#
+
 import logging
 from datetime import datetime
 from datetime import timezone
@@ -63,18 +72,21 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
 
         for ref in inference.references:
             reference, _ = models.VulnerabilityReference.objects.get_or_create(
-                vulnerability=vuln, reference_id=ref.reference_id, url=ref.url
+                reference_id=ref.reference_id, url=ref.url
+            )
+
+            models.VulnerabilityRelatedReference.objects.update_or_create(
+                reference=reference, vulnerability=vuln
             )
 
             for severity in ref.severities:
-                obj, updated = models.VulnerabilitySeverity.objects.update_or_create(
-                    vulnerability=vuln,
+                _vs, updated = models.VulnerabilitySeverity.objects.update_or_create(
                     scoring_system=severity.system.identifier,
                     reference=reference,
                     defaults={"value": str(severity.value)},
                 )
                 if updated:
-                    logger.info("Severity updated for reference {ref!r} to {severity.value!r}")
+                    logger.info(f"Severity updated for reference {ref!r} to {severity.value!r}")
 
         if inference.affected_purls:
             for pkg in inference.affected_purls:

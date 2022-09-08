@@ -1,0 +1,193 @@
+[
+  {
+    "aliases": [
+      "CVE-2014-8242"
+    ],
+    "summary": "librsync before 1.0.0 uses a truncated MD4 checksum to match blocks",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "776246",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=776246",
+        "severities": []
+      }
+    ],
+    "date_published": null
+  },
+  {
+    "aliases": [
+      "CVE-2009-1382"
+    ],
+    "summary": "Multiple stack-based buffer overflows in mimetex.cgi in mimeTeX",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "deb",
+          "namespace": "debian",
+          "name": "mimetex",
+          "version": null,
+          "qualifiers": {
+            "distro": "buster"
+          },
+          "subpath": null
+        },
+        "affected_version_range": null,
+        "fixed_version": "1.74-1"
+      },
+      {
+        "package": {
+          "type": "deb",
+          "namespace": "debian",
+          "name": "mimetex",
+          "version": null,
+          "qualifiers": {
+            "distro": "buster"
+          },
+          "subpath": null
+        },
+        "affected_version_range": null,
+        "fixed_version": "1.50-1.1"
+      },
+      {
+        "package": {
+          "type": "deb",
+          "namespace": "debian",
+          "name": "mimetex",
+          "version": null,
+          "qualifiers": {
+            "distro": "buster"
+          },
+          "subpath": null
+        },
+        "affected_version_range": null,
+        "fixed_version": "1.76-1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "537254",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
+        "severities": []
+      }
+    ],
+    "date_published": null
+  },
+  {
+    "aliases": [
+      "CVE-2009-2459"
+    ],
+    "summary": "Multiple unspecified vulnerabilities in mimeTeX",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "deb",
+          "namespace": "debian",
+          "name": "mimetex",
+          "version": null,
+          "qualifiers": {
+            "distro": "buster"
+          },
+          "subpath": null
+        },
+        "affected_version_range": null,
+        "fixed_version": "1.74-1"
+      },
+      {
+        "package": {
+          "type": "deb",
+          "namespace": "debian",
+          "name": "mimetex",
+          "version": null,
+          "qualifiers": {
+            "distro": "buster"
+          },
+          "subpath": null
+        },
+        "affected_version_range": null,
+        "fixed_version": "1.50-1.1"
+      },
+      {
+        "package": {
+          "type": "deb",
+          "namespace": "debian",
+          "name": "mimetex",
+          "version": null,
+          "qualifiers": {
+            "distro": "buster"
+          },
+          "subpath": null
+        },
+        "affected_version_range": null,
+        "fixed_version": "1.76-1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "537254",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
+        "severities": []
+      }
+    ],
+    "date_published": null
+  },
+  {
+    "aliases": [
+      "CVE-2021-37231"
+    ],
+    "summary": "A stack-buffer-overflow occurs in Atomicparsley 20210124.204813.840499f through APar_readX() in src/util.cpp while parsing a crafted mp4 file because of the missing boundary check.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "deb",
+          "namespace": "debian",
+          "name": "atomicparsley",
+          "version": null,
+          "qualifiers": {
+            "distro": "stretch"
+          },
+          "subpath": null
+        },
+        "affected_version_range": "vers:deb/0.9.6-1|0.9.6-2",
+        "fixed_version": "20210715.151551.e7ad03a-1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "993372",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=993372",
+        "severities": []
+      }
+    ],
+    "date_published": null
+  },
+  {
+    "aliases": [
+      "CVE-2021-37232"
+    ],
+    "summary": "A stack overflow vulnerability occurs in Atomicparsley 20210124.204813.840499f through APar_read64() in src/util.cpp due to the lack of buffer size of uint32_buffer while reading more bytes in APar_read64.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "deb",
+          "namespace": "debian",
+          "name": "atomicparsley",
+          "version": null,
+          "qualifiers": {
+            "distro": "stretch"
+          },
+          "subpath": null
+        },
+        "affected_version_range": "vers:deb/0.9.6-1|0.9.6-2",
+        "fixed_version": "20210715.151551.e7ad03a-1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "993366",
+        "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=993366",
+        "severities": []
+      }
+    ],
+    "date_published": null
+  }
+]

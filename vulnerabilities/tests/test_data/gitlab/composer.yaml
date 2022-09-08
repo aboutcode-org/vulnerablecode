@@ -1,0 +1,22 @@
+---
+identifier: "GMS-2018-26"
+package_slug: "packagist/amphp/http"
+title: "Incorrect header injection check"
+description: "amphp/http isn't properly protected against HTTP header injection."
+date: "2018-03-15"
+pubdate: "2018-03-15"
+affected_range: "<1.0.1"
+fixed_versions:
+- "v1.0.1"
+affected_versions: "All versions before 1.0.1"
+not_impacted: "All versions starting from 1.0.1"
+solution: "Upgrade to version v1.0.1 or above."
+urls:
+- "https://github.com/amphp/http/pull/4"
+credit: "Niklas Keller"
+uuid: "fc673181-bda9-4299-9c2e-61f9313f11f9"
+cwe_ids:
+- "CWE-1035"
+- "CWE-937"
+identifiers:
+- "GMS-2018-26"

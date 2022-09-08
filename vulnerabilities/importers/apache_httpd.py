@@ -1,42 +1,28 @@
+#
 # Copyright (c) nexB Inc. and others. All rights reserved.
-# http://nexb.com and https://github.com/nexB/vulnerablecode/
-# The VulnerableCode software is licensed under the Apache License version 2.0.
-# Data generated with VulnerableCode require an acknowledgment.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
 #
-# You may not use this software except in compliance with the License.
-# You may obtain a copy of the License at: http://apache.org/licenses/LICENSE-2.0
-# Unless required by applicable law or agreed to in writing, software distributed
-# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-# CONDITIONS OF ANY KIND, either express or implied. See the License for the
-# specific language governing permissions and limitations under the License.
-#
-# When you publish or redistribute any data created with VulnerableCode or any VulnerableCode
-# derivative work, you must accompany this data with the following acknowledgment:
-#
-#  Generated with VulnerableCode and provided on an "AS IS" BASIS, WITHOUT WARRANTIES
-#  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
-#  VulnerableCode should be considered or used as legal advice. Consult an Attorney
-#  for any legal advice.
-#  VulnerableCode is a free software tool from nexB Inc. and others.
-#  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
-import dataclasses
 import urllib
 
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
-from univers.version_specifier import VersionSpecifier
+from univers.version_range import VersionRange
 from univers.versions import SemverVersion
 
-from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.package_managers import GitHubTagsAPI
-from vulnerabilities.severity_systems import scoring_systems
+from vulnerabilities.severity_systems import APACHE_HTTPD
+from vulnerabilities.utils import nearest_patched_package
 
 
 class ApacheHTTPDImporter(Importer):
@@ -78,7 +64,7 @@ class ApacheHTTPDImporter(Importer):
             if value:
                 severities.append(
                     VulnerabilitySeverity(
-                        system=scoring_systems["apache_httpd"],
+                        system=APACHE_HTTPD,
                         value=value,
                     )
                 )
@@ -118,7 +104,7 @@ class ApacheHTTPDImporter(Importer):
                 ]
             )
 
-        return Advisory(
+        return AdvisoryData(
             vulnerability_id=cve,
             summary=description,
             affected_packages=nearest_patched_package(affected_packages, fixed_packages),
@@ -133,13 +119,13 @@ class ApacheHTTPDImporter(Importer):
             range_expression = version_data["version_affected"]
             if range_expression == "<":
                 fixed_version_ranges.append(
-                    VersionSpecifier.from_scheme_version_spec_string(
+                    VersionRange.from_scheme_version_spec_string(
                         "semver", ">={}".format(version_value)
                     )
                 )
             elif range_expression == "=" or range_expression == "?=":
                 affected_version_ranges.append(
-                    VersionSpecifier.from_scheme_version_spec_string(
+                    VersionRange.from_scheme_version_spec_string(
                         "semver", "{}".format(version_value)
                     )
                 )

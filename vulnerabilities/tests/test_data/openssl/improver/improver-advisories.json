@@ -1,0 +1,263 @@
+[
+  {
+    "aliases": [
+      "CVE-2022-0778",
+      "VC-OPENSSL-20220315-CVE-2022-0778"
+    ],
+    "summary": "The BN_mod_sqrt() function, which computes a modular square root, contains a bug that can cause it to loop forever for non-prime moduli. Internally this function is used when parsing certificates that contain elliptic curve public keys in compressed form or explicit elliptic curve parameters with a base point encoded in compressed form. It is possible to trigger the infinite loop by crafting a certificate that has invalid explicit curve parameters. Since certificate parsing happens prior to verification of the certificate signature, any process that parses an externally supplied certificate may thus be subject to a denial of service attack. The infinite loop can also be reached when parsing crafted private keys as they can contain explicit elliptic curve parameters. Thus vulnerable situations include: - TLS clients consuming server certificates - TLS servers consuming client certificates - Hosting providers taking certificates or private keys from customers - Certificate authorities parsing certification requests from subscribers - Anything else which parses ASN.1 elliptic curve parameters Also any other applications that use the BN_mod_sqrt() where the attacker can control the parameter values are vulnerable to this DoS issue. In the OpenSSL 1.0.2 version the public key is not parsed during initial parsing of the certificate which makes it slightly harder to trigger the infinite loop. However any operation which requires the public key from the certificate will trigger the infinite loop. In particular the attacker can use a self-signed certificate to trigger the loop during verification of the certificate signature. This issue affects OpenSSL versions 1.0.2, 1.1.1 and 3.0. It was addressed in the releases of 1.1.1n and 3.0.2 on the 15th March 2022.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": null,
+          "name": "openssl",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:openssl/3.0.0|3.0.1",
+        "fixed_version": "3.0.2"
+      },
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": null,
+          "name": "openssl",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c|1.1.1d|1.1.1e|1.1.1f|1.1.1g|1.1.1h|1.1.1i|1.1.1j|1.1.1k|1.1.1l|1.1.1m",
+        "fixed_version": "1.1.1n"
+      },
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": null,
+          "name": "openssl",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:openssl/1.0.2|1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2w|1.0.2x|1.0.2y|1.0.2za|1.0.2zb|1.0.2zc",
+        "fixed_version": "1.0.2zd"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-0778",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0778",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/a466912611aa6cbdf550cd10601390e587451246",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/3118eb64934499d93db3230748a452351d1d9a65",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/380085481c64de749a6dd25cdf0bcf4360b30f83",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.openssl.org/news/secadv/20220315.txt",
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "High"
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-03-15T00:00:00+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2021-4160",
+      "VC-OPENSSL-20220128-CVE-2021-4160"
+    ],
+    "summary": "There is a carry propagation bug in the MIPS32 and MIPS64 squaring procedure. Many EC algorithms are affected, including some of the TLS 1.3 default curves. Impact was not analyzed in detail, because the pre-requisites for attack are considered unlikely and include reusing private keys. Analysis suggests that attacks against RSA and DSA as a result of this defect would be very difficult to perform and are not believed likely. Attacks against DH are considered just feasible (although very difficult) because most of the work necessary to deduce information about a private key may be performed offline. The amount of resources required for such an attack would be significant. However, for an attack on TLS to be meaningful, the server would have to share the DH private key among multiple clients, which is no longer an option since CVE-2016-0701. This issue affects OpenSSL versions 1.0.2, 1.1.1 and 3.0.0. It was addressed in the releases of 1.1.1m and 3.0.1 on the 15th of December 2021. For the 1.0.2 release it is addressed in git commit 6fc1aaaf3 that is available to premium support customers only. It will be made available in 1.0.2zc when it is released. The issue only affects OpenSSL on MIPS platforms.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": null,
+          "name": "openssl",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:openssl/3.0.0",
+        "fixed_version": "3.0.1"
+      },
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": null,
+          "name": "openssl",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c|1.1.1d|1.1.1e|1.1.1f|1.1.1g|1.1.1h|1.1.1i|1.1.1j|1.1.1k|1.1.1l",
+        "fixed_version": "1.1.1m"
+      },
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": null,
+          "name": "openssl",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:openssl/1.0.2|1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2w|1.0.2x|1.0.2y|1.0.2za|1.0.2zb",
+        "fixed_version": "1.0.2zc-de"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2021-4160",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-4160",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/3bf7b73ea7123045b8f972badc67ed6878e6c37f",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/e9e726506cd2a3fd9c0f12daf8cc1fe934c7dddb",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/6fc1aaaf303185aa5e483e06bdfae16daa9193a7",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.openssl.org/news/secadv/20220128.txt",
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "Moderate"
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-01-28T00:00:00+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2021-4044",
+      "VC-OPENSSL-20211214-CVE-2021-4044"
+    ],
+    "summary": "Internally libssl in OpenSSL calls X509_verify_cert() on the client side to verify a certificate supplied by a server. That function may return a negative return value to indicate an internal error (for example out of memory). Such a negative return value is mishandled by OpenSSL and will cause an IO function (such as SSL_connect() or SSL_do_handshake()) to not indicate success and a subsequent call to SSL_get_error() to return the value SSL_ERROR_WANT_RETRY_VERIFY. This return value is only supposed to be returned by OpenSSL if the application has previously called SSL_CTX_set_cert_verify_callback(). Since most applications do not do this the SSL_ERROR_WANT_RETRY_VERIFY return value from SSL_get_error() will be totally unexpected and applications may not behave correctly as a result. The exact behaviour will depend on the application but it could result in crashes, infinite loops or other similar incorrect responses. This issue is made more serious in combination with a separate bug in OpenSSL 3.0 that will cause X509_verify_cert() to indicate an internal error when processing a certificate chain. This will occur where a certificate does not include the Subject Alternative Name extension but where a Certificate Authority has enforced name constraints. This issue can occur even with valid chains. By combining the two issues an attacker could induce incorrect, application dependent behaviour.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": null,
+          "name": "openssl",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:openssl/3.0.0",
+        "fixed_version": "3.0.1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2021-4044",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-4044",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/758754966791c537ea95241438454aa86f91f256",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.openssl.org/news/secadv/20211214.txt",
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "Moderate"
+          }
+        ]
+      }
+    ],
+    "date_published": "2021-12-14T00:00:00+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2020-1971",
+      "VC-OPENSSL-20201208-CVE-2020-1971"
+    ],
+    "summary": "The X.509 GeneralName type is a generic type for representing different types of names. One of those name types is known as EDIPartyName. OpenSSL provides a function GENERAL_NAME_cmp which compares different instances of a GENERAL_NAME to see if they are equal or not. This function behaves incorrectly when both GENERAL_NAMEs contain an EDIPARTYNAME. A NULL pointer dereference and a crash may occur leading to a possible denial of service attack. OpenSSL itself uses the GENERAL_NAME_cmp function for two purposes: 1) Comparing CRL distribution point names between an available CRL and a CRL distribution point embedded in an X509 certificate 2) When verifying that a timestamp response token signer matches the timestamp authority name (exposed via the API functions TS_RESP_verify_response and TS_RESP_verify_token) If an attacker can control both items being compared then that attacker could trigger a crash. For example if the attacker can trick a client or server into checking a malicious certificate against a malicious CRL then this may occur. Note that some applications automatically download CRLs based on a URL embedded in a certificate. This checking happens prior to the signatures on the certificate and CRL being verified. OpenSSL's s_server, s_client and verify tools have support for the \"-crl_download\" option which implements automatic CRL downloading and this attack has been demonstrated to work against those tools. Note that an unrelated bug means that affected versions of OpenSSL cannot parse or construct correct encodings of EDIPARTYNAME. However it is possible to construct a malformed EDIPARTYNAME that OpenSSL's parser will accept and hence trigger this attack. All OpenSSL 1.1.1 and 1.0.2 versions are affected by this issue. Other OpenSSL releases are out of support and have not been checked.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": null,
+          "name": "openssl",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c|1.1.1d|1.1.1e|1.1.1f|1.1.1g|1.1.1h",
+        "fixed_version": "1.1.1i"
+      },
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": null,
+          "name": "openssl",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:openssl/1.0.2|1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2w",
+        "fixed_version": "1.0.2x"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2020-1971",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-1971",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/f960d81215ebf3f65e03d4d5d857fb9b666d6920",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/openssl/openssl/commit/2154ab83e14ede338d2ede9bbe5cdfce5d5a6c9e",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.openssl.org/news/secadv/20201208.txt",
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "High"
+          }
+        ]
+      }
+    ],
+    "date_published": "2020-12-08T00:00:00+00:00"
+  }
+]

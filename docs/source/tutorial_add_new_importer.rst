@@ -3,9 +3,8 @@
 Add a new importer
 ====================
 
-This tutorial contains all the things one should know to quickly
-implement an importer.
-A lot of internal sausage about importers could be found inside the
+This tutorial contains all the things one should know to quickly implement an importer.
+Many internal details about importers can be found inside the
 :file:`vulnerabilites/importer.py` file.
 Make sure to go through :ref:`importer-overview` before you begin writing one.
 
@@ -15,7 +14,7 @@ TL;DR
 #. Create a new :file:`vulnerabilities/importers/{importer_name.py}` file.
 #. Create a new importer subclass inheriting from the ``Importer`` superclass defined in
    ``vulnerabilites.importer``. It is conventional to end an importer name with *Importer*.
-#. Specify the importer licence.
+#. Specify the importer license.
 #. Implement the ``advisory_data`` method to process the data source you're writing an importer for.
 #. Add the newly created importer to the importers registry at
    ``vulnerabilites/importers/__init__.py``
@@ -42,27 +41,27 @@ VulnerableCode extensively uses Package URLs to identify a package. See the
     purl = PackageURL(name="ffmpeg", type="deb", version="1.2.3")
 
 
-AdvioryData
+AdvisoryData
 ^^^^^^^^^^^^^
 
-``AdvisoryData`` is an intermediate data-format,
-it is expected, that your importer converts the raw scraped data into ``AdvisoryData`` objects.
-All the fields in ``AdvioryData`` dataclass are optional, it is the importer's resposibility to
-ensure that it must contain meaningful information about a vulnerability.
+``AdvisoryData`` is an intermediate data format:
+it is expected that your importer will convert the raw scraped data into ``AdvisoryData`` objects.
+All the fields in ``AdvisoryData`` dataclass are optional; it is the importer's resposibility to
+ensure that it contains meaningful information about a vulnerability.
 
 AffectedPackage
 ^^^^^^^^^^^^^^^^
 
 ``AffectedPackage`` data type is used to store a range of affected versions and a fixed version of a
-given package. For all version related data, `univers <https://github.com/nexB/univers>`_ library
+given package. For all version-related data, `univers <https://github.com/nexB/univers>`_ library
 is used.
 
 Univers
 ^^^^^^^^
 
-`univers <https://github.com/nexB/univers>`_ is a python implementation of the `vers specification <https://github.com/package-url/purl-spec/pull/139>`_.
-It can parse and compare all the package versions and all the ranges.
-From debian, npm, pypi, ruby and more.
+`univers <https://github.com/nexB/univers>`_ is a Python implementation of the `vers specification <https://github.com/package-url/purl-spec/pull/139>`_.
+It can parse and compare all the package versions and all the ranges,
+from debian, npm, pypi, ruby and more.
 It processes all the version range specs and expressions.
 
 Importer
@@ -90,24 +89,24 @@ implementing the unimplemented methods.
 Specify the Importer License
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Importers scrape data off the internet, in order to make sure the data is useable, a license must be
-provided.
-Populate the ``spdx_license_expression`` with appropriate value.
-The SPDX license identifies can be found at https://spdx.org/licenses/
+Importers scrape data off the internet.  In order to make sure the data is useable, a license
+must be provided.
+Populate the ``spdx_license_expression`` with the appropriate value.
+The SPDX license identifiers can be found at https://spdx.org/licenses/.
 
 .. note::
    An SPDX license identifier by itself is a valid licence expression. In case you need more complex
-   expressions, see: https://spdx.github.io/spdx-spec/SPDX-license-expressions/
+   expressions, see https://spdx.github.io/spdx-spec/SPDX-license-expressions/
 
 Implement the ``advisory_data`` Method
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``advisory_data`` method scrapes the advisories from the data source this importer is targeted
-at.
-It is required to return an *Iterable of AdvisoryData objects*, thus it is a good idea to yield from
-this method after creating each AdvisoryData object
+The ``advisory_data`` method scrapes the advisories from the data source this importer is
+targeted at.
+It is required to return an *Iterable of AdvisoryData objects*, and thus it is a good idea to yield
+from this method after creating each AdvisoryData object.
 
-At this point, an example importer will look like:
+At this point, an example importer will look like this:
 
 :file:`vulnerabilites/importers/example.py`
 
@@ -133,11 +132,11 @@ This importer is only a valid skeleton and does not import anything at all.
 Let us implement another dummy importer that actually imports some data.
 
 Here we have a ``dummy_package`` which follows ``NginxVersionRange`` and ``SemverVersion`` for
-version management from `univers <https://github.com/nexB/univers>`_
+version management from `univers <https://github.com/nexB/univers>`_.
 
 .. note::
 
-   It is possible that versioning scheme you are targetting has not yet been implemented in the `univers <https://github.com/nexB/univers>`_ library. If this is the case, you'll need to head over over there and implement one.
+   It is possible that the versioning scheme you are targetting has not yet been implemented in the `univers <https://github.com/nexB/univers>`_ library. If this is the case, you'll need to head over there and implement one.
 
 .. code-block:: python
 
@@ -241,7 +240,7 @@ Congratulations! You've written your first importer.
 Run Your First Importer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If everything went fine, you'll see your importer in the list of available importers
+If everything went well, you'll see your importer in the list of available importers.
 
 .. code-block:: console
    :emphasize-lines: 5
@@ -252,7 +251,7 @@ If everything went fine, you'll see your importer in the list of available impor
     vulnerabilities.importers.nginx.NginxImporter
     vulnerabilities.importers.example.ExampleImporter
 
-Now, run the importer
+Now, run the importer.
 
 .. code-block:: console
 
@@ -285,7 +284,7 @@ For more visibility, turn on debug logs in :file:`vulnerablecode/settings.py`.
         },
     }
 
-Invoke the import command now and you'll see (in a fresh database)
+Invoke the import command now and you'll see (in a fresh database):
 
 .. code-block:: console
 

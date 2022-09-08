@@ -1,175 +1,193 @@
+#
 # Copyright (c) nexB Inc. and others. All rights reserved.
-# http://nexb.com and https://github.com/nexB/vulnerablecode/
-# The VulnerableCode software is licensed under the Apache License version 2.0.
-# Data generated with VulnerableCode require an acknowledgment.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
 #
-# You may not use this software except in compliance with the License.
-# You may obtain a copy of the License at: http://apache.org/licenses/LICENSE-2.0
-# Unless required by applicable law or agreed to in writing, software distributed
-# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-# CONDITIONS OF ANY KIND, either express or implied. See the License for the
-# specific language governing permissions and limitations under the License.
-#
-# When you publish or redistribute any data created with VulnerableCode or any VulnerableCode
-# derivative work, you must accompany this data with the following acknowledgment:
-#
-#  Generated with VulnerableCode and provided on an "AS IS" BASIS, WITHOUT WARRANTIES
-#  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
-#  VulnerableCode should be considered or used as legal advice. Consult an Attorney
-#  for any legal advice.
-#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
-#  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-from urllib.parse import urlencode
 
-from django.core.paginator import PageNotAnInteger
-from django.core.paginator import Paginator
 from django.db.models import Count
 from django.db.models import Q
 from django.http.response import HttpResponseNotAllowed
 from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
-from django.views.generic.edit import UpdateView
+from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from packageurl import PackageURL
 
-from vulnerabilities import forms
 from vulnerabilities import models
+from vulnerabilities.forms import PackageForm
+from vulnerabilities.forms import VulnerabilityForm
+
+PAGE_SIZE = 50
 
 
-class PackageSearchView(View):
+class PackageSearchView(ListView):
+    model = models.Package
     template_name = "packages.html"
+    ordering = ["type", "namespace", "name", "version"]
+    paginate_by = PAGE_SIZE
 
-    def get(self, request):
-        context = {"form": forms.PackageForm(request.GET or None)}
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request_query = self.request.GET
+        context["package_form"] = PackageForm(request_query)
+        context["package_name"] = request_query.get("package_name")
+        return context
 
-        if request.GET:
-            packages = self.request_to_queryset(request)
-            result_size = len(packages)
+    def get_queryset(self, query=None):
+        """
+        Return a Package queryset for the ``query``.
+        Make a best effort approach to find matching packages either based
+        on exact purl, partial purl or just name and namespace.
+        """
+        qs = self.model.objects
+
+        query = query or self.request.GET.get("package_name") or ""
+        query = query.strip()
+        if not query:
+            return qs.none()
+
+        if not query.startswith("pkg:"):
+            # treat this as a plain search
+            qs = qs.filter(Q(name__icontains=query) | Q(namespace__icontains=query))
+        else:
+            # this looks like a purl: check if it quacks like a purl
+            purl_type = namespace = name = version = qualifiers = subpath = None
+
+            _, _scheme, remainder = query.partition("pkg:")
+            remainder = remainder.strip()
+            if not remainder:
+                return qs.none()
+
             try:
-                page_no = request.GET.get("page", 1)
-                packages = Paginator(packages, 50).get_page(page_no)
-            except PageNotAnInteger:
-                packages = Paginator(packages, 50).get_page(1)
-            packages = Paginator(packages, 50).get_page(page_no)
-            context["packages"] = packages
-            context["searched_for"] = urlencode(
-                {param: request.GET[param] for param in request.GET if param != "page"}
+                # First, treat the query as a syntactically-correct purl
+                purl = PackageURL.from_string(query)
+                purl_type, namespace, name, version, qualifiers, subpath = purl.to_dict().values()
+            except ValueError:
+                # Otherwise, attempt a more lenient parsing of a possibly partial purl
+                if "/" in remainder:
+                    purl_type, _scheme, ns_name = remainder.partition("/")
+                    ns_name = ns_name.strip()
+                    if ns_name:
+                        if "/" in ns_name:
+                            namespace, _, name = ns_name.partition("/")
+                        else:
+                            name = ns_name
+                        name = name.strip()
+                        if name:
+                            if "@" in name:
+                                name, _, version = name.partition("@")
+                                version = version.strip()
+                                name = name.strip()
+                else:
+                    purl_type = remainder
+
+            if purl_type:
+                qs = qs.filter(type__iexact=purl_type)
+            if namespace:
+                qs = qs.filter(namespace__iexact=namespace)
+            if name:
+                qs = qs.filter(name__iexact=name)
+            if version:
+                qs = qs.filter(version__iexact=version)
+            if qualifiers:
+                qs = qs.filter(qualifiers=qualifiers)
+            if subpath:
+                qs = qs.filter(subpath__iexact=subpath)
+
+        return qs.annotate(
+            vulnerability_count=Count(
+                "vulnerabilities",
+                filter=Q(packagerelatedvulnerability__fix=False),
+            ),
+            patched_vulnerability_count=Count(
+                "vulnerabilities",
+                filter=Q(packagerelatedvulnerability__fix=True),
+            ),
+        ).prefetch_related()
+
+
+class VulnerabilitySearchView(ListView):
+    model = models.Vulnerability
+    template_name = "vulnerabilities.html"
+    ordering = ["vulnerability_id"]
+    paginate_by = PAGE_SIZE
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request_query = self.request.GET
+        context["vulnerability_form"] = VulnerabilityForm(request_query)
+        context["vulnerability_id"] = request_query.get("vulnerability_id")
+        return context
+
+    def get_queryset(self, query=None):
+        query = query or self.request.GET.get("vulnerability_id") or ""
+        qs = self.model.objects
+        if not query:
+            return qs.none()
+        qs = (
+            qs.filter(
+                Q(vulnerability_id__icontains=query)
+                | Q(aliases__alias__icontains=query)
+                | Q(references__id__icontains=query)
+                | Q(summary__icontains=query)
             )
-            context["result_size"] = result_size
-
-        return render(request, self.template_name, context)
-
-    @staticmethod
-    def request_to_queryset(request):
-        package_type = ""
-        package_name = ""
-
-        if len(request.GET["type"]):
-            package_type = request.GET["type"]
-
-        if len(request.GET["name"]):
-            package_name = request.GET["name"]
-
-        return list(
-            models.Package.objects.all()
-            # FIXME: This filter is wrong and ignoring most of the fields needed for a
-            # proper package lookup: type/namespace/name@version?qualifiers and so on
-            .filter(name__icontains=package_name, type__icontains=package_type)
+            .order_by("vulnerability_id")
             .annotate(
-                vulnerability_count=Count(
-                    "vulnerabilities",
-                    filter=Q(vulnerabilities__packagerelatedvulnerability__fix=False),
+                vulnerable_package_count=Count(
+                    "packages", filter=Q(packagerelatedvulnerability__fix=False), distinct=True
                 ),
-                # TODO: consider renaming to fixed in the future
-                patched_vulnerability_count=Count(
-                    "vulnerabilities",
-                    filter=Q(vulnerabilities__packagerelatedvulnerability__fix=True),
+                patched_package_count=Count(
+                    "packages", filter=Q(packagerelatedvulnerability__fix=True), distinct=True
                 ),
             )
             .prefetch_related()
         )
+        return qs
 
 
-class VulnerabilitySearchView(View):
-
-    template_name = "vulnerabilities.html"
-
-    def get(self, request):
-        context = {"form": forms.CVEForm(request.GET or None)}
-        if request.GET:
-            vulnerabilities = self.request_to_vulnerabilities(request)
-            result_size = len(vulnerabilities)
-            pages = Paginator(vulnerabilities, 50)
-            vulnerabilities = pages.get_page(int(self.request.GET.get("page", 1)))
-            context["vulnerabilities"] = vulnerabilities
-            context["result_size"] = result_size
-
-        return render(request, self.template_name, context)
-
-    @staticmethod
-    def request_to_vulnerabilities(request):
-        vuln_id = request.GET["vuln_id"]
-        return list(
-            models.Vulnerability.objects.filter(vulnerability_id__icontains=vuln_id).annotate(
-                vulnerable_package_count=Count(
-                    "packages", filter=Q(packagerelatedvulnerability__fix=False)
-                ),
-                patched_package_count=Count(
-                    "packages", filter=Q(packagerelatedvulnerability__fix=True)
-                ),
-            )
-        )
-
-
-class PackageUpdate(UpdateView):
-
-    template_name = "package_update.html"
+class PackageDetails(DetailView):
     model = models.Package
-    fields = ["name", "type", "version", "namespace"]
+    template_name = "package_details.html"
 
     def get_context_data(self, **kwargs):
-        context = super(PackageUpdate, self).get_context_data(**kwargs)
-        resolved_vuln, unresolved_vuln = self._package_vulnerabilities(self.kwargs["pk"])
-        context["resolved_vuln"] = resolved_vuln
-        context["impacted_vuln"] = unresolved_vuln
-
+        context = super().get_context_data(**kwargs)
+        package = self.object
+        context["package"] = package
+        context["impacted_vuln"] = package.vulnerable_to.order_by("vulnerability_id")
+        context["resolved_vuln"] = package.resolved_to.order_by("vulnerability_id")
+        context["package_form"] = PackageForm(self.request.GET)
         return context
 
-    def _package_vulnerabilities(self, package_pk):
-        # This can be further optimised by caching get_object result first time it
-        # is called
-        package = self.get_object()
-        resolved_vuln = [i for i in package.resolved_to.values("vulnerability_id", "pk")]
-        unresolved_vuln = [i for i in package.vulnerable_to.values("vulnerability_id", "pk")]
 
-        return resolved_vuln, unresolved_vuln
-
-    def get_success_url(self):
-        return reverse("package_view", kwargs={"pk": self.kwargs["pk"]})
-
-
-class VulnerabilityDetails(ListView):
-    template_name = "vulnerability.html"
-    model = models.VulnerabilityReference
+class VulnerabilityDetails(DetailView):
+    model = models.Vulnerability
+    template_name = "vulnerability_details.html"
 
     def get_context_data(self, **kwargs):
-        context = super(VulnerabilityDetails, self).get_context_data(**kwargs)
-        context["vulnerability"] = models.Vulnerability.objects.get(id=self.kwargs["pk"])
+        context = super().get_context_data(**kwargs)
+        context["vulnerability"] = self.object
+        context["vulnerability_form"] = VulnerabilityForm(self.request.GET)
+        context["severities"] = list(self.object.severities)
         return context
-
-    def get_queryset(self):
-        return models.VulnerabilityReference.objects.filter(vulnerability_id=self.kwargs["pk"])
 
 
 class HomePage(View):
-
     template_name = "index.html"
 
     def get(self, request):
-        return render(request, self.template_name)
+        request_query = request.GET
+        context = {
+            "vulnerability_form": VulnerabilityForm(request_query),
+            "package_form": PackageForm(request_query),
+        }
+        return render(request=request, template_name=self.template_name, context=context)
 
 
 def schema_view(request):
     if request.method != "GET":
         return HttpResponseNotAllowed()
-    return render(request, "api_doc.html")
+    return render(request=request, template_name="api_doc.html")

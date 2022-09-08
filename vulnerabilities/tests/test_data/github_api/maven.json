@@ -139,6 +139,9 @@
             "package": {
               "name": "org.apache.tomcat.embed:tomcat-embed-core"
             },
+            "firstPatchedVersion": {
+              "identifier" :"9.0.1"
+            },
             "vulnerableVersionRange": ">= 9.0.0, < 9.0.31"
           }
         }

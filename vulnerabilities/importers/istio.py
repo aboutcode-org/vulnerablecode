@@ -1,24 +1,11 @@
+#
 # Copyright (c) nexB Inc. and others. All rights reserved.
-# http://nexb.com and https://github.com/nexB/vulnerablecode/
-# The VulnerableCode software is licensed under the Apache License version 2.0.
-# Data generated with VulnerableCode require an acknowledgment.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
 #
-# You may not use this software except in compliance with the License.
-# You may obtain a copy of the License at: http://apache.org/licenses/LICENSE-2.0
-# Unless required by applicable law or agreed to in writing, software distributed
-# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-# CONDITIONS OF ANY KIND, either express or implied. See the License for the
-# specific language governing permissions and limitations under the License.
-#
-# When you publish or redistribute any data created with VulnerableCode or any VulnerableCode
-# derivative work, you must accompany this data with the following acknowledgment:
-#
-#  Generated with VulnerableCode and provided on an "AS IS" BASIS, WITHOUT WARRANTIES
-#  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
-#  VulnerableCode should be considered or used as legal advice. Consult an Attorney
-#  for any legal advice.
-#  VulnerableCode is a free software tool from nexB Inc. and others.
-#  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 import asyncio
 import re
 from typing import Set
@@ -27,15 +14,15 @@ import pytz
 import saneyaml
 from dateutil import parser
 from packageurl import PackageURL
-from univers.version_specifier import VersionSpecifier
+from univers.version_range import VersionRange
 from univers.versions import SemverVersion
 
-from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.helpers import split_markdown_front_matter
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.utils import nearest_patched_package
+from vulnerabilities.utils import split_markdown_front_matter
 
 is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match
 
@@ -54,7 +41,7 @@ class IstioImporter(GitImporter):
     def set_api(self):
         asyncio.run(self.version_api.load_api(["istio/istio"]))
 
-    def updated_advisories(self) -> Set[Advisory]:
+    def updated_advisories(self) -> Set[AdvisoryData]:
         files = self._added_files.union(self._updated_files)
         advisories = []
         for f in files:
@@ -76,8 +63,7 @@ class IstioImporter(GitImporter):
         safe_pkg_versions = []
         vuln_pkg_versions = []
         version_ranges = [
-            VersionSpecifier.from_scheme_version_spec_string("semver", r)
-            for r in version_range_list
+            VersionRange.from_scheme_version_spec_string("semver", r) for r in version_range_list
         ]
         for version in all_version:
             version_obj = SemverVersion(version)
@@ -165,7 +151,7 @@ class IstioImporter(GitImporter):
             affected_packages.extend(nearest_patched_package(vuln_purls_github, safe_purls_github))
 
             advisories.append(
-                Advisory(
+                AdvisoryData(
                     vulnerability_id=cve_id,
                     summary=data["description"],
                     affected_packages=affected_packages,

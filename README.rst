@@ -2,13 +2,15 @@
 VulnerableCode
 ===============
 
-|Build Status| |License| |Python 3.8+| |stability-wip| |Gitter chat|
+|Build Status| |Code License| |Data License| |Python 3.8+| |stability-wip| |Gitter chat|
 
 
 .. |Build Status| image:: https://github.com/nexB/vulnerablecode/actions/workflows/main.yml/badge.svg?branch=main
    :target: https://github.com/nexB/vulnerablecode/actions?query=workflow%3ACI
-.. |License| image:: https://img.shields.io/badge/License-Apache%202.0-green.svg
+.. |Code License| image:: https://img.shields.io/badge/Code%20License-Apache--2.0-green.svg
    :target: https://opensource.org/licenses/Apache-2.0
+.. |Data License| image:: https://img.shields.io/badge/Data%20License-CC--BY--SA--4.0-green.svg
+   :target: https://creativecommons.org/licenses/by-sa/4.0/legalcode 
 .. |Python 3.8+| image:: https://img.shields.io/badge/python-3.8+-green.svg
    :target: https://www.python.org/downloads/release/python-380/
 .. |stability-wip| image:: https://img.shields.io/badge/stability-work_in_progress-lightgrey.svg
@@ -19,6 +21,7 @@ VulnerableCode
 VulnerableCode is a free and open database of open source software package
 vulnerabilities **because open source software vulnerabilities data and tools
 should be free and open source themselves**:
+
 we are trying to change this and evolve the status quo in a few other areas!
 
 - Vulnerability databases have been **traditionally proprietary** even though they
@@ -120,3 +123,25 @@ And a JSON API and its minimal web documentation:
 
 .. image:: vulnerablecode-json-api.png
 .. image:: vulnerablecode-api-doc.png
+
+
+License
+^^^^^^^^^^
+
+Copyright (c) nexB Inc. and others. All rights reserved.
+
+VulnerableCode is a trademark of nexB Inc.
+
+SPDX-License-Identifier: Apache-2.0 AND CC-BY-SA-4.0
+
+VulnerableCode software is licensed under the Apache License version 2.0.
+
+VulnerableCode data is licensed collectively under CC-BY-SA-4.0.
+
+See https://www.apache.org/licenses/LICENSE-2.0 for the license text.
+
+See https://creativecommons.org/licenses/by-sa/4.0/legalcode for the license text.
+
+See https://github.com/nexB/vulnerablecode for support or download. 
+
+See https://aboutcode.org for more information about nexB OSS projects.

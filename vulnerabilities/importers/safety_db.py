@@ -1,30 +1,13 @@
 #
-# Copyright (c)  nexB Inc. and others. All rights reserved.
-# http://nexb.com and https://github.com/nexB/vulnerablecode/
-# The VulnerableCode software is licensed under the Apache License version 2.0.
-# Data generated with VulnerableCode require an acknowledgment.
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
 #
-# You may not use this software except in compliance with the License.
-# You may obtain a copy of the License at: http://apache.org/licenses/LICENSE-2.0
-# Unless required by applicable law or agreed to in writing, software distributed
-# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-# CONDITIONS OF ANY KIND, either express or implied. See the License for the
-# specific language governing permissions and limitations under the License.
-#
-# When you publish or redistribute any data created with VulnerableCode or any VulnerableCode
-# derivative work, you must accompany this data with the following acknowledgment:
-#
-#  Generated with VulnerableCode and provided on an "AS IS" BASIS, WITHOUT WARRANTIES
-#  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
-#  VulnerableCode should be considered or used as legal advice. Consult an Attorney
-#  for any legal advice.
-#  VulnerableCode is a free software tool from nexB Inc. and others.
-#  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-#
-# Data Imported from https://github.com/pyupio/safety-db
 
 import asyncio
-import dataclasses
 import logging
 import re
 from typing import Any
@@ -35,15 +18,15 @@ from typing import Tuple
 
 import requests
 from packageurl import PackageURL
-from univers.version_specifier import VersionSpecifier
+from univers.version_range import PypiVersionRange
 from univers.versions import InvalidVersion
-from univers.versions import PYPIVersion
+from univers.versions import PypiVersion
 
-from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import PypiVersionAPI
+from vulnerabilities.utils import nearest_patched_package
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +52,7 @@ class SafetyDbImporter(Importer):
     def collect_packages(self):
         return {pkg for pkg in self._api_response}
 
-    def updated_advisories(self) -> Set[Advisory]:
+    def updated_advisories(self) -> Set[AdvisoryData]:
         for package_name in self._api_response:
             if package_name == "$meta" or package_name == "cumin":
                 # This is the first entry in the data feed. It contains metadata of the feed.
@@ -96,7 +79,7 @@ class SafetyDbImporter(Importer):
                 advisories = []
                 for cve_id in cve_ids:
                     advisories.append(
-                        Advisory(
+                        AdvisoryData(
                             vulnerability_id=cve_id,
                             summary=advisory["advisory"],
                             references=reference,
@@ -134,12 +117,12 @@ def categorize_versions(
     impacted_versions, impacted_purls = set(), []
     vurl_specs = []
     for version_spec in version_specs:
-        vurl_specs.append(VersionSpecifier.from_scheme_version_spec_string("pypi", version_spec))
+        vurl_specs.append(PypiVersionRange.from_native(version_spec))
 
     invalid_versions = set()
     for version in all_versions:
         try:
-            version_object = PYPIVersion(version)
+            version_object = PypiVersion(version)
         except InvalidVersion:
             invalid_versions.add(version)
             continue

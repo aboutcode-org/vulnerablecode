@@ -16,12 +16,12 @@
           "subpath": null
         },
         "affected_version_range": "vers:nuget/<=4.5.1-alpha001",
-        "fixed_version": null
+        "fixed_version": "4.5.1"
       }
     ],
     "references": [
       {
-        "reference_id": "",
+        "reference_id": "CVE-2021-46703",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-46703",
         "severities": []
       },
@@ -65,7 +65,7 @@
     ],
     "references": [
       {
-        "reference_id": "",
+        "reference_id": "CVE-2022-23395",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-23395",
         "severities": []
       },
@@ -153,7 +153,7 @@
     ],
     "references": [
       {
-        "reference_id": "",
+        "reference_id": "CVE-2017-0256",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-0256",
         "severities": []
       },

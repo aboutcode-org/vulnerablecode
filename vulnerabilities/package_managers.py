@@ -1,51 +1,53 @@
-# Copyright (c)  nexB Inc. and others. All rights reserved.
-# http://nexb.com and https://github.com/nexB/vulnerablecode/
-# The VulnerableCode software is licensed under the Apache License version 2.0.
-# Data generated with VulnerableCode require an acknowledgment.
 #
-# You may not use this software except in compliance with the License.
-# You may obtain a copy of the License at: http://apache.org/licenses/LICENSE-2.0
-# Unless required by applicable law or agreed to in writing, software distributed
-# under the License is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES OR
-# CONDITIONS OF ANY KIND, either express or implied. See the License for the
-# specific language governing permissions and limitations under the License.
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
 #
-# When you publish or redistribute any data created with VulnerableCode or any VulnerableCode
-# derivative work, you must accompany this data with the following acknowledgment:
-#
-#  Generated with VulnerableCode and provided on an 'AS IS' BASIS, WITHOUT WARRANTIES
-#  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
-#  VulnerableCode should be considered or used as legal advice. Consult an Attorney
-#  for any legal advice.
-#  VulnerableCode is a free software code scanning tool from nexB Inc. and others.
-#  Visit https://github.com/nexB/vulnerablecode/ for support and download.
-import asyncio
+
 import dataclasses
-import os
+import json
+import logging
 import traceback
 import xml.etree.ElementTree as ET
 from datetime import datetime
-from json import JSONDecodeError
-from subprocess import check_output
+from typing import Iterable
 from typing import List
-from typing import MutableMapping
 from typing import Optional
 from typing import Set
+from urllib.parse import urlparse
 
-import aiohttp
-from aiohttp import ClientSession
-from aiohttp.client_exceptions import ClientResponseError
-from aiohttp.client_exceptions import ServerDisconnectedError
-from aiohttp.web_exceptions import HTTPGone
-from bs4 import BeautifulSoup
+import requests
 from dateutil import parser as dateparser
 from django.utils.dateparse import parse_datetime
+from packageurl import PackageURL
+
+from vulnerabilities import utils
+from vulnerabilities.utils import get_item
+
+logger = logging.getLogger(__name__)
+
+"""
+Utilities to retrieve lists of package versions from remote package
+repositories, registries or APIs.
+"""
+
+# FIXME: use purl for cache key, rather than an undefined package_name key
+# FIXME: DO NOT cache by default as this is an optimization that does not work for long running processes
+# FIXME: DO NOT use set() for storing version lists: they lose the original ordering
 
 
 @dataclasses.dataclass(frozen=True)
-class Version:
+class PackageVersion:
     value: str
     release_date: Optional[datetime] = None
+
+    def to_dict(self):
+        release_date = self.release_date
+        release_date = release_date and release_date.isoformat()
+        return dict(value=self.value, release_date=release_date)
 
 
 @dataclasses.dataclass
@@ -54,18 +56,49 @@ class VersionResponse:
     newer_versions: Set[str] = dataclasses.field(default_factory=set)
 
 
-class GraphQLError(Exception):
-    pass
+def get_response(url, content_type="json", headers=None):
+    """
+    Fetch ``url`` and return its content as ``content_type`` which is one of
+    binary, text or json.
+    """
+    assert content_type in ("binary", "text", "json")
+
+    try:
+        resp = requests.get(url=url, headers=headers)
+    except:
+        logger.error(traceback.format_exc())
+        return
+    if not resp.status_code == 200:
+        logger.error(f"Error while fetching {url!r}: {resp.status_code!r}")
+        return
+
+    if content_type == "binary":
+        return resp.content
+    elif content_type == "text":
+        return resp.text
+    elif content_type == "json":
+        return resp.json()
 
 
 class VersionAPI:
-    def __init__(self, cache: MutableMapping[str, Set[Version]] = None):
-        self.cache = cache or {}
+    """
+    Base class for version APIs classes that fetch package versions from remote
+    package repositories, registries or APIs.
+    """
 
-    def get(self, package_name, until=None) -> VersionResponse:
+    # subclasses must define the purl package_type they catter to
+    package_type = None
+
+    def get_until(self, package_name, until=None) -> VersionResponse:
+        """
+        Return a VersionResponse given a ``package_name`` cache key and an
+        optional ``until`` datetime object for a date "until" which to fetch
+        versions.
+        """
         new_versions = set()
         valid_versions = set()
-        for version in self.cache.get(package_name, set()):
+
+        for version in self.fetch(package_name):
             if until and version.release_date and version.release_date > until:
                 new_versions.add(version.value)
             else:
@@ -73,223 +106,211 @@ class VersionAPI:
 
         return VersionResponse(valid_versions=valid_versions, newer_versions=new_versions)
 
-    async def load_api(self, pkg_set):
+    def fetch(self, pkg: str) -> Iterable[PackageVersion]:
         """
-        Populate the cache with the versions of the packages in pkg_set
-        """
-        async with client_session() as session:
-            await asyncio.gather(
-                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
-            )
-
-    async def fetch(self, pkg, session):
-        """
-        Override this method to fetch the pkg's version in the cache
+        Yield PackageVersion versions given a ``pkg`` package name.
+        Subclasses must override this method and can create caches as needed.
         """
         raise NotImplementedError
 
 
-def client_session(**kwargs):
-    # trust_env is important so that https_proxy environment variable is used
-    # in proxy protected environments
-    return ClientSession(raise_for_status=True, trust_env=True, **kwargs)
+def remove_debian_default_epoch(version):
+    """
+    Remove the default epoch from a Debian ``version`` string.
+    """
+    return version and version.replace("0:", "")
 
 
 class LaunchpadVersionAPI(VersionAPI):
+    """
+    Fetch versions of Ubuntu debian packages from Launchpad
+    """
 
     package_type = "deb"
 
-    async def fetch(self, pkg, session):
+    def fetch(self, pkg: str) -> Iterable[PackageVersion]:
         url = (
-            "https://api.launchpad.net/1.0/ubuntu/+archive/"
-            "primary?ws.op=getPublishedSources&"
-            "source_name={}&exact_match=true".format(pkg)
+            f"https://api.launchpad.net/1.0/ubuntu/+archive/primary?"
+            "ws.op=getPublishedSources&source_name={pkg}&exact_match=true"
         )
-        try:
-            all_versions = set()
-            while True:
-                response = await session.request(method="GET", url=url)
-                resp_json = await response.json()
-                if resp_json["entries"] == []:
-                    self.cache[pkg] = set()
-                    break
-                for release in resp_json["entries"]:
-                    all_versions.add(
-                        Version(
-                            value=release["source_package_version"].replace("0:", ""),
-                            release_date=release["date_published"],
-                        )
-                    )
-                if resp_json.get("next_collection_link"):
-                    url = resp_json["next_collection_link"]
-                else:
-                    break
-            self.cache[pkg] = all_versions
-        except (
-            ClientResponseError,
-            asyncio.exceptions.TimeoutError,
-            ServerDisconnectedError,
-        ):
-            self.cache[pkg] = set()
+
+        while True:
+            response = get_response(url=url, content_type="json")
+
+            entries = response["entries"]
+            if not entries:
+                break
+
+            for release in entries:
+                source_package_version = release["source_package_version"]
+                source_package_version = remove_debian_default_epoch(source_package_version)
+                yield PackageVersion(
+                    value=source_package_version,
+                    release_date=release["date_published"],
+                )
+            if response.get("next_collection_link"):
+                url = response["next_collection_link"]
+            else:
+                break
 
 
 class PypiVersionAPI(VersionAPI):
+    """
+    Fetch versions of Python pypi packages from the PyPI API.
+    """
 
     package_type = "pypi"
 
-    async def fetch(self, pkg, session):
-        url = f"https://pypi.org/pypi/{pkg}/json"
-        versions = set()
-        try:
-            response = await session.request(method="GET", url=url)
-            response = await response.json()
-            for version, download_items in response["releases"].items():
-                if download_items:
-                    latest_download_item = max(
-                        download_items,
-                        key=lambda download_item: dateparser.parse(
-                            download_item["upload_time_iso_8601"]
-                        ),
-                    )
-                    versions.add(
-                        Version(
-                            value=version,
-                            release_date=dateparser.parse(
-                                latest_download_item["upload_time_iso_8601"]
-                            ),
-                        )
-                    )
-        except ClientResponseError:
-            # PYPI removed this package.
-            # https://www.zdnet.com/article/twelve-malicious-python-libraries-found-and-removed-from-pypi/  # nopep8
-            pass
-        self.cache[pkg] = versions
+    def fetch(self, pkg):
+        response = get_response(url=f"https://pypi.org/pypi/{pkg}/json")
+        if not response:
+            # FIXME: raise!
+            return
+
+        releases = response.get("releases") or {}
+        for version, download_items in releases.items():
+            if not download_items:
+                continue
+
+            release_date = self.get_latest_date(download_items)
+            yield PackageVersion(
+                value=version,
+                release_date=release_date,
+            )
+
+    def get_latest_date(self, downloads):
+        """
+        Return the latest date from a list of mapping of PyPI ``downloadss`` or  None.
+
+        The data has this shape:
+        [
+          {
+            ....
+            "upload_time_iso_8601": "2010-12-23T05:14:23.509436Z",
+            "url": "https://files.pythonhosted.org/packages/8f/1f/c20ca80fa5df025cc/Django-1.1.3.tar.gz",
+          },
+          {
+            ....
+            "upload_time_iso_8601": "2010-12-23T05:20:23.509436Z",
+            "url": "https://files.pythonhosted.org/packages/8f/1f/561bddc20ca80fa5df025cc/Django-1.1.3.wheel",
+          },
+        ]
+        """
+        latest_date = None
+        for download in downloads:
+            upload_time = download.get("upload_time_iso_8601")
+            if upload_time:
+                current_date = dateparser.parse(upload_time)
+            if not latest_date:
+                latest_date = current_date
+            else:
+                if current_date > latest_date:
+                    latest_date = current_date
+        return latest_date
 
 
 class CratesVersionAPI(VersionAPI):
+    """
+    Fetch versions of Rust cargo packages from the crates.io API.
+    """
 
     package_type = "cargo"
 
-    async def fetch(self, pkg, session):
+    def fetch(self, pkg):
         url = f"https://crates.io/api/v1/crates/{pkg}"
-        response = await session.request(method="GET", url=url)
-        response = await response.json()
-        versions = set()
+        response = get_response(url=url, content_type="json")
         for version_info in response["versions"]:
-            versions.add(
-                Version(
-                    value=version_info["num"],
-                    release_date=dateparser.parse(version_info["updated_at"]),
-                )
+            yield PackageVersion(
+                value=version_info["num"],
+                release_date=dateparser.parse(version_info["updated_at"]),
             )
-
-        self.cache[pkg] = versions
 
 
 class RubyVersionAPI(VersionAPI):
+    """
+    Fetch versions of Rubygems packages from the rubygems API.
+    """
 
     package_type = "gem"
 
-    async def fetch(self, pkg, session):
+    def fetch(self, pkg):
         url = f"https://rubygems.org/api/v1/versions/{pkg}.json"
-        versions = set()
-        try:
-            response = await session.request(method="GET", url=url)
-            response = await response.json()
-            for release in response:
-                versions.add(
-                    Version(
-                        value=release["number"],
-                        release_date=dateparser.parse(release["created_at"]),
-                    )
-                )
-        except (ClientResponseError, JSONDecodeError):
-            pass
-
-        self.cache[pkg] = versions
+        response = get_response(url=url, content_type="json")
+        if not response:
+            return
+        for release in response:
+            if release.get("published_at"):
+                release_date = dateparser.parse(release["published_at"])
+            elif release.get("created_at"):
+                release_date = dateparser.parse(release["created_at"])
+            else:
+                release_date = None
+            if release.get("number"):
+                yield PackageVersion(value=release["number"], release_date=release_date)
+            else:
+                logger.error(f"Failed to parse release {release} from url: {url}")
 
 
 class NpmVersionAPI(VersionAPI):
+    """
+    Fetch versions of npm packages from the npm registry API.
+    """
 
     package_type = "npm"
 
-    async def fetch(self, pkg, session):
+    def fetch(self, pkg):
         url = f"https://registry.npmjs.org/{pkg}"
-        versions = set()
-        try:
-            response = await session.request(method="GET", url=url)
-            response = await response.json()
-            for version in response.get("versions", []):
-                release_date = response.get("time", {}).get(version)
-                if release_date:
-                    release_date = dateparser.parse(release_date)
-                    versions.add(Version(value=version, release_date=release_date))
-                else:
-                    versions.add(Version(value=version, release_date=None))
-
-        except ClientResponseError:
-            pass
-
-        self.cache[pkg] = versions
+        response = get_response(url=url, content_type="json")
+        if not response:
+            logger.error(f"Failed to fetch {url}")
+            return
+        for version in response.get("versions") or []:
+            release_date = response.get("time", {}).get(version)
+            release_date = release_date and dateparser.parse(release_date) or None
+            yield PackageVersion(value=version, release_date=release_date)
 
 
 class DebianVersionAPI(VersionAPI):
+    """
+    Fetch versions of Debian debian packages from the sources.debian.org API
+    """
 
     package_type = "deb"
 
-    async def load_api(self, pkg_set):
+    def fetch(self, pkg):
         # Need to set the headers, because the Debian API upgrades
         # the connection to HTTP 2.0
-        async with client_session(headers={"Connection": "keep-alive"}) as session:
-            await asyncio.gather(
-                *[self.fetch(pkg, session) for pkg in pkg_set if pkg not in self.cache]
-            )
+        response = get_response(
+            url=f"https://sources.debian.org/api/src/{pkg}",
+            headers={"Connection": "keep-alive"},
+            content_type="json",
+        )
+        if response.get("error") or not response.get("versions"):
+            return
 
-    async def fetch(self, pkg, session, retry_count=5):
-        url = "https://sources.debian.org/api/src/{}".format(pkg)
-        try:
-            all_versions = set()
-            response = await session.request(method="GET", url=url)
-            resp_json = await response.json()
-
-            if resp_json.get("error") or not resp_json.get("versions"):
-                self.cache[pkg] = set()
-                return
-            for release in resp_json["versions"]:
-                all_versions.add(Version(value=release["version"].replace("0:", "")))
-
-            self.cache[pkg] = all_versions
-        # TODO : Handle ServerDisconnectedError by using some sort of
-        # retry mechanism
-        except (
-            ClientResponseError,
-            asyncio.exceptions.TimeoutError,
-            ServerDisconnectedError,
-        ):
-            self.cache[pkg] = set()
+        for release in response["versions"]:
+            version = release["version"]
+            version = remove_debian_default_epoch(version)
+            yield PackageVersion(value=version)
 
 
 class MavenVersionAPI(VersionAPI):
+    """
+    Fetch versions of Maven packages from Maven Central maven-metadata.xml data
+    """
 
     package_type = "maven"
 
-    async def fetch(self, pkg, session) -> None:
+    def fetch(self, pkg: str) -> Iterable[PackageVersion]:
         artifact_comps = pkg.split(":")
         endpoint = self.artifact_url(artifact_comps)
-        try:
-            resp = await session.request(method="GET", url=endpoint)
-            resp = await resp.read()
-
-        except ClientResponseError:
-            self.cache[pkg] = set()
-            return
-
-        xml_resp = ET.ElementTree(ET.fromstring(resp.decode("utf-8")))
-        self.cache[pkg] = self.extract_versions(xml_resp)
+        response = get_response(url=endpoint, content_type="binary")
+        if response:
+            xml_resp = ET.ElementTree(ET.fromstring(response.decode("utf-8")))
+            yield from self.extract_versions(xml_resp)
 
     @staticmethod
     def artifact_url(artifact_comps: List[str]) -> str:
-        base_url = "https://repo1.maven.org/maven2/{}"
         try:
             group_id, artifact_id = artifact_comps
         except ValueError:
@@ -304,100 +325,102 @@ class MavenVersionAPI(VersionAPI):
                 raise
 
         group_url = group_id.replace(".", "/")
-        suffix = group_url + "/" + artifact_id + "/" + "maven-metadata.xml"
-        endpoint = base_url.format(suffix)
-
+        endpoint = f"https://repo1.maven.org/maven2/{group_url}/{artifact_id}/maven-metadata.xml"
         return endpoint
 
     @staticmethod
-    def extract_versions(xml_response: ET.ElementTree) -> Set[Version]:
-        all_versions = set()
+    def extract_versions(xml_response: ET.ElementTree) -> Iterable[PackageVersion]:
         for child in xml_response.getroot().iter():
             if child.tag == "version" and child.text:
-                all_versions.add(Version(child.text))
-
-        return all_versions
+                yield PackageVersion(value=child.text)
 
 
 class NugetVersionAPI(VersionAPI):
+    """
+    Fetch versions of NuGet packages from the nuget.org API
+    """
 
     package_type = "nuget"
 
-    async def fetch(self, pkg, session) -> None:
-        endpoint = self.nuget_url(pkg)
-        resp = await session.request(method="GET", url=endpoint)
-        resp = await resp.json()
-        self.cache[pkg] = self.extract_versions(resp)
+    def fetch(self, pkg: str) -> Iterable[PackageVersion]:
+        pkg = pkg.lower().strip()
+        url = f"https://api.nuget.org/v3/registration5-semver1/{pkg}/index.json"
+        resp = get_response(url=url)
+        if resp:
+            yield from self.extract_versions(resp)
 
     @staticmethod
-    def nuget_url(pkg_name: str) -> str:
-        pkg_name = pkg_name.lower().strip()
-        base_url = "https://api.nuget.org/v3/registration5-semver1/{}/index.json"
-        return base_url.format(pkg_name)
+    def extract_versions(response: dict) -> Iterable[PackageVersion]:
+        for entry_group in response.get("items") or []:
+            for entry in entry_group.get("items") or []:
+                catalog_entry = entry.get("catalogEntry") or {}
+                version = catalog_entry.get("version")
+                if not version:
+                    continue
+                release_date = catalog_entry.get("published")
+                if release_date:
+                    release_date = dateparser.parse(release_date)
+                yield PackageVersion(
+                    value=version,
+                    release_date=release_date,
+                )
 
-    @staticmethod
-    def extract_versions(resp: dict) -> Set[Version]:
-        all_versions = set()
-        try:
-            for entry_group in resp["items"]:
-                for entry in entry_group["items"]:
-                    all_versions.add(
-                        Version(
-                            value=entry["catalogEntry"]["version"],
-                            release_date=dateparser.parse(entry["catalogEntry"]["published"]),
-                        )
-                    )
-        # FIXME: json response for YamlDotNet.Signed triggers this exception.
-        # Some packages with many versions give a response of a list of endpoints.
-        # In such cases rather, we should collect data from those endpoints.
-        except KeyError:
-            pass
 
-        return all_versions
+def cleaned_version(version):
+    """
+    Return a ``version`` string stripped from leading "v" prefix.
+    """
+    return version.lstrip("vV")
 
 
 class ComposerVersionAPI(VersionAPI):
+    """
+    Fetch versions of PHP Composer packages from the packagist.org API
+    """
 
     package_type = "composer"
 
-    async def fetch(self, pkg, session) -> None:
-        endpoint = self.composer_url(pkg)
-        if endpoint:
-            resp = await session.request(method="GET", url=endpoint)
-            resp = await resp.json()
-            self.cache[pkg] = self.extract_versions(resp, pkg)
+    def fetch(self, pkg: str) -> Iterable[PackageVersion]:
+        response = get_response(url=f"https://repo.packagist.org/p/{pkg}.json")
+        if response:
+            yield from self.extract_versions(response, pkg)
 
     @staticmethod
-    def composer_url(pkg_name: str) -> Optional[str]:
-        try:
-            vendor, name = pkg_name.split("/")
-        except ValueError:
-            # TODO Log this
-            return
-        return f"https://repo.packagist.org/p/{vendor}/{name}.json"
-
-    @staticmethod
-    def extract_versions(resp: dict, pkg_name: str) -> Set[Version]:
-        all_versions = set()
-        for version in resp["packages"][pkg_name]:
+    def extract_versions(resp: dict, pkg: str) -> Iterable[PackageVersion]:
+        for version in get_item(resp, "packages", pkg) or []:
             if "dev" in version:
                 continue
 
             # This if statement ensures, that all_versions contains only released versions
             # See https://github.com/composer/composer/blob/44a4429978d1b3c6223277b875762b2930e83e8c/doc/articles/versions.md#tags  # nopep8
             # for explanation of removing 'v'
-            all_versions.add(
-                Version(
-                    value=version.lstrip("v"),
-                    release_date=dateparser.parse(resp["packages"][pkg_name][version]["time"]),
-                )
+            time = get_item(resp, "packages", pkg, version, "time")
+            yield PackageVersion(
+                value=cleaned_version(version),
+                release_date=dateparser.parse(time) if time else None,
             )
-        return all_versions
+
+
+class GraphQLError(Exception):
+    pass
+
+
+# Isolated network call for simplicity of testing
+def get_gh_response(endpoint: str, headers: dict, query: dict):
+    return requests.post(endpoint, headers=headers, json=query).json()
+
+
+# FIXME: this code is duplicated with the imports/github.py code
 
 
 class GitHubTagsAPI(VersionAPI):
+    """
+    Fetch tags of Git repositories from the GitHub graphql API
+    This requires the "GH_TOKEN" environment variable to be set.
+    """
 
     package_type = "github"
+
     GQL_QUERY = """
     query getTags($name: String!, $owner: String!, $after: String)
     {
@@ -427,98 +450,116 @@ class GitHubTagsAPI(VersionAPI):
         }
     }"""
 
-    def __init__(self, cache: MutableMapping[str, Set[Version]] = None):
-        self.gh_token = os.getenv("GH_TOKEN")
-        super().__init__(cache=cache)
+    def fetch(self, pkg: str) -> Iterable[PackageVersion]:
+        """
+        Yield PackageVersion from the Git tags of the ``pkg`` "{owner}/{repo}"
+        repository using the GitHub API.
+        ``pkg`` is a string of format "{repo_owner}/{repo_name}" Example value
+        of owner_repo = "nexB/scancode-toolkit"
+        """
 
-    async def fetch(self, owner_repo: str, session: aiohttp.ClientSession) -> None:
+        for node in self.fetch_tag_nodes(pkg):
+            name = node["name"]
+            target = node["target"]
+
+            # in case the tag is a signed tag, then the commit info is in target['target']
+            if "committedDate" not in target:
+                target = target["target"]
+
+            committed_date = target.get("committedDate")
+            if committed_date:
+                release_date = dateparser.parse(committed_date)
+            else:
+                # Tags can actually point to tree and not commit, so
+                # there is no guaranteed date. This is seen in the linux kernel.
+                # Github cannot even properly display it.
+                # https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/refs/tags/v2.6.11
+                release_date = None
+
+            yield PackageVersion(value=name, release_date=release_date)
+
+    def fetch_tag_nodes(self, pkg: str, _DUMP_TO_FILE=False) -> Iterable[PackageVersion]:
         """
-        owner_repo is a string of format "{repo_owner}/{repo_name}"
-        Example value of owner_repo = "nexB/scancode-toolkit"
-        """
-        self.cache[owner_repo] = set()
-        if self.gh_token:
-            # graphql api cannot work without api token
-            session.headers["Authorization"] = "token " + self.gh_token
-            endpoint = f"https://api.github.com/graphql"
-            owner, name = owner_repo.split("/")
-            query = {
-                "query": self.GQL_QUERY,
-                "variables": {"name": name, "owner": owner},
+        Yield node "name/target} mappings for Git tags of the ``pkg`` "{owner}/{repo}"
+        GitHub repository using the GitHub graphql API. ``pkg`` is a string of
+        format "{repo_owner}/{repo_name}" as in "nexB /scancode-toolkit"
+
+        Each node has this shape:
+          {
+            "name": "v2.6.24-rc5",
+            "target": {
+              "target": {
+                "committedDate": "2007-12-11T03:48:43Z"
+              }
             }
+          },
+        """
+        repo_owner, repo_name = pkg.split("/")
 
-            while True:
-                response = await session.post(endpoint, json=query)
-                resp_json = await response.json()
+        variables = {
+            "owner": repo_owner,
+            "name": repo_name,
+        }
+        graphql_query = {
+            "query": self.GQL_QUERY,
+            "variables": variables,
+        }
 
-                if "errors" in resp_json:
-                    raise GraphQLError(resp_json["errors"])
+        idx = 0
+        while True:
+            response = utils.fetch_github_graphql_query(graphql_query)
 
-                refs = resp_json["data"]["repository"]["refs"]
+            # this is a convenience for testing to dump results to a file
+            if _DUMP_TO_FILE:
+                fn = f"github-{repo_owner}-{repo_name}-{idx}.json"
+                print(f"fetch_tag_nodes: Dumping to file: {fn}")
+                with open(fn, "w") as o:
+                    json.dump(response, o, indent=2)
+                idx += 1
 
-                for entry in refs["nodes"]:
-                    name = entry["name"]
-                    target = entry["target"]
-                    # in case the tag is a signed tag, then the commit info is in target['target']
-                    if "committedDate" not in target:
-                        target = target["target"]
-                    if "committedDate" in target:
-                        release_date = dateparser.parse(target["committedDate"])
-                    else:
-                        # but tags can actually point to tree and not commit, so there is no date
-                        # probably this only happened for linux. Github cannot even properly display it.
-                        # https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/refs/tags/v2.6.11
-                        release_date = None
-                    self.cache[owner_repo].add(Version(value=name, release_date=release_date))
+            refs = response["data"]["repository"]["refs"]
+            for node in refs["nodes"]:
+                yield node
 
-                if not refs["pageInfo"]["hasNextPage"]:
-                    break
-                # to fetch next page, we just set the after variable to endCursor
-                query["variables"]["after"] = refs["pageInfo"]["endCursor"]
+            page_info = refs["pageInfo"]
+            if not page_info["hasNextPage"]:
+                break
 
-        else:
-            # In case we don't have GH_TOKEN, we use the svn ls method to get the tags
-            # It allows to get all the information needed in one request without any rate limiting
-            # this method is however not scalable for larger repo and the api is unresponsive
-            # for repo with > 50 tags
-            endpoint = f"https://github.com/{owner_repo}"
-            tags_xml = check_output(["svn", "ls", "--xml", f"{endpoint}/tags"], text=True)
-            elements = ET.fromstring(tags_xml)
-            for entry in elements.iter("entry"):
-                name = entry.find("name").text
-                release_date = dateparser.parse(entry.find("commit/date").text)
+            # to fetch next page, we just set the after variable to endCursor
+            variables["after"] = page_info["endCursor"]
 
 
 class HexVersionAPI(VersionAPI):
-    async def fetch(self, pkg, session):
-        url = f"https://hex.pm/api/packages/{pkg}"
-        versions = set()
-        try:
-            response = await session.request(method="GET", url=url)
-            response = await response.json()
-            for release in response["releases"]:
-                versions.add(
-                    Version(
-                        value=release["version"],
-                        release_date=dateparser.parse(release["inserted_at"]),
-                    )
-                )
-        except (ClientResponseError, JSONDecodeError):
-            pass
+    """
+    Fetch versions of Erlang packages from the hex API
+    """
 
-        self.cache[pkg] = versions
+    package_type = "hex"
+
+    def fetch(self, pkg: str) -> Iterable[PackageVersion]:
+        response = get_response(
+            url=f"https://hex.pm/api/packages/{pkg}",
+            content_type="json",
+        )
+        for release in response["releases"]:
+            yield PackageVersion(
+                value=release["version"],
+                release_date=dateparser.parse(release["inserted_at"]),
+            )
 
 
 class GoproxyVersionAPI(VersionAPI):
+    """
+    Fetch versions of Go "golang" packages from the Go proxy API
+    """
 
     package_type = "golang"
 
-    def __init__(self, cache: MutableMapping[str, Set[Version]] = None):
-        super().__init__(cache)
+    def __init__(self):
         self.module_name_by_package_name = {}
 
     @staticmethod
-    def trim_url_path(url_path: str) -> Optional[str]:
+    def trim_go_url_path(url_path: str) -> Optional[str]:
         """
         Return a trimmed Go `url_path` removing trailing
         package references and keeping only the module
@@ -533,17 +574,21 @@ class GoproxyVersionAPI(VersionAPI):
         This functions trims the trailing part(s) of a package URL
         and returns the remaining the module name.
         For example:
-        >>> module = "https://github.com/xx/a"
-        >>> assert GoproxyVersionAPI.trim_url_path("https://github.com/xx/a/b") == module
+        >>> module = "github.com/xx/a"
+        >>> assert GoproxyVersionAPI.trim_go_url_path("https://github.com/xx/a/b") == module
         """
         # some advisories contains this prefix in package name, e.g. https://github.com/advisories/GHSA-7h6j-2268-fhcm
         if url_path.startswith("https://pkg.go.dev/"):
-            url_path = url_path.removeprefix("https://pkg.go.dev/")
-        parts = url_path.split("/")
-        if len(parts) >= 2:
-            return "/".join(parts[:-1])
+            url_path = url_path[len("https://pkg.go.dev/") :]
+        parsed_url_path = urlparse(url_path)
+        path = parsed_url_path.path
+        parts = path.split("/")
+        if len(parts) < 3:
+            logger.error(f"Not a valid Go URL path {url_path} trim_go_url_path")
+            return
         else:
-            return None
+            joined_path = "/".join(parts[:3])
+            return f"{parsed_url_path.netloc}{joined_path}"
 
     @staticmethod
     def escape_path(path: str) -> str:
@@ -565,56 +610,96 @@ class GoproxyVersionAPI(VersionAPI):
         return escaped_path
 
     @staticmethod
-    async def parse_version_info(
-        version_info: str, escaped_pkg: str, session: ClientSession
-    ) -> Optional[Version]:
+    def fetch_version_info(version_info: str, escaped_pkg: str) -> Optional[PackageVersion]:
         v = version_info.split()
         if not v:
             return None
+
         value = v[0]
         if len(v) > 1:
-            # get release date from the second part. see https://github.com/golang/go/blob/master/src/cmd/go/internal/modfetch/proxy.go#latest()
+            # get release date from the second part. see
+            # https://github.com/golang/go/blob/master/src/cmd/go/internal/modfetch/proxy.go#latest()
             release_date = parse_datetime(v[1])
         else:
             escaped_ver = GoproxyVersionAPI.escape_path(value)
-            try:
-                response = await session.request(
-                    method="GET",
-                    url=f"https://proxy.golang.org/{escaped_pkg}/@v/{escaped_ver}.info",
-                )
-                resp_json = await response.json()
-                release_date = parse_datetime(resp_json.get("Time", ""))
-            except:
-                traceback.print_exc()
-                print(
-                    f"error while fetching version info for {escaped_pkg}/{escaped_ver} from goproxy"
-                )
-                release_date = None
-        return Version(value=value, release_date=release_date)
+            response = get_response(
+                url=f"https://proxy.golang.org/{escaped_pkg}/@v/{escaped_ver}.info",
+                content_type="json",
+            )
 
-    async def fetch(self, pkg: str, session: ClientSession):
+            if not response:
+                logger.error(
+                    f"Error while fetching version info for {escaped_pkg}/{escaped_ver} "
+                    f"from goproxy:\n{traceback.format_exc()}"
+                )
+            release_date = parse_datetime(response.get("Time", "")) if response else None
+
+        return PackageVersion(value=value, release_date=release_date)
+
+    def fetch(self, pkg: str) -> Iterable[PackageVersion]:
+
         # escape uppercase in module path
-        escaped_pkg = GoproxyVersionAPI.escape_path(pkg)
+        escaped_pkg = self.escape_path(pkg)
         trimmed_pkg = pkg
-        resp_text = None
+        response = None
         # resolve module name from package name, see https://go.dev/ref/mod#resolve-pkg-mod
         while escaped_pkg is not None:
             url = f"https://proxy.golang.org/{escaped_pkg}/@v/list"
-            try:
-                response = await session.request(method="GET", url=url)
-                resp_text = await response.text()
-            except HTTPGone:
-                escaped_pkg = GoproxyVersionAPI.trim_url_path(escaped_pkg)
-                trimmed_pkg = GoproxyVersionAPI.trim_url_path(trimmed_pkg) or ""
+            response = get_response(url=url, content_type="text")
+            if not response:
+                trimmed_escaped_pkg = self.trim_go_url_path(escaped_pkg)
+                trimmed_pkg = self.trim_go_url_path(trimmed_pkg) or ""
+                if trimmed_escaped_pkg == escaped_pkg:
+                    break
+
+                escaped_pkg = trimmed_escaped_pkg
                 continue
+
             break
-        if resp_text is None or escaped_pkg is None or trimmed_pkg is None:
-            print(f"error while fetching versions for {pkg} from goproxy")
+
+        if response is None or escaped_pkg is None or trimmed_pkg is None:
+            logger.error(f"Error while fetching versions for {pkg!r} from goproxy")
             return
         self.module_name_by_package_name[pkg] = trimmed_pkg
-        versions = set()
-        for version_info in resp_text.split("\n"):
-            version = await GoproxyVersionAPI.parse_version_info(version_info, escaped_pkg, session)
-            if version is not None:
-                versions.add(version)
-        self.cache[pkg] = versions
+        for version_info in response.split("\n"):
+            version = self.fetch_version_info(version_info, escaped_pkg)
+            if version:
+                yield version
+
+
+VERSION_API_CLASSES = {
+    MavenVersionAPI,
+    NugetVersionAPI,
+    ComposerVersionAPI,
+    PypiVersionAPI,
+    RubyVersionAPI,
+    GoproxyVersionAPI,
+    NpmVersionAPI,
+    HexVersionAPI,
+    LaunchpadVersionAPI,
+    CratesVersionAPI,
+    DebianVersionAPI,
+    GitHubTagsAPI,
+}
+
+VERSION_API_CLASSES_BY_PACKAGE_TYPE = {cls.package_type: cls for cls in VERSION_API_CLASSES}
+
+
+def get_api_package_name(purl: PackageURL) -> str:
+    """
+    Return the package name expected by the GitHub API given a PackageURL
+    >>> get_api_package_name(PackageURL(type="maven", namespace="org.apache.commons", name="commons-lang3"))
+    'org.apache.commons:commons-lang3'
+    >>> get_api_package_name(PackageURL(type="composer", namespace="foo", name="bar"))
+    'foo/bar'
+    """
+    if not purl.name:
+        return None
+    if purl.type in ("nuget", "pypi", "gem") or not purl.namespace:
+        return purl.name
+    if purl.type == "maven":
+        return f"{purl.namespace}:{purl.name}"
+    if purl.type in ("composer", "golang", "npm"):
+        return f"{purl.namespace}/{purl.name}"
+
+    logger.error(f"get_api_package_name: Unknown PURL {purl!r}")

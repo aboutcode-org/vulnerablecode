@@ -1,25 +1,13 @@
-# Author: Navonil Das (@NavonilDas)
+#
 # Copyright (c) nexB Inc. and others. All rights reserved.
-# http://nexb.com and https://github.com/nexB/vulnerablecode/
-# The VulnerableCode software is licensed under the Apache License version 2.0.
-# Data generated with VulnerableCode require an acknowledgment.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
 #
-# You may not use this software except in compliance with the License.
-# You may obtain a copy of the License at: http://apache.org/licenses/LICENSE-2.0
-# Unless required by applicable law or agreed to in writing, software distributed
-# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-# CONDITIONS OF ANY KIND, either express or implied. See the License for the
-# specific language governing permissions and limitations under the License.
-#
-# When you publish or redistribute any data created with VulnerableCode or any VulnerableCode
-# derivative work, you must accompany this data with the following acknowledgment:
-#
-#  Generated with VulnerableCode and provided on an "AS IS" BASIS, WITHOUT WARRANTIES
-#  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
-#  VulnerableCode should be considered or used as legal advice. Consult an Attorney
-#  for any legal advice.
-#  VulnerableCode is a free software from nexB Inc. and others.
-#  Visit https://github.com/nexB/vulnerablecode/ for support and download.
+
+# Author: Navonil Das (@NavonilDas)
 
 import asyncio
 from typing import List
@@ -30,15 +18,15 @@ from urllib.parse import quote
 import pytz
 from dateutil.parser import parse
 from packageurl import PackageURL
-from univers.version_specifier import VersionSpecifier
+from univers.version_range import VersionRange
 from univers.versions import SemverVersion
 
-from vulnerabilities.helpers import load_json
-from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import NpmVersionAPI
+from vulnerabilities.utils import load_json
+from vulnerabilities.utils import nearest_patched_package
 
 NPM_URL = "https://registry.npmjs.org{}"
 
@@ -54,7 +42,7 @@ class NpmImporter(GitImporter):
         self._versions = NpmVersionAPI()
         self.set_api(self.collect_packages())
 
-    def updated_advisories(self) -> Set[Advisory]:
+    def updated_advisories(self) -> Set[AdvisoryData]:
         files = self._updated_files.union(self._added_files)
         advisories = []
         for f in files:
@@ -79,7 +67,7 @@ class NpmImporter(GitImporter):
     def versions(self):  # quick hack to make it patchable
         return self._versions
 
-    def process_file(self, file) -> List[Advisory]:
+    def process_file(self, file) -> List[AdvisoryData]:
 
         record = load_json(file)
         advisories = []
@@ -114,7 +102,7 @@ class NpmImporter(GitImporter):
 
         for cve_id in record.get("cves") or [""]:
             advisories.append(
-                Advisory(
+                AdvisoryData(
                     summary=record.get("overview", ""),
                     vulnerability_id=cve_id,
                     affected_packages=nearest_patched_package(impacted_purls, resolved_purls),
@@ -182,7 +170,7 @@ def categorize_versions(
     if affected_version_range:
         aff_specs = normalize_ranges(affected_version_range)
         aff_spec = [
-            VersionSpecifier.from_scheme_version_spec_string("semver", spec)
+            VersionRange.from_scheme_version_spec_string("semver", spec)
             for spec in aff_specs
             if len(spec) >= 3
         ]
@@ -190,7 +178,7 @@ def categorize_versions(
     if fixed_version_range:
         fix_specs = normalize_ranges(fixed_version_range)
         fix_spec = [
-            VersionSpecifier.from_scheme_version_spec_string("semver", spec)
+            VersionRange.from_scheme_version_spec_string("semver", spec)
             for spec in fix_specs
             if len(spec) >= 3
         ]

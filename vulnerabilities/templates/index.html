@@ -1,14 +1,18 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load widget_tweaks %}
 
 {% block title %}
-<h1 class="title">
-Welcome to VulnerableCode!
-</h1>
+VulnerableCode Home
 {% endblock %}
 
 {% block content %}
-<div class = "hero is-large has-text-centered">
-    <a class="button is-medium has-background-light has-text-link"  href="{% url 'vulnerability_search' %}"> Search Vulnerabilities</a>
-    <a class="button is-medium has-background-light has-text-link" href="{% url 'package_search' %}"> Search Packages</a>
-</div>
+    {% include "navbar.html" %}
+    <section class="section pt-0">
+       {% include "package_search_box.html" %}
+       {% include "vulnerability_search_box.html" %}
+    </section>
+{% endblock %}
+
+{% block scripts %}
+   {% include "validate_form_scripts.html" %}
 {% endblock %}

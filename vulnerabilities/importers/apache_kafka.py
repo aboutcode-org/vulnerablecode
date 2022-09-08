@@ -1,38 +1,25 @@
+#
 # Copyright (c) nexB Inc. and others. All rights reserved.
-# http://nexb.com and https://github.com/nexB/vulnerablecode/
-# The VulnerableCode software is licensed under the Apache License version 2.0.
-# Data generated with VulnerableCode require an acknowledgment.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
 #
-# You may not use this software except in compliance with the License.
-# You may obtain a copy of the License at: http://apache.org/licenses/LICENSE-2.0
-# Unless required by applicable law or agreed to in writing, software distributed
-# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-# CONDITIONS OF ANY KIND, either express or implied. See the License for the
-# specific language governing permissions and limitations under the License.
-#
-# When you publish or redistribute any data created with VulnerableCode or any VulnerableCode
-# derivative work, you must accompany this data with the following acknowledgment:
-#
-#  Generated with VulnerableCode and provided on an "AS IS" BASIS, WITHOUT WARRANTIES
-#  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
-#  VulnerableCode should be considered or used as legal advice. Consult an Attorney
-#  for any legal advice.
-#  VulnerableCode is a free software tool from nexB Inc. and others.
-#  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import asyncio
 
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
-from univers.version_specifier import VersionSpecifier
+from univers.version_range import VersionRange
 from univers.versions import MavenVersion
 
-from vulnerabilities.helpers import nearest_patched_package
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
+from vulnerabilities.utils import nearest_patched_package
 
 GH_PAGE_URL = "https://raw.githubusercontent.com/apache/kafka-site/asf-site/cve-list.html"
 ASF_PAGE_URL = "https://kafka.apache.org/cve-list"
@@ -93,7 +80,7 @@ class ApacheKafkaImporter(Importer):
             ]
 
             advisories.append(
-                Advisory(
+                AdvisoryData(
                     vulnerability_id=cve_id,
                     summary=cve_description_paragraph.text,
                     affected_packages=nearest_patched_package(affected_packages, fixed_packages),
@@ -119,7 +106,7 @@ def to_version_ranges(version_range_text):
             lower_bound = f">={lower_bound}"
             upper_bound = f"<={upper_bound}"
             version_ranges.append(
-                VersionSpecifier.from_scheme_version_spec_string(
+                VersionRange.from_scheme_version_spec_string(
                     "maven", f"{lower_bound},{upper_bound}"
                 )
             )
@@ -128,12 +115,12 @@ def to_version_ranges(version_range_text):
             # eg range_expression == "2.1.1 and later"
             range_expression = range_expression.replace("and later", "")
             version_ranges.append(
-                VersionSpecifier.from_scheme_version_spec_string("maven", f">={range_expression}")
+                VersionRange.from_scheme_version_spec_string("maven", f">={range_expression}")
             )
 
         else:
             # eg  range_expression == "3.0.0"
             version_ranges.append(
-                VersionSpecifier.from_scheme_version_spec_string("maven", range_expression)
+                VersionRange.from_scheme_version_spec_string("maven", range_expression)
             )
     return version_ranges

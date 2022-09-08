@@ -21,7 +21,7 @@
     ],
     "references": [
       {
-        "reference_id": "",
+        "reference_id": "CVE-2022-0832",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0832",
         "severities": []
       },
@@ -70,7 +70,7 @@
     ],
     "references": [
       {
-        "reference_id": "",
+        "reference_id": "CVE-2022-0831",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0831",
         "severities": []
       },
@@ -119,7 +119,7 @@
     ],
     "references": [
       {
-        "reference_id": "",
+        "reference_id": "CVE-2022-0895",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0895",
         "severities": []
       },
@@ -163,12 +163,12 @@
           "subpath": null
         },
         "affected_version_range": "vers:composer/<22.1.0",
-        "fixed_version": null
+        "fixed_version": "22.1.0"
       }
     ],
     "references": [
       {
-        "reference_id": "",
+        "reference_id": "CVE-2022-0589",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0589",
         "severities": []
       },

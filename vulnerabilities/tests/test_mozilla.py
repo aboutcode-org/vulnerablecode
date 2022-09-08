@@ -1,3 +1,12 @@
+#
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
+#
+
 import os
 import shutil
 import tempfile
@@ -8,7 +17,6 @@ from django.test import TestCase
 
 from vulnerabilities import models
 from vulnerabilities.import_runner import ImportRunner
-from vulnerabilities.importers.npm import categorize_versions
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")
@@ -76,7 +84,6 @@ class MozillaImportTest(TestCase):
         vulnerability_id=None,
         impacted_version=None,
     ):
-        vuln = None
 
         pkg = models.Package.objects.get(name=package_name, version=resolved_version)
         vuln = pkg.vulnerabilities.first()

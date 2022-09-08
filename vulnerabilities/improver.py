@@ -1,3 +1,12 @@
+#
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
+#
+
 import dataclasses
 import logging
 from typing import Iterable
@@ -8,9 +17,9 @@ from uuid import uuid4
 from django.db.models.query import QuerySet
 from packageurl import PackageURL
 
-from vulnerabilities.helpers import classproperty
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
+from vulnerabilities.utils import classproperty
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +38,7 @@ class Inference:
     vulnerability_id: str = None
     aliases: Optional[List[str]] = dataclasses.field(default_factory=list)
     confidence: int = MAX_CONFIDENCE
-    summary: Optional[str] = None
+    summary: Optional[str] = ""
     affected_purls: Optional[List[PackageURL]] = dataclasses.field(default_factory=list)
     fixed_purl: PackageURL = None
     references: List[Reference] = dataclasses.field(default_factory=list)
@@ -71,7 +80,7 @@ class Inference:
             "confidence": self.confidence,
             "summary": self.summary,
             "affected_purls": [affected_purl.to_dict() for affected_purl in self.affected_purls],
-            "fixed_purl": self.fixed_purl.to_dict(),
+            "fixed_purl": self.fixed_purl.to_dict() if self.fixed_purl else None,
             "references": [ref.to_dict() for ref in self.references],
         }
 
@@ -85,7 +94,7 @@ class Inference:
             aliases=advisory_data.aliases,
             confidence=confidence,
             summary=advisory_data.summary,
-            affected_purls=affected_purls,
+            affected_purls=affected_purls or [],
             fixed_purl=fixed_purl,
             references=advisory_data.references,
         )
@@ -109,12 +118,16 @@ class Improver:
     @property
     def interesting_advisories(self) -> QuerySet:
         """
-        Return QuerySet for the advisories this improver is interested in
+        Return QuerySet for the advisories this improver is interested in.
+
+        Subclasses must implement.
         """
         raise NotImplementedError
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         """
-        Generate and return Inferences for the given advisory data
+        Return an iterable of Inferences from the ``advisory data``.
+
+        Subclasses must implement.
         """
         raise NotImplementedError

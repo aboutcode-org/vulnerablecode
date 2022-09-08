@@ -96,5 +96,107 @@
         }
       }
     }
+  },
+  "atomicparsley": {
+    "CVE-2021-37231": {
+      "description": "A stack-buffer-overflow occurs in Atomicparsley 20210124.204813.840499f through APar_readX() in src/util.cpp while parsing a crafted mp4 file because of the missing boundary check.",
+      "debianbug": 993372,
+      "scope": "local",
+      "releases": {
+        "bookworm": {
+          "status": "resolved",
+          "repositories": {
+            "bookworm": "20210715.151551.e7ad03a-1"
+          },
+          "fixed_version": "20210715.151551.e7ad03a-1",
+          "urgency": "not yet assigned"
+        },
+        "bullseye": {
+          "status": "open",
+          "repositories": {
+            "bullseye": "0.9.6-2"
+          },
+          "urgency": "not yet assigned",
+          "nodsa": "Minor issue",
+          "nodsa_reason": ""
+        },
+        "buster": {
+          "status": "open",
+          "repositories": {
+            "buster": "0.9.6-2"
+          },
+          "urgency": "not yet assigned",
+          "nodsa": "Minor issue",
+          "nodsa_reason": ""
+        },
+        "sid": {
+          "status": "resolved",
+          "repositories": {
+            "sid": "20210715.151551.e7ad03a-1"
+          },
+          "fixed_version": "20210715.151551.e7ad03a-1",
+          "urgency": "not yet assigned"
+        },
+        "stretch": {
+          "status": "open",
+          "repositories": {
+            "stretch": "0.9.6-1"
+          },
+          "urgency": "not yet assigned",
+          "nodsa": "Minor issue",
+          "nodsa_reason": ""
+        }
+      }
+    },
+    "CVE-2021-37232": {
+      "description": "A stack overflow vulnerability occurs in Atomicparsley 20210124.204813.840499f through APar_read64() in src/util.cpp due to the lack of buffer size of uint32_buffer while reading more bytes in APar_read64.",
+      "debianbug": 993366,
+      "scope": "local",
+      "releases": {
+        "bookworm": {
+          "status": "resolved",
+          "repositories": {
+            "bookworm": "20210715.151551.e7ad03a-1"
+          },
+          "fixed_version": "20210715.151551.e7ad03a-1",
+          "urgency": "not yet assigned"
+        },
+        "bullseye": {
+          "status": "open",
+          "repositories": {
+            "bullseye": "0.9.6-2"
+          },
+          "urgency": "not yet assigned",
+          "nodsa": "Minor issue",
+          "nodsa_reason": ""
+        },
+        "buster": {
+          "status": "open",
+          "repositories": {
+            "buster": "0.9.6-2"
+          },
+          "urgency": "not yet assigned",
+          "nodsa": "Minor issue",
+          "nodsa_reason": ""
+        },
+        "sid": {
+          "status": "resolved",
+          "repositories": {
+            "sid": "20210715.151551.e7ad03a-1"
+          },
+          "fixed_version": "20210715.151551.e7ad03a-1",
+          "urgency": "not yet assigned"
+        },
+        "stretch": {
+          "status": "open",
+          "repositories": {
+            "stretch": "0.9.6-1"
+          },
+          "urgency": "not yet assigned",
+          "nodsa": "Minor issue",
+          "nodsa_reason": ""
+        }
+      }
+    }
   }
 }

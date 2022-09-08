@@ -33,6 +33,9 @@
             "package": {
               "name": "RazorEngine"
             },
+            "firstPatchedVersion": {
+              "identifier" :"4.5.1"
+            },
             "vulnerableVersionRange": "<= 4.5.1-alpha001"
           }
         },

@@ -1,24 +1,11 @@
-# Copyright (c)  nexB Inc. and others. All rights reserved.
-# http://nexb.com and https://github.com/nexB/vulnerablecode/
-# The VulnerableCode software is licensed under the Apache License version 2.0.
-# Data generated with VulnerableCode require an acknowledgment.
 #
-# You may not use this software except in compliance with the License.
-# You may obtain a copy of the License at: http://apache.org/licenses/LICENSE-2.0
-# Unless required by applicable law or agreed to in writing, software distributed
-# under the License is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES OR
-# CONDITIONS OF ANY KIND, either express or implied. See the License for the
-# specific language governing permissions and limitations under the License.
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
 #
-# When you publish or redistribute any data created with VulnerableCode or any VulnerableCode
-# derivative work, you must accompany this data with the following acknowledgment:
-#
-#  Generated with VulnerableCode and provided on an 'AS IS' BASIS, WITHOUT WARRANTIES
-#  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
-#  VulnerableCode should be considered or used as legal advice. Consult an Attorney
-#  for any legal advice.
-#  VulnerableCode is a free software from nexB Inc. and others.
-#  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 import os
 from unittest import TestCase
@@ -26,12 +13,12 @@ from unittest.mock import patch
 
 from packageurl import PackageURL
 
-from vulnerabilities.helpers import AffectedPackage
-from vulnerabilities.importer import Advisory
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatImporter
 from vulnerabilities.package_managers import MavenVersionAPI
-from vulnerabilities.package_managers import Version
+from vulnerabilities.package_managers import PackageVersion
+from vulnerabilities.utils import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "apache_tomcat", "security-9.html")
@@ -44,10 +31,10 @@ class TestApacheTomcatImporter(TestCase):
         mock_api = MavenVersionAPI(
             cache={
                 "org.apache.tomcat:tomcat": [
-                    Version("9.0.0.M1"),
-                    Version("9.0.0.M2"),
-                    Version("8.0.0.M1"),
-                    Version("6.0.0M2"),
+                    PackageVersion("9.0.0.M1"),
+                    PackageVersion("9.0.0.M2"),
+                    PackageVersion("8.0.0.M1"),
+                    PackageVersion("6.0.0M2"),
                 ]
             }
         )
@@ -58,7 +45,7 @@ class TestApacheTomcatImporter(TestCase):
 
     def test_to_advisories(self):
         expected_advisories = [
-            Advisory(
+            AdvisoryData(
                 summary="",
                 vulnerability_id="CVE-2015-5351",
                 affected_packages=[
@@ -127,7 +114,7 @@ class TestApacheTomcatImporter(TestCase):
                     ),
                 ],
             ),
-            Advisory(
+            AdvisoryData(
                 summary="",
                 vulnerability_id="CVE-2016-0706",
                 affected_packages=[
@@ -159,7 +146,7 @@ class TestApacheTomcatImporter(TestCase):
                     ),
                 ],
             ),
-            Advisory(
+            AdvisoryData(
                 summary="",
                 vulnerability_id="CVE-2016-0714",
                 affected_packages={},
@@ -181,7 +168,7 @@ class TestApacheTomcatImporter(TestCase):
                     ),
                 ],
             ),
-            Advisory(
+            AdvisoryData(
                 summary="",
                 vulnerability_id="CVE-2016-0763",
                 affected_packages=[
@@ -232,6 +219,6 @@ class TestApacheTomcatImporter(TestCase):
         with open(TEST_DATA) as f:
             found_advisories = self.data_src.to_advisories(f)
 
-        found_advisories = list(map(Advisory.normalized, found_advisories))
-        expected_advisories = list(map(Advisory.normalized, expected_advisories))
+        found_advisories = list(map(AdvisoryData.normalized, found_advisories))
+        expected_advisories = list(map(AdvisoryData.normalized, expected_advisories))
         assert sorted(found_advisories) == sorted(expected_advisories)

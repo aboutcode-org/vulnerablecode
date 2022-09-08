@@ -1,28 +1,15 @@
 #
 # Copyright (c) nexB Inc. and others. All rights reserved.
-# http://nexb.com and https://github.com/nexB/vulnerablecode/
-# The VulnerableCode software is licensed under the Apache License version 2.0.
-# Data generated with VulnerableCode require an acknowledgment.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
 #
-# You may not use this software except in compliance with the License.
-# You may obtain a copy of the License at: http://apache.org/licenses/LICENSE-2.0
-# Unless required by applicable law or agreed to in writing, software distributed
-# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-# CONDITIONS OF ANY KIND, either express or implied. See the License for the
-# specific language governing permissions and limitations under the License.
-#
-# When you publish or redistribute any data created with VulnerableCode or any VulnerableCode
-# derivative work, you must accompany this data with the following acknowledgment:
-#
-#  Generated with VulnerableCode and provided on an "AS IS" BASIS, WITHOUT WARRANTIES
-#  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
-#  VulnerableCode should be considered or used as legal advice. Consult an Attorney
-#  for any legal advice.
-#  VulnerableCode is a free software tool from nexB Inc. and others.
-#  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
 from urllib.parse import unquote
 
+from django.db.models import Prefetch
 from django_filters import rest_framework as filters
 from packageurl import PackageURL
 from rest_framework import serializers
@@ -30,6 +17,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
@@ -44,10 +32,11 @@ class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
 
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
     scores = VulnerabilitySeveritySerializer(many=True, source="vulnerabilityseverity_set")
+    reference_url = serializers.CharField(source="url")
 
     class Meta:
         model = VulnerabilityReference
-        fields = ["reference_id", "url", "scores"]
+        fields = ["reference_url", "reference_id", "scores", "url"]
 
 
 class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
@@ -59,7 +48,23 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Package
-        fields = ["url", "purl"]
+        fields = ["url", "purl", "is_vulnerable"]
+
+
+class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
+    """
+    Used for nesting inside package focused APIs.
+    """
+
+    fixed_packages = MinimalPackageSerializer(
+        many=True, source="filtered_fixed_packages", read_only=True
+    )
+
+    references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
+
+    class Meta:
+        model = Vulnerability
+        fields = ["url", "vulnerability_id", "summary", "references", "fixed_packages"]
 
 
 class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
@@ -67,40 +72,117 @@ class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
     Used for nesting inside package focused APIs.
     """
 
-    references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
-
     class Meta:
         model = Vulnerability
-        fields = ["url", "vulnerability_id", "references", "summary"]
+        fields = ["url", "vulnerability_id"]
+
+
+class AliasSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Used for nesting inside package focused APIs.
+    """
+
+    class Meta:
+        model = Alias
+        fields = ["alias"]
 
 
 class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
 
-    resolved_packages = MinimalPackageSerializer(many=True, source="resolved_to", read_only=True)
-    unresolved_packages = MinimalPackageSerializer(
-        many=True, source="vulnerable_to", read_only=True
+    fixed_packages = MinimalPackageSerializer(
+        many=True, source="filtered_fixed_packages", read_only=True
     )
+    affected_packages = MinimalPackageSerializer(many=True, source="vulnerable_to", read_only=True)
 
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
+    aliases = AliasSerializer(many=True, source="alias")
 
     class Meta:
         model = Vulnerability
-        fields = "__all__"
+        fields = [
+            "url",
+            "vulnerability_id",
+            "summary",
+            "aliases",
+            "fixed_packages",
+            "affected_packages",
+            "references",
+        ]
 
 
 class PackageSerializer(serializers.HyperlinkedModelSerializer):
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["unresolved_vulnerabilities"] = data["affected_by_vulnerabilities"]
+        return data
 
-    unresolved_vulnerabilities = MinimalVulnerabilitySerializer(
-        many=True, source="vulnerable_to", read_only=True
-    )
-    resolved_vulnerabilities = MinimalVulnerabilitySerializer(
-        many=True, source="resolved_to", read_only=True
-    )
     purl = serializers.CharField(source="package_url")
+
+    affected_by_vulnerabilities = serializers.SerializerMethodField("get_affected_vulnerabilities")
+
+    fixing_vulnerabilities = serializers.SerializerMethodField("get_fixed_vulnerabilities")
+
+    def get_fixed_packages(self, package):
+        """
+        Return a queryset of all packages that fixes a vulnerability with
+        same type, namespace, name, subpath and qualifiers of the `package`
+        """
+        return Package.objects.filter(
+            name=package.name,
+            namespace=package.namespace,
+            type=package.type,
+            qualifiers=package.qualifiers,
+            subpath=package.subpath,
+            packagerelatedvulnerability__fix=True,
+        ).distinct()
+
+    def get_vulnerabilities_for_a_package(self, package, fix):
+        """
+        Return a queryset of vulnerabilities related to the given `package`.
+        Return vulnerabilities that affects the `package` if given `fix` flag is False,
+        otherwise return vulnerabilities fixed by the `package`.
+        """
+        fixed_packages = self.get_fixed_packages(package=package)
+        qs = package.vulnerabilities.filter(packagerelatedvulnerability__fix=fix)
+        qs = qs.prefetch_related(
+            Prefetch(
+                "packages",
+                queryset=fixed_packages,
+                to_attr="filtered_fixed_packages",
+            )
+        )
+        return VulnSerializerRefsAndSummary(
+            instance=qs,
+            many=True,
+            context={"request": self.context["request"]},
+        ).data
+
+    def get_fixed_vulnerabilities(self, package):
+        """
+        Return a queryset of vulnerabilities fixed in the given `package`.
+        """
+        return self.get_vulnerabilities_for_a_package(package=package, fix=True)
+
+    def get_affected_vulnerabilities(self, package):
+        """
+        Return a queryset of vulnerabilities that affects the given `package`.
+        """
+        return self.get_vulnerabilities_for_a_package(package=package, fix=False)
 
     class Meta:
         model = Package
-        exclude = ["vulnerabilities"]
+        fields = [
+            "url",
+            "purl",
+            "type",
+            "namespace",
+            "name",
+            "version",
+            "qualifiers",
+            "subpath",
+            "affected_by_vulnerabilities",
+            "fixing_vulnerabilities",
+        ]
 
 
 class PackageFilterSet(filters.FilterSet):
@@ -108,7 +190,15 @@ class PackageFilterSet(filters.FilterSet):
 
     class Meta:
         model = Package
-        fields = ["name", "type", "version", "subpath", "purl"]
+        fields = [
+            "name",
+            "type",
+            "version",
+            "subpath",
+            "purl",
+            "namespace",
+            "packagerelatedvulnerability__fix",
+        ]
 
     def filter_purl(self, queryset, name, value):
         purl = unquote(value)
@@ -147,7 +237,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
             try:
                 purl_string = purl
                 purl = PackageURL.from_string(purl).to_dict()
-            except ValueError as ve:
+            except ValueError:
                 return Response(status=400, data={"Error": f"Invalid Package URL: {purl}"})
             purl_data = Package.objects.filter(
                 **{key: value for key, value in purl.items() if value}
@@ -172,8 +262,89 @@ class VulnerabilityFilterSet(filters.FilterSet):
 
 
 class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Vulnerability.objects.all()
+    def get_fixed_packages_qs(self):
+        """
+        Filter the packages that fixes a vulnerability
+        on fields like name, namespace and type.
+        """
+        package_filter_data = {"packagerelatedvulnerability__fix": True}
+
+        query_params = self.request.query_params
+        for field_name in ["name", "namespace", "type"]:
+            value = query_params.get(field_name)
+            if value:
+                package_filter_data[field_name] = value
+
+        return PackageFilterSet(package_filter_data).qs
+
+    def get_queryset(self):
+        """
+        Assign filtered packages queryset from `get_fixed_packages_qs`
+        to a custom attribute `filtered_fixed_packages`
+        """
+        return Vulnerability.objects.prefetch_related(
+            Prefetch(
+                "packages",
+                queryset=self.get_fixed_packages_qs(),
+                to_attr="filtered_fixed_packages",
+            )
+        )
+
     serializer_class = VulnerabilitySerializer
-    paginate_by = 50
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = VulnerabilityFilterSet
+
+
+class CPEFilterSet(filters.FilterSet):
+    cpe = filters.CharFilter(method="filter_cpe")
+
+    def filter_cpe(self, queryset, name, value):
+        cpe = unquote(value)
+        return self.queryset.filter(vulnerabilityreference__reference_id__startswith=cpe).distinct()
+
+
+class CPEViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Vulnerability.objects.filter(
+        vulnerabilityreference__reference_id__startswith="cpe"
+    ).distinct()
+    serializer_class = VulnerabilitySerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = CPEFilterSet
+
+    @action(detail=False, methods=["post"])
+    def bulk_search(self, request):
+        """
+        This endpoint is used to search for vulnerabilities by more than one CPE.
+        """
+        cpes = request.data.get("cpes", []) or []
+        if not cpes or not isinstance(cpes, list):
+            return Response(
+                status=400,
+                data={"Error": "A non-empty 'cpes' list of CPEs is required."},
+            )
+        for cpe in cpes:
+            if not cpe.startswith("cpe"):
+                return Response(status=400, data={"Error": f"Invalid CPE: {cpe}"})
+        vulnerabilitiesResponse = Vulnerability.objects.filter(
+            vulnerabilityreference__reference_id__in=cpes
+        ).distinct()
+        return Response(
+            VulnerabilitySerializer(
+                vulnerabilitiesResponse, many=True, context={"request": request}
+            ).data
+        )
+
+
+class AliasFilterSet(filters.FilterSet):
+    alias = filters.CharFilter(method="filter_alias")
+
+    def filter_alias(self, queryset, name, value):
+        alias = unquote(value)
+        return self.queryset.filter(aliases__alias__icontains=alias)
+
+
+class AliasViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Vulnerability.objects.all()
+    serializer_class = VulnerabilitySerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = AliasFilterSet

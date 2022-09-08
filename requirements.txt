@@ -1,4 +1,3 @@
-aiohttp==3.8.1
 aiosignal==1.2.0
 alabaster==0.7.12
 asgiref==3.5.0
@@ -21,7 +20,7 @@ cryptography==36.0.2
 decorator==5.1.1
 defusedxml==0.7.1
 distro==1.7.0
-Django==4.0.3
+Django==4.0.7
 django-environ==0.8.1
 django-filter==21.1
 django-widget-tweaks==1.4.12
@@ -48,7 +47,7 @@ jedi==0.18.1
 Jinja2==3.1.1
 jsonschema==3.2.0
 license-expression==21.6.14
-lxml==4.8.0
+lxml==4.9.1
 Markdown==3.3.4
 MarkupSafe==2.1.1
 matplotlib-inline==0.1.3
@@ -107,9 +106,11 @@ toml==0.10.2
 tomli==2.0.1
 traitlets==5.1.1
 typing_extensions==4.1.1
-univers==30.4.0
+univers==30.7.0
 urllib3==1.26.9
 wcwidth==0.2.5
 websocket-client==0.59.0
 yarl==1.7.2
 zipp==3.8.0
+dateparser==1.1.1
+fetchcode==0.1.0

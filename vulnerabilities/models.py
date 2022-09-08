@@ -1,48 +1,32 @@
+#
 # Copyright (c) nexB Inc. and others. All rights reserved.
-# http://nexb.com and https://github.com/nexB/vulnerablecode/
-# The VulnerableCode software is licensed under the Apache License version 2.0.
-# Data generated with VulnerableCode require an acknowledgment.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
 #
-# You may not use this software except in compliance with the License.
-# You may obtain a copy of the License at: http://apache.org/licenses/LICENSE-2.0
-# Unless required by applicable law or agreed to in writing, software distributed
-# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-# CONDITIONS OF ANY KIND, either express or implied. See the License for the
-# specific language governing permissions and limitations under the License.
-#
-# When you publish or redistribute any data created with VulnerableCode or any VulnerableCode
-# derivative work, you must accompany this data with the following acknowledgment:
-#
-#  Generated with VulnerableCode and provided on an "AS IS" BASIS, WITHOUT WARRANTIES
-#  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
-#  VulnerableCode should be considered or used as legal advice. Consult an Attorney
-#  for any legal advice.
-#  VulnerableCode is a free software tool from nexB Inc. and others.
-#  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-import dataclasses
 import hashlib
-import importlib
 import json
 import logging
-import uuid
-from datetime import datetime
-from typing import List
-from typing import Optional
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.dispatch import receiver
 from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin
+from rest_framework.authtoken.models import Token
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.utils import build_vcid
 
 logger = logging.getLogger(__name__)
 
@@ -53,30 +37,39 @@ class Vulnerability(models.Model):
     stored as ``Alias``.
     """
 
-    vulnerability_id = models.UUIDField(
-        default=uuid.uuid4,
-        editable=False,
+    vulnerability_id = models.CharField(
         unique=True,
-        help_text="Unique identifier for a vulnerability in this database, assigned automatically. "
-        "In the external representation it is prefixed with VULCOID-",
+        blank=True,
+        max_length=20,
+        default=build_vcid,
+        help_text="Unique identifier for a vulnerability in the external representation. "
+        "It is prefixed with VCID-",
     )
 
     summary = models.TextField(
         help_text="Summary of the vulnerability",
-        null=True,
         blank=True,
     )
 
+    references = models.ManyToManyField(
+        to="VulnerabilityReference", through="VulnerabilityRelatedReference"
+    )
+    packages = models.ManyToManyField(
+        to="Package",
+        through="PackageRelatedVulnerability",
+    )
+
     @property
-    def vulcoid(self):
-        return f"VULCOID-{self.vulnerability_id}"
+    def severities(self):
+        for reference in self.references.all():
+            yield from VulnerabilitySeverity.objects.filter(reference=reference.id)
 
     @property
     def vulnerable_to(self):
         """
         Return packages that are vulnerable to this vulnerability.
         """
-        return self.packages.filter(vulnerabilities__packagerelatedvulnerability__fix=False)
+        return self.packages.filter(packagerelatedvulnerability__fix=False)
 
     @property
     def resolved_to(self):
@@ -84,10 +77,18 @@ class Vulnerability(models.Model):
         Returns packages that first received patch against this vulnerability
         in their particular version history.
         """
-        return self.packages.filter(vulnerabilities__packagerelatedvulnerability__fix=True)
+        return self.packages.filter(packagerelatedvulnerability__fix=True)
+
+    @property
+    def alias(self):
+        """
+        Returns packages that first received patch against this vulnerability
+        in their particular version history.
+        """
+        return self.aliases.all()
 
     def __str__(self):
-        return self.vulcoid
+        return self.vulnerability_id
 
     class Meta:
         verbose_name_plural = "Vulnerabilities"
@@ -99,34 +100,47 @@ class VulnerabilityReference(models.Model):
     package manager.
     """
 
-    vulnerability = models.ForeignKey(
-        Vulnerability,
-        on_delete=models.CASCADE,
+    vulnerabilities = models.ManyToManyField(
+        to="Vulnerability",
+        through="VulnerabilityRelatedReference",
     )
-    url = models.URLField(
-        max_length=1024, help_text="URL to the vulnerability reference", blank=True
-    )
+
+    url = models.URLField(max_length=1024, help_text="URL to the vulnerability reference")
     reference_id = models.CharField(
         max_length=200,
         help_text="An optional reference ID, such as DSA-4465-1 when available",
         blank=True,
-        null=True,
     )
-
-    @property
-    def severities(self):
-        return VulnerabilitySeverity.objects.filter(reference=self.id)
 
     class Meta:
         unique_together = (
-            "vulnerability",
             "url",
             "reference_id",
         )
+        ordering = ["reference_id", "url"]
 
     def __str__(self):
-        reference_id = " {self.reference_id}" if self.reference_id else ""
+        reference_id = f" {self.reference_id}" if self.reference_id else ""
         return f"{self.url}{reference_id}"
+
+
+class VulnerabilityRelatedReference(models.Model):
+    """
+    A reference related to a vulnerability.
+    """
+
+    vulnerability = models.ForeignKey(
+        Vulnerability,
+        on_delete=models.CASCADE,
+    )
+
+    reference = models.ForeignKey(
+        VulnerabilityReference,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        unique_together = ("vulnerability", "reference")
 
 
 class Package(PackageURLMixin):
@@ -135,10 +149,7 @@ class Package(PackageURLMixin):
     """
 
     vulnerabilities = models.ManyToManyField(
-        to="Vulnerability",
-        through="PackageRelatedVulnerability",
-        through_fields=("package", "vulnerability"),
-        related_name="packages",
+        to="Vulnerability", through="PackageRelatedVulnerability"
     )
 
     # Remove the `qualifers` and `set_package_url` overrides after
@@ -179,6 +190,27 @@ class Package(PackageURLMixin):
         """
         return self.vulnerabilities.filter(packagerelatedvulnerability__fix=True)
 
+    @property
+    def fixed_packages(self):
+        """
+        Returns vulnerabilities which are affecting this package.
+        """
+        return Package.objects.filter(
+            name=self.name,
+            namespace=self.namespace,
+            type=self.type,
+            qualifiers=self.qualifiers,
+            subpath=self.subpath,
+            packagerelatedvulnerability__fix=True,
+        ).distinct()
+
+    @property
+    def is_vulnerable(self):
+        """
+        Returns True if this package is vulnerable to any vulnerability.
+        """
+        return self.vulnerable_to.exists()
+
     def set_package_url(self, package_url):
         """
         Set each field values to the values of the provided `package_url` string
@@ -203,8 +235,14 @@ class Package(PackageURLMixin):
 class PackageRelatedVulnerability(models.Model):
 
     # TODO: Fix related_name
-    package = models.ForeignKey(Package, on_delete=models.CASCADE, related_name="package")
-    vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
+    package = models.ForeignKey(
+        Package,
+        on_delete=models.CASCADE,
+    )
+    vulnerability = models.ForeignKey(
+        Vulnerability,
+        on_delete=models.CASCADE,
+    )
     created_by = models.CharField(
         max_length=100,
         blank=True,
@@ -267,7 +305,6 @@ class PackageRelatedVulnerability(models.Model):
 
 class VulnerabilitySeverity(models.Model):
 
-    vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
     reference = models.ForeignKey(VulnerabilityReference, on_delete=models.CASCADE)
 
     scoring_system_choices = tuple(
@@ -289,7 +326,6 @@ class VulnerabilitySeverity(models.Model):
 
     class Meta:
         unique_together = (
-            "vulnerability",
             "reference",
             "scoring_system",
             "value",
@@ -320,6 +356,21 @@ class Alias(models.Model):
         related_name="aliases",
     )
 
+    @property
+    def url(self):
+        """
+        Create a URL for the alias.
+        """
+        alias: str = self.alias
+        if alias.startswith("CVE"):
+            return f"https://nvd.nist.gov/vuln/detail/{alias}"
+
+        if alias.startswith("GHSA"):
+            return f"https://github.com/advisories/{alias}"
+
+    class Meta:
+        ordering = ["alias"]
+
     def __str__(self):
         return self.alias
 
@@ -330,17 +381,14 @@ class Advisory(models.Model):
     into structured data
     """
 
-    def save(self, *args, **kwargs):
-        checksum = hashlib.md5()
-        for field in (self.summary, self.affected_packages, self.references):
-            value = json.dumps(field, separators=(",", ":")).encode("utf-8")
-            checksum.update(value)
-        self.unique_content_id = checksum.hexdigest()
-        super().save(*args, **kwargs)
-
-    unique_content_id = models.CharField(max_length=32, blank=True, null=True)
+    unique_content_id = models.CharField(
+        max_length=32,
+        blank=True,
+    )
     aliases = models.JSONField(blank=True, default=list, help_text="A list of alias strings")
-    summary = models.TextField(blank=True, null=True)
+    summary = models.TextField(
+        blank=True,
+    )
     # we use a JSON field here to avoid creating a complete relational model for data that
     # is never queried directly; instead it is only retrieved and processed as a whole by
     # an improver
@@ -373,6 +421,14 @@ class Advisory(models.Model):
             "date_published",
         )
 
+    def save(self, *args, **kwargs):
+        checksum = hashlib.md5()
+        for field in (self.summary, self.affected_packages, self.references):
+            value = json.dumps(field, separators=(",", ":")).encode("utf-8")
+            checksum.update(value)
+        self.unique_content_id = checksum.hexdigest()
+        super().save(*args, **kwargs)
+
     def to_advisory_data(self) -> AdvisoryData:
         return AdvisoryData(
             aliases=self.aliases,
@@ -381,3 +437,12 @@ class Advisory(models.Model):
             references=[Reference.from_dict(ref) for ref in self.references],
             date_published=self.date_published,
         )
+
+
+@receiver(models.signals.post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    """
+    Creates an API key token on user creation, using the signal system.
+    """
+    if created:
+        Token.objects.create(user_id=instance.pk)

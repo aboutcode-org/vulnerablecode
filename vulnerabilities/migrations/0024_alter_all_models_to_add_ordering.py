@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('vulnerabilities', '0026_alter_package_purl'),
+        ('vulnerabilities', '0023_vcid_migration'),
     ]
 
     operations = [
@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='package',
-            options={'ordering': ['purl']},
+            options={'ordering': ['type', 'namespace', 'name', 'version', 'qualifiers', 'subpath']},
         ),
         migrations.AlterModelOptions(
             name='packagerelatedvulnerability',

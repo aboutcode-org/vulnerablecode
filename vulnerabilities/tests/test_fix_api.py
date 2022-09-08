@@ -64,13 +64,13 @@ class APITestCaseVulnerability(TransactionTestCase):
             "aliases": [],
             "fixed_packages": [
                 {
-                    "url": f"http://testserver/api/packages/{self.pkg1.id}",
-                    "purl": "pkg:pypi/flask@0.1.2",
+                    "url": f"http://testserver/api/packages/{self.pkg2.id}",
+                    "purl": "pkg:debian/flask@0.1.2",
                     "is_vulnerable": False,
                 },
                 {
-                    "url": f"http://testserver/api/packages/{self.pkg2.id}",
-                    "purl": "pkg:debian/flask@0.1.2",
+                    "url": f"http://testserver/api/packages/{self.pkg1.id}",
+                    "purl": "pkg:pypi/flask@0.1.2",
                     "is_vulnerable": False,
                 },
             ],

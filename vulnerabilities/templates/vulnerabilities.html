@@ -14,37 +14,28 @@ VulnerableCode Vulnerability Search
     {% include "vulnerability_search_box.html" %}
 </section>
 
-{% if vulnerability_id %}
+{% if search %}
     <div class="is-max-desktop mb-3">
         <section class="mx-5">
             <article class="panel is-info panel-header-only">
                 <div class="panel-heading py-2 is-size-6">
-                    <div class="field is-grouped is-grouped-multiline">
-                        Vulnerability search results:
-                        <div class="control">
-                            <div class="tags">
-                                <span class="tag is-white custom">
-                                    {{ vulnerability_id }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+                    Vulnerability search results:
                 </div>
             </article>
             <div class="is-flex" style="justify-content: space-between;">
                 <div>
-                    <strong>Total records:</strong> {{ page_obj.paginator.count|intcomma }}
+                    {{ page_obj.paginator.count|intcomma }} results
                 </div>
                 <div>
                     {% if page_obj.has_previous %}
                         <a
                             class="small_page_button"
-                            href="?vulnerability_id={{ vulnerability_id }}&page=1">
+                            href="?search={{ search }}&page=1">
                             1
                         </a>
                         <a
                             class="page_arrow_spacing"
-                            href="?vulnerability_id={{ vulnerability_id }}&page={{ page_obj.previous_page_number }}">
+                            href="?search={{ search }}&page={{ page_obj.previous_page_number }}">
                             &laquo;
                         </a>
                     {% else %}
@@ -60,7 +51,7 @@ VulnerableCode Vulnerability Search
                         </a>
                         <a
                             class="small_page_button"
-                            href="?vulnerability_id={{ vulnerability_id }}&page={{ page_obj.paginator.num_pages }}">
+                            href="?search={{ search }}&page={{ page_obj.paginator.num_pages }}">
                             {{ page_obj.paginator.num_pages|intcomma }}
                             </a>
                     {% else %}
@@ -88,7 +79,7 @@ VulnerableCode Vulnerability Search
                         <tr class="is-clipped-list">
                             <td style="word-break: break-all;">
                                 <a
-                                    href="{% url 'vulnerability_view' vulnerability.pk %}?vulnerability_id={{ vulnerability.vulnerability_id }}"
+                                    href="{{ vulnerability.get_absolute_url }}?search={{ search }}"
                                     target="_self">{{ vulnerability.vulnerability_id }}
                                 </a>
                             </td>
@@ -121,7 +112,7 @@ VulnerableCode Vulnerability Search
         <nav class="pagination is-centered is-small" aria-label="pagination">
             {% if page_obj.has_previous %}
                 <a
-                    href="?vulnerability_id={{ vulnerability_id }}&page={{ page_obj.previous_page_number }}"
+                    href="?search={{ search }}&page={{ page_obj.previous_page_number }}"
                     class="pagination-previous">
                     Previous
                 </a>
@@ -130,7 +121,7 @@ VulnerableCode Vulnerability Search
             {% endif %}
 
             {% if page_obj.has_next %}
-                <a href="?vulnerability_id={{ vulnerability_id }}&page={{ page_obj.next_page_number }}"
+                <a href="?search={{ search }}&page={{ page_obj.next_page_number }}"
                     class="pagination-next">
                     Next
                 </a>
@@ -142,7 +133,7 @@ VulnerableCode Vulnerability Search
                 {% if page_obj.number != 1 %}
                     <li>
                         <a
-                            href="?vulnerability_id={{ vulnerability_id }}&page=1{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}"
+                            href="?search={{ search }}&page=1{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}"
                             class="pagination-link"
                             aria-label="Goto page 1">
                             1
@@ -171,7 +162,7 @@ VulnerableCode Vulnerability Search
                     {% endif %}
                     <li>
                         <a
-                            href="?vulnerability_id={{ vulnerability_id }}&page={{ page_obj.paginator.num_pages }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}"
+                            href="?search={{ search }}&page={{ page_obj.paginator.num_pages }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}"
                             class="pagination-link"
                             aria-label="Goto page {{ page_obj.paginator.num_pages }}">
                             {{ page_obj.paginator.num_pages|intcomma }}
@@ -186,8 +177,6 @@ VulnerableCode Vulnerability Search
 {% endblock %}
 
 {% block scripts %}
-   {% include "validate_form_scripts.html" %}
-
     <script>
         let $showClippedButton = getAll("button.show-clipped");
 

@@ -14,32 +14,17 @@ VulnerableCode Package Search
     {% include "package_search_box.html" %}
 </section>
 
-{% if package_name %}
+{% if search %}
     <div class="is-max-desktop mb-3">
         <section class="mx-5">
-            <article class="panel is-info panel-header-only">
-                <div class="panel-heading py-2 is-size-6">
-                    <div class="field is-grouped is-grouped-multiline">
-                        Package search results:
-                        <div class="control">
-                            <div class="tags has-addons">
-                                <span class="tag is-white custom">
-                                    {{ package_name }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
             <div class="is-flex" style="justify-content: space-between;">
                 <div>
-                    <strong>Total records:</strong> {{ page_obj.paginator.count|intcomma }}
+                    {{ page_obj.paginator.count|intcomma }} results
                 </div>
                 <div>
                     {% if page_obj.has_previous %}
-                        <a class="small_page_button" href="?package_name={{ package_name }}&page=1">1</a>
-                        <a class="page_arrow_spacing" href="?package_name={{ package_name }}&page={{ page_obj.previous_page_number }}">&laquo;</a>
+                        <a class="small_page_button" href="?search={{ search }}&page=1">1</a>
+                        <a class="page_arrow_spacing" href="?search={{ search }}&page={{ page_obj.previous_page_number }}">&laquo;</a>
                     {% else %}
                         <span class="small_page_button">1</span>
                         <span class="page_arrow_spacing">&laquo;</span>
@@ -48,11 +33,11 @@ VulnerableCode Package Search
                     {% if page_obj.has_next %}
                         <a
                             class="page_arrow_spacing"
-                            href="?package_name={{ package_name }}&page={{ page_obj.next_page_number }}">&raquo;
+                            href="?search={{ search }}&page={{ page_obj.next_page_number }}">&raquo;
                         </a>
                         <a
                             class="small_page_button"
-                            href="?package_name={{ package_name }}&page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages|intcomma }}
+                            href="?search={{ search }}&page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages|intcomma }}
                         </a>
                     {% else %}
                         <span class="page_arrow_spacing">&raquo;</span>
@@ -96,7 +81,7 @@ VulnerableCode Package Search
                         <tr>
                             <td style="word-break: break-all;">
                                 <a
-                                    href="{% url 'package_view' package.pk %}?package_name={{ package.package_url }}"
+                                    href="{% url 'package_view' package.pk %}?search={{ search }}&purl={{ package.package_url }}"
                                     target="_self">{{ package.package_url }}</a>
                             </td>
                             <td>{{ package.vulnerability_count }}</td>
@@ -115,13 +100,13 @@ VulnerableCode Package Search
    
         <nav class="pagination is-centered is-small" aria-label="pagination">
             {% if page_obj.has_previous %}
-                <a href="?package_name={{ package_name }}&page={{ page_obj.previous_page_number }}" class="pagination-previous">Previous</a>
+                <a href="?search={{ search }}&page={{ page_obj.previous_page_number }}" class="pagination-previous">Previous</a>
             {% else %}
                 <a class="pagination-previous" disabled>Previous</a>
             {% endif %}
    
             {% if page_obj.has_next %}
-                <a href="?package_name={{ package_name }}&page={{ page_obj.next_page_number }}" class="pagination-next">Next</a>
+                <a href="?search={{ search }}&page={{ page_obj.next_page_number }}" class="pagination-next">Next</a>
             {% else %}
                 <a class="pagination-next" disabled>Next</a>
             {% endif %}
@@ -130,7 +115,7 @@ VulnerableCode Package Search
                 {% if page_obj.number != 1%}
                     <li>
                         <a
-                            href="?package_name={{ package_name }}&page=1{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}"
+                            href="?search={{ search }}&page=1{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}"
                             class="pagination-link"
                             aria-label="Goto page 1">1
                         </a>
@@ -156,7 +141,7 @@ VulnerableCode Package Search
                     {% endif %}
                     <li>
                         <a
-                            href="?package_name={{ package_name }}&page={{ page_obj.paginator.num_pages }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}"
+                            href="?search={{ search }}&page={{ page_obj.paginator.num_pages }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}"
                             class="pagination-link"
                             aria-label="Goto page {{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages|intcomma }}
                         </a>
@@ -167,8 +152,4 @@ VulnerableCode Package Search
    
     </section>
 {% endif %}
-{% endblock %}
-
-{% block scripts %}
-   {% include "validate_form_scripts.html" %}
 {% endblock %}

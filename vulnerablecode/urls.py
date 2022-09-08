@@ -43,7 +43,11 @@ urlpatterns = [
     path("packages/search", PackageSearchView.as_view(), name="package_search"),
     path("packages/<int:pk>", PackageDetails.as_view(), name="package_view"),
     path("vulnerabilities/search", VulnerabilitySearchView.as_view(), name="vulnerability_search"),
-    path("vulnerabilities/<int:pk>", VulnerabilityDetails.as_view(), name="vulnerability_view"),
+    path(
+        "vulnerabilities/<str:vulnerability_id>",
+        VulnerabilityDetails.as_view(),
+        name="vulnerability_view",
+    ),
     path("api/docs", schema_view, name="redoc"),
     path(r"api/", include(api_router.urls)),
     # disabled for now

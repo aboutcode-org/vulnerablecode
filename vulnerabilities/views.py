@@ -34,7 +34,7 @@ class PackageSearchView(ListView):
         context = super().get_context_data(**kwargs)
         request_query = self.request.GET
         context["package_form"] = PackageForm(request_query)
-        context["package_name"] = request_query.get("package_name")
+        context["search"] = request_query.get("search")
         return context
 
     def get_queryset(self, query=None):
@@ -45,7 +45,7 @@ class PackageSearchView(ListView):
         """
         qs = self.model.objects
 
-        query = query or self.request.GET.get("package_name") or ""
+        query = query or self.request.GET.get("search") or ""
         query = query.strip()
         if not query:
             return qs.none()
@@ -120,11 +120,11 @@ class VulnerabilitySearchView(ListView):
         context = super().get_context_data(**kwargs)
         request_query = self.request.GET
         context["vulnerability_form"] = VulnerabilityForm(request_query)
-        context["vulnerability_id"] = request_query.get("vulnerability_id")
+        context["search"] = request_query.get("search")
         return context
 
     def get_queryset(self, query=None):
-        query = query or self.request.GET.get("vulnerability_id") or ""
+        query = query or self.request.GET.get("search") or ""
         qs = self.model.objects
         if not query:
             return qs.none()
@@ -166,6 +166,8 @@ class PackageDetails(DetailView):
 class VulnerabilityDetails(DetailView):
     model = models.Vulnerability
     template_name = "vulnerability_details.html"
+    slug_url_kwarg = "vulnerability_id"
+    slug_field = "vulnerability_id"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

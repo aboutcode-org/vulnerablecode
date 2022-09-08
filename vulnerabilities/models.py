@@ -18,7 +18,6 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.dispatch import receiver
 from django.urls import reverse
-from django.utils.http import int_to_base36
 from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin
 from rest_framework.authtoken.models import Token
@@ -28,6 +27,7 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.utils import build_vcid
 
 logger = logging.getLogger(__name__)
 
@@ -41,8 +41,9 @@ class Vulnerability(models.Model):
         unique=True,
         blank=True,
         max_length=20,
+        default=build_vcid,
         help_text="Unique identifier for a vulnerability in the external representation. "
-        "It is prefixed with VULCOID-",
+        "It is prefixed with VCID-",
     )
 
     summary = models.TextField(
@@ -69,12 +70,6 @@ class Vulnerability(models.Model):
     def severities(self):
         for reference in self.references.all():
             yield from VulnerabilitySeverity.objects.filter(reference=reference.id)
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if not self.vulnerability_id:
-            self.vulnerability_id = f"VULCOID-{int_to_base36(self.id).upper()}"
-            super().save(update_fields=["vulnerability_id"])
 
     @property
     def vulnerable_to(self):

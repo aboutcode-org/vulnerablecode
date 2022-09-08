@@ -60,6 +60,7 @@ class Vulnerability(models.Model):
 
     class Meta:
         verbose_name_plural = "Vulnerabilities"
+        ordering = ["vulnerability_id"]
 
     def __str__(self):
         return self.vulnerability_id
@@ -118,10 +119,7 @@ class VulnerabilityReference(models.Model):
     )
 
     class Meta:
-        unique_together = (
-            "url",
-            "reference_id",
-        )
+        unique_together = ["url", "reference_id"]
         ordering = ["reference_id", "url"]
 
     def __str__(self):
@@ -145,7 +143,8 @@ class VulnerabilityRelatedReference(models.Model):
     )
 
     class Meta:
-        unique_together = ("vulnerability", "reference")
+        unique_together = ["vulnerability", "reference"]
+        ordering = ["vulnerability", "reference"]
 
 
 class Package(PackageURLMixin):
@@ -174,14 +173,8 @@ class Package(PackageURLMixin):
         return self.package_url
 
     class Meta:
-        unique_together = (
-            "type",
-            "namespace",
-            "name",
-            "version",
-            "qualifiers",
-            "subpath",
-        )
+        unique_together = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
+        ordering = ["purl"]
 
     def __str__(self):
         return self.package_url
@@ -261,9 +254,10 @@ class PackageRelatedVulnerability(models.Model):
     )
 
     class Meta:
-        unique_together = ("package", "vulnerability")
+        unique_together = ["package", "vulnerability"]
         verbose_name_plural = "PackageRelatedVulnerabilities"
         indexes = [models.Index(fields=["fix"])]
+        ordering = ["package", "vulnerability"]
 
     def __str__(self):
         return f"{self.package.package_url} {self.vulnerability.vulnerability_id}"
@@ -324,11 +318,8 @@ class VulnerabilitySeverity(models.Model):
     value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
 
     class Meta:
-        unique_together = (
-            "reference",
-            "scoring_system",
-            "value",
-        )
+        unique_together = ["reference", "scoring_system", "value"]
+        ordering = ["reference", "scoring_system", "value"]
 
 
 class Alias(models.Model):
@@ -414,11 +405,8 @@ class Advisory(models.Model):
     )
 
     class Meta:
-        unique_together = (
-            "aliases",
-            "unique_content_id",
-            "date_published",
-        )
+        unique_together = ["aliases", "unique_content_id", "date_published"]
+        ordering = ["aliases", "date_published", "unique_content_id"]
 
     def save(self, *args, **kwargs):
         checksum = hashlib.md5()

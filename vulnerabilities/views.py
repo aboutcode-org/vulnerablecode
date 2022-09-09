@@ -170,13 +170,13 @@ class PackageDetails(DetailView):
 
         purl = self.kwargs.get(self.slug_url_kwarg)
         if purl:
-            queryset.for_package_url(purl_str=purl)
+            queryset = queryset.for_package_url(purl_str=purl)
         else:
             cls = self.__class__.__name__
             raise AttributeError(
                 f"Package details view {cls} must be called with a purl, " f"but got: {purl!r}"
             )
-        queryset = queryset.for_package_url(purl_str=purl)
+
         try:
             package = queryset.get()
         except queryset.model.DoesNotExist:

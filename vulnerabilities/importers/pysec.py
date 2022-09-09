@@ -27,18 +27,15 @@ class PyPIImporter(Importer):
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         """
-        1. Fetch the data from osv api
-        2. unzip the file
-        3. open the file one by one
-        4. yield the json file to parse_advisory_data
+        Yield AdvisoryData using a zipped data dump of OSV data
         """
         url = "https://osv-vulnerabilities.storage.googleapis.com/PyPI/all.zip"
         response = requests.get(url).content
         with ZipFile(BytesIO(response)) as zip_file:
             for file_name in zip_file.namelist():
                 if not file_name.startswith("PYSEC-"):
-                    logger.error(f"NotImplementedError PyPI package file_name: {file_name}")
-                else:
-                    with zip_file.open(file_name) as f:
-                        vul_info = json.load(f)
-                        yield parse_advisory_data(vul_info, supported_ecosystem="pypi")
+                    logger.error(f"Unsupported PyPI advisory data file: {file_name}")
+                    continue
+                with zip_file.open(file_name) as f:
+                    vul_info = json.load(f)
+                    yield parse_advisory_data(raw_data=vul_info, supported_ecosystem="pypi")

@@ -26,8 +26,8 @@ class PyPaImporter(Importer):
     url = "git+https://github.com/pypa/advisory-database"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
-        for file in fork_and_get_files(self.url):
-            yield parse_advisory_data(file, supported_ecosystem="pypi")
+        for raw_data in fork_and_get_files(self.url):
+            yield parse_advisory_data(raw_data=raw_data, supported_ecosystem="pypi")
 
 
 class ForkError(Exception):
@@ -36,20 +36,20 @@ class ForkError(Exception):
 
 def fork_and_get_files(url) -> dict:
     """
-    Fetch the github repository and go to vulns directory ,
-    then open directories one by one and return a file .
+    Yield advisorie data mappings from the PyPA GitHub repository at ``url``.
     """
     try:
         fork_directory = fetch_via_git(url=url)
     except Exception as e:
-        logger.error(f"Can't clone url {url}")
+        logger.error(f"Failed to clone url {url}: {e}")
         raise ForkError(url) from e
 
     advisory_dirs = os.path.join(fork_directory.dest_dir, "vulns")
     for root, _, files in os.walk(advisory_dirs):
         for file in files:
+            path = os.path.join(root, file)
             if not file.endswith(".yaml"):
-                logger.warning(f"unsupported file {file}")
-            else:
-                with open(os.path.join(root, file), "r") as f:
-                    yield saneyaml.load(f.read())
+                logger.warning(f"Unsupported non-YAML PyPA advisory file: {path}")
+                continue
+            with open(path) as f:
+                yield saneyaml.load(f.read())

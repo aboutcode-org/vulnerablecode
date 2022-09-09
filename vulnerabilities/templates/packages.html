@@ -14,51 +14,16 @@ VulnerableCode Package Search
     {% include "package_search_box.html" %}
 </section>
 
-{% if package_name %}
+{% if search %}
     <div class="is-max-desktop mb-3">
         <section class="mx-5">
-            <article class="panel is-info panel-header-only">
-                <div class="panel-heading py-2 is-size-6">
-                    <div class="field is-grouped is-grouped-multiline">
-                        Package search results:
-                        <div class="control">
-                            <div class="tags has-addons">
-                                <span class="tag is-white custom">
-                                    {{ package_name }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
             <div class="is-flex" style="justify-content: space-between;">
                 <div>
-                    <strong>Total records:</strong> {{ page_obj.paginator.count|intcomma }}
+                    {{ page_obj.paginator.count|intcomma }} results
                 </div>
-                <div>
-                    {% if page_obj.has_previous %}
-                        <a class="small_page_button" href="?package_name={{ package_name }}&page=1">1</a>
-                        <a class="page_arrow_spacing" href="?package_name={{ package_name }}&page={{ page_obj.previous_page_number }}">&laquo;</a>
-                    {% else %}
-                        <span class="small_page_button">1</span>
-                        <span class="page_arrow_spacing">&laquo;</span>
-                    {% endif %}
-                    Page {{ page_obj.number|intcomma }} of {{ page_obj.paginator.num_pages|intcomma }}
-                    {% if page_obj.has_next %}
-                        <a
-                            class="page_arrow_spacing"
-                            href="?package_name={{ package_name }}&page={{ page_obj.next_page_number }}">&raquo;
-                        </a>
-                        <a
-                            class="small_page_button"
-                            href="?package_name={{ package_name }}&page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages|intcomma }}
-                        </a>
-                    {% else %}
-                        <span class="page_arrow_spacing">&raquo;</span>
-                        <span class="small_page_button">{{ page_obj.paginator.num_pages|intcomma }}</span>
-                    {% endif %}
-                </div>
+                {% if is_paginated %}
+                    {% include 'includes/pagination.html' with page_obj=page_obj %}
+                {% endif %}
             </div>
         </section>
     </div>
@@ -96,8 +61,8 @@ VulnerableCode Package Search
                         <tr>
                             <td style="word-break: break-all;">
                                 <a
-                                    href="{% url 'package_view' package.pk %}?package_name={{ package.package_url }}"
-                                    target="_self">{{ package.package_url }}</a>
+                                    href="{{ package.get_absolute_url }}?search={{ search }}"
+                                    target="_self">{{ package.purl }}</a>
                             </td>
                             <td>{{ package.vulnerability_count }}</td>
                             <td>{{ package.patched_vulnerability_count }}</td>
@@ -112,63 +77,11 @@ VulnerableCode Package Search
                 </tbody>
             </table>
         </div>
-   
-        <nav class="pagination is-centered is-small" aria-label="pagination">
-            {% if page_obj.has_previous %}
-                <a href="?package_name={{ package_name }}&page={{ page_obj.previous_page_number }}" class="pagination-previous">Previous</a>
-            {% else %}
-                <a class="pagination-previous" disabled>Previous</a>
-            {% endif %}
-   
-            {% if page_obj.has_next %}
-                <a href="?package_name={{ package_name }}&page={{ page_obj.next_page_number }}" class="pagination-next">Next</a>
-            {% else %}
-                <a class="pagination-next" disabled>Next</a>
-            {% endif %}
-   
-            <ul class="pagination-list">
-                {% if page_obj.number != 1%}
-                    <li>
-                        <a
-                            href="?package_name={{ package_name }}&page=1{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}"
-                            class="pagination-link"
-                            aria-label="Goto page 1">1
-                        </a>
-                    </li>
-                    {% if page_obj.number > 2 %}
-                        <li>
-                            <span class="pagination-ellipsis">&hellip;</span>
-                        </li>
-                    {% endif %}
-                {% endif %}
-                <li>
-                    <a
-                        class="pagination-link is-current"
-                        disabled aria-label="Page {{ page_obj.number }}"
-                        aria-current="page">{{ page_obj.number|intcomma }}
-                    </a>
-                </li>
-                {% if page_obj.number != page_obj.paginator.num_pages %}
-                    {% if page_obj.next_page_number != page_obj.paginator.num_pages %}
-                        <li>
-                            <span class="pagination-ellipsis">&hellip;</span>
-                        </li>
-                    {% endif %}
-                    <li>
-                        <a
-                            href="?package_name={{ package_name }}&page={{ page_obj.paginator.num_pages }}{% if url_params_without_page %}&{{ url_params_without_page }}{% endif %}"
-                            class="pagination-link"
-                            aria-label="Goto page {{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages|intcomma }}
-                        </a>
-                    </li>
-                {% endif %}
-            </ul>
-        </nav>
-   
+
+    {% if is_paginated %}
+        {% include 'includes/pagination.html' with page_obj=page_obj %}
+    {% endif %}
+
     </section>
 {% endif %}
-{% endblock %}
-
-{% block scripts %}
-   {% include "validate_form_scripts.html" %}
 {% endblock %}

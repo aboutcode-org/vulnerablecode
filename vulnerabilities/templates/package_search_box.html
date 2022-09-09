@@ -17,6 +17,7 @@
                                 Package URL
                             </a>
                             (aka. <strong>purl</strong>) such as <strong>pkg:maven/org.apache.logging.log4j/log4j@2.0</strong>
+                            or purl prefix fragment such as <strong>pkg:alpine</strong>
                             or by package <strong>name</strong>.
                         </div>
                     </div>
@@ -29,12 +30,11 @@
             <form
                 action="{% url 'package_search' %}"
                 method="get"
-                name="pkg_form"
-                onsubmit="return validatePkgForm()"
+                name="package_search_form"
             >
                 <div class="field has-addons mt-3">
                     <div class="control width-100-pct">
-                        {{ package_form.package_name|add_class:"input" }}
+                        {{ package_search_form.search|add_class:"input" }}
                     </div>
                     <div class="control">
                         <button class="button is-link" type="submit" id="submit_pkg">
@@ -43,14 +43,6 @@
                     </div>
                 </div>
             </form>
-            <div>
-                {% if package_search %}
-                    <div class="notification search-alert">
-                        <button class=" delete"></button>
-                        {{ package_search }}
-                    </div>
-                {% endif %}
-            </div>
         </div>
     </div>
 </article>

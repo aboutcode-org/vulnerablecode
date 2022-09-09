@@ -119,7 +119,6 @@ class VulnerabilityReference(models.Model):
         )
         ordering = ["reference_id", "url"]
 
-    
     def save(self, *args, **kwargs):
         if not self.url:
             raise ValidationError("URL cannot be empty")

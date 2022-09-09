@@ -8,6 +8,7 @@
 #
 
 import pytest
+from django.core.exceptions import ValidationError
 
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
@@ -22,3 +23,15 @@ def test_cpe_as_reference_id_in_db():
         url="https://foo.com",
         vulnerability=vulnerability,
     )
+
+
+@pytest.mark.django_db
+def test_cpe_as_reference_id_in_db_with_empty_url():
+    with pytest.raises(ValidationError) as e:
+        vulnerability = Vulnerability(summary="lorem ipsum" * 10)
+        vulnerability.save()
+        VulnerabilityReference.objects.get_or_create(
+            reference_id="cpe:2.3:a:microsoft:windows_10:10.0.17134:*:*:*:*:*:*:*" * 3,
+            url="",
+            vulnerability=vulnerability,
+        )

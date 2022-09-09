@@ -10,15 +10,21 @@
 import hashlib
 import json
 import logging
+from contextlib import suppress
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models.functions import Length
+from django.db.models.functions import Trim
 from django.dispatch import receiver
+from django.urls import reverse
 from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin
+from packageurl.contrib.django.models import PackageURLQuerySet
+from packageurl.contrib.django.models import without_empty_values
 from rest_framework.authtoken.models import Token
 
 from vulnerabilities.importer import AdvisoryData
@@ -30,11 +36,22 @@ from vulnerabilities.utils import build_vcid
 
 logger = logging.getLogger(__name__)
 
+models.CharField.register_lookup(Length)
+models.CharField.register_lookup(Trim)
+
+
+class BaseQuerySet(models.QuerySet):
+    def get_or_none(self, *args, **kwargs):
+        """
+        Returns a single object matching the given keyword arguments, `None` otherwise.
+        """
+        with suppress(self.model.DoesNotExist, ValidationError):
+            return self.get(*args, **kwargs)
+
 
 class Vulnerability(models.Model):
     """
-    A software vulnerability with minimal information. Unique identifiers are
-    stored as ``Alias``.
+    A software vulnerability with a unique identifier and alternate ``aliases``.
     """
 
     vulnerability_id = models.CharField(
@@ -54,10 +71,18 @@ class Vulnerability(models.Model):
     references = models.ManyToManyField(
         to="VulnerabilityReference", through="VulnerabilityRelatedReference"
     )
+
     packages = models.ManyToManyField(
         to="Package",
         through="PackageRelatedVulnerability",
     )
+
+    class Meta:
+        verbose_name_plural = "Vulnerabilities"
+        ordering = ["vulnerability_id"]
+
+    def __str__(self):
+        return self.vulnerability_id
 
     @property
     def severities(self):
@@ -87,11 +112,11 @@ class Vulnerability(models.Model):
         """
         return self.aliases.all()
 
-    def __str__(self):
-        return self.vulnerability_id
-
-    class Meta:
-        verbose_name_plural = "Vulnerabilities"
+    def get_absolute_url(self):
+        """
+        Return this Vulnerability details URL.
+        """
+        return reverse("vulnerability_details", args=[self.vulnerability_id])
 
 
 class VulnerabilityReference(models.Model):
@@ -105,18 +130,21 @@ class VulnerabilityReference(models.Model):
         through="VulnerabilityRelatedReference",
     )
 
-    url = models.URLField(max_length=1024, help_text="URL to the vulnerability reference")
+    url = models.URLField(
+        max_length=1024,
+        help_text="URL to the vulnerability reference",
+        unique=True,
+    )
+
     reference_id = models.CharField(
         max_length=200,
         help_text="An optional reference ID, such as DSA-4465-1 when available",
         blank=True,
     )
 
+    objects = BaseQuerySet.as_manager()
+
     class Meta:
-        unique_together = (
-            "url",
-            "reference_id",
-        )
         ordering = ["reference_id", "url"]
 
     def __str__(self):
@@ -140,17 +168,41 @@ class VulnerabilityRelatedReference(models.Model):
     )
 
     class Meta:
-        unique_together = ("vulnerability", "reference")
+        unique_together = ["vulnerability", "reference"]
+        ordering = ["vulnerability", "reference"]
+
+
+class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
+    def get_or_create_from_purl(self, purl: PackageURL):
+        """
+        Return an existing or new Package (created if neeed) given a
+        ``purl`` PackageURL.
+        """
+        purl_fields = without_empty_values(purl.to_dict(encode=True))
+        package, _ = Package.objects.get_or_create(**purl_fields)
+        return package
+
+    def for_package_url_object(self, purl):
+        """
+        Filter the QuerySet with the provided Package URL object or string. The
+        ``purl`` string is validated and transformed into filtering lookups. If
+        this is a PackageURL object it is reused as-is.
+        """
+        if isinstance(purl, PackageURL):
+            lookups = without_empty_values(purl.to_dict(encode=True))
+            return self.filter(**lookups)
+
+        elif isinstance(purl, str):
+            return self.for_package_url(purl)
+
+        else:
+            return self.none()
 
 
 class Package(PackageURLMixin):
     """
     A software package with related vulnerabilities.
     """
-
-    vulnerabilities = models.ManyToManyField(
-        to="Vulnerability", through="PackageRelatedVulnerability"
-    )
 
     # Remove the `qualifers` and `set_package_url` overrides after
     # https://github.com/package-url/packageurl-python/pull/35
@@ -164,15 +216,22 @@ class Package(PackageURLMixin):
         null=False,
     )
 
+    vulnerabilities = models.ManyToManyField(
+        to="Vulnerability", through="PackageRelatedVulnerability"
+    )
+
+    objects = PackageQuerySet.as_manager()
+
+    @property
+    def purl(self):
+        return self.package_url
+
     class Meta:
-        unique_together = (
-            "type",
-            "namespace",
-            "name",
-            "version",
-            "qualifiers",
-            "subpath",
-        )
+        unique_together = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
+        ordering = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
+
+    def __str__(self):
+        return self.package_url
 
     @property
     # TODO: consider renaming to "affected_by"
@@ -211,25 +270,11 @@ class Package(PackageURLMixin):
         """
         return self.vulnerable_to.exists()
 
-    def set_package_url(self, package_url):
+    def get_absolute_url(self):
         """
-        Set each field values to the values of the provided `package_url` string
-        or PackageURL object. Existing values are overwritten including setting
-        values to None for provided empty values.
+        Return this Package details URL.
         """
-        if not isinstance(package_url, PackageURL):
-            package_url = PackageURL.from_string(package_url)
-
-        for field_name, value in package_url.to_dict().items():
-            model_field = self._meta.get_field(field_name)
-
-            if value and len(value) > model_field.max_length:
-                raise ValidationError(f'Value too long for field "{field_name}".')
-
-            setattr(self, field_name, value or None)
-
-    def __str__(self):
-        return self.package_url
+        return reverse("package_details", args=[self.purl])
 
 
 class PackageRelatedVulnerability(models.Model):
@@ -239,6 +284,7 @@ class PackageRelatedVulnerability(models.Model):
         Package,
         on_delete=models.CASCADE,
     )
+
     vulnerability = models.ForeignKey(
         Vulnerability,
         on_delete=models.CASCADE,
@@ -261,13 +307,14 @@ class PackageRelatedVulnerability(models.Model):
         default=False, help_text="Does this relation fix the specified vulnerability ?"
     )
 
-    def __str__(self):
-        return f"{self.package.package_url} {self.vulnerability.vulnerability_id}"
-
     class Meta:
-        unique_together = ("package", "vulnerability")
+        unique_together = ["package", "vulnerability"]
         verbose_name_plural = "PackageRelatedVulnerabilities"
         indexes = [models.Index(fields=["fix"])]
+        ordering = ["package", "vulnerability"]
+
+    def __str__(self):
+        return f"{self.package.package_url} {self.vulnerability.vulnerability_id}"
 
     def update_or_create(self):
         """
@@ -325,11 +372,8 @@ class VulnerabilitySeverity(models.Model):
     value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
 
     class Meta:
-        unique_together = (
-            "reference",
-            "scoring_system",
-            "value",
-        )
+        unique_together = ["reference", "scoring_system", "value"]
+        ordering = ["reference", "scoring_system", "value"]
 
 
 class Alias(models.Model):
@@ -356,6 +400,12 @@ class Alias(models.Model):
         related_name="aliases",
     )
 
+    class Meta:
+        ordering = ["alias"]
+
+    def __str__(self):
+        return self.alias
+
     @property
     def url(self):
         """
@@ -367,12 +417,6 @@ class Alias(models.Model):
 
         if alias.startswith("GHSA"):
             return f"https://github.com/advisories/{alias}"
-
-    class Meta:
-        ordering = ["alias"]
-
-    def __str__(self):
-        return self.alias
 
 
 class Advisory(models.Model):
@@ -415,11 +459,8 @@ class Advisory(models.Model):
     )
 
     class Meta:
-        unique_together = (
-            "aliases",
-            "unique_content_id",
-            "date_published",
-        )
+        unique_together = ["aliases", "unique_content_id", "date_published"]
+        ordering = ["aliases", "date_published", "unique_content_id"]
 
     def save(self, *args, **kwargs):
         checksum = hashlib.md5()

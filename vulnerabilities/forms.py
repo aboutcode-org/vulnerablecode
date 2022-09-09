@@ -9,29 +9,21 @@
 
 from django import forms
 
-from vulnerabilities.models import Package
 
+class PackageSearchForm(forms.Form):
 
-def get_known_package_types():
-    """
-    Return a list of known package types.
-    """
-    pkg_types = [(i.type, i.type) for i in Package.objects.distinct("type").all()]
-    pkg_types.append((None, "Any type"))
-    return pkg_types
-
-
-class PackageForm(forms.Form):
-
-    package_name = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"placeholder": "Package name or purl"})
+    search = forms.CharField(
+        required=True,
+        widget=forms.TextInput(
+            attrs={"placeholder": "Package name, purl or purl fragment"},
+        ),
     )
 
 
-class VulnerabilityForm(forms.Form):
+class VulnerabilitySearchForm(forms.Form):
 
-    vulnerability_id = forms.CharField(
-        required=False,
+    search = forms.CharField(
+        required=True,
         widget=forms.TextInput(
             attrs={"placeholder": "Vulnerability id or alias such as CVE or GHSA"}
         ),

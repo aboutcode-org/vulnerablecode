@@ -9,22 +9,22 @@
 
 from django.db.models import Count
 from django.db.models import Q
+from django.http.response import Http404
 from django.http.response import HttpResponseNotAllowed
 from django.shortcuts import render
-from django.urls import reverse
 from django.views import View
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from packageurl import PackageURL
 
 from vulnerabilities import models
-from vulnerabilities.forms import PackageForm
-from vulnerabilities.forms import VulnerabilityForm
+from vulnerabilities.forms import PackageSearchForm
+from vulnerabilities.forms import VulnerabilitySearchForm
 
-PAGE_SIZE = 50
+PAGE_SIZE = 20
 
 
-class PackageSearchView(ListView):
+class PackageSearch(ListView):
     model = models.Package
     template_name = "packages.html"
     ordering = ["type", "namespace", "name", "version"]
@@ -33,8 +33,8 @@ class PackageSearchView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         request_query = self.request.GET
-        context["package_form"] = PackageForm(request_query)
-        context["package_name"] = request_query.get("package_name")
+        context["package_search_form"] = PackageSearchForm(request_query)
+        context["search"] = request_query.get("search")
         return context
 
     def get_queryset(self, query=None):
@@ -45,7 +45,7 @@ class PackageSearchView(ListView):
         """
         qs = self.model.objects
 
-        query = query or self.request.GET.get("package_name") or ""
+        query = query or self.request.GET.get("search") or ""
         query = query.strip()
         if not query:
             return qs.none()
@@ -110,7 +110,7 @@ class PackageSearchView(ListView):
         ).prefetch_related()
 
 
-class VulnerabilitySearchView(ListView):
+class VulnerabilitySearch(ListView):
     model = models.Vulnerability
     template_name = "vulnerabilities.html"
     ordering = ["vulnerability_id"]
@@ -119,12 +119,12 @@ class VulnerabilitySearchView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         request_query = self.request.GET
-        context["vulnerability_form"] = VulnerabilityForm(request_query)
-        context["vulnerability_id"] = request_query.get("vulnerability_id")
+        context["vulnerability_search_form"] = VulnerabilitySearchForm(request_query)
+        context["search"] = request_query.get("search")
         return context
 
     def get_queryset(self, query=None):
-        query = query or self.request.GET.get("vulnerability_id") or ""
+        query = query or self.request.GET.get("search") or ""
         qs = self.model.objects
         if not query:
             return qs.none()
@@ -152,25 +152,48 @@ class VulnerabilitySearchView(ListView):
 class PackageDetails(DetailView):
     model = models.Package
     template_name = "package_details.html"
+    slug_url_kwarg = "purl"
+    slug_field = "purl"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         package = self.object
         context["package"] = package
-        context["impacted_vuln"] = package.vulnerable_to.order_by("vulnerability_id")
-        context["resolved_vuln"] = package.resolved_to.order_by("vulnerability_id")
-        context["package_form"] = PackageForm(self.request.GET)
+        context["affected_by_vulnerabilities"] = package.vulnerable_to.order_by("vulnerability_id")
+        context["fixing_vulnerabilities"] = package.resolved_to.order_by("vulnerability_id")
+        context["package_search_form"] = PackageSearchForm(self.request.GET)
         return context
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        purl = self.kwargs.get(self.slug_url_kwarg)
+        if purl:
+            queryset = queryset.for_package_url(purl_str=purl)
+        else:
+            cls = self.__class__.__name__
+            raise AttributeError(
+                f"Package details view {cls} must be called with a purl, " f"but got: {purl!r}"
+            )
+
+        try:
+            package = queryset.get()
+        except queryset.model.DoesNotExist:
+            raise Http404(f"No Package found for purl: {purl}")
+        return package
 
 
 class VulnerabilityDetails(DetailView):
     model = models.Vulnerability
     template_name = "vulnerability_details.html"
+    slug_url_kwarg = "vulnerability_id"
+    slug_field = "vulnerability_id"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["vulnerability"] = self.object
-        context["vulnerability_form"] = VulnerabilityForm(self.request.GET)
+        context["vulnerability_search_form"] = VulnerabilitySearchForm(self.request.GET)
         context["severities"] = list(self.object.severities)
         return context
 
@@ -181,8 +204,8 @@ class HomePage(View):
     def get(self, request):
         request_query = request.GET
         context = {
-            "vulnerability_form": VulnerabilityForm(request_query),
-            "package_form": PackageForm(request_query),
+            "vulnerability_search_form": VulnerabilitySearchForm(request_query),
+            "package_search_form": PackageSearchForm(request_query),
         }
         return render(request=request, template_name=self.template_name, context=context)
 

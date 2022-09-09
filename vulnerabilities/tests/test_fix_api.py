@@ -64,13 +64,13 @@ class APITestCaseVulnerability(TransactionTestCase):
             "aliases": [],
             "fixed_packages": [
                 {
-                    "url": f"http://testserver/api/packages/{self.pkg1.id}",
-                    "purl": "pkg:pypi/flask@0.1.2",
+                    "url": f"http://testserver/api/packages/{self.pkg2.id}",
+                    "purl": "pkg:debian/flask@0.1.2",
                     "is_vulnerable": False,
                 },
                 {
-                    "url": f"http://testserver/api/packages/{self.pkg2.id}",
-                    "purl": "pkg:debian/flask@0.1.2",
+                    "url": f"http://testserver/api/packages/{self.pkg1.id}",
+                    "purl": "pkg:pypi/flask@0.1.2",
                     "is_vulnerable": False,
                 },
             ],
@@ -269,6 +269,7 @@ class CPEApi(TestCase):
         for i in range(0, 10):
             ref, _ = VulnerabilityReference.objects.get_or_create(
                 reference_id=f"cpe:/a:nginx:{i}",
+                url=f"https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:/a:nginx:{i}",
             )
             VulnerabilityRelatedReference.objects.create(
                 reference=ref, vulnerability=self.vulnerability
@@ -356,7 +357,10 @@ class BulkSearchAPICPE(TestCase):
         ]
         vuln = Vulnerability.objects.create(summary="test")
         for cpe in self.exclusive_cpes:
-            ref = VulnerabilityReference.objects.create(reference_id=cpe)
+            ref = VulnerabilityReference.objects.create(
+                reference_id=cpe,
+                url=f"https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query={cpe}",
+            )
             VulnerabilityRelatedReference.objects.create(reference=ref, vulnerability=vuln)
         second_vuln = Vulnerability.objects.create(summary="test-A")
         self.non_exclusive_cpes = [
@@ -370,7 +374,10 @@ class BulkSearchAPICPE(TestCase):
         ]
         third_vuln = Vulnerability.objects.create(summary="test-B")
         for cpe in self.non_exclusive_cpes:
-            ref = VulnerabilityReference.objects.create(reference_id=cpe)
+            ref = VulnerabilityReference.objects.create(
+                reference_id=cpe,
+                url=f"https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query={cpe}",
+            )
             VulnerabilityRelatedReference.objects.create(reference=ref, vulnerability=second_vuln)
             VulnerabilityRelatedReference.objects.create(reference=ref, vulnerability=third_vuln)
 

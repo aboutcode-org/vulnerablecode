@@ -99,7 +99,8 @@
         "url": "https://github.com/jmrozanec/cron-utils/commit/cfd2880f80e62ea74b92fa83474c2aabdb9899da",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -144,6 +145,7 @@
         "url": "https://github.com/jmrozanec/cron-utils/commit/cfd2880f80e62ea74b92fa83474c2aabdb9899da",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   }
 ]

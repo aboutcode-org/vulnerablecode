@@ -24,6 +24,7 @@ from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
+from vulnerabilities.models import Weakness
 
 logger = logging.getLogger(__name__)
 
@@ -133,6 +134,11 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                 fix=True,
             ).update_or_create()
 
+        if inference.weaknesses and vulnerability:
+            for cwe_id in inference.weaknesses:
+                cwe_obj, created = Weakness.objects.get_or_create(cwe_id=cwe_id)
+                cwe_obj.vulnerabilities.add(vulnerability)
+                cwe_obj.save()
     advisory.date_improved = datetime.now(timezone.utc)
     advisory.save()
 

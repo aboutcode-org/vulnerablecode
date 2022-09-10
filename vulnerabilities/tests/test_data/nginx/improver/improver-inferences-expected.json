@@ -1443,7 +1443,8 @@
         "url": "https://nginx.org/download/patch.2021.resolver.txt.asc",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": "PLAIN-ID-FOR-TESTING",
@@ -2889,7 +2890,8 @@
         "url": "https://nginx.org/download/patch.2021.resolver.txt.asc",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": "PLAIN-ID-FOR-TESTING",
@@ -3445,7 +3447,8 @@
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-9511",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": "PLAIN-ID-FOR-TESTING",
@@ -4001,6 +4004,7 @@
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-9511",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   }
 ]

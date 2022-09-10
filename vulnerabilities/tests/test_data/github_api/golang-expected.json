@@ -62,7 +62,8 @@
         ]
       }
     ],
-    "date_published": "2021-05-18T21:09:17+00:00"
+    "date_published": "2021-05-18T21:09:17+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -127,7 +128,8 @@
         ]
       }
     ],
-    "date_published": "2021-05-18T21:09:17+00:00"
+    "date_published": "2021-05-18T21:09:17+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -178,6 +180,7 @@
         ]
       }
     ],
-    "date_published": "2021-12-14T21:48:16+00:00"
+    "date_published": "2021-12-14T21:48:16+00:00",
+    "weaknesses": []
   }
 ]

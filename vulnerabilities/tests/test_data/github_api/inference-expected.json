@@ -217,7 +217,8 @@
           }
         ]
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -421,6 +422,7 @@
           }
         ]
       }
-    ]
+    ],
+    "weaknesses": []
   }
 ]

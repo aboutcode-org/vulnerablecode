@@ -75,7 +75,8 @@
         ]
       }
     ],
-    "date_published": "2022-03-15T00:00:00+00:00"
+    "date_published": "2022-03-15T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -153,7 +154,8 @@
         ]
       }
     ],
-    "date_published": "2022-01-28T00:00:00+00:00"
+    "date_published": "2022-01-28T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -197,7 +199,8 @@
         ]
       }
     ],
-    "date_published": "2021-12-14T00:00:00+00:00"
+    "date_published": "2021-12-14T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -258,6 +261,7 @@
         ]
       }
     ],
-    "date_published": "2020-12-08T00:00:00+00:00"
+    "date_published": "2020-12-08T00:00:00+00:00",
+    "weaknesses": []
   }
 ]

@@ -44,7 +44,8 @@
       }
     ],
     "references": [],
-    "date_published": "2014-10-15T00:00:00+00:00"
+    "date_published": "2014-10-15T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "2ec1914c66b9d7965fca6a0e0bf6c0ec",
@@ -79,7 +80,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2002-07-30T00:00:00+00:00"
+    "date_published": "2002-07-30T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "25d5f2c0daeaee15470dfefa43708d73",
@@ -114,7 +116,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2002-07-30T00:00:00+00:00"
+    "date_published": "2002-07-30T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "c98c11a31d0c05afb57039eac59ae4b1",
@@ -149,7 +152,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2002-07-30T00:00:00+00:00"
+    "date_published": "2002-07-30T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "cb80d3d5cbb3cecb0f4a3288931c2ed3",
@@ -184,7 +188,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2002-07-30T00:00:00+00:00"
+    "date_published": "2002-07-30T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "e030092a3a2d0cce363e5f70220b78dd",
@@ -219,7 +224,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2002-08-08T00:00:00+00:00"
+    "date_published": "2002-08-08T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "73a5c0c4082149dea0cc58110cce5240",
@@ -266,7 +272,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2003-02-19T00:00:00+00:00"
+    "date_published": "2003-02-19T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "55cc2fb9b51cb4777fe7ea4b98a45853",
@@ -313,7 +320,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2003-03-19T00:00:00+00:00"
+    "date_published": "2003-03-19T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "63a8a6e8a2dbde22c68815ec8fa6e1b5",
@@ -360,7 +368,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2003-03-14T00:00:00+00:00"
+    "date_published": "2003-03-14T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "aebb33e7fbb490eac9a8a617fc0d7ca3",
@@ -407,7 +416,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2003-09-30T00:00:00+00:00"
+    "date_published": "2003-09-30T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "b00ab5e0ca915c6c9b2663a0ee19e472",
@@ -454,7 +464,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2003-09-30T00:00:00+00:00"
+    "date_published": "2003-09-30T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "9ae2c602beabf73d535f1933f2bdee91",
@@ -489,7 +500,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2003-09-30T00:00:00+00:00"
+    "date_published": "2003-09-30T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "b9dbe99eb99cff6623b2f07bda3db3e1",
@@ -524,7 +536,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2003-11-04T00:00:00+00:00"
+    "date_published": "2003-11-04T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "0399fccd94425e8afdd33ffc49edcf87",
@@ -571,7 +584,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2004-03-17T00:00:00+00:00"
+    "date_published": "2004-03-17T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "04baadb0909239aa63250f8148b840e4",
@@ -606,7 +620,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2004-03-17T00:00:00+00:00"
+    "date_published": "2004-03-17T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "e11001942f7918509fd2391a2595d3c8",
@@ -641,7 +656,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2004-03-17T00:00:00+00:00"
+    "date_published": "2004-03-17T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "fa1f3146fe26d34512d73ade9810b151",
@@ -688,7 +704,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2004-09-30T00:00:00+00:00"
+    "date_published": "2004-09-30T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "6d92ea5ca68aae26e71ee69b0343b3a5",
@@ -747,7 +764,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2005-10-11T00:00:00+00:00"
+    "date_published": "2005-10-11T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "69a5e64b56819419f55c40d5db981710",
@@ -794,7 +812,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2006-09-28T00:00:00+00:00"
+    "date_published": "2006-09-28T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "12536462776dc0fec2a706166cccb41f",
@@ -853,7 +872,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2006-09-28T00:00:00+00:00"
+    "date_published": "2006-09-28T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "5a1555075a1a07181596e9ee755176d2",
@@ -912,7 +932,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2006-09-28T00:00:00+00:00"
+    "date_published": "2006-09-28T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "6213f8e51cb9850bd2d59065aecdf0cd",
@@ -971,7 +992,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2006-09-05T00:00:00+00:00"
+    "date_published": "2006-09-05T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "b8fcc1e274575002715a347b125ae8e4",
@@ -1030,7 +1052,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2006-09-28T00:00:00+00:00"
+    "date_published": "2006-09-28T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "ce7a360e61885d4a980deb76217c0d60",
@@ -1065,7 +1088,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2007-10-12T00:00:00+00:00"
+    "date_published": "2007-10-12T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "70a70192d83214d772289d57dae1ee61",
@@ -1100,7 +1124,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2007-10-12T00:00:00+00:00"
+    "date_published": "2007-10-12T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "1f2782accf0ef33eec7f7c21fe969938",
@@ -1135,7 +1160,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2008-05-28T00:00:00+00:00"
+    "date_published": "2008-05-28T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "b1b17735ced56629f76d4ad4156b9bce",
@@ -1170,7 +1196,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2008-05-28T00:00:00+00:00"
+    "date_published": "2008-05-28T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "0b092b26a3a1c75112d186f6cdd60ff7",
@@ -1205,7 +1232,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2009-01-07T00:00:00+00:00"
+    "date_published": "2009-01-07T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "e0b9e817cf72e4d773d890a61287bd88",
@@ -1240,7 +1268,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2009-03-25T00:00:00+00:00"
+    "date_published": "2009-03-25T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "43dcbfcedcc32b87a723125d164291e1",
@@ -1275,7 +1304,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2009-03-25T00:00:00+00:00"
+    "date_published": "2009-03-25T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "1e3c05fa25e14f424f2078739c0bdc60",
@@ -1310,7 +1340,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2009-03-25T00:00:00+00:00"
+    "date_published": "2009-03-25T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "10ae2d0da4aa9205aaded1b081eb1b25",
@@ -1350,7 +1381,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2009-05-12T00:00:00+00:00"
+    "date_published": "2009-05-12T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "2b4e1b73c41a5e2fd1e5ec5acd53085f",
@@ -1390,7 +1422,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2009-05-12T00:00:00+00:00"
+    "date_published": "2009-05-12T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "2479cc3b4b0c5a64f6af5fe00d4bb334",
@@ -1430,7 +1463,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2009-05-12T00:00:00+00:00"
+    "date_published": "2009-05-12T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "dd6da6267d70026a558db1a116fbee2e",
@@ -1465,7 +1499,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2009-06-02T00:00:00+00:00"
+    "date_published": "2009-06-02T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "855075369cb16f6855f37e5f18dd94aa",
@@ -1500,7 +1535,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2009-02-05T00:00:00+00:00"
+    "date_published": "2009-02-05T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "cd5a928e754a81fe78d2ff793fd9fe5c",
@@ -1535,7 +1571,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2010-02-23T00:00:00+00:00"
+    "date_published": "2010-02-23T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "e13ddcabb53c6826afd71355212e490f",
@@ -1570,7 +1607,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2009-11-05T00:00:00+00:00"
+    "date_published": "2009-11-05T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "7623cc9fdf2c1a033ae13b9c4f85c216",
@@ -1605,7 +1643,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2010-01-13T00:00:00+00:00"
+    "date_published": "2010-01-13T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "f93465ffe5c17257ebdf5801edd6c8e7",
@@ -1640,7 +1679,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2010-01-19T00:00:00+00:00"
+    "date_published": "2010-01-19T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "1c2ec8085e7e8589e189bc816ea6e4f8",
@@ -1675,7 +1715,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2010-03-24T00:00:00+00:00"
+    "date_published": "2010-03-24T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "10a8d75d89e03a7e1b68c7de54099ca7",
@@ -1722,7 +1763,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2010-06-01T00:00:00+00:00"
+    "date_published": "2010-06-01T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "a2f368d38ceb728d8725aff53b981893",
@@ -1757,7 +1799,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2010-06-01T00:00:00+00:00"
+    "date_published": "2010-06-01T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "c59743251b77735f296be0f67fead428",
@@ -1804,7 +1847,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2010-11-16T00:00:00+00:00"
+    "date_published": "2010-11-16T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "e4b73e603cc3582c869a0225260b68f2",
@@ -1851,7 +1895,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2010-12-02T00:00:00+00:00"
+    "date_published": "2010-12-02T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "c8d35a8e132ea021df593dbfa90519fe",
@@ -1886,7 +1931,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2010-12-02T00:00:00+00:00"
+    "date_published": "2010-12-02T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "89b3f67beba5915422b336140683b8a9",
@@ -1933,7 +1979,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-04-08T00:00:00+00:00"
+    "date_published": "2014-04-08T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "c321f88c434d878975bb4654c9dd11fb",
@@ -1980,7 +2027,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2011-02-08T00:00:00+00:00"
+    "date_published": "2011-02-08T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "54c01172e2e79e9e75d62960fb3f3ca3",
@@ -2015,7 +2063,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2011-09-06T00:00:00+00:00"
+    "date_published": "2011-09-06T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "0b591f3a423642028bd7610a4c0c4c8b",
@@ -2062,7 +2111,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2011-09-06T00:00:00+00:00"
+    "date_published": "2011-09-06T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "600af49289d67cfbc3327ab07d7ad2e4",
@@ -2109,7 +2159,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2012-01-04T00:00:00+00:00"
+    "date_published": "2012-01-04T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "7807545a105e79cf1c8b50521641e613",
@@ -2144,7 +2195,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2012-01-04T00:00:00+00:00"
+    "date_published": "2012-01-04T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "ad9473b31be72e89afbe9ad718a72e00",
@@ -2191,7 +2243,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2012-01-04T00:00:00+00:00"
+    "date_published": "2012-01-04T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "3e660791fead8dd25efecc0f283c208c",
@@ -2238,7 +2291,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2012-01-04T00:00:00+00:00"
+    "date_published": "2012-01-04T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "f86d2211da5a61d8e581d7b11f1908d1",
@@ -2285,7 +2339,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2012-01-04T00:00:00+00:00"
+    "date_published": "2012-01-04T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "92951f2a40936d95d72816f0d2998000",
@@ -2320,7 +2375,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2012-01-04T00:00:00+00:00"
+    "date_published": "2012-01-04T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "f50e568118ff3cbe3e7d9218d8fe8490",
@@ -2367,7 +2423,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2012-01-04T00:00:00+00:00"
+    "date_published": "2012-01-04T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "f06c70d55861fcad43368de536b9fa2b",
@@ -2414,7 +2471,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2012-03-12T00:00:00+00:00"
+    "date_published": "2012-03-12T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "e5eb2917af2b324b45323e80a932eaac",
@@ -2473,7 +2531,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2012-04-19T00:00:00+00:00"
+    "date_published": "2012-04-19T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "4ec9eb4c6e5c622e43a6ea6ef15d52b4",
@@ -2508,7 +2567,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2012-04-24T00:00:00+00:00"
+    "date_published": "2012-04-24T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "6a0035c2e08c94d1f96c341c1c65308e",
@@ -2567,7 +2627,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2012-05-10T00:00:00+00:00"
+    "date_published": "2012-05-10T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "71f19fecae0d29e9647041dd489f8b9d",
@@ -2602,7 +2663,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2013-02-05T00:00:00+00:00"
+    "date_published": "2013-02-05T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "9ead169dc70d8bbcfceb668bf99916b5",
@@ -2661,7 +2723,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2013-02-05T00:00:00+00:00"
+    "date_published": "2013-02-05T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "5150b7bcb2a91bca5bbec4be5fd9707e",
@@ -2720,7 +2783,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2013-02-04T00:00:00+00:00"
+    "date_published": "2013-02-04T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "8f379a5bad1322f3555d207330a7e79b",
@@ -2755,7 +2819,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-01-06T00:00:00+00:00"
+    "date_published": "2014-01-06T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "e044b060bb6a88182ef047435b17edc7",
@@ -2790,7 +2855,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2013-12-14T00:00:00+00:00"
+    "date_published": "2013-12-14T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "f629034826a9a0b0405e02e8fecc5471",
@@ -2837,7 +2903,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2013-12-13T00:00:00+00:00"
+    "date_published": "2013-12-13T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "f088991977978985d6c22eae42e9ae0d",
@@ -2906,7 +2973,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-02-14T00:00:00+00:00"
+    "date_published": "2014-02-14T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "45eb6dfd31b5fc4828ce7918a5e30fe1",
@@ -2941,7 +3009,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-04-07T00:00:00+00:00"
+    "date_published": "2014-04-07T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "61d91c23f6b3cbb2cfe8c448285ced91",
@@ -3000,7 +3069,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-06-05T00:00:00+00:00"
+    "date_published": "2014-06-05T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "b72606d65a6ae99abd593e03be951491",
@@ -3047,7 +3117,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-04-21T00:00:00+00:00"
+    "date_published": "2014-04-21T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "9d281843d5f176d057383fdad48bf8b9",
@@ -3106,7 +3177,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-06-05T00:00:00+00:00"
+    "date_published": "2014-06-05T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "acd1e3ac9746e2bf60f9e4356e42a244",
@@ -3165,7 +3237,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-06-05T00:00:00+00:00"
+    "date_published": "2014-06-05T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "928fd52bdf45973bd405785383f86ff9",
@@ -3224,7 +3297,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-05-30T00:00:00+00:00"
+    "date_published": "2014-05-30T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "ddb7ca3a4fe071c0b0e2bce9159e80a9",
@@ -3283,7 +3357,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-08-06T00:00:00+00:00"
+    "date_published": "2014-08-06T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "9a0cc7af593e54b92b6972add5003c70",
@@ -3342,7 +3417,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-08-06T00:00:00+00:00"
+    "date_published": "2014-08-06T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "3f2bdad8de4efd2e68f4bf04d8cb7038",
@@ -3401,7 +3477,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-08-06T00:00:00+00:00"
+    "date_published": "2014-08-06T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "3c0bc908a2f8b2ec18eabf6b12757586",
@@ -3460,7 +3537,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-08-06T00:00:00+00:00"
+    "date_published": "2014-08-06T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "cc4b40b103fcbee25daf28d68cfc0f96",
@@ -3507,7 +3585,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-08-06T00:00:00+00:00"
+    "date_published": "2014-08-06T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "f2c41d8c1f22980784c20b489c539cfb",
@@ -3566,7 +3645,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-08-06T00:00:00+00:00"
+    "date_published": "2014-08-06T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "9538bc3461d96c2b21db3c1fac24baa1",
@@ -3601,7 +3681,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-08-06T00:00:00+00:00"
+    "date_published": "2014-08-06T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "69b45e7fa2c0b4fb073a8b82849decbd",
@@ -3636,7 +3717,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-08-06T00:00:00+00:00"
+    "date_published": "2014-08-06T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "11e1f9c06f2e3543c81cf07c224cf341",
@@ -3677,7 +3759,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-10-15T00:00:00+00:00"
+    "date_published": "2014-10-15T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "8d6fe58e87dc190b8862a94b4d2d8562",
@@ -3742,7 +3825,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-10-15T00:00:00+00:00"
+    "date_published": "2014-10-15T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "da97f3220903401cf9a9d0e1bcb5d216",
@@ -3807,7 +3891,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-10-15T00:00:00+00:00"
+    "date_published": "2014-10-15T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "bc3dcbb576781e2d3895959a32a98cd6",
@@ -3872,7 +3957,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-10-21T00:00:00+00:00"
+    "date_published": "2014-10-21T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "de6019028ac0c1f61b2791ea0b64dae4",
@@ -3937,7 +4023,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-01-08T00:00:00+00:00"
+    "date_published": "2015-01-08T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "e1a2c8490ee8ec555408bf1ba329ab5f",
@@ -4002,7 +4089,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-01-05T00:00:00+00:00"
+    "date_published": "2015-01-05T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "830d8ea55e127bf408bf1a96867fde9e",
@@ -4067,7 +4155,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-01-05T00:00:00+00:00"
+    "date_published": "2015-01-05T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "556ac77a9be9aa218ddaa6bafb6c3ef1",
@@ -4102,7 +4191,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2014-08-06T00:00:00+00:00"
+    "date_published": "2014-08-06T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "ba9bf80219726629bf9ca25b9ec2d7ee",
@@ -4167,7 +4257,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-06-11T00:00:00+00:00"
+    "date_published": "2015-06-11T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "17a2b9e6e7f20925bfa76eed64d97e63",
@@ -4232,7 +4323,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-01-05T00:00:00+00:00"
+    "date_published": "2015-01-05T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "da0b220dac069d120b1b47e18460563e",
@@ -4297,7 +4389,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-01-06T00:00:00+00:00"
+    "date_published": "2015-01-06T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "9110b3c3a234b07357ebc6c80b9e5718",
@@ -4350,7 +4443,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-01-08T00:00:00+00:00"
+    "date_published": "2015-01-08T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "f80174a3b289a4ded7c91ff074ab8d3c",
@@ -4403,7 +4497,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-01-08T00:00:00+00:00"
+    "date_published": "2015-01-08T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "6e873fedb8d2713b07fdac4782eb09ec",
@@ -4444,7 +4539,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-03-19T00:00:00+00:00"
+    "date_published": "2015-03-19T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "517f709ddc0f0586d83e272e9c8b0773",
@@ -4485,7 +4581,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-03-19T00:00:00+00:00"
+    "date_published": "2015-03-19T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "b76e9c597b1ed20726dd4b1927843303",
@@ -4562,7 +4659,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-03-19T00:00:00+00:00"
+    "date_published": "2015-03-19T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "fdcf9c50310fe3e4a297a0477ecb33d8",
@@ -4603,7 +4701,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-03-10T00:00:00+00:00"
+    "date_published": "2015-03-10T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "b260215cc8903aec80e94a71e6b1ba1a",
@@ -4680,7 +4779,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-03-19T00:00:00+00:00"
+    "date_published": "2015-03-19T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "7da3628b8b128b6e84e39d89d5f13c19",
@@ -4757,7 +4857,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-03-19T00:00:00+00:00"
+    "date_published": "2015-03-19T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "ca59a8208ab9a2665834ce8f27cfdc0d",
@@ -4834,7 +4935,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-03-02T00:00:00+00:00"
+    "date_published": "2015-03-02T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "7ba9c375172e33e587e6916a2c04abc2",
@@ -4911,7 +5013,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-03-19T00:00:00+00:00"
+    "date_published": "2015-03-19T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "19d2f8893cb07b2605c1579c89dfe8f5",
@@ -4952,7 +5055,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-03-19T00:00:00+00:00"
+    "date_published": "2015-03-19T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "5c2919fe7b5c27c156fb01572b75c3f7",
@@ -4993,7 +5097,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-03-19T00:00:00+00:00"
+    "date_published": "2015-03-19T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "0f721e9aab1c62cb180baeb245335c9d",
@@ -5058,7 +5163,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-03-19T00:00:00+00:00"
+    "date_published": "2015-03-19T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "e84f4ac47cc48005d56f018d2e65daf5",
@@ -5135,7 +5241,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-03-19T00:00:00+00:00"
+    "date_published": "2015-03-19T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "d303e292194a0e8071acc4fc72084b83",
@@ -5176,7 +5283,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-03-19T00:00:00+00:00"
+    "date_published": "2015-03-19T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "de7491499e972efb327be2360b1d7cdd",
@@ -5253,7 +5361,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-06-11T00:00:00+00:00"
+    "date_published": "2015-06-11T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "9a43962bbf90922aca933cf9313dd17e",
@@ -5330,7 +5439,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-06-11T00:00:00+00:00"
+    "date_published": "2015-06-11T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "52b243f95587be4795cf1b20e3d32d44",
@@ -5407,7 +5517,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-06-11T00:00:00+00:00"
+    "date_published": "2015-06-11T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "7cb208b48e8a1b1a13ace73af9d072f5",
@@ -5484,7 +5595,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-06-02T00:00:00+00:00"
+    "date_published": "2015-06-02T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "2b161e2cb26f5f69adae525b1bb55be2",
@@ -5561,7 +5673,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-06-11T00:00:00+00:00"
+    "date_published": "2015-06-11T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "ed7f363c3468e822e0b6f7ff17df2f70",
@@ -5614,7 +5727,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-07-09T00:00:00+00:00"
+    "date_published": "2015-07-09T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "c5e420a14990226a4a83d287ee46ff06",
@@ -5655,7 +5769,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-08-11T00:00:00+00:00"
+    "date_published": "2015-08-11T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "b271421c430e491af8d4ef2a41c18859",
@@ -5696,7 +5811,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-12-03T00:00:00+00:00"
+    "date_published": "2015-12-03T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "1e4d05c5d1f49c2c21106fe8bd1741b0",
@@ -5749,7 +5865,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-12-03T00:00:00+00:00"
+    "date_published": "2015-12-03T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "cfa823ad1a1d8f66b8efc7472dfd1803",
@@ -5826,7 +5943,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-12-03T00:00:00+00:00"
+    "date_published": "2015-12-03T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "87218d1dec8ba5f20c4fa10ed58a5cbd",
@@ -5891,7 +6009,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2015-12-03T00:00:00+00:00"
+    "date_published": "2015-12-03T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "9f2f59254d29b5dde559974aa39aaab5",
@@ -5944,7 +6063,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-01-28T00:00:00+00:00"
+    "date_published": "2016-01-28T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "2c5fcff42780eda76107cd4d1d428440",
@@ -5985,7 +6105,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-01-28T00:00:00+00:00"
+    "date_published": "2016-01-28T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "bedf5abaa9e09cc7e8c88d307af2471d",
@@ -6038,7 +6159,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-03-01T00:00:00+00:00"
+    "date_published": "2016-03-01T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "ee14f55b7ca44f25383963f3632f5ce6",
@@ -6115,7 +6237,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-03-01T00:00:00+00:00"
+    "date_published": "2016-03-01T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "6e944e4ae9494a92c0524c9385ba57fa",
@@ -6192,7 +6315,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-03-01T00:00:00+00:00"
+    "date_published": "2016-03-01T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "13ae8b30193d6ec8c136c984be9e3a10",
@@ -6245,7 +6369,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-03-01T00:00:00+00:00"
+    "date_published": "2016-03-01T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "7e09aafeb92ce8fe7c521a686d0512c7",
@@ -6298,7 +6423,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-03-01T00:00:00+00:00"
+    "date_published": "2016-03-01T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "3e39295eed09f594d800182719c7e7a9",
@@ -6351,7 +6477,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-03-01T00:00:00+00:00"
+    "date_published": "2016-03-01T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "7fce5880e666dd07fdb5d065d290c66c",
@@ -6404,7 +6531,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-03-01T00:00:00+00:00"
+    "date_published": "2016-03-01T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "cb36123362fb740570fed49d206977ea",
@@ -6457,7 +6585,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-03-01T00:00:00+00:00"
+    "date_published": "2016-03-01T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "5e8d51c166acf64b3a4b36c12e9e3887",
@@ -6510,7 +6639,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-05-03T00:00:00+00:00"
+    "date_published": "2016-05-03T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "af86c5d45b8bc400e35ba954b77e1ab8",
@@ -6563,7 +6693,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-05-03T00:00:00+00:00"
+    "date_published": "2016-05-03T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "3bc6a5d23c3f0c13e5cb6ba7511b77fa",
@@ -6621,7 +6752,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-05-03T00:00:00+00:00"
+    "date_published": "2016-05-03T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "6f28891b48e529b6181ac053a2dd6831",
@@ -6674,7 +6806,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-05-03T00:00:00+00:00"
+    "date_published": "2016-05-03T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "31da6300c54771768dfbbb493c0ea012",
@@ -6727,7 +6860,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-05-03T00:00:00+00:00"
+    "date_published": "2016-05-03T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "3e9c33c7fa8c5395fdd5bbcbfa22873f",
@@ -6780,7 +6914,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-05-03T00:00:00+00:00"
+    "date_published": "2016-05-03T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "f7aaf96e395a2dba4c36c673c22434f8",
@@ -6833,7 +6968,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-06-01T00:00:00+00:00"
+    "date_published": "2016-06-01T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "22c52099d0acc1a49228c3dd25b79942",
@@ -6886,7 +7022,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-06-07T00:00:00+00:00"
+    "date_published": "2016-06-07T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "268776bd9394c0ecb7509b7b3bcb2d7b",
@@ -6949,7 +7086,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-08-22T00:00:00+00:00"
+    "date_published": "2016-08-22T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "dbb52bd196ca767a28c425e5ee363dee",
@@ -7002,7 +7140,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-07-22T00:00:00+00:00"
+    "date_published": "2016-07-22T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "3dd39a452b071637a8d0a9c68425d6c3",
@@ -7065,7 +7204,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-08-19T00:00:00+00:00"
+    "date_published": "2016-08-19T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "19e7d92bb3814220b6d76331a3f61dfa",
@@ -7118,7 +7258,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-08-16T00:00:00+00:00"
+    "date_published": "2016-08-16T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "021d94c11f04ee1e3c8ebb30430ecea8",
@@ -7159,7 +7300,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-08-24T00:00:00+00:00"
+    "date_published": "2016-08-24T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "4a1ed8b07b630922c9abd2cb9dd11e89",
@@ -7222,7 +7364,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-08-23T00:00:00+00:00"
+    "date_published": "2016-08-23T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "1c88b59c666122ca095dc7d316ee96ed",
@@ -7285,7 +7428,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-08-24T00:00:00+00:00"
+    "date_published": "2016-08-24T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "9b901055857e8309bf9660758966d368",
@@ -7365,7 +7509,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-09-22T00:00:00+00:00"
+    "date_published": "2016-09-22T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "2419ffdc30aaa2a3d1201eb4a4619971",
@@ -7411,7 +7556,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-09-22T00:00:00+00:00"
+    "date_published": "2016-09-22T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "40a04f9bb1e95d0ac60574cc03f03aac",
@@ -7474,7 +7620,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-09-21T00:00:00+00:00"
+    "date_published": "2016-09-21T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "2e25b2d69f1eab45b1b7029e6b422eda",
@@ -7520,7 +7667,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-09-21T00:00:00+00:00"
+    "date_published": "2016-09-21T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "123af7e3199e4cb96b82e6b7b4147c83",
@@ -7566,7 +7714,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-09-21T00:00:00+00:00"
+    "date_published": "2016-09-21T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "c9b2f175fc6014ed75090aa3ac346d07",
@@ -7612,7 +7761,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-09-26T00:00:00+00:00"
+    "date_published": "2016-09-26T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "0ca838fe0ecd5347bfe4810743c68d76",
@@ -7658,7 +7808,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-09-26T00:00:00+00:00"
+    "date_published": "2016-09-26T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "977753740957f22482446fa804b3bacb",
@@ -7704,7 +7855,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-11-10T00:00:00+00:00"
+    "date_published": "2016-11-10T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "a1787d390b904122cf68f1fcd7cbf49d",
@@ -7750,7 +7902,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-11-10T00:00:00+00:00"
+    "date_published": "2016-11-10T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "b29e4e1444a95c4ac89b67825960fc30",
@@ -7813,7 +7966,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2016-11-10T00:00:00+00:00"
+    "date_published": "2016-11-10T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "6ac9a30b63d9120bac06625f40f7793e",
@@ -7859,7 +8013,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2017-01-26T00:00:00+00:00"
+    "date_published": "2017-01-26T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "d87ae57ff551a38e03041e9e46c46132",
@@ -7922,7 +8077,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2017-01-26T00:00:00+00:00"
+    "date_published": "2017-01-26T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "108b4958e52639140053033741fd5922",
@@ -7985,7 +8141,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2017-01-26T00:00:00+00:00"
+    "date_published": "2017-01-26T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "5f038662b9b3c70c751f11672fb4fbcb",
@@ -8031,7 +8188,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2017-02-16T00:00:00+00:00"
+    "date_published": "2017-02-16T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "9737708961f378dfee3d47ed43884c11",
@@ -8094,7 +8252,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2017-08-28T00:00:00+00:00"
+    "date_published": "2017-08-28T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "c3b257e295a5600543dae25d04aa42cd",
@@ -8157,7 +8316,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2017-11-02T00:00:00+00:00"
+    "date_published": "2017-11-02T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "d394c4e4bd822d903834d7a3c71998ea",
@@ -8203,7 +8363,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2017-12-07T00:00:00+00:00"
+    "date_published": "2017-12-07T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "3982fdafdc98d5aa5b0fb95793d837c5",
@@ -8266,7 +8427,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2017-12-07T00:00:00+00:00"
+    "date_published": "2017-12-07T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "0c0f3d9f673e7dfd17d5af9ab52a527f",
@@ -8329,7 +8491,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2018-06-12T00:00:00+00:00"
+    "date_published": "2018-06-12T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "8a42bdb4244b87a07381796eac77b5dd",
@@ -8375,7 +8538,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2018-03-27T00:00:00+00:00"
+    "date_published": "2018-03-27T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "e5db72eef7ab0c3c1c4ab2adc4153b7c",
@@ -8455,7 +8619,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2018-10-30T00:00:00+00:00"
+    "date_published": "2018-10-30T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "4f357adf49d7aaff448007329cef90e5",
@@ -8518,7 +8683,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2018-10-29T00:00:00+00:00"
+    "date_published": "2018-10-29T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "5b894b1f146925555f16167269e3d1ac",
@@ -8581,7 +8747,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2018-04-16T00:00:00+00:00"
+    "date_published": "2018-04-16T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "a4177376d5ba9b5bc5dc22b340e6a75f",
@@ -8644,7 +8811,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2018-03-27T00:00:00+00:00"
+    "date_published": "2018-03-27T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "65578d021077b3ade97c82d30e9cbba1",
@@ -8707,7 +8875,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2018-11-02T00:00:00+00:00"
+    "date_published": "2018-11-02T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "5a72ce027e8c589dad30c281fd761d75",
@@ -8770,7 +8939,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2019-03-06T00:00:00+00:00"
+    "date_published": "2019-03-06T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "fcfcf197a9c4bad6a8dd3ffe15818f12",
@@ -8850,7 +9020,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2019-09-10T00:00:00+00:00"
+    "date_published": "2019-09-10T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "ec00d8bb72ac0b7f1de849bce460731c",
@@ -8896,7 +9067,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2019-09-10T00:00:00+00:00"
+    "date_published": "2019-09-10T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "42a4c402937fed3e5a602fc384f29de3",
@@ -8959,7 +9131,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2019-12-06T00:00:00+00:00"
+    "date_published": "2019-12-06T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "619b9f78d7b4b1f7b86692e6667e630c",
@@ -9044,7 +9217,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2019-07-30T00:00:00+00:00"
+    "date_published": "2019-07-30T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "63919a30984ae536d613016bee191b5a",
@@ -9090,7 +9264,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2019-02-26T00:00:00+00:00"
+    "date_published": "2019-02-26T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "baef276b71e733ed8313ded9ff93ff86",
@@ -9170,7 +9345,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2019-09-10T00:00:00+00:00"
+    "date_published": "2019-09-10T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "f2f8bab6941d4e702c466afaf4d63566",
@@ -9216,7 +9392,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2020-04-21T00:00:00+00:00"
+    "date_published": "2020-04-21T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "5d5c7aa4c1296dba54969e2f85a8f85d",
@@ -9257,7 +9434,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2020-09-09T00:00:00+00:00"
+    "date_published": "2020-09-09T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "4eca1baa3ab7532afce3f199f004c008",
@@ -9320,7 +9498,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2020-12-08T00:00:00+00:00"
+    "date_published": "2020-12-08T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "f0110a9eed5251b83bc81a5735b0561b",
@@ -9366,7 +9545,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2021-02-16T00:00:00+00:00"
+    "date_published": "2021-02-16T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "7195f653a74059978ec045dd4558d4d1",
@@ -9429,7 +9609,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2021-02-16T00:00:00+00:00"
+    "date_published": "2021-02-16T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "2a04eb07243878ddd179d5779cf4fd32",
@@ -9492,7 +9673,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2021-02-16T00:00:00+00:00"
+    "date_published": "2021-02-16T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "b13223184b6b68b231a91e49ef3ee757",
@@ -9538,7 +9720,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2021-03-25T00:00:00+00:00"
+    "date_published": "2021-03-25T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "c64723c0cebca9d2e3ed32708d0afd26",
@@ -9584,7 +9767,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2021-03-25T00:00:00+00:00"
+    "date_published": "2021-03-25T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "8e2e7b2bccf583aa4f73640981f9f28c",
@@ -9630,7 +9814,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2021-08-24T00:00:00+00:00"
+    "date_published": "2021-08-24T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "9bba434e660f689b603eba45f564f36b",
@@ -9693,7 +9878,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2021-08-24T00:00:00+00:00"
+    "date_published": "2021-08-24T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "2d60663dd3dcc1196b6957d86e64528a",
@@ -9739,7 +9925,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2021-12-14T00:00:00+00:00"
+    "date_published": "2021-12-14T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "7e6fa0286e37a5ab70e652291081bd09",
@@ -9819,7 +10006,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2022-01-28T00:00:00+00:00"
+    "date_published": "2022-01-28T00:00:00+00:00",
+    "weaknesses": []
   },
   {
     "unique_content_id": "46263e25471907426341354aed6dc237",
@@ -9899,6 +10087,7 @@
         "reference_id": ""
       }
     ],
-    "date_published": "2022-03-15T00:00:00+00:00"
+    "date_published": "2022-03-15T00:00:00+00:00",
+    "weaknesses": []
   }
 ]

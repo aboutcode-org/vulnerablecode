@@ -65,7 +65,8 @@
           }
         ]
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": "PLAIN-ID-FOR-TESTING",
@@ -229,7 +230,8 @@
           }
         ]
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": "PLAIN-ID-FOR-TESTING",
@@ -513,7 +515,8 @@
           }
         ]
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": "PLAIN-ID-FOR-TESTING",
@@ -573,7 +576,8 @@
           }
         ]
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": "PLAIN-ID-FOR-TESTING",
@@ -729,7 +733,8 @@
           }
         ]
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": "PLAIN-ID-FOR-TESTING",
@@ -1005,7 +1010,8 @@
           }
         ]
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": "PLAIN-ID-FOR-TESTING",
@@ -1055,7 +1061,8 @@
           }
         ]
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": "PLAIN-ID-FOR-TESTING",
@@ -1174,7 +1181,8 @@
           }
         ]
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": "PLAIN-ID-FOR-TESTING",
@@ -1413,6 +1421,7 @@
           }
         ]
       }
-    ]
+    ],
+    "weaknesses": []
   }
 ]

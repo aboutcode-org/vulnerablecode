@@ -23,7 +23,8 @@
         "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -49,7 +50,8 @@
         "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -75,7 +77,8 @@
         "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -101,7 +104,8 @@
         "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -127,7 +131,8 @@
         "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -153,7 +158,8 @@
         "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -200,7 +206,8 @@
         "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=993372",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -247,7 +254,8 @@
         "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=993366",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -264,7 +272,8 @@
         "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=776246",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -290,7 +299,8 @@
         "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -316,7 +326,8 @@
         "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -342,7 +353,8 @@
         "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -368,7 +380,8 @@
         "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -394,7 +407,8 @@
         "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -420,7 +434,8 @@
         "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=537254",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -467,7 +482,8 @@
         "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=993372",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -514,6 +530,7 @@
         "url": "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=993366",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   }
 ]

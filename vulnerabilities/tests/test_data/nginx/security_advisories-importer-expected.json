@@ -36,7 +36,8 @@
       }
     ],
     "references": [],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "b55c336a480792ece857368101645c0c",
@@ -111,7 +112,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "5df3f01df0d85143bc51ddbb453c1581",
@@ -152,7 +154,8 @@
         "reference_id": "CVE-2009-3898"
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "480c77ca27341a47f11299017c7660b7",
@@ -181,7 +184,8 @@
         "reference_id": "CVE-2009-4487"
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "20cecfba57d0a66b04e1b4b6fb4efb26",
@@ -226,7 +230,8 @@
         "reference_id": "CVE-2010-2263"
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "646911f1d2f21611b0a3720f3523b3b2",
@@ -271,7 +276,8 @@
         "reference_id": "CVE-2010-2266"
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "56a7ea32d809aa1a3181ab87eea4fe43",
@@ -312,7 +318,8 @@
         "reference_id": "CVE-2011-4315"
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "2bac8349cb492bcc4990b161b01dc414",
@@ -368,7 +375,8 @@
         "reference_id": "CVE-2011-4963"
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "aff5af1bcc53f6fa1a49917e044acf79",
@@ -424,7 +432,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "b0a336b612b378d72e93193756b3e376",
@@ -480,7 +489,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "e35afe5b1aadcb66c5ad82c8894dff17",
@@ -536,7 +546,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "870c7bf846dc50554e9fa2290598b001",
@@ -620,7 +631,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "ce0711c66b7cdd60814c1abfbafdd3b9",
@@ -682,7 +694,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "55dccce79c4247faa1ed8db0f8fbd44f",
@@ -726,7 +739,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "0c5952c29a54fdbc5526988c898e639d",
@@ -782,7 +796,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "3637800165bcb0cf3917364af7654fee",
@@ -844,7 +859,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "2024528d103453292ea1f23163cb7ad8",
@@ -896,7 +912,8 @@
         "reference_id": "CVE-2014-3616"
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "4a748f6cbd00bbafac23faa271396b3a",
@@ -948,7 +965,8 @@
         "reference_id": "CVE-2016-0742"
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "964babd1d8158846f348e9fa6df4e27f",
@@ -1000,7 +1018,8 @@
         "reference_id": "CVE-2016-0746"
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "e96daddac5c29ad0b9e157638fbeb3b2",
@@ -1052,7 +1071,8 @@
         "reference_id": "CVE-2016-0747"
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "9cb4dc08fbceda238c4f45b00320ce42",
@@ -1124,7 +1144,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "4ebd7508e9aaa3c3c89cac10397f47d4",
@@ -1186,7 +1207,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "2fc1350472196c63ba9f7031fd456e76",
@@ -1238,7 +1260,8 @@
         "reference_id": "CVE-2018-16843"
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "1ae05361ffd7ba4b2a466afc6a3de34c",
@@ -1290,7 +1313,8 @@
         "reference_id": "CVE-2018-16844"
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "c78f14d302f37c9241afbc18578c49b3",
@@ -1352,7 +1376,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "dbbf831a29a655709b98cb79a5f90fac",
@@ -1404,7 +1429,8 @@
         "reference_id": "CVE-2019-9511"
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "834d4d1067390d7f84ebd3cea8f60fb4",
@@ -1456,7 +1482,8 @@
         "reference_id": "CVE-2019-9513"
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "8e94de6ae6386d8e0af0241a0989cdcd",
@@ -1508,7 +1535,8 @@
         "reference_id": "CVE-2019-9516"
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "fa52846658ab31e85334ad4af2fa7529",
@@ -1570,7 +1598,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "34b7ff4154010452c4dd186b7cbbcc5d",
@@ -1622,7 +1651,8 @@
         "reference_id": ""
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "unique_content_id": "cef6afb87317112ea248571bd6991994",
@@ -1698,6 +1728,7 @@
         "reference_id": ""
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   }
 ]

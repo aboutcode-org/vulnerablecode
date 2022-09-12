@@ -33,6 +33,8 @@ IMPORTERS_REGISTRY = [
     gitlab.GitLabAPIImporter,
     pypa.PyPaImporter,
     archlinux.ArchlinuxImporter,
+    ubuntu.UbuntuImporter,
+    debian_oval.DebianOvalImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

@@ -285,7 +285,7 @@ class DebianVersionAPI(VersionAPI):
             headers={"Connection": "keep-alive"},
             content_type="json",
         )
-        if response.get("error") or not response.get("versions"):
+        if response and (response.get("error") or not response.get("versions")):
             return
 
         for release in response["versions"]:

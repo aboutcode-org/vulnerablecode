@@ -1,0 +1,34 @@
+{
+    "id": 1518,
+    "created": "2020-04-30T18:19:09.542Z",
+    "updated_at": "2020-04-30T18:19:09.542Z",
+    "deleted": null,
+    "title": "Cross-Site Scripting",
+    "found_by": {
+        "link": "",
+        "name": "Masato Kinugawa",
+        "email": ""
+    },
+    "reported_by": {
+        "link": "",
+        "name": "Masato Kinugawa",
+        "email": ""
+    },
+    "module_name": "jquery",
+    "cves": [
+        "CVE-2020-11022"
+    ],
+    "vulnerable_versions": "<3.5.0",
+    "patched_versions": ">=3.5.0",
+    "overview": "Versions of `jquery` prior to 3.5.0 are vulnerable to Cross-Site Scripting. Passing HTML from untrusted sources - even after sanitizing it - to one of jQuery's DOM manipulation methods (i.e. .html(), .append(), and others) may execute arbitrary JavaScript in a victim's browser.",
+    "recommendation": "Upgrade to version 3.5.0 or later.",
+    "references": "- [GitHub Advisory](https://github.com/advisories/GHSA-gxr4-xjj5-5px2)",
+    "access": "public",
+    "severity": "moderate",
+    "cwe": "CWE-79",
+    "metadata": {
+        "module_type": "",
+        "exploitability": 3,
+        "affected_components": ""
+    }
+}

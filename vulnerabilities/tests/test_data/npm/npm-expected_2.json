@@ -1,0 +1,64 @@
+{
+  "aliases": [
+    "CVE-2020-11022"
+  ],
+  "summary": "Versions of `jquery` prior to 3.5.0 are vulnerable to Cross-Site Scripting. Passing HTML from untrusted sources - even after sanitizing it - to one of jQuery's DOM manipulation methods (i.e. .html(), .append(), and others) may execute arbitrary JavaScript in a victim's browser.",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "npm",
+        "namespace": null,
+        "name": "jquery",
+        "version": null,
+        "qualifiers": null,
+        "subpath": null
+      },
+      "affected_version_range": "vers:npm/<3.5.0",
+      "fixed_version": "3.5.0"
+    },
+    {
+      "package": {
+        "type": "npm",
+        "namespace": null,
+        "name": "jquery",
+        "version": null,
+        "qualifiers": null,
+        "subpath": null
+      },
+      "affected_version_range": "vers:npm/<3.5.0",
+      "fixed_version": "3.5.1"
+    },
+    {
+      "package": {
+        "type": "npm",
+        "namespace": null,
+        "name": "jquery",
+        "version": null,
+        "qualifiers": null,
+        "subpath": null
+      },
+      "affected_version_range": "vers:npm/<3.5.0",
+      "fixed_version": "3.6.0"
+    },
+    {
+      "package": {
+        "type": "npm",
+        "namespace": null,
+        "name": "jquery",
+        "version": null,
+        "qualifiers": null,
+        "subpath": null
+      },
+      "affected_version_range": "vers:npm/<3.5.0",
+      "fixed_version": "3.6.1"
+    }
+  ],
+  "references": [
+    {
+      "reference_id": 1518,
+      "url": "https://registry.npmjs.org/-/npm/v1/advisories/1518",
+      "severities": []
+    }
+  ],
+  "date_published": "2020-04-30T18:19:09.542000+00:00"
+}

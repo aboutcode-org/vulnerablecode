@@ -1,0 +1,32 @@
+{
+    "id": 1514,
+    "created": "2020-04-14T21:44:49.820Z",
+    "updated_at": "2020-04-14T21:44:49.820Z",
+    "deleted": null,
+    "title": "DLL Injection",
+    "found_by": {
+        "link": "",
+        "name": "Dan Shallom, OP Innovate Ltd",
+        "email": ""
+    },
+    "reported_by": {
+        "link": "",
+        "name": "Dan Shallom, OP Innovate Ltd",
+        "email": ""
+    },
+    "module_name": "kerberos",
+    "cves": [],
+    "vulnerable_versions": "<1.0.0",
+    "patched_versions": ">=1.0.0",
+    "overview": "Version of `kerberos` prior to 1.0.0 are vulnerable to DLL Injection. The package loads DLLs without specifying a full path. This may allow attackers to create a file with the same name in a folder that precedes the intended file in the DLL path search. Doing so would allow attackers to execute arbitrary code in the machine.",
+    "recommendation": "Upgrade to version 1.0.0 or later.",
+    "references": "",
+    "access": "public",
+    "severity": "high",
+    "cwe": "CWE-114",
+    "metadata": {
+        "module_type": "",
+        "exploitability": 4,
+        "affected_components": ""
+    }
+}

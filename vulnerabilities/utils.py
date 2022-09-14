@@ -29,7 +29,6 @@ import urllib3
 from packageurl import PackageURL
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import VersionRange
-from univers.versions import Version
 
 logger = logging.getLogger(__name__)
 
@@ -40,22 +39,8 @@ find_all_cve = cve_regex.findall
 
 @dataclasses.dataclass(order=True, frozen=True)
 class AffectedPackage:
-    package: PackageURL
-    affected_version_range: Optional[VersionRange] = None
-    fixed_version: Optional[Version] = None
-
-    def to_dict(self):
-        """
-        Return a serializable dict that can be converted back using self.from_dict
-        """
-        affected_version_range = None
-        if self.affected_version_range:
-            affected_version_range = str(self.affected_version_range)
-        return {
-            "package": self.package.to_dict(),
-            "affected_version_range": affected_version_range,
-            "fixed_version": str(self.fixed_version) if self.fixed_version else None,
-        }
+    vulnerable_package: PackageURL
+    patched_package: Optional[PackageURL] = None
 
 
 def load_yaml(path):
@@ -193,8 +178,8 @@ def nearest_patched_package(
 
         affected_package_with_patched_package_objects.append(
             AffectedPackage(
-                package=vulnerable_package.purl,
-                fixed_version=patched_package.purl if patched_package else None,
+                vulnerable_package=vulnerable_package.purl,
+                patched_package=patched_package.purl if patched_package else None,
             )
         )
 

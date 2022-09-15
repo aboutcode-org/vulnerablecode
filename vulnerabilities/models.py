@@ -193,7 +193,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
             return self.filter(**lookups)
 
         elif isinstance(purl, str):
-            return self.for_package_url(purl)
+            return self.for_package_url(purl, encode=False)
 
         else:
             return self.none()

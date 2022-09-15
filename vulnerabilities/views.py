@@ -170,7 +170,7 @@ class PackageDetails(DetailView):
 
         purl = self.kwargs.get(self.slug_url_kwarg)
         if purl:
-            queryset = queryset.for_package_url(purl_str=purl)
+            queryset = queryset.for_package_url(purl_str=purl, encode=False)
         else:
             cls = self.__class__.__name__
             raise AttributeError(

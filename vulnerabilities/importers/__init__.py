@@ -17,6 +17,7 @@ from vulnerabilities.importers import openssl
 from vulnerabilities.importers import pypa
 from vulnerabilities.importers import pysec
 from vulnerabilities.importers import redhat
+from vulnerabilities.importers import archlinux
 
 IMPORTERS_REGISTRY = [
     nginx.NginxImporter,
@@ -29,6 +30,7 @@ IMPORTERS_REGISTRY = [
     debian.DebianImporter,
     gitlab.GitLabAPIImporter,
     pypa.PyPaImporter,
+    archlinux.ArchlinuxImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

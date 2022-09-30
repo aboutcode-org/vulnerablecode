@@ -16,6 +16,7 @@ from django.test import TestCase
 
 from vulnerabilities import models
 from vulnerabilities.import_runner import ImportRunner
+from vulnerabilities.importers import archlinux
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")
@@ -100,3 +101,78 @@ class ArchlinuxImportTest(TestCase):
 
         if cve_ids:
             assert cve_ids == {v.vulnerability_id for v in qs[0].vulnerabilities.all()}
+
+
+# 9/28/2022 Wednesday 12:45:59 PM.  https://security.archlinux.org/json -- view in Firefox, copy, paste, change null to None
+def test_parse_advisory():
+    record = {
+        "name": "AVG-2781",
+        "packages": ["python-pyjwt"],
+        "status": "Unknown",
+        "severity": "Unknown",
+        "type": "unknown",
+        "affected": "2.3.0-1",
+        "fixed": "2.4.0-1",
+        "ticket": None,
+        "issues": ["CVE-2022-29217"],
+        "advisories": [],
+    }
+
+    assert archlinux.ArchlinuxImporter().parse_advisory(record)
+
+
+# 9/29/2022 Thursday 9:08:38 PM.
+def test_parse_advisory_multi():
+    # record = {
+    #     "name": "AVG-2781",
+    #     "packages": ["python-pyjwt"],
+    #     "status": "Unknown",
+    #     "severity": "Unknown",
+    #     "type": "unknown",
+    #     "affected": "2.3.0-1",
+    #     "fixed": "2.4.0-1",
+    #     "ticket": None,
+    #     "issues": ["CVE-2022-29217"],
+    #     "advisories": [],
+    # }
+
+    record_list = [
+        {
+            "name": "AVG-2781",
+            "packages": ["python-pyjwt"],
+            "status": "Unknown",
+            "severity": "Unknown",
+            "type": "unknown",
+            "affected": "2.3.0-1",
+            "fixed": "2.4.0-1",
+            "ticket": None,
+            "issues": ["CVE-2022-29217"],
+            "advisories": [],
+        },
+        {
+            "name": "AVG-2780",
+            "packages": ["wpewebkit"],
+            "status": "Unknown",
+            "severity": "Unknown",
+            "type": "unknown",
+            "affected": "2.36.3-1",
+            "fixed": "2.36.4-1",
+            "ticket": None,
+            "issues": ["CVE-2022-26710", "CVE-2022-22677", "CVE-2022-22662"],
+            "advisories": [],
+        },
+        {
+            "name": "AVG-4",
+            "packages": ["bzip2"],
+            "status": "Fixed",
+            "severity": "Low",
+            "type": "denial of service",
+            "affected": "1.0.6-5",
+            "fixed": "1.0.6-6",
+            "ticket": None,
+            "issues": ["CVE-2016-3189"],
+            "advisories": ["ASA-201702-19"],
+        },
+    ]
+
+    assert archlinux.ArchlinuxImporter().parse_advisory(record_list)

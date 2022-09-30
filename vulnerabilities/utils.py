@@ -410,3 +410,15 @@ def base32_custom(btes):
             + _base32_table[c & 0x3FF]  # bits 21 - 30  # bits 31 - 40
         )
     return bytes(encoded)
+
+
+# 9/28/2022 Wednesday 1:07:41 PM.Copy from /home/jmh/dev/nexb/vulnerablecode/vulnerabilities/importers/alpine_linux.py
+# for use in /home/jmh/dev/nexb/vulnerablecode/vulnerabilities/importers/archlinux.py
+def fetch_response(url):
+    """
+    Fetch and return `response` from the `url`
+    """
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response
+    raise Exception(f"Failed to fetch data from {url!r} with status code: {response.status_code!r}")

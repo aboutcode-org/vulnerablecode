@@ -193,6 +193,10 @@ code {
     /* word-break: break-all; */
 }
 
+.wrap-strings {
+    word-break: break-all;
+}
+
 .two-col-left {
     width: 160px;
     text-align: right !important;

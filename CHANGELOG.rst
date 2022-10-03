@@ -4,11 +4,14 @@ Release notes
 Version v30.0.0
 ----------------
 
+This is a major version that is not backward compatible.
+
 - We refactored the core processing with Importers that import data and Improvers that
   transform imported data and convert that in Vulnerabilities and Packages. Improvers can
   also improve and refine imported and existing data as well as enrich data using external
   data sources. The migration to this new architecture is under way and not all importers
   are available.
+
   Because of these extensive changes, it is not possible to migrate existing imported
   data to the new schema. You will need instead to restart imports from an empty database
   or access the new public.vulnerablecode.io live instance. We also provide a database dump.

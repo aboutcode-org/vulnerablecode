@@ -12,7 +12,6 @@ import json
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.test import TransactionTestCase
-from django.utils.http import int_to_base36
 from packageurl import PackageURL
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -109,6 +108,7 @@ class APITestCasePackage(TestCase):
             summary="test-vuln",
         )
         self.vuln = vuln
+        self.vulnerable_packages = []
         for i in range(0, 10):
             query_kwargs = dict(
                 type="generic",
@@ -257,6 +257,29 @@ class APITestCasePackage(TestCase):
                 }
             ],
         }
+
+    def test_api_with_all_vulnerable_packages(self):
+        with self.assertNumQueries(4):
+            # There are 4 queries:
+            # 1. SAVEPOINT
+            # 2. Authenticating user
+            # 3. Get all vulnerable packages
+            # 4. RELEASE SAVEPOINT
+            response = self.csrf_client.get(f"/api/packages/all", format="json").data
+            assert len(response) == 11
+            assert response == [
+                "pkg:generic/nginx/test@0",
+                "pkg:generic/nginx/test@1",
+                "pkg:generic/nginx/test@11",
+                "pkg:generic/nginx/test@2",
+                "pkg:generic/nginx/test@3",
+                "pkg:generic/nginx/test@4",
+                "pkg:generic/nginx/test@5",
+                "pkg:generic/nginx/test@6",
+                "pkg:generic/nginx/test@7",
+                "pkg:generic/nginx/test@8",
+                "pkg:generic/nginx/test@9",
+            ]
 
 
 class CPEApi(TestCase):

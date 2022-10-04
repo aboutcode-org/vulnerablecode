@@ -94,7 +94,7 @@ class Vulnerability(models.Model):
         """
         Return packages that are vulnerable to this vulnerability.
         """
-        return self.packages.filter(packagerelatedvulnerability__fix=False)
+        return self.packages.vulnerable()
 
     @property
     def resolved_to(self):
@@ -197,6 +197,12 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
 
         else:
             return self.none()
+
+    def vulnerable(self):
+        """
+        Return all vulnerable packages.
+        """
+        return Package.objects.filter(packagerelatedvulnerability__fix=False).distinct()
 
 
 class Package(PackageURLMixin):

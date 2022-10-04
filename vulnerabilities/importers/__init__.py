@@ -8,6 +8,7 @@
 #
 
 from vulnerabilities.importers import alpine_linux
+from vulnerabilities.importers import archlinux
 from vulnerabilities.importers import debian
 from vulnerabilities.importers import github
 from vulnerabilities.importers import gitlab
@@ -17,7 +18,6 @@ from vulnerabilities.importers import openssl
 from vulnerabilities.importers import pypa
 from vulnerabilities.importers import pysec
 from vulnerabilities.importers import redhat
-from vulnerabilities.importers import archlinux
 
 IMPORTERS_REGISTRY = [
     nginx.NginxImporter,

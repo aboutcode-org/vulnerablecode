@@ -8,6 +8,7 @@
 #
 import dataclasses
 import json
+import pprint
 from typing import Iterable
 from typing import List
 from typing import Mapping
@@ -15,7 +16,6 @@ from typing import Set
 from urllib.request import urlopen
 
 from packageurl import PackageURL
-import pprint
 
 from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
@@ -30,7 +30,6 @@ from vulnerabilities.models import Advisory
 # copy fetch_response function to vulnerabilities.utils then import here and use below
 from vulnerabilities.utils import fetch_response
 from vulnerabilities.utils import nearest_patched_package
-
 
 # Take a URL -> Grab the data from the URL -> Map it according to AdvisoryData
 

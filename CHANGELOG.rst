@@ -2,7 +2,7 @@ Release notes
 =============
 
 
-Version v31.0.0
+Version v30.1.0
 ----------------
 
 - We added a new "/packages/all" API endpoint to get all Package URLs know to be vulnerable.

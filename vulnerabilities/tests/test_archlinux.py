@@ -103,8 +103,7 @@ class ArchlinuxImportTest(TestCase):
             assert cve_ids == {v.vulnerability_id for v in qs[0].vulnerabilities.all()}
 
 
-# 9/28/2022 Wednesday 12:45:59 PM.  https://security.archlinux.org/json -- view in Firefox, copy, paste, change null to None
-def test_parse_advisory():
+def test_parse_advisory_single():
     record = {
         "name": "AVG-2781",
         "packages": ["python-pyjwt"],
@@ -121,21 +120,7 @@ def test_parse_advisory():
     assert archlinux.ArchlinuxImporter().parse_advisory(record)
 
 
-# 9/29/2022 Thursday 9:08:38 PM.
 def test_parse_advisory_multi():
-    # record = {
-    #     "name": "AVG-2781",
-    #     "packages": ["python-pyjwt"],
-    #     "status": "Unknown",
-    #     "severity": "Unknown",
-    #     "type": "unknown",
-    #     "affected": "2.3.0-1",
-    #     "fixed": "2.4.0-1",
-    #     "ticket": None,
-    #     "issues": ["CVE-2022-29217"],
-    #     "advisories": [],
-    # }
-
     record_list = [
         {
             "name": "AVG-2781",
@@ -175,4 +160,5 @@ def test_parse_advisory_multi():
         },
     ]
 
-    assert archlinux.ArchlinuxImporter().parse_advisory(record_list)
+    for record in record_list:
+        assert archlinux.ArchlinuxImporter().parse_advisory(record)

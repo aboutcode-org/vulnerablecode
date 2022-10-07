@@ -13,14 +13,16 @@ from typing import Mapping
 from urllib.request import urlopen
 
 from packageurl import PackageURL
+from univers.version_range import ArchLinuxVersionRange
+from univers.versions import ArchLinuxVersion
 
 from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.utils import fetch_response
-from vulnerabilities.utils import nearest_patched_package
 
 
 class ArchlinuxImporter(Importer):
@@ -35,36 +37,27 @@ class ArchlinuxImporter(Importer):
         for record in self.fetch():
             yield self.parse_advisory(record)
 
-    # The JSON includes 'status' and 'type' fields do we want to incorporate them into the AdvisoryData objects?
-    # Although not directly reflected in the JSON, the web page for at least some references include an additional reference,
-    # see, e.g., https://security.archlinux.org/AVG-2781 (one of our test inputs, which lists this ref: https://github.com/jpadilla/pyjwt/security/advisories/GHSA-ffqj-6fqr-9h24)
-    # Do we want to incorporate them into the AdvisoryData objects?
     def parse_advisory(self, record) -> List[AdvisoryData]:
         advisories = []
         aliases = record["issues"]
         for alias in record["issues"]:
             affected_packages = []
             for name in record["packages"]:
-                impacted_purls, resolved_purls = [], []
-                impacted_purls.append(
+                summary = record.get("type") or ""
+                if summary == "unknown":
+                    summary = ""
+
+                affected_packages = AffectedPackage(
                     PackageURL(
                         name=name,
                         type="alpm",
                         namespace="archlinux",
-                        version=record["affected"],
-                    )
+                    ),
+                    affected_version_range=ArchLinuxVersionRange.from_versions(
+                        [record.get("affected") or ""]
+                    ),
+                    fixed_version=ArchLinuxVersion(record.get("fixed") or ""),
                 )
-
-                if record["fixed"]:
-                    resolved_purls.append(
-                        PackageURL(
-                            name=name,
-                            type="alpm",
-                            namespace="archlinux",
-                            version=record["fixed"],
-                        )
-                    )
-                affected_packages.extend(nearest_patched_package(impacted_purls, resolved_purls))
 
             references = []
             references.append(
@@ -89,11 +82,8 @@ class ArchlinuxImporter(Importer):
 
             advisories.append(
                 AdvisoryData(
-                    # Do we want/need to keep this inside a list?  "aliases" is plural but I understand we want to break out each alias individually.
-                    # However, it looks like alpine_linux.py and nginx.py, for example, return a list of aliases.
-                    aliases=[alias],
-                    # aliases=alias,
-                    summary="",
+                    aliases=[alias, record["name"]],
+                    summary=summary,
                     affected_packages=affected_packages,
                     references=references,
                 )
@@ -106,23 +96,50 @@ class ArchlinuxImporter(Importer):
         print("\n\r=================================\n\r")
 
         for advisory in advisories:
-            print(f"1. aliases: {advisory.aliases}\r")
-            print("")
-            print(f"2. summary: {advisory.summary}\r")
-            print("")
-            print(f"3. affected_packages: {advisory.affected_packages}\r")
-            for pkg in advisory.affected_packages:
-                print("")
-                print("vulnerable_package: {}\r".format(pkg.vulnerable_package))
-                print("")
-                print("patched_package: {}\r".format(pkg.patched_package))
-            print("")
+            print(f"1. aliases: {advisory.aliases}\r\n")
+            for alias in advisory.aliases:
+
+                print("\talias: {}\r\n".format(alias))
+
+            print(f"2. summary: {advisory.summary}\r\n")
+
+            print(f"3. affected_packages: {advisory.affected_packages}\r\n")
+
+            print("\tpackage: {}\r\n".format(advisory.affected_packages.package))
+
+            print("\t\ttype: {}\r".format(advisory.affected_packages.package.type))
+
+            print("\t\tnamespace: {}\r".format(advisory.affected_packages.package.namespace))
+
+            print("\t\tname: {}\r".format(advisory.affected_packages.package.name))
+
+            print("\t\tversion: {}\r".format(advisory.affected_packages.package.version))
+
+            print("\t\tqualifiers: {}\r".format(advisory.affected_packages.package.qualifiers))
+
+            print("\t\tsubpath: {}\r\n".format(advisory.affected_packages.package.subpath))
+
+            print(
+                "\taffected_version_range: {}\r\n".format(
+                    advisory.affected_packages.affected_version_range
+                )
+            )
+
+            print("\tfixed_version: {}\r\n".format(advisory.affected_packages.fixed_version))
+
             print(f"4. references: {advisory.references}\r")
             for ref in advisory.references:
-                print("")
-                print("ref: {}\r".format(ref))
-            print("")
+
+                print("\r\nref: {}\r\n".format(ref))
+
+                print("\treference_id: {}\r\n".format(ref.reference_id))
+
+                print("\turl: {}\r\n".format(ref.url))
+
+                print("\tseverities: {}\r\n".format(ref.severities))
+
             print(f"5. date_published: {advisory.date_published}\r")
+
             print("\n\r=================================\n\r")
 
         return advisories

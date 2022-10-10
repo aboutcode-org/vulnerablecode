@@ -35,36 +35,36 @@ VERSION_API_CLASS_BY_NAMESPACE = {
 }
 
 
-class OvalBasicImprover(Improver):
+def get_package_versions(
+    package_url: PackageURL,
+    until: Optional[datetime] = None,
+    versions_fetcher_by_purl: Mapping[PackageURL, VersionAPI] = {},
+) -> List[str]:
+    """
+    Return a list of `valid_versions` for the `package_url`
+    """
+    api_name = get_api_package_name(package_url)
+    if not api_name:
+        logger.error(f"Could not get versions for {package_url!r}")
+        return []
+    versions_fetcher = versions_fetcher_by_purl.get(package_url)
+    if not versions_fetcher:
+        versions_fetcher: VersionAPI = VERSION_API_CLASS_BY_NAMESPACE[package_url.namespace]
+        versions_fetcher_by_purl[package_url] = versions_fetcher()
+
+    versions_fetcher = versions_fetcher_by_purl[package_url]
+
+    versions_fetcher_by_purl[package_url] = versions_fetcher
+    return versions_fetcher.get_until(package_name=api_name, until=until).valid_versions
+
+
+class DebianOvalBasicImprover(Improver):
     def __init__(self) -> None:
         self.versions_fetcher_by_purl: Mapping[str, VersionAPI] = {}
 
     @property
     def interesting_advisories(self) -> QuerySet:
-        return Advisory.objects.filter(
-            Q(created_by=UbuntuImporter.qualified_name)
-            | Q(created_by=DebianOvalImporter.qualified_name)
-        )
-
-    def get_package_versions(
-        self, package_url: PackageURL, until: Optional[datetime] = None
-    ) -> List[str]:
-        """
-        Return a list of `valid_versions` for the `package_url`
-        """
-        api_name = get_api_package_name(package_url)
-        if not api_name:
-            logger.error(f"Could not get versions for {package_url!r}")
-            return []
-        versions_fetcher = self.versions_fetcher_by_purl.get(package_url)
-        if not versions_fetcher:
-            versions_fetcher: VersionAPI = VERSION_API_CLASS_BY_NAMESPACE[package_url.namespace]
-            self.versions_fetcher_by_purl[package_url] = versions_fetcher()
-
-        versions_fetcher = self.versions_fetcher_by_purl[package_url]
-
-        self.versions_fetcher_by_purl[package_url] = versions_fetcher
-        return versions_fetcher.get_until(package_name=api_name, until=until).valid_versions
+        return Advisory.objects.filter(Q(created_by=DebianOvalImporter.qualified_name))
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         """
@@ -83,10 +83,70 @@ class OvalBasicImprover(Improver):
         pkg_type = purl.type
         pkg_namespace = purl.namespace
         pkg_name = purl.name
-        valid_versions = self.get_package_versions(
-            package_url=purl, until=advisory_data.date_published
+        valid_versions = get_package_versions(
+            package_url=purl,
+            until=advisory_data.date_published,
+            versions_fetcher_by_purl=self.versions_fetcher_by_purl,
         )
+
         for affected_version_range in affected_version_ranges:
+            aff_vers, unaff_vers = resolve_version_range(
+                affected_version_range=affected_version_range,
+                package_versions=valid_versions,
+            )
+            affected_purls = [
+                PackageURL(type=pkg_type, namespace=pkg_namespace, name=pkg_name, version=version)
+                for version in aff_vers
+            ]
+
+            unaffected_purls = [
+                PackageURL(type=pkg_type, namespace=pkg_namespace, name=pkg_name, version=version)
+                for version in unaff_vers
+            ]
+
+            affected_packages: List[LegacyAffectedPackage] = nearest_patched_package(
+                vulnerable_packages=affected_purls, resolved_packages=unaffected_purls
+            )
+
+            for (
+                fixed_package,
+                affected_packages,
+            ) in get_affected_packages_by_patched_package(affected_packages).items():
+                yield Inference.from_advisory_data(
+                    advisory_data,
+                    confidence=100,  # We are getting all valid versions to get this inference
+                    affected_purls=affected_packages,
+                    fixed_purl=fixed_package,
+                )
+
+
+class UbuntuOvalBasicImprover(Improver):
+    def __init__(self) -> None:
+        self.versions_fetcher_by_purl: Mapping[str, VersionAPI] = {}
+
+    @property
+    def interesting_advisories(self) -> QuerySet:
+        return Advisory.objects.filter(Q(created_by=UbuntuImporter.qualified_name))
+
+    def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
+        """
+        Yield Inferences for the given advisory data
+        """
+        if not advisory_data.affected_packages:
+            return
+
+        for affected_package in advisory_data.affected_packages:
+            purl = affected_package.package
+            affected_version_range = affected_package.affected_version_range
+            pkg_type = purl.type
+            pkg_namespace = purl.namespace
+            pkg_name = purl.name
+            valid_versions = get_package_versions(
+                package_url=purl,
+                until=advisory_data.date_published,
+                versions_fetcher_by_purl=self.versions_fetcher_by_purl,
+            )
+
             aff_vers, unaff_vers = resolve_version_range(
                 affected_version_range=affected_version_range,
                 package_versions=valid_versions,

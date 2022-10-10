@@ -131,7 +131,7 @@ class LaunchpadVersionAPI(VersionAPI):
     def fetch(self, pkg: str) -> Iterable[PackageVersion]:
         url = (
             f"https://api.launchpad.net/1.0/ubuntu/+archive/primary?"
-            "ws.op=getPublishedSources&source_name={pkg}&exact_match=true"
+            f"ws.op=getPublishedSources&source_name={pkg}&exact_match=true"
         )
 
         while True:
@@ -146,7 +146,7 @@ class LaunchpadVersionAPI(VersionAPI):
                 source_package_version = remove_debian_default_epoch(source_package_version)
                 yield PackageVersion(
                     value=source_package_version,
-                    release_date=release["date_published"],
+                    release_date=dateparser.parse(release["date_published"]),
                 )
             if response.get("next_collection_link"):
                 url = response["next_collection_link"]

@@ -31,6 +31,7 @@ from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import VersionRange
 from univers.versions import Version
 
+from vulnerabilities import severity_systems
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.severity_systems import ScoringSystem
@@ -425,7 +426,19 @@ class OvalImporter(Importer):
             # connected/linked to an OvalDefinition
             vuln_id = definition_data["vuln_id"]
             description = definition_data["description"]
-            references = [Reference(url=url) for url in definition_data["reference_urls"]]
+            severities = (
+                [
+                    VulnerabilitySeverity(
+                        system=severity_systems.GENERIC, value=definition_data.get("severity")
+                    )
+                ]
+                if definition_data.get("severity")
+                else []
+            )
+            references = [
+                Reference(url=url, severities=severities)
+                for url in definition_data["reference_urls"]
+            ]
             affected_packages = []
             for test_data in definition_data["test_data"]:
                 for package_name in test_data["package_list"]:

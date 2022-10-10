@@ -22,17 +22,32 @@
       {
         "reference_id": "",
         "url": "http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8703.html",
-        "severities": []
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "Medium"
+          }
+        ]
       },
       {
         "reference_id": "",
         "url": "https://blogs.gentoo.org/ago/2016/08/08/potrace-multiplesix-heap-based-buffer-overflow-in-bm_readbody_bmp-bitmap_io-c/",
-        "severities": []
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "Medium"
+          }
+        ]
       },
       {
         "reference_id": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8703",
-        "severities": []
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "Medium"
+          }
+        ]
       }
     ],
     "date_published": "2020-05-11T04:53:34+00:00"
@@ -60,32 +75,62 @@
       {
         "reference_id": "",
         "url": "http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8860.html",
-        "severities": []
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "Medium"
+          }
+        ]
       },
       {
         "reference_id": "",
         "url": "http://www.openwall.com/lists/oss-security/2016/10/18/11",
-        "severities": []
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "Medium"
+          }
+        ]
       },
       {
         "reference_id": "",
         "url": "https://blog.torproject.org/blog/tor-0289-released-important-fixes",
-        "severities": []
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "Medium"
+          }
+        ]
       },
       {
         "reference_id": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8860",
-        "severities": []
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "Medium"
+          }
+        ]
       },
       {
         "reference_id": "",
         "url": "https://github.com/torproject/tor/commit/3cea86eb2fbb65949673eb4ba8ebb695c87a57ce",
-        "severities": []
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "Medium"
+          }
+        ]
       },
       {
         "reference_id": "",
         "url": "https://trac.torproject.org/projects/tor/ticket/20384",
-        "severities": []
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "Medium"
+          }
+        ]
       }
     ],
     "date_published": "2020-05-11T04:53:34+00:00"

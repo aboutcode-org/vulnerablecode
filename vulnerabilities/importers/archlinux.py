@@ -27,7 +27,8 @@ from vulnerabilities.utils import fetch_response
 
 class ArchlinuxImporter(Importer):
     url = "https://security.archlinux.org/json"
-    spdx_license_expression = "unknown"
+    spdx_license_expression = "MIT"
+    license_url = "https://github.com/archlinux/arch-security-tracker/blob/master/LICENSE"
 
     def fetch(self) -> Iterable[Mapping]:
         response = fetch_response(self.url)
@@ -39,24 +40,41 @@ class ArchlinuxImporter(Importer):
 
     def parse_advisory(self, record) -> List[AdvisoryData]:
         advisories = []
-        aliases = record["issues"]
-        for alias in record["issues"]:
+        # aliases = record["issues"]
+        aliases = record.get("issues") or []
+        # for alias in record["issues"]:
+        for alias in aliases:
             affected_packages = []
             for name in record["packages"]:
                 summary = record.get("type") or ""
                 if summary == "unknown":
                     summary = ""
 
+                # affected_packages = AffectedPackage(
+                #     PackageURL(
+                #         name=name,
+                #         type="alpm",
+                #         namespace="archlinux",
+                #     ),
+                #     affected_version_range=ArchLinuxVersionRange.from_versions(
+                #         [record.get("affected") or ""]
+                #     ),
+                #     fixed_version=ArchLinuxVersion(record.get("fixed") or ""),
+                # )
+                affected = record.get("affected") or ""
+                affected_version_range = (
+                    ArchLinuxVersionRange.from_versions([affected]) if affected else None
+                )
+                fixed = record.get("fixed") or ""
+                fixed_version = ArchLinuxVersion(fixed) if fixed else None
                 affected_packages = AffectedPackage(
-                    PackageURL(
+                    package=PackageURL(
                         name=name,
                         type="alpm",
                         namespace="archlinux",
                     ),
-                    affected_version_range=ArchLinuxVersionRange.from_versions(
-                        [record.get("affected") or ""]
-                    ),
-                    fixed_version=ArchLinuxVersion(record.get("fixed") or ""),
+                    affected_version_range=affected_version_range,
+                    fixed_version=fixed_version,
                 )
 
             references = []

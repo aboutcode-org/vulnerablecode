@@ -254,6 +254,12 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
         return Response(response)
 
+    @action(detail=False, methods=["get"])
+    def all(self, request):
+        vulnerable_packages = Package.objects.vulnerable().only(*PackageURL._fields)
+        vulnerable_purls = [str(package.purl) for package in vulnerable_packages]
+        return Response(vulnerable_purls)
+
 
 class VulnerabilityFilterSet(filters.FilterSet):
     class Meta:

@@ -1,6 +1,13 @@
 Release notes
 =============
 
+
+Version v30.1.0
+----------------
+
+- We added a new "/packages/all" API endpoint to get all Package URLs know to be vulnerable.
+
+
 Version v30.0.0
 ----------------
 
@@ -79,7 +86,6 @@ This is a major version that is not backward compatible.
 
 - The data license is now CC-BY-SA-4.0 as this is the highest common
   denominator license among all the data sources we collect and aggregate. 
-
 
 Other:
 

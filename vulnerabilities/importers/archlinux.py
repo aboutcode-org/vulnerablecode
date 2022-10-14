@@ -36,7 +36,7 @@ class ArchlinuxImporter(Importer):
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         for record in self.fetch():
-            yield self.parse_advisory(record)
+            yield from self.parse_advisory(record)
 
     def parse_advisory(self, record) -> List[AdvisoryData]:
         advisories = []

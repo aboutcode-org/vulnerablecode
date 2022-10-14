@@ -43,7 +43,7 @@ def test_parse_advisory_single():
     util_tests.check_results_against_json(result, expected_file)
 
 
-@patch("vulnerabilities.utils.fetch_response")
+@patch("vulnerabilities.importers.archlinux.ArchlinuxImporter.fetch")
 def test_archlinux_importer(mock_response):
     with open(os.path.join(TEST_DATA, "archlinux-multi.json")) as f:
         mock_response.return_value = json.load(f)

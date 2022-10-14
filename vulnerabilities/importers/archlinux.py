@@ -40,34 +40,21 @@ class ArchlinuxImporter(Importer):
 
     def parse_advisory(self, record) -> List[AdvisoryData]:
         advisories = []
-        # aliases = record["issues"]
         aliases = record.get("issues") or []
-        # for alias in record["issues"]:
         for alias in aliases:
             affected_packages = []
             for name in record["packages"]:
                 summary = record.get("type") or ""
                 if summary == "unknown":
                     summary = ""
-
-                # affected_packages = AffectedPackage(
-                #     PackageURL(
-                #         name=name,
-                #         type="alpm",
-                #         namespace="archlinux",
-                #     ),
-                #     affected_version_range=ArchLinuxVersionRange.from_versions(
-                #         [record.get("affected") or ""]
-                #     ),
-                #     fixed_version=ArchLinuxVersion(record.get("fixed") or ""),
-                # )
                 affected = record.get("affected") or ""
                 affected_version_range = (
                     ArchLinuxVersionRange.from_versions([affected]) if affected else None
                 )
                 fixed = record.get("fixed") or ""
                 fixed_version = ArchLinuxVersion(fixed) if fixed else None
-                affected_packages = AffectedPackage(
+                affected_packages = []
+                affected_package = AffectedPackage(
                     package=PackageURL(
                         name=name,
                         type="alpm",
@@ -76,6 +63,7 @@ class ArchlinuxImporter(Importer):
                     affected_version_range=affected_version_range,
                     fixed_version=fixed_version,
                 )
+                affected_packages.append(affected_package)
 
             references = []
             references.append(
@@ -106,58 +94,5 @@ class ArchlinuxImporter(Importer):
                     references=references,
                 )
             )
-
-        # The print statements below will print the structure of each test advisory when either of these tests is run:
-        # pytest -vvs -k test_parse_advisory_single vulnerabilities/tests/test_archlinux.py
-        # pytest -vvs -k test_parse_advisory_multi vulnerabilities/tests/test_archlinux.py
-
-        print("\n\r=================================\n\r")
-
-        for advisory in advisories:
-            print(f"1. aliases: {advisory.aliases}\r\n")
-            for alias in advisory.aliases:
-
-                print("\talias: {}\r\n".format(alias))
-
-            print(f"2. summary: {advisory.summary}\r\n")
-
-            print(f"3. affected_packages: {advisory.affected_packages}\r\n")
-
-            print("\tpackage: {}\r\n".format(advisory.affected_packages.package))
-
-            print("\t\ttype: {}\r".format(advisory.affected_packages.package.type))
-
-            print("\t\tnamespace: {}\r".format(advisory.affected_packages.package.namespace))
-
-            print("\t\tname: {}\r".format(advisory.affected_packages.package.name))
-
-            print("\t\tversion: {}\r".format(advisory.affected_packages.package.version))
-
-            print("\t\tqualifiers: {}\r".format(advisory.affected_packages.package.qualifiers))
-
-            print("\t\tsubpath: {}\r\n".format(advisory.affected_packages.package.subpath))
-
-            print(
-                "\taffected_version_range: {}\r\n".format(
-                    advisory.affected_packages.affected_version_range
-                )
-            )
-
-            print("\tfixed_version: {}\r\n".format(advisory.affected_packages.fixed_version))
-
-            print(f"4. references: {advisory.references}\r")
-            for ref in advisory.references:
-
-                print("\r\nref: {}\r\n".format(ref))
-
-                print("\treference_id: {}\r\n".format(ref.reference_id))
-
-                print("\turl: {}\r\n".format(ref.url))
-
-                print("\tseverities: {}\r\n".format(ref.severities))
-
-            print(f"5. date_published: {advisory.date_published}\r")
-
-            print("\n\r=================================\n\r")
 
         return advisories

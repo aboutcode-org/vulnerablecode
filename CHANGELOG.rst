@@ -2,6 +2,13 @@ Release notes
 =============
 
 
+Version v30.1.1
+----------------
+
+- We added a new web UI link to explain how to obtain an API for the publicly
+  hosted VulnerableCode
+
+
 Version v30.1.0
 ----------------
 
@@ -32,7 +39,7 @@ This is a major version that is not backward compatible.
 
 - We removed the ability to edit relationships from the UI. The UI is now read-only.
 
-- We replace the web UI with a brand new UI based on the same overall look and feel as ScanCode.io.
+- We replaced the web UI with a brand new UI based on the same overall look and feel as ScanCode.io.
 
 - We added support for NixOS as a Linux deployment target.
 
@@ -62,7 +69,7 @@ This is a major version that is not backward compatible.
   another aliases/ endpoint to lookup for vulnerabilities by aliases. These two endpoints will be
   replaced by query parameters on the main vulnerabilities/ endpoint when stabilized.
 
-- Added filters for vulnerabilities endpoint to get fixed packages in accordance
+- We added filters for vulnerabilities endpoint to get fixed packages in accordance
   to the details given in filters: For example, when you call the endpoint this way
   ``/api/vulnerabilities?type=pypi&namespace=foo&name=bar``, you will receive only
   fixed versioned purls of the type ``pypi``, namespace ``foo`` and name ``bar``.

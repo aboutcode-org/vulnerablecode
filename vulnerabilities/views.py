@@ -128,14 +128,25 @@ class VulnerabilitySearch(ListView):
         qs = self.model.objects
         if not query:
             return qs.none()
-        qs = (
-            qs.filter(
-                Q(vulnerability_id__icontains=query)
-                | Q(aliases__alias__icontains=query)
-                | Q(references__id__icontains=query)
-                | Q(summary__icontains=query)
-            )
-            .order_by("vulnerability_id")
+
+        # middle ground, exact on vulnerability_id
+        qssearch = qs.filter(vulnerability_id=query)
+        if not qssearch.exists():
+            # middle ground, exact on alias
+            qssearch = qs.filter(aliases__alias=query)
+            if not qssearch.exists():
+                # middle ground, slow enough
+                qssearch = qs.filter(
+                    Q(vulnerability_id__icontains=query) | Q(aliases__alias__icontains=query)
+                )
+                if not qssearch.exists():
+                    # last resort super slow
+                    qssearch = qs.filter(
+                        Q(references__id__icontains=query) | Q(summary__icontains=query)
+                    )
+
+        return (
+            qssearch.order_by("vulnerability_id")
             .annotate(
                 vulnerable_package_count=Count(
                     "packages", filter=Q(packagerelatedvulnerability__fix=False), distinct=True
@@ -146,7 +157,6 @@ class VulnerabilitySearch(ListView):
             )
             .prefetch_related()
         )
-        return qs
 
 
 class PackageDetails(DetailView):

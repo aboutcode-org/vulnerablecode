@@ -412,8 +412,6 @@ def base32_custom(btes):
     return bytes(encoded)
 
 
-# 9/28/2022 Wednesday 1:07:41 PM.Copy from /home/jmh/dev/nexb/vulnerablecode/vulnerabilities/importers/alpine_linux.py
-# for use in /home/jmh/dev/nexb/vulnerablecode/vulnerabilities/importers/archlinux.py
 def fetch_response(url):
     """
     Fetch and return `response` from the `url`

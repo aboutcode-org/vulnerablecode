@@ -8,9 +8,9 @@
 #
 
 import logging
-import os
 import traceback
 from datetime import datetime
+from pathlib import Path
 from typing import Iterable
 from typing import List
 from typing import Mapping
@@ -29,7 +29,7 @@ from univers.versions import Version
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Importer
+from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import UnMergeablePackageError
 from vulnerabilities.improver import Improver
@@ -71,31 +71,53 @@ def fork_and_get_dir(url):
     return fetch_via_vcs(url).dest_dir
 
 
-class ForkError(Exception):
-    pass
-
-
-class GitLabAPIImporter(Importer):
+class GitLabAPIImporter(GitImporter):
     spdx_license_expression = "MIT"
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
-    gitlab_url = "git+https://gitlab.com/gitlab-org/advisories-community/"
+
+    def __init__(self):
+        super().__init__(repo_url="git+https://gitlab.com/gitlab-org/advisories-community/")
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         try:
-            fork_directory = fork_and_get_dir(url=self.gitlab_url)
-        except Exception as e:
-            logger.error(f"Can't clone url {self.gitlab_url}")
-            raise ForkError(self.gitlab_url) from e
-        for root_dir in os.listdir(fork_directory):
-            # skip well known files and directories that contain no advisory data
-            if root_dir in ("ci", "CODEOWNERS", "README.md", "LICENSE", ".git"):
-                continue
-            if root_dir not in PURL_TYPE_BY_GITLAB_SCHEME:
-                logger.error(f"Unknown package type: {root_dir}")
-                continue
-            for root, _, files in os.walk(os.path.join(fork_directory, root_dir)):
-                for file in files:
-                    yield parse_gitlab_advisory(file=os.path.join(root, file))
+            self.clone()
+            path = Path(self.vcs_response.dest_dir)
+
+            glob = "**/*.yml"
+            files = (p for p in path.glob(glob) if p.is_file())
+            for file in files:
+                # split a path according to gitlab conventions where package type and name are a part of path
+                # For example with this path:
+                # /tmp/tmpi1klhpmd/pypi/gradio/CVE-2021-43831.yml
+                # the package type is pypi and the package name is gradio
+                # to ('/', 'tmp', 'tmpi1klhpmd', 'pypi', 'gradio', 'CVE-2021-43831.yml')
+                purl_type = get_gitlab_package_type(path=file)
+                if not purl_type:
+                    logger.error(f"Unknow gitlab directory structure {file!r}")
+                    continue
+
+                if purl_type in PURL_TYPE_BY_GITLAB_SCHEME:
+                    yield parse_gitlab_advisory(file)
+
+                else:
+                    logger.error(f"Unknow package type {purl_type!r}")
+                    continue
+        finally:
+            if self.vcs_response:
+                self.vcs_response.delete()
+
+
+def get_gitlab_package_type(path: Path):
+    """
+    Return a package type extracted from a gitlab advisory path or None
+    """
+    parts = path.parts[-3:]
+
+    if len(parts) < 3:
+        return
+
+    type, _name, _vid = parts
+    return type
 
 
 def get_purl(package_slug):
@@ -168,10 +190,12 @@ def parse_gitlab_advisory(file):
     identifiers:
     - "GMS-2018-26"
     """
-    with open(file, "r") as f:
+    with open(file) as f:
         gitlab_advisory = saneyaml.load(f)
     if not isinstance(gitlab_advisory, dict):
-        logger.error(f"parse_yaml_file: yaml_file is not of type `dict`: {gitlab_advisory!r}")
+        logger.error(
+            f"parse_gitlab_advisory: unknown gitlab advisory format in {file!r} with data: {gitlab_advisory!r}"
+        )
         return
 
     # refer to schema here https://gitlab.com/gitlab-org/advisories-community/-/blob/main/ci/schema/schema.json

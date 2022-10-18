@@ -14,6 +14,7 @@ from vulnerabilities.importers import gitlab
 from vulnerabilities.importers import nginx
 from vulnerabilities.importers import nvd
 from vulnerabilities.importers import openssl
+from vulnerabilities.importers import pypa
 from vulnerabilities.importers import pysec
 from vulnerabilities.importers import redhat
 
@@ -27,6 +28,7 @@ IMPORTERS_REGISTRY = [
     pysec.PyPIImporter,
     debian.DebianImporter,
     gitlab.GitLabAPIImporter,
+    pypa.PyPaImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

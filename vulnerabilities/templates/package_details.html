@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+{% block title %}
+VulnerableCode Package Details - {{ package.purl }}
+{% endblock %}
+
+{% block content %}
+
+{% include "navbar.html" %}
+
+<section class="section pt-0">
+    {% include "package_search_box.html"%}
+</section>
+
+{% if package %}
+    <section class="section pt-0">
+        <div class="details-container">
+            <article class="panel is-info panel-header-only">
+                <div class="panel-heading py-2 is-size-6">
+                Package details:
+                </div>
+            </article>
+
+            <div class="pl-3 pr-3 mb-5">
+                <table class="table vcio-table width-100-pct mt-2">
+                    <tbody>
+                        <tr>
+                            <td class="two-col-left">
+                                <span
+                                    class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                    data-tooltip="The package url or purl is a URL string used to identify and locate a software package."
+                                >
+                                purl
+                                </span>
+                            </td>
+                            <td class="two-col-right">
+                                {{ package.purl }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content ml-3 mr-3">
+                <div class="has-text-weight-bold ml-1 mb-0">
+                    Affected by vulnerabilities ({{ affected_by_vulnerabilities|length }})
+                </div>
+
+                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th style="width: 175px;">Vulnerability</th>
+                            <th>Summary</th>
+                            <th style="width: 225px;">Aliases</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for vulnerability in affected_by_vulnerabilities %}
+                            <tr>
+                                <td>
+                                    <a href="{{ vulnerability.get_absolute_url }}" target="_self">{{ vulnerability.vulnerability_id }}</a>
+                                </td>
+                                <td>
+                                    {{ vulnerability.summary }}
+                                </td>
+                                <td>
+                                    {% for alias in vulnerability.alias %}
+                                        {% if alias.url %}
+                                            <a href={{ alias.url }} target="_blank">{{ alias }}<i class="fa fa-external-link fa_link_custom"></i></a>
+                                            <br />
+                                        {% else %}
+                                            {{ alias }}
+                                            <br />
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3">
+                                    This package is not known to be affected by vulnerabilities.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+            <div class="content ml-3 mr-3">
+                <div class="has-text-weight-bold ml-1 mb-0">
+                    Fixing vulnerabilities ({{ fixing_vulnerabilities|length }})
+                </div>
+
+                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th style="width: 175px;">Vulnerability</th>
+                            <th>Summary</th>
+                            <th style="width: 225px;">Aliases</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for vulnerability in fixing_vulnerabilities %}
+                            <tr>
+                                <td>
+                                    <a href="{{ vulnerability.get_absolute_url }}" target="_self">{{ vulnerability.vulnerability_id }}</a>
+                                </td>
+                                <td>
+                                    {{ vulnerability.summary }}
+                                </td>
+                                <td>
+                                    {% for alias in vulnerability.alias %}
+                                        {% if alias.url %}
+                                            <a href={{ alias.url }} target="_blank">{{ alias }}<i class="fa fa-external-link fa_link_custom"></i></a>
+                                            <br />
+                                        {% else %}
+                                            {{ alias }}
+                                            <br />
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3">
+                                    This package is not known to fix vulnerabilities.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            <br/>
+            </div>
+        </div>
+    </section>
+{% endif %}
+
+{% endblock %}

@@ -37,7 +37,6 @@ repositories, registries or APIs.
 # FIXME: use purl for cache key, rather than an undefined package_name key
 # FIXME: DO NOT cache by default as this is an optimization that does not work for long running processes
 # FIXME: DO NOT use set() for storing version lists: they lose the original ordering
-# FIXME: DO NOT use aiohttp that makes the code more complex before this is can be tested for correctness first
 
 
 @dataclasses.dataclass(frozen=True)

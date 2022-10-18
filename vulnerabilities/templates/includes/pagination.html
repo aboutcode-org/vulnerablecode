@@ -1,0 +1,39 @@
+<nav class="pagination is-centered is-small" aria-label="pagination">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}&search={{ search }}" class="pagination-previous">Previous</a>
+  {% else %}
+    <a class="pagination-previous" disabled>Previous</a>
+  {% endif %}
+
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}&search={{ search }}" class="pagination-next">Next</a>
+  {% else %}
+    <a class="pagination-next" disabled>Next</a>
+  {% endif %}
+
+  <ul class="pagination-list">
+    {% if page_obj.number != 1%}
+      <li>
+        <a href="?page=1&search={{ search }}" class="pagination-link" aria-label="Goto page 1">1</a>
+      </li>
+      {% if page_obj.number > 2 %}
+        <li>
+          <span class="pagination-ellipsis">&hellip;</span>
+        </li>
+      {% endif %}
+    {% endif %}
+    <li>
+      <a class="pagination-link is-current" aria-label="Page {{ page_obj.number }}" aria-current="page">{{ page_obj.number }}</a>
+    </li>
+    {% if page_obj.number != page_obj.paginator.num_pages %}
+      {% if page_obj.next_page_number != page_obj.paginator.num_pages %}
+        <li>
+          <span class="pagination-ellipsis">&hellip;</span>
+        </li>
+      {% endif %}
+      <li>
+        <a href="?page={{ page_obj.paginator.num_pages }}&search={{ search }}" class="pagination-link" aria-label="Goto page {{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>

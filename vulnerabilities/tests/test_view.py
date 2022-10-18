@@ -18,14 +18,11 @@ class PackageSearchTestCase(TestCase):
     def setUp(self):
         self.client = Client()
 
-    def test_paginator(self):
-        """
-        Test PackageSearch paginator
-        """
+    def test_packages_search_view_paginator(self):
         response = self.client.get("/packages/search?type=deb&name=&page=1")
         self.assertEqual(response.status_code, 200)
         response = self.client.get("/packages/search?type=deb&name=&page=*")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 404)
         response = self.client.get("/packages/search?type=deb&name=&page=")
         self.assertEqual(response.status_code, 200)
         response = self.client.get("/packages/search?type=&name=&page=")
@@ -34,30 +31,22 @@ class PackageSearchTestCase(TestCase):
 
 class VulnerabilitySearchTestCase(TestCase):
     def setUp(self):
-        vulnerability = Vulnerability(summary="test")
+        self.vulnerability = vulnerability = Vulnerability(summary="test")
         vulnerability.save()
         alias = Alias(alias="TEST-2022", vulnerability=vulnerability)
         alias.save()
-        self.id = vulnerability.id
         self.client = Client()
 
-    def test_vulnerabilties(self):
-        """
-        Test Vulnerability View
-        """
-        response = self.client.get(f"/vulnerabilities/{self.id}")
+    def test_vulnerabilties_search_view_with_vcid_works_and_pk_does_not(self):
+        response = self.client.get(f"/vulnerabilities/{self.vulnerability.pk}")
+        self.assertEqual(response.status_code, 404)
+        response = self.client.get(f"/vulnerabilities/{self.vulnerability.vulnerability_id}")
         self.assertEqual(response.status_code, 200)
 
-    def test_vulnerabilties_search(self):
-        """
-        Test Vulnerability Search View
-        """
+    def test_vulnerabilties_search_view_with_empty(self):
         response = self.client.get(f"/vulnerabilities/search")
         self.assertEqual(response.status_code, 200)
 
-    def test_alias(self):
-        """
-        Test Vulnerability Search View
-        """
-        response = self.client.get(f"/vulnerabilities/search?vuln_id=TEST-2022")
+    def test_vulnerabilties_search_view_can_find_alias(self):
+        response = self.client.get(f"/vulnerabilities/search?search=TEST-2022")
         self.assertEqual(response.status_code, 200)

@@ -1,64 +1,87 @@
-{% extends 'base.html' %} 
-{% block title %} 
-<h1 class="title">
-Explore Vulnerable packages
-</h1>
-{% endblock %}
-{% block content %}
+{% extends "base.html" %}
+{% load humanize %}
 {% load widget_tweaks %}
 
-<div class="columns">
-  <div class="column is-one-third is-offset-one-third">
-    <form action="{% url 'package_search' %}" method="get">
-    {% load widget_tweaks %}
-      <div class="field is-horizontal pd-3">
-        <div class="select">
-        {{form.type}}
-        </div>
-        {{form.name|add_class:"input"}}
-        <button class="button is-success", type="submit">
-          Search
-        </button>
-      </div>
-    </form>
-    {% if result_size %}
-      <p class="has-text-centered" id="result_count">{{result_size}} results</p>
-    {% elif result_size == 0 %}
-      <p class="has-text-centered" id="result_count">No results found</p>
-    {% endif %}
-  </div>
-</div>
+{% block title %}
+VulnerableCode Package Search
+{% endblock %}
 
-{% if packages %}
+{% block content %}
 
-<section class="section">
-  <div class="content is-medium">
-    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-      <tr>
-        <th>Package URL</th>
-        <th>Affected By Vulnerabilities</th>
-        <th>Fixing Vulnerabilities</th>
-      </tr>
-      {% for package in packages %}
-      <tr>
-        <td><a href="{% url 'package_view' package.pk %}">{{package.package_url}}</a></td>
-        <td>{{package.vulnerability_count}}</td>
-        <td>{{package.patched_vulnerability_count}}</td>
-      </tr>
-      {% endfor %}
-    </table>
-  </div>
-  
-  <div class="is-field is-horizontal">
-    {% if packages.has_previous %}
-      <a class="button" href="?{{ searched_for }}&page={{ packages.previous_page_number }}">Previous Page</a>
-    {% endif %}
-  
-    {% if packages.has_next %}
-      <a class="button" href="?{{ searched_for }}&page={{ packages.next_page_number}}">Next Page</a>
-    {% endif %}
-  </div>
+{% include "navbar.html" %}
+
+<section class="section pt-0">
+    {% include "package_search_box.html" %}
 </section>
 
+{% if search %}
+    <div class="is-max-desktop mb-3">
+        <section class="mx-5">
+            <div class="is-flex" style="justify-content: space-between;">
+                <div>
+                    {{ page_obj.paginator.count|intcomma }} results
+                </div>
+                {% if is_paginated %}
+                    {% include 'includes/pagination.html' with page_obj=page_obj %}
+                {% endif %}
+            </div>
+        </section>
+    </div>
+   
+    <section class="section pt-0">
+        <div class="content">
+            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>
+                            <span
+                                class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                data-tooltip="The package url or purl is a URL string used to identify and locate a software package.">
+                                Package URL
+                            </span>
+                        </th>
+                        <th style="width: 225px;">
+                            <span
+                                class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                data-tooltip="This is the number of vulnerabilities that affect the package.">
+                                Affected by vulnerabilities
+                            </span>
+                        </th>
+                        <th style="width: 225px;">
+                            <span
+                                class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                data-tooltip="This is the number of vulnerabilities fixed by the package.">
+                                Fixing vulnerabilities
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for package in page_obj %}
+                        <tr>
+                            <td style="word-break: break-all;">
+                                <a
+                                    href="{{ package.get_absolute_url }}?search={{ search }}"
+                                    target="_self">{{ package.purl }}</a>
+                            </td>
+                            <td>{{ package.vulnerability_count }}</td>
+                            <td>{{ package.patched_vulnerability_count }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="3" style="word-break: break-all;">
+                            No Package found.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    {% if is_paginated %}
+        {% include 'includes/pagination.html' with page_obj=page_obj %}
+    {% endif %}
+
+    </section>
 {% endif %}
 {% endblock %}

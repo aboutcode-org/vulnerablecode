@@ -109,7 +109,7 @@ Local development installation
 Supported Platforms
 ^^^^^^^^^^^^^^^^^^^
 
-**VulnerableCode* has been tested and is supported on the following operating systems:
+**VulnerableCode** has been tested and is supported on the following operating systems:
 
     #. **Debian-based** Linux distributions
     #. **macOS** 12.1 and up
@@ -122,7 +122,7 @@ Pre-installation Checklist
 
 Before you install VulnerableCode, make sure you have the following prerequisites:
 
- * **Python: 3.8+* found at https://www.python.org/downloads/
+ * **Python: 3.8+** found at https://www.python.org/downloads/
  * **Git**: most recent release available at https://git-scm.com/
  * **PostgreSQL**: release 10 or later found at https://www.postgresql.org/ or
    https://postgresapp.com/ on macOS
@@ -211,8 +211,6 @@ application.
 .. warning::
     This setup is **not suitable for deployments** and **only supported for local
     development**.
-
-An overview of the web application usage is available at :ref:`user_interface`.
 
 
 Upgrading

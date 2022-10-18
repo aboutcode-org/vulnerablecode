@@ -11,6 +11,7 @@ from datetime import datetime
 from unittest import TestCase
 
 import pytest
+from django.db.utils import IntegrityError
 from freezegun import freeze_time
 
 from vulnerabilities import models

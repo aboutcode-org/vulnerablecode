@@ -97,7 +97,7 @@ class TestOpenssl(testcase.FileBasedTesting):
             references=[
                 Reference(
                     reference_id="CVE-2017-3737",
-                    url="",
+                    url="https://nvd.nist.gov/vuln/detail/CVE-2017-3737",
                     severities=[],
                 ),
                 Reference(

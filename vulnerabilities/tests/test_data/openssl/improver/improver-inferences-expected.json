@@ -36,7 +36,7 @@
     "references": [
       {
         "reference_id": "CVE-2022-0778",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0778",
         "severities": []
       },
       {
@@ -199,7 +199,7 @@
     "references": [
       {
         "reference_id": "CVE-2022-0778",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0778",
         "severities": []
       },
       {
@@ -482,7 +482,7 @@
     "references": [
       {
         "reference_id": "CVE-2022-0778",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0778",
         "severities": []
       },
       {
@@ -541,7 +541,7 @@
     "references": [
       {
         "reference_id": "CVE-2021-4160",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-4160",
         "severities": []
       },
       {
@@ -696,7 +696,7 @@
     "references": [
       {
         "reference_id": "CVE-2021-4160",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-4160",
         "severities": []
       },
       {
@@ -971,7 +971,7 @@
     "references": [
       {
         "reference_id": "CVE-2021-4160",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-4160",
         "severities": []
       },
       {
@@ -1030,7 +1030,7 @@
     "references": [
       {
         "reference_id": "CVE-2021-4044",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-4044",
         "severities": []
       },
       {
@@ -1143,7 +1143,7 @@
     "references": [
       {
         "reference_id": "CVE-2020-1971",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-1971",
         "severities": []
       },
       {
@@ -1381,7 +1381,7 @@
     "references": [
       {
         "reference_id": "CVE-2020-1971",
-        "url": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-1971",
         "severities": []
       },
       {

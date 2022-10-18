@@ -10,6 +10,7 @@
 from django.contrib import admin
 from django.urls import include
 from django.urls import path
+from django.urls import re_path
 from rest_framework.routers import DefaultRouter
 
 from vulnerabilities.api import AliasViewSet
@@ -17,10 +18,10 @@ from vulnerabilities.api import CPEViewSet
 from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
 from vulnerabilities.views import HomePage
-from vulnerabilities.views import PackageSearchView
-from vulnerabilities.views import PackageUpdate
+from vulnerabilities.views import PackageDetails
+from vulnerabilities.views import PackageSearch
 from vulnerabilities.views import VulnerabilityDetails
-from vulnerabilities.views import VulnerabilitySearchView
+from vulnerabilities.views import VulnerabilitySearch
 from vulnerabilities.views import schema_view
 
 
@@ -38,14 +39,18 @@ api_router.register(r"vulnerabilities", VulnerabilityViewSet, basename="vulnerab
 api_router.register(r"cpes", CPEViewSet, basename="cpe")
 api_router.register(r"alias", AliasViewSet, basename="alias")
 
-
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("api/docs", schema_view, name="redoc"),
-    path("packages/search", PackageSearchView.as_view(), name="package_search"),
-    path("packages/<int:pk>", PackageUpdate.as_view(), name="package_view"),
-    path("vulnerabilities/<int:pk>", VulnerabilityDetails.as_view(), name="vulnerability_view"),
-    path("vulnerabilities/search", VulnerabilitySearchView.as_view(), name="vulnerability_search"),
     path("", HomePage.as_view(), name="home"),
+    path("packages/search", PackageSearch.as_view(), name="package_search"),
+    re_path("^packages/(?P<purl>pkg:.+)$", PackageDetails.as_view(), name="package_details"),
+    path("vulnerabilities/search", VulnerabilitySearch.as_view(), name="vulnerability_search"),
+    path(
+        "vulnerabilities/<str:vulnerability_id>",
+        VulnerabilityDetails.as_view(),
+        name="vulnerability_details",
+    ),
+    path("api/docs", schema_view, name="redoc"),
     path(r"api/", include(api_router.urls)),
+    # disabled for now
+    #    path("admin/", admin.site.urls),
 ]

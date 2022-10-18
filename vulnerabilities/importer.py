@@ -12,7 +12,6 @@ import datetime
 import logging
 import os
 import shutil
-import tempfile
 import traceback
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -23,9 +22,7 @@ from typing import Optional
 from typing import Set
 from typing import Tuple
 
-from binaryornot.helpers import is_binary_string
-from git import DiffIndex
-from git import Repo
+from fetchcode.vcs import fetch_via_vcs
 from license_expression import Licensing
 from packageurl import PackageURL
 from univers.version_range import VersionRange
@@ -312,193 +309,37 @@ class Importer:
         raise NotImplementedError
 
 
-# TODO: Needs rewrite
+class ForkError(Exception):
+    pass
+
+
 class GitImporter(Importer):
-    def validate_configuration(self) -> None:
-
-        if not self.config.create_working_directory and self.config.working_directory is None:
-            self.error(
-                '"create_working_directory" is not set but "working_directory" is set to '
-                "the default, which calls tempfile.mkdtemp()"
-            )
-
-        if not self.config.create_working_directory and not os.path.exists(
-            self.config.working_directory
-        ):
-            self.error(
-                '"working_directory" does not contain an existing directory and'
-                '"create_working_directory" is not set'
-            )
-
-        if not self.config.remove_working_directory and self.config.working_directory is None:
-            self.error(
-                '"remove_working_directory" is not set and "working_directory" is set to '
-                "the default, which calls tempfile.mkdtemp()"
-            )
+    def __init__(self, repo_url):
+        super().__init__()
+        self.repo_url = repo_url
+        self.vcs_response = None
 
     def __enter__(self):
-        self._ensure_working_directory()
-        self._ensure_repository()
+        super().__enter__()
+        self.clone()
+        return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        if self.config.remove_working_directory:
-            shutil.rmtree(self.config.working_directory)
+    def __exit__(self):
+        self.vcs_response.delete()
 
-    def file_changes(
-        self,
-        subdir: str = None,
-        recursive: bool = False,
-        file_ext: Optional[str] = None,
-    ) -> Tuple[Set[str], Set[str]]:
+    def clone(self):
+        try:
+            self.vcs_response = fetch_via_vcs(self.repo_url)
+        except Exception as e:
+            msg = f"Failed to fetch {self.repo_url} via vcs: {e}"
+            logger.error(msg)
+            raise ForkError(msg) from e
+
+    def advisory_data(self) -> Iterable[AdvisoryData]:
         """
-        Returns all added and modified files since last_run_date or cutoff_date (whichever is more
-        recent).
-
-        :param subdir: filter by files in this directory
-        :param recursive: whether to include files in subdirectories
-        :param file_ext: filter files by this extension
-        :return: The first set contains (absolute paths to) added files, the second one modified
-                 files
+        Return AdvisoryData objects corresponding to the data being imported
         """
-        if subdir is None:
-            working_dir = self.config.working_directory
-        else:
-            working_dir = os.path.join(self.config.working_directory, subdir)
-
-        path = Path(working_dir)
-
-        if self.config.last_run_date is None and self.config.cutoff_date is None:
-            if recursive:
-                glob = "**/*"
-            else:
-                glob = "*"
-
-            if file_ext:
-                glob = f"{glob}.{file_ext}"
-
-            return {str(p) for p in path.glob(glob) if p.is_file()}, set()
-
-        return self._collect_file_changes(subdir=subdir, recursive=recursive, file_ext=file_ext)
-
-    def _collect_file_changes(
-        self,
-        subdir: Optional[str],
-        recursive: bool,
-        file_ext: Optional[str],
-    ) -> Tuple[Set[str], Set[str]]:
-
-        added_files, updated_files = set(), set()
-
-        # find the most ancient commit we need to diff with
-        cutoff_commit = None
-        for commit in self._repo.iter_commits(self._repo.head):
-            if commit.committed_date < self.cutoff_timestamp:
-                break
-            cutoff_commit = commit
-
-        if cutoff_commit is None:
-            return added_files, updated_files
-
-        def _is_binary(d: DiffIndex):
-            return is_binary_string(d.b_blob.data_stream.read(1024))
-
-        for d in cutoff_commit.diff(self._repo.head.commit):
-            if not _include_file(d.b_path, subdir, recursive, file_ext) or _is_binary(d):
-                continue
-
-            abspath = os.path.join(self.config.working_directory, d.b_path)
-            if d.new_file:
-                added_files.add(abspath)
-            elif d.a_blob and d.b_blob:
-                if d.a_path != d.b_path:
-                    # consider moved files as added
-                    added_files.add(abspath)
-                elif d.a_blob != d.b_blob:
-                    updated_files.add(abspath)
-
-        # Any file that has been added and then updated inside the window of the git history we
-        # looked at, should be considered "added", not "updated", since it does not exist in the
-        # database yet.
-        updated_files = updated_files - added_files
-
-        return added_files, updated_files
-
-    def _ensure_working_directory(self) -> None:
-        if self.config.working_directory is None:
-            self.config.working_directory = tempfile.mkdtemp()
-        elif self.config.create_working_directory and not os.path.exists(
-            self.config.working_directory
-        ):
-            os.mkdir(self.config.working_directory)
-
-    def _ensure_repository(self) -> None:
-        if not os.path.exists(os.path.join(self.config.working_directory, ".git")):
-            self._clone_repository()
-            return
-        self._repo = Repo(self.config.working_directory)
-
-        if self.config.branch is None:
-            self.config.branch = str(self._repo.active_branch)
-        branch = self.config.branch
-        self._repo.head.reference = self._repo.heads[branch]
-        self._repo.head.reset(index=True, working_tree=True)
-
-        remote = self._find_or_add_remote()
-        self._update_from_remote(remote, branch)
-
-    def _clone_repository(self) -> None:
-        kwargs = {}
-        if self.config.branch:
-            kwargs["branch"] = self.config.branch
-
-        self._repo = Repo.clone_from(
-            self.config.repository_url, self.config.working_directory, **kwargs
-        )
-
-    def _find_or_add_remote(self):
-        remote = None
-        for r in self._repo.remotes:
-            if r.url == self.config.repository_url:
-                remote = r
-                break
-
-        if remote is None:
-            remote = self._repo.create_remote(
-                "added_by_vulnerablecode", url=self.config.repository_url
-            )
-
-        return remote
-
-    def _update_from_remote(self, remote, branch) -> None:
-        fetch_info = remote.fetch()
-        if len(fetch_info) == 0:
-            return
-        branch = self._repo.branches[branch]
-        branch.set_reference(remote.refs[branch.name])
-        self._repo.head.reset(index=True, working_tree=True)
-
-
-def _include_file(
-    path: str,
-    subdir: Optional[str] = None,
-    recursive: bool = False,
-    file_ext: Optional[str] = None,
-) -> bool:
-    match = True
-
-    if subdir:
-        if not subdir.endswith(os.path.sep):
-            subdir = f"{subdir}{os.path.sep}"
-
-        match = match and path.startswith(subdir)
-
-    if not recursive:
-        match = match and (os.path.sep not in path[len(subdir or "") :])
-
-    if file_ext:
-        match = match and path.endswith(f".{file_ext}")
-
-    return match
+        raise NotImplementedError
 
 
 # TODO: Needs rewrite

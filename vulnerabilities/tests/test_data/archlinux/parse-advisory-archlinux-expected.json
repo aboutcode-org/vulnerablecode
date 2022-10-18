@@ -1,8 +1,7 @@
 [
   {
     "aliases": [
-      "CVE-2022-29217",
-      "AVG-2781"
+      "CVE-2022-29217"
     ],
     "summary": "",
     "affected_packages": [

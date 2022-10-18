@@ -88,7 +88,7 @@ class ArchlinuxImporter(Importer):
 
             advisories.append(
                 AdvisoryData(
-                    aliases=[alias, record["name"]],
+                    aliases=[alias],
                     summary=summary,
                     affected_packages=affected_packages,
                     references=references,

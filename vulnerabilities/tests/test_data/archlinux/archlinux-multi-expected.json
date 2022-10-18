@@ -1,8 +1,7 @@
 [
   {
     "aliases": [
-      "CVE-2022-29217",
-      "AVG-2781"
+      "CVE-2022-29217"
     ],
     "summary": "",
     "affected_packages": [
@@ -35,8 +34,7 @@
   },
   {
     "aliases": [
-      "CVE-2022-26710",
-      "AVG-2780"
+      "CVE-2022-26710"
     ],
     "summary": "",
     "affected_packages": [
@@ -69,8 +67,7 @@
   },
   {
     "aliases": [
-      "CVE-2022-22677",
-      "AVG-2780"
+      "CVE-2022-22677"
     ],
     "summary": "",
     "affected_packages": [
@@ -103,8 +100,7 @@
   },
   {
     "aliases": [
-      "CVE-2022-22662",
-      "AVG-2780"
+      "CVE-2022-22662"
     ],
     "summary": "",
     "affected_packages": [
@@ -137,8 +133,7 @@
   },
   {
     "aliases": [
-      "CVE-2016-3189",
-      "AVG-4"
+      "CVE-2016-3189"
     ],
     "summary": "denial of service",
     "affected_packages": [

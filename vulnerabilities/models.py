@@ -17,6 +17,8 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import Count
+from django.db.models import Q
 from django.db.models.functions import Length
 from django.db.models.functions import Trim
 from django.dispatch import receiver
@@ -86,8 +88,7 @@ class Vulnerability(models.Model):
 
     @property
     def severities(self):
-        for reference in self.references.all():
-            yield from VulnerabilitySeverity.objects.filter(reference=reference.id)
+        return VulnerabilitySeverity.objects.filter(reference__in=self.references.all())
 
     @property
     def vulnerable_to(self):
@@ -203,6 +204,18 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         Return all vulnerable packages.
         """
         return Package.objects.filter(packagerelatedvulnerability__fix=False).distinct()
+
+    def with_vulnerability_counts(self):
+        return self.annotate(
+            vulnerability_count=Count(
+                "vulnerabilities",
+                filter=Q(packagerelatedvulnerability__fix=False),
+            ),
+            patched_vulnerability_count=Count(
+                "vulnerabilities",
+                filter=Q(packagerelatedvulnerability__fix=True),
+            ),
+        )
 
 
 class Package(PackageURLMixin):

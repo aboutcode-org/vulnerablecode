@@ -46,7 +46,7 @@ AdvisoryData
 
 ``AdvisoryData`` is an intermediate data format:
 it is expected that your importer will convert the raw scraped data into ``AdvisoryData`` objects.
-All the fields in ``AdvisoryData`` dataclass are optional; it is the importer's resposibility to
+All the fields in ``AdvisoryData`` dataclass are optional; it is the importer's responsibility to
 ensure that it contains meaningful information about a vulnerability.
 
 AffectedPackage

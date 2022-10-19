@@ -80,7 +80,7 @@ to run on a different port than 8000.
 
    Serving VulnerableCode on a network could lead to security issues and there
    are several steps that may be needed to secure such a deployment.
-   Currently, this is not recommendend.
+   Currently, this is not recommended.
 
 Execute a Command
 ^^^^^^^^^^^^^^^^^
@@ -242,7 +242,7 @@ There are several options to use the Nix version::
     > ../../manage.py ... # invoke the local checkout
     > vulnerablecode-manage.py ... # invoke manage.py as installed in the nix store
 
-    # Test the import prodecure using the Nix version.
+    # Test the import procedure using the Nix version.
     etc/nix/test-import-using-nix.sh --all # import everything
     # Test the import using the local checkout.
     INSTALL_DIR=. etc/nix/test-import-using-nix.sh ruby # import ruby only

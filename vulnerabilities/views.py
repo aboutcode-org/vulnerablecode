@@ -126,6 +126,7 @@ class VulnerabilitySearch(ListView):
     def get_queryset(self, query=None):
         query = query or self.request.GET.get("search") or ""
         qs = self.model.objects
+        query = query.strip()
         if not query:
             return qs.none()
 
@@ -206,7 +207,6 @@ class VulnerabilityDetails(DetailView):
         context["vulnerability_search_form"] = VulnerabilitySearchForm(self.request.GET)
         context["severities"] = list(self.object.severities)
         return context
-
 
 class HomePage(View):
     template_name = "index.html"

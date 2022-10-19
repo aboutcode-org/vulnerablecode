@@ -6,7 +6,6 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-
 import traceback
 
 from django.core.management.base import BaseCommand

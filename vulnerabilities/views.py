@@ -201,11 +201,22 @@ class VulnerabilityDetails(DetailView):
     slug_url_kwarg = "vulnerability_id"
     slug_field = "vulnerability_id"
 
+    def get_queryset(self):
+        return super().get_queryset().prefetch_related("references", "aliases")
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["vulnerability"] = self.object
-        context["vulnerability_search_form"] = VulnerabilitySearchForm(self.request.GET)
-        context["severities"] = list(self.object.severities)
+        context.update(
+            {
+                "vulnerability": self.object,
+                "vulnerability_search_form": VulnerabilitySearchForm(self.request.GET),
+                "severities": list(self.object.severities),
+                "references": self.object.references.all(),
+                "aliases": self.object.aliases.all(),
+                "resolved_to": self.object.resolved_to.with_vulnerability_counts(),
+                "vulnerable_to": self.object.vulnerable_to.with_vulnerability_counts(),
+            }
+        )
         return context
 
 class HomePage(View):

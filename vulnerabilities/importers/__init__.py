@@ -8,6 +8,7 @@
 #
 
 from vulnerabilities.importers import alpine_linux
+from vulnerabilities.importers import archlinux
 from vulnerabilities.importers import debian
 from vulnerabilities.importers import github
 from vulnerabilities.importers import gitlab
@@ -29,6 +30,7 @@ IMPORTERS_REGISTRY = [
     debian.DebianImporter,
     gitlab.GitLabAPIImporter,
     pypa.PyPaImporter,
+    archlinux.ArchlinuxImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

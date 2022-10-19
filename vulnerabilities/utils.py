@@ -410,3 +410,13 @@ def base32_custom(btes):
             + _base32_table[c & 0x3FF]  # bits 21 - 30  # bits 31 - 40
         )
     return bytes(encoded)
+
+
+def fetch_response(url):
+    """
+    Fetch and return `response` from the `url`
+    """
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response
+    raise Exception(f"Failed to fetch data from {url!r} with status code: {response.status_code!r}")

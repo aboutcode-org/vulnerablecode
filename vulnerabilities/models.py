@@ -203,7 +203,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         """
         Return all vulnerable packages.
         """
-        return Package.objects.filter(packagerelatedvulnerability__fix=False).distinct()
+        return self.filter(packagerelatedvulnerability__fix=False)
 
     def with_vulnerability_counts(self):
         return self.annotate(
@@ -323,7 +323,9 @@ class PackageRelatedVulnerability(models.Model):
     )
 
     fix = models.BooleanField(
-        default=False, help_text="Does this relation fix the specified vulnerability ?"
+        default=False,
+        db_index=True,
+        help_text="Does this relation fix the specified vulnerability ?",
     )
 
     class Meta:

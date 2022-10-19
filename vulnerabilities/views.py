@@ -219,6 +219,7 @@ class VulnerabilityDetails(DetailView):
         )
         return context
 
+
 class HomePage(View):
     template_name = "index.html"
 

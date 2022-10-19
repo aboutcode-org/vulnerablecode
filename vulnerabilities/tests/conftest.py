@@ -29,7 +29,6 @@ collect_ignore = [
     "test_apache_kafka.py",
     "test_apache_tomcat.py",
     "test_api.py",
-    "test_archlinux.py",
     "test_debian_oval.py",
     "test_elixir_security.py",
     "test_gentoo.py",

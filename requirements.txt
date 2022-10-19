@@ -113,4 +113,4 @@ websocket-client==0.59.0
 yarl==1.7.2
 zipp==3.8.0
 dateparser==1.1.1
-fetchcode==0.1.0
+fetchcode==0.2.0

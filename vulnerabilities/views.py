@@ -146,17 +146,13 @@ class VulnerabilitySearch(ListView):
                         Q(references__id__icontains=query) | Q(summary__icontains=query)
                     )
 
-        return (
-            qssearch.order_by("vulnerability_id")
-            .annotate(
-                vulnerable_package_count=Count(
-                    "packages", filter=Q(packagerelatedvulnerability__fix=False), distinct=True
-                ),
-                patched_package_count=Count(
-                    "packages", filter=Q(packagerelatedvulnerability__fix=True), distinct=True
-                ),
-            )
-            .prefetch_related()
+        return qssearch.order_by("vulnerability_id").annotate(
+            vulnerable_package_count=Count(
+                "packages", filter=Q(packagerelatedvulnerability__fix=False), distinct=True
+            ),
+            patched_package_count=Count(
+                "packages", filter=Q(packagerelatedvulnerability__fix=True), distinct=True
+            ),
         )
 
 
@@ -213,8 +209,8 @@ class VulnerabilityDetails(DetailView):
                 "severities": list(self.object.severities),
                 "references": self.object.references.all(),
                 "aliases": self.object.aliases.all(),
-                "resolved_to": self.object.resolved_to.with_vulnerability_counts(),
-                "vulnerable_to": self.object.vulnerable_to.with_vulnerability_counts(),
+                "resolved_to": self.object.resolved_to.all(),
+                "vulnerable_to": self.object.vulnerable_to.all(),
             }
         )
         return context

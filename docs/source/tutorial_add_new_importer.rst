@@ -15,7 +15,8 @@ TL;DR
 #. Create a new importer subclass inheriting from the ``Importer`` superclass defined in
    ``vulnerabilites.importer``. It is conventional to end an importer name with *Importer*.
 #. Specify the importer license.
-#. Implement the ``advisory_data`` method to process the data source you're writing an importer for.
+#. Implement the ``advisory_data`` method to process the data source you are
+   writing an importer for.
 #. Add the newly created importer to the importers registry at
    ``vulnerabilites/importers/__init__.py``
 
@@ -136,7 +137,9 @@ version management from `univers <https://github.com/nexB/univers>`_.
 
 .. note::
 
-   It is possible that the versioning scheme you are targetting has not yet been implemented in the `univers <https://github.com/nexB/univers>`_ library. If this is the case, you'll need to head over there and implement one.
+   It is possible that the versioning scheme you are targetting has not yet been
+   implemented in the `univers <https://github.com/nexB/univers>`_ library.
+   If this is the case, you will need to head over there and implement one.
 
 .. code-block:: python
 
@@ -235,12 +238,12 @@ Finally, register your importer in the importer registry at
 
     IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}
 
-Congratulations! You've written your first importer.
+Congratulations! You have written your first importer.
 
 Run Your First Importer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If everything went well, you'll see your importer in the list of available importers.
+If everything went well, you will see your importer in the list of available importers.
 
 .. code-block:: console
    :emphasize-lines: 5
@@ -284,7 +287,7 @@ For more visibility, turn on debug logs in :file:`vulnerablecode/settings.py`.
         },
     }
 
-Invoke the import command now and you'll see (in a fresh database):
+Invoke the import command now and you will see (in a fresh database):
 
 .. code-block:: console
 

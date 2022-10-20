@@ -20,7 +20,6 @@ import pytz
 import saneyaml
 from dateutil import parser as dateparser
 from django.db.models.query import QuerySet
-from fetchcode.vcs import fetch_via_vcs
 from packageurl import PackageURL
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import VersionRange

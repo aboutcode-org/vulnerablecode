@@ -15,19 +15,13 @@ from typing import List
 from typing import Mapping
 from urllib.parse import urljoin
 
-import requests
 from bs4 import BeautifulSoup
-from django.db.models.query import QuerySet
 from packageurl import PackageURL
 from univers.versions import AlpineLinuxVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
-from vulnerabilities.improver import MAX_CONFIDENCE
-from vulnerabilities.improver import Improver
-from vulnerabilities.improver import Inference
-from vulnerabilities.models import Advisory
 from vulnerabilities.references import WireSharkReference
 from vulnerabilities.references import XsaReference
 from vulnerabilities.references import ZbxReference

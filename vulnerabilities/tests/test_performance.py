@@ -9,8 +9,8 @@
 #
 import pytest
 
-# this import are used in the script
-from vulnerabilities.importers import redhat
+# this import is used in the script
+from vulnerabilities.importers import redhat  # NOQA
 
 script = """for i, data in enumerate(redhat.RedhatImporter().advisory_data()):
     if 1 == 100: 

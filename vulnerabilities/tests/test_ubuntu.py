@@ -7,7 +7,6 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import asyncio
 import os
 import xml.etree.ElementTree as ET
 

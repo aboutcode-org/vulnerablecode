@@ -2,6 +2,36 @@ Release notes
 =============
 
 
+
+Version v30.2.0
+----------------
+
+This is a critical bug fix release including features updates.
+
+- We fixed critical performance issues that made the web UI unusable. This include
+  removing some less interesting redundant details displayed in the web UI for
+  vulnerabilities.
+- We made minor documentation updates.
+- We renabled support for Arch linux, Debian, and Ubuntu security advisories importers
+- We added a new improver for Oval data sources
+- We improved Alpine linux and Gitlab security advisories importers 
+
+The summary of performance improvements include these fixes:
+
+- Cascade queries from exact to approximate searches to avoid full table scans
+  in all cases. This is a band-aid for now. The proper solution will likely
+  require using full text search instead.
+- Avoid iceberg queries with "prefetch related" to limit the number of queries
+  that are needed in the UI
+- Do not recreate querysets from scratch but instead allow these to be chained
+  for simpler and correct code.
+- Remove extra details from the vulnerability pacge: each package was further
+  listing its related vulnerabilities creating an iceberg query.
+- Enable the django-debug-toolbar with a setting to easily profile queries on demand
+  by setting both VULNERABLECODE_DEBUG and VULNERABLECODE_DEBUG_TOOLBAR enviroment
+  variables.
+
+
 Version v30.1.1
 ----------------
 

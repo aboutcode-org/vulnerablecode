@@ -76,7 +76,7 @@ Explore Package Managers (Optional)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If your Improver depends on the discrete versions of a package, the package managers' VersionAPI
-located at :file:`vulnerabilites/package_managers.py` could come in handy.  You'll need to
+located at :file:`vulnerabilites/package_managers.py` could come in handy.  You will need to
 instantiate the relevant ``VersionAPI`` in the improver's constructor and use it later in the
 implemented methods. See an already implemented improver (NginxBasicImprover) for an example usage.
 
@@ -184,12 +184,12 @@ Finally, register your improver in the improver registry at
 
     IMPROVERS_REGISTRY = {x.qualified_name: x for x in IMPROVERS_REGISTRY}
 
-Congratulations! You've written your first improver.
+Congratulations! You have written your first improver.
 
 Run Your First Improver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If everything went well, you'll see your improver in the list of available improvers.
+If everything went well, you will see your improver in the list of available improvers.
 
 .. code-block:: console
    :emphasize-lines: 6
@@ -244,7 +244,7 @@ For more visibility, turn on debug logs in :file:`vulnerablecode/settings.py`.
         },
     }
 
-Invoke the improve command now and you'll see (in a fresh database, after importing):
+Invoke the improve command now and you will see (in a fresh database, after importing):
 
 .. code-block:: console
 

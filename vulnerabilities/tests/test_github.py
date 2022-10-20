@@ -26,9 +26,7 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers.github import GitHubAPIImporter
 from vulnerabilities.importers.github import GitHubBasicImprover
 from vulnerabilities.importers.github import process_response
-from vulnerabilities.package_managers import PackageVersion
 from vulnerabilities.utils import GitHubTokenError
-from vulnerabilities.utils import resolve_version_range
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "github_api")
@@ -52,35 +50,6 @@ def test_process_response_github_importer(pkg_type, regen=False):
             expected = json.load(f)
 
     assert result == expected
-
-
-def test_resolve_version_range():
-    assert (["1.0.0", "2.0.0"], ["10.0.0"]) == resolve_version_range(
-        GemVersionRange(
-            constraints=(
-                VersionConstraint(comparator="<", version=RubygemsVersion(string="9.0.0")),
-            )
-        ),
-        [
-            "1.0.0",
-            "2.0.0",
-            "10.0.0",
-        ],
-        [],
-    )
-
-
-def test_resolve_version_range_failure(caplog):
-    assert ([], []) == resolve_version_range(
-        None,
-        [
-            PackageVersion(value="1.0.0"),
-            PackageVersion(value="2.0.0"),
-            PackageVersion(value="10.0.0"),
-        ],
-        [],
-    )
-    assert "affected version range is" in caplog.text
 
 
 def test_process_response_with_empty_vulnaribilities(caplog):

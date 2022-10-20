@@ -23,6 +23,7 @@ from vulnerabilities.views import PackageSearch
 from vulnerabilities.views import VulnerabilityDetails
 from vulnerabilities.views import VulnerabilitySearch
 from vulnerabilities.views import schema_view
+from vulnerablecode.settings import DEBUG_TOOLBAR
 
 
 # See the comment at https://stackoverflow.com/a/46163870.
@@ -54,3 +55,8 @@ urlpatterns = [
     # disabled for now
     #    path("admin/", admin.site.urls),
 ]
+
+if DEBUG_TOOLBAR:
+    urlpatterns += [
+        path("__debug__/", include("debug_toolbar.urls")),
+    ]

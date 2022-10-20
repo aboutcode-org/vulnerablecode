@@ -50,8 +50,9 @@ class TestPackageModel(TestCase):
 
     def test_get_vulnerable_packages(self):
         vuln_packages = Package.objects.vulnerable()
-        assert vuln_packages.count() == 10
-        vuln_purls = [pkg.purl for pkg in vuln_packages.only(*PackageURL._fields)]
+        assert vuln_packages.count() == 20
+        assert vuln_packages.distinct().count() == 10
+        vuln_purls = [pkg.purl for pkg in vuln_packages.distinct().only(*PackageURL._fields)]
         assert vuln_purls == [
             "pkg:generic/nginx/test@0",
             "pkg:generic/nginx/test@1",

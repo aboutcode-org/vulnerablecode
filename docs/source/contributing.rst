@@ -39,7 +39,7 @@ welcome newcomer contributors. We maintain some
 and encourage new contributors to work on those issues for a smooth start.
 
 .. tip::
-    If you arere an open-source newbie, make sure to check the extra resources at
+    If you are an open-source newbie, make sure to check the extra resources at
     the bottom of this page to get the hang of the contribution process!
 
 Code Contributions

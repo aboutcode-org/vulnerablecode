@@ -12,7 +12,7 @@ database - VulnerableCode.io.
 
 In this documentation you will find information on:
 
-- An overview of VulnerableCode and hwat you can do with it
+- An overview of VulnerableCode and what you can do with it
 - Installation instructions
 - How to make technical contributions to the project and the community
 

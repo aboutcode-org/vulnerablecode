@@ -12,10 +12,6 @@ import json
 import os
 from unittest.mock import patch
 
-from django.test import TestCase
-
-from vulnerabilities import models
-from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.importers import archlinux
 from vulnerabilities.tests import util_tests
 

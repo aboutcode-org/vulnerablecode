@@ -126,27 +126,34 @@ class VulnerabilitySearch(ListView):
     def get_queryset(self, query=None):
         query = query or self.request.GET.get("search") or ""
         qs = self.model.objects
+        query = query.strip()
         if not query:
             return qs.none()
-        qs = (
-            qs.filter(
-                Q(vulnerability_id__icontains=query)
-                | Q(aliases__alias__icontains=query)
-                | Q(references__id__icontains=query)
-                | Q(summary__icontains=query)
-            )
-            .order_by("vulnerability_id")
-            .annotate(
-                vulnerable_package_count=Count(
-                    "packages", filter=Q(packagerelatedvulnerability__fix=False), distinct=True
-                ),
-                patched_package_count=Count(
-                    "packages", filter=Q(packagerelatedvulnerability__fix=True), distinct=True
-                ),
-            )
-            .prefetch_related()
+
+        # middle ground, exact on vulnerability_id
+        qssearch = qs.filter(vulnerability_id=query)
+        if not qssearch.exists():
+            # middle ground, exact on alias
+            qssearch = qs.filter(aliases__alias=query)
+            if not qssearch.exists():
+                # middle ground, slow enough
+                qssearch = qs.filter(
+                    Q(vulnerability_id__icontains=query) | Q(aliases__alias__icontains=query)
+                )
+                if not qssearch.exists():
+                    # last resort super slow
+                    qssearch = qs.filter(
+                        Q(references__id__icontains=query) | Q(summary__icontains=query)
+                    )
+
+        return qssearch.order_by("vulnerability_id").annotate(
+            vulnerable_package_count=Count(
+                "packages", filter=Q(packagerelatedvulnerability__fix=False), distinct=True
+            ),
+            patched_package_count=Count(
+                "packages", filter=Q(packagerelatedvulnerability__fix=True), distinct=True
+            ),
         )
-        return qs
 
 
 class PackageDetails(DetailView):
@@ -190,11 +197,22 @@ class VulnerabilityDetails(DetailView):
     slug_url_kwarg = "vulnerability_id"
     slug_field = "vulnerability_id"
 
+    def get_queryset(self):
+        return super().get_queryset().prefetch_related("references", "aliases")
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["vulnerability"] = self.object
-        context["vulnerability_search_form"] = VulnerabilitySearchForm(self.request.GET)
-        context["severities"] = list(self.object.severities)
+        context.update(
+            {
+                "vulnerability": self.object,
+                "vulnerability_search_form": VulnerabilitySearchForm(self.request.GET),
+                "severities": list(self.object.severities),
+                "references": self.object.references.all(),
+                "aliases": self.object.aliases.all(),
+                "resolved_to": self.object.resolved_to.all(),
+                "vulnerable_to": self.object.vulnerable_to.all(),
+            }
+        )
         return context
 
 

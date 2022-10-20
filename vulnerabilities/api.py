@@ -256,7 +256,10 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=False, methods=["get"])
     def all(self, request):
-        vulnerable_packages = Package.objects.vulnerable().only(*PackageURL._fields)
+        """
+        Return all the vulnerable Package URLs.
+        """
+        vulnerable_packages = Package.objects.vulnerable().only(*PackageURL._fields).distinct()
         vulnerable_purls = [str(package.purl) for package in vulnerable_packages]
         return Response(vulnerable_purls)
 

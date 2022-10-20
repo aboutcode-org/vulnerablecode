@@ -12,7 +12,7 @@ This is a critical bug fix release including features updates.
   removing some less interesting redundant details displayed in the web UI for
   vulnerabilities.
 - We made minor documentation updates.
-- We renabled support for Arch linux, Debian, and Ubuntu security advisories importers
+- We re-enabled support for Arch linux, Debian, and Ubuntu security advisories importers
 - We added a new improver for Oval data sources
 - We improved Alpine linux and Gitlab security advisories importers 
 

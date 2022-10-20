@@ -3,18 +3,61 @@
 VulnerableCode Overview
 ========================
 
-VulnerableCode is a FOSS project that provides tools to build a database
-of software vulnerabilities and the packages they impact. The tools
-handle collecting, aggregating and correlating these vulnerabilities.
-Our project also supports a public Cloud instance of this database –
-VulnerableCode.io.
+*VulnerableCode* provides an open database of software packages that are affected
+by known security vulnerabilities aka. *"vulnerable packages"*.
+
+VulnerableCode is also a free and open source software (FOSS) project that
+provides the tools to build this open database. The tools handle collecting,
+aggregating and correlating these vulnerabilities and relating them to a correct
+package version. Our project also supports a public cloud instance of this
+database - VulnerableCode.io.
+
+
+What can I do with VulnerableCode?
+------------------------------------
+
+**For security researchers and software developers, VulnerableCode offers a web
+UI and a JSON API to efficient find if the FOSS packages and dependencies that
+you use may be affected by known vulnerabilities and which version of a package
+you should upgrade to to fix this issue.**
+
+
+- With the web UI, you can search by package using Package URLs or search by
+  vulnerability like by CVE. From there you can navigate to the package
+  vulnerabilities and to the vulnerable packages.
+
+- With the JSON API, you can perform package queries using Package URLs or query
+  by vulnerability id. You can also query by CPEs and vulnerability aliases.
+  The API provides paginated index and detail endpoints and includes indexes
+  of vulnerable CPEs and vulnerable Package URLs (purl).
+
+You can also install VulnerableCode locally or use the provided publicly hosted instance,
+or host your own installation. You can also contact the VulnerableCode authors and team
+for special needs including commercial support.
+
 
 Why VulnerableCode?
 -------------------
 
-Existing vulnerability database solutions are primarily commercial or
-proprietary which does not make sense because the data is about FOSS
-(Free and Open Source Software).
+VulnerableCode provides open correlated data and eventually does provide curated
+data. Our approach is to privilege upstream data sources and to merge multiple
+vulnerability data sources after comparison and correlation. The vulnerability
+data is keyed by Package URL ensuring quick and accurate lookup with minimal
+friction. We further continuously validate and refine the collected data for
+quality, accuracy and consistency using "improver" jobs.
+An example of such improver can validate that a package version reported as
+vulnerable effectively exists (several do not exist); Or an improver can
+re-evaluate a vulnerable version ranges based on the latest releases of a
+package.
+
+The benefits of our approach is that we will eventually provide better, more
+accurate vulnerability data, more efficiently related to actual packages scanned
+or reported in an SBOM. This should contribute to more efficient vulnerability
+management with less noise from false positives.
+
+Furthermore, existing vulnerability database solutions are primarily commercial
+or proprietary which does not make sense because the bulk of the vulnerability
+data is about FOSS.
 
 The National Vulnerability Database, which is a primary centralized data
 source for known vulnerabilities, is not particularly well suited to

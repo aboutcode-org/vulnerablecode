@@ -1,0 +1,50 @@
+[
+  {
+    "aliases": [
+      "CVE-2001-1593"
+    ],
+    "summary": "security update",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "deb",
+          "namespace": "debian",
+          "name": "a2ps",
+          "version": null,
+          "qualifiers": {
+            "distro": "wheezy"
+          },
+          "subpath": null
+        },
+        "affected_version_range": "vers:deb/<1:4.14-1.1+deb7u1",
+        "fixed_version": null
+      }
+    ],
+    "references": [],
+    "date_published": "2020-06-08T23:31:02.188000-04:00"
+  },
+  {
+    "aliases": [
+      "CVE-2002-2443"
+    ],
+    "summary": "denial of service",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "deb",
+          "namespace": "debian",
+          "name": "krb5",
+          "version": null,
+          "qualifiers": {
+            "distro": "wheezy"
+          },
+          "subpath": null
+        },
+        "affected_version_range": "vers:deb/<1.10.1+dfsg-5+deb7u1",
+        "fixed_version": null
+      }
+    ],
+    "references": [],
+    "date_published": "2020-06-08T23:31:02.188000-04:00"
+  }
+]

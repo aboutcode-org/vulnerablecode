@@ -131,7 +131,7 @@ class LaunchpadVersionAPI(VersionAPI):
     def fetch(self, pkg: str) -> Iterable[PackageVersion]:
         url = (
             f"https://api.launchpad.net/1.0/ubuntu/+archive/primary?"
-            "ws.op=getPublishedSources&source_name={pkg}&exact_match=true"
+            f"ws.op=getPublishedSources&source_name={pkg}&exact_match=true"
         )
 
         while True:
@@ -146,7 +146,7 @@ class LaunchpadVersionAPI(VersionAPI):
                 source_package_version = remove_debian_default_epoch(source_package_version)
                 yield PackageVersion(
                     value=source_package_version,
-                    release_date=release["date_published"],
+                    release_date=dateparser.parse(release["date_published"]),
                 )
             if response.get("next_collection_link"):
                 url = response["next_collection_link"]
@@ -285,7 +285,7 @@ class DebianVersionAPI(VersionAPI):
             headers={"Connection": "keep-alive"},
             content_type="json",
         )
-        if response.get("error") or not response.get("versions"):
+        if response and (response.get("error") or not response.get("versions")):
             return
 
         for release in response["versions"]:
@@ -695,7 +695,7 @@ def get_api_package_name(purl: PackageURL) -> str:
     """
     if not purl.name:
         return None
-    if purl.type in ("nuget", "pypi", "gem") or not purl.namespace:
+    if purl.type in ("nuget", "pypi", "gem", "deb") or not purl.namespace:
         return purl.name
     if purl.type == "maven":
         return f"{purl.namespace}:{purl.name}"

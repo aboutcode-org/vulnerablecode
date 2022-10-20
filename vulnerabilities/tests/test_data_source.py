@@ -38,23 +38,21 @@ class TestGitImporter(GitImporter):
     spdx_license_expression = "FOO-BAR"
 
 def test_create_purl():
-    purl1 = PackageURL(name="ffmpeg", type="test", version="1.2.0")
+    purl1 = PackageURL(name="ffmpeg", type="test")
 
     assert purl1 == TestOvalImporter().create_purl(
-        pkg_name="ffmpeg", pkg_version="1.2.0", pkg_data={"type": "test"}
+        pkg_name="ffmpeg", pkg_data={"type": "test"}
     )
 
     purl2 = PackageURL(
         name="notepad",
         type="example",
-        version="7.9.6",
         namespace="ns",
         qualifiers={"distro": "sample"},
         subpath="root",
     )
     assert purl2 == TestOvalImporter().create_purl(
         pkg_name="notepad",
-        pkg_version="7.9.6",
         pkg_data={
             "namespace": "ns",
             "qualifiers": {"distro": "sample"},

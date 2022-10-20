@@ -1,9 +1,18 @@
-VulnerableCode documentation
+Welcome to VulnerableCode!
 =============================
 
-Welcome to VulnerableCode! In this documentation you’ll find information on:
+*VulnerableCode* provides an open database of software packages that are affected
+by known security vulnerabilities aka. *"vulnerable packages"*.
 
-- An overview of VulnerableCode
+VulnerableCode is also a free and open source software (FOSS) project that
+provides the tools to build this open database. The tools handle collecting,
+aggregating and correlating these vulnerabilities and relating them to a correct
+package version. Our project also supports a public cloud instance of this
+database - VulnerableCode.io.
+
+In this documentation you will find information on:
+
+- An overview of VulnerableCode and what you can do with it
 - Installation instructions
 - How to make technical contributions to the project and the community
 
@@ -33,6 +42,7 @@ Welcome to VulnerableCode! In this documentation you’ll find information on:
     reference_improver_overview
     reference_framework_overview
     command-line-interface
+    importers_link
 
 .. toctree::
    :maxdepth: 1

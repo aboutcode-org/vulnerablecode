@@ -9,13 +9,11 @@
 
 import datetime
 import json
-import os
 from pathlib import Path
 
 import defusedxml.ElementTree as DET
 import pytest
 from commoncode import testcase
-from django.db.models.query import QuerySet
 from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
 from univers.version_range import OpensslVersionRange

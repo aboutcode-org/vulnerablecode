@@ -10,21 +10,17 @@
 
 
 import os
-from collections import OrderedDict
 from random import choices
-from unittest.mock import MagicMock
 from urllib.parse import quote
 
 from django.test import TestCase
 from django.test.client import RequestFactory
-from rest_framework.test import APIClient
-from rest_framework.test import APIRequestFactory
 
 from vulnerabilities.api import PackageSerializer
 from vulnerabilities.models import Package
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "test_data/")
+TEST_DATA = os.path.join(BASE_DIR, "test_data")
 
 
 def cleaned_response(response):
@@ -75,7 +71,7 @@ def cleaned_response(response):
 
 
 class TestDebianResponse(TestCase):
-    fixtures = ["debian.json"]
+    fixtures = [os.path.join(TEST_DATA, "api_fixtures/debian.json")]
 
     @classmethod
     def setUpTestData(cls):
@@ -164,7 +160,7 @@ class TestDebianResponse(TestCase):
 
 
 class APIResponseRelations(TestCase):
-    fixtures = ["openssl.json"]
+    fixtures = [os.path.join(TEST_DATA, "api_fixtures/openssl.json")]
 
     def test_vulnerability_package_relations(self):
 
@@ -207,7 +203,7 @@ class APIResponseRelations(TestCase):
 
 
 class TestSerializers(TestCase):
-    fixtures = ["debian.json"]
+    fixtures = [os.path.join(TEST_DATA, "api_fixtures/debian.json")]
 
     def test_package_serializer(self):
         pk = Package.objects.filter(name="mimetex")
@@ -228,7 +224,7 @@ class TestSerializers(TestCase):
 
 
 class TestBulkAPIResponse(TestCase):
-    fixtures = ["github.json"]
+    fixtures = [os.path.join(TEST_DATA, "api_fixtures/github.json")]
 
     def test_bulk_packages_api(self):
         request_body = {

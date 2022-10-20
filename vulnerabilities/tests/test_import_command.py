@@ -15,7 +15,6 @@ from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import TestCase
 
-from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 
 

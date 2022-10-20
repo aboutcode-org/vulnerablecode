@@ -8,7 +8,9 @@
 #
 
 from vulnerabilities.importers import alpine_linux
+from vulnerabilities.importers import archlinux
 from vulnerabilities.importers import debian
+from vulnerabilities.importers import debian_oval
 from vulnerabilities.importers import github
 from vulnerabilities.importers import gitlab
 from vulnerabilities.importers import nginx
@@ -17,6 +19,7 @@ from vulnerabilities.importers import openssl
 from vulnerabilities.importers import pypa
 from vulnerabilities.importers import pysec
 from vulnerabilities.importers import redhat
+from vulnerabilities.importers import ubuntu
 
 IMPORTERS_REGISTRY = [
     nginx.NginxImporter,
@@ -29,6 +32,9 @@ IMPORTERS_REGISTRY = [
     debian.DebianImporter,
     gitlab.GitLabAPIImporter,
     pypa.PyPaImporter,
+    archlinux.ArchlinuxImporter,
+    ubuntu.UbuntuImporter,
+    debian_oval.DebianOvalImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

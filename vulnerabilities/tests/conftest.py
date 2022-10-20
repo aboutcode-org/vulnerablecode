@@ -29,8 +29,6 @@ collect_ignore = [
     "test_apache_kafka.py",
     "test_apache_tomcat.py",
     "test_api.py",
-    "test_archlinux.py",
-    "test_debian_oval.py",
     "test_elixir_security.py",
     "test_gentoo.py",
     "test_importer_yielder.py",
@@ -48,7 +46,6 @@ collect_ignore = [
     "test_suse_backports.py",
     "test_suse.py",
     "test_suse_scores.py",
-    "test_ubuntu.py",
     "test_ubuntu_usn.py",
     "test_upstream.py",
 ]

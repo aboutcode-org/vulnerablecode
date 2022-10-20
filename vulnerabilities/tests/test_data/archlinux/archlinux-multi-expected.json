@@ -1,0 +1,172 @@
+[
+  {
+    "aliases": [
+      "CVE-2022-29217"
+    ],
+    "summary": "",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "alpm",
+          "namespace": "archlinux",
+          "name": "python-pyjwt",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:alpm/2.3.0-1",
+        "fixed_version": "2.4.0-1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "AVG-2781",
+        "url": "https://security.archlinux.org/AVG-2781",
+        "severities": [
+          {
+            "system": "archlinux",
+            "value": "Unknown"
+          }
+        ]
+      }
+    ],
+    "date_published": null
+  },
+  {
+    "aliases": [
+      "CVE-2022-26710"
+    ],
+    "summary": "",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "alpm",
+          "namespace": "archlinux",
+          "name": "wpewebkit",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:alpm/2.36.3-1",
+        "fixed_version": "2.36.4-1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "AVG-2780",
+        "url": "https://security.archlinux.org/AVG-2780",
+        "severities": [
+          {
+            "system": "archlinux",
+            "value": "Unknown"
+          }
+        ]
+      }
+    ],
+    "date_published": null
+  },
+  {
+    "aliases": [
+      "CVE-2022-22677"
+    ],
+    "summary": "",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "alpm",
+          "namespace": "archlinux",
+          "name": "wpewebkit",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:alpm/2.36.3-1",
+        "fixed_version": "2.36.4-1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "AVG-2780",
+        "url": "https://security.archlinux.org/AVG-2780",
+        "severities": [
+          {
+            "system": "archlinux",
+            "value": "Unknown"
+          }
+        ]
+      }
+    ],
+    "date_published": null
+  },
+  {
+    "aliases": [
+      "CVE-2022-22662"
+    ],
+    "summary": "",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "alpm",
+          "namespace": "archlinux",
+          "name": "wpewebkit",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:alpm/2.36.3-1",
+        "fixed_version": "2.36.4-1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "AVG-2780",
+        "url": "https://security.archlinux.org/AVG-2780",
+        "severities": [
+          {
+            "system": "archlinux",
+            "value": "Unknown"
+          }
+        ]
+      }
+    ],
+    "date_published": null
+  },
+  {
+    "aliases": [
+      "CVE-2016-3189"
+    ],
+    "summary": "denial of service",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "alpm",
+          "namespace": "archlinux",
+          "name": "bzip2",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:alpm/1.0.6-5",
+        "fixed_version": "1.0.6-6"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "AVG-4",
+        "url": "https://security.archlinux.org/AVG-4",
+        "severities": [
+          {
+            "system": "archlinux",
+            "value": "Low"
+          }
+        ]
+      },
+      {
+        "reference_id": "ASA-201702-19",
+        "url": "https://security.archlinux.org/ASA-201702-19",
+        "severities": []
+      }
+    ],
+    "date_published": null
+  }
+]

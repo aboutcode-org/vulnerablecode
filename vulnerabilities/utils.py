@@ -318,7 +318,7 @@ def get_reference_id(url: str):
 def resolve_version_range(
     affected_version_range: VersionRange,
     package_versions: List[str],
-    ignorable_versions: List[str] = [],
+    ignorable_versions: List[str] = tuple(),
 ) -> Tuple[List[str], List[str]]:
     """
     Given an affected version range and a list of `package_versions`, resolve

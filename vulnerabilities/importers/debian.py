@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 
 class DebianImporter(Importer):
 
-    spdx_license_expression = "MIT"
+    spdx_license_expression = "LicenseRef-scancode-other-permissive"
     license_url = "https://www.debian.org/license"
     notice = """
     From: Tushar Goel <tgoel@nexb.com>

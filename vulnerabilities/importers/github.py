@@ -184,12 +184,16 @@ class GitHubAPIImporter(Importer):
 
 def get_purl(pkg_type: str, github_name: str) -> Optional[PackageURL]:
     """
-    Return a PackageURL by splitting the `github_name` using the `pkg_type` convention.
-    Return None and log an error if we can not split or it is an unknown package type.
-    >>> get_purl("maven", "org.apache.commons:commons-lang3")
-    PackageURL(type="maven", namespace="org.apache.commons", name="commons-lang3")
-    >>> get_purl("composer", "foo/bar")
-    PackageURL(type="composer", namespace="foo", name="bar")
+    Return a PackageURL by splitting the `github_name` using the `pkg_type`
+    convention. Return None and log an error if we can not split or it is an
+    unknown package type.
+
+    For example::
+    >>> expected = PackageURL(type='maven', namespace='org.apache.commons', name='commons-lang3')
+    >>> assert get_purl("maven", "org.apache.commons:commons-lang3") == expected
+
+    >>> expected = PackageURL(type="composer", namespace="foo", name="bar")
+    >>> assert get_purl("composer", "foo/bar") == expected
     """
     if pkg_type == "maven":
         if ":" not in github_name:

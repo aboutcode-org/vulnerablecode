@@ -10,7 +10,6 @@
 from typing import Iterable
 from typing import List
 from typing import Mapping
-from urllib.request import urlopen
 
 from packageurl import PackageURL
 from univers.version_range import ArchLinuxVersionRange

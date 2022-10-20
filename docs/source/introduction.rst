@@ -28,7 +28,7 @@ fixes those vulnerabilities.**
 
 - With the JSON API, you can perform package queries using Package URLs (`purl
   <https://github.com/package-url/purl-spec>`__) or query
-  by vulnerability id. You can also query by CPEs and other vulnerability aliases.
+  by vulnerability id ("VCID"). You can also query by CPEs and other vulnerability aliases.
   The API provides paginated index and detail endpoints and includes indexes
   of vulnerable CPEs and vulnerable Package URLs.
 

@@ -3,6 +3,12 @@ Release notes
 
 
 
+Version v30.2.1
+----------------
+
+- We refactored and fixed the LaunchPad API code.
+
+
 Version v30.2.0
 ----------------
 

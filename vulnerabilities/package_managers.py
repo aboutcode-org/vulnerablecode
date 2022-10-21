@@ -137,17 +137,24 @@ class LaunchpadVersionAPI(VersionAPI):
         while True:
             response = get_response(url=url, content_type="json")
 
-            entries = response["entries"]
+            if not response:
+                break
+            entries = response.get("entries")
             if not entries:
                 break
 
             for release in entries:
-                source_package_version = release["source_package_version"]
-                source_package_version = remove_debian_default_epoch(source_package_version)
-                yield PackageVersion(
-                    value=source_package_version,
-                    release_date=dateparser.parse(release["date_published"]),
-                )
+                source_package_version = release.get("source_package_version")
+                source_package_version = remove_debian_default_epoch(version=source_package_version)
+                date_published = release.get("date_published")
+                release_date = None
+                if date_published and type(date_published) is str:
+                    release_date = dateparser.parse(date_published)
+                if source_package_version:
+                    yield PackageVersion(
+                        value=source_package_version,
+                        release_date=release_date,
+                    )
             if response.get("next_collection_link"):
                 url = response["next_collection_link"]
             else:

@@ -210,11 +210,17 @@ class PackageFilterSet(filters.FilterSet):
                 detail={"error": f'"{purl}" is not a valid Package URL: {ve}'},
             )
 
-        ignorable_fields = ["subpath", "qualifiers"]
+        lookups = get_purl_query_lookups(purl)
+        return self.queryset.filter(**lookups)
 
-        attrs = {k: v for k, v in purl.to_dict().items() if v and k not in ignorable_fields}
 
-        return self.queryset.filter(**attrs)
+def get_purl_query_lookups(purl):
+    lookup_fields = ["type", "namespace", "name", "version"]
+    return {
+        field_name: value
+        for field_name, value in purl.to_dict().items()
+        if value and field_name in lookup_fields
+    }
 
 
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -239,17 +245,11 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         for purl in request.data["purls"]:
             try:
                 purl_string = purl
-                purl = PackageURL.from_string(purl).to_dict()
+                purl = PackageURL.from_string(purl)
             except ValueError:
                 return Response(status=400, data={"Error": f"Invalid Package URL: {purl}"})
-            ignorable_fields = ["subpath", "qualifiers"]
-            purl_data = Package.objects.filter(
-                **{
-                    key: value
-                    for key, value in purl.items()
-                    if value and key not in ignorable_fields
-                }
-            )
+            lookups = get_purl_query_lookups(purl)
+            purl_data = Package.objects.filter(**lookups)
             purl_response = {}
             if purl_data:
                 purl_response = PackageSerializer(purl_data[0], context={"request": request}).data

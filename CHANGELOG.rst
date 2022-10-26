@@ -7,6 +7,7 @@ Version v30.2.1
 ----------------
 
 - We refactored and fixed the LaunchPad API code.
+- We now ignore qualifiers and subpath from PURL search lookups. 
 
 
 Version v30.2.0

@@ -281,6 +281,13 @@ class APITestCasePackage(TestCase):
                 "pkg:generic/nginx/test@9",
             ]
 
+    def test_api_with_ignorning_qualifiers(self):
+        response = self.csrf_client.get(
+            f"/api/packages/?purl=pkg:generic/nginx/test@9?foo=bar", format="json"
+        ).data
+        assert response["count"] == 1
+        assert response["results"][0]["purl"] == "pkg:generic/nginx/test@9"
+
 
 class CPEApi(TestCase):
     def setUp(self):
@@ -353,7 +360,7 @@ class BulkSearchAPIPackage(TestCase):
             attrs = {k: v for k, v in purl.to_dict().items() if v}
             Package.objects.create(**attrs)
 
-    def test_api_response(self):
+    def test_bulk_api_response(self):
         request_body = {
             "purls": self.packages,
         }
@@ -363,6 +370,30 @@ class BulkSearchAPIPackage(TestCase):
             content_type="application/json",
         ).json()
         assert len(response) == 13
+
+    def test_bulk_api_response_with_ignoring_qualifiers(self):
+        request_body = {
+            "purls": ["pkg:nginx/nginx@1.0.15?qualifiers=dev"],
+        }
+        response = self.csrf_client.post(
+            "/api/packages/bulk_search",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+        assert len(response) == 1
+        assert response[0]["purl"] == "pkg:nginx/nginx@1.0.15"
+
+    def test_bulk_api_response_with_ignoring_subpath(self):
+        request_body = {
+            "purls": ["pkg:nginx/nginx@1.0.15#dev/subpath"],
+        }
+        response = self.csrf_client.post(
+            "/api/packages/bulk_search",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+        assert len(response) == 1
+        assert response[0]["purl"] == "pkg:nginx/nginx@1.0.15"
 
 
 class BulkSearchAPICPE(TestCase):

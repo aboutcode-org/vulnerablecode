@@ -22,6 +22,7 @@ from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
+from vulnerabilities.models import get_purl_query_lookups
 
 
 class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
@@ -210,8 +211,8 @@ class PackageFilterSet(filters.FilterSet):
                 detail={"error": f'"{purl}" is not a valid Package URL: {ve}'},
             )
 
-        attrs = {k: v for k, v in purl.to_dict().items() if v}
-        return self.queryset.filter(**attrs)
+        lookups = get_purl_query_lookups(purl)
+        return self.queryset.filter(**lookups)
 
 
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -236,12 +237,11 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         for purl in request.data["purls"]:
             try:
                 purl_string = purl
-                purl = PackageURL.from_string(purl).to_dict()
+                purl = PackageURL.from_string(purl)
             except ValueError:
                 return Response(status=400, data={"Error": f"Invalid Package URL: {purl}"})
-            purl_data = Package.objects.filter(
-                **{key: value for key, value in purl.items() if value}
-            )
+            lookups = get_purl_query_lookups(purl)
+            purl_data = Package.objects.filter(**lookups)
             purl_response = {}
             if purl_data:
                 purl_response = PackageSerializer(purl_data[0], context={"request": request}).data

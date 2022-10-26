@@ -93,10 +93,6 @@ class PackageSearch(ListView):
                 qs = qs.filter(name__iexact=name)
             if version:
                 qs = qs.filter(version__iexact=version)
-            if qualifiers:
-                qs = qs.filter(qualifiers=qualifiers)
-            if subpath:
-                qs = qs.filter(subpath__iexact=subpath)
 
         return qs.annotate(
             vulnerability_count=Count(

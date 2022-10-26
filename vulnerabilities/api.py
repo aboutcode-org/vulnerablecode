@@ -22,6 +22,7 @@ from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
+from vulnerabilities.models import get_purl_query_lookups
 
 
 class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
@@ -212,15 +213,6 @@ class PackageFilterSet(filters.FilterSet):
 
         lookups = get_purl_query_lookups(purl)
         return self.queryset.filter(**lookups)
-
-
-def get_purl_query_lookups(purl):
-    lookup_fields = ["type", "namespace", "name", "version"]
-    return {
-        field_name: value
-        for field_name, value in purl.to_dict().items()
-        if value and field_name in lookup_fields
-    }
 
 
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):

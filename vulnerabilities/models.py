@@ -218,6 +218,15 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         )
 
 
+def get_purl_query_lookups(purl):
+    lookup_fields = ["type", "namespace", "name", "version"]
+    return {
+        field_name: value
+        for field_name, value in purl.to_dict().items()
+        if value and field_name in lookup_fields
+    }
+
+
 class Package(PackageURLMixin):
     """
     A software package with related vulnerabilities.

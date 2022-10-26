@@ -7,7 +7,8 @@ Version v30.2.1
 ----------------
 
 - We refactored and fixed the LaunchPad API code.
-- We now ignore qualifiers and subpath from PURL search lookups. 
+- We now ignore qualifiers and subpath from PURL search lookups.
+- We fixed severity table column spillover.
 
 
 Version v30.2.0
@@ -21,7 +22,7 @@ This is a critical bug fix release including features updates.
 - We made minor documentation updates.
 - We re-enabled support for Arch linux, Debian, and Ubuntu security advisories importers
 - We added a new improver for Oval data sources
-- We improved Alpine linux and Gitlab security advisories importers 
+- We improved Alpine linux and Gitlab security advisories importers
 
 The summary of performance improvements include these fixes:
 
@@ -68,7 +69,7 @@ This is a major version that is not backward compatible.
   or access the new public.vulnerablecode.io live instance. We also provide a database dump.
 
 - You can track the progress of this refactoring in this issue:
-  https://github.com/nexB/vulnerablecode/issues/597 
+  https://github.com/nexB/vulnerablecode/issues/597
 
 - We added new data sources including PYSEC, GitHub and GitLab.
 
@@ -86,7 +87,7 @@ This is a major version that is not backward compatible.
 
   - in the /api/vulnerabilities/ endpoint:
 
-    - Rename `resolved_packages` to `fixed_packages` 
+    - Rename `resolved_packages` to `fixed_packages`
     - Rename `unresolved_packages` to `affected_packages`
     - Rename `url` to `reference_url` in the reference list
     - Add is_vulnerable property in fixed and affected_packages.
@@ -102,7 +103,7 @@ This is a major version that is not backward compatible.
 - We have provided backward compatibility for `url` and `unresolved_vulnerabilities` for now.
   These will be removed in the next major version and should be considered as deprecated.
 
-- There is a new experimental `cpe/` API endpoint to lookup for vulnerabilities by CPE and 
+- There is a new experimental `cpe/` API endpoint to lookup for vulnerabilities by CPE and
   another aliases/ endpoint to lookup for vulnerabilities by aliases. These two endpoints will be
   replaced by query parameters on the main vulnerabilities/ endpoint when stabilized.
 
@@ -114,7 +115,7 @@ This is a major version that is not backward compatible.
 - Package endpoint will give fixed packages of only those that
   matches type, name, namespace, subpath and qualifiers of the package queried.
 
-- Paginated initial listings to display a small number of records 
+- Paginated initial listings to display a small number of records
   and provided page per size with a maximum limit of 100 records per page.
 
 - Add fixed packages in vulnerabilities details in packages endpoint.
@@ -124,12 +125,12 @@ This is a major version that is not backward compatible.
 - Add authentication for REST API endpoint.
   The autentication is disabled by default and can be enabled using the
   VULNERABLECODEIO_REQUIRE_AUTHENTICATION settings.
-  When enabled, users have to authenticate using 
+  When enabled, users have to authenticate using
   their API Key in the REST API.
   Users can be created using the Django "createsuperuser" management command.
 
 - The data license is now CC-BY-SA-4.0 as this is the highest common
-  denominator license among all the data sources we collect and aggregate. 
+  denominator license among all the data sources we collect and aggregate.
 
 Other:
 

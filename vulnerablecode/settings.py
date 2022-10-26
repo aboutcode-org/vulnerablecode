@@ -30,6 +30,12 @@ SECRET_KEY = env.str("SECRET_KEY")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[".localhost", "127.0.0.1", "[::1]"])
 
+VULNERABLECODE_REQUIRE_AUTHENTICATION = env.bool(
+    "VULNERABLECODE_REQUIRE_AUTHENTICATION", default=False
+)
+
+VULNERABLECODE_PASSWORD_MIN_LENGTH = env.int("VULNERABLECODE_PASSWORD_MIN_LENGTH", default=14)
+
 # SECURITY WARNING: don't run with debug turned on in production
 DEBUG = env.bool("VULNERABLECODE_DEBUG", default=False)
 
@@ -120,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
         "OPTIONS": {
-            "min_length": 14,
+            "min_length": VULNERABLECODE_PASSWORD_MIN_LENGTH,
         },
     },
     {
@@ -198,7 +204,7 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
-        #    "rest_framework.renderers.AdminRenderer",
+        "rest_framework.renderers.AdminRenderer",
     ),
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",

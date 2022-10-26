@@ -210,7 +210,10 @@ class PackageFilterSet(filters.FilterSet):
                 detail={"error": f'"{purl}" is not a valid Package URL: {ve}'},
             )
 
-        attrs = {k: v for k, v in purl.to_dict().items() if v}
+        ignorable_fields = ["subpath", "qualifiers"]
+
+        attrs = {k: v for k, v in purl.to_dict().items() if v and k not in ignorable_fields}
+
         return self.queryset.filter(**attrs)
 
 
@@ -239,8 +242,13 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                 purl = PackageURL.from_string(purl).to_dict()
             except ValueError:
                 return Response(status=400, data={"Error": f"Invalid Package URL: {purl}"})
+            ignorable_fields = ["subpath", "qualifiers"]
             purl_data = Package.objects.filter(
-                **{key: value for key, value in purl.items() if value}
+                **{
+                    key: value
+                    for key, value in purl.items()
+                    if value and key not in ignorable_fields
+                }
             )
             purl_response = {}
             if purl_data:

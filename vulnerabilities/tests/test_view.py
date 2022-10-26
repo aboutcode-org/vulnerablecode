@@ -9,14 +9,37 @@
 
 from django.test import Client
 from django.test import TestCase
+from packageurl import PackageURL
 
 from vulnerabilities.models import Alias
+from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
+from vulnerabilities.views import PackageSearch
 
 
 class PackageSearchTestCase(TestCase):
     def setUp(self):
         self.client = Client()
+        packages = [
+            "pkg:nginx/nginx@0.6.18",
+            "pkg:nginx/nginx@1.20.0",
+            "pkg:nginx/nginx@1.21.0",
+            "pkg:nginx/nginx@1.20.1",
+            "pkg:nginx/nginx@1.9.5",
+            "pkg:nginx/nginx@1.17.2",
+            "pkg:nginx/nginx@1.17.3",
+            "pkg:nginx/nginx@1.16.1",
+            "pkg:nginx/nginx@1.15.5",
+            "pkg:nginx/nginx@1.15.6",
+            "pkg:nginx/nginx@1.14.1",
+            "pkg:nginx/nginx@1.0.7",
+            "pkg:nginx/nginx@1.0.15",
+        ]
+        self.packages = packages
+        for package in packages:
+            purl = PackageURL.from_string(package)
+            attrs = {k: v for k, v in purl.to_dict().items() if v}
+            Package.objects.create(**attrs)
 
     def test_packages_search_view_paginator(self):
         response = self.client.get("/packages/search?type=deb&name=&page=1")
@@ -27,6 +50,12 @@ class PackageSearchTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         response = self.client.get("/packages/search?type=&name=&page=")
         self.assertEqual(response.status_code, 200)
+
+    def test_package_view(self):
+        qs = PackageSearch().get_queryset(query="pkg:nginx/nginx@1.0.15?foo=bar")
+        pkgs = list(qs)
+        self.assertEqual(len(pkgs), 1)
+        self.assertEqual(pkgs[0].purl, "pkg:nginx/nginx@1.0.15")
 
 
 class VulnerabilitySearchTestCase(TestCase):

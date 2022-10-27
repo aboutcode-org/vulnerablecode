@@ -17,6 +17,7 @@ from vulnerabilities.api import AliasViewSet
 from vulnerabilities.api import CPEViewSet
 from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
+from vulnerabilities.views import ApiUserCreateView
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import PackageDetails
 from vulnerabilities.views import PackageSearch
@@ -53,7 +54,9 @@ urlpatterns = [
     path("api/docs", schema_view, name="redoc"),
     path(r"api/", include(api_router.urls)),
     path("admin/", admin.site.urls),
+    path("user/request_api_key", ApiUserCreateView.as_view(), name="api_user_request"),
 ]
+
 
 if DEBUG_TOOLBAR:
     urlpatterns += [

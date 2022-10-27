@@ -31,7 +31,7 @@ class TestCreateApiUserCommand(TestCase):
     def test_create_simple_user_cannot_create_user_twice_with_same_email(self):
         call_command("create-api-user", "--email", "foo1@example.com")
 
-        with pytest.raises(CommandError) as cm:
+        with pytest.raises(CommandError):
             call_command("create-api-user", "--email", "foo1@example.com")
 
     def test_create_user_with_names(self):
@@ -52,3 +52,7 @@ class TestCreateApiUserCommand(TestCase):
         assert user.auth_token.key
         assert user.first_name == "Bjorn"
         assert user.last_name == "Borg"
+
+    def test_create_simple_user_demands_a_valid_email(self):
+        with pytest.raises(CommandError):
+            call_command("create-api-user", "--email", "fooNOT AN EMAIL.com")

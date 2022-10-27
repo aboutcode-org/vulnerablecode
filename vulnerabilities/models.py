@@ -24,8 +24,8 @@ from django.db.models import Count
 from django.db.models import Q
 from django.db.models.functions import Length
 from django.db.models.functions import Trim
-ffrom django.dispatch import receiver
-rom django.urls import reverse
+from django.dispatch import receiver
+from django.urls import reverse
 from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin
 from packageurl.contrib.django.models import PackageURLQuerySet

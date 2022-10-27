@@ -26,6 +26,7 @@ from vulnerabilities.views import PackageDetails
 from vulnerabilities.views import PackageSearch
 from vulnerabilities.views import VulnerabilityDetails
 from vulnerabilities.views import VulnerabilitySearch
+from vulnerabilities.views import schema_view
 from vulnerablecode.settings import DEBUG_TOOLBAR
 
 

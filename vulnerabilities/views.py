@@ -7,13 +7,10 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-from django.contrib import messages
-from django.core.exceptions import ValidationError
-from django.core.mail import send_mail
 from django.db.models import Count
 from django.db.models import Q
 from django.http.response import Http404
-from django.shortcuts import redirect
+from django.http.response import HttpResponseNotAllowed
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
@@ -26,7 +23,6 @@ from vulnerabilities import models
 from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import VulnerabilitySearchForm
-from vulnerablecode.settings import env
 
 PAGE_SIZE = 20
 
@@ -62,7 +58,7 @@ class PackageSearch(ListView):
             qs = qs.filter(Q(name__icontains=query) | Q(namespace__icontains=query))
         else:
             # this looks like a purl: check if it quacks like a purl
-            purl_type = namespace = name = version = None
+            purl_type = namespace = name = version = qualifiers = subpath = None
 
             _, _scheme, remainder = query.partition("pkg:")
             remainder = remainder.strip()
@@ -72,7 +68,7 @@ class PackageSearch(ListView):
             try:
                 # First, treat the query as a syntactically-correct purl
                 purl = PackageURL.from_string(query)
-                purl_type, namespace, name, version, _quals, _subp = purl.to_dict().values()
+                purl_type, namespace, name, version, qualifiers, subpath = purl.to_dict().values()
             except ValueError:
                 # Otherwise, attempt a more lenient parsing of a possibly partial purl
                 if "/" in remainder:
@@ -231,32 +227,21 @@ class HomePage(View):
         return render(request=request, template_name=self.template_name, context=context)
 
 
+def schema_view(request):
+    if request.method != "GET":
+        return HttpResponseNotAllowed()
+    return render(request=request, template_name="api_doc.html")
+
+
 class ApiUserCreateView(generic.CreateView):
     model = models.ApiUser
     form_class = ApiUserCreationForm
     template_name = "api_user_creation_form.html"
 
     def form_valid(self, form):
-
-        try:
-            response = super().form_valid(form)
-        except ValidationError as e:
-            messages.error(self.request, "Email is invalid or already taken")
-            return redirect(self.get_success_url())
-
-        send_mail(
-            subject="VulnerableCode.io API key token",
-            message=f"Here is your VulnerableCode.io API key token: {self.object.auth_token}",
-            from_email=env.str("FROM_EMAIL", default=""),
-            recipient_list=[self.object.email],
-            fail_silently=True,
-        )
-
-        messages.success(
-            self.request, f"API key token sent to your email address {self.object.email}."
-        )
-
-        return response
+        # TODO: send an email with the API key
+        response = super().form_valid(form)
+        # TODO: return http response with a simple success message that
 
     def get_success_url(self):
-        return reverse_lazy("api_user_request")
+        return reverse_lazy("api_user_creation_success", kwargs={"uuid": self.object.pk})

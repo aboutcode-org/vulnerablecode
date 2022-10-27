@@ -41,24 +41,20 @@ class ApiUserCreationForm(forms.ModelForm):
     class Meta:
         model = ApiUser
         fields = (
-            "email",
+            "username",
             "first_name",
             "last_name",
         )
 
-    def __init__(self, *args, **kwargs):
-        super(ApiUserCreationForm, self).__init__(*args, **kwargs)
-        self.fields["email"].required = True
-
     def save(self, commit=True):
         return ApiUser.objects.create_api_user(
-            username=self.cleaned_data["email"],
+            username=self.cleaned_data["username"],
             first_name=self.cleaned_data["first_name"],
             last_name=self.cleaned_data["last_name"],
         )
 
     def clean_username(self):
-        username = self.cleaned_data["email"]
+        username = self.cleaned_data["username"]
         validate_email(username)
         return username
 

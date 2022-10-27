@@ -52,8 +52,8 @@ class Command(BaseCommand):
         if error_msg:
             raise CommandError(error_msg)
 
-        first_name = options["first_name"] or None
-        last_name = options["last_name"] or None
+        first_name = options["first_name"] or ""
+        last_name = options["last_name"] or ""
 
         password = None
         user = self.UserModel._default_manager.create_user(

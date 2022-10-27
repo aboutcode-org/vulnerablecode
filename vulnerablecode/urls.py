@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from django.contrib import admin
 from django.urls import include
 from django.urls import path
 from django.urls import re_path
@@ -51,8 +52,7 @@ urlpatterns = [
     ),
     path("api/docs", schema_view, name="redoc"),
     path(r"api/", include(api_router.urls)),
-    # disabled for now
-    #    path("admin/", admin.site.urls),
+    path("admin/", admin.site.urls),
 ]
 
 if DEBUG_TOOLBAR:

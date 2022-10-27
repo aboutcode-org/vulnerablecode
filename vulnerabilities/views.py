@@ -12,12 +12,15 @@ from django.db.models import Q
 from django.http.response import Http404
 from django.http.response import HttpResponseNotAllowed
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views import View
+from django.views import generic
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from packageurl import PackageURL
 
 from vulnerabilities import models
+from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import VulnerabilitySearchForm
 
@@ -228,3 +231,17 @@ def schema_view(request):
     if request.method != "GET":
         return HttpResponseNotAllowed()
     return render(request=request, template_name="api_doc.html")
+
+
+class ApiUserCreateView(generic.CreateView):
+    model = models.ApiUser
+    form_class = ApiUserCreationForm
+    template_name = "api_user_creation_form.html"
+
+    def form_valid(self, form):
+        # TODO: send an email with the API key
+        response = super().form_valid(form)
+        # TODO: return http response with a simple success message that
+
+    def get_success_url(self):
+        return reverse_lazy("api_user_creation_success", kwargs={"uuid": self.object.pk})

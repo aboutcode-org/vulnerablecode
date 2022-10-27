@@ -518,6 +518,8 @@ class Advisory(models.Model):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     """
     Creates an API key token on user creation, using the signal system.
+    This ensures that a token is automatically created each time a user
+    is created, for instance in the admin or the command line.
     """
     if created:
         Token.objects.create(user_id=instance.pk)

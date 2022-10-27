@@ -80,7 +80,7 @@ def to_advisories(data):
             # This is for the anomaly in https://www.postgresql.org/support/security/8.1/ 's
             # last entry
         except IndexError:
-            pass
+            continue
 
         references = []
         vector_link_tag = severity_score_col.find("a")

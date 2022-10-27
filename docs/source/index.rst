@@ -43,6 +43,7 @@ In this documentation you will find information on:
     reference_framework_overview
     command-line-interface
     importers_link
+    api
 
 .. toctree::
    :maxdepth: 1

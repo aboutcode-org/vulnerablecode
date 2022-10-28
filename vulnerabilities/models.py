@@ -397,10 +397,7 @@ class VulnerabilitySeverity(models.Model):
         max_length=50,
         choices=scoring_system_choices,
         help_text="Identifier for the scoring system used. Available choices are: {} ".format(
-            ", ".join(
-                f"{sid} is vulnerability_id for {sname} system"
-                for sid, sname in scoring_system_choices
-            )
+            ",\n".join(f"{sid}: {sname}" for sid, sname in scoring_system_choices)
         ),
     )
 

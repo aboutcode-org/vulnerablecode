@@ -31,16 +31,16 @@ def load_oval_data():
     return etrees_of_oval
 
 
-class TestOvalImporter(OvalImporter):
+class MockOvalImporter(OvalImporter):
     spdx_license_expression = "FOO-BAR"
 
-class TestGitImporter(GitImporter):
+class MockGitImporter(GitImporter):
     spdx_license_expression = "FOO-BAR"
 
 def test_create_purl():
     purl1 = PackageURL(name="ffmpeg", type="test")
 
-    assert purl1 == TestOvalImporter().create_purl(
+    assert purl1 == MockOvalImporter().create_purl(
         pkg_name="ffmpeg", pkg_data={"type": "test"}
     )
 
@@ -51,7 +51,7 @@ def test_create_purl():
         qualifiers={"distro": "sample"},
         subpath="root",
     )
-    assert purl2 == TestOvalImporter().create_purl(
+    assert purl2 == MockOvalImporter().create_purl(
         pkg_name="notepad",
         pkg_data={
             "namespace": "ns",
@@ -70,11 +70,11 @@ def test__collect_pkgs():
 
     translations = {"less than": "<"}
 
-    found_suse_pkgs = TestOvalImporter()._collect_pkgs(
+    found_suse_pkgs = MockOvalImporter()._collect_pkgs(
         OvalParser(translations, xmls["suse"]).get_data()
     )
 
-    found_ubuntu_pkgs = TestOvalImporter()._collect_pkgs(
+    found_ubuntu_pkgs = MockOvalImporter()._collect_pkgs(
         OvalParser(translations, xmls["ubuntu"]).get_data()
     )
 
@@ -87,5 +87,5 @@ def clone(self):
 @patch("vulnerabilities.importer.GitImporter.clone")
 def test_git_importer(mock_clone):
     mock_clone.return_value = clone
-    imp = TestGitImporter("test-url")
+    imp = MockGitImporter("test-url")
     assert imp.repo_url == "test-url"

@@ -227,12 +227,6 @@ class HomePage(View):
         return render(request=request, template_name=self.template_name, context=context)
 
 
-def schema_view(request):
-    if request.method != "GET":
-        return HttpResponseNotAllowed()
-    return render(request=request, template_name="api_doc.html")
-
-
 class ApiUserCreateView(generic.CreateView):
     model = models.ApiUser
     form_class = ApiUserCreationForm

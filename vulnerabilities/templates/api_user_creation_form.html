@@ -1,11 +1,18 @@
 {% extends "base.html" %}
+{%load crispy_forms_tags %} 
 
-{% block title %}
-VulnerableCode API key request
-{% endblock %}
 
 {% block content %}
     <section class="section pt-0">
-       {{ form.as_p }}
+    {% block title %}
+    VulnerableCode API key request
+    {% endblock %}
+    <br/>
+        <form action = "" method = "post">
+            {% csrf_token %}
+            {{form|crispy }}
+            <br/>
+            <input class="button is-link" type="submit" value="Submit">
+        </form>
     </section>
 {% endblock %}

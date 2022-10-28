@@ -23,7 +23,6 @@ from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import get_purl_query_lookups
-from vulnerabilities.throttling import StaffUserRateThrottle
 
 
 class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
@@ -55,7 +54,7 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
 
 class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
     """
-    Lookup vulnerabilities references by aliases (such as a CVE).
+    Used for nesting inside package focused APIs.
     """
 
     fixed_packages = MinimalPackageSerializer(
@@ -71,7 +70,7 @@ class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
 
 class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
     """
-    Lookup vulnerabilities by aliases (such as a CVE).
+    Used for nesting inside package focused APIs.
     """
 
     class Meta:
@@ -113,10 +112,6 @@ class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
 
 
 class PackageSerializer(serializers.HyperlinkedModelSerializer):
-    """
-    Lookup software package using Package URLs
-    """
-
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["unresolved_vulnerabilities"] = data["affected_by_vulnerabilities"]
@@ -229,14 +224,12 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PackageSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageFilterSet
-    throttle_classes = [StaffUserRateThrottle]
-    throttle_scope = "packages"
 
     # TODO: Fix the swagger documentation for this endpoint
-    @action(detail=False, methods=["post"], throttle_scope="bulk_search_packages")
+    @action(detail=False, methods=["post"])
     def bulk_search(self, request):
         """
-        Lookup for vulnerable packages using many Package URLs at once.
+        See https://github.com/nexB/vulnerablecode/pull/369#issuecomment-796877606 for docs
         """
         response = []
         purls = request.data.get("purls", []) or []
@@ -257,7 +250,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
             if purl_data:
                 purl_response = PackageSerializer(purl_data[0], context={"request": request}).data
             else:
-                purl_response = purl.to_dict()
+                purl_response = purl
                 purl_response["unresolved_vulnerabilities"] = []
                 purl_response["resolved_vulnerabilities"] = []
                 purl_response["purl"] = purl_string
@@ -265,10 +258,10 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
         return Response(response)
 
-    @action(detail=False, methods=["get"], throttle_scope="vulnerable_packages")
+    @action(detail=False, methods=["get"])
     def all(self, request):
         """
-        Return the Package URLs of all packages known to be vulnerable.
+        Return all the vulnerable Package URLs.
         """
         vulnerable_packages = Package.objects.vulnerable().only(*PackageURL._fields).distinct()
         vulnerable_purls = [str(package.purl) for package in vulnerable_packages]
@@ -283,7 +276,7 @@ class VulnerabilityFilterSet(filters.FilterSet):
 
 class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Lookup for vulnerabilities affecting packages.
+    Lookup for vulnerable packages by vulnerability.
     """
 
     def get_fixed_packages_qs(self):
@@ -317,8 +310,6 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = VulnerabilityFilterSet
-    throttle_classes = [StaffUserRateThrottle]
-    throttle_scope = "vulnerabilities"
 
 
 class CPEFilterSet(filters.FilterSet):
@@ -331,7 +322,7 @@ class CPEFilterSet(filters.FilterSet):
 
 class CPEViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Lookup for vulnerabilities by CPE (https://nvd.nist.gov/products/cpe)
+    Lookup for vulnerable packages by CPE.
     """
 
     queryset = Vulnerability.objects.filter(
@@ -339,14 +330,12 @@ class CPEViewSet(viewsets.ReadOnlyModelViewSet):
     ).distinct()
     serializer_class = VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    throttle_classes = [StaffUserRateThrottle]
     filterset_class = CPEFilterSet
-    throttle_scope = "cpes"
 
-    @action(detail=False, methods=["post"], throttle_scope="bulk_search_cpes")
+    @action(detail=False, methods=["post"])
     def bulk_search(self, request):
         """
-        Lookup for vulnerabilities using many CPEs at once.
+        This endpoint is used to search for vulnerabilities by more than one CPE.
         """
         cpes = request.data.get("cpes", []) or []
         if not cpes or not isinstance(cpes, list):
@@ -377,13 +366,10 @@ class AliasFilterSet(filters.FilterSet):
 
 class AliasViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Lookup for vulnerabilities by vulnerability aliases such as a CVE
-    (https://nvd.nist.gov/general/cve-process).
+    Lookup for vulnerabilities by vulnerability aliases such as a CVE.
     """
 
     queryset = Vulnerability.objects.all()
     serializer_class = VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AliasFilterSet
-    throttle_classes = [StaffUserRateThrottle]
-    throttle_scope = "aliases"

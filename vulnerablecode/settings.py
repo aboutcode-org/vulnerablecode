@@ -83,7 +83,6 @@ INSTALLED_APPS = (
     "drf_spectacular_sidecar",
 )
 
-
 MIDDLEWARE = (
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -196,7 +195,6 @@ if IS_TESTS:
         "bulk_search_cpes": "5/day",
     }
 
-
 USE_L10N = True
 
 USE_TZ = True
@@ -210,7 +208,6 @@ STATIC_ROOT = env.str("VULNERABLECODE_STATIC_ROOT", "./")
 STATICFILES_DIRS = [
     str(PROJECT_DIR / "static"),
 ]
-
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 

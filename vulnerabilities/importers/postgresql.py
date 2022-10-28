@@ -13,17 +13,27 @@ import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
 
+# is there a univers versionrange?  a version?
+from univers.version_range import GenericVersionRange
+from univers.versions import GenericVersion
+
 from vulnerabilities import severity_systems
+
+# add AffectedPackage
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
+
+# we no longer use nearest_patched_package, do we?
 from vulnerabilities.utils import nearest_patched_package
 
 
 class PostgreSQLImporter(Importer):
 
     root_url = "https://www.postgresql.org/support/security/"
+    # need spdx_license_expression and license_url
 
     def updated_advisories(self):
         advisories = []
@@ -54,26 +64,64 @@ def to_advisories(data):
         if "windows" in summary.lower():
             pkg_qualifiers = {"os": "windows"}
 
-        affected_packages = [
-            PackageURL(
-                type="generic",
-                name="postgresql",
-                version=version.strip(),
-                qualifiers=pkg_qualifiers,
-            )
-            for version in affected_col.text.split(",")
-        ]
+        # affected_packages = [
+        #     PackageURL(
+        #         type="generic",
+        #         name="postgresql",
+        #         version=version.strip(),
+        #         qualifiers=pkg_qualifiers,
+        #     )
+        #     for version in affected_col.text.split(",")
+        # ]
 
-        fixed_packages = [
-            PackageURL(
-                type="generic",
-                name="postgresql",
-                version=version.strip(),
-                qualifiers=pkg_qualifiers,
+        # fixed_packages = [
+        #     PackageURL(
+        #         type="generic",
+        #         name="postgresql",
+        #         version=version.strip(),
+        #         qualifiers=pkg_qualifiers,
+        #     )
+        #     for version in fixed_col.text.split(",")
+        #     # why the "if version" here but not in affected_packages?
+        #     # aren't we assuming (can we assume?) there are an equal number of versions in affect_packages and fixed_packages?
+        #     if version
+        # ]
+
+        # This will replace the affected_packages and fixed_packages lists above. ============
+        affected_packages = []
+        affected_version_list = affected_col.text.split(",")
+        fixed_version_list = fixed_col.text.split(",")
+        package_count = len(affected_version_list)
+
+        while package_count > 0:
+            summary = summary
+
+            affected = affected_version_list[0]
+            affected_version_list.pop(0)
+            # Do we need "if affected else None"?
+            affected_version_range = (
+                GenericVersionRange.from_versions([affected]) if affected else None
             )
-            for version in fixed_col.text.split(",")
-            if version
-        ]
+
+            fixed = fixed_version_list[0]
+            fixed_version_list.pop(0)
+            # Do we need "if affected else None"?
+            fixed_version = GenericVersion(fixed) if fixed else None
+
+            package_count -= 1
+
+            affected_package = AffectedPackage(
+                package=PackageURL(
+                    name="postgresql",
+                    type="generic",
+                    namespace="postgresql",
+                ),
+                affected_version_range=affected_version_range,
+                fixed_version=fixed_version,
+            )
+            affected_packages.append(affected_package)
+
+            # end of initial draft insert ===================================
 
         try:
             cve_id = ref_col.select("nobr")[0].text
@@ -105,10 +153,13 @@ def to_advisories(data):
 
         advisories.append(
             AdvisoryData(
-                vulnerability_id=cve_id,
+                # 10/26/2022 Wednesday 6:40:01 PM.  Throws error (terminal points to test data): TypeError: __init__() got an unexpected keyword argument 'vulnerability_id'
+                # vulnerability_id=cve_id,
+                aliases=[cve_id],
                 summary=summary,
                 references=references,
-                affected_packages=nearest_patched_package(affected_packages, fixed_packages),
+                # affected_packages=nearest_patched_package(affected_packages, fixed_packages),
+                affected_packages=affected_packages,
             )
         )
 

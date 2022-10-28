@@ -76,6 +76,10 @@ INSTALLED_APPS = (
     "rest_framework.authtoken",
     "widget_tweaks",
     "crispy_forms",
+    # for API doc
+    "drf_spectacular",
+    # required for Django collectstatic discovery
+    "drf_spectacular_sidecar",
 )
 
 MIDDLEWARE = (

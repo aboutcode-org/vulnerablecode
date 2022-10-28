@@ -12,6 +12,10 @@ from pathlib import Path
 
 import environ
 
+from vulnerablecode import __version__
+
+VULNERABLECODE_VERSION = __version__
+
 PROJECT_DIR = Path(__file__).resolve().parent
 ROOT_DIR = PROJECT_DIR.parent
 
@@ -36,13 +40,13 @@ VULNERABLECODE_REQUIRE_AUTHENTICATION = env.bool(
 
 VULNERABLECODE_PASSWORD_MIN_LENGTH = env.int("VULNERABLECODE_PASSWORD_MIN_LENGTH", default=14)
 
-# SECURITY WARNING: don't run with debug turned on in production
+# SECURITY WARNING: do not run with debug turned on in production
 DEBUG = env.bool("VULNERABLECODE_DEBUG", default=False)
 
-# SECURITY WARNING: don't run with debug turned on in production
+# SECURITY WARNING: do not  run with debug turned on in production
 DEBUG_TOOLBAR = env.bool("VULNERABLECODE_DEBUG_TOOLBAR", default=False)
 
-# SECURITY WARNING: don't run with debug turned on in production
+# SECURITY WARNING: do not  run with debug turned on in production
 DEBUG_UI = env.bool("VULNERABLECODE_DEBUG_UI", default=False)
 
 # Application definition
@@ -64,8 +68,11 @@ INSTALLED_APPS = (
     "rest_framework",
     "rest_framework.authtoken",
     "widget_tweaks",
+    # for API doc
+    "drf_spectacular",
+    # required for Django collectstatic discovery
+    "drf_spectacular_sidecar",
 )
-
 
 MIDDLEWARE = (
     "django.middleware.security.SecurityMiddleware",
@@ -217,12 +224,56 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "vulnerabilities.pagination.SmallResultSetPagination",
     # Limit the load on the Database returning a small number of records by default. https://github.com/nexB/vulnerablecode/issues/819
     "PAGE_SIZE": 10,
+    # for API docs
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 if not VULNERABLECODEIO_REQUIRE_AUTHENTICATION:
     REST_FRAMEWORK["DEFAULT_PERMISSION_CLASSES"] = ("rest_framework.permissions.AllowAny",)
 
+api_doc_intro = """
+<div>
+    <p><strong>VulnerableCode</strong> is open data and free software by
+    <a href="https://github.com/nexB/vulnerablecode"> nexB Inc. and others.</a>
+    </p>
+    <p>The VulnerableCode API exposes these endpoints:</p>
+    <ul>
+        <li>
+            <strong>packages/</strong>: main endpoint to lookup for vulnerable packages.
+        </li>
+        <li>
+            <strong>vulnerabilities/</strong>: secondary endpoint to lookup by vulnerabilities.
+        </li>
+        <li>
+            <strong>alias/</strong>: secondary endpoint to lookup vulnerabilities by aliases (e.g., CVE)
+        </li>
+        <li>
+            <strong>cpes/</strong>: secondary endpoint to lookup vulnerabilities by CPE.
+        </li>
+    </ul>
+</div>
+"""
 
+# for API docs
+SPECTACULAR_SETTINGS = {
+    "TITLE": "VulnerableCode API",
+    "DESCRIPTION": api_doc_intro,
+    "VERSION": VULNERABLECODE_VERSION,
+    "TOS": "/tos/",
+    "CONTACT": {
+        "name": "nexB Inc.",
+        "url": "https://public.vulnerablecode.io",
+        "email": "mailto:info@nexb.com",
+    },
+    "LICENSE": {
+        "name": "Source code: Apache-2.0 | Data: CC-BY-SA-4.0",
+        "url": "https://github.com/nexb/vulnerablecode#license",
+    },
+    "SERVE_INCLUDE_SCHEMA": True,
+    # shorthand to use the sidecar instead
+    "SWAGGER_UI_DIST": "SIDECAR",
+    "SWAGGER_UI_FAVICON_HREF": "/static/images/favicon.ico",
+}
 if DEBUG_TOOLBAR:
     INSTALLED_APPS += ("debug_toolbar",)
 

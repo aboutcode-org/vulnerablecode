@@ -55,7 +55,7 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
 
 class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
     """
-    Used for nesting inside package focused APIs.
+    Lookup vulnerabilities references by aliases (such as a CVE).
     """
 
     fixed_packages = MinimalPackageSerializer(
@@ -71,7 +71,7 @@ class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
 
 class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
     """
-    Used for nesting inside package focused APIs.
+    Lookup vulnerabilities by aliases (such as a CVE).
     """
 
     class Meta:
@@ -113,6 +113,10 @@ class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
 
 
 class PackageSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Lookup software package using Package URLs
+    """
+
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["unresolved_vulnerabilities"] = data["affected_by_vulnerabilities"]
@@ -232,7 +236,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=["post"], throttle_scope="bulk_search_packages")
     def bulk_search(self, request):
         """
-        See https://github.com/nexB/vulnerablecode/pull/369#issuecomment-796877606 for docs
+        Lookup for vulnerable packages using many Package URLs at once.
         """
         response = []
         purls = request.data.get("purls", []) or []
@@ -264,7 +268,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=["get"], throttle_scope="vulnerable_packages")
     def all(self, request):
         """
-        Return all the vulnerable Package URLs.
+        Return the Package URLs of all packages known to be vulnerable.
         """
         vulnerable_packages = Package.objects.vulnerable().only(*PackageURL._fields).distinct()
         vulnerable_purls = [str(package.purl) for package in vulnerable_packages]
@@ -279,7 +283,7 @@ class VulnerabilityFilterSet(filters.FilterSet):
 
 class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Lookup for vulnerable packages by vulnerability.
+    Lookup for vulnerabilities affecting packages.
     """
 
     def get_fixed_packages_qs(self):
@@ -327,7 +331,7 @@ class CPEFilterSet(filters.FilterSet):
 
 class CPEViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Lookup for vulnerable packages by CPE.
+    Lookup for vulnerabilities by CPE (https://nvd.nist.gov/products/cpe)
     """
 
     queryset = Vulnerability.objects.filter(
@@ -342,7 +346,7 @@ class CPEViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=["post"], throttle_scope="bulk_search_cpes")
     def bulk_search(self, request):
         """
-        This endpoint is used to search for vulnerabilities by more than one CPE.
+        Lookup for vulnerabilities using many CPEs at once.
         """
         cpes = request.data.get("cpes", []) or []
         if not cpes or not isinstance(cpes, list):
@@ -373,7 +377,8 @@ class AliasFilterSet(filters.FilterSet):
 
 class AliasViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Lookup for vulnerabilities by vulnerability aliases such as a CVE.
+    Lookup for vulnerabilities by vulnerability aliases such as a CVE
+    (https://nvd.nist.gov/general/cve-process).
     """
 
     queryset = Vulnerability.objects.all()

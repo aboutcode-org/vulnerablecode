@@ -266,11 +266,22 @@ SPECTACULAR_SETTINGS = {
         "name": "Source code: Apache-2.0 | Data: CC-BY-SA-4.0",
         "url": "https://github.com/nexb/vulnerablecode#license",
     },
-    "SERVE_INCLUDE_SCHEMA": True,
+    "SERVE_INCLUDE_SCHEMA": False,
     # shorthand to use the sidecar instead
     "SWAGGER_UI_DIST": "SIDECAR",
     "SWAGGER_UI_FAVICON_HREF": "/static/images/favicon.ico",
+    # See https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "displayOperationId": True,
+        "defaultModelsExpandDepth": 1,
+        "displayRequestDuration": True,
+        "docExpansion": "list",
+    },
+    "SORT_OPERATIONS": False,
+    "TAGS_SORTER": False,
 }
+
 if DEBUG_TOOLBAR:
     INSTALLED_APPS += ("debug_toolbar",)
 

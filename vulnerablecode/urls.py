@@ -70,27 +70,27 @@ urlpatterns = [
         name="vulnerability_details",
     ),
     path(
-        "api",
+        "api/",
         include(api_router.urls),
         name="api",
     ),
     path(
-        "api/schema",
+        "api/schema/",
         SpectacularAPIView.as_view(),
         name="schema",
     ),
     path(
-        "api/docs",
+        "api/docs/",
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="api_docs",
     ),
     path(
-        "api/request_api_key",
+        "account/request_api_key/",
         ApiUserCreateView.as_view(),
         name="api_user_request",
     ),
     path(
-        "tos",
+        "tos/",
         TemplateView.as_view(template_name="tos.html"),
         name="api_tos",
     ),

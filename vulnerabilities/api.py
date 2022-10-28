@@ -138,9 +138,9 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
             packagerelatedvulnerability__fix=True,
         ).distinct()
 
-    def get_vulnerabilities_for_a_package(self, package, fix):
+    def get_vulnerabilities_for_a_package(self, package, fix) -> dict:
         """
-        Return a queryset of vulnerabilities related to the given `package`.
+        Return a mapping of vulnerabilities data related to the given `package`.
         Return vulnerabilities that affects the `package` if given `fix` flag is False,
         otherwise return vulnerabilities fixed by the `package`.
         """
@@ -159,15 +159,15 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
             context={"request": self.context["request"]},
         ).data
 
-    def get_fixed_vulnerabilities(self, package):
+    def get_fixed_vulnerabilities(self, package) -> dict:
         """
-        Return a queryset of vulnerabilities fixed in the given `package`.
+        Return a mapping of vulnerabilities fixed in the given `package`.
         """
         return self.get_vulnerabilities_for_a_package(package=package, fix=True)
 
-    def get_affected_vulnerabilities(self, package):
+    def get_affected_vulnerabilities(self, package) -> dict:
         """
-        Return a queryset of vulnerabilities that affects the given `package`.
+        Return a mapping of vulnerabilities that affects the given `package`.
         """
         return self.get_vulnerabilities_for_a_package(package=package, fix=False)
 
@@ -217,6 +217,10 @@ class PackageFilterSet(filters.FilterSet):
 
 
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Lookup for vulnerable packages by Package URL.
+    """
+
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
     filter_backends = (filters.DjangoFilterBackend,)
@@ -274,6 +278,10 @@ class VulnerabilityFilterSet(filters.FilterSet):
 
 
 class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Lookup for vulnerable packages by vulnerability.
+    """
+
     def get_fixed_packages_qs(self):
         """
         Filter the packages that fixes a vulnerability
@@ -318,6 +326,10 @@ class CPEFilterSet(filters.FilterSet):
 
 
 class CPEViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Lookup for vulnerable packages by CPE.
+    """
+
     queryset = Vulnerability.objects.filter(
         vulnerabilityreference__reference_id__startswith="cpe"
     ).distinct()
@@ -360,6 +372,10 @@ class AliasFilterSet(filters.FilterSet):
 
 
 class AliasViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Lookup for vulnerabilities by vulnerability aliases such as a CVE.
+    """
+
     queryset = Vulnerability.objects.all()
     serializer_class = VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)

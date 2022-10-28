@@ -4,6 +4,12 @@ API overview
 ========================
 
 
+Browse the Open API documentation
+------------------------------------
+
+- https://public.vulnerablecode.io/api/docs/ for documentation with Swagger
+- https://public.vulnerablecode.io/api/schema/ for the OpenAPI schema
+
 
 Enable the API key authentication
 ------------------------------------
@@ -26,7 +32,7 @@ This can be done in the admin and from the command line::
 Access the API using curl
 -----------------------------
 
-    curl -X GET -H 'Authorization: Token <YOUR TOKEN> ' http://public.vulnerablecode.io/api/
+    curl -X GET -H 'Authorization: Token <YOUR TOKEN>' https://public.vulnerablecode.io/api/
 
 
 API endpoints
@@ -37,7 +43,8 @@ There are two primary endpoints:
 
 - packages/: this is the main endpoint where you can lookup vulnerabilities by package.
 
-- vulnerabilities.: for lookup by vulnerabilities
+- vulnerabilities/: to lookup by vulnerabilities
 
-And two secondary endpoints, used to query aliases and CPEs: cpes/ and alias/
+And two secondary endpoints, used to query vulnerability aliases (such as CVEs)
+and vulnerability by CPEs: cpes/ and aliases/
 

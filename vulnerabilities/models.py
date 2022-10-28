@@ -297,7 +297,7 @@ class Package(PackageURLMixin):
         ).distinct()
 
     @property
-    def is_vulnerable(self):
+    def is_vulnerable(self) -> bool:
         """
         Returns True if this package is vulnerable to any vulnerability.
         """

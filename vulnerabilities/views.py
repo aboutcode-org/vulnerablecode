@@ -238,14 +238,14 @@ class ApiUserCreateView(generic.CreateView):
         super().form_valid(form)
 
         send_mail(
-            subject="VCIO API Key",
-            message=f"Here is your token for the VCIO API: {self.object.auth_token}",
+            subject="VulnerableCode.io API key token",
+            message=f"Here is your VulnerableCode.io API key token: {self.object.auth_token}",
             from_email=env.str("FROM_EMAIL", default=""),
             recipient_list=[self.object.email],
         )
 
         return HttpResponse(
-            f"We have mailed you the token for VCIO API on this email {self.object.email}"
+            f"Check your email for VulnerableCode.io API key token: {self.object.email}"
         )
 
     def get_success_url(self):

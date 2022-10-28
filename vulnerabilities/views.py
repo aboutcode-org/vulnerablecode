@@ -7,8 +7,10 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from django.core.mail import send_mail
 from django.db.models import Count
 from django.db.models import Q
+from django.http import HttpResponse
 from django.http.response import Http404
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -22,6 +24,7 @@ from vulnerabilities import models
 from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import VulnerabilitySearchForm
+from vulnerablecode.settings import env
 
 PAGE_SIZE = 20
 
@@ -232,9 +235,18 @@ class ApiUserCreateView(generic.CreateView):
     template_name = "api_user_creation_form.html"
 
     def form_valid(self, form):
-        # TODO: send an email with the API key
-        response = super().form_valid(form)
-        # TODO: return http response with a simple success message that
+        super().form_valid(form)
+
+        send_mail(
+            subject="VCIO API Key",
+            message=f"Here is your token for the VCIO API: {self.object.auth_token}",
+            from_email=env.str("FROM_EMAIL", default=""),
+            recipient_list=[self.object.email],
+        )
+
+        return HttpResponse(
+            f"We have mailed you the token for VCIO API on this email {self.object.email}"
+        )
 
     def get_success_url(self):
-        return reverse_lazy("api_user_creation_success", kwargs={"uuid": self.object.pk})
+        return reverse_lazy("home")

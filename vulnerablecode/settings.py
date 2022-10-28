@@ -49,6 +49,13 @@ DEBUG_TOOLBAR = env.bool("VULNERABLECODE_DEBUG_TOOLBAR", default=False)
 # SECURITY WARNING: do not  run with debug turned on in production
 DEBUG_UI = env.bool("VULNERABLECODE_DEBUG_UI", default=False)
 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = env.str("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD", default="")
+
 # Application definition
 
 INSTALLED_APPS = (
@@ -68,10 +75,7 @@ INSTALLED_APPS = (
     "rest_framework",
     "rest_framework.authtoken",
     "widget_tweaks",
-    # for API doc
-    "drf_spectacular",
-    # required for Django collectstatic discovery
-    "drf_spectacular_sidecar",
+    "crispy_forms",
 )
 
 MIDDLEWARE = (
@@ -200,6 +204,9 @@ STATIC_ROOT = env.str("VULNERABLECODE_STATIC_ROOT", "./")
 STATICFILES_DIRS = [
     str(PROJECT_DIR / "static"),
 ]
+
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # Third-party apps
 

@@ -46,7 +46,7 @@ class ApacheKafkaImporter(Importer):
         advisory_page = BeautifulSoup(advisory_page, features="lxml")
         cve_section_beginnings = advisory_page.find_all("h2")
         for cve_section_beginning in cve_section_beginnings:
-            cve_id = cve_section_beginning.text.split("\n")[0]
+            cve_id = cve_section_beginning.find_next("a").text
             cve_description_paragraph = cve_section_beginning.find_next_sibling("p")
             cve_data_table = cve_section_beginning.find_next_sibling("table")
             cve_data_table_rows = cve_data_table.find_all("tr")

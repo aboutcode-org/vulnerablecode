@@ -10,7 +10,6 @@
 from django.db.models import Count
 from django.db.models import Q
 from django.http.response import Http404
-from django.http.response import HttpResponseNotAllowed
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
@@ -58,7 +57,7 @@ class PackageSearch(ListView):
             qs = qs.filter(Q(name__icontains=query) | Q(namespace__icontains=query))
         else:
             # this looks like a purl: check if it quacks like a purl
-            purl_type = namespace = name = version = qualifiers = subpath = None
+            purl_type = namespace = name = version = None
 
             _, _scheme, remainder = query.partition("pkg:")
             remainder = remainder.strip()
@@ -68,7 +67,7 @@ class PackageSearch(ListView):
             try:
                 # First, treat the query as a syntactically-correct purl
                 purl = PackageURL.from_string(query)
-                purl_type, namespace, name, version, qualifiers, subpath = purl.to_dict().values()
+                purl_type, namespace, name, version, _quals, _subp = purl.to_dict().values()
             except ValueError:
                 # Otherwise, attempt a more lenient parsing of a possibly partial purl
                 if "/" in remainder:

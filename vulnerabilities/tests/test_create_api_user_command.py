@@ -19,7 +19,7 @@ from django.test import TestCase
 class TestCreateApiUserCommand(TestCase):
     def test_create_simple_user(self):
         buf = StringIO()
-        call_command("create-api-user", "--email", "foo@example.com", stdout=buf)
+        call_command("create_api_user", "--email", "foo@example.com", stdout=buf)
         output = buf.getvalue()
         User = get_user_model()
         user = User.objects.get(username="foo@example.com")
@@ -29,15 +29,15 @@ class TestCreateApiUserCommand(TestCase):
         assert f"User foo@example.com created with API key: {user.auth_token.key}" in output
 
     def test_create_simple_user_cannot_create_user_twice_with_same_email(self):
-        call_command("create-api-user", "--email", "foo1@example.com")
+        call_command("create_api_user", "--email", "foo1@example.com")
 
         with pytest.raises(CommandError):
-            call_command("create-api-user", "--email", "foo1@example.com")
+            call_command("create_api_user", "--email", "foo1@example.com")
 
     def test_create_user_with_names(self):
         buf = StringIO()
         call_command(
-            "create-api-user",
+            "create_api_user",
             "--email",
             "foo3@example.com",
             "--first-name",
@@ -55,4 +55,4 @@ class TestCreateApiUserCommand(TestCase):
 
     def test_create_simple_user_demands_a_valid_email(self):
         with pytest.raises(CommandError):
-            call_command("create-api-user", "--email", "fooNOT AN EMAIL.com")
+            call_command("create_api_user", "--email", "fooNOT AN EMAIL.com")

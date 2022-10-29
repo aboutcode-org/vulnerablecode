@@ -25,7 +25,7 @@ Create an API key-only user
 
 This can be done in the admin and from the command line::
 
-    $ ./manage.py create-api-user --email "p4@nexb.com" --first-name="Phil" --last-name "Goel"
+    $ ./manage.py create_api_user --email "p4@nexb.com" --first-name="Phil" --last-name "Goel"
     User p4@nexb.com created with API key: ce8616b929d2adsddd6146346c2f26536423423491
 
 

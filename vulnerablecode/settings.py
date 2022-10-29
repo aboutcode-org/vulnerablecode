@@ -184,6 +184,10 @@ REST_FRAMEWORK = {
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.SearchFilter",
     ),
+    "DEFAULT_THROTTLE_CLASSES": [
+        "vulnerabilities.throttling.ExceptionalUserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {"user": "1000/hour"},
     "DEFAULT_PAGINATION_CLASS": "vulnerabilities.pagination.SmallResultSetPagination",
     # Limit the load on the Database returning a small number of records by default. https://github.com/nexB/vulnerablecode/issues/819
     "PAGE_SIZE": 10,

@@ -259,12 +259,13 @@ class APITestCasePackage(TestCase):
         }
 
     def test_api_with_all_vulnerable_packages(self):
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(5):
             # There are 4 queries:
             # 1. SAVEPOINT
             # 2. Authenticating user
-            # 3. Get all vulnerable packages
-            # 4. RELEASE SAVEPOINT
+            # 3. Checking if user is staff user for throttling purposes
+            # 4. Get all vulnerable packages
+            # 5. RELEASE SAVEPOINT
             response = self.csrf_client.get(f"/api/packages/all", format="json").data
             assert len(response) == 11
             assert response == [

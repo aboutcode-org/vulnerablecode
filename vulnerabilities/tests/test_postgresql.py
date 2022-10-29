@@ -24,6 +24,8 @@ TEST_DATA = os.path.join(BASE_DIR, "test_data/postgresql", "advisories.html")
 
 
 class TestPostgreSQLImporter(TestCase):
+    # This is the original test.  When it first failed I began correcting the obvious errors,
+    # but quickly concluded I needed to revise postgresql.py instead and left this as is.
     def test_to_advisories(self):
 
         with open(TEST_DATA) as f:
@@ -195,181 +197,13 @@ class TestPostgreSQLImporter(TestCase):
         expected_advisories = list(map(AdvisoryData, expected_advisories))
         assert sorted(found_advisories) == sorted(expected_advisories)
 
-    # 10/27/2022 Thursday 6:40:04 PM.  This is intended to be an updated test -- but I have barely started to work on it!
-    # Focusing instead on postgresql.py for now.
-    def test_to_advisories_updated(self):
+    # My new, skeletal test, designed only to run the to_advisories() print statements
+    # on the original advisories.html test input file.
+    def test_to_advisories_simple(self):
 
         with open(TEST_DATA) as f:
             raw_data = f.read()
 
-        expected_advisories = [
-            AdvisoryData(
-                summary="ALTER ... DEPENDS ON EXTENSION is missing authorization checks.more details",
-                # 10/26/2022 Wednesday 6:40:01 PM.  Throws error: TypeError: __init__() got an unexpected keyword argument 'vulnerability_id'
-                # vulnerability_id="CVE-2020-1720",
-                aliases=["CVE-2020-1720"],
-                affected_packages=[
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            name="postgresql",
-                            version="10",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            name="postgresql",
-                            version="10.12",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            name="postgresql",
-                            version="11",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            name="postgresql",
-                            version="11.7",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            name="postgresql",
-                            version="12",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            name="postgresql",
-                            version="12.2",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            name="postgresql",
-                            version="9.6",
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            name="postgresql",
-                            version="9.6.17",
-                        ),
-                    ),
-                ],
-                references=[
-                    Reference(
-                        reference_id="",
-                        url="https://www.postgresql.org/about/news/postgresql-122-117-1012-9617-9521-and-9426-released-2011/",
-                    ),
-                    Reference(
-                        reference_id="",
-                        url="https://www.postgresql.org/support/security/CVE-2020-1720/",
-                        severities=[
-                            VulnerabilitySeverity(
-                                system=severity_systems.CVSSV3,
-                                value="3.1",
-                            ),
-                            VulnerabilitySeverity(
-                                system=severity_systems.CVSSV3_VECTOR,
-                                value=["AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N"],
-                            ),
-                        ],
-                    ),
-                ],
-            ),
-            AdvisoryData(
-                summary="Windows installer runs executables from uncontrolled directoriesmore details",
-                # 10/26/2022 Wednesday 6:40:01 PM.  Throws error: TypeError: __init__() got an unexpected keyword argument 'vulnerability_id'
-                # vulnerability_id="CVE-2020-10733",
-                aliases=["CVE-2020-10733"],
-                affected_packages=[
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            name="postgresql",
-                            version="10",
-                            qualifiers={"os": "windows"},
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            name="postgresql",
-                            version="10.13",
-                            qualifiers={"os": "windows"},
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            name="postgresql",
-                            version="11",
-                            qualifiers={"os": "windows"},
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            name="postgresql",
-                            version="11.8",
-                            qualifiers={"os": "windows"},
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            name="postgresql",
-                            version="12",
-                            qualifiers={"os": "windows"},
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            name="postgresql",
-                            version="12.3",
-                            qualifiers={"os": "windows"},
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="generic",
-                            name="postgresql",
-                            version="9.6",
-                            qualifiers={"os": "windows"},
-                        ),
-                        patched_package=PackageURL(
-                            type="generic",
-                            name="postgresql",
-                            version="9.6.18",
-                            qualifiers={"os": "windows"},
-                        ),
-                    ),
-                ],
-                references=[
-                    Reference(
-                        reference_id="",
-                        url="https://www.postgresql.org/about/news/postgresql-123-118-1013-9618-and-9522-released-2038/",
-                    ),
-                    Reference(
-                        reference_id="",
-                        url="https://www.postgresql.org/support/security/CVE-2020-10733/",
-                        severities=[
-                            VulnerabilitySeverity(
-                                system=severity_systems.CVSSV3,
-                                value="6.7",
-                            ),
-                            VulnerabilitySeverity(
-                                system=severity_systems.CVSSV3_VECTOR,
-                                value=["AV:L/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:H"],
-                            ),
-                        ],
-                    ),
-                ],
-            ),
-        ]
-
         found_advisories = to_advisories(raw_data)
 
-        # 10/26/2022 Wednesday 7:07:13 PM.  Throws error: AttributeError: type object 'AdvisoryData' has no attribute 'normalized'
-        # found_advisories = list(map(AdvisoryData.normalized, found_advisories))
-        # found_advisories = list(map(AdvisoryData, found_advisories))
-        # expected_advisories = list(map(AdvisoryData.normalized, expected_advisories))
-        # expected_advisories = list(map(AdvisoryData, expected_advisories))
-        assert sorted(found_advisories) == sorted(expected_advisories)
+        # do nothing more -- we're just trying to trigger print statements in to_advisories()

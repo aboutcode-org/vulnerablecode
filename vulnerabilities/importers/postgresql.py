@@ -54,10 +54,15 @@ class PostgreSQLImporter(Importer):
 
 
 def to_advisories(data):
+    print("\n\n>> This is a test.")
+    print("\n=====")
     advisories = []
     soup = BeautifulSoup(data, features="lxml")
     table = soup.select("table")[0]
+    test_row_count = 0
     for row in table.select("tbody tr"):
+        test_row_count += 1
+        print("\ntest_row_count = {}".format(test_row_count))
         ref_col, affected_col, fixed_col, severity_score_col, desc_col = row.select("td")
         summary = desc_col.text
         pkg_qualifiers = {}
@@ -89,9 +94,14 @@ def to_advisories(data):
 
         # This will replace the affected_packages and fixed_packages lists above. ============
         affected_packages = []
+        # do I need to trim these?  e.g., affected_version_list = [x.strip() for x in affected_col.text.split(',')]
         affected_version_list = affected_col.text.split(",")
         fixed_version_list = fixed_col.text.split(",")
         package_count = len(affected_version_list)
+
+        print("\naffected_version_list = {}".format(affected_version_list))
+        print("\nfixed_version_list = {}".format(fixed_version_list))
+        print("\npackage_count = {}".format(package_count))
 
         while package_count > 0:
             summary = summary
@@ -105,7 +115,7 @@ def to_advisories(data):
 
             fixed = fixed_version_list[0]
             fixed_version_list.pop(0)
-            # Do we need "if affected else None"?
+            # Do we need "if fixed else None"?
             fixed_version = GenericVersion(fixed) if fixed else None
 
             package_count -= 1
@@ -115,11 +125,23 @@ def to_advisories(data):
                     name="postgresql",
                     type="generic",
                     namespace="postgresql",
+                    qualifiers=pkg_qualifiers,
                 ),
                 affected_version_range=affected_version_range,
                 fixed_version=fixed_version,
             )
             affected_packages.append(affected_package)
+
+            print("\naffected_package = {}".format(affected_package))
+            print("\n\taffected_package.package = {}".format(affected_package.package))
+            print(
+                "\n\taffected_package.affected_version_range = {}".format(
+                    affected_package.affected_version_range
+                )
+            )
+            print("\n\taffected_package.fixed_version = {}".format(affected_package.fixed_version))
+
+            print("\ninterim package_count = {}".format(package_count))
 
             # end of initial draft insert ===================================
 
@@ -127,6 +149,7 @@ def to_advisories(data):
             cve_id = ref_col.select("nobr")[0].text
             # This is for the anomaly in https://www.postgresql.org/support/security/8.1/ 's
             # last entry
+            # Note: in this example and others, final entry/entries have no CVE in the 1st column
         except IndexError:
             pass
 
@@ -162,6 +185,39 @@ def to_advisories(data):
                 affected_packages=affected_packages,
             )
         )
+
+        print("\n------------------------------------")
+
+    print("\ntotal test_advisories (i.e., AdvisoryData objects) = {}".format(len(advisories)))
+    print("\nadvisories = {}".format(advisories))
+
+    test_advisory_count = 0
+    for test_advisory in advisories:
+        test_advisory_count += 1
+        print("\ntest_advisory #{} = {}".format(test_advisory_count, test_advisory))
+        print("\n\ttest_advisory.aliases = {}".format(test_advisory.aliases))
+        print("\n\ttest_advisory.summary = {}".format(test_advisory.summary))
+        print("\n\ttest_advisory.affected_packages = {}".format(test_advisory.affected_packages))
+        for test_affected_package in test_advisory.affected_packages:
+            print("\n\ttest_affected_package = {}".format(test_affected_package))
+            print("\n\t\ttest_affected_package.package = {}".format(test_affected_package.package))
+            print(
+                "\n\t\ttest_affected_package.affected_version_range = {}".format(
+                    test_affected_package.affected_version_range
+                )
+            )
+            print(
+                "\n\t\ttest_affected_package.fixed_version = {}".format(
+                    test_affected_package.fixed_version
+                )
+            )
+        print("\n\ttest_advisory.references = {}".format(test_advisory.references))
+        for test_reference in test_advisory.references:
+            print("\n\ttest_test_reference = {}".format(test_reference))
+
+    print("\n------------------------------------")
+
+    print("\n>> This is the end of the test.\n")
 
     return advisories
 

@@ -93,7 +93,7 @@ class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
     fixed_packages = MinimalPackageSerializer(
         many=True, source="filtered_fixed_packages", read_only=True
     )
-    affected_packages = MinimalPackageSerializer(many=True, source="vulnerable_to", read_only=True)
+    affected_packages = MinimalPackageSerializer(many=True, read_only=True)
 
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
     aliases = AliasSerializer(many=True, source="alias")

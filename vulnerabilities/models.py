@@ -476,7 +476,6 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         return self.filter(vulnerabilities__vulnerabilityreference__reference_id__exact=cve)
 
 
-
 def get_purl_query_lookups(purl):
     """
     Do not reference all the possible qualifiers and relax the

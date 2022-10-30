@@ -8,8 +8,6 @@
 #
 
 from django.core.mail import send_mail
-from django.db.models import Count
-from django.db.models import Q
 from django.http import HttpResponse
 from django.http.response import Http404
 from django.shortcuts import render
@@ -18,7 +16,6 @@ from django.views import View
 from django.views import generic
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from packageurl import PackageURL
 
 from vulnerabilities import models
 from vulnerabilities.forms import ApiUserCreationForm
@@ -43,72 +40,8 @@ class PackageSearch(ListView):
         return context
 
     def get_queryset(self, query=None):
-        """
-        Return a Package queryset for the ``query``.
-        Make a best effort approach to find matching packages either based
-        on exact purl, partial purl or just name and namespace.
-        """
-        qs = self.model.objects
-
         query = query or self.request.GET.get("search") or ""
-        query = query.strip()
-        if not query:
-            return qs.none()
-
-        if not query.startswith("pkg:"):
-            # treat this as a plain search
-            qs = qs.filter(Q(name__icontains=query) | Q(namespace__icontains=query))
-        else:
-            # this looks like a purl: check if it quacks like a purl
-            purl_type = namespace = name = version = None
-
-            _, _scheme, remainder = query.partition("pkg:")
-            remainder = remainder.strip()
-            if not remainder:
-                return qs.none()
-
-            try:
-                # First, treat the query as a syntactically-correct purl
-                purl = PackageURL.from_string(query)
-                purl_type, namespace, name, version, _quals, _subp = purl.to_dict().values()
-            except ValueError:
-                # Otherwise, attempt a more lenient parsing of a possibly partial purl
-                if "/" in remainder:
-                    purl_type, _scheme, ns_name = remainder.partition("/")
-                    ns_name = ns_name.strip()
-                    if ns_name:
-                        if "/" in ns_name:
-                            namespace, _, name = ns_name.partition("/")
-                        else:
-                            name = ns_name
-                        name = name.strip()
-                        if name:
-                            if "@" in name:
-                                name, _, version = name.partition("@")
-                                version = version.strip()
-                                name = name.strip()
-                else:
-                    purl_type = remainder
-
-            if purl_type:
-                qs = qs.filter(type__iexact=purl_type)
-            if namespace:
-                qs = qs.filter(namespace__iexact=namespace)
-            if name:
-                qs = qs.filter(name__iexact=name)
-            if version:
-                qs = qs.filter(version__iexact=version)
-
-        return qs.annotate(
-            vulnerability_count=Count(
-                "vulnerabilities",
-                filter=Q(packagerelatedvulnerability__fix=False),
-            ),
-            patched_vulnerability_count=Count(
-                "vulnerabilities",
-                filter=Q(packagerelatedvulnerability__fix=True),
-            ),
-        ).prefetch_related()
+        return self.model.objects.search(query).with_vulnerability_counts().prefetch_related()
 
 
 class VulnerabilitySearch(ListView):
@@ -126,35 +59,7 @@ class VulnerabilitySearch(ListView):
 
     def get_queryset(self, query=None):
         query = query or self.request.GET.get("search") or ""
-        qs = self.model.objects
-        query = query.strip()
-        if not query:
-            return qs.none()
-
-        # middle ground, exact on vulnerability_id
-        qssearch = qs.filter(vulnerability_id=query)
-        if not qssearch.exists():
-            # middle ground, exact on alias
-            qssearch = qs.filter(aliases__alias=query)
-            if not qssearch.exists():
-                # middle ground, slow enough
-                qssearch = qs.filter(
-                    Q(vulnerability_id__icontains=query) | Q(aliases__alias__icontains=query)
-                )
-                if not qssearch.exists():
-                    # last resort super slow
-                    qssearch = qs.filter(
-                        Q(references__id__icontains=query) | Q(summary__icontains=query)
-                    )
-
-        return qssearch.order_by("vulnerability_id").annotate(
-            vulnerable_package_count=Count(
-                "packages", filter=Q(packagerelatedvulnerability__fix=False), distinct=True
-            ),
-            patched_package_count=Count(
-                "packages", filter=Q(packagerelatedvulnerability__fix=True), distinct=True
-            ),
-        )
+        return self.model.objects.search(query=query).with_package_counts()
 
 
 class PackageDetails(DetailView):
@@ -167,8 +72,8 @@ class PackageDetails(DetailView):
         context = super().get_context_data(**kwargs)
         package = self.object
         context["package"] = package
-        context["affected_by_vulnerabilities"] = package.vulnerable_to.order_by("vulnerability_id")
-        context["fixing_vulnerabilities"] = package.resolved_to.order_by("vulnerability_id")
+        context["affected_by_vulnerabilities"] = package.affected_by.order_by("vulnerability_id")
+        context["fixing_vulnerabilities"] = package.fixing.order_by("vulnerability_id")
         context["package_search_form"] = PackageSearchForm(self.request.GET)
         return context
 
@@ -210,8 +115,8 @@ class VulnerabilityDetails(DetailView):
                 "severities": list(self.object.severities),
                 "references": self.object.references.all(),
                 "aliases": self.object.aliases.all(),
-                "resolved_to": self.object.resolved_to.all(),
-                "vulnerable_to": self.object.vulnerable_to.all(),
+                "affected_packages": self.object.affected_packages.all(),
+                "fixed_by_packages": self.object.fixed_by_packages.all(),
             }
         )
         return context

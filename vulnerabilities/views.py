@@ -10,13 +10,13 @@
 from django.core.mail import send_mail
 from django.db.models import Count
 from django.db.models import Q
-from django.http import HttpResponse
 from django.http.response import Http404
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
 from django.views import generic
 from django.views.generic.detail import DetailView
+from django.contrib import messages
 from django.views.generic.list import ListView
 from packageurl import PackageURL
 
@@ -235,18 +235,26 @@ class ApiUserCreateView(generic.CreateView):
     template_name = "api_user_creation_form.html"
 
     def form_valid(self, form):
-        super().form_valid(form)
+        response = super().form_valid(form)
 
         send_mail(
             subject="VulnerableCode.io API key token",
             message=f"Here is your VulnerableCode.io API key token: {self.object.auth_token}",
             from_email=env.str("FROM_EMAIL", default=""),
             recipient_list=[self.object.email],
+            fail_silently=True,
         )
 
-        return HttpResponse(
-            f"Check your email for VulnerableCode.io API key token: {self.object.email}"
-        )
+        messages.success(self.request, f"API key token sent to your email address {self.object.email}.")
+
+        return response
+
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+
+        messages.error(self.request, str(form.errors))
+
+        return response
 
     def get_success_url(self):
-        return reverse_lazy("home")
+        return reverse_lazy("api_user_request")

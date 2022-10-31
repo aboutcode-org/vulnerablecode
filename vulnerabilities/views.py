@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from django.contrib import messages
 from django.core.mail import send_mail
 from django.db.models import Count
 from django.db.models import Q
@@ -16,7 +17,6 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views import generic
 from django.views.generic.detail import DetailView
-from django.contrib import messages
 from django.views.generic.list import ListView
 from packageurl import PackageURL
 
@@ -245,7 +245,9 @@ class ApiUserCreateView(generic.CreateView):
             fail_silently=True,
         )
 
-        messages.success(self.request, f"API key token sent to your email address {self.object.email}.")
+        messages.success(
+            self.request, f"API key token sent to your email address {self.object.email}."
+        )
 
         return response
 

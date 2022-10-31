@@ -47,8 +47,9 @@ class ApiUserCreationForm(forms.ModelForm):
         )
 
     def __init__(self, *args, **kwargs):
-        super(ApiUserCreationForm, self).__init__(*args, **kwargs)
+        super(ApiUserCreationForm, self).__init__(*args, **kwargs) 
         self.fields["username"].help_text = f"<ul><li>{self.fields['username'].help_text}</li></ul>"
+        self.fields["username"].label = "Email"
 
     def save(self, commit=True):
         return ApiUser.objects.create_api_user(

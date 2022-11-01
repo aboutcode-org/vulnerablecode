@@ -12,12 +12,10 @@ import urllib.parse as urlparse
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
-
 from univers.version_range import GenericVersionRange
 from univers.versions import GenericVersion
 
 from vulnerabilities import severity_systems
-
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
@@ -32,7 +30,8 @@ class PostgreSQLImporter(Importer):
 
     root_url = "https://www.postgresql.org/support/security/"
     # need license_url; 'mit' below is just a placeholder value -- need to determine actual license
-    spdx_license_expression = 'mit'
+    spdx_license_expression = "mit"
+
     def advisory_data(self):
         # Not used but we added during huddle?
         # urls = []
@@ -85,8 +84,12 @@ def to_advisories(data):
                             namespace="postgresql",
                             qualifiers=pkg_qualifiers,
                         ),
-                        affected_version_range=GenericVersionRange.from_versions(affected_version_list) if affected_version_list else None,
-                        fixed_version=GenericVersion(fixed_version) if fixed_version else None
+                        affected_version_range=GenericVersionRange.from_versions(
+                            affected_version_list
+                        )
+                        if affected_version_list
+                        else None,
+                        fixed_version=GenericVersion(fixed_version) if fixed_version else None,
                     )
                 )
         elif affected_version_list:

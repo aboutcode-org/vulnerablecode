@@ -150,9 +150,12 @@ VULNERABLECODEIO_REQUIRE_AUTHENTICATION = env.bool(
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
+THROTTLING_RATE = env.str("THROTTLING_RATE", default="1000/day")
 
 if IS_TESTS:
     VULNERABLECODEIO_REQUIRE_AUTHENTICATION = True
+    THROTTLING_RATE = "5/day"
+
 
 USE_L10N = True
 
@@ -184,6 +187,10 @@ REST_FRAMEWORK = {
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.SearchFilter",
     ),
+    "DEFAULT_THROTTLE_CLASSES": [
+        "vulnerabilities.throttling.StaffUserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {"user": THROTTLING_RATE},
     "DEFAULT_PAGINATION_CLASS": "vulnerabilities.pagination.SmallResultSetPagination",
     # Limit the load on the Database returning a small number of records by default. https://github.com/nexB/vulnerablecode/issues/819
     "PAGE_SIZE": 10,

@@ -3,6 +3,13 @@ Release notes
 
 
 
+Version v30.2.2
+----------------
+
+- We enabled API throttling for a basic user and for a staff user 
+  they can have unlimited access on API.
+
+
 Version v30.2.1
 ----------------
 

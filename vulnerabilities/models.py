@@ -533,6 +533,7 @@ class ApiUserManager(UserManager):
             password=None,
             first_name=first_name,
             last_name=last_name,
+            **extra_fields,
         )
 
         # this ensure that this is not a valid password

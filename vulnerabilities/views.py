@@ -8,10 +8,12 @@
 #
 
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models import Count
 from django.db.models import Q
 from django.http.response import Http404
+from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
@@ -235,7 +237,12 @@ class ApiUserCreateView(generic.CreateView):
     template_name = "api_user_creation_form.html"
 
     def form_valid(self, form):
-        response = super().form_valid(form)
+
+        try:
+            response = super().form_valid(form)
+        except ValidationError as e:
+            messages.error(self.request, "Email is invalid or already taken")
+            return redirect(self.get_success_url())
 
         send_mail(
             subject="VulnerableCode.io API key token",
@@ -248,13 +255,6 @@ class ApiUserCreateView(generic.CreateView):
         messages.success(
             self.request, f"API key token sent to your email address {self.object.email}."
         )
-
-        return response
-
-    def form_invalid(self, form):
-        response = super().form_invalid(form)
-
-        messages.error(self.request, str(form.errors))
 
         return response
 

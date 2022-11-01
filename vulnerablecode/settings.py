@@ -188,7 +188,7 @@ REST_FRAMEWORK = {
         "rest_framework.filters.SearchFilter",
     ),
     "DEFAULT_THROTTLE_CLASSES": [
-        "vulnerabilities.throttling.ExceptionalUserRateThrottle",
+        "vulnerabilities.throttling.StaffUserRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": {"user": THROTTLING_RATE},
     "DEFAULT_PAGINATION_CLASS": "vulnerabilities.pagination.SmallResultSetPagination",

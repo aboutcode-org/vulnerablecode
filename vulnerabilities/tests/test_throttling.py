@@ -13,21 +13,19 @@ from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
 
-User = get_user_model()
+from vulnerabilities.models import ApiUser
 
 
 class ThrottleApiTests(APITestCase):
     def setUp(self):
         # create a basic user
-        self.user = User.objects.create_user("username", "e@mail.com", "secret")
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
         self.auth = f"Token {self.user.auth_token.key}"
         self.csrf_client = APIClient(enforce_csrf_checks=True)
         self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
 
         # create a staff user
-        self.staff_user = User.objects.create_user(
-            "staff", "staff@mail.com", "secret", is_staff=True
-        )
+        self.staff_user = ApiUser.objects.create_api_user(username="staff@mail.com", is_staff=True)
         self.staff_auth = f"Token {self.staff_user.auth_token.key}"
         self.staff_csrf_client = APIClient(enforce_csrf_checks=True)
         self.staff_csrf_client.credentials(HTTP_AUTHORIZATION=self.staff_auth)

@@ -23,6 +23,13 @@ from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import get_purl_query_lookups
+from vulnerabilities.throttling import AliasesAPIThrottle
+from vulnerabilities.throttling import BulkSearchCPEAPIThrottle
+from vulnerabilities.throttling import BulkSearchPackagesAPIThrottle
+from vulnerabilities.throttling import CPEAPIThrottle
+from vulnerabilities.throttling import PackagesAPIThrottle
+from vulnerabilities.throttling import VulnerabilitiesAPIThrottle
+from vulnerabilities.throttling import VulnerablePackagesAPIThrottle
 
 
 class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
@@ -221,6 +228,15 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageFilterSet
 
+    def get_throttles(self):
+        if self.action == "bulk_search":
+            throttle_classes = [BulkSearchPackagesAPIThrottle]
+        elif self.action == "all":
+            throttle_classes = [VulnerablePackagesAPIThrottle]
+        else:
+            throttle_classes = [PackagesAPIThrottle]
+        return [throttle() for throttle in throttle_classes]
+
     # TODO: Fix the swagger documentation for this endpoint
     @action(detail=False, methods=["post"])
     def bulk_search(self, request):
@@ -246,7 +262,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
             if purl_data:
                 purl_response = PackageSerializer(purl_data[0], context={"request": request}).data
             else:
-                purl_response = purl
+                purl_response = purl.to_dict()
                 purl_response["unresolved_vulnerabilities"] = []
                 purl_response["resolved_vulnerabilities"] = []
                 purl_response["purl"] = purl_string
@@ -302,6 +318,7 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = VulnerabilityFilterSet
+    throttle_classes = [VulnerabilitiesAPIThrottle]
 
 
 class CPEFilterSet(filters.FilterSet):
@@ -319,6 +336,13 @@ class CPEViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = CPEFilterSet
+
+    def get_throttles(self):
+        if self.action == "bulk_search":
+            throttle_classes = [BulkSearchCPEAPIThrottle]
+        else:
+            throttle_classes = [CPEAPIThrottle]
+        return [throttle() for throttle in throttle_classes]
 
     @action(detail=False, methods=["post"])
     def bulk_search(self, request):
@@ -357,3 +381,4 @@ class AliasViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AliasFilterSet
+    throttle_classes = [AliasesAPIThrottle]

@@ -22,39 +22,30 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 
-# we no longer use nearest_patched_package, do we?
-from vulnerabilities.utils import nearest_patched_package
-
 
 class PostgreSQLImporter(Importer):
 
     root_url = "https://www.postgresql.org/support/security/"
-    # need license_url; 'mit' below is just a placeholder value -- need to determine actual license
-    spdx_license_expression = "mit"
+    license_url = "https://www.postgresql.org/about/licence/"
+    spdx_license_expression = "PostgreSQL"
 
     def advisory_data(self):
-        # Not used but we added during huddle?
-        # urls = []
-        # No longer used
-        # advisories = []
         known_urls = {self.root_url}
         visited_urls = set()
+        data_by_url = {}
         while True:
             unvisited_urls = known_urls - visited_urls
             for url in unvisited_urls:
                 data = requests.get(url).content
+                data_by_url[url] = data
                 visited_urls.add(url)
                 known_urls.update(find_advisory_urls(data))
 
-            # Could these 2 lines be replaced with `known_urls != visited_urls`?
             if known_urls == visited_urls:
                 break
 
-        # What is batch_advisories()?  Old code?
-        # return self.batch_advisories(advisories)
-
-        for url in visited_urls:
-            data = requests.get(url).content
+        # JMH: why did we replace "for url in visited_urls:"?
+        for url, data in data_by_url.items():
             yield from to_advisories(data)
 
 
@@ -79,9 +70,8 @@ def to_advisories(data):
                     AffectedPackage(
                         package=PackageURL(
                             name="postgresql",
+                            # TODO: See https://github.com/nexB/vulnerablecode/issues/990
                             type="generic",
-                            # TODO: Discuss namespace issue for postgresql
-                            namespace="postgresql",
                             qualifiers=pkg_qualifiers,
                         ),
                         affected_version_range=GenericVersionRange.from_versions(
@@ -97,20 +87,21 @@ def to_advisories(data):
                 AffectedPackage(
                     package=PackageURL(
                         name="postgresql",
+                        # TODO: See https://github.com/nexB/vulnerablecode/issues/990
                         type="generic",
-                        # TODO: Discuss namespace issue for postgresql
-                        namespace="postgresql",
                         qualifiers=pkg_qualifiers,
                     ),
                     affected_version_range=GenericVersionRange.from_versions(affected_version_list),
                 )
             )
-
+        cve_id = ""
         try:
+            # in the prior code, this is the only place where cve_id was defined, and presumably
+            # there was no error like the error we got:
+            # UnboundLocalError: local variable 'cve_id' referenced before assignment
             cve_id = ref_col.select("nobr")[0].text
             # This is for the anomaly in https://www.postgresql.org/support/security/8.1/ 's
             # last entry
-            # Note: in this example and others, final entry/entries have no CVE in the 1st column
         except IndexError:
             pass
 
@@ -134,19 +125,18 @@ def to_advisories(data):
                     )
                     severities.append(severity)
             references.append(Reference(url=link, severities=severities))
-
-        advisories.append(
-            AdvisoryData(
-                aliases=[cve_id],
-                summary=summary,
-                references=references,
-                affected_packages=affected_packages,
+        if cve_id:
+            advisories.append(
+                AdvisoryData(
+                    # we defined cve_id and added the if... because we got this error:
+                    # UnboundLocalError: local variable 'cve_id' referenced before assignment
+                    # but JMH is not sure what caused the error or whether this is a legit fix
+                    aliases=[cve_id],
+                    summary=summary,
+                    references=references,
+                    affected_packages=affected_packages,
+                )
             )
-        )
-
-    # Keep temporarily for reference
-    print("\ntotal test_advisories (i.e., AdvisoryData objects) = {}".format(len(advisories)))
-    print("\nadvisories = {}".format(advisories))
 
     return advisories
 

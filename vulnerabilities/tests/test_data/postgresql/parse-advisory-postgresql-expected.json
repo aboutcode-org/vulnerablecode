@@ -1,0 +1,170 @@
+[
+  {
+    "aliases": [
+      "CVE-2020-10733"
+    ],
+    "summary": "Windows installer runs executables from uncontrolled directoriesmore details",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "generic",
+          "namespace": null,
+          "name": "postgresql",
+          "version": null,
+          "qualifiers": {
+            "os": "windows"
+          },
+          "subpath": null
+        },
+        "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
+        "fixed_version": "12.3"
+      },
+      {
+        "package": {
+          "type": "generic",
+          "namespace": null,
+          "name": "postgresql",
+          "version": null,
+          "qualifiers": {
+            "os": "windows"
+          },
+          "subpath": null
+        },
+        "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
+        "fixed_version": "11.8"
+      },
+      {
+        "package": {
+          "type": "generic",
+          "namespace": null,
+          "name": "postgresql",
+          "version": null,
+          "qualifiers": {
+            "os": "windows"
+          },
+          "subpath": null
+        },
+        "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
+        "fixed_version": "10.13"
+      },
+      {
+        "package": {
+          "type": "generic",
+          "namespace": null,
+          "name": "postgresql",
+          "version": null,
+          "qualifiers": {
+            "os": "windows"
+          },
+          "subpath": null
+        },
+        "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
+        "fixed_version": "9.6.18"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://www.postgresql.org/support/security/CVE-2020-10733/",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": "6.7"
+          },
+          {
+            "system": "cvssv3_vector",
+            "value": [
+              "AV:L/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:H"
+            ]
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.postgresql.org/about/news/postgresql-123-118-1013-9618-and-9522-released-2038/",
+        "severities": []
+      }
+    ],
+    "date_published": null
+  },
+  {
+    "aliases": [
+      "CVE-2020-1720"
+    ],
+    "summary": "ALTER ... DEPENDS ON EXTENSION is missing authorization checks.more details",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "generic",
+          "namespace": null,
+          "name": "postgresql",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
+        "fixed_version": "12.2"
+      },
+      {
+        "package": {
+          "type": "generic",
+          "namespace": null,
+          "name": "postgresql",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
+        "fixed_version": "11.7"
+      },
+      {
+        "package": {
+          "type": "generic",
+          "namespace": null,
+          "name": "postgresql",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
+        "fixed_version": "10.12"
+      },
+      {
+        "package": {
+          "type": "generic",
+          "namespace": null,
+          "name": "postgresql",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
+        "fixed_version": "9.6.17"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://www.postgresql.org/support/security/CVE-2020-1720/",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": "3.1"
+          },
+          {
+            "system": "cvssv3_vector",
+            "value": [
+              "AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N"
+            ]
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.postgresql.org/about/news/postgresql-122-117-1012-9617-9521-and-9426-released-2011/",
+        "severities": []
+      }
+    ],
+    "date_published": null
+  }
+]

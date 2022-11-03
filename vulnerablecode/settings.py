@@ -50,7 +50,7 @@ DEBUG_TOOLBAR = env.bool("VULNERABLECODE_DEBUG_TOOLBAR", default=False)
 DEBUG_UI = env.bool("VULNERABLECODE_DEBUG_UI", default=False)
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST = env.str("EMAIL_HOST", default="")
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = env.str("EMAIL_HOST_USER", default="")

@@ -9,6 +9,9 @@ Version v30.2.2
 - We enabled API throttling for a basic user and for a staff user 
   they can have unlimited access on API.
 
+- We added throttle rate for each API endpoint and it can be 
+  configured from the settings #991 https://github.com/nexB/vulnerablecode/issues/991.
+
 
 Version v30.2.1
 ----------------

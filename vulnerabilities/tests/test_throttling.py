@@ -51,7 +51,7 @@ class ThrottleApiTests(APITestCase):
 
     def test_cpes_endpoint_throttling(self):
 
-        # A basic user can only access /cpes endpoint 5 times a day
+        # A basic user can only access /cpes endpoint 4 times a day
         for i in range(0, 4):
             response = self.csrf_client.get("/api/cpes")
             self.assertEqual(response.status_code, 200)
@@ -85,7 +85,7 @@ class ThrottleApiTests(APITestCase):
 
     def test_vulnerabilities_endpoint_throttling(self):
 
-        # A basic user can only access /vulnerabilities 10 times a day
+        # A basic user can only access /vulnerabilities 8 times a day
         for i in range(0, 8):
             response = self.csrf_client.get("/api/vulnerabilities")
             self.assertEqual(response.status_code, 200)
@@ -120,7 +120,7 @@ class ThrottleApiTests(APITestCase):
     def test_bulk_search_packages_endpoint_throttling(self):
         data = json.dumps({"purls": ["pkg:foo/bar"]})
 
-        # A basic user can only access /packages/bulk_search 5 times a day
+        # A basic user can only access /packages/bulk_search 6 times a day
         for i in range(0, 6):
             response = self.csrf_client.post(
                 "/api/packages/bulk_search", data=data, content_type="application/json"

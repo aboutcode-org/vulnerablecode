@@ -6,14 +6,10 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-
-from django.contrib.auth import get_user_model
-from rest_framework.throttling import UserRateThrottle
-
-User = get_user_model()
+from rest_framework.throttling import ScopedRateThrottle
 
 
-class StaffUserRateThrottle(UserRateThrottle):
+class StaffUserRateThrottle(ScopedRateThrottle):
     def allow_request(self, request, view):
         """
         Do not apply throttling for superusers and admins.

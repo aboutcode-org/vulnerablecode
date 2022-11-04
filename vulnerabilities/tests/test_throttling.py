@@ -9,7 +9,6 @@
 
 import json
 
-from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
 
@@ -102,16 +101,16 @@ class ThrottleApiTests(APITestCase):
 
         # A basic user can only access /alias 2 times a day
         for i in range(0, 2):
-            response = self.csrf_client.get("/api/alias")
+            response = self.csrf_client.get("/api/aliases")
             self.assertEqual(response.status_code, 200)
-            response = self.staff_csrf_client.get("/api/alias")
+            response = self.staff_csrf_client.get("/api/aliases")
             self.assertEqual(response.status_code, 200)
 
-        response = self.csrf_client.get("/api/alias")
+        response = self.csrf_client.get("/api/aliases")
         # 429 - too many requests for basic user
         self.assertEqual(response.status_code, 429)
 
-        response = self.staff_csrf_client.get("/api/alias", format="json")
+        response = self.staff_csrf_client.get("/api/aliases", format="json")
         # 200 - staff user can access API unlimited times
         self.assertEqual(response.status_code, 200)
 

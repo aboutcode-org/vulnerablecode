@@ -99,7 +99,9 @@ def to_advisories(data):
             # in the prior code, this is the only place where cve_id was defined, and presumably
             # there was no error like the error we got:
             # UnboundLocalError: local variable 'cve_id' referenced before assignment
-            cve_id = ref_col.select("nobr")[0].text
+
+            # changed from nobr to .nobr due to html changes
+            cve_id = ref_col.select(".nobr")[0].text
             # This is for the anomaly in https://www.postgresql.org/support/security/8.1/ 's
             # last entry
         except IndexError:
@@ -142,7 +144,7 @@ def to_advisories(data):
 
 
 def find_advisory_urls(page_data):
-    soup = BeautifulSoup(page_data)
+    soup = BeautifulSoup(page_data, features="lxml")
     return {
         urlparse.urljoin("https://www.postgresql.org/", a_tag.attrs["href"])
         for a_tag in soup.select("h3+ p a")

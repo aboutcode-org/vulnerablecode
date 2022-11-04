@@ -324,6 +324,20 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         ``purl`` PackageURL.
         """
         purl_fields = without_empty_values(purl.to_dict(encode=True))
+
+        # when there are 2 packages one with qualifiers and one without
+        # qualifiers, having all other fields same, this raises MultipleObjectsReturned
+        # so we are filling out the fields with empty value to avoid this
+        for field in PackageURL._fields:
+            # name, type, and version are required fields
+            if field not in purl_fields:
+                if field == "namespace":
+                    purl_fields[field] = ""
+                if field == "qualifiers":
+                    purl_fields[field] = {}
+                if field == "subpath":
+                    purl_fields[field] = ""
+
         package, _ = Package.objects.get_or_create(**purl_fields)
         return package
 

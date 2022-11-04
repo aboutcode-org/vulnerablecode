@@ -150,23 +150,28 @@ VULNERABLECODEIO_REQUIRE_AUTHENTICATION = env.bool(
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
-TEST_PACKAGE_THROTTLING_RATE = None
-TEST_BULK_SEARCH_PACKAGE_THROTTLING_RATE = None
-TEST_ALL_VULNERABLE_PACKAGE_THROTTLING_RATE = None
-TEST_VULNERABILITIES_THROTTLING_RATE = None
-TEST_CPES_THROTTLING_RATE = None
-TEST_BULK_SEARCH_CPES_THROTTLING_RATE = None
-TEST_ALIASES_THROTTLING_RATE = None
+
+REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {
+    "vulnerable_packages": "1/hour",
+    "bulk_search_packages": "5/hour",
+    "packages": "10/minute",
+    "vulnerabilities": "10/minute",
+    "aliases": "5/minute",
+    "cpes": "5/minute",
+    "bulk_search_cpes": "5/hour",
+}
 
 if IS_TESTS:
     VULNERABLECODEIO_REQUIRE_AUTHENTICATION = True
-    TEST_PACKAGE_THROTTLING_RATE = "10/day"
-    TEST_BULK_SEARCH_PACKAGE_THROTTLING_RATE = "6/day"
-    TEST_ALL_VULNERABLE_PACKAGE_THROTTLING_RATE = "1/day"
-    TEST_VULNERABILITIES_THROTTLING_RATE = "8/day"
-    TEST_CPES_THROTTLING_RATE = "4/day"
-    TEST_BULK_SEARCH_CPES_THROTTLING_RATE = "5/day"
-    TEST_ALIASES_THROTTLING_RATE = "2/day"
+    REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {
+        "vulnerable_packages": "1/day",
+        "bulk_search_packages": "6/day",
+        "packages": "10/day",
+        "vulnerabilities": "8/day",
+        "aliases": "2/day",
+        "cpes": "4/day",
+        "bulk_search_cpes": "5/day",
+    }
 
 
 USE_L10N = True
@@ -202,15 +207,7 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_CLASSES": [
         "vulnerabilities.throttling.StaffUserRateThrottle",
     ],
-    "DEFAULT_THROTTLE_RATES": {
-        "vulnerable_packages": TEST_ALL_VULNERABLE_PACKAGE_THROTTLING_RATE or "1/hour",
-        "bulk_search_packages": TEST_BULK_SEARCH_PACKAGE_THROTTLING_RATE or "5/hour",
-        "packages": TEST_PACKAGE_THROTTLING_RATE or "10/minute",
-        "vulnerabilities": TEST_VULNERABILITIES_THROTTLING_RATE or "10/minute",
-        "aliases": TEST_ALIASES_THROTTLING_RATE or "5/minute",
-        "cpes": TEST_CPES_THROTTLING_RATE or "5/minute",
-        "bulk_search_cpes": TEST_BULK_SEARCH_CPES_THROTTLING_RATE or "5/hour",
-    },
+    "DEFAULT_THROTTLE_RATES": REST_FRAMEWORK_DEFAULT_THROTTLE_RATES,
     "DEFAULT_PAGINATION_CLASS": "vulnerabilities.pagination.SmallResultSetPagination",
     # Limit the load on the Database returning a small number of records by default. https://github.com/nexB/vulnerablecode/issues/819
     "PAGE_SIZE": 10,

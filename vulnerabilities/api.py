@@ -23,13 +23,7 @@ from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import get_purl_query_lookups
-from vulnerabilities.throttling import AliasesAPIThrottle
-from vulnerabilities.throttling import BulkSearchCPEAPIThrottle
-from vulnerabilities.throttling import BulkSearchPackagesAPIThrottle
-from vulnerabilities.throttling import CPEAPIThrottle
-from vulnerabilities.throttling import PackagesAPIThrottle
-from vulnerabilities.throttling import VulnerabilitiesAPIThrottle
-from vulnerabilities.throttling import VulnerablePackagesAPIThrottle
+from vulnerabilities.throttling import StaffUserRateThrottle
 
 
 class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
@@ -227,18 +221,11 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PackageSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageFilterSet
-
-    def get_throttles(self):
-        if self.action == "bulk_search":
-            throttle_classes = [BulkSearchPackagesAPIThrottle]
-        elif self.action == "all":
-            throttle_classes = [VulnerablePackagesAPIThrottle]
-        else:
-            throttle_classes = [PackagesAPIThrottle]
-        return [throttle() for throttle in throttle_classes]
+    throttle_classes = [StaffUserRateThrottle]
+    throttle_scope = "packages"
 
     # TODO: Fix the swagger documentation for this endpoint
-    @action(detail=False, methods=["post"])
+    @action(detail=False, methods=["post"], throttle_scope="bulk_search_packages")
     def bulk_search(self, request):
         """
         See https://github.com/nexB/vulnerablecode/pull/369#issuecomment-796877606 for docs
@@ -270,7 +257,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
         return Response(response)
 
-    @action(detail=False, methods=["get"])
+    @action(detail=False, methods=["get"], throttle_scope="vulnerable_packages")
     def all(self, request):
         """
         Return all the vulnerable Package URLs.
@@ -318,7 +305,8 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = VulnerabilityFilterSet
-    throttle_classes = [VulnerabilitiesAPIThrottle]
+    throttle_classes = [StaffUserRateThrottle]
+    throttle_scope = "vulnerabilities"
 
 
 class CPEFilterSet(filters.FilterSet):
@@ -335,16 +323,11 @@ class CPEViewSet(viewsets.ReadOnlyModelViewSet):
     ).distinct()
     serializer_class = VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
+    throttle_classes = [StaffUserRateThrottle]
     filterset_class = CPEFilterSet
+    throttle_scope = "cpes"
 
-    def get_throttles(self):
-        if self.action == "bulk_search":
-            throttle_classes = [BulkSearchCPEAPIThrottle]
-        else:
-            throttle_classes = [CPEAPIThrottle]
-        return [throttle() for throttle in throttle_classes]
-
-    @action(detail=False, methods=["post"])
+    @action(detail=False, methods=["post"], throttle_scope="bulk_search_cpes")
     def bulk_search(self, request):
         """
         This endpoint is used to search for vulnerabilities by more than one CPE.
@@ -381,4 +364,5 @@ class AliasViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AliasFilterSet
-    throttle_classes = [AliasesAPIThrottle]
+    throttle_classes = [StaffUserRateThrottle]
+    throttle_scope = "aliases"

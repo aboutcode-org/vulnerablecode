@@ -6,14 +6,10 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-
-from django.contrib.auth import get_user_model
-from rest_framework.throttling import SimpleRateThrottle
-
-User = get_user_model()
+from rest_framework.throttling import ScopedRateThrottle
 
 
-class StaffUserRateThrottle(SimpleRateThrottle):
+class StaffUserRateThrottle(ScopedRateThrottle):
     def allow_request(self, request, view):
         """
         Do not apply throttling for superusers and admins.
@@ -22,42 +18,3 @@ class StaffUserRateThrottle(SimpleRateThrottle):
             return True
 
         return super().allow_request(request, view)
-
-    def get_cache_key(self, request, view):
-        """
-        Return the cache key to use for this request.
-        """
-        if request.user.is_authenticated:
-            ident = request.user.pk
-        else:
-            ident = self.get_ident(request)
-
-        return self.cache_format % {"scope": self.scope, "ident": ident}
-
-
-class VulnerablePackagesAPIThrottle(StaffUserRateThrottle):
-    scope = "vulnerable_packages"
-
-
-class BulkSearchPackagesAPIThrottle(StaffUserRateThrottle):
-    scope = "bulk_search_packages"
-
-
-class PackagesAPIThrottle(StaffUserRateThrottle):
-    scope = "packages"
-
-
-class VulnerabilitiesAPIThrottle(StaffUserRateThrottle):
-    scope = "vulnerabilities"
-
-
-class AliasesAPIThrottle(StaffUserRateThrottle):
-    scope = "aliases"
-
-
-class CPEAPIThrottle(StaffUserRateThrottle):
-    scope = "cpes"
-
-
-class BulkSearchCPEAPIThrottle(StaffUserRateThrottle):
-    scope = "bulk_search_cpes"

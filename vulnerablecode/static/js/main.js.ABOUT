@@ -1,0 +1,15 @@
+about_resource: main.js
+purl: pkg:github/jgthms/bulma@0.9.0
+version: v0.9.0
+download_url: https://github.com/jgthms/bulma/archive/refs/tags/0.9.0.tar.gz
+
+name: bulma css 
+homepage_url: https://github.com/jgthms/bulma
+owner: Jeremy Thomas
+author: Jeremy Thomas
+notes: This is a generated subset of Bulma JS framework.
+
+license: mit
+license_file: main.js.LICENSE
+
+copyright: Code copyright 2020 Jeremy Thomas. Code released under the MIT license.

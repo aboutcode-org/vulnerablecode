@@ -9,25 +9,22 @@
 
 import json
 
-from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
 
-User = get_user_model()
+from vulnerabilities.models import ApiUser
 
 
 class ThrottleApiTests(APITestCase):
     def setUp(self):
         # create a basic user
-        self.user = User.objects.create_user("username", "e@mail.com", "secret")
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
         self.auth = f"Token {self.user.auth_token.key}"
         self.csrf_client = APIClient(enforce_csrf_checks=True)
         self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
 
         # create a staff user
-        self.staff_user = User.objects.create_user(
-            "staff", "staff@mail.com", "secret", is_staff=True
-        )
+        self.staff_user = ApiUser.objects.create_api_user(username="staff@mail.com", is_staff=True)
         self.staff_auth = f"Token {self.staff_user.auth_token.key}"
         self.staff_csrf_client = APIClient(enforce_csrf_checks=True)
         self.staff_csrf_client.credentials(HTTP_AUTHORIZATION=self.staff_auth)
@@ -104,16 +101,16 @@ class ThrottleApiTests(APITestCase):
 
         # A basic user can only access /alias 2 times a day
         for i in range(0, 2):
-            response = self.csrf_client.get("/api/alias")
+            response = self.csrf_client.get("/api/aliases")
             self.assertEqual(response.status_code, 200)
-            response = self.staff_csrf_client.get("/api/alias")
+            response = self.staff_csrf_client.get("/api/aliases")
             self.assertEqual(response.status_code, 200)
 
-        response = self.csrf_client.get("/api/alias")
+        response = self.csrf_client.get("/api/aliases")
         # 429 - too many requests for basic user
         self.assertEqual(response.status_code, 429)
 
-        response = self.staff_csrf_client.get("/api/alias", format="json")
+        response = self.staff_csrf_client.get("/api/aliases", format="json")
         # 200 - staff user can access API unlimited times
         self.assertEqual(response.status_code, 200)
 

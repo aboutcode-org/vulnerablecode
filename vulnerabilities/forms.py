@@ -8,6 +8,9 @@
 #
 
 from django import forms
+from django.core.validators import validate_email
+
+from vulnerabilities.models import ApiUser
 
 
 class PackageSearchForm(forms.Form):
@@ -28,3 +31,36 @@ class VulnerabilitySearchForm(forms.Form):
             attrs={"placeholder": "Vulnerability id or alias such as CVE or GHSA"}
         ),
     )
+
+
+class ApiUserCreationForm(forms.ModelForm):
+    """
+    Support a simplified creation for API-only users directly from the UI.
+    """
+
+    class Meta:
+        model = ApiUser
+        fields = (
+            "email",
+            "first_name",
+            "last_name",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(ApiUserCreationForm, self).__init__(*args, **kwargs)
+        self.fields["email"].required = True
+
+    def save(self, commit=True):
+        return ApiUser.objects.create_api_user(
+            username=self.cleaned_data["email"],
+            first_name=self.cleaned_data["first_name"],
+            last_name=self.cleaned_data["last_name"],
+        )
+
+    def clean_username(self):
+        username = self.cleaned_data["email"]
+        validate_email(username)
+        return username
+
+    def save_m2m(self):
+        pass

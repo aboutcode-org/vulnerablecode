@@ -26,7 +26,11 @@
                     <div class="dropdown-menu navbar-hover-div" role="menu">
                     <div class="dropdown-content">
                         <div class="dropdown-item about-hover-div">
-                            If you want to try the JSON REST API for VulnerableCode.io, please send an email to <a href="mailto:info@nexb.com">info@nexb.com</a> with "VulnerableCode API Key" in the email title. API access is limited to a maximum of 1000 package-versions per request.
+                            If you want to try the JSON REST API for VulnerableCode.io,
+                            first <a href="{% url 'api_user_request' %}">request an API key</a>,
+                            then <a href="{% url 'api_docs' %}">visit the live OpenAPI documentation</a>,
+                            and <a href="{% url 'api_docs' %}">the API endpoint</a>.
+                            Note that API access may be throttled.
                         </div>
                     </div>
                 </div>

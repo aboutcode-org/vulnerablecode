@@ -1,0 +1,14 @@
+about_resource: drf-spectacular
+copyright: Copyright (c) T. Franzel <tfranzel@gmail.com>
+description: Sane and flexible OpenAPI 3 schema generation for Django REST framework
+download_url: https://files.pythonhosted.org/packages/92/eb/2b9903486bb417c779e2b57f5fb2eea0ff72c2d0280070b587b9aa8b0280/drf-spectacular-0.24.2.tar.gz
+holder: T. Franzel
+holder_contact: tfranzel@gmail.com
+homepage_url: https://github.com/tfranzel/drf-spectacular
+license_expression: bsd-new
+name: drf-spectacular
+package_url: pkg:pypi/drf-spectacular@0.24.2
+primary_language: Python
+type: pypi
+version: 0.24.2
+notes: these files are copied from the drf_spectacular/templates/drf_spectacular directories

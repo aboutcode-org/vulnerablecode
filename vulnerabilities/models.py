@@ -12,7 +12,9 @@ import json
 import logging
 from contextlib import suppress
 
-from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import UserManager
+from django.core import exceptions
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
@@ -21,7 +23,6 @@ from django.db.models import Count
 from django.db.models import Q
 from django.db.models.functions import Length
 from django.db.models.functions import Trim
-from django.dispatch import receiver
 from django.urls import reverse
 from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin
@@ -296,7 +297,7 @@ class Package(PackageURLMixin):
         ).distinct()
 
     @property
-    def is_vulnerable(self):
+    def is_vulnerable(self) -> bool:
         """
         Returns True if this package is vulnerable to any vulnerability.
         """
@@ -396,10 +397,7 @@ class VulnerabilitySeverity(models.Model):
         max_length=50,
         choices=scoring_system_choices,
         help_text="Identifier for the scoring system used. Available choices are: {} ".format(
-            ", ".join(
-                f"{sid} is vulnerability_id for {sname} system"
-                for sid, sname in scoring_system_choices
-            )
+            ",\n".join(f"{sid}: {sname}" for sid, sname in scoring_system_choices)
         ),
     )
 
@@ -514,10 +512,56 @@ class Advisory(models.Model):
         )
 
 
-@receiver(models.signals.post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
+UserModel = get_user_model()
+
+
+class ApiUserManager(UserManager):
+    def create_api_user(self, username, first_name="", last_name="", **extra_fields):
+        """
+        Create and return an API-only user. Raise ValidationError.
+        """
+        username = self.normalize_email(username)
+        email = username
+        self._validate_username(email)
+
+        # note we use the email as username and we could instead override
+        # django.contrib.auth.models.AbstractUser.USERNAME_FIELD
+
+        user = self.create_user(
+            username=email,
+            email=email,
+            password=None,
+            first_name=first_name,
+            last_name=last_name,
+            **extra_fields,
+        )
+
+        # this ensure that this is not a valid password
+        user.set_unusable_password()
+        user.save()
+
+        Token._default_manager.get_or_create(user=user)
+
+        return user
+
+    def _validate_username(self, email):
+        """
+        Validate username. If invalid, raise a ValidationError
+        """
+        try:
+            self.get_by_natural_key(email)
+        except models.ObjectDoesNotExist:
+            pass
+        else:
+            raise exceptions.ValidationError(f"Error: This email already exists: {email}")
+
+
+class ApiUser(UserModel):
     """
-    Creates an API key token on user creation, using the signal system.
+    A User proxy model to facilitate simplified admin API user creation.
     """
-    if created:
-        Token.objects.create(user_id=instance.pk)
+
+    objects = ApiUserManager()
+
+    class Meta:
+        proxy = True

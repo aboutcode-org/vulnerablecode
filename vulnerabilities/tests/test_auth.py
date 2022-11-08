@@ -10,13 +10,13 @@
 
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 
+from vulnerabilities.models import ApiUser
+
 TEST_PASSWORD = "secret"
 
-User = get_user_model()
 
 api_package_url = "/api/packages/"
 login_redirect_url = settings.LOGIN_REDIRECT_URL
@@ -24,8 +24,7 @@ login_redirect_url = settings.LOGIN_REDIRECT_URL
 
 class VulnerableCodeAuthTest(TestCase):
     def setUp(self):
-        self.anonymous_user = AnonymousUser()
-        self.basic_user = User.objects.create_user(username="basic_user", password=TEST_PASSWORD)
+        self.basic_user = ApiUser.objects.create_api_user(username="basic_user@foo.com")
 
     def test_vulnerablecode_auth_api_required_authentication(self):
         response = self.client.get(api_package_url)

@@ -12,6 +12,10 @@ from pathlib import Path
 
 import environ
 
+from vulnerablecode import __version__
+
+VULNERABLECODE_VERSION = __version__
+
 PROJECT_DIR = Path(__file__).resolve().parent
 ROOT_DIR = PROJECT_DIR.parent
 
@@ -30,14 +34,28 @@ SECRET_KEY = env.str("SECRET_KEY")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[".localhost", "127.0.0.1", "[::1]"])
 
-# SECURITY WARNING: don't run with debug turned on in production
+VULNERABLECODE_REQUIRE_AUTHENTICATION = env.bool(
+    "VULNERABLECODE_REQUIRE_AUTHENTICATION", default=False
+)
+
+VULNERABLECODE_PASSWORD_MIN_LENGTH = env.int("VULNERABLECODE_PASSWORD_MIN_LENGTH", default=14)
+
+# SECURITY WARNING: do not run with debug turned on in production
 DEBUG = env.bool("VULNERABLECODE_DEBUG", default=False)
 
-# SECURITY WARNING: don't run with debug turned on in production
+# SECURITY WARNING: do not  run with debug turned on in production
 DEBUG_TOOLBAR = env.bool("VULNERABLECODE_DEBUG_TOOLBAR", default=False)
 
-# SECURITY WARNING: don't run with debug turned on in production
+# SECURITY WARNING: do not  run with debug turned on in production
 DEBUG_UI = env.bool("VULNERABLECODE_DEBUG_UI", default=False)
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = env.str("EMAIL_HOST", default="")
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = env.str("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD", default="")
+FROM_EMAIL = env.str("FROM_EMAIL", default="")
 
 # Application definition
 
@@ -58,8 +76,12 @@ INSTALLED_APPS = (
     "rest_framework",
     "rest_framework.authtoken",
     "widget_tweaks",
+    "crispy_forms",
+    # for API doc
+    "drf_spectacular",
+    # required for Django collectstatic discovery
+    "drf_spectacular_sidecar",
 )
-
 
 MIDDLEWARE = (
     "django.middleware.security.SecurityMiddleware",
@@ -120,7 +142,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
         "OPTIONS": {
-            "min_length": 14,
+            "min_length": VULNERABLECODE_PASSWORD_MIN_LENGTH,
         },
     },
     {
@@ -188,6 +210,9 @@ STATICFILES_DIRS = [
     str(PROJECT_DIR / "static"),
 ]
 
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
+
 # Third-party apps
 
 # Django restframework
@@ -198,7 +223,7 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
-        #    "rest_framework.renderers.AdminRenderer",
+        "rest_framework.renderers.AdminRenderer",
     ),
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
@@ -211,11 +236,63 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "vulnerabilities.pagination.SmallResultSetPagination",
     # Limit the load on the Database returning a small number of records by default. https://github.com/nexB/vulnerablecode/issues/819
     "PAGE_SIZE": 10,
+    # for API docs
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
-if not VULNERABLECODEIO_REQUIRE_AUTHENTICATION:
-    REST_FRAMEWORK["DEFAULT_PERMISSION_CLASSES"] = ("rest_framework.permissions.AllowAny",)
+api_doc_intro = """
+<div>
+    <p><strong>VulnerableCode</strong> is open data and free software by
+    <a href="https://github.com/nexB/vulnerablecode"> nexB Inc. and others.</a>
+    </p>
+    <p>The VulnerableCode API exposes these endpoints:</p>
+    <ul>
+        <li>
+            <strong>packages/</strong>: main endpoint to lookup for vulnerable packages.
+        </li>
+        <li>
+            <strong>vulnerabilities/</strong>: secondary endpoint to lookup by vulnerabilities.
+        </li>
+        <li>
+            <strong>alias/</strong>: secondary endpoint to lookup vulnerabilities by aliases (e.g., CVE)
+        </li>
+        <li>
+            <strong>cpes/</strong>: secondary endpoint to lookup vulnerabilities by CPE.
+        </li>
+    </ul>
+</div>
+"""
 
+# for API docs
+SPECTACULAR_SETTINGS = {
+    "TITLE": "VulnerableCode API",
+    "DESCRIPTION": api_doc_intro,
+    "VERSION": VULNERABLECODE_VERSION,
+    "TOS": "/tos/",
+    "CONTACT": {
+        "name": "nexB Inc.",
+        "url": "https://public.vulnerablecode.io",
+        "email": "mailto:info@nexb.com",
+    },
+    "LICENSE": {
+        "name": "Source code: Apache-2.0 | Data: CC-BY-SA-4.0",
+        "url": "https://github.com/nexb/vulnerablecode#license",
+    },
+    "SERVE_INCLUDE_SCHEMA": False,
+    # shorthand to use the sidecar instead
+    "SWAGGER_UI_DIST": "SIDECAR",
+    "SWAGGER_UI_FAVICON_HREF": "/static/images/favicon.ico",
+    # See https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "displayOperationId": True,
+        "defaultModelsExpandDepth": 1,
+        "displayRequestDuration": True,
+        "docExpansion": "list",
+    },
+    "SORT_OPERATIONS": False,
+    "TAGS_SORTER": False,
+}
 
 if DEBUG_TOOLBAR:
     INSTALLED_APPS += ("debug_toolbar",)
@@ -242,3 +319,6 @@ if DEBUG_TOOLBAR:
     INTERNAL_IPS = [
         "127.0.0.1",
     ]
+
+if not VULNERABLECODEIO_REQUIRE_AUTHENTICATION:
+    REST_FRAMEWORK["DEFAULT_PERMISSION_CLASSES"] = ("rest_framework.permissions.AllowAny",)

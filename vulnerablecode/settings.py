@@ -294,6 +294,11 @@ SPECTACULAR_SETTINGS = {
     "TAGS_SORTER": False,
 }
 
+
+if not VULNERABLECODEIO_REQUIRE_AUTHENTICATION:
+    REST_FRAMEWORK["DEFAULT_PERMISSION_CLASSES"] = ("rest_framework.permissions.AllowAny",)
+
+
 if DEBUG_TOOLBAR:
     INSTALLED_APPS += ("debug_toolbar",)
 
@@ -319,6 +324,3 @@ if DEBUG_TOOLBAR:
     INTERNAL_IPS = [
         "127.0.0.1",
     ]
-
-if not VULNERABLECODEIO_REQUIRE_AUTHENTICATION:
-    REST_FRAMEWORK["DEFAULT_PERMISSION_CLASSES"] = ("rest_framework.permissions.AllowAny",)

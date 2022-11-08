@@ -24,9 +24,7 @@ login_redirect_url = settings.LOGIN_REDIRECT_URL
 
 class VulnerableCodeAuthTest(TestCase):
     def setUp(self):
-        self.basic_user = ApiUser.objects.create_api_user(
-            username="basic_user@foo.com", password=TEST_PASSWORD
-        )
+        self.basic_user = ApiUser.objects.create_api_user(username="basic_user@foo.com")
 
     def test_vulnerablecode_auth_api_required_authentication(self):
         response = self.client.get(api_package_url)

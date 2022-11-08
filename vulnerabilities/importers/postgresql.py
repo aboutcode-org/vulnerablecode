@@ -44,7 +44,6 @@ class PostgreSQLImporter(Importer):
             if known_urls == visited_urls:
                 break
 
-        # JMH: why did we replace "for url in visited_urls:"?
         for url, data in data_by_url.items():
             yield from to_advisories(data)
 
@@ -96,11 +95,6 @@ def to_advisories(data):
             )
         cve_id = ""
         try:
-            # in the prior code, this is the only place where cve_id was defined, and presumably
-            # there was no error like the error we got:
-            # UnboundLocalError: local variable 'cve_id' referenced before assignment
-
-            # changed from nobr to .nobr due to html changes
             cve_id = ref_col.select(".nobr")[0].text
             # This is for the anomaly in https://www.postgresql.org/support/security/8.1/ 's
             # last entry
@@ -130,16 +124,12 @@ def to_advisories(data):
         if cve_id:
             advisories.append(
                 AdvisoryData(
-                    # we defined cve_id and added the if... because we got this error:
-                    # UnboundLocalError: local variable 'cve_id' referenced before assignment
-                    # but JMH is not sure what caused the error or whether this is a legit fix
                     aliases=[cve_id],
                     summary=summary,
                     references=references,
                     affected_packages=affected_packages,
                 )
             )
-
     return advisories
 
 

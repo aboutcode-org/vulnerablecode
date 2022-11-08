@@ -65,11 +65,11 @@ INSTALLED_APPS = (
     "vulnerabilities",
     # Django built-in
     "django.contrib.auth",
+    "django.contrib.admin",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.admin",
     "django.contrib.humanize",
     # Third-party apps
     "django_filters",
@@ -161,6 +161,10 @@ TIME_ZONE = env.str("TIME_ZONE", default="UTC")
 
 USE_I18N = True
 
+USE_L10N = True
+
+USE_TZ = True
+
 IS_TESTS = False
 
 if len(sys.argv) > 0:
@@ -195,9 +199,6 @@ if IS_TESTS:
         "bulk_search_cpes": "5/day",
     }
 
-USE_L10N = True
-
-USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 

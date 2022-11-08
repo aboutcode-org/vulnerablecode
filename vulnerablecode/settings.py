@@ -65,11 +65,11 @@ INSTALLED_APPS = (
     "vulnerabilities",
     # Django built-in
     "django.contrib.auth",
-    "django.contrib.admin",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.admin",
     "django.contrib.humanize",
     # Third-party apps
     "django_filters",
@@ -161,10 +161,6 @@ TIME_ZONE = env.str("TIME_ZONE", default="UTC")
 
 USE_I18N = True
 
-USE_L10N = True
-
-USE_TZ = True
-
 IS_TESTS = False
 
 if len(sys.argv) > 0:
@@ -200,6 +196,10 @@ if IS_TESTS:
     }
 
 
+USE_L10N = True
+
+USE_TZ = True
+
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = "/static/"
@@ -209,6 +209,7 @@ STATIC_ROOT = env.str("VULNERABLECODE_STATIC_ROOT", "./")
 STATICFILES_DIRS = [
     str(PROJECT_DIR / "static"),
 ]
+
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
@@ -293,8 +294,10 @@ SPECTACULAR_SETTINGS = {
     "TAGS_SORTER": False,
 }
 
+
 if not VULNERABLECODEIO_REQUIRE_AUTHENTICATION:
     REST_FRAMEWORK["DEFAULT_PERMISSION_CLASSES"] = ("rest_framework.permissions.AllowAny",)
+
 
 if DEBUG_TOOLBAR:
     INSTALLED_APPS += ("debug_toolbar",)

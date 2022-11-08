@@ -7,9 +7,11 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
-from django.http import HttpResponse
 from django.http.response import Http404
+from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
@@ -40,6 +42,11 @@ class PackageSearch(ListView):
         return context
 
     def get_queryset(self, query=None):
+        """
+        Return a Package queryset for the ``query``.
+        Make a best effort approach to find matching packages either based
+        on exact purl, partial purl or just name and namespace.
+        """
         query = query or self.request.GET.get("search") or ""
         return self.model.objects.search(query).with_vulnerability_counts().prefetch_related()
 
@@ -140,18 +147,26 @@ class ApiUserCreateView(generic.CreateView):
     template_name = "api_user_creation_form.html"
 
     def form_valid(self, form):
-        super().form_valid(form)
+
+        try:
+            response = super().form_valid(form)
+        except ValidationError:
+            messages.error(self.request, "Email is invalid or already taken")
+            return redirect(self.get_success_url())
 
         send_mail(
             subject="VulnerableCode.io API key token",
             message=f"Here is your VulnerableCode.io API key token: {self.object.auth_token}",
             from_email=env.str("FROM_EMAIL", default=""),
             recipient_list=[self.object.email],
+            fail_silently=True,
         )
 
-        return HttpResponse(
-            f"Check your email for VulnerableCode.io API key token: {self.object.email}"
+        messages.success(
+            self.request, f"API key token sent to your email address {self.object.email}."
         )
+
+        return response
 
     def get_success_url(self):
-        return reverse_lazy("home")
+        return reverse_lazy("api_user_request")

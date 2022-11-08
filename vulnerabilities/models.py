@@ -12,7 +12,6 @@ import json
 import logging
 from contextlib import suppress
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import UserManager
 from django.core import exceptions
@@ -24,7 +23,6 @@ from django.db.models import Count
 from django.db.models import Q
 from django.db.models.functions import Length
 from django.db.models.functions import Trim
-from django.dispatch import receiver
 from django.urls import reverse
 from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin

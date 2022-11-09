@@ -141,6 +141,33 @@ class HomePage(View):
         return render(request=request, template_name=self.template_name, context=context)
 
 
+email_template = """
+Dear VulnerableCode.io user:
+
+We have received a request to send a VulnerableCode.io API key to this email address.
+Here is your API key:
+
+   Token {auth_token}
+
+If you did NOT request this API key, you can either ignore this email or contact us at support@nexb.com and let us know in the forward that you did not request an API key.
+
+The API root is at https://public.vulnerablecode.io/api
+To learn more about using the VulnerableCode.io API, please refer to the live API documentation at https://public.vulnerablecode.io/api/docs
+To learn about VulnerableCode, refer to the general documentation at https://vulnerablecode.readthedocs.io
+
+--
+Sincerely,
+The nexB support Team.
+
+VulnerableCode is a free and open database of software package vulnerabilities
+and the tools to aggregate and correlate these vulnerabilities.
+
+Chat at https://gitter.im/aboutcode-org/vulnerablecode
+Docs at https://vulnerablecode.readthedocs.org/
+Source code and issues at https://github.com/nexB/vulnerablecode
+"""
+
+
 class ApiUserCreateView(generic.CreateView):
     model = models.ApiUser
     form_class = ApiUserCreationForm
@@ -155,15 +182,15 @@ class ApiUserCreateView(generic.CreateView):
             return redirect(self.get_success_url())
 
         send_mail(
-            subject="VulnerableCode.io API key token",
-            message=f"Here is your VulnerableCode.io API key token: {self.object.auth_token}",
+            subject="VulnerableCode.io API key request",
+            message=email_template.format(auth_token=self.object.auth_token),
             from_email=env.str("FROM_EMAIL", default=""),
             recipient_list=[self.object.email],
             fail_silently=True,
         )
 
         messages.success(
-            self.request, f"API key token sent to your email address {self.object.email}."
+            self.request, f"Your API key token has been sent to your email: {self.object.email}."
         )
 
         return response

@@ -36,6 +36,8 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[".localhost", "127.0.0.1", "[
 
 VULNERABLECODE_PASSWORD_MIN_LENGTH = env.int("VULNERABLECODE_PASSWORD_MIN_LENGTH", default=14)
 
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
+
 # SECURITY WARNING: do not run with debug turned on in production
 DEBUG = env.bool("VULNERABLECODE_DEBUG", default=False)
 

@@ -3,8 +3,19 @@ Release notes
 
 
 
+Version v30.3.1
+----------------
+
+This is a minor bug fix release.
+
+- We enabled proper CSRF configuration for deployments
+
+
 Version v30.3.0
 ----------------
+
+This is a feature update release including minor bug fixes and the introduction
+of API keys and API throttling.
 
 - We enabled API throttling for a basic user and for a staff user 
   they can have unlimited access on API.

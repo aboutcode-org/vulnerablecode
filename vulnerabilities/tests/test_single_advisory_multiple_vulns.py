@@ -32,7 +32,7 @@ class TestAdvisoryWihoutAlias(TestCase):
         ]
         refs = [
             Reference(
-                url="test-url",
+                url="https://www.djangoproject.com/weblog/2015/sep/25/security-releases/",
                 reference_id="test-id",
             )
         ]

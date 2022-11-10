@@ -68,11 +68,14 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
     logger.info(f"Improving advisory id: {advisory.id}")
 
     for inference in inferences:
-        vulnerability = get_or_create_vulnerability_and_aliases(
-            vulnerability_id=inference.vulnerability_id,
-            alias_names=inference.aliases,
-            summary=inference.summary,
-        )
+        if not inference.aliases:
+            vulnerability = get_or_create_vulnerability_without_aliases(inference)
+        else:
+            vulnerability = get_or_create_vulnerability_and_aliases(
+                vulnerability_id=inference.vulnerability_id,
+                alias_names=inference.aliases,
+                summary=inference.summary,
+            )
 
         if not vulnerability:
             logger.warn(f"Unable to get vulnerability for inference: {inference!r}")
@@ -218,3 +221,76 @@ def get_or_create_vulnerability_and_aliases(vulnerability_id, alias_names, summa
         logger.info(f"New alias for {vulnerability!r}: {alias_name}")
 
     return vulnerability
+
+
+def get_or_create_vulnerability_without_aliases(inference):
+    """
+    Get or create vulnerabilitiy without aliases
+
+    Try to get vulnerability by matching references,
+    summary and packages. If no vulnerability is found,
+    create a new one.
+    """
+
+    refs_are_exact_match = True
+
+    vuln_by_refs = {}
+
+    for ref in inference.references:
+        try:
+            reference = VulnerabilityReference.objects.get(url=ref.url)
+            vuln_by_refs[ref.url] = set(reference.vulnerabilities.all())
+        except VulnerabilityReference.DoesNotExist:
+            refs_are_exact_match = False
+            pass
+
+    if refs_are_exact_match:
+        common_vulns = set.intersection(*vuln_by_refs.values())
+
+        if len(common_vulns) == 1:
+            return common_vulns.pop()
+        elif len(common_vulns) > 1:
+            for vuln in common_vulns:
+                if vuln.summary == inference.summary:
+                    if match_packages(inference, vuln):
+                        return vuln
+
+    vulnerability = Vulnerability(summary=inference.summary)
+    vulnerability.save()
+
+    return vulnerability
+
+
+def match_packages(inference, vuln):
+    """
+    Check if the packages in the inference match the packages in the vulnerability
+    """
+    for affected_purl in inference.affected_purls:
+        if not find_package_and_check_related_to_vuln(purl=affected_purl, fix=False, vuln=vuln):
+            return False
+    if inference.fixed_purl and not find_package_and_check_related_to_vuln(
+        purl=inference.fixed_purl, fix=True, vuln=vuln
+    ):
+        return False
+    return True
+
+
+def find_package_and_check_related_to_vuln(purl, fix, vuln):
+    """
+    Find package in the database and check if it is associated
+    with the vulnerability.
+    If package is not found, return False
+    If package is found, but not associated with the vulnerability, return False
+    If package is found and associated with the vulnerability, return True
+    """
+    try:
+        package = Package.objects.get_from_purl(purl=purl)
+        if not PackageRelatedVulnerability.objects.exists(
+            vulnerability=vuln,
+            package=package,
+            fix=fix,
+        ):
+            return False
+    except Package.DoesNotExist:
+        return False
+    return True

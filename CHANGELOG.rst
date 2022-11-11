@@ -2,6 +2,11 @@ Release notes
 =============
 
 
+Version v30.3.2
+----------------
+
+- We added heuristics to ingest advsiories without aliases.
+
 
 Version v30.3.1
 ----------------

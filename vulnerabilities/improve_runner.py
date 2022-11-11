@@ -249,20 +249,20 @@ def get_or_create_vulnerability_without_aliases(inference):
 
     if refs_are_exact_match:
 
-        list_of_vulns_by_each_url = vuln_by_refs.values()
+        list_of_vulns_by_each_ref = vuln_by_refs.values()
 
-        # Find all common vulnerabilities for all references
-        common_vulns = set.intersection(*list_of_vulns_by_each_url)
+        # Find all common vulnerabilities amongst all references
+        common_vulns_in_refs = set.intersection(*list_of_vulns_by_each_ref)
 
         # For a single common vulnerability that have same exact reference
         # return it
-        if len(common_vulns) == 1:
-            return common_vulns.pop()
+        if len(common_vulns_in_refs) == 1:
+            return common_vulns_in_refs.pop()
 
         # If there are multiple common vulnerabilities, try to find
         # one that matches the summary and packages
-        elif len(common_vulns) > 1:
-            for vuln in common_vulns:
+        elif len(common_vulns_in_refs) > 1:
+            for vuln in common_vulns_in_refs:
                 if vuln.summary == inference.summary:
                     if match_packages(inference, vuln):
                         return vuln

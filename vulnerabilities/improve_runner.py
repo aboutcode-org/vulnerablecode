@@ -303,7 +303,7 @@ def find_package_and_check_related_to_vuln(purl, fix, vuln):
     If package is found and associated with the vulnerability, return True
     """
     try:
-        package = Package.objects.get_from_purl(purl=purl)
+        package = Package.objects.for_purl(purl=purl)
         if not PackageRelatedVulnerability.objects.exists(
             vulnerability=vuln,
             package=package,

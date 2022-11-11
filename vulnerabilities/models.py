@@ -327,13 +327,6 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         package, _ = Package.objects.get_or_create(**purl_fields)
         return package
 
-    def for_purl(self, purl: PackageURL):
-        """
-        Return an existing Package given a ``purl`` PackageURL.
-        """
-        purl_fields = without_empty_values(purl.to_dict(encode=True))
-        return Package.objects.get(**purl_fields)
-
     def for_package_url_object(self, purl):
         """
         Filter the QuerySet with the provided Package URL object or string. The
@@ -450,7 +443,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         """
         if not isinstance(purl, PackageURL):
             purl = PackageURL.from_string(purl)
-        purl = purl.to_dict()
+        purl = purl.to_dict(encode=True)
         if not with_qualifiers_and_subpath:
             del purl["qualifiers"]
             del purl["subpath"]

@@ -327,10 +327,9 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         package, _ = Package.objects.get_or_create(**purl_fields)
         return package
 
-    def get_from_purl(self, purl: PackageURL):
+    def for_purl(self, purl: PackageURL):
         """
-        Return an existing or new Package (created if neeed) given a
-        ``purl`` PackageURL.
+        Return an existing Package given a ``purl`` PackageURL.
         """
         purl_fields = without_empty_values(purl.to_dict(encode=True))
         return Package.objects.get(**purl_fields)

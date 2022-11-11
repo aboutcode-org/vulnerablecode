@@ -236,25 +236,44 @@ def get_or_create_vulnerability_without_aliases(inference):
 
     vuln_by_refs = {}
 
-    for ref in inference.references:
-        try:
-            reference = VulnerabilityReference.objects.get(url=ref.url)
-            vuln_by_refs[ref.url] = set(reference.vulnerabilities.all())
-        except VulnerabilityReference.DoesNotExist:
-            refs_are_exact_match = False
-            pass
+    ref_urls = [ref.url for ref in inference.references]
+
+    references = VulnerabilityReference.objects.filter(url__in=ref_urls)
+
+    if references.count() != len(ref_urls):
+        refs_are_exact_match = False
+    else:
+        for ref in references:
+            # saving it as a set to use intersection later
+            vuln_by_refs[ref.url] = set(ref.vulnerabilities.all())
 
     if refs_are_exact_match:
-        common_vulns = set.intersection(*vuln_by_refs.values())
 
+        list_of_vulns_by_each_url = vuln_by_refs.values()
+
+        # Find all common vulnerabilities for all references
+        common_vulns = set.intersection(*list_of_vulns_by_each_url)
+
+        # For a single common vulnerability that have same exact reference
+        # return it
         if len(common_vulns) == 1:
             return common_vulns.pop()
+
+        # If there are multiple common vulnerabilities, try to find
+        # one that matches the summary and packages
         elif len(common_vulns) > 1:
             for vuln in common_vulns:
                 if vuln.summary == inference.summary:
                     if match_packages(inference, vuln):
                         return vuln
 
+        else:
+            # If there are no common vulnerabilities, fall back to creating
+            # a new vulnerability
+            pass
+
+    # This is fallback for cases when we cannot find vulnerability
+    # by references, summary and packages
     vulnerability = Vulnerability(summary=inference.summary)
     vulnerability.save()
 

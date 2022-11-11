@@ -5,7 +5,7 @@ Release notes
 Version v30.3.2
 ----------------
 
-- We added heuristics to ingest advsiories without aliases.
+- We added heuristics to ingest advisories without aliases.
 
 
 Version v30.3.1

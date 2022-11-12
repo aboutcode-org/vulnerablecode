@@ -9,7 +9,6 @@
 
 import json
 
-from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.test import TransactionTestCase
 from packageurl import PackageURL
@@ -17,18 +16,17 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from vulnerabilities.models import Alias
+from vulnerabilities.models import ApiUser
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 
-User = get_user_model()
-
 
 class APITestCaseVulnerability(TransactionTestCase):
     def setUp(self):
-        self.user = User.objects.create_user("username", "e@mail.com", "secret")
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
         self.auth = f"Token {self.user.auth_token.key}"
         self.csrf_client = APIClient(enforce_csrf_checks=True)
         self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
@@ -100,7 +98,7 @@ class APITestCaseVulnerability(TransactionTestCase):
 
 class APITestCasePackage(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user("username", "e@mail.com", "secret")
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
         self.auth = f"Token {self.user.auth_token.key}"
         self.csrf_client = APIClient(enforce_csrf_checks=True)
         self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
@@ -291,7 +289,7 @@ class APITestCasePackage(TestCase):
 
 class CPEApi(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user("username", "e@mail.com", "secret")
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
         self.auth = f"Token {self.user.auth_token.key}"
         self.csrf_client = APIClient(enforce_csrf_checks=True)
         self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
@@ -316,7 +314,7 @@ class CPEApi(TestCase):
 
 class AliasApi(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user("username", "e@mail.com", "secret")
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
         self.auth = f"Token {self.user.auth_token.key}"
         self.csrf_client = APIClient(enforce_csrf_checks=True)
         self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
@@ -325,17 +323,17 @@ class AliasApi(TestCase):
             Alias.objects.create(alias=f"CVE-{i}", vulnerability=self.vulnerability)
 
     def test_api_status(self):
-        response = self.csrf_client.get("/api/alias/", format="json")
+        response = self.csrf_client.get("/api/aliases/", format="json")
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_api_response(self):
-        response = self.csrf_client.get("/api/alias?alias=CVE-9", format="json").data
+        response = self.csrf_client.get("/api/aliases?alias=CVE-9", format="json").data
         self.assertEqual(response["count"], 1)
 
 
 class BulkSearchAPIPackage(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user("username", "e@mail.com", "secret")
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
         self.auth = f"Token {self.user.auth_token.key}"
         self.csrf_client = APIClient(enforce_csrf_checks=True)
         self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
@@ -398,7 +396,7 @@ class BulkSearchAPIPackage(TestCase):
 
 class BulkSearchAPICPE(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user("username", "e@mail.com", "secret")
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
         self.auth = f"Token {self.user.auth_token.key}"
         self.csrf_client = APIClient(enforce_csrf_checks=True)
         self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)

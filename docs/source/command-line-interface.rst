@@ -3,7 +3,7 @@
 Command Line Interface
 ======================
 
-The main entry point is Django's :guilabel:`manage.py` management commands.
+The main entry point is the Django :guilabel:`manage.py` management command script.
 
 ``$ ./manage.py --help``
 ------------------------
@@ -14,9 +14,10 @@ VulnerableCode's own commands are listed under the ``[vulnerabilities]`` section
     $ ./manage.py --help
     ...
     [vulnerabilities]
-        create_cpe_to_purl_map
-        importer
-        improver
+        import
+        improve
+        purl2cpe
+
 
 ``$ ./manage.py <subcommand> --help``
 ---------------------------------------
@@ -58,3 +59,17 @@ Other variations:
 
 * ``--list`` List all available improvers
 * ``--all`` Run all available improvers
+
+
+
+``$ ./manage.py purl2cpe --destination <directory``
+------------------------------------------
+
+Dump a mapping of CPEs to PURLs grouped by vulnerability in the ``destination``
+directory.
+
+
+Other variations:
+
+* ``--limit`` Limit the number of processed vulnerabilities
+

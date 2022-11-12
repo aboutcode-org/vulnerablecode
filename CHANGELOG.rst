@@ -3,6 +3,35 @@ Release notes
 
 
 
+Version v30.3.1
+----------------
+
+This is a minor bug fix release.
+
+- We enabled proper CSRF configuration for deployments
+
+
+Version v30.3.0
+----------------
+
+This is a feature update release including minor bug fixes and the introduction
+of API keys and API throttling.
+
+- We enabled API throttling for a basic user and for a staff user 
+  they can have unlimited access on API.
+
+- We added throttle rate for each API endpoint and it can be 
+  configured from the settings #991 https://github.com/nexB/vulnerablecode/issues/991
+
+- We improved how we import NVD data
+- We refactored and made the purl2cpe script work to dump purl to CPE mappings
+
+Internally:
+
+- We aligned key names internally with the names used in the UI and API (such as affected and fixed)
+- We now use querysets as model managers and have streamlined view code
+
+
 Version v30.2.1
 ----------------
 

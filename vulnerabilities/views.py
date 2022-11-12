@@ -7,19 +7,23 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-from django.db.models import Count
-from django.db.models import Q
+from django.contrib import messages
+from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
 from django.http.response import Http404
-from django.http.response import HttpResponseNotAllowed
+from django.shortcuts import redirect
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views import View
+from django.views import generic
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from packageurl import PackageURL
 
 from vulnerabilities import models
+from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import VulnerabilitySearchForm
+from vulnerablecode.settings import env
 
 PAGE_SIZE = 20
 
@@ -43,67 +47,8 @@ class PackageSearch(ListView):
         Make a best effort approach to find matching packages either based
         on exact purl, partial purl or just name and namespace.
         """
-        qs = self.model.objects
-
         query = query or self.request.GET.get("search") or ""
-        query = query.strip()
-        if not query:
-            return qs.none()
-
-        if not query.startswith("pkg:"):
-            # treat this as a plain search
-            qs = qs.filter(Q(name__icontains=query) | Q(namespace__icontains=query))
-        else:
-            # this looks like a purl: check if it quacks like a purl
-            purl_type = namespace = name = version = qualifiers = subpath = None
-
-            _, _scheme, remainder = query.partition("pkg:")
-            remainder = remainder.strip()
-            if not remainder:
-                return qs.none()
-
-            try:
-                # First, treat the query as a syntactically-correct purl
-                purl = PackageURL.from_string(query)
-                purl_type, namespace, name, version, qualifiers, subpath = purl.to_dict().values()
-            except ValueError:
-                # Otherwise, attempt a more lenient parsing of a possibly partial purl
-                if "/" in remainder:
-                    purl_type, _scheme, ns_name = remainder.partition("/")
-                    ns_name = ns_name.strip()
-                    if ns_name:
-                        if "/" in ns_name:
-                            namespace, _, name = ns_name.partition("/")
-                        else:
-                            name = ns_name
-                        name = name.strip()
-                        if name:
-                            if "@" in name:
-                                name, _, version = name.partition("@")
-                                version = version.strip()
-                                name = name.strip()
-                else:
-                    purl_type = remainder
-
-            if purl_type:
-                qs = qs.filter(type__iexact=purl_type)
-            if namespace:
-                qs = qs.filter(namespace__iexact=namespace)
-            if name:
-                qs = qs.filter(name__iexact=name)
-            if version:
-                qs = qs.filter(version__iexact=version)
-
-        return qs.annotate(
-            vulnerability_count=Count(
-                "vulnerabilities",
-                filter=Q(packagerelatedvulnerability__fix=False),
-            ),
-            patched_vulnerability_count=Count(
-                "vulnerabilities",
-                filter=Q(packagerelatedvulnerability__fix=True),
-            ),
-        ).prefetch_related()
+        return self.model.objects.search(query).with_vulnerability_counts().prefetch_related()
 
 
 class VulnerabilitySearch(ListView):
@@ -121,35 +66,7 @@ class VulnerabilitySearch(ListView):
 
     def get_queryset(self, query=None):
         query = query or self.request.GET.get("search") or ""
-        qs = self.model.objects
-        query = query.strip()
-        if not query:
-            return qs.none()
-
-        # middle ground, exact on vulnerability_id
-        qssearch = qs.filter(vulnerability_id=query)
-        if not qssearch.exists():
-            # middle ground, exact on alias
-            qssearch = qs.filter(aliases__alias=query)
-            if not qssearch.exists():
-                # middle ground, slow enough
-                qssearch = qs.filter(
-                    Q(vulnerability_id__icontains=query) | Q(aliases__alias__icontains=query)
-                )
-                if not qssearch.exists():
-                    # last resort super slow
-                    qssearch = qs.filter(
-                        Q(references__id__icontains=query) | Q(summary__icontains=query)
-                    )
-
-        return qssearch.order_by("vulnerability_id").annotate(
-            vulnerable_package_count=Count(
-                "packages", filter=Q(packagerelatedvulnerability__fix=False), distinct=True
-            ),
-            patched_package_count=Count(
-                "packages", filter=Q(packagerelatedvulnerability__fix=True), distinct=True
-            ),
-        )
+        return self.model.objects.search(query=query).with_package_counts()
 
 
 class PackageDetails(DetailView):
@@ -162,8 +79,8 @@ class PackageDetails(DetailView):
         context = super().get_context_data(**kwargs)
         package = self.object
         context["package"] = package
-        context["affected_by_vulnerabilities"] = package.vulnerable_to.order_by("vulnerability_id")
-        context["fixing_vulnerabilities"] = package.resolved_to.order_by("vulnerability_id")
+        context["affected_by_vulnerabilities"] = package.affected_by.order_by("vulnerability_id")
+        context["fixing_vulnerabilities"] = package.fixing.order_by("vulnerability_id")
         context["package_search_form"] = PackageSearchForm(self.request.GET)
         return context
 
@@ -205,8 +122,8 @@ class VulnerabilityDetails(DetailView):
                 "severities": list(self.object.severities),
                 "references": self.object.references.all(),
                 "aliases": self.object.aliases.all(),
-                "resolved_to": self.object.resolved_to.all(),
-                "vulnerable_to": self.object.vulnerable_to.all(),
+                "affected_packages": self.object.affected_packages.all(),
+                "fixed_by_packages": self.object.fixed_by_packages.all(),
             }
         )
         return context
@@ -224,7 +141,59 @@ class HomePage(View):
         return render(request=request, template_name=self.template_name, context=context)
 
 
-def schema_view(request):
-    if request.method != "GET":
-        return HttpResponseNotAllowed()
-    return render(request=request, template_name="api_doc.html")
+email_template = """
+Dear VulnerableCode.io user:
+
+We have received a request to send a VulnerableCode.io API key to this email address.
+Here is your API key:
+
+   Token {auth_token}
+
+If you did NOT request this API key, you can either ignore this email or contact us at support@nexb.com and let us know in the forward that you did not request an API key.
+
+The API root is at https://public.vulnerablecode.io/api
+To learn more about using the VulnerableCode.io API, please refer to the live API documentation at https://public.vulnerablecode.io/api/docs
+To learn about VulnerableCode, refer to the general documentation at https://vulnerablecode.readthedocs.io
+
+--
+Sincerely,
+The nexB support Team.
+
+VulnerableCode is a free and open database of software package vulnerabilities
+and the tools to aggregate and correlate these vulnerabilities.
+
+Chat at https://gitter.im/aboutcode-org/vulnerablecode
+Docs at https://vulnerablecode.readthedocs.org/
+Source code and issues at https://github.com/nexB/vulnerablecode
+"""
+
+
+class ApiUserCreateView(generic.CreateView):
+    model = models.ApiUser
+    form_class = ApiUserCreationForm
+    template_name = "api_user_creation_form.html"
+
+    def form_valid(self, form):
+
+        try:
+            response = super().form_valid(form)
+        except ValidationError:
+            messages.error(self.request, "Email is invalid or already taken")
+            return redirect(self.get_success_url())
+
+        send_mail(
+            subject="VulnerableCode.io API key request",
+            message=email_template.format(auth_token=self.object.auth_token),
+            from_email=env.str("FROM_EMAIL", default=""),
+            recipient_list=[self.object.email],
+            fail_silently=True,
+        )
+
+        messages.success(
+            self.request, f"Your API key token has been sent to your email: {self.object.email}."
+        )
+
+        return response
+
+    def get_success_url(self):
+        return reverse_lazy("api_user_request")

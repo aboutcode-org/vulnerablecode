@@ -12,7 +12,9 @@ import json
 import logging
 from contextlib import suppress
 
-from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import UserManager
+from django.core import exceptions
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
@@ -21,7 +23,6 @@ from django.db.models import Count
 from django.db.models import Q
 from django.db.models.functions import Length
 from django.db.models.functions import Trim
-from django.dispatch import receiver
 from django.urls import reverse
 from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin
@@ -49,6 +50,89 @@ class BaseQuerySet(models.QuerySet):
         """
         with suppress(self.model.DoesNotExist, ValidationError):
             return self.get(*args, **kwargs)
+
+
+class VulnerabilityQuerySet(BaseQuerySet):
+    def with_cpes(self):
+        """
+        Return a queryset of Vulnerability that have one or more NVD CPE references.
+        """
+        return self.filter(vulnerabilityreference__reference_id__startswith="cpe")
+
+    def for_cpe(self, cpe):
+        """
+        Return a queryset of Vulnerability that have the ``cpe`` as an NVD CPE reference.
+        """
+        return self.filter(vulnerabilityreference__reference_id__exact=cpe)
+
+    def with_cves(self):
+        """
+        Return a queryset of Vulnerability that have one or more NVD CVE aliases.
+        """
+        return self.filter(aliases__alias__startswith="CVE")
+
+    def for_cve(self, cve):
+        """
+        Return a queryset of Vulnerability that have the the NVD CVE ``cve`` as an alias.
+        """
+        return self.filter(vulnerabilityreference__reference_id__exact=cve)
+
+    def with_packages(self):
+        """
+        Return a queryset of Vulnerability that have one or more related packages.
+        """
+        return self.filter(packages__isnull=False)
+
+    def for_package(self, package):
+        """
+        Return a queryset of Vulnerability related to ``package``.
+        """
+        return self.filter(packages=package)
+
+    def for_purl(self, package):
+        """
+        Return a queryset of Vulnerability related to ``package``.
+        """
+        return self.filter(packages=package)
+
+    def search(self, query):
+        """
+        Return a Vulnerability queryset searching for the ``query``.
+        Make a best effort approach to search a vulnerability.
+        """
+
+        qs = self
+        query = query and query.strip()
+        if not query:
+            return qs.none()
+
+        # middle ground, exact on vulnerability_id
+        qssearch = qs.filter(vulnerability_id=query)
+        if not qssearch.exists():
+            # middle ground, exact on alias
+            qssearch = qs.filter(aliases__alias=query)
+            if not qssearch.exists():
+                # middle ground, slow enough
+                qssearch = qs.filter(
+                    Q(vulnerability_id__icontains=query) | Q(aliases__alias__icontains=query)
+                )
+                if not qssearch.exists():
+                    # last resort super slow
+                    qssearch = qs.filter(
+                        Q(references__id__icontains=query) | Q(summary__icontains=query)
+                    )
+
+        return qssearch.order_by("vulnerability_id")
+
+    def with_package_counts(self):
+        return self.annotate(
+            vulnerable_package_count=Count(
+                "packages", filter=Q(packagerelatedvulnerability__fix=False), distinct=True
+            ),
+            patched_package_count=Count(
+                "packages", filter=Q(packagerelatedvulnerability__fix=True), distinct=True
+            ),
+        )
 
 
 class Vulnerability(models.Model):
@@ -79,6 +163,8 @@ class Vulnerability(models.Model):
         through="PackageRelatedVulnerability",
     )
 
+    objects = VulnerabilityQuerySet.as_manager()
+
     class Meta:
         verbose_name_plural = "Vulnerabilities"
         ordering = ["vulnerability_id"]
@@ -87,37 +173,88 @@ class Vulnerability(models.Model):
         return self.vulnerability_id
 
     @property
+    def vcid(self):
+        return self.vulnerability_id
+
+    @property
     def severities(self):
+        """
+        Return a queryset of VulnerabilitySeverity for this vulnerability.
+        """
         return VulnerabilitySeverity.objects.filter(reference__in=self.references.all())
 
     @property
-    def vulnerable_to(self):
+    def affected_packages(self):
         """
-        Return packages that are vulnerable to this vulnerability.
+        Return a queryset of packages that are affected by this vulnerability.
         """
-        return self.packages.vulnerable()
+        return self.packages.affected()
+
+    # legacy aliases
+    vulnerable_packages = affected_packages
 
     @property
-    def resolved_to(self):
+    def fixed_by_packages(self):
         """
-        Returns packages that first received patch against this vulnerability
-        in their particular version history.
+        Return a queryset of packages that are fixing this vulnerability.
         """
-        return self.packages.filter(packagerelatedvulnerability__fix=True)
+        return self.packages.fixing()
+
+    # legacy alias
+    patched_packages = fixed_by_packages
 
     @property
-    def alias(self):
+    def get_aliases(self):
         """
-        Returns packages that first received patch against this vulnerability
-        in their particular version history.
+        Return a queryset of all Aliases for this vulnerability.
         """
         return self.aliases.all()
 
+    alias = get_aliases
+
     def get_absolute_url(self):
         """
-        Return this Vulnerability details URL.
+        Return this Vulnerability details absolute URL.
         """
         return reverse("vulnerability_details", args=[self.vulnerability_id])
+
+    def get_related_cpes(self):
+        """
+        Return a list of CPE strings of this vulnerability.
+        """
+        return list(self.references.for_cpe().values_list("reference_id", flat=True).distinct())
+
+    def get_related_cves(self):
+        """
+        Return a list of aliases CVE strings of this vulnerability.
+        """
+        return list(self.aliases.for_cve().values_list("alias", flat=True).distinct())
+
+    def get_affected_purls(self):
+        """
+        Return a list of purl strings affected by this vulnerability.
+        """
+        return [p.package_url for p in self.affected_packages.all()]
+
+    def get_fixing_purls(self):
+        """
+        Return a list of purl strings fixing this vulnerability.
+        """
+        return [p.package_url for p in self.fixed_by_packages.all()]
+
+    def get_related_purls(self):
+        """
+        Return a list of purl strings related to this vulnerability.
+        """
+        return [p.package_url for p in self.packages.distinct().all()]
+
+
+class VulnerabilityReferenceQuerySet(BaseQuerySet):
+    def for_cpe(self):
+        """
+        Return a queryset of VulnerabilityReferences that are for a CPE.
+        """
+        return self.filter(reference_id__startswith="cpe")
 
 
 class VulnerabilityReference(models.Model):
@@ -143,7 +280,7 @@ class VulnerabilityReference(models.Model):
         blank=True,
     )
 
-    objects = BaseQuerySet.as_manager()
+    objects = VulnerabilityReferenceQuerySet.as_manager()
 
     class Meta:
         ordering = ["reference_id", "url"]
@@ -151,6 +288,13 @@ class VulnerabilityReference(models.Model):
     def __str__(self):
         reference_id = f" {self.reference_id}" if self.reference_id else ""
         return f"{self.url}{reference_id}"
+
+    @property
+    def is_cpe(self):
+        """
+        Return Trueis this is a CPE reference.
+        """
+        return self.reference_id.startswith("cpe")
 
 
 class VulnerabilityRelatedReference(models.Model):
@@ -199,11 +343,19 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         else:
             return self.none()
 
-    def vulnerable(self):
+    def affected(self):
         """
-        Return all vulnerable packages.
+        Return only packages affected by a vulnerability.
         """
         return self.filter(packagerelatedvulnerability__fix=False)
+
+    vulnerable = affected
+
+    def fixing(self):
+        """
+        Return only packages fixing a vulnerability .
+        """
+        return self.filter(packagerelatedvulnerability__fix=True)
 
     def with_vulnerability_counts(self):
         return self.annotate(
@@ -216,6 +368,110 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
                 filter=Q(packagerelatedvulnerability__fix=True),
             ),
         )
+
+    def fixing_packages(self, package, with_qualifiers_and_subpath=True):
+        """
+        Return a queryset of packages that are fixing the vulnerability of
+        ``package``.
+        """
+
+        return self.match_purl(
+            purl=package.purl,
+            with_qualifiers_and_subpath=with_qualifiers_and_subpath,
+        ).fixing()
+
+    def search(self, query=None):
+        """
+        Return a Package queryset searching for the ``query``.
+        Make a best effort approach to find matching packages either based
+        on exact purl, partial purl or just name and namespace.
+        """
+        query = query and query.strip()
+        if not query:
+            return self.none()
+
+        qs = self
+        if not query.startswith("pkg:"):
+            # treat this as a plain search
+            qs = qs.filter(Q(name__icontains=query) | Q(namespace__icontains=query))
+        else:
+            # this looks like a purl: check if it quacks like a purl
+            purl_type = namespace = name = version = None
+
+            _, _scheme, remainder = query.partition("pkg:")
+            remainder = remainder.strip()
+            if not remainder:
+                return qs.none()
+
+            try:
+                # First, treat the query as a syntactically-correct purl
+                purl = PackageURL.from_string(query)
+                purl_type, namespace, name, version, _quals, _subp = purl.to_dict().values()
+            except ValueError:
+                # Otherwise, attempt a more lenient parsing of a possibly partial purl
+                if "/" in remainder:
+                    purl_type, _scheme, ns_name = remainder.partition("/")
+                    ns_name = ns_name.strip()
+                    if ns_name:
+                        if "/" in ns_name:
+                            namespace, _, name = ns_name.partition("/")
+                        else:
+                            name = ns_name
+                        name = name.strip()
+                        if name:
+                            if "@" in name:
+                                name, _, version = name.partition("@")
+                                version = version.strip()
+                                name = name.strip()
+                else:
+                    purl_type = remainder
+
+            if purl_type:
+                qs = qs.filter(type__iexact=purl_type)
+            if namespace:
+                qs = qs.filter(namespace__iexact=namespace)
+            if name:
+                qs = qs.filter(name__iexact=name)
+            if version:
+                qs = qs.filter(version__iexact=version)
+
+        return qs
+
+    def for_purl(self, purl, with_qualifiers_and_subpath=True):
+        """
+        Return a queryset matching the ``purl`` Package URL.
+        """
+        if not isinstance(purl, PackageURL):
+            purl = PackageURL.from_string(purl)
+        purl = purl.to_dict()
+        if not with_qualifiers_and_subpath:
+            del purl["qualifiers"]
+            del purl["subpath"]
+        return self.filter(**purl)
+
+    def with_cpes(self):
+        """
+        Return a queryset of Package that a vulnerability with one or more NVD CPE references.
+        """
+        return self.filter(vulnerabilities__vulnerabilityreference__reference_id__startswith="cpe")
+
+    def for_cpe(self, cpe):
+        """
+        Return a queryset of Vulnerability that have the ``cpe`` as an NVD CPE reference.
+        """
+        return self.filter(vulnerabilities__vulnerabilityreference__reference_id__exact=cpe)
+
+    def with_cves(self):
+        """
+        Return a queryset of Vulnerability that have one or more NVD CVE aliases.
+        """
+        return self.filter(vulnerabilities__aliases__alias__startswith="CVE")
+
+    def for_cve(self, cve):
+        """
+        Return a queryset of Vulnerability that have the the NVD CVE ``cve`` as an alias.
+        """
+        return self.filter(vulnerabilities__vulnerabilityreference__reference_id__exact=cve)
 
 
 def get_purl_query_lookups(purl):
@@ -267,40 +523,39 @@ class Package(PackageURLMixin):
 
     @property
     # TODO: consider renaming to "affected_by"
-    def vulnerable_to(self):
+    def affected_by(self):
         """
-        Returns vulnerabilities which are affecting this package.
+        Return a queryset of vulnerabilities affecting this package.
         """
         return self.vulnerabilities.filter(packagerelatedvulnerability__fix=False)
 
+    # legacy aliases
+    vulnerable_to = affected_by
+
     @property
     # TODO: consider renaming to "fixes" or "fixing" ? (TBD) and updating the docstring
-    def resolved_to(self):
+    def fixing(self):
         """
-        Returns the vulnerabilities which this package is patched against.
+        Return a queryset of vulnerabilities fixed by this package.
         """
         return self.vulnerabilities.filter(packagerelatedvulnerability__fix=True)
+
+    # legacy aliases
+    resolved_to = fixing
 
     @property
     def fixed_packages(self):
         """
-        Returns vulnerabilities which are affecting this package.
+        Return a queryset of packages that are fixed.
         """
-        return Package.objects.filter(
-            name=self.name,
-            namespace=self.namespace,
-            type=self.type,
-            qualifiers=self.qualifiers,
-            subpath=self.subpath,
-            packagerelatedvulnerability__fix=True,
-        ).distinct()
+        return Package.objects.fixing_packages(package=self).distinct()
 
     @property
-    def is_vulnerable(self):
+    def is_vulnerable(self) -> bool:
         """
         Returns True if this package is vulnerable to any vulnerability.
         """
-        return self.vulnerable_to.exists()
+        return self.affected_by.exists()
 
     def get_absolute_url(self):
         """
@@ -310,6 +565,9 @@ class Package(PackageURLMixin):
 
 
 class PackageRelatedVulnerability(models.Model):
+    """
+    Track the relationship between a Package and Vulnerability.
+    """
     # TODO: Fix related_name
     package = models.ForeignKey(
         Package,
@@ -320,6 +578,7 @@ class PackageRelatedVulnerability(models.Model):
         Vulnerability,
         on_delete=models.CASCADE,
     )
+
     created_by = models.CharField(
         max_length=100,
         blank=True,
@@ -384,6 +643,7 @@ class PackageRelatedVulnerability(models.Model):
 
 
 class VulnerabilitySeverity(models.Model):
+
     reference = models.ForeignKey(VulnerabilityReference, on_delete=models.CASCADE)
 
     scoring_system_choices = tuple(
@@ -394,10 +654,7 @@ class VulnerabilitySeverity(models.Model):
         max_length=50,
         choices=scoring_system_choices,
         help_text="Identifier for the scoring system used. Available choices are: {} ".format(
-            ", ".join(
-                f"{sid} is vulnerability_id for {sname} system"
-                for sid, sname in scoring_system_choices
-            )
+            ",\n".join(f"{sid}: {sname}" for sid, sname in scoring_system_choices)
         ),
     )
 
@@ -414,6 +671,14 @@ class VulnerabilitySeverity(models.Model):
     class Meta:
         unique_together = ["reference", "scoring_system", "value"]
         ordering = ["reference", "scoring_system", "value"]
+
+
+class AliasQuerySet(BaseQuerySet):
+    def for_cve(self):
+        """
+        Return a queryset of Aliases that are for a CVE.
+        """
+        return self.filter(alias__startswith="CVE")
 
 
 class Alias(models.Model):
@@ -439,6 +704,8 @@ class Alias(models.Model):
         on_delete=models.CASCADE,
         related_name="aliases",
     )
+
+    objects = AliasQuerySet.as_manager()
 
     class Meta:
         ordering = ["alias"]
@@ -520,10 +787,56 @@ class Advisory(models.Model):
         )
 
 
-@receiver(models.signals.post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
+UserModel = get_user_model()
+
+
+class ApiUserManager(UserManager):
+    def create_api_user(self, username, first_name="", last_name="", **extra_fields):
+        """
+        Create and return an API-only user. Raise ValidationError.
+        """
+        username = self.normalize_email(username)
+        email = username
+        self._validate_username(email)
+
+        # note we use the email as username and we could instead override
+        # django.contrib.auth.models.AbstractUser.USERNAME_FIELD
+
+        user = self.create_user(
+            username=email,
+            email=email,
+            password=None,
+            first_name=first_name,
+            last_name=last_name,
+            **extra_fields,
+        )
+
+        # this ensure that this is not a valid password
+        user.set_unusable_password()
+        user.save()
+
+        Token._default_manager.get_or_create(user=user)
+
+        return user
+
+    def _validate_username(self, email):
+        """
+        Validate username. If invalid, raise a ValidationError
+        """
+        try:
+            self.get_by_natural_key(email)
+        except models.ObjectDoesNotExist:
+            pass
+        else:
+            raise exceptions.ValidationError(f"Error: This email already exists: {email}")
+
+
+class ApiUser(UserModel):
     """
-    Creates an API key token on user creation, using the signal system.
+    A User proxy model to facilitate simplified admin API user creation.
     """
-    if created:
-        Token.objects.create(user_id=instance.pk)
+
+    objects = ApiUserManager()
+
+    class Meta:
+        proxy = True

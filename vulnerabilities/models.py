@@ -568,6 +568,7 @@ class PackageRelatedVulnerability(models.Model):
     """
     Track the relationship between a Package and Vulnerability.
     """
+
     # TODO: Fix related_name
     package = models.ForeignKey(
         Package,

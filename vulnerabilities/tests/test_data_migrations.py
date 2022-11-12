@@ -138,8 +138,8 @@ class UpdateCPEURL(TestMigrations):
 
 
 class TestScoringElement(TestMigrations):
-    migrate_from = "0029_vulnerabilityseverity_scoring_elements"
-    migrate_to = "0030_vulnerabilityserverity_compute_score"
+    migrate_from = "0031_vulnerabilityseverity_scoring_elements"
+    migrate_to = "0032_vulnerabilityseverity_compute_score"
 
     def setUpBeforeMigration(self, apps):
         # using get_model to avoid circular import
@@ -196,8 +196,8 @@ class TestScoringElement(TestMigrations):
 
 
 class TestRemoveExtraRows(TestMigrations):
-    migrate_from = "0030_vulnerabilityserverity_compute_score"
-    migrate_to = "0031_vulnerabilityseverity_rm_extra_records_swap"
+    migrate_from = "0032_vulnerabilityseverity_compute_score"
+    migrate_to = "0033_vulnerabilityseverity_rm_extra_records_swap"
 
     def setUpBeforeMigration(self, apps):
         # using get_model to avoid circular import

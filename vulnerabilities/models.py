@@ -664,9 +664,8 @@ class VulnerabilitySeverity(models.Model):
     scoring_elements = models.CharField(
         max_length=150,
         null=True,
-        help_text="Supporting a scoring elements as a string "
-        "For example a CVSS vector Important, High, Medium ,Low."
-        "Typically used to compute the value",
+        help_text="Supporting scoring elements used to compute the score values. "
+        "For example a CVSS vector string as used to compute a CVSS score."
     )
 
     class Meta:

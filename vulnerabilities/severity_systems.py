@@ -8,7 +8,6 @@
 #
 
 import dataclasses
-from decimal import Decimal
 
 from cvss import CVSS2
 from cvss import CVSS3
@@ -31,35 +30,32 @@ class ScoringSystem:
     # notes about that scoring system
     notes: str = ""
 
-    def as_score(self, value) -> Decimal:
+    def compute(self, scoring_elements: str) -> str:
         """
-        Return a normalized numeric score for this scoring system  given a raw
-        value. For instance this can be used to convert a CVSS vector to a base
-        score.
-
-        >>> SCORING_SYSTEMS["cvssv2_vector"].as_score("AV:L/AC:L/Au:M/C:N/I:P/A:C/E:U/RL:W/RC:ND/CDP:L/TD:H/CR:ND/IR:ND/AR:M")
-        Decimal('5.0')
-        >>> SCORING_SYSTEMS["cvssv3_vector"].as_score('CVSS:3.0/S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/E:H/RL:O/RC:R/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X')
-        Decimal('6.5')
-        >>> SCORING_SYSTEMS["cvssv3.1_vector"].as_score("CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:H")
-        Decimal('8.6')
+        Return a normalized numeric score as a string for this scoring system
+        given a ``scoring_elements`` string value.
         """
-
-        if self.identifier == "cvssv2_vector":
-            c = CVSS2(value)
-            return c.base_score
-        elif self.identifier in ["cvssv3_vector", "cvssv3.1_vector"]:
-            c = CVSS3(value)
-            return c.base_score
-        else:
-            raise NotImplementedError("Can't compute a score")
+        return NotImplementedError
 
 
-CVSSV2 = ScoringSystem(
+@dataclasses.dataclass(order=True)
+class Cvssv2ScoringSystem(ScoringSystem):
+
+    def compute(self, scoring_elements:str) -> str:
+        """
+        Return a CVSSv2 base score.
+
+        >>> Cvssv2ScoringSystem().compute("AV:L/AC:L/Au:M/C:N/I:P/A:C/E:U/RL:W/RC:ND/CDP:L/TD:H/CR:ND/IR:ND/AR:M")
+        '5.0'
+        """
+        return str(CVSS2(vector=scoring_elements).base_score)
+
+
+CVSSV2 = Cvssv2ScoringSystem(
     identifier="cvssv2",
-    name="CVSSv2 Base Score",
+    name="CVSSv2 Score",
     url="https://www.first.org/cvss/v2/",
-    notes="cvssv2 base score",
+    notes="cvssv2 score and vector",
 )
 
 CVSSV2_VECTOR = ScoringSystem(
@@ -70,7 +66,23 @@ CVSSV2_VECTOR = ScoringSystem(
     "nature and severity of vulnerability",
 )
 
-CVSSV3 = ScoringSystem(
+
+@dataclasses.dataclass(order=True)
+class Cvssv3ScoringSystem(ScoringSystem):
+
+    def compute(self, scoring_elements:str) -> str:
+        """
+        Return a CVSSv3 or CVSSv3.1 base score.
+
+        >>> Cvssv3ScoringSystem().compute("CVSS:3.0/S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/E:H/RL:O/RC:R/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X")
+        '6.5'
+        >>> Cvssv3ScoringSystem().compute("CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:H")
+        '8.6'
+        """
+        return str(CVSS3(vector=scoring_elements).base_score)
+
+
+CVSSV3 = Cvssv3ScoringSystem(
     identifier="cvssv3",
     name="CVSSv3 Base Score",
     url="https://www.first.org/cvss/v3-0/",
@@ -85,11 +97,11 @@ CVSSV3_VECTOR = ScoringSystem(
     "nature and severity of vulnerability",
 )
 
-CVSSV31 = ScoringSystem(
+CVSSV31 = Cvssv3ScoringSystem(
     identifier="cvssv3.1",
-    name="CVSSv3.1 Base Score",
+    name="CVSSv3.1 Score",
     url="https://www.first.org/cvss/v3-1/",
-    notes="cvssv3.1 base score",
+    notes="cvssv3.1 base score and vector",
 )
 
 CVSSV31_VECTOR = ScoringSystem(

@@ -40,8 +40,7 @@ class ScoringSystem:
 
 @dataclasses.dataclass(order=True)
 class Cvssv2ScoringSystem(ScoringSystem):
-
-    def compute(self, scoring_elements:str) -> str:
+    def compute(self, scoring_elements: str) -> str:
         """
         Return a CVSSv2 base score.
 
@@ -69,8 +68,7 @@ CVSSV2_VECTOR = ScoringSystem(
 
 @dataclasses.dataclass(order=True)
 class Cvssv3ScoringSystem(ScoringSystem):
-
-    def compute(self, scoring_elements:str) -> str:
+    def compute(self, scoring_elements: str) -> str:
         """
         Return a CVSSv3 or CVSSv3.1 base score.
 

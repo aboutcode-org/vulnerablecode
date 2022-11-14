@@ -154,10 +154,12 @@ class TestOSVImporter(TestCase):
                 }
             )
         )
+
         expected = [
             VulnerabilitySeverity(
-                system=SCORING_SYSTEMS["cvssv3.1_vector"],
-                value="CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N",
+                system=SCORING_SYSTEMS["cvssv3.1"],
+                value="7.1",
+                scoring_elements="CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N",
             )
         ]
         assert results == expected
@@ -183,12 +185,14 @@ class TestOSVImporter(TestCase):
 
         expected = [
             VulnerabilitySeverity(
-                system=SCORING_SYSTEMS["cvssv3.1_vector"],
-                value="CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N",
+                system=SCORING_SYSTEMS["cvssv3.1"],
+                value="7.1",
+                scoring_elements="CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N",
             ),
             VulnerabilitySeverity(
-                system=SCORING_SYSTEMS["cvssv3.1_vector"],
-                value="CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N",
+                system=SCORING_SYSTEMS["cvssv3.1"],
+                value="7.1",
+                scoring_elements="CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N",
             ),
         ]
         assert results == expected

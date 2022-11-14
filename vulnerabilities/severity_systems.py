@@ -44,7 +44,7 @@ class Cvssv2ScoringSystem(ScoringSystem):
         """
         Return a CVSSv2 base score.
 
-        >>> Cvssv2ScoringSystem().compute("AV:L/AC:L/Au:M/C:N/I:P/A:C/E:U/RL:W/RC:ND/CDP:L/TD:H/CR:ND/IR:ND/AR:M")
+        >>> CVSSV2.compute("AV:L/AC:L/Au:M/C:N/I:P/A:C/E:U/RL:W/RC:ND/CDP:L/TD:H/CR:ND/IR:ND/AR:M")
         '5.0'
         """
         return str(CVSS2(vector=scoring_elements).base_score)
@@ -52,17 +52,9 @@ class Cvssv2ScoringSystem(ScoringSystem):
 
 CVSSV2 = Cvssv2ScoringSystem(
     identifier="cvssv2",
-    name="CVSSv2 Score",
+    name="CVSSv2 Base Score",
     url="https://www.first.org/cvss/v2/",
-    notes="cvssv2 score and vector",
-)
-
-CVSSV2_VECTOR = ScoringSystem(
-    identifier="cvssv2_vector",
-    name="CVSSv2 Vector",
-    url="https://www.first.org/cvss/v2/",
-    notes="cvssv2 vector, used to get additional info about "
-    "nature and severity of vulnerability",
+    notes="CVSSv2 base score and vector",
 )
 
 
@@ -72,9 +64,9 @@ class Cvssv3ScoringSystem(ScoringSystem):
         """
         Return a CVSSv3 or CVSSv3.1 base score.
 
-        >>> Cvssv3ScoringSystem().compute("CVSS:3.0/S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/E:H/RL:O/RC:R/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X")
+        >>> CVSSV3.compute("CVSS:3.0/S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/E:H/RL:O/RC:R/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X")
         '6.5'
-        >>> Cvssv3ScoringSystem().compute("CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:H")
+        >>> CVSSV31.compute("CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:H")
         '8.6'
         """
         return str(CVSS3(vector=scoring_elements).base_score)
@@ -84,30 +76,14 @@ CVSSV3 = Cvssv3ScoringSystem(
     identifier="cvssv3",
     name="CVSSv3 Base Score",
     url="https://www.first.org/cvss/v3-0/",
-    notes="cvssv3 base score",
-)
-
-CVSSV3_VECTOR = ScoringSystem(
-    identifier="cvssv3_vector",
-    name="CVSSv3 Vector",
-    url="https://www.first.org/cvss/v3-0/",
-    notes="cvssv3 vector, used to get additional info about "
-    "nature and severity of vulnerability",
+    notes="CVSSv3 base score and vector",
 )
 
 CVSSV31 = Cvssv3ScoringSystem(
     identifier="cvssv3.1",
-    name="CVSSv3.1 Score",
+    name="CVSSv3.1 Base Score",
     url="https://www.first.org/cvss/v3-1/",
-    notes="cvssv3.1 base score and vector",
-)
-
-CVSSV31_VECTOR = ScoringSystem(
-    identifier="cvssv3.1_vector",
-    name="CVSSv3.1 Vector",
-    url="https://www.first.org/cvss/v3-1/",
-    notes="cvssv3.1 vector, used to get additional info about "
-    "nature and severity of vulnerability",
+    notes="CVSSv3.1 base score and vector",
 )
 
 REDHAT_BUGZILLA = ScoringSystem(
@@ -153,11 +129,8 @@ SCORING_SYSTEMS = {
     system.identifier: system
     for system in (
         CVSSV2,
-        CVSSV2_VECTOR,
         CVSSV3,
-        CVSSV3_VECTOR,
         CVSSV31,
-        CVSSV31_VECTOR,
         REDHAT_BUGZILLA,
         REDHAT_AGGREGATE,
         ARCHLINUX,

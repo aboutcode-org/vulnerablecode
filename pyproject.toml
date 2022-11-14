@@ -74,11 +74,11 @@ addopts = [
 line-length = 100
 include = '\.pyi?$'
 skip_gitignore = true
-extend-exclude = "migrations|data|venv"
+extend-exclude = "data|venv"
 
 [tool.isort]
 profile = "black"
 line_length = 100
 force_single_line = true
 skip_gitignore = true
-skip_glob = "*/migrations/*"
+#skip_glob = "*/migrations/*"

@@ -34,15 +34,15 @@ def load_oval_data():
 class MockOvalImporter(OvalImporter):
     spdx_license_expression = "FOO-BAR"
 
+
 class MockGitImporter(GitImporter):
     spdx_license_expression = "FOO-BAR"
+
 
 def test_create_purl():
     purl1 = PackageURL(name="ffmpeg", type="test")
 
-    assert purl1 == MockOvalImporter().create_purl(
-        pkg_name="ffmpeg", pkg_data={"type": "test"}
-    )
+    assert purl1 == MockOvalImporter().create_purl(pkg_name="ffmpeg", pkg_data={"type": "test"})
 
     purl2 = PackageURL(
         name="notepad",
@@ -60,6 +60,7 @@ def test_create_purl():
             "type": "example",
         },
     )
+
 
 def test__collect_pkgs():
 
@@ -81,8 +82,10 @@ def test__collect_pkgs():
     assert found_suse_pkgs == expected_suse_pkgs
     assert found_ubuntu_pkgs == expected_ubuntu_pkgs
 
+
 def clone(self):
     pass
+
 
 @patch("vulnerabilities.importer.GitImporter.clone")
 def test_git_importer(mock_clone):

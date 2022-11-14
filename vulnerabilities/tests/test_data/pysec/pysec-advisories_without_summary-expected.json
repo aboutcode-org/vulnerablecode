@@ -24,8 +24,9 @@
       "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-40831",
       "severities": [
         {
-          "system": "cvssv3.1_vector",
-          "value": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+          "system": "cvssv3.1",
+          "value": "7.1",
+          "scoring_elements": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
         }
       ]
     },
@@ -34,8 +35,9 @@
       "url": "https://github.com/aws/aws-iot-device-sdk-cpp-v2",
       "severities": [
         {
-          "system": "cvssv3.1_vector",
-          "value": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+          "system": "cvssv3.1",
+          "value": "7.1"
+          "scoring_elements": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
         }
       ]
     }

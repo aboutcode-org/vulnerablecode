@@ -74,11 +74,19 @@ addopts = [
 line-length = 100
 include = '\.pyi?$'
 skip_gitignore = true
-extend-exclude = "data|venv"
+# 'extend-exclude' excludes files or directories in addition to the defaults
+extend-exclude = '''
+(
+  ^/venv/.*
+  | ^/vulnerabilities/migrations/.*
+  | ^/vulnerabilities/tests/data/.*
+)
+'''
+
 
 [tool.isort]
 profile = "black"
 line_length = 100
 force_single_line = true
 skip_gitignore = true
-#skip_glob = "*/migrations/*"
+skip_glob = "vulnerabilities/migrations/*"

@@ -315,7 +315,7 @@
     "date_published": null
   },
   {
-    "unique_content_id": "899ece25ddf860b11ce3408d7e1e8eed",
+    "unique_content_id": "2bac8349cb492bcc4990b161b01dc414",
     "aliases": [
       "CVE-2011-4963"
     ],
@@ -356,7 +356,8 @@
         "severities": [
           {
             "value": "medium",
-            "system": "generic_textual"
+            "system": "generic_textual",
+            "scoring_elements": ""
           }
         ],
         "reference_id": ""
@@ -538,7 +539,7 @@
     "date_published": null
   },
   {
-    "unique_content_id": "bf07c722836da87901a6a99186aa1451",
+    "unique_content_id": "870c7bf846dc50554e9fa2290598b001",
     "aliases": [
       "CVE-2013-2070"
     ],
@@ -587,7 +588,8 @@
         "severities": [
           {
             "value": "medium",
-            "system": "generic_textual"
+            "system": "generic_textual",
+            "scoring_elements": ""
           }
         ],
         "reference_id": ""
@@ -621,7 +623,7 @@
     "date_published": null
   },
   {
-    "unique_content_id": "233d69f66b16829cd2563a8d4544c4fc",
+    "unique_content_id": "ce0711c66b7cdd60814c1abfbafdd3b9",
     "aliases": [
       "CVE-2013-4547"
     ],
@@ -658,7 +660,8 @@
         "severities": [
           {
             "value": "medium",
-            "system": "generic_textual"
+            "system": "generic_textual",
+            "scoring_elements": ""
           }
         ],
         "reference_id": ""
@@ -782,7 +785,7 @@
     "date_published": null
   },
   {
-    "unique_content_id": "be04a26546034f1bf6dc81fe3f196d21",
+    "unique_content_id": "3637800165bcb0cf3917364af7654fee",
     "aliases": [
       "CVE-2014-3556"
     ],
@@ -819,7 +822,8 @@
         "severities": [
           {
             "value": "medium",
-            "system": "generic_textual"
+            "system": "generic_textual",
+            "scoring_elements": ""
           }
         ],
         "reference_id": ""
@@ -843,7 +847,7 @@
     "date_published": null
   },
   {
-    "unique_content_id": "de51a68688d1254c7b923c4d553673d7",
+    "unique_content_id": "2024528d103453292ea1f23163cb7ad8",
     "aliases": [
       "CVE-2014-3616"
     ],
@@ -880,7 +884,8 @@
         "severities": [
           {
             "value": "medium",
-            "system": "generic_textual"
+            "system": "generic_textual",
+            "scoring_elements": ""
           }
         ],
         "reference_id": ""
@@ -894,7 +899,7 @@
     "date_published": null
   },
   {
-    "unique_content_id": "cc7df0e8e72511288d97344b777f34ba",
+    "unique_content_id": "4a748f6cbd00bbafac23faa271396b3a",
     "aliases": [
       "CVE-2016-0742"
     ],
@@ -931,7 +936,8 @@
         "severities": [
           {
             "value": "medium",
-            "system": "generic_textual"
+            "system": "generic_textual",
+            "scoring_elements": ""
           }
         ],
         "reference_id": ""
@@ -945,7 +951,7 @@
     "date_published": null
   },
   {
-    "unique_content_id": "3dd9fdd76b336623770856c554207c25",
+    "unique_content_id": "964babd1d8158846f348e9fa6df4e27f",
     "aliases": [
       "CVE-2016-0746"
     ],
@@ -982,7 +988,8 @@
         "severities": [
           {
             "value": "medium",
-            "system": "generic_textual"
+            "system": "generic_textual",
+            "scoring_elements": ""
           }
         ],
         "reference_id": ""
@@ -996,7 +1003,7 @@
     "date_published": null
   },
   {
-    "unique_content_id": "efde3660cac695e0cf1a2641d85fc960",
+    "unique_content_id": "e96daddac5c29ad0b9e157638fbeb3b2",
     "aliases": [
       "CVE-2016-0747"
     ],
@@ -1033,7 +1040,8 @@
         "severities": [
           {
             "value": "medium",
-            "system": "generic_textual"
+            "system": "generic_textual",
+            "scoring_elements": ""
           }
         ],
         "reference_id": ""
@@ -1047,7 +1055,7 @@
     "date_published": null
   },
   {
-    "unique_content_id": "55c06fb39c2060ebd4286f059a2de757",
+    "unique_content_id": "9cb4dc08fbceda238c4f45b00320ce42",
     "aliases": [
       "CVE-2016-4450"
     ],
@@ -1084,7 +1092,8 @@
         "severities": [
           {
             "value": "medium",
-            "system": "generic_textual"
+            "system": "generic_textual",
+            "scoring_elements": ""
           }
         ],
         "reference_id": ""
@@ -1118,7 +1127,7 @@
     "date_published": null
   },
   {
-    "unique_content_id": "b228b252bfacba385255fa39b0ab8a24",
+    "unique_content_id": "4ebd7508e9aaa3c3c89cac10397f47d4",
     "aliases": [
       "CVE-2017-7529"
     ],
@@ -1155,7 +1164,8 @@
         "severities": [
           {
             "value": "medium",
-            "system": "generic_textual"
+            "system": "generic_textual",
+            "scoring_elements": ""
           }
         ],
         "reference_id": ""
@@ -1179,7 +1189,7 @@
     "date_published": null
   },
   {
-    "unique_content_id": "7dd33f5c92c595292d689401ae2e2e5e",
+    "unique_content_id": "2fc1350472196c63ba9f7031fd456e76",
     "aliases": [
       "CVE-2018-16843"
     ],
@@ -1216,7 +1226,8 @@
         "severities": [
           {
             "value": "low",
-            "system": "generic_textual"
+            "system": "generic_textual",
+            "scoring_elements": ""
           }
         ],
         "reference_id": ""
@@ -1230,7 +1241,7 @@
     "date_published": null
   },
   {
-    "unique_content_id": "3f512172cf08fbf37eed94073722c0d1",
+    "unique_content_id": "1ae05361ffd7ba4b2a466afc6a3de34c",
     "aliases": [
       "CVE-2018-16844"
     ],
@@ -1267,7 +1278,8 @@
         "severities": [
           {
             "value": "low",
-            "system": "generic_textual"
+            "system": "generic_textual",
+            "scoring_elements": ""
           }
         ],
         "reference_id": ""
@@ -1281,7 +1293,7 @@
     "date_published": null
   },
   {
-    "unique_content_id": "65afa9db838c6440788e944c0c841e14",
+    "unique_content_id": "c78f14d302f37c9241afbc18578c49b3",
     "aliases": [
       "CVE-2018-16845"
     ],
@@ -1318,7 +1330,8 @@
         "severities": [
           {
             "value": "medium",
-            "system": "generic_textual"
+            "system": "generic_textual",
+            "scoring_elements": ""
           }
         ],
         "reference_id": ""
@@ -1342,7 +1355,7 @@
     "date_published": null
   },
   {
-    "unique_content_id": "836975e8910970e6adbef6643c714424",
+    "unique_content_id": "dbbf831a29a655709b98cb79a5f90fac",
     "aliases": [
       "CVE-2019-9511"
     ],
@@ -1379,7 +1392,8 @@
         "severities": [
           {
             "value": "medium",
-            "system": "generic_textual"
+            "system": "generic_textual",
+            "scoring_elements": ""
           }
         ],
         "reference_id": ""
@@ -1393,7 +1407,7 @@
     "date_published": null
   },
   {
-    "unique_content_id": "0ac8c5b8bbd51df34fcb6e027d5ea044",
+    "unique_content_id": "834d4d1067390d7f84ebd3cea8f60fb4",
     "aliases": [
       "CVE-2019-9513"
     ],
@@ -1430,7 +1444,8 @@
         "severities": [
           {
             "value": "low",
-            "system": "generic_textual"
+            "system": "generic_textual",
+            "scoring_elements": ""
           }
         ],
         "reference_id": ""
@@ -1444,7 +1459,7 @@
     "date_published": null
   },
   {
-    "unique_content_id": "7d85553ab2c402dc0f68469d0789ec2c",
+    "unique_content_id": "8e94de6ae6386d8e0af0241a0989cdcd",
     "aliases": [
       "CVE-2019-9516"
     ],
@@ -1481,7 +1496,8 @@
         "severities": [
           {
             "value": "low",
-            "system": "generic_textual"
+            "system": "generic_textual",
+            "scoring_elements": ""
           }
         ],
         "reference_id": ""
@@ -1495,7 +1511,7 @@
     "date_published": null
   },
   {
-    "unique_content_id": "dd9de89fd19c456d6452c1fe591238f8",
+    "unique_content_id": "fa52846658ab31e85334ad4af2fa7529",
     "aliases": [
       "CVE-2021-23017"
     ],
@@ -1532,7 +1548,8 @@
         "severities": [
           {
             "value": "medium",
-            "system": "generic_textual"
+            "system": "generic_textual",
+            "scoring_elements": ""
           }
         ],
         "reference_id": ""

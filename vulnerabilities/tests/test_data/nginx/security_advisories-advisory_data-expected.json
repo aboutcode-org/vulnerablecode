@@ -37,7 +37,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "medium"
+            "value": "medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -97,7 +98,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "medium"
+            "value": "medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -147,7 +149,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "low"
+            "value": "low",
+            "scoring_elements": ""
           }
         ]
       },
@@ -197,7 +200,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "low"
+            "value": "low",
+            "scoring_elements": ""
           }
         ]
       },
@@ -247,7 +251,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "low"
+            "value": "low",
+            "scoring_elements": ""
           }
         ]
       },
@@ -297,7 +302,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "low"
+            "value": "low",
+            "scoring_elements": ""
           }
         ]
       },
@@ -347,7 +353,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "medium"
+            "value": "medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -407,7 +414,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "medium"
+            "value": "medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -467,7 +475,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "medium"
+            "value": "medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -537,7 +546,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "medium"
+            "value": "medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -587,7 +597,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "medium"
+            "value": "medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -637,7 +648,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "medium"
+            "value": "medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -687,7 +699,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "medium"
+            "value": "medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -737,7 +750,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "medium"
+            "value": "medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -895,7 +909,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "medium"
+            "value": "medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -967,7 +982,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "medium"
+            "value": "medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -1096,7 +1112,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "medium"
+            "value": "medium",
+            "scoring_elements": ""
           }
         ]
       },

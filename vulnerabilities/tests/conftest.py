@@ -31,7 +31,6 @@ collect_ignore = [
     "test_api.py",
     "test_elixir_security.py",
     "test_gentoo.py",
-    "test_importer_yielder.py",
     "test_istio.py",
     "test_models.py",
     "test_mozilla.py",

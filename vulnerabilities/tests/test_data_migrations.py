@@ -157,22 +157,22 @@ class TestCvssVectorMigrationToScoringElementComputeNewScores(TestMigrations):
                 reference_id=1,
             ),
             VulnerabilitySeverity.objects.create(
-                scoring_system=severity_systems.CVSSV2_VECTOR.identifier,
+                scoring_system="cvssv2_vector",
                 value="AV:N/AC:L/Au:N/C:P/I:P/A:P",
                 reference_id=1,
             ),
             VulnerabilitySeverity.objects.create(
-                scoring_system=severity_systems.CVSSV3_VECTOR.identifier,
+                scoring_system="cvssv3_vector",
                 value="CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
                 reference_id=1,
             ),
             VulnerabilitySeverity.objects.create(
-                scoring_system=severity_systems.CVSSV31_VECTOR.identifier,
+                scoring_system="cvssv3.1_vector",
                 value="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
                 reference_id=1,
             ),
             VulnerabilitySeverity.objects.create(
-                scoring_system=severity_systems.CVSSV2_VECTOR.identifier,
+                scoring_system="cvssv2_vector",
                 value="",
                 reference_id=1,
             ),
@@ -286,7 +286,7 @@ class TestCvssVectorMigrationToScoringElementMergeRows(TestMigrations):
                 reference_id=1,
             ),
             VulnerabilitySeverity.objects.create(
-                scoring_system=severity_systems.CVSSV2_VECTOR.identifier,
+                scoring_system="cvssv2_vector",
                 value="AV:N/AC:L/Au:N/C:P/I:P/A:P",
                 reference_id=1,
             ),
@@ -297,7 +297,7 @@ class TestCvssVectorMigrationToScoringElementMergeRows(TestMigrations):
                 reference_id=2,
             ),
             VulnerabilitySeverity.objects.create(
-                scoring_system=severity_systems.CVSSV3_VECTOR.identifier,
+                scoring_system="cvssv3_vector",
                 value="CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
                 reference_id=2,
             ),
@@ -308,7 +308,7 @@ class TestCvssVectorMigrationToScoringElementMergeRows(TestMigrations):
                 reference_id=3,
             ),
             VulnerabilitySeverity.objects.create(
-                scoring_system=severity_systems.CVSSV31_VECTOR.identifier,
+                scoring_system="cvssv3.1_vector",
                 value="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
                 reference_id=3,
             ),
@@ -319,7 +319,7 @@ class TestCvssVectorMigrationToScoringElementMergeRows(TestMigrations):
                 reference_id=4,
             ),
             VulnerabilitySeverity.objects.create(
-                scoring_system=severity_systems.CVSSV2_VECTOR.identifier,
+                scoring_system="cvssv2_vector",
                 value="AV:N/AC:L/Au:N/C:P/I:P/A:P",
                 reference_id=4,
             ),
@@ -329,7 +329,7 @@ class TestCvssVectorMigrationToScoringElementMergeRows(TestMigrations):
                 reference_id=4,
             ),
             VulnerabilitySeverity.objects.create(
-                scoring_system=severity_systems.CVSSV3_VECTOR.identifier,
+                scoring_system="cvssv3_vector",
                 value="CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
                 reference_id=4,
             ),
@@ -339,7 +339,7 @@ class TestCvssVectorMigrationToScoringElementMergeRows(TestMigrations):
                 reference_id=4,
             ),
             VulnerabilitySeverity.objects.create(
-                scoring_system=severity_systems.CVSSV31_VECTOR.identifier,
+                scoring_system="cvssv3.1_vector",
                 value="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
                 reference_id=4,
             ),
@@ -360,7 +360,7 @@ class TestCvssVectorMigrationToScoringElementMergeRows(TestMigrations):
                 reference_id=5,
             ),
             VulnerabilitySeverity.objects.create(
-                scoring_system=severity_systems.CVSSV31_VECTOR.identifier,
+                scoring_system="cvssv3.1_vector",
                 value="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
                 # value="9.8",
                 reference_id=5,
@@ -471,7 +471,7 @@ class TestCvssVectorMigrationToScoringElementMergeRowsWithDupes(TestMigrations):
             ),
             # no matching score: score should be computed
             VulnerabilitySeverity.objects.create(
-                scoring_system=severity_systems.CVSSV2_VECTOR.identifier,
+                scoring_system="cvssv2_vector",
                 value="AV:N/AC:H/Au:N/C:P/I:P/A:P",
                 reference_id=1,
             ),
@@ -482,7 +482,7 @@ class TestCvssVectorMigrationToScoringElementMergeRowsWithDupes(TestMigrations):
                 reference_id=1,
             ),
             VulnerabilitySeverity.objects.create(
-                scoring_system=severity_systems.CVSSV2_VECTOR.identifier,
+                scoring_system="cvssv2_vector",
                 value="AV:N/AC:L/Au:N/C:P/I:P/A:P",
                 reference_id=1,
             ),

@@ -665,7 +665,7 @@ class VulnerabilitySeverity(models.Model):
         max_length=150,
         null=True,
         help_text="Supporting scoring elements used to compute the score values. "
-        "For example a CVSS vector string as used to compute a CVSS score."
+        "For example a CVSS vector string as used to compute a CVSS score.",
     )
 
     class Meta:

@@ -154,20 +154,13 @@ def to_advisory(advisory_data):
 
     redhat_scores = []
     cvssv3_score = advisory_data.get("cvss3_score")
+    cvssv3_vector = advisory_data.get("cvss3_scoring_vector", "")
     if cvssv3_score:
         redhat_scores.append(
             VulnerabilitySeverity(
                 system=severity_systems.CVSSV3,
                 value=cvssv3_score,
-            )
-        )
-
-    cvssv3_vector = advisory_data.get("cvss3_scoring_vector")
-    if cvssv3_vector:
-        redhat_scores.append(
-            VulnerabilitySeverity(
-                system=severity_systems.CVSSV3_VECTOR,
-                value=cvssv3_vector,
+                scoring_elements=cvssv3_vector,
             )
         )
 

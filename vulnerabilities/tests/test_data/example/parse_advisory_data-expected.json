@@ -24,7 +24,8 @@
       "severities": [
         {
           "system": "generic_textual",
-          "value": "high"
+          "value": "high",
+          "scoring_elements": ""
         }
       ]
     }

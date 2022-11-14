@@ -20,7 +20,8 @@
         "severities": [
           {
             "system": "cvssv3.1",
-            "value": "HIGH"
+            "value": "HIGH",
+            "scoring_elements": ""
           }
         ]
       }

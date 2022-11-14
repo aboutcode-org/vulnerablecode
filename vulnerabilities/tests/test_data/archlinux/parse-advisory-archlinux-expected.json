@@ -25,7 +25,8 @@
         "severities": [
           {
             "system": "archlinux",
-            "value": "Unknown"
+            "value": "Unknown",
+            "scoring_elements": ""
           }
         ]
       }

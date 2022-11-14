@@ -28,10 +28,11 @@ from vulnerabilities.utils import requests_with_5xx_retry
 
 logger = logging.getLogger(__name__)
 
+# FIXME: we should use a centralized retry
 requests_session = requests_with_5xx_retry(max_retries=5, backoff_factor=1)
 
 
-def fetch_list_of_cves() -> Iterable[List[Dict]]:
+def fetch_cves() -> Iterable[List[Dict]]:
     page_no = 1
     cve_data = None
     while True:
@@ -39,11 +40,11 @@ def fetch_list_of_cves() -> Iterable[List[Dict]]:
         try:
             response = requests_session.get(current_url)
             if response.status_code != requests.codes.ok:
-                logger.error(f"Failed to fetch results from {current_url}")
+                logger.error(f"Failed to fetch RedHat CVE results from {current_url}")
                 break
             cve_data = response.json()
         except Exception as e:
-            logger.error(f"Failed to fetch results from {current_url} {e}")
+            logger.error(f"Failed to fetch RedHat CVE results from {current_url} {e}")
             break
         if not cve_data:
             break
@@ -65,8 +66,8 @@ class RedhatImporter(Importer):
     license_url = "https://access.redhat.com/documentation/en-us/red_hat_security_data_api/1.0/html/red_hat_security_data_api/legal-notice"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
-        for list_of_redhat_cves in fetch_list_of_cves():
-            for redhat_cve in list_of_redhat_cves:
+        for redhat_cves in fetch_cves():
+            for redhat_cve in redhat_cves:
                 yield to_advisory(redhat_cve)
 
 

@@ -36,7 +36,7 @@
       "severities": [
         {
           "system": "cvssv3.1",
-          "value": "7.1"
+          "value": "7.1",
           "scoring_elements": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
         }
       ]

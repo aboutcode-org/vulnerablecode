@@ -79,7 +79,7 @@ extend-exclude = '''
 (
   ^/venv/.*
   | ^/vulnerabilities/migrations/.*
-  | ^/vulnerabilities/tests/data/.*
+  | ^/vulnerabilities/tests/test_data/.*
 )
 '''
 

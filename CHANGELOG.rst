@@ -7,6 +7,7 @@ Version v30.3.2
 ----------------
 
 - We re-enabled support for the PostgreSQL securities advisories importer.
+- We fixed the API key request form UI and made it consistent with rest of UI.
 
 
 Version v30.3.1

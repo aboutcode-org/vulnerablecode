@@ -11,15 +11,33 @@
           </div>
         </article>
       {% endfor %}
-    {% block title %}
-    VulnerableCode API key request
-    {% endblock %}
+      <div id="form-errors" class="message is-danger {% if not form.errors %}is-hidden{% endif %}">
+        {% for field_name, errors in form.errors.items %}
+        <div class="message-body">
+          {{ errors }}
+        </div>
+        {% endfor %}
+      </div>
+    <h2 class="subtitle mb-0 pt-2 mb-2">
+      <b>VulnerableCode API key request</b>
+    </h2>
+
+    <section class="ml-2 mt-3 pr-4 pt-4 pl-4 pb-4 has-background-light has-border-radius">
+      Please provide your <b>email address</b> and we will email you the <b>API token</b>.
+    </section>
+
     <br/>
         <form action = "" method = "post">
             {% csrf_token %}
-            {{form|crispy }}
-            <br/>
-            <input class="button is-link" type="submit" value="Submit">
+            {% for field in form %}
+                <div class="field mt-2">
+                    <label class="label" for="{{ form.name.id_for_label }}">{{ field.label }}</label>
+                    <div class="control">
+                        {{ field }}
+                    </div>
+                </div>
+            {% endfor %}
+            <input class="button is-link mt-5" type="submit" value="Request my API Key">
         </form>
     </section>
 {% endblock %}

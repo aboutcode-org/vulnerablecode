@@ -1,0 +1,72 @@
+[
+    {
+        "aliases": [
+          "CVE-2020-10733"
+        ],
+        "summary": "Windows installer runs executables from uncontrolled directoriesmore details",
+        "affected_packages": [
+        {
+            "package": {
+                "type": "generic",
+                "namespace": null,
+                "name": "postgresql",
+                "version": null,
+                "qualifiers": {},
+                "subpath": null
+            },
+            "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
+            "fixed_version": "12.3"
+            },
+        {
+            "package": {
+              "type": "generic",
+              "namespace": null,
+              "name": "postgresql",
+              "version": null,
+              "qualifiers": {
+                  "os": "windows"
+                },
+                "subpath": null
+            },
+            "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
+            "fixed_version": "12.3"
+        },
+        {
+          "package": {
+            "type": "generic",
+            "namespace": null,
+            "name": "postgresql",
+            "version": null,
+            "qualifiers": {},
+            "subpath": null
+          },
+          "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
+          "fixed_version": "12.3"
+        }
+        ],
+        "references": [
+          {
+            "reference_id": "",
+            "url": "https://www.postgresql.org/support/security/CVE-2020-10733/",
+            "severities": [
+              {
+                "system": "cvssv3",
+                "value": "6.7"
+              },
+              {
+                "system": "cvssv3_vector",
+                "value": [
+                  "AV:L/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:H"
+                ]
+              }
+            ]
+          },
+          {
+            "reference_id": "",
+            "url": "https://www.postgresql.org/about/news/postgresql-123-118-1013-9618-and-9522-released-2038/",
+            "severities": []
+          }
+        ],
+        "date_published": null
+      }
+]

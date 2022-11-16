@@ -7,16 +7,21 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 import os
-from unittest import TestCase
 
+from django.test import TestCase
 from packageurl import PackageURL
 
 from vulnerabilities import severity_systems
+from vulnerabilities.import_runner import process_advisories
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers.postgresql import to_advisories
+from vulnerabilities.improve_runner import ImproveRunner
+from vulnerabilities.improve_runner import process_inferences
+from vulnerabilities.improvers.default import DefaultImprover
 from vulnerabilities.tests import util_tests
 from vulnerabilities.utils import AffectedPackage
 
@@ -35,3 +40,10 @@ class TestPostgreSQLImporter(TestCase):
         result = [data.to_dict() for data in advisories]
         expected_file = os.path.join(TEST_DATA, f"parse-advisory-postgresql-expected.json")
         util_tests.check_results_against_json(result, expected_file)
+
+    def test_run_default_improver(self):
+        with open(os.path.join(TEST_DATA, "improver-data.json")) as f:
+            raw_data = json.load(f)
+        advisories = [AdvisoryData.from_dict(data) for data in raw_data]
+        process_advisories(advisories, "postgresql")
+        ImproveRunner(DefaultImprover).run()

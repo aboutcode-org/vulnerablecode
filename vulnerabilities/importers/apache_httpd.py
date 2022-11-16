@@ -29,6 +29,8 @@ class ApacheHTTPDImporter(Importer):
 
     base_url = "https://httpd.apache.org/security/json/"
 
+    # For now, don't use the GH API
+
     def set_api(self):
         self.version_api = GitHubTagsAPI()
         asyncio.run(self.version_api.load_api(["apache/httpd"]))
@@ -41,6 +43,7 @@ class ApacheHTTPDImporter(Importer):
 
     def updated_advisories(self):
         links = fetch_links(self.base_url)
+        # For now, don't use the GH API
         self.set_api()
         advisories = []
         for link in links:

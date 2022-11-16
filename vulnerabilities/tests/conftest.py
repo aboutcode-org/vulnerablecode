@@ -25,7 +25,7 @@ def no_rmtree(monkeypatch):
 # Step 2: Run test for importer only if it is activated (pytestmark = pytest.mark.skipif(...))
 # Step 3: Migrate all the tests
 collect_ignore = [
-    "test_apache_httpd.py",
+    # "test_apache_httpd.py",
     "test_apache_kafka.py",
     "test_apache_tomcat.py",
     "test_api.py",

@@ -8,6 +8,7 @@
 #
 
 from vulnerabilities.importers import alpine_linux
+from vulnerabilities.importers import apache_httpd
 from vulnerabilities.importers import archlinux
 from vulnerabilities.importers import debian
 from vulnerabilities.importers import debian_oval
@@ -41,6 +42,7 @@ IMPORTERS_REGISTRY = [
     debian_oval.DebianOvalImporter,
     npm.NpmImporter,
     retiredotnet.RetireDotnetImporter,
+    apache_httpd.ApacheHTTPDImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

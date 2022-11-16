@@ -110,3 +110,7 @@ class TestApacheHTTPDImporter(TestCase):
         found_advisories = list(map(AdvisoryData.normalized, found_advisories))
         expected_advisories = list(map(AdvisoryData.normalized, expected_advisories))
         assert sorted(found_advisories) == sorted(expected_advisories)
+
+    def test_misc_01(self):
+        print("\nHello!\n")
+        assert True == True

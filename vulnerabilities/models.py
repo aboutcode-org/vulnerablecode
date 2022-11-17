@@ -443,7 +443,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         """
         if not isinstance(purl, PackageURL):
             purl = PackageURL.from_string(purl)
-        purl = purl.to_dict(encode=True)
+        purl = purl.to_dict()
         if not with_qualifiers_and_subpath:
             del purl["qualifiers"]
             del purl["subpath"]

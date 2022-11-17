@@ -34,12 +34,57 @@ class TestAdvisoryWihoutAlias(TestCase):
             Reference(
                 url="https://www.djangoproject.com/weblog/2015/sep/25/security-releases/",
                 reference_id="test-id",
-            )
+            ),
+            Reference(
+                url="https://www.djangoproject.com/web/2015/sep/25/security-releases/",
+                reference_id="test1-id",
+            ),
         ]
-        self.advisory = Advisory.objects.create(
+        Advisory.objects.create(
             summary="summary",
             affected_packages=[pkg.to_dict() for pkg in aff_pkg],
             references=[ref.to_dict() for ref in refs],
+            date_published="2020-01-01",
+            date_collected="2020-01-01",
+        )
+        aff_pkg_2 = aff_pkg + [
+            AffectedPackage(
+                package=PackageURL(
+                    name="flask",
+                    type="pypi",
+                ),
+                fixed_version=PypiVersion("0.1.0"),
+            )
+        ]
+        # Advisory object with different affected packages
+        Advisory.objects.create(
+            summary="summary",
+            affected_packages=[pkg.to_dict() for pkg in aff_pkg_2],
+            references=[ref.to_dict() for ref in refs],
+            date_published="2020-01-01",
+            date_collected="2020-01-01",
+        )
+
+        refs_2 = refs + [
+            Reference(
+                url="https://www.djangoproject.com/web/2016/sep/25/security-releases/",
+                reference_id="test2-id",
+            )
+        ]
+        # Advisory object with different references
+        Advisory.objects.create(
+            summary="summary",
+            affected_packages=[pkg.to_dict() for pkg in aff_pkg],
+            references=[ref.to_dict() for ref in refs_2],
+            date_published="2020-01-01",
+            date_collected="2020-01-01",
+        )
+
+        # Advisory object with different summary, refs and affected packages
+        Advisory.objects.create(
+            summary="diff-summary",
+            affected_packages=[pkg.to_dict() for pkg in aff_pkg_2],
+            references=[ref.to_dict() for ref in refs_2],
             date_published="2020-01-01",
             date_collected="2020-01-01",
         )
@@ -50,5 +95,5 @@ class TestAdvisoryWihoutAlias(TestCase):
         # advisory when ran through same improver
         ImproveRunner(DefaultImprover).run()
         ImproveRunner(DefaultImprover).run()
-        self.assertEqual(Advisory.objects.count(), 1)
-        self.assertEqual(Vulnerability.objects.count(), 1)
+        self.assertEqual(Advisory.objects.count(), 4)
+        self.assertEqual(Vulnerability.objects.count(), 2)

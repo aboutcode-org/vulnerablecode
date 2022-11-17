@@ -229,18 +229,19 @@ def get_or_create_vulnerability_without_aliases(inference):
 
     Try to get vulnerability by matching references,
     summary and packages. If no vulnerability is found,
-    create a new one.
+    create a new one. We do not create a new vulnerability
+    only and only if there is an exact existing vulnerability.
     """
 
     refs_are_exact_match = True
 
     vuln_by_refs = {}
 
-    ref_urls = [ref.url for ref in inference.references]
+    ref_urls_in_inference = sorted([ref.url for ref in inference.references])
 
-    references = VulnerabilityReference.objects.filter(url__in=ref_urls)
+    references = VulnerabilityReference.objects.filter(url__in=ref_urls_in_inference)
 
-    if references.count() != len(ref_urls):
+    if references.count() != len(ref_urls_in_inference):
         refs_are_exact_match = False
     else:
         for ref in references:
@@ -248,24 +249,18 @@ def get_or_create_vulnerability_without_aliases(inference):
             vuln_by_refs[ref.url] = set(ref.vulnerabilities.all())
 
     if refs_are_exact_match:
-
         list_of_vulns_by_each_ref = vuln_by_refs.values()
-
         # Find all common vulnerabilities amongst all references
-        common_vulns_in_refs = set.intersection(*list_of_vulns_by_each_ref)
-
+        common_vulns_in_refs = list(set.intersection(*list_of_vulns_by_each_ref))
         # For a single common vulnerability that have same exact reference
         # return it
-        if len(common_vulns_in_refs) == 1:
-            return common_vulns_in_refs.pop()
-
-        # If there are multiple common vulnerabilities, try to find
-        # one that matches the summary and packages
-        elif len(common_vulns_in_refs) > 1:
-            for vuln in common_vulns_in_refs:
-                if vuln.summary == inference.summary:
-                    if match_packages(inference, vuln):
-                        return vuln
+        for vuln in common_vulns_in_refs:
+            refs_in_vulnerability = Vulnerability.objects.get(
+                vulnerability_id=vuln
+            ).references.all()
+            ref_urls_in_vuln = sorted([ref.url for ref in refs_in_vulnerability])
+            if ref_urls_in_vuln == ref_urls_in_inference:
+                return vuln
 
         else:
             # If there are no common vulnerabilities, fall back to creating
@@ -280,36 +275,37 @@ def get_or_create_vulnerability_without_aliases(inference):
     return vulnerability
 
 
-def match_packages(inference, vuln):
-    """
-    Check if the packages in the inference match the packages in the vulnerability
-    """
-    for affected_purl in inference.affected_purls:
-        if not find_package_and_check_related_to_vuln(purl=affected_purl, fix=False, vuln=vuln):
-            return False
-    if inference.fixed_purl and not find_package_and_check_related_to_vuln(
-        purl=inference.fixed_purl, fix=True, vuln=vuln
-    ):
-        return False
-    return True
+# def match_packages(inference, vuln):
+#     """
+#     Check if the packages in the inference match the packages in the vulnerability
+#     """
+#     for affected_purl in inference.affected_purls:
+#         if not find_package_and_check_related_to_vuln(purl=affected_purl, fix=False, vuln=vuln):
+#             return False
+#     if inference.fixed_purl and not find_package_and_check_related_to_vuln(
+#         purl=inference.fixed_purl, fix=True, vuln=vuln
+#     ):
+#         return False
+#     return True
 
 
-def find_package_and_check_related_to_vuln(purl, fix, vuln):
-    """
-    Find package in the database and check if it is associated
-    with the vulnerability.
-    If package is not found, return False
-    If package is found, but not associated with the vulnerability, return False
-    If package is found and associated with the vulnerability, return True
-    """
-    try:
-        package = Package.objects.for_purl(purl=purl)
-        if not PackageRelatedVulnerability.objects.exists(
-            vulnerability=vuln,
-            package=package,
-            fix=fix,
-        ):
-            return False
-    except Package.DoesNotExist:
-        return False
-    return True
+# def find_package_and_check_related_to_vuln(purl, fix, vuln):
+#     """
+#     Find package in the database and check if it is associated
+#     with the vulnerability.
+#     If package is not found, return False
+#     If package is found, but not associated with the vulnerability, return False
+#     If package is found and associated with the vulnerability, return True
+#     """
+#     try:
+#         package = Package.objects.get_from_purl(purl=purl)
+#         package_related = PackageRelatedVulnerability.objects.filter(
+#             vulnerability=vuln,
+#             package=package,
+#             fix=fix,
+#         ).exists()
+#         if not package_related:
+#             return False
+#     except Package.DoesNotExist:
+#         return False
+#     return True

@@ -26,7 +26,8 @@
       "severities": [
         {
           "system": "generic_textual",
-          "value": "HIGH"
+          "value": "HIGH",
+          "scoring_elements": ""
         }
       ]
     },
@@ -36,7 +37,8 @@
       "severities": [
         {
           "system": "generic_textual",
-          "value": "HIGH"
+          "value": "HIGH",
+          "scoring_elements": ""
         }
       ]
     },
@@ -46,7 +48,8 @@
       "severities": [
         {
           "system": "generic_textual",
-          "value": "HIGH"
+          "value": "HIGH",
+          "scoring_elements": ""
         }
       ]
     }

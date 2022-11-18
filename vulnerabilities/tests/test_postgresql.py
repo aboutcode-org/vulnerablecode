@@ -95,10 +95,7 @@ class TestPostgreSQLImporter(TestCase):
                             VulnerabilitySeverity(
                                 system=severity_systems.CVSSV3,
                                 value="3.1",
-                            ),
-                            VulnerabilitySeverity(
-                                system=severity_systems.CVSSV3_VECTOR,
-                                value=["AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N"],
+                                scoring_elements="AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N",
                             ),
                         ],
                     ),
@@ -177,10 +174,7 @@ class TestPostgreSQLImporter(TestCase):
                             VulnerabilitySeverity(
                                 system=severity_systems.CVSSV3,
                                 value="6.7",
-                            ),
-                            VulnerabilitySeverity(
-                                system=severity_systems.CVSSV3_VECTOR,
-                                value=["AV:L/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:H"],
+                                scoring_elements="AV:L/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:H",
                             ),
                         ],
                     ),

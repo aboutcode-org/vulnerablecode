@@ -167,12 +167,7 @@ class CveItem:
             vs = VulnerabilitySeverity(
                 system=severity_systems.CVSSV3,
                 value=str(cvss_v3.get("baseScore") or ""),
-            )
-            severities.append(vs)
-
-            vs = VulnerabilitySeverity(
-                system=severity_systems.CVSSV3_VECTOR,
-                value=str(cvss_v3.get("vectorString") or ""),
+                scoring_elements=str(cvss_v3.get("vectorString") or ""),
             )
             severities.append(vs)
 
@@ -182,12 +177,7 @@ class CveItem:
             vs = VulnerabilitySeverity(
                 system=severity_systems.CVSSV2,
                 value=str(cvss_v2.get("baseScore") or ""),
-            )
-            severities.append(vs)
-
-            vs = VulnerabilitySeverity(
-                system=severity_systems.CVSSV2_VECTOR,
-                value=str(cvss_v2.get("vectorString") or ""),
+                scoring_elements=str(cvss_v2.get("vectorString") or ""),
             )
             severities.append(vs)
 

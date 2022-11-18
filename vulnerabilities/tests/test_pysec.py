@@ -11,7 +11,8 @@ import os
 from unittest import TestCase
 
 from vulnerabilities.importers.osv import parse_advisory_data
-from vulnerabilities.tests import util_tests
+from vulnerabilities.tests.util_tests import VULNERABLECODE_REGEN_TEST_FIXTURES as REGEN
+from vulnerabilities.tests.util_tests import check_results_against_json
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/pysec")
@@ -19,17 +20,26 @@ TEST_DATA = os.path.join(BASE_DIR, "test_data/pysec")
 
 class TestPyPIImporter(TestCase):
     def test_to_advisories_with_summary(self):
-        with open(os.path.join(TEST_DATA, "pysec_test_1.json")) as f:
+        with open(os.path.join(TEST_DATA, "pysec-advisories_with_summary.json")) as f:
             mock_response = json.load(f)
-        expected_file = os.path.join(TEST_DATA, f"pysec-expected-1.json")
-        imported_data = parse_advisory_data(mock_response, "pypi")
-        result = imported_data.to_dict()
-        util_tests.check_results_against_json(result, expected_file)
+        results = parse_advisory_data(mock_response, "pypi").to_dict()
+
+        expected_file = os.path.join(TEST_DATA, "pysec-advisories_with_summary-expected.json")
+        check_results_against_json(
+            results=results,
+            expected_file=expected_file,
+            regen=REGEN,
+        )
 
     def test_to_advisories_without_summary(self):
-        with open(os.path.join(TEST_DATA, "pysec_test_2.json")) as f:
+        with open(os.path.join(TEST_DATA, "pysec-advisories_without_summary.json")) as f:
             mock_response = json.load(f)
-        expected_file = os.path.join(TEST_DATA, f"pysec-expected-2.json")
-        imported_data = parse_advisory_data(mock_response, "pypi")
-        result = imported_data.to_dict()
-        util_tests.check_results_against_json(result, expected_file)
+
+        results = parse_advisory_data(mock_response, "pypi").to_dict()
+
+        expected_file = os.path.join(TEST_DATA, "pysec-advisories_without_summary-expected.json")
+        check_results_against_json(
+            results=results,
+            expected_file=expected_file,
+            regen=REGEN,
+        )

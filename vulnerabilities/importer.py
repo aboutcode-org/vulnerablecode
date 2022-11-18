@@ -46,13 +46,16 @@ logger = logging.getLogger(__name__)
 
 @dataclasses.dataclass(order=True)
 class VulnerabilitySeverity:
+    # FIXME: this should be named scoring_system, like in the model
     system: ScoringSystem
     value: str
+    scoring_elements: str = ""
 
     def to_dict(self):
         return {
             "system": self.system.identifier,
             "value": self.value,
+            "scoring_elements": self.scoring_elements,
         }
 
     @classmethod
@@ -61,7 +64,11 @@ class VulnerabilitySeverity:
         Return a VulnerabilitySeverity object from a ``severity`` mapping of
         VulnerabilitySeverity data.
         """
-        return cls(system=SCORING_SYSTEMS[severity["system"]], value=severity["value"])
+        return cls(
+            system=SCORING_SYSTEMS[severity["system"]],
+            value=severity["value"],
+            scoring_elements=severity.get("scoring_elements", ""),
+        )
 
 
 @dataclasses.dataclass(order=True)
@@ -426,15 +433,13 @@ class OvalImporter(Importer):
             # connected/linked to an OvalDefinition
             vuln_id = definition_data["vuln_id"]
             description = definition_data["description"]
-            severities = (
-                [
-                    VulnerabilitySeverity(
-                        system=severity_systems.GENERIC, value=definition_data.get("severity")
-                    )
-                ]
-                if definition_data.get("severity")
-                else []
-            )
+
+            severities = []
+            severity = definition_data.get("severity")
+            if severity:
+                severities.append(
+                    VulnerabilitySeverity(system=severity_systems.GENERIC, value=severity)
+                )
             references = [
                 Reference(url=url, severities=severities)
                 for url in definition_data["reference_urls"]

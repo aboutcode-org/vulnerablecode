@@ -25,7 +25,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "Medium"
+            "value": "Medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -35,7 +36,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "Medium"
+            "value": "Medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -45,7 +47,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "Medium"
+            "value": "Medium",
+            "scoring_elements": ""
           }
         ]
       }
@@ -78,7 +81,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "Medium"
+            "value": "Medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -88,7 +92,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "Medium"
+            "value": "Medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -98,7 +103,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "Medium"
+            "value": "Medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -108,7 +114,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "Medium"
+            "value": "Medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -118,7 +125,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "Medium"
+            "value": "Medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -128,7 +136,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "Medium"
+            "value": "Medium",
+            "scoring_elements": ""
           }
         ]
       }

@@ -11,6 +11,7 @@ import json
 import os
 
 from vulnerabilities.importers import nvd
+from vulnerabilities.tests.util_tests import VULNERABLECODE_REGEN_TEST_FIXTURES as REGEN
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/nvd/nvd_test.json")
@@ -23,7 +24,8 @@ def load_test_data():
 
 def sorted_advisory_data(advisory_data):
     """
-    Sorted nested lists in a list of AdvisoryData mappings.
+    Return ``advisory_data`` of AdvisoryData mappings where each mapping nested
+    list is sorted for stable testing results.
     """
     sorter = lambda dct: tuple(dct.items())
     for data in advisory_data:
@@ -33,7 +35,7 @@ def sorted_advisory_data(advisory_data):
     return advisory_data
 
 
-def test_to_advisories_skips_hardware(regen=False):
+def test_to_advisories_skips_hardware(regen=REGEN):
     expected_file = os.path.join(BASE_DIR, "test_data/nvd/nvd-expected.json")
 
     test_data = load_test_data()

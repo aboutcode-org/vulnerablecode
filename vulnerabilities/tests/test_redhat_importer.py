@@ -32,18 +32,18 @@ def test_rpm_to_purl():
     )
 
 
-@patch("vulnerabilities.importers.redhat.fetch_list_of_cves")
+@patch("vulnerabilities.importers.redhat.fetch_cves")
 @patch("vulnerabilities.importers.redhat.get_data_from_url")
 def test_redhat_importer(get_data_from_url, fetcher):
     redhat_importer = redhat.RedhatImporter()
-    response_file = os.path.join(TEST_DATA, f"redhat-input.json")
+    response_file = os.path.join(TEST_DATA, "redhat-input.json")
 
     with open(response_file) as f:
         fetcher.return_value = [json.load(f)]
-    bugzilla_2075788_response_file = os.path.join(TEST_DATA, f"bugzilla-2075788.json")
-    bugzilla_2077736_response_file = os.path.join(TEST_DATA, f"bugzilla-2077736.json")
-    rhsa_1437 = os.path.join(TEST_DATA, f"RHSA-2022:1437.json")
-    rhsa_1439 = os.path.join(TEST_DATA, f"RHSA-2022:1439.json")
+    bugzilla_2075788_response_file = os.path.join(TEST_DATA, "bugzilla-2075788.json")
+    bugzilla_2077736_response_file = os.path.join(TEST_DATA, "bugzilla-2077736.json")
+    rhsa_1437 = os.path.join(TEST_DATA, "RHSA-2022:1437.json")
+    rhsa_1439 = os.path.join(TEST_DATA, "RHSA-2022:1439.json")
     get_data_from_url.side_effect = [
         json.load(open(bugzilla_2075788_response_file)),
         json.load(open(bugzilla_2077736_response_file)),
@@ -51,7 +51,7 @@ def test_redhat_importer(get_data_from_url, fetcher):
         json.load(open(rhsa_1437)),
         None,
     ]
-    expected_file = os.path.join(TEST_DATA, f"redhat-expected.json")
+    expected_file = os.path.join(TEST_DATA, "redhat-expected.json")
     imported_data = list(redhat_importer.advisory_data())
     result = [data.to_dict() for data in imported_data]
     util_tests.check_results_against_json(result, expected_file)

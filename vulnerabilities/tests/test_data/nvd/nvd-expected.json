@@ -22,11 +22,8 @@
         "severities": [
           {
             "system": "cvssv2",
-            "value": "5.0"
-          },
-          {
-            "system": "cvssv2_vector",
-            "value": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+            "value": "5.0",
+            "scoring_elements": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
           }
         ]
       },
@@ -136,11 +133,8 @@
         "severities": [
           {
             "system": "cvssv2",
-            "value": "5.0"
-          },
-          {
-            "system": "cvssv2_vector",
-            "value": "AV:N/AC:L/Au:N/C:P/I:N/A:N"
+            "value": "5.0",
+            "scoring_elements": "AV:N/AC:L/Au:N/C:P/I:N/A:N"
           }
         ]
       },

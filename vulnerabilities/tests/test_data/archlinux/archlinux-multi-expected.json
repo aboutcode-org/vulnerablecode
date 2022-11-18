@@ -25,7 +25,8 @@
         "severities": [
           {
             "system": "archlinux",
-            "value": "Unknown"
+            "value": "Unknown",
+            "scoring_elements": ""
           }
         ]
       }
@@ -58,7 +59,8 @@
         "severities": [
           {
             "system": "archlinux",
-            "value": "Unknown"
+            "value": "Unknown",
+            "scoring_elements": ""
           }
         ]
       }
@@ -91,7 +93,8 @@
         "severities": [
           {
             "system": "archlinux",
-            "value": "Unknown"
+            "value": "Unknown",
+            "scoring_elements": ""
           }
         ]
       }
@@ -124,7 +127,8 @@
         "severities": [
           {
             "system": "archlinux",
-            "value": "Unknown"
+            "value": "Unknown",
+            "scoring_elements": ""
           }
         ]
       }
@@ -157,7 +161,8 @@
         "severities": [
           {
             "system": "archlinux",
-            "value": "Low"
+            "value": "Low",
+            "scoring_elements": ""
           }
         ]
       },

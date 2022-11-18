@@ -60,7 +60,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "High"
+            "value": "High",
+            "scoring_elements": ""
           }
         ]
       }
@@ -223,7 +224,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "High"
+            "value": "High",
+            "scoring_elements": ""
           }
         ]
       }
@@ -506,7 +508,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "High"
+            "value": "High",
+            "scoring_elements": ""
           }
         ]
       }
@@ -565,7 +568,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "Moderate"
+            "value": "Moderate",
+            "scoring_elements": ""
           }
         ]
       }
@@ -720,7 +724,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "Moderate"
+            "value": "Moderate",
+            "scoring_elements": ""
           }
         ]
       }
@@ -995,7 +1000,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "Moderate"
+            "value": "Moderate",
+            "scoring_elements": ""
           }
         ]
       }
@@ -1044,7 +1050,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "Moderate"
+            "value": "Moderate",
+            "scoring_elements": ""
           }
         ]
       }
@@ -1162,7 +1169,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "High"
+            "value": "High",
+            "scoring_elements": ""
           }
         ]
       }
@@ -1400,7 +1408,8 @@
         "severities": [
           {
             "system": "generic_textual",
-            "value": "High"
+            "value": "High",
+            "scoring_elements": ""
           }
         ]
       }

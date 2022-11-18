@@ -26,7 +26,8 @@
         "severities": [
           {
             "system": "cvssv3.1_qr",
-            "value": "MODERATE"
+            "value": "MODERATE",
+            "scoring_elements": ""
           }
         ]
       }
@@ -60,7 +61,8 @@
         "severities": [
           {
             "system": "cvssv3.1_qr",
-            "value": "HIGH"
+            "value": "HIGH",
+            "scoring_elements": ""
           }
         ]
       }
@@ -94,7 +96,8 @@
         "severities": [
           {
             "system": "cvssv3.1_qr",
-            "value": "LOW"
+            "value": "LOW",
+            "scoring_elements": ""
           }
         ]
       }
@@ -128,7 +131,8 @@
         "severities": [
           {
             "system": "cvssv3.1_qr",
-            "value": "MODERATE"
+            "value": "MODERATE",
+            "scoring_elements": ""
           }
         ]
       }
@@ -162,7 +166,8 @@
         "severities": [
           {
             "system": "cvssv3.1_qr",
-            "value": "LOW"
+            "value": "LOW",
+            "scoring_elements": ""
           }
         ]
       }

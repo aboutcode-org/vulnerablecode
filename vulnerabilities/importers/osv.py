@@ -115,10 +115,10 @@ def get_severities(raw_data) -> Iterable[VulnerabilitySeverity]:
     """
     for severity in raw_data.get("severity") or []:
         if severity.get("type") == "CVSS_V3":
-            yield VulnerabilitySeverity(
-                system=SCORING_SYSTEMS["cvssv3.1_vector"],
-                value=severity["score"],
-            )
+            vector = severity["score"]
+            system = SCORING_SYSTEMS["cvssv3.1"]
+            score = system.compute(vector)
+            yield VulnerabilitySeverity(system=system, value=score, scoring_elements=vector)
         else:
             logger.error(f"Unsupported severity type: {severity!r} for OSV id: {raw_data['id']!r}")
 

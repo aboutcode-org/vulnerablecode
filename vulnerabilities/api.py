@@ -29,7 +29,7 @@ from vulnerabilities.throttling import StaffUserRateThrottle
 class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
     class Meta:
         model = VulnerabilitySeverity
-        fields = ["value", "scoring_system"]
+        fields = ["value", "scoring_system", "scoring_elements"]
 
 
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):

@@ -35,18 +35,12 @@ class TestSUSESeverityScoreImporter(TestCase):
                             VulnerabilitySeverity(
                                 system=severity_systems.CVSSV2,
                                 value="4.3",
-                            ),
-                            VulnerabilitySeverity(
-                                system=severity_systems.CVSSV2_VECTOR,
-                                value="AV:N/AC:M/Au:N/C:N/I:N/A:P",
+                                scoring_elements="AV:N/AC:M/Au:N/C:N/I:N/A:P",
                             ),
                             VulnerabilitySeverity(
                                 system=severity_systems.CVSSV31,
                                 value="3.7",
-                            ),
-                            VulnerabilitySeverity(
-                                system=severity_systems.CVSSV31_VECTOR,
-                                value="CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+                                scoring_elements="CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
                             ),
                         ],
                     )
@@ -63,10 +57,7 @@ class TestSUSESeverityScoreImporter(TestCase):
                             VulnerabilitySeverity(
                                 system=severity_systems.CVSSV3,
                                 value="8.6",
-                            ),
-                            VulnerabilitySeverity(
-                                system=severity_systems.CVSSV3_VECTOR,
-                                value="CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N",
+                                scoring_elements="CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N",
                             ),
                         ],
                     )

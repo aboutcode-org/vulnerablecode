@@ -34,7 +34,7 @@ class Command(BaseCommand):
             return
 
         if options["all"]:
-            self.import_data(IMPORTERS_REGISTRY.values())
+            self.import_data(importers=IMPORTERS_REGISTRY.values())
             return
 
         sources = options["sources"]
@@ -44,9 +44,8 @@ class Command(BaseCommand):
         self.import_data(validate_importers(sources))
 
     def list_sources(self):
-        importers = list(IMPORTERS_REGISTRY)
         self.stdout.write("Vulnerability data can be imported from the following importers:")
-        self.stdout.write("\n".join(importers))
+        self.stdout.write("\n".join(IMPORTERS_REGISTRY))
 
     def import_data(self, importers):
         """

@@ -26,6 +26,7 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers.github import GitHubAPIImporter
 from vulnerabilities.importers.github import GitHubBasicImprover
 from vulnerabilities.importers.github import process_response
+from vulnerabilities.tests.util_tests import VULNERABLECODE_REGEN_TEST_FIXTURES as REGEN
 from vulnerabilities.utils import GitHubTokenError
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -33,7 +34,7 @@ TEST_DATA = os.path.join(BASE_DIR, "test_data", "github_api")
 
 
 @pytest.mark.parametrize("pkg_type", ["maven", "nuget", "gem", "golang", "composer", "pypi"])
-def test_process_response_github_importer(pkg_type, regen=False):
+def test_process_response_github_importer(pkg_type, regen=REGEN):
     response_file = os.path.join(TEST_DATA, f"{pkg_type}.json")
     expected_file = os.path.join(TEST_DATA, f"{pkg_type}-expected.json")
     with open(response_file) as f:
@@ -175,7 +176,7 @@ def valid_versions():
 
 
 @mock.patch("vulnerabilities.importers.github.GitHubBasicImprover.get_package_versions")
-def test_github_improver(mock_response, regen=False):
+def test_github_improver(mock_response, regen=REGEN):
     advisory_data = AdvisoryData(
         aliases=["CVE-2022-21831", "GHSA-w749-p3v6-hccq"],
         summary="Possible code injection vulnerability in Rails / Active Storage",

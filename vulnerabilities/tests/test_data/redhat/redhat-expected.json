@@ -12,7 +12,8 @@
         "severities": [
           {
             "system": "rhbs",
-            "value": "medium"
+            "value": "medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -22,11 +23,8 @@
         "severities": [
           {
             "system": "cvssv3",
-            "value": 6.3
-          },
-          {
-            "system": "cvssv3_vector",
-            "value": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:H/I:L/A:N"
+            "value": 6.3,
+            "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:H/I:L/A:N"
           }
         ]
       }
@@ -201,7 +199,8 @@
         "severities": [
           {
             "system": "rhbs",
-            "value": "medium"
+            "value": "medium",
+            "scoring_elements": ""
           }
         ]
       },
@@ -211,7 +210,8 @@
         "severities": [
           {
             "system": "rhas",
-            "value": "Important"
+            "value": "Important",
+            "scoring_elements": ""
           }
         ]
       },
@@ -221,7 +221,8 @@
         "severities": [
           {
             "system": "rhas",
-            "value": "Important"
+            "value": "Important",
+            "scoring_elements": ""
           }
         ]
       },
@@ -231,11 +232,8 @@
         "severities": [
           {
             "system": "cvssv3",
-            "value": 5.3
-          },
-          {
-            "system": "cvssv3_vector",
-            "value": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+            "value": 5.3,
+            "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
           }
         ]
       }

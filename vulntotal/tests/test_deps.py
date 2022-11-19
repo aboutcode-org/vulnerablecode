@@ -21,9 +21,14 @@ class TestDeps(testcase.FileBasedTesting):
     test_data_dir = str(Path(__file__).resolve().parent / "test_data" / "deps")
 
     def test_generate_meta_payload(self):
-        file_purls = self.get_test_loc("purls.txt")
-        with open(file_purls) as f:
-            purls = f.readlines()
+        purls = [
+            "pkg:pypi/jinja2@2.4.1",
+            "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M8",
+            "pkg:npm/semver-regex@3.1.3",
+            "pkg:golang/github.com/cloudflare/cfrpki@1.4.1",
+            "pkg:cargo/rand@0.5.4",
+        ]
+
         results = [deps.generate_meta_payload(PackageURL.from_string(purl)) for purl in purls]
         expected_file = self.get_test_loc("payloads_meta-expected.json", must_exist=False)
         util_tests.check_results_against_json(results, expected_file)

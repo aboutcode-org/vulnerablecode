@@ -21,9 +21,17 @@ class TestGithub(testcase.FileBasedTesting):
     test_data_dir = str(Path(__file__).resolve().parent / "test_data" / "github")
 
     def test_generate_graphql_payload(self):
-        file_purls = self.get_test_loc("purls.txt")
-        with open(file_purls) as f:
-            purls = f.readlines()
+        purls = [
+            "pkg:pypi/jinja2@2.4.1",
+            "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M8",
+            "pkg:nuget/moment.js@2.18.0",
+            "pkg:npm/semver-regex@3.1.3",
+            "pkg:golang/github.com/cloudflare/cfrpki@0.1.0",
+            "pkg:composer/symfony/symfony@2.7.1",
+            "pkg:rust/slice-deque@0.1.0",
+            "pkg:erlang/alchemist.vim@1.3.0",
+            "pkg:gem/ftpd@0.0.1",
+        ]
         results = [
             github.generate_graphql_payload(PackageURL.from_string(purl), "") for purl in purls
         ]

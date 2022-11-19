@@ -63,7 +63,9 @@ class OSVDataSource(DataSource):
 
 
 def parse_advisory(response) -> Iterable[VendorData]:
-    """Parse response from OSV API and yield VendorData"""
+    """
+    Parse response from OSV API and yield VendorData
+    """
 
     for vuln in response.get("vulns") or []:
         aliases = []
@@ -71,7 +73,8 @@ def parse_advisory(response) -> Iterable[VendorData]:
         fixed = []
 
         aliases.extend(vuln.get("aliases") or [])
-        aliases.append(vuln.get("id")) if vuln.get("id") else None
+        vuln_id = vuln.get("id")
+        aliases.append(vuln_id) if vuln_id else None
 
         try:
             affected_versions.extend(get_item(vuln, "affected", 0, "versions") or [])
@@ -100,40 +103,43 @@ def generate_payload(purl):
     supported_ecosystem = OSVDataSource.supported_ecosystem()
     payload = {}
     payload["version"] = purl.version
-    payload["package"] = {}
+    package = payload["package"] = {}
 
-    if purl.type in supported_ecosystem:
-        payload["package"]["ecosystem"] = supported_ecosystem[purl.type]
+    purl_type = purl.type
+    purl_namespace = purl.namespace
 
-    if purl.type == "maven":
-        if not purl.namespace:
+    if purl_type in supported_ecosystem:
+        package["ecosystem"] = supported_ecosystem[purl_type]
+
+    if purl_type == "maven":
+        if not purl_namespace:
             logger.error(f"Invalid Maven PURL {str(purl)}")
             return
-        payload["package"]["name"] = f"{purl.namespace}:{purl.name}"
+        package["name"] = f"{purl.namespace}:{purl.name}"
 
-    elif purl.type == "packagist":
-        if not purl.namespace:
+    elif purl_type == "packagist":
+        if not purl_namespace:
             logger.error(f"Invalid Packagist PURL {str(purl)}")
             return
-        payload["package"]["name"] = f"{purl.namespace}/{purl.name}"
+        package["name"] = f"{purl.namespace}/{purl.name}"
 
-    elif purl.type == "linux":
+    elif purl_type == "linux":
         if purl.name not in ("kernel", "Kernel"):
             logger.error(f"Invalid Linux PURL {str(purl)}")
             return
-        payload["package"]["name"] = "Kernel"
+        package["name"] = "Kernel"
 
-    elif purl.type == "nuget":
+    elif purl_type == "nuget":
         nuget_package = get_closest_nuget_package_name(purl.name)
         if not nuget_package:
             logger.error(f"Invalid NuGet PURL {str(purl)}")
             return
-        payload["package"]["name"] = nuget_package
+        package["name"] = nuget_package
 
-    elif purl.type == "golang" and purl.namespace:
-        payload["package"]["name"] = f"{purl.namespace}/{purl.name}"
+    elif purl_type == "golang" and purl_namespace:
+        package["name"] = f"{purl.namespace}/{purl.name}"
 
     else:
-        payload["package"]["name"] = purl.name
+        package["name"] = purl.name
 
     return payload

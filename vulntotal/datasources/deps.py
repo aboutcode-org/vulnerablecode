@@ -57,21 +57,22 @@ class DepsDataSource(DataSource):
 
 
 def parse_advisory(advisory) -> Iterable[VendorData]:
-    affected_versions = [event["version"] for event in advisory["packages"][0]["versionsAffected"]]
-    fixed_versions = [event["version"] for event in advisory["packages"][0]["versionsUnaffected"]]
+    package = advisory["packages"][0]
+    affected_versions = [event["version"] for event in package["versionsAffected"]]
+    fixed_versions = [event["version"] for event in package["versionsUnaffected"]]
     yield VendorData(
-        aliases=sorted(list(set(advisory["aliases"]))),
-        affected_versions=sorted(list(set(affected_versions))),
-        fixed_versions=sorted(list(set(fixed_versions))),
+        aliases=sorted(set(advisory["aliases"])),
+        affected_versions=sorted(set(affected_versions)),
+        fixed_versions=sorted(set(fixed_versions)),
     )
 
 
 def parse_advisories_from_meta(advisories_metadata):
     advisories = []
-    if "dependencies" in advisories_metadata and advisories_metadata["dependencies"]:
-        for dependency in advisories_metadata["dependencies"]:
-            if dependency["advisories"]:
-                advisories.extend(dependency["advisories"])
+    dependencies = advisories_metadata.get("dependencies") or []
+    for dependency in dependencies:
+        advs = dependency.get("advisories") or []
+        advisories.extend(advs)
     return advisories
 
 

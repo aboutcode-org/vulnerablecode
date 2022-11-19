@@ -21,7 +21,27 @@
 #  VulnTotal is a free software tool from nexB Inc. and others.
 #  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
+import glob
+import importlib
+import inspect
+from os.path import basename
+from os.path import dirname
+from os.path import isfile
+from os.path import join
 
-DATASOURCE_REGISTRY = []
+from vulntotal.validator import DataSource
 
-DATASOURCE_REGISTRY = {x.__module__.split(".")[-1]: x for x in DATASOURCE_REGISTRY}
+DATASOURCE_REGISTRY = {}
+files = glob.glob(join(dirname(__file__), "*.py"))
+modules = [
+    f"vulntotal.datasources.{basename(f)[:-3]}"
+    for f in files
+    if isfile(f) and not f.endswith("__init__.py")
+]
+
+
+for module in modules:
+    for name, cls in inspect.getmembers(importlib.import_module(module), inspect.isclass):
+        if cls.__module__ == module and cls.__base__ == DataSource:
+            DATASOURCE_REGISTRY[cls.__module__.split(".")[-1]] = cls
+            break

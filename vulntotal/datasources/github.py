@@ -58,9 +58,7 @@ def parse_advisory(interesting_edges) -> Iterable[VendorData]:
     for edge in interesting_edges:
         node = edge["node"]
         aliases = [aliase["value"] for aliase in node["advisory"]["identifiers"]]
-        affected_versions = (
-            node["vulnerableVersionRange"].strip().replace(" ", "").split(",")
-        )
+        affected_versions = node["vulnerableVersionRange"].strip().replace(" ", "").split(",")
         fixed_versions = [node["firstPatchedVersion"]["identifier"]]
         yield VendorData(
             aliases=sorted(list(set(aliases))),

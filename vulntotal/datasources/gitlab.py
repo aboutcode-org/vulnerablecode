@@ -1,28 +1,12 @@
 #
 # Copyright (c) nexB Inc. and others. All rights reserved.
-# http://nexb.com and https://github.com/nexB/vulnerablecode/
-# The VulnTotal software is licensed under the Apache License version 2.0.
-# Data generated with VulnTotal require an acknowledgment.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
 #
-# You may not use this software except in compliance with the License.
-# You may obtain a copy of the License at: http://apache.org/licenses/LICENSE-2.0
-# Unless required by applicable law or agreed to in writing, software distributed
-# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-# CONDITIONS OF ANY KIND, either express or implied. See the License for the
-# specific language governing permissions and limitations under the License.
-#
-# When you publish or redistribute any data created with VulnTotal or any VulnTotal
-# derivative work, you must accompany this data with the following acknowledgment:
-#
-#  Generated with VulnTotal and provided on an "AS IS" BASIS, WITHOUT WARRANTIES
-#  OR CONDITIONS OF ANY KIND, either express or implied. No content created from
-#  VulnTotal should be considered or used as legal advice. Consult an Attorney
-#  for any legal advice.
-#  VulnTotal is a free software tool from nexB Inc. and others.
-#  Visit https://github.com/nexB/vulnerablecode/ for support and download.
 
-
-import json
 import logging
 import os
 import shutil
@@ -33,7 +17,6 @@ from typing import Iterable
 import requests
 import saneyaml
 from fetchcode import fetch
-from packageurl import PackageURL
 
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
@@ -55,7 +38,9 @@ class GitlabDataSource(DataSource):
             casesensitive_package_slug = get_casesensitive_slug(path, package_slug)
             location = download_subtree(casesensitive_package_slug)
         if location:
-            interesting_advisories = parse_interesting_advisories(location, purl.version, delete_download=True)
+            interesting_advisories = parse_interesting_advisories(
+                location, purl.version, delete_download=True
+            )
             return interesting_advisories
         clear_download(location)
 

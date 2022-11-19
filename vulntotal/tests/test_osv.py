@@ -10,6 +10,7 @@
 import json
 from pathlib import Path
 
+import pytest
 from commoncode import testcase
 from packageurl import PackageURL
 
@@ -62,6 +63,7 @@ class TestOSV(testcase.FileBasedTesting):
         util_tests.check_results_against_json(results, expected_file)
 
 
+@pytest.mark.webtest
 class TestOSVLive(testcase.FileBasedTesting):
     def test_generate_payload_nuget_with_api_call(self):
         # this test makes like API calls

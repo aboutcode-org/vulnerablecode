@@ -12,7 +12,7 @@ from typing import Iterable
 
 import requests
 
-from vulntotal.ecosystem.nuget import get_closest_nuget_package_name
+from vulntotal.ecosystem.nuget import search_closest_nuget_package_name
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
 from vulntotal.vulntotal_utils import get_item
@@ -130,7 +130,7 @@ def generate_payload(purl):
         package["name"] = "Kernel"
 
     elif purl_type == "nuget":
-        nuget_package = get_closest_nuget_package_name(purl.name)
+        nuget_package = search_closest_nuget_package_name(purl.name)
         if not nuget_package:
             logger.error(f"Invalid NuGet PURL {str(purl)}")
             return

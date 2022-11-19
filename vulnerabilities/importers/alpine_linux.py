@@ -15,22 +15,17 @@ from typing import List
 from typing import Mapping
 from urllib.parse import urljoin
 
-import requests
 from bs4 import BeautifulSoup
-from django.db.models.query import QuerySet
 from packageurl import PackageURL
 from univers.versions import AlpineLinuxVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
-from vulnerabilities.improver import MAX_CONFIDENCE
-from vulnerabilities.improver import Improver
-from vulnerabilities.improver import Inference
-from vulnerabilities.models import Advisory
 from vulnerabilities.references import WireSharkReference
 from vulnerabilities.references import XsaReference
 from vulnerabilities.references import ZbxReference
+from vulnerabilities.utils import fetch_response
 from vulnerabilities.utils import is_cve
 
 LOGGER = logging.getLogger(__name__)
@@ -56,16 +51,6 @@ class AlpineImporter(Importer):
                 LOGGER.error(f'"packages" not found in {link!r}')
                 continue
             yield from process_record(record)
-
-
-def fetch_response(url):
-    """
-    Fetch and return `response` from the `url`
-    """
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response
-    raise Exception(f"Failed to fetch data from {url!r} with status code: {response.status_code!r}")
 
 
 def fetch_advisory_directory_links(page_response_content: str) -> List[str]:

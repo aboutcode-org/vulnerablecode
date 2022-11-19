@@ -5,7 +5,7 @@ Contributing to VulnerableCode
 
 Thank you so much for being so interested in contributing to VulnerableCode. We
 are always on the lookout for enthusiastic contributors like you who can make
-our project better, and we're willing to lend a helping hand if you have any
+our project better, and we are willing to lend a helping hand if you have any
 questions or need guidance along the way. That being said, here are a few
 resources to help you get started.
 
@@ -33,13 +33,13 @@ join our community. Below are some examples to get involved:
 First Timers
 ^^^^^^^^^^^^
 
-You are here to help, but you're a new contributor! No worries, we always
+You are here to help, but you are a new contributor! No worries, we always
 welcome newcomer contributors. We maintain some
 `good first issues <https://github.com/nexB/vulnerablecode/labels/good%20first%20issue>`_
 and encourage new contributors to work on those issues for a smooth start.
 
 .. tip::
-    If you're an open-source newbie, make sure to check the extra resources at
+    If you are an open-source newbie, make sure to check the extra resources at
     the bottom of this page to get the hang of the contribution process!
 
 Code Contributions
@@ -75,7 +75,7 @@ Other Ways
 ^^^^^^^^^^
 
 You want to contribute to other aspects of the VulnerableCode project, and you
-can't find what you're looking for! You can always discuss new topics, ask
+cannot find what you are looking for! You can always discuss new topics, ask
 questions, and interact with us and other community members on
 `AboutCode Gitter <https://gitter.im/aboutcode-org/discuss>`_ and `VulnerableCode Gitter <https://gitter.im/aboutcode-org/vulnerablecode>`_
 

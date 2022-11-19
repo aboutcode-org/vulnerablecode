@@ -37,7 +37,6 @@ repositories, registries or APIs.
 # FIXME: use purl for cache key, rather than an undefined package_name key
 # FIXME: DO NOT cache by default as this is an optimization that does not work for long running processes
 # FIXME: DO NOT use set() for storing version lists: they lose the original ordering
-# FIXME: DO NOT use aiohttp that makes the code more complex before this is can be tested for correctness first
 
 
 @dataclasses.dataclass(frozen=True)
@@ -132,23 +131,30 @@ class LaunchpadVersionAPI(VersionAPI):
     def fetch(self, pkg: str) -> Iterable[PackageVersion]:
         url = (
             f"https://api.launchpad.net/1.0/ubuntu/+archive/primary?"
-            "ws.op=getPublishedSources&source_name={pkg}&exact_match=true"
+            f"ws.op=getPublishedSources&source_name={pkg}&exact_match=true"
         )
 
         while True:
             response = get_response(url=url, content_type="json")
 
-            entries = response["entries"]
+            if not response:
+                break
+            entries = response.get("entries")
             if not entries:
                 break
 
             for release in entries:
-                source_package_version = release["source_package_version"]
-                source_package_version = remove_debian_default_epoch(source_package_version)
-                yield PackageVersion(
-                    value=source_package_version,
-                    release_date=release["date_published"],
-                )
+                source_package_version = release.get("source_package_version")
+                source_package_version = remove_debian_default_epoch(version=source_package_version)
+                date_published = release.get("date_published")
+                release_date = None
+                if date_published and type(date_published) is str:
+                    release_date = dateparser.parse(date_published)
+                if source_package_version:
+                    yield PackageVersion(
+                        value=source_package_version,
+                        release_date=release_date,
+                    )
             if response.get("next_collection_link"):
                 url = response["next_collection_link"]
             else:
@@ -286,7 +292,7 @@ class DebianVersionAPI(VersionAPI):
             headers={"Connection": "keep-alive"},
             content_type="json",
         )
-        if response.get("error") or not response.get("versions"):
+        if response and (response.get("error") or not response.get("versions")):
             return
 
         for release in response["versions"]:
@@ -696,7 +702,7 @@ def get_api_package_name(purl: PackageURL) -> str:
     """
     if not purl.name:
         return None
-    if purl.type in ("nuget", "pypi", "gem") or not purl.namespace:
+    if purl.type in ("nuget", "pypi", "gem", "deb") or not purl.namespace:
         return purl.name
     if purl.type == "maven":
         return f"{purl.namespace}:{purl.name}"

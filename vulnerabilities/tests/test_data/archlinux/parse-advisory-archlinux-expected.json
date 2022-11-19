@@ -1,0 +1,36 @@
+[
+  {
+    "aliases": [
+      "CVE-2022-29217"
+    ],
+    "summary": "",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "alpm",
+          "namespace": "archlinux",
+          "name": "python-pyjwt",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:alpm/2.3.0-1",
+        "fixed_version": "2.4.0-1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "AVG-2781",
+        "url": "https://security.archlinux.org/AVG-2781",
+        "severities": [
+          {
+            "system": "archlinux",
+            "value": "Unknown",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": null
+  }
+]

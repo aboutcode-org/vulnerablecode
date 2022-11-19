@@ -8,9 +8,9 @@
 #
 
 import logging
-import os
 import traceback
 from datetime import datetime
+from pathlib import Path
 from typing import Iterable
 from typing import List
 from typing import Mapping
@@ -20,7 +20,6 @@ import pytz
 import saneyaml
 from dateutil import parser as dateparser
 from django.db.models.query import QuerySet
-from fetchcode.vcs import fetch_via_vcs
 from packageurl import PackageURL
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import VersionRange
@@ -29,7 +28,7 @@ from univers.versions import Version
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Importer
+from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import UnMergeablePackageError
 from vulnerabilities.improver import Improver
@@ -64,38 +63,61 @@ PURL_TYPE_BY_GITLAB_SCHEME = {
 GITLAB_SCHEME_BY_PURL_TYPE = {v: k for k, v in PURL_TYPE_BY_GITLAB_SCHEME.items()}
 
 
-def fork_and_get_dir(url):
-    """
-    Fetch a clone of the gitlab repository at url and return the directory destination
-    """
-    return fetch_via_vcs(url).dest_dir
-
-
-class ForkError(Exception):
-    pass
-
-
-class GitLabAPIImporter(Importer):
+class GitLabAPIImporter(GitImporter):
     spdx_license_expression = "MIT"
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
-    gitlab_url = "git+https://gitlab.com/gitlab-org/advisories-community/"
 
-    def advisory_data(self) -> Iterable[AdvisoryData]:
+    def __init__(self):
+        super().__init__(repo_url="git+https://gitlab.com/gitlab-org/advisories-community/")
+
+    def advisory_data(self, _keep_clone=True) -> Iterable[AdvisoryData]:
         try:
-            fork_directory = fork_and_get_dir(url=self.gitlab_url)
-        except Exception as e:
-            logger.error(f"Can't clone url {self.gitlab_url}")
-            raise ForkError(self.gitlab_url) from e
-        for root_dir in os.listdir(fork_directory):
-            # skip well known files and directories that contain no advisory data
-            if root_dir in ("ci", "CODEOWNERS", "README.md", "LICENSE", ".git"):
-                continue
-            if root_dir not in PURL_TYPE_BY_GITLAB_SCHEME:
-                logger.error(f"Unknown package type: {root_dir}")
-                continue
-            for root, _, files in os.walk(os.path.join(fork_directory, root_dir)):
-                for file in files:
-                    yield parse_gitlab_advisory(file=os.path.join(root, file))
+            self.clone()
+            base_path = Path(self.vcs_response.dest_dir)
+
+            for file_path in base_path.glob("**/*.yml"):
+                gitlab_type, package_slug, vuln_id = parse_advisory_path(
+                    base_path=base_path,
+                    file_path=file_path,
+                )
+
+                if gitlab_type in PURL_TYPE_BY_GITLAB_SCHEME:
+                    yield parse_gitlab_advisory(file_path)
+
+                else:
+                    logger.error(f"Unknow package type {gitlab_type!r} in {file_path!r}")
+                    continue
+        finally:
+            if self.vcs_response and not _keep_clone:
+                self.vcs_response.delete()
+
+
+def parse_advisory_path(base_path: Path, file_path: Path) -> Optional[AdvisoryData]:
+    """
+    Parse a gitlab advisory file and return a 3-tuple of:
+       (gitlab_type, package_slug, vulnerability_id)
+
+    For example::
+
+    >>> base_path = Path("/tmp/tmpi1klhpmd/checkout")
+    >>> file_path=Path("/tmp/tmpi1klhpmd/checkout/pypi/gradio/CVE-2021-43831.yml")
+    >>> parse_advisory_path(base_path=base_path, file_path=file_path)
+    ('pypi', 'gradio', 'CVE-2021-43831')
+
+    >>> file_path=Path("/tmp/tmpi1klhpmd/checkout/nuget/github.com/beego/beego/v2/nuget/CVE-2021-43831.yml")
+    >>> parse_advisory_path(base_path=base_path, file_path=file_path)
+    ('nuget', 'github.com/beego/beego/v2/nuget', 'CVE-2021-43831')
+
+    >>> file_path = Path("/tmp/tmpi1klhpmd/checkout/npm/@express/beego/beego/v2/CVE-2021-43831.yml")
+    >>> parse_advisory_path(base_path=base_path, file_path=file_path)
+    ('npm', '@express/beego/beego/v2', 'CVE-2021-43831')
+    """
+    relative_path_segments = str(file_path.relative_to(base_path)).strip("/").split("/")
+    gitlab_type = relative_path_segments[0]
+    vuln_id = relative_path_segments[-1].replace(".yml", "")
+    package_slug = "/".join(relative_path_segments[1:-1])
+
+    return gitlab_type, package_slug, vuln_id
 
 
 def get_purl(package_slug):
@@ -168,10 +190,12 @@ def parse_gitlab_advisory(file):
     identifiers:
     - "GMS-2018-26"
     """
-    with open(file, "r") as f:
+    with open(file) as f:
         gitlab_advisory = saneyaml.load(f)
     if not isinstance(gitlab_advisory, dict):
-        logger.error(f"parse_yaml_file: yaml_file is not of type `dict`: {gitlab_advisory!r}")
+        logger.error(
+            f"parse_gitlab_advisory: unknown gitlab advisory format in {file!r} with data: {gitlab_advisory!r}"
+        )
         return
 
     # refer to schema here https://gitlab.com/gitlab-org/advisories-community/-/blob/main/ci/schema/schema.json

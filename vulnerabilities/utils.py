@@ -15,10 +15,12 @@ import os
 import re
 from collections import defaultdict
 from functools import total_ordering
+from hashlib import sha256
 from typing import List
 from typing import Optional
 from typing import Tuple
 from unittest.mock import MagicMock
+from uuid import uuid4
 
 import requests
 import saneyaml
@@ -316,7 +318,7 @@ def get_reference_id(url: str):
 def resolve_version_range(
     affected_version_range: VersionRange,
     package_versions: List[str],
-    ignorable_versions: List[str],
+    ignorable_versions: List[str] = tuple(),
 ) -> Tuple[List[str], List[str]]:
     """
     Given an affected version range and a list of `package_versions`, resolve
@@ -351,3 +353,70 @@ def resolve_version_range(
             )
             continue
     return affected_versions, unaffected_versions
+
+
+def build_vcid(prefix="VCID"):
+    """
+    Return a new VulnerableCode VCID unique identifier string using the ``prefix``.
+
+    For example::
+    >>> import re
+    >>> vcid = build_vcid()
+    >>> # VCID-6npv-94wz-hhuq
+    >>> assert re.match('VCID(-[a-z1-9]{4}){3}', vcid), vcid
+    """
+    # we keep only 64 bits (e.g. 8 bytes)
+    uid = sha256(uuid4().bytes).digest()[:8]
+    # we keep only 12 encoded bytes (which corresponds to 60 bits)
+    uid = base32_custom(uid)[:12].decode("utf-8").lower()
+    return f"{prefix}-{uid[:4]}-{uid[4:8]}-{uid[8:12]}"
+
+
+_base32_alphabet = b"ABCDEFGHJKMNPQRSTUVWXYZ123456789"
+_base32_table = None
+
+
+def base32_custom(btes):
+    """
+    Encode the ``btes`` bytes object using a Base32 encoding using a custom
+    alphabet and return a bytes object.
+
+    Code copied and modified from the Python Standard Library:
+    base64.b32encode function
+
+    SPDX-License-Identifier: Python-2.0
+    Copyright (c) The Python Software Foundation
+
+    For example::
+    >>> assert base32_custom(b'abcd') == b'ABTZE25E', base32_custom(b'abcd')
+    >>> assert base32_custom(b'abcde00000xxxxxPPPPP') == b'PFUGG3DFGA2DAPBTSB6HT8D2MBJFAXCT'
+    """
+    global _base32_table
+    # Delay the initialization of the table to not waste memory
+    # if the function is never called
+    if _base32_table is None:
+        b32tab = [bytes((i,)) for i in _base32_alphabet]
+        _base32_table = [a + b for a in b32tab for b in b32tab]
+
+    encoded = bytearray()
+    from_bytes = int.from_bytes
+
+    for i in range(0, len(btes), 5):
+        c = from_bytes(btes[i : i + 5], "big")
+        encoded += (
+            _base32_table[c >> 30]
+            + _base32_table[(c >> 20) & 0x3FF]  # bits 1 - 10
+            + _base32_table[(c >> 10) & 0x3FF]  # bits 11 - 20
+            + _base32_table[c & 0x3FF]  # bits 21 - 30  # bits 31 - 40
+        )
+    return bytes(encoded)
+
+
+def fetch_response(url):
+    """
+    Fetch and return `response` from the `url`
+    """
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response
+    raise Exception(f"Failed to fetch data from {url!r} with status code: {response.status_code!r}")

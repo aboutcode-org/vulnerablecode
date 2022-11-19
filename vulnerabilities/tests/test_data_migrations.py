@@ -51,7 +51,6 @@ class TestMigrations(TestCase):
 
 
 class DuplicateSeverityTestCase(TestMigrations):
-
     migrate_from = "0013_auto_20220503_0941"
     migrate_to = "0014_remove_duplicate_severities"
 
@@ -60,7 +59,7 @@ class DuplicateSeverityTestCase(TestMigrations):
         VulnerabilityReference = apps.get_model("vulnerabilities", "VulnerabilityReference")
         Severities = apps.get_model("vulnerabilities", "VulnerabilitySeverity")
         Vulnerability = apps.get_model("vulnerabilities", "Vulnerability")
-        
+
         reference = VulnerabilityReference.objects.create(
             reference_id="CVE-TEST", url="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-TEST"
         )
@@ -96,7 +95,6 @@ class DuplicateSeverityTestCase(TestMigrations):
 
 
 class DropVulnerabilityFromSeverityTestCase(TestMigrations):
-
     migrate_from = "0014_remove_duplicate_severities"
     migrate_to = "0015_alter_vulnerabilityseverity_unique_together_and_more"
 
@@ -116,7 +114,6 @@ class DropVulnerabilityFromSeverityTestCase(TestMigrations):
 
 
 class UpdateCPEURL(TestMigrations):
-
     migrate_from = "0015_alter_vulnerabilityseverity_unique_together_and_more"
     migrate_to = "0016_update_cpe_url"
 
@@ -130,8 +127,402 @@ class UpdateCPEURL(TestMigrations):
         reference.save()
         self.reference = reference
 
-    def test_cpe_url_updation(self):
+    def test_cpe_url_update(self):
         # using get_model to avoid circular import
         VulnerabilityReference = self.apps.get_model("vulnerabilities", "VulnerabilityReference")
-        ref = VulnerabilityReference.objects.get(reference_id = self.reference.reference_id)
-        assert ref.url == "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:f5:nginx:*:*:*:*:*:*:*:*"
+        ref = VulnerabilityReference.objects.get(reference_id=self.reference.reference_id)
+        assert (
+            ref.url
+            == "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:f5:nginx:*:*:*:*:*:*:*:*"
+        )
+
+
+class TestCvssVectorMigrationToScoringElementComputeNewScores(TestMigrations):
+    migrate_from = "0031_vulnerabilityseverity_scoring_elements"
+    migrate_to = "0032_vulnerabilityseverity_merge_cvss_score_and_vector"
+
+    def setUpBeforeMigration(self, apps):
+        # using get_model to avoid circular import
+        VulnerabilitySeverity = apps.get_model("vulnerabilities", "VulnerabilitySeverity")
+        VulnerabilityReference = apps.get_model("vulnerabilities", "VulnerabilityReference")
+        reference = VulnerabilityReference.objects.create(
+            id=1, reference_id="fake-reference_id", url="fake-url"
+        )
+        reference.save()
+        self.reference = reference
+        self.severities = [
+            VulnerabilitySeverity.objects.create(
+                scoring_system=severity_systems.CVSSV2.identifier,
+                value="AV:N/AC:L/Au:N/C:P/I:P/A:P",
+                reference_id=1,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system="cvssv2_vector",
+                value="AV:N/AC:L/Au:N/C:P/I:P/A:P",
+                reference_id=1,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system="cvssv3_vector",
+                value="CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                reference_id=1,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system="cvssv3.1_vector",
+                value="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                reference_id=1,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system="cvssv2_vector",
+                value="",
+                reference_id=1,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system="generic_textual",
+                value="Low",
+                reference_id=1,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system="rhbs",
+                value="medium",
+                reference_id=1,
+            ),
+        ]
+        for severity in self.severities:
+            severity.save()
+
+    def test_compute_cvss(self):
+        # using get_model to avoid circular import
+        VulnerabilitySeverity = self.apps.get_model("vulnerabilities", "VulnerabilitySeverity")
+        severities = list(
+            VulnerabilitySeverity.objects.values(
+                "reference_id", "scoring_system", "value", "scoring_elements"
+            ).all()
+        )
+        expected = [
+            {
+                "reference_id": 1,
+                "scoring_system": "cvssv2",
+                "value": "7.5",
+                "scoring_elements": "AV:N/AC:L/Au:N/C:P/I:P/A:P",
+            },
+            {
+                "reference_id": 1,
+                "scoring_system": "cvssv2",
+                "value": "AV:N/AC:L/Au:N/C:P/I:P/A:P",
+                "scoring_elements": None,
+            },
+            {
+                "reference_id": 1,
+                "scoring_system": "cvssv3",
+                "value": "7.5",
+                "scoring_elements": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            },
+            {
+                "reference_id": 1,
+                "scoring_system": "cvssv3.1",
+                "value": "9.8",
+                "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+            },
+            {
+                "reference_id": 1,
+                "scoring_system": "generic_textual",
+                "value": "Low",
+                "scoring_elements": None,
+            },
+            {
+                "reference_id": 1,
+                "scoring_system": "rhbs",
+                "value": "medium",
+                "scoring_elements": None,
+            },
+        ]
+        assert severities == expected
+
+
+class TestCvssVectorMigrationToScoringElementMergeRows(TestMigrations):
+    migrate_from = "0031_vulnerabilityseverity_scoring_elements"
+    migrate_to = "0032_vulnerabilityseverity_merge_cvss_score_and_vector"
+
+    def setUpBeforeMigration(self, apps):
+        # using get_model to avoid circular import
+        VulnerabilitySeverity = apps.get_model("vulnerabilities", "VulnerabilitySeverity")
+        VulnerabilityReference = apps.get_model("vulnerabilities", "VulnerabilityReference")
+        self.reference_list = [
+            VulnerabilityReference.objects.create(
+                id=1,
+                reference_id="fake-reference_id1",
+                url="fake-url1",
+            ),
+            VulnerabilityReference.objects.create(
+                id=2,
+                reference_id="fake-reference_id2",
+                url="fake-url2",
+            ),
+            VulnerabilityReference.objects.create(
+                id=3,
+                reference_id="fake-reference_id3",
+                url="fake-url3",
+            ),
+            VulnerabilityReference.objects.create(
+                id=4,
+                reference_id="fake-reference_id4",
+                url="fake-url4",
+            ),
+            VulnerabilityReference.objects.create(
+                id=5,
+                reference_id="fake-reference_id5",
+                url="fake-url5",
+            ),
+        ]
+
+        for reference in self.reference_list:
+            reference.save()
+
+        self.severities = [
+            # test severity_cvss2
+            VulnerabilitySeverity.objects.create(
+                scoring_system=severity_systems.CVSSV2.identifier,
+                value="7.5",
+                reference_id=1,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system="cvssv2_vector",
+                value="AV:N/AC:L/Au:N/C:P/I:P/A:P",
+                reference_id=1,
+            ),
+            # test severity_cvss3
+            VulnerabilitySeverity.objects.create(
+                scoring_system=severity_systems.CVSSV3.identifier,
+                value="7.5",
+                reference_id=2,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system="cvssv3_vector",
+                value="CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                reference_id=2,
+            ),
+            # test severity_cvss3_1
+            VulnerabilitySeverity.objects.create(
+                scoring_system=severity_systems.CVSSV31.identifier,
+                value="9.8",
+                reference_id=3,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system="cvssv3.1_vector",
+                value="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                reference_id=3,
+            ),
+            # test all type of severities for the same reference_id 4
+            VulnerabilitySeverity.objects.create(
+                scoring_system=severity_systems.CVSSV2.identifier,
+                value="7.5",
+                reference_id=4,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system="cvssv2_vector",
+                value="AV:N/AC:L/Au:N/C:P/I:P/A:P",
+                reference_id=4,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system=severity_systems.CVSSV3.identifier,
+                value="7.5",
+                reference_id=4,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system="cvssv3_vector",
+                value="CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                reference_id=4,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system=severity_systems.CVSSV31.identifier,
+                value="9.8",
+                reference_id=4,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system="cvssv3.1_vector",
+                value="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                reference_id=4,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system="generic_textual",
+                value="Low",
+                reference_id=4,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system="rhbs",
+                value="medium",
+                reference_id=4,
+            ),
+            # solo cases
+            VulnerabilitySeverity.objects.create(
+                scoring_system=severity_systems.CVSSV3.identifier,
+                value="8",
+                reference_id=5,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system="cvssv3.1_vector",
+                value="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                # value="9.8",
+                reference_id=5,
+            ),
+        ]
+
+        for severity in self.severities:
+            severity.save()
+
+    def test_merge_rows(self):
+        # using get_model to avoid circular import
+        VulnerabilitySeverity = self.apps.get_model("vulnerabilities", "VulnerabilitySeverity")
+
+        severities = list(
+            VulnerabilitySeverity.objects.values(
+                "reference_id",
+                "scoring_system",
+                "value",
+                "scoring_elements",
+            ).all()
+        )
+        expected = [
+            {
+                "reference_id": 1,
+                "scoring_system": "cvssv2",
+                "value": "7.5",
+                "scoring_elements": "AV:N/AC:L/Au:N/C:P/I:P/A:P",
+            },
+            {
+                "reference_id": 2,
+                "scoring_system": "cvssv3",
+                "value": "7.5",
+                "scoring_elements": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            },
+            {
+                "reference_id": 3,
+                "scoring_system": "cvssv3.1",
+                "value": "9.8",
+                "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+            },
+            {
+                "reference_id": 4,
+                "scoring_system": "cvssv2",
+                "value": "7.5",
+                "scoring_elements": "AV:N/AC:L/Au:N/C:P/I:P/A:P",
+            },
+            {
+                "reference_id": 4,
+                "scoring_system": "cvssv3",
+                "value": "7.5",
+                "scoring_elements": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            },
+            {
+                "reference_id": 4,
+                "scoring_system": "cvssv3.1",
+                "value": "9.8",
+                "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+            },
+            {
+                "reference_id": 4,
+                "scoring_system": "generic_textual",
+                "value": "Low",
+                "scoring_elements": None,
+            },
+            {
+                "reference_id": 4,
+                "scoring_system": "rhbs",
+                "value": "medium",
+                "scoring_elements": None,
+            },
+            {
+                "reference_id": 5,
+                "scoring_system": "cvssv3",
+                "value": "8",
+                "scoring_elements": None,
+            },
+            {
+                "reference_id": 5,
+                "scoring_system": "cvssv3.1",
+                "value": "9.8",
+                "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+            },
+        ]
+        assert severities == expected
+
+
+class TestCvssVectorMigrationToScoringElementMergeRowsWithDupes(TestMigrations):
+    migrate_from = "0031_vulnerabilityseverity_scoring_elements"
+    migrate_to = "0032_vulnerabilityseverity_merge_cvss_score_and_vector"
+
+    def setUpBeforeMigration(self, apps):
+        # using get_model to avoid circular import
+        VulnerabilitySeverity = apps.get_model("vulnerabilities", "VulnerabilitySeverity")
+        VulnerabilityReference = apps.get_model("vulnerabilities", "VulnerabilityReference")
+        self.v1 = VulnerabilityReference.objects.create(
+            id=1,
+            reference_id="fake-reference_id1",
+            url="fake-url1",
+        )
+        self.v1.save()
+
+        self.severities = [
+            # no matching vector: should stay as is
+            VulnerabilitySeverity.objects.create(
+                scoring_system=severity_systems.CVSSV2.identifier,
+                value="8.3",
+                reference_id=1,
+            ),
+            # no matching score: score should be computed
+            VulnerabilitySeverity.objects.create(
+                scoring_system="cvssv2_vector",
+                value="AV:N/AC:H/Au:N/C:P/I:P/A:P",
+                reference_id=1,
+            ),
+            # pair of score/vector: should be merged
+            VulnerabilitySeverity.objects.create(
+                scoring_system=severity_systems.CVSSV2.identifier,
+                value="7.5",
+                reference_id=1,
+            ),
+            VulnerabilitySeverity.objects.create(
+                scoring_system="cvssv2_vector",
+                value="AV:N/AC:L/Au:N/C:P/I:P/A:P",
+                reference_id=1,
+            ),
+        ]
+
+        for severity in self.severities:
+            severity.save()
+
+    def test_merge_rows(self):
+        # using get_model to avoid circular import
+        VulnerabilitySeverity = self.apps.get_model("vulnerabilities", "VulnerabilitySeverity")
+
+        severities = list(
+            VulnerabilitySeverity.objects.values(
+                "reference_id",
+                "scoring_system",
+                "value",
+                "scoring_elements",
+            ).all()
+        )
+
+        expected = [
+            {
+                "reference_id": 1,
+                "scoring_elements": "AV:N/AC:H/Au:N/C:P/I:P/A:P",
+                "scoring_system": "cvssv2",
+                "value": "5.1",
+            },
+            {
+                "reference_id": 1,
+                "scoring_elements": "AV:N/AC:L/Au:N/C:P/I:P/A:P",
+                "scoring_system": "cvssv2",
+                "value": "7.5",
+            },
+            {
+                "reference_id": 1,
+                "scoring_elements": None,
+                "scoring_system": "cvssv2",
+                "value": "8.3",
+            },
+        ]
+
+        assert severities == expected

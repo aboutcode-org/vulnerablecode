@@ -10,11 +10,8 @@
 import json
 import os
 
-from vulnerabilities.importers.nvd import extract_cpes
-from vulnerabilities.importers.nvd import extract_reference_urls
-from vulnerabilities.importers.nvd import extract_summary
-from vulnerabilities.importers.nvd import related_to_hardware
-from vulnerabilities.importers.nvd import to_advisories
+from vulnerabilities.importers import nvd
+from vulnerabilities.tests.util_tests import VULNERABLECODE_REGEN_TEST_FIXTURES as REGEN
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/nvd/nvd_test.json")
@@ -25,10 +22,25 @@ def load_test_data():
         return json.load(f)
 
 
-def test_nvd_importer_with_hardware(regen=False):
+def sorted_advisory_data(advisory_data):
+    """
+    Return ``advisory_data`` of AdvisoryData mappings where each mapping nested
+    list is sorted for stable testing results.
+    """
+    sorter = lambda dct: tuple(dct.items())
+    for data in advisory_data:
+        data["aliases"] = sorted(data["aliases"])
+        data["affected_packages"] = sorted(data["affected_packages"], key=sorter)
+        data["references"] = sorted(data["references"], key=sorter)
+    return advisory_data
+
+
+def test_to_advisories_skips_hardware(regen=REGEN):
     expected_file = os.path.join(BASE_DIR, "test_data/nvd/nvd-expected.json")
 
-    result = [data.to_dict() for data in list(to_advisories(load_test_data()))]
+    test_data = load_test_data()
+    result = [data.to_dict() for data in nvd.to_advisories(test_data)]
+    result = sorted_advisory_data(result)
 
     if regen:
         with open(expected_file, "w") as f:
@@ -37,11 +49,13 @@ def test_nvd_importer_with_hardware(regen=False):
     else:
         with open(expected_file) as f:
             expected = json.load(f)
+    expected = sorted_advisory_data(expected)
 
     assert result == expected
 
 
-def get_cve_item():
+# TODO: use a JSON fixtures instead
+def get_test_cve_item():
 
     return {
         "cve": {
@@ -127,49 +141,38 @@ def get_cve_item():
     }
 
 
-def test_extract_cpes():
-    expected_cpes = {
+def test_CveItem_cpes():
+    expected_cpes = [
         "cpe:2.3:a:csilvers:gperftools:0.1:*:*:*:*:*:*:*",
         "cpe:2.3:a:csilvers:gperftools:0.2:*:*:*:*:*:*:*",
         "cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*",
-    }
+    ]
 
-    found_cpes = set()
-    found_cpes.update(extract_cpes(get_cve_item()))
-
+    found_cpes = nvd.CveItem(cve_item=get_test_cve_item()).cpes
     assert found_cpes == expected_cpes
 
 
-def test_related_to_hardware():
-    assert (
-        related_to_hardware(
-            cpes=[
-                "cpe:2.3:a:csilvers:gperftools:0.1:*:*:*:*:*:*:*",
-                "cpe:2.3:h:csilvers:gperftools:0.2:*:*:*:*:*:*:*",
-                "cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*",
-            ]
-        )
-        == True
-    )
+def test_is_related_to_hardware():
+    assert nvd.is_related_to_hardware("cpe:2.3:h:csilvers:gperftools:0.2:*:*:*:*:*:*:*")
+    assert not nvd.is_related_to_hardware("cpe:2.3:a:csilvers:gperftools:0.1:*:*:*:*:*:*:*")
+    assert not nvd.is_related_to_hardware("cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*")
 
 
-def test_extract_summary_with_single_summary():
+def test_CveItem_summary_with_single_summary():
     expected_summary = (
         "Multiple integer overflows in TCMalloc (tcmalloc.cc) in gperftools "
         "before 0.4 make it easier for context-dependent attackers to perform memory-related "
         "attacks such as buffer overflows via a large size value, which causes less memory to "
         "be allocated than expected."
     )
-    found_summary = extract_summary(get_cve_item())
-    assert found_summary == expected_summary
+
+    assert nvd.CveItem(cve_item=get_test_cve_item()).summary == expected_summary
 
 
-def test_extract_reference_urls():
-    expected_urls = {
+def test_CveItem_reference_urls():
+    expected_urls = [
         "http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",
         "http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",
-    }
+    ]
 
-    found_urls = extract_reference_urls(get_cve_item())
-
-    assert found_urls == expected_urls
+    assert nvd.CveItem(cve_item=get_test_cve_item()).reference_urls == expected_urls

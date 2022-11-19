@@ -48,6 +48,8 @@ class OvalParser:
             definition_data["vuln_id"] = self.get_vuln_id_from_definition(definition)
             definition_data["reference_urls"] = self.get_urls_from_definition(definition)
 
+            definition_data["severity"] = self.get_severity_from_definition(definition)
+
             for test in matching_tests:
                 test_obj, test_state = self.get_object_state_of_test(test)
                 if not test_obj or not test_state:
@@ -164,6 +166,15 @@ class OvalParser:
                 break
 
         return all_urls
+
+    @staticmethod
+    def get_severity_from_definition(definition: OvalDefinition) -> Set[str]:
+        definition_metadata = definition.getMetadata().element
+        for child in definition_metadata:
+            if child.tag.endswith("advisory"):
+                for grandchild in child:
+                    if grandchild.tag.endswith("severity"):
+                        return grandchild.text
 
     @staticmethod
     def get_vuln_id_from_definition(definition):

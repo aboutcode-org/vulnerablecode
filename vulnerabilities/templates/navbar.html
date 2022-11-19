@@ -1,0 +1,78 @@
+<nav class="navbar is-dark mb-5 border-bottom-radius" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand ml-3">
+        <a class="navbar-item is-size-4 has-text-weight-bold" href="/">
+            VulnerableCode<span class="nexb-orange">.</span>io
+        </a>
+    </div>
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item" href="{% url 'package_search' %}">
+                Packages
+            </a>
+            <a class="navbar-item" href="{% url 'vulnerability_search' %}">
+                Vulnerabilities
+            </a>
+            <a class="navbar-item" href="https://vulnerablecode.readthedocs.io/en/latest/" target="_blank">
+                Documentation
+            </a>
+        </div>
+    </div>
+    <div class="navbar-end mr-3">
+        <div class="navbar-item navbar-item is-cursor-help">
+            <div class="dropdown is-right is-hoverable ">
+                <div class="dropdown-trigger has-text-grey-light">
+                    API
+                </div>
+                    <div class="dropdown-menu navbar-hover-div" role="menu">
+                    <div class="dropdown-content">
+                        <div class="dropdown-item about-hover-div">
+                            If you want to try the JSON REST API for VulnerableCode.io,
+                            first <a href="{% url 'api_user_request' %}">request an API key</a>,
+                            then <a href="{% url 'api_docs' %}">visit the live OpenAPI documentation</a>,
+                            and <a href="{% url 'api_docs' %}">the API endpoint</a>.
+                            Note that API access may be throttled.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-item navbar-item is-cursor-help">
+            <div class="dropdown is-right is-hoverable ">
+                <div class="dropdown-trigger has-text-grey-light">
+                    About
+                </div>
+                    <div class="dropdown-menu navbar-hover-div" role="menu">
+                    <div class="dropdown-content">
+                        <div class="dropdown-item about-hover-div">
+
+                            VulnerableCode is a free and open database of software package vulnerabilities.
+                            <ul>
+                                <li>
+                                    Live chat at <a href="https://gitter.im/aboutcode-org/vulnerablecode">
+                                    https://gitter.im/aboutcode-org/vulnerablecode</a>
+                                </li>
+                                <li>
+                                    Source code and support at <a href="https://github.com/nexB/vulnerablecode">https://github.com/nexB/vulnerablecode</a>
+                                </li>
+                                <li>
+                                    Docs at <a href=https://vulnerablecode.readthedocs.org/>
+                                    https://vulnerablecode.readthedocs.org/</a>
+                                </li>
+                                <li>
+                                    Sponsored by NLnet <a href="https://nlnet.nl/project/vulnerabilitydatabase/">
+                                    https://nlnet.nl/project/vulnerabilitydatabase/</a> for
+                                    <a href="https://www.aboutcode.org/">https://www.aboutcode.org/</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-item navbar-item is-cursor-help">
+            <div class="dropdown-trigger has-text-grey-light">
+            v{{ VULNERABLECODE_VERSION }}
+            </div>
+        </div>
+    </div>
+</nav>

@@ -11,7 +11,6 @@ from datetime import datetime
 from datetime import timezone
 from typing import Iterable
 
-import requests
 from django.db.models.query import QuerySet
 from packageurl import PackageURL
 from univers.version_range import NginxVersionRange

@@ -82,7 +82,7 @@ def parse_constraint(constraint):
 
 def github_constraints_satisfied(github_constrain, version):
     """
-    Return True or False depending on whether the given version satisfies the github constrain
+    Return True or False depending on whether the given version satisfies the github constraint
     For example:
     >>> assert github_constraints_satisfied(">= 7.0.0, <= 7.6.57", "7.1.1") == True
     >>> assert github_constraints_satisfied(">= 10.4.0, <= 10.4.1", "10.6.0") == False
@@ -100,7 +100,7 @@ def github_constraints_satisfied(github_constrain, version):
 
 def snky_constraints_satisfied(snyk_constrain, version):
     """
-    Return True or False depending on whether the given version satisfies the snyk constrain
+    Return True or False depending on whether the given version satisfies the snyk constraint
     For example:
     >>> assert snky_constraints_satisfied(">=4.0.0, <4.0.10.16", "4.0.10.15") == True
     >>> assert snky_constraints_satisfied(" >=4.1.0, <4.4.15.7", "4.0.10.15") == False
@@ -119,7 +119,7 @@ def snky_constraints_satisfied(snyk_constrain, version):
 
 def gitlab_constraints_satisfied(gitlab_constrain, version):
     """
-    Return True or False depending on whether the given version satisfies the gitlab constrain
+    Return True or False depending on whether the given version satisfies the gitlab constraint
     For example:
     >>> assert gitlab_constraints_satisfied("[7.0.0,7.0.11),[7.2.0,7.2.4)", "7.2.1") == True
     >>> assert gitlab_constraints_satisfied("[7.0.0,7.0.11),[7.2.0,7.2.4)", "8.2.1") == False

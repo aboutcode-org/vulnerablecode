@@ -11,7 +11,6 @@ import logging
 from typing import Iterable
 
 import requests
-from packageurl import PackageURL
 
 from vulntotal.ecosystem.nuget import get_closest_nuget_package_name
 from vulntotal.validator import DataSource
@@ -27,7 +26,7 @@ class OSVDataSource(DataSource):
     url = "https://api.osv.dev/v1/query"
 
     def fetch_advisory(self, payload):
-        """Fetch JSON advisory from OSV API for a given package payload """
+        """Fetch JSON advisory from OSV API for a given package payload"""
 
         response = requests.post(self.url, data=str(payload))
         if not response.status_code == 200:

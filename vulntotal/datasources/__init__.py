@@ -7,14 +7,6 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import glob
-import importlib
-import inspect
-from os.path import basename
-from os.path import dirname
-from os.path import isfile
-from os.path import join
-
 from vulntotal.datasources import deps
 from vulntotal.datasources import github
 from vulntotal.datasources import gitlab

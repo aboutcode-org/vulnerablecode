@@ -56,11 +56,12 @@ class GithubDataSource(DataSource):
 
 def parse_advisory(interesting_edges) -> Iterable[VendorData]:
     for edge in interesting_edges:
-        aliases = [aliase["value"] for aliase in edge["node"]["advisory"]["identifiers"]]
+        node = edge["node"]
+        aliases = [aliase["value"] for aliase in node["advisory"]["identifiers"]]
         affected_versions = (
-            edge["node"]["vulnerableVersionRange"].strip().replace(" ", "").split(",")
+            node["vulnerableVersionRange"].strip().replace(" ", "").split(",")
         )
-        fixed_versions = [edge["node"]["firstPatchedVersion"]["identifier"]]
+        fixed_versions = [node["firstPatchedVersion"]["identifier"]]
         yield VendorData(
             aliases=sorted(list(set(aliases))),
             affected_versions=sorted(list(set(affected_versions))),

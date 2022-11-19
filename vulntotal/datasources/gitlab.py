@@ -139,12 +139,13 @@ def get_casesensitive_slug(path, package_slug):
         paginated_tree = response[0]["data"]["project"]["repository"]["paginatedTree"]
 
         for slug in paginated_tree["nodes"][0]["trees"]["nodes"]:
-            if slug["flatPath"].lower() == package_slug.lower():
-                return slug["flatPath"]
+            slug_flatpath = slug["flatPath"]
+            if slug_flatpath.lower() == package_slug.lower():
+                return slug_flatpath
 
             # If the namespace/subfolder contains multiple packages, then progressive transverse through folders tree
-            if package_slug.lower().startswith(slug["flatPath"].lower()):
-                return get_gitlab_style_slug(slug["flatPath"], package_slug)
+            if package_slug.lower().startswith(slug_flatpath.lower()):
+                return get_gitlab_style_slug(slug_flatpath, package_slug)
 
         payload[0]["variables"]["nextPageCursor"] = paginated_tree["pageInfo"]["endCursor"]
         hasnext = paginated_tree["pageInfo"]["hasNextPage"]
@@ -157,10 +158,11 @@ def parse_interesting_advisories(location, version, delete_download=False) -> It
     for file in sorted(files):
         with open(file) as f:
             gitlab_advisory = saneyaml.load(f)
-        if gitlab_constraints_satisfied(gitlab_advisory["affected_range"], version):
+        affected_range = gitlab_advisory["affected_range"]
+        if gitlab_constraints_satisfied(affected_range, version):
             yield VendorData(
                 aliases=gitlab_advisory["identifiers"],
-                affected_versions=[gitlab_advisory["affected_range"]],
+                affected_versions=[affected_range],
                 fixed_versions=gitlab_advisory["fixed_versions"],
             )
     if delete_download:

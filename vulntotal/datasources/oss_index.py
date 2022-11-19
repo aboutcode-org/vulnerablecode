@@ -81,15 +81,15 @@ class OSSDataSource(DataSource):
 
 def parse_advisory(component) -> Iterable[VendorData]:
     response = component[0]
-    if response["vulnerabilities"]:
-        for vuln in response["vulnerabilities"]:
-            aliases = [vuln["id"]]
-            affected_versions = []
-            fixed_versions = []
-            if "versionRanges" in vuln:
-                affected_versions.extend(vuln["versionRanges"])
-            yield VendorData(
-                aliases=aliases,
-                affected_versions=affected_versions,
-                fixed_versions=fixed_versions,
-            )
+    vulnerabilities = response.get("vulnerabilities") or []
+    for vuln in vulnerabilities:
+        aliases = [vuln["id"]]
+        affected_versions = []
+        fixed_versions = []
+        version_ranges = vuln.get("versionRanges") or []
+        affected_versions.extend(version_ranges)
+        yield VendorData(
+            aliases=aliases,
+            affected_versions=affected_versions,
+            fixed_versions=fixed_versions,
+        )

@@ -8,36 +8,59 @@
 #
 
 from django import forms
+from django.core.validators import validate_email
 
-from vulnerabilities.models import Package
-from vulnerabilities.models import PackageRelatedVulnerability
-from vulnerabilities.models import Vulnerability
-
-
-def get_package_types():
-    pkg_types = [(i.type, i.type) for i in Package.objects.distinct("type").all()]
-    pkg_types.append((None, "Any type"))
-    return pkg_types
+from vulnerabilities.models import ApiUser
 
 
-def get_package_namespaces():
-    pkg_namespaces = [
-        (i.namespace, i.namespace)
-        for i in Package.objects.distinct("namespace").all()
-        if i.namespace
-    ]
-    pkg_namespaces.append((None, "package namespace"))
-    return pkg_namespaces
+class PackageSearchForm(forms.Form):
 
-
-class PackageForm(forms.Form):
-
-    type = forms.ChoiceField(choices=get_package_types)
-    name = forms.CharField(
-        required=False, widget=forms.TextInput(attrs={"placeholder": "package name"})
+    search = forms.CharField(
+        required=True,
+        widget=forms.TextInput(
+            attrs={"placeholder": "Package name, purl or purl fragment"},
+        ),
     )
 
 
-class CVEForm(forms.Form):
+class VulnerabilitySearchForm(forms.Form):
 
-    vuln_id = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "vulnerability id"}))
+    search = forms.CharField(
+        required=True,
+        widget=forms.TextInput(
+            attrs={"placeholder": "Vulnerability id or alias such as CVE or GHSA"}
+        ),
+    )
+
+
+class ApiUserCreationForm(forms.ModelForm):
+    """
+    Support a simplified creation for API-only users directly from the UI.
+    """
+
+    class Meta:
+        model = ApiUser
+        fields = (
+            "email",
+            "first_name",
+            "last_name",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(ApiUserCreationForm, self).__init__(*args, **kwargs)
+        self.fields["email"].required = True
+
+    def save(self, commit=True):
+        return ApiUser.objects.create_api_user(
+            username=self.cleaned_data["email"],
+            first_name=self.cleaned_data["first_name"],
+            last_name=self.cleaned_data["last_name"],
+        )
+
+    def clean_username(self):
+        username = self.cleaned_data["email"]
+        validate_email(username)
+        return username
+
+    def save_m2m(self):
+        pass

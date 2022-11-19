@@ -6,7 +6,6 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-
 import traceback
 
 from django.core.management.base import BaseCommand
@@ -35,7 +34,7 @@ class Command(BaseCommand):
             return
 
         if options["all"]:
-            self.import_data(IMPORTERS_REGISTRY.values())
+            self.import_data(importers=IMPORTERS_REGISTRY.values())
             return
 
         sources = options["sources"]
@@ -45,9 +44,8 @@ class Command(BaseCommand):
         self.import_data(validate_importers(sources))
 
     def list_sources(self):
-        importers = list(IMPORTERS_REGISTRY)
         self.stdout.write("Vulnerability data can be imported from the following importers:")
-        self.stdout.write("\n".join(importers))
+        self.stdout.write("\n".join(IMPORTERS_REGISTRY))
 
     def import_data(self, importers):
         """

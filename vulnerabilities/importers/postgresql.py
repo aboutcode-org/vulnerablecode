@@ -95,16 +95,12 @@ def to_advisories(data):
                     parsed_link = urlparse.urlparse(vector_link_tag["href"])
                     cvss3_vector = urlparse.parse_qs(parsed_link.query)["vector"]
                     cvss3_base_score = vector_link_tag.text
-                    severities.extend(
-                        [
-                            VulnerabilitySeverity(
-                                system=severity_systems.CVSSV3, value=cvss3_base_score
-                            ),
-                            VulnerabilitySeverity(
-                                system=severity_systems.CVSSV3_VECTOR, value=cvss3_vector
-                            ),
-                        ]
+                    severity = VulnerabilitySeverity(
+                        system=severity_systems.CVSSV3,
+                        value=cvss3_base_score,
+                        scoring_elements=cvss3_vector,
                     )
+                    severities.append(severity)
             references.append(Reference(url=link, severities=severities))
 
         advisories.append(

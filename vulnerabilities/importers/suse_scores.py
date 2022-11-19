@@ -26,37 +26,26 @@ class SUSESeverityScoreImporter(Importer):
 
     @staticmethod
     def to_advisory(score_data):
+        systems_by_version = {
+            "2.0": severity_systems.CVSSV2,
+            "3": severity_systems.CVSSV3,
+            "3.1": severity_systems.CVSSV31,
+        }
         advisories = []
+
         for cve_id in score_data:
             severities = []
             for cvss_score in score_data[cve_id]["cvss"]:
-                score = None
-                vector = None
-                if cvss_score["version"] == "2.0":
-                    score = VulnerabilitySeverity(
-                        system=severity_systems.CVSSV2, value=str(cvss_score["score"])
-                    )
-                    vector = VulnerabilitySeverity(
-                        system=severity_systems.CVSSV2_VECTOR, value=str(cvss_score["vector"])
-                    )
-
-                elif cvss_score["version"] == "3":
-                    score = VulnerabilitySeverity(
-                        system=severity_systems.CVSSV3, value=str(cvss_score["score"])
-                    )
-                    vector = VulnerabilitySeverity(
-                        system=severity_systems.CVSSV3_VECTOR, value=str(cvss_score["vector"])
-                    )
-
-                elif cvss_score["version"] == "3.1":
-                    score = VulnerabilitySeverity(
-                        system=severity_systems.CVSSV31, value=str(cvss_score["score"])
-                    )
-                    vector = VulnerabilitySeverity(
-                        system=severity_systems.CVSSV31_VECTOR, value=str(cvss_score["vector"])
-                    )
-
-                severities.extend([score, vector])
+                cvss_version = cvss_score["version"]
+                scoring_system = systems_by_version[cvss_version]
+                base_score = str(cvss_score["score"])
+                vector = str(cvss_score.get("vector", ""))
+                score = VulnerabilitySeverity(
+                    system=scoring_system,
+                    value=base_score,
+                    scoring_elements=vector,
+                )
+                severities.append(score)
 
             advisories.append(
                 AdvisoryData(

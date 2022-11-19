@@ -46,23 +46,16 @@ addopts = [
     "--doctest-modules",
     # Ignore the following doctests until these files are migrated to
     # import-improve structure
-    "--ignore=vulnerabilities/importers/alpine_linux.py",
     "--ignore=vulnerabilities/importers/apache_httpd.py",
     "--ignore=vulnerabilities/importers/apache_kafka.py",
     "--ignore=vulnerabilities/importers/apache_tomcat.py",
-    "--ignore=vulnerabilities/importers/archlinux.py",
-    "--ignore=vulnerabilities/importers/debian.py",
     "--ignore=vulnerabilities/importers/elixir_security.py",
     "--ignore=vulnerabilities/importers/gentoo.py",
-    "--ignore=vulnerabilities/importers/github.py",
     "--ignore=vulnerabilities/importers/istio.py",
     "--ignore=vulnerabilities/importers/kaybee.py",
     "--ignore=vulnerabilities/importers/npm.py",
-    "--ignore=vulnerabilities/importers/nvd.py",
-    "--ignore=vulnerabilities/importers/openssl.py",
     "--ignore=vulnerabilities/importers/postgresql.py",
     "--ignore=vulnerabilities/importers/project_kb_msr2019.py",
-    "--ignore=vulnerabilities/importers/redhat.py",
     "--ignore=vulnerabilities/importers/retiredotnet.py",
     "--ignore=vulnerabilities/importers/ruby.py",
     "--ignore=vulnerabilities/importers/rust.py",
@@ -73,7 +66,7 @@ addopts = [
     "--ignore=vulnerabilities/importers/mozilla.py",
     "--ignore=vulnerabilities/importers/mattermost.py",
     "--ignore=vulnerabilities/importers/xen.py",
-    "--ignore=vulnerabilities/management/commands/create_cpe_to_purl_map.py",
+    "--ignore=vulnerabilities/management/commands/purl2cpe.py",
     "--ignore=vulnerabilities/lib_oval.py",
 ]
 
@@ -81,11 +74,19 @@ addopts = [
 line-length = 100
 include = '\.pyi?$'
 skip_gitignore = true
-extend-exclude = "migrations|data|venv"
+# 'extend-exclude' excludes files or directories in addition to the defaults
+extend-exclude = '''
+(
+  ^/venv/.*
+  | ^/vulnerabilities/migrations/.*
+  | ^/vulnerabilities/tests/test_data/.*
+)
+'''
+
 
 [tool.isort]
 profile = "black"
 line_length = 100
 force_single_line = true
 skip_gitignore = true
-skip_glob = "*/migrations/*"
+skip_glob = "vulnerabilities/migrations/*"

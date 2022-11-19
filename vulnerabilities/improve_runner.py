@@ -11,14 +11,19 @@ import logging
 from datetime import datetime
 from datetime import timezone
 from typing import List
-from typing import Tuple
 
+from django.core.exceptions import ValidationError
 from django.db import transaction
 
-from vulnerabilities import models
-from vulnerabilities.importer import PackageURL
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
+from vulnerabilities.models import Alias
+from vulnerabilities.models import Package
+from vulnerabilities.models import PackageRelatedVulnerability
+from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityReference
+from vulnerabilities.models import VulnerabilityRelatedReference
+from vulnerabilities.models import VulnerabilitySeverity
 
 logger = logging.getLogger(__name__)
 
@@ -63,46 +68,65 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
     logger.info(f"Improving advisory id: {advisory.id}")
 
     for inference in inferences:
-        vuln = get_or_create_vulnerability_and_aliases(
-            inference.vulnerability_id, inference.aliases, inference.summary
+        vulnerability = get_or_create_vulnerability_and_aliases(
+            vulnerability_id=inference.vulnerability_id,
+            alias_names=inference.aliases,
+            summary=inference.summary,
         )
-        if not vuln:
+
+        if not vulnerability:
             logger.warn(f"Unable to get vulnerability for inference: {inference!r}")
             continue
 
         for ref in inference.references:
-            reference, _ = models.VulnerabilityReference.objects.get_or_create(
-                reference_id=ref.reference_id, url=ref.url
+
+            reference = VulnerabilityReference.objects.get_or_none(
+                reference_id=ref.reference_id,
+                url=ref.url,
             )
 
-            models.VulnerabilityRelatedReference.objects.update_or_create(
-                reference=reference, vulnerability=vuln
+            if not reference:
+                reference = create_valid_vulnerability_reference(
+                    reference_id=ref.reference_id,
+                    url=ref.url,
+                )
+                if not reference:
+                    continue
+
+            VulnerabilityRelatedReference.objects.update_or_create(
+                reference=reference,
+                vulnerability=vulnerability,
             )
 
             for severity in ref.severities:
-                _vs, updated = models.VulnerabilitySeverity.objects.update_or_create(
+                _vs, updated = VulnerabilitySeverity.objects.update_or_create(
                     scoring_system=severity.system.identifier,
                     reference=reference,
-                    defaults={"value": str(severity.value)},
+                    defaults={
+                        "value": str(severity.value),
+                        "scoring_elements": str(severity.scoring_elements),
+                    },
                 )
                 if updated:
-                    logger.info(f"Severity updated for reference {ref!r} to {severity.value!r}")
+                    logger.info(
+                        f"Severity updated for reference {ref!r} to value: {severity.value!r} "
+                        f"and scoring_elements: {severity.scoring_elements!r}"
+                    )
 
-        if inference.affected_purls:
-            for pkg in inference.affected_purls:
-                vulnerable_package, _ = _get_or_create_package(pkg)
-                models.PackageRelatedVulnerability(
-                    vulnerability=vuln,
-                    package=vulnerable_package,
-                    created_by=improver_name,
-                    confidence=inference.confidence,
-                    fix=False,
-                ).update_or_create()
+        for affected_purl in inference.affected_purls or []:
+            vulnerable_package = Package.objects.get_or_create_from_purl(purl=affected_purl)
+            PackageRelatedVulnerability(
+                vulnerability=vulnerability,
+                package=vulnerable_package,
+                created_by=improver_name,
+                confidence=inference.confidence,
+                fix=False,
+            ).update_or_create()
 
         if inference.fixed_purl:
-            fixed_package, _ = _get_or_create_package(inference.fixed_purl)
-            models.PackageRelatedVulnerability(
-                vulnerability=vuln,
+            fixed_package = Package.objects.get_or_create_from_purl(purl=inference.fixed_purl)
+            PackageRelatedVulnerability(
+                vulnerability=vulnerability,
                 package=fixed_package,
                 created_by=improver_name,
                 confidence=inference.confidence,
@@ -113,26 +137,25 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
     advisory.save()
 
 
-def _get_or_create_package(p: PackageURL) -> Tuple[models.Package, bool]:
-    query_kwargs = {}
-    # TODO: this should be revisited as this should best be a model or manager method... and possibly streamlined
-    query_kwargs = dict(
-        type=p.type or "",
-        namespace=p.namespace or "",
-        name=p.name or "",
-        version=p.version or "",
-        qualifiers=p.qualifiers or {},
-        subpath=p.subpath or "",
+def create_valid_vulnerability_reference(url, reference_id=None):
+    """
+    Create and return a new validated VulnerabilityReference from a
+    ``url`` and ``reference_id``.
+    Return None and log a warning if this is not a valid reference.
+    """
+    reference = VulnerabilityReference(
+        reference_id=reference_id,
+        url=url,
     )
 
-    return models.Package.objects.get_or_create(**query_kwargs)
+    try:
+        reference.full_clean()
+    except ValidationError as e:
+        logger.warning(f"Invalid vulnerability reference: {reference!r}: {e}")
+        return
 
-
-def _package_url_to_package(purl: PackageURL) -> models.Package:
-    # FIXME: this is is likely creating a package from a purl?
-    p = models.Package()
-    p.set_package_url(purl)
-    return p
+    reference.save()
+    return reference
 
 
 def get_or_create_vulnerability_and_aliases(vulnerability_id, alias_names, summary):
@@ -145,9 +168,9 @@ def get_or_create_vulnerability_and_aliases(vulnerability_id, alias_names, summa
     new_alias_names = set()
     for alias_name in alias_names:
         try:
-            alias = models.Alias.objects.get(alias=alias_name)
+            alias = Alias.objects.get(alias=alias_name)
             existing_vulns.add(alias.vulnerability)
-        except models.Alias.DoesNotExist:
+        except Alias.DoesNotExist:
             new_alias_names.add(alias_name)
 
     # If given set of aliases point to different vulnerabilities in the
@@ -179,14 +202,14 @@ def get_or_create_vulnerability_and_aliases(vulnerability_id, alias_names, summa
         vulnerability = existing_alias_vuln
     elif vulnerability_id:
         try:
-            vulnerability = models.Vulnerability.objects.get(vulnerability_id=vulnerability_id)
-        except models.Vulnerability.DoesNotExist:
+            vulnerability = Vulnerability.objects.get(vulnerability_id=vulnerability_id)
+        except Vulnerability.DoesNotExist:
             logger.warn(
                 f"Given vulnerability_id: {vulnerability_id} does not exist in the database"
             )
             return
     else:
-        vulnerability = models.Vulnerability(summary=summary)
+        vulnerability = Vulnerability(summary=summary)
         vulnerability.save()
 
     if summary and summary != vulnerability.summary:
@@ -196,7 +219,7 @@ def get_or_create_vulnerability_and_aliases(vulnerability_id, alias_names, summa
         )
 
     for alias_name in new_alias_names:
-        alias = models.Alias(alias=alias_name, vulnerability=vulnerability)
+        alias = Alias(alias=alias_name, vulnerability=vulnerability)
         alias.save()
         logger.info(f"New alias for {vulnerability!r}: {alias_name}")
 

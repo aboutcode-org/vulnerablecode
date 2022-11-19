@@ -1,0 +1,54 @@
+[
+    {
+        "name": "AVG-2781",
+        "packages": [
+            "python-pyjwt"
+        ],
+        "status": "Unknown",
+        "severity": "Unknown",
+        "type": "unknown",
+        "affected": "2.3.0-1",
+        "fixed": "2.4.0-1",
+        "ticket": null,
+        "issues": [
+            "CVE-2022-29217"
+        ],
+        "advisories": []
+    },
+    {
+        "name": "AVG-2780",
+        "packages": [
+            "wpewebkit"
+        ],
+        "status": "Unknown",
+        "severity": "Unknown",
+        "type": "unknown",
+        "affected": "2.36.3-1",
+        "fixed": "2.36.4-1",
+        "ticket": null,
+        "issues": [
+            "CVE-2022-26710",
+            "CVE-2022-22677",
+            "CVE-2022-22662"
+        ],
+        "advisories": []
+    },
+    {
+        "name": "AVG-4",
+        "packages": [
+            "bzip2"
+        ],
+        "status": "Fixed",
+        "severity": "Low",
+        "type": "denial of service",
+        "affected": "1.0.6-5",
+        "fixed": "1.0.6-6",
+        "ticket": null,
+        "issues": [
+            "CVE-2016-3189"
+        ],
+        "advisories": [
+            "ASA-201702-19"
+        ]
+    }
+]

@@ -1,0 +1,15 @@
+{
+  "affected_versions": [
+    "TEST-AFFECTED"
+  ],
+  "fixed_versions": [
+    "5.37.9",
+    "6.2.5",
+    "6.3.5",
+    "6.4.2"
+  ],
+  "aliases": [
+    "CVE-2022-1332",
+    "TEST-SNYKID"
+  ]
+}

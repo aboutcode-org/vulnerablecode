@@ -11,6 +11,11 @@ from urllib.parse import urljoin
 
 import requests
 
+"""
+Find case-sensitive NuGet package names using API calls.
+Some data source such as OSV demand case-sensitive names.
+"""
+
 
 def get_closest_nuget_package_name(query):
     """
@@ -31,3 +36,26 @@ def get_closest_nuget_package_name(query):
         query_response = requests.get(url_query).json()
         if query_response.get("data"):
             return query_response["data"][0]["id"]
+
+
+def search_closest_nuget_package_name(query):
+    """
+    Return case-sensitive NuGet package name using
+    the autocomplete service provided by NuGet
+    The data has this shape:
+        {
+          "@context": {
+            "@vocab": "http://schema.nuget.org/schema#"
+          },
+          "totalHits": 3145,
+          "data": [
+            "Azure.Core",
+            "Azure.Storage.Blobs",
+            "Azure.Security.KeyVault.Secrets",
+            ...
+    """
+    url_query = f"https://azuresearch-usnc.nuget.org/autocomplete?q={query}"
+    query_response = requests.get(url_query).json()
+    data = query_response.get("data")
+    if data:
+        return data[0]

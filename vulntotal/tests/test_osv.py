@@ -21,9 +21,18 @@ class TestOSV(testcase.FileBasedTesting):
     test_data_dir = str(Path(__file__).resolve().parent / "test_data" / "osv")
 
     def test_generate_payload(self):
-        file_purls = self.get_test_loc("purls.txt")
-        with open(file_purls) as f:
-            purls = f.readlines()
+        purls = [
+            "pkg:pypi/jinja2@2.4.1",
+            "pkg:android/System@10",
+            "pkg:debian:8/davical@1.1.3-1",
+            "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M8",
+            "pkg:linux/Kernel@v5.4.195",
+            "pkg:packagist/dolibarr/dolibarr@12.0.5",
+            "pkg:crates.io/sha2@0.9.7",
+            "pkg:nuget/Moment.js@2.18.0",
+            "pkg:npm/semver-regex@3.1.3",
+            "pkg:golang/github.com/cloudflare/cfrpki@1.1.0",
+        ]
         results = [osv.generate_payload(PackageURL.from_string(purl)) for purl in purls]
         expected_file = self.get_test_loc("payloads_data-expected.json", must_exist=False)
         util_tests.check_results_against_json(results, expected_file)

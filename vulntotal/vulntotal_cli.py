@@ -25,6 +25,25 @@ from vulntotal.validator import VendorData
 
 
 @click.command()
+@click.argument("purl", required=False)
+@click.option(
+    "--json",
+    "json_output",
+    type=click.File("w"),
+    required=False,
+    metavar="FILE",
+    help="Write output as pretty-printed JSON to FILE. Use '-' to print on screen.",
+)
+@click.option(
+    "--yaml",
+    "yaml_output",
+    type=click.File("w"),
+    required=False,
+    metavar="FILE",
+    help="Write output as YAML to FILE. Use '-' to print on screen.",
+)
+
+# hidden debug options
 @click.option(
     "-l",
     "--list",
@@ -32,7 +51,7 @@ from vulntotal.validator import VendorData
     is_flag=True,
     multiple=False,
     required=False,
-    help="Lists all the available DataSources.",
+    help="List available datasources.",
 )
 @click.option(
     "-e",
@@ -42,7 +61,7 @@ from vulntotal.validator import VendorData
     multiple=True,
     type=click.Choice(DATASOURCE_REGISTRY.keys()),
     required=False,
-    help="Enable these datasource/s only.",
+    help="Enable only this datasource. Repeat for multiple datasources. Used for debugging.",
 )
 @click.option(
     "-d",
@@ -52,7 +71,7 @@ from vulntotal.validator import VendorData
     multiple=True,
     type=click.Choice(DATASOURCE_REGISTRY.keys()),
     required=False,
-    help="Disable these datasource/s.",
+    help="Disable this datasource. Repeat for multiple datasources. Used for debugging.",
 )
 @click.option(
     "--ecosystem",
@@ -60,7 +79,7 @@ from vulntotal.validator import VendorData
     hidden=True,
     is_flag=True,
     required=False,
-    help="Lists ecosystem supported by active DataSources",
+    help="List package ecosystem supported by active datasources. Used for debugging.",
 )
 @click.option(
     "--raw",
@@ -69,7 +88,7 @@ from vulntotal.validator import VendorData
     hidden=True,
     multiple=False,
     required=False,
-    help="List of all the raw response from DataSources.",
+    help="Report the raw responses from each datasource. Used for debugging. Used for debugging.",
 )
 @click.option(
     "--no-threading",
@@ -78,7 +97,7 @@ from vulntotal.validator import VendorData
     hidden=True,
     multiple=False,
     required=False,
-    help="Run DataSources sequentially.",
+    help="Query datasources sequentially. Used for debugging.",
 )
 @click.option(
     "-p",
@@ -88,23 +107,7 @@ from vulntotal.validator import VendorData
     hidden=True,
     multiple=False,
     required=False,
-    help="Enable default pagination.",
-)
-@click.option(
-    "--json",
-    "json_output",
-    type=click.File("w"),
-    required=False,
-    metavar="FILE",
-    help="Write output as pretty-printed JSON to FILE. ",
-)
-@click.option(
-    "--yaml",
-    "yaml_output",
-    type=click.File("w"),
-    required=False,
-    metavar="FILE",
-    help="Write output as YAML to FILE. ",
+    help="Enable default pagination. Used for debugging.",
 )
 @click.option(
     "--no-group",
@@ -113,9 +116,8 @@ from vulntotal.validator import VendorData
     hidden=True,
     multiple=False,
     required=False,
-    help="Don't group by CVE.",
+    help="Do not group output by vulnerability/CVE. Used for debugging.",
 )
-@click.argument("purl", required=False)
 @click.help_option("-h", "--help")
 def handler(
     purl,
@@ -131,8 +133,7 @@ def handler(
     no_group,
 ):
     """
-    Runs the PURL through all the available datasources and group vulnerability by CVEs.
-    Use the special '-' file name to print JSON or YAML results on screen/stdout.
+    Search all the available vulnerabilities databases for the package-url PURL.
     """
     active_datasource = (
         get_enabled_datasource(enable)
@@ -144,7 +145,7 @@ def handler(
         list_datasources()
 
     elif not active_datasource:
-        click.echo("No datasources available!", err=True)
+        click.echo("No datasource available!", err=True)
 
     elif ecosystem:
         list_supported_ecosystem(active_datasource)
@@ -176,7 +177,7 @@ def get_valid_datasources(datasources):
         except KeyError:
             unknown_datasources.append(key)
     if unknown_datasources:
-        raise CommandError(f"Unknown datasource: {unknown_datasources}")
+        raise Exception(f"Unknown datasources: {unknown_datasources}")
     return valid_datasources
 
 
@@ -197,13 +198,13 @@ def list_datasources():
 
 def list_supported_ecosystem(datasources):
     ecosystems = []
-    for key, datasource in datasources.items():
+    for _key, datasource in datasources.items():
         vendor_supported_ecosystem = datasource.supported_ecosystem()
         ecosystems.extend([x.upper() for x in vendor_supported_ecosystem.keys()])
 
     active_datasource = [x.upper() for x in datasources.keys()]
-    click.echo("Active DataSources: %s\n" % ", ".join(sorted(active_datasource)))
-    click.echo("Ecosystem supported by active datasources")
+    click.echo("Active datasources: %s\n" % ", ".join(sorted(active_datasource)))
+    click.echo("Package ecosystem supported by active datasources")
     click.echo("\n".join(sorted(set(ecosystems))))
 
 
@@ -281,8 +282,8 @@ def prettyprint(purl, datasources, pagination, no_threading):
     if not vulnerabilities:
         return
 
-    active_datasource = ", ".join(sorted([x.upper() for x in datasources.keys()]))
-    metadata = f"PURL: {purl}\nActive DataSources: {active_datasource}\n\n"
+    active_datasources = ", ".join(sorted([x.upper() for x in datasources.keys()]))
+    metadata = f"PURL: {purl}\nActive datasources: {active_datasources}\n\n"
 
     table = Texttable()
     table.set_cols_dtype(["t", "t", "t", "t"])

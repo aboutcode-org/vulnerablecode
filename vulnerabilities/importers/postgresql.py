@@ -12,35 +12,40 @@ import urllib.parse as urlparse
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
+from univers.version_range import GenericVersionRange
+from univers.versions import GenericVersion
 
 from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.utils import nearest_patched_package
 
 
 class PostgreSQLImporter(Importer):
 
     root_url = "https://www.postgresql.org/support/security/"
+    license_url = "https://www.postgresql.org/about/licence/"
+    spdx_license_expression = "PostgreSQL"
 
-    def updated_advisories(self):
-        advisories = []
+    def advisory_data(self):
         known_urls = {self.root_url}
         visited_urls = set()
+        data_by_url = {}
         while True:
             unvisited_urls = known_urls - visited_urls
             for url in unvisited_urls:
                 data = requests.get(url).content
-                advisories.extend(to_advisories(data))
+                data_by_url[url] = data
                 visited_urls.add(url)
                 known_urls.update(find_advisory_urls(data))
 
             if known_urls == visited_urls:
                 break
 
-        return self.batch_advisories(advisories)
+        for url, data in data_by_url.items():
+            yield from to_advisories(data)
 
 
 def to_advisories(data):
@@ -54,29 +59,43 @@ def to_advisories(data):
         if "windows" in summary.lower():
             pkg_qualifiers = {"os": "windows"}
 
-        affected_packages = [
-            PackageURL(
-                type="generic",
-                name="postgresql",
-                version=version.strip(),
-                qualifiers=pkg_qualifiers,
-            )
-            for version in affected_col.text.split(",")
-        ]
+        affected_packages = []
+        affected_version_list = affected_col.text.split(",")
+        fixed_version_list = fixed_col.text.split(",")
 
-        fixed_packages = [
-            PackageURL(
-                type="generic",
-                name="postgresql",
-                version=version.strip(),
-                qualifiers=pkg_qualifiers,
+        if fixed_version_list:
+            for fixed_version in fixed_version_list:
+                affected_packages.append(
+                    AffectedPackage(
+                        package=PackageURL(
+                            name="postgresql",
+                            # TODO: See https://github.com/nexB/vulnerablecode/issues/990
+                            type="generic",
+                            qualifiers=pkg_qualifiers,
+                        ),
+                        affected_version_range=GenericVersionRange.from_versions(
+                            affected_version_list
+                        )
+                        if affected_version_list
+                        else None,
+                        fixed_version=GenericVersion(fixed_version) if fixed_version else None,
+                    )
+                )
+        elif affected_version_list:
+            affected_packages.append(
+                AffectedPackage(
+                    package=PackageURL(
+                        name="postgresql",
+                        # TODO: See https://github.com/nexB/vulnerablecode/issues/990
+                        type="generic",
+                        qualifiers=pkg_qualifiers,
+                    ),
+                    affected_version_range=GenericVersionRange.from_versions(affected_version_list),
+                )
             )
-            for version in fixed_col.text.split(",")
-            if version
-        ]
-
+        cve_id = ""
         try:
-            cve_id = ref_col.select("nobr")[0].text
+            cve_id = ref_col.select(".nobr")[0].text
             # This is for the anomaly in https://www.postgresql.org/support/security/8.1/ 's
             # last entry
         except IndexError:
@@ -102,21 +121,20 @@ def to_advisories(data):
                     )
                     severities.append(severity)
             references.append(Reference(url=link, severities=severities))
-
-        advisories.append(
-            AdvisoryData(
-                vulnerability_id=cve_id,
-                summary=summary,
-                references=references,
-                affected_packages=nearest_patched_package(affected_packages, fixed_packages),
+        if cve_id:
+            advisories.append(
+                AdvisoryData(
+                    aliases=[cve_id],
+                    summary=summary,
+                    references=references,
+                    affected_packages=affected_packages,
+                )
             )
-        )
-
     return advisories
 
 
 def find_advisory_urls(page_data):
-    soup = BeautifulSoup(page_data)
+    soup = BeautifulSoup(page_data, features="lxml")
     return {
         urlparse.urljoin("https://www.postgresql.org/", a_tag.attrs["href"])
         for a_tag in soup.select("h3+ p a")

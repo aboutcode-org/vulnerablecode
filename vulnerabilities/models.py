@@ -317,14 +317,40 @@ class VulnerabilityRelatedReference(models.Model):
         ordering = ["vulnerability", "reference"]
 
 
+def purl_to_dict(purl: PackageURL):
+    """
+    Return a dict of purl components suitable for use in a queryset.
+    We need to have specific empty values for using in querysets because of our peculiar model structure.
+
+    For example::
+    >>> purl_to_dict(PackageURL.from_string("pkg:generic/postgres"))
+    {'type': 'generic', 'namespace': '', 'name': 'postgres', 'version': '', 'qualifiers': {}, 'subpath': ''}
+    >>> purl_to_dict(PackageURL.from_string("pkg:generic/postgres/postgres@1.2?foo=bar#baz"))
+    {'type': 'generic', 'namespace': 'postgres', 'name': 'postgres', 'version': '1.2', 'qualifiers': {'foo': 'bar'}, 'subpath': 'baz'}
+    """
+    if isinstance(purl, str):
+        purl = PackageURL.from_string(purl)
+
+    return dict(
+        type=purl.type,
+        namespace=purl.namespace or "",
+        name=purl.name,
+        version=purl.version or "",
+        qualifiers=purl.qualifiers or {},
+        subpath=purl.subpath or "",
+    )
+
+
 class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
     def get_or_create_from_purl(self, purl: PackageURL):
         """
         Return an existing or new Package (created if neeed) given a
         ``purl`` PackageURL.
         """
-        purl_fields = without_empty_values(purl.to_dict(encode=True))
-        package, _ = Package.objects.get_or_create(**purl_fields)
+        if isinstance(purl, str):
+            purl = PackageURL.from_string(purl)
+
+        package, _ = Package.objects.get_or_create(**purl_to_dict(purl=purl))
         return package
 
     def for_package_url_object(self, purl):
@@ -333,15 +359,12 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         ``purl`` string is validated and transformed into filtering lookups. If
         this is a PackageURL object it is reused as-is.
         """
-        if isinstance(purl, PackageURL):
-            lookups = without_empty_values(purl.to_dict(encode=True))
-            return self.filter(**lookups)
-
-        elif isinstance(purl, str):
-            return self.for_package_url(purl, encode=False)
-
-        else:
+        if not purl:
             return self.none()
+        if isinstance(purl, str):
+            purl = PackageURL.from_string(purl)
+        lookups = without_empty_values(purl.to_dict(encode=True))
+        return self.filter(**lookups)
 
     def affected(self):
         """

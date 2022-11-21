@@ -3,6 +3,12 @@ Release notes
 
 
 
+Version v30.3.2
+----------------
+
+- We re-enabled support for the PostgreSQL securities advisories importer.
+
+
 Version v30.3.1
 ----------------
 
@@ -17,10 +23,10 @@ Version v30.3.0
 This is a feature update release including minor bug fixes and the introduction
 of API keys and API throttling.
 
-- We enabled API throttling for a basic user and for a staff user 
+- We enabled API throttling for a basic user and for a staff user
   they can have unlimited access on API.
 
-- We added throttle rate for each API endpoint and it can be 
+- We added throttle rate for each API endpoint and it can be
   configured from the settings #991 https://github.com/nexB/vulnerablecode/issues/991
 
 - We improved how we import NVD data

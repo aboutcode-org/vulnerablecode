@@ -1,0 +1,65 @@
+[
+  {
+    "affected_versions": [],
+    "fixed_versions": [],
+    "aliases": [
+      "CVE-2021-3907"
+    ]
+  },
+  {
+    "affected_versions": [],
+    "fixed_versions": [],
+    "aliases": [
+      "CVE-2021-3761"
+    ]
+  },
+  {
+    "affected_versions": [],
+    "fixed_versions": [],
+    "aliases": [
+      "CVE-2021-3908"
+    ]
+  },
+  {
+    "affected_versions": [],
+    "fixed_versions": [],
+    "aliases": [
+      "CVE-2021-3909"
+    ]
+  },
+  {
+    "affected_versions": [],
+    "fixed_versions": [],
+    "aliases": [
+      "CVE-2021-3910"
+    ]
+  },
+  {
+    "affected_versions": [],
+    "fixed_versions": [],
+    "aliases": [
+      "CVE-2021-3978"
+    ]
+  },
+  {
+    "affected_versions": [],
+    "fixed_versions": [],
+    "aliases": [
+      "CVE-2021-3911"
+    ]
+  },
+  {
+    "affected_versions": [],
+    "fixed_versions": [],
+    "aliases": [
+      "CVE-2021-3912"
+    ]
+  },
+  {
+    "affected_versions": [],
+    "fixed_versions": [],
+    "aliases": [
+      "sonatype-2022-0972"
+    ]
+  }
+]

@@ -1,0 +1,7 @@
+[
+  "https://deps.dev/_/s/pypi/p/jinja2/v/2.4.1/dependencies",
+  "https://deps.dev/_/s/maven/p/org.apache.tomcat%3Atomcat/v/10.1.0-M8/dependencies",
+  "https://deps.dev/_/s/npm/p/semver-regex/v/3.1.3/dependencies",
+  "https://deps.dev/_/s/go/p/github.com%2Fcloudflare%2Fcfrpki/v/v1.4.1/dependencies",
+  "https://deps.dev/_/s/cargo/p/rand/v/0.5.4/dependencies"
+]

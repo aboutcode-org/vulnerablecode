@@ -18,29 +18,12 @@
         </div>
     </div>
     <div class="navbar-end mr-3">
+        <a class="navbar-item" href="{% url 'api_user_request' %}" target="_blank">
+            API
+        </a>
         <div class="navbar-item navbar-item is-cursor-help">
             <div class="dropdown is-right is-hoverable ">
-                <div class="dropdown-trigger has-text-grey-light">
-                    API
-                </div>
-                    <div class="dropdown-menu navbar-hover-div" role="menu">
-                    <div class="dropdown-content">
-                        <div class="dropdown-item about-hover-div">
-                            If you want to try the JSON REST API for VulnerableCode.io,
-                            first <a href="{% url 'api_user_request' %}">request an API key</a>,
-                            then <a href="{% url 'api_docs' %}">visit the live OpenAPI documentation</a>,
-                            and <a href="{% url 'api_docs' %}">the API endpoint</a>.
-                            Note that API access may be throttled.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="navbar-item navbar-item is-cursor-help">
-            <div class="dropdown is-right is-hoverable ">
-                <div class="dropdown-trigger has-text-grey-light">
-                    About
-                </div>
+                <div class="dropdown-trigger has-text-grey-light">About</div>
                     <div class="dropdown-menu navbar-hover-div" role="menu">
                     <div class="dropdown-content">
                         <div class="dropdown-item about-hover-div">

@@ -55,15 +55,15 @@ class ApiUserCreationForm(forms.ModelForm):
         email_field.label = "Email"
         email_field.widget.attrs["class"] = "input"
         email_field.widget.attrs["style"] = "width: 50%"
-        email_field.widget.attrs["placeholder"] = "e.g. foo@bar.com"
+        email_field.widget.attrs["placeholder"] = "foo@bar.com"
         first_name_field.label = "First Name"
         first_name_field.widget.attrs["class"] = "input"
         first_name_field.widget.attrs["style"] = "width: 50%"
-        first_name_field.widget.attrs["placeholder"] = "e.g. Jon"
+        first_name_field.widget.attrs["placeholder"] = "Jon"
         last_name_field.label = "Last Name"
         last_name_field.widget.attrs["class"] = "input"
         last_name_field.widget.attrs["style"] = "width: 50%"
-        last_name_field.widget.attrs["placeholder"] = "e.g. Doe"
+        last_name_field.widget.attrs["placeholder"] = "Doe"
 
     def save(self, commit=True):
         return ApiUser.objects.create_api_user(

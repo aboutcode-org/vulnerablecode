@@ -42,6 +42,17 @@ def check_results_against_json(
         with open(expected_file) as exp:
             expected = json.load(exp)
 
+    check_results_against_expected(results, expected)
+
+
+def check_results_against_expected(
+    results,
+    expected,
+):
+    """
+    Check the JSON-serializable mapping or sequence ``results`` against the
+    ``expected``.
+    """
     # NOTE we redump the JSON as a YAML string for easier display of
     # the failures comparison/diff
     if results != expected:

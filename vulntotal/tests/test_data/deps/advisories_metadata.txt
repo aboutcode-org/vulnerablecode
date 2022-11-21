@@ -1,0 +1,208 @@
+{
+  "package": {
+    "system": "PYPI",
+    "name": "jinja2"
+  },
+  "version": "2.4.1",
+  "dependencyCount": 0,
+  "directCount": 0,
+  "indirectCount": 0,
+  "dependencies": [
+    {
+      "package": {
+        "system": "PYPI",
+        "name": "jinja2"
+      },
+      "version": "2.4.1",
+      "type": "",
+      "createdAt": 1271771625,
+      "description": "A small but fast and easy to use stand-alone template engine written in pure python.",
+      "owners": [],
+      "licenses": [
+        "non-standard"
+      ],
+      "advisories": [
+        {
+          "source": "GHSA",
+          "sourceID": "GHSA-g3rq-g295-4j3m",
+          "sourceURL": "https://github.com/advisories/GHSA-g3rq-g295-4j3m",
+          "title": "Regular Expression Denial of Service (ReDoS) in Jinja2",
+          "description": "This affects the package jinja2 from 0.0.0 and before 2.11.3. The ReDOS vulnerability of the regex is mainly due to the sub-pattern [a-zA-Z0-9._-]+.[a-zA-Z0-9._-]+ This issue can be mitigated by Markdown to format user content instead of the urlize filter, or by implementing request timeouts and limiting process memory.",
+          "referenceURLs": [
+            "https://nvd.nist.gov/vuln/detail/CVE-2020-28493",
+            "https://github.com/pallets/jinja/pull/1343",
+            "https://github.com/pallets/jinja/blob/ab81fd9c277900c85da0c322a2ff9d68a235b2e6/src/jinja2/utils.py%23L20",
+            "https://snyk.io/vuln/SNYK-PYTHON-JINJA2-1012994",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/PVAKCOO7VBVUBM3Q6CBBTPBFNP5NDXF4/",
+            "https://security.gentoo.org/glsa/202107-19",
+            "https://github.com/advisories/GHSA-g3rq-g295-4j3m"
+          ],
+          "severity": "MEDIUM",
+          "gitHubSeverity": "MODERATE",
+          "scoreV3": 5.3,
+          "aliases": [
+            "CVE-2020-28493"
+          ],
+          "disclosedAt": 1616189285,
+          "observedAt": 1650328213
+        },
+        {
+          "source": "OSV",
+          "sourceID": "PYSEC-2014-8",
+          "sourceURL": "https://osv.dev/vulnerability/PYSEC-2014-8",
+          "title": "PYSEC-2014-8",
+          "description": "The default configuration for bccache.FileSystemBytecodeCache in Jinja2 before 2.7.2 does not properly create temporary files, which allows local users to gain privileges via a crafted .cache file with a name starting with __jinja2_ in /tmp.",
+          "referenceURLs": [
+            "http://advisories.mageia.org/MGASA-2014-0028.html",
+            "http://jinja.pocoo.org/docs/changelog/",
+            "http://openwall.com/lists/oss-security/2014/01/10/2",
+            "http://openwall.com/lists/oss-security/2014/01/10/3",
+            "http://rhn.redhat.com/errata/RHSA-2014-0747.html",
+            "http://rhn.redhat.com/errata/RHSA-2014-0748.html",
+            "http://secunia.com/advisories/56287",
+            "http://secunia.com/advisories/58783",
+            "http://secunia.com/advisories/58918",
+            "http://secunia.com/advisories/59017",
+            "http://secunia.com/advisories/60738",
+            "http://secunia.com/advisories/60770",
+            "http://www.gentoo.org/security/en/glsa/glsa-201408-13.xml",
+            "http://www.mandriva.com/security/advisories?name=MDVSA-2014:096",
+            "https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=734747",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=1051421",
+            "https://github.com/pypa/advisory-database/blob/main/vulns/jinja2/PYSEC-2014-8.yaml",
+            "https://oss.oracle.com/pipermail/el-errata/2014-June/004192.html"
+          ],
+          "severity": "UNKNOWN",
+          "gitHubSeverity": "UNKNOWN",
+          "aliases": [
+            "CVE-2014-1402"
+          ],
+          "disclosedAt": 1400511300,
+          "observedAt": 1645597812
+        },
+        {
+          "source": "OSV",
+          "sourceID": "PYSEC-2014-82",
+          "sourceURL": "https://osv.dev/vulnerability/PYSEC-2014-82",
+          "title": "PYSEC-2014-82",
+          "description": "FileSystemBytecodeCache in Jinja2 2.7.2 does not properly create temporary directories, which allows local users to gain privileges by pre-creating a temporary directory with a user's uid.  NOTE: this vulnerability exists because of an incomplete fix for CVE-2014-1402.",
+          "referenceURLs": [
+            "http://seclists.org/oss-sec/2014/q1/73",
+            "http://secunia.com/advisories/56328",
+            "http://secunia.com/advisories/60738",
+            "http://www.gentoo.org/security/en/glsa/glsa-201408-13.xml",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=1051421",
+            "https://github.com/mitsuhiko/jinja2",
+            "https://github.com/mitsuhiko/jinja2/commit/acb672b6a179567632e032f547582f30fa2f4aa7",
+            "https://github.com/mitsuhiko/jinja2/pull/292",
+            "https://github.com/mitsuhiko/jinja2/pull/296",
+            "https://github.com/pypa/advisory-database/blob/main/vulns/jinja2/PYSEC-2014-82.yaml"
+          ],
+          "severity": "UNKNOWN",
+          "gitHubSeverity": "UNKNOWN",
+          "aliases": [
+            "CVE-2014-0012"
+          ],
+          "disclosedAt": 1400511300,
+          "observedAt": 1645597812
+        },
+        {
+          "source": "OSV",
+          "sourceID": "PYSEC-2019-217",
+          "sourceURL": "https://osv.dev/vulnerability/PYSEC-2019-217",
+          "title": "PYSEC-2019-217",
+          "description": "In Pallets Jinja before 2.10.1, str.format_map allows a sandbox escape.",
+          "referenceURLs": [
+            "http://lists.opensuse.org/opensuse-security-announce/2019-05/msg00030.html",
+            "http://lists.opensuse.org/opensuse-security-announce/2019-06/msg00064.html",
+            "https://access.redhat.com/errata/RHSA-2019:1152",
+            "https://access.redhat.com/errata/RHSA-2019:1237",
+            "https://access.redhat.com/errata/RHSA-2019:1329",
+            "https://github.com/advisories/GHSA-462w-v97r-4m45",
+            "https://github.com/pypa/advisory-database/blob/main/vulns/jinja2/PYSEC-2019-217.yaml",
+            "https://lists.apache.org/thread.html/09fc842ff444cd43d9d4c510756fec625ef8eb1175f14fd21de2605f@%3Cdevnull.infra.apache.org%3E",
+            "https://lists.apache.org/thread.html/2b52b9c8b9d6366a4f1b407a8bde6af28d9fc73fdb3b37695fd0d9ac@%3Cdevnull.infra.apache.org%3E",
+            "https://lists.apache.org/thread.html/320441dccbd9a545320f5f07306d711d4bbd31ba43dc9eebcfc602df@%3Cdevnull.infra.apache.org%3E",
+            "https://lists.apache.org/thread.html/46c055e173b52d599c648a98199972dbd6a89d2b4c4647b0500f2284@%3Cdevnull.infra.apache.org%3E",
+            "https://lists.apache.org/thread.html/57673a78c4d5c870d3f21465c7e2946b9f8285c7c57e54c2ae552f02@%3Ccommits.airflow.apache.org%3E",
+            "https://lists.apache.org/thread.html/7f39f01392d320dfb48e4901db68daeece62fd60ef20955966739993@%3Ccommits.airflow.apache.org%3E",
+            "https://lists.apache.org/thread.html/b2380d147b508bbcb90d2cad443c159e63e12555966ab4f320ee22da@%3Ccommits.airflow.apache.org%3E",
+            "https://lists.apache.org/thread.html/f0c4a03418bcfe70c539c5dbaf99c04c98da13bfa1d3266f08564316@%3Ccommits.airflow.apache.org%3E",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/DSW3QZMFVVR7YE3UT4YRQA272TYAL5AF/",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/QCDYIS254EJMBNWOG4S5QY6AOTOR4TZU/",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/TS7IVZAJBWOHNRDMFJDIZVFCMRP6YIUQ/",
+            "https://palletsprojects.com/blog/jinja-2-10-1-released",
+            "https://usn.ubuntu.com/4011-1/",
+            "https://usn.ubuntu.com/4011-2/"
+          ],
+          "severity": "UNKNOWN",
+          "gitHubSeverity": "UNKNOWN",
+          "aliases": [
+            "CVE-2019-10906",
+            "GHSA-462w-v97r-4m45"
+          ],
+          "disclosedAt": 1554596940,
+          "observedAt": 1645597812
+        },
+        {
+          "source": "OSV",
+          "sourceID": "PYSEC-2019-220",
+          "sourceURL": "https://osv.dev/vulnerability/PYSEC-2019-220",
+          "title": "PYSEC-2019-220",
+          "description": "In Pallets Jinja before 2.8.1, str.format allows a sandbox escape.",
+          "referenceURLs": [
+            "http://lists.opensuse.org/opensuse-security-announce/2019-05/msg00030.html",
+            "http://lists.opensuse.org/opensuse-security-announce/2019-06/msg00064.html",
+            "https://access.redhat.com/errata/RHSA-2019:1022",
+            "https://access.redhat.com/errata/RHSA-2019:1237",
+            "https://access.redhat.com/errata/RHSA-2019:1260",
+            "https://access.redhat.com/errata/RHSA-2019:3964",
+            "https://access.redhat.com/errata/RHSA-2019:4062",
+            "https://github.com/advisories/GHSA-hj2j-77xm-mc5v",
+            "https://github.com/pallets/jinja",
+            "https://github.com/pallets/jinja/commit/9b53045c34e61013dc8f09b7e52a555fa16bed16",
+            "https://github.com/pypa/advisory-database/blob/main/vulns/jinja2/PYSEC-2019-220.yaml",
+            "https://palletsprojects.com/blog/jinja-281-released/",
+            "https://usn.ubuntu.com/4011-1/",
+            "https://usn.ubuntu.com/4011-2/"
+          ],
+          "severity": "UNKNOWN",
+          "gitHubSeverity": "UNKNOWN",
+          "aliases": [
+            "CVE-2016-10745",
+            "GHSA-hj2j-77xm-mc5v"
+          ],
+          "disclosedAt": 1554730140,
+          "observedAt": 1645597812
+        },
+        {
+          "source": "OSV",
+          "sourceID": "PYSEC-2021-66",
+          "sourceURL": "https://osv.dev/vulnerability/PYSEC-2021-66",
+          "title": "PYSEC-2021-66",
+          "description": "This affects the package jinja2 from 0.0.0 and before 2.11.3. The ReDoS vulnerability is mainly due to the `_punctuation_re regex` operator and its use of multiple wildcards. The last wildcard is the most exploitable as it searches for trailing punctuation. This issue can be mitigated by Markdown to format user content instead of the urlize filter, or by implementing request timeouts and limiting process memory.",
+          "referenceURLs": [
+            "https://github.com/advisories/GHSA-g3rq-g295-4j3m",
+            "https://github.com/pallets/jinja/blob/ab81fd9c277900c85da0c322a2ff9d68a235b2e6/src/jinja2/utils.py%23L20",
+            "https://github.com/pallets/jinja/pull/1343",
+            "https://github.com/pypa/advisory-database/blob/main/vulns/jinja2/PYSEC-2021-66.yaml",
+            "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/PVAKCOO7VBVUBM3Q6CBBTPBFNP5NDXF4/",
+            "https://snyk.io/vuln/SNYK-PYTHON-JINJA2-1012994"
+          ],
+          "severity": "UNKNOWN",
+          "gitHubSeverity": "UNKNOWN",
+          "aliases": [
+            "CVE-2020-28493",
+            "SNYK-PYTHON-JINJA2-1012994",
+            "GHSA-g3rq-g295-4j3m"
+          ],
+          "disclosedAt": 1612210500,
+          "observedAt": 1645597812
+        }
+      ],
+      "distance": 0,
+      "dependencyCount": 0,
+      "errors": []
+    }
+  ]
+}

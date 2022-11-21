@@ -1,0 +1,12 @@
+{
+  "affected_versions": [
+    "TEST-AFFECTED"
+  ],
+  "fixed_versions": [
+    "6.0.3"
+  ],
+  "aliases": [
+    "CVE-2021-37861",
+    "TEST-SNYKID"
+  ]
+}

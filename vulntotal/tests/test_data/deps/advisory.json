@@ -1,0 +1,247 @@
+{
+  "source": "OSV",
+  "sourceID": "PYSEC-2019-217",
+  "sourceURL": "https://osv.dev/vulnerability/PYSEC-2019-217",
+  "title": "PYSEC-2019-217",
+  "description": "In Pallets Jinja before 2.10.1, str.format_map allows a sandbox escape.",
+  "referenceURLs": [
+    "http://lists.opensuse.org/opensuse-security-announce/2019-05/msg00030.html",
+    "http://lists.opensuse.org/opensuse-security-announce/2019-06/msg00064.html",
+    "https://access.redhat.com/errata/RHSA-2019:1152",
+    "https://access.redhat.com/errata/RHSA-2019:1237",
+    "https://access.redhat.com/errata/RHSA-2019:1329",
+    "https://github.com/advisories/GHSA-462w-v97r-4m45",
+    "https://github.com/pypa/advisory-database/blob/main/vulns/jinja2/PYSEC-2019-217.yaml",
+    "https://lists.apache.org/thread.html/09fc842ff444cd43d9d4c510756fec625ef8eb1175f14fd21de2605f@%3Cdevnull.infra.apache.org%3E",
+    "https://lists.apache.org/thread.html/2b52b9c8b9d6366a4f1b407a8bde6af28d9fc73fdb3b37695fd0d9ac@%3Cdevnull.infra.apache.org%3E",
+    "https://lists.apache.org/thread.html/320441dccbd9a545320f5f07306d711d4bbd31ba43dc9eebcfc602df@%3Cdevnull.infra.apache.org%3E",
+    "https://lists.apache.org/thread.html/46c055e173b52d599c648a98199972dbd6a89d2b4c4647b0500f2284@%3Cdevnull.infra.apache.org%3E",
+    "https://lists.apache.org/thread.html/57673a78c4d5c870d3f21465c7e2946b9f8285c7c57e54c2ae552f02@%3Ccommits.airflow.apache.org%3E",
+    "https://lists.apache.org/thread.html/7f39f01392d320dfb48e4901db68daeece62fd60ef20955966739993@%3Ccommits.airflow.apache.org%3E",
+    "https://lists.apache.org/thread.html/b2380d147b508bbcb90d2cad443c159e63e12555966ab4f320ee22da@%3Ccommits.airflow.apache.org%3E",
+    "https://lists.apache.org/thread.html/f0c4a03418bcfe70c539c5dbaf99c04c98da13bfa1d3266f08564316@%3Ccommits.airflow.apache.org%3E",
+    "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/DSW3QZMFVVR7YE3UT4YRQA272TYAL5AF/",
+    "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/QCDYIS254EJMBNWOG4S5QY6AOTOR4TZU/",
+    "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/TS7IVZAJBWOHNRDMFJDIZVFCMRP6YIUQ/",
+    "https://palletsprojects.com/blog/jinja-2-10-1-released",
+    "https://usn.ubuntu.com/4011-1/",
+    "https://usn.ubuntu.com/4011-2/"
+  ],
+  "severity": "UNKNOWN",
+  "gitHubSeverity": "UNKNOWN",
+  "aliases": [
+    "CVE-2019-10906",
+    "GHSA-462w-v97r-4m45"
+  ],
+  "disclosedAt": 1554596940,
+  "observedAt": 1645597812,
+  "affectedPackageCount": 734,
+  "fixedPackageCount": 343,
+  "ecosystemAffected": 0.001987420225656133,
+  "packages": [
+    {
+      "package": {
+        "system": "PyPI",
+        "name": "jinja2"
+      },
+      "affected": "{[0.0.0.dev0:2.10.1)}",
+      "rawAffected": "Introduced: 0, Fixed: 2.10.1",
+      "versionsAffected": [
+        {
+          "version": "2.10",
+          "createdAt": 1510172022
+        },
+        {
+          "version": "2.9.6",
+          "createdAt": 1491225087
+        },
+        {
+          "version": "2.9.5",
+          "createdAt": 1485614558
+        },
+        {
+          "version": "2.9.4",
+          "createdAt": 1484036657
+        },
+        {
+          "version": "2.9.3",
+          "createdAt": 1483910640
+        },
+        {
+          "version": "2.9.2",
+          "createdAt": 1483840248
+        },
+        {
+          "version": "2.9.1",
+          "createdAt": 1483804587
+        },
+        {
+          "version": "2.9",
+          "createdAt": 1483803350
+        },
+        {
+          "version": "2.8.1",
+          "createdAt": 1483017384
+        },
+        {
+          "version": "2.8",
+          "createdAt": 1437933126
+        },
+        {
+          "version": "2.7.3",
+          "createdAt": 1402073357
+        },
+        {
+          "version": "2.7.2",
+          "createdAt": 1389350560
+        },
+        {
+          "version": "2.7.1",
+          "createdAt": 1375882058
+        },
+        {
+          "version": "2.7",
+          "createdAt": 1369054982
+        },
+        {
+          "version": "2.6",
+          "createdAt": 1311544131
+        },
+        {
+          "version": "2.5.5",
+          "createdAt": 1287412660
+        },
+        {
+          "version": "2.5.4",
+          "createdAt": 1287334122
+        },
+        {
+          "version": "2.5.3",
+          "createdAt": 1287330903
+        },
+        {
+          "version": "2.5.2",
+          "createdAt": 1282130120
+        },
+        {
+          "version": "2.5.1",
+          "createdAt": 1282048744
+        },
+        {
+          "version": "2.5",
+          "createdAt": 1275173682
+        },
+        {
+          "version": "2.4.1",
+          "createdAt": 1271771625
+        },
+        {
+          "version": "2.4",
+          "createdAt": 1271120167
+        },
+        {
+          "version": "2.3.1",
+          "createdAt": 1266586731
+        },
+        {
+          "version": "2.3",
+          "createdAt": 1265768375
+        },
+        {
+          "version": "2.2.1",
+          "createdAt": 1252972721
+        },
+        {
+          "version": "2.2",
+          "createdAt": 1252834253
+        },
+        {
+          "version": "2.1.1",
+          "createdAt": 1230226892
+        },
+        {
+          "version": "2.1",
+          "createdAt": 1227443230
+        },
+        {
+          "version": "2.0",
+          "createdAt": 1216330416
+        },
+        {
+          "version": "2.0rc1",
+          "createdAt": 1213030243
+        }
+      ],
+      "versionsUnaffected": [
+        {
+          "version": "3.1.2",
+          "createdAt": 1651166485
+        },
+        {
+          "version": "3.1.1",
+          "createdAt": 1648247575
+        },
+        {
+          "version": "3.1.0",
+          "createdAt": 1648131241
+        },
+        {
+          "version": "3.0.3",
+          "createdAt": 1636489647
+        },
+        {
+          "version": "3.0.2",
+          "createdAt": 1633394967
+        },
+        {
+          "version": "3.0.1",
+          "createdAt": 1621370357
+        },
+        {
+          "version": "3.0.0",
+          "createdAt": 1620767296
+        },
+        {
+          "version": "3.0.0rc2",
+          "createdAt": 1619363578
+        },
+        {
+          "version": "3.0.0rc1",
+          "createdAt": 1618586722
+        },
+        {
+          "version": "3.0.0a1",
+          "createdAt": 1580942178
+        },
+        {
+          "version": "2.11.3",
+          "createdAt": 1612110787
+        },
+        {
+          "version": "2.11.2",
+          "createdAt": 1586794604
+        },
+        {
+          "version": "2.11.1",
+          "createdAt": 1580407772
+        },
+        {
+          "version": "2.11.0",
+          "createdAt": 1580149449
+        },
+        {
+          "version": "2.10.3",
+          "createdAt": 1570215157
+        },
+        {
+          "version": "2.10.2",
+          "createdAt": 1570213187
+        },
+        {
+          "version": "2.10.1",
+          "createdAt": 1554577199
+        }
+      ]
+    }
+  ]
+}

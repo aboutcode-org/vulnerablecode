@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {%load crispy_forms_tags %} 
-
+{% block title %}
+VulnerableCode API key request
+{% endblock %}
 
 {% block content %}
     <section class="section pt-0">
@@ -23,7 +25,13 @@
     </h2>
 
     <section class="ml-2 mt-3 pr-4 pt-4 pl-4 pb-4 has-background-light has-border-radius">
-      Please provide your <b>email address</b> and we will email you the <b>API token</b>.
+      <p class="pb-2">You need an <b>API key</b> to access the 
+      <a href="{% url 'api-root' %}">VulnerableCode JSON REST API</a>.
+      Please check the live <a href="{% url 'api_docs' %}"> OpenAPI documentation </a> 
+      to learn how to use <a href="{% url 'api-root' %}">the API</a>.
+      By using this API, you agree to the VulnerableCode.io <a href="/tos">Terms of Service</a>.
+      This <b>API key</b> gives you a throttled access to the API and helps to prevent abuse of the API.
+      </p>
     </section>
 
     <br/>

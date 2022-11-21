@@ -69,11 +69,8 @@
         "severities": [
           {
             "system": "cvssv3",
-            "value": "6.7"
-          },
-          {
-            "system": "cvssv3_vector",
-            "value": [
+            "value": "6.7",
+            "scoring_elements": [
               "AV:L/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:H"
             ]
           }
@@ -149,11 +146,8 @@
         "severities": [
           {
             "system": "cvssv3",
-            "value": "3.1"
-          },
-          {
-            "system": "cvssv3_vector",
-            "value": [
+            "value": "3.1",
+            "scoring_elements": [
               "AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N"
             ]
           }

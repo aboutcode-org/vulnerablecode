@@ -15,8 +15,9 @@ import dateparser
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
-from univers.version_range import VersionRange
+from univers.version_range import GenericVersionRange
 from univers.versions import SemverVersion
+from univers.version_constraint import VersionConstraint
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -32,6 +33,7 @@ from vulnerabilities.severity_systems import APACHE_HTTPD
 class ApacheHTTPDImporter(Importer):
 
     base_url = "https://httpd.apache.org/security/json/"
+    spdx_license_expression = "Apache-2.0"
 
     # For now, don't use the GH API
     # def set_api(self):
@@ -44,15 +46,13 @@ class ApacheHTTPDImporter(Importer):
     #         )
     #     )
 
-    def updated_advisories(self):
+    def advisory_data(self):
         links = fetch_links(self.base_url)
         # For now, don't use the GH API
         # self.set_api()
-        advisories = []
         for link in links:
             data = requests.get(link).json()
-            advisories.append(self.to_advisory(data))
-        return self.batch_advisories(advisories)
+            yield self.to_advisory(data)
 
     def to_advisory(self, data):
         # cve = data["CVE_data_meta"]["ID"]
@@ -98,34 +98,34 @@ class ApacheHTTPDImporter(Importer):
 
             # print("\n\tversion = \n{}\n".format(json.dumps(version, indent=2)))
 
-        fixed_version_ranges, affected_version_ranges = self.to_version_ranges(versions_data)
+        affected_version_range = self.to_version_ranges(versions_data)
 
-        fixed_version = []
-        date_published = ""
+        # fixed_version = []
+        # date_published = ""
 
-        for entry in data["timeline"]:
-            value = entry["value"]
-            # if "released" in entry["value"]:
-            if "released" in value:
-                # fixed_version.append(entry["value"])
-                fixed_version.append(value.split(" ")[0])
-                date_published = get_published_date(entry["time"])
+        # for entry in data["timeline"]:
+        #     value = entry["value"]
+        #     # if "released" in entry["value"]:
+        #     if "released" in value:
+        #         # fixed_version.append(entry["value"])
+        #         fixed_version.append(value.split(" ")[0])
+        #         date_published = get_published_date(entry["time"])
 
-        affected_packages = []
+        # affected_packages = []
         # fixed_packages = []
 
-        for version in versions_data:
-            affected_package = AffectedPackage(
-                package=PackageURL(
-                    type="generic",
-                    name="apache_httpd",
-                ),
-                # affected_version_range=affected_version_range,
-                affected_version_range=version.get("version_value", "ERROR!!"),
-                fixed_version=fixed_version[0],
-                # fixed_version="to come",
-            )
-            affected_packages.append(affected_package)
+        # for version in versions_data:
+            # affected_package = AffectedPackage(
+            #     package=PackageURL(
+            #         type="generic",
+            #         name="apache_httpd",
+            #     ),
+            #     # affected_version_range=affected_version_range,
+            #     affected_version_range=version.get("version_value", "ERROR!!"),
+            #     fixed_version=fixed_version[0],
+            #     # fixed_version="to come",
+            # )
+            # affected_packages.append(affected_package)
 
         # for version_range in fixed_version_ranges:
         #     fixed_packages.extend(
@@ -150,31 +150,49 @@ class ApacheHTTPDImporter(Importer):
             aliases=[alias],
             summary=description,
             # affected_packages=nearest_patched_package(affected_packages, fixed_packages),
-            affected_packages=affected_packages,
+            # affected_packages=AffectedPackage(
+            #     package=PackageURL(
+            #         type="apache", 
+            #         name="httpd",
+            #     ),
+            #     affected_version_range=affected_version_range
+            # )
+            affected_packages=[
+                AffectedPackage(
+                    package=PackageURL(
+                        type="generic",
+                        name="apache_httpd",
+                    ),
+                    affected_version_range=affected_version_range,
+                )
+            ],
             references=[reference],
-            date_published=date_published,
         )
 
     def to_version_ranges(self, versions_data):
-        fixed_version_ranges = []
-        affected_version_ranges = []
+        constraints = []
         for version_data in versions_data:
             version_value = version_data["version_value"]
             range_expression = version_data["version_affected"]
-            if range_expression == "<":
-                fixed_version_ranges.append(
-                    VersionRange.from_scheme_version_spec_string(
-                        "semver", ">={}".format(version_value)
-                    )
-                )
-            elif range_expression == "=" or range_expression == "?=":
-                affected_version_ranges.append(
-                    VersionRange.from_scheme_version_spec_string(
-                        "semver", "{}".format(version_value)
-                    )
-                )
+            if range_expression == ">=" or range_expression == "!<":
+                constraints.append(VersionConstraint(
+                    comparator=">=",
+                    version=SemverVersion(version_value),
+                ))
 
-        return (fixed_version_ranges, affected_version_ranges)
+            if range_expression == "<=":
+                constraints.append(VersionConstraint(
+                    comparator="<=",
+                    version=SemverVersion(version_value),
+                ))
+
+            if range_expression == "=" or range_expression == "?=":
+                constraints.append(VersionConstraint(
+                    comparator="=",
+                    version=SemverVersion(version_value),
+                ))
+
+        return GenericVersionRange(constraints=constraints)
 
 
 def fetch_links(url):

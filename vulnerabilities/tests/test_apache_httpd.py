@@ -145,32 +145,33 @@ class TestApacheHTTPDImporter(TestCase):
     base_url = "https://httpd.apache.org/security/json/"
 
     def test_to_advisory_in_class(self):
-        # print("\nHello!\n")
-        with open(os.path.join(TEST_DATA, "CVE-1999-1199.json")) as f:
+        # with open(os.path.join(TEST_DATA, "CVE-1999-1199.json")) as f:
+        with open(os.path.join(TEST_DATA, "CVE-2021-44224.json")) as f:
             raw_data = json.load(f)
 
         # print("\n\nraw_data = \n{}\n".format(raw_data))
-        # print("\npretty raw_data = {}".format(json.dumps(raw_data, indent=2)))
+        print(
+            "\n\nJSON input file CVE-1999-1199.json = \n\n{}".format(json.dumps(raw_data, indent=2))
+        )
 
         advisory = ApacheHTTPDImporter.to_advisory(self, raw_data)
 
-        print("\n\nadvisory = \n{}\n".format(advisory))
+        print("\n\nJSON input file to_advisory() = \n\n{}\n".format(advisory))
 
-        print("advisory.aliases = {}\n".format(advisory.aliases))
+        # print("advisory.aliases = {}\n".format(advisory.aliases))
 
-        print("advisory.summary = {}\n".format(advisory.summary))
+        # print("advisory.summary = {}\n".format(advisory.summary))
 
-        print("advisory.affected_packages = {}\n".format(advisory.affected_packages))
+        # print("advisory.affected_packages = {}\n".format(advisory.affected_packages))
 
-        print("advisory.references = {}\n".format(advisory.references))
-        for ref in advisory.references:
-            print("\treference = {}\n".format(ref))
+        # print("advisory.references = {}\n".format(advisory.references))
+        # for ref in advisory.references:
+        #     print("\treference = {}\n".format(ref))
 
-        print("advisory.date_published = {}\n".format(advisory.date_published))
+        # print("advisory.date_published = {}\n".format(advisory.date_published))
 
-        # result = [data.to_dict() for data in advisories]
         result = advisory.to_dict()
 
-        print("result = {}\n".format(result))
+        # print("result = {}\n".format(result))
 
-        print("\npretty result = \n{}".format(json.dumps(result, indent=2)))
+        print("\nadvisory.to_dict() = \n\n{}\n".format(json.dumps(result, indent=2)))

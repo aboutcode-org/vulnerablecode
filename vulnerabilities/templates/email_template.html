@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {
+            background-color: #f6f6f6;
+        }
+        img {
+             width: 100px;
+             height: 50px;
+        }
+        div {
+            width: 100%;
+            margin: auto;
+            background-color: white;
+            padding: 35px;
+            line-height: 1.4;
+        }
+
+@media (max-width: 600px) {
+  div {
+        padding: 10px;
+  }
+  pre {
+      font-size: small;
+  }
+}
+    </style>
+</head>
+<body>
+<div>
+
+    <img src="data:image/png;base64,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">
+    <p><b>Dear VulnerableCode.io user:</b>
+    <p>
+        We have received a request to send a VulnerableCode.io API key to this email address.
+    <p>  Here is your API key: </p> <pre>Token {{ auth_token }}</pre>
+    </p>
+    <p>
+    If you did NOT request this API key, you can either ignore this email or contact us at <a href="mailto:support@nexb.com">support@nexb.com </a>and let us know in the forward that you did not request an API key.
+    The API root is at <a href="https://public.vulnerablecode.io/api">https://public.vulnerablecode.io/api</a>
+    To learn more about using the VulnerableCode.io API, please refer to the live API documentation at <a href="https://public.vulnerablecode.io/api/docs">https://public.vulnerablecode.io/api/docs</a>
+    To learn about VulnerableCode, refer to the general documentation at <a href="https://vulnerablecode.readthedocs.io">https://vulnerablecode.readthedocs.io</a>
+    </p>
+    <p>
+    Sincerely,
+    The nexB support Team.
+    VulnerableCode is a free and open database of software package vulnerabilities
+    and the tools to aggregate and correlate these vulnerabilities.
+    <br/>
+    Chat at <a href="https://gitter.im/aboutcode-org/vulnerablecode">https://gitter.im/aboutcode-org/vulnerablecode</a>
+    <br/>
+    Docs at <a href="https://vulnerablecode.readthedocs.org/">https://vulnerablecode.readthedocs.org/</a>
+    <br/>
+    Source code and issues at <a href="https://github.com/nexB/vulnerablecode">https://github.com/nexB/vulnerablecode</a>
+</div>
+</body>
+</html>

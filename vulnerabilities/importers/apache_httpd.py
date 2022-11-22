@@ -8,8 +8,10 @@
 #
 
 import asyncio
+import datetime
 import urllib
 
+import dateparser
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
@@ -71,6 +73,7 @@ class ApacheHTTPDImporter(Importer):
                     VulnerabilitySeverity(
                         system=APACHE_HTTPD,
                         value=value,
+                        scoring_elements="",
                     )
                 )
                 break
@@ -82,40 +85,23 @@ class ApacheHTTPDImporter(Importer):
             severities=severities,
         )
 
-        # 2022-11-17 Thursday 19:02:16.  This redraft of mine looks wrong and unnecessary -- current approach looks like what we want, since sampling suggests there are no real references in the JSON data and that there's always one value in ["impact"]["other"]
-        # reference_list = []
-        # # reference_data = data["references"]
-        # # if data["references"]["reference_data"]:
-        # if "reference_data" in data.get("references", {}):
-        #     reference = Reference(
-        #         reference_id=data["references"]["reference_data"][0]["refsource"],
-        #         url=data["references"]["reference_data"][0]["refsource"],
-        #         severities=severities,
-        #     )
-        # else:
-        #     reference = Reference(
-        #         reference_id="",
-        #         url="",
-        #         severities=severities,
-        #     )
-
         versions_data = []
         for vendor in data["affects"]["vendor"]["vendor_data"]:
             for products in vendor["product"]["product_data"]:
                 for version_data in products["version"]["version_data"]:
                     versions_data.append(version_data)
 
-        print("\n\n==> versions_data = {}\n".format(versions_data))
+        # print("\n\n==> versions_data = {}\n".format(versions_data))
         for version in versions_data:
-            print("\n\tversion = {}\n".format(version))
+            # print("\n\tversion = {}\n".format(version))
             import json
 
-            # print(json.dumps(version, indent=2))
-            print("\n\tversion = \n{}\n".format(json.dumps(version, indent=2)))
+            # print("\n\tversion = \n{}\n".format(json.dumps(version, indent=2)))
 
-        # fixed_version_ranges, affected_version_ranges = self.to_version_ranges(versions_data)
+        fixed_version_ranges, affected_version_ranges = self.to_version_ranges(versions_data)
 
         fixed_version = []
+        date_published = ""
 
         for entry in data["timeline"]:
             value = entry["value"]
@@ -123,6 +109,7 @@ class ApacheHTTPDImporter(Importer):
             if "released" in value:
                 # fixed_version.append(entry["value"])
                 fixed_version.append(value.split(" ")[0])
+                date_published = get_published_date(entry["time"])
 
         affected_packages = []
         # fixed_packages = []
@@ -165,28 +152,29 @@ class ApacheHTTPDImporter(Importer):
             # affected_packages=nearest_patched_package(affected_packages, fixed_packages),
             affected_packages=affected_packages,
             references=[reference],
+            date_published=date_published,
         )
 
-    # def to_version_ranges(self, versions_data):
-    #     fixed_version_ranges = []
-    #     affected_version_ranges = []
-    #     for version_data in versions_data:
-    #         version_value = version_data["version_value"]
-    #         range_expression = version_data["version_affected"]
-    #         if range_expression == "<":
-    #             fixed_version_ranges.append(
-    #                 VersionRange.from_scheme_version_spec_string(
-    #                     "semver", ">={}".format(version_value)
-    #                 )
-    #             )
-    #         elif range_expression == "=" or range_expression == "?=":
-    #             affected_version_ranges.append(
-    #                 VersionRange.from_scheme_version_spec_string(
-    #                     "semver", "{}".format(version_value)
-    #                 )
-    #             )
+    def to_version_ranges(self, versions_data):
+        fixed_version_ranges = []
+        affected_version_ranges = []
+        for version_data in versions_data:
+            version_value = version_data["version_value"]
+            range_expression = version_data["version_affected"]
+            if range_expression == "<":
+                fixed_version_ranges.append(
+                    VersionRange.from_scheme_version_spec_string(
+                        "semver", ">={}".format(version_value)
+                    )
+                )
+            elif range_expression == "=" or range_expression == "?=":
+                affected_version_ranges.append(
+                    VersionRange.from_scheme_version_spec_string(
+                        "semver", "{}".format(version_value)
+                    )
+                )
 
-    #     return (fixed_version_ranges, affected_version_ranges)
+        return (fixed_version_ranges, affected_version_ranges)
 
 
 def fetch_links(url):
@@ -199,6 +187,20 @@ def fetch_links(url):
             continue
         links.append(urllib.parse.urljoin(url, link))
     return links
+
+
+# From osv.py
+# def get_published_date(raw_data):
+#     published = raw_data.get("published")
+#     return published and dateparser.parse(date_string=published)
+
+
+def get_published_date(published):
+    # return published and dateparser.parse(date_string=published)
+    # above gives result like this: "date_published": "2021-12-20T00:00:00"
+    # so does this:
+    published = datetime.datetime.strptime(published, "%Y-%m-%d")
+    return published
 
 
 ignore_tags = {

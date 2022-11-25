@@ -531,7 +531,18 @@ class Package(PackageURLMixin):
         to="Vulnerability", through="PackageRelatedVulnerability"
     )
 
+    package = models.CharField(
+        max_length=255,
+        blank=True,
+        null=False,
+        help_text="The Package URL for this package.",
+    )
+
     objects = PackageQuerySet.as_manager()
+
+    def save(self, *args, **kwargs):
+        self.package = self.purl
+        super().save(*args, **kwargs)
 
     @property
     def purl(self):

@@ -238,32 +238,26 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         """
         Lookup for vulnerable packages using many Package URLs at once.
         """
-        response = []
+
         purls = request.data.get("purls", []) or []
+        purl_only = request.data.get("purl_only", False)
         if not purls or not isinstance(purls, list):
             return Response(
                 status=400,
-                data={"Error": "A non-empty 'purls' list of package URLs is required."},
+                data={"Error": "A non-empty 'purls' list of PURLs is required."},
             )
-        for purl in request.data["purls"]:
-            try:
-                purl_string = purl
-                purl = PackageURL.from_string(purl)
-            except ValueError:
-                return Response(status=400, data={"Error": f"Invalid Package URL: {purl}"})
-            lookups = get_purl_query_lookups(purl)
-            purl_data = Package.objects.filter(**lookups)
-            purl_response = {}
-            if purl_data:
-                purl_response = PackageSerializer(purl_data[0], context={"request": request}).data
-            else:
-                purl_response = purl.to_dict()
-                purl_response["unresolved_vulnerabilities"] = []
-                purl_response["resolved_vulnerabilities"] = []
-                purl_response["purl"] = purl_string
-            response.append(purl_response)
 
-        return Response(response)
+        query = Package.objects.filter(package__in=purls)
+
+        if not purl_only:
+            return Response(
+                PackageSerializer(query.distinct(), many=True, context={"request": request}).data
+            )
+
+        vulnerable_purls = (
+            query.filter(packagerelatedvulnerability__fix=False).only("package").distinct()
+        )
+        return Response(data=vulnerable_purls)
 
     @action(detail=False, methods=["get"], throttle_scope="vulnerable_packages")
     def all(self, request):

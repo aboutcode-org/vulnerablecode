@@ -247,7 +247,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                 data={"Error": "A non-empty 'purls' list of PURLs is required."},
             )
 
-        query = Package.objects.filter(package__in=purls)
+        query = Package.objects.filter(package_url__in=purls)
 
         if not purl_only:
             return Response(
@@ -264,8 +264,8 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         """
         Return the Package URLs of all packages known to be vulnerable.
         """
-        vulnerable_packages = Package.objects.vulnerable().only(*PackageURL._fields).distinct()
-        vulnerable_purls = [str(package.purl) for package in vulnerable_packages]
+        vulnerable_packages = Package.objects.vulnerable().only("package_url").distinct()
+        vulnerable_purls = [str(package.package_url) for package in vulnerable_packages]
         return Response(vulnerable_purls)
 
 

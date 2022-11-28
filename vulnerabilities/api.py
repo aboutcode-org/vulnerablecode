@@ -238,40 +238,62 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         """
         Lookup for vulnerable packages using many Package URLs at once.
         """
-        response = []
+
         purls = request.data.get("purls", []) or []
+        purl_only = request.data.get("purl_only", False)
+        plain_purl = request.data.get("plain_purl", False)
         if not purls or not isinstance(purls, list):
             return Response(
                 status=400,
-                data={"Error": "A non-empty 'purls' list of package URLs is required."},
+                data={"Error": "A non-empty 'purls' list of PURLs is required."},
             )
-        for purl in request.data["purls"]:
-            try:
-                purl_string = purl
-                purl = PackageURL.from_string(purl)
-            except ValueError:
-                return Response(status=400, data={"Error": f"Invalid Package URL: {purl}"})
-            lookups = get_purl_query_lookups(purl)
-            purl_data = Package.objects.filter(**lookups)
-            purl_response = {}
-            if purl_data:
-                purl_response = PackageSerializer(purl_data[0], context={"request": request}).data
-            else:
-                purl_response = purl.to_dict()
-                purl_response["unresolved_vulnerabilities"] = []
-                purl_response["resolved_vulnerabilities"] = []
-                purl_response["purl"] = purl_string
-            response.append(purl_response)
 
-        return Response(response)
+        if plain_purl:
+            purl_objects = [PackageURL.from_string(purl) for purl in purls]
+            plain_purl_objects = [
+                PackageURL(
+                    type=purl.type,
+                    namespace=purl.namespace,
+                    name=purl.name,
+                    version=purl.version,
+                )
+                for purl in purl_objects
+            ]
+            plain_purls = [str(purl) for purl in plain_purl_objects]
+
+            query = (
+                Package.objects.filter(plain_package_url__in=plain_purls)
+                .order_by("plain_package_url")
+                .distinct("plain_package_url")
+            )
+
+            if not purl_only:
+                return Response(
+                    PackageSerializer(query, many=True, context={"request": request}).data
+                )
+
+            # using order by and distinct because there will be
+            # many fully qualified purl for a single plain purl
+            vulnerable_purls = query.vulnerable().only("plain_package_url")
+            vulnerable_purls = [str(package.plain_package_url) for package in vulnerable_purls]
+            return Response(data=vulnerable_purls)
+
+        query = Package.objects.filter(package_url__in=purls).distinct()
+
+        if not purl_only:
+            return Response(PackageSerializer(query, many=True, context={"request": request}).data)
+
+        vulnerable_purls = query.vulnerable().only("package_url")
+        vulnerable_purls = [str(package.package_url) for package in vulnerable_purls]
+        return Response(data=vulnerable_purls)
 
     @action(detail=False, methods=["get"], throttle_scope="vulnerable_packages")
     def all(self, request):
         """
         Return the Package URLs of all packages known to be vulnerable.
         """
-        vulnerable_packages = Package.objects.vulnerable().only(*PackageURL._fields).distinct()
-        vulnerable_purls = [str(package.purl) for package in vulnerable_packages]
+        vulnerable_packages = Package.objects.vulnerable().only("package_url").distinct()
+        vulnerable_purls = [str(package.package_url) for package in vulnerable_packages]
         return Response(vulnerable_purls)
 
 

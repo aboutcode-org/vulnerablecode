@@ -8,7 +8,13 @@ Version v30.3.2
 
 - We re-enabled support for the PostgreSQL securities advisories importer.
 - We fixed the API key request form UI and made it consistent with rest of UI.
-
+- We made bulk search faster by pre-computing 
+  `package_url` and `plain_package_url` in Package model. 
+  And provided two options in package bulk search 
+  ``purl_only`` option to get only vulnerable 
+  purls without any extra details, ``plain_purl`` option 
+  to filter purls without qualifiers and 
+  subpath and also return them without qualifiers and subpath.
 
 Version v30.3.1
 ----------------

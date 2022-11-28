@@ -18,8 +18,9 @@ from vulnerabilities import severity_systems
 class TestMigrations(TestCase):
     @property
     def app(self):
-        return apps.get_containing_app_config(type(self).__module__).name
+        return apps.get_containing_app_config(self.app_name).name
 
+    app_name = None
     migrate_from = None
     migrate_to = None
 
@@ -51,6 +52,7 @@ class TestMigrations(TestCase):
 
 
 class DuplicateSeverityTestCase(TestMigrations):
+    app_name = "vulnerabilities"
     migrate_from = "0013_auto_20220503_0941"
     migrate_to = "0014_remove_duplicate_severities"
 
@@ -95,6 +97,7 @@ class DuplicateSeverityTestCase(TestMigrations):
 
 
 class DropVulnerabilityFromSeverityTestCase(TestMigrations):
+    app_name = "vulnerabilities"
     migrate_from = "0014_remove_duplicate_severities"
     migrate_to = "0015_alter_vulnerabilityseverity_unique_together_and_more"
 
@@ -114,6 +117,7 @@ class DropVulnerabilityFromSeverityTestCase(TestMigrations):
 
 
 class UpdateCPEURL(TestMigrations):
+    app_name = "vulnerabilities"
     migrate_from = "0015_alter_vulnerabilityseverity_unique_together_and_more"
     migrate_to = "0016_update_cpe_url"
 
@@ -138,6 +142,7 @@ class UpdateCPEURL(TestMigrations):
 
 
 class TestCvssVectorMigrationToScoringElementComputeNewScores(TestMigrations):
+    app_name = "vulnerabilities"
     migrate_from = "0031_vulnerabilityseverity_scoring_elements"
     migrate_to = "0032_vulnerabilityseverity_merge_cvss_score_and_vector"
 
@@ -240,6 +245,7 @@ class TestCvssVectorMigrationToScoringElementComputeNewScores(TestMigrations):
 
 
 class TestCvssVectorMigrationToScoringElementMergeRows(TestMigrations):
+    app_name = "vulnerabilities"
     migrate_from = "0031_vulnerabilityseverity_scoring_elements"
     migrate_to = "0032_vulnerabilityseverity_merge_cvss_score_and_vector"
 
@@ -448,6 +454,7 @@ class TestCvssVectorMigrationToScoringElementMergeRows(TestMigrations):
 
 
 class TestCvssVectorMigrationToScoringElementMergeRowsWithDupes(TestMigrations):
+    app_name = "vulnerabilities"
     migrate_from = "0031_vulnerabilityseverity_scoring_elements"
     migrate_to = "0032_vulnerabilityseverity_merge_cvss_score_and_vector"
 

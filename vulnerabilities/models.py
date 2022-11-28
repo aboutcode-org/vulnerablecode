@@ -532,9 +532,16 @@ class Package(PackageURLMixin):
     )
 
     package_url = models.CharField(
-        max_length=255,
+        max_length=1000,
         null=False,
         help_text="The Package URL for this package.",
+        db_index=True,
+    )
+
+    plain_package_url = models.CharField(
+        max_length=1000,
+        null=False,
+        help_text="The Package URL for this package without qualifiers and subpath.",
         db_index=True,
     )
 
@@ -549,7 +556,14 @@ class Package(PackageURLMixin):
             qualifiers=self.qualifiers,
             subpath=self.subpath,
         )
+        plain_purl = PackageURL(
+            type=self.type,
+            namespace=self.namespace,
+            name=self.name,
+            version=self.version,
+        )
         self.package_url = str(purl_object)
+        self.plain_package_url = str(plain_purl)
         super().save(*args, **kwargs)
 
     @property

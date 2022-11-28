@@ -3,18 +3,27 @@ Release notes
 
 
 
-Version v30.3.2
+Version v31.0.0
 ----------------
 
+- We added a new Vulntotal command line tool that can compare the vulnerabilities
+  between multiple vulnerability databases.
+
+- We refactored how we handle CVSS scores. We are no longer storing a CVSS
+  score separately from a CVSS vector. Instead the vector is stored in the
+  scoring_elements field.
+
 - We re-enabled support for the PostgreSQL securities advisories importer.
+
 - We fixed the API key request form UI and made it consistent with rest of UI.
-- We made bulk search faster by pre-computing 
-  `package_url` and `plain_package_url` in Package model. 
-  And provided two options in package bulk search 
-  ``purl_only`` option to get only vulnerable 
-  purls without any extra details, ``plain_purl`` option 
-  to filter purls without qualifiers and 
-  subpath and also return them without qualifiers and subpath.
+
+- We made bulk search faster by pre-computing `package_url` and
+  `plain_package_url` in Package model.  And provided two options in package
+  bulk search  ``purl_only`` option to get only vulnerable purls without any
+  extra details, ``plain_purl`` option to filter purls without qualifiers and 
+  subpath and also return them without qualifiers and subpath. The names used
+  are provisional and may be updated in a future release.
+
 
 Version v30.3.1
 ----------------

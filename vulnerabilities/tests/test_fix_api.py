@@ -358,6 +358,19 @@ class BulkSearchAPIPackage(TestCase):
             attrs = {k: v for k, v in purl.to_dict().items() if v}
             Package.objects.create(**attrs)
 
+        vulnerable_packages = [
+            "pkg:nginx/nginx@1.0.15?foo=bar",
+            "pkg:nginx/nginx@1.0.15?foo=baz",
+        ]
+
+        vuln = Vulnerability.objects.create(summary="test")
+
+        for package in vulnerable_packages:
+            purl = PackageURL.from_string(package)
+            attrs = {k: v for k, v in purl.to_dict().items() if v}
+            pkg = Package.objects.create(**attrs)
+            PackageRelatedVulnerability.objects.create(package=pkg, vulnerability=vuln)
+
     def test_bulk_api_response(self):
         request_body = {
             "purls": self.packages,
@@ -370,9 +383,7 @@ class BulkSearchAPIPackage(TestCase):
         assert len(response) == 13
 
     def test_bulk_api_response_with_ignoring_qualifiers(self):
-        request_body = {
-            "purls": ["pkg:nginx/nginx@1.0.15?qualifiers=dev"],
-        }
+        request_body = {"purls": ["pkg:nginx/nginx@1.0.15?qualifiers=dev"], "plain_purl": True}
         response = self.csrf_client.post(
             "/api/packages/bulk_search",
             data=json.dumps(request_body),
@@ -382,9 +393,7 @@ class BulkSearchAPIPackage(TestCase):
         assert response[0]["purl"] == "pkg:nginx/nginx@1.0.15"
 
     def test_bulk_api_response_with_ignoring_subpath(self):
-        request_body = {
-            "purls": ["pkg:nginx/nginx@1.0.15#dev/subpath"],
-        }
+        request_body = {"purls": ["pkg:nginx/nginx@1.0.15#dev/subpath"], "plain_purl": True}
         response = self.csrf_client.post(
             "/api/packages/bulk_search",
             data=json.dumps(request_body),
@@ -392,6 +401,20 @@ class BulkSearchAPIPackage(TestCase):
         ).json()
         assert len(response) == 1
         assert response[0]["purl"] == "pkg:nginx/nginx@1.0.15"
+
+    def test_bulk_api_with_purl_only_option(self):
+        request_body = {
+            "purls": ["pkg:nginx/nginx@1.0.15#dev/subpath"],
+            "purl_only": True,
+            "plain_purl": True,
+        }
+        response = self.csrf_client.post(
+            "/api/packages/bulk_search",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+        assert len(response) == 1
+        assert response[0] == "pkg:nginx/nginx@1.0.15"
 
 
 class BulkSearchAPICPE(TestCase):

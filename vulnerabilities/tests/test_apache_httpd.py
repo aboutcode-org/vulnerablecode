@@ -44,7 +44,6 @@ def test_to_version_ranges():
     assert (
         GenericVersionRange(
             constraints=(
-                VersionConstraint(comparator="=", version=SemverVersion(string="1.3.0")),
                 VersionConstraint(comparator="=", version=SemverVersion(string="1.3.1")),
                 VersionConstraint(comparator="<=", version=SemverVersion(string="2.3.4")),
             )

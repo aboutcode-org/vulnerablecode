@@ -25,6 +25,8 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.severity_systems import APACHE_HTTPD
 
+KNOWN_RANGE_EXPRESSIONS = {"<=", ">=", "?=", "!<", "="}
+
 
 class ApacheHTTPDImporter(Importer):
 
@@ -87,10 +89,9 @@ class ApacheHTTPDImporter(Importer):
 
         affected_version_range = self.to_version_ranges(versions_data)
 
-        return AdvisoryData(
-            aliases=[alias],
-            summary=description,
-            affected_packages=[
+        affected_packages = []
+        if affected_version_range:
+            affected_packages.append(
                 AffectedPackage(
                     package=PackageURL(
                         type="generic",
@@ -98,7 +99,12 @@ class ApacheHTTPDImporter(Importer):
                     ),
                     affected_version_range=affected_version_range,
                 )
-            ],
+            )
+
+        return AdvisoryData(
+            aliases=[alias],
+            summary=description,
+            affected_packages=affected_packages,
             references=[reference],
         )
 
@@ -107,7 +113,8 @@ class ApacheHTTPDImporter(Importer):
         for version_data in versions_data:
             version_value = version_data["version_value"]
             range_expression = version_data["version_affected"]
-
+            if range_expression not in KNOWN_RANGE_EXPRESSIONS:
+                raise ValueError(f"unknown comparator found! {range_expression}")
             if range_expression == ">=" or range_expression == "!<":
                 constraints.append(
                     VersionConstraint(
@@ -124,7 +131,10 @@ class ApacheHTTPDImporter(Importer):
                     )
                 )
 
-            if range_expression == "=" or range_expression == "?=":
+            if range_expression == "?=":
+                pass
+
+            if range_expression == "=":
                 constraints.append(
                     VersionConstraint(
                         comparator="=",

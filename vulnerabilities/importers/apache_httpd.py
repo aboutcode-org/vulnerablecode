@@ -8,16 +8,14 @@
 #
 
 import asyncio
-import datetime
 import urllib
 
-import dateparser
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
+from univers.version_constraint import VersionConstraint
 from univers.version_range import GenericVersionRange
 from univers.versions import SemverVersion
-from univers.version_constraint import VersionConstraint
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -27,13 +25,12 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.severity_systems import APACHE_HTTPD
 
-# from vulnerabilities.utils import nearest_patched_package
-
 
 class ApacheHTTPDImporter(Importer):
 
     base_url = "https://httpd.apache.org/security/json/"
     spdx_license_expression = "Apache-2.0"
+    license_url = "https://www.apache.org/licenses/"
 
     # For now, don't use the GH API
     # def set_api(self):
@@ -55,7 +52,6 @@ class ApacheHTTPDImporter(Importer):
             yield self.to_advisory(data)
 
     def to_advisory(self, data):
-        # cve = data["CVE_data_meta"]["ID"]
         alias = data["CVE_data_meta"]["ID"]
         descriptions = data["description"]["description_data"]
         description = None
@@ -78,9 +74,7 @@ class ApacheHTTPDImporter(Importer):
                 )
                 break
         reference = Reference(
-            # reference_id=cve,
             reference_id=alias,
-            # url=urllib.parse.urljoin(self.base_url, f"{cve}.json"),
             url=urllib.parse.urljoin(self.base_url, f"{alias}.json"),
             severities=severities,
         )
@@ -91,72 +85,11 @@ class ApacheHTTPDImporter(Importer):
                 for version_data in products["version"]["version_data"]:
                     versions_data.append(version_data)
 
-        # print("\n\n==> versions_data = {}\n".format(versions_data))
-        for version in versions_data:
-            # print("\n\tversion = {}\n".format(version))
-            import json
-
-            # print("\n\tversion = \n{}\n".format(json.dumps(version, indent=2)))
-
         affected_version_range = self.to_version_ranges(versions_data)
 
-        # fixed_version = []
-        # date_published = ""
-
-        # for entry in data["timeline"]:
-        #     value = entry["value"]
-        #     # if "released" in entry["value"]:
-        #     if "released" in value:
-        #         # fixed_version.append(entry["value"])
-        #         fixed_version.append(value.split(" ")[0])
-        #         date_published = get_published_date(entry["time"])
-
-        # affected_packages = []
-        # fixed_packages = []
-
-        # for version in versions_data:
-            # affected_package = AffectedPackage(
-            #     package=PackageURL(
-            #         type="generic",
-            #         name="apache_httpd",
-            #     ),
-            #     # affected_version_range=affected_version_range,
-            #     affected_version_range=version.get("version_value", "ERROR!!"),
-            #     fixed_version=fixed_version[0],
-            #     # fixed_version="to come",
-            # )
-            # affected_packages.append(affected_package)
-
-        # for version_range in fixed_version_ranges:
-        #     fixed_packages.extend(
-        #         [
-        #             PackageURL(type="apache", name="httpd", version=version)
-        #             for version in self.version_api.get("apache/httpd").valid_versions
-        #             if SemverVersion(version) in version_range
-        #         ]
-        #     )
-
-        # for version_range in affected_version_ranges:
-        #     affected_packages.extend(
-        #         [
-        #             PackageURL(type="apache", name="httpd", version=version)
-        #             for version in self.version_api.get("apache/httpd").valid_versions
-        #             if SemverVersion(version) in version_range
-        #         ]
-        #     )
-
         return AdvisoryData(
-            # vulnerability_id=cve,
             aliases=[alias],
             summary=description,
-            # affected_packages=nearest_patched_package(affected_packages, fixed_packages),
-            # affected_packages=AffectedPackage(
-            #     package=PackageURL(
-            #         type="apache", 
-            #         name="httpd",
-            #     ),
-            #     affected_version_range=affected_version_range
-            # )
             affected_packages=[
                 AffectedPackage(
                     package=PackageURL(
@@ -174,23 +107,30 @@ class ApacheHTTPDImporter(Importer):
         for version_data in versions_data:
             version_value = version_data["version_value"]
             range_expression = version_data["version_affected"]
+
             if range_expression == ">=" or range_expression == "!<":
-                constraints.append(VersionConstraint(
-                    comparator=">=",
-                    version=SemverVersion(version_value),
-                ))
+                constraints.append(
+                    VersionConstraint(
+                        comparator=">=",
+                        version=SemverVersion(version_value),
+                    )
+                )
 
             if range_expression == "<=":
-                constraints.append(VersionConstraint(
-                    comparator="<=",
-                    version=SemverVersion(version_value),
-                ))
+                constraints.append(
+                    VersionConstraint(
+                        comparator="<=",
+                        version=SemverVersion(version_value),
+                    )
+                )
 
             if range_expression == "=" or range_expression == "?=":
-                constraints.append(VersionConstraint(
-                    comparator="=",
-                    version=SemverVersion(version_value),
-                ))
+                constraints.append(
+                    VersionConstraint(
+                        comparator="=",
+                        version=SemverVersion(version_value),
+                    )
+                )
 
         return GenericVersionRange(constraints=constraints)
 
@@ -205,20 +145,6 @@ def fetch_links(url):
             continue
         links.append(urllib.parse.urljoin(url, link))
     return links
-
-
-# From osv.py
-# def get_published_date(raw_data):
-#     published = raw_data.get("published")
-#     return published and dateparser.parse(date_string=published)
-
-
-def get_published_date(published):
-    # return published and dateparser.parse(date_string=published)
-    # above gives result like this: "date_published": "2021-12-20T00:00:00"
-    # so does this:
-    published = datetime.datetime.strptime(published, "%Y-%m-%d")
-    return published
 
 
 ignore_tags = {

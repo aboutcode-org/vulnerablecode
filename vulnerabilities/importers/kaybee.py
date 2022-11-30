@@ -7,56 +7,100 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import logging
+from pathlib import Path
+from typing import Iterable
+
 from packageurl import PackageURL
+from univers import version_range
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.utils import load_yaml
-from vulnerabilities.utils import nearest_patched_package
+
+logger = logging.getLogger(__name__)
 
 
 class KaybeeImporter(GitImporter):
-    def __enter__(self):
-        super(KaybeeImporter, self).__enter__()
-        self._added_files, self._updated_files = self.file_changes(
-            recursive=True,
-            file_ext="yaml",
-        )
+    spdx_license_expression = "MIT"
+    license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
 
-    def updated_advisories(self):
-        advisories = []
-        for yaml_file in self._added_files.union(self._updated_files):
-            advisories.append(yaml_file_to_advisory(yaml_file))
+    def __init__(self):
+        super().__init__(repo_url="git+https://github.com/SAP/project-kb.git@vulnerability-data")
 
-        return self.batch_advisories(advisories)
+    def advisory_data(self, _keep_clone=True) -> Iterable[AdvisoryData]:
+        try:
+            self.clone()
+            base_path = Path(self.vcs_response.dest_dir)
+            statements = base_path.glob("statements/**/*.yaml")
+            for statement_file in statements:
+                yield yaml_file_to_advisory(statement_file)
+
+        finally:
+            if self.vcs_response and not _keep_clone:
+                self.vcs_response.delete()
 
 
 def yaml_file_to_advisory(yaml_path):
-    impacted_packages = []
-    resolved_packages = []
     references = []
 
     data = load_yaml(yaml_path)
-    vuln_id = data["vulnerability_id"]
+    aliases = []
+    vuln_id = data.get("vulnerability_id")
+    if vuln_id:
+        aliases.append(vuln_id)
     summary = ""
-    if data.get("text"):
-        summary = "\n".join([note["text"] for note in data["notes"]])
+    notes = data.get("notes")
+    if notes:
+        note_texts = []
+        for note in notes:
+            note_text = note.get("text")
+            if note_text:
+                note_texts.append(note_text)
+        summary = "\n".join(note_texts)
+
+    affected_packages = []
 
     for entry in data.get("artifacts", []):
-        package = PackageURL.from_string(entry["id"])
-        if entry["affected"]:
-            impacted_packages.append(package)
+        purl = entry.get("id")
+        if not purl:
+            continue
+        package = PackageURL.from_string(purl)
+        version = package.version
+        affected_version_range = None
+        fixed_version = None
+        vrc = version_range.RANGE_CLASS_BY_SCHEMES.get(package.type)
+        if not vrc:
+            logger.warning(f"Unknown package type {package.type} for {purl} in {vuln_id}")
+            continue
+        if entry.get("affected"):
+            affected_version_range = vrc.from_versions([version])
         else:
-            resolved_packages.append(package)
+            fixed_version = vrc.version_class(version)
+        versionless_purl = PackageURL(
+            type=package.type,
+            namespace=package.namespace,
+            name=package.name,
+            qualifiers=package.qualifiers,
+            subpath=package.subpath,
+        )
+        affected_packages.append(
+            AffectedPackage(
+                package=versionless_purl,
+                affected_version_range=affected_version_range,
+                fixed_version=fixed_version,
+            )
+        )
 
-    for fix in data.get("fixes", []):
-        for commit in fix["commits"]:
+    for fix in data.get("fixes") or []:
+        for commit in fix.get("commits") or []:
             references.append(Reference(url=f"{commit['repository']}/{commit['id']}"))
 
     return AdvisoryData(
-        vulnerability_id=vuln_id,
+        aliases=aliases,
         summary=summary,
-        affected_packages=nearest_patched_package(impacted_packages, resolved_packages),
+        affected_packages=affected_packages,
         references=references,
     )

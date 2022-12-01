@@ -38,7 +38,18 @@ def test_to_version_ranges():
             "version_value": "2.3.4",
         },
     ]
-    affected_version_range = ApacheHTTPDImporter().to_version_ranges(data)
+
+    # fixed_versions = [
+    #     {
+    #         "version_affected": "=",
+    #         "fixed_version": "1.3.2",
+    #     },
+    # ]
+
+    fixed_versions = ["1.3.2"]
+
+    # affected_version_range = ApacheHTTPDImporter().to_version_ranges(data)
+    affected_version_range = ApacheHTTPDImporter().to_version_ranges(data, fixed_versions)
 
     # Check vulnerable packages
     assert (
@@ -46,6 +57,8 @@ def test_to_version_ranges():
             constraints=(
                 VersionConstraint(comparator="=", version=SemverVersion(string="1.3.1")),
                 VersionConstraint(comparator="<=", version=SemverVersion(string="2.3.4")),
+                # based on errors I got, I think we need "!=" because of the use of .invert()
+                VersionConstraint(comparator="!=", version=SemverVersion(string="1.3.2")),
             )
         )
         == affected_version_range

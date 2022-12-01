@@ -87,8 +87,6 @@ class ApacheHTTPDImporter(Importer):
                 for version_data in products["version"]["version_data"]:
                     versions_data.append(version_data)
 
-        # =====================================
-
         fixed_versions = []
         for timeline_object in data["timeline"]:
             timeline_value = timeline_object["value"]
@@ -101,27 +99,7 @@ class ApacheHTTPDImporter(Importer):
                 if "release" in split_timeline_value[0]:
                     fixed_versions.append(split_timeline_value[-1])
 
-        # for timeline_object in data["timeline"]:
-        #     if "released" in timeline_object["value"]:
-        #         # need to isolate the fixed version number
-        #         fixed_version = timeline_object["value"]
-        #         fixed_versions.append(fixed_version)
-
-        # =====================================
-
-        # affected_version_range = self.to_version_ranges(versions_data)
         affected_version_range = self.to_version_ranges(versions_data, fixed_versions)
-        # this assumes I already have the fixed versions
-        # fixed_versions = []
-        # fixed_version_constraints = []
-        # for fixed_version in fixed_versions:
-        #     fixed_version_constraints.append(
-        #         VersionConstraint(
-        #             # comparator=">=",
-        #             comparator="=",
-        #             version=SemverVersion(fixed_version),
-        #         ).invert()
-        #     )
 
         affected_packages = []
         if affected_version_range:
@@ -142,7 +120,6 @@ class ApacheHTTPDImporter(Importer):
             references=[reference],
         )
 
-    # def to_version_ranges(self, versions_data):
     def to_version_ranges(self, versions_data, fixed_versions):
         constraints = []
         for version_data in versions_data:
@@ -180,7 +157,6 @@ class ApacheHTTPDImporter(Importer):
         for fixed_version in fixed_versions:
             constraints.append(
                 VersionConstraint(
-                    # comparator=">=",
                     comparator="=",
                     version=SemverVersion(fixed_version),
                 ).invert()

@@ -11,6 +11,7 @@ import json
 import os
 from unittest import TestCase
 
+import pytest
 from univers.version_constraint import VersionConstraint
 from univers.version_range import GenericVersionRange
 from univers.versions import SemverVersion
@@ -38,31 +39,45 @@ def test_to_version_ranges():
             "version_value": "2.3.4",
         },
     ]
-
-    # fixed_versions = [
-    #     {
-    #         "version_affected": "=",
-    #         "fixed_version": "1.3.2",
-    #     },
-    # ]
-
     fixed_versions = ["1.3.2"]
-
-    # affected_version_range = ApacheHTTPDImporter().to_version_ranges(data)
     affected_version_range = ApacheHTTPDImporter().to_version_ranges(data, fixed_versions)
 
-    # Check vulnerable packages
     assert (
         GenericVersionRange(
             constraints=(
                 VersionConstraint(comparator="=", version=SemverVersion(string="1.3.1")),
                 VersionConstraint(comparator="<=", version=SemverVersion(string="2.3.4")),
-                # based on errors I got, I think we need "!=" because of the use of .invert()
                 VersionConstraint(comparator="!=", version=SemverVersion(string="1.3.2")),
             )
         )
         == affected_version_range
     )
+
+
+def unknown_comparator():
+    data = [
+        {
+            "version_affected": "?=",
+            "version_value": "1.3.0",
+        },
+        {
+            "version_affected": "=",
+            "version_value": "1.3.1",
+        },
+        {
+            "version_affected": "#=",
+            "version_value": "2.3.4",
+        },
+    ]
+    fixed_versions = ["1.3.2"]
+    affected_version_range = ApacheHTTPDImporter().to_version_ranges(data, fixed_versions)
+
+
+def test_unknown_comparator_exception():
+    with pytest.raises(ValueError) as excinfo:
+        unknown_comparator()
+
+    assert "unknown comparator found! #=" in str(excinfo.value)
 
 
 def test_to_advisory_CVE_1999_1199():

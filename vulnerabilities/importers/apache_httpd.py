@@ -93,8 +93,8 @@ class ApacheHTTPDImporter(Importer):
             if "release" in timeline_value:
                 split_timeline_value = timeline_value.split(" ")
                 if "never" in timeline_value:
-                    pass
-                if "release" in split_timeline_value[-1] and "never" not in split_timeline_value[0]:
+                    continue
+                if "release" in split_timeline_value[-1]:
                     fixed_versions.append(split_timeline_value[0])
                 if "release" in split_timeline_value[0]:
                     fixed_versions.append(split_timeline_value[-1])

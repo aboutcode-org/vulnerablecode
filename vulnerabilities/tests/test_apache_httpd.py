@@ -100,3 +100,13 @@ def test_to_advisory_CVE_2021_44224():
         TEST_DATA, f"to-advisory-CVE-2021-44224-apache-httpd-expected.json"
     )
     util_tests.check_results_against_json(result, expected_file)
+
+
+def test_to_advisory_CVE_2017_9798():
+    with open(os.path.join(TEST_DATA, "CVE-2017-9798.json")) as f:
+        data = json.load(f)
+
+    advisories = ApacheHTTPDImporter().to_advisory(data)
+    result = advisories.to_dict()
+    expected_file = os.path.join(TEST_DATA, f"to-advisory-CVE-2017-9798-apache-httpd-expected.json")
+    util_tests.check_results_against_json(result, expected_file)

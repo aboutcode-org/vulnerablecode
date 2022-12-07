@@ -412,53 +412,14 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         query = query and query.strip()
         if not query:
             return self.none()
-
         qs = self
-        if not query.startswith("pkg:"):
-            # treat this as a plain search
-            qs = qs.filter(Q(name__icontains=query) | Q(namespace__icontains=query))
-        else:
-            # this looks like a purl: check if it quacks like a purl
-            purl_type = namespace = name = version = None
 
-            _, _scheme, remainder = query.partition("pkg:")
-            remainder = remainder.strip()
-            if not remainder:
-                return qs.none()
-
-            try:
-                # First, treat the query as a syntactically-correct purl
-                purl = PackageURL.from_string(query)
-                purl_type, namespace, name, version, _quals, _subp = purl.to_dict().values()
-            except ValueError:
-                # Otherwise, attempt a more lenient parsing of a possibly partial purl
-                if "/" in remainder:
-                    purl_type, _scheme, ns_name = remainder.partition("/")
-                    ns_name = ns_name.strip()
-                    if ns_name:
-                        if "/" in ns_name:
-                            namespace, _, name = ns_name.partition("/")
-                        else:
-                            name = ns_name
-                        name = name.strip()
-                        if name:
-                            if "@" in name:
-                                name, _, version = name.partition("@")
-                                version = version.strip()
-                                name = name.strip()
-                else:
-                    purl_type = remainder
-
-            if purl_type:
-                qs = qs.filter(type__iexact=purl_type)
-            if namespace:
-                qs = qs.filter(namespace__iexact=namespace)
-            if name:
-                qs = qs.filter(name__iexact=name)
-            if version:
-                qs = qs.filter(version__iexact=version)
-
-        return qs
+        try:
+            # if it's a valid purl, use it as is
+            purl = PackageURL.from_string(query)
+            return self.for_purl(purl, with_qualifiers_and_subpath=False)
+        except ValueError:
+            return qs.filter(package_url__icontains=query)
 
     def for_purl(self, purl, with_qualifiers_and_subpath=True):
         """
@@ -466,7 +427,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         """
         if not isinstance(purl, PackageURL):
             purl = PackageURL.from_string(purl)
-        purl = purl.to_dict()
+        purl = purl_to_dict(purl)
         if not with_qualifiers_and_subpath:
             del purl["qualifiers"]
             del purl["subpath"]

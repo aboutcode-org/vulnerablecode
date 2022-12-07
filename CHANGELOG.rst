@@ -7,6 +7,7 @@ Version v31.1.0
 
 - We re-enabled support for the NPM vulnerabilities advisories importer. 
 - We re-enabled support for the Retiredotnet vulnerabilities advisories importer.
+- We are now handling purl fragments in package search.
 
 
 Version v31.0.0

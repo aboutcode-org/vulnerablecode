@@ -1,0 +1,283 @@
+vulnerability_id: CVE-2020-9546
+notes:
+- text: FasterXML jackson-databind 2.x before 2.9.10.4 mishandles the interaction between serialization gadgets and typing, related to org.apache.hadoop.shaded.com.zaxxer.hikari.HikariConfig (aka shaded hikari-config).
+artifacts:
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.1.1
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.3.1
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.3.0
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.1.2
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.3.3
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.5.1
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.3.2
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.5.0
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.1.4
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.5.3
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.7.0
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.3.4
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.7.3
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.1
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.5.4
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.7.2
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.0
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.3
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.7.5
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.7.4
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.2
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.7.7
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.5
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.4
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.7.9
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.7
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.9.1
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.7.8
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/org.apache.htrace/htrace-core4@4.1.0-incubating
+  reason: Reviewed manually
+  affected: false
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.9.2
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.6
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.0.pr3
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.0.pr4
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/net.sf.ehcache/ehcache@2.10.6
+  reason: Reviewed manually
+  affected: false
+- id: pkg:maven/com.signalfx.public/signalfx-java@0.2.0
+  reason: Reviewed manually
+  affected: false
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.6.7.1
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.11.2
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.11.1
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.9
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.11.5
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.11.4
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.11.3
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/org.apache.htrace/htrace-core@3.1.0-incubating
+  reason: Reviewed manually
+  affected: false
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.10.4
+  reason: Reviewed manually
+  affected: false
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.10
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.10.3
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.10.2
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.10.1
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.8.1
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.0.2
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.4.0
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.4.2
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.0.6
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.6.0
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.11
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.2.3
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.10
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.4.4
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.0
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.6.2
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.4.3
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.6.1
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.6.4
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.2
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.4.6
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.6.3
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.1
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.4.5
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.4
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.6.6
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.6.5
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.3
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.6
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.6.7
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.5
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.8
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.7
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.10.2
+  reason: Reviewed manually
+  affected: false
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.10.3
+  reason: Reviewed manually
+  affected: false
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.10.0
+  reason: Reviewed manually
+  affected: false
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.10.1
+  reason: Reviewed manually
+  affected: false
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.0.0
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.6.7.2
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.6.7.3
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.7.9.5
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.7.9.3
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.7.9.4
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.7.9.1
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.7.9.2
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.8.0.rc2
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.9
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.9.8
+  reason: Reviewed manually
+  affected: true
+- id: pkg:maven/com.signalfx.public/signalfx-java@0.0.48
+  reason: Reviewed manually
+  affected: false

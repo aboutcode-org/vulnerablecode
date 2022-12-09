@@ -14,6 +14,7 @@ from vulnerabilities.importers import debian_oval
 from vulnerabilities.importers import github
 from vulnerabilities.importers import gitlab
 from vulnerabilities.importers import nginx
+from vulnerabilities.importers import npm
 from vulnerabilities.importers import nvd
 from vulnerabilities.importers import openssl
 from vulnerabilities.importers import postgresql
@@ -37,6 +38,7 @@ IMPORTERS_REGISTRY = [
     archlinux.ArchlinuxImporter,
     ubuntu.UbuntuImporter,
     debian_oval.DebianOvalImporter,
+    npm.NpmImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

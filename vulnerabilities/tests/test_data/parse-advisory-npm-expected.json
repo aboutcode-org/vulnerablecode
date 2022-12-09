@@ -1,0 +1,58 @@
+[
+  {
+    "aliases": [
+      "CVE-2013-4116"
+    ],
+    "summary": "Predictable temp filenames allow overwrite of arbitrary files\nnpm versions before 1.3.3 allows local users to overwrite arbitrary files via a symlink attack on temporary files with predictable names that are created when unpacking archives.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "npm",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<1.3.3",
+        "fixed_version": "1.3.3"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://github.com/npm/npm/issues/3635",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": 3.2,
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "http://www.openwall.com/lists/oss-security/2013/07/10/17",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": 3.2,
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": 152,
+        "url": "https://github.com/nodejs/security-wg/blob/main/vuln/npm/152.json",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": 3.2,
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2016-10-27T00:00:00+00:00"
+  }
+]

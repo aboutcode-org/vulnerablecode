@@ -16,30 +16,28 @@ from univers import version_range
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.utils import load_yaml
 
 logger = logging.getLogger(__name__)
 
 
-class KaybeeImporter(GitImporter):
-    spdx_license_expression = "MIT"
-    license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
+class KaybeeImporter(Importer):
+    spdx_license_expression = "Apache-2.0"
+    license_url = "https://github.com/SAP/project-kb/blob/main/LICENSE.txt"
+    repo_url = "git+https://github.com/SAP/project-kb.git@vulnerability-data"
 
-    def __init__(self):
-        super().__init__(repo_url="git+https://github.com/SAP/project-kb.git@vulnerability-data")
-
-    def advisory_data(self, _keep_clone=True) -> Iterable[AdvisoryData]:
+    def advisory_data(self) -> Iterable[AdvisoryData]:
         try:
-            self.clone()
+            self.clone(self.repo_url)
             base_path = Path(self.vcs_response.dest_dir)
             statements = base_path.glob("statements/**/*.yaml")
             for statement_file in statements:
                 yield yaml_file_to_advisory(statement_file)
 
         finally:
-            if self.vcs_response and not _keep_clone:
+            if self.vcs_response:
                 self.vcs_response.delete()
 
 

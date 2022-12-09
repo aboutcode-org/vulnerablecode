@@ -294,6 +294,7 @@ class Importer:
     spdx_license_expression = ""
     license_url = ""
     notice = ""
+    vcs_response = None
 
     def __init__(self):
         if not self.spdx_license_expression:
@@ -318,6 +319,14 @@ class Importer:
         Return AdvisoryData objects corresponding to the data being imported
         """
         raise NotImplementedError
+
+    def clone(self, repo_url):
+        try:
+            self.vcs_response = fetch_via_vcs(repo_url)
+        except Exception as e:
+            msg = f"Failed to fetch {repo_url} via vcs: {e}"
+            logger.error(msg)
+            raise ForkError(msg) from e
 
 
 class ForkError(Exception):

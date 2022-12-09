@@ -35,7 +35,6 @@ collect_ignore = [
     "test_models.py",
     "test_mozilla.py",
     "test_msr2019.py",
-    "test_npm.py",
     "test_package_managers.py",
     "test_retiredotnet.py",
     "test_ruby.py",

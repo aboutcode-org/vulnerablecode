@@ -781,6 +781,10 @@ class Alias(models.Model):
         if alias.startswith("GHSA"):
             return f"https://github.com/advisories/{alias}"
 
+        if alias.startswith("NPM-"):
+            id = alias.lstrip("NPM-")
+            return f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json"
+
 
 class Advisory(models.Model):
     """

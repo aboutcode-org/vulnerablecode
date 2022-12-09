@@ -2,6 +2,11 @@ Release notes
 =============
 
 
+Version v31.1.0
+----------------
+
+- We re-enabled support for the NPM vulnerabilities advisories importer. 
+
 
 Version v31.0.0
 ----------------

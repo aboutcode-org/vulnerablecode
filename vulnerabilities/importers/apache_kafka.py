@@ -9,118 +9,321 @@
 
 import asyncio
 
+# to test json print
+import json
+
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
-from univers.version_range import VersionRange
+
+# import VersionConstraint to experiment
+from univers.version_constraint import VersionConstraint
+from univers.version_range import MavenVersionRange
 from univers.versions import MavenVersion
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import GitHubTagsAPI
-from vulnerabilities.utils import nearest_patched_package
 
-GH_PAGE_URL = "https://raw.githubusercontent.com/apache/kafka-site/asf-site/cve-list.html"
-ASF_PAGE_URL = "https://kafka.apache.org/cve-list"
+affected_version_range_mapping = {
+    "CVE-2022-34917": {
+        "action": "include",
+        "2.8.0 - 2.8.1, 3.0.0 - 3.0.1, 3.1.0 - 3.1.1, 3.2.0 - 3.2.1": "affected",
+        "2.8.2, 3.0.2, 3.1.2, 3.2.3": "fixed",
+        "affected_version_range": "vers:maven/>=2.8.0|<=2.8.1|!=2.8.2|>=3.0.0|<=3.0.1|!=3.0.2|>=3.1.0|<=3.1.1|!=3.1.2|>=3.2.0|<=3.2.1|!=3.2.3",
+    },
+    "CVE-2022-23302": {
+        "action": "omit",
+    },
+    "CVE-2022-23305": {
+        "action": "omit",
+    },
+    "CVE-2022-23307": {
+        "action": "omit",
+    },
+    "CVE-2021-45046": {
+        "action": "omit",
+    },
+    "CVE-2021-44228": {
+        "action": "omit",
+    },
+    "CVE-2021-4104": {
+        "action": "omit",
+    },
+    "CVE-2021-38153": {
+        "action": "include",
+        "2.0.0, 2.0.1, 2.1.0, 2.1.1, 2.2.0, 2.2.1, 2.2.2, 2.3.0, 2.3.1, 2.4.0, 2.4.1, 2.5.0, 2.5.1, 2.6.0, 2.6.1, 2.6.2, 2.7.0, 2.7.1, 2.8.0.": "affected",
+        "2.6.3, 2.7.2, 2.8.1, 3.0.0 and later": "fixed",
+        "affected_version_range": "vers:maven/2.0.0|2.0.1|2.1.0|2.1.1|2.2.0|2.2.1|2.2.2|2.3.0|2.3.1|2.4.0|2.4.1|2.5.0|2.5.1|2.6.0|2.6.1|2.6.2|!=2.6.3|2.7.0|2.7.1|!=2.7.2|2.8.0.|!=2.8.1|<3.0.0",
+    },
+    "CVE-2019-12399": {
+        "action": "include",
+        "2.0.0, 2.0.1, 2.1.0, 2.1.1, 2.2.0, 2.2.1, 2.3.0": "affected",
+        "2.2.2, 2.3.1 and later": "fixed",
+        "affected_version_range": "vers:maven/2.0.0|2.0.1|2.1.0|2.1.1|2.2.0|2.2.1|!=2.2.2|2.3.0|<2.3.1",
+    },
+    "CVE-2018-17196": {
+        "action": "include",
+        "0.11.0.0 to 2.1.0": "affected",
+        "2.1.1 and later": "fixed",
+        "affected_version_range": "vers:maven/>=0.11.0.0|<=2.1.0|<2.1.1",
+    },
+    "CVE-2018-1288": {
+        "action": "include",
+        "0.9.0.0 to 0.9.0.1, 0.10.0.0 to 0.10.2.1, 0.11.0.0 to 0.11.0.2, 1.0.0": "affected",
+        "0.10.2.2, 0.11.0.3, 1.0.1, 1.1.0": "fixed",
+        "affected_version_range": "vers:maven/>=0.9.0.0|<=0.9.0.1|>=0.10.0.0|<=0.10.2.1|!=0.10.2.2|>=0.11.0.0|<=0.11.0.2|!=0.11.0.3|1.0.0|!=1.0.1|!=1.1.0",
+    },
+    "CVE-2017-12610": {
+        "action": "include",
+        "0.10.0.0 to 0.10.2.1, 0.11.0.0 to 0.11.0.1": "affected",
+        "0.10.2.2, 0.11.0.2, 1.0.0": "fixed",
+        "affected_version_range": "vers:maven/>=0.10.0.0|<=0.10.2.1|!=0.10.2.2|>=0.11.0.0|<=0.11.0.1|!=0.11.0.2|!=1.0.0",
+    },
+}
 
 
 class ApacheKafkaImporter(Importer):
+
+    GH_PAGE_URL = "https://raw.githubusercontent.com/apache/kafka-site/asf-site/cve-list.html"
+    ASF_PAGE_URL = "https://kafka.apache.org/cve-list"
+    spdx_license_expression = "Apache-2.0"
+    license_url = "https://www.apache.org/licenses/"
+
     @staticmethod
-    def fetch_advisory_page():
-        page = requests.get(GH_PAGE_URL)
+    def fetch_advisory_page(self):
+        page = requests.get(self.GH_PAGE_URL)
         return page.content
 
-    def set_api(self):
-        self.version_api = GitHubTagsAPI()
-        asyncio.run(self.version_api.load_api(["apache/kafka"]))
+    # For now, don't use the GH API
+    # def set_api(self):
+    #     self.version_api = GitHubTagsAPI()
+    #     asyncio.run(self.version_api.load_api(["apache/kafka"]))
 
     def updated_advisories(self):
         advisory_page = self.fetch_advisory_page()
-        self.set_api()
+        # For now, don't use the GH API
+        # self.set_api()
+
         parsed_data = self.to_advisory(advisory_page)
         return self.batch_advisories(parsed_data)
 
     def to_advisory(self, advisory_page):
         advisories = []
+
         advisory_page = BeautifulSoup(advisory_page, features="lxml")
         cve_section_beginnings = advisory_page.find_all("h2")
         for cve_section_beginning in cve_section_beginnings:
-            cve_id = cve_section_beginning.text.split("\n")[0]
+            # This sometimes includes text that follows the CVE on the same line -- sometimes there is a carriage return, sometimes there is not
+            # cve_id = cve_section_beginning.text.split("\n")[0]
+            # This is superior, gets only the cve id and no following text.
+            cve_id = cve_section_beginning.get("id")
+
             cve_description_paragraph = cve_section_beginning.find_next_sibling("p")
+
+            stripped_cve_description_paragraph = str(cve_description_paragraph.get_text())
+            stripped_cve_description_paragraph = stripped_cve_description_paragraph.replace(
+                "\n", ""
+            )
+            stripped_cve_description_paragraph = " ".join(
+                stripped_cve_description_paragraph.split()
+            )
+
             cve_data_table = cve_section_beginning.find_next_sibling("table")
             cve_data_table_rows = cve_data_table.find_all("tr")
             affected_versions_row = cve_data_table_rows[0]
             fixed_versions_row = cve_data_table_rows[1]
-            affected_version_ranges = to_version_ranges(
-                affected_versions_row.find_all("td")[1].text
-            )
-            fixed_version_ranges = to_version_ranges(fixed_versions_row.find_all("td")[1].text)
 
-            fixed_packages = [
-                PackageURL(type="apache", name="kafka", version=version)
-                for version in self.version_api.get("apache/kafka").valid_versions
-                if any(
-                    [
-                        MavenVersion(version) in version_range
-                        for version_range in fixed_version_ranges
-                    ]
-                )
+            affected_versions_string = affected_versions_row.find_all("td")[1].text
+            fixed_versions_string = fixed_versions_row.find_all("td")[1].text
+
+            # Remove leading white space after initial comma
+            affected_versions_string_split_SPLIT = [
+                substring.strip()
+                for substring in affected_versions_string.split(",")
+                if not substring.isspace()
+            ]
+            fixed_versions_string_split_SPLIT = [
+                substring.strip()
+                for substring in fixed_versions_string.split(",")
+                if not substring.isspace()
             ]
 
-            affected_packages = [
-                PackageURL(type="apache", name="kafka", version=version)
-                for version in self.version_api.get("apache/kafka").valid_versions
-                if any(
-                    [
-                        MavenVersion(version) in version_range
-                        for version_range in affected_version_ranges
-                    ]
-                )
-            ]
+            # This throws a KeyError if the opening h2 tag `id` data changes or is not in the
+            # hard-coded affected_version_range_mapping dictionary.
+            if affected_version_range_mapping[cve_id]["action"] == "include":
 
-            advisories.append(
-                AdvisoryData(
-                    vulnerability_id=cve_id,
-                    summary=cve_description_paragraph.text,
-                    affected_packages=nearest_patched_package(affected_packages, fixed_packages),
-                    references=[
-                        Reference(url=ASF_PAGE_URL),
-                        Reference(
-                            url=f"https://cve.mitre.org/cgi-bin/cvename.cgi?name={cve_id}",
-                            reference_id=cve_id,
-                        ),
+                # print("\ncve_id = {}".format(cve_id))
+
+                # These 2 variables (not used elsewhere) trigger the KeyError for changed/missing data.
+                check_affected_versions_key = affected_version_range_mapping[cve_id][
+                    affected_versions_string
+                ]
+                check_fixed_versions_key = affected_version_range_mapping[cve_id][
+                    fixed_versions_string
+                ]
+
+                # This calculates/prints the correct univers version value, which we can then use in the mapping dictionary.
+                # We'll delete this and to_version_ranges_test() when no longer needed.
+                affected_version_ranges_TEST = self.to_version_ranges_test(
+                    affected_versions_string_split_SPLIT, fixed_versions_string_split_SPLIT
+                )
+                # print("\naffected_version_ranges_TEST = {}".format(affected_version_ranges_TEST))
+                # print("\naffected_versions_string = {}".format(affected_versions_string))
+                # print("\nfixed_versions_string = {}".format(fixed_versions_string))
+
+                references = [
+                    Reference(url=self.ASF_PAGE_URL),
+                    Reference(
+                        url=f"https://cve.mitre.org/cgi-bin/cvename.cgi?name={cve_id}",
+                        reference_id=cve_id,
+                    ),
+                ]
+
+                affected_packages = []
+                affected_package = AffectedPackage(
+                    package=PackageURL(
+                        name="apache_kafka",
+                        type="maven",
+                    ),
+                    affected_version_range=affected_version_range_mapping[cve_id][
+                        "affected_version_range"
                     ],
                 )
-            )
+                affected_packages.append(affected_package)
+
+                advisories.append(
+                    AdvisoryData(
+                        aliases=[cve_id],
+                        summary=stripped_cve_description_paragraph,
+                        affected_packages=affected_packages,
+                        references=references,
+                    )
+                )
+
+                # print("\nadvisories[-1] = {}".format(advisories[-1]))
+                # print("\nadvisories[-1].to_dict() = {}".format(advisories[-1].to_dict()))
+
+                # print("\n========================================")
+
+        # Print a dict of the advisories.
+        # result = [data.to_dict() for data in advisories]
+        # print("result = \n")
+        # print(json.dumps(result, indent=4, sort_keys=False))
+
         return advisories
 
+    # We use this to calculate the ranges for the hard-coded affected_version_range_mapping.
+    # We'' delete this when no longer needed.
+    def to_version_ranges_test(self, versions_data, fixed_versions):
+        constraints = []
 
-def to_version_ranges(version_range_text):
-    version_ranges = []
-    range_expressions = version_range_text.split(",")
-    for range_expression in range_expressions:
-        if "to" in range_expression:
-            # eg range_expression == "3.2.0 to 3.2.1"
-            lower_bound, upper_bound = range_expression.split("to")
-            lower_bound = f">={lower_bound}"
-            upper_bound = f"<={upper_bound}"
-            version_ranges.append(
-                VersionRange.from_scheme_version_spec_string(
-                    "maven", f"{lower_bound},{upper_bound}"
+        for version_item in versions_data:
+            if "to" in version_item:
+                version_item_split = version_item.split(" ")
+
+                constraints.append(
+                    VersionConstraint(
+                        comparator=">=",
+                        version=MavenVersion(version_item_split[0]),
+                    )
                 )
-            )
+                constraints.append(
+                    VersionConstraint(
+                        comparator="<=",
+                        version=MavenVersion(version_item_split[-1]),
+                    )
+                )
 
-        elif "and later" in range_expression:
-            # eg range_expression == "2.1.1 and later"
-            range_expression = range_expression.replace("and later", "")
-            version_ranges.append(
-                VersionRange.from_scheme_version_spec_string("maven", f">={range_expression}")
-            )
+            elif "-" in version_item:
+                version_item_split = version_item.split(" ")
 
-        else:
-            # eg  range_expression == "3.0.0"
-            version_ranges.append(
-                VersionRange.from_scheme_version_spec_string("maven", range_expression)
-            )
-    return version_ranges
+                constraints.append(
+                    VersionConstraint(
+                        comparator=">=",
+                        version=MavenVersion(version_item_split[0]),
+                    )
+                )
+                constraints.append(
+                    VersionConstraint(
+                        comparator="<=",
+                        version=MavenVersion(version_item_split[-1]),
+                    )
+                )
+
+            elif "and later" in version_item:
+                version_item_split = version_item.split(" ")
+
+                constraints.append(
+                    VersionConstraint(
+                        comparator=">=",
+                        version=MavenVersion(version_item_split[0]),
+                    )
+                )
+
+            else:
+                version_item_split = version_item.split(" ")
+
+                constraints.append(
+                    VersionConstraint(
+                        comparator="=",
+                        version=MavenVersion(version_item_split[0]),
+                    )
+                )
+
+        for fixed_item in fixed_versions:
+            if "to" in fixed_item:
+                fixed_item_split = fixed_item.split(" ")
+
+                constraints.append(
+                    VersionConstraint(
+                        comparator=">=",
+                        version=MavenVersion(fixed_item_split[0]),
+                    ).invert()
+                )
+                constraints.append(
+                    VersionConstraint(
+                        comparator="<=",
+                        version=MavenVersion(fixed_item_split[-1]),
+                    ).invert()
+                )
+
+            elif "-" in fixed_item:
+                fixed_item_split = fixed_item.split(" ")
+
+                constraints.append(
+                    VersionConstraint(
+                        comparator=">=",
+                        version=MavenVersion(fixed_item_split[0]),
+                    ).invert()
+                )
+                constraints.append(
+                    VersionConstraint(
+                        comparator="<=",
+                        version=MavenVersion(fixed_item_split[-1]),
+                    ).invert()
+                )
+
+            elif "and later" in fixed_item:
+                fixed_item_split = fixed_item.split(" ")
+
+                constraints.append(
+                    VersionConstraint(
+                        comparator=">=",
+                        version=MavenVersion(fixed_item_split[0]),
+                    ).invert()
+                )
+
+            else:
+                fixed_item_split = fixed_item.split(" ")
+
+                constraints.append(
+                    VersionConstraint(
+                        comparator="=",
+                        version=MavenVersion(fixed_item_split[0]),
+                    ).invert()
+                )
+
+        return MavenVersionRange(constraints=constraints)

@@ -9,7 +9,6 @@
 
 import json
 import os
-from unittest import TestCase
 
 import pytest
 from univers.version_constraint import VersionConstraint
@@ -17,7 +16,6 @@ from univers.version_range import GenericVersionRange
 from univers.versions import SemverVersion
 
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDImporter
-from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.tests import util_tests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -107,4 +105,14 @@ def test_to_advisory_CVE_2017_9798():
     advisories = ApacheHTTPDImporter().to_advisory(data)
     result = advisories.to_dict()
     expected_file = os.path.join(TEST_DATA, f"CVE-2017-9798-apache-httpd-expected.json")
+    util_tests.check_results_against_json(result, expected_file)
+
+
+def test_to_advisory_CVE_2022_28614():
+    with open(os.path.join(TEST_DATA, "CVE-2022-28614.json")) as f:
+        data = json.load(f)
+
+    advisories = ApacheHTTPDImporter().to_advisory(data)
+    result = advisories.to_dict()
+    expected_file = os.path.join(TEST_DATA, f"CVE-2022-28614-apache-httpd-expected.json")
     util_tests.check_results_against_json(result, expected_file)

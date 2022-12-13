@@ -22,10 +22,7 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.severity_systems import APACHE_HTTPD
-
-KNOWN_RANGE_EXPRESSIONS = {"<=", ">=", "?=", "!<", "="}
 
 
 class ApacheHTTPDImporter(Importer):
@@ -34,21 +31,8 @@ class ApacheHTTPDImporter(Importer):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://www.apache.org/licenses/"
 
-    # For now, don't use the GH API
-    # def set_api(self):
-    #     self.version_api = GitHubTagsAPI()
-    #     asyncio.run(self.version_api.load_api(["apache/httpd"]))
-    #     self.version_api.cache["apache/httpd"] = set(
-    #         filter(
-    #             lambda version: version.value not in ignore_tags,
-    #             self.version_api.cache["apache/httpd"],
-    #         )
-    #     )
-
     def advisory_data(self):
         links = fetch_links(self.base_url)
-        # For now, don't use the GH API
-        # self.set_api()
         for link in links:
             data = requests.get(link).json()
             yield self.to_advisory(data)
@@ -99,9 +83,8 @@ class ApacheHTTPDImporter(Importer):
                 if "release" in split_timeline_value[0]:
                     fixed_versions.append(split_timeline_value[-1])
 
-        affected_version_range = self.to_version_ranges(versions_data, fixed_versions)
-
         affected_packages = []
+        affected_version_range = self.to_version_ranges(versions_data, fixed_versions)
         if affected_version_range:
             affected_packages.append(
                 AffectedPackage(
@@ -125,36 +108,24 @@ class ApacheHTTPDImporter(Importer):
         for version_data in versions_data:
             version_value = version_data["version_value"]
             range_expression = version_data["version_affected"]
-            if range_expression not in KNOWN_RANGE_EXPRESSIONS:
+            if range_expression not in {"<=", ">=", "?=", "!<", "="}:
                 raise ValueError(f"unknown comparator found! {range_expression}")
-            if range_expression == ">=" or range_expression == "!<":
+            comparator_by_range_expression = {
+                ">=": ">=",
+                "!<": ">=",
+                "<=": "<=",
+                "=": "=",
+            }
+            comparator = comparator_by_range_expression.get(range_expression)
+            if comparator:
                 constraints.append(
-                    VersionConstraint(
-                        comparator=">=",
-                        version=SemverVersion(version_value),
-                    )
-                )
-
-            if range_expression == "<=":
-                constraints.append(
-                    VersionConstraint(
-                        comparator="<=",
-                        version=SemverVersion(version_value),
-                    )
-                )
-
-            if range_expression == "?=":
-                pass
-
-            if range_expression == "=":
-                constraints.append(
-                    VersionConstraint(
-                        comparator="=",
-                        version=SemverVersion(version_value),
-                    )
+                    VersionConstraint(comparator=comparator, version=SemverVersion(version_value))
                 )
 
         for fixed_version in fixed_versions:
+            # The VersionConstraint method `invert()` inverts the fixed_version's comparator,
+            # enabling us to include the fixed_version among the `affected_version_range` values
+            # and accurately reflect its fixed value.
             constraints.append(
                 VersionConstraint(
                     comparator="=",

@@ -13,60 +13,36 @@ import requests
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
-from vulnerabilities.importer import Reference
-from vulnerabilities.utils import create_etag
+from vulnerabilities.references import XsaReference
+from vulnerabilities.utils import fetch_response
 from vulnerabilities.utils import is_cve
 
 
 class XenImporter(Importer):
-    # CONFIG_CLASS = XenDBConfiguration
 
-    def updated_advisories(self):
-        advisories = []
-        if create_etag(data_src=self, url=self.config.db_url, etag_key="etag"):
-            advisories.extend(self.to_advisories(fetch(self.config.db_url)))
+    url = "https://xenbits.xen.org/xsa/xsa.json"
+    spdx_license_expression = ""
+    license_url = ""
 
-        return self.batch_advisories(advisories)
+    def advisory_data(self):
+        data = fetch_response(self.url).json()
+        if not len(data):
+            return []
+        xsas = data[0].get("xsas") or []
+        for xsa in xsas:
+            yield from self.to_advisories(xsa)
 
-    def create_etag(self, url):
-        etag = requests.head(url).headers.get("etag")
-        if not etag:
-            return True
-
-        elif url in self.config.etags:
-            if self.config.etags[url] == etag:
-                return False
-
-        self.config.etags[url] = etag
-        return True
-
-    @staticmethod
-    def to_advisories(xen_db):
-        advisories = []
-        for xsa in xen_db[0]["xsas"]:
-            reference = get_xen_references(xsa["xsa"])
-            title = xsa.get("title", [""])
-            for cve in xsa.get("cve", [""]):
-                if not is_cve(cve):
-                    cve = ""
-
-                advisories.append(
-                    AdvisoryData(
-                        vulnerability_id=cve,
-                        summary=title,
-                        references=[reference],
-                    )
-                )
-        return advisories
-
-
-def get_xen_references(xsa_id):
-    return Reference(
-        reference_id="XSA-" + xsa_id,
-        url="https://xenbits.xen.org/xsa/advisory-{}.html".format(xsa_id),
-    )
-
-
-def fetch(url):
-    response = requests.get(url).content
-    return json.loads(response)
+    def to_advisories(self, xsa):
+        xsa_id = xsa.get("xsa")
+        references = []
+        if xsa_id:
+            references.append(XsaReference.from_num_id(num_id=xsa_id))
+        title = xsa.get("title")
+        for cve in xsa.get("cve") or []:
+            if not is_cve(cve):
+                continue
+            yield AdvisoryData(
+                aliases=[cve],
+                summary=title,
+                references=references,
+            )

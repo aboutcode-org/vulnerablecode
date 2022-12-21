@@ -1,0 +1,42 @@
+{
+    "cve": [
+      "CVE-2012-5510"
+    ],
+    "files": [
+      {
+        "name": "xsa26-4.1.patch",
+        "project": "xen",
+        "upstream": "Xen",
+        "versions": [
+          [
+            "4.1.x"
+          ]
+        ]
+      },
+      {
+        "name": "xsa26-4.2.patch",
+        "project": "xen",
+        "upstream": "Xen",
+        "versions": [
+          [
+            "4.2.x"
+          ]
+        ]
+      },
+      {
+        "name": "xsa26-unstable.patch",
+        "project": "xen",
+        "upstream": "Xen",
+        "versions": [
+          [
+            "xen-unstable"
+          ]
+        ]
+      }
+    ],
+    "public_time": "2012-12-03 17:51",
+    "title": "Grant table version switch list corruption vulnerability",
+    "version": 3,
+    "version_time": "2012-12-03 17:51",
+    "xsa": "26"
+}

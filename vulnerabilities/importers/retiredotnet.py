@@ -9,34 +9,38 @@
 
 import json
 import re
+from pathlib import Path
+from typing import Iterable
 from typing import List
-from typing import Set
 
 from packageurl import PackageURL
+from univers.version_range import NugetVersionRange
+from univers.versions import NugetVersion
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
-from vulnerabilities.utils import AffectedPackage
 
 
-class RetireDotnetImporter(GitImporter):
-    def __enter__(self):
-        super(RetireDotnetImporter, self).__enter__()
+class RetireDotnetImporter(Importer):
+    license_url = "https://github.com/RetireNet/Packages/blob/master/LICENSE"
+    spdx_license_expression = "MIT"
+    repo_url = "git+https://github.com/RetireNet/Packages/"
 
-        if not getattr(self, "_added_files", None):
-            self._added_files, self._updated_files = self.file_changes(
-                recursive=True, file_ext="json", subdir="./Content"
-            )
+    def advisory_data(self) -> Iterable[AdvisoryData]:
+        try:
+            self.clone(self.repo_url)
+            path = Path(self.vcs_response.dest_dir)
 
-    def updated_advisories(self) -> Set[AdvisoryData]:
-        files = self._updated_files.union(self._added_files)
-        advisories = []
-        for f in files:
-            processed_data = self.process_file(f)
-            if processed_data:
-                advisories.append(processed_data)
-        return self.batch_advisories(advisories)
+            vuln = path / "Content"
+            for file in vuln.glob("*.json"):
+                advisory = self.process_file(file)
+                if advisory:
+                    yield advisory
+        finally:
+            if self.vcs_response:
+                self.vcs_response.delete()
 
     @staticmethod
     def vuln_id_from_desc(desc):
@@ -50,33 +54,40 @@ class RetireDotnetImporter(GitImporter):
     def process_file(self, path) -> List[AdvisoryData]:
         with open(path) as f:
             json_doc = json.load(f)
-            if self.vuln_id_from_desc(json_doc["description"]):
-                vuln_id = self.vuln_id_from_desc(json_doc["description"])
-            else:
-                return
-
+            description = json_doc.get("description") or ""
+            alias = self.vuln_id_from_desc(description)
             affected_packages = []
-            for pkg in json_doc["packages"]:
+            for pkg in json_doc.get("packages") or []:
+                name = pkg.get("id")
+                if not name:
+                    continue
+                affected_version_range = None
+                fixed_version = None
+                if pkg.get("affected"):
+                    affected_version_range = NugetVersionRange.from_versions([pkg["affected"]])
+                if pkg.get("fix"):
+                    fixed_version = NugetVersion(pkg["fix"])
+                if not affected_version_range and not fixed_version:
+                    continue
                 affected_packages.append(
                     AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            name=pkg["id"], version=pkg["affected"], type="nuget"
-                        ),
-                        patched_package=PackageURL(
-                            name=pkg["id"], version=pkg["fix"], type="nuget"
-                        ),
+                        package=PackageURL(name=name, type="nuget"),
+                        affected_version_range=affected_version_range,
+                        fixed_version=fixed_version,
                     )
                 )
 
-            vuln_reference = [
-                Reference(
-                    url=json_doc["link"],
+            link = json_doc.get("link")
+            if link:
+                vuln_reference = [
+                    Reference(
+                        url=link,
+                    )
+                ]
+            if alias:
+                return AdvisoryData(
+                    aliases=[alias],
+                    summary=description,
+                    affected_packages=affected_packages,
+                    references=vuln_reference,
                 )
-            ]
-
-            return AdvisoryData(
-                vulnerability_id=vuln_id,
-                summary=json_doc["description"],
-                affected_packages=affected_packages,
-                references=vuln_reference,
-            )

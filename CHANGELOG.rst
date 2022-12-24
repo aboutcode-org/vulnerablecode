@@ -7,6 +7,7 @@ Version v31.1.0
 ----------------
 
 - We re-enabled support for the NPM vulnerabilities advisories importer. 
+- We re-enabled support for the Retiredotnet vulnerabilities advisories importer.
 - We re-enabled support for the Kaybee security advisories importer.
 
 

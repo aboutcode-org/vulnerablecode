@@ -22,6 +22,7 @@ from vulnerabilities.importers import postgresql
 from vulnerabilities.importers import pypa
 from vulnerabilities.importers import pysec
 from vulnerabilities.importers import redhat
+from vulnerabilities.importers import retiredotnet
 from vulnerabilities.importers import ubuntu
 
 IMPORTERS_REGISTRY = [
@@ -40,6 +41,7 @@ IMPORTERS_REGISTRY = [
     ubuntu.UbuntuImporter,
     debian_oval.DebianOvalImporter,
     npm.NpmImporter,
+    retiredotnet.RetireDotnetImporter,
     kaybee.KaybeeImporter,
 ]
 

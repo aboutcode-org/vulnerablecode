@@ -12,6 +12,9 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from packageurl import PackageURL
+from univers.version_constraint import VersionConstraint
+from univers.version_range import MavenVersionRange
+from univers.versions import MavenVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
@@ -21,204 +24,67 @@ from vulnerabilities.package_managers import PackageVersion
 from vulnerabilities.utils import AffectedPackage
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "test_data", "apache_tomcat", "security-9.html")
+TEST_DATA = os.path.join(BASE_DIR, "test_data/apache_tomcat")
+
+security_updates_home = "https://tomcat.apache.org/security"
 
 
-class TestApacheTomcatImporter(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        data_source_cfg = {"etags": {}}
-        mock_api = MavenVersionAPI(
-            cache={
-                "org.apache.tomcat:tomcat": [
-                    PackageVersion("9.0.0.M1"),
-                    PackageVersion("9.0.0.M2"),
-                    PackageVersion("8.0.0.M1"),
-                    PackageVersion("6.0.0M2"),
-                ]
-            }
+# This test is temporary -- just for running apache_tomcat.py using all HTML report pages.
+# Will replace with a REGEN-based test as with apache_httpd and postgresql.
+def test_updated_advisories():
+    returned_advisories = ApacheTomcatImporter().updated_advisories()
+
+
+def test_fetch_links():
+    retrieved_links = ApacheTomcatImporter().fetch_links(security_updates_home)
+
+    assert retrieved_links == [
+        "https://tomcat.apache.org/security-10.html",
+        "https://tomcat.apache.org/security-9.html",
+        "https://tomcat.apache.org/security-8.html",
+        "https://tomcat.apache.org/security-7.html",
+        "https://tomcat.apache.org/security-6.html",
+        "https://tomcat.apache.org/security-5.html",
+        "https://tomcat.apache.org/security-4.html",
+        "https://tomcat.apache.org/security-3.html",
+    ]
+
+
+def test_to_version_ranges_test():
+    versions_data = [
+        "1.0.0-2.0.0",
+        "3.2.2-3.2.3?",
+        "3.3a-3.3.1",
+        "9.0.0.M1 to 9.0.0.M9",
+        "10.1.0-M1 to 10.1.0-M16",
+    ]
+    fixed_versions = ["3.0.0", "3.3.1a"]
+
+    expected_versions_data = "vers:maven/>=1.0.0|<=2.0.0|!=3.0.0|>=3.2.2|<=3.2.3?|>=3.3a|<=3.3.1|!=3.3.1a|>=9.0.0.M1|<=9.0.0.M9|>=10.1.0-M1|<=10.1.0-M16"
+
+    expected_MavenVersionRange_versions_data = MavenVersionRange(
+        constraints=(
+            VersionConstraint(comparator=">=", version=MavenVersion(string="1.0.0")),
+            VersionConstraint(comparator="<=", version=MavenVersion(string="2.0.0")),
+            VersionConstraint(comparator="!=", version=MavenVersion(string="3.0.0")),
+            VersionConstraint(comparator=">=", version=MavenVersion(string="3.2.2")),
+            VersionConstraint(comparator="<=", version=MavenVersion(string="3.2.3?")),
+            VersionConstraint(comparator=">=", version=MavenVersion(string="3.3a")),
+            VersionConstraint(comparator="<=", version=MavenVersion(string="3.3.1")),
+            VersionConstraint(comparator="!=", version=MavenVersion(string="3.3.1a")),
+            VersionConstraint(comparator=">=", version=MavenVersion(string="9.0.0.M1")),
+            VersionConstraint(comparator="<=", version=MavenVersion(string="9.0.0.M9")),
+            VersionConstraint(comparator=">=", version=MavenVersion(string="10.1.0-M1")),
+            VersionConstraint(comparator="<=", version=MavenVersion(string="10.1.0-M16")),
         )
-        with patch("vulnerabilities.importers.apache_tomcat.MavenVersionAPI"):
-            with patch("vulnerabilities.importers.apache_tomcat.asyncio"):
-                cls.data_src = ApacheTomcatImporter(1, config=data_source_cfg)
-        cls.data_src.version_api = mock_api
+    )
 
-    def test_to_advisories(self):
-        expected_advisories = [
-            AdvisoryData(
-                summary="",
-                vulnerability_id="CVE-2015-5351",
-                affected_packages=[
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="maven",
-                            namespace="apache",
-                            name="tomcat",
-                            version="8.0.0.M1",
-                            qualifiers={},
-                            subpath=None,
-                        ),
-                        patched_package=PackageURL(
-                            type="maven",
-                            namespace="apache",
-                            name="tomcat",
-                            version="9.0.0.M3",
-                            qualifiers={},
-                            subpath=None,
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="maven",
-                            namespace="apache",
-                            name="tomcat",
-                            version="9.0.0.M1",
-                        ),
-                        patched_package=PackageURL(
-                            type="maven",
-                            namespace="apache",
-                            name="tomcat",
-                            version="9.0.0.M3",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="maven",
-                            namespace="apache",
-                            name="tomcat",
-                            version="9.0.0.M2",
-                        ),
-                        patched_package=PackageURL(
-                            type="maven",
-                            namespace="apache",
-                            name="tomcat",
-                            version="9.0.0.M3",
-                        ),
-                    ),
-                ],
-                references=[
-                    Reference(
-                        reference_id="",
-                        url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-5351",
-                        severities=[],
-                    ),
-                    Reference(
-                        reference_id="",
-                        url="https://svn.apache.org/viewvc?view=rev&rev=1720652",
-                        severities=[],
-                    ),
-                    Reference(
-                        reference_id="",
-                        url="https://svn.apache.org/viewvc?view=rev&rev=1720655",
-                        severities=[],
-                    ),
-                ],
-            ),
-            AdvisoryData(
-                summary="",
-                vulnerability_id="CVE-2016-0706",
-                affected_packages=[
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="maven",
-                            namespace="apache",
-                            name="tomcat",
-                            version="9.0.0.M1",
-                        ),
-                        patched_package=PackageURL(
-                            type="maven",
-                            namespace="apache",
-                            name="tomcat",
-                            version="9.0.0.M3",
-                        ),
-                    )
-                ],
-                references=[
-                    Reference(
-                        reference_id="",
-                        url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0706",
-                        severities=[],
-                    ),
-                    Reference(
-                        reference_id="",
-                        url="https://svn.apache.org/viewvc?view=rev&rev=1722799",
-                        severities=[],
-                    ),
-                ],
-            ),
-            AdvisoryData(
-                summary="",
-                vulnerability_id="CVE-2016-0714",
-                affected_packages={},
-                references=[
-                    Reference(
-                        reference_id="",
-                        url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0714",
-                        severities=[],
-                    ),
-                    Reference(
-                        reference_id="",
-                        url="https://svn.apache.org/viewvc?view=rev&rev=1725263",
-                        severities=[],
-                    ),
-                    Reference(
-                        reference_id="",
-                        url="https://svn.apache.org/viewvc?view=rev&rev=1725914",
-                        severities=[],
-                    ),
-                ],
-            ),
-            AdvisoryData(
-                summary="",
-                vulnerability_id="CVE-2016-0763",
-                affected_packages=[
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="maven",
-                            namespace="apache",
-                            name="tomcat",
-                            version="9.0.0.M1",
-                        ),
-                        patched_package=PackageURL(
-                            type="maven",
-                            namespace="apache",
-                            name="tomcat",
-                            version="9.0.0.M3",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="maven",
-                            namespace="apache",
-                            name="tomcat",
-                            version="9.0.0.M2",
-                        ),
-                        patched_package=PackageURL(
-                            type="maven",
-                            namespace="apache",
-                            name="tomcat",
-                            version="9.0.0.M3",
-                        ),
-                    ),
-                ],
-                references=[
-                    Reference(
-                        reference_id="",
-                        url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0763",
-                        severities=[],
-                    ),
-                    Reference(
-                        reference_id="",
-                        url="https://svn.apache.org/viewvc?view=rev&rev=1725926",
-                        severities=[],
-                    ),
-                ],
-            ),
-        ]
+    converted_versions_data = ApacheTomcatImporter().to_version_ranges(
+        versions_data, fixed_versions
+    )
 
-        with open(TEST_DATA) as f:
-            found_advisories = self.data_src.to_advisories(f)
+    # print("\nvers_test = {}\n".format(MavenVersionRange.from_string("vers:maven/>=1.0.0|<=2.0.0")))
+    # print("\nconverted_versions_data = {}\n".format(converted_versions_data))
 
-        found_advisories = list(map(AdvisoryData.normalized, found_advisories))
-        expected_advisories = list(map(AdvisoryData.normalized, expected_advisories))
-        assert sorted(found_advisories) == sorted(expected_advisories)
+    assert expected_MavenVersionRange_versions_data == converted_versions_data
+    assert MavenVersionRange.from_string(expected_versions_data) == converted_versions_data

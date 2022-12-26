@@ -29,7 +29,7 @@ jobs:
 
       - name: Check Sphinx Documentation build minimally
         working-directory: ./docs
-        run: sphinx-build -E source build
+        run: sphinx-build -b linkcheck -EW source build
 
       - name: Check for documentation style errors
         working-directory: ./docs

@@ -97,7 +97,7 @@ The SPDX license identifiers can be found at https://spdx.org/licenses/.
 
 .. note::
    An SPDX license identifier by itself is a valid licence expression. In case you need more complex
-   expressions, see https://spdx.github.io/spdx-spec/SPDX-license-expressions/
+   expressions, see https://spdx.github.io/spdx-spec/v2.3/SPDX-license-expressions/
 
 Implement the ``advisory_data`` Method
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

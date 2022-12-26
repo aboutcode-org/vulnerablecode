@@ -11,7 +11,7 @@ resources to help you get started.
 
 .. note::
     By contributing to the VulnerableCode project, you agree to the Developer
-    `Certificate of Origin <http://developercertificate.org/>`_.
+    `Certificate of Origin <https://developercertificate.org/>`_.
 
 
 Do Your Homework

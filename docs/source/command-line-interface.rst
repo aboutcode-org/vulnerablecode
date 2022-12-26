@@ -63,7 +63,7 @@ Other variations:
 
 
 ``$ ./manage.py purl2cpe --destination <directory``
-------------------------------------------
+---------------------------------------------------
 
 Dump a mapping of CPEs to PURLs grouped by vulnerability in the ``destination``
 directory.

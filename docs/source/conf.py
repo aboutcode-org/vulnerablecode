@@ -24,6 +24,18 @@ author = "nexB Inc. and others"
 
 # -- General configuration ---------------------------------------------------
 
+# Ensure there are no invalid URLs
+# Use -b linkcheck to check integrity of all external links
+nitpicky = True
+linkcheck_anchors = False  # See: https://github.com/sphinx-doc/sphinx/issues/9016
+linkcheck_ignore = [
+    r"http://localhost:\d+/",
+    r"http://127.0.0.1:\d+/",
+    "https://api.github.com/graphql",  # Requires auth
+    "https://anongit.gentoo.org/git/data/glsa.git",  # Git only link
+    "https://www.softwaretestinghelp.com/how-to-write-good-bug-report/",  # Cloudflare protection
+]
+
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.

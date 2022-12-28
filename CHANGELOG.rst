@@ -10,6 +10,7 @@ Version v31.1.0
 - We are now handling purl fragments in package search. For example:
   you can now serch using queries in the UI like this : `cherrypy@2.1.1`,
   `cherrypy` or `pkg:pypi`.
+- We are now ingesting npm advisories data through GitHub API.
 
 
 Version v31.0.0

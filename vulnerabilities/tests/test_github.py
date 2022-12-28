@@ -33,7 +33,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "github_api")
 
 
-@pytest.mark.parametrize("pkg_type", ["maven", "nuget", "gem", "golang", "composer", "pypi"])
+@pytest.mark.parametrize("pkg_type", ["maven", "nuget", "gem", "golang", "composer", "pypi", "npm"])
 def test_process_response_github_importer(pkg_type, regen=REGEN):
     response_file = os.path.join(TEST_DATA, f"{pkg_type}.json")
     expected_file = os.path.join(TEST_DATA, f"{pkg_type}-expected.json")

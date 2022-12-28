@@ -11,61 +11,47 @@ import requests
 import saneyaml
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
+from univers.versions import RpmVersion
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
-from vulnerabilities.utils import create_etag
+from vulnerabilities.utils import fetch_yaml
 
 
 class SUSEBackportsImporter(Importer):
-    @staticmethod
-    def get_all_urls_of_backports(url):
+
+    spdx_license_expression = "TBD"
+
+    def get_all_urls_of_backports(self, url):
         r = requests.get(url)
         soup = BeautifulSoup(r.content, "lxml")
         for a_tag in soup.find_all("a", href=True):
-            if a_tag["href"].endswith(".yaml") and a_tag["href"].startswith("backports"):
+            href = a_tag.get("href") or ""
+            if href.endswith(".yaml") and href.startswith("backports"):
                 yield url + a_tag["href"]
 
-    def updated_advisories(self):
-        advisories = []
-        all_urls = self.get_all_urls_of_backports(self.config.url)
+    def advisory_data(self):
+        url = "http://ftp.suse.com/pub/projects/security/yaml/"
+        all_urls = self.get_all_urls_of_backports(url=url)
         for url in all_urls:
-            if not create_etag(data_src=self, url=url, etag_key="ETag"):
-                continue
-            advisories.extend(self.process_file(self._fetch_yaml(url)))
-        return self.batch_advisories(advisories)
+            yield from self.process_file(fetch_yaml(url))
 
-    def _fetch_yaml(self, url):
-
-        try:
-            resp = requests.get(url)
-            resp.raise_for_status()
-            return saneyaml.load(resp.content)
-
-        except requests.HTTPError:
-            return {}
-
-    @staticmethod
-    def process_file(yaml_file):
-        advisories = []
-        try:
-            for pkg in yaml_file[0]["packages"]:
-                for version in yaml_file[0]["packages"][pkg]["fixed"]:
-                    for vuln in yaml_file[0]["packages"][pkg]["fixed"][version]:
-                        # yaml_file specific data can be added
-                        purl = [
-                            PackageURL(name=pkg, type="rpm", version=version, namespace="opensuse")
-                        ]
-                        advisories.append(
-                            AdvisoryData(
-                                vulnerability_id=vuln,
-                                resolved_package_urls=purl,
-                                summary="",
-                                impacted_package_urls=[],
-                            )
-                        )
-        except TypeError:
-            # could've used pass
-            return advisories
-
-        return advisories
+    def process_file(self, yaml_file):
+        if not yaml_file:
+            return []
+        data = yaml_file[0]
+        for pkg in data.get("packages") or []:
+            package_data = data["packages"][pkg]
+            for version in package_data.get("fixed") or []:
+                version_data = package_data["fixed"][version]
+                for vuln in version_data:
+                    # yaml_file specific data can be added
+                    package = PackageURL(name=pkg, type="rpm", namespace="opensuse")
+                    yield AdvisoryData(
+                        aliases=[vuln],
+                        summary="",
+                        affected_packages=[
+                            AffectedPackage(package=package, fixed_version=RpmVersion(version))
+                        ],
+                    )

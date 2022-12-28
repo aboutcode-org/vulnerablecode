@@ -22,6 +22,7 @@ from vulnerabilities.importers import pypa
 from vulnerabilities.importers import pysec
 from vulnerabilities.importers import redhat
 from vulnerabilities.importers import retiredotnet
+from vulnerabilities.importers import suse_backports
 from vulnerabilities.importers import ubuntu
 
 IMPORTERS_REGISTRY = [
@@ -41,6 +42,7 @@ IMPORTERS_REGISTRY = [
     debian_oval.DebianOvalImporter,
     npm.NpmImporter,
     retiredotnet.RetireDotnetImporter,
+    suse_backports.SUSEBackportsImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

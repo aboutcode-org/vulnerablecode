@@ -19,3 +19,2923 @@
         0.7.0.r4359-15.9.2:
           - CVE-2009-0365
           - CVE-2009-0578
+    NetworkManager-glib:
+      fixed:
+        0.7.0.r4359-15.9.2:
+          - CVE-2009-0365
+          - CVE-2009-0578
+    NetworkManager-gnome:
+      fixed:
+        0.7.0.r1053-11.11.1:
+          - CVE-2009-4144
+          - CVE-2009-4145
+    OpenEXR:
+      fixed:
+        1.6.1-83.17.1:
+          - CVE-2009-1720
+          - CVE-2009-1721
+    OpenEXR-32bit:
+      fixed:
+        1.6.1-83.17.1:
+          - CVE-2009-1720
+          - CVE-2009-1721
+    OpenEXR-x86:
+      fixed:
+        1.6.1-83.17.1:
+          - CVE-2009-1720
+          - CVE-2009-1721
+    acl:
+      fixed:
+        2.2.47-30.5.1:
+          - CVE-2009-4411
+    apache2:
+      fixed:
+        2.2.10-2.23.22.1:
+          - CVE-2010-0408
+          - CVE-2010-0434
+    apache2-doc:
+      fixed:
+        2.2.10-2.23.22.1:
+          - CVE-2010-0408
+          - CVE-2010-0434
+    apache2-example-pages:
+      fixed:
+        2.2.10-2.23.22.1:
+          - CVE-2010-0408
+          - CVE-2010-0434
+    apache2-mod_php5:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    apache2-prefork:
+      fixed:
+        2.2.10-2.23.22.1:
+          - CVE-2010-0408
+          - CVE-2010-0434
+    apache2-utils:
+      fixed:
+        2.2.10-2.23.22.1:
+          - CVE-2010-0408
+          - CVE-2010-0434
+    apache2-worker:
+      fixed:
+        2.2.10-2.23.22.1:
+          - CVE-2010-0408
+          - CVE-2010-0434
+    avahi:
+      fixed:
+        0.6.23-11.14.1:
+          - CVE-2009-0758
+    avahi-lang:
+      fixed:
+        0.6.23-11.14.1:
+          - CVE-2009-0758
+    bzip2:
+      fixed:
+        1.0.5-34.253.1:
+          - CVE-2010-0405
+    bzip2-doc:
+      fixed:
+        1.0.5-34.253.1:
+          - CVE-2010-0405
+    cdparanoia:
+      fixed:
+        IIIalpha9.8-691.22:
+          - CVE-2009-3025
+          - CVE-2009-3026
+          - CVE-2009-3083
+          - CVE-2009-3084
+          - CVE-2009-3085
+          - CVE-2009-3615
+    cdparanoia-32bit:
+      fixed:
+        IIIalpha9.8-691.22:
+          - CVE-2009-3025
+          - CVE-2009-3026
+          - CVE-2009-3083
+          - CVE-2009-3084
+          - CVE-2009-3085
+          - CVE-2009-3615
+    cdparanoia-x86:
+      fixed:
+        IIIalpha9.8-691.22:
+          - CVE-2009-3025
+          - CVE-2009-3026
+          - CVE-2009-3083
+          - CVE-2009-3084
+          - CVE-2009-3085
+          - CVE-2009-3615
+    cifs-mount:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    cpio:
+      fixed:
+        2.9-75.27.24.1:
+          - CVE-2010-0624
+    cpio-lang:
+      fixed:
+        2.9-75.27.24.1:
+          - CVE-2010-0624
+    cron:
+      fixed:
+        4.1-194.19.1:
+          - CVE-2010-0424
+    cups:
+      fixed:
+        1.3.9-8.15.1:
+          - CVE-2009-0163
+    cups-client:
+      fixed:
+        1.3.9-8.15.1:
+          - CVE-2009-0163
+    cups-libs:
+      fixed:
+        1.3.9-8.15.1:
+          - CVE-2009-0163
+    cups-libs-32bit:
+      fixed:
+        1.3.9-8.15.1:
+          - CVE-2009-0163
+    cups-libs-x86:
+      fixed:
+        1.3.9-8.15.1:
+          - CVE-2009-0163
+    curl:
+      fixed:
+        7.19.0-11.21.1:
+          - CVE-2009-0037
+    cyrus-imapd:
+      fixed:
+        2.3.11-60.21.1:
+          - CVE-2009-3235
+    cyrus-sasl:
+      fixed:
+        2.1.22-182.20.1:
+          - CVE-2009-0688
+    cyrus-sasl-32bit:
+      fixed:
+        2.1.22-182.20.1:
+          - CVE-2009-0688
+    cyrus-sasl-crammd5:
+      fixed:
+        2.1.22-182.20.1:
+          - CVE-2009-0688
+    cyrus-sasl-crammd5-32bit:
+      fixed:
+        2.1.22-182.20.1:
+          - CVE-2009-0688
+    cyrus-sasl-crammd5-x86:
+      fixed:
+        2.1.22-182.20.1:
+          - CVE-2009-0688
+    cyrus-sasl-digestmd5:
+      fixed:
+        2.1.22-182.20.1:
+          - CVE-2009-0688
+    cyrus-sasl-gssapi:
+      fixed:
+        2.1.22-182.20.1:
+          - CVE-2009-0688
+    cyrus-sasl-gssapi-32bit:
+      fixed:
+        2.1.22-182.20.1:
+          - CVE-2009-0688
+    cyrus-sasl-gssapi-x86:
+      fixed:
+        2.1.22-182.20.1:
+          - CVE-2009-0688
+    cyrus-sasl-otp:
+      fixed:
+        2.1.22-182.20.1:
+          - CVE-2009-0688
+    cyrus-sasl-otp-32bit:
+      fixed:
+        2.1.22-182.20.1:
+          - CVE-2009-0688
+    cyrus-sasl-otp-x86:
+      fixed:
+        2.1.22-182.20.1:
+          - CVE-2009-0688
+    cyrus-sasl-plain:
+      fixed:
+        2.1.22-182.20.1:
+          - CVE-2009-0688
+    cyrus-sasl-plain-32bit:
+      fixed:
+        2.1.22-182.20.1:
+          - CVE-2009-0688
+    cyrus-sasl-plain-x86:
+      fixed:
+        2.1.22-182.20.1:
+          - CVE-2009-0688
+    cyrus-sasl-x86:
+      fixed:
+        2.1.22-182.20.1:
+          - CVE-2009-0688
+    dbus-1:
+      fixed:
+        1.2.10-3.9.1:
+          - CVE-2008-4311
+    dbus-1-32bit:
+      fixed:
+        1.2.10-3.9.1:
+          - CVE-2008-4311
+    dbus-1-glib:
+      fixed:
+        0.76-34.10.1:
+          - CVE-2010-1172
+    dbus-1-glib-32bit:
+      fixed:
+        0.76-34.10.1:
+          - CVE-2010-1172
+    dbus-1-glib-x86:
+      fixed:
+        0.76-34.10.1:
+          - CVE-2010-1172
+    dbus-1-x86:
+      fixed:
+        1.2.10-3.9.1:
+          - CVE-2008-4311
+    desktop-file-utils:
+      fixed:
+        0.15-1.29:
+          - CVE-2009-3025
+          - CVE-2009-3026
+          - CVE-2009-3083
+          - CVE-2009-3084
+          - CVE-2009-3085
+          - CVE-2009-3615
+    dhcp-client:
+      fixed:
+        3.1.1-7.13.1:
+          - CVE-2009-0692
+    evolution-data-server:
+      fixed:
+        2.24.1.1-11.12.1:
+          - CVE-2009-0547
+          - CVE-2009-0587
+          - CVE-2009-1631
+        2.24.1.1-11.8.1:
+          - CVE-2009-0582
+    evolution-data-server-32bit:
+      fixed:
+        2.24.1.1-11.12.1:
+          - CVE-2009-0547
+          - CVE-2009-0587
+          - CVE-2009-1631
+        2.24.1.1-11.8.1:
+          - CVE-2009-0582
+    evolution-data-server-lang:
+      fixed:
+        2.24.1.1-11.12.1:
+          - CVE-2009-0547
+          - CVE-2009-0587
+          - CVE-2009-1631
+        2.24.1.1-11.8.1:
+          - CVE-2009-0582
+    evolution-data-server-x86:
+      fixed:
+        2.24.1.1-11.12.1:
+          - CVE-2009-0547
+          - CVE-2009-0587
+          - CVE-2009-1631
+        2.24.1.1-11.8.1:
+          - CVE-2009-0582
+    expat:
+      fixed:
+        2.0.1-88.26.1:
+          - CVE-2009-3560
+    ext4dev-kmp-default:
+      fixed:
+        0_2.6.27.23_0.1-7.1.7:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    ext4dev-kmp-pae:
+      fixed:
+        0_2.6.27.23_0.1-7.1.7:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    ext4dev-kmp-ppc64:
+      fixed:
+        0_2.6.27.23_0.1-7.1.7:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    ext4dev-kmp-vmi:
+      fixed:
+        0_2.6.27.23_0.1-7.1.7:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    ext4dev-kmp-xen:
+      fixed:
+        0_2.6.27.23_0.1-7.1.7:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    fam:
+      fixed:
+        2.7.0-130.21:
+          - CVE-2009-3025
+          - CVE-2009-3026
+          - CVE-2009-3083
+          - CVE-2009-3084
+          - CVE-2009-3085
+          - CVE-2009-3615
+    fam-32bit:
+      fixed:
+        2.7.0-130.21:
+          - CVE-2009-3025
+          - CVE-2009-3026
+          - CVE-2009-3083
+          - CVE-2009-3084
+          - CVE-2009-3085
+          - CVE-2009-3615
+    fam-x86:
+      fixed:
+        2.7.0-130.21:
+          - CVE-2009-3025
+          - CVE-2009-3026
+          - CVE-2009-3083
+          - CVE-2009-3084
+          - CVE-2009-3085
+          - CVE-2009-3615
+    fetchmail:
+      fixed:
+        6.3.8.90-13.16.1:
+          - CVE-2009-2666
+    fetchmailconf:
+      fixed:
+        6.3.8.90-13.16.1:
+          - CVE-2009-2666
+    freetype2:
+      fixed:
+        2.3.7-25.9.1:
+          - CVE-2009-0946
+    freetype2-32bit:
+      fixed:
+        2.3.7-25.9.1:
+          - CVE-2009-0946
+    freetype2-x86:
+      fixed:
+        2.3.7-25.9.1:
+          - CVE-2009-0946
+    gconf2:
+      fixed:
+        2.24.0-7.5:
+          - CVE-2009-1313
+    gconf2-32bit:
+      fixed:
+        2.24.0-7.5:
+          - CVE-2009-1313
+    gconf2-x86:
+      fixed:
+        2.24.0-7.5:
+          - CVE-2009-1313
+    ghostscript-fonts-other:
+      fixed:
+        8.62-32.25.1:
+          - CVE-2007-6725
+          - CVE-2008-6679
+          - CVE-2009-0196
+          - CVE-2009-0792
+    ghostscript-fonts-rus:
+      fixed:
+        8.62-32.25.1:
+          - CVE-2007-6725
+          - CVE-2008-6679
+          - CVE-2009-0196
+          - CVE-2009-0792
+    ghostscript-fonts-std:
+      fixed:
+        8.62-32.25.1:
+          - CVE-2007-6725
+          - CVE-2008-6679
+          - CVE-2009-0196
+          - CVE-2009-0792
+    ghostscript-library:
+      fixed:
+        8.62-32.25.1:
+          - CVE-2007-6725
+          - CVE-2008-6679
+          - CVE-2009-0196
+          - CVE-2009-0792
+    ghostscript-omni:
+      fixed:
+        8.62-32.25.1:
+          - CVE-2007-6725
+          - CVE-2008-6679
+          - CVE-2009-0196
+          - CVE-2009-0792
+    ghostscript-x11:
+      fixed:
+        8.62-32.25.1:
+          - CVE-2007-6725
+          - CVE-2008-6679
+          - CVE-2009-0196
+          - CVE-2009-0792
+    glib2:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    glib2-doc:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    glib2-lang:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    glibc:
+      fixed:
+        2.9-13.11.1:
+          - CVE-2010-3847
+          - CVE-2010-3856
+    glibc-32bit:
+      fixed:
+        2.9-13.11.1:
+          - CVE-2010-3847
+          - CVE-2010-3856
+    glibc-devel:
+      fixed:
+        2.9-13.11.1:
+          - CVE-2010-3847
+          - CVE-2010-3856
+    glibc-devel-32bit:
+      fixed:
+        2.9-13.11.1:
+          - CVE-2010-3847
+          - CVE-2010-3856
+    glibc-html:
+      fixed:
+        2.9-13.11.1:
+          - CVE-2010-3847
+          - CVE-2010-3856
+    glibc-i18ndata:
+      fixed:
+        2.9-13.11.1:
+          - CVE-2010-3847
+          - CVE-2010-3856
+    glibc-info:
+      fixed:
+        2.9-13.11.1:
+          - CVE-2010-3847
+          - CVE-2010-3856
+    glibc-locale:
+      fixed:
+        2.9-13.11.1:
+          - CVE-2010-3847
+          - CVE-2010-3856
+    glibc-locale-32bit:
+      fixed:
+        2.9-13.11.1:
+          - CVE-2010-3847
+          - CVE-2010-3856
+    glibc-locale-x86:
+      fixed:
+        2.9-13.11.1:
+          - CVE-2010-3847
+          - CVE-2010-3856
+    glibc-profile:
+      fixed:
+        2.9-13.11.1:
+          - CVE-2010-3847
+          - CVE-2010-3856
+    glibc-profile-32bit:
+      fixed:
+        2.9-13.11.1:
+          - CVE-2010-3847
+          - CVE-2010-3856
+    glibc-profile-x86:
+      fixed:
+        2.9-13.11.1:
+          - CVE-2010-3847
+          - CVE-2010-3856
+    glibc-x86:
+      fixed:
+        2.9-13.11.1:
+          - CVE-2010-3847
+          - CVE-2010-3856
+    gmime:
+      fixed:
+        2.2.23-1.41.1:
+          - CVE-2010-0409
+    gmime-doc:
+      fixed:
+        2.2.23-1.41.1:
+          - CVE-2010-0409
+    gnome-screensaver:
+      fixed:
+        2.24.0-14.27.1:
+          - CVE-2010-0285
+          - CVE-2010-0732
+    gnome-screensaver-lang:
+      fixed:
+        2.24.0-14.27.1:
+          - CVE-2010-0285
+          - CVE-2010-0732
+    gnome-vfs2:
+      fixed:
+        2.24.0-7.4:
+          - CVE-2009-3025
+          - CVE-2009-3026
+          - CVE-2009-3083
+          - CVE-2009-3084
+          - CVE-2009-3085
+          - CVE-2009-3615
+    gnome-vfs2-32bit:
+      fixed:
+        2.24.0-7.4:
+          - CVE-2009-3025
+          - CVE-2009-3026
+          - CVE-2009-3083
+          - CVE-2009-3084
+          - CVE-2009-3085
+          - CVE-2009-3615
+    gnome-vfs2-x86:
+      fixed:
+        2.24.0-7.4:
+          - CVE-2009-3025
+          - CVE-2009-3026
+          - CVE-2009-3083
+          - CVE-2009-3084
+          - CVE-2009-3085
+          - CVE-2009-3615
+    gnutls:
+      fixed:
+        2.4.1-24.16.1:
+          - CVE-2008-4989
+    gstreamer-0_10:
+      fixed:
+        0.10.21-3.20:
+          - CVE-2009-3025
+          - CVE-2009-3026
+          - CVE-2009-3083
+          - CVE-2009-3084
+          - CVE-2009-3085
+          - CVE-2009-3615
+    gstreamer-0_10-plugins-base:
+      fixed:
+        0.10.21-2.36.1:
+          - CVE-2009-0586
+    gstreamer-0_10-plugins-base-32bit:
+      fixed:
+        0.10.21-2.36.1:
+          - CVE-2009-0586
+    gstreamer-0_10-plugins-base-doc:
+      fixed:
+        0.10.21-2.36.1:
+          - CVE-2009-0586
+    gstreamer-0_10-plugins-base-lang:
+      fixed:
+        0.10.21-2.36.1:
+          - CVE-2009-0586
+    gstreamer-0_10-plugins-base-x86:
+      fixed:
+        0.10.21-2.36.1:
+          - CVE-2009-0586
+    gstreamer-0_10-plugins-good:
+      fixed:
+        0.10.10-4.9.1:
+          - CVE-2009-1932
+    gstreamer-0_10-plugins-good-doc:
+      fixed:
+        0.10.10-4.9.1:
+          - CVE-2009-1932
+    gstreamer-0_10-plugins-good-lang:
+      fixed:
+        0.10.10-4.9.1:
+          - CVE-2009-1932
+    gtkhtml2:
+      fixed:
+        3.24.1.1-3.23.2:
+          - CVE-2009-0582
+    gtkhtml2-lang:
+      fixed:
+        3.24.1.1-3.23.2:
+          - CVE-2009-0582
+    gzip:
+      fixed:
+        1.3.12-69.19.1:
+          - CVE-2009-2624
+          - CVE-2010-0001
+    htmldoc:
+      fixed:
+        1.8.27-170.4.1:
+          - CVE-2009-3050
+    ipsec-tools:
+      fixed:
+        0.7.1-10.31.1:
+          - CVE-2009-1574
+          - CVE-2009-1632
+    iscsitarget:
+      fixed:
+        0.4.15-94.14.1:
+          - CVE-2010-0743
+          - CVE-2010-2221
+    iscsitarget-kmp-default:
+      fixed:
+        0.4.15_2.6.27.48_0.6-94.14.1:
+          - CVE-2010-0743
+          - CVE-2010-2221
+        0.4.15_2.6.27.54_0.2-94.14.8:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    iscsitarget-kmp-pae:
+      fixed:
+        0.4.15_2.6.27.48_0.6-94.14.1:
+          - CVE-2010-0743
+          - CVE-2010-2221
+    iscsitarget-kmp-ppc64:
+      fixed:
+        0.4.15_2.6.27.48_0.6-94.14.1:
+          - CVE-2010-0743
+          - CVE-2010-2221
+    iscsitarget-kmp-vmi:
+      fixed:
+        0.4.15_2.6.27.48_0.6-94.14.1:
+          - CVE-2010-0743
+          - CVE-2010-2221
+    iscsitarget-kmp-xen:
+      fixed:
+        0.4.15_2.6.27.48_0.6-94.14.1:
+          - CVE-2010-0743
+          - CVE-2010-2221
+    java-1_4_2-ibm:
+      fixed:
+        1.4.2_sr13-0.1.1:
+          - CVE-2008-2086
+          - CVE-2008-5339
+          - CVE-2008-5340
+          - CVE-2008-5342
+          - CVE-2008-5343
+          - CVE-2008-5344
+          - CVE-2008-5345
+          - CVE-2008-5346
+          - CVE-2008-5348
+          - CVE-2008-5350
+          - CVE-2008-5351
+          - CVE-2008-5353
+          - CVE-2008-5354
+          - CVE-2008-5356
+          - CVE-2008-5357
+          - CVE-2008-5359
+          - CVE-2008-5360
+    java-1_4_2-ibm-jdbc:
+      fixed:
+        1.4.2_sr13-0.1.1:
+          - CVE-2008-2086
+          - CVE-2008-5339
+          - CVE-2008-5340
+          - CVE-2008-5342
+          - CVE-2008-5343
+          - CVE-2008-5344
+          - CVE-2008-5345
+          - CVE-2008-5346
+          - CVE-2008-5348
+          - CVE-2008-5350
+          - CVE-2008-5351
+          - CVE-2008-5353
+          - CVE-2008-5354
+          - CVE-2008-5356
+          - CVE-2008-5357
+          - CVE-2008-5359
+          - CVE-2008-5360
+    java-1_4_2-ibm-plugin:
+      fixed:
+        1.4.2_sr13-0.1.1:
+          - CVE-2008-2086
+          - CVE-2008-5339
+          - CVE-2008-5340
+          - CVE-2008-5342
+          - CVE-2008-5343
+          - CVE-2008-5344
+          - CVE-2008-5345
+          - CVE-2008-5346
+          - CVE-2008-5348
+          - CVE-2008-5350
+          - CVE-2008-5351
+          - CVE-2008-5353
+          - CVE-2008-5354
+          - CVE-2008-5356
+          - CVE-2008-5357
+          - CVE-2008-5359
+          - CVE-2008-5360
+    java-1_6_0-ibm:
+      fixed:
+        1.6.0-124.6.1:
+          - CVE-2008-5340
+          - CVE-2008-5341
+          - CVE-2008-5342
+          - CVE-2008-5351
+          - CVE-2008-5356
+          - CVE-2008-5357
+          - CVE-2008-5358
+    java-1_6_0-ibm-alsa:
+      fixed:
+        1.6.0-124.6.1:
+          - CVE-2008-5340
+          - CVE-2008-5341
+          - CVE-2008-5342
+          - CVE-2008-5351
+          - CVE-2008-5356
+          - CVE-2008-5357
+          - CVE-2008-5358
+    java-1_6_0-ibm-alsa-x86:
+      fixed:
+        1.6.0-124.7.1:
+          - CVE-2008-5340
+          - CVE-2008-5341
+          - CVE-2008-5342
+          - CVE-2008-5351
+          - CVE-2008-5356
+          - CVE-2008-5357
+          - CVE-2008-5358
+    java-1_6_0-ibm-fonts:
+      fixed:
+        1.6.0-124.6.1:
+          - CVE-2008-5340
+          - CVE-2008-5341
+          - CVE-2008-5342
+          - CVE-2008-5351
+          - CVE-2008-5356
+          - CVE-2008-5357
+          - CVE-2008-5358
+    java-1_6_0-ibm-jdbc:
+      fixed:
+        1.6.0-124.6.1:
+          - CVE-2008-5340
+          - CVE-2008-5341
+          - CVE-2008-5342
+          - CVE-2008-5351
+          - CVE-2008-5356
+          - CVE-2008-5357
+          - CVE-2008-5358
+    java-1_6_0-ibm-plugin:
+      fixed:
+        1.6.0-124.6.1:
+          - CVE-2008-5340
+          - CVE-2008-5341
+          - CVE-2008-5342
+          - CVE-2008-5351
+          - CVE-2008-5356
+          - CVE-2008-5357
+          - CVE-2008-5358
+    java-1_6_0-ibm-x86:
+      fixed:
+        1.6.0-124.7.1:
+          - CVE-2008-5340
+          - CVE-2008-5341
+          - CVE-2008-5342
+          - CVE-2008-5351
+          - CVE-2008-5356
+          - CVE-2008-5357
+          - CVE-2008-5358
+    kde4-gwenview:
+      fixed:
+        4.1.3-7.17.1:
+          - CVE-2010-2575
+    kde4-kcolorchooser:
+      fixed:
+        4.1.3-7.17.1:
+          - CVE-2010-2575
+    kde4-kdm:
+      fixed:
+        4.1.3-18.8.1:
+          - CVE-2010-0436
+    kde4-kget:
+      fixed:
+        4.1.3-7.9.1:
+          - CVE-2008-4776
+          - CVE-2010-1000
+    kde4-kgreeter-plugins:
+      fixed:
+        4.1.3-18.8.1:
+          - CVE-2010-0436
+    kde4-knewsticker:
+      fixed:
+        4.1.3-7.9.1:
+          - CVE-2008-4776
+          - CVE-2010-1000
+    kde4-kopete:
+      fixed:
+        4.1.3-7.9.1:
+          - CVE-2008-4776
+          - CVE-2010-1000
+    kde4-krdc:
+      fixed:
+        4.1.3-7.9.1:
+          - CVE-2008-4776
+          - CVE-2010-1000
+    kde4-krfb:
+      fixed:
+        4.1.3-7.9.1:
+          - CVE-2008-4776
+          - CVE-2010-1000
+    kde4-kruler:
+      fixed:
+        4.1.3-7.17.1:
+          - CVE-2010-2575
+    kde4-ksnapshot:
+      fixed:
+        4.1.3-7.17.1:
+          - CVE-2010-2575
+    kde4-kwin:
+      fixed:
+        4.1.3-18.8.1:
+          - CVE-2010-0436
+    kde4-okular:
+      fixed:
+        4.1.3-7.17.1:
+          - CVE-2010-2575
+    kdebase4-workspace:
+      fixed:
+        4.1.3-18.8.1:
+          - CVE-2010-0436
+    kdebase4-workspace-ksysguardd:
+      fixed:
+        4.1.3-18.8.1:
+          - CVE-2010-0436
+    kdelibs3:
+      fixed:
+        3.5.10-23.30.1:
+          - CVE-2009-1725
+    kdelibs3-32bit:
+      fixed:
+        3.5.10-23.30.1:
+          - CVE-2009-1725
+    kdelibs3-default-style:
+      fixed:
+        3.5.10-23.30.1:
+          - CVE-2009-1725
+    kdelibs3-default-style-32bit:
+      fixed:
+        3.5.10-23.30.1:
+          - CVE-2009-1725
+    kdelibs3-default-style-x86:
+      fixed:
+        3.5.10-23.30.1:
+          - CVE-2009-1725
+    kdelibs3-x86:
+      fixed:
+        3.5.10-23.30.1:
+          - CVE-2009-1725
+    kdelibs4:
+      fixed:
+        4.1.3-8.18.1:
+          - CVE-2009-0689
+        4.1.3-8.21.1:
+          - CVE-2009-1725
+    kdelibs4-core:
+      fixed:
+        4.1.3-8.18.1:
+          - CVE-2009-0689
+        4.1.3-8.21.1:
+          - CVE-2009-1725
+    kdenetwork4-filesharing:
+      fixed:
+        4.1.3-7.9.1:
+          - CVE-2008-4776
+          - CVE-2010-1000
+    kernel-default:
+      fixed:
+        2.6.27.23-0.1.1:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    kernel-default-base:
+      fixed:
+        2.6.27.23-0.1.1:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    kernel-default-man:
+      fixed:
+        2.6.27.23-0.1.1:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    kernel-kdump:
+      fixed:
+        2.6.27.23-0.1.1:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    kernel-pae:
+      fixed:
+        2.6.27.23-0.1.1:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    kernel-pae-base:
+      fixed:
+        2.6.27.23-0.1.1:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    kernel-ppc64:
+      fixed:
+        2.6.27.23-0.1.1:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    kernel-ppc64-base:
+      fixed:
+        2.6.27.23-0.1.1:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    kernel-source:
+      fixed:
+        2.6.27.23-0.1.1:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    kernel-syms:
+      fixed:
+        2.6.27.23-0.1.1:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    kernel-vmi:
+      fixed:
+        2.6.27.23-0.1.1:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    kernel-vmi-base:
+      fixed:
+        2.6.27.23-0.1.1:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    kernel-xen:
+      fixed:
+        2.6.27.23-0.1.1:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    kernel-xen-base:
+      fixed:
+        2.6.27.23-0.1.1:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    keyutils-libs:
+      fixed:
+        1.2-107.22:
+          - CVE-2009-0037
+    keyutils-libs-32bit:
+      fixed:
+        1.2-107.22:
+          - CVE-2009-0037
+    keyutils-libs-x86:
+      fixed:
+        1.2-107.22:
+          - CVE-2009-0037
+    krb5:
+      fixed:
+        1.6.3-133.25.1:
+          - CVE-2009-0844
+          - CVE-2009-0845
+          - CVE-2009-0846
+          - CVE-2009-0847
+    krb5-32bit:
+      fixed:
+        1.6.3-133.25.1:
+          - CVE-2009-0844
+          - CVE-2009-0845
+          - CVE-2009-0846
+          - CVE-2009-0847
+    krb5-apps-clients:
+      fixed:
+        1.6.3-133.25.1:
+          - CVE-2009-0844
+          - CVE-2009-0845
+          - CVE-2009-0846
+          - CVE-2009-0847
+    krb5-apps-servers:
+      fixed:
+        1.6.3-133.25.1:
+          - CVE-2009-0844
+          - CVE-2009-0845
+          - CVE-2009-0846
+          - CVE-2009-0847
+    krb5-client:
+      fixed:
+        1.6.3-133.25.1:
+          - CVE-2009-0844
+          - CVE-2009-0845
+          - CVE-2009-0846
+          - CVE-2009-0847
+    krb5-server:
+      fixed:
+        1.6.3-133.25.1:
+          - CVE-2009-0844
+          - CVE-2009-0845
+          - CVE-2009-0846
+          - CVE-2009-0847
+    krb5-x86:
+      fixed:
+        1.6.3-133.25.1:
+          - CVE-2009-0844
+          - CVE-2009-0845
+          - CVE-2009-0846
+          - CVE-2009-0847
+    kvm:
+      fixed:
+        78.0.10.6-0.3.1:
+          - CVE-2009-3616
+          - CVE-2009-3638
+          - CVE-2009-3640
+    kvm-kmp-default:
+      fixed:
+        78.2.6.30.1_2.6.27.37_0.1-0.7.1:
+          - CVE-2009-3616
+          - CVE-2009-3638
+          - CVE-2009-3640
+    kvm-kmp-pae:
+      fixed:
+        78.2.6.30.1_2.6.27.37_0.1-0.7.1:
+          - CVE-2009-3616
+          - CVE-2009-3638
+          - CVE-2009-3640
+    lcms:
+      fixed:
+        1.17-77.12.1:
+          - CVE-2009-0581
+          - CVE-2009-0723
+          - CVE-2009-0733
+    ldapsmb:
+      fixed:
+        1.34b-11.21.1:
+          - CVE-2010-3069
+    libHX13:
+      fixed:
+        1.23-4.1.1:
+          - CVE-2010-2947
+    libHX13-32bit:
+      fixed:
+        1.23-4.1.1:
+          - CVE-2010-2947
+    libHX13-x86:
+      fixed:
+        1.23-4.1.1:
+          - CVE-2010-2947
+    libMagickCore1:
+      fixed:
+        6.4.3.6-7.19.1:
+          - CVE-2009-1882
+    libMagickCore1-32bit:
+      fixed:
+        6.4.3.6-7.19.1:
+          - CVE-2009-1882
+    libacl:
+      fixed:
+        2.2.47-30.5.1:
+          - CVE-2009-4411
+    libacl-32bit:
+      fixed:
+        2.2.47-30.5.1:
+          - CVE-2009-4411
+    libacl-x86:
+      fixed:
+        2.2.47-30.5.1:
+          - CVE-2009-4411
+    libapr-util1:
+      fixed:
+        1.3.4-12.19.1:
+          - CVE-2009-0023
+          - CVE-2009-1955
+          - CVE-2009-1956
+    libapr-util1-32bit:
+      fixed:
+        1.3.4-12.19.1:
+          - CVE-2009-0023
+          - CVE-2009-1955
+          - CVE-2009-1956
+    libapr1:
+      fixed:
+        1.3.3-11.16.1:
+          - CVE-2009-0023
+          - CVE-2009-1955
+          - CVE-2009-1956
+    libapr1-32bit:
+      fixed:
+        1.3.3-11.16.1:
+          - CVE-2009-0023
+          - CVE-2009-1955
+          - CVE-2009-1956
+    libavahi-client3:
+      fixed:
+        0.6.23-11.14.1:
+          - CVE-2009-0758
+    libavahi-client3-32bit:
+      fixed:
+        0.6.23-11.14.1:
+          - CVE-2009-0758
+    libavahi-client3-x86:
+      fixed:
+        0.6.23-11.14.1:
+          - CVE-2009-0758
+    libavahi-common3:
+      fixed:
+        0.6.23-11.14.1:
+          - CVE-2009-0758
+    libavahi-common3-32bit:
+      fixed:
+        0.6.23-11.14.1:
+          - CVE-2009-0758
+    libavahi-common3-x86:
+      fixed:
+        0.6.23-11.14.1:
+          - CVE-2009-0758
+    libavahi-core5:
+      fixed:
+        0.6.23-11.14.1:
+          - CVE-2009-0758
+    libbz2-1:
+      fixed:
+        1.0.5-34.253.1:
+          - CVE-2010-0405
+    libbz2-1-32bit:
+      fixed:
+        1.0.5-34.253.1:
+          - CVE-2010-0405
+    libbz2-1-x86:
+      fixed:
+        1.0.5-34.253.1:
+          - CVE-2010-0405
+    libcmpiutil:
+      fixed:
+        0.5-15.16.1:
+          - CVE-2009-3525
+    libcurl4:
+      fixed:
+        7.19.0-11.21.1:
+          - CVE-2009-0037
+    libcurl4-32bit:
+      fixed:
+        7.19.0-11.21.1:
+          - CVE-2009-0037
+    libcurl4-x86:
+      fixed:
+        7.19.0-11.21.1:
+          - CVE-2009-0037
+    libdns_sd:
+      fixed:
+        0.6.23-11.14.1:
+          - CVE-2009-0758
+    libdns_sd-32bit:
+      fixed:
+        0.6.23-11.14.1:
+          - CVE-2009-0758
+    libdns_sd-x86:
+      fixed:
+        0.6.23-11.14.1:
+          - CVE-2009-0758
+    libesmtp:
+      fixed:
+        1.0.4-157.15.1:
+          - CVE-2010-1192
+          - CVE-2010-1194
+    libexpat1:
+      fixed:
+        2.0.1-88.26.1:
+          - CVE-2009-3560
+    libexpat1-32bit:
+      fixed:
+        2.0.1-88.26.1:
+          - CVE-2009-3560
+    libexpat1-x86:
+      fixed:
+        2.0.1-88.26.1:
+          - CVE-2009-3560
+    libfreebl3:
+      fixed:
+        3.12.3.1-1.2.1:
+          - CVE-2009-1313
+        3.12.8-1.2.1:
+          - CVE-2010-3170
+    libfreebl3-32bit:
+      fixed:
+        3.12.3.1-1.2.1:
+          - CVE-2009-1313
+        3.12.8-1.2.1:
+          - CVE-2010-3170
+    libfreebl3-x86:
+      fixed:
+        3.12.3.1-1.2.1:
+          - CVE-2009-1313
+        3.12.8-1.2.1:
+          - CVE-2010-3170
+    libgdiplus0:
+      fixed:
+        2.0-11.20.1:
+          - CVE-2010-1526
+    libgimpprint:
+      fixed:
+        4.2.7-32.25.1:
+          - CVE-2007-6725
+          - CVE-2008-6679
+          - CVE-2009-0196
+          - CVE-2009-0792
+    libgio-2_0-0:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    libgio-2_0-0-32bit:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    libgio-2_0-0-x86:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    libglib-2_0-0:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    libglib-2_0-0-32bit:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    libglib-2_0-0-x86:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    libgmime-2_0-3:
+      fixed:
+        2.2.23-1.41.1:
+          - CVE-2010-0409
+    libgmodule-2_0-0:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    libgmodule-2_0-0-32bit:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    libgmodule-2_0-0-x86:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    libgnutls26:
+      fixed:
+        2.4.1-24.16.1:
+          - CVE-2008-4989
+    libgnutls26-32bit:
+      fixed:
+        2.4.1-24.16.1:
+          - CVE-2008-4989
+    libgnutls26-x86:
+      fixed:
+        2.4.1-24.16.1:
+          - CVE-2008-4989
+    libgobject-2_0-0:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    libgobject-2_0-0-32bit:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    libgobject-2_0-0-x86:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    libgstinterfaces-0_10-0:
+      fixed:
+        0.10.21-2.36.1:
+          - CVE-2009-0586
+    libgstinterfaces-0_10-0-32bit:
+      fixed:
+        0.10.21-2.36.1:
+          - CVE-2009-0586
+    libgstinterfaces-0_10-0-x86:
+      fixed:
+        0.10.21-2.36.1:
+          - CVE-2009-0586
+    libgthread-2_0-0:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    libgthread-2_0-0-32bit:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    libgthread-2_0-0-x86:
+      fixed:
+        2.18.2-7.7.1:
+          - CVE-2008-4316
+    libicu:
+      fixed:
+        4.0-7.22.1:
+          - CVE-2009-0153
+    libicu-32bit:
+      fixed:
+        4.0-7.22.1:
+          - CVE-2009-0153
+    libicu-doc:
+      fixed:
+        4.0-7.22.1:
+          - CVE-2009-0153
+    libidl:
+      fixed:
+        0.8.11-2.14:
+          - CVE-2009-1313
+    libidl-32bit:
+      fixed:
+        0.8.11-2.14:
+          - CVE-2009-1313
+    libidl-x86:
+      fixed:
+        0.8.11-2.14:
+          - CVE-2009-1313
+    libidn:
+      fixed:
+        1.10-3.18:
+          - CVE-2009-0037
+    libidn-32bit:
+      fixed:
+        1.10-3.18:
+          - CVE-2009-0037
+    libidn-x86:
+      fixed:
+        1.10-3.18:
+          - CVE-2009-0037
+    libkde4:
+      fixed:
+        4.1.3-8.18.1:
+          - CVE-2009-0689
+        4.1.3-8.21.1:
+          - CVE-2009-1725
+    libkde4-32bit:
+      fixed:
+        4.1.3-8.18.1:
+          - CVE-2009-0689
+        4.1.3-8.21.1:
+          - CVE-2009-1725
+    libkde4-x86:
+      fixed:
+        4.1.3-8.18.1:
+          - CVE-2009-0689
+        4.1.3-8.21.1:
+          - CVE-2009-1725
+    libkdecore4:
+      fixed:
+        4.1.3-8.18.1:
+          - CVE-2009-0689
+        4.1.3-8.21.1:
+          - CVE-2009-1725
+    libkdecore4-32bit:
+      fixed:
+        4.1.3-8.18.1:
+          - CVE-2009-0689
+        4.1.3-8.21.1:
+          - CVE-2009-1725
+    libkdecore4-x86:
+      fixed:
+        4.1.3-8.18.1:
+          - CVE-2009-0689
+        4.1.3-8.21.1:
+          - CVE-2009-1725
+    libkipi5:
+      fixed:
+        4.1.3-7.17.1:
+          - CVE-2010-2575
+    liblcms1:
+      fixed:
+        1.17-77.12.1:
+          - CVE-2009-0581
+          - CVE-2009-0723
+          - CVE-2009-0733
+    liblcms1-32bit:
+      fixed:
+        1.17-77.12.1:
+          - CVE-2009-0581
+          - CVE-2009-0723
+          - CVE-2009-0733
+    liblcms1-x86:
+      fixed:
+        1.17-77.12.1:
+          - CVE-2009-0581
+          - CVE-2009-0723
+          - CVE-2009-0733
+    libldap-2_4-2:
+      fixed:
+        2.4.12-7.19.1:
+          - CVE-2010-0211
+          - CVE-2010-0212
+    libldap-2_4-2-32bit:
+      fixed:
+        2.4.12-7.19.1:
+          - CVE-2010-0211
+          - CVE-2010-0212
+    libldap-2_4-2-x86:
+      fixed:
+        2.4.12-7.19.1:
+          - CVE-2010-0211
+          - CVE-2010-0212
+    libltdl7:
+      fixed:
+        2.2.6-2.131.1:
+          - CVE-2009-3736
+    libltdl7-32bit:
+      fixed:
+        2.2.6-2.131.1:
+          - CVE-2009-3736
+    libltdl7-x86:
+      fixed:
+        2.2.6-2.131.1:
+          - CVE-2009-3736
+    libmysqlclient15:
+      fixed:
+        5.0.67-13.26.1:
+          - CVE-2010-1626
+          - CVE-2010-1848
+          - CVE-2010-1849
+          - CVE-2010-1850
+          - CVE-2010-3677
+          - CVE-2010-3678
+          - CVE-2010-3681
+          - CVE-2010-3682
+          - CVE-2010-3683
+    libmysqlclient15-32bit:
+      fixed:
+        5.0.67-13.26.1:
+          - CVE-2010-1626
+          - CVE-2010-1848
+          - CVE-2010-1849
+          - CVE-2010-1850
+          - CVE-2010-3677
+          - CVE-2010-3678
+          - CVE-2010-3681
+          - CVE-2010-3682
+          - CVE-2010-3683
+    libmysqlclient15-x86:
+      fixed:
+        5.0.67-13.26.1:
+          - CVE-2010-1626
+          - CVE-2010-1848
+          - CVE-2010-1849
+          - CVE-2010-1850
+          - CVE-2010-3677
+          - CVE-2010-3678
+          - CVE-2010-3681
+          - CVE-2010-3682
+          - CVE-2010-3683
+    libmysqlclient_r15:
+      fixed:
+        5.0.67-13.26.1:
+          - CVE-2010-1626
+          - CVE-2010-1848
+          - CVE-2010-1849
+          - CVE-2010-1850
+          - CVE-2010-3677
+          - CVE-2010-3678
+          - CVE-2010-3681
+          - CVE-2010-3682
+          - CVE-2010-3683
+    libneon27:
+      fixed:
+        0.28.3-2.12.1:
+          - CVE-2009-2408
+          - CVE-2009-2473
+    libneon27-32bit:
+      fixed:
+        0.28.3-2.12.1:
+          - CVE-2009-2408
+          - CVE-2009-2473
+    libneon27-x86:
+      fixed:
+        0.28.3-2.12.1:
+          - CVE-2009-2408
+          - CVE-2009-2473
+    libnetpbm10:
+      fixed:
+        10.26.44-101.9.1:
+          - CVE-2009-4274
+    libnetpbm10-32bit:
+      fixed:
+        10.26.44-101.9.1:
+          - CVE-2009-4274
+    libnetpbm10-x86:
+      fixed:
+        10.26.44-101.9.1:
+          - CVE-2009-4274
+    libogg0:
+      fixed:
+        1.1.3-87.12:
+          - CVE-2009-3025
+          - CVE-2009-3026
+          - CVE-2009-3083
+          - CVE-2009-3084
+          - CVE-2009-3085
+          - CVE-2009-3615
+    libogg0-32bit:
+      fixed:
+        1.1.3-87.12:
+          - CVE-2009-3025
+          - CVE-2009-3026
+          - CVE-2009-3083
+          - CVE-2009-3084
+          - CVE-2009-3085
+          - CVE-2009-3615
+    libogg0-x86:
+      fixed:
+        1.1.3-87.12:
+          - CVE-2009-3025
+          - CVE-2009-3026
+          - CVE-2009-3083
+          - CVE-2009-3084
+          - CVE-2009-3085
+          - CVE-2009-3615
+    liboil:
+      fixed:
+        0.3.15-3.10:
+          - CVE-2009-3025
+          - CVE-2009-3026
+          - CVE-2009-3083
+          - CVE-2009-3084
+          - CVE-2009-3085
+          - CVE-2009-3615
+    liboil-32bit:
+      fixed:
+        0.3.15-3.10:
+          - CVE-2009-3025
+          - CVE-2009-3026
+          - CVE-2009-3083
+          - CVE-2009-3084
+          - CVE-2009-3085
+          - CVE-2009-3615
+    liboil-x86:
+      fixed:
+        0.3.15-3.10:
+          - CVE-2009-3025
+          - CVE-2009-3026
+          - CVE-2009-3083
+          - CVE-2009-3084
+          - CVE-2009-3085
+          - CVE-2009-3615
+    libopensc2:
+      fixed:
+        0.11.6-5.25.1:
+          - CVE-2009-0368
+    libopensc2-32bit:
+      fixed:
+        0.11.6-5.25.1:
+          - CVE-2009-0368
+    libopensc2-x86:
+      fixed:
+        0.11.6-5.25.1:
+          - CVE-2009-0368
+    libopenssl0_9_8:
+      fixed:
+        0.9.8h-30.13.1:
+          - CVE-2009-1377
+          - CVE-2009-1378
+          - CVE-2009-1379
+        0.9.8h-30.14.1:
+          - CVE-2009-1386
+          - CVE-2009-1387
+        0.9.8h-30.18.1:
+          - CVE-2009-4355
+    libopenssl0_9_8-32bit:
+      fixed:
+        0.9.8h-30.13.1:
+          - CVE-2009-1377
+          - CVE-2009-1378
+          - CVE-2009-1379
+        0.9.8h-30.14.1:
+          - CVE-2009-1386
+          - CVE-2009-1387
+        0.9.8h-30.18.1:
+          - CVE-2009-4355
+    libopenssl0_9_8-x86:
+      fixed:
+        0.9.8h-30.13.1:
+          - CVE-2009-1377
+          - CVE-2009-1378
+          - CVE-2009-1379
+        0.9.8h-30.14.1:
+          - CVE-2009-1386
+          - CVE-2009-1387
+        0.9.8h-30.18.1:
+          - CVE-2009-4355
+    libpng12-0:
+      fixed:
+        1.2.31-5.11.1:
+          - CVE-2009-0040
+        1.2.31-5.18.1:
+          - CVE-2010-1205
+          - CVE-2010-2249
+    libpng12-0-32bit:
+      fixed:
+        1.2.31-5.11.1:
+          - CVE-2009-0040
+        1.2.31-5.18.1:
+          - CVE-2010-1205
+          - CVE-2010-2249
+    libpng12-0-x86:
+      fixed:
+        1.2.31-5.11.1:
+          - CVE-2009-0040
+        1.2.31-5.18.1:
+          - CVE-2010-1205
+          - CVE-2010-2249
+    libpoppler-glib4:
+      fixed:
+        0.10.1-1.37.1:
+          - CVE-2010-3702
+          - CVE-2010-3704
+    libpoppler-qt4-3:
+      fixed:
+        0.10.1-1.37.1:
+          - CVE-2010-3702
+          - CVE-2010-3704
+    libpoppler4:
+      fixed:
+        0.10.1-1.30.5:
+          - CVE-2009-0146
+          - CVE-2009-0147
+          - CVE-2009-0165
+          - CVE-2009-0166
+          - CVE-2009-0755
+          - CVE-2009-0756
+          - CVE-2009-0799
+          - CVE-2009-0800
+          - CVE-2009-1179
+          - CVE-2009-1180
+          - CVE-2009-1181
+          - CVE-2009-1182
+          - CVE-2009-1183
+        0.10.1-1.37.1:
+          - CVE-2010-3702
+          - CVE-2010-3704
+    libpython2_6-1_0:
+      fixed:
+        2.6.0-8.8.6.1:
+          - CVE-2010-1634
+          - CVE-2010-2089
+          - CVE-2010-3493
+    libpython2_6-1_0-32bit:
+      fixed:
+        2.6.0-8.8.6.1:
+          - CVE-2010-1634
+          - CVE-2010-2089
+          - CVE-2010-3493
+    libpython2_6-1_0-x86:
+      fixed:
+        2.6.0-8.8.6.1:
+          - CVE-2010-1634
+          - CVE-2010-2089
+          - CVE-2010-3493
+    libsmbclient0:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    libsmbclient0-32bit:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    libsmbclient0-x86:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    libsndfile:
+      fixed:
+        1.0.17-172.14.1:
+          - CVE-2009-1788
+          - CVE-2009-1791
+    libsndfile-32bit:
+      fixed:
+        1.0.17-172.14.1:
+          - CVE-2009-1788
+          - CVE-2009-1791
+    libsndfile-x86:
+      fixed:
+        1.0.17-172.14.1:
+          - CVE-2009-1788
+          - CVE-2009-1791
+    libtalloc1:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    libtalloc1-32bit:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    libtalloc1-x86:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    libtdb1:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    libtdb1-32bit:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    libtdb1-x86:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    libtheora0:
+      fixed:
+        1.0.beta2-6.1.1:
+          - CVE-2009-3389
+    libtheora0-32bit:
+      fixed:
+        1.0.beta2-6.1.1:
+          - CVE-2009-3389
+    libtheora0-x86:
+      fixed:
+        1.0.beta2-6.1.1:
+          - CVE-2009-3389
+    libtiff3:
+      fixed:
+        3.8.2-141.7.1:
+          - CVE-2009-2285
+        3.8.2-141.8.1:
+          - CVE-2009-2347
+    libtiff3-32bit:
+      fixed:
+        3.8.2-141.7.1:
+          - CVE-2009-2285
+        3.8.2-141.8.1:
+          - CVE-2009-2347
+    libtiff3-x86:
+      fixed:
+        3.8.2-141.7.1:
+          - CVE-2009-2285
+        3.8.2-141.8.1:
+          - CVE-2009-2347
+    libtool:
+      fixed:
+        2.2.6-2.131.1:
+          - CVE-2009-3736
+    libtool-32bit:
+      fixed:
+        2.2.6-2.131.1:
+          - CVE-2009-3736
+    libtool-x86:
+      fixed:
+        2.2.6-2.131.1:
+          - CVE-2009-3736
+    libvirt:
+      fixed:
+        0.4.6-14.60.16:
+          - CVE-2009-3525
+        0.4.6-14.63.1:
+          - CVE-2010-2242
+    libvirt-cim:
+      fixed:
+        0.5.2-8.47.85:
+          - CVE-2009-3525
+    libvirt-doc:
+      fixed:
+        0.4.6-14.60.16:
+          - CVE-2009-3525
+        0.4.6-14.63.1:
+          - CVE-2010-2242
+    libvirt-python:
+      fixed:
+        0.4.6-14.60.16:
+          - CVE-2009-3525
+        0.4.6-14.63.1:
+          - CVE-2010-2242
+    libvolume_id1:
+      fixed:
+        128-13.2.1:
+          - CVE-2009-1185
+    libvorbis:
+      fixed:
+        1.2.0-79.13.1:
+          - CVE-2009-2663
+    libvorbis-32bit:
+      fixed:
+        1.2.0-79.13.1:
+          - CVE-2009-2663
+    libvorbis-doc:
+      fixed:
+        1.2.0-79.13.1:
+          - CVE-2009-2663
+    libvorbis-x86:
+      fixed:
+        1.2.0-79.13.1:
+          - CVE-2009-2663
+    libwbclient0:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    libwbclient0-32bit:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    libwbclient0-x86:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    libxml2:
+      fixed:
+        2.7.1-10.11.1:
+          - CVE-2010-4008
+    libxml2-32bit:
+      fixed:
+        2.7.1-10.11.1:
+          - CVE-2010-4008
+    libxml2-doc:
+      fixed:
+        2.7.1-10.11.1:
+          - CVE-2010-4008
+    libxml2-x86:
+      fixed:
+        2.7.1-10.11.1:
+          - CVE-2010-4008
+    lvm2:
+      fixed:
+        2.02.39-18.26.3:
+          - CVE-2010-2526
+    mipv6d:
+      fixed:
+        2.0.2-2.15.1:
+          - CVE-2010-2522
+          - CVE-2010-2523
+    mozilla-nspr:
+      fixed:
+        4.8-1.3.1:
+          - CVE-2009-1313
+        4.8.2-1.1.1:
+          - CVE-2009-1563
+        4.8.6-1.2.1:
+          - CVE-2010-3170
+    mozilla-nspr-32bit:
+      fixed:
+        4.8-1.3.1:
+          - CVE-2009-1313
+        4.8.2-1.1.1:
+          - CVE-2009-1563
+        4.8.6-1.2.1:
+          - CVE-2010-3170
+    mozilla-nspr-x86:
+      fixed:
+        4.8-1.3.1:
+          - CVE-2009-1313
+        4.8.2-1.1.1:
+          - CVE-2009-1563
+        4.8.6-1.2.1:
+          - CVE-2010-3170
+    mozilla-nss:
+      fixed:
+        3.12.3.1-1.2.1:
+          - CVE-2009-1313
+        3.12.8-1.2.1:
+          - CVE-2010-3170
+    mozilla-nss-32bit:
+      fixed:
+        3.12.3.1-1.2.1:
+          - CVE-2009-1313
+        3.12.8-1.2.1:
+          - CVE-2010-3170
+    mozilla-nss-tools:
+      fixed:
+        3.12.3.1-1.2.1:
+          - CVE-2009-1313
+        3.12.8-1.2.1:
+          - CVE-2010-3170
+    mozilla-nss-x86:
+      fixed:
+        3.12.3.1-1.2.1:
+          - CVE-2009-1313
+        3.12.8-1.2.1:
+          - CVE-2010-3170
+    mozilla-xulrunner190:
+      fixed:
+        1.9.0.10-1.1.1:
+          - CVE-2009-1313
+        1.9.0.9-0.1.1:
+          - CVE-2009-0652
+          - CVE-2009-1302
+          - CVE-2009-1303
+          - CVE-2009-1304
+          - CVE-2009-1305
+          - CVE-2009-1307
+          - CVE-2009-1308
+          - CVE-2009-1309
+          - CVE-2009-1311
+          - CVE-2009-1312
+    mozilla-xulrunner190-32bit:
+      fixed:
+        1.9.0.10-1.1.1:
+          - CVE-2009-1313
+        1.9.0.9-0.1.1:
+          - CVE-2009-0652
+          - CVE-2009-1302
+          - CVE-2009-1303
+          - CVE-2009-1304
+          - CVE-2009-1305
+          - CVE-2009-1307
+          - CVE-2009-1308
+          - CVE-2009-1309
+          - CVE-2009-1311
+          - CVE-2009-1312
+    mozilla-xulrunner190-gnomevfs:
+      fixed:
+        1.9.0.10-1.1.1:
+          - CVE-2009-1313
+        1.9.0.9-0.1.1:
+          - CVE-2009-0652
+          - CVE-2009-1302
+          - CVE-2009-1303
+          - CVE-2009-1304
+          - CVE-2009-1305
+          - CVE-2009-1307
+          - CVE-2009-1308
+          - CVE-2009-1309
+          - CVE-2009-1311
+          - CVE-2009-1312
+    mozilla-xulrunner190-translations:
+      fixed:
+        1.9.0.10-1.1.1:
+          - CVE-2009-1313
+        1.9.0.9-0.1.1:
+          - CVE-2009-0652
+          - CVE-2009-1302
+          - CVE-2009-1303
+          - CVE-2009-1304
+          - CVE-2009-1305
+          - CVE-2009-1307
+          - CVE-2009-1308
+          - CVE-2009-1309
+          - CVE-2009-1311
+          - CVE-2009-1312
+    mozilla-xulrunner190-x86:
+      fixed:
+        1.9.0.10-1.1.1:
+          - CVE-2009-1313
+        1.9.0.9-0.1.1:
+          - CVE-2009-0652
+          - CVE-2009-1302
+          - CVE-2009-1303
+          - CVE-2009-1304
+          - CVE-2009-1305
+          - CVE-2009-1307
+          - CVE-2009-1308
+          - CVE-2009-1309
+          - CVE-2009-1311
+          - CVE-2009-1312
+    mozilla-xulrunner191:
+      fixed:
+        1.9.1.11-0.1.1:
+          - CVE-2009-1313
+        1.9.1.15-0.5.1:
+          - CVE-2010-3170
+          - CVE-2010-3175
+          - CVE-2010-3176
+          - CVE-2010-3177
+          - CVE-2010-3178
+          - CVE-2010-3179
+          - CVE-2010-3180
+          - CVE-2010-3182
+          - CVE-2010-3183
+          - CVE-2010-3765
+    mozilla-xulrunner191-32bit:
+      fixed:
+        1.9.1.11-0.1.1:
+          - CVE-2009-1313
+        1.9.1.15-0.5.1:
+          - CVE-2010-3170
+          - CVE-2010-3175
+          - CVE-2010-3176
+          - CVE-2010-3177
+          - CVE-2010-3178
+          - CVE-2010-3179
+          - CVE-2010-3180
+          - CVE-2010-3182
+          - CVE-2010-3183
+          - CVE-2010-3765
+    mozilla-xulrunner191-gnomevfs:
+      fixed:
+        1.9.1.11-0.1.1:
+          - CVE-2009-1313
+        1.9.1.15-0.5.1:
+          - CVE-2010-3170
+          - CVE-2010-3175
+          - CVE-2010-3176
+          - CVE-2010-3177
+          - CVE-2010-3178
+          - CVE-2010-3179
+          - CVE-2010-3180
+          - CVE-2010-3182
+          - CVE-2010-3183
+          - CVE-2010-3765
+    mozilla-xulrunner191-translations:
+      fixed:
+        1.9.1.11-0.1.1:
+          - CVE-2009-1313
+        1.9.1.15-0.5.1:
+          - CVE-2010-3170
+          - CVE-2010-3175
+          - CVE-2010-3176
+          - CVE-2010-3177
+          - CVE-2010-3178
+          - CVE-2010-3179
+          - CVE-2010-3180
+          - CVE-2010-3182
+          - CVE-2010-3183
+          - CVE-2010-3765
+    mozilla-xulrunner191-x86:
+      fixed:
+        1.9.1.11-0.1.1:
+          - CVE-2009-1313
+        1.9.1.15-0.5.1:
+          - CVE-2010-3170
+          - CVE-2010-3175
+          - CVE-2010-3176
+          - CVE-2010-3177
+          - CVE-2010-3178
+          - CVE-2010-3179
+          - CVE-2010-3180
+          - CVE-2010-3182
+          - CVE-2010-3183
+          - CVE-2010-3765
+    mozilla-xulrunner192:
+      fixed:
+        1.9.2.12-0.6.1:
+          - CVE-2009-1313
+    mozilla-xulrunner192-32bit:
+      fixed:
+        1.9.2.12-0.6.1:
+          - CVE-2009-1313
+    mozilla-xulrunner192-gnome:
+      fixed:
+        1.9.2.12-0.6.1:
+          - CVE-2009-1313
+    mozilla-xulrunner192-translations:
+      fixed:
+        1.9.2.12-0.6.1:
+          - CVE-2009-1313
+    mozilla-xulrunner192-x86:
+      fixed:
+        1.9.2.12-0.6.1:
+          - CVE-2009-1313
+    mysql:
+      fixed:
+        5.0.67-13.26.1:
+          - CVE-2010-1626
+          - CVE-2010-1848
+          - CVE-2010-1849
+          - CVE-2010-1850
+          - CVE-2010-3677
+          - CVE-2010-3678
+          - CVE-2010-3681
+          - CVE-2010-3682
+          - CVE-2010-3683
+    mysql-Max:
+      fixed:
+        5.0.67-13.26.1:
+          - CVE-2010-1626
+          - CVE-2010-1848
+          - CVE-2010-1849
+          - CVE-2010-1850
+          - CVE-2010-3677
+          - CVE-2010-3678
+          - CVE-2010-3681
+          - CVE-2010-3682
+          - CVE-2010-3683
+    mysql-client:
+      fixed:
+        5.0.67-13.26.1:
+          - CVE-2010-1626
+          - CVE-2010-1848
+          - CVE-2010-1849
+          - CVE-2010-1850
+          - CVE-2010-3677
+          - CVE-2010-3678
+          - CVE-2010-3681
+          - CVE-2010-3682
+          - CVE-2010-3683
+    nagios:
+      fixed:
+        3.0.6-1.21.1:
+          - CVE-2009-2288
+    nagios-www:
+      fixed:
+        3.0.6-1.21.1:
+          - CVE-2009-2288
+    neon:
+      fixed:
+        0.28.3-2.12.1:
+          - CVE-2009-2408
+          - CVE-2009-2473
+    netpbm:
+      fixed:
+        10.26.44-101.9.1:
+          - CVE-2009-4274
+    nscd:
+      fixed:
+        2.9-13.11.1:
+          - CVE-2010-3847
+          - CVE-2010-3856
+    ntp:
+      fixed:
+        4.2.4p6-1.17.1:
+          - CVE-2009-0159
+          - CVE-2009-1252
+    ntp-doc:
+      fixed:
+        4.2.4p6-1.17.1:
+          - CVE-2009-0159
+          - CVE-2009-1252
+    open-iscsi:
+      fixed:
+        2.0.870-26.6.1:
+          - CVE-2009-1297
+    openldap2:
+      fixed:
+        2.4.12-7.19.1:
+          - CVE-2010-0211
+          - CVE-2010-0212
+    openldap2-back-meta:
+      fixed:
+        2.4.12-7.19.1:
+          - CVE-2010-0211
+          - CVE-2010-0212
+    openldap2-client:
+      fixed:
+        2.4.12-7.19.1:
+          - CVE-2010-0211
+          - CVE-2010-0212
+    opensc:
+      fixed:
+        0.11.6-5.25.1:
+          - CVE-2009-0368
+    opensc-32bit:
+      fixed:
+        0.11.6-5.25.1:
+          - CVE-2009-0368
+    opensc-x86:
+      fixed:
+        0.11.6-5.25.1:
+          - CVE-2009-0368
+    openslp:
+      fixed:
+        1.2.0-172.10.7.1:
+          - CVE-2010-3609
+    openslp-32bit:
+      fixed:
+        1.2.0-172.10.7.1:
+          - CVE-2010-3609
+    openslp-server:
+      fixed:
+        1.2.0-172.10.7.1:
+          - CVE-2010-3609
+    openslp-x86:
+      fixed:
+        1.2.0-172.10.7.1:
+          - CVE-2010-3609
+    openssl:
+      fixed:
+        0.9.8h-30.13.1:
+          - CVE-2009-1377
+          - CVE-2009-1378
+          - CVE-2009-1379
+        0.9.8h-30.14.1:
+          - CVE-2009-1386
+          - CVE-2009-1387
+        0.9.8h-30.18.1:
+          - CVE-2009-4355
+    openssl-doc:
+      fixed:
+        0.9.8h-30.13.1:
+          - CVE-2009-1377
+          - CVE-2009-1378
+          - CVE-2009-1379
+        0.9.8h-30.14.1:
+          - CVE-2009-1386
+          - CVE-2009-1387
+        0.9.8h-30.18.1:
+          - CVE-2009-4355
+    openswan:
+      fixed:
+        2.6.16-1.32.1:
+          - CVE-2009-0790
+    openswan-doc:
+      fixed:
+        2.6.16-1.32.1:
+          - CVE-2009-0790
+    oracleasm-kmp-default:
+      fixed:
+        2.0.5_2.6.27.54_0.2-7.9.1:
+          - CVE-2009-1192
+          - CVE-2009-1242
+          - CVE-2009-1265
+          - CVE-2009-1337
+          - CVE-2009-1360
+          - CVE-2009-1439
+    orbit2:
+      fixed:
+        2.14.16-2.16:
+          - CVE-2009-1313
+    orbit2-32bit:
+      fixed:
+        2.14.16-2.16:
+          - CVE-2009-1313
+    orbit2-x86:
+      fixed:
+        2.14.16-2.16:
+          - CVE-2009-1313
+    pango:
+      fixed:
+        1.22.1-3.17.3:
+          - CVE-2009-1194
+    pango-32bit:
+      fixed:
+        1.22.1-3.17.3:
+          - CVE-2009-1194
+    pango-doc:
+      fixed:
+        1.22.1-3.17.3:
+          - CVE-2009-1194
+    pango-x86:
+      fixed:
+        1.22.1-3.17.3:
+          - CVE-2009-1194
+    pcsc-lite:
+      fixed:
+        1.4.102-1.31.1:
+          - CVE-2010-0407
+    pcsc-lite-32bit:
+      fixed:
+        1.4.102-1.31.1:
+          - CVE-2010-0407
+    pcsc-lite-x86:
+      fixed:
+        1.4.102-1.31.1:
+          - CVE-2010-0407
+    perl:
+      fixed:
+        5.10.0-64.43.1:
+          - CVE-2009-1391
+    perl-32bit:
+      fixed:
+        5.10.0-64.43.1:
+          - CVE-2009-1391
+    perl-Cyrus-IMAP:
+      fixed:
+        2.3.11-60.21.1:
+          - CVE-2009-3235
+    perl-Cyrus-SIEVE-managesieve:
+      fixed:
+        2.3.11-60.21.1:
+          - CVE-2009-3235
+    perl-HTML-Parser:
+      fixed:
+        3.56-1.18.1:
+          - CVE-2009-3627
+    perl-IO-Socket-SSL:
+      fixed:
+        1.16-3.2.1:
+          - CVE-2009-3024
+    perl-base:
+      fixed:
+        5.10.0-64.43.1:
+          - CVE-2009-1391
+    perl-doc:
+      fixed:
+        5.10.0-64.43.1:
+          - CVE-2009-1391
+    perl-x86:
+      fixed:
+        5.10.0-64.43.1:
+          - CVE-2009-1391
+    php5:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-bcmath:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-bz2:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-calendar:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-ctype:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-curl:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-dba:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-dbase:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-dom:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-exif:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-fastcgi:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-ftp:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-gd:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-gettext:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-gmp:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-hash:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-iconv:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-json:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-ldap:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-mbstring:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-mcrypt:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-mysql:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-odbc:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-openssl:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-pcntl:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-pdo:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-pear:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-pgsql:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-pspell:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-shmop:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-snmp:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-soap:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-suhosin:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-sysvmsg:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-sysvsem:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-sysvshm:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-tokenizer:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-wddx:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-xmlreader:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-xmlrpc:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-xmlwriter:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-xsl:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-zip:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    php5-zlib:
+      fixed:
+        5.2.6-50.18.3:
+          - CVE-2008-5498
+          - CVE-2009-0754
+    poppler-tools:
+      fixed:
+        0.10.1-1.37.1:
+          - CVE-2010-3702
+          - CVE-2010-3704
+    postgresql:
+      fixed:
+        8.3.7-0.1.1:
+          - CVE-2009-0922
+    postgresql-contrib:
+      fixed:
+        8.3.7-0.1.1:
+          - CVE-2009-0922
+    postgresql-docs:
+      fixed:
+        8.3.7-0.1.1:
+          - CVE-2009-0922
+    postgresql-libs:
+      fixed:
+        8.3.7-0.1.1:
+          - CVE-2009-0922
+    postgresql-libs-32bit:
+      fixed:
+        8.3.7-0.1.1:
+          - CVE-2009-0922
+    postgresql-libs-x86:
+      fixed:
+        8.3.7-0.1.1:
+          - CVE-2009-0922
+    postgresql-server:
+      fixed:
+        8.3.7-0.1.1:
+          - CVE-2009-0922
+    procps:
+      fixed:
+        3.2.7-151.3:
+          - CVE-2010-0395
+    python:
+      fixed:
+        2.6.0-8.9.6.2:
+          - CVE-2010-1634
+          - CVE-2010-2089
+          - CVE-2010-3493
+    python-32bit:
+      fixed:
+        2.6.0-8.9.6.2:
+          - CVE-2010-1634
+          - CVE-2010-2089
+          - CVE-2010-3493
+    python-base:
+      fixed:
+        2.6.0-8.8.6.1:
+          - CVE-2010-1634
+          - CVE-2010-2089
+          - CVE-2010-3493
+    python-base-32bit:
+      fixed:
+        2.6.0-8.8.6.1:
+          - CVE-2010-1634
+          - CVE-2010-2089
+          - CVE-2010-3493
+    python-base-x86:
+      fixed:
+        2.6.0-8.8.6.1:
+          - CVE-2010-1634
+          - CVE-2010-2089
+          - CVE-2010-3493
+    python-curses:
+      fixed:
+        2.6.0-8.9.6.2:
+          - CVE-2010-1634
+          - CVE-2010-2089
+          - CVE-2010-3493
+    python-demo:
+      fixed:
+        2.6.0-8.9.6.2:
+          - CVE-2010-1634
+          - CVE-2010-2089
+          - CVE-2010-3493
+    python-gdbm:
+      fixed:
+        2.6.0-8.9.6.2:
+          - CVE-2010-1634
+          - CVE-2010-2089
+          - CVE-2010-3493
+    python-idle:
+      fixed:
+        2.6.0-8.9.6.2:
+          - CVE-2010-1634
+          - CVE-2010-2089
+          - CVE-2010-3493
+    python-tk:
+      fixed:
+        2.6.0-8.9.6.2:
+          - CVE-2010-1634
+          - CVE-2010-2089
+          - CVE-2010-3493
+    python-x86:
+      fixed:
+        2.6.0-8.9.6.2:
+          - CVE-2010-1634
+          - CVE-2010-2089
+          - CVE-2010-3493
+    python-xml:
+      fixed:
+        2.6.0-8.8.6.1:
+          - CVE-2010-1634
+          - CVE-2010-2089
+          - CVE-2010-3493
+    pyxml:
+      fixed:
+        0.8.4-194.19.1:
+          - CVE-2009-3560
+          - CVE-2009-3720
+    quagga:
+      fixed:
+        0.99.10-17.17.1:
+          - CVE-2009-1572
+    ruby:
+      fixed:
+        1.8.7.p72-5.22.1:
+          - CVE-2008-3443
+          - CVE-2008-3655
+          - CVE-2008-3656
+          - CVE-2008-3657
+          - CVE-2008-3790
+          - CVE-2008-3905
+          - CVE-2009-0642
+          - CVE-2009-1904
+    ruby-doc-html:
+      fixed:
+        1.8.7.p72-5.22.1:
+          - CVE-2008-3443
+          - CVE-2008-3655
+          - CVE-2008-3656
+          - CVE-2008-3657
+          - CVE-2008-3790
+          - CVE-2008-3905
+          - CVE-2009-0642
+          - CVE-2009-1904
+    ruby-tk:
+      fixed:
+        1.8.7.p72-5.22.1:
+          - CVE-2008-3443
+          - CVE-2008-3655
+          - CVE-2008-3656
+          - CVE-2008-3657
+          - CVE-2008-3790
+          - CVE-2008-3905
+          - CVE-2009-0642
+          - CVE-2009-1904
+    samba:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    samba-32bit:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    samba-client:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    samba-client-32bit:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    samba-client-x86:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    samba-krb-printing:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    samba-winbind:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    samba-winbind-32bit:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    samba-winbind-x86:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    samba-x86:
+      fixed:
+        3.2.7-11.21.1:
+          - CVE-2010-3069
+    squid:
+      fixed:
+        2.7.STABLE5-2.4.1:
+          - CVE-2009-2621
+          - CVE-2009-2622
+          - CVE-2009-2855
+          - CVE-2010-0308
+    strongswan:
+      fixed:
+        4.2.8-1.23.1:
+          - CVE-2009-1957
+          - CVE-2009-1958
+    strongswan-doc:
+      fixed:
+        4.2.8-1.23.1:
+          - CVE-2009-1957
+          - CVE-2009-1958
+    sudo:
+      fixed:
+        1.6.9p17-21.3.1:
+          - CVE-2010-0426
+          - CVE-2010-0427
+    systemtap:
+      fixed:
+        0.7.1-42.5.1:
+          - CVE-2009-4273
+    tar:
+      fixed:
+        1.20-23.23.1:
+          - CVE-2010-0624
+    tgt:
+      fixed:
+        0.9.0-1.27.1:
+          - CVE-2010-0743
+          - CVE-2010-2221
+    tiff:
+      fixed:
+        3.8.2-141.8.1:
+          - CVE-2009-2347
+    udev:
+      fixed:
+        128-13.2.1:
+          - CVE-2009-1185
+    utempter:
+      fixed:
+        0.5.5-106.18:
+          - CVE-2009-0689
+    utempter-32bit:
+      fixed:
+        0.5.5-106.18:
+          - CVE-2009-0689
+    utempter-x86:
+      fixed:
+        0.5.5-106.18:
+          - CVE-2009-0689
+    virt-manager:
+      fixed:
+        0.5.3-66.42.13:
+          - CVE-2009-3525
+    virt-viewer:
+      fixed:
+        0.0.3-3.57.13:
+          - CVE-2009-3525
+    vm-install:
+      fixed:
+        0.3.27-0.1.15:
+          - CVE-2009-3525
+    w3m:
+      fixed:
+        0.5.2-128.18.1:
+          - CVE-2010-2074
+    websphere-as_ce:
+      fixed:
+        2.1.1.2-2.1:
+          - CVE-2008-5518
+          - CVE-2009-0038
+          - CVE-2009-0039
+          - CVE-2009-0781
+    wireshark:
+      fixed:
+        1.0.5-1.26.1:
+          - CVE-2009-1210
+          - CVE-2009-1266
+          - CVE-2009-1267
+          - CVE-2009-1268
+          - CVE-2009-1269
+        1.0.5-1.27.1:
+          - CVE-2009-2562
+    xen:
+      fixed:
+        3.3.1_18546_24-0.3.7:
+          - CVE-2009-3525
+    xen-doc-html:
+      fixed:
+        3.3.1_18546_24-0.3.7:
+          - CVE-2009-3525
+    xen-doc-pdf:
+      fixed:
+        3.3.1_18546_24-0.3.7:
+          - CVE-2009-3525
+    xen-kmp-default:
+      fixed:
+        3.3.1_18546_24_2.6.27.45_0.3-0.3.7:
+          - CVE-2009-3525
+    xen-kmp-pae:
+      fixed:
+        3.3.1_18546_24_2.6.27.45_0.3-0.3.7:
+          - CVE-2009-3525
+    xen-libs:
+      fixed:
+        3.3.1_18546_24-0.3.7:
+          - CVE-2009-3525
+    xen-tools:
+      fixed:
+        3.3.1_18546_24-0.3.7:
+          - CVE-2009-3525
+    xen-tools-domU:
+      fixed:
+        3.3.1_18546_24-0.3.7:
+          - CVE-2009-3525
+    xerces-j2:
+      fixed:
+        2.8.1-238.27.1:
+          - CVE-2009-2625
+    xerces-j2-xml-apis:
+      fixed:
+        2.8.1-238.27.1:
+          - CVE-2009-2625
+    xerces-j2-xml-resolver:
+      fixed:
+        2.8.1-238.27.1:
+          - CVE-2009-2625
+    xpdf-tools:
+      fixed:
+        3.02-138.26.1:
+          - CVE-2009-0791
+    yast2-ldap-server:
+      fixed:
+        2.17.21-0.1.1:
+          - CVE-2009-1648
+    zlib:
+      fixed:
+        1.2.3-106.34:
+          - CVE-2010-3170
+    zlib-32bit:
+      fixed:
+        1.2.3-106.34:
+          - CVE-2010-3170
+    zlib-x86:
+      fixed:
+        1.2.3-106.34:
+          - CVE-2010-3170

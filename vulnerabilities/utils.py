@@ -420,3 +420,8 @@ def fetch_response(url):
     if response.status_code == 200:
         return response
     raise Exception(f"Failed to fetch data from {url!r} with status code: {response.status_code!r}")
+
+
+def fetch_yaml(url):
+    resp = fetch_response(url)
+    return saneyaml.load(resp.content)

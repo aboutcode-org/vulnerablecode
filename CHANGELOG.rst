@@ -7,7 +7,9 @@ Version v31.1.0
 
 - We re-enabled support for the NPM vulnerabilities advisories importer. 
 - We re-enabled support for the Retiredotnet vulnerabilities advisories importer.
-- We are now handling purl fragments in package search.
+- We are now handling purl fragments in package search. For example:
+  you can now serch using queries in the UI like this : `cherrypy@2.1.1`,
+  `cherrypy` or `pkg:pypi`.
 
 
 Version v31.0.0

@@ -266,7 +266,8 @@ class NpmVersionAPI(VersionAPI):
     package_type = "npm"
 
     def fetch(self, pkg):
-        url = f"https://registry.npmjs.org/{pkg}"
+        lower_pkg = pkg.lower()
+        url = f"https://registry.npmjs.org/{lower_pkg}"
         response = get_response(url=url, content_type="json")
         if not response:
             logger.error(f"Failed to fetch {url}")

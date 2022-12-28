@@ -57,6 +57,12 @@ class PackageSearchTestCase(TestCase):
         self.assertEqual(len(pkgs), 1)
         self.assertEqual(pkgs[0].purl, "pkg:nginx/nginx@1.0.15")
 
+    def test_package_view_with_purl_fragment(self):
+        qs = PackageSearch().get_queryset(query="nginx@1.0.15")
+        pkgs = list(qs)
+        self.assertEqual(len(pkgs), 1)
+        self.assertEqual(pkgs[0].purl, "pkg:nginx/nginx@1.0.15")
+
 
 class VulnerabilitySearchTestCase(TestCase):
     def setUp(self):

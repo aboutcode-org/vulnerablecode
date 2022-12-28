@@ -1,0 +1,6175 @@
+[
+  {
+    "aliases": [
+      "CVE-2022-2564",
+      "GHSA-f825-f98c-gj3g"
+    ],
+    "summary": "automattic/mongoose vulnerable to Prototype pollution via Schema.path",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "mongoose",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>5.13.15|<6.4.6",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-2564",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-2564",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/automattic/mongoose/commit/a45cfb6b0ce0067ae9794cfa80f7917e1fb3c6f8",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://huntr.dev/bounties/055be524-9296-4b2f-b68d-6d5b810d1ddd",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/Automattic/mongoose/blob/master/CHANGELOG.md",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/Automattic/mongoose/blob/51e758541763b6f14569744ced15cc23ab8b50c6/lib/schema.js#L88-L141",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/Automattic/mongoose/compare/6.4.5...6.4.6",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-f825-f98c-gj3g",
+        "url": "https://github.com/advisories/GHSA-f825-f98c-gj3g",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-07-29T00:00:18+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-4111",
+      "GHSA-hgp8-w8fj-r4cm"
+    ],
+    "summary": "ToolJet is vulnerable to Denial of Service (DoS)",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "tooljet",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<1.27.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-4111",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-4111",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/tooljet/tooljet/commit/01cd3f0464747973ec329e9fb1ea12743d3235cc",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://huntr.dev/bounties/5596d072-66d2-4361-8cac-101c9c781c3d",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/ToolJet/ToolJet/pull/4103",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-hgp8-w8fj-r4cm",
+        "url": "https://github.com/advisories/GHSA-hgp8-w8fj-r4cm",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-22T03:30:56+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-25848",
+      "GHSA-7fxm-c848-89q8"
+    ],
+    "summary": "static-dev-server vulnerable to path traversal",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "static-dev-server",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/1.0.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-25848",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-25848",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://gist.github.com/lirantal/5550bcd0bdf92c1b56fbb20e141fe5bd",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-JS-STATICDEVSERVER-3149917",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-7fxm-c848-89q8",
+        "url": "https://github.com/advisories/GHSA-7fxm-c848-89q8",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-29T18:30:18+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-38900",
+      "GHSA-w573-4hg7-7wgq"
+    ],
+    "summary": "decode-uri-component vulnerable to Denial of Service (DoS)",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "decode-uri-component",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<0.2.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-38900",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-38900",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/SamVerschueren/decode-uri-component/issues/5",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/sindresorhus/query-string/issues/345",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/SamVerschueren/decode-uri-component/commit/746ca5dcb6667c5d364e782d53c542830e4c10b9",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/SamVerschueren/decode-uri-component/releases/tag/v0.2.1",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-w573-4hg7-7wgq",
+        "url": "https://github.com/advisories/GHSA-w573-4hg7-7wgq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "LOW",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-28T15:30:24+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-4135",
+      "GHSA-995f-9x5r-2rcj"
+    ],
+    "summary": "Heap buffer overflow in GPU",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "electron",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=19.0.0|<19.1.8",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-4135",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-4135",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://chromereleases.googleblog.com/2022/11/stable-channel-update-for-desktop_24.html",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://crbug.com/1392715",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/electron/electron/pull/36444",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/electron/electron/pull/36447",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-995f-9x5r-2rcj",
+        "url": "https://github.com/advisories/GHSA-995f-9x5r-2rcj",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-25T03:30:19+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-41654",
+      "GHSA-9gh8-wp53-ccc6"
+    ],
+    "summary": "ghost vulnerable to unauthorized newsletter modification via improper access controls",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "ghost",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=4.46.0|<4.48.8",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-9gh8-wp53-ccc6",
+        "url": "https://github.com/TryGhost/Ghost/security/advisories/GHSA-9gh8-wp53-ccc6",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://forum.ghost.org/t/security-update-available-for-ghost-4-48-7-and-5-22-6/34475",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-9gh8-wp53-ccc6",
+        "url": "https://github.com/advisories/GHSA-9gh8-wp53-ccc6",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-28T22:06:24+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-41654",
+      "GHSA-9gh8-wp53-ccc6"
+    ],
+    "summary": "ghost vulnerable to unauthorized newsletter modification via improper access controls",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "ghost",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=5.0.0|<5.22.7",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-9gh8-wp53-ccc6",
+        "url": "https://github.com/TryGhost/Ghost/security/advisories/GHSA-9gh8-wp53-ccc6",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://forum.ghost.org/t/security-update-available-for-ghost-4-48-7-and-5-22-6/34475",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-9gh8-wp53-ccc6",
+        "url": "https://github.com/advisories/GHSA-9gh8-wp53-ccc6",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-28T22:06:24+00:00"
+  },
+  {
+    "aliases": [
+      "GHSA-8jh9-wqpf-q52c"
+    ],
+    "summary": "sweetalert2 v8.19.1 and above contains hidden functionality",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "sweetalert2",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=8.19.1|<9.0.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://github.com/sweetalert2/sweetalert2/releases/tag/v11.4.9",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.npmjs.com/package/sweetalert2",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-8jh9-wqpf-q52c",
+        "url": "https://github.com/advisories/GHSA-8jh9-wqpf-q52c",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "LOW",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-23T15:49:51+00:00"
+  },
+  {
+    "aliases": [
+      "GHSA-pg98-6v7f-2xfv"
+    ],
+    "summary": "sweetalert2 v9.17.4 and above contains hidden functionality",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "sweetalert2",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=9.17.4|<10.0.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://github.com/sweetalert2/sweetalert2/releases/tag/v11.4.9",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.npmjs.com/package/sweetalert2",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-pg98-6v7f-2xfv",
+        "url": "https://github.com/advisories/GHSA-pg98-6v7f-2xfv",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "LOW",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-23T15:44:52+00:00"
+  },
+  {
+    "aliases": [
+      "GHSA-457r-cqc8-9vj9"
+    ],
+    "summary": "sweetalert2 v10.16.10 and above contains hidden functionality",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "sweetalert2",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=10.16.10|<11.0.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://github.com/sweetalert2/sweetalert2/releases/tag/v11.4.9",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.npmjs.com/package/sweetalert2",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-457r-cqc8-9vj9",
+        "url": "https://github.com/advisories/GHSA-457r-cqc8-9vj9",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "LOW",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-23T15:39:50+00:00"
+  },
+  {
+    "aliases": [
+      "GHSA-qq6h-5g6j-q3cm"
+    ],
+    "summary": "sweetalert2 v11.4.9 and above contains hidden functionality",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "sweetalert2",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=11.4.9",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://github.com/sweetalert2/sweetalert2/releases/tag/v11.4.9",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.npmjs.com/package/sweetalert2",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-qq6h-5g6j-q3cm",
+        "url": "https://github.com/advisories/GHSA-qq6h-5g6j-q3cm",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "LOW",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-23T15:26:43+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-41940",
+      "GHSA-r7qp-cfhv-p84w"
+    ],
+    "summary": "Uncaught exception in engine.io ",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "engine.io",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=4.0.0|<6.2.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-r7qp-cfhv-p84w",
+        "url": "https://github.com/socketio/engine.io/security/advisories/GHSA-r7qp-cfhv-p84w",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2022-41940",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41940",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/engine.io/commit/425e833ab13373edf1dd5a0706f07100db14e3c6",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/engine.io/commit/83c4071af871fc188298d7d591e95670bf9f9085",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-r7qp-cfhv-p84w",
+        "url": "https://github.com/advisories/GHSA-r7qp-cfhv-p84w",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-21T23:55:41+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-41940",
+      "GHSA-r7qp-cfhv-p84w"
+    ],
+    "summary": "Uncaught exception in engine.io ",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "engine.io",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<3.6.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-r7qp-cfhv-p84w",
+        "url": "https://github.com/socketio/engine.io/security/advisories/GHSA-r7qp-cfhv-p84w",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2022-41940",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41940",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/engine.io/commit/425e833ab13373edf1dd5a0706f07100db14e3c6",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/engine.io/commit/83c4071af871fc188298d7d591e95670bf9f9085",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-r7qp-cfhv-p84w",
+        "url": "https://github.com/advisories/GHSA-r7qp-cfhv-p84w",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-21T23:55:41+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-41919",
+      "GHSA-3fjj-p79j-c9hh"
+    ],
+    "summary": "Fastify: Incorrect Content-Type parsing can lead to CSRF attack ",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "fastify",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=3.0.0|<3.29.4",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-3fjj-p79j-c9hh",
+        "url": "https://github.com/fastify/fastify/security/advisories/GHSA-3fjj-p79j-c9hh",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/fastify/fastify/commit/62dde76f1f7aca76e38625fe8d983761f26e6fc9",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-41919",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41919",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.npmjs.com/package/@fastify/csrf",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-3fjj-p79j-c9hh",
+        "url": "https://github.com/advisories/GHSA-3fjj-p79j-c9hh",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-21T22:28:11+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-41919",
+      "GHSA-3fjj-p79j-c9hh"
+    ],
+    "summary": "Fastify: Incorrect Content-Type parsing can lead to CSRF attack ",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "fastify",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=4.0.0|<4.10.2",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-3fjj-p79j-c9hh",
+        "url": "https://github.com/fastify/fastify/security/advisories/GHSA-3fjj-p79j-c9hh",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/fastify/fastify/commit/62dde76f1f7aca76e38625fe8d983761f26e6fc9",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-41919",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41919",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.npmjs.com/package/@fastify/csrf",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-3fjj-p79j-c9hh",
+        "url": "https://github.com/advisories/GHSA-3fjj-p79j-c9hh",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-21T22:28:11+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-41713",
+      "GHSA-653v-rqx9-j85p"
+    ],
+    "summary": "deep-object-diff vulnerable to Prototype Pollution",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "deep-object-diff",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=1.1.6|<1.1.9",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-41713",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41713",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://fluidattacks.com/advisories/heldens/",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/mattphillips/deep-object-diff/issues/85",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/mattphillips/deep-object-diff/issues/85#issuecomment-1312450353",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/mattphillips/deep-object-diff/pull/87/commits/55f9c3c70cf0d54cb30291e949fb8682fa3c5d9f",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/mattphillips/deep-object-diff/pull/87/commits/9576963b68b955e88610aa4f0c696a1aafc1119d",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-653v-rqx9-j85p",
+        "url": "https://github.com/advisories/GHSA-653v-rqx9-j85p",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-04T12:00:25+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-3978",
+      "GHSA-5gwx-wf9g-r5mx"
+    ],
+    "summary": "NodeBB vulnerable to Cross-Site Request Forgery",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "nodebb",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<2.5.8",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-3978",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-3978",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/NodeBB/NodeBB/issues/11017",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/NodeBB/NodeBB/commit/2f9d8c350e54543f608d3d4c8e1a49bbb6cdea38",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/NodeBB/NodeBB/releases/tag/v2.5.8",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://vuldb.com/?id.213555",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-5gwx-wf9g-r5mx",
+        "url": "https://github.com/advisories/GHSA-5gwx-wf9g-r5mx",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-13T19:00:41+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-3971",
+      "GHSA-ffwf-47x2-jpr8"
+    ],
+    "summary": "Matrix-appservice-irc vulnerable to sql injection via roomIds argument",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "matrix-appservice-irc",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<0.36.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-3971",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-3971",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/matrix-org/matrix-appservice-irc/pull/1619",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/matrix-org/matrix-appservice-irc/commit/179313a37f06b298150edba3e2b0e5a73c1415e7",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/matrix-org/matrix-appservice-irc/releases/tag/0.36.0",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://vuldb.com/?id.213550",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-ffwf-47x2-jpr8",
+        "url": "https://github.com/advisories/GHSA-ffwf-47x2-jpr8",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-13T12:00:17+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-37603",
+      "GHSA-3rfm-jhwj-7488"
+    ],
+    "summary": "loader-utils is vulnerable to Regular Expression Denial of Service (ReDoS) via url variable",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "loader-utils",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=3.0.0|<3.2.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-37603",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-37603",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/issues/213",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L107",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L38",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/issues/216",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-3rfm-jhwj-7488",
+        "url": "https://github.com/advisories/GHSA-3rfm-jhwj-7488",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-14T19:00:38+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-37603",
+      "GHSA-3rfm-jhwj-7488"
+    ],
+    "summary": "loader-utils is vulnerable to Regular Expression Denial of Service (ReDoS) via url variable",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "loader-utils",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=2.0.0|<2.0.4",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-37603",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-37603",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/issues/213",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L107",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L38",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/issues/216",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-3rfm-jhwj-7488",
+        "url": "https://github.com/advisories/GHSA-3rfm-jhwj-7488",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-14T19:00:38+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-37603",
+      "GHSA-3rfm-jhwj-7488"
+    ],
+    "summary": "loader-utils is vulnerable to Regular Expression Denial of Service (ReDoS) via url variable",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "loader-utils",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=1.0.0|<1.4.2",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-37603",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-37603",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/issues/213",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L107",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L38",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/issues/216",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-3rfm-jhwj-7488",
+        "url": "https://github.com/advisories/GHSA-3rfm-jhwj-7488",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-14T19:00:38+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-37599",
+      "GHSA-hhq3-ff78-jv3g"
+    ],
+    "summary": "loader-utils is vulnerable to Regular Expression Denial of Service (ReDoS)",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "loader-utils",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=3.0.0|<3.2.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-37599",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-37599",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/issues/211",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L38",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L83",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/issues/216",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/commit/36dc86617930a5cf18af51cf3f53d0ee284d2824",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-hhq3-ff78-jv3g",
+        "url": "https://github.com/advisories/GHSA-hhq3-ff78-jv3g",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-12T12:00:27+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-37599",
+      "GHSA-hhq3-ff78-jv3g"
+    ],
+    "summary": "loader-utils is vulnerable to Regular Expression Denial of Service (ReDoS)",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "loader-utils",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=2.0.0|<2.0.4",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-37599",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-37599",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/issues/211",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L38",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L83",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/issues/216",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/commit/36dc86617930a5cf18af51cf3f53d0ee284d2824",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-hhq3-ff78-jv3g",
+        "url": "https://github.com/advisories/GHSA-hhq3-ff78-jv3g",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-12T12:00:27+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-37599",
+      "GHSA-hhq3-ff78-jv3g"
+    ],
+    "summary": "loader-utils is vulnerable to Regular Expression Denial of Service (ReDoS)",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "loader-utils",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=1.0.0|<1.4.2",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-37599",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-37599",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/issues/211",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L38",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L83",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/issues/216",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/commit/36dc86617930a5cf18af51cf3f53d0ee284d2824",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-hhq3-ff78-jv3g",
+        "url": "https://github.com/advisories/GHSA-hhq3-ff78-jv3g",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-12T12:00:27+00:00"
+  },
+  {
+    "aliases": [
+      "GHSA-98pf-gfh3-x3mp"
+    ],
+    "summary": "Read the Docs vulnerable to Cross-Site Scripting (XSS)",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "readthedocs",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<8.8.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-98pf-gfh3-x3mp",
+        "url": "https://github.com/readthedocs/readthedocs.org/security/advisories/GHSA-98pf-gfh3-x3mp",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/readthedocs/readthedocs.org/commit/b0ae626acd13882170ec5888e35f3ef2e48e6ff6",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-98pf-gfh3-x3mp",
+        "url": "https://github.com/advisories/GHSA-98pf-gfh3-x3mp",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-10T16:02:51+00:00"
+  },
+  {
+    "aliases": [
+      "GHSA-3qmc-2r76-4rqp"
+    ],
+    "summary": "Redwood is vulnerable to account takeover via dbAuth \"forgot-password\" ",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "@redwoodjs",
+          "name": "api",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=3.0.0|<3.3.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-3qmc-2r76-4rqp",
+        "url": "https://github.com/redwoodjs/redwood/security/advisories/GHSA-3qmc-2r76-4rqp",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/redwoodjs/redwood/issues/6343",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/redwoodjs/redwood/pull/6778",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/redwoodjs/redwood/releases/tag/v2.2.5",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/redwoodjs/redwood/releases/tag/v3.3.1",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-3qmc-2r76-4rqp",
+        "url": "https://github.com/advisories/GHSA-3qmc-2r76-4rqp",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-10T15:51:01+00:00"
+  },
+  {
+    "aliases": [
+      "GHSA-3qmc-2r76-4rqp"
+    ],
+    "summary": "Redwood is vulnerable to account takeover via dbAuth \"forgot-password\" ",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "@redwoodjs",
+          "name": "api",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=0.38.0|<2.2.5",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-3qmc-2r76-4rqp",
+        "url": "https://github.com/redwoodjs/redwood/security/advisories/GHSA-3qmc-2r76-4rqp",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/redwoodjs/redwood/issues/6343",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/redwoodjs/redwood/pull/6778",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/redwoodjs/redwood/releases/tag/v2.2.5",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/redwoodjs/redwood/releases/tag/v3.3.1",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-3qmc-2r76-4rqp",
+        "url": "https://github.com/advisories/GHSA-3qmc-2r76-4rqp",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-10T15:51:01+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-41879",
+      "GHSA-93vw-8fm5-p2jf"
+    ],
+    "summary": "Parse Server is vulnerable to Prototype Pollution via Cloud Code Webhooks",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "parse-server",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=5.0.0|<5.3.3",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-93vw-8fm5-p2jf",
+        "url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-93vw-8fm5-p2jf",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/pull/8305",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/pull/8306",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/commit/60c5a73d257e0d536056b38bdafef8b7130524d8",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/commit/6c63f04ba37174021082a5b5c4ba1556dcc954f4",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/releases/tag/4.10.20",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/releases/tag/5.3.3",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-41879",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41879",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-93vw-8fm5-p2jf",
+        "url": "https://github.com/advisories/GHSA-93vw-8fm5-p2jf",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-10T13:02:35+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-41879",
+      "GHSA-93vw-8fm5-p2jf"
+    ],
+    "summary": "Parse Server is vulnerable to Prototype Pollution via Cloud Code Webhooks",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "parse-server",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<4.10.20",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-93vw-8fm5-p2jf",
+        "url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-93vw-8fm5-p2jf",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/pull/8305",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/pull/8306",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/commit/60c5a73d257e0d536056b38bdafef8b7130524d8",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/commit/6c63f04ba37174021082a5b5c4ba1556dcc954f4",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/releases/tag/4.10.20",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/releases/tag/5.3.3",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-41879",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41879",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-93vw-8fm5-p2jf",
+        "url": "https://github.com/advisories/GHSA-93vw-8fm5-p2jf",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-10T13:02:35+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-36077",
+      "GHSA-p2jh-44qj-pf2v"
+    ],
+    "summary": "Exfiltration of hashed SMB credentials on Windows via file:// redirect",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "electron",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=19.0.0-beta.1|<19.0.11",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-p2jh-44qj-pf2v",
+        "url": "https://github.com/electron/electron/security/advisories/GHSA-p2jh-44qj-pf2v",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2022-36077",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-36077",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-p2jh-44qj-pf2v",
+        "url": "https://github.com/advisories/GHSA-p2jh-44qj-pf2v",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-10T12:38:57+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-36077",
+      "GHSA-p2jh-44qj-pf2v"
+    ],
+    "summary": "Exfiltration of hashed SMB credentials on Windows via file:// redirect",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "electron",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=20.0.0-beta.1|<20.0.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-p2jh-44qj-pf2v",
+        "url": "https://github.com/electron/electron/security/advisories/GHSA-p2jh-44qj-pf2v",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2022-36077",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-36077",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-p2jh-44qj-pf2v",
+        "url": "https://github.com/advisories/GHSA-p2jh-44qj-pf2v",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-10T12:38:57+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-36077",
+      "GHSA-p2jh-44qj-pf2v"
+    ],
+    "summary": "Exfiltration of hashed SMB credentials on Windows via file:// redirect",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "electron",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<18.3.7",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-p2jh-44qj-pf2v",
+        "url": "https://github.com/electron/electron/security/advisories/GHSA-p2jh-44qj-pf2v",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2022-36077",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-36077",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-p2jh-44qj-pf2v",
+        "url": "https://github.com/advisories/GHSA-p2jh-44qj-pf2v",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-10T12:38:57+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-2421",
+      "GHSA-qm95-pgcg-qqfq"
+    ],
+    "summary": "Insufficient validation when decoding a Socket.IO packet",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "socket.io-parser",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=3.4.0|<3.4.2",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-2421",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-2421",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://csirt.divd.nl/cases/DIVD-2022-00045",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-2421",
+        "url": "https://csirt.divd.nl/cves/CVE-2022-2421",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/socket.io-parser/commit/b559f050ee02bd90bd853b9823f8de7fa94a80d4",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/socket.io-parser/commit/b5d0cb7dc56a0601a09b056beaeeb0e43b160050",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/socket.io-parser/commit/04d23cecafe1b859fb03e0cbf6ba3b74dff56d14",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/socket.io-parser/commit/fb21e422fc193b34347395a33e0f625bebc09983",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-qm95-pgcg-qqfq",
+        "url": "https://github.com/advisories/GHSA-qm95-pgcg-qqfq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-26T12:00:28+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-2421",
+      "GHSA-qm95-pgcg-qqfq"
+    ],
+    "summary": "Insufficient validation when decoding a Socket.IO packet",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "socket.io-parser",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<3.3.3",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-2421",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-2421",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://csirt.divd.nl/cases/DIVD-2022-00045",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-2421",
+        "url": "https://csirt.divd.nl/cves/CVE-2022-2421",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/socket.io-parser/commit/b559f050ee02bd90bd853b9823f8de7fa94a80d4",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/socket.io-parser/commit/b5d0cb7dc56a0601a09b056beaeeb0e43b160050",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/socket.io-parser/commit/04d23cecafe1b859fb03e0cbf6ba3b74dff56d14",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/socket.io-parser/commit/fb21e422fc193b34347395a33e0f625bebc09983",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-qm95-pgcg-qqfq",
+        "url": "https://github.com/advisories/GHSA-qm95-pgcg-qqfq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-26T12:00:28+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-2421",
+      "GHSA-qm95-pgcg-qqfq"
+    ],
+    "summary": "Insufficient validation when decoding a Socket.IO packet",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "socket.io-parser",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=4.0.0|<4.0.5",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-2421",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-2421",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://csirt.divd.nl/cases/DIVD-2022-00045",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-2421",
+        "url": "https://csirt.divd.nl/cves/CVE-2022-2421",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/socket.io-parser/commit/b559f050ee02bd90bd853b9823f8de7fa94a80d4",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/socket.io-parser/commit/b5d0cb7dc56a0601a09b056beaeeb0e43b160050",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/socket.io-parser/commit/04d23cecafe1b859fb03e0cbf6ba3b74dff56d14",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/socket.io-parser/commit/fb21e422fc193b34347395a33e0f625bebc09983",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-qm95-pgcg-qqfq",
+        "url": "https://github.com/advisories/GHSA-qm95-pgcg-qqfq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-26T12:00:28+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-41878",
+      "GHSA-xprv-wvh7-qqqx"
+    ],
+    "summary": "Parse Server vulnerable to Prototype Pollution via Cloud Code Webhooks or Cloud Code Triggers",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "parse-server",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=5.0.0|<5.3.2",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-xprv-wvh7-qqqx",
+        "url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-xprv-wvh7-qqqx",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/pull/8301",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/pull/8302",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/commit/0a2d412e265992d53a670011afd9d2578562adc3",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/commit/6728da1e3591db1e27031d335d64d8f25546a06f",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-41878",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41878",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-xprv-wvh7-qqqx",
+        "url": "https://github.com/advisories/GHSA-xprv-wvh7-qqqx",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-09T20:47:27+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-41878",
+      "GHSA-xprv-wvh7-qqqx"
+    ],
+    "summary": "Parse Server vulnerable to Prototype Pollution via Cloud Code Webhooks or Cloud Code Triggers",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "parse-server",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<4.10.19",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-xprv-wvh7-qqqx",
+        "url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-xprv-wvh7-qqqx",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/pull/8301",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/pull/8302",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/commit/0a2d412e265992d53a670011afd9d2578562adc3",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/commit/6728da1e3591db1e27031d335d64d8f25546a06f",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-41878",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41878",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-xprv-wvh7-qqqx",
+        "url": "https://github.com/advisories/GHSA-xprv-wvh7-qqqx",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-09T20:47:27+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39390",
+      "GHSA-r4jg-5v89-9v62"
+    ],
+    "summary": "Withdrawn: Octocat.js vulnerable to code injection",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "octocat.js",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<1.2.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-r4jg-5v89-9v62",
+        "url": "https://github.com/octocademy/octocat.js/security/advisories/GHSA-r4jg-5v89-9v62",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2022-39390",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39390",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-r4jg-5v89-9v62",
+        "url": "https://github.com/advisories/GHSA-r4jg-5v89-9v62",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-08T20:48:49+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39396",
+      "GHSA-prm5-8g2m-24gg"
+    ],
+    "summary": "Remote code execution via MongoDB BSON parser through prototype pollution",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "parse-server",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=5.0.0|<5.3.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-prm5-8g2m-24gg",
+        "url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-prm5-8g2m-24gg",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/pull/8295",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/pull/8296",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/releases/tag/4.10.18",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/releases/tag/5.3.1",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39396",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39396",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-prm5-8g2m-24gg",
+        "url": "https://github.com/advisories/GHSA-prm5-8g2m-24gg",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-08T17:29:16+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39396",
+      "GHSA-prm5-8g2m-24gg"
+    ],
+    "summary": "Remote code execution via MongoDB BSON parser through prototype pollution",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "parse-server",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<4.10.18",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-prm5-8g2m-24gg",
+        "url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-prm5-8g2m-24gg",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/pull/8295",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/pull/8296",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/releases/tag/4.10.18",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/releases/tag/5.3.1",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39396",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39396",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-prm5-8g2m-24gg",
+        "url": "https://github.com/advisories/GHSA-prm5-8g2m-24gg",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-08T17:29:16+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-41714",
+      "GHSA-p5g9-rjcf-95vj"
+    ],
+    "summary": "fastest-json-copy vulnerable to Prototype Pollution",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "fastest-json-copy",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<=1.0.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-41714",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41714",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://fluidattacks.com/advisories/guetta/",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/streamich/fastest-json-copy",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-p5g9-rjcf-95vj",
+        "url": "https://github.com/advisories/GHSA-p5g9-rjcf-95vj",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-04T12:00:25+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-42743",
+      "GHSA-ff9j-pwxg-q5p2"
+    ],
+    "summary": "deep-parse-json vulnerable to Prototype Pollution",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "deep-parse-json",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<=1.0.2",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-42743",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-42743",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://fluidattacks.com/advisories/buuren/",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/sibu-github/deep-parse-json/issues/6",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-ff9j-pwxg-q5p2",
+        "url": "https://github.com/advisories/GHSA-ff9j-pwxg-q5p2",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-04T12:00:25+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-37601",
+      "GHSA-76p3-8jx3-jpfq"
+    ],
+    "summary": "Prototype pollution in webpack loader-utils",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "loader-utils",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<1.4.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-37601",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-37601",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/issues/212",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L11",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L47",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/releases/tag/v2.0.3",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/pull/217",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/pull/220",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/releases/tag/v1.4.1",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-76p3-8jx3-jpfq",
+        "url": "https://github.com/advisories/GHSA-76p3-8jx3-jpfq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-13T12:00:28+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-37601",
+      "GHSA-76p3-8jx3-jpfq"
+    ],
+    "summary": "Prototype pollution in webpack loader-utils",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "loader-utils",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=2.0.0|<2.0.3",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-37601",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-37601",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/issues/212",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L11",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L47",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/releases/tag/v2.0.3",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/pull/217",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/pull/220",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/webpack/loader-utils/releases/tag/v1.4.1",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-76p3-8jx3-jpfq",
+        "url": "https://github.com/advisories/GHSA-76p3-8jx3-jpfq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-13T12:00:28+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39386",
+      "GHSA-4pcg-wr6c-h9cq"
+    ],
+    "summary": "fastify/websocket vulnerable to uncaught exception via crash on malformed packet",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "@fastify",
+          "name": "websocket",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=5.0.0|<5.0.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-4pcg-wr6c-h9cq",
+        "url": "https://github.com/fastify/fastify-websocket/security/advisories/GHSA-4pcg-wr6c-h9cq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/fastify/fastify-websocket/releases/tag/v5.0.1",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/fastify/fastify-websocket/releases/tag/v7.1.1",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39386",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39386",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-4pcg-wr6c-h9cq",
+        "url": "https://github.com/advisories/GHSA-4pcg-wr6c-h9cq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-07T21:13:57+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39386",
+      "GHSA-4pcg-wr6c-h9cq"
+    ],
+    "summary": "fastify/websocket vulnerable to uncaught exception via crash on malformed packet",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "fastify-websocket",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<=4.3.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-4pcg-wr6c-h9cq",
+        "url": "https://github.com/fastify/fastify-websocket/security/advisories/GHSA-4pcg-wr6c-h9cq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/fastify/fastify-websocket/releases/tag/v5.0.1",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/fastify/fastify-websocket/releases/tag/v7.1.1",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39386",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39386",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-4pcg-wr6c-h9cq",
+        "url": "https://github.com/advisories/GHSA-4pcg-wr6c-h9cq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-07T21:13:57+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39386",
+      "GHSA-4pcg-wr6c-h9cq"
+    ],
+    "summary": "fastify/websocket vulnerable to uncaught exception via crash on malformed packet",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "@fastify",
+          "name": "websocket",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=6.0.0|<7.1.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-4pcg-wr6c-h9cq",
+        "url": "https://github.com/fastify/fastify-websocket/security/advisories/GHSA-4pcg-wr6c-h9cq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/fastify/fastify-websocket/releases/tag/v5.0.1",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/fastify/fastify-websocket/releases/tag/v7.1.1",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39386",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39386",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-4pcg-wr6c-h9cq",
+        "url": "https://github.com/advisories/GHSA-4pcg-wr6c-h9cq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-07T21:13:57+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-41710",
+      "GHSA-qqhf-xfhw-7884"
+    ],
+    "summary": "Markdownify has Files or Directories Accessible to External Parties",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "electron-markdownify",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<=1.4.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-41710",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41710",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://fluidattacks.com/advisories/noisestorm/",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/amitmerchant1990/electron-markdownify",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-qqhf-xfhw-7884",
+        "url": "https://github.com/advisories/GHSA-qqhf-xfhw-7884",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-04T12:00:25+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39382",
+      "GHSA-25mx-2mxm-6343"
+    ],
+    "summary": "@keystone-6/core's NODE_ENV defaults to development with esbuild",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "@keystone-6",
+          "name": "core",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=3.0.0|<3.0.2",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-25mx-2mxm-6343",
+        "url": "https://github.com/keystonejs/keystone/security/advisories/GHSA-25mx-2mxm-6343",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/keystonejs/keystone/pull/8063",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39382",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39382",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/keystonejs/keystone/pull/8031/",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-25mx-2mxm-6343",
+        "url": "https://github.com/advisories/GHSA-25mx-2mxm-6343",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-03T18:14:05+00:00"
+  },
+  {
+    "aliases": [
+      "GHSA-8r69-3cvp-wxc3"
+    ],
+    "summary": "Batched HTTP requests may set incorrect `cache-control` response header",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "@apollo",
+          "name": "server",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<4.1.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-8r69-3cvp-wxc3",
+        "url": "https://github.com/apollographql/apollo-server/security/advisories/GHSA-8r69-3cvp-wxc3",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/apollographql/apollo-server/commit/2a2d1e3b4bbb1f2802b09004444029bd1adb9c19",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/apollographql/apollo-server/commit/69be2f75d05c7044086a869d915b965ada033850",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-8r69-3cvp-wxc3",
+        "url": "https://github.com/advisories/GHSA-8r69-3cvp-wxc3",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-02T18:18:10+00:00"
+  },
+  {
+    "aliases": [
+      "GHSA-8r69-3cvp-wxc3"
+    ],
+    "summary": "Batched HTTP requests may set incorrect `cache-control` response header",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "apollo-server-core",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=3.0.0|<3.11.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-8r69-3cvp-wxc3",
+        "url": "https://github.com/apollographql/apollo-server/security/advisories/GHSA-8r69-3cvp-wxc3",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/apollographql/apollo-server/commit/2a2d1e3b4bbb1f2802b09004444029bd1adb9c19",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/apollographql/apollo-server/commit/69be2f75d05c7044086a869d915b965ada033850",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-8r69-3cvp-wxc3",
+        "url": "https://github.com/advisories/GHSA-8r69-3cvp-wxc3",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-02T18:18:10+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39381",
+      "GHSA-rcrx-fpjp-mfrw"
+    ],
+    "summary": "Unchecked Return Value to NULL Pointer Dereference in PDFDocumentHandler.cpp",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "hummus",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<1.0.111",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-rcrx-fpjp-mfrw",
+        "url": "https://github.com/julianhille/MuhammaraJS/security/advisories/GHSA-rcrx-fpjp-mfrw",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/galkahana/HummusJS/issues/293",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/julianhille/MuhammaraJS/issues/191",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/julianhille/MuhammaraJS/pull/194",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/galkahana/HummusJS/commit/a9bf2520ab5abb69f9328906e406fbebfb36159a",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39381",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39381",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-rcrx-fpjp-mfrw",
+        "url": "https://github.com/advisories/GHSA-rcrx-fpjp-mfrw",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-02T18:10:47+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39381",
+      "GHSA-rcrx-fpjp-mfrw"
+    ],
+    "summary": "Unchecked Return Value to NULL Pointer Dereference in PDFDocumentHandler.cpp",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "muhammara",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<2.6.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-rcrx-fpjp-mfrw",
+        "url": "https://github.com/julianhille/MuhammaraJS/security/advisories/GHSA-rcrx-fpjp-mfrw",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/galkahana/HummusJS/issues/293",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/julianhille/MuhammaraJS/issues/191",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/julianhille/MuhammaraJS/pull/194",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/galkahana/HummusJS/commit/a9bf2520ab5abb69f9328906e406fbebfb36159a",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39381",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39381",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-rcrx-fpjp-mfrw",
+        "url": "https://github.com/advisories/GHSA-rcrx-fpjp-mfrw",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-02T18:10:47+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-25885",
+      "GHSA-frp9-2v6r-gj97"
+    ],
+    "summary": "muhammara and hummus vulnerable to null pointer dereference on bad response object",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "hummus",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=1.0.0|<=1.0.110",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-25885",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-25885",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/galkahana/HummusJS/issues/439",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/julianhille/MuhammaraJS/issues/188",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/julianhille/MuhammaraJS/commit/0a6427eec82ef2978995e453de2dc0d6224dd46c",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-JS-HUMMUS-3091139",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-JS-MUHAMMARA-3091137",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/galkahana/HummusJS/commit/a9bf2520ab5abb69f9328906e406fbebfb36159a",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-frp9-2v6r-gj97",
+        "url": "https://github.com/advisories/GHSA-frp9-2v6r-gj97",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-01T12:00:30+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-25892",
+      "GHSA-9cv5-4wqv-9w94"
+    ],
+    "summary": "muhammara and hummus vulnerable to denial of service by NULL pointer dereference",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "hummus",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<1.0.111",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-25892",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-25892",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/galkahana/HummusJS/issues/463",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/julianhille/MuhammaraJS/issues/214",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/julianhille/MuhammaraJS/commit/1890fb555eaf171db79b73fdc3ea543bbd63c002",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/julianhille/MuhammaraJS/commit/90b278d09f16062d93a4160ef0a54d449d739c51",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-JS-HUMMUS-3091138",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-JS-MUHAMMARA-3060320",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-f64j-4x74-p42m",
+        "url": "https://github.com/julianhille/MuhammaraJS/security/advisories/GHSA-f64j-4x74-p42m",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/galkahana/HummusJS/commit/a9bf2520ab5abb69f9328906e406fbebfb36159a",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-9cv5-4wqv-9w94",
+        "url": "https://github.com/advisories/GHSA-9cv5-4wqv-9w94",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-01T12:00:30+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-25885",
+      "GHSA-frp9-2v6r-gj97"
+    ],
+    "summary": "muhammara and hummus vulnerable to null pointer dereference on bad response object",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "muhammara",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<2.6.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-25885",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-25885",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/galkahana/HummusJS/issues/439",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/julianhille/MuhammaraJS/issues/188",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/julianhille/MuhammaraJS/commit/0a6427eec82ef2978995e453de2dc0d6224dd46c",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-JS-HUMMUS-3091139",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-JS-MUHAMMARA-3091137",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/galkahana/HummusJS/commit/a9bf2520ab5abb69f9328906e406fbebfb36159a",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-frp9-2v6r-gj97",
+        "url": "https://github.com/advisories/GHSA-frp9-2v6r-gj97",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-01T12:00:30+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-25892",
+      "GHSA-9cv5-4wqv-9w94"
+    ],
+    "summary": "muhammara and hummus vulnerable to denial of service by NULL pointer dereference",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "muhammara",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=3.0.0|<3.1.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-25892",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-25892",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/galkahana/HummusJS/issues/463",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/julianhille/MuhammaraJS/issues/214",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/julianhille/MuhammaraJS/commit/1890fb555eaf171db79b73fdc3ea543bbd63c002",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/julianhille/MuhammaraJS/commit/90b278d09f16062d93a4160ef0a54d449d739c51",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-JS-HUMMUS-3091138",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-JS-MUHAMMARA-3060320",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-f64j-4x74-p42m",
+        "url": "https://github.com/julianhille/MuhammaraJS/security/advisories/GHSA-f64j-4x74-p42m",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/galkahana/HummusJS/commit/a9bf2520ab5abb69f9328906e406fbebfb36159a",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-9cv5-4wqv-9w94",
+        "url": "https://github.com/advisories/GHSA-9cv5-4wqv-9w94",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-01T12:00:30+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-25892",
+      "GHSA-9cv5-4wqv-9w94"
+    ],
+    "summary": "muhammara and hummus vulnerable to denial of service by NULL pointer dereference",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "muhammara",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<2.6.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-25892",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-25892",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/galkahana/HummusJS/issues/463",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/julianhille/MuhammaraJS/issues/214",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/julianhille/MuhammaraJS/commit/1890fb555eaf171db79b73fdc3ea543bbd63c002",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/julianhille/MuhammaraJS/commit/90b278d09f16062d93a4160ef0a54d449d739c51",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-JS-HUMMUS-3091138",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-JS-MUHAMMARA-3060320",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-f64j-4x74-p42m",
+        "url": "https://github.com/julianhille/MuhammaraJS/security/advisories/GHSA-f64j-4x74-p42m",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/galkahana/HummusJS/commit/a9bf2520ab5abb69f9328906e406fbebfb36159a",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-9cv5-4wqv-9w94",
+        "url": "https://github.com/advisories/GHSA-9cv5-4wqv-9w94",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-01T12:00:30+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-3783",
+      "GHSA-vrv9-3x3w-ffxw"
+    ],
+    "summary": "node-red-dashboard vulnerable to Cross-site Scripting",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "node-red-dashboard",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<3.2.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-3783",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-3783",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/node-red/node-red-dashboard/issues/772",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/node-red/node-red-dashboard/commit/9305d1a82f19b235dfad24a7d1dd4ed244db7743",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://vuldb.com/?id.212555",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-vrv9-3x3w-ffxw",
+        "url": "https://github.com/advisories/GHSA-vrv9-3x3w-ffxw",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-01T12:00:36+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39353",
+      "GHSA-crh6-fp67-6883"
+    ],
+    "summary": "xmldom allows multiple root nodes in a DOM",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "@xmldom",
+          "name": "xmldom",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=0.9.0-beta.1|<0.9.0-beta.4",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-crh6-fp67-6883",
+        "url": "https://github.com/xmldom/xmldom/security/advisories/GHSA-crh6-fp67-6883",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/releases/tag/0.7.7",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/releases/tag/0.8.4",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/releases/tag/0.9.0-beta.4",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39353",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39353",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/jindw/xmldom/issues/150",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-crh6-fp67-6883",
+        "url": "https://github.com/advisories/GHSA-crh6-fp67-6883",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-01T17:29:11+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39353",
+      "GHSA-crh6-fp67-6883"
+    ],
+    "summary": "xmldom allows multiple root nodes in a DOM",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "@xmldom",
+          "name": "xmldom",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=0.8.0|<0.8.4",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-crh6-fp67-6883",
+        "url": "https://github.com/xmldom/xmldom/security/advisories/GHSA-crh6-fp67-6883",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/releases/tag/0.7.7",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/releases/tag/0.8.4",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/releases/tag/0.9.0-beta.4",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39353",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39353",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/jindw/xmldom/issues/150",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-crh6-fp67-6883",
+        "url": "https://github.com/advisories/GHSA-crh6-fp67-6883",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-01T17:29:11+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39353",
+      "GHSA-crh6-fp67-6883"
+    ],
+    "summary": "xmldom allows multiple root nodes in a DOM",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "@xmldom",
+          "name": "xmldom",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<0.7.7",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-crh6-fp67-6883",
+        "url": "https://github.com/xmldom/xmldom/security/advisories/GHSA-crh6-fp67-6883",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/releases/tag/0.7.7",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/releases/tag/0.8.4",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/releases/tag/0.9.0-beta.4",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39353",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39353",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/jindw/xmldom/issues/150",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-crh6-fp67-6883",
+        "url": "https://github.com/advisories/GHSA-crh6-fp67-6883",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-01T17:29:11+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39353",
+      "GHSA-crh6-fp67-6883"
+    ],
+    "summary": "xmldom allows multiple root nodes in a DOM",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "xmldom",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<=0.6.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-crh6-fp67-6883",
+        "url": "https://github.com/xmldom/xmldom/security/advisories/GHSA-crh6-fp67-6883",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/releases/tag/0.7.7",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/releases/tag/0.8.4",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/releases/tag/0.9.0-beta.4",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39353",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39353",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/jindw/xmldom/issues/150",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-crh6-fp67-6883",
+        "url": "https://github.com/advisories/GHSA-crh6-fp67-6883",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-11-01T17:29:11+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-29823",
+      "GHSA-p5m3-27vh-52j4"
+    ],
+    "summary": "Feather-Sequelize cleanQuery method vulnerable to Prototype Pollution",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "feathers-sequelize",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=6.0.0|<6.3.3",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-29823",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-29823",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://csirt.divd.nl/cases/DIVD-2022-00020",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-29823",
+        "url": "https://csirt.divd.nl/cves/CVE-2022-29823/",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/feathersjs-ecosystem/feathers-sequelize/commit/0b7beaa773dc313fdb27edd9ee8115064d7cf114",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-p5m3-27vh-52j4",
+        "url": "https://github.com/advisories/GHSA-p5m3-27vh-52j4",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-26T12:00:28+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-29822",
+      "GHSA-5hq7-j5wq-p227"
+    ],
+    "summary": "feathers-sequelize vulnerable to SQL injection due to improper parameter filtering",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "feathers-sequelize",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=6.0.0|<6.3.4",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-29822",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-29822",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://csirt.divd.nl/cases/DIVD-2022-00020",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-29822",
+        "url": "https://csirt.divd.nl/cves/CVE-2022-29822/",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/feathersjs-ecosystem/feathers-sequelize/commit/0f2d85f0b2d556f2b6c70423dcebdbd29d95e3dc",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-5hq7-j5wq-p227",
+        "url": "https://github.com/advisories/GHSA-5hq7-j5wq-p227",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-26T12:00:28+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-2422",
+      "GHSA-qpv8-4pjq-qqh7"
+    ],
+    "summary": "PENDING feathers-sequelize contains improper input validation leading to SQL injection",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "feathers-sequelize",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=6.0.0|<6.3.4",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-2422",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-2422",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://csirt.divd.nl/cases/DIVD-2022-00020",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-2422",
+        "url": "https://csirt.divd.nl/cves/CVE-2022-2422",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/feathersjs-ecosystem/feathers-sequelize/commit/0f2d85f0b2d556f2b6c70423dcebdbd29d95e3dc",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-qpv8-4pjq-qqh7",
+        "url": "https://github.com/advisories/GHSA-qpv8-4pjq-qqh7",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-26T12:00:28+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-2421",
+      "GHSA-qm95-pgcg-qqfq"
+    ],
+    "summary": "Insufficient validation when decoding a Socket.IO packet",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "socket.io-parser",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=4.1.0|<4.2.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-2421",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-2421",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://csirt.divd.nl/cases/DIVD-2022-00045",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-2421",
+        "url": "https://csirt.divd.nl/cves/CVE-2022-2421",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/socket.io-parser/commit/b559f050ee02bd90bd853b9823f8de7fa94a80d4",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/socket.io-parser/commit/b5d0cb7dc56a0601a09b056beaeeb0e43b160050",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/socket.io-parser/commit/04d23cecafe1b859fb03e0cbf6ba3b74dff56d14",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/socketio/socket.io-parser/commit/fb21e422fc193b34347395a33e0f625bebc09983",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-qm95-pgcg-qqfq",
+        "url": "https://github.com/advisories/GHSA-qm95-pgcg-qqfq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-26T12:00:28+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-25918",
+      "GHSA-cr84-xvw4-qx3c"
+    ],
+    "summary": "Inefficient Regular Expression Complexity in shescape ",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "shescape",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=1.5.10|<1.6.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-cr84-xvw4-qx3c",
+        "url": "https://github.com/ericcornelissen/shescape/security/advisories/GHSA-cr84-xvw4-qx3c",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2022-25918",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-25918",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/ericcornelissen/shescape/commit/552e8eab56861720b1d4e5474fb65741643358f9",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/ericcornelissen/shescape/blob/main/src/unix.js%23L52",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/ericcornelissen/shescape/releases/tag/v1.6.1",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-JS-SHESCAPE-3061108",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-cr84-xvw4-qx3c",
+        "url": "https://github.com/advisories/GHSA-cr84-xvw4-qx3c",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-25T22:27:32+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39350",
+      "GHSA-c33w-pm52-mqvf"
+    ],
+    "summary": "@dependencytrack/frontend vulnerable to  Persistent Cross-Site-Scripting via Vulnerability Details",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "@dependencytrack",
+          "name": "frontend",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<4.6.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-c33w-pm52-mqvf",
+        "url": "https://github.com/DependencyTrack/frontend/security/advisories/GHSA-c33w-pm52-mqvf",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2022-39350",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39350",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://docs.dependencytrack.org/changelog/",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/showdownjs/showdown/wiki/Markdown's-XSS-Vulnerability-(and-how-to-mitigate-it)",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-c33w-pm52-mqvf",
+        "url": "https://github.com/advisories/GHSA-c33w-pm52-mqvf",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-25T20:22:01+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-41709",
+      "GHSA-c942-mfmp-p4fh"
+    ],
+    "summary": "Markdownify subject to Remote Code Execution via malicious markdown file",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "electron-markdownify",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<=1.4.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-41709",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41709",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://fluidattacks.com/advisories/adams/",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/amitmerchant1990/electron-markdownify",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-c942-mfmp-p4fh",
+        "url": "https://github.com/advisories/GHSA-c942-mfmp-p4fh",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-19T19:00:17+00:00"
+  },
+  {
+    "aliases": [
+      "GHSA-whpx-q3rq-w8jc"
+    ],
+    "summary": "Hardening of TypedArrays with non-canonical numeric property names in SES",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "ses",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<0.16.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-whpx-q3rq-w8jc",
+        "url": "https://github.com/endojs/endo/security/advisories/GHSA-whpx-q3rq-w8jc",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "LOW",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/endojs/endo/commit/88cab0be4cf816dc578f2ff441fd9bcda0aa5cf5",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-whpx-q3rq-w8jc",
+        "url": "https://github.com/advisories/GHSA-whpx-q3rq-w8jc",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "LOW",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-20T18:38:35+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-24373",
+      "GHSA-2j79-8pqc-r7x6"
+    ],
+    "summary": "react-native-reanimated vulnerable to ReDoS",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "react-native-reanimated",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<2.10.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-24373",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-24373",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/software-mansion/react-native-reanimated/pull/3382",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/software-mansion/react-native-reanimated/pull/3382/commits/7adf06d0c59382d884a04be86a96eede3d0432fa",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/software-mansion/react-native-reanimated/releases/tag/3.0.0-rc.1",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-JS-REACTNATIVEREANIMATED-2949507",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/software-mansion/react-native-reanimated/commit/8a927904366fa2d02df7a11553f8b0aa93471279",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/software-mansion/react-native-reanimated/compare/2.9.1...2.10.0",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-2j79-8pqc-r7x6",
+        "url": "https://github.com/advisories/GHSA-2j79-8pqc-r7x6",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-01T00:00:24+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-3517",
+      "GHSA-f8q6-p94x-37v3"
+    ],
+    "summary": "minimatch ReDoS vulnerability",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "minimatch",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<3.0.5",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-3517",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-3517",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/grafana/grafana-image-renderer/issues/329",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/isaacs/minimatch/commit/a8763f4388e51956be62dc6025cec1126beeb5e6",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/nodejs/node/issues/42510",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-f8q6-p94x-37v3",
+        "url": "https://github.com/advisories/GHSA-f8q6-p94x-37v3",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-18T12:00:32+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2019-17426",
+      "GHSA-8687-vv9j-hgph"
+    ],
+    "summary": "Improper Input Validation in Automattic Mongoose",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "mongoose",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<4.13.21",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2019-17426",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-17426",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/Automattic/mongoose/commit/f3eca5b94d822225c04e96cbeed9f095afb3c31c",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/Automattic/mongoose/issues/8222",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/Automattic/mongoose/commits/4.13.21",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/Automattic/mongoose/releases/tag/4.13.21",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-8687-vv9j-hgph",
+        "url": "https://github.com/advisories/GHSA-8687-vv9j-hgph",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2019-10-22T20:19:54+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2019-17426",
+      "GHSA-8687-vv9j-hgph"
+    ],
+    "summary": "Improper Input Validation in Automattic Mongoose",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "mongoose",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=5.0.0|<5.7.5",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2019-17426",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-17426",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/Automattic/mongoose/commit/f3eca5b94d822225c04e96cbeed9f095afb3c31c",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/Automattic/mongoose/issues/8222",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/Automattic/mongoose/commits/4.13.21",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/Automattic/mongoose/releases/tag/4.13.21",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-8687-vv9j-hgph",
+        "url": "https://github.com/advisories/GHSA-8687-vv9j-hgph",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2019-10-22T20:19:54+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39322",
+      "GHSA-6mhr-52mv-6v6f"
+    ],
+    "summary": "Field-level access-control bypass for multiselect field",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "@keystone-6",
+          "name": "core",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=2.2.0|<2.3.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-6mhr-52mv-6v6f",
+        "url": "https://github.com/keystonejs/keystone/security/advisories/GHSA-6mhr-52mv-6v6f",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2022-39322",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39322",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/keystonejs/keystone/commit/65c6ee3deef23605fc72b80230908696a7a65e7c",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-6mhr-52mv-6v6f",
+        "url": "https://github.com/advisories/GHSA-6mhr-52mv-6v6f",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-18T17:12:46+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39313",
+      "GHSA-h423-w6qv-2wj3"
+    ],
+    "summary": "parse-server crashes when receiving file download request with invalid byte range",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "parse-server",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=5.0.0|<5.2.8",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-h423-w6qv-2wj3",
+        "url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-h423-w6qv-2wj3",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/releases/tag/4.10.17",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39313",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39313",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-h423-w6qv-2wj3",
+        "url": "https://github.com/advisories/GHSA-h423-w6qv-2wj3",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-18T16:08:49+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39313",
+      "GHSA-h423-w6qv-2wj3"
+    ],
+    "summary": "parse-server crashes when receiving file download request with invalid byte range",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "parse-server",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<4.10.17",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-h423-w6qv-2wj3",
+        "url": "https://github.com/parse-community/parse-server/security/advisories/GHSA-h423-w6qv-2wj3",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/parse-community/parse-server/releases/tag/4.10.17",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39313",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39313",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-h423-w6qv-2wj3",
+        "url": "https://github.com/advisories/GHSA-h423-w6qv-2wj3",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-18T16:08:49+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-37616",
+      "GHSA-9pgh-qqpf-7wqj"
+    ],
+    "summary": "Withdrawn: Improperly Controlled Modification of Object Prototype Attributes ('Prototype Pollution') in @xmldom/xmldom and xmldom",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "@xmldom",
+          "name": "xmldom",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<0.7.6",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-9pgh-qqpf-7wqj",
+        "url": "https://github.com/xmldom/xmldom/security/advisories/GHSA-9pgh-qqpf-7wqj",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2022-37616",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-37616",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/issues/436",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/pull/437",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/blob/bc36efddf9948aba15618f85dc1addfc2ac9d7b2/lib/dom.js#L1",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/blob/bc36efddf9948aba15618f85dc1addfc2ac9d7b2/lib/dom.js#L3",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/blob/master/CHANGELOG.md#076",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://lists.debian.org/debian-lts-announce/2022/10/msg00023.html",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-9pgh-qqpf-7wqj",
+        "url": "https://github.com/advisories/GHSA-9pgh-qqpf-7wqj",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-11T20:42:57+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-37616",
+      "GHSA-9pgh-qqpf-7wqj"
+    ],
+    "summary": "Withdrawn: Improperly Controlled Modification of Object Prototype Attributes ('Prototype Pollution') in @xmldom/xmldom and xmldom",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "@xmldom",
+          "name": "xmldom",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=0.8.0|<0.8.3",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-9pgh-qqpf-7wqj",
+        "url": "https://github.com/xmldom/xmldom/security/advisories/GHSA-9pgh-qqpf-7wqj",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2022-37616",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-37616",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/issues/436",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/pull/437",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/blob/bc36efddf9948aba15618f85dc1addfc2ac9d7b2/lib/dom.js#L1",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/blob/bc36efddf9948aba15618f85dc1addfc2ac9d7b2/lib/dom.js#L3",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/blob/master/CHANGELOG.md#076",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://lists.debian.org/debian-lts-announce/2022/10/msg00023.html",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-9pgh-qqpf-7wqj",
+        "url": "https://github.com/advisories/GHSA-9pgh-qqpf-7wqj",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-11T20:42:57+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39300",
+      "GHSA-5p8w-2mvw-38pv"
+    ],
+    "summary": "Signature bypass via multiple root elements",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "node-saml",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<4.0.0-beta.5",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-5p8w-2mvw-38pv",
+        "url": "https://github.com/node-saml/node-saml/security/advisories/GHSA-5p8w-2mvw-38pv",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/node-saml/node-saml/commit/c1f275c289c01921e58f5c70ce0fdbc5287e5fbe",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39300",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39300",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-5p8w-2mvw-38pv",
+        "url": "https://github.com/advisories/GHSA-5p8w-2mvw-38pv",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-12T22:05:44+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39299",
+      "GHSA-m974-647v-whv7"
+    ],
+    "summary": "Signature bypass via multiple root elements",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "@node-saml",
+          "name": "passport-saml",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<4.0.0-beta.3",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-m974-647v-whv7",
+        "url": "https://github.com/node-saml/passport-saml/security/advisories/GHSA-m974-647v-whv7",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/node-saml/passport-saml/commit/8b7e3f5a91c8e5ac7e890a0c90bc7491ce33155e",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/node-saml/passport-saml/releases/tag/v3.2.2",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39299",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39299",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://packetstormsecurity.com/files/169826/Node-saml-Root-Element-Signature-Bypass.html",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-m974-647v-whv7",
+        "url": "https://github.com/advisories/GHSA-m974-647v-whv7",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-12T22:05:41+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39299",
+      "GHSA-m974-647v-whv7"
+    ],
+    "summary": "Signature bypass via multiple root elements",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "@node-saml",
+          "name": "node-saml",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<4.0.0-beta.5",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-m974-647v-whv7",
+        "url": "https://github.com/node-saml/passport-saml/security/advisories/GHSA-m974-647v-whv7",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/node-saml/passport-saml/commit/8b7e3f5a91c8e5ac7e890a0c90bc7491ce33155e",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/node-saml/passport-saml/releases/tag/v3.2.2",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39299",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39299",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://packetstormsecurity.com/files/169826/Node-saml-Root-Element-Signature-Bypass.html",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-m974-647v-whv7",
+        "url": "https://github.com/advisories/GHSA-m974-647v-whv7",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-12T22:05:41+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39299",
+      "GHSA-m974-647v-whv7"
+    ],
+    "summary": "Signature bypass via multiple root elements",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "node-saml",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<4.0.0-beta.5",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-m974-647v-whv7",
+        "url": "https://github.com/node-saml/passport-saml/security/advisories/GHSA-m974-647v-whv7",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/node-saml/passport-saml/commit/8b7e3f5a91c8e5ac7e890a0c90bc7491ce33155e",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/node-saml/passport-saml/releases/tag/v3.2.2",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39299",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39299",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://packetstormsecurity.com/files/169826/Node-saml-Root-Element-Signature-Bypass.html",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-m974-647v-whv7",
+        "url": "https://github.com/advisories/GHSA-m974-647v-whv7",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-12T22:05:41+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39299",
+      "GHSA-m974-647v-whv7"
+    ],
+    "summary": "Signature bypass via multiple root elements",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "passport-saml",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<3.2.2",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-m974-647v-whv7",
+        "url": "https://github.com/node-saml/passport-saml/security/advisories/GHSA-m974-647v-whv7",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/node-saml/passport-saml/commit/8b7e3f5a91c8e5ac7e890a0c90bc7491ce33155e",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/node-saml/passport-saml/releases/tag/v3.2.2",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39299",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39299",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "http://packetstormsecurity.com/files/169826/Node-saml-Root-Element-Signature-Bypass.html",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-m974-647v-whv7",
+        "url": "https://github.com/advisories/GHSA-m974-647v-whv7",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-12T22:05:41+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-41376",
+      "GHSA-633r-r4p8-pw3w"
+    ],
+    "summary": "Cross site scripting in Metro UI",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "metro4",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=4.4.0|<=4.5.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-41376",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41376",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://alicangonullu.org/konu/138",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://youtu.be/_wzGVpX54Rc",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-633r-r4p8-pw3w",
+        "url": "https://github.com/advisories/GHSA-633r-r4p8-pw3w",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-11T19:00:26+00:00"
+  },
+  {
+    "aliases": [
+      "GHSA-2p3c-p3qw-69r4"
+    ],
+    "summary": "The graphql-upload library included in Apollo Server 2 is vulnerable to CSRF mutations",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "apollo-server",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=2.0.0|<2.25.4",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-2p3c-p3qw-69r4",
+        "url": "https://github.com/apollographql/apollo-server/security/advisories/GHSA-2p3c-p3qw-69r4",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/jaydenseric/graphql-multipart-request-spec/pull/64",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/apollographql/apollo-server/commit/82d44985ddca8e61557957d67f41e9c1a705a5ca",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-2p3c-p3qw-69r4",
+        "url": "https://github.com/advisories/GHSA-2p3c-p3qw-69r4",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-12T14:15:48+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-37616",
+      "GHSA-9pgh-qqpf-7wqj"
+    ],
+    "summary": "Withdrawn: Improperly Controlled Modification of Object Prototype Attributes ('Prototype Pollution') in @xmldom/xmldom and xmldom",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "@xmldom",
+          "name": "xmldom",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/0.9.0-beta.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-9pgh-qqpf-7wqj",
+        "url": "https://github.com/xmldom/xmldom/security/advisories/GHSA-9pgh-qqpf-7wqj",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2022-37616",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-37616",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/issues/436",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/pull/437",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/blob/bc36efddf9948aba15618f85dc1addfc2ac9d7b2/lib/dom.js#L1",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/blob/bc36efddf9948aba15618f85dc1addfc2ac9d7b2/lib/dom.js#L3",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/blob/master/CHANGELOG.md#076",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://lists.debian.org/debian-lts-announce/2022/10/msg00023.html",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-9pgh-qqpf-7wqj",
+        "url": "https://github.com/advisories/GHSA-9pgh-qqpf-7wqj",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-11T20:42:57+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-37616",
+      "GHSA-9pgh-qqpf-7wqj"
+    ],
+    "summary": "Withdrawn: Improperly Controlled Modification of Object Prototype Attributes ('Prototype Pollution') in @xmldom/xmldom and xmldom",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "xmldom",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<=0.6.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-9pgh-qqpf-7wqj",
+        "url": "https://github.com/xmldom/xmldom/security/advisories/GHSA-9pgh-qqpf-7wqj",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2022-37616",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-37616",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/issues/436",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/pull/437",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/blob/bc36efddf9948aba15618f85dc1addfc2ac9d7b2/lib/dom.js#L1",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/blob/bc36efddf9948aba15618f85dc1addfc2ac9d7b2/lib/dom.js#L3",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/xmldom/xmldom/blob/master/CHANGELOG.md#076",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://lists.debian.org/debian-lts-announce/2022/10/msg00023.html",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-9pgh-qqpf-7wqj",
+        "url": "https://github.com/advisories/GHSA-9pgh-qqpf-7wqj",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-11T20:42:57+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39288",
+      "GHSA-455w-c45v-86rg"
+    ],
+    "summary": "fastify vulnerable to denial of service via malicious Content-Type",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "fastify",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=4.0.0|<4.8.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-455w-c45v-86rg",
+        "url": "https://github.com/fastify/fastify/security/advisories/GHSA-455w-c45v-86rg",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2022-39288",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39288",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/fastify/fastify/commit/fbb07e8dfad74c69cd4cd2211aedab87194618e3",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/fastify/fastify/security/policy",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://hackerone.com/bugs?report_id=1715536&subject=fastify",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-455w-c45v-86rg",
+        "url": "https://github.com/advisories/GHSA-455w-c45v-86rg",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-11T13:45:14+00:00"
+  },
+  {
+    "aliases": [
+      "GHSA-jjmg-x456-w976"
+    ],
+    "summary": "Incorrect default cookie name and recommendation",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "csrf-csrf",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<2.2.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-jjmg-x456-w976",
+        "url": "https://github.com/Psifi-Solutions/csrf-csrf/security/advisories/GHSA-jjmg-x456-w976",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "LOW",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/Psifi-Solutions/csrf-csrf/commit/8f1ce8db97d945a4bb7f39f0b43c6041fa83d675",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-jjmg-x456-w976",
+        "url": "https://github.com/advisories/GHSA-jjmg-x456-w976",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "LOW",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-10T20:59:02+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-3423",
+      "GHSA-grv6-m753-3w2g"
+    ],
+    "summary": "NocoDB vulnerable to Denial of Service",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "nocodb",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<0.92.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-3423",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-3423",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/nocodb/nocodb/commit/000ecd886738b965b5997cd905825e3244f48b95",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://huntr.dev/bounties/94639d8e-8301-4432-ab80-e76e1346e631",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-grv6-m753-3w2g",
+        "url": "https://github.com/advisories/GHSA-grv6-m753-3w2g",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-07T18:16:01+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-39287",
+      "GHSA-pj2c-h76w-vv6f"
+    ],
+    "summary": "tiny-csrf has openly visible CSRF tokens",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "tiny-csrf",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<1.1.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-pj2c-h76w-vv6f",
+        "url": "https://github.com/valexandersaulys/tiny-csrf/security/advisories/GHSA-pj2c-h76w-vv6f",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/valexandersaulys/tiny-csrf/commit/8eead6da3b56e290512bbe8d20c2c5df3be317ba",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-39287",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39287",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-pj2c-h76w-vv6f",
+        "url": "https://github.com/advisories/GHSA-pj2c-h76w-vv6f",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-07T21:23:18+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-35923",
+      "GHSA-xrx9-gj26-5wx9"
+    ],
+    "summary": "v8n vulnerable to Inefficient Regular Expression Complexity",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "v8n",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<1.5.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-xrx9-gj26-5wx9",
+        "url": "https://github.com/imbrn/v8n/security/advisories/GHSA-xrx9-gj26-5wx9",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2022-35923",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-35923",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/imbrn/v8n/commit/92393862156fad190c05ec3f6e2bc73308dcd2f9",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://huntr.dev/bounties/2d92f644-593b-43b4-bfd1-c8042ac60609/",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-xrx9-gj26-5wx9",
+        "url": "https://github.com/advisories/GHSA-xrx9-gj26-5wx9",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-07T07:33:44+00:00"
+  },
+  {
+    "aliases": [
+      "GHSA-8w7w-67mw-r5p7"
+    ],
+    "summary": "generator-jhipster vulnerable to login check Regular Expression Denial of Service",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "generator-jhipster",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>6.8.0|<6.9.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GHSA-8w7w-67mw-r5p7",
+        "url": "https://github.com/jhipster/generator-jhipster/security/advisories/GHSA-8w7w-67mw-r5p7",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://gist.github.com/atomfrede/311f8a9c6eb74c5c5226af0481155207",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.jhipster.tech/2020/05/17/jhipster-release-6.9.0.html",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-8w7w-67mw-r5p7",
+        "url": "https://github.com/advisories/GHSA-8w7w-67mw-r5p7",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-06T22:56:29+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-40764",
+      "GHSA-hpqj-7cj6-hfj8"
+    ],
+    "summary": "Snyk CLI affected by Command Injection vulnerability",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "snyk-go-plugin",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<1.19.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-40764",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-40764",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/snyk/cli/releases/tag/v1.996.0",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/snyk/snyk-go-plugin/releases/tag/v1.19.1",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://support.snyk.io/hc/en-us/articles/7015908293789-CVE-2022-40764-Command-Injection-vulnerability-affecting-Snyk-CLI-versions-prior-to-1-996-0",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.imperva.com/blog/how-scanning-your-projects-for-security-issues-can-lead-to-remote-code-execution/",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-hpqj-7cj6-hfj8",
+        "url": "https://github.com/advisories/GHSA-hpqj-7cj6-hfj8",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-04T00:00:22+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-40764",
+      "GHSA-hpqj-7cj6-hfj8"
+    ],
+    "summary": "Snyk CLI affected by Command Injection vulnerability",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "snyk",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<1.996.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-40764",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-40764",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/snyk/cli/releases/tag/v1.996.0",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/snyk/snyk-go-plugin/releases/tag/v1.19.1",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://support.snyk.io/hc/en-us/articles/7015908293789-CVE-2022-40764-Command-Injection-vulnerability-affecting-Snyk-CLI-versions-prior-to-1-996-0",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.imperva.com/blog/how-scanning-your-projects-for-security-issues-can-lead-to-remote-code-execution/",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-hpqj-7cj6-hfj8",
+        "url": "https://github.com/advisories/GHSA-hpqj-7cj6-hfj8",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-04T00:00:22+00:00"
+  },
+  {
+    "aliases": [
+      "GHSA-8j6j-4h2c-c65p"
+    ],
+    "summary": "Arbitrary Code Execution in require-node",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "require-node",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/>=2.0.0|<2.0.4",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://www.npmjs.com/advisories/1015",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-8j6j-4h2c-c65p",
+        "url": "https://github.com/advisories/GHSA-8j6j-4h2c-c65p",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "CRITICAL",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2020-09-03T17:02:52+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2016-10707",
+      "GHSA-mhpp-875w-9cpv"
+    ],
+    "summary": "Denial of Service in jquery",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "jquery",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/3.0.0-rc.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2016-10707",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-10707",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/jquery/jquery/issues/3133",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-mhpp-875w-9cpv",
+        "url": "https://github.com/advisories/GHSA-mhpp-875w-9cpv",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.npmjs.com/advisories/330",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/jquery/jquery/pull/3134",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://snyk.io/vuln/npm:jquery:20160529",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/jquery/jquery/issues/3133#issuecomment-358978489",
+        "severities": []
+      }
+    ],
+    "date_published": "2018-01-22T13:32:42+00:00"
+  },
+  {
+    "aliases": [
+      "CVE-2022-21222",
+      "GHSA-p28h-cc7q-c4fg"
+    ],
+    "summary": "css-what vulnerable to ReDoS due to use of insecure regular expression",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": null,
+          "name": "css-what",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:npm/<2.1.3",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-21222",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21222",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-JS-CSSWHAT-3035488",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/fb55/css-what/commit/dc510929790da6617e7aa93a616498b22f6a6b72",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/fb55/css-what/blob/a38effd5a8f5506d75c7f8f13cbd8c76248a3860/index.js#23L12",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-p28h-cc7q-c4fg",
+        "url": "https://github.com/advisories/GHSA-p28h-cc7q-c4fg",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-10-01T00:00:24+00:00"
+  }
+]

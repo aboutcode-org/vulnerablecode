@@ -59,6 +59,8 @@ def test_extract_advisories_from_page():
                     'href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-30639" '
                     'rel="nofollow">CVE-2021-30639</a></p>',
                     "<p>An error introduced as part of a change to improve " "error handling.</p>",
+                    "<o>Applications that do not use non-blocking I/O are "
+                    "not exposed to this vulnerability.</o>",
                     "<p>This was fixed with commit\n"
                     "        <a "
                     'href="https://github.com/apache/tomcat/commit/b59099e4ca501a039510334ebe1024971cd6f959">b59099e4</a>.</p>',
@@ -200,7 +202,29 @@ def test_extract_advisories_from_page_with_multiple_groups():
                     "The issue was made public\n"
                     "       on 1 March 2021.</p>",
                     "<p>Affects: 10.0.0-M1 to 10.0.0</p>",
-                ]
+                ],
+                [
+                    "<p><strong>Important: Request mix-up with "
+                    "h2c</strong>\n"
+                    "<a "
+                    'href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-25122" '
+                    'rel="nofollow">CVE-2021-25122</a></p>',
+                    "<p>When responding to new h2c connection requests, "
+                    "Apache Tomcat could\n"
+                    "    duplicate request headers and a limited amount of "
+                    "request body from one\n"
+                    "    request to another meaning user A and user B could "
+                    "both see the results of\n"
+                    "    user A's request.</p>",
+                    "<p>This was fixed with commit\n"
+                    "       <a "
+                    'href="https://github.com/apache/tomcat/commit/dd757c0a893e2e35f8bc1385d6967221ae8b9b9b">dd757c0a</a>.</p>',
+                    "<p>This issue was identified by the Apache Tomcat "
+                    "Security team on 11\n"
+                    "       January 2021. The issue was made public on 1 "
+                    "March 2021.</p>",
+                    "<p>Affects: 10.0.0-M1 to 10.0.0</p>",
+                ],
             ],
             "fixed_versions": ["10.0.2"],
         },
@@ -232,11 +256,40 @@ def test_extract_advisories_from_page_with_multiple_groups():
                     "       on 26 October 2020. The issue was made public "
                     "on 14 January 2021.</p>",
                     "<p>Affects: 10.0.0-M1 to 10.0.0-M9</p>",
-                ]
+                ],
+                [
+                    "<p><strong>Moderate: HTTP/2 request header "
+                    "mix-up</strong>\n"
+                    "<a "
+                    'href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-17527" '
+                    'rel="nofollow">CVE-2020-17527</a></p>',
+                    "<p>While investigating issue <a "
+                    'href="https://bz.apache.org/bugzilla/show_bug.cgi?id=64830">64830</a> '
+                    "it was discovered that Apache\n"
+                    "       Tomcat could re-use an HTTP request header "
+                    "value from the previous stream\n"
+                    "       received on an HTTP/2 connection for the "
+                    "request associated with the\n"
+                    "       subsequent stream. While this would most likely "
+                    "lead to an error and the\n"
+                    "       closure of the HTTP/2 connection, it is "
+                    "possible that information could\n"
+                    "       leak between requests.\n"
+                    "    </p>",
+                    "<p>This was fixed with commit\n"
+                    "       <a "
+                    'href="https://github.com/apache/tomcat/commit/8d2fe6894d6e258a6d615d7f786acca80e6020cb">8d2fe689</a>.</p>',
+                    "<p>This issue was identified by the Apache Tomcat "
+                    "Security team on 10\n"
+                    "       November 2020. The issue was made public on 3 "
+                    "December 2020.</p>",
+                    "<p>Affects: 10.0.0-M1 to 10.0.0-M9</p>",
+                ],
             ],
             "fixed_versions": ["10.0.0-M10"],
         },
     ]
+
     results = extract_advisories_from_page(page)
     results = [d.to_dict() for d in results]
     assert results == expected

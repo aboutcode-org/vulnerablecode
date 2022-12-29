@@ -25,7 +25,7 @@ from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import APACHE_TOMCAT
 
-TRACE = True
+TRACE = False
 
 
 class ApacheTomcatImporter(Importer):
@@ -89,7 +89,6 @@ class ApacheTomcatImporter(Importer):
             adv_dict = adv.to_dict()
             temp_advisory_to_dict_list.append(adv_dict)
 
-        # TODO: 2022-12-26 Monday 16:17:38.  With my new ("better") approach, throws error: TypeError: Object of type Tag is not JSON serializable
         with open(
             "apache_tomcat_advisories_to_dict-02.json",
             "w",
@@ -133,6 +132,8 @@ class ApacheTomcatImporter(Importer):
             for line in self.record_of_all_affected_version_strings:
                 f.write(f"{line}\n")
 
+    # 2022-12-29 Thursday 13:11:16.  We're in the process of refactoring this method.
+    # See, e.g., function with the same name at the bottom of this file.
     def extract_advisories_from_page(self, apache_tomcat_advisory_html):
         """
         Return a list of AdvisoryData extracted from the HTML text ``apache_tomcat_advisory_html``.
@@ -389,8 +390,6 @@ class ApacheTomcatImporter(Importer):
                 )
 
             elif "-" in version_item:
-                # elif "-" in version_item and not any([i.isalpha() for i in version_item]):
-                # version_item_split = version_item.split(" ")
                 version_item_split = version_item.split("-")
 
                 constraints.append(
@@ -479,6 +478,7 @@ def extract_advisories_from_page(apache_tomcat_advisory_html):
         fixed_version = fixed_version_heading.text.split("Fixed in Apache Tomcat")[-1].strip()
         if TRACE:
             print("fixed_version = {}".format(fixed_version))
+            print("===========================")
 
         # We want to handle the occasional "and" in the fixed version headers, e.g.,
         # <h3 id="Fixed_in_Apache_Tomcat_8.5.5_and_8.0.37"><span class="pull-right">5 September 2016</span> Fixed in Apache Tomcat 8.5.5 and 8.0.37</h3>
@@ -489,6 +489,7 @@ def extract_advisories_from_page(apache_tomcat_advisory_html):
 
         if TRACE:
             print("fixed_versions = {}".format(fixed_versions))
+            print("===========================")
 
         # Each group of fixed-version-related data is contained in a div that immediately follows the h3 element, e.g.,
         # <h3 id="Fixed_in_Apache_Tomcat_8.5.8"><span class="pull-right">8 November 2016</span> Fixed in Apache Tomcat 8.5.8</h3>
@@ -502,20 +503,23 @@ def extract_advisories_from_page(apache_tomcat_advisory_html):
         severities = ("Low:", "Moderate:", "Important:", "High:", "Critical:")
         # A list of groups of paragraphs, each for a single Tomcat Advisory.
         advisory_groups = []
-        current_group = []
-        for para in fixed_version_paras.find_all("p"):
-            if para.text.startswith(severities):
-                if current_group:
-                    current_group = []
-                else:
-                    advisory_groups.append(current_group)
 
+        for para in fixed_version_paras.find_all("p"):
+            current_group = []
+            if para.text.startswith(severities):
                 current_group.append(para)
 
-            else:
-                if current_group:
-                    current_group.append(para)
-                else:
-                    pass
+                test_nextSiblings = para.find_next_siblings()
+                for next_sibling in test_nextSiblings:
+                    if not next_sibling.text.startswith(severities):
+                        current_group.append(next_sibling)
+                    elif next_sibling.text.startswith(severities):
+                        break
+
+                advisory_groups.append(current_group)
+
+        if TRACE:
+            print("\ncurrent_group = {}\n".format(current_group))
+            print("\nadvisory_groups = {}\n".format(advisory_groups))
 
         yield TomcatAdvisoryData(fixed_versions=fixed_versions, advisory_groups=advisory_groups)

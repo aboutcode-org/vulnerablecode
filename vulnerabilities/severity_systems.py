@@ -124,6 +124,27 @@ APACHE_HTTPD = ScoringSystem(
     name="Apache Httpd Severity",
     url="https://httpd.apache.org/security/impact_levels.html",
 )
+APACHE_HTTPD.choices = [
+    "Critical",
+    "Important",
+    "Moderate",
+    "Low",
+]
+
+# This is essentially identical to apache_http except for the addition of the "High" score,
+# which seems to be used interchangeably for "Important".
+APACHE_TOMCAT = ScoringSystem(
+    identifier="apache_tomcat",
+    name="Apache Tomcat Severity",
+    url="https://tomcat.apache.org/security-impact.html",
+)
+APACHE_TOMCAT.choices = [
+    "Critical",
+    "High",
+    "Important",
+    "Moderate",
+    "Low",
+]
 
 SCORING_SYSTEMS = {
     system.identifier: system
@@ -137,5 +158,6 @@ SCORING_SYSTEMS = {
         CVSS31_QUALITY,
         GENERIC,
         APACHE_HTTPD,
+        APACHE_TOMCAT,
     )
 }

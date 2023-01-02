@@ -1,0 +1,54 @@
+[
+  {
+    "aliases": [
+      "CVE-2017-9800"
+    ],
+    "summary": "A command injection vulnerability in Subversion may allow remote\n    attackers to execute arbitrary code.\n  ",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "ebuild",
+          "namespace": "dev-vcs",
+          "name": "subversion",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:ebuild/!=1.9.7",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "ebuild",
+          "namespace": "dev-vcs",
+          "name": "subversion",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:ebuild/!=1.9.7",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "ebuild",
+          "namespace": "dev-vcs",
+          "name": "subversion",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:ebuild/0.1.1|!=1.9.7",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GLSA-201709-09",
+        "url": "https://security.gentoo.org/glsa/201709-09",
+        "severities": []
+      }
+    ],
+    "date_published": null
+  }
+]

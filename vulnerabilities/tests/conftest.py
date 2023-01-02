@@ -29,7 +29,6 @@ collect_ignore = [
     "test_apache_tomcat.py",
     "test_api.py",
     "test_elixir_security.py",
-    "test_istio.py",
     "test_models.py",
     "test_msr2019.py",
     "test_package_managers.py",

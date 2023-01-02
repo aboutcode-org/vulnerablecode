@@ -14,6 +14,7 @@ import pytz
 import saneyaml
 from dateutil import parser
 from packageurl import PackageURL
+from univers.version_constraint import VersionConstraint
 from univers.version_range import GitHubVersionRange
 from univers.version_range import GolangVersionRange
 from univers.versions import SemverVersion

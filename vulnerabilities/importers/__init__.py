@@ -13,6 +13,7 @@ from vulnerabilities.importers import archlinux
 from vulnerabilities.importers import debian
 from vulnerabilities.importers import debian_oval
 from vulnerabilities.importers import gentoo
+from vulnerabilities.importers import elixir_security
 from vulnerabilities.importers import github
 from vulnerabilities.importers import gitlab
 from vulnerabilities.importers import istio
@@ -53,6 +54,7 @@ IMPORTERS_REGISTRY = [
     istio.IstioImporter,
     project_kb_msr2019.ProjectKBMSRImporter,
     suse_scores.SUSESeverityScoreImporter,
+    elixir_security.ElixirSecurityImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

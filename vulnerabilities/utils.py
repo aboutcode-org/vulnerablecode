@@ -420,3 +420,18 @@ def fetch_response(url):
     if response.status_code == 200:
         return response
     raise Exception(f"Failed to fetch data from {url!r} with status code: {response.status_code!r}")
+
+
+# This should be a method on PackageURL
+def remove_qualifiers_and_subpath(purl):
+    """
+    Return a package URL without qualifiers and subpath
+    """
+    if not isinstance(purl, PackageURL):
+        purl = PackageURL.from_string(purl)
+    return PackageURL(
+        type=purl.type,
+        namespace=purl.namespace,
+        name=purl.name,
+        version=purl.version,
+    )

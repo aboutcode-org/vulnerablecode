@@ -2,10 +2,16 @@ Release notes
 =============
 
 
+Version v31.1.1
+---------------
+
+- We re-enabled support for the Apache HTTPD securities advisories importer.
+
+
 Version v31.1.0
 ----------------
 
-- We re-enabled support for the NPM vulnerabilities advisories importer. 
+- We re-enabled support for the NPM vulnerabilities advisories importer.
 - We re-enabled support for the Retiredotnet vulnerabilities advisories importer.
 - We are now handling purl fragments in package search. For example:
   you can now serch using queries in the UI like this : ``cherrypy@2.1.1``,
@@ -30,7 +36,7 @@ Version v31.0.0
 - We made bulk search faster by pre-computing `package_url` and
   `plain_package_url` in Package model.  And provided two options in package
   bulk search  ``purl_only`` option to get only vulnerable purls without any
-  extra details, ``plain_purl`` option to filter purls without qualifiers and 
+  extra details, ``plain_purl`` option to filter purls without qualifiers and
   subpath and also return them without qualifiers and subpath. The names used
   are provisional and may be updated in a future release.
 

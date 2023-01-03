@@ -28,7 +28,7 @@ from vulnerabilities.utils import AffectedPackage
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/apache_tomcat")
 
-security_updates_home = "https://tomcat.apache.org/security"
+# security_updates_home = "https://tomcat.apache.org/security"
 
 
 # Temp test to flesh out `extract_advisories_from_page()` -- the method .
@@ -311,9 +311,17 @@ def test_advisory_data():
 
 
 def test_fetch_links():
-    retrieved_links = ApacheTomcatImporter().fetch_advisory_links(security_updates_home)
+    # retrieved_links = ApacheTomcatImporter().fetch_advisory_links(security_updates_home)
+    retrieved_links = ApacheTomcatImporter().fetch_advisory_links(
+        "https://tomcat.apache.org/security"
+    )
 
-    assert retrieved_links == [
+    generator_result = []
+    for link in retrieved_links:
+        generator_result.append(link)
+
+    assert generator_result == [
+        "https://tomcat.apache.org/security-11.html",
         "https://tomcat.apache.org/security-10.html",
         "https://tomcat.apache.org/security-9.html",
         "https://tomcat.apache.org/security-8.html",

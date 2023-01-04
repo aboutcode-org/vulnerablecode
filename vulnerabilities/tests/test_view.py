@@ -123,6 +123,18 @@ class PackageSearchTestCase(TestCase):
             "pkg:nginx/nginx@1.0.15",
         ]
 
+    def test_package_view_with_purl_type(self):
+        qs = PackageSearch().get_queryset(query="pkg:pypi")
+        pkgs = list(qs)
+        pkgs = [p.purl for p in pkgs]
+        assert pkgs == ["pkg:pypi/foo@1"]
+
+    def test_package_view_with_type_as_input(self):
+        qs = PackageSearch().get_queryset(query="pypi")
+        pkgs = list(qs)
+        pkgs = [p.purl for p in pkgs]
+        assert pkgs == ["pkg:pypi/foo@1"]
+
 
 class VulnerabilitySearchTestCase(TestCase):
     def setUp(self):

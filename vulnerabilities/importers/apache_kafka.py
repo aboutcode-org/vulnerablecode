@@ -7,16 +7,10 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import asyncio
-
-# to test json print
-import json
 
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
-
-# import VersionConstraint to experiment
 from univers.version_constraint import VersionConstraint
 from univers.version_range import MavenVersionRange
 from univers.versions import MavenVersion
@@ -25,8 +19,9 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
-from vulnerabilities.package_managers import GitHubTagsAPI
 
+# The entries below with `"action": "omit"` have no useful/reportable fixed or affected version data.
+# See https://kafka.apache.org/cve-list
 affected_version_range_mapping = {
     "CVE-2022-34917": {
         "action": "include",
@@ -97,15 +92,8 @@ class ApacheKafkaImporter(Importer):
         page = requests.get(self.GH_PAGE_URL)
         return page.content
 
-    # For now, don't use the GH API
-    # def set_api(self):
-    #     self.version_api = GitHubTagsAPI()
-    #     asyncio.run(self.version_api.load_api(["apache/kafka"]))
-
     def updated_advisories(self):
         advisory_page = self.fetch_advisory_page()
-        # For now, don't use the GH API
-        # self.set_api()
 
         parsed_data = self.to_advisory(advisory_page)
         return self.batch_advisories(parsed_data)
@@ -155,8 +143,6 @@ class ApacheKafkaImporter(Importer):
             # hard-coded affected_version_range_mapping dictionary.
             if affected_version_range_mapping[cve_id]["action"] == "include":
 
-                # print("\ncve_id = {}".format(cve_id))
-
                 # These 2 variables (not used elsewhere) trigger the KeyError for changed/missing data.
                 check_affected_versions_key = affected_version_range_mapping[cve_id][
                     affected_versions_string
@@ -164,15 +150,6 @@ class ApacheKafkaImporter(Importer):
                 check_fixed_versions_key = affected_version_range_mapping[cve_id][
                     fixed_versions_string
                 ]
-
-                # This calculates/prints the correct univers version value, which we can then use in the mapping dictionary.
-                # We'll delete this and to_version_ranges_test() when no longer needed.
-                affected_version_ranges_TEST = self.to_version_ranges_test(
-                    affected_versions_string_split_SPLIT, fixed_versions_string_split_SPLIT
-                )
-                # print("\naffected_version_ranges_TEST = {}".format(affected_version_ranges_TEST))
-                # print("\naffected_versions_string = {}".format(affected_versions_string))
-                # print("\nfixed_versions_string = {}".format(fixed_versions_string))
 
                 references = [
                     Reference(url=self.ASF_PAGE_URL),
@@ -203,127 +180,4 @@ class ApacheKafkaImporter(Importer):
                     )
                 )
 
-                # print("\nadvisories[-1] = {}".format(advisories[-1]))
-                # print("\nadvisories[-1].to_dict() = {}".format(advisories[-1].to_dict()))
-
-                # print("\n========================================")
-
-        # Print a dict of the advisories.
-        # result = [data.to_dict() for data in advisories]
-        # print("result = \n")
-        # print(json.dumps(result, indent=4, sort_keys=False))
-
         return advisories
-
-    # We use this to calculate the ranges for the hard-coded affected_version_range_mapping.
-    # We'' delete this when no longer needed.
-    def to_version_ranges_test(self, versions_data, fixed_versions):
-        constraints = []
-
-        for version_item in versions_data:
-            if "to" in version_item:
-                version_item_split = version_item.split(" ")
-
-                constraints.append(
-                    VersionConstraint(
-                        comparator=">=",
-                        version=MavenVersion(version_item_split[0]),
-                    )
-                )
-                constraints.append(
-                    VersionConstraint(
-                        comparator="<=",
-                        version=MavenVersion(version_item_split[-1]),
-                    )
-                )
-
-            elif "-" in version_item:
-                version_item_split = version_item.split(" ")
-
-                constraints.append(
-                    VersionConstraint(
-                        comparator=">=",
-                        version=MavenVersion(version_item_split[0]),
-                    )
-                )
-                constraints.append(
-                    VersionConstraint(
-                        comparator="<=",
-                        version=MavenVersion(version_item_split[-1]),
-                    )
-                )
-
-            elif "and later" in version_item:
-                version_item_split = version_item.split(" ")
-
-                constraints.append(
-                    VersionConstraint(
-                        comparator=">=",
-                        version=MavenVersion(version_item_split[0]),
-                    )
-                )
-
-            else:
-                version_item_split = version_item.split(" ")
-
-                constraints.append(
-                    VersionConstraint(
-                        comparator="=",
-                        version=MavenVersion(version_item_split[0]),
-                    )
-                )
-
-        for fixed_item in fixed_versions:
-            if "to" in fixed_item:
-                fixed_item_split = fixed_item.split(" ")
-
-                constraints.append(
-                    VersionConstraint(
-                        comparator=">=",
-                        version=MavenVersion(fixed_item_split[0]),
-                    ).invert()
-                )
-                constraints.append(
-                    VersionConstraint(
-                        comparator="<=",
-                        version=MavenVersion(fixed_item_split[-1]),
-                    ).invert()
-                )
-
-            elif "-" in fixed_item:
-                fixed_item_split = fixed_item.split(" ")
-
-                constraints.append(
-                    VersionConstraint(
-                        comparator=">=",
-                        version=MavenVersion(fixed_item_split[0]),
-                    ).invert()
-                )
-                constraints.append(
-                    VersionConstraint(
-                        comparator="<=",
-                        version=MavenVersion(fixed_item_split[-1]),
-                    ).invert()
-                )
-
-            elif "and later" in fixed_item:
-                fixed_item_split = fixed_item.split(" ")
-
-                constraints.append(
-                    VersionConstraint(
-                        comparator=">=",
-                        version=MavenVersion(fixed_item_split[0]),
-                    ).invert()
-                )
-
-            else:
-                fixed_item_split = fixed_item.split(" ")
-
-                constraints.append(
-                    VersionConstraint(
-                        comparator="=",
-                        version=MavenVersion(fixed_item_split[0]),
-                    ).invert()
-                )
-
-        return MavenVersionRange(constraints=constraints)

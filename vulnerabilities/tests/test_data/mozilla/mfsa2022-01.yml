@@ -1,0 +1,161 @@
+## mfsa2022-01.yml
+announced: January 11, 2022
+impact: high
+fixed_in:
+- Firefox 96
+title: Security Vulnerabilities fixed in Firefox 96
+advisories:
+  CVE-2022-22746:
+    title: Calling into reportValidity could have lead to fullscreen window spoof
+    impact: high
+    reporter: Irvan Kurniawan
+    description: |
+      A race condition could have allowed bypassing the fullscreen notification which could have lead to a fullscreen window spoof being unnoticed.<br>*This bug only affects Firefox for Windows. Other operating systems are unaffected.*
+    bugs:
+      - url: 1735071
+  CVE-2022-22743:
+    title: Browser window spoof using fullscreen mode
+    impact: high
+    reporter: Irvan Kurniawan
+    description: |
+      When navigating from inside an iframe while requesting fullscreen access, an attacker-controlled tab could have made the browser unable to leave fullscreen mode.
+    bugs:
+      - url: 1739220
+  CVE-2022-22742:
+    title: Out-of-bounds memory access when inserting text in edit mode
+    impact: high
+    reporter: Irvan Kurniawan
+    description: |
+      When inserting text while in edit mode, some characters might have lead to out-of-bounds memory access causing a potentially exploitable crash.
+    bugs:
+      - url: 1739923
+  CVE-2022-22741:
+    title: Browser window spoof using fullscreen mode
+    impact: high
+    reporter: Irvan Kurniawan
+    description: |
+      When resizing a popup while requesting fullscreen access, the popup would have become unable to leave fullscreen mode.
+    bugs:
+      - url: 1740389
+  CVE-2022-22740:
+    title: 'Use-after-free of ChannelEventQueue::mOwner'
+    impact: high
+    reporter: bo13oy of Cyber Kunlun Lab
+    description: |
+      Certain network request objects were freed too early when releasing a network request handle. This could have lead to a use-after-free causing a potentially exploitable crash.
+    bugs:
+      - url: 1742334
+  CVE-2022-22738:
+    title: Heap-buffer-overflow in blendGaussianBlur
+    impact: high
+    reporter: Atte Kettunen
+    description: |
+      Applying a CSS filter effect could have accessed out of bounds memory. This could have lead to a heap-buffer-overflow causing a potentially exploitable crash.
+    bugs:
+      - url: 1742382
+  CVE-2022-22737:
+    title: Race condition when playing audio files
+    impact: high
+    reporter: bo13oy of Cyber Kunlun Lab
+    description: |
+      Constructing audio sinks could have lead to a race condition when playing audio files and closing windows. This could have lead to a use-after-free causing a potentially exploitable crash.
+    bugs:
+      - url: 1745874
+  CVE-2021-4140:
+    title: Iframe sandbox bypass with XSLT
+    impact: high
+    reporter: Peter Van der Beken
+    description: |
+      It was possible to construct specific XSLT markup that would be able to bypass an iframe sandbox.
+    bugs:
+      - url: 1746720
+  CVE-2022-22750:
+    title: IPC passing of resource handles could have lead to sandbox bypass
+    impact: moderate
+    reporter: Jed Davis
+    description: |
+      By generally accepting and passing resource handles across processes, a compromised content process might have confused higher privileged processes to interact with handles that the unprivileged process should not have access to.<br>*This bug only affects Firefox for Windows and MacOS. Other operating systems are unaffected.*
+    bugs:
+      - url: 1566608
+  CVE-2022-22749:
+    title: Lack of URL restrictions when scanning QR codes
+    impact: moderate
+    reporter: Wladimir Palant working with Include Security
+    description: |
+      When scanning QR codes, Firefox for Android would have allowed navigation to some URLs that do not point to web content.<br>*This bug only affects Firefox for Android. Other operating systems are unaffected.*
+    bugs:
+      - url: 1705094
+  CVE-2022-22748:
+    title: Spoofed origin on external protocol launch dialog
+    impact: moderate
+    reporter: Alesandro Ortiz
+    description: |
+      Malicious websites could have confused Firefox into showing the wrong origin when asking to launch a program and handling an external URL protocol.
+    bugs:
+      - url: 1705211
+  CVE-2022-22745:
+    title: Leaking cross-origin URLs through securitypolicyviolation event
+    impact: moderate
+    reporter: Jannis Rautenstrauch
+    description: |
+      Securitypolicyviolation events could have leaked cross-origin information for frame-ancestors violations
+    bugs:
+      - url: 1735856
+  CVE-2022-22744:
+    title: The 'Copy as curl' feature in DevTools did not fully escape website-controlled data, potentially leading to command injection
+    impact: moderate
+    reporter: Mattias Jacobsson
+    description: |
+      The constructed curl command from the "Copy as curl" feature in DevTools was not properly escaped for PowerShell.  This could have lead to command injection if pasted into a Powershell prompt.<br>*This bug only affects Firefox for Windows. Other operating systems are unaffected.*
+    bugs:
+      - url: 1737252
+  CVE-2022-22763:
+    title: Script Execution during invalid object state
+    impact: moderate
+    reporter: Mozilla Fuzzing Team
+    description: |
+      When a worker is shutdown, it was possible to cause script to run late in the lifecycle, at a point after where it should not be possible.
+    bugs:
+      - url: 1740534
+  CVE-2022-22747:
+    title: Crash when handling empty pkcs7 sequence
+    impact: low
+    reporter: Tavis Ormandy
+    description: |
+      After accepting an untrusted certificate, handling an empty pkcs7 sequence as part of the certificate data could have lead to a crash. This crash is believed to be unexploitable.
+    bugs:
+      - url: 1735028
+  CVE-2022-22736:
+    title: Potential local privilege escalation when loading modules from the install directory.
+    impact: low
+    reporter: Toshihito Kikuchi
+    description: |
+      If Firefox was installed to a world-writable directory, a local privilege escalation could occur when Firefox searched the current directory for system libraries. However the install directory is not world-writable by default.<br>*This bug only affects Firefox for Windows in a non-default installation. Other operating systems are unaffected.*
+    bugs:
+      - url: 1742692
+  CVE-2022-22739:
+    title: Missing throttling on external protocol launch dialog
+    impact: low
+    reporter: Alesandro Ortiz
+    description: |
+      Malicious websites could have tricked users into accepting launching a program to handle an external URL protocol.
+    bugs:
+      - url: 1744158
+  CVE-2022-22751:
+    title: Memory safety bugs fixed in Firefox 96 and Firefox ESR 91.5
+    impact: high
+    reporter: Mozilla developers and community
+    description: |
+      Mozilla developers Calixte Denizet, Kershaw Chang, Christian Holler, Jason Kratzer, Gabriele Svelto, Tyson Smith, Simon Giesecke, and Steve Fink reported memory safety bugs present in Firefox 95 and Firefox ESR 91.4. Some of these bugs showed evidence of memory corruption and we presume that with enough effort some of these could have been exploited to run arbitrary code.
+    bugs:
+      - url: 1664149, 1737816, 1739366, 1740274, 1740797, 1741201, 1741869, 1743221, 1743515, 1745373, 1746011
+        desc: Memory safety bugs fixed in Firefox 96 and Firefox ESR 91.5
+  CVE-2022-22752:
+    title: Memory safety bugs fixed in Firefox 96
+    impact: moderate
+    reporter: Mozilla developers and community
+    description: |
+      Mozilla developers Christian Holler and Jason Kratzer reported memory safety bugs present in Firefox 95. Some of these bugs showed evidence of memory corruption and we presume that with enough effort some of these could have been exploited to run arbitrary code.
+    bugs:
+      - url: 1741210, 1742770
+        desc: Memory safety bugs fixed in Firefox 96

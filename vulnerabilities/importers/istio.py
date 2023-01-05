@@ -31,24 +31,28 @@ is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match
 class IstioImporter(Importer):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/istio/istio.io/blob/master/LICENSE"
+    repo_url = "git+https://github.com/istio/istio.io/"
 
     def advisory_data(self) -> Set[AdvisoryData]:
-        self.clone(repo_url="git+https://github.com/istio/istio.io/")
+        self.clone(self.repo_url)
         path = Path(self.vcs_response.dest_dir)
         vuln = path / "content/en/news/security/"
-        for f in vuln.glob("**/*.md"):
+        for file in vuln.glob("**/*.md"):
             # Istio website has files with name starting with underscore, these contain metadata
             # required for rendering the website. We're not interested in these.
             # See also https://github.com/nexB/vulnerablecode/issues/563
-            f = str(f)
-            if f.endswith("_index.md"):
+            file = str(file)
+            if file.endswith("_index.md"):
                 continue
-            yield from self.process_file(f)
+            yield from self.process_file(file)
 
     def process_file(self, path):
 
         data = self.get_data_from_md(path)
-        release_date = parser.parse(data["publishdate"]).replace(tzinfo=pytz.UTC)
+        published_date = data.get("publishdate")
+        release_date = None
+        if published_date:
+            release_date = parser.parse(published_date).replace(tzinfo=pytz.UTC)
 
         constraints = []
 
@@ -87,10 +91,7 @@ class IstioImporter(Importer):
         for cve_id in data.get("cves") or []:
 
             if not cve_id.startswith("CVE"):
-                cve_id = ""
-
-            if not data.get("release_ranges"):
-                data["release_ranges"] = []
+                continue
 
             affected_packages = []
 

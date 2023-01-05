@@ -7,10 +7,6 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import json
-
-import requests
-
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.references import XsaReference
@@ -21,14 +17,27 @@ from vulnerabilities.utils import is_cve
 class XenImporter(Importer):
 
     url = "https://xenbits.xen.org/xsa/xsa.json"
-    spdx_license_expression = ""
-    license_url = ""
+    spdx_license_expression = "GPL-2"
+    license_url = "https://wiki.xenproject.org/wiki/Xen_FAQ_General"
 
     def advisory_data(self):
         data = fetch_response(self.url).json()
-        if not len(data):
+        # The data looks like this
+        # [
+        #  {
+        #   "xsas": [
+        #     {
+        #       "cve": [
+        #         "CVE-2012-5510"
+        #       ],
+        #       "title": "XSA-1: Xen security advisory",
+        #       }
+        #     ]
+        #   }
+        # ]
+        if not data:
             return []
-        xsas = data[0].get("xsas") or []
+        xsas = data[0]["xsas"]
         for xsa in xsas:
             yield from self.to_advisories(xsa)
 

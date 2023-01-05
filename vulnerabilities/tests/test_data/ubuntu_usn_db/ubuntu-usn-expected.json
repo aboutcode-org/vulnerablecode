@@ -1,0 +1,32 @@
+[
+  {
+    "aliases": [
+      "CVE-2009-0698"
+    ],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "USN-763-1",
+        "url": "https://usn.ubuntu.com/763-1/",
+        "severities": []
+      }
+    ],
+    "date_published": null
+  },
+  {
+    "aliases": [
+      "CVE-2009-1274"
+    ],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "USN-763-1",
+        "url": "https://usn.ubuntu.com/763-1/",
+        "severities": []
+      }
+    ],
+    "date_published": null
+  }
+]

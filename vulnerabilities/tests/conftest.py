@@ -33,6 +33,5 @@ collect_ignore = [
     "test_rust.py",
     "test_suse_backports.py",
     "test_suse.py",
-    "test_ubuntu_usn.py",
     "test_upstream.py",
 ]

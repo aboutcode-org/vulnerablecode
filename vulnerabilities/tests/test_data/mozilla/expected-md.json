@@ -1,0 +1,41 @@
+[
+  {
+    "aliases": [
+      "CVE-2006-0294"
+    ],
+    "summary": "Dynamically changing the style of an element from position:relative\nto position:static can cause Gecko to operate on freed memory.\nIt may be possible to exploit this in order to run arbitrary\ncode.This flaw was introduced during Firefox 1.5 and SeaMonkey 1.0\ndevelopment and does not affect Firefox 1.0 or the Mozilla Suite 1.7Thunderbird 1.5 could be vulnerable if JavaScript is\nenabled in mail. This is not the default setting and we strongly\ndiscourage users from turning on JavaScript in mail. Thunderbird\nis not vulnerable in its default configuration.Update (13 April 2006)\nThis flaw has been fixed in Thunderbird 1.5.0.2",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "mozilla",
+          "namespace": null,
+          "name": "SeaMonkey",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": null,
+        "fixed_version": "1.0.0"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "mfsa2006-02",
+        "url": "https://www.mozilla.org/en-US/security/advisories/mfsa2006-02",
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "none",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2006-0294",
+        "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-0294",
+        "severities": []
+      }
+    ],
+    "date_published": null
+  }
+]

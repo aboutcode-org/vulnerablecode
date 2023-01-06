@@ -13,43 +13,32 @@ import urllib
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
-from univers.version_range import VersionRange
+from univers.version_constraint import VersionConstraint
+from univers.version_range import ApacheVersionRange
 from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.severity_systems import APACHE_HTTPD
-from vulnerabilities.utils import nearest_patched_package
 
 
 class ApacheHTTPDImporter(Importer):
 
     base_url = "https://httpd.apache.org/security/json/"
+    spdx_license_expression = "Apache-2.0"
+    license_url = "https://www.apache.org/licenses/LICENSE-2.0"
 
-    def set_api(self):
-        self.version_api = GitHubTagsAPI()
-        asyncio.run(self.version_api.load_api(["apache/httpd"]))
-        self.version_api.cache["apache/httpd"] = set(
-            filter(
-                lambda version: version.value not in ignore_tags,
-                self.version_api.cache["apache/httpd"],
-            )
-        )
-
-    def updated_advisories(self):
+    def advisory_data(self):
         links = fetch_links(self.base_url)
-        self.set_api()
-        advisories = []
         for link in links:
             data = requests.get(link).json()
-            advisories.append(self.to_advisory(data))
-        return self.batch_advisories(advisories)
+            yield self.to_advisory(data)
 
     def to_advisory(self, data):
-        cve = data["CVE_data_meta"]["ID"]
+        alias = data["CVE_data_meta"]["ID"]
         descriptions = data["description"]["description_data"]
         description = None
         for desc in descriptions:
@@ -66,12 +55,13 @@ class ApacheHTTPDImporter(Importer):
                     VulnerabilitySeverity(
                         system=APACHE_HTTPD,
                         value=value,
+                        scoring_elements="",
                     )
                 )
                 break
         reference = Reference(
-            reference_id=cve,
-            url=urllib.parse.urljoin(self.base_url, f"{cve}.json"),
+            reference_id=alias,
+            url=urllib.parse.urljoin(self.base_url, f"{alias}.json"),
             severities=severities,
         )
 
@@ -81,56 +71,68 @@ class ApacheHTTPDImporter(Importer):
                 for version_data in products["version"]["version_data"]:
                     versions_data.append(version_data)
 
-        fixed_version_ranges, affected_version_ranges = self.to_version_ranges(versions_data)
+        fixed_versions = []
+        for timeline_object in data.get("timeline") or []:
+            timeline_value = timeline_object["value"]
+            if "release" in timeline_value:
+                split_timeline_value = timeline_value.split(" ")
+                if "never" in timeline_value:
+                    continue
+                if "release" in split_timeline_value[-1]:
+                    fixed_versions.append(split_timeline_value[0])
+                if "release" in split_timeline_value[0]:
+                    fixed_versions.append(split_timeline_value[-1])
 
         affected_packages = []
-        fixed_packages = []
-
-        for version_range in fixed_version_ranges:
-            fixed_packages.extend(
-                [
-                    PackageURL(type="apache", name="httpd", version=version)
-                    for version in self.version_api.get("apache/httpd").valid_versions
-                    if SemverVersion(version) in version_range
-                ]
-            )
-
-        for version_range in affected_version_ranges:
-            affected_packages.extend(
-                [
-                    PackageURL(type="apache", name="httpd", version=version)
-                    for version in self.version_api.get("apache/httpd").valid_versions
-                    if SemverVersion(version) in version_range
-                ]
+        affected_version_range = self.to_version_ranges(versions_data, fixed_versions)
+        if affected_version_range:
+            affected_packages.append(
+                AffectedPackage(
+                    package=PackageURL(
+                        type="apache",
+                        name="httpd",
+                    ),
+                    affected_version_range=affected_version_range,
+                )
             )
 
         return AdvisoryData(
-            vulnerability_id=cve,
+            aliases=[alias],
             summary=description,
-            affected_packages=nearest_patched_package(affected_packages, fixed_packages),
+            affected_packages=affected_packages,
             references=[reference],
         )
 
-    def to_version_ranges(self, versions_data):
-        fixed_version_ranges = []
-        affected_version_ranges = []
+    def to_version_ranges(self, versions_data, fixed_versions):
+        constraints = []
         for version_data in versions_data:
             version_value = version_data["version_value"]
             range_expression = version_data["version_affected"]
-            if range_expression == "<":
-                fixed_version_ranges.append(
-                    VersionRange.from_scheme_version_spec_string(
-                        "semver", ">={}".format(version_value)
-                    )
-                )
-            elif range_expression == "=" or range_expression == "?=":
-                affected_version_ranges.append(
-                    VersionRange.from_scheme_version_spec_string(
-                        "semver", "{}".format(version_value)
-                    )
+            if range_expression not in {"<=", ">=", "?=", "!<", "="}:
+                raise ValueError(f"unknown comparator found! {range_expression}")
+            comparator_by_range_expression = {
+                ">=": ">=",
+                "!<": ">=",
+                "<=": "<=",
+                "=": "=",
+            }
+            comparator = comparator_by_range_expression.get(range_expression)
+            if comparator:
+                constraints.append(
+                    VersionConstraint(comparator=comparator, version=SemverVersion(version_value))
                 )
 
-        return (fixed_version_ranges, affected_version_ranges)
+        for fixed_version in fixed_versions:
+            # The VersionConstraint method `invert()` inverts the fixed_version's comparator,
+            # enabling inclusion of multiple fixed versions with the `affected_version_range` values.
+            constraints.append(
+                VersionConstraint(
+                    comparator="=",
+                    version=SemverVersion(fixed_version),
+                ).invert()
+            )
+
+        return ApacheVersionRange(constraints=constraints)
 
 
 def fetch_links(url):

@@ -12,7 +12,7 @@ import os
 
 import pytest
 from univers.version_constraint import VersionConstraint
-from univers.version_range import GenericVersionRange
+from univers.version_range import ApacheVersionRange
 from univers.versions import SemverVersion
 
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDImporter
@@ -41,7 +41,7 @@ def test_to_version_ranges():
     affected_version_range = ApacheHTTPDImporter().to_version_ranges(data, fixed_versions)
 
     assert (
-        GenericVersionRange(
+        ApacheVersionRange(
             constraints=(
                 VersionConstraint(comparator="=", version=SemverVersion(string="1.3.1")),
                 VersionConstraint(comparator="<=", version=SemverVersion(string="2.3.4")),

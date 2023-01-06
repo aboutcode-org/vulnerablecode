@@ -5,7 +5,7 @@ Release notes
 Version v31.1.1
 ---------------
 
-- We re-enabled support for the Apache HTTPD securities advisories importer.
+- We re-enabled support for the Apache HTTPD security advisories importer.
 
 
 Version v31.1.0

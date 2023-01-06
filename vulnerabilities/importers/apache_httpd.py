@@ -14,7 +14,7 @@ import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
-from univers.version_range import GenericVersionRange
+from univers.version_range import ApacheVersionRange
 from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
@@ -29,7 +29,7 @@ class ApacheHTTPDImporter(Importer):
 
     base_url = "https://httpd.apache.org/security/json/"
     spdx_license_expression = "Apache-2.0"
-    license_url = "https://www.apache.org/licenses/"
+    license_url = "https://www.apache.org/licenses/LICENSE-2.0"
 
     def advisory_data(self):
         links = fetch_links(self.base_url)
@@ -72,7 +72,7 @@ class ApacheHTTPDImporter(Importer):
                     versions_data.append(version_data)
 
         fixed_versions = []
-        for timeline_object in data["timeline"]:
+        for timeline_object in data.get("timeline") or []:
             timeline_value = timeline_object["value"]
             if "release" in timeline_value:
                 split_timeline_value = timeline_value.split(" ")
@@ -89,8 +89,8 @@ class ApacheHTTPDImporter(Importer):
             affected_packages.append(
                 AffectedPackage(
                     package=PackageURL(
-                        type="generic",
-                        name="apache_httpd",
+                        type="apache",
+                        name="httpd",
                     ),
                     affected_version_range=affected_version_range,
                 )
@@ -132,7 +132,7 @@ class ApacheHTTPDImporter(Importer):
                 ).invert()
             )
 
-        return GenericVersionRange(constraints=constraints)
+        return ApacheVersionRange(constraints=constraints)
 
 
 def fetch_links(url):

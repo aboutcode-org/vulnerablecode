@@ -28,12 +28,11 @@ from vulnerabilities.utils import AffectedPackage
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/apache_tomcat")
 
-# security_updates_home = "https://tomcat.apache.org/security"
-
 
 # Temp test to flesh out `extract_advisories_from_page()` -- the method .
 def test_method_extract_advisories_from_page():
-    with open(os.path.join(TEST_DATA, "apache_tomcat_cve-2020-9484.html")) as f:
+    # with open(os.path.join(TEST_DATA, "apache_tomcat_cve-2020-9484.html")) as f:
+    with open(os.path.join(TEST_DATA, "apache_tomcat-selected-advisories.html")) as f:
         raw_data = f.read()
     extracted_advisories = ApacheTomcatImporter().extract_advisories_from_page(raw_data)
 
@@ -333,7 +332,8 @@ def test_fetch_links():
     ]
 
 
-def test_to_version_ranges_test():
+# def test_to_version_ranges_test():
+def test_to_version_ranges():
     versions_data = [
         "1.0.0-2.0.0",
         "3.2.2-3.2.3?",

@@ -25,7 +25,20 @@ from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import APACHE_TOMCAT
 
-TRACE = False
+TRACE = True
+
+record_of_all_affects_elements = []
+record_of_all_affected_versions = []
+record_of_all_reported_cves = []
+
+
+# Not yet finished!
+corrective_data_mapping = {
+    (("4.1.3",), "CVE-2002-0935"): {
+        "fixed_versions": ["4.1.3"],
+        "affected_versions": ["4.0.0-4.0.2", "4.0.3", "4.0.4-4.0.6", "4.1.0-4.1.2"],
+    },
+}
 
 
 class ApacheTomcatImporter(Importer):
@@ -33,12 +46,12 @@ class ApacheTomcatImporter(Importer):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://www.apache.org/licenses/"
 
-    temp_list_of_fixed_versions = []
-    temp_advisory_dict_list = []
-    updated_temp_advisory_dict_list = []
-    record_of_all_affects_elements = []
-    record_of_all_affects_strings = []
-    record_of_all_affected_version_strings = []
+    # temp_list_of_fixed_versions = []
+    # temp_advisory_dict_list = []
+    # updated_temp_advisory_dict_list = []
+    # record_of_all_affects_elements = []
+    # record_of_all_affects_strings = []
+    # record_of_all_affected_version_strings = []
 
     def fetch_advisory_pages(self):
         """
@@ -64,7 +77,7 @@ class ApacheTomcatImporter(Importer):
 
     def advisory_data(self):
         """
-        Return a list of AdvisoryData.
+        Return a list of AdvisoryData objects.
         """
         advisories = []
 
@@ -79,104 +92,109 @@ class ApacheTomcatImporter(Importer):
 
     def debug_advisory_data(self, advisories):
 
-        apache_tomcat_advisories = "apache_tomcat_advisories_refactored-02.txt"
-
-        with open(apache_tomcat_advisories, "w") as f:
-            for advisory in advisories:
-                f.write(f"{advisory}\n")
-
-        temp_advisory_to_dict_list = []
-        for adv in advisories:
-            adv_dict = adv.to_dict()
-            temp_advisory_to_dict_list.append(adv_dict)
-
-        with open(
-            "apache_tomcat_advisories_to_dict-02.json",
-            "w",
-            encoding="utf-8",
-        ) as f:
-            json.dump(temp_advisory_to_dict_list, f, ensure_ascii=False, indent=4)
-
-        with open(
-            "apache_tomcat_fixed_version_list-00.txt",
-            "w",
-        ) as f:
-            for line in self.temp_list_of_fixed_versions:
-                f.write(f"{line}\n")
-
-        with open(
-            "apache_tomcat_advisory_dict_list-00.json",
-            "w",
-            encoding="utf-8",
-        ) as f:
-            json.dump(self.temp_advisory_dict_list, f, ensure_ascii=False, indent=4)
-
-        with open(
-            "apache_tomcat_advisory_dict_list-00-updated.json",
-            "w",
-            encoding="utf-8",
-        ) as f:
-            json.dump(self.updated_temp_advisory_dict_list, f, ensure_ascii=False, indent=4)
-
-        tomcat_affects_elements = "record_of_all_affects_elements-2022-12-27-00.txt"
+        tomcat_affects_elements = "vulnerabilities/tests/test_data/apache_tomcat/trace/record_of_all_affects_elements-2023-01-04-00.txt"
         with open(tomcat_affects_elements, "w") as f:
-            for line in self.record_of_all_affects_elements:
+            for line in record_of_all_affects_elements:
                 f.write(f"{line}\n")
 
-        tomcat_affects_strings = "record_of_all_affects_strings-2022-12-27-00.txt"
-        with open(tomcat_affects_strings, "w") as f:
-            for line in self.record_of_all_affects_strings:
+        tomcat_affected_versions = "vulnerabilities/tests/test_data/apache_tomcat/trace/record_of_all_affected_versions-2023-01-04-00.txt"
+        with open(tomcat_affected_versions, "w") as f:
+            for line in record_of_all_affected_versions:
                 f.write(f"{line}\n")
 
-        tomcat_affected_version_strings = "record_of_all_affected_version_strings-2022-12-27-00.txt"
-        with open(tomcat_affected_version_strings, "w") as f:
-            for line in self.record_of_all_affected_version_strings:
+        # record_of_all_reported_cves
+        tomcat_reported_cves = "vulnerabilities/tests/test_data/apache_tomcat/trace/record_of_all_reported_cves-2023-01-04-00.txt"
+        with open(tomcat_reported_cves, "w") as f:
+            for line in record_of_all_reported_cves:
                 f.write(f"{line}\n")
 
-    # 2022-12-29 Thursday 13:11:16.  We're in the process of refactoring this method.
-    # See, e.g., function with the same name at the bottom of this file.
+        # apache_tomcat_advisories = "apache_tomcat_advisories_refactored-02.txt"
+
+        # with open(apache_tomcat_advisories, "w") as f:
+        #     for advisory in advisories:
+        #         f.write(f"{advisory}\n")
+
+        # temp_advisory_to_dict_list = []
+        # for adv in advisories:
+        #     adv_dict = adv.to_dict()
+        #     temp_advisory_to_dict_list.append(adv_dict)
+
+        # with open(
+        #     "apache_tomcat_advisories_to_dict-02.json",
+        #     "w",
+        #     encoding="utf-8",
+        # ) as f:
+        #     json.dump(temp_advisory_to_dict_list, f, ensure_ascii=False, indent=4)
+
+        # with open(
+        #     "apache_tomcat_fixed_version_list-00.txt",
+        #     "w",
+        # ) as f:
+        #     for line in self.temp_list_of_fixed_versions:
+        #         f.write(f"{line}\n")
+
+        # with open(
+        #     "apache_tomcat_advisory_dict_list-00.json",
+        #     "w",
+        #     encoding="utf-8",
+        # ) as f:
+        #     json.dump(self.temp_advisory_dict_list, f, ensure_ascii=False, indent=4)
+
+        # with open(
+        #     "apache_tomcat_advisory_dict_list-00-updated.json",
+        #     "w",
+        #     encoding="utf-8",
+        # ) as f:
+        #     json.dump(self.updated_temp_advisory_dict_list, f, ensure_ascii=False, indent=4)
+
+        # tomcat_affects_elements = "vulnerabilities/tests/test_data/apache_tomcat/record_of_all_affects_elements-2023-01-03-00.txt"
+        # with open(tomcat_affects_elements, "w") as f:
+        #     for line in self.record_of_all_affects_elements:
+        #         f.write(f"{line}\n")
+
+        # tomcat_affects_strings = "record_of_all_affects_strings-2022-12-27-00.txt"
+        # with open(tomcat_affects_strings, "w") as f:
+        #     for line in self.record_of_all_affects_strings:
+        #         f.write(f"{line}\n")
+
+        # tomcat_affected_version_strings = "record_of_all_affected_version_strings-2022-12-27-00.txt"
+        # with open(tomcat_affected_version_strings, "w") as f:
+        #     for line in self.record_of_all_affected_version_strings:
+        #         f.write(f"{line}\n")
+
     def extract_advisories_from_page(self, apache_tomcat_advisory_html):
         """
         Return a list of AdvisoryData extracted from the HTML text ``apache_tomcat_advisory_html``.
         """
         advisories = []
 
-        # TODO: 2022-12-29 Thursday 13:52:36.  Replace relevant code block below with with call to new independent function.
-        # TODO: Then: create a function that receives a single TomcatAdvisoryData object and yields one or more AdvisoryData objects.
-
-        # fixed_versions, advisory_groups = extract_advisories_from_page(apache_tomcat_advisory_html)
-        # print("\nfixed_versions = {}\n".format(fixed_versions))
-        # print("\nadvisory_groups = {}\n".format(advisory_groups))
-
         test_output = extract_tomcat_advisory_data_from_page(apache_tomcat_advisory_html)
-        # XXX: 2023-01-02 Monday 12:15:49.  Hide but keep while debugging
-        # print(
-        #     "\n\n-------------------------------------------------------------------------------------------"
-        # )
-        # print("test_output = {}".format(test_output))
-        # print(
-        #     "-------------------------------------------------------------------------------------------"
-        # )
 
         for adv in test_output:
-            print("\n==================================================\n")
+            advisory_data_objects = generate_advisory_data_objects(adv)
 
-            print("Fixed-version advisory")
-            # XXX: 2023-01-02 Monday 12:15:49.  Hide but keep while debugging
-            # print("\nadv = {}\n".format(adv))
-            advisory_data_object = generate_advisory_data_objects(adv)
-            # print("\nadvisory_data_object = {}\n".format(advisory_data_object))
-            for gen in advisory_data_object:
-                print("\ngen = {}\n".format(gen))
-                # XXX: 2023-01-02 Monday 15:18:53.  Now that we're writing `real` code this doesn't
-                # work because `gen` is now an AdvisoryData() object, not a hand-crafted dict.
-                # print(json.dumps(gen, indent=4, sort_keys=False))
-            advisories.append(advisory_data_object)
-            # XXX: 2023-01-02 Monday 12:15:49.  Hide but keep while debugging
-            # for test_advisory in advisories:
-            #     print("\ntest_advisory = {}\n".format(test_advisory))
+            for advisory_data_object in advisory_data_objects:
+                print("\nadvisory_data_object = {}\n".format(advisory_data_object))
+                # to_dict()
+                print(
+                    "\nadvisory_data_object.to_dict() = {}\n".format(advisory_data_object.to_dict())
+                )
 
-        print("\nadvisories = {}\n".format(advisories))
+                adv_dict = advisory_data_object.to_dict()
+                print(json.dumps(adv_dict, indent=4, sort_keys=False))
+                # XXX: 2023-01-05 Thursday 09:18:15.  Great this now works w/o the error
+                # TypeError: Object of type Tag is not JSON serializable
+
+                # result = advisory_data_object.to_dict()
+                # print(json.dumps(result, indent=4, sort_keys=False))
+
+            # # another to_dict() approach:
+            # another_result = [data.to_dict() for data in advisory_data_objects]
+            # print(another_result)
+            # print("another_result = \n")
+            # print(json.dumps(another_result, indent=4, sort_keys=False))
+
+            advisories.append(advisory_data_objects)
 
         return advisories
 
@@ -210,11 +228,14 @@ def extract_tomcat_advisory_data_from_page(apache_tomcat_advisory_html):
     ]
 
     for fixed_version_heading in fixed_version_headings:
+        print("\n==================================================\n")
+        print("*** fixed_version_heading.text = {} ***".format(fixed_version_heading.text))
         fixed_versions = []
         fixed_version = fixed_version_heading.text.split("Fixed in Apache Tomcat")[-1].strip()
-        if TRACE:
-            print("fixed_version = {}".format(fixed_version))
-            print("===========================")
+
+        # if TRACE:
+        #     print("fixed_version = {}".format(fixed_version))
+        #     print("===========================")
 
         # We want to handle the occasional "and" in the fixed version headers, e.g.,
         # <h3 id="Fixed_in_Apache_Tomcat_8.5.5_and_8.0.37"><span class="pull-right">5 September 2016</span> Fixed in Apache Tomcat 8.5.5 and 8.0.37</h3>
@@ -223,9 +244,11 @@ def extract_tomcat_advisory_data_from_page(apache_tomcat_advisory_html):
         else:
             fixed_versions.append(fixed_version)
 
-        if TRACE:
-            print("fixed_versions = {}".format(fixed_versions))
-            print("===========================")
+        print("*** fixed_versions = {} ***\n".format(fixed_versions))
+
+        # if TRACE:
+        #     print("fixed_versions = {}".format(fixed_versions))
+        # print("===========================")
 
         # Each group of fixed-version-related data is contained in a div that immediately follows the h3 element, e.g.,
         # <h3 id="Fixed_in_Apache_Tomcat_8.5.8"><span class="pull-right">8 November 2016</span> Fixed in Apache Tomcat 8.5.8</h3>
@@ -236,28 +259,29 @@ def extract_tomcat_advisory_data_from_page(apache_tomcat_advisory_html):
         # Each advisory section starts with a <p> element,
         # the text of which starts with, e.g., "Low:", so we look for these here, e.g.,
         # <p><strong>Low: Apache Tomcat request smuggling</strong><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-42252" rel="nofollow">CVE-2022-42252</a></p>
-        severities = ("Low:", "Moderate:", "Important:", "High:", "Critical:")
+        # severities = ("Low:", "Moderate:", "Important:", "High:", "Critical:")
+        severity_scores = ("Low:", "Moderate:", "Important:", "High:", "Critical:")
         # A list of groups of paragraphs, each for a single Tomcat Advisory.
         advisory_groups = []
 
         for para in fixed_version_paras.find_all("p"):
             current_group = []
-            if para.text.startswith(severities):
+            if para.text.startswith(severity_scores):
                 current_group.append(para)
 
                 # TODO: 2023-01-02 Monday 11:47:58.  Rename this `nextSiblings`.
                 test_nextSiblings = para.find_next_siblings()
                 for next_sibling in test_nextSiblings:
-                    if not next_sibling.text.startswith(severities):
+                    if not next_sibling.text.startswith(severity_scores):
                         current_group.append(next_sibling)
-                    elif next_sibling.text.startswith(severities):
+                    elif next_sibling.text.startswith(severity_scores):
                         break
 
                 advisory_groups.append(current_group)
 
-        if TRACE:
-            print("\ncurrent_group = {}\n".format(current_group))
-            print("\nadvisory_groups = {}\n".format(advisory_groups))
+        # if TRACE:
+        #     print("\ncurrent_group = {}\n".format(current_group))
+        #     print("\nadvisory_groups = {}\n".format(advisory_groups))
 
         yield TomcatAdvisoryData(fixed_versions=fixed_versions, advisory_groups=advisory_groups)
 
@@ -266,13 +290,14 @@ def generate_advisory_data_objects(tomcat_advisory_data_object):
 
     fixed_versions = tomcat_advisory_data_object.fixed_versions
 
-    len_advisory_groups = len(tomcat_advisory_data_object.advisory_groups)
-    print("\nlen_advisory_groups = {}\n".format(len_advisory_groups))
+    # len_advisory_groups = len(tomcat_advisory_data_object.advisory_groups)
+    # print("\nlen_advisory_groups = {}\n".format(len_advisory_groups))
 
     # aliases = []
 
     # vuln_p_list = ("Low:", "Moderate:", "Important:", "High:", "Critical:")
-    severities = ("Low:", "Moderate:", "Important:", "High:", "Critical:")
+    # severities = ("Low:", "Moderate:", "Important:", "High:", "Critical:")
+    severity_scores = ("Low:", "Moderate:", "Important:", "High:", "Critical:")
 
     for para_list in tomcat_advisory_data_object.advisory_groups:
         # XXX: 2023-01-02 Monday 12:15:49.  Hide but keep while debugging
@@ -285,49 +310,56 @@ def generate_advisory_data_objects(tomcat_advisory_data_object):
         for para in para_list:
 
             if para.text.startswith("Affects:"):
-                print("\npara startswith Affects: = {}\n".format(para))
-                print(">>> {}".format(para.text.split(":")[-1]))
+                # 2023-01-03 Tuesday 20:33:02.  Add to .txt
+                record_of_all_affects_elements.append(para.text)
+                # print("\npara startswith Affects: = {}\n".format(para))
+                # print(">>> {}".format(para.text.split(":")[-1]))
                 # This will need detailed cleaning:
-                affected_versions.append(para.text.split(":")[-1])
+
+                print("\npara.text startswith affects = {}".format(para.text))
+
+                formatted_affected_version_data = para.text.split(":")[-1].split(", ")
+                print(
+                    "\nformatted_affected_version_data = {}\n".format(
+                        formatted_affected_version_data
+                    )
+                )
+
+                # affected_versions.append(para.text.split(":")[-1])
+                affected_versions.extend(formatted_affected_version_data)
+
+                print("\naffected_versions = {}".format(affected_versions))
+
+                # # XXX: Remove any leading spaces
+                # affected_versions = [
+                #     affected_version.strip() for affected_version in affected_versions
+                # ]
             elif "was fixed in" in para.text or "was fixed with" in para.text:
                 # XXX: 2023-01-02 Monday 12:15:49.  Hide but keep while debugging
                 # print("\nnext sib (was fixed) = {}".format(para))
                 fixed_commit_list = para.find_all("a")
-                print("\nfixed_commit_list = {}".format(fixed_commit_list))
+                print("\nfixed_commit_list = {}\n".format(fixed_commit_list))
 
                 # print("\n!!!!!!!!! fixed_commit_list = {}\n".format(fixed_commit_list))
                 references.extend([ref_url["href"] for ref_url in fixed_commit_list])
-            elif para.text.startswith(severities):
+            elif para.text.startswith(severity_scores):
                 # XXX: 2023-01-02 Monday 12:15:49.  Hide but keep while debugging
                 # print("\n==> para_severity_row = {}\n".format(para))
                 cve_url_list = para.find_all("a")
-                print("\n==> cve_url_list = {}\n".format(cve_url_list))
+                # print("==> cve_url_list = {}".format(cve_url_list))
                 cve_list = [cve_url.text for cve_url in cve_url_list]
-                print("\n==> cve_list = {}\n".format(cve_list))
+                print("\n==> cve_list = {}".format(cve_list))
 
                 severity_score = para.text.split(":")[0]
 
         for cve_url in cve_url_list:
+            print("\n^^^ cve_url = {}\n".format(cve_url))
             aliases = []
             aliases.append(cve_url.text)
 
-            # XXX: 2023-01-02 Monday 13:53:38.  This simple dict output can be replaced by the creation of the AdvisoryData() object.
-            # =====================================================
-
-            # test_dict = {
-            #     "aliases": aliases,
-            #     "fixed_versions": fixed_versions,
-            #     "affected_versions": affected_versions,
-            #     "references": references,
-            #     "severity_score": severity_score,
-            # }
-
-            # yield test_dict
-
-            # XXX: 2023-01-02 Monday 14:28:39.  This is meant to be the `real` code.
-            # =====================================================
-            better_severities = []
-            better_severities.append(
+            # better_severities = []
+            severity_list = []
+            severity_list.append(
                 VulnerabilitySeverity(
                     system=APACHE_TOMCAT,
                     value=severity_score,
@@ -335,7 +367,38 @@ def generate_advisory_data_objects(tomcat_advisory_data_object):
                 )
             )
 
-            print("\naffected_versions = {}\n".format(affected_versions))
+            # FIXME: 2023-01-05 Thursday 12:05:16.  Check the dictionary and supply/replace needed values.
+            # Convert the list `fixed_versions`` to a tuple so it's hashable and thus can serve as part of a tuple-based dictionary key.
+            print("fixed_versions before update if any = {}".format(fixed_versions))
+            print("affected_versions before update if any = {}\n".format(affected_versions))
+
+            fixed_versions_tuple = tuple(fixed_versions)
+
+            if (fixed_versions_tuple, cve_url.text) in corrective_data_mapping.keys():
+                print("\n\n-- REPLACE/CORRECT VERSION DATA --  \n\n")
+                fixed_versions = corrective_data_mapping[fixed_versions_tuple, cve_url.text][
+                    "fixed_versions"
+                ]
+                affected_versions = corrective_data_mapping[fixed_versions_tuple, cve_url.text][
+                    "affected_versions"
+                ]
+            else:
+                pass
+
+            print("==> reported_cve = {}\n".format(cve_url.text))
+            record_of_all_reported_cves.append(cve_url.text)
+
+            # print("==> affected_versions = {}".format(affected_versions))
+            print("fixed_versions after update if any = {}".format(fixed_versions))
+            print("affected_versions after update if any = {}".format(affected_versions))
+
+            # # XXX: Do we want to remove leading spaces here?  Can we do this earlier?
+            # print(
+            #     "==> affected_versions -- stripped = {}".format(
+            #         [affected_version.strip() for affected_version in affected_versions]
+            #     )
+            # )
+            record_of_all_affected_versions.append(affected_versions)
 
             # XXX: 2023-01-02 Monday 15:02:15.  We need to clean up the affected version data
             # with a combination of RegEx, replace(), join()/split() and split().
@@ -358,12 +421,21 @@ def generate_advisory_data_objects(tomcat_advisory_data_object):
                     # url=f"https://cve.mitre.org/cgi-bin/cvename.cgi?name={cve_id}",
                     # XXX: 2023-01-02 Monday 14:56:33.  We want to use cve_url in this current loop.
                     # url=f"https://cve.mitre.org/cgi-bin/cvename.cgi?name={better_cve_id_record}",
-                    url=f"https://cve.mitre.org/cgi-bin/cvename.cgi?name={cve_url}",
-                    # reference_id=cve_id,
-                    # reference_id=better_cve_id_record,
-                    reference_id=cve_url,
+                    # url=f"https://cve.mitre.org/cgi-bin/cvename.cgi?name={cve_url}",
+                    # XXX: 2023-01-05 Thursday 09:05:10.  Is above throwing error when I try json.dumps()?
+                    # We want this instead:
+                    url=f"https://cve.mitre.org/cgi-bin/cvename.cgi?name={cve_url.text}",
+                    # # reference_id=cve_id,
+                    # # reference_id=better_cve_id_record,
+                    # reference_id=cve_url,
+                    # XXX: 2023-01-05 Thursday 09:15:31.  Or maybe the above is throwing the error
+                    # TypeError: Object of type Tag is not JSON serializable
+                    # so instead just get the text, e.g., CVE-2020-1234, not the entire <a> tag?
+                    # 2023-01-05 Thursday 09:18:50.  YES this removed the error and json.dumps()
+                    # now works above in extract_advisories_from_page.  Excellent!
+                    reference_id=cve_url.text,
                     # severities=severities,
-                    severities=better_severities,
+                    severities=severity_list,
                 ),
             ]
 
@@ -414,7 +486,9 @@ def to_version_ranges(versions_data, fixed_versions):
     for version_item in versions_data:
         # XXX: 2023-01-02 Monday 15:12:36.  Clean affected version data here or above
         # in generate_advisory_data_objects()?  Try here.
+        # print("version_item = {}".format(version_item))
         version_item = version_item.strip()
+        # print("version_item.strip() = {}".format(version_item.strip()))
         if "to" in version_item:
             version_item_split = version_item.split(" ")
 

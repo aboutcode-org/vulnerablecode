@@ -39,21 +39,22 @@ class DefaultImprover(Improver):
         return Advisory.objects.all()
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
-
         if not advisory_data:
             return []
 
         if advisory_data.affected_packages:
             for affected_package in advisory_data.affected_packages:
-                affected_purls, fixed_purl = get_exact_purls(affected_package)
-                yield Inference(
-                    aliases=advisory_data.aliases,
-                    confidence=MAX_CONFIDENCE,
-                    summary=advisory_data.summary,
-                    affected_purls=affected_purls,
-                    fixed_purl=fixed_purl,
-                    references=advisory_data.references,
-                )
+                # To deal with multiple fixed versions in a single affected package
+                affected_purls, fixed_purls = get_exact_purls(affected_package)
+                for fixed_purl in fixed_purls:
+                    yield Inference(
+                        aliases=advisory_data.aliases,
+                        confidence=MAX_CONFIDENCE,
+                        summary=advisory_data.summary,
+                        affected_purls=affected_purls,
+                        fixed_purl=fixed_purl,
+                        references=advisory_data.references,
+                    )
 
         else:
             yield Inference.from_advisory_data(
@@ -78,7 +79,7 @@ def get_exact_purls(affected_package: AffectedPackage) -> Tuple[List[PackageURL]
     >>> got = get_exact_purls(affected_package)
     >>> expected = (
     ...     [PackageURL(type='turtle', namespace=None, name='green', version='2.0.0', qualifiers={}, subpath=None)],
-    ...      PackageURL(type='turtle', namespace=None, name='green', version='5.0.0', qualifiers={}, subpath=None)
+    ...     [PackageURL(type='turtle', namespace=None, name='green', version='5.0.0', qualifiers={}, subpath=None)]
     ... )
     >>> assert expected == got
     """
@@ -89,16 +90,25 @@ def get_exact_purls(affected_package: AffectedPackage) -> Tuple[List[PackageURL]
     # TODO: Revisit after https://github.com/nexB/univers/issues/33
     try:
         affected_purls = []
+        fixed_versions = []
         if vr:
             range_versions = [c.version for c in vr.constraints if c]
+            # Any version that's not affected by a vulnerability is considered
+            # fixed.
+            fixed_versions = [c.version for c in vr.constraints if c and c.comparator == "!="]
             resolved_versions = [v for v in range_versions if v and v in vr]
             for version in resolved_versions:
                 affected_purl = evolve_purl(purl=affected_package.package, version=str(version))
                 affected_purls.append(affected_purl)
 
-        fixed_purl = affected_package.get_fixed_purl() if affected_package.fixed_version else None
+        if affected_package.fixed_version:
+            fixed_versions.append(affected_package.fixed_version)
 
-        return affected_purls, fixed_purl
+        fixed_purls = [
+            evolve_purl(purl=affected_package.package, version=str(version))
+            for version in fixed_versions
+        ]
+        return affected_purls, fixed_purls
     except Exception as e:
         logger.error(f"Failed to get exact purls for {affected_package} {e}")
-        return [], None
+        return [], []

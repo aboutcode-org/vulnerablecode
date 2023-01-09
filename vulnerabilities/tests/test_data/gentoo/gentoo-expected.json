@@ -14,30 +14,6 @@
           "qualifiers": null,
           "subpath": null
         },
-        "affected_version_range": "vers:ebuild/!=1.9.7",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "ebuild",
-          "namespace": "dev-vcs",
-          "name": "subversion",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:ebuild/!=1.9.7",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "ebuild",
-          "namespace": "dev-vcs",
-          "name": "subversion",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
         "affected_version_range": "vers:ebuild/0.1.1|!=1.9.7",
         "fixed_version": null
       }

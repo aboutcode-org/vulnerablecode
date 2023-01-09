@@ -27,7 +27,10 @@ from vulnerabilities.importer import Reference
 class GentooImporter(Importer):
     repo_url = "git+https://anongit.gentoo.org/git/data/glsa.git"
     spdx_license_expression = "CC-BY-SA-4.0"
-    license_url = "https://anongit.gentoo.org/"
+    # the license notice is at this url https://anongit.gentoo.org/ says:
+    # The contents of this document, unless otherwise expressly stated, are licensed
+    # under the [CC-BY-SA-4.0](https://creativecommons.org/licenses/by-sa/4.0/) license.
+    license_url = "https://creativecommons.org/licenses/by-sa/4.0/"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         try:
@@ -42,12 +45,12 @@ class GentooImporter(Importer):
     def process_file(self, file):
         cves = []
         summary = ""
-        vuln_reference = []
+        vuln_references = []
         xml_root = ET.parse(file).getroot()
         id = xml_root.attrib.get("id")
         if id:
             glsa = "GLSA-" + id
-            vuln_reference = [
+            vuln_references = [
                 Reference(
                     reference_id=glsa,
                     url=f"https://security.gentoo.org/glsa/{id}",
@@ -70,7 +73,7 @@ class GentooImporter(Importer):
             yield AdvisoryData(
                 aliases=[cve],
                 summary=summary,
-                references=vuln_reference,
+                references=vuln_references,
                 affected_packages=affected_packages,
             )
 
@@ -87,57 +90,63 @@ class GentooImporter(Importer):
 
     @staticmethod
     def affected_and_safe_purls(affected_elem):
+        constraints = []
+        for pkg in affected_elem:
+            name = pkg.attrib.get("name")
+            if not name:
+                continue
+            pkg_ns, _, pkg_name = name.rpartition("/")
+            purl = PackageURL(type="ebuild", name=pkg_name, namespace=pkg_ns)
+            safe_versions, affected_versions = GentooImporter.get_safe_and_affected_versions(pkg)
+
+            for version in safe_versions:
+                constraints.append(
+                    VersionConstraint(version=GentooVersion(version), comparator="=").invert()
+                )
+
+            for version in affected_versions:
+                constraints.append(
+                    VersionConstraint(version=GentooVersion(version), comparator="=")
+                )
+
+            if not constraints:
+                continue
+
+            yield AffectedPackage(
+                package=purl, affected_version_range=EbuildVersionRange(constraints=constraints)
+            )
+
+    @staticmethod
+    def get_safe_and_affected_versions(pkg):
+        # TODO : Revisit why we are skipping some versions in gentoo importer
+        skip_versions = {"1.3*", "7.3*", "7.4*"}
         safe_versions = set()
         affected_versions = set()
-        skip_versions = {"1.3*", "7.3*", "7.4*"}
-        for pkg in affected_elem:
-            for info in pkg:
-                if info.text in skip_versions:
+        for info in pkg:
+            if info.text in skip_versions:
+                continue
+
+            if info.attrib.get("range"):
+                if len(info.attrib.get("range")) > 2:
                     continue
-                name = pkg.attrib.get("name")
-                if name:
-                    (
-                        pkg_ns,
-                        pkg_name,
-                    ) = name.split("/")
-                purl = PackageURL(type="ebuild", name=pkg_name, namespace=pkg_ns)
 
-                if info.attrib.get("range"):
-                    if len(info.attrib.get("range")) > 2:
-                        continue
+            if info.tag == "unaffected":
+                # quick hack, to know whether this
+                # version lies in this range, 'e' stands for
+                # equal, which is paired with 'greater' or 'less'.
+                # All possible values of info.attrib['range'] =
+                # {'gt', 'lt', 'rle', 'rge', 'rgt', 'le', 'ge', 'eq'}, out of
+                # which ('rle', 'rge', 'rgt') are ignored, because they compare
+                # 'release' not the 'version'.
+                if "e" in info.attrib["range"]:
+                    safe_versions.add(info.text)
+                else:
+                    affected_versions.add(info.text)
 
-                if info.tag == "unaffected":
-                    # quick hack, to know whether this
-                    # version lies in this range, 'e' stands for
-                    # equal, which is paired with 'greater' or 'less'.
-                    # All possible values of info.attrib['range'] =
-                    # {'gt', 'lt', 'rle', 'rge', 'rgt', 'le', 'ge', 'eq'}, out of
-                    # which ('rle', 'rge', 'rgt') are ignored, because they compare
-                    # 'release' not the 'version'.
+            elif info.tag == "vulnerable":
+                if "e" in info.attrib["range"]:
+                    affected_versions.add(info.text)
+                else:
+                    safe_versions.add(info.text)
 
-                    if "e" in info.attrib["range"]:
-                        safe_versions.add(info.text)
-                    else:
-                        affected_versions.add(info.text)
-
-                elif info.tag == "vulnerable":
-                    if "e" in info.attrib["range"]:
-                        affected_versions.add(info.text)
-                    else:
-                        safe_versions.add(info.text)
-
-                constraints = []
-
-                for version in safe_versions:
-                    constraints.append(
-                        VersionConstraint(version=GentooVersion(version), comparator="=").invert()
-                    )
-
-                for version in affected_versions:
-                    constraints.append(
-                        VersionConstraint(version=GentooVersion(version), comparator="=")
-                    )
-
-                yield AffectedPackage(
-                    package=purl, affected_version_range=EbuildVersionRange(constraints=constraints)
-                )
+        return safe_versions, affected_versions

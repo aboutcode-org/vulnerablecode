@@ -26,7 +26,7 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import APACHE_TOMCAT
 
 # For temporary data testing.
-PRINT = False
+PRINT = True
 TRACE = True
 record_of_all_affects_elements = []
 record_of_all_affected_versions = []
@@ -199,8 +199,17 @@ def extract_tomcat_advisory_data_from_page(apache_tomcat_advisory_html):
     # We're looking for headers -- one for each advisory -- like this:
     # <h3 id="Fixed_in_Apache_Tomcat_10.0.27"><span class="pull-right">2022-10-10</span> Fixed in Apache Tomcat 10.0.27</h3>
     pageh3s = page_soup.find_all("h3")
+    # fixed_version_headings = [
+    #     heading for heading in pageh3s if "Fixed in Apache Tomcat" in heading.text
+    # ]
+    # 2023-01-09 Monday 10:31:29.  Include the 2 groups of not-fixed advisories.
+    fixed_header_substrings = (
+        "Fixed in Apache Tomcat",
+        "Will not be fixed in Apache Tomcat 4.1.x",
+        "Not fixed in",
+    )
     fixed_version_headings = [
-        heading for heading in pageh3s if "Fixed in Apache Tomcat" in heading.text
+        heading for heading in pageh3s if heading.text.startswith(fixed_header_substrings)
     ]
 
     for fixed_version_heading in fixed_version_headings:
@@ -209,7 +218,21 @@ def extract_tomcat_advisory_data_from_page(apache_tomcat_advisory_html):
             print("*** fixed_version_heading.text = {} ***".format(fixed_version_heading.text))
 
         fixed_versions = []
-        fixed_version = fixed_version_heading.text.split("Fixed in Apache Tomcat")[-1].strip()
+        # fixed_version = fixed_version_heading.text.split("Fixed in Apache Tomcat")[-1].strip()
+        # 2023-01-09 Monday 10:31:29.  Include the 2 groups of not-fixed advisories.
+        # We report no value for those that won't be fixed.
+        if "Fixed in Apache Tomcat" in fixed_version_heading:
+            fixed_version = fixed_version_heading.text.split("Fixed in Apache Tomcat")[-1].strip()
+        else:
+            fixed_version = "0.0"
+        # elif "Will not be fixed in Apache Tomcat 4.1.x" in fixed_version_heading:
+        #     fixed_version = fixed_version_heading.text.split("Will not be fixed in Apache Tomcat")[
+        #         -1
+        #     ].strip()
+        # elif "Not fixed in Apache Tomcat 3.x" in fixed_version_heading:
+        #     fixed_version = fixed_version_heading.text.split("Not fixed in Apache Tomcat")[
+        #         -1
+        #     ].strip()
 
         # We want to handle the occasional "and" in the fixed version headers, e.g.,
         # <h3 id="Fixed_in_Apache_Tomcat_8.5.5_and_8.0.37"><span class="pull-right">5 September 2016</span> Fixed in Apache Tomcat 8.5.5 and 8.0.37</h3>
@@ -440,7 +463,12 @@ def to_version_ranges(versions_data, fixed_versions):
     # Need to check whether the inverted value is already in the `constraints` list.
     # This needs work -- as do the related tests.
     for fixed_item in fixed_versions:
+        # 2023-01-09 Monday 10:54:10.  We need to skip those with no fixed version.
+        # if len(fixed_item) == 0:
+        #     continue
+
         if "-" in fixed_item and not any([i.isalpha() for i in fixed_item]):
+            # elif "-" in fixed_item and not any([i.isalpha() for i in fixed_item]):
             fixed_item_split = fixed_item.split(" ")
 
             constraints.append(

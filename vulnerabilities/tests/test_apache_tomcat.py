@@ -29,9 +29,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/apache_tomcat")
 
 
-# Temp test to flesh out `extract_advisories_from_page()` -- the method .
 def test_method_extract_advisories_from_page():
-    # with open(os.path.join(TEST_DATA, "apache_tomcat_cve-2020-9484.html")) as f:
     with open(os.path.join(TEST_DATA, "apache_tomcat-selected-advisories.html")) as f:
         raw_data = f.read()
     extracted_advisories = ApacheTomcatImporter().extract_advisories_from_page(raw_data)
@@ -304,13 +302,11 @@ def test_extract_advisories_from_page_with_multiple_groups():
 
 # This test is temporary -- just for running apache_tomcat.py using all HTML report pages.
 # Will replace with a REGEN-based test as with apache_httpd and postgresql.
-# Formely named `test_updated_advisories` before method was renamed `advisory_data()`
 def test_advisory_data():
     returned_advisories = ApacheTomcatImporter().advisory_data()
 
 
 def test_fetch_links():
-    # retrieved_links = ApacheTomcatImporter().fetch_advisory_links(security_updates_home)
     retrieved_links = ApacheTomcatImporter().fetch_advisory_links(
         "https://tomcat.apache.org/security"
     )
@@ -332,18 +328,17 @@ def test_fetch_links():
     ]
 
 
-# def test_to_version_ranges_test():
 def test_to_version_ranges():
     versions_data = [
         "1.0.0-2.0.0",
-        "3.2.2-3.2.3?",
+        "3.2.2-3.2.3",
         "3.3a-3.3.1",
         "9.0.0.M1 to 9.0.0.M9",
         "10.1.0-M1 to 10.1.0-M16",
     ]
     fixed_versions = ["3.0.0", "3.3.1a"]
 
-    expected_versions_data = "vers:maven/>=1.0.0|<=2.0.0|!=3.0.0|>=3.2.2|<=3.2.3?|>=3.3a|<=3.3.1|!=3.3.1a|>=9.0.0.M1|<=9.0.0.M9|>=10.1.0-M1|<=10.1.0-M16"
+    expected_versions_data = "vers:maven/>=1.0.0|<=2.0.0|!=3.0.0|>=3.2.2|<=3.2.3|>=3.3a|<=3.3.1|!=3.3.1a|>=9.0.0.M1|<=9.0.0.M9|>=10.1.0-M1|<=10.1.0-M16"
 
     expected_MavenVersionRange_versions_data = MavenVersionRange(
         constraints=(
@@ -351,7 +346,7 @@ def test_to_version_ranges():
             VersionConstraint(comparator="<=", version=MavenVersion(string="2.0.0")),
             VersionConstraint(comparator="!=", version=MavenVersion(string="3.0.0")),
             VersionConstraint(comparator=">=", version=MavenVersion(string="3.2.2")),
-            VersionConstraint(comparator="<=", version=MavenVersion(string="3.2.3?")),
+            VersionConstraint(comparator="<=", version=MavenVersion(string="3.2.3")),
             VersionConstraint(comparator=">=", version=MavenVersion(string="3.3a")),
             VersionConstraint(comparator="<=", version=MavenVersion(string="3.3.1")),
             VersionConstraint(comparator="!=", version=MavenVersion(string="3.3.1a")),
@@ -362,16 +357,21 @@ def test_to_version_ranges():
         )
     )
 
-    # XXX: 2023-01-02 Monday 16:27:37.  Error: AttributeError: 'ApacheTomcatImporter' object has no attribute 'to_version_ranges'
-    # That's because I converted a method function to an independent function.
-    # converted_versions_data = ApacheTomcatImporter().to_version_ranges(
-    #     versions_data, fixed_versions
-    # )
-    # Try this instead.  It works!
     converted_versions_data = to_version_ranges(versions_data, fixed_versions)
-
-    # print("\nvers_test = {}\n".format(MavenVersionRange.from_string("vers:maven/>=1.0.0|<=2.0.0")))
-    # print("\nconverted_versions_data = {}\n".format(converted_versions_data))
 
     assert expected_MavenVersionRange_versions_data == converted_versions_data
     assert MavenVersionRange.from_string(expected_versions_data) == converted_versions_data
+
+
+# def test_to_version_ranges_invert():
+#     # Do we want to prevent or alert to this type of conflict?
+#     # And how do we test the desired behavior?
+#     # versions_data = ["3.0.0"]
+#     # fixed_versions = ["3.0.0", "3.3.1a"]
+
+#     versions_data = ["1.0.0-3.0.0"]
+#     fixed_versions = ["1.0.0-3.0.0", "3.3.1a"]
+
+#     converted_versions_data = to_version_ranges(versions_data, fixed_versions)
+
+#     print("\n\nconverted_versions_data = {}\n".format(converted_versions_data))

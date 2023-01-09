@@ -2,6 +2,12 @@ Release notes
 =============
 
 
+Next release
+----------------
+
+- We re-enabled support for the mozilla vulnerabilities advisories importer.
+
+
 Version v31.1.1
 ---------------
 

@@ -34,6 +34,7 @@ class PackageSearchTestCase(TestCase):
             "pkg:nginx/nginx@1.14.1",
             "pkg:nginx/nginx@1.0.7",
             "pkg:nginx/nginx@1.0.15",
+            "pkg:pypi/foo@1",
         ]
         self.packages = packages
         for package in packages:
@@ -62,6 +63,77 @@ class PackageSearchTestCase(TestCase):
         pkgs = list(qs)
         self.assertEqual(len(pkgs), 1)
         self.assertEqual(pkgs[0].purl, "pkg:nginx/nginx@1.0.15")
+
+    def test_package_view_with_purl_fragment(self):
+        qs = PackageSearch().get_queryset(query="nginx/nginx")
+        pkgs = list(qs)
+        pkgs = [p.purl for p in pkgs]
+        assert pkgs == [
+            "pkg:nginx/nginx@0.6.18",
+            "pkg:nginx/nginx@1.20.0",
+            "pkg:nginx/nginx@1.21.0",
+            "pkg:nginx/nginx@1.20.1",
+            "pkg:nginx/nginx@1.9.5",
+            "pkg:nginx/nginx@1.17.2",
+            "pkg:nginx/nginx@1.17.3",
+            "pkg:nginx/nginx@1.16.1",
+            "pkg:nginx/nginx@1.15.5",
+            "pkg:nginx/nginx@1.15.6",
+            "pkg:nginx/nginx@1.14.1",
+            "pkg:nginx/nginx@1.0.7",
+            "pkg:nginx/nginx@1.0.15",
+        ]
+
+    def test_package_view_with_valid_purl_without_version(self):
+        qs = PackageSearch().get_queryset(query="pkg:nginx/nginx")
+        pkgs = list(qs)
+        pkgs = [p.purl for p in pkgs]
+        assert pkgs == [
+            "pkg:nginx/nginx@0.6.18",
+            "pkg:nginx/nginx@1.20.0",
+            "pkg:nginx/nginx@1.21.0",
+            "pkg:nginx/nginx@1.20.1",
+            "pkg:nginx/nginx@1.9.5",
+            "pkg:nginx/nginx@1.17.2",
+            "pkg:nginx/nginx@1.17.3",
+            "pkg:nginx/nginx@1.16.1",
+            "pkg:nginx/nginx@1.15.5",
+            "pkg:nginx/nginx@1.15.6",
+            "pkg:nginx/nginx@1.14.1",
+            "pkg:nginx/nginx@1.0.7",
+            "pkg:nginx/nginx@1.0.15",
+        ]
+
+    def test_package_view_with_valid_purl_and_incomplete_version(self):
+        qs = PackageSearch().get_queryset(query="pkg:nginx/nginx@1")
+        pkgs = list(qs)
+        pkgs = [p.purl for p in pkgs]
+        assert pkgs == [
+            "pkg:nginx/nginx@1.20.0",
+            "pkg:nginx/nginx@1.21.0",
+            "pkg:nginx/nginx@1.20.1",
+            "pkg:nginx/nginx@1.9.5",
+            "pkg:nginx/nginx@1.17.2",
+            "pkg:nginx/nginx@1.17.3",
+            "pkg:nginx/nginx@1.16.1",
+            "pkg:nginx/nginx@1.15.5",
+            "pkg:nginx/nginx@1.15.6",
+            "pkg:nginx/nginx@1.14.1",
+            "pkg:nginx/nginx@1.0.7",
+            "pkg:nginx/nginx@1.0.15",
+        ]
+
+    def test_package_view_with_purl_type(self):
+        qs = PackageSearch().get_queryset(query="pkg:pypi")
+        pkgs = list(qs)
+        pkgs = [p.purl for p in pkgs]
+        assert pkgs == ["pkg:pypi/foo@1"]
+
+    def test_package_view_with_type_as_input(self):
+        qs = PackageSearch().get_queryset(query="pypi")
+        pkgs = list(qs)
+        pkgs = [p.purl for p in pkgs]
+        assert pkgs == ["pkg:pypi/foo@1"]
 
 
 class VulnerabilitySearchTestCase(TestCase):

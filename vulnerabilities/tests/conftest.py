@@ -32,7 +32,6 @@ collect_ignore = [
     "test_gentoo.py",
     "test_istio.py",
     "test_models.py",
-    "test_mozilla.py",
     "test_msr2019.py",
     "test_package_managers.py",
     "test_ruby.py",

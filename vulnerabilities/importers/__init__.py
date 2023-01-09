@@ -12,6 +12,7 @@ from vulnerabilities.importers import apache_httpd
 from vulnerabilities.importers import archlinux
 from vulnerabilities.importers import debian
 from vulnerabilities.importers import debian_oval
+from vulnerabilities.importers import gentoo
 from vulnerabilities.importers import github
 from vulnerabilities.importers import gitlab
 from vulnerabilities.importers import mozilla
@@ -45,6 +46,7 @@ IMPORTERS_REGISTRY = [
     retiredotnet.RetireDotnetImporter,
     apache_httpd.ApacheHTTPDImporter,
     mozilla.MozillaImporter,
+    gentoo.GentooImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

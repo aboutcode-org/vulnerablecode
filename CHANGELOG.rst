@@ -6,6 +6,9 @@ Version v31.1.1
 ---------------
 
 - We re-enabled support for the Apache HTTPD security advisories importer.
+- We now support incomplete versions for a valid purl in search. For example,
+  you can now search for ``pkg:nginx/nginx@1`` and get all versions of nginx
+  starting with ``1``.
 
 
 Version v31.1.0

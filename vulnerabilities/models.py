@@ -36,6 +36,7 @@ from vulnerabilities.importer import Reference
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import build_vcid
+from vulnerabilities.utils import remove_qualifiers_and_subpath
 
 logger = logging.getLogger(__name__)
 
@@ -417,7 +418,8 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         try:
             # if it's a valid purl, use it as is
             purl = PackageURL.from_string(query)
-            return self.for_purl(purl, with_qualifiers_and_subpath=False)
+            purl = str(remove_qualifiers_and_subpath(purl))
+            return qs.filter(package_url__istartswith=purl)
         except ValueError:
             return qs.filter(package_url__icontains=query)
 
@@ -427,10 +429,9 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         """
         if not isinstance(purl, PackageURL):
             purl = PackageURL.from_string(purl)
-        purl = purl_to_dict(purl)
         if not with_qualifiers_and_subpath:
-            del purl["qualifiers"]
-            del purl["subpath"]
+            remove_qualifiers_and_subpath(purl)
+        purl = purl_to_dict(purl)
         return self.filter(**purl)
 
     def with_cpes(self):

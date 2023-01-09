@@ -83,8 +83,7 @@ def get_advisories_from_yml(mfsa_id, lines) -> List[AdvisoryData]:
     for cve, advisory in data["advisories"].items():
         # These may contain HTML tags
         summary = BeautifulSoup(advisory.get("description", ""), features="lxml").get_text()
-        alias = is_cve(cve)
-        if alias:
+        if is_cve(cve):
             yield AdvisoryData(
                 summary=summary,
                 aliases=[cve],
@@ -141,8 +140,7 @@ def get_affected_packages(pkgs: List[str]) -> List[PackageURL]:
         if not pkg:
             continue
             # pkg is of the form "Firefox ESR 1.21" or "Thunderbird 2.21"
-        version = pkg.rsplit(None, 1)[1]
-        name = pkg.rsplit(None, 1)[0]
+        name, _, version = pkg.rpartition(" ")
         if version and name:
             try:
                 # count no of "." in version

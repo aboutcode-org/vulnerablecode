@@ -13,14 +13,17 @@ from unittest.mock import patch
 
 from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
+from univers.version_range import ApacheVersionRange
 from univers.version_range import MavenVersionRange
 from univers.versions import MavenVersion
+from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatImporter
 from vulnerabilities.importers.apache_tomcat import extract_tomcat_advisory_data_from_page
-from vulnerabilities.importers.apache_tomcat import to_version_ranges
+from vulnerabilities.importers.apache_tomcat import to_version_ranges_apache
+from vulnerabilities.importers.apache_tomcat import to_version_ranges_maven
 from vulnerabilities.package_managers import MavenVersionAPI
 from vulnerabilities.package_managers import PackageVersion
 from vulnerabilities.utils import AffectedPackage
@@ -338,7 +341,7 @@ def test_to_version_ranges():
     ]
     fixed_versions = ["3.0.0", "3.3.1a"]
 
-    expected_versions_data = "vers:maven/>=1.0.0|<=2.0.0|!=3.0.0|>=3.2.2|<=3.2.3|>=3.3a|<=3.3.1|!=3.3.1a|>=9.0.0.M1|<=9.0.0.M9|>=10.1.0-M1|<=10.1.0-M16"
+    expected_versions_data_maven = "vers:maven/>=1.0.0|<=2.0.0|!=3.0.0|>=3.2.2|<=3.2.3|>=3.3a|<=3.3.1|!=3.3.1a|>=9.0.0.M1|<=9.0.0.M9|>=10.1.0-M1|<=10.1.0-M16"
 
     expected_MavenVersionRange_versions_data = MavenVersionRange(
         constraints=(
@@ -357,21 +360,36 @@ def test_to_version_ranges():
         )
     )
 
-    converted_versions_data = to_version_ranges(versions_data, fixed_versions)
+    converted_versions_data_maven = to_version_ranges_maven(versions_data, fixed_versions)
 
-    assert expected_MavenVersionRange_versions_data == converted_versions_data
-    assert MavenVersionRange.from_string(expected_versions_data) == converted_versions_data
+    assert expected_MavenVersionRange_versions_data == converted_versions_data_maven
+    assert (
+        MavenVersionRange.from_string(expected_versions_data_maven) == converted_versions_data_maven
+    )
 
+    expected_versions_data_apache = "vers:apache/>=1.0.0|<=2.0.0|!=3.0.0|>=3.2.2|<=3.2.3|>=3.3a|<=3.3.1|!=3.3.1a|>=9.0.0.M1|<=9.0.0.M9|>=10.1.0-M1|<=10.1.0-M16"
 
-# def test_to_version_ranges_invert():
-#     # Do we want to prevent or alert to this type of conflict?
-#     # And how do we test the desired behavior?
-#     # versions_data = ["3.0.0"]
-#     # fixed_versions = ["3.0.0", "3.3.1a"]
+    expected_ApacheVersionRange_versions_data = ApacheVersionRange(
+        constraints=(
+            VersionConstraint(comparator=">=", version=SemverVersion(string="1.0.0")),
+            VersionConstraint(comparator="<=", version=SemverVersion(string="2.0.0")),
+            VersionConstraint(comparator="!=", version=SemverVersion(string="3.0.0")),
+            VersionConstraint(comparator=">=", version=SemverVersion(string="3.2.2")),
+            VersionConstraint(comparator="<=", version=SemverVersion(string="3.2.3")),
+            VersionConstraint(comparator=">=", version=SemverVersion(string="3.3a")),
+            VersionConstraint(comparator="<=", version=SemverVersion(string="3.3.1")),
+            VersionConstraint(comparator="!=", version=SemverVersion(string="3.3.1a")),
+            VersionConstraint(comparator=">=", version=SemverVersion(string="9.0.0.M1")),
+            VersionConstraint(comparator="<=", version=SemverVersion(string="9.0.0.M9")),
+            VersionConstraint(comparator=">=", version=SemverVersion(string="10.1.0-M1")),
+            VersionConstraint(comparator="<=", version=SemverVersion(string="10.1.0-M16")),
+        )
+    )
 
-#     versions_data = ["1.0.0-3.0.0"]
-#     fixed_versions = ["1.0.0-3.0.0", "3.3.1a"]
+    converted_versions_data_apache = to_version_ranges_apache(versions_data, fixed_versions)
 
-#     converted_versions_data = to_version_ranges(versions_data, fixed_versions)
-
-#     print("\n\nconverted_versions_data = {}\n".format(converted_versions_data))
+    assert expected_ApacheVersionRange_versions_data == converted_versions_data_apache
+    assert (
+        ApacheVersionRange.from_string(expected_versions_data_apache)
+        == converted_versions_data_apache
+    )

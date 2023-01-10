@@ -9,14 +9,18 @@
 
 import dataclasses
 import json
+import logging
 import urllib
+from collections import namedtuple
 
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
+from univers.version_range import ApacheVersionRange
 from univers.version_range import MavenVersionRange
 from univers.versions import MavenVersion
+from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -25,8 +29,10 @@ from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import APACHE_TOMCAT
 
+LOGGER = logging.getLogger(__name__)
+
 # For temporary data testing.
-PRINT = True
+PRINT = False
 TRACE = True
 record_of_all_affects_elements = []
 record_of_all_affected_versions = []
@@ -37,11 +43,86 @@ record_of_all_reported_advisories_test02 = []
 record_of_all_reported_advisories_test03 = []
 
 
-# Not yet finished!
 corrective_data_mapping = {
-    (("4.1.3",), "CVE-2002-0935"): {
+    ("not released Fixed in Apache Tomcat 9.0.9", "CVE-2018-8014"): {
+        "fixed_versions": ["9.0.9"],
+        "affected_versions": ["9.0.0.M1 to 9.0.8"],
+    },
+    ("6 July 2018 Fixed in Apache Tomcat 8.0.53", "CVE-2018-8014"): {
+        "fixed_versions": ["8.0.53"],
+        "affected_versions": ["8.0.0.RC1 to 8.0.52"],
+    },
+    ("26 June 2018 Fixed in Apache Tomcat 8.5.32", "CVE-2018-8014"): {
+        "fixed_versions": ["8.5.32"],
+        "affected_versions": ["8.5.0 to 8.5.31"],
+    },
+    ("not released Fixed in Apache Tomcat 7.0.89", "CVE-2018-8014"): {
+        "fixed_versions": ["7.0.89"],
+        "affected_versions": ["7.0.41 to 7.0.88"],
+    },
+    ("16 May 2018 Fixed in Apache Tomcat 7.0.88", "CVE-2018-1336"): {
+        "fixed_versions": ["7.0.88"],
+        "affected_versions": ["7.0.28 to 7.0.86"],
+    },
+    ("released 21 Jan 2010 Fixed in Apache Tomcat 6.0.24", "CVE-2009-2901"): {
+        "fixed_versions": ["6.0.24"],
+        "affected_versions": ["6.0.0-6.0.20"],
+    },
+    ("released 20 Apr 2010 Fixed in Apache Tomcat 5.5.29", "CVE-2009-2901"): {
+        "fixed_versions": ["5.5.29"],
+        "affected_versions": ["5.5.0-5.5.28"],
+    },
+    ("released 4 Sep 2009 Fixed in Apache Tomcat 5.5.28", "CVE-2009-0580"): {
+        "fixed_versions": ["5.5.28"],
+        "affected_versions": ["5.5.0-5.5.27"],
+    },
+    ("not released Fixed in Apache Tomcat 5.5.21", "CVE-2008-4308"): {
+        "fixed_versions": ["5.5.21"],
+        "affected_versions": ["5.5.10-5.5.20"],
+    },
+    ("Fixed in Apache Tomcat 5.5.1", "CVE-2008-3271"): {
+        "fixed_versions": ["5.5.1"],
+        "affected_versions": ["5.5.0"],
+    },
+    ("Will not be fixed in Apache Tomcat 4.1.x", "CVE-2005-4836"): {
+        "fixed_versions": [],
+        "affected_versions": ["4.1.15-4.1.SVN"],
+    },
+    ("Fixed in Apache Tomcat 4.1.40", "CVE-2009-0580"): {
+        "fixed_versions": ["4.1.40"],
+        "affected_versions": ["4.1.0-4.1.39"],
+    },
+    ("Fixed in Apache Tomcat 4.1.35", "CVE-2008-4308"): {
+        "fixed_versions": ["4.1.35"],
+        "affected_versions": ["4.1.32-4.1.34"],
+    },
+    ("Fixed in Apache Tomcat 4.1.3", "CVE-2002-0935"): {
         "fixed_versions": ["4.1.3"],
         "affected_versions": ["4.0.0-4.0.2", "4.0.3", "4.0.4-4.0.6", "4.1.0-4.1.2"],
+    },
+    ("Fixed in Apache Tomcat 4.0.0", "CVE-2002-0493"): {
+        "fixed_versions": ["4.0.0"],
+        "affected_versions": ["<4.0.0"],
+    },
+    ("Not fixed in Apache Tomcat 3.x", "CVE-2005-0808"): {
+        "fixed_versions": [],
+        "affected_versions": ["3.0", "3.1-3.1.1", "3.2-3.2.4", "3.3a-3.3.2"],
+    },
+    ("Not fixed in Apache Tomcat 3.x", "CVE-2007-3382"): {
+        "fixed_versions": [],
+        "affected_versions": ["3.3-3.3.2"],
+    },
+    ("Not fixed in Apache Tomcat 3.x", "CVE-2007-3384"): {
+        "fixed_versions": [],
+        "affected_versions": ["3.3-3.3.2"],
+    },
+    ("Not fixed in Apache Tomcat 3.x", "CVE-2007-3385"): {
+        "fixed_versions": [],
+        "affected_versions": ["3.3-3.3.2"],
+    },
+    ("Fixed in Apache Tomcat 3.2.4", "CVE-2001-1563"): {
+        "fixed_versions": ["3.2.4"],
+        "affected_versions": ["3.2", "3.2.1", "3.2.2-3.2.3"],
     },
 }
 
@@ -179,6 +260,8 @@ class ApacheTomcatImporter(Importer):
 class TomcatAdvisoryData:
     fixed_versions: list
     advisory_groups: list
+    # 2023-01-09 Monday 14:43:24.  Use this as 1st key in dict?
+    fixed_version_heading_text: str
 
     def to_dict(self):
         advisory_groups_to_strings = []
@@ -199,17 +282,24 @@ def extract_tomcat_advisory_data_from_page(apache_tomcat_advisory_html):
     # We're looking for headers -- one for each advisory -- like this:
     # <h3 id="Fixed_in_Apache_Tomcat_10.0.27"><span class="pull-right">2022-10-10</span> Fixed in Apache Tomcat 10.0.27</h3>
     pageh3s = page_soup.find_all("h3")
+
     # fixed_version_headings = [
     #     heading for heading in pageh3s if "Fixed in Apache Tomcat" in heading.text
     # ]
-    # 2023-01-09 Monday 10:31:29.  Include the 2 groups of not-fixed advisories.
+
+    # Include the 2 groups of not-fixed advisories.
     fixed_header_substrings = (
         "Fixed in Apache Tomcat",
         "Will not be fixed in Apache Tomcat 4.1.x",
-        "Not fixed in",
+        "Not fixed in Apache Tomcat 3.x",
     )
     fixed_version_headings = [
-        heading for heading in pageh3s if heading.text.startswith(fixed_header_substrings)
+        heading
+        for heading in pageh3s
+        if any(
+            fixed_header_substring in heading.text
+            for fixed_header_substring in fixed_header_substrings
+        )
     ]
 
     for fixed_version_heading in fixed_version_headings:
@@ -219,20 +309,20 @@ def extract_tomcat_advisory_data_from_page(apache_tomcat_advisory_html):
 
         fixed_versions = []
         # fixed_version = fixed_version_heading.text.split("Fixed in Apache Tomcat")[-1].strip()
-        # 2023-01-09 Monday 10:31:29.  Include the 2 groups of not-fixed advisories.
-        # We report no value for those that won't be fixed.
-        if "Fixed in Apache Tomcat" in fixed_version_heading:
+        fixed_version = ""
+
+        # # 2023-01-09 Monday 10:31:29.  Include the 2 groups of not-fixed advisories.
+        # # We report no value for those that won't be fixed.
+        if "Fixed in Apache Tomcat" in fixed_version_heading.text:
             fixed_version = fixed_version_heading.text.split("Fixed in Apache Tomcat")[-1].strip()
-        else:
-            fixed_version = "0.0"
-        # elif "Will not be fixed in Apache Tomcat 4.1.x" in fixed_version_heading:
-        #     fixed_version = fixed_version_heading.text.split("Will not be fixed in Apache Tomcat")[
-        #         -1
-        #     ].strip()
-        # elif "Not fixed in Apache Tomcat 3.x" in fixed_version_heading:
-        #     fixed_version = fixed_version_heading.text.split("Not fixed in Apache Tomcat")[
-        #         -1
-        #     ].strip()
+        elif "Will not be fixed in Apache Tomcat 4.1.x" in fixed_version_heading.text:
+            fixed_version = fixed_version_heading.text.split("Will not be fixed in Apache Tomcat")[
+                -1
+            ].strip()
+        elif "Not fixed in Apache Tomcat 3.x" in fixed_version_heading.text:
+            fixed_version = fixed_version_heading.text.split("Not fixed in Apache Tomcat")[
+                -1
+            ].strip()
 
         # We want to handle the occasional "and" in the fixed version headers, e.g.,
         # <h3 id="Fixed_in_Apache_Tomcat_8.5.5_and_8.0.37"><span class="pull-right">5 September 2016</span> Fixed in Apache Tomcat 8.5.5 and 8.0.37</h3>
@@ -272,7 +362,13 @@ def extract_tomcat_advisory_data_from_page(apache_tomcat_advisory_html):
 
                 advisory_groups.append(current_group)
 
-        yield TomcatAdvisoryData(fixed_versions=fixed_versions, advisory_groups=advisory_groups)
+        # yield TomcatAdvisoryData(fixed_versions=fixed_versions, advisory_groups=advisory_groups)
+        # fixed_version_heading.text
+        yield TomcatAdvisoryData(
+            fixed_versions=fixed_versions,
+            advisory_groups=advisory_groups,
+            fixed_version_heading_text=fixed_version_heading.text,
+        )
 
 
 def generate_advisory_data_objects(tomcat_advisory_data_object):
@@ -337,23 +433,45 @@ def generate_advisory_data_objects(tomcat_advisory_data_object):
                 )
             )
 
-            # Check the dictionary and supply/replace needed values.  Convert `fixed_versions`` list
-            # to a tuple so it's hashable and thus can serve as part of a tuple-based dictionary key.
+            # # Check the dictionary and supply/replace needed values.  Convert `fixed_versions`` list
+            # # to a tuple so it's hashable and thus can serve as part of a tuple-based dictionary key.
+            # if PRINT:
+            #     print("fixed_versions before update if any = {}".format(fixed_versions))
+            #     print("affected_versions before update if any = {}\n".format(affected_versions))
+
+            # fixed_versions_tuple = tuple(fixed_versions)
+
+            # if (fixed_versions_tuple, cve_url.text) in corrective_data_mapping.keys():
+            #     if PRINT:
+            #         print("\n\n-- REPLACE/CORRECT VERSION DATA --  \n\n")
+            #     fixed_versions = corrective_data_mapping[fixed_versions_tuple, cve_url.text][
+            #         "fixed_versions"
+            #     ]
+            #     affected_versions = corrective_data_mapping[fixed_versions_tuple, cve_url.text][
+            #         "affected_versions"
+            #     ]
+            # else:
+            #     pass
+
+            # 2023-01-09 Monday 14:48:34.  Use the fixed header string in place of the tuple
+            # Check the dictionary and supply/replace needed values.
             if PRINT:
                 print("fixed_versions before update if any = {}".format(fixed_versions))
                 print("affected_versions before update if any = {}\n".format(affected_versions))
 
-            fixed_versions_tuple = tuple(fixed_versions)
+            # fixed_versions_tuple = tuple(fixed_versions)
+            # 2023-01-09 Monday 14:45:55.  Try this as the 1st dict key:
+            fixed_version_heading_text = tomcat_advisory_data_object.fixed_version_heading_text
 
-            if (fixed_versions_tuple, cve_url.text) in corrective_data_mapping.keys():
+            if (fixed_version_heading_text, cve_url.text) in corrective_data_mapping.keys():
                 if PRINT:
                     print("\n\n-- REPLACE/CORRECT VERSION DATA --  \n\n")
-                fixed_versions = corrective_data_mapping[fixed_versions_tuple, cve_url.text][
+                fixed_versions = corrective_data_mapping[fixed_version_heading_text, cve_url.text][
                     "fixed_versions"
                 ]
-                affected_versions = corrective_data_mapping[fixed_versions_tuple, cve_url.text][
-                    "affected_versions"
-                ]
+                affected_versions = corrective_data_mapping[
+                    fixed_version_heading_text, cve_url.text
+                ]["affected_versions"]
             else:
                 pass
 
@@ -365,10 +483,25 @@ def generate_advisory_data_objects(tomcat_advisory_data_object):
                 record_of_all_reported_cves.append(cve_url.text)
                 record_of_all_affected_versions.append(affected_versions)
 
-            affected_version_range = to_version_ranges(
+            # try:
+            #     affected_version_range_apache = to_version_ranges_apache(
+            #         affected_versions,
+            #         fixed_versions,
+            #     )
+            # except Exception as e:
+            #     LOGGER.error(f"{affected_versions!r} is not a valid SemverVersion {e!r}")
+            #     continue
+
+            affected_version_range_apache = to_version_ranges_apache(
                 affected_versions,
                 fixed_versions,
             )
+
+            affected_version_range_maven = to_version_ranges_maven(
+                affected_versions,
+                fixed_versions,
+            )
+
             references = [
                 Reference(
                     url=f"https://cve.mitre.org/cgi-bin/cvename.cgi?name={cve_url.text}",
@@ -385,11 +518,21 @@ def generate_advisory_data_objects(tomcat_advisory_data_object):
             affected_packages.append(
                 AffectedPackage(
                     package=PackageURL(
-                        type="maven",
-                        namespace="apache",
+                        type="apache",
                         name="tomcat",
                     ),
-                    affected_version_range=affected_version_range,
+                    affected_version_range=affected_version_range_apache,
+                )
+            )
+
+            affected_packages.append(
+                AffectedPackage(
+                    package=PackageURL(
+                        type="maven",
+                        namespace="org.apache.tomcat",
+                        name="tomcat",
+                    ),
+                    affected_version_range=affected_version_range_maven,
                 )
             )
 
@@ -413,7 +556,146 @@ def generate_advisory_data_objects(tomcat_advisory_data_object):
             )
 
 
-def to_version_ranges(versions_data, fixed_versions):
+def to_version_ranges_apache(versions_data, fixed_versions):
+    constraints = []
+
+    VersionConstraintTuple = namedtuple("VersionConstraintTuple", ["comparator", "version"])
+    affected_constraint_tuple_list = []
+    fixed_constraint_tuple_list = []
+
+    for version_item in versions_data:
+        version_item = version_item.strip()
+        if "to" in version_item:
+            version_item_split = version_item.split(" ")
+
+            # constraints.append(
+            #     VersionConstraint(
+            #         comparator=">=",
+            #         version=SemverVersion(version_item_split[0]),
+            #     )
+            # )
+            # constraints.append(
+            #     VersionConstraint(
+            #         comparator="<=",
+            #         version=SemverVersion(version_item_split[-1]),
+            #     )
+            # )
+
+            affected_constraint_tuple_list.append(
+                VersionConstraintTuple(">=", version_item_split[0])
+            )
+            affected_constraint_tuple_list.append(
+                VersionConstraintTuple("<=", version_item_split[-1])
+            )
+
+        elif "-" in version_item:
+            version_item_split = version_item.split("-")
+
+            # constraints.append(
+            #     VersionConstraint(
+            #         comparator=">=",
+            #         version=SemverVersion(version_item_split[0]),
+            #     )
+            # )
+            # constraints.append(
+            #     VersionConstraint(
+            #         comparator="<=",
+            #         version=SemverVersion(version_item_split[-1]),
+            #     )
+            # )
+
+            affected_constraint_tuple_list.append(
+                VersionConstraintTuple(">=", version_item_split[0])
+            )
+            affected_constraint_tuple_list.append(
+                VersionConstraintTuple("<=", version_item_split[-1])
+            )
+
+        elif version_item.startswith("<"):
+            version_item_split = version_item.split("<")
+
+            # constraints.append(
+            #     VersionConstraint(
+            #         comparator="<",
+            #         version=SemverVersion(version_item_split[-1]),
+            #     )
+            # )
+
+            affected_constraint_tuple_list.append(
+                VersionConstraintTuple("<", version_item_split[-1])
+            )
+
+        else:
+            version_item_split = version_item.split(" ")
+
+            # constraints.append(
+            #     VersionConstraint(
+            #         comparator="=",
+            #         version=SemverVersion(version_item_split[0]),
+            #     )
+            # )
+
+            affected_constraint_tuple_list.append(
+                VersionConstraintTuple("=", version_item_split[0])
+            )
+
+    for fixed_item in fixed_versions:
+
+        if "-" in fixed_item and not any([i.isalpha() for i in fixed_item]):
+            fixed_item_split = fixed_item.split(" ")
+
+            # constraints.append(
+            #     VersionConstraint(
+            #         comparator=">=",
+            #         version=SemverVersion(fixed_item_split[0]),
+            #     ).invert()
+            # )
+            # constraints.append(
+            #     VersionConstraint(
+            #         comparator="<=",
+            #         version=SemverVersion(fixed_item_split[-1]),
+            #     ).invert()
+            # )
+
+            fixed_constraint_tuple_list.append(VersionConstraintTuple(">=", fixed_item_split[0]))
+            fixed_constraint_tuple_list.append(VersionConstraintTuple("<=", fixed_item_split[-1]))
+
+        else:
+            fixed_item_split = fixed_item.split(" ")
+
+            # constraints.append(
+            #     VersionConstraint(
+            #         comparator="=",
+            #         version=SemverVersion(fixed_item_split[0]),
+            #     ).invert()
+            # )
+
+            fixed_constraint_tuple_list.append(VersionConstraintTuple("=", fixed_item_split[0]))
+
+    for record in affected_constraint_tuple_list:
+        try:
+            constraints.append(
+                VersionConstraint(
+                    comparator=record.comparator,
+                    version=SemverVersion(record.version),
+                )
+            )
+        except Exception as e:
+            LOGGER.error(f"{record.version!r} is not a valid SemverVersion {e!r}")
+            continue
+
+    for record in fixed_constraint_tuple_list:
+        constraints.append(
+            VersionConstraint(
+                comparator=record.comparator,
+                version=SemverVersion(record.version),
+            ).invert()
+        )
+
+    return ApacheVersionRange(constraints=constraints)
+
+
+def to_version_ranges_maven(versions_data, fixed_versions):
     constraints = []
 
     for version_item in versions_data:
@@ -450,6 +732,16 @@ def to_version_ranges(versions_data, fixed_versions):
                 )
             )
 
+        elif version_item.startswith("<"):
+            version_item_split = version_item.split("<")
+
+            constraints.append(
+                VersionConstraint(
+                    comparator="<",
+                    version=MavenVersion(version_item_split[-1]),
+                )
+            )
+
         else:
             version_item_split = version_item.split(" ")
 
@@ -460,15 +752,9 @@ def to_version_ranges(versions_data, fixed_versions):
                 )
             )
 
-    # Need to check whether the inverted value is already in the `constraints` list.
-    # This needs work -- as do the related tests.
     for fixed_item in fixed_versions:
-        # 2023-01-09 Monday 10:54:10.  We need to skip those with no fixed version.
-        # if len(fixed_item) == 0:
-        #     continue
 
         if "-" in fixed_item and not any([i.isalpha() for i in fixed_item]):
-            # elif "-" in fixed_item and not any([i.isalpha() for i in fixed_item]):
             fixed_item_split = fixed_item.split(" ")
 
             constraints.append(
@@ -484,21 +770,6 @@ def to_version_ranges(versions_data, fixed_versions):
                 ).invert()
             )
 
-            # # TODO: What's the correct structure for this?
-            # version_range_start = VersionConstraint(
-            #     comparator=">=",
-            #     version=MavenVersion(fixed_item_split[0]),
-            # ).invert()
-
-            # version_range_stop = VersionConstraint(
-            #     comparator="<=",
-            #     version=MavenVersion(fixed_item_split[-1]),
-            # ).invert()
-
-            # if version_range_start not in constraints and version_range_stop not in constraints:
-            #     constraints.append(version_range_start)
-            #     constraints.append(version_range_stop)
-
         else:
             fixed_item_split = fixed_item.split(" ")
 
@@ -508,14 +779,5 @@ def to_version_ranges(versions_data, fixed_versions):
                     version=MavenVersion(fixed_item_split[0]),
                 ).invert()
             )
-
-            # # TODO: What's the correct structure for this?
-            # version_range_value = VersionConstraint(
-            #     comparator="=",
-            #     version=MavenVersion(fixed_item_split[0]),
-            # ).invert()
-
-            # if version_range_value not in constraints:
-            #     constraints.append(version_range_value)
 
     return MavenVersionRange(constraints=constraints)

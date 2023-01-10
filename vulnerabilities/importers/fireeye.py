@@ -32,8 +32,12 @@ class FireyeImporter(GitImporter):
         for file in files:
             if Path(file).stem == "README":
                 continue
-            with open(file, encoding="ISO-8859-1") as f:
-                yield parse_advisory_data(f.read())
+            try:
+                with open(file) as f:
+                    yield parse_advisory_data(f.read())
+            except UnicodeError:
+                print(file)
+
 
 
 def parse_advisory_data(raw_data) -> AdvisoryData:

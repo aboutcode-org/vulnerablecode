@@ -15,6 +15,7 @@ from vulnerabilities.importers import debian_oval
 from vulnerabilities.importers import gentoo
 from vulnerabilities.importers import github
 from vulnerabilities.importers import gitlab
+from vulnerabilities.importers import istio
 from vulnerabilities.importers import mozilla
 from vulnerabilities.importers import nginx
 from vulnerabilities.importers import npm
@@ -47,6 +48,7 @@ IMPORTERS_REGISTRY = [
     apache_httpd.ApacheHTTPDImporter,
     mozilla.MozillaImporter,
     gentoo.GentooImporter,
+    istio.IstioImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

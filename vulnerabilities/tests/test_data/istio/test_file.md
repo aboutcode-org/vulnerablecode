@@ -5,7 +5,7 @@ description: Incorrect access control.
 cves: [CVE-2019-12243]
 cvss: "8.9"
 vector: "CVSS:3.0/AV:A/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N/E:H/RL:O/RC:C"
-releases: ["1.1 to 1.1.15", "1.2 to 1.2.6", "1.3 to 1.3.1"]
+releases: ["All releases prior to 0.0.9","1.1 to 1.1.15","1.3 to 1.3.1", "All releases 1.5.0 and later"]
 publishdate: 2019-05-28
 
 ---

@@ -46,15 +46,25 @@ class DefaultImprover(Improver):
             for affected_package in advisory_data.affected_packages:
                 # To deal with multiple fixed versions in a single affected package
                 affected_purls, fixed_purls = get_exact_purls(affected_package)
-                for fixed_purl in fixed_purls:
+                if not fixed_purls:
                     yield Inference(
                         aliases=advisory_data.aliases,
                         confidence=MAX_CONFIDENCE,
                         summary=advisory_data.summary,
                         affected_purls=affected_purls,
-                        fixed_purl=fixed_purl,
+                        fixed_purl=None,
                         references=advisory_data.references,
                     )
+                else:
+                    for fixed_purl in fixed_purls or []:
+                        yield Inference(
+                            aliases=advisory_data.aliases,
+                            confidence=MAX_CONFIDENCE,
+                            summary=advisory_data.summary,
+                            affected_purls=affected_purls,
+                            fixed_purl=fixed_purl,
+                            references=advisory_data.references,
+                        )
 
         else:
             yield Inference.from_advisory_data(

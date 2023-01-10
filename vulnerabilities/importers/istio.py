@@ -59,28 +59,28 @@ class IstioImporter(Importer):
         for release in data.get("releases") or []:
             # If it is of form "All releases prior to x"
             if "All releases prior" in release:
-                release = release.strip()
-                release = release.split(" ")
+                _, _, release = release.strip().rpartition(" ")
                 constraints.append(
-                    VersionConstraint(version=SemverVersion(release[4]), comparator="<")
+                    VersionConstraint(version=SemverVersion(release), comparator="<")
                 )
 
             # Eg. 'All releases 1.5 and later'
             elif "All releases" in release and "and later" in release:
-                release = release.split()[2].strip()
+                # remove All releases from string
+                release = release.replace("All releases", "").strip()
+                # remove and later from string
+                release = release.replace("and later", "").strip()
+                if not is_release(release):
+                    continue
                 constraints.append(
-                    VersionConstraint(version=SemverVersion(release), comparator=">")
+                    VersionConstraint(version=SemverVersion(release), comparator=">=")
                 )
 
+            # Eg. 1.5 to 2.0
             elif "to" in release:
-                release = release.strip()
-                release = release.split(" ")
-                constraints.append(
-                    VersionConstraint(version=SemverVersion(release[0]), comparator=">=")
-                )
-                constraints.append(
-                    VersionConstraint(version=SemverVersion(release[2]), comparator="<=")
-                )
+                lower, _, upper = release.strip().partition("to")
+                constraints.append(VersionConstraint(version=SemverVersion(lower), comparator=">="))
+                constraints.append(VersionConstraint(version=SemverVersion(upper), comparator="<="))
 
             # If it is a single release
             elif is_release(release):
@@ -95,19 +95,20 @@ class IstioImporter(Importer):
 
             affected_packages = []
 
-            affected_packages.append(
-                AffectedPackage(
-                    package=PackageURL(type="golang", name="istio"),
-                    affected_version_range=GolangVersionRange(constraints=constraints),
+            if constraints:
+                affected_packages.append(
+                    AffectedPackage(
+                        package=PackageURL(type="golang", namespace="istio.io", name="istio"),
+                        affected_version_range=GolangVersionRange(constraints=constraints),
+                    )
                 )
-            )
 
-            affected_packages.append(
-                AffectedPackage(
-                    package=PackageURL(type="github", name="istio"),
-                    affected_version_range=GitHubVersionRange(constraints=constraints),
+                affected_packages.append(
+                    AffectedPackage(
+                        package=PackageURL(type="github", namespace="istio", name="istio"),
+                        affected_version_range=GitHubVersionRange(constraints=constraints),
+                    )
                 )
-            )
 
             title = data.get("title") or ""
             references = []

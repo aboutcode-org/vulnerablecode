@@ -15,8 +15,8 @@ from vulnerabilities.importers import debian_oval
 from vulnerabilities.importers import gentoo
 from vulnerabilities.importers import github
 from vulnerabilities.importers import gitlab
-from vulnerabilities.importers import mozilla
 from vulnerabilities.importers import istio
+from vulnerabilities.importers import mozilla
 from vulnerabilities.importers import nginx
 from vulnerabilities.importers import npm
 from vulnerabilities.importers import nvd

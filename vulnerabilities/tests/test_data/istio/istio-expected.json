@@ -8,25 +8,25 @@
       {
         "package": {
           "type": "golang",
-          "namespace": null,
+          "namespace": "istio.io",
           "name": "istio",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
-        "affected_version_range": "vers:golang/>=1.1.0|<=1.1.15|>=1.2.0|<=1.2.6|>=1.3.0|<=1.3.1",
+        "affected_version_range": "vers:golang/<0.0.9|>=1.1.0|<=1.1.15|>=1.3.0|<=1.3.1|>=1.5.0",
         "fixed_version": null
       },
       {
         "package": {
           "type": "github",
-          "namespace": null,
+          "namespace": "istio",
           "name": "istio",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
-        "affected_version_range": "vers:github/>=1.1.0|<=1.1.15|>=1.2.0|<=1.2.6|>=1.3.0|<=1.3.1",
+        "affected_version_range": "vers:github/<0.0.9|>=1.1.0|<=1.1.15|>=1.3.0|<=1.3.1|>=1.5.0",
         "fixed_version": null
       }
     ],

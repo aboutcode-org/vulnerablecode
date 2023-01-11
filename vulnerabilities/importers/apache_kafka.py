@@ -27,7 +27,7 @@ affected_version_range_mapping = {
         "action": "include",
         "2.8.0 - 2.8.1, 3.0.0 - 3.0.1, 3.1.0 - 3.1.1, 3.2.0 - 3.2.1": "affected",
         "2.8.2, 3.0.2, 3.1.2, 3.2.3": "fixed",
-        "affected_version_range": "vers:maven/>=2.8.0|<=2.8.1|!=2.8.2|>=3.0.0|<=3.0.1|!=3.0.2|>=3.1.0|<=3.1.1|!=3.1.2|>=3.2.0|<=3.2.1|!=3.2.3",
+        "affected_version_range": "vers:apache/>=2.8.0|<=2.8.1|!=2.8.2|>=3.0.0|<=3.0.1|!=3.0.2|>=3.1.0|<=3.1.1|!=3.1.2|>=3.2.0|<=3.2.1|!=3.2.3",
     },
     "CVE-2022-23302": {
         "action": "omit",
@@ -51,31 +51,31 @@ affected_version_range_mapping = {
         "action": "include",
         "2.0.0, 2.0.1, 2.1.0, 2.1.1, 2.2.0, 2.2.1, 2.2.2, 2.3.0, 2.3.1, 2.4.0, 2.4.1, 2.5.0, 2.5.1, 2.6.0, 2.6.1, 2.6.2, 2.7.0, 2.7.1, 2.8.0.": "affected",
         "2.6.3, 2.7.2, 2.8.1, 3.0.0 and later": "fixed",
-        "affected_version_range": "vers:maven/2.0.0|2.0.1|2.1.0|2.1.1|2.2.0|2.2.1|2.2.2|2.3.0|2.3.1|2.4.0|2.4.1|2.5.0|2.5.1|2.6.0|2.6.1|2.6.2|!=2.6.3|2.7.0|2.7.1|!=2.7.2|2.8.0.|!=2.8.1|<3.0.0",
+        "affected_version_range": "vers:apache/2.0.0|2.0.1|2.1.0|2.1.1|2.2.0|2.2.1|2.2.2|2.3.0|2.3.1|2.4.0|2.4.1|2.5.0|2.5.1|2.6.0|2.6.1|2.6.2|!=2.6.3|2.7.0|2.7.1|!=2.7.2|2.8.0.|!=2.8.1|<3.0.0",
     },
     "CVE-2019-12399": {
         "action": "include",
         "2.0.0, 2.0.1, 2.1.0, 2.1.1, 2.2.0, 2.2.1, 2.3.0": "affected",
         "2.2.2, 2.3.1 and later": "fixed",
-        "affected_version_range": "vers:maven/2.0.0|2.0.1|2.1.0|2.1.1|2.2.0|2.2.1|!=2.2.2|2.3.0|<2.3.1",
+        "affected_version_range": "vers:apache/2.0.0|2.0.1|2.1.0|2.1.1|2.2.0|2.2.1|!=2.2.2|2.3.0|<2.3.1",
     },
     "CVE-2018-17196": {
         "action": "include",
         "0.11.0.0 to 2.1.0": "affected",
         "2.1.1 and later": "fixed",
-        "affected_version_range": "vers:maven/>=0.11.0.0|<=2.1.0|<2.1.1",
+        "affected_version_range": "vers:apache/>=0.11.0.0|<=2.1.0|<2.1.1",
     },
     "CVE-2018-1288": {
         "action": "include",
         "0.9.0.0 to 0.9.0.1, 0.10.0.0 to 0.10.2.1, 0.11.0.0 to 0.11.0.2, 1.0.0": "affected",
         "0.10.2.2, 0.11.0.3, 1.0.1, 1.1.0": "fixed",
-        "affected_version_range": "vers:maven/>=0.9.0.0|<=0.9.0.1|>=0.10.0.0|<=0.10.2.1|!=0.10.2.2|>=0.11.0.0|<=0.11.0.2|!=0.11.0.3|1.0.0|!=1.0.1|!=1.1.0",
+        "affected_version_range": "vers:apache/>=0.9.0.0|<=0.9.0.1|>=0.10.0.0|<=0.10.2.1|!=0.10.2.2|>=0.11.0.0|<=0.11.0.2|!=0.11.0.3|1.0.0|!=1.0.1|!=1.1.0",
     },
     "CVE-2017-12610": {
         "action": "include",
         "0.10.0.0 to 0.10.2.1, 0.11.0.0 to 0.11.0.1": "affected",
         "0.10.2.2, 0.11.0.2, 1.0.0": "fixed",
-        "affected_version_range": "vers:maven/>=0.10.0.0|<=0.10.2.1|!=0.10.2.2|>=0.11.0.0|<=0.11.0.1|!=0.11.0.2|!=1.0.0",
+        "affected_version_range": "vers:apache/>=0.10.0.0|<=0.10.2.1|!=0.10.2.2|>=0.11.0.0|<=0.11.0.1|!=0.11.0.2|!=1.0.0",
     },
 }
 
@@ -162,8 +162,8 @@ class ApacheKafkaImporter(Importer):
                 affected_packages = []
                 affected_package = AffectedPackage(
                     package=PackageURL(
-                        name="apache_kafka",
-                        type="maven",
+                        name="kafka",
+                        type="apache",
                     ),
                     affected_version_range=affected_version_range_mapping[cve_id][
                         "affected_version_range"

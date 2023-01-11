@@ -7,14 +7,14 @@
     "affected_packages": [
       {
         "package": {
-          "type": "maven",
+          "type": "apache",
           "namespace": null,
-          "name": "apache_kafka",
+          "name": "kafka",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
-        "affected_version_range": "vers:maven/>=2.8.0|<=2.8.1|!=2.8.2|>=3.0.0|<=3.0.1|!=3.0.2|>=3.1.0|<=3.1.1|!=3.1.2|>=3.2.0|<=3.2.1|!=3.2.3",
+        "affected_version_range": "vers:apache/>=2.8.0|<=2.8.1|!=2.8.2|>=3.0.0|<=3.0.1|!=3.0.2|>=3.1.0|<=3.1.1|!=3.1.2|>=3.2.0|<=3.2.1|!=3.2.3",
         "fixed_version": null
       }
     ],
@@ -40,14 +40,14 @@
     "affected_packages": [
       {
         "package": {
-          "type": "maven",
+          "type": "apache",
           "namespace": null,
-          "name": "apache_kafka",
+          "name": "kafka",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
-        "affected_version_range": "vers:maven/2.0.0|2.0.1|2.1.0|2.1.1|2.2.0|2.2.1|2.2.2|2.3.0|2.3.1|2.4.0|2.4.1|2.5.0|2.5.1|2.6.0|2.6.1|2.6.2|!=2.6.3|2.7.0|2.7.1|!=2.7.2|2.8.0.|!=2.8.1|<3.0.0",
+        "affected_version_range": "vers:apache/2.0.0|2.0.1|2.1.0|2.1.1|2.2.0|2.2.1|2.2.2|2.3.0|2.3.1|2.4.0|2.4.1|2.5.0|2.5.1|2.6.0|2.6.1|2.6.2|!=2.6.3|2.7.0|2.7.1|!=2.7.2|2.8.0.|!=2.8.1|<3.0.0",
         "fixed_version": null
       }
     ],
@@ -73,14 +73,14 @@
     "affected_packages": [
       {
         "package": {
-          "type": "maven",
+          "type": "apache",
           "namespace": null,
-          "name": "apache_kafka",
+          "name": "kafka",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
-        "affected_version_range": "vers:maven/2.0.0|2.0.1|2.1.0|2.1.1|2.2.0|2.2.1|!=2.2.2|2.3.0|<2.3.1",
+        "affected_version_range": "vers:apache/2.0.0|2.0.1|2.1.0|2.1.1|2.2.0|2.2.1|!=2.2.2|2.3.0|<2.3.1",
         "fixed_version": null
       }
     ],
@@ -106,14 +106,14 @@
     "affected_packages": [
       {
         "package": {
-          "type": "maven",
+          "type": "apache",
           "namespace": null,
-          "name": "apache_kafka",
+          "name": "kafka",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
-        "affected_version_range": "vers:maven/>=0.11.0.0|<=2.1.0|<2.1.1",
+        "affected_version_range": "vers:apache/>=0.11.0.0|<=2.1.0|<2.1.1",
         "fixed_version": null
       }
     ],
@@ -139,14 +139,14 @@
     "affected_packages": [
       {
         "package": {
-          "type": "maven",
+          "type": "apache",
           "namespace": null,
-          "name": "apache_kafka",
+          "name": "kafka",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
-        "affected_version_range": "vers:maven/>=0.9.0.0|<=0.9.0.1|>=0.10.0.0|<=0.10.2.1|!=0.10.2.2|>=0.11.0.0|<=0.11.0.2|!=0.11.0.3|1.0.0|!=1.0.1|!=1.1.0",
+        "affected_version_range": "vers:apache/>=0.9.0.0|<=0.9.0.1|>=0.10.0.0|<=0.10.2.1|!=0.10.2.2|>=0.11.0.0|<=0.11.0.2|!=0.11.0.3|1.0.0|!=1.0.1|!=1.1.0",
         "fixed_version": null
       }
     ],
@@ -172,14 +172,14 @@
     "affected_packages": [
       {
         "package": {
-          "type": "maven",
+          "type": "apache",
           "namespace": null,
-          "name": "apache_kafka",
+          "name": "kafka",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
-        "affected_version_range": "vers:maven/>=0.10.0.0|<=0.10.2.1|!=0.10.2.2|>=0.11.0.0|<=0.11.0.1|!=0.11.0.2|!=1.0.0",
+        "affected_version_range": "vers:apache/>=0.10.0.0|<=0.10.2.1|!=0.10.2.2|>=0.11.0.0|<=0.11.0.1|!=0.11.0.2|!=1.0.0",
         "fixed_version": null
       }
     ],

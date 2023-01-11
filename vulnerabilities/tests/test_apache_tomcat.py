@@ -9,24 +9,18 @@
 
 import os
 from unittest import TestCase
-from unittest.mock import patch
 
-from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
 from univers.version_range import ApacheVersionRange
 from univers.version_range import MavenVersionRange
 from univers.versions import MavenVersion
 from univers.versions import SemverVersion
 
-from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import Reference
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatImporter
 from vulnerabilities.importers.apache_tomcat import extract_tomcat_advisory_data_from_page
 from vulnerabilities.importers.apache_tomcat import to_version_ranges_apache
 from vulnerabilities.importers.apache_tomcat import to_version_ranges_maven
-from vulnerabilities.package_managers import MavenVersionAPI
-from vulnerabilities.package_managers import PackageVersion
-from vulnerabilities.utils import AffectedPackage
+from vulnerabilities.tests import util_tests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/apache_tomcat")
@@ -36,6 +30,13 @@ def test_method_extract_advisories_from_page():
     with open(os.path.join(TEST_DATA, "apache_tomcat-selected-advisories.html")) as f:
         raw_data = f.read()
     extracted_advisories = ApacheTomcatImporter().extract_advisories_from_page(raw_data)
+
+    results = [adv.to_dict() for d in extracted_advisories for adv in d]
+
+    expected_file = os.path.join(
+        TEST_DATA, f"parse-apache_tomcat-selected-advisories-expected.json"
+    )
+    util_tests.check_results_against_json(results, expected_file)
 
 
 def test_extract_advisories_from_page():
@@ -301,12 +302,6 @@ def test_extract_advisories_from_page_with_multiple_groups():
     results = extract_tomcat_advisory_data_from_page(page)
     results = [d.to_dict() for d in results]
     assert results == expected
-
-
-# This test is temporary -- just for running apache_tomcat.py using all HTML report pages.
-# Will replace with a REGEN-based test as with apache_httpd and postgresql.
-def test_advisory_data():
-    returned_advisories = ApacheTomcatImporter().advisory_data()
 
 
 def test_fetch_links():

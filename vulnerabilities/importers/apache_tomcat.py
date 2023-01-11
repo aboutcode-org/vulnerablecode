@@ -8,7 +8,6 @@
 #
 
 import dataclasses
-import json
 import logging
 import urllib
 from collections import namedtuple
@@ -30,18 +29,6 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import APACHE_TOMCAT
 
 LOGGER = logging.getLogger(__name__)
-
-# For temporary data testing.
-PRINT = False
-TRACE = True
-record_of_all_affects_elements = []
-record_of_all_affected_versions = []
-record_of_all_reported_cves = []
-record_of_all_reported_advisories = []
-record_of_all_reported_advisories_test01 = []
-record_of_all_reported_advisories_test02 = []
-record_of_all_reported_advisories_test03 = []
-
 
 corrective_data_mapping = {
     ("not released Fixed in Apache Tomcat 9.0.9", "CVE-2018-8014"): {
@@ -163,58 +150,7 @@ class ApacheTomcatImporter(Importer):
         for advisory_page in self.fetch_advisory_pages():
             advisories.extend(self.extract_advisories_from_page(advisory_page))
 
-        # This is what we want -- 243 advisory_data_objects = 243 "fixed version" groups.
-        for adv in advisories:
-            record_of_all_reported_advisories.append(adv)
-
-        if TRACE:
-            self.debug_advisory_data(advisories)
-
-        if PRINT:
-            print("\nlen(advisories) = {}\n".format(len(advisories)))
-
-            advisories_list = list(advisories)
-            for adv in advisories_list:
-                print("adv = {}".format(adv))
-
         return advisories
-
-    def debug_advisory_data(self, advisories):
-
-        tomcat_affects_elements = "vulnerabilities/tests/test_data/apache_tomcat/trace/record_of_all_affects_elements-2023-01-04-00.txt"
-        with open(tomcat_affects_elements, "w") as f:
-            for line in record_of_all_affects_elements:
-                f.write(f"{line}\n")
-
-        tomcat_affected_versions = "vulnerabilities/tests/test_data/apache_tomcat/trace/record_of_all_affected_versions-2023-01-04-00.txt"
-        with open(tomcat_affected_versions, "w") as f:
-            for line in record_of_all_affected_versions:
-                f.write(f"{line}\n")
-
-        tomcat_reported_cves = "vulnerabilities/tests/test_data/apache_tomcat/trace/record_of_all_reported_cves-2023-01-04-00.txt"
-        with open(tomcat_reported_cves, "w") as f:
-            for line in record_of_all_reported_cves:
-                f.write(f"{line}\n")
-
-        tomcat_reported_advisories = "vulnerabilities/tests/test_data/apache_tomcat/trace/record_of_all_reported_advisories-2023-01-06-00.txt"
-        with open(tomcat_reported_advisories, "w") as f:
-            for line in record_of_all_reported_advisories:
-                f.write(f"{line}\n")
-
-        tomcat_reported_advisories_test01 = "vulnerabilities/tests/test_data/apache_tomcat/trace/record_of_all_reported_advisories_test01-2023-01-06-00.txt"
-        with open(tomcat_reported_advisories_test01, "w") as f:
-            for line in record_of_all_reported_advisories_test01:
-                f.write(f"{line}\n")
-
-        tomcat_reported_advisories_test02 = "vulnerabilities/tests/test_data/apache_tomcat/trace/record_of_all_reported_advisories_test02-2023-01-06-00.txt"
-        with open(tomcat_reported_advisories_test02, "w") as f:
-            for line in record_of_all_reported_advisories_test02:
-                f.write(f"{line}\n")
-
-        tomcat_reported_advisories_test03 = "vulnerabilities/tests/test_data/apache_tomcat/trace/record_of_all_reported_advisories_test03-2023-01-06-00.txt"
-        with open(tomcat_reported_advisories_test03, "w") as f:
-            for line in record_of_all_reported_advisories_test03:
-                f.write(f"{line}\n")
 
     def extract_advisories_from_page(self, apache_tomcat_advisory_html):
         """
@@ -230,27 +166,6 @@ class ApacheTomcatImporter(Importer):
         for advisory_group in fixed_version_advisory_groups:
             advisory_data_objects = generate_advisory_data_objects(advisory_group)
 
-            if PRINT:
-                print("\n>>> advisory_data_objects = {}".format(advisory_data_objects))
-
-            if TRACE:
-                for advisory_data_object in advisory_data_objects:
-                    record_of_all_reported_advisories_test03.append(advisory_data_object)
-
-                    if PRINT:
-                        print("\nadvisory_data_object = {}\n".format(advisory_data_object))
-                        print(
-                            "\nadvisory_data_object.to_dict() = {}\n".format(
-                                advisory_data_object.to_dict()
-                            )
-                        )
-
-                    adv_dict = advisory_data_object.to_dict()
-                    if PRINT:
-                        print(json.dumps(adv_dict, indent=4, sort_keys=False))
-
-                    record_of_all_reported_advisories_test01.append(adv_dict)
-
             advisories.append(advisory_data_objects)
 
         return advisories
@@ -260,7 +175,7 @@ class ApacheTomcatImporter(Importer):
 class TomcatAdvisoryData:
     fixed_versions: list
     advisory_groups: list
-    # 2023-01-09 Monday 14:43:24.  Use this as 1st key in dict?
+    # Use this as the 1st key in `corrective_data_mapping` dictionary.
     fixed_version_heading_text: str
 
     def to_dict(self):
@@ -283,10 +198,6 @@ def extract_tomcat_advisory_data_from_page(apache_tomcat_advisory_html):
     # <h3 id="Fixed_in_Apache_Tomcat_10.0.27"><span class="pull-right">2022-10-10</span> Fixed in Apache Tomcat 10.0.27</h3>
     pageh3s = page_soup.find_all("h3")
 
-    # fixed_version_headings = [
-    #     heading for heading in pageh3s if "Fixed in Apache Tomcat" in heading.text
-    # ]
-
     # Include the 2 groups of not-fixed advisories.
     fixed_header_substrings = (
         "Fixed in Apache Tomcat",
@@ -303,16 +214,10 @@ def extract_tomcat_advisory_data_from_page(apache_tomcat_advisory_html):
     ]
 
     for fixed_version_heading in fixed_version_headings:
-        if PRINT:
-            print("\n==================================================\n")
-            print("*** fixed_version_heading.text = {} ***".format(fixed_version_heading.text))
-
         fixed_versions = []
-        # fixed_version = fixed_version_heading.text.split("Fixed in Apache Tomcat")[-1].strip()
         fixed_version = ""
 
-        # # 2023-01-09 Monday 10:31:29.  Include the 2 groups of not-fixed advisories.
-        # # We report no value for those that won't be fixed.
+        # Include the 2 groups of not-fixed advisories.  We report no value for those that won't be fixed.
         if "Fixed in Apache Tomcat" in fixed_version_heading.text:
             fixed_version = fixed_version_heading.text.split("Fixed in Apache Tomcat")[-1].strip()
         elif "Will not be fixed in Apache Tomcat 4.1.x" in fixed_version_heading.text:
@@ -330,9 +235,6 @@ def extract_tomcat_advisory_data_from_page(apache_tomcat_advisory_html):
             fixed_versions = fixed_version.split(" and ")
         else:
             fixed_versions.append(fixed_version)
-
-        if PRINT:
-            print("*** fixed_versions = {} ***\n".format(fixed_versions))
 
         # Each group of fixed-version-related data is contained in a div that immediately follows the h3 element, e.g.,
         # <h3 id="Fixed_in_Apache_Tomcat_8.5.8"><span class="pull-right">8 November 2016</span> Fixed in Apache Tomcat 8.5.8</h3>
@@ -362,8 +264,6 @@ def extract_tomcat_advisory_data_from_page(apache_tomcat_advisory_html):
 
                 advisory_groups.append(current_group)
 
-        # yield TomcatAdvisoryData(fixed_versions=fixed_versions, advisory_groups=advisory_groups)
-        # fixed_version_heading.text
         yield TomcatAdvisoryData(
             fixed_versions=fixed_versions,
             advisory_groups=advisory_groups,
@@ -372,9 +272,7 @@ def extract_tomcat_advisory_data_from_page(apache_tomcat_advisory_html):
 
 
 def generate_advisory_data_objects(tomcat_advisory_data_object):
-
     fixed_versions = tomcat_advisory_data_object.fixed_versions
-
     severity_scores = ("Low:", "Moderate:", "Important:", "High:", "Critical:")
 
     for para_list in tomcat_advisory_data_object.advisory_groups:
@@ -383,44 +281,18 @@ def generate_advisory_data_objects(tomcat_advisory_data_object):
         references = []
         cve_url_list = []
         for para in para_list:
-
             if para.text.startswith("Affects:"):
-                if TRACE:
-                    record_of_all_affects_elements.append(para.text)
-
-                if PRINT:
-                    print("\npara.text startswith affects = {}".format(para.text))
-
                 formatted_affected_version_data = para.text.split(":")[-1].split(", ")
-                if PRINT:
-                    print(
-                        "\nformatted_affected_version_data = {}\n".format(
-                            formatted_affected_version_data
-                        )
-                    )
-
                 affected_versions.extend(formatted_affected_version_data)
-
-                if PRINT:
-                    print("\naffected_versions = {}".format(affected_versions))
-
             elif "was fixed in" in para.text or "was fixed with" in para.text:
                 fixed_commit_list = para.find_all("a")
-                if PRINT:
-                    print("\nfixed_commit_list = {}\n".format(fixed_commit_list))
-
                 references.extend([ref_url["href"] for ref_url in fixed_commit_list])
             elif para.text.startswith(severity_scores):
                 cve_url_list = para.find_all("a")
                 cve_list = [cve_url.text for cve_url in cve_url_list]
-                if PRINT:
-                    print("\n==> cve_list = {}".format(cve_list))
-
                 severity_score = para.text.split(":")[0]
 
         for cve_url in cve_url_list:
-            if PRINT:
-                print("\n^^^ cve_url = {}\n".format(cve_url))
             aliases = []
             aliases.append(cve_url.text)
 
@@ -433,39 +305,10 @@ def generate_advisory_data_objects(tomcat_advisory_data_object):
                 )
             )
 
-            # # Check the dictionary and supply/replace needed values.  Convert `fixed_versions`` list
-            # # to a tuple so it's hashable and thus can serve as part of a tuple-based dictionary key.
-            # if PRINT:
-            #     print("fixed_versions before update if any = {}".format(fixed_versions))
-            #     print("affected_versions before update if any = {}\n".format(affected_versions))
-
-            # fixed_versions_tuple = tuple(fixed_versions)
-
-            # if (fixed_versions_tuple, cve_url.text) in corrective_data_mapping.keys():
-            #     if PRINT:
-            #         print("\n\n-- REPLACE/CORRECT VERSION DATA --  \n\n")
-            #     fixed_versions = corrective_data_mapping[fixed_versions_tuple, cve_url.text][
-            #         "fixed_versions"
-            #     ]
-            #     affected_versions = corrective_data_mapping[fixed_versions_tuple, cve_url.text][
-            #         "affected_versions"
-            #     ]
-            # else:
-            #     pass
-
-            # 2023-01-09 Monday 14:48:34.  Use the fixed header string in place of the tuple
-            # Check the dictionary and supply/replace needed values.
-            if PRINT:
-                print("fixed_versions before update if any = {}".format(fixed_versions))
-                print("affected_versions before update if any = {}\n".format(affected_versions))
-
-            # fixed_versions_tuple = tuple(fixed_versions)
-            # 2023-01-09 Monday 14:45:55.  Try this as the 1st dict key:
+            # This is the 1st `corrective_data_mapping` key:
             fixed_version_heading_text = tomcat_advisory_data_object.fixed_version_heading_text
 
             if (fixed_version_heading_text, cve_url.text) in corrective_data_mapping.keys():
-                if PRINT:
-                    print("\n\n-- REPLACE/CORRECT VERSION DATA --  \n\n")
                 fixed_versions = corrective_data_mapping[fixed_version_heading_text, cve_url.text][
                     "fixed_versions"
                 ]
@@ -474,23 +317,6 @@ def generate_advisory_data_objects(tomcat_advisory_data_object):
                 ]["affected_versions"]
             else:
                 pass
-
-            if PRINT:
-                print("==> reported_cve = {}\n".format(cve_url.text))
-                print("fixed_versions after update if any = {}".format(fixed_versions))
-                print("affected_versions after update if any = {}".format(affected_versions))
-            if TRACE:
-                record_of_all_reported_cves.append(cve_url.text)
-                record_of_all_affected_versions.append(affected_versions)
-
-            # try:
-            #     affected_version_range_apache = to_version_ranges_apache(
-            #         affected_versions,
-            #         fixed_versions,
-            #     )
-            # except Exception as e:
-            #     LOGGER.error(f"{affected_versions!r} is not a valid SemverVersion {e!r}")
-            #     continue
 
             affected_version_range_apache = to_version_ranges_apache(
                 affected_versions,
@@ -536,18 +362,6 @@ def generate_advisory_data_objects(tomcat_advisory_data_object):
                 )
             )
 
-            if TRACE:
-                temp_advisory_data_object = AdvisoryData(
-                    aliases=aliases,
-                    summary="",
-                    affected_packages=affected_packages,
-                    references=references,
-                )
-
-                temp_advisory_dict = temp_advisory_data_object.to_dict()
-
-                record_of_all_reported_advisories_test02.append(temp_advisory_dict)
-
             yield AdvisoryData(
                 aliases=aliases,
                 summary="",
@@ -567,20 +381,6 @@ def to_version_ranges_apache(versions_data, fixed_versions):
         version_item = version_item.strip()
         if "to" in version_item:
             version_item_split = version_item.split(" ")
-
-            # constraints.append(
-            #     VersionConstraint(
-            #         comparator=">=",
-            #         version=SemverVersion(version_item_split[0]),
-            #     )
-            # )
-            # constraints.append(
-            #     VersionConstraint(
-            #         comparator="<=",
-            #         version=SemverVersion(version_item_split[-1]),
-            #     )
-            # )
-
             affected_constraint_tuple_list.append(
                 VersionConstraintTuple(">=", version_item_split[0])
             )
@@ -590,20 +390,6 @@ def to_version_ranges_apache(versions_data, fixed_versions):
 
         elif "-" in version_item:
             version_item_split = version_item.split("-")
-
-            # constraints.append(
-            #     VersionConstraint(
-            #         comparator=">=",
-            #         version=SemverVersion(version_item_split[0]),
-            #     )
-            # )
-            # constraints.append(
-            #     VersionConstraint(
-            #         comparator="<=",
-            #         version=SemverVersion(version_item_split[-1]),
-            #     )
-            # )
-
             affected_constraint_tuple_list.append(
                 VersionConstraintTuple(">=", version_item_split[0])
             )
@@ -613,28 +399,12 @@ def to_version_ranges_apache(versions_data, fixed_versions):
 
         elif version_item.startswith("<"):
             version_item_split = version_item.split("<")
-
-            # constraints.append(
-            #     VersionConstraint(
-            #         comparator="<",
-            #         version=SemverVersion(version_item_split[-1]),
-            #     )
-            # )
-
             affected_constraint_tuple_list.append(
                 VersionConstraintTuple("<", version_item_split[-1])
             )
 
         else:
             version_item_split = version_item.split(" ")
-
-            # constraints.append(
-            #     VersionConstraint(
-            #         comparator="=",
-            #         version=SemverVersion(version_item_split[0]),
-            #     )
-            # )
-
             affected_constraint_tuple_list.append(
                 VersionConstraintTuple("=", version_item_split[0])
             )
@@ -643,33 +413,11 @@ def to_version_ranges_apache(versions_data, fixed_versions):
 
         if "-" in fixed_item and not any([i.isalpha() for i in fixed_item]):
             fixed_item_split = fixed_item.split(" ")
-
-            # constraints.append(
-            #     VersionConstraint(
-            #         comparator=">=",
-            #         version=SemverVersion(fixed_item_split[0]),
-            #     ).invert()
-            # )
-            # constraints.append(
-            #     VersionConstraint(
-            #         comparator="<=",
-            #         version=SemverVersion(fixed_item_split[-1]),
-            #     ).invert()
-            # )
-
             fixed_constraint_tuple_list.append(VersionConstraintTuple(">=", fixed_item_split[0]))
             fixed_constraint_tuple_list.append(VersionConstraintTuple("<=", fixed_item_split[-1]))
 
         else:
             fixed_item_split = fixed_item.split(" ")
-
-            # constraints.append(
-            #     VersionConstraint(
-            #         comparator="=",
-            #         version=SemverVersion(fixed_item_split[0]),
-            #     ).invert()
-            # )
-
             fixed_constraint_tuple_list.append(VersionConstraintTuple("=", fixed_item_split[0]))
 
     for record in affected_constraint_tuple_list:

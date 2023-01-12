@@ -27,6 +27,7 @@ from vulnerabilities.importers import pypa
 from vulnerabilities.importers import pysec
 from vulnerabilities.importers import redhat
 from vulnerabilities.importers import retiredotnet
+from vulnerabilities.importers import suse_scores
 from vulnerabilities.importers import ubuntu
 
 IMPORTERS_REGISTRY = [
@@ -51,6 +52,7 @@ IMPORTERS_REGISTRY = [
     gentoo.GentooImporter,
     istio.IstioImporter,
     project_kb_msr2019.ProjectKBMSRImporter,
+    suse_scores.SUSESeverityScoreImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

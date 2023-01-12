@@ -6,7 +6,6 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-import logging
 from pathlib import Path
 from typing import Set
 
@@ -18,9 +17,8 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
+from vulnerabilities.utils import is_cve
 from vulnerabilities.utils import load_yaml
-
-logger = logging.getLogger(__name__)
 
 
 class ElixirSecurityImporter(Importer):
@@ -46,14 +44,17 @@ class ElixirSecurityImporter(Importer):
         cve_id = ""
         summary = yaml_file.get("description") or ""
         pkg_name = yaml_file.get("package") or ""
-        if not pkg_name:
-            return []
 
         cve = yaml_file.get("cve") or ""
 
         if cve and not cve.startswith("CVE-"):
-            cve = yaml_file["cve"]
             cve_id = f"CVE-{cve}"
+
+        if not cve_id:
+            return []
+
+        if not is_cve(cve_id):
+            return []
 
         references = []
         link = yaml_file.get("link") or ""
@@ -82,18 +83,16 @@ class ElixirSecurityImporter(Importer):
                 VersionConstraint.from_string(version_class=vrc, string=version).invert()
             )
 
-        affected_packages.append(
-            AffectedPackage(
-                package=PackageURL(
-                    type="hex",
-                    name=pkg_name,
-                ),
-                affected_version_range=HexVersionRange(constraints=constraints),
+        if pkg_name:
+            affected_packages.append(
+                AffectedPackage(
+                    package=PackageURL(
+                        type="hex",
+                        name=pkg_name,
+                    ),
+                    affected_version_range=HexVersionRange(constraints=constraints),
+                )
             )
-        )
-
-        if not cve_id:
-            return []
 
         yield AdvisoryData(
             aliases=[cve_id],

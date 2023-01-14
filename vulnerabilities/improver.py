@@ -78,7 +78,7 @@ class Inference:
         """
         return {
             "vulnerability_id": self.vulnerability_id,
-            "aliases": [alias for alias in self.aliases],
+            "aliases": self.aliases,
             "confidence": self.confidence,
             "summary": self.summary,
             "affected_purls": [affected_purl.to_dict() for affected_purl in self.affected_purls],
@@ -91,7 +91,7 @@ class Inference:
     def from_advisory_data(cls, advisory_data, confidence, fixed_purl, affected_purls=None):
         """
         Return an Inference object while keeping the same values as of advisory_data
-        for vulnerability_id, summary and references
+        for aliases, summary and references
         """
         return cls(
             aliases=advisory_data.aliases,

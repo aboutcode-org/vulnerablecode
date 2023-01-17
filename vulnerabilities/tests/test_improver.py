@@ -31,6 +31,7 @@ def test_inference_to_dict_method_with_vulnerability_id():
         "affected_purls": [],
         "fixed_purl": None,
         "references": [],
+        "weaknesses": [],
     }
     assert expected == inference.to_dict()
 
@@ -46,6 +47,7 @@ def test_inference_to_dict_method_with_purls():
         "affected_purls": [purl.to_dict()],
         "fixed_purl": purl.to_dict(),
         "references": [],
+        "weaknesses": [],
     }
     assert expected == inference.to_dict()
 

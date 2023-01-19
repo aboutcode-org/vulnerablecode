@@ -8,11 +8,13 @@
 #
 
 import bisect
+import csv
 import dataclasses
 import json
 import logging
 import os
 import re
+import urllib.request
 from collections import defaultdict
 from functools import total_ordering
 from hashlib import sha256
@@ -435,3 +437,9 @@ def remove_qualifiers_and_subpath(purl):
         name=purl.name,
         version=purl.version,
     )
+
+
+def fetch_and_read_from_csv(url):
+    response = urllib.request.urlopen(url)
+    lines = [l.decode("utf-8") for l in response.readlines()]
+    return csv.reader(lines)

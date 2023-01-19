@@ -7,9 +7,6 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import csv
-import urllib.request
-
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
@@ -44,9 +41,3 @@ class ProjectKBMSRImporter(Importer):
                 summary="",
                 references=[reference],
             )
-
-
-def fetch_and_read_from_csv(url):
-    response = urllib.request.urlopen(url)
-    lines = [l.decode("utf-8") for l in response.readlines()]
-    return csv.reader(lines)

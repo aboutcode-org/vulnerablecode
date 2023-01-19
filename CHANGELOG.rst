@@ -9,6 +9,7 @@ Next release
 - We re-enabled support for the gentoo vulnerabilities advisories importer.
 - We re-enabled support for the istio vulnerabilities advisories importer.
 - We re-enabled support for the kbmsr2019 vulnerabilities advisories importer.
+- We re-enabled support for the suse score advisories importer.
 
 
 Version v31.1.1

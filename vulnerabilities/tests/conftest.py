@@ -36,7 +36,6 @@ collect_ignore = [
     "test_safety_db.py",
     "test_suse_backports.py",
     "test_suse.py",
-    "test_suse_scores.py",
     "test_ubuntu_usn.py",
     "test_upstream.py",
 ]

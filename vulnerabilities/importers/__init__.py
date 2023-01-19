@@ -22,6 +22,7 @@ from vulnerabilities.importers import npm
 from vulnerabilities.importers import nvd
 from vulnerabilities.importers import openssl
 from vulnerabilities.importers import postgresql
+from vulnerabilities.importers import project_kb_msr2019
 from vulnerabilities.importers import pypa
 from vulnerabilities.importers import pysec
 from vulnerabilities.importers import redhat
@@ -49,6 +50,7 @@ IMPORTERS_REGISTRY = [
     mozilla.MozillaImporter,
     gentoo.GentooImporter,
     istio.IstioImporter,
+    project_kb_msr2019.ProjectKBMSRImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

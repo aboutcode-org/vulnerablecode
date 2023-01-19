@@ -36,13 +36,15 @@ class SUSESeverityScoreImporter(Importer):
             "3.1": severity_systems.CVSSV31,
         }
 
-        for cve_id in score_data:
+        for cve_id in score_data or []:
             severities = []
-            for cvss_score in score_data[cve_id]["cvss"]:
-                cvss_version = cvss_score["version"]
-                scoring_system = systems_by_version[cvss_version]
-                base_score = str(cvss_score["score"])
-                vector = str(cvss_score.get("vector", ""))
+            for cvss_score in score_data[cve_id].get("cvss") or []:
+                cvss_version = cvss_score.get("version") or ""
+                scoring_system = systems_by_version.get(cvss_version)
+                if not scoring_system:
+                    continue
+                base_score = str(cvss_score.get("score") or "")
+                vector = str(cvss_score.get("vector") or "")
                 score = VulnerabilitySeverity(
                     system=scoring_system,
                     value=base_score,

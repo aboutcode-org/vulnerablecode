@@ -1,0 +1,1980 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<oval_definitions
+		xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd"
+		xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5"
+		xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+	  <generator>
+	      <oval:product_name>Marcus Updateinfo to OVAL Converter</oval:product_name>
+	      <oval:schema_version>5.5</oval:schema_version>
+	      <oval:timestamp>2023-01-18T06:56:54</oval:timestamp>
+	  </generator>
+<definitions>
+<definition id="oval:org.opensuse.security:def:52363" version="1" class="patch">
+	<metadata>
+		<title>Security update for dpkg (Low)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1199944" ref_url="https://bugzilla.suse.com/1199944" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-1664" ref_url="https://www.suse.com/security/cve/CVE-2022-1664/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4081-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-November/012992.html" source="SUSE-SU"/>
+		<description>
+This update for dpkg fixes the following issues:
+
+- CVE-2022-1664: Fixed a directory traversal vulnerability in Dpkg::Source::Archive (bsc#1199944).
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-11-18"/>
+	<updated date="2022-11-18"/>
+	<severity>Low</severity>
+	<bugzilla href="https://bugzilla.suse.com/1199944">SUSE bug 1199944</bugzilla>
+	<cve impact="low" cvss3="4.4/CVSS:3.1/AV:L/AC:L/PR:H/UI:N/S:U/C:H/I:N/A:N" href="https://www.suse.com/security/cve/CVE-2022-1664/">CVE-2022-1664</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009723152" comment="update-alternatives-1.19.0.4-150000.4.4.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52364" version="1" class="patch">
+	<metadata>
+		<title>Security update for grub2 (Important)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1205178" ref_url="https://bugzilla.suse.com/1205178" source="BUGZILLA"/>
+		<reference ref_id="1205182" ref_url="https://bugzilla.suse.com/1205182" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-2601" ref_url="https://www.suse.com/security/cve/CVE-2022-2601/" source="CVE"/>
+		<reference ref_id="CVE-2022-3775" ref_url="https://www.suse.com/security/cve/CVE-2022-3775/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4141-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-November/013048.html" source="SUSE-SU"/>
+		<description>
+This update for grub2 fixes the following issues:
+
+- CVE-2022-2601: Fixed buffer overflow in grub_font_construct_glyph (bsc#1205178).
+- CVE-2022-3775: Fixed integer underflow in blit_comb() (bsc#1205182).
+
+Other:
+
+- Bump upstream SBAT generation to 3
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-11-21"/>
+	<updated date="2022-11-21"/>
+	<severity>Important</severity>
+	<bugzilla href="https://bugzilla.suse.com/1205178">SUSE bug 1205178</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1205182">SUSE bug 1205182</bugzilla>
+	<cve impact="moderate" cvss3="6.4/CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-2601/">CVE-2022-2601</cve>
+	<cve impact="moderate" cvss3="6.4/CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-3775/">CVE-2022-3775</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+		<criteria operator="OR">
+			<criterion test_ref="oval:org.opensuse.security:tst:2009728916" comment="grub2-2.06-150400.11.17.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009726180" comment="grub2-arm64-efi-2.06-150400.11.17.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009726183" comment="grub2-i386-pc-2.06-150400.11.17.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009726189" comment="grub2-snapper-plugin-2.06-150400.11.17.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009726191" comment="grub2-x86_64-efi-2.06-150400.11.17.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009726193" comment="grub2-x86_64-xen-2.06-150400.11.17.1 is installed"/>
+		</criteria>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52365" version="1" class="patch">
+	<metadata>
+		<title>Security update for kubevirt stack (Important)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="SUSE-SU-2022:4147-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-November/013045.html" source="SUSE-SU"/>
+		<description>
+
+This update provides rebuilds of the kubevirt containers with up to date base images,
+fixing various security issues.
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-11-21"/>
+	<updated date="2022-11-21"/>
+	<severity>Important</severity>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+		<criteria operator="OR">
+			<criterion test_ref="oval:org.opensuse.security:tst:2009725247" comment="kubevirt-manifests-0.54.0-150400.3.7.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009725254" comment="kubevirt-virtctl-0.54.0-150400.3.7.1 is installed"/>
+		</criteria>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52366" version="1" class="patch">
+	<metadata>
+		<title>Security update for krb5 (Important)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1205126" ref_url="https://bugzilla.suse.com/1205126" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-42898" ref_url="https://www.suse.com/security/cve/CVE-2022-42898/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4153-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-November/013050.html" source="SUSE-SU"/>
+		<description>
+This update for krb5 fixes the following issues:
+
+- CVE-2022-42898: Fixed integer overflow in PAC parsing (bsc#1205126).
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-11-21"/>
+	<updated date="2022-11-21"/>
+	<severity>Important</severity>
+	<bugzilla href="https://bugzilla.suse.com/1205126">SUSE bug 1205126</bugzilla>
+	<cve impact="moderate" cvss3="6.4/CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:L/I:H/A:L" href="https://www.suse.com/security/cve/CVE-2022-42898/">CVE-2022-42898</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009728917" comment="krb5-1.19.2-150400.3.3.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52367" version="1" class="patch">
+	<metadata>
+		<title>Security update for containerized-data-importer (Important)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="SUSE-SU-2022:4191-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-November/013088.html" source="SUSE-SU"/>
+		<description>
+
+This update rebuilds the current containeried data importer images against
+current base images, to fix security issues.
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-11-23"/>
+	<updated date="2022-11-23"/>
+	<severity>Important</severity>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009725343" comment="containerized-data-importer-manifests-1.51.0-150400.4.7.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52368" version="1" class="patch">
+	<metadata>
+		<title>Security update for net-snmp (Moderate)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1201103" ref_url="https://bugzilla.suse.com/1201103" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-24805" ref_url="https://www.suse.com/security/cve/CVE-2022-24805/" source="CVE"/>
+		<reference ref_id="CVE-2022-24806" ref_url="https://www.suse.com/security/cve/CVE-2022-24806/" source="CVE"/>
+		<reference ref_id="CVE-2022-24807" ref_url="https://www.suse.com/security/cve/CVE-2022-24807/" source="CVE"/>
+		<reference ref_id="CVE-2022-24808" ref_url="https://www.suse.com/security/cve/CVE-2022-24808/" source="CVE"/>
+		<reference ref_id="CVE-2022-24809" ref_url="https://www.suse.com/security/cve/CVE-2022-24809/" source="CVE"/>
+		<reference ref_id="CVE-2022-24810" ref_url="https://www.suse.com/security/cve/CVE-2022-24810/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4205-2" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-December/013226.html" source="SUSE-SU"/>
+		<description>
+This update for net-snmp fixes the following issues:
+
+  Updated to version 5.9.3 (bsc#1201103, jsc#SLE-11203):
+
+  - CVE-2022-24805: Fixed a buffer overflow in the handling of the INDEX of NET-SNMP-VACM-MIB that can cause an out-of-bounds memory access.
+  - CVE-2022-24809: Fixed a malformed OID in a GET-NEXT to the nsVacmAccessTable that can cause a NULL pointer dereference.
+  - CVE-2022-24806: Fixed an improper Input Validation when SETing malformed OIDs in master agent and subagent simultaneously.
+  - CVE-2022-24807: Fixed a malformed OID in a SET request to SNMP-VIEW-BASED-ACM-MIB::vacmAccessTable can cause an out-of-bounds memory access.
+  - CVE-2022-24808: Fixed a malformed OID in a SET request to NET-SNMP-AGENT-MIB::nsLogTable can cause a NULL pointer dereference.
+  - CVE-2022-24810: Fixed a malformed OID in a SET to the nsVacmAccessTable can cause a NULL pointer dereference.
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-12-13"/>
+	<updated date="2022-12-13"/>
+	<severity>Moderate</severity>
+	<bugzilla href="https://bugzilla.suse.com/1201103">SUSE bug 1201103</bugzilla>
+	<cve impact="moderate" href="https://www.suse.com/security/cve/CVE-2022-24805/">CVE-2022-24805</cve>
+	<cve impact="moderate" href="https://www.suse.com/security/cve/CVE-2022-24806/">CVE-2022-24806</cve>
+	<cve impact="moderate" href="https://www.suse.com/security/cve/CVE-2022-24807/">CVE-2022-24807</cve>
+	<cve impact="moderate" href="https://www.suse.com/security/cve/CVE-2022-24808/">CVE-2022-24808</cve>
+	<cve impact="moderate" href="https://www.suse.com/security/cve/CVE-2022-24809/">CVE-2022-24809</cve>
+	<cve impact="moderate" href="https://www.suse.com/security/cve/CVE-2022-24810/">CVE-2022-24810</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+		<criteria operator="OR">
+			<criterion test_ref="oval:org.opensuse.security:tst:2009728918" comment="libsnmp40-5.9.3-150300.15.3.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009728919" comment="snmp-mibs-5.9.3-150300.15.3.1 is installed"/>
+		</criteria>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52369" version="1" class="patch">
+	<metadata>
+		<title>Security update for pixman (Important)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1205033" ref_url="https://bugzilla.suse.com/1205033" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-44638" ref_url="https://www.suse.com/security/cve/CVE-2022-44638/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4206-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-November/013096.html" source="SUSE-SU"/>
+		<description>
+This update for pixman fixes the following issues:
+
+- CVE-2022-44638: Fixed an integer overflow in pixman_sample_floor_y leading to heap out-of-bounds write (bsc#1205033).
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-11-23"/>
+	<updated date="2022-11-23"/>
+	<severity>Important</severity>
+	<bugzilla href="https://bugzilla.suse.com/1205033">SUSE bug 1205033</bugzilla>
+	<cve impact="important" cvss3="8.8/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-44638/">CVE-2022-44638</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009728920" comment="libpixman-1-0-0.40.0-150400.3.3.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52370" version="1" class="patch">
+	<metadata>
+		<title>Security update for libarchive (Low)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1205629" ref_url="https://bugzilla.suse.com/1205629" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-36227" ref_url="https://www.suse.com/security/cve/CVE-2022-36227/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4209-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-November/013094.html" source="SUSE-SU"/>
+		<description>
+This update for libarchive fixes the following issues:
+
+- CVE-2022-36227: Fixed potential NULL pointer dereference in __archive_write_allocate_filter() (bsc#1205629).
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-11-23"/>
+	<updated date="2022-11-23"/>
+	<severity>Low</severity>
+	<bugzilla href="https://bugzilla.suse.com/1205629">SUSE bug 1205629</bugzilla>
+	<cve impact="low" cvss3="3.3/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:L" href="https://www.suse.com/security/cve/CVE-2022-36227/">CVE-2022-36227</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009728921" comment="libarchive13-3.5.1-150400.3.12.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52371" version="1" class="patch">
+	<metadata>
+		<title>Security update for libdb-4_8 (Low)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1174414" ref_url="https://bugzilla.suse.com/1174414" source="BUGZILLA"/>
+		<reference ref_id="CVE-2019-2708" ref_url="https://www.suse.com/security/cve/CVE-2019-2708/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4214-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-November/013106.html" source="SUSE-SU"/>
+		<description>
+This update for libdb-4_8 fixes the following issues:
+
+- CVE-2019-2708: Fixed partial DoS due to data store execution (bsc#1174414).
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-11-24"/>
+	<updated date="2022-11-24"/>
+	<severity>Low</severity>
+	<bugzilla href="https://bugzilla.suse.com/1174414">SUSE bug 1174414</bugzilla>
+	<cve impact="low" cvss3="3.3/CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L" href="https://www.suse.com/security/cve/CVE-2019-2708/">CVE-2019-2708</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+		<criteria operator="OR">
+			<criterion test_ref="oval:org.opensuse.security:tst:2009725639" comment="db48-utils-4.8.30-150000.7.6.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009725640" comment="libdb-4_8-4.8.30-150000.7.6.1 is installed"/>
+		</criteria>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52372" version="1" class="patch">
+	<metadata>
+		<title>Security update for tiff (Important)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1204641" ref_url="https://bugzilla.suse.com/1204641" source="BUGZILLA"/>
+		<reference ref_id="1204643" ref_url="https://bugzilla.suse.com/1204643" source="BUGZILLA"/>
+		<reference ref_id="1204644" ref_url="https://bugzilla.suse.com/1204644" source="BUGZILLA"/>
+		<reference ref_id="1204645" ref_url="https://bugzilla.suse.com/1204645" source="BUGZILLA"/>
+		<reference ref_id="1205392" ref_url="https://bugzilla.suse.com/1205392" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-3597" ref_url="https://www.suse.com/security/cve/CVE-2022-3597/" source="CVE"/>
+		<reference ref_id="CVE-2022-3599" ref_url="https://www.suse.com/security/cve/CVE-2022-3599/" source="CVE"/>
+		<reference ref_id="CVE-2022-3626" ref_url="https://www.suse.com/security/cve/CVE-2022-3626/" source="CVE"/>
+		<reference ref_id="CVE-2022-3627" ref_url="https://www.suse.com/security/cve/CVE-2022-3627/" source="CVE"/>
+		<reference ref_id="CVE-2022-3970" ref_url="https://www.suse.com/security/cve/CVE-2022-3970/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4259-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-November/013135.html" source="SUSE-SU"/>
+		<description>
+This update for tiff fixes the following issues:
+
+- CVE-2022-3597: Fixed out-of-bounds write in _TIFFmemcpy in libtiff/tif_unix.c (bnc#1204641).
+- CVE-2022-3599: Fixed out-of-bounds read in writeSingleSection in tools/tiffcrop.c (bnc#1204643).
+- CVE-2022-3626: Fixed out-of-bounds write in _TIFFmemset in libtiff/tif_unix.c (bnc#1204644)
+- CVE-2022-3627: Fixed out-of-bounds write in _TIFFmemcpy in libtiff/tif_unix.c (bnc#1204645).
+- CVE-2022-3970: Fixed unsigned integer overflow in TIFFReadRGBATileExt() (bnc#1205392).
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-11-28"/>
+	<updated date="2022-11-28"/>
+	<severity>Important</severity>
+	<bugzilla href="https://bugzilla.suse.com/1204641">SUSE bug 1204641</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1204643">SUSE bug 1204643</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1204644">SUSE bug 1204644</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1204645">SUSE bug 1204645</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1205392">SUSE bug 1205392</bugzilla>
+	<cve impact="moderate" cvss3="6.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2022-3597/">CVE-2022-3597</cve>
+	<cve impact="moderate" cvss3="6.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2022-3599/">CVE-2022-3599</cve>
+	<cve impact="moderate" cvss3="6.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2022-3626/">CVE-2022-3626</cve>
+	<cve impact="moderate" cvss3="6.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2022-3627/">CVE-2022-3627</cve>
+	<cve impact="important" cvss3="7.8/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-3970/">CVE-2022-3970</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009725556" comment="libtiff5-4.0.9-150000.45.19.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52373" version="1" class="patch">
+	<metadata>
+		<title>Security update for supportutils (Moderate)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1184689" ref_url="https://bugzilla.suse.com/1184689" source="BUGZILLA"/>
+		<reference ref_id="1188086" ref_url="https://bugzilla.suse.com/1188086" source="BUGZILLA"/>
+		<reference ref_id="1192252" ref_url="https://bugzilla.suse.com/1192252" source="BUGZILLA"/>
+		<reference ref_id="1192648" ref_url="https://bugzilla.suse.com/1192648" source="BUGZILLA"/>
+		<reference ref_id="1197428" ref_url="https://bugzilla.suse.com/1197428" source="BUGZILLA"/>
+		<reference ref_id="1200330" ref_url="https://bugzilla.suse.com/1200330" source="BUGZILLA"/>
+		<reference ref_id="1202269" ref_url="https://bugzilla.suse.com/1202269" source="BUGZILLA"/>
+		<reference ref_id="1202337" ref_url="https://bugzilla.suse.com/1202337" source="BUGZILLA"/>
+		<reference ref_id="1202417" ref_url="https://bugzilla.suse.com/1202417" source="BUGZILLA"/>
+		<reference ref_id="1203818" ref_url="https://bugzilla.suse.com/1203818" source="BUGZILLA"/>
+		<reference ref_id="SUSE-SU-2022:4278-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-November/013146.html" source="SUSE-SU"/>
+		<description>
+This update for supportutils fixes the following issues:
+
+Security issues fixed:
+
+- Passwords correctly removed from email.txt, updates.txt and fs-iscsi.txt (bsc#1203818)
+
+Bug fixes:
+
+- Added lifecycle information
+- Fixed KVM virtualization detection on bare metal (bsc#1184689)
+- Added logging using journalctl (bsc#1200330)
+- Get current sar data before collecting files (bsc#1192648)
+- Collects everything in /etc/multipath/ (bsc#1192252)
+- Collects power management information in hardware.txt (bsc#1197428)
+- Checks for suseconnect-ng or SUSEConnect packages (bsc#1202337)
+- Fixed conf_files and conf_text_files so y2log is gathered (bsc#1202269)
+- Update to nvme_info and block_info (bsc#1202417)
+- Added includedir directories from /etc/sudoers (bsc#1188086)
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-11-29"/>
+	<updated date="2022-11-29"/>
+	<severity>Moderate</severity>
+	<bugzilla href="https://bugzilla.suse.com/1184689">SUSE bug 1184689</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1188086">SUSE bug 1188086</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1192252">SUSE bug 1192252</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1192648">SUSE bug 1192648</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1197428">SUSE bug 1197428</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1200330">SUSE bug 1200330</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1202269">SUSE bug 1202269</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1202337">SUSE bug 1202337</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1202417">SUSE bug 1202417</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1203818">SUSE bug 1203818</bugzilla>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009726756" comment="supportutils-3.1.21-150300.7.35.15.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52374" version="1" class="patch">
+	<metadata>
+		<title>Security update for python3 (Important)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1188607" ref_url="https://bugzilla.suse.com/1188607" source="BUGZILLA"/>
+		<reference ref_id="1203125" ref_url="https://bugzilla.suse.com/1203125" source="BUGZILLA"/>
+		<reference ref_id="1204577" ref_url="https://bugzilla.suse.com/1204577" source="BUGZILLA"/>
+		<reference ref_id="CVE-2019-18348" ref_url="https://www.suse.com/security/cve/CVE-2019-18348/" source="CVE"/>
+		<reference ref_id="CVE-2020-10735" ref_url="https://www.suse.com/security/cve/CVE-2020-10735/" source="CVE"/>
+		<reference ref_id="CVE-2020-8492" ref_url="https://www.suse.com/security/cve/CVE-2020-8492/" source="CVE"/>
+		<reference ref_id="CVE-2022-37454" ref_url="https://www.suse.com/security/cve/CVE-2022-37454/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4281-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-November/013149.html" source="SUSE-SU"/>
+		<description>
+This update for python3 fixes the following issues:
+
+- CVE-2022-37454: Fixed a buffer overflow in hashlib.sha3_* implementations. (bsc#1204577)
+- CVE-2020-10735: Fixed a bug to limit amount of digits converting text to int and vice vera. (bsc#1203125)
+
+The following non-security bug was fixed:
+
+- Fixed a crash in the garbage collection (bsc#1188607).
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-11-29"/>
+	<updated date="2022-11-29"/>
+	<severity>Important</severity>
+	<bugzilla href="https://bugzilla.suse.com/1188607">SUSE bug 1188607</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1203125">SUSE bug 1203125</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1204577">SUSE bug 1204577</bugzilla>
+	<cve impact="moderate" cvss3="6.1/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N" href="https://www.suse.com/security/cve/CVE-2019-18348/">CVE-2019-18348</cve>
+	<cve impact="important" cvss3="7.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2020-10735/">CVE-2020-10735</cve>
+	<cve impact="moderate" cvss3="6.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2020-8492/">CVE-2020-8492</cve>
+	<cve impact="important" cvss3="8.1/CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-37454/">CVE-2022-37454</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+		<criteria operator="OR">
+			<criterion test_ref="oval:org.opensuse.security:tst:2009726610" comment="libpython3_6m1_0-3.6.15-150300.10.37.2 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009726611" comment="python3-3.6.15-150300.10.37.2 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009726612" comment="python3-base-3.6.15-150300.10.37.2 is installed"/>
+		</criteria>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52375" version="1" class="patch">
+	<metadata>
+		<title>Security update for vim (Important)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1192478" ref_url="https://bugzilla.suse.com/1192478" source="BUGZILLA"/>
+		<reference ref_id="1202962" ref_url="https://bugzilla.suse.com/1202962" source="BUGZILLA"/>
+		<reference ref_id="1203110" ref_url="https://bugzilla.suse.com/1203110" source="BUGZILLA"/>
+		<reference ref_id="1203152" ref_url="https://bugzilla.suse.com/1203152" source="BUGZILLA"/>
+		<reference ref_id="1203155" ref_url="https://bugzilla.suse.com/1203155" source="BUGZILLA"/>
+		<reference ref_id="1203194" ref_url="https://bugzilla.suse.com/1203194" source="BUGZILLA"/>
+		<reference ref_id="1203272" ref_url="https://bugzilla.suse.com/1203272" source="BUGZILLA"/>
+		<reference ref_id="1203508" ref_url="https://bugzilla.suse.com/1203508" source="BUGZILLA"/>
+		<reference ref_id="1203509" ref_url="https://bugzilla.suse.com/1203509" source="BUGZILLA"/>
+		<reference ref_id="1203796" ref_url="https://bugzilla.suse.com/1203796" source="BUGZILLA"/>
+		<reference ref_id="1203797" ref_url="https://bugzilla.suse.com/1203797" source="BUGZILLA"/>
+		<reference ref_id="1203799" ref_url="https://bugzilla.suse.com/1203799" source="BUGZILLA"/>
+		<reference ref_id="1203820" ref_url="https://bugzilla.suse.com/1203820" source="BUGZILLA"/>
+		<reference ref_id="1203924" ref_url="https://bugzilla.suse.com/1203924" source="BUGZILLA"/>
+		<reference ref_id="1204779" ref_url="https://bugzilla.suse.com/1204779" source="BUGZILLA"/>
+		<reference ref_id="CVE-2021-3928" ref_url="https://www.suse.com/security/cve/CVE-2021-3928/" source="CVE"/>
+		<reference ref_id="CVE-2022-2980" ref_url="https://www.suse.com/security/cve/CVE-2022-2980/" source="CVE"/>
+		<reference ref_id="CVE-2022-2982" ref_url="https://www.suse.com/security/cve/CVE-2022-2982/" source="CVE"/>
+		<reference ref_id="CVE-2022-3037" ref_url="https://www.suse.com/security/cve/CVE-2022-3037/" source="CVE"/>
+		<reference ref_id="CVE-2022-3099" ref_url="https://www.suse.com/security/cve/CVE-2022-3099/" source="CVE"/>
+		<reference ref_id="CVE-2022-3134" ref_url="https://www.suse.com/security/cve/CVE-2022-3134/" source="CVE"/>
+		<reference ref_id="CVE-2022-3153" ref_url="https://www.suse.com/security/cve/CVE-2022-3153/" source="CVE"/>
+		<reference ref_id="CVE-2022-3234" ref_url="https://www.suse.com/security/cve/CVE-2022-3234/" source="CVE"/>
+		<reference ref_id="CVE-2022-3235" ref_url="https://www.suse.com/security/cve/CVE-2022-3235/" source="CVE"/>
+		<reference ref_id="CVE-2022-3278" ref_url="https://www.suse.com/security/cve/CVE-2022-3278/" source="CVE"/>
+		<reference ref_id="CVE-2022-3296" ref_url="https://www.suse.com/security/cve/CVE-2022-3296/" source="CVE"/>
+		<reference ref_id="CVE-2022-3297" ref_url="https://www.suse.com/security/cve/CVE-2022-3297/" source="CVE"/>
+		<reference ref_id="CVE-2022-3324" ref_url="https://www.suse.com/security/cve/CVE-2022-3324/" source="CVE"/>
+		<reference ref_id="CVE-2022-3352" ref_url="https://www.suse.com/security/cve/CVE-2022-3352/" source="CVE"/>
+		<reference ref_id="CVE-2022-3705" ref_url="https://www.suse.com/security/cve/CVE-2022-3705/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4282-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-November/013152.html" source="SUSE-SU"/>
+		<description>
+This update for vim fixes the following issues:
+
+Updated to version 9.0 with patch level 0814:
+
+- CVE-2021-3928: Fixed stack-based buffer overflow (bsc#1192478).
+- CVE-2022-3234: Fixed heap-based buffer overflow (bsc#1203508).
+- CVE-2022-3235: Fixed use-after-free (bsc#1203509).
+- CVE-2022-3324: Fixed stack-based buffer overflow (bsc#1203820).
+- CVE-2022-3705: Fixed use-after-free in function qf_update_buffer of the file quickfix.c (bsc#1204779).
+- CVE-2022-2982: Fixed use-after-free in qf_fill_buffer() (bsc#1203152).
+- CVE-2022-3296: Fixed stack out of bounds read in ex_finally() in ex_eval.c (bsc#1203796).
+- CVE-2022-3297: Fixed use-after-free in process_next_cpt_value() at insexpand.c (bsc#1203797).
+- CVE-2022-3099: Fixed use-after-free in ex_docmd.c (bsc#1203110).
+- CVE-2022-3134: Fixed use-after-free in do_tag() (bsc#1203194).
+- CVE-2022-3153: Fixed NULL pointer dereference (bsc#1203272).
+- CVE-2022-3278: Fixed NULL pointer dereference in eval_next_non_blank() in eval.c (bsc#1203799).
+- CVE-2022-3352: Fixed use-after-free (bsc#1203924).
+- CVE-2022-2980: Fixed NULL pointer dereference in do_mouse() (bsc#1203155).
+- CVE-2022-3037: Fixed use-after-free (bsc#1202962).
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-11-29"/>
+	<updated date="2022-11-29"/>
+	<severity>Important</severity>
+	<bugzilla href="https://bugzilla.suse.com/1192478">SUSE bug 1192478</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1202962">SUSE bug 1202962</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1203110">SUSE bug 1203110</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1203152">SUSE bug 1203152</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1203155">SUSE bug 1203155</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1203194">SUSE bug 1203194</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1203272">SUSE bug 1203272</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1203508">SUSE bug 1203508</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1203509">SUSE bug 1203509</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1203796">SUSE bug 1203796</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1203797">SUSE bug 1203797</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1203799">SUSE bug 1203799</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1203820">SUSE bug 1203820</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1203924">SUSE bug 1203924</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1204779">SUSE bug 1204779</bugzilla>
+	<cve impact="moderate" cvss3="6.1/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:L" href="https://www.suse.com/security/cve/CVE-2021-3928/">CVE-2021-3928</cve>
+	<cve impact="low" cvss3="3.3/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:L" href="https://www.suse.com/security/cve/CVE-2022-2980/">CVE-2022-2980</cve>
+	<cve impact="moderate" cvss3="3.3/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:L" href="https://www.suse.com/security/cve/CVE-2022-2982/">CVE-2022-2982</cve>
+	<cve impact="low" cvss3="3.3/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:L" href="https://www.suse.com/security/cve/CVE-2022-3037/">CVE-2022-3037</cve>
+	<cve impact="moderate" cvss3="5.3/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:L" href="https://www.suse.com/security/cve/CVE-2022-3099/">CVE-2022-3099</cve>
+	<cve impact="low" cvss3="3.3/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:L" href="https://www.suse.com/security/cve/CVE-2022-3134/">CVE-2022-3134</cve>
+	<cve impact="moderate" cvss3="5.5/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2022-3153/">CVE-2022-3153</cve>
+	<cve impact="important" cvss3="7.8/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-3234/">CVE-2022-3234</cve>
+	<cve impact="low" cvss3="3.3/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:L" href="https://www.suse.com/security/cve/CVE-2022-3235/">CVE-2022-3235</cve>
+	<cve impact="low" cvss3="3.3/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:L" href="https://www.suse.com/security/cve/CVE-2022-3278/">CVE-2022-3278</cve>
+	<cve impact="moderate" cvss3="3.3/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N" href="https://www.suse.com/security/cve/CVE-2022-3296/">CVE-2022-3296</cve>
+	<cve impact="moderate" cvss3="3.3/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:L" href="https://www.suse.com/security/cve/CVE-2022-3297/">CVE-2022-3297</cve>
+	<cve impact="moderate" cvss3="7/CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-3324/">CVE-2022-3324</cve>
+	<cve impact="moderate" cvss3="5.3/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:L" href="https://www.suse.com/security/cve/CVE-2022-3352/">CVE-2022-3352</cve>
+	<cve impact="moderate" cvss3="5/CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:L" href="https://www.suse.com/security/cve/CVE-2022-3705/">CVE-2022-3705</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+		<criteria operator="OR">
+			<criterion test_ref="oval:org.opensuse.security:tst:2009726770" comment="vim-data-common-9.0.0814-150000.5.28.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009726850" comment="vim-small-9.0.0814-150000.5.28.1 is installed"/>
+		</criteria>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52376" version="1" class="patch">
+	<metadata>
+		<title>Security update for tiff (Important)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1204642" ref_url="https://bugzilla.suse.com/1204642" source="BUGZILLA"/>
+		<reference ref_id="1205422" ref_url="https://bugzilla.suse.com/1205422" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-3570" ref_url="https://www.suse.com/security/cve/CVE-2022-3570/" source="CVE"/>
+		<reference ref_id="CVE-2022-3598" ref_url="https://www.suse.com/security/cve/CVE-2022-3598/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4411-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-December/013217.html" source="SUSE-SU"/>
+		<description>
+This update for tiff fixes the following issues:
+
+- CVE-2022-3570: Fixed heap buffer overflows in tiffcrop.c (bsc#1205422).
+- CVE-2022-3598: Fixed out-of-bounds write in extractContigSamplesShifted24bits in tools/tiffcrop.c [bsc#1204642]
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-12-13"/>
+	<updated date="2022-12-13"/>
+	<severity>Important</severity>
+	<bugzilla href="https://bugzilla.suse.com/1204642">SUSE bug 1204642</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1205422">SUSE bug 1205422</bugzilla>
+	<cve impact="moderate" cvss3="5.5/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2022-3570/">CVE-2022-3570</cve>
+	<cve impact="moderate" cvss3="6.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2022-3598/">CVE-2022-3598</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009727260" comment="libtiff5-4.0.9-150000.45.22.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52377" version="1" class="patch">
+	<metadata>
+		<title>Security update for libtpms (Moderate)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1187767" ref_url="https://bugzilla.suse.com/1187767" source="BUGZILLA"/>
+		<reference ref_id="1204556" ref_url="https://bugzilla.suse.com/1204556" source="BUGZILLA"/>
+		<reference ref_id="CVE-2021-3623" ref_url="https://www.suse.com/security/cve/CVE-2021-3623/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4457-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-December/013225.html" source="SUSE-SU"/>
+		<description>
+This update for libtpms fixes the following issues:
+
+- CVE-2021-3623: Fixed out-of-bounds access when trying to resume the
+  state of the vTPM (bsc#1187767)
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-12-13"/>
+	<updated date="2022-12-13"/>
+	<severity>Moderate</severity>
+	<bugzilla href="https://bugzilla.suse.com/1187767">SUSE bug 1187767</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1204556">SUSE bug 1204556</bugzilla>
+	<cve impact="moderate" cvss3="6.1/CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2021-3623/">CVE-2021-3623</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009727204" comment="libtpms0-0.8.2-150300.3.6.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52378" version="1" class="patch">
+	<metadata>
+		<title>Security update for containerd (Important)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1197284" ref_url="https://bugzilla.suse.com/1197284" source="BUGZILLA"/>
+		<reference ref_id="1206065" ref_url="https://bugzilla.suse.com/1206065" source="BUGZILLA"/>
+		<reference ref_id="1206235" ref_url="https://bugzilla.suse.com/1206235" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-23471" ref_url="https://www.suse.com/security/cve/CVE-2022-23471/" source="CVE"/>
+		<reference ref_id="CVE-2022-27191" ref_url="https://www.suse.com/security/cve/CVE-2022-27191/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4463-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-December/013228.html" source="SUSE-SU"/>
+		<description>
+This update for containerd fixes the following issues:
+
+Update to containerd v1.6.12 including Docker v20.10.21-ce (bsc#1206065).
+
+Also includes the following fix:
+
+- CVE-2022-23471: host memory exhaustion through Terminal resize goroutine leak (bsc#1206235).
+- CVE-2022-27191: crash in a golang.org/x/crypto/ssh server (bsc#1197284).
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-12-13"/>
+	<updated date="2022-12-13"/>
+	<severity>Important</severity>
+	<bugzilla href="https://bugzilla.suse.com/1197284">SUSE bug 1197284</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1206065">SUSE bug 1206065</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1206235">SUSE bug 1206235</bugzilla>
+	<cve impact="moderate" cvss3="6.5/CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2022-23471/">CVE-2022-23471</cve>
+	<cve impact="important" cvss3="7.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2022-27191/">CVE-2022-27191</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009728138" comment="containerd-1.6.12-150000.79.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52379" version="1" class="patch">
+	<metadata>
+		<title>Security update for cni (Important)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1181961" ref_url="https://bugzilla.suse.com/1181961" source="BUGZILLA"/>
+		<reference ref_id="CVE-2021-20206" ref_url="https://www.suse.com/security/cve/CVE-2021-20206/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4592-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-December/013299.html" source="SUSE-SU"/>
+		<description>
+This update for cni fixes the following issues:
+
+- CVE-2021-20206: Fixed arbitrary path injection via type field in CNI configuration (bsc#1181961).
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-12-20"/>
+	<updated date="2022-12-20"/>
+	<severity>Important</severity>
+	<bugzilla href="https://bugzilla.suse.com/1181961">SUSE bug 1181961</bugzilla>
+	<cve impact="important" cvss3="7.2/CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2021-20206/">CVE-2021-20206</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009725913" comment="cni-0.7.1-150100.3.8.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52380" version="1" class="patch">
+	<metadata>
+		<title>Security update for cni-plugins (Important)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1181961" ref_url="https://bugzilla.suse.com/1181961" source="BUGZILLA"/>
+		<reference ref_id="CVE-2021-20206" ref_url="https://www.suse.com/security/cve/CVE-2021-20206/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4593-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-December/013297.html" source="SUSE-SU"/>
+		<description>
+This update for cni-plugins fixes the following issues:
+
+- CVE-2021-20206: Fixed arbitrary path injection via type field in CNI configuration (bsc#1181961).
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-12-20"/>
+	<updated date="2022-12-20"/>
+	<severity>Important</severity>
+	<bugzilla href="https://bugzilla.suse.com/1181961">SUSE bug 1181961</bugzilla>
+	<cve impact="important" cvss3="7.2/CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2021-20206/">CVE-2021-20206</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009725914" comment="cni-plugins-0.8.6-150100.3.11.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52381" version="1" class="patch">
+	<metadata>
+		<title>Security update for curl (Important)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1206308" ref_url="https://bugzilla.suse.com/1206308" source="BUGZILLA"/>
+		<reference ref_id="1206309" ref_url="https://bugzilla.suse.com/1206309" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-43551" ref_url="https://www.suse.com/security/cve/CVE-2022-43551/" source="CVE"/>
+		<reference ref_id="CVE-2022-43552" ref_url="https://www.suse.com/security/cve/CVE-2022-43552/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4597-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-December/013302.html" source="SUSE-SU"/>
+		<description>
+This update for curl fixes the following issues:
+
+- CVE-2022-43552: HTTP Proxy deny use-after-free (bsc#1206309).
+- CVE-2022-43551: Fixed HSTS bypass via IDN (bsc#1206308).
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-12-21"/>
+	<updated date="2022-12-21"/>
+	<severity>Important</severity>
+	<bugzilla href="https://bugzilla.suse.com/1206308">SUSE bug 1206308</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1206309">SUSE bug 1206309</bugzilla>
+	<cve impact="important" cvss3="6.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N" href="https://www.suse.com/security/cve/CVE-2022-43551/">CVE-2022-43551</cve>
+	<cve impact="moderate" cvss3="5.6/CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:L" href="https://www.suse.com/security/cve/CVE-2022-43552/">CVE-2022-43552</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+		<criteria operator="OR">
+			<criterion test_ref="oval:org.opensuse.security:tst:2009729987" comment="curl-7.79.1-150400.5.12.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009729988" comment="libcurl4-7.79.1-150400.5.12.1 is installed"/>
+		</criteria>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52382" version="1" class="patch">
+	<metadata>
+		<title>Security update for sqlite3 (Moderate)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1206337" ref_url="https://bugzilla.suse.com/1206337" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-46908" ref_url="https://www.suse.com/security/cve/CVE-2022-46908/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4628-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-December/013354.html" source="SUSE-SU"/>
+		<description>
+This update for sqlite3 fixes the following issues:
+
+- CVE-2022-46908: Properly implement the azProhibitedFunctions protection mechanism,
+  when relying on --safe for execution of an untrusted CLI script (bsc#1206337).
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-12-28"/>
+	<updated date="2022-12-28"/>
+	<severity>Moderate</severity>
+	<bugzilla href="https://bugzilla.suse.com/1206337">SUSE bug 1206337</bugzilla>
+	<cve impact="moderate" cvss3="5.3/CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L" href="https://www.suse.com/security/cve/CVE-2022-46908/">CVE-2022-46908</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+		<criteria operator="OR">
+			<criterion test_ref="oval:org.opensuse.security:tst:2009729752" comment="libsqlite3-0-3.39.3-150000.3.20.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009729753" comment="sqlite3-tcl-3.39.3-150000.3.20.1 is installed"/>
+		</criteria>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52383" version="1" class="patch">
+	<metadata>
+		<title>Security update for systemd (Important)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1200723" ref_url="https://bugzilla.suse.com/1200723" source="BUGZILLA"/>
+		<reference ref_id="1205000" ref_url="https://bugzilla.suse.com/1205000" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-4415" ref_url="https://www.suse.com/security/cve/CVE-2022-4415/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4629-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-December/013352.html" source="SUSE-SU"/>
+		<description>
+This update for systemd fixes the following issues:
+
+- CVE-2022-4415: Fixed systemd-coredump that did not respect the fs.suid_dumpable kernel setting (bsc#1205000).
+
+Bug fixes:
+
+- Support by-path devlink for multipath nvme block devices (bsc#1200723).
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-12-28"/>
+	<updated date="2022-12-28"/>
+	<severity>Important</severity>
+	<bugzilla href="https://bugzilla.suse.com/1200723">SUSE bug 1200723</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1205000">SUSE bug 1205000</bugzilla>
+	<cve impact="moderate" cvss3="5.5/CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N" href="https://www.suse.com/security/cve/CVE-2022-4415/">CVE-2022-4415</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+		<criteria operator="OR">
+			<criterion test_ref="oval:org.opensuse.security:tst:2009730688" comment="libsystemd0-249.12-150400.8.16.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009730689" comment="libudev1-249.12-150400.8.16.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009730690" comment="systemd-249.12-150400.8.16.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009730691" comment="systemd-container-249.12-150400.8.16.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009730692" comment="systemd-journal-remote-249.12-150400.8.16.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009730693" comment="systemd-sysvinit-249.12-150400.8.16.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009730694" comment="udev-249.12-150400.8.16.1 is installed"/>
+		</criteria>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52384" version="1" class="patch">
+	<metadata>
+		<title>Security update for vim (Important)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1204779" ref_url="https://bugzilla.suse.com/1204779" source="BUGZILLA"/>
+		<reference ref_id="1205797" ref_url="https://bugzilla.suse.com/1205797" source="BUGZILLA"/>
+		<reference ref_id="1206028" ref_url="https://bugzilla.suse.com/1206028" source="BUGZILLA"/>
+		<reference ref_id="1206071" ref_url="https://bugzilla.suse.com/1206071" source="BUGZILLA"/>
+		<reference ref_id="1206072" ref_url="https://bugzilla.suse.com/1206072" source="BUGZILLA"/>
+		<reference ref_id="1206075" ref_url="https://bugzilla.suse.com/1206075" source="BUGZILLA"/>
+		<reference ref_id="1206077" ref_url="https://bugzilla.suse.com/1206077" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-3491" ref_url="https://www.suse.com/security/cve/CVE-2022-3491/" source="CVE"/>
+		<reference ref_id="CVE-2022-3520" ref_url="https://www.suse.com/security/cve/CVE-2022-3520/" source="CVE"/>
+		<reference ref_id="CVE-2022-3591" ref_url="https://www.suse.com/security/cve/CVE-2022-3591/" source="CVE"/>
+		<reference ref_id="CVE-2022-3705" ref_url="https://www.suse.com/security/cve/CVE-2022-3705/" source="CVE"/>
+		<reference ref_id="CVE-2022-4141" ref_url="https://www.suse.com/security/cve/CVE-2022-4141/" source="CVE"/>
+		<reference ref_id="CVE-2022-4292" ref_url="https://www.suse.com/security/cve/CVE-2022-4292/" source="CVE"/>
+		<reference ref_id="CVE-2022-4293" ref_url="https://www.suse.com/security/cve/CVE-2022-4293/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4631-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-December/013353.html" source="SUSE-SU"/>
+		<description>
+This update for vim fixes the following issues:
+
+Updated to version 9.0.1040:
+
+- CVE-2022-3491: vim: Heap-based Buffer Overflow prior to 9.0.0742 (bsc#1206028).
+- CVE-2022-3520: vim: Heap-based Buffer Overflow (bsc#1206071).
+- CVE-2022-3591: vim: Use After Free (bsc#1206072).
+- CVE-2022-4292: vim: Use After Free in GitHub repository vim/vim prior to 9.0.0882 (bsc#1206075).
+- CVE-2022-4293: vim: Floating Point Comparison with Incorrect Operator in GitHub repository vim/vim prior to 9.0.0804 (bsc#1206077).
+- CVE-2022-4141: vim: heap-buffer-overflow in alloc.c 246:11 (bsc#1205797).
+- CVE-2022-3705: vim: use after free in function qf_update_buffer of the file quickfix.c (bsc#1204779).
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-12-28"/>
+	<updated date="2022-12-28"/>
+	<severity>Important</severity>
+	<bugzilla href="https://bugzilla.suse.com/1204779">SUSE bug 1204779</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1205797">SUSE bug 1205797</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1206028">SUSE bug 1206028</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1206071">SUSE bug 1206071</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1206072">SUSE bug 1206072</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1206075">SUSE bug 1206075</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1206077">SUSE bug 1206077</bugzilla>
+	<cve impact="low" cvss3="4/CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L" href="https://www.suse.com/security/cve/CVE-2022-3491/">CVE-2022-3491</cve>
+	<cve impact="important" cvss3="7.8/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-3520/">CVE-2022-3520</cve>
+	<cve impact="important" cvss3="7.8/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-3591/">CVE-2022-3591</cve>
+	<cve impact="moderate" cvss3="5/CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:L" href="https://www.suse.com/security/cve/CVE-2022-3705/">CVE-2022-3705</cve>
+	<cve impact="important" cvss3="7.3/CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-4141/">CVE-2022-4141</cve>
+	<cve impact="important" cvss3="7.8/CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-4292/">CVE-2022-4292</cve>
+	<cve impact="moderate" cvss3="6.8/CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2022-4293/">CVE-2022-4293</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+		<criteria operator="OR">
+			<criterion test_ref="oval:org.opensuse.security:tst:2009729554" comment="vim-data-common-9.0.1040-150000.5.31.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009729641" comment="vim-small-9.0.1040-150000.5.31.1 is installed"/>
+		</criteria>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52385" version="1" class="patch">
+	<metadata>
+		<title>Security update for conmon (Moderate)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1200285" ref_url="https://bugzilla.suse.com/1200285" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-1708" ref_url="https://www.suse.com/security/cve/CVE-2022-1708/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2022:4635-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2022-December/013379.html" source="SUSE-SU"/>
+		<description>
+This update for conmon fixes the following issues:
+
+conmon was updated to version 2.1.5:
+
+* don't leak syslog_identifier
+* logging: do not read more that the buf size
+* logging: fix error handling
+* Makefile: Fix install for FreeBSD
+* signal: Track changes to get_signal_descriptor in the FreeBSD version
+* Packit: initial enablement
+
+Update to version 2.1.4:
+
+* Fix a bug where conmon crashed when it got a SIGCHLD
+
+update to 2.1.3:
+
+* Stop using g_unix_signal_add() to avoid threads
+* Rename CLI optionlog-size-global-max to log-global-size-max
+
+Update to version 2.1.2:
+
+* add log-global-size-max option to limit the total output conmon processes (CVE-2022-1708 bsc#1200285)
+* journald: print tag and name if both are specified
+* drop some logs to debug level
+
+Update to version 2.1.0
+
+* logging: buffer partial messages to journald
+* exit: close all fds &gt;= 3
+* fix: cgroup: Free memory_cgroup_file_path if open fails.
+
+Update to version 2.0.32
+
+* Fix: Avoid mainfd_std{in,out} sharing the same file descriptor.
+* exit_command: Fix: unset subreaper attribute before running exit command
+
+Update to version 2.0.31
+* logging: new mode -l passthrough
+* ctr_logs: use container name or ID as SYSLOG_IDENTIFIER for journald
+* conmon: Fix: free userdata files before exec cleanup
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2022-12-29"/>
+	<updated date="2022-12-29"/>
+	<severity>Moderate</severity>
+	<bugzilla href="https://bugzilla.suse.com/1200285">SUSE bug 1200285</bugzilla>
+	<cve impact="moderate" cvss3="6.8/CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:N/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2022-1708/">CVE-2022-1708</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009729849" comment="conmon-2.1.5-150400.3.3.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52386" version="1" class="patch">
+	<metadata>
+		<title>Security update for python-certifi (Important) (in QA)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1206212" ref_url="https://bugzilla.suse.com/1206212" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-23491" ref_url="https://www.suse.com/security/cve/CVE-2022-23491/" source="CVE"/>
+		<description>
+This update for python-certifi fixes the following issues:
+
+- remove all TrustCor CAs, as TrustCor issued multiple man-in-the-middle
+  certs (bsc#1206212 CVE-2022-23491)
+     - TrustCor RootCert CA-1
+     - TrustCor RootCert CA-2
+     - TrustCor ECA-1
+- Add removeTrustCor.patch
+
+This patch is currently in QA and not yet available for download.
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2023-01-09"/>
+	<updated date="2023-01-09"/>
+	<severity>Important</severity>
+	<bugzilla href="https://bugzilla.suse.com/1206212">SUSE bug 1206212</bugzilla>
+	<cve impact="moderate" cvss3="6.6/CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-23491/">CVE-2022-23491</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009731091" comment="python3-certifi-2018.1.18-150000.3.3.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52387" version="1" class="patch">
+	<metadata>
+		<title>Security update for python-setuptools (Moderate) (in QA)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1206667" ref_url="https://bugzilla.suse.com/1206667" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-40897" ref_url="https://www.suse.com/security/cve/CVE-2022-40897/" source="CVE"/>
+		<description>
+This update for python-setuptools fixes the following issues:
+
+- CVE-2022-40897: Fixed an excessive CPU usage that could be triggered
+  by fetching a malicious HTML document (bsc#1206667).
+
+This patch is currently in QA and not yet available for download.
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2023-01-11"/>
+	<updated date="2023-01-11"/>
+	<severity>Moderate</severity>
+	<bugzilla href="https://bugzilla.suse.com/1206667">SUSE bug 1206667</bugzilla>
+	<cve impact="moderate" cvss3="4.3/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:L" href="https://www.suse.com/security/cve/CVE-2022-40897/">CVE-2022-40897</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009731774" comment="python3-setuptools-44.1.1-150400.3.3.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52388" version="1" class="patch">
+	<metadata>
+		<title>Security update for mozilla-nss (Important) (in QA)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1204272" ref_url="https://bugzilla.suse.com/1204272" source="BUGZILLA"/>
+		<reference ref_id="1207038" ref_url="https://bugzilla.suse.com/1207038" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-23491" ref_url="https://www.suse.com/security/cve/CVE-2022-23491/" source="CVE"/>
+		<reference ref_id="CVE-2022-3479" ref_url="https://www.suse.com/security/cve/CVE-2022-3479/" source="CVE"/>
+		<description>
+This update for mozilla-nss fixes the following issues:
+
+- CVE-2022-3479: Fixed a potential crash that could be triggered when
+  a server requested a client authentication certificate, but the
+  client had no certificates stored (bsc#1204272).
+- Updated to version 3.79.3 (bsc#1207038):
+  - CVE-2022-23491: Removed trust for 3 root certificates from TrustCor.
+
+This patch is currently in QA and not yet available for download.
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2023-01-13"/>
+	<updated date="2023-01-13"/>
+	<severity>Important</severity>
+	<bugzilla href="https://bugzilla.suse.com/1204272">SUSE bug 1204272</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1207038">SUSE bug 1207038</bugzilla>
+	<cve impact="moderate" cvss3="6.6/CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-23491/">CVE-2022-23491</cve>
+	<cve impact="moderate" cvss3="6.5/CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2022-3479/">CVE-2022-3479</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+		<criteria operator="OR">
+			<criterion test_ref="oval:org.opensuse.security:tst:2009732456" comment="libfreebl3-3.79.3-150400.3.23.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009732457" comment="libfreebl3-hmac-3.79.3-150400.3.23.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009732458" comment="libsoftokn3-3.79.3-150400.3.23.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009732459" comment="libsoftokn3-hmac-3.79.3-150400.3.23.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009732460" comment="mozilla-nss-3.79.3-150400.3.23.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009732461" comment="mozilla-nss-certs-3.79.3-150400.3.23.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009732462" comment="mozilla-nss-tools-3.79.3-150400.3.23.1 is installed"/>
+		</criteria>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52389" version="1" class="patch">
+	<metadata>
+		<title>Security update for samba (Important) (in QA)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1200102" ref_url="https://bugzilla.suse.com/1200102" source="BUGZILLA"/>
+		<reference ref_id="1201490" ref_url="https://bugzilla.suse.com/1201490" source="BUGZILLA"/>
+		<reference ref_id="1201492" ref_url="https://bugzilla.suse.com/1201492" source="BUGZILLA"/>
+		<reference ref_id="1201493" ref_url="https://bugzilla.suse.com/1201493" source="BUGZILLA"/>
+		<reference ref_id="1201495" ref_url="https://bugzilla.suse.com/1201495" source="BUGZILLA"/>
+		<reference ref_id="1201496" ref_url="https://bugzilla.suse.com/1201496" source="BUGZILLA"/>
+		<reference ref_id="1201689" ref_url="https://bugzilla.suse.com/1201689" source="BUGZILLA"/>
+		<reference ref_id="1204254" ref_url="https://bugzilla.suse.com/1204254" source="BUGZILLA"/>
+		<reference ref_id="1205126" ref_url="https://bugzilla.suse.com/1205126" source="BUGZILLA"/>
+		<reference ref_id="1205385" ref_url="https://bugzilla.suse.com/1205385" source="BUGZILLA"/>
+		<reference ref_id="1205386" ref_url="https://bugzilla.suse.com/1205386" source="BUGZILLA"/>
+		<reference ref_id="1206504" ref_url="https://bugzilla.suse.com/1206504" source="BUGZILLA"/>
+		<reference ref_id="1206546" ref_url="https://bugzilla.suse.com/1206546" source="BUGZILLA"/>
+		<reference ref_id="CVE-2021-20251" ref_url="https://www.suse.com/security/cve/CVE-2021-20251/" source="CVE"/>
+		<reference ref_id="CVE-2022-2031" ref_url="https://www.suse.com/security/cve/CVE-2022-2031/" source="CVE"/>
+		<reference ref_id="CVE-2022-32742" ref_url="https://www.suse.com/security/cve/CVE-2022-32742/" source="CVE"/>
+		<reference ref_id="CVE-2022-32744" ref_url="https://www.suse.com/security/cve/CVE-2022-32744/" source="CVE"/>
+		<reference ref_id="CVE-2022-32745" ref_url="https://www.suse.com/security/cve/CVE-2022-32745/" source="CVE"/>
+		<reference ref_id="CVE-2022-32746" ref_url="https://www.suse.com/security/cve/CVE-2022-32746/" source="CVE"/>
+		<reference ref_id="CVE-2022-3437" ref_url="https://www.suse.com/security/cve/CVE-2022-3437/" source="CVE"/>
+		<reference ref_id="CVE-2022-37966" ref_url="https://www.suse.com/security/cve/CVE-2022-37966/" source="CVE"/>
+		<reference ref_id="CVE-2022-37967" ref_url="https://www.suse.com/security/cve/CVE-2022-37967/" source="CVE"/>
+		<reference ref_id="CVE-2022-38023" ref_url="https://www.suse.com/security/cve/CVE-2022-38023/" source="CVE"/>
+		<reference ref_id="CVE-2022-42898" ref_url="https://www.suse.com/security/cve/CVE-2022-42898/" source="CVE"/>
+		<description>
+This update for samba fixes the following issues:
+
+- CVE-2021-20251: Fixed an issue where the bad password count would
+  not be properly incremented, which could allow attackers to brute
+  force a user's password (bsc#1206546).
+
+- Updated to version 4.15.13:
+  - CVE-2022-37966: Fixed an issue where a weak cipher would be
+    selected to encrypt session keys, which could lead to privilege
+    escalation (bsc#1205385).
+  - CVE-2022-37967: Fixed a potential privilege escalation issue via
+    constrained delegation due to weak a cryptographic algorithm
+    being selected (bsc#1205386).
+  - CVE-2022-38023: Disabled weak ciphers by default in the Netlogon
+    Secure channel (bsc#1206504).
+
+- Updated to version 4.15.12:
+  - CVE-2022-42898: Fixed several buffer overflow vulnerabilities on
+  32-bit systems (bsc#1205126).
+
+- Updated to version 4.15.11:
+  - CVE-2022-3437: Fixed a buffer overflow in Heimdal unwrap_des3()
+  (bsc#1204254).
+
+- Updated to version 4.15.10:
+  - Fixed a potential crash due to a concurrency issue (bsc#1200102).
+
+- Updated to version 4.15.9:
+  - CVE-2022-32742: Fixed an information leak that could be triggered
+    via SMB1 (bsc#1201496).
+  - CVE-2022-32746: Fixed a memory corruption issue in database
+    audit logging (bsc#1201490).
+  - CVE-2022-2031: Fixed AD restrictions bypass associated with
+    changing passwords (bsc#1201495).
+  - CVE-2022-32745: Fixed a remote server crash that could be
+    triggered with certain LDAP requests (bsc#1201492).
+  - CVE-2022-32744: Fixed an issue where AD users could have forged
+    password change requests on behalf of other users (bsc#1201493).
+
+Other fixes:
+
+- Fixed a problem when using bind as samba-ad-dc backend related to
+  the named service (bsc#1201689).
+
+This patch is currently in QA and not yet available for download.
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2023-01-17"/>
+	<updated date="2023-01-17"/>
+	<severity>Important</severity>
+	<bugzilla href="https://bugzilla.suse.com/1200102">SUSE bug 1200102</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1201490">SUSE bug 1201490</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1201492">SUSE bug 1201492</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1201493">SUSE bug 1201493</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1201495">SUSE bug 1201495</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1201496">SUSE bug 1201496</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1201689">SUSE bug 1201689</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1204254">SUSE bug 1204254</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1205126">SUSE bug 1205126</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1205385">SUSE bug 1205385</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1205386">SUSE bug 1205386</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1206504">SUSE bug 1206504</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1206546">SUSE bug 1206546</bugzilla>
+	<cve impact="important" cvss3="8.1/CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2021-20251/">CVE-2021-20251</cve>
+	<cve impact="important" cvss3="8.8/CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-2031/">CVE-2022-2031</cve>
+	<cve impact="important" cvss3="4.3/CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N" href="https://www.suse.com/security/cve/CVE-2022-32742/">CVE-2022-32742</cve>
+	<cve impact="important" cvss3="8.8/CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-32744/">CVE-2022-32744</cve>
+	<cve impact="moderate" cvss3="5.4/CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:L" href="https://www.suse.com/security/cve/CVE-2022-32745/">CVE-2022-32745</cve>
+	<cve impact="moderate" cvss3="5.4/CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:L" href="https://www.suse.com/security/cve/CVE-2022-32746/">CVE-2022-32746</cve>
+	<cve impact="moderate" cvss3="5.9/CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:H/A:L" href="https://www.suse.com/security/cve/CVE-2022-3437/">CVE-2022-3437</cve>
+	<cve impact="important" cvss3="8.1/CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-37966/">CVE-2022-37966</cve>
+	<cve impact="important" cvss3="7.2/CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-37967/">CVE-2022-37967</cve>
+	<cve impact="important" cvss3="8.1/CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H" href="https://www.suse.com/security/cve/CVE-2022-38023/">CVE-2022-38023</cve>
+	<cve impact="moderate" cvss3="6.4/CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:L/I:H/A:L" href="https://www.suse.com/security/cve/CVE-2022-42898/">CVE-2022-42898</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009733432" comment="samba-client-libs-4.15.13+git.591.ab36624310c-150400.3.19.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52390" version="1" class="patch">
+	<metadata>
+		<title>Security update for python-py (Moderate) (in QA)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1204364" ref_url="https://bugzilla.suse.com/1204364" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-42969" ref_url="https://www.suse.com/security/cve/CVE-2022-42969/" source="CVE"/>
+		<description>
+This update for python-py fixes the following issues:
+
+- CVE-2022-42969: Fixed an excessive resource consumption that could
+  be triggered when interacting with a Subversion repository
+  containing crated data (bsc#1204364).
+
+This patch is currently in QA and not yet available for download.
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2023-01-17"/>
+	<updated date="2023-01-17"/>
+	<severity>Moderate</severity>
+	<bugzilla href="https://bugzilla.suse.com/1204364">SUSE bug 1204364</bugzilla>
+	<cve impact="moderate" cvss3="6.5/CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2022-42969/">CVE-2022-42969</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009732670" comment="python3-py-1.10.0-150100.5.12.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52391" version="1" class="patch">
+	<metadata>
+		<title>Security update for ca-certificates-mozilla (Important)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1206212" ref_url="https://bugzilla.suse.com/1206212" source="BUGZILLA"/>
+		<reference ref_id="1206622" ref_url="https://bugzilla.suse.com/1206622" source="BUGZILLA"/>
+		<reference ref_id="SUSE-SU-2023:0037-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2023-January/013430.html" source="SUSE-SU"/>
+		<description>
+This update for ca-certificates-mozilla fixes the following issues:
+
+- Updated to 2.60 state of Mozilla SSL root CAs (bsc#1206622)
+  Removed CAs:
+  - Global Chambersign Root
+  - EC-ACC
+  - Network Solutions Certificate Authority
+  - Staat der Nederlanden EV Root CA
+  - SwissSign Platinum CA - G2
+  Added CAs:
+  - DIGITALSIGN GLOBAL ROOT ECDSA CA
+  - DIGITALSIGN GLOBAL ROOT RSA CA
+  - Security Communication ECC RootCA1
+  - Security Communication RootCA3
+  Changed trust:
+  - TrustCor certificates only trusted up to Nov 30 (bsc#1206212)
+- Removed CAs (bsc#1206212) as most code does not handle 'valid before nov 30 2022'
+  and it is not clear how many certs were issued for SSL middleware by TrustCor:
+  - TrustCor RootCert CA-1
+  - TrustCor RootCert CA-2
+  - TrustCor ECA-1
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2023-01-06"/>
+	<updated date="2023-01-06"/>
+	<severity>Important</severity>
+	<bugzilla href="https://bugzilla.suse.com/1206212">SUSE bug 1206212</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1206622">SUSE bug 1206622</bugzilla>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009730078" comment="ca-certificates-mozilla-2.60-150200.27.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52392" version="1" class="patch">
+	<metadata>
+		<title>Security update for libksba (Moderate)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1206579" ref_url="https://bugzilla.suse.com/1206579" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-47629" ref_url="https://www.suse.com/security/cve/CVE-2022-47629/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2023:0056-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2023-January/013437.html" source="SUSE-SU"/>
+		<description>
+This update for libksba fixes the following issues:
+
+- CVE-2022-47629: Fixed an integer overflow vulnerability in the CRL
+  signature parser (bsc#1206579).
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2023-01-09"/>
+	<updated date="2023-01-09"/>
+	<severity>Moderate</severity>
+	<bugzilla href="https://bugzilla.suse.com/1206579">SUSE bug 1206579</bugzilla>
+	<cve impact="moderate" cvss3="5.4/CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:L" href="https://www.suse.com/security/cve/CVE-2022-47629/">CVE-2022-47629</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009730954" comment="libksba8-1.3.5-150000.4.6.1 is installed"/>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52393" version="1" class="patch">
+	<metadata>
+		<title>Security update for net-snmp (Moderate)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1205148" ref_url="https://bugzilla.suse.com/1205148" source="BUGZILLA"/>
+		<reference ref_id="1205150" ref_url="https://bugzilla.suse.com/1205150" source="BUGZILLA"/>
+		<reference ref_id="1206044" ref_url="https://bugzilla.suse.com/1206044" source="BUGZILLA"/>
+		<reference ref_id="1206828" ref_url="https://bugzilla.suse.com/1206828" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-44792" ref_url="https://www.suse.com/security/cve/CVE-2022-44792/" source="CVE"/>
+		<reference ref_id="CVE-2022-44793" ref_url="https://www.suse.com/security/cve/CVE-2022-44793/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2023:0075-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2023-January/013464.html" source="SUSE-SU"/>
+		<description>
+This update for net-snmp fixes the following issues:
+
+- CVE-2022-44793: Fixed a NULL pointer dereference issue that could
+  allow a remote attacker with write access to crash the server
+  instance (bsc#1205148).
+- CVE-2022-44792: Fixed a NULL pointer dereference issue that could
+  allow a remote attacker with write access to crash the server
+  instance (bsc#1205150).
+
+Other fixes:
+- Enabled AES-192 and AES-256 privacy protocols (bsc#1206828).
+- Fixed an incorrect systemd hardening that caused home directory
+  size and allocation to be listed incorrectly (bsc#1206044)
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2023-01-12"/>
+	<updated date="2023-01-12"/>
+	<severity>Moderate</severity>
+	<bugzilla href="https://bugzilla.suse.com/1205148">SUSE bug 1205148</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1205150">SUSE bug 1205150</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1206044">SUSE bug 1206044</bugzilla>
+	<bugzilla href="https://bugzilla.suse.com/1206828">SUSE bug 1206828</bugzilla>
+	<cve impact="moderate" cvss3="6.5/CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2022-44792/">CVE-2022-44792</cve>
+	<cve impact="moderate" cvss3="6.5/CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H" href="https://www.suse.com/security/cve/CVE-2022-44793/">CVE-2022-44793</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+		<criteria operator="OR">
+			<criterion test_ref="oval:org.opensuse.security:tst:2009731659" comment="libsnmp40-5.9.3-150300.15.8.1 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009731660" comment="snmp-mibs-5.9.3-150300.15.8.1 is installed"/>
+		</criteria>
+	</criteria>
+</definition>
+<definition id="oval:org.opensuse.security:def:52394" version="1" class="patch">
+	<metadata>
+		<title>Security update for python-future (Moderate)</title>
+		<affected family="unix">
+			<platform>openSUSE Leap Micro 5.3</platform>
+		</affected>
+		<reference ref_id="1206673" ref_url="https://bugzilla.suse.com/1206673" source="BUGZILLA"/>
+		<reference ref_id="CVE-2022-40899" ref_url="https://www.suse.com/security/cve/CVE-2022-40899/" source="CVE"/>
+		<reference ref_id="SUSE-SU-2023:0079-1" ref_url="https://lists.suse.com/pipermail/sle-security-updates/2023-January/013462.html" source="SUSE-SU"/>
+		<description>
+This update for python-future fixes the following issues:
+
+- CVE-2022-40899: Fixed an issue that could allow attackers to cause
+  an excessive CPU usage via a crafted Set-Cookie header (bsc#1206673).
+		</description>
+<advisory from="security@suse.de">
+	<issued date="2023-01-12"/>
+	<updated date="2023-01-12"/>
+	<severity>Moderate</severity>
+	<bugzilla href="https://bugzilla.suse.com/1206673">SUSE bug 1206673</bugzilla>
+	<cve impact="moderate" cvss3="5.3/CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L" href="https://www.suse.com/security/cve/CVE-2022-40899/">CVE-2022-40899</cve>
+	<affected_cpe_list>
+		<cpe>cpe:/o:opensuse:leap-micro:5.3</cpe>
+	</affected_cpe_list>
+</advisory>
+	</metadata>
+	<criteria operator="AND">
+		<criterion test_ref="oval:org.opensuse.security:tst:2009728915" comment="openSUSE Leap Micro 5.3 is installed"/>
+			<criterion test_ref="oval:org.opensuse.security:tst:2009731088" comment="python3-future-0.18.2-150300.3.3.1 is installed"/>
+	</criteria>
+</definition>
+</definitions>
+<tests>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009723152" version="1" comment="update-alternatives is &lt;1.19.0.4-150000.4.4.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009036437"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009172519"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009728915" version="1" comment="openSUSE-release is ==5.3" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009031246"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173556"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009728916" version="1" comment="grub2 is &lt;2.06-150400.11.17.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009039506"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173588"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009726180" version="1" comment="grub2-arm64-efi is &lt;2.06-150400.11.17.1 for noarch" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009041109"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173110"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009726183" version="1" comment="grub2-i386-pc is &lt;2.06-150400.11.17.1 for noarch" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009039507"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173110"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009726189" version="1" comment="grub2-snapper-plugin is &lt;2.06-150400.11.17.1 for noarch" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009039508"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173110"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009726191" version="1" comment="grub2-x86_64-efi is &lt;2.06-150400.11.17.1 for noarch" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009039509"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173110"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009726193" version="1" comment="grub2-x86_64-xen is &lt;2.06-150400.11.17.1 for noarch" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009039510"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173110"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009725247" version="1" comment="kubevirt-manifests is &lt;0.54.0-150400.3.7.1 for x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009052138"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009172899"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009725254" version="1" comment="kubevirt-virtctl is &lt;0.54.0-150400.3.7.1 for x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009051702"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009172899"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009728917" version="1" comment="krb5 is &lt;1.19.2-150400.3.3.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009031044"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173589"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009725343" version="1" comment="containerized-data-importer-manifests is &lt;1.51.0-150400.4.7.1 for x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009052144"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009172918"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009728918" version="1" comment="libsnmp40 is &lt;5.9.3-150300.15.3.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009060126"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173590"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009728919" version="1" comment="snmp-mibs is &lt;5.9.3-150300.15.3.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009031643"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173590"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009728920" version="1" comment="libpixman-1-0 is &lt;0.40.0-150400.3.3.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009037297"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173591"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009728921" version="1" comment="libarchive13 is &lt;3.5.1-150400.3.12.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009038584"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173592"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009725639" version="1" comment="db48-utils is &lt;4.8.30-150000.7.6.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009042226"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009172999"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009725640" version="1" comment="libdb-4_8 is &lt;4.8.30-150000.7.6.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009042227"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009172999"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009725556" version="1" comment="libtiff5 is &lt;4.0.9-150000.45.19.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009035969"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009172977"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009726756" version="1" comment="supportutils is &lt;3.1.21-150300.7.35.15.1 for noarch" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009034036"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173258"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009726610" version="1" comment="libpython3_6m1_0 is &lt;3.6.15-150300.10.37.2 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009042555"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173226"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009726611" version="1" comment="python3 is &lt;3.6.15-150300.10.37.2 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009037061"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173226"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009726612" version="1" comment="python3-base is &lt;3.6.15-150300.10.37.2 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009036916"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173226"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009726770" version="1" comment="vim-data-common is &lt;9.0.0814-150000.5.28.1 for noarch" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009042567"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173261"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009726850" version="1" comment="vim-small is &lt;9.0.0814-150000.5.28.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009052260"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173274"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009727260" version="1" comment="libtiff5 is &lt;4.0.9-150000.45.22.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009035969"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173328"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009727204" version="1" comment="libtpms0 is &lt;0.8.2-150300.3.6.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009052394"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173310"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009728138" version="1" comment="containerd is &lt;1.6.12-150000.79.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009040908"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173502"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009725913" version="1" comment="cni is &lt;0.7.1-150100.3.8.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009048722"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173057"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009725914" version="1" comment="cni-plugins is &lt;0.8.6-150100.3.11.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009048723"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173058"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009729987" version="1" comment="curl is &lt;7.79.1-150400.5.12.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009030596"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173821"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009729988" version="1" comment="libcurl4 is &lt;7.79.1-150400.5.12.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009030964"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173821"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009729752" version="1" comment="libsqlite3-0 is &lt;3.39.3-150000.3.20.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009040582"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173787"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009729753" version="1" comment="sqlite3-tcl is &lt;3.39.3-150000.3.20.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009060189"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173787"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009730688" version="1" comment="libsystemd0 is &lt;249.12-150400.8.16.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009041083"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173910"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009730689" version="1" comment="libudev1 is &lt;249.12-150400.8.16.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009037378"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173910"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009730690" version="1" comment="systemd is &lt;249.12-150400.8.16.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009036874"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173910"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009730691" version="1" comment="systemd-container is &lt;249.12-150400.8.16.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009042704"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173910"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009730692" version="1" comment="systemd-journal-remote is &lt;249.12-150400.8.16.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009052198"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173910"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009730693" version="1" comment="systemd-sysvinit is &lt;249.12-150400.8.16.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009036879"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173910"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009730694" version="1" comment="udev is &lt;249.12-150400.8.16.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009031048"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173910"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009729554" version="1" comment="vim-data-common is &lt;9.0.1040-150000.5.31.1 for noarch" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009042567"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173735"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009729641" version="1" comment="vim-small is &lt;9.0.1040-150000.5.31.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009052260"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173751"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009729849" version="1" comment="conmon is &lt;2.1.5-150400.3.3.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009048724"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173800"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009731091" version="1" comment="python3-certifi is &lt;2018.1.18-150000.3.3.1 for noarch" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009048938"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173995"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009731774" version="1" comment="python3-setuptools is &lt;44.1.1-150400.3.3.1 for noarch" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009047019"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009174046"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009732456" version="1" comment="libfreebl3 is &lt;3.79.3-150400.3.23.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009033259"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009174100"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009732457" version="1" comment="libfreebl3-hmac is &lt;3.79.3-150400.3.23.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009038245"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009174100"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009732458" version="1" comment="libsoftokn3 is &lt;3.79.3-150400.3.23.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009033976"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009174100"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009732459" version="1" comment="libsoftokn3-hmac is &lt;3.79.3-150400.3.23.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009038247"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009174100"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009732460" version="1" comment="mozilla-nss is &lt;3.79.3-150400.3.23.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009032440"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009174100"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009732461" version="1" comment="mozilla-nss-certs is &lt;3.79.3-150400.3.23.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009033978"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009174100"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009732462" version="1" comment="mozilla-nss-tools is &lt;3.79.3-150400.3.23.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009032444"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009174100"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009733432" version="1" comment="samba-client-libs is &lt;4.15.13+git.591.ab36624310c-150400.3.19.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009059228"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009174138"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009732670" version="1" comment="python3-py is &lt;1.10.0-150100.5.12.1 for noarch" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009050228"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009174142"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009730078" version="1" comment="ca-certificates-mozilla is &lt;2.60-150200.27.1 for noarch" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009037520"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173836"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009730954" version="1" comment="libksba8 is &lt;1.3.5-150000.4.6.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009038301"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173974"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009731659" version="1" comment="libsnmp40 is &lt;5.9.3-150300.15.8.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009060126"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009174038"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009731660" version="1" comment="snmp-mibs is &lt;5.9.3-150300.15.8.1 for aarch64,x86_64" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009031643"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009174038"/>
+	</rpminfo_test>
+	<rpminfo_test id="oval:org.opensuse.security:tst:2009731088" version="1" comment="python3-future is &lt;0.18.2-150300.3.3.1 for noarch" check="at least one" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<object object_ref="oval:org.opensuse.security:obj:2009060791"/>
+		<state state_ref="oval:org.opensuse.security:ste:2009173993"/>
+	</rpminfo_test>
+</tests>
+<objects>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009036437" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>update-alternatives</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009031246" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>openSUSE-release</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009039506" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>grub2</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009041109" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>grub2-arm64-efi</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009039507" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>grub2-i386-pc</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009039508" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>grub2-snapper-plugin</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009039509" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>grub2-x86_64-efi</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009039510" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>grub2-x86_64-xen</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009052138" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>kubevirt-manifests</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009051702" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>kubevirt-virtctl</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009031044" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>krb5</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009052144" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>containerized-data-importer-manifests</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009060126" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>libsnmp40</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009031643" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>snmp-mibs</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009037297" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>libpixman-1-0</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009038584" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>libarchive13</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009042226" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>db48-utils</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009042227" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>libdb-4_8</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009035969" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>libtiff5</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009034036" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>supportutils</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009042555" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>libpython3_6m1_0</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009037061" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>python3</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009036916" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>python3-base</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009042567" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>vim-data-common</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009052260" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>vim-small</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009052394" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>libtpms0</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009040908" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>containerd</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009048722" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>cni</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009048723" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>cni-plugins</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009030596" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>curl</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009030964" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>libcurl4</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009040582" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>libsqlite3-0</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009060189" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>sqlite3-tcl</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009041083" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>libsystemd0</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009037378" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>libudev1</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009036874" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>systemd</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009042704" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>systemd-container</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009052198" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>systemd-journal-remote</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009036879" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>systemd-sysvinit</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009031048" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>udev</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009048724" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>conmon</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009048938" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>python3-certifi</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009047019" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>python3-setuptools</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009033259" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>libfreebl3</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009038245" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>libfreebl3-hmac</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009033976" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>libsoftokn3</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009038247" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>libsoftokn3-hmac</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009032440" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>mozilla-nss</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009033978" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>mozilla-nss-certs</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009032444" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>mozilla-nss-tools</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009059228" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>samba-client-libs</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009050228" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>python3-py</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009037520" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>ca-certificates-mozilla</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009038301" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>libksba8</name>
+	</rpminfo_object>
+	<rpminfo_object id="oval:org.opensuse.security:obj:2009060791" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+		<name>python3-future</name>
+	</rpminfo_object>
+</objects>
+<states>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009172519" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:1.19.0.4-150000.4.4.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173556" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <version operation="equals">5.3</version>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173588" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:2.06-150400.11.17.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173110" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(noarch)</arch>
+   <evr datatype="evr_string" operation="less than">0:2.06-150400.11.17.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009172899" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:0.54.0-150400.3.7.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173589" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:1.19.2-150400.3.3.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009172918" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:1.51.0-150400.4.7.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173590" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:5.9.3-150300.15.3.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173591" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:0.40.0-150400.3.3.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173592" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:3.5.1-150400.3.12.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009172999" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:4.8.30-150000.7.6.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009172977" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:4.0.9-150000.45.19.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173258" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(noarch)</arch>
+   <evr datatype="evr_string" operation="less than">0:3.1.21-150300.7.35.15.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173226" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:3.6.15-150300.10.37.2</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173261" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(noarch)</arch>
+   <evr datatype="evr_string" operation="less than">0:9.0.0814-150000.5.28.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173274" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:9.0.0814-150000.5.28.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173328" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:4.0.9-150000.45.22.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173310" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:0.8.2-150300.3.6.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173502" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:1.6.12-150000.79.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173057" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:0.7.1-150100.3.8.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173058" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:0.8.6-150100.3.11.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173821" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:7.79.1-150400.5.12.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173787" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:3.39.3-150000.3.20.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173910" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:249.12-150400.8.16.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173735" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(noarch)</arch>
+   <evr datatype="evr_string" operation="less than">0:9.0.1040-150000.5.31.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173751" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:9.0.1040-150000.5.31.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173800" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:2.1.5-150400.3.3.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173995" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(noarch)</arch>
+   <evr datatype="evr_string" operation="less than">0:2018.1.18-150000.3.3.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009174046" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(noarch)</arch>
+   <evr datatype="evr_string" operation="less than">0:44.1.1-150400.3.3.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009174100" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:3.79.3-150400.3.23.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009174138" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:4.15.13+git.591.ab36624310c-150400.3.19.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009174142" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(noarch)</arch>
+   <evr datatype="evr_string" operation="less than">0:1.10.0-150100.5.12.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173836" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(noarch)</arch>
+   <evr datatype="evr_string" operation="less than">0:2.60-150200.27.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173974" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:1.3.5-150000.4.6.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009174038" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(aarch64|x86_64)</arch>
+   <evr datatype="evr_string" operation="less than">0:5.9.3-150300.15.8.1</evr>
+  </rpminfo_state>
+  <rpminfo_state id="oval:org.opensuse.security:ste:2009173993" version="1" xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux">
+   <arch datatype="string" operation="pattern match">(noarch)</arch>
+   <evr datatype="evr_string" operation="less than">0:0.18.2-150300.3.3.1</evr>
+  </rpminfo_state>
+</states>
+</oval_definitions>

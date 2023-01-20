@@ -9,24 +9,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libpython3_6m1_0",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       },
       {
@@ -684,18 +684,6 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "db48-utils",
           "version": null,
           "qualifiers": null,
@@ -714,6 +702,18 @@
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -808,24 +808,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libpython3_6m1_0",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       },
       {
@@ -1230,24 +1230,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libpython3_6m1_0",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       },
       {
@@ -2059,18 +2059,6 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "cni",
           "version": null,
           "qualifiers": null,
@@ -2089,6 +2077,18 @@
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -2381,24 +2381,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libtpms0",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -3002,24 +3002,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "conmon",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -3125,24 +3125,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "containerd",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -3292,24 +3292,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libsnmp40",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       },
       {
@@ -3405,24 +3405,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libsnmp40",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       },
       {
@@ -3518,24 +3518,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libsnmp40",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       },
       {
@@ -3631,24 +3631,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libsnmp40",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       },
       {
@@ -3744,24 +3744,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libsnmp40",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       },
       {
@@ -3857,24 +3857,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libsnmp40",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       },
       {
@@ -3970,18 +3970,6 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "grub2",
           "version": null,
           "qualifiers": null,
@@ -4048,6 +4036,18 @@
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -4263,24 +4263,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "containerd",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -7676,24 +7676,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libtiff5",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -7923,24 +7923,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libtiff5",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -8035,24 +8035,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libtiff5",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -8147,24 +8147,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libtiff5",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -8259,24 +8259,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libarchive13",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -8371,24 +8371,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libtiff5",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -8483,24 +8483,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libtiff5",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -8862,24 +8862,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libpython3_6m1_0",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       },
       {
@@ -9262,18 +9262,6 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "grub2",
           "version": null,
           "qualifiers": null,
@@ -9340,6 +9328,18 @@
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -9555,24 +9555,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libtiff5",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -9925,24 +9925,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "krb5",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -10923,18 +10923,6 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "curl",
           "version": null,
           "qualifiers": null,
@@ -10953,6 +10941,18 @@
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -11333,18 +11333,6 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "curl",
           "version": null,
           "qualifiers": null,
@@ -11363,6 +11351,18 @@
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -11831,18 +11831,6 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libsystemd0",
           "version": null,
           "qualifiers": null,
@@ -11861,6 +11849,18 @@
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       },
       {
@@ -12444,24 +12444,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libpixman-1-0",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],
@@ -12556,24 +12556,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libsnmp40",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       },
       {
@@ -12669,24 +12669,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libsnmp40",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       },
       {
@@ -12782,24 +12782,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libsqlite3-0",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       },
       {
@@ -13082,24 +13082,24 @@
         "package": {
           "type": "rpm",
           "namespace": "opensuse",
-          "name": "openSUSE-release",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
-        },
-        "affected_version_range": "vers:rpm/5.3",
-        "fixed_version": null
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "opensuse",
           "name": "libksba8",
           "version": null,
           "qualifiers": null,
           "subpath": null
         },
         "affected_version_range": "vers:rpm/b88b2fd43dbdc284",
+        "fixed_version": null
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "opensuse",
+          "name": "openSUSE-release",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:rpm/5.3",
         "fixed_version": null
       }
     ],

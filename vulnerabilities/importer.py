@@ -458,6 +458,7 @@ class OvalImporter(Importer):
             ]
             affected_packages = []
             for test_data in definition_data["test_data"]:
+                print("\ntest_data = {}\n".format(test_data["package_list"]))
                 for package_name in test_data["package_list"]:
                     affected_version_range = test_data["version_ranges"]
                     vrc = RANGE_CLASS_BY_SCHEMES[pkg_metadata["type"]]
@@ -477,13 +478,14 @@ class OvalImporter(Importer):
                                 affected_version_range=affected_version_range,
                             )
                         )
+            print("affected_packages = {}".format(affected_packages))
             date_published = dateparser.parse(timestamp)
             if not date_published.tzinfo:
                 date_published = date_published.replace(tzinfo=pytz.UTC)
             yield AdvisoryData(
                 aliases=[vuln_id],
                 summary=description,
-                affected_packages=affected_packages,
+                affected_packages=sorted(affected_packages),
                 references=sorted(references),
                 date_published=date_published,
             )

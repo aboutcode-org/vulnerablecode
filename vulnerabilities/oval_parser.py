@@ -36,7 +36,11 @@ class OvalParser:
         Return a list of OvalDefinition mappings.
         """
         oval_data = []
+        # print(len(self.all_definitions))
+        print("\nlen(self.all_definitions) = {}\n".format(len(self.all_definitions)))
         for definition in self.all_definitions:
+            # print(definition)
+            # print(list(definition))
 
             matching_tests = self.get_tests_of_definition(definition)
             if not matching_tests:
@@ -49,13 +53,15 @@ class OvalParser:
             definition_data["reference_urls"] = self.get_urls_from_definition(definition)
 
             definition_data["severity"] = self.get_severity_from_definition(definition)
-
+            print("\nlen(matching_tests) = {}\n".format(len(matching_tests)))
             for test in matching_tests:
                 test_obj, test_state = self.get_object_state_of_test(test)
                 if not test_obj or not test_state:
                     continue
                 test_data = {"package_list": []}
+                print(test_obj)
                 test_data["package_list"].extend(self.get_pkgs_from_obj(test_obj))
+                print(self.get_pkgs_from_obj(test_obj))
                 version_ranges = self.get_version_range_from_state(test_state)
                 test_data["version_ranges"] = version_ranges
                 definition_data["test_data"].append(test_data)
@@ -88,8 +94,9 @@ class OvalParser:
                         break
                 if valid_test:
                     matching_tests.append(self.oval_document.getElementByID(ref))
+                    print(matching_tests)
 
-        return matching_tests
+        return list(set(matching_tests))
 
     def get_object_state_of_test(self, test: OvalTest) -> Tuple[OvalObject, OvalState]:
         """

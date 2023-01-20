@@ -17,11 +17,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/suse_oval")
 
 
-# This is a temporary test, used only to run the _fetch() method
-def test_fetch():
-    SuseOvalImporter()._fetch()
-
-
 # TODO: How can we test a .gz file?  This would be like running one .gz through _fetch().
 
 

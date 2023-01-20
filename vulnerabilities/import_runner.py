@@ -39,6 +39,7 @@ class ImportRunner:
         """
         importer_name = self.importer_class.qualified_name
         importer_class = self.importer_class
+        Advisory.objects.filter(created_by=importer_name).delete()
         logger.info(f"Starting import for {importer_name}")
         advisory_datas = importer_class().advisory_data()
         count = process_advisories(advisory_datas=advisory_datas, importer_name=importer_name)

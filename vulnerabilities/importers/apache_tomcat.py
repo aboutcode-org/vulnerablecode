@@ -156,19 +156,13 @@ class ApacheTomcatImporter(Importer):
         """
         Return a list of AdvisoryData objects extracted from the HTML text ``apache_tomcat_advisory_html``.
         """
-        advisories = []
-
         # This yields groups of advisories organized by Tomcat fixed versions -- 1+ per group.
         fixed_version_advisory_groups = extract_tomcat_advisory_data_from_page(
             apache_tomcat_advisory_html
         )
 
         for advisory_group in fixed_version_advisory_groups:
-            advisory_data_objects = generate_advisory_data_objects(advisory_group)
-
-            advisories.append(advisory_data_objects)
-
-        return advisories
+            yield from generate_advisory_data_objects(advisory_group)
 
 
 @dataclasses.dataclass(order=True)

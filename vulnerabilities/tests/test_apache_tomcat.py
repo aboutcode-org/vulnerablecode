@@ -31,7 +31,6 @@ def test_method_extract_advisories_from_page():
         raw_data = f.read()
     extracted_advisories = ApacheTomcatImporter().extract_advisories_from_page(raw_data)
 
-    # results = [adv.to_dict() for d in extracted_advisories for adv in d]
     results = [adv.to_dict() for adv in extracted_advisories]
 
     expected_file = os.path.join(

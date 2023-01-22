@@ -154,7 +154,7 @@ class ApacheTomcatImporter(Importer):
 
     def extract_advisories_from_page(self, apache_tomcat_advisory_html):
         """
-        Return a list of AdvisoryData objects extracted from the HTML text ``apache_tomcat_advisory_html``.
+        Yield AdvisoryData objects extracted from the HTML text ``apache_tomcat_advisory_html``.
         """
         # This yields groups of advisories organized by Tomcat fixed versions -- 1+ per group.
         fixed_version_advisory_groups = extract_tomcat_advisory_data_from_page(

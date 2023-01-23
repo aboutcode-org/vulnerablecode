@@ -9,6 +9,7 @@
 
 from vulnerabilities.importers import alpine_linux
 from vulnerabilities.importers import apache_httpd
+from vulnerabilities.importers import apache_tomcat
 from vulnerabilities.importers import archlinux
 from vulnerabilities.importers import debian
 from vulnerabilities.importers import debian_oval
@@ -55,6 +56,7 @@ IMPORTERS_REGISTRY = [
     project_kb_msr2019.ProjectKBMSRImporter,
     suse_scores.SUSESeverityScoreImporter,
     elixir_security.ElixirSecurityImporter,
+    apache_tomcat.ApacheTomcatImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

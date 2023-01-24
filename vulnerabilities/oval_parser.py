@@ -187,6 +187,8 @@ class OvalParser:
     def get_vuln_id_from_definition(definition):
         # SUSE and Ubuntu OVAL files will get cves via this loop
         for child in definition.element.iter():
+            # if child.get("ref_id"):
+            #     return child.get("ref_id")
             # Must also check whether 'source' field exists and value is 'CVE'
             # TODO: what if there are multiple elements that satisfy the condition?
             # Add to list and report as separate AdvisoryData() objects?

@@ -6,6 +6,7 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+import logging
 import re
 from pathlib import Path
 from typing import Iterable
@@ -15,6 +16,8 @@ from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.utils import build_description
 from vulnerabilities.utils import dedupe
+
+logger = logging.getLogger(__name__)
 
 
 class FireyeImporter(GitImporter):
@@ -36,8 +39,7 @@ class FireyeImporter(GitImporter):
                 with open(file) as f:
                     yield parse_advisory_data(f.read())
             except UnicodeError:
-                print(file)
-
+                logger.error(f"Invalid file {file}")
 
 
 def parse_advisory_data(raw_data) -> AdvisoryData:

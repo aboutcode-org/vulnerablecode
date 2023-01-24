@@ -93,10 +93,10 @@ class ApacheKafkaImporter(Importer):
         return page.content
 
     def advisory_data(self):
-        advisory_page = self.fetch_advisory_page()
+        advisory_page = self.fetch_advisory_page(self)
 
         parsed_data = self.to_advisory(advisory_page)
-        return self.batch_advisories(parsed_data)
+        return parsed_data
 
     def to_advisory(self, advisory_page):
         advisories = []

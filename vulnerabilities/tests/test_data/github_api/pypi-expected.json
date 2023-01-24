@@ -41,7 +41,8 @@
         ]
       }
     ],
-    "date_published": "2022-03-11T23:39:27+00:00"
+    "date_published": "2022-03-11T23:39:27+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -106,7 +107,8 @@
         ]
       }
     ],
-    "date_published": "2022-01-12T20:07:33+00:00"
+    "date_published": "2022-01-12T20:07:33+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -156,7 +158,8 @@
         ]
       }
     ],
-    "date_published": "2022-03-11T23:10:32+00:00"
+    "date_published": "2022-03-11T23:10:32+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -217,6 +220,7 @@
         ]
       }
     ],
-    "date_published": "2022-02-10T00:33:13+00:00"
+    "date_published": "2022-02-10T00:33:13+00:00",
+    "weaknesses": []
   }
 ]

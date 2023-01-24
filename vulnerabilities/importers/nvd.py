@@ -20,6 +20,7 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.utils import get_cwe_id
 from vulnerabilities.utils import get_item
 
 
@@ -236,6 +237,25 @@ class CveItem:
         """
         return any(is_related_to_hardware(cpe) for cpe in self.cpes)
 
+    @property
+    def weaknesses(self):
+        """
+        Return a list of CWE IDs like: [119, 189]
+        """
+        weaknesses = []
+        for weaknesses_item in (
+            get_item(self.cve_item, "cve", "problemtype", "problemtype_data") or []
+        ):
+            weaknesses_description = weaknesses_item.get("description") or []
+            for weaknesses_value in weaknesses_description:
+                cwe_id = (
+                    weaknesses_value.get("value") if weaknesses_value.get("lang") == "en" else None
+                )
+                if cwe_id in ["NVD-CWE-Other", "NVD-CWE-noinfo"] or not cwe_id:
+                    continue  # Skip Invalid CWE
+                weaknesses.append(get_cwe_id(cwe_id))
+        return weaknesses
+
     def to_advisory(self):
         """
         Return an AdvisoryData object from this CVE item
@@ -245,6 +265,7 @@ class CveItem:
             summary=self.summary,
             references=self.references,
             date_published=dateparser.parse(self.cve_item.get("publishedDate")),
+            weaknesses=self.weaknesses,
         )
 
 

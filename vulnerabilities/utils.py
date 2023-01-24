@@ -443,3 +443,13 @@ def fetch_and_read_from_csv(url):
     response = urllib.request.urlopen(url)
     lines = [l.decode("utf-8") for l in response.readlines()]
     return csv.reader(lines)
+
+
+def get_cwe_id(cwe_string: str) -> int:
+    """
+    Split the CWE string and extract the id
+    >>> get_cwe_id("CWE-20")
+    20
+    """
+    cwe_id = cwe_string.split("-")[1]
+    return int(cwe_id)

@@ -42,6 +42,7 @@ class Inference:
     affected_purls: Optional[List[PackageURL]] = dataclasses.field(default_factory=list)
     fixed_purl: PackageURL = None
     references: List[Reference] = dataclasses.field(default_factory=list)
+    weaknesses: List[int] = dataclasses.field(default_factory=list)
 
     def __post_init__(self):
         if self.confidence > MAX_CONFIDENCE or self.confidence < 0:
@@ -54,6 +55,7 @@ class Inference:
             or self.affected_purls
             or self.fixed_purl
             or self.references
+            or self.weaknesses
         )
 
         versionless_purls = []
@@ -82,6 +84,7 @@ class Inference:
             "affected_purls": [affected_purl.to_dict() for affected_purl in self.affected_purls],
             "fixed_purl": self.fixed_purl.to_dict() if self.fixed_purl else None,
             "references": [ref.to_dict() for ref in self.references],
+            "weaknesses": self.weaknesses,
         }
 
     @classmethod
@@ -97,6 +100,7 @@ class Inference:
             affected_purls=affected_purls or [],
             fixed_purl=fixed_purl,
             references=advisory_data.references,
+            weaknesses=advisory_data.weaknesses,
         )
 
 

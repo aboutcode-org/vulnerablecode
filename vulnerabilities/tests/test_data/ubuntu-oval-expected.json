@@ -53,7 +53,8 @@
         ]
       }
     ],
-    "date_published": "2020-05-11T04:53:34+00:00"
+    "date_published": "2020-05-11T04:53:34+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -142,6 +143,7 @@
         ]
       }
     ],
-    "date_published": "2020-05-11T04:53:34+00:00"
+    "date_published": "2020-05-11T04:53:34+00:00",
+    "weaknesses": []
   }
 ]

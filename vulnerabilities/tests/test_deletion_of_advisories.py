@@ -26,16 +26,20 @@ def test_deletion_of_advisories(fetch):
     ImproveRunner(DefaultImprover).run()
     packages = Package.objects.all().only("id")
     packages_before_deletion = [int(package.id) for package in packages]
-    vulnerabilities = Vulnerability.objects.all().only("id")
-    vulnerabilities_before_deletion = [int(vulnerability.id) for vulnerability in vulnerabilities]
+    vulnerabilities = Vulnerability.objects.all().only("vulnerability_id")
+    vulnerabilities_before_deletion = [
+        str(vulnerability.vulnerability_id) for vulnerability in vulnerabilities
+    ]
     references = VulnerabilityReference.objects.all().only("id")
     references_before_deletion = [int(reference.id) for reference in references]
     ImportRunner(NginxImporter).run()
     ImproveRunner(DefaultImprover).run()
     packages = Package.objects.all().only("id")
     packages_after_deletion = [int(package.id) for package in packages]
-    vulnerabilities = Vulnerability.objects.all().only("id")
-    vulnerabilities_after_deletion = [int(vulnerability.id) for vulnerability in vulnerabilities]
+    vulnerabilities = Vulnerability.objects.all().only("vulnerability_id")
+    vulnerabilities_after_deletion = [
+        str(vulnerability.vulnerability_id) for vulnerability in vulnerabilities
+    ]
     references = VulnerabilityReference.objects.all().only("id")
     references_after_deletion = [int(reference.id) for reference in references]
     assert packages_before_deletion == packages_after_deletion

@@ -92,7 +92,7 @@ class ApacheKafkaImporter(Importer):
         page = requests.get(self.GH_PAGE_URL)
         return page.content
 
-    def updated_advisories(self):
+    def advisory_data(self):
         advisory_page = self.fetch_advisory_page()
 
         parsed_data = self.to_advisory(advisory_page)

@@ -30,7 +30,8 @@
         "severities": []
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -63,7 +64,8 @@
         "severities": []
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -96,7 +98,8 @@
         "severities": []
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -129,7 +132,8 @@
         "severities": []
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -162,7 +166,8 @@
         "severities": []
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -195,6 +200,7 @@
         "severities": []
       }
     ],
-    "date_published": null
+    "date_published": null,
+    "weaknesses": []
   }
 ]

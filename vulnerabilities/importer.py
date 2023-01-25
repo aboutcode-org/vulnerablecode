@@ -447,6 +447,9 @@ class OvalImporter(Importer):
             print("\ndefinition_data = {}\n".format(definition_data))
             # These fields are definition level, i.e common for all elements
             # connected/linked to an OvalDefinition
+
+            # TODO: 2023-01-24 Tuesday 22:34:20.  Is this where we'd loop through the list of CVEs/aliases?
+
             vuln_id = definition_data["vuln_id"]
             description = definition_data["description"]
 

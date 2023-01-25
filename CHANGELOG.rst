@@ -2,6 +2,12 @@ Release notes
 =============
 
 
+Version v32.0.0rc2
+--------------------
+
+- We added migration for adding apache tomcat option in severity scoring.
+
+
 Version v32.0.0rc1
 --------------------
 

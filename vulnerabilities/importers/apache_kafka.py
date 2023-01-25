@@ -63,7 +63,7 @@ affected_version_range_mapping = {
         "action": "include",
         "0.11.0.0 to 2.1.0": "affected",
         "2.1.1 and later": "fixed",
-        "affected_version_range": "vers:apache/>=0.11.0.0|<=2.1.0|<2.1.1",
+        "affected_version_range": "vers:apache/>=0.11.0.0|<2.1.1",
     },
     "CVE-2018-1288": {
         "action": "include",

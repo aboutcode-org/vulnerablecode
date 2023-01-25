@@ -537,8 +537,8 @@ class TestCvssVectorMigrationToScoringElementMergeRowsWithDupes(TestMigrations):
 
 class RemoveCorrupteAdvisories(TestMigrations):
     app_name = "vulnerabilities"
-    migrate_from = "0036_alter_package_package_url_and_more"
-    migrate_to = "0037_auto_20230120_1204"
+    migrate_from = "0037_advisory_weaknesses_weakness"
+    migrate_to = "0038_remove_corrupted_advisories_with_incorrect_refs_and_severity"
 
     def setUpBeforeMigration(self, apps):
         # using get_model to avoid circular import

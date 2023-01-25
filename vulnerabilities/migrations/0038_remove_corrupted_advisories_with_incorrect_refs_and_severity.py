@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
         Advisory.objects.filter(pk__in=deletables).delete()            
 
     dependencies = [
-        ("vulnerabilities", "0036_alter_package_package_url_and_more"),
+        ("vulnerabilities", "0037_advisory_weaknesses_weakness"),
     ]
 
     operations = [

@@ -533,3 +533,38 @@ class TestCvssVectorMigrationToScoringElementMergeRowsWithDupes(TestMigrations):
         ]
 
         assert severities == expected
+
+
+class RemoveCorrupteAdvisories(TestMigrations):
+    app_name = "vulnerabilities"
+    migrate_from = "0036_alter_package_package_url_and_more"
+    migrate_to = "0037_auto_20230120_1204"
+
+    def setUpBeforeMigration(self, apps):
+        # using get_model to avoid circular import
+        Advisory = apps.get_model("vulnerabilities", "Advisory")
+
+        corrupted_advisory = Advisory.objects.create(
+            aliases=["CVE-2020-1234"],
+            summary="Corrupted advisory",
+            references=[
+                {
+                    "reference_id": "cpe:2.3:a:f5:nginx:1.16.1:*:*:*:*:*:*:*",
+                    "url": "",
+                    "severity": [
+                        {
+                            "scoring_system": "cvssv3_vector",
+                            "value": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                        }
+                    ],
+                }
+            ],
+            date_collected="2020-01-01",
+            date_published="2020-01-01",
+        )
+        corrupted_advisory.save()
+
+    def test_removal_of_corrupted_advisory(self):
+        # using get_model to avoid circular import
+        Advisory = self.apps.get_model("vulnerabilities", "Advisory")
+        Advisory.objects.all().count() == 0

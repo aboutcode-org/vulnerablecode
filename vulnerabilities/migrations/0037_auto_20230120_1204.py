@@ -1,5 +1,13 @@
+#
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
+#
+
 from django.db import migrations
-from packageurl import PackageURL
 
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 
@@ -9,7 +17,6 @@ class Migration(migrations.Migration):
         Advisory = apps.get_model("vulnerabilities", "Advisory")
         deletables = []
         for advisory in Advisory.objects.iterator(chunk_size=1000):
-            print(advisory.pk)
             for ref in advisory.references:
                 if not ref["url"]:
                     deletables.append(advisory.pk)

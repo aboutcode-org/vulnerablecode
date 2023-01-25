@@ -12,6 +12,7 @@ Version v32.0.0rc1
 - We re-enabled support for the suse score advisories importer.
 - We re-enabled support for the elixir security advisories importer.
 - We re-enabled support for the apache tomcat security advisories importer.
+- We added support for CWE.
 - We added migrations to remove corrupted advisories https://github.com/nexB/vulnerablecode/issues/1086.
 
 

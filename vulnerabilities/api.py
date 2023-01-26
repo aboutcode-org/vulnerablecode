@@ -53,22 +53,6 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
         fields = ["url", "purl", "is_vulnerable"]
 
 
-class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
-    """
-    Lookup vulnerabilities references by aliases (such as a CVE).
-    """
-
-    fixed_packages = MinimalPackageSerializer(
-        many=True, source="filtered_fixed_packages", read_only=True
-    )
-
-    references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
-
-    class Meta:
-        model = Vulnerability
-        fields = ["url", "vulnerability_id", "summary", "references", "fixed_packages"]
-
-
 class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
     """
     Lookup vulnerabilities by aliases (such as a CVE).
@@ -87,6 +71,23 @@ class AliasSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Alias
         fields = ["alias"]
+
+
+class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
+    """
+    Lookup vulnerabilities references by aliases (such as a CVE).
+    """
+
+    fixed_packages = MinimalPackageSerializer(
+        many=True, source="filtered_fixed_packages", read_only=True
+    )
+
+    references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
+    aliases = AliasSerializer(many=True, source="alias")
+
+    class Meta:
+        model = Vulnerability
+        fields = ["url", "vulnerability_id", "summary", "references", "fixed_packages", "aliases"]
 
 
 class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):

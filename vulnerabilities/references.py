@@ -29,13 +29,13 @@ class XsaReference(Reference):
         )
 
     @classmethod
-    def from_num_id(cls, num_id):
+    def from_number(cls, number):
         """
-        Return a new XsaReference from an XSA-XXXX id.
+        Return a new XsaReference from an XSA number.
         """
         return cls(
-            reference_id=f"XSA-{num_id}",
-            url=f"https://xenbits.xen.org/xsa/advisory-{num_id}.html",
+            reference_id=f"XSA-{number}",
+            url=f"https://xenbits.xen.org/xsa/advisory-{number}.html",
         )
 
 

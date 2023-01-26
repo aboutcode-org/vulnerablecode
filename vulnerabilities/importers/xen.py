@@ -45,9 +45,10 @@ class XenImporter(Importer):
         xsa_id = xsa.get("xsa")
         references = []
         if xsa_id:
-            references.append(XsaReference.from_num_id(num_id=xsa_id))
+            references.append(XsaReference.from_number(number=xsa_id))
         title = xsa.get("title")
         for cve in xsa.get("cve") or []:
+       #TODO: https://github.com/nexB/vulnerablecode/issues/981
             if not is_cve(cve):
                 continue
             yield AdvisoryData(

@@ -1,0 +1,302 @@
+[
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2019-12243"
+    ],
+    "confidence": 100,
+    "summary": "Incorrect access control.",
+    "affected_purls": [
+      {
+        "type": "golang",
+        "namespace": "istio.io",
+        "name": "istio",
+        "version": "1.1.0",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "golang",
+        "namespace": "istio.io",
+        "name": "istio",
+        "version": "1.1.1",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "golang",
+        "namespace": "istio.io",
+        "name": "istio",
+        "version": "1.1.2",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "golang",
+        "namespace": "istio.io",
+        "name": "istio",
+        "version": "1.1.3",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "golang",
+        "namespace": "istio.io",
+        "name": "istio",
+        "version": "1.1.4",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "golang",
+        "namespace": "istio.io",
+        "name": "istio",
+        "version": "1.1.5",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "golang",
+        "namespace": "istio.io",
+        "name": "istio",
+        "version": "1.1.6",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "golang",
+        "namespace": "istio.io",
+        "name": "istio",
+        "version": "1.1.7",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "golang",
+        "namespace": "istio.io",
+        "name": "istio",
+        "version": "1.1.8",
+        "qualifiers": null,
+        "subpath": null
+      }
+    ],
+    "fixed_purl": null,
+    "references": [
+      {
+        "reference_id": "ISTIO-SECURITY-2019-001",
+        "url": "https://istio.io/latest/news/security/ISTIO-SECURITY-2019-001/",
+        "severities": []
+      }
+    ],
+    "weaknesses": []
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2019-12243"
+    ],
+    "confidence": 100,
+    "summary": "Incorrect access control.",
+    "affected_purls": [
+      {
+        "type": "github",
+        "namespace": "istio",
+        "name": "istio",
+        "version": "1.1.0",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "github",
+        "namespace": "istio",
+        "name": "istio",
+        "version": "1.1.1",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "github",
+        "namespace": "istio",
+        "name": "istio",
+        "version": "1.1.2",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "github",
+        "namespace": "istio",
+        "name": "istio",
+        "version": "1.1.3",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "github",
+        "namespace": "istio",
+        "name": "istio",
+        "version": "1.1.4",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "github",
+        "namespace": "istio",
+        "name": "istio",
+        "version": "1.1.5",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "github",
+        "namespace": "istio",
+        "name": "istio",
+        "version": "1.1.6",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "github",
+        "namespace": "istio",
+        "name": "istio",
+        "version": "1.1.7",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "github",
+        "namespace": "istio",
+        "name": "istio",
+        "version": "1.1.8",
+        "qualifiers": null,
+        "subpath": null
+      }
+    ],
+    "fixed_purl": null,
+    "references": [
+      {
+        "reference_id": "ISTIO-SECURITY-2019-001",
+        "url": "https://istio.io/latest/news/security/ISTIO-SECURITY-2019-001/",
+        "severities": []
+      }
+    ],
+    "weaknesses": []
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2019-12243"
+    ],
+    "confidence": 100,
+    "summary": "Incorrect access control.",
+    "affected_purls": [
+      {
+        "type": "golang",
+        "namespace": "istio.io",
+        "name": "istio",
+        "version": "1.1.0",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "golang",
+        "namespace": "istio.io",
+        "name": "istio",
+        "version": "1.1.15",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "golang",
+        "namespace": "istio.io",
+        "name": "istio",
+        "version": "1.3.0",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "golang",
+        "namespace": "istio.io",
+        "name": "istio",
+        "version": "1.3.1",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "golang",
+        "namespace": "istio.io",
+        "name": "istio",
+        "version": "1.5.0",
+        "qualifiers": null,
+        "subpath": null
+      }
+    ],
+    "fixed_purl": null,
+    "references": [
+      {
+        "reference_id": "ISTIO-SECURITY-2019-001",
+        "url": "https://istio.io/latest/news/security/ISTIO-SECURITY-2019-001/",
+        "severities": []
+      }
+    ],
+    "weaknesses": []
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2019-12243"
+    ],
+    "confidence": 100,
+    "summary": "Incorrect access control.",
+    "affected_purls": [
+      {
+        "type": "github",
+        "namespace": "istio",
+        "name": "istio",
+        "version": "1.1.0",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "github",
+        "namespace": "istio",
+        "name": "istio",
+        "version": "1.1.15",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "github",
+        "namespace": "istio",
+        "name": "istio",
+        "version": "1.3.0",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "github",
+        "namespace": "istio",
+        "name": "istio",
+        "version": "1.3.1",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "github",
+        "namespace": "istio",
+        "name": "istio",
+        "version": "1.5.0",
+        "qualifiers": null,
+        "subpath": null
+      }
+    ],
+    "fixed_purl": null,
+    "references": [
+      {
+        "reference_id": "ISTIO-SECURITY-2019-001",
+        "url": "https://istio.io/latest/news/security/ISTIO-SECURITY-2019-001/",
+        "severities": []
+      }
+    ],
+    "weaknesses": []
+  }
+]

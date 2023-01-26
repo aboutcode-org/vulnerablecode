@@ -296,6 +296,7 @@ class APITestCasePackage(TestCase):
         vuln1 = Vulnerability.objects.create(
             summary="test-vuln1",
         )
+        alias = Alias.objects.create(alias="CVE-2019-1234", vulnerability=vuln1)
         self.vuln1 = vuln1
         PackageRelatedVulnerability.objects.create(
             package=self.package,
@@ -340,6 +341,7 @@ class APITestCasePackage(TestCase):
                     "summary": "test-vuln1",
                     "references": [],
                     "fixed_packages": [],
+                    "aliases": [{"alias": "CVE-2019-1234"}],
                 }
             ],
             "fixing_vulnerabilities": [
@@ -355,6 +357,7 @@ class APITestCasePackage(TestCase):
                             "is_vulnerable": True,
                         }
                     ],
+                    "aliases": [],
                 },
             ],
             "unresolved_vulnerabilities": [
@@ -364,6 +367,7 @@ class APITestCasePackage(TestCase):
                     "summary": "test-vuln1",
                     "references": [],
                     "fixed_packages": [],
+                    "aliases": [{"alias": "CVE-2019-1234"}],
                 }
             ],
         }
@@ -392,6 +396,7 @@ class APITestCasePackage(TestCase):
                             "is_vulnerable": True,
                         }
                     ],
+                    "aliases": [],
                 }
             ],
             "fixing_vulnerabilities": [],
@@ -408,6 +413,7 @@ class APITestCasePackage(TestCase):
                             "is_vulnerable": True,
                         }
                     ],
+                    "aliases": [],
                 }
             ],
         }

@@ -9,13 +9,17 @@
 
 import json
 import os
+from unittest import mock
 
 import pytest
 from univers.version_constraint import VersionConstraint
 from univers.version_range import ApacheVersionRange
 from univers.versions import SemverVersion
 
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDImporter
+from vulnerabilities.importers.apache_httpd import ApacheHTTPDImprover
+from vulnerabilities.improvers.default import DefaultImprover
 from vulnerabilities.tests import util_tests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -115,4 +119,25 @@ def test_to_advisory_CVE_2022_28614():
     advisories = ApacheHTTPDImporter().to_advisory(data)
     result = advisories.to_dict()
     expected_file = os.path.join(TEST_DATA, f"CVE-2022-28614-apache-httpd-expected.json")
+    util_tests.check_results_against_json(result, expected_file)
+
+
+@mock.patch("vulnerabilities.importers.apache_httpd.ApacheHTTPDImprover.get_package_versions")
+def test_apache_httpd_improver(mock_response):
+    advisory_file = os.path.join(TEST_DATA, f"CVE-2021-44224-apache-httpd-expected.json")
+    expected_file = os.path.join(TEST_DATA, f"apache-httpd-improver-expected.json")
+    with open(advisory_file) as exp:
+        advisory = AdvisoryData.from_dict(json.load(exp))
+    mock_response.return_value = [
+        "2.4.8",
+        "2.4.9",
+        "2.4.10",
+        "2.4.53",
+        "2.4.54",
+    ]
+    improvers = [ApacheHTTPDImprover(), DefaultImprover()]
+    result = []
+    for improver in improvers:
+        inference = [data.to_dict() for data in improver.get_inferences(advisory)]
+        result.extend(inference)
     util_tests.check_results_against_json(result, expected_file)

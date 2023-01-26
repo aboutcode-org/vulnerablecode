@@ -14,7 +14,8 @@ from packageurl import PackageURL
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
-from vulnerabilities.views import PackageDetails, PackageSearch
+from vulnerabilities.views import PackageDetails
+from vulnerabilities.views import PackageSearch
 
 
 class PackageSearchTestCase(TestCase):
@@ -56,13 +57,12 @@ class PackageSearchTestCase(TestCase):
     def test_package_view(self):
         qs = PackageSearch().get_queryset(query="pkg:nginx/nginx@1.0.15?foo=bar")
         pkgs = list(qs)
-        self.assertEqual(len(pkgs), 1)
+        self.assertEqual(len(pkgs), 2)
         self.assertEqual(pkgs[0].purl, "pkg:nginx/nginx@1.0.15")
-    
+
     def test_package_detail_view(self):
-        package = PackageDetails(kwargs={"purl":"pkg:nginx/nginx@1.0.15"}).get_object()
+        package = PackageDetails(kwargs={"purl": "pkg:nginx/nginx@1.0.15"}).get_object()
         assert package.purl == "pkg:nginx/nginx@1.0.15"
-        
 
     def test_package_view_with_purl_fragment(self):
         qs = PackageSearch().get_queryset(query="nginx@1.0.15")
@@ -88,6 +88,7 @@ class PackageSearchTestCase(TestCase):
             "pkg:nginx/nginx@1.14.1",
             "pkg:nginx/nginx@1.0.7",
             "pkg:nginx/nginx@1.0.15",
+            "pkg:nginx/nginx@1.0.15?foo=bar",
         ]
 
     def test_package_view_with_valid_purl_without_version(self):
@@ -108,6 +109,7 @@ class PackageSearchTestCase(TestCase):
             "pkg:nginx/nginx@1.14.1",
             "pkg:nginx/nginx@1.0.7",
             "pkg:nginx/nginx@1.0.15",
+            "pkg:nginx/nginx@1.0.15?foo=bar",
         ]
 
     def test_package_view_with_valid_purl_and_incomplete_version(self):
@@ -127,6 +129,7 @@ class PackageSearchTestCase(TestCase):
             "pkg:nginx/nginx@1.14.1",
             "pkg:nginx/nginx@1.0.7",
             "pkg:nginx/nginx@1.0.15",
+            "pkg:nginx/nginx@1.0.15?foo=bar",
         ]
 
     def test_package_view_with_purl_type(self):

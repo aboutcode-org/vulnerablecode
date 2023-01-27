@@ -20,6 +20,7 @@ IMPROVERS_REGISTRY = [
     importers.istio.IstioImprover,
     oval.DebianOvalBasicImprover,
     oval.UbuntuOvalBasicImprover,
+    importers.apache_httpd.ApacheHTTPDImprover,
 ]
 
 IMPROVERS_REGISTRY = {x.qualified_name: x for x in IMPROVERS_REGISTRY}

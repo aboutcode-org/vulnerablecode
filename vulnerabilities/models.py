@@ -12,6 +12,7 @@ import json
 import logging
 from contextlib import suppress
 
+from cwe2.database import Database
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import UserManager
 from django.core import exceptions
@@ -248,6 +249,28 @@ class Vulnerability(models.Model):
         Return a list of purl strings related to this vulnerability.
         """
         return [p.package_url for p in self.packages.distinct().all()]
+
+
+class Weakness(models.Model):
+    """
+    A Common Weakness Enumeration model
+    """
+
+    cwe_id = models.IntegerField(help_text="CWE id")
+    vulnerabilities = models.ManyToManyField(Vulnerability, related_name="weaknesses")
+    db = Database()
+
+    @property
+    def name(self):
+        """Return the weakness's name."""
+        weakness = self.db.get(self.cwe_id)
+        return weakness.name
+
+    @property
+    def description(self):
+        """Return the weakness's description."""
+        weakness = self.db.get(self.cwe_id)
+        return weakness.description
 
 
 class VulnerabilityReferenceQuerySet(BaseQuerySet):
@@ -662,7 +685,6 @@ class PackageRelatedVulnerability(models.Model):
 
 
 class VulnerabilitySeverity(models.Model):
-
     reference = models.ForeignKey(VulnerabilityReference, on_delete=models.CASCADE)
 
     scoring_system_choices = tuple(
@@ -774,6 +796,7 @@ class Advisory(models.Model):
     date_published = models.DateTimeField(
         blank=True, null=True, help_text="UTC Date of publication of the advisory"
     )
+    weaknesses = models.JSONField(blank=True, default=list, help_text="A list of CWE ids")
     date_collected = models.DateTimeField(help_text="UTC Date on which the advisory was collected")
     date_improved = models.DateTimeField(
         blank=True,
@@ -806,6 +829,7 @@ class Advisory(models.Model):
             affected_packages=[AffectedPackage.from_dict(pkg) for pkg in self.affected_packages],
             references=[Reference.from_dict(ref) for ref in self.references],
             date_published=self.date_published,
+            weaknesses=self.weaknesses,
         )
 
 

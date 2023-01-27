@@ -1,0 +1,31 @@
+[
+  {
+    "aliases": [
+      "CVE-2018-20301"
+    ],
+    "summary": "The Coherence library has \"Mass Assignment\"-like vulnerabilities.\n",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "hex",
+          "namespace": null,
+          "name": "coherence",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:hex/<0.5.2",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://github.com/smpallen99/coherence/issues/270",
+        "severities": []
+      }
+    ],
+    "date_published": null,
+    "weaknesses": []
+  }
+]

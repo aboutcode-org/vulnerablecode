@@ -17,6 +17,7 @@ IMPROVERS_REGISTRY = [
     importers.github.GitHubBasicImprover,
     importers.debian.DebianBasicImprover,
     importers.gitlab.GitLabBasicImprover,
+    importers.istio.IstioImprover,
     oval.DebianOvalBasicImprover,
     oval.UbuntuOvalBasicImprover,
 ]

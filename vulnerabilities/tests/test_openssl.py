@@ -35,6 +35,7 @@ ADVISORY_FIELDS_TO_TEST = (
     "affected_packages",
     "references",
     "date_published",
+    "weaknesses",
 )
 
 

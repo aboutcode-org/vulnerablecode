@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>apache_tomcat-selected-advisories.html</title>
+
+
+    <style>
+        body,
+        input {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 10.5pt;
+        }
+
+        #content {
+            margin-left: 100px;
+            margin-right: 100px;
+            margin-top: 30px;
+        }
+
+        .pull-right {
+            float: right;
+        }
+
+        #content h3,
+        #content h4,
+        #content h5,
+        #content h6 {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #content h3,
+        #content h4,
+        #content h5,
+        #content h6 {
+            padding-left: 5px;
+            padding-right: 5px;
+            background-color: #eaeaea;
+        }
+
+        #content div.text {
+            margin-bottom: 30px;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        th {
+            font-weight: 600;
+        }
+
+        .nexb_span {
+            background-color: #ffe6e6;
+            padding: 5px;
+            margin-bottom: 30px;
+            border: solid 1px #ffcccc;
+            border-radius: 5px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div id="content">
+
+        <div class="nexb_span">nexB note: This file contains excerpts from <a href="https://tomcat.apache.org/security-9.html">https://tomcat.apache.org/security-9.html</a> and other related Tomcat pages.</div>
+
+        <h3 id="Fixed_in_Apache_Tomcat_9.0.43"><span class="pull-right">2 February 2021</span> Fixed in Apache Tomcat 9.0.43</h3>
+        <div class="text">
+
+            <p><i>Note: The issues below were fixed in Apache Tomcat 9.0.42 but the
+                    release vote for the 9.0.42 release candidate did not pass. Therefore,
+                    although users must download 9.0.43 to obtain a version that includes a
+                    fix for these issues, version 9.0.42 is not included in the list of
+                    affected versions.</i></p>
+
+            <p><strong>Low: Fix for <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9484" rel="nofollow">CVE-2020-9484</a> was incomplete</strong>
+                <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-25329" rel="nofollow">CVE-2021-25329</a>
+            </p>
+
+            <p>The fix for <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9484" rel="nofollow">CVE-2020-9484</a> was incomplete. When using a
+                highly unlikely configuration edge case, the Tomcat instance was still
+                vulnerable to <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9484" rel="nofollow">CVE-2020-9484</a>. Note that both the previously
+                published prerequisites for <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9484" rel="nofollow">CVE-2020-9484</a> and the previously
+                published non-upgrade mitigations for <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9484" rel="nofollow">CVE-2020-9484</a> also apply to
+                this issue.</p>
+
+            <p>This was fixed with commit
+                <a href="https://github.com/apache/tomcat/commit/4785433a226a20df6acbea49296e1ce7e23de453">4785433a</a>.
+            </p>
+
+            <p>This issue was reported to the Apache Tomcat Security team by Trung Pham
+                of Viettel Cyber Security on 12 January 2021. The issue was made public
+                on 1 March 2021.</p>
+
+            <p>Affects: 9.0.0.M1 to 9.0.41</p>
+
+            <p><strong>Important: Request mix-up with h2c</strong>
+                <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-25122" rel="nofollow">CVE-2021-25122</a>
+            </p>
+
+            <p>When responding to new h2c connection requests, Apache Tomcat could
+                duplicate request headers and a limited amount of request body from one
+                request to another meaning user A and user B could both see the results of
+                user A's request.</p>
+
+            <p>This was fixed with commit
+                <a href="https://github.com/apache/tomcat/commit/d47c20a776e8919eaca8da9390a32bc8bf8210b1">d47c20a7</a>.
+            </p>
+
+            <p>This issue was identified by the Apache Tomcat Security team on 11
+                January 2021. The issue was made public on 1 March 2021.</p>
+
+            <p>Affects: 9.0.0.M1 to 9.0.41</p>
+
+        </div>
+
+        <h3 id="Fixed_in_Apache_Tomcat_9.0.35"><span class="pull-right">11 May 2020</span> Fixed in Apache Tomcat 9.0.35</h3>
+        <div class="text">
+
+            <p><strong>Important: Remote Code Execution via session persistence</strong>
+                <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9484" rel="nofollow">CVE-2020-9484</a>
+            </p>
+
+            <p>If:</p>
+            <ul>
+                <li>an attacker is able to control the contents and name of a file on the
+                    server; and</li>
+                <li>the server is configured to use the <code>PersistenceManager</code>
+                    with a <code>FileStore</code>; and</li>
+                <li>the <code>PersistenceManager</code> is configured with
+                    <code>sessionAttributeValueClassNameFilter="null"</code> (the default
+                    unless a <code>SecurityManager</code> is used) or a sufficiently lax
+                    filter to allow the attacker provided object to be deserialized;
+                    and
+                </li>
+                <li>the attacker knows the relative file path from the storage location
+                    used by <code>FileStore</code> to the file the attacker has control
+                    over;</li>
+            </ul>
+            <p>then, using a specifically crafted request, the attacker will be able to
+                trigger remote code execution via deserialization of the file under their
+                control.</p>
+
+            <p><strong>Note:</strong> All of conditions above must be true for the
+                attack to succeed.</p>
+
+            <p>As an alternative to upgrading to 9.0.35 or later, users may configure
+                the <code>PersistenceManager</code> with an appropriate value for
+                <code>sessionAttributeValueClassNameFilter</code> to ensure that only
+                application provided attributes are serialized and deserialized.
+            </p>
+
+            <p>This was fixed with commit
+                <a href="https://github.com/apache/tomcat/commit/3aa8f28db7efb311cdd1b6fe15a9cd3b167a2222">3aa8f28d</a>.
+            </p>
+
+            <p>This issue was reported to the Apache Tomcat Security Team by by jarvis
+                threedr3am of pdd security research on 12 April 2020. The issue was made
+                public on 20 May 2020.</p>
+
+            <p>Affects: 9.0.0.M1 to 9.0.34</p>
+
+        </div>
+
+<h3 id="Fixed_in_Apache_Tomcat_9.0.9"><span class="pull-right">not released</span> Fixed in Apache Tomcat 9.0.9</h3>
+<div class="text">
+
+    <p><strong>Low: CORS filter has insecure defaults</strong>
+        <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-8014" rel="nofollow">CVE-2018-8014</a>
+    </p>
+
+    <p>The defaults settings for the CORS filter are insecure and enable
+        <code>supportsCredentials</code> for all origins. It is expected that
+        users of the CORS filter will have configured it appropriately for their
+        environment rather than using it in the default configuration. Therefore,
+        it is expected that most users will not be impacted by this issue.
+    </p>
+
+    <p>This was fixed in revision <a href="https://svn.apache.org/viewvc?view=rev&amp;rev=1831726">1831726</a>.</p>
+
+    <p>This issue was reported publicly on 1 May 2018 and formally announced as
+        a vulnerability on 16 May 2018.</p>
+
+</div>
+
+        <h3 id="Fixed_in_Apache_Tomcat_8.5.3_and_8.0.36"><span class="pull-right">13 June 2016</span> Fixed in Apache Tomcat 8.5.3 and 8.0.36</h3>
+        <div class="text">
+
+            <p><strong>Moderate: Denial of Service</strong>
+                <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-3092" rel="nofollow">CVE-2016-3092</a>
+            </p>
+
+            <p>Apache Tomcat uses a package renamed copy of Apache Commons FileUpload to
+                implement the file upload requirements of the Servlet specification. A
+                denial of service vulnerability was identified in Commons FileUpload that
+                occurred when the length of the multipart boundary was just below the
+                size of the buffer (4096 bytes) used to read the uploaded file. This
+                caused the file upload process to take several orders of magnitude
+                longer than if the boundary was the typical tens of bytes long.</p>
+
+            <p>This was fixed in revision <a href="https://svn.apache.org/viewvc?view=rev&amp;rev=1743722">1743722</a> for
+                8.5.x and revision <a href="https://svn.apache.org/viewvc?view=rev&amp;rev=1743738">1743738</a> for
+                8.0.x.</p>
+
+            <p>This issue was identified by the TERASOLUNA Framework Development Team
+                and reported to the Apache Commons team via JPCERT on 9 May 2016. It was
+                made public on 21 June 2016.</p>
+
+            <p>Affects: 8.5.0 to 8.5.2, 8.0.0.RC1 to 8.0.35</p>
+
+        </div>
+
+        <h3 id="Fixed_in_Apache_Tomcat_5.5.28"><span class="pull-right">released 4 Sep 2009</span> Fixed in Apache Tomcat 5.5.28</h3>
+        <div class="text">
+            <p><strong>Important: Information Disclosure</strong>
+                <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-5515" rel="nofollow">CVE-2008-5515</a>
+            </p>
+
+            <p>When using a RequestDispatcher obtained from the Request, the target path
+                was normalised before the query string was removed. A request that
+                included a specially crafted request parameter could be used to access
+                content that would otherwise be protected by a security constraint or by
+                locating it in under the WEB-INF directory.</p>
+
+            <p>This was fixed in revisions <a href="https://svn.apache.org/viewvc?view=rev&amp;rev=782757">782757</a> and
+                <a href="https://svn.apache.org/viewvc?view=rev&amp;rev=783291">783291</a>.
+            </p>
+
+            <p>This was first reported to the Tomcat security team on 11 Dec 2008 and
+                made public on 8 Jun 2009.</p>
+
+            <p>Affects: 5.5.0-5.5.27</p>
+
+            <p><strong>Important: Denial of Service</strong>
+                <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0033" rel="nofollow">CVE-2009-0033</a>
+            </p>
+
+            <p>If Tomcat receives a request with invalid headers via the Java AJP
+                connector, it does not return an error and instead closes the AJP
+                connection. In case this connector is member of a mod_jk load balancing
+                worker, this member will be put into an error state and will be blocked
+                from use for approximately one minute. Thus the behaviour can be used for
+                a denial of service attack using a carefully crafted request.</p>
+
+            <p>This was fixed in <a href="https://svn.apache.org/viewvc?view=rev&amp;rev=781362">revision 781362</a>.</p>
+
+            <p>This was first reported to the Tomcat security team on 26 Jan 2009 and
+                made public on 3 Jun 2009.</p>
+
+            <p>Affects: 5.5.0-5.5.27</p>
+
+            <p><strong>Low: Information disclosure</strong>
+                <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0580" rel="nofollow">CVE-2009-0580</a>
+            </p>
+
+            <p>Due to insufficient error checking in some authentication classes, Tomcat
+                allows for the enumeration (brute force testing) of user names by
+                supplying illegally URL encoded passwords. The attack is possible if FORM
+                based authentication (j_security_check) is used with the MemoryRealm.
+                Note that in early versions, the DataSourceRealm and JDBCRealm were also
+                affected.</p>
+
+            <p>This was fixed in <a href="https://svn.apache.org/viewvc?view=rev&amp;rev=781379">revision 781379</a>.</p>
+
+            <p>This was first reported to the Tomcat security team on 25 Feb 2009 and
+                made public on 3 Jun 2009.</p>
+
+            <p>Affects: 5.5.0-5.5.27 (Memory Realm), 5.5.0-5.5.5 (DataSource and JDBC
+                Realms)</p>
+
+            <p><strong>Low: Cross-site scripting</strong>
+                <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0781" rel="nofollow">CVE-2009-0781</a>
+            </p>
+
+            <p>The calendar application in the examples web application contains an
+                XSS flaw due to invalid HTML which renders the XSS filtering protection
+                ineffective.</p>
+
+            <p>This was fixed in <a href="https://svn.apache.org/viewvc?view=rev&amp;rev=750928">revision 750928</a>.</p>
+
+            <p>This was first reported to the Tomcat security team on 5 Mar 2009 and
+                made public on 6 Mar 2009.</p>
+
+            <p>Affects: 5.5.0-5.5.27</p>
+
+            <p><strong>Low: Information disclosure</strong>
+                <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0783" rel="nofollow">CVE-2009-0783</a>
+            </p>
+
+            <p>Bugs <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=29936">29936</a> and <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=45933">45933</a> allowed a web application
+                to replace the XML parser used by
+                Tomcat to process web.xml, context.xml and tld files. In limited
+                circumstances these bugs may allow a rogue web application to view and/or
+                alter the web.xml, context.xml and tld files of other web applications
+                deployed on the Tomcat instance.</p>
+
+            <p>This was fixed in revisions <a href="https://svn.apache.org/viewvc?view=rev&amp;rev=681156">681156</a> and
+                <a href="https://svn.apache.org/viewvc?view=rev&amp;rev=781542">781542</a>.
+            </p>
+
+            <p>This was first reported to the Tomcat security team on 2 Mar 2009 and
+                made public on 4 Jun 2009.</p>
+
+            <p>Affects: 5.5.0-5.5.27</p>
+
+        </div>
+
+        <h3 id="Will_not_be_fixed_in_Apache_Tomcat_4.1.x">Will not be fixed in Apache Tomcat 4.1.x</h3>
+        <div class="text">
+            <p><strong>Moderate: Information disclosure</strong>
+                <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2005-4836" rel="nofollow">CVE-2005-4836</a>
+            </p>
+
+            <p>The deprecated HTTP/1.1 connector does not reject request URIs containing
+                null bytes when used with contexts that are configured with
+                allowLinking="true". Failure to reject the null byte enables an attacker
+                to obtain the source for any JSP page in these contexts. Users of Tomcat
+                4.1.x are advised to use the default, supported Coyote HTTP/1.1 connector
+                which does not exhibit this issue. There are no plans to issue an update
+                to Tomcat 4.1.x for this issue.</p>
+
+            <p>Affects: 4.1.15-4.1.SVN</p>
+
+        </div>
+
+<h3 id="Fixed_in_Apache_Tomcat_4.1.35">Fixed in Apache Tomcat 4.1.35</h3>
+<div class="text">
+
+    <p><strong>Low: Information disclosure</strong>
+        <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-4308" rel="nofollow">CVE-2008-4308</a>
+    </p>
+
+    <p><a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=40771">Bug
+            40771</a> may result in the disclosure of POSTed content from a previous
+        request. For a vulnerability to exist, the content read from the input
+        stream must be disclosed, eg via writing it to the response and committing
+        the response, before the ArrayIndexOutOfBoundsException occurs which will
+        halt processing of the request.</p>
+
+    <p>Affects: 4.1.32-4.1.34 (4.0.x unknown)</p>
+</div>
+
+<h3 id="Fixed_in_Apache_Tomcat_4.1.3">Fixed in Apache Tomcat 4.1.3</h3>
+<div class="text">
+    <p><strong>Important: Denial of service</strong>
+        <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-0935" rel="nofollow">CVE-2002-0935</a>
+    </p>
+
+    <p>A malformed HTTP request can cause the request processing thread to
+        become unresponsive. A sequence of such requests will cause all request
+        processing threads, and hence Tomcat as a whole, to become unresponsive.</p>
+
+    <p>Affects: 4.0.0-4.0.2?, 4.0.3, 4.0.4-4.0.6?, 4.1.0-4.1.2?</p>
+
+</div>
+
+        <h3 id="Fixed_in_Apache_Tomcat_3.3a">Fixed in Apache Tomcat 3.3a</h3>
+        <div class="text">
+            <p><strong>Moderate: Information disclosure</strong>
+                <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-2007" rel="nofollow">CVE-2002-2007</a>
+            </p>
+
+            <p>Non-standard requests to the sample applications installed by default
+                could result in unexpected directory listings or disclosure of the full
+                file system path for a JSP.</p>
+
+            <p>Affects: 3.2.3-3.2.4</p>
+
+            <p><strong>Low: Information disclosure</strong>
+                <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-2006" rel="nofollow">CVE-2002-2006</a>,
+                <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2000-0760" rel="nofollow">CVE-2000-0760</a>
+            </p>
+
+            <p>The snoop servlet installed as part of the examples includes output that
+                identifies the Tomcat installation path. There are no plans to issue a an
+                update to Tomcat 3.x for this issue.</p>
+
+            <p>Affects:3.1-3.1.1, 3.2-3.2.4</p>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

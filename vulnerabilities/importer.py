@@ -246,6 +246,7 @@ class AdvisoryData:
     affected_packages: List[AffectedPackage] = dataclasses.field(default_factory=list)
     references: List[Reference] = dataclasses.field(default_factory=list)
     date_published: Optional[datetime.datetime] = None
+    weaknesses: List[int] = dataclasses.field(default_factory=list)
 
     def __post_init__(self):
         if self.date_published and not self.date_published.tzinfo:
@@ -258,6 +259,7 @@ class AdvisoryData:
             "affected_packages": [pkg.to_dict() for pkg in self.affected_packages],
             "references": [ref.to_dict() for ref in self.references],
             "date_published": self.date_published.isoformat() if self.date_published else None,
+            "weaknesses": self.weaknesses,
         }
 
     @classmethod
@@ -273,6 +275,7 @@ class AdvisoryData:
             "date_published": datetime.datetime.fromisoformat(date_published)
             if date_published
             else None,
+            "weaknesses": advisory_data["weaknesses"],
         }
         return cls(**transformed)
 

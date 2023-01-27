@@ -31,6 +31,8 @@ from vulnerabilities.importers import redhat
 from vulnerabilities.importers import retiredotnet
 from vulnerabilities.importers import suse_scores
 from vulnerabilities.importers import ubuntu
+from vulnerabilities.importers import ubuntu_usn
+from vulnerabilities.importers import xen
 
 IMPORTERS_REGISTRY = [
     nginx.NginxImporter,
@@ -57,6 +59,8 @@ IMPORTERS_REGISTRY = [
     suse_scores.SUSESeverityScoreImporter,
     elixir_security.ElixirSecurityImporter,
     apache_tomcat.ApacheTomcatImporter,
+    xen.XenImporter,
+    ubuntu_usn.UbuntuUSNImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

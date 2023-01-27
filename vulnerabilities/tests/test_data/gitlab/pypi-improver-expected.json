@@ -43,7 +43,8 @@
         "url": "https://www.palletsprojects.com/blog/flask-1-0-released/",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -72,6 +73,7 @@
         "url": "https://www.palletsprojects.com/blog/flask-1-0-released/",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   }
 ]

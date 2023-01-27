@@ -36,7 +36,8 @@
         "url": "https://github.com/advisories/GHSA-x5c7-x7m2-rhmf",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -66,6 +67,7 @@
         "url": "https://github.com/advisories/GHSA-x5c7-x7m2-rhmf",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   }
 ]

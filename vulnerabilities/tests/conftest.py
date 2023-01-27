@@ -30,9 +30,7 @@ collect_ignore = [
     "test_package_managers.py",
     "test_ruby.py",
     "test_rust.py",
-    "test_safety_db.py",
     "test_suse_backports.py",
     "test_suse.py",
-    "test_ubuntu_usn.py",
     "test_upstream.py",
 ]

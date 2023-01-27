@@ -398,7 +398,7 @@ class APITestCasePackage(TestCase):
                             "is_vulnerable": True,
                         }
                     ],
-                    "aliases": [],
+                    "aliases": ["CVE-2029-1234"],
                 }
             ],
             "fixing_vulnerabilities": [],
@@ -415,7 +415,7 @@ class APITestCasePackage(TestCase):
                             "is_vulnerable": True,
                         }
                     ],
-                    "aliases": [],
+                    "aliases": ["CVE-2029-1234"],
                 }
             ],
         }

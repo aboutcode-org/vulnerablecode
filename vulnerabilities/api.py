@@ -78,6 +78,12 @@ class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
     Lookup vulnerabilities references by aliases (such as a CVE).
     """
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        aliases = [alias["alias"] for alias in data["aliases"]]
+        data["aliases"] = aliases
+        return data
+
     fixed_packages = MinimalPackageSerializer(
         many=True, source="filtered_fixed_packages", read_only=True
     )

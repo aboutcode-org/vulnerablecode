@@ -36,7 +36,6 @@ class OvalParser:
         Return a list of OvalDefinition mappings.
         """
         oval_data = []
-        # print(len(self.all_definitions))
         print("\nlen(self.all_definitions) = {}\n".format(len(self.all_definitions)))
         for definition in self.all_definitions:
             # print(definition)
@@ -54,19 +53,27 @@ class OvalParser:
 
             definition_data["severity"] = self.get_severity_from_definition(definition)
             print("\nlen(matching_tests) = {}\n".format(len(matching_tests)))
+            print("\nmatching_tests = {}\n".format(matching_tests))
             for test in matching_tests:
+                print("\ntest = {}\n".format(test))
                 test_obj, test_state = self.get_object_state_of_test(test)
                 if not test_obj or not test_state:
                     continue
                 test_data = {"package_list": []}
-                print(test_obj)
+                print("\ntest_obj = {}\n".format(test_obj))
                 test_data["package_list"].extend(self.get_pkgs_from_obj(test_obj))
-                print(self.get_pkgs_from_obj(test_obj))
+                print(
+                    "\nself.get_pkgs_from_obj(test_obj) = {}\n".format(
+                        self.get_pkgs_from_obj(test_obj)
+                    )
+                )
                 version_ranges = self.get_version_range_from_state(test_state)
                 test_data["version_ranges"] = version_ranges
                 definition_data["test_data"].append(test_data)
 
             oval_data.append(definition_data)
+
+            # print('\ntest_data["package_list"] = {}\n'.format(test_data["package_list"]))
 
         return oval_data
 
@@ -185,15 +192,27 @@ class OvalParser:
 
     @staticmethod
     def get_vuln_id_from_definition(definition):
-        # SUSE and Ubuntu OVAL files will get cves via this loop
+        # # SUSE and Ubuntu OVAL files will get cves via this loop
+        # for child in definition.element.iter():
+        #     # if child.get("ref_id"):
+        #     #     return child.get("ref_id")
+        #     # Must also check whether 'source' field exists and value is 'CVE'
+        #     # TODO: what if there are multiple elements that satisfy the condition?
+        #     # Add to list and report as separate AdvisoryData() objects?
+        #     if child.get("ref_id") and child.get("source"):
+        #         if child.get("source") == "CVE":
+        #             return child.get("ref_id")
+        # # Debian OVAL files will get cves via this
+        # return definition.getMetadata().getTitle()
+        # ========================================================
+        cve_list = []
         for child in definition.element.iter():
-            # if child.get("ref_id"):
-            #     return child.get("ref_id")
-            # Must also check whether 'source' field exists and value is 'CVE'
-            # TODO: what if there are multiple elements that satisfy the condition?
-            # Add to list and report as separate AdvisoryData() objects?
             if child.get("ref_id") and child.get("source"):
                 if child.get("source") == "CVE":
-                    return child.get("ref_id")
+                    cve_list.append(child.get("ref_id"))
+
         # Debian OVAL files will get cves via this
-        return definition.getMetadata().getTitle()
+        if len(cve_list) == 0:
+            cve_list.append(definition.getMetadata().getTitle())
+
+        return cve_list

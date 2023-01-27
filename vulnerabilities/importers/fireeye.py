@@ -23,7 +23,12 @@ logger = logging.getLogger(__name__)
 class FireyeImporter(GitImporter):
     spdx_license_expression = "CC-BY-SA-4.0 AND MIT"
     license_url = "https://github.com/mandiant/Vulnerability-Disclosures/blob/master/README.md"
-
+    notice = """
+    Copyright (c) Mandiant
+    The following licenses/licensing apply to this Mandiant repository:
+    1. CC BY-SA 4.0 - For CVE related information not including source code (such as PoCs)
+    2. MIT - For source code contained within provided CVE information
+    """
     def __init__(self):
         super().__init__(repo_url="git+https://github.com/mandiant/Vulnerability-Disclosures")
 

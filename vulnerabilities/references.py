@@ -28,6 +28,16 @@ class XsaReference(Reference):
             url=f"https://xenbits.xen.org/xsa/advisory-{numid}.html",
         )
 
+    @classmethod
+    def from_number(cls, number):
+        """
+        Return a new XsaReference from an XSA number.
+        """
+        return cls(
+            reference_id=f"XSA-{number}",
+            url=f"https://xenbits.xen.org/xsa/advisory-{number}.html",
+        )
+
 
 class ZbxReference(Reference):
     """

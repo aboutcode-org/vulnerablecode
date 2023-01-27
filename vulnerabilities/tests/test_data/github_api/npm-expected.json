@@ -62,7 +62,8 @@
         ]
       }
     ],
-    "date_published": "2022-07-29T00:00:18+00:00"
+    "date_published": "2022-07-29T00:00:18+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -117,7 +118,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-22T03:30:56+00:00"
+    "date_published": "2022-11-22T03:30:56+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -167,7 +169,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-29T18:30:18+00:00"
+    "date_published": "2022-11-29T18:30:18+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -227,7 +230,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-28T15:30:24+00:00"
+    "date_published": "2022-11-28T15:30:24+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -287,7 +291,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-25T03:30:19+00:00"
+    "date_published": "2022-11-25T03:30:19+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -338,7 +343,9 @@
         ]
       }
     ],
-    "date_published": "2022-11-28T22:06:24+00:00"
+    "date_published": "2022-11-28T22:06:24+00:00",
+    "weaknesses": []
+
   },
   {
     "aliases": [
@@ -389,7 +396,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-28T22:06:24+00:00"
+    "date_published": "2022-11-28T22:06:24+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -433,7 +441,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-23T15:49:51+00:00"
+    "date_published": "2022-11-23T15:49:51+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -477,7 +486,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-23T15:44:52+00:00"
+    "date_published": "2022-11-23T15:44:52+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -521,7 +531,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-23T15:39:50+00:00"
+    "date_published": "2022-11-23T15:39:50+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -565,7 +576,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-23T15:26:43+00:00"
+    "date_published": "2022-11-23T15:26:43+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -626,7 +638,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-21T23:55:41+00:00"
+    "date_published": "2022-11-21T23:55:41+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -687,7 +700,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-21T23:55:41+00:00"
+    "date_published": "2022-11-21T23:55:41+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -748,7 +762,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-21T22:28:11+00:00"
+    "date_published": "2022-11-21T22:28:11+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -809,7 +824,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-21T22:28:11+00:00"
+    "date_published": "2022-11-21T22:28:11+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -874,7 +890,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-04T12:00:25+00:00"
+    "date_published": "2022-11-04T12:00:25+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -934,7 +951,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-13T19:00:41+00:00"
+    "date_published": "2022-11-13T19:00:41+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -994,7 +1012,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-13T12:00:17+00:00"
+    "date_published": "2022-11-13T12:00:17+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -1054,7 +1073,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-14T19:00:38+00:00"
+    "date_published": "2022-10-14T19:00:38+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -1114,7 +1134,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-14T19:00:38+00:00"
+    "date_published": "2022-10-14T19:00:38+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -1174,7 +1195,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-14T19:00:38+00:00"
+    "date_published": "2022-10-14T19:00:38+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -1239,7 +1261,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-12T12:00:27+00:00"
+    "date_published": "2022-10-12T12:00:27+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -1304,7 +1327,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-12T12:00:27+00:00"
+    "date_published": "2022-10-12T12:00:27+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -1369,7 +1393,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-12T12:00:27+00:00"
+    "date_published": "2022-10-12T12:00:27+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -1419,7 +1444,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-10T16:02:51+00:00"
+    "date_published": "2022-11-10T16:02:51+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -1484,7 +1510,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-10T15:51:01+00:00"
+    "date_published": "2022-11-10T15:51:01+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -1549,7 +1576,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-10T15:51:01+00:00"
+    "date_published": "2022-11-10T15:51:01+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -1630,7 +1658,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-10T13:02:35+00:00"
+    "date_published": "2022-11-10T13:02:35+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -1711,7 +1740,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-10T13:02:35+00:00"
+    "date_published": "2022-11-10T13:02:35+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -1762,7 +1792,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-10T12:38:57+00:00"
+    "date_published": "2022-11-10T12:38:57+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -1813,7 +1844,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-10T12:38:57+00:00"
+    "date_published": "2022-11-10T12:38:57+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -1864,7 +1896,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-10T12:38:57+00:00"
+    "date_published": "2022-11-10T12:38:57+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -1934,7 +1967,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-26T12:00:28+00:00"
+    "date_published": "2022-10-26T12:00:28+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -2004,7 +2038,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-26T12:00:28+00:00"
+    "date_published": "2022-10-26T12:00:28+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -2074,7 +2109,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-26T12:00:28+00:00"
+    "date_published": "2022-10-26T12:00:28+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -2145,7 +2181,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-09T20:47:27+00:00"
+    "date_published": "2022-11-09T20:47:27+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -2216,7 +2253,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-09T20:47:27+00:00"
+    "date_published": "2022-11-09T20:47:27+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -2267,7 +2305,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-08T20:48:49+00:00"
+    "date_published": "2022-11-08T20:48:49+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -2338,7 +2377,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-08T17:29:16+00:00"
+    "date_published": "2022-11-08T17:29:16+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -2409,7 +2449,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-08T17:29:16+00:00"
+    "date_published": "2022-11-08T17:29:16+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -2459,7 +2500,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-04T12:00:25+00:00"
+    "date_published": "2022-11-04T12:00:25+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -2509,7 +2551,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-04T12:00:25+00:00"
+    "date_published": "2022-11-04T12:00:25+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -2584,7 +2627,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-13T12:00:28+00:00"
+    "date_published": "2022-10-13T12:00:28+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -2659,7 +2703,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-13T12:00:28+00:00"
+    "date_published": "2022-10-13T12:00:28+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -2720,7 +2765,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-07T21:13:57+00:00"
+    "date_published": "2022-11-07T21:13:57+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -2781,7 +2827,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-07T21:13:57+00:00"
+    "date_published": "2022-11-07T21:13:57+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -2842,7 +2889,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-07T21:13:57+00:00"
+    "date_published": "2022-11-07T21:13:57+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -2892,7 +2940,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-04T12:00:25+00:00"
+    "date_published": "2022-11-04T12:00:25+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -2953,7 +3002,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-03T18:14:05+00:00"
+    "date_published": "2022-11-03T18:14:05+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -3008,7 +3058,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-02T18:18:10+00:00"
+    "date_published": "2022-11-02T18:18:10+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -3063,7 +3114,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-02T18:18:10+00:00"
+    "date_published": "2022-11-02T18:18:10+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -3134,7 +3186,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-02T18:10:47+00:00"
+    "date_published": "2022-11-02T18:10:47+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -3205,7 +3258,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-02T18:10:47+00:00"
+    "date_published": "2022-11-02T18:10:47+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -3275,7 +3329,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-01T12:00:30+00:00"
+    "date_published": "2022-11-01T12:00:30+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -3355,7 +3410,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-01T12:00:30+00:00"
+    "date_published": "2022-11-01T12:00:30+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -3425,7 +3481,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-01T12:00:30+00:00"
+    "date_published": "2022-11-01T12:00:30+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -3505,7 +3562,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-01T12:00:30+00:00"
+    "date_published": "2022-11-01T12:00:30+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -3585,7 +3643,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-01T12:00:30+00:00"
+    "date_published": "2022-11-01T12:00:30+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -3640,7 +3699,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-01T12:00:36+00:00"
+    "date_published": "2022-11-01T12:00:36+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -3711,7 +3771,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-01T17:29:11+00:00"
+    "date_published": "2022-11-01T17:29:11+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -3782,7 +3843,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-01T17:29:11+00:00"
+    "date_published": "2022-11-01T17:29:11+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -3853,7 +3915,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-01T17:29:11+00:00"
+    "date_published": "2022-11-01T17:29:11+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -3924,7 +3987,8 @@
         ]
       }
     ],
-    "date_published": "2022-11-01T17:29:11+00:00"
+    "date_published": "2022-11-01T17:29:11+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -3979,7 +4043,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-26T12:00:28+00:00"
+    "date_published": "2022-10-26T12:00:28+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -4034,7 +4099,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-26T12:00:28+00:00"
+    "date_published": "2022-10-26T12:00:28+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -4089,7 +4155,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-26T12:00:28+00:00"
+    "date_published": "2022-10-26T12:00:28+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -4159,7 +4226,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-26T12:00:28+00:00"
+    "date_published": "2022-10-26T12:00:28+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -4230,7 +4298,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-25T22:27:32+00:00"
+    "date_published": "2022-10-25T22:27:32+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -4291,7 +4360,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-25T20:22:01+00:00"
+    "date_published": "2022-10-25T20:22:01+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -4341,7 +4411,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-19T19:00:17+00:00"
+    "date_published": "2022-10-19T19:00:17+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -4391,7 +4462,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-20T18:38:35+00:00"
+    "date_published": "2022-10-20T18:38:35+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -4461,7 +4533,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-01T00:00:24+00:00"
+    "date_published": "2022-10-01T00:00:24+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -4516,7 +4589,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-18T12:00:32+00:00"
+    "date_published": "2022-10-18T12:00:32+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -4576,7 +4650,8 @@
         ]
       }
     ],
-    "date_published": "2019-10-22T20:19:54+00:00"
+    "date_published": "2019-10-22T20:19:54+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -4636,7 +4711,8 @@
         ]
       }
     ],
-    "date_published": "2019-10-22T20:19:54+00:00"
+    "date_published": "2019-10-22T20:19:54+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -4692,7 +4768,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-18T17:12:46+00:00"
+    "date_published": "2022-10-18T17:12:46+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -4748,7 +4825,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-18T16:08:49+00:00"
+    "date_published": "2022-10-18T16:08:49+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -4804,7 +4882,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-18T16:08:49+00:00"
+    "date_published": "2022-10-18T16:08:49+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -4885,7 +4964,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-11T20:42:57+00:00"
+    "date_published": "2022-10-11T20:42:57+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -4966,7 +5046,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-11T20:42:57+00:00"
+    "date_published": "2022-10-11T20:42:57+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -5022,7 +5103,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-12T22:05:44+00:00"
+    "date_published": "2022-10-12T22:05:44+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -5088,7 +5170,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-12T22:05:41+00:00"
+    "date_published": "2022-10-12T22:05:41+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -5154,7 +5237,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-12T22:05:41+00:00"
+    "date_published": "2022-10-12T22:05:41+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -5220,7 +5304,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-12T22:05:41+00:00"
+    "date_published": "2022-10-12T22:05:41+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -5286,7 +5371,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-12T22:05:41+00:00"
+    "date_published": "2022-10-12T22:05:41+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -5336,7 +5422,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-11T19:00:26+00:00"
+    "date_published": "2022-10-11T19:00:26+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -5391,7 +5478,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-12T14:15:48+00:00"
+    "date_published": "2022-10-12T14:15:48+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -5472,7 +5560,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-11T20:42:57+00:00"
+    "date_published": "2022-10-11T20:42:57+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -5553,7 +5642,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-11T20:42:57+00:00"
+    "date_published": "2022-10-11T20:42:57+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -5619,7 +5709,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-11T13:45:14+00:00"
+    "date_published": "2022-10-11T13:45:14+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -5669,7 +5760,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-10T20:59:02+00:00"
+    "date_published": "2022-10-10T20:59:02+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -5719,7 +5811,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-07T18:16:01+00:00"
+    "date_published": "2022-10-07T18:16:01+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -5775,7 +5868,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-07T21:23:18+00:00"
+    "date_published": "2022-10-07T21:23:18+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -5836,7 +5930,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-07T07:33:44+00:00"
+    "date_published": "2022-10-07T07:33:44+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -5891,7 +5986,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-06T22:56:29+00:00"
+    "date_published": "2022-10-06T22:56:29+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -5951,7 +6047,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-04T00:00:22+00:00"
+    "date_published": "2022-10-04T00:00:22+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -6011,7 +6108,8 @@
         ]
       }
     ],
-    "date_published": "2022-10-04T00:00:22+00:00"
+    "date_published": "2022-10-04T00:00:22+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -6050,7 +6148,8 @@
         ]
       }
     ],
-    "date_published": "2020-09-03T17:02:52+00:00"
+    "date_published": "2020-09-03T17:02:52+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -6115,7 +6214,8 @@
         "severities": []
       }
     ],
-    "date_published": "2018-01-22T13:32:42+00:00"
+    "date_published": "2018-01-22T13:32:42+00:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -6170,6 +6270,7 @@
         ]
       }
     ],
-    "date_published": "2022-10-01T00:00:24+00:00"
+    "date_published": "2022-10-01T00:00:24+00:00",
+    "weaknesses": []
   }
 ]

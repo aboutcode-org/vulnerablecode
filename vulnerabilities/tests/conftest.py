@@ -26,18 +26,12 @@ def no_rmtree(monkeypatch):
 # Step 3: Migrate all the tests
 collect_ignore = [
     "test_apache_kafka.py",
-    "test_apache_tomcat.py",
     "test_api.py",
-    "test_elixir_security.py",
     "test_models.py",
-    "test_msr2019.py",
     "test_package_managers.py",
     "test_ruby.py",
     "test_rust.py",
-    "test_safety_db.py",
     "test_suse_backports.py",
     "test_suse.py",
-    "test_suse_scores.py",
-    "test_ubuntu_usn.py",
     "test_upstream.py",
 ]

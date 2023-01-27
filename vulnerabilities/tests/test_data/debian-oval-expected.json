@@ -21,7 +21,8 @@
       }
     ],
     "references": [],
-    "date_published": "2020-06-08T23:31:02.188000-04:00"
+    "date_published": "2020-06-08T23:31:02.188000-04:00",
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -45,6 +46,7 @@
       }
     ],
     "references": [],
-    "date_published": "2020-06-08T23:31:02.188000-04:00"
+    "date_published": "2020-06-08T23:31:02.188000-04:00",
+    "weaknesses": []
   }
 ]

@@ -1,0 +1,106 @@
+[
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2021-44224"
+    ],
+    "confidence": 100,
+    "summary": "A crafted URI sent to httpd configured as a forward proxy (ProxyRequests on) can cause a crash (NULL pointer dereference) or, for configurations mixing forward and reverse proxy declarations, can allow for requests to be directed to a declared Unix Domain Socket endpoint (Server Side Request Forgery).\n\nThis issue affects Apache HTTP Server 2.4.7 up to 2.4.51 (included).",
+    "affected_purls": [
+      {
+        "type": "apache",
+        "namespace": null,
+        "name": "httpd",
+        "version": "2.4.8",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "apache",
+        "namespace": null,
+        "name": "httpd",
+        "version": "2.4.9",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "apache",
+        "namespace": null,
+        "name": "httpd",
+        "version": "2.4.10",
+        "qualifiers": null,
+        "subpath": null
+      }
+    ],
+    "fixed_purl": {
+      "type": "apache",
+      "namespace": null,
+      "name": "httpd",
+      "version": "2.4.53",
+      "qualifiers": null,
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "CVE-2021-44224",
+        "url": "https://httpd.apache.org/security/json/CVE-2021-44224.json",
+        "severities": [
+          {
+            "system": "apache_httpd",
+            "value": "moderate",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "weaknesses": []
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2021-44224"
+    ],
+    "confidence": 100,
+    "summary": "A crafted URI sent to httpd configured as a forward proxy (ProxyRequests on) can cause a crash (NULL pointer dereference) or, for configurations mixing forward and reverse proxy declarations, can allow for requests to be directed to a declared Unix Domain Socket endpoint (Server Side Request Forgery).\n\nThis issue affects Apache HTTP Server 2.4.7 up to 2.4.51 (included).",
+    "affected_purls": [
+      {
+        "type": "apache",
+        "namespace": null,
+        "name": "httpd",
+        "version": "2.4.7",
+        "qualifiers": null,
+        "subpath": null
+      },
+      {
+        "type": "apache",
+        "namespace": null,
+        "name": "httpd",
+        "version": "2.4.51",
+        "qualifiers": null,
+        "subpath": null
+      }
+    ],
+    "fixed_purl": {
+      "type": "apache",
+      "namespace": null,
+      "name": "httpd",
+      "version": "2.4.52",
+      "qualifiers": null,
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "CVE-2021-44224",
+        "url": "https://httpd.apache.org/security/json/CVE-2021-44224.json",
+        "severities": [
+          {
+            "system": "apache_httpd",
+            "value": "moderate",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "weaknesses": []
+  }
+]

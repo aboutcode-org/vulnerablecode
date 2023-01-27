@@ -2,8 +2,14 @@ Release notes
 =============
 
 
-Next release
-----------------
+Version v32.0.0rc2
+--------------------
+
+- We added migration for adding apache tomcat option in severity scoring.
+
+
+Version v32.0.0rc1
+--------------------
 
 - We re-enabled support for the mozilla vulnerabilities advisories importer.
 - We re-enabled support for the gentoo vulnerabilities advisories importer.
@@ -11,6 +17,10 @@ Next release
 - We re-enabled support for the kbmsr2019 vulnerabilities advisories importer.
 - We re-enabled support for the suse score advisories importer.
 - We re-enabled support for the elixir security advisories importer.
+- We re-enabled support for the apache tomcat security advisories importer.
+- We added support for CWE.
+- We added migrations to remove corrupted advisories https://github.com/nexB/vulnerablecode/issues/1086.
+
 
 Version v31.1.1
 ---------------

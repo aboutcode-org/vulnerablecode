@@ -36,7 +36,8 @@
         "url": "https://github.com/advisories/GHSA-868x-rg4c-cjqg",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   },
   {
     "vulnerability_id": null,
@@ -66,6 +67,7 @@
         "url": "https://github.com/advisories/GHSA-868x-rg4c-cjqg",
         "severities": []
       }
-    ]
+    ],
+    "weaknesses": []
   }
 ]

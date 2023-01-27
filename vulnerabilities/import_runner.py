@@ -61,6 +61,7 @@ def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: st
             affected_packages=[pkg.to_dict() for pkg in data.affected_packages],
             references=[ref.to_dict() for ref in data.references],
             date_published=data.date_published,
+            weaknesses=data.weaknesses,
             defaults={
                 "created_by": importer_name,
                 "date_collected": datetime.datetime.now(tz=datetime.timezone.utc),

@@ -23,6 +23,7 @@ from vulnerabilities import models
 from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import VulnerabilitySearchForm
+from vulnerabilities.models import Weakness
 from vulnerablecode.settings import env
 
 PAGE_SIZE = 20
@@ -90,7 +91,7 @@ class PackageDetails(DetailView):
 
         purl = self.kwargs.get(self.slug_url_kwarg)
         if purl:
-            queryset = queryset.for_package_url(purl_str=purl, encode=False)
+            queryset = queryset.for_purl(purl)
         else:
             cls = self.__class__.__name__
             raise AttributeError(
@@ -111,7 +112,7 @@ class VulnerabilityDetails(DetailView):
     slug_field = "vulnerability_id"
 
     def get_queryset(self):
-        return super().get_queryset().prefetch_related("references", "aliases")
+        return super().get_queryset().prefetch_related("references", "aliases", "weaknesses")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -124,6 +125,7 @@ class VulnerabilityDetails(DetailView):
                 "aliases": self.object.aliases.all(),
                 "affected_packages": self.object.affected_packages.all(),
                 "fixed_by_packages": self.object.fixed_by_packages.all(),
+                "weaknesses": self.object.weaknesses.all(),
             }
         )
         return context

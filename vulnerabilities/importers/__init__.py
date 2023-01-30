@@ -14,8 +14,8 @@ from vulnerabilities.importers import archlinux
 from vulnerabilities.importers import debian
 from vulnerabilities.importers import debian_oval
 from vulnerabilities.importers import elixir_security
-from vulnerabilities.importers import gentoo
 from vulnerabilities.importers import fireeye
+from vulnerabilities.importers import gentoo
 from vulnerabilities.importers import github
 from vulnerabilities.importers import gitlab
 from vulnerabilities.importers import istio

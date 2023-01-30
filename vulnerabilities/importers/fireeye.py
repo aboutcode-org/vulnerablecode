@@ -10,6 +10,7 @@ import logging
 import re
 from pathlib import Path
 from typing import Iterable
+from typing import List
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import GitImporter
@@ -29,6 +30,7 @@ class FireyeImporter(GitImporter):
     1. CC BY-SA 4.0 - For CVE related information not including source code (such as PoCs)
     2. MIT - For source code contained within provided CVE information
     """
+
     def __init__(self):
         super().__init__(repo_url="git+https://github.com/mandiant/Vulnerability-Disclosures")
 
@@ -105,7 +107,7 @@ def matcher_url(ref) -> str:
         return ref
 
 
-def get_aliases(database_id, cve_ref) -> []:
+def get_aliases(database_id, cve_ref) -> List:
     """
     Returns a List of Aliases from a database_id and a list of CVEs
     >>> get_aliases("MNDT-2021-0012",["CVE-2021-44207"])

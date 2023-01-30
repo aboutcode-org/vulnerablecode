@@ -14,6 +14,7 @@ from vulnerabilities.importers import archlinux
 from vulnerabilities.importers import debian
 from vulnerabilities.importers import debian_oval
 from vulnerabilities.importers import elixir_security
+from vulnerabilities.importers import fireeye
 from vulnerabilities.importers import gentoo
 from vulnerabilities.importers import github
 from vulnerabilities.importers import gitlab
@@ -61,6 +62,7 @@ IMPORTERS_REGISTRY = [
     apache_tomcat.ApacheTomcatImporter,
     xen.XenImporter,
     ubuntu_usn.UbuntuUSNImporter,
+    fireeye.FireyeImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

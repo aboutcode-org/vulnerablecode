@@ -1,13 +1,27 @@
 {
-  "aliases": ["CVE-2020-12878", " FEYE-2020-0020"],
+  "aliases": [
+    "CVE-2020-12878",
+    " FEYE-2020-0020"
+  ],
   "summary": "Digi International's ConnectPort X2e is susceptible to a local privilege escalation vulnerable to the privileged user `root`.",
   "affected_packages": [],
   "references": [
     {
-      "reference_id": "", "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-12878", "severities": []},
+      "reference_id": "",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-12878",
+      "severities": []
+    },
     {
-      "reference_id": "", "url": "https://www.fireeye.com/blog/threat-research/2021/02/solarcity-exploitation-of-x2e-iot-device-part-one.html", "severities": []},
+      "reference_id": "",
+      "url": "https://www.fireeye.com/blog/threat-research/2021/02/solarcity-exploitation-of-x2e-iot-device-part-one.html",
+      "severities": []
+    },
     {
-      "reference_id": "", "url": "https://www.fireeye.com/blog/threat-research/2021/02/solarcity-exploitation-of-x2e-iot-device-part-two.html", "severities": []}],
-  "date_published":""
+      "reference_id": "",
+      "url": "https://www.fireeye.com/blog/threat-research/2021/02/solarcity-exploitation-of-x2e-iot-device-part-two.html",
+      "severities": []
+    }
+  ],
+  "date_published": null,
+  "weaknesses": []
 }

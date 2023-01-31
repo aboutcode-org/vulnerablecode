@@ -8,10 +8,12 @@
 #
 
 import logging
+import os
 from typing import Iterable
 from urllib.parse import urljoin
 
 import requests
+from dotenv import load_dotenv
 from packageurl import PackageURL
 
 from vulntotal.validator import DataSource
@@ -24,21 +26,19 @@ class VulnerableCodeDataSource(DataSource):
     spdx_license_expression = "CC-BY-SA-4.0"
     license_url = "https://github.com/nexB/vulnerablecode/blob/main/cc-by-sa-4.0.LICENSE"
 
-    global_instance = None
+    global_instance = "https://public.vulnerablecode.io/"
     vc_purl_search_api_path = "api/packages/bulk_search/"
 
     def fetch_post_json(self, payload):
-        vc_instance = self.global_instance if self.global_instance else "http://localhost:8001/"
-
-        url = urljoin(vc_instance, self.vc_purl_search_api_path)
-        response = requests.post(url, json=payload)
+        url = urljoin(self.global_instance, self.vc_purl_search_api_path)
+        response = fetch_vulnerablecode_query(url=url, payload=payload)
         if not response.status_code == 200:
             logger.error(f"Error while fetching {url}")
             return
         return response.json()
 
     def fetch_get_json(self, url):
-        response = requests.get(url)
+        response = fetch_vulnerablecode_query(url=url, payload=None)
         if not response.status_code == 200:
             logger.error(f"Error while fetching {url}")
             return
@@ -85,3 +85,32 @@ def parse_advisory(fetched_advisory) -> VendorData:
     return VendorData(
         aliases=aliases, affected_versions=affected_versions, fixed_versions=fixed_versions
     )
+
+
+class VCIOTokenError(Exception):
+    pass
+
+
+def fetch_vulnerablecode_query(url: str, payload: dict):
+    """
+    Requires VCIO API key in .env file
+    For example::
+
+              VCIO_TOKEN="OJ78Os2IPfM80hqVT2ek+1QnrTKvsX1HdOMABq3pmQd"
+    """
+    load_dotenv()
+    vcio_token = os.environ.get("VCIO_TOKEN", None)
+    if not vcio_token:
+        msg = "Cannot call VulnerableCode API without a token set in the VCIO_TOKEN environment variable."
+        raise VCIOTokenError(msg)
+
+    response = (
+        requests.post(url, headers={"Authorization": f"Token {vcio_token}"}, json=payload)
+        if payload is not None
+        else requests.get(url, headers={"Authorization": f"Token {vcio_token}"})
+    )
+
+    if response.text.startswith('{"detail":'):
+        raise VCIOTokenError(f"{response.json().get('detail')}")
+
+    return response

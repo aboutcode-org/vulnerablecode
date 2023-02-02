@@ -516,16 +516,18 @@ class OvalImporter(Importer):
         oval_doc = oval_parsed_data.oval_document
         timestamp = oval_doc.getGenerator().getTimestamp()
 
-        print("\noval_parsed_data = {}\n".format(oval_parsed_data))
-        print("\nraw_data = {}\n".format(raw_data))
+        print("\n== Run OvalImporter() get_data_from_xml_doc() ==\n")
+
+        # print("\noval_parsed_data = {}\n".format(oval_parsed_data))
+        print("\n==> raw_data = {}\n".format(raw_data))
 
         # convert definition_data to Advisory objects
         for definition_data in raw_data:
-            print("\ndefinition_data = {}\n".format(definition_data))
+            print("\n==> definition_data = {}\n".format(definition_data))
             # These fields are definition level, i.e common for all elements
             # connected/linked to an OvalDefinition
 
-            # TODO: 2023-01-24 Tuesday 22:34:20.  Is this where we'd loop through the list of CVEs/aliases?
+            # NOTE: This is where we loop through the list of CVEs/aliases.
 
             vuln_id_list = definition_data["vuln_id"]
 
@@ -545,9 +547,13 @@ class OvalImporter(Importer):
                     for url in definition_data["reference_urls"]
                 ]
                 affected_packages = []
-                print('\ndefinition_data["test_data"] = {}\n'.format(definition_data["test_data"]))
+                print(
+                    '\n==> definition_data["test_data"] = {}\n'.format(definition_data["test_data"])
+                )
                 for test_data in definition_data["test_data"]:
-                    print("\ntest_data['package_list'] = {}\n".format(test_data["package_list"]))
+                    print(
+                        "\n==> test_data['package_list'] = {}\n".format(test_data["package_list"])
+                    )
                     for package_name in test_data["package_list"]:
                         affected_version_range = test_data["version_ranges"]
                         vrc = RANGE_CLASS_BY_SCHEMES[pkg_metadata["type"]]
@@ -567,7 +573,7 @@ class OvalImporter(Importer):
                                     affected_version_range=affected_version_range,
                                 )
                             )
-                print("affected_packages = {}".format(affected_packages))
+                print("==> affected_packages = {}\n".format(affected_packages))
                 date_published = dateparser.parse(timestamp)
                 if not date_published.tzinfo:
                     date_published = date_published.replace(tzinfo=pytz.UTC)

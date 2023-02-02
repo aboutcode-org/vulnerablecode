@@ -53,14 +53,15 @@ class OvalParser:
 
             definition_data["severity"] = self.get_severity_from_definition(definition)
             print("\nlen(matching_tests) = {}\n".format(len(matching_tests)))
-            print("\nmatching_tests = {}\n".format(matching_tests))
+            # print("\nmatching_tests = {}\n".format(matching_tests))
             for test in matching_tests:
-                print("\ntest = {}\n".format(test))
+                # print("\ntest = {}\n".format(test))
+                # print("\ntest.element = {}\n".format(test.element))
                 test_obj, test_state = self.get_object_state_of_test(test)
                 if not test_obj or not test_state:
                     continue
                 test_data = {"package_list": []}
-                print("\ntest_obj = {}\n".format(test_obj))
+                # print("\ntest_obj = {}\n".format(test_obj))
                 test_data["package_list"].extend(self.get_pkgs_from_obj(test_obj))
                 print(
                     "\nself.get_pkgs_from_obj(test_obj) = {}\n".format(
@@ -101,7 +102,9 @@ class OvalParser:
                         break
                 if valid_test:
                     matching_tests.append(self.oval_document.getElementByID(ref))
-                    print(matching_tests)
+                    print("\nThese are matching_tests: {}".format(matching_tests))
+                    for mt in matching_tests:
+                        print("mt = {}".format(mt.element))
 
         return list(set(matching_tests))
 

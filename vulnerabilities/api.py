@@ -28,6 +28,7 @@ from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
+from vulnerabilities.models import Weakness
 from vulnerabilities.models import get_purl_query_lookups
 from vulnerabilities.throttling import StaffUserRateThrottle
 
@@ -121,6 +122,16 @@ class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
         fields = ["url", "vulnerability_id", "summary", "references", "fixed_packages", "aliases"]
 
 
+class WeaknessSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Used for nesting inside weakness focused APIs.
+    """
+
+    class Meta:
+        model = Weakness
+        fields = ["cwe_id", "name", "description"]
+
+
 class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
     fixed_packages = MinimalPackageSerializer(
         many=True, source="filtered_fixed_packages", read_only=True
@@ -129,6 +140,7 @@ class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
 
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
     aliases = AliasSerializer(many=True, source="alias")
+    weaknesses = WeaknessSerializer(many=True)
 
     class Meta:
         model = Vulnerability
@@ -140,6 +152,7 @@ class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
             "fixed_packages",
             "affected_packages",
             "references",
+            "weaknesses",
         ]
 
 
@@ -491,11 +504,12 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
         to a custom attribute `filtered_fixed_packages`
         """
         return Vulnerability.objects.prefetch_related(
+            "weaknesses",
             Prefetch(
                 "packages",
                 queryset=self.get_fixed_packages_qs(),
                 to_attr="filtered_fixed_packages",
-            )
+            ),
         )
 
     serializer_class = VulnerabilitySerializer

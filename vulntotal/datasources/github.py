@@ -10,9 +10,12 @@
 import logging
 from typing import Iterable
 
+from dotenv import load_dotenv
+
 from vulnerabilities import utils
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
+from vulntotal.vulntotal_utils import get_item
 from vulntotal.vulntotal_utils import github_constraints_satisfied
 
 logger = logging.getLogger(__name__)
@@ -23,6 +26,13 @@ class GithubDataSource(DataSource):
     license_url = "TODO"
 
     def fetch_github(self, graphql_query):
+        """
+        Requires GitHub API key in .env file
+        For example::
+
+                GH_TOKEN="your-github-token"
+        """
+        load_dotenv()
         return utils.fetch_github_graphql_query(graphql_query)
 
     def datasource_advisory(self, purl) -> Iterable[VendorData]:
@@ -32,9 +42,9 @@ class GithubDataSource(DataSource):
             queryset = generate_graphql_payload(purl, end_cursor)
             response = self.fetch_github(queryset)
             self._raw_dump.append(response)
-            security_advisories = response["data"]["securityVulnerabilities"]
+            security_advisories = get_item(response, "data", "securityVulnerabilities")
             interesting_edges.extend(extract_interesting_edge(security_advisories["edges"], purl))
-            end_cursor = security_advisories["pageInfo"]["endCursor"]
+            end_cursor = get_item(security_advisories, "pageInfo", "endCursor")
             if not security_advisories["pageInfo"]["hasNextPage"]:
                 break
         return parse_advisory(interesting_edges)
@@ -57,9 +67,10 @@ class GithubDataSource(DataSource):
 def parse_advisory(interesting_edges) -> Iterable[VendorData]:
     for edge in interesting_edges:
         node = edge["node"]
-        aliases = [aliase["value"] for aliase in node["advisory"]["identifiers"]]
+        aliases = [aliase["value"] for aliase in get_item(node, "advisory", "identifiers")]
         affected_versions = node["vulnerableVersionRange"].strip().replace(" ", "").split(",")
-        fixed_versions = [node["firstPatchedVersion"]["identifier"]]
+        parsed_fixed_versions = get_item(node, "firstPatchedVersion", "identifier")
+        fixed_versions = [parsed_fixed_versions] if parsed_fixed_versions else []
         yield VendorData(
             aliases=sorted(list(set(aliases))),
             affected_versions=sorted(list(set(affected_versions))),

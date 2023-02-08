@@ -36,45 +36,28 @@ class OvalParser:
         Return a list of OvalDefinition mappings.
         """
         oval_data = []
-        print("\nlen(self.all_definitions) = {}\n".format(len(self.all_definitions)))
         for definition in self.all_definitions:
-            # print(definition)
-            # print(list(definition))
-
             matching_tests = self.get_tests_of_definition(definition)
             if not matching_tests:
                 continue
             definition_data = {"test_data": []}
             # TODO:this could use some data cleaning
             definition_data["description"] = definition.getMetadata().getDescription() or ""
-
             definition_data["vuln_id"] = self.get_vuln_id_from_definition(definition)
             definition_data["reference_urls"] = self.get_urls_from_definition(definition)
-
             definition_data["severity"] = self.get_severity_from_definition(definition)
-            print("\nlen(matching_tests) = {}\n".format(len(matching_tests)))
-            # print("\nmatching_tests = {}\n".format(matching_tests))
+
             for test in matching_tests:
-                # print("\ntest = {}\n".format(test))
-                # print("\ntest.element = {}\n".format(test.element))
                 test_obj, test_state = self.get_object_state_of_test(test)
                 if not test_obj or not test_state:
                     continue
                 test_data = {"package_list": []}
-                # print("\ntest_obj = {}\n".format(test_obj))
                 test_data["package_list"].extend(self.get_pkgs_from_obj(test_obj))
-                print(
-                    "\nself.get_pkgs_from_obj(test_obj) = {}\n".format(
-                        self.get_pkgs_from_obj(test_obj)
-                    )
-                )
                 version_ranges = self.get_version_range_from_state(test_state)
                 test_data["version_ranges"] = version_ranges
                 definition_data["test_data"].append(test_data)
 
             oval_data.append(definition_data)
-
-            # print('\ntest_data["package_list"] = {}\n'.format(test_data["package_list"]))
 
         return oval_data
 
@@ -86,25 +69,28 @@ class OvalParser:
         criteria_refs = []
 
         for child in definition.element.iter():
-
             if "test_ref" in child.attrib:
                 criteria_refs.append(child.get("test_ref"))
 
         matching_tests = []
         for ref in criteria_refs:
             oval_test = self.oval_document.getElementByID(ref)
+            # All matches will be `rpminfo_test` elements inside the `tests` element.
+            # Test for len == 2 because this IDs a pair of nested `object` and `state` elements.
             if len(oval_test.element) == 2:
                 _, state = self.get_object_state_of_test(oval_test)
                 valid_test = True
                 for child in state.element:
                     if child.get("operation") not in self.translations:
                         valid_test = False
-                        break
-                if valid_test:
-                    matching_tests.append(self.oval_document.getElementByID(ref))
-                    print("\nThese are matching_tests: {}".format(matching_tests))
-                    for mt in matching_tests:
-                        print("mt = {}".format(mt.element))
+                        continue
+                    elif (
+                        child.get("operation") in self.translations
+                        # "debian_evr_string" is used in both Debian and Ubuntu test XML files; SUSE OVAL uses "evr_string".
+                        # See also https://github.com/OVALProject/Language/blob/master/docs/oval-common-schema.md
+                        and child.get("datatype") in ["evr_string", "debian_evr_string"]
+                    ):
+                        matching_tests.append(self.oval_document.getElementByID(ref))
 
         return list(set(matching_tests))
 
@@ -126,6 +112,7 @@ class OvalParser:
         pkg_list = []
 
         for var in obj.element:
+            # It appears that `var_ref` is used in Ubuntu OVAL but not Debian or SUSE.
             if var.get("var_ref"):
                 var_elem = self.oval_document.getElementByID(var.get("var_ref"))
                 comment = var_elem.element.get("comment")
@@ -195,26 +182,13 @@ class OvalParser:
 
     @staticmethod
     def get_vuln_id_from_definition(definition):
-        # # SUSE and Ubuntu OVAL files will get cves via this loop
-        # for child in definition.element.iter():
-        #     # if child.get("ref_id"):
-        #     #     return child.get("ref_id")
-        #     # Must also check whether 'source' field exists and value is 'CVE'
-        #     # TODO: what if there are multiple elements that satisfy the condition?
-        #     # Add to list and report as separate AdvisoryData() objects?
-        #     if child.get("ref_id") and child.get("source"):
-        #         if child.get("source") == "CVE":
-        #             return child.get("ref_id")
-        # # Debian OVAL files will get cves via this
-        # return definition.getMetadata().getTitle()
-        # ========================================================
+        # SUSE and Ubuntu OVAL files will get CVEs via this loop.
         cve_list = []
         for child in definition.element.iter():
             if child.get("ref_id") and child.get("source"):
                 if child.get("source") == "CVE":
                     cve_list.append(child.get("ref_id"))
-
-        # Debian OVAL files will get cves via this
+        # Debian OVAL files (no "ref_id") will get CVEs via this.
         if len(cve_list) == 0:
             cve_list.append(definition.getMetadata().getTitle())
 

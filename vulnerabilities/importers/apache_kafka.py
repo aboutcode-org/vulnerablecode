@@ -137,13 +137,11 @@ class ApacheKafkaImporter(Importer):
 
             # This throws a KeyError if the opening h2 tag `id` data changes or is not in the
             # hard-coded affected_version_range_mapping dictionary.
-            if affected_version_range_mapping[cve_id]["action"] == "include":
-
+            cve_version_mapping = affected_version_range_mapping[cve_id]
+            if cve_version_mapping["action"] == "include":
                 # These 2 variables (not used elsewhere) trigger the KeyError for changed/missing data.
-                check_affected_versions_key = affected_version_range_mapping[cve_id][
-                    affected_versions
-                ]
-                check_fixed_versions_key = affected_version_range_mapping[cve_id][fixed_versions]
+                check_affected_versions_key = cve_version_mapping[affected_versions]
+                check_fixed_versions_key = cve_version_mapping[fixed_versions]
 
                 references = [
                     Reference(
@@ -166,15 +164,13 @@ class ApacheKafkaImporter(Importer):
                         name="kafka",
                         type="apache",
                     ),
-                    affected_version_range=affected_version_range_mapping[cve_id][
-                        "affected_version_range"
-                    ],
+                    affected_version_range=cve_version_mapping["affected_version_range"],
                 )
                 affected_packages.append(affected_package)
 
-                date_published = parse(
-                    affected_version_range_mapping[cve_id]["Issue announced"]
-                ).replace(tzinfo=pytz.UTC)
+                date_published = parse(cve_version_mapping["Issue announced"]).replace(
+                    tzinfo=pytz.UTC
+                )
 
                 advisories.append(
                     AdvisoryData(

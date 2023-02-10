@@ -8,91 +8,64 @@
 #
 
 import os
-from unittest import TestCase
 
-from packageurl import PackageURL
-from univers.version_range import VersionRange
+import pytest
 
-from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import Reference
 from vulnerabilities.importers.apache_kafka import ApacheKafkaImporter
-from vulnerabilities.importers.apache_kafka import to_version_ranges
-from vulnerabilities.package_managers import GitHubTagsAPI
-from vulnerabilities.package_managers import Version
-from vulnerabilities.utils import AffectedPackage
+from vulnerabilities.tests import util_tests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "test_data", "apache_kafka", "cve-list.html")
+
+TEST_DATA = os.path.join(
+    BASE_DIR,
+    "test_data/apache_kafka",
+)
 
 
-class TestApacheKafkaImporter(TestCase):
-    def test_to_version_ranges(self):
-        # Check single version
-        assert [
-            VersionRange.from_scheme_version_spec_string("maven", "=3.2.2")
-        ] == to_version_ranges("3.2.2")
+def test_to_advisory():
+    with open(os.path.join(TEST_DATA, "cve-list-2022-12-06.html")) as f:
+        raw_data = f.read()
+    advisories = ApacheKafkaImporter().to_advisory(raw_data)
+    result = [data.to_dict() for data in advisories]
 
-        # Check range with lower and upper bounds
-        assert [
-            VersionRange.from_scheme_version_spec_string("maven", ">=3.2.2, <=3.2.3")
-        ] == to_version_ranges("3.2.2 to 3.2.3")
+    expected_file = os.path.join(TEST_DATA, f"to-advisory-apache_kafka-expected.json")
+    util_tests.check_results_against_json(result, expected_file)
 
-        # Check range with "and later"
-        assert [
-            VersionRange.from_scheme_version_spec_string("maven", ">=3.2.2")
-        ] == to_version_ranges("3.2.2 and later")
 
-        # Check combination of above cases
-        assert [
-            VersionRange.from_scheme_version_spec_string("maven", ">=3.2.2"),
-            VersionRange.from_scheme_version_spec_string("maven", ">=3.2.2, <=3.2.3"),
-            VersionRange.from_scheme_version_spec_string("maven", "==3.2.2"),
-        ] == to_version_ranges("3.2.2 and later, 3.2.2 to 3.2.3, 3.2.2")
+def to_advisory_changed_cve():
+    with open(os.path.join(TEST_DATA, "cve-list-changed-cve.html")) as f:
+        raw_data = f.read()
+    advisories = ApacheKafkaImporter().to_advisory(raw_data)
 
-    def test_to_advisory(self):
-        data_source = ApacheKafkaImporter(batch_size=1)
-        data_source.version_api = GitHubTagsAPI(
-            cache={"apache/kafka": [Version("2.1.2"), Version("0.10.2.2")]}
-        )
-        expected_advisories = [
-            Advisory(
-                summary="In Apache Kafka versions between 0.11.0.0 and 2.1.0, it is possible to manually\n    craft a Produce request which bypasses transaction/idempotent ACL validation.\n    Only authenticated clients with Write permission on the respective topics are\n    able to exploit this vulnerability. Users should upgrade to 2.1.1 or later\n    where this vulnerability has been fixed.",
-                vulnerability_id="CVE-2018-17196",
-                affected_packages=[
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="apache",
-                            namespace=None,
-                            name="kafka",
-                            version="0.10.2.2",
-                            qualifiers={},
-                            subpath=None,
-                        ),
-                        patched_package=PackageURL(
-                            type="apache",
-                            namespace=None,
-                            name="kafka",
-                            version="2.1.2",
-                            qualifiers={},
-                            subpath=None,
-                        ),
-                    )
-                ],
-                references=[
-                    Reference(
-                        reference_id="", url="https://kafka.apache.org/cve-list", severities=[]
-                    ),
-                    Reference(
-                        reference_id="CVE-2018-17196",
-                        url="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-17196",
-                        severities=[],
-                    ),
-                ],
-            )
-        ]
-        with open(TEST_DATA) as f:
-            found_advisories = data_source.to_advisory(f)
 
-        found_advisories = list(map(Advisory.normalized, found_advisories))
-        expected_advisories = list(map(Advisory.normalized, expected_advisories))
-        assert sorted(found_advisories) == sorted(expected_advisories)
+def test_to_advisory_changed_cve_exception():
+    with pytest.raises(KeyError) as excinfo:
+        to_advisory_changed_cve()
+
+    assert "CVE-2022-34918" in str(excinfo.value)
+
+
+def to_advisory_changed_versions_affected():
+    with open(os.path.join(TEST_DATA, "cve-list-changed-versions-affected.html")) as f:
+        raw_data = f.read()
+    advisories = ApacheKafkaImporter().to_advisory(raw_data)
+
+
+def test_to_advisory_changed_versions_affected_exception():
+    with pytest.raises(KeyError) as excinfo:
+        to_advisory_changed_versions_affected()
+
+    assert "2.8.0 - 2.8.1, 3.0.0 - 3.0.1, 3.1.0 - 3.1.1, 3.2.0 - 3.2.2" in str(excinfo.value)
+
+
+def to_advisory_changed_fixed_versions():
+    with open(os.path.join(TEST_DATA, "cve-list-changed-fixed-versions.html")) as f:
+        raw_data = f.read()
+    advisories = ApacheKafkaImporter().to_advisory(raw_data)
+
+
+def test_to_advisory_changed_fixed_versions_exception():
+    with pytest.raises(KeyError) as excinfo:
+        to_advisory_changed_fixed_versions()
+
+    assert "2.8.2, 3.0.2, 3.1.2, 3.2.4" in str(excinfo.value)

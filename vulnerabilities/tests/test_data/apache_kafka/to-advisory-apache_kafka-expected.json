@@ -1,0 +1,236 @@
+[
+  {
+    "aliases": [
+      "CVE-2022-34917"
+    ],
+    "summary": "This CVE identified a flaw where it allows the malicious unauthenticated clients to allocate large amounts of memory on brokers. This can lead to brokers hitting OutOfMemoryException and causing denial of service.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "apache",
+          "namespace": null,
+          "name": "kafka",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:apache/>=2.8.0|<=2.8.1|!=2.8.2|>=3.0.0|<=3.0.1|!=3.0.2|>=3.1.0|<=3.1.1|!=3.1.2|>=3.2.0|<=3.2.1|!=3.2.3",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2022-34917",
+        "url": "https://kafka.apache.org/cve-list",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-34917",
+        "url": "https://kafka.apache.org/cve-list#CVE-2022-34917",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2022-34917",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-34917",
+        "severities": []
+      }
+    ],
+    "date_published": "2022-09-19T00:00:00+00:00",
+    "weaknesses": []
+  },
+  {
+    "aliases": [
+      "CVE-2021-38153"
+    ],
+    "summary": "Some components in Apache Kafka use Arrays.equals to validate a password or key, which is vulnerable to timing attacks that make brute force attacks for such credentials more likely to be successful. Users should upgrade to 2.8.1 or higher, or 3.0.0 or higher where this vulnerability has been fixed.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "apache",
+          "namespace": null,
+          "name": "kafka",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:apache/2.0.0|2.0.1|2.1.0|2.1.1|2.2.0|2.2.1|2.2.2|2.3.0|2.3.1|2.4.0|2.4.1|2.5.0|2.5.1|2.6.0|2.6.1|2.6.2|!=2.6.3|2.7.0|2.7.1|!=2.7.2|2.8.0.|!=2.8.1|<3.0.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2021-38153",
+        "url": "https://kafka.apache.org/cve-list",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2021-38153",
+        "url": "https://kafka.apache.org/cve-list#CVE-2021-38153",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2021-38153",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-38153",
+        "severities": []
+      }
+    ],
+    "date_published": "2021-09-21T00:00:00+00:00",
+    "weaknesses": []
+  },
+  {
+    "aliases": [
+      "CVE-2019-12399"
+    ],
+    "summary": "When Connect workers in Apache Kafka 2.0.0, 2.0.1, 2.1.0, 2.1.1, 2.2.0, 2.2.1, or 2.3.0 are configured with one or more config providers, and a connector is created/updated on that Connect cluster to use an externalized secret variable in a substring of a connector configuration property value (the externalized secret variable is not the whole configuration property value), then any client can issue a request to the same Connect cluster to obtain the connector's task configurations and the response will contain the plaintext secret rather than the externalized secrets variable. Users should upgrade to 2.2.2 or higher, or 2.3.1 or higher where this vulnerability has been fixed.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "apache",
+          "namespace": null,
+          "name": "kafka",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:apache/2.0.0|2.0.1|2.1.0|2.1.1|2.2.0|2.2.1|!=2.2.2|2.3.0|<2.3.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2019-12399",
+        "url": "https://kafka.apache.org/cve-list",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2019-12399",
+        "url": "https://kafka.apache.org/cve-list#CVE-2019-12399",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2019-12399",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-12399",
+        "severities": []
+      }
+    ],
+    "date_published": "2020-01-13T00:00:00+00:00",
+    "weaknesses": []
+  },
+  {
+    "aliases": [
+      "CVE-2018-17196"
+    ],
+    "summary": "In Apache Kafka versions between 0.11.0.0 and 2.1.0, it is possible to manually craft a Produce request which bypasses transaction/idempotent ACL validation. Only authenticated clients with Write permission on the respective topics are able to exploit this vulnerability. Users should upgrade to 2.1.1 or later where this vulnerability has been fixed.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "apache",
+          "namespace": null,
+          "name": "kafka",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:apache/>=0.11.0.0|<2.1.1",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2018-17196",
+        "url": "https://kafka.apache.org/cve-list",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2018-17196",
+        "url": "https://kafka.apache.org/cve-list#CVE-2018-17196",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2018-17196",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-17196",
+        "severities": []
+      }
+    ],
+    "date_published": "2019-07-10T00:00:00+00:00",
+    "weaknesses": []
+  },
+  {
+    "aliases": [
+      "CVE-2018-1288"
+    ],
+    "summary": "Authenticated Kafka users may perform action reserved for the Broker via a manually created fetch request interfering with data replication, resulting in data loss.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "apache",
+          "namespace": null,
+          "name": "kafka",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:apache/>=0.9.0.0|<=0.9.0.1|>=0.10.0.0|<=0.10.2.1|!=0.10.2.2|>=0.11.0.0|<=0.11.0.2|!=0.11.0.3|1.0.0|!=1.0.1|!=1.1.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2018-1288",
+        "url": "https://kafka.apache.org/cve-list",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2018-1288",
+        "url": "https://kafka.apache.org/cve-list#CVE-2018-1288",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2018-1288",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-1288",
+        "severities": []
+      }
+    ],
+    "date_published": "2018-07-26T00:00:00+00:00",
+    "weaknesses": []
+  },
+  {
+    "aliases": [
+      "CVE-2017-12610"
+    ],
+    "summary": "Authenticated Kafka clients may use impersonation via a manually crafted protocol message with SASL/PLAIN or SASL/SCRAM authentication when using the built-in PLAIN or SCRAM server implementations in Apache Kafka.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "apache",
+          "namespace": null,
+          "name": "kafka",
+          "version": null,
+          "qualifiers": null,
+          "subpath": null
+        },
+        "affected_version_range": "vers:apache/>=0.10.0.0|<=0.10.2.1|!=0.10.2.2|>=0.11.0.0|<=0.11.0.1|!=0.11.0.2|!=1.0.0",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2017-12610",
+        "url": "https://kafka.apache.org/cve-list",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2017-12610",
+        "url": "https://kafka.apache.org/cve-list#CVE-2017-12610",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2017-12610",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-12610",
+        "severities": []
+      }
+    ],
+    "date_published": "2018-07-26T00:00:00+00:00",
+    "weaknesses": []
+  }
+]

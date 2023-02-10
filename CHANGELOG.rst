@@ -2,6 +2,12 @@ Release notes
 =============
 
 
+Next Release
+------------
+
+- We re-enabled support for the Apache Kafka vulnerabilities advisories importer.
+
+
 Version v32.0.0rc2
 --------------------
 

@@ -9,6 +9,7 @@
 
 from vulnerabilities.importers import alpine_linux
 from vulnerabilities.importers import apache_httpd
+from vulnerabilities.importers import apache_kafka
 from vulnerabilities.importers import apache_tomcat
 from vulnerabilities.importers import archlinux
 from vulnerabilities.importers import debian
@@ -63,6 +64,7 @@ IMPORTERS_REGISTRY = [
     xen.XenImporter,
     ubuntu_usn.UbuntuUSNImporter,
     fireeye.FireyeImporter,
+    apache_kafka.ApacheKafkaImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

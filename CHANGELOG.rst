@@ -2,10 +2,19 @@ Release notes
 =============
 
 
-Next Release
+Version v32.0.0rc3
 ------------
 
+- Add aliases to package endpoint.
+- We added Apache HTTPD improver.
+- We removed redundant API tests.
+- We added fireye vulnerabilities advisories importer.
+- We added support for public instance of vulnerablecode in vulntotal.
 - We re-enabled support for the Apache Kafka vulnerabilities advisories importer.
+- We re-enabled support for the xen vulnerabilities advisories importer.
+- We re-enabled support for the istio vulnerabilities advisories importer.
+- We re-enabled support for the Ubuntu usn vulnerabilities advisories importer.
+
 
 
 Version v32.0.0rc2

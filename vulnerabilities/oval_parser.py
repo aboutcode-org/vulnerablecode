@@ -25,7 +25,6 @@ from vulnerabilities.lib_oval import OvalTest
 
 class OvalParser:
     def __init__(self, translations: Dict, oval_document: ET.ElementTree):
-
         self.translations = translations
         self.oval_document = OvalDocument(oval_document)
         self.all_definitions = self.oval_document.getDefinitions()
@@ -187,7 +186,22 @@ class OvalParser:
         for child in definition.element.iter():
             if child.get("ref_id") and child.get("source"):
                 if child.get("source") == "CVE":
-                    cve_list.append(child.get("ref_id"))
+                    # TODO: I think this is here only for the print statement below, so need to revisit w/o print statement.
+                    # TODO: What if there's no "CVE" for the `split()` function?  Use try/except?
+                    unwanted_prefix = child.get("ref_id").split("CVE")[0]
+                    if child.get("ref_id").startswith("CVE"):
+                        pass
+                    # else:
+                    # unwanted_prefix = child.get("ref_id").split("CVE")[0]
+                    # print(
+                    #     "\n\nOh oh!  This starts with '{}' and should be '{}' rather than '{}'".format(
+                    #         unwanted_prefix,
+                    #         child.get("ref_id").replace(unwanted_prefix, ""),
+                    #         child.get("ref_id"),
+                    #     )
+                    # )
+                    # cve_list.append(child.get("ref_id"))
+                    cve_list.append(child.get("ref_id").replace(unwanted_prefix, ""))
         # Debian OVAL files (no "ref_id") will get CVEs via this.
         if len(cve_list) == 0:
             cve_list.append(definition.getMetadata().getTitle())

@@ -61,7 +61,6 @@ def get_data_from_url(url):
 
 
 class RedhatImporter(Importer):
-
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://access.redhat.com/documentation/en-us/red_hat_security_data_api/1.0/html/red_hat_security_data_api/legal-notice"
 

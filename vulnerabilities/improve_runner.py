@@ -80,7 +80,6 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
             continue
 
         for ref in inference.references:
-
             reference = VulnerabilityReference.objects.get_or_none(
                 reference_id=ref.reference_id,
                 url=ref.url,

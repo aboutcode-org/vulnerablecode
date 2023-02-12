@@ -24,7 +24,6 @@ from vulnerabilities.importer import VulnerabilitySeverity
 
 
 class PostgreSQLImporter(Importer):
-
     root_url = "https://www.postgresql.org/support/security/"
     license_url = "https://www.postgresql.org/about/licence/"
     spdx_license_expression = "PostgreSQL"

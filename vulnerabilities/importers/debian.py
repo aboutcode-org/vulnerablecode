@@ -38,7 +38,6 @@ logger = logging.getLogger(__name__)
 
 
 class DebianImporter(Importer):
-
     spdx_license_expression = "LicenseRef-scancode-other-permissive"
     license_url = "https://www.debian.org/license"
     notice = """
@@ -226,7 +225,10 @@ class DebianBasicImprover(Improver):
                 vulnerable_packages=affected_purls, resolved_packages=fixed_purls
             )
 
-            for (fixed_package, affected_packages,) in get_affected_packages_by_patched_package(
+            for (
+                fixed_package,
+                affected_packages,
+            ) in get_affected_packages_by_patched_package(
                 affected_packages=affected_packages
             ).items():
                 yield Inference.from_advisory_data(

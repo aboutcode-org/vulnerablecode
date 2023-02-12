@@ -17,7 +17,6 @@ from vulnerabilities.utils import is_cve
 
 
 class ProjectKBMSRImporter(Importer):
-
     url = "https://raw.githubusercontent.com/SAP/project-kb/master/MSR2019/dataset/vulas_db_msr2019_release.csv"
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/SAP/project-kb/blob/main/LICENSE.txt"

@@ -21,7 +21,6 @@ from vulnerabilities.utils import split_markdown_front_matter
 
 
 def test_nearest_patched_package():
-
     result = nearest_patched_package(
         vulnerable_packages=[
             PackageURL(type="npm", name="foo", version="2.0.4"),

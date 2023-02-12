@@ -86,7 +86,6 @@ affected_version_range_mapping = {
 
 
 class ApacheKafkaImporter(Importer):
-
     GH_PAGE_URL = "https://raw.githubusercontent.com/apache/kafka-site/asf-site/cve-list.html"
     ASF_PAGE_URL = "https://kafka.apache.org/cve-list"
     spdx_license_expression = "Apache-2.0"

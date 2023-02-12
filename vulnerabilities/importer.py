@@ -73,7 +73,6 @@ class VulnerabilitySeverity:
 
 @dataclasses.dataclass(order=True)
 class Reference:
-
     reference_id: str = ""
     url: str = ""
     severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)

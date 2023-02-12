@@ -176,7 +176,6 @@ class ApiUserCreateView(generic.CreateView):
     template_name = "api_user_creation_form.html"
 
     def form_valid(self, form):
-
         try:
             response = super().form_valid(form)
         except ValidationError:

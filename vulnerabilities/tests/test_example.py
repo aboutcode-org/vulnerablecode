@@ -52,7 +52,6 @@ def mock_fetch_additional_aliases(alias):
     mock_fetch_additional_aliases,
 )
 class TestExampleImporter(testcase.FileBasedTesting):
-
     test_data_dir = str(Path(__file__).resolve().parent / "test_data" / "example")
 
     def test_parse_advisory_data(self):

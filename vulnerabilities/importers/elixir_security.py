@@ -22,7 +22,6 @@ from vulnerabilities.utils import load_yaml
 
 
 class ElixirSecurityImporter(Importer):
-
     repo_url = "git+https://github.com/dependabot/elixir-security-advisories"
     license_url = "https://github.com/dependabot/elixir-security-advisories/blob/master/LICENSE.txt"
     spdx_license_expression = "CC0-1.0"

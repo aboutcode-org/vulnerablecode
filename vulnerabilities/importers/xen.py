@@ -15,7 +15,6 @@ from vulnerabilities.utils import is_cve
 
 
 class XenImporter(Importer):
-
     url = "https://xenbits.xen.org/xsa/xsa.json"
     spdx_license_expression = "LicenseRef-scancode-other-permissive"
     notice = """

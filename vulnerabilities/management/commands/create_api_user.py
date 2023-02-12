@@ -40,7 +40,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-
         email = options["email"]
         try:
             validate_email(email)

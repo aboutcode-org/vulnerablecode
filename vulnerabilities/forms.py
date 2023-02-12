@@ -14,7 +14,6 @@ from vulnerabilities.models import ApiUser
 
 
 class PackageSearchForm(forms.Form):
-
     search = forms.CharField(
         required=True,
         widget=forms.TextInput(
@@ -24,7 +23,6 @@ class PackageSearchForm(forms.Form):
 
 
 class VulnerabilitySearchForm(forms.Form):
-
     search = forms.CharField(
         required=True,
         widget=forms.TextInput(

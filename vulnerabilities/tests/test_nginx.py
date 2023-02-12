@@ -149,7 +149,6 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
 
     @pytest.mark.django_db(transaction=True)
     def test_NginxImporter(self):
-
         expected_file = self.get_test_loc(
             "security_advisories-importer-expected.json", must_exist=False
         )
@@ -221,7 +220,6 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
 
     @pytest.mark.django_db(transaction=True)
     def test_NginxBasicImprover__get_inferences_from_versions_end_to_end(self):
-
         with open(self.get_test_loc("improver/improver-advisories.json")) as vf:
             advisories_data = json.load(vf)
 

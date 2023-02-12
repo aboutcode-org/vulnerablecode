@@ -107,7 +107,6 @@ def test_pypi_fetch_with_no_release(mock_response):
 
 @mock.patch("vulnerabilities.package_managers.get_response")
 def test_ruby_fetch_with_no_release(mock_response):
-
     with open(os.path.join(TEST_DATA, "gem.json")) as f:
         mock_response.return_value = json.load(f)
 
@@ -122,7 +121,6 @@ def test_ruby_fetch_with_no_release(mock_response):
 
 
 class TestComposerVersionAPI:
-
     expected_versions = [
         PackageVersion(value=("10.0.0",), release_date=dt_local(2019, 7, 23, 7, 6, 3)),
         PackageVersion(value=("10.1.0",), release_date=dt_local(2019, 10, 1, 8, 18, 18)),
@@ -257,7 +255,6 @@ class TestMavenVersionAPI:
 
 class TestGoproxyVersionAPI:
     def test_trim_go_url_path(self):
-
         url1 = "https://pkg.go.dev/github.com/containous/traefik/v2"
         assert GoproxyVersionAPI.trim_go_url_path(url1) == "github.com/containous/traefik"
 

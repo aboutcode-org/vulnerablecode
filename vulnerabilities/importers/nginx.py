@@ -37,7 +37,6 @@ logger = logging.getLogger(__name__)
 
 
 class NginxImporter(Importer):
-
     url = "https://nginx.org/en/security_advisories.html"
 
     spdx_license_expression = "BSD-2-Clause"
@@ -168,7 +167,6 @@ def parse_advisory_data_from_paragraph(vuln_info):
         ):
             aliases.append(text)
             if text.startswith("CVE-"):
-
                 # always keep the CVE as a reference too
                 link = f"https://nvd.nist.gov/vuln/detail/{text}"
                 reference = Reference(reference_id=text, url=link)

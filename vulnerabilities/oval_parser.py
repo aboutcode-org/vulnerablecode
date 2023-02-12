@@ -25,7 +25,6 @@ from vulnerabilities.lib_oval import OvalTest
 
 class OvalParser:
     def __init__(self, translations: Dict, oval_document: ET.ElementTree):
-
         self.translations = translations
         self.oval_document = OvalDocument(oval_document)
         self.all_definitions = self.oval_document.getDefinitions()
@@ -37,7 +36,6 @@ class OvalParser:
         """
         oval_data = []
         for definition in self.all_definitions:
-
             matching_tests = self.get_tests_of_definition(definition)
             if not matching_tests:
                 continue
@@ -72,7 +70,6 @@ class OvalParser:
         criteria_refs = []
 
         for child in definition.element.iter():
-
             if "test_ref" in child.attrib:
                 criteria_refs.append(child.get("test_ref"))
 

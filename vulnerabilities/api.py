@@ -97,7 +97,6 @@ class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
 
 
 class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
-
     fixed_packages = MinimalPackageSerializer(
         many=True, source="filtered_fixed_packages", read_only=True
     )

@@ -253,7 +253,6 @@ class OvalDocument(object):
             return False
 
     def to_string(self):
-
         if not self.tree:
             return None
 

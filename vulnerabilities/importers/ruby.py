@@ -115,7 +115,6 @@ class RubyImporter(GitImporter):
 
     @staticmethod
     def categorize_versions(all_versions, unaffected_version_ranges):
-
         for id, elem in enumerate(unaffected_version_ranges):
             unaffected_version_ranges[id] = VersionRange.from_scheme_version_spec_string(
                 "semver", elem

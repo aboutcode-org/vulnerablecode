@@ -30,7 +30,6 @@ class ThrottleApiTests(APITestCase):
         self.staff_csrf_client.credentials(HTTP_AUTHORIZATION=self.staff_auth)
 
     def test_packages_endpoint_throttling(self):
-
         # A basic user can only access /packages endpoint 10 times a day
         for i in range(0, 10):
             response = self.csrf_client.get("/api/packages")
@@ -47,7 +46,6 @@ class ThrottleApiTests(APITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_cpes_endpoint_throttling(self):
-
         # A basic user can only access /cpes endpoint 4 times a day
         for i in range(0, 4):
             response = self.csrf_client.get("/api/cpes")
@@ -64,7 +62,6 @@ class ThrottleApiTests(APITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_all_vulnerable_packages_endpoint_throttling(self):
-
         # A basic user can only access /packages/all 1 time a day
         for i in range(0, 1):
             response = self.csrf_client.get("/api/packages/all")
@@ -81,7 +78,6 @@ class ThrottleApiTests(APITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_vulnerabilities_endpoint_throttling(self):
-
         # A basic user can only access /vulnerabilities 8 times a day
         for i in range(0, 8):
             response = self.csrf_client.get("/api/vulnerabilities")
@@ -98,7 +94,6 @@ class ThrottleApiTests(APITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_aliases_endpoint_throttling(self):
-
         # A basic user can only access /alias 2 times a day
         for i in range(0, 2):
             response = self.csrf_client.get("/api/aliases")

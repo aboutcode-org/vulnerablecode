@@ -63,7 +63,6 @@ def test_create_purl():
 
 
 def test__collect_pkgs():
-
     xmls = load_oval_data()
 
     expected_suse_pkgs = {"cacti-spine", "apache2-mod_perl", "cacti", "apache2-mod_perl-devel"}

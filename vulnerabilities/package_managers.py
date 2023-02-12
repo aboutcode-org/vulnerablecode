@@ -645,7 +645,6 @@ class GoproxyVersionAPI(VersionAPI):
         return PackageVersion(value=value, release_date=release_date)
 
     def fetch(self, pkg: str) -> Iterable[PackageVersion]:
-
         # escape uppercase in module path
         escaped_pkg = self.escape_path(pkg)
         trimmed_pkg = pkg

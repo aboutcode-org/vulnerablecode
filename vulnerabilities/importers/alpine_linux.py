@@ -156,7 +156,6 @@ def load_advisories(
                 vuln_ids = vuln_ids[1:]
             references = []
             for reference_id in vuln_ids:
-
                 if reference_id.startswith("XSA"):
                     references.append(XsaReference.from_id(xsa_id=reference_id))
 

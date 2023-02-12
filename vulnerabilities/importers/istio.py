@@ -66,7 +66,6 @@ class IstioImporter(Importer):
             yield from self.process_file(file)
 
     def process_file(self, path):
-
         data = self.get_data_from_md(path)
         published_date = data.get("publishdate")
         release_date = None
@@ -108,7 +107,6 @@ class IstioImporter(Importer):
                 )
 
         for cve_id in data.get("cves") or []:
-
             if not cve_id.startswith("CVE"):
                 continue
 

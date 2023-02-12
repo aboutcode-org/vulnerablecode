@@ -222,7 +222,6 @@ def get_fixed_versions(fixed_range, raw_id) -> List[Version]:
     fixed_range_type = fixed_range["type"]
 
     for version in extract_fixed_versions(fixed_range):
-
         # FIXME: ECOSYSTEM does not imply PyPI!!!!
         if fixed_range_type == "ECOSYSTEM":
             try:

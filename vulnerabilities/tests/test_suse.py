@@ -30,7 +30,6 @@ class TestSUSEOvalParser(unittest.TestCase):
         self.definition_2 = self.parsed_oval.all_definitions[1]
 
     def test_get_definitions(self):
-
         assert len(self.parsed_oval.all_definitions) == 2
         assert (
             self.parsed_oval.all_definitions[0].getId() == "oval:org.opensuse.security:def:20094112"
@@ -40,7 +39,6 @@ class TestSUSEOvalParser(unittest.TestCase):
         )
 
     def test_get_tests_of_definition(self):
-
         definition_1_test_ids = {
             "oval:org.opensuse.security:tst:2009281999",
             "oval:org.opensuse.security:tst:2009282000",
@@ -59,7 +57,6 @@ class TestSUSEOvalParser(unittest.TestCase):
         }
 
     def test_get_vuln_id_from_definition(self):
-
         vuln_id_1 = "CVE-2009-4112"
         vuln_id_2 = "CVE-2011-2767"
 
@@ -67,7 +64,6 @@ class TestSUSEOvalParser(unittest.TestCase):
         assert vuln_id_2 == self.parsed_oval.get_vuln_id_from_definition(self.definition_2)
 
     def test_get_object_state_of_test(self):
-
         # This method is inherited as it is from UbuntuOvalParser
         # this test ensures that the method works with suse OVAL documents
 
@@ -86,7 +82,6 @@ class TestSUSEOvalParser(unittest.TestCase):
         assert obj_t1.getId() == "oval:org.opensuse.security:obj:2009031246"
 
     def test_get_pkgs_from_obj(self):
-
         assert len(self.parsed_oval.oval_document.getObjects()) == 5
 
         obj_t1 = self.parsed_oval.oval_document.getObjects()[0]
@@ -101,7 +96,6 @@ class TestSUSEOvalParser(unittest.TestCase):
         assert pkg_set2 == {"cacti"}
 
     def test_get_version_range_from_state(self):
-
         assert len(self.parsed_oval.oval_document.getStates()) == 4
 
         state_1 = self.parsed_oval.oval_document.getStates()[0]
@@ -115,7 +109,6 @@ class TestSUSEOvalParser(unittest.TestCase):
         assert self.parsed_oval.get_version_range_from_state(state_2) == exp_range_2
 
     def test_get_urls_from_definition(self):
-
         def1_urls = {
             "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-4112",
             "https://www.suse.com/security/cve/CVE-2009-4112.html",
@@ -134,7 +127,6 @@ class TestSUSEOvalParser(unittest.TestCase):
         assert def2_urls == self.parsed_oval.get_urls_from_definition(self.definition_2)
 
     def test_get_data(self):
-
         expected_data = [
             {
                 "test_data": [

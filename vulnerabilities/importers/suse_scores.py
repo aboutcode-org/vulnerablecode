@@ -21,7 +21,6 @@ URL = "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml"
 
 
 class SUSESeverityScoreImporter(Importer):
-
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://ftp.suse.com/pub/projects/security/yaml/LICENSE"
 

@@ -88,7 +88,6 @@ class TestDebianResponse(TransactionTestCase):
         self.client.credentials(HTTP_AUTHORIZATION=self.auth)
 
     def test_query_qualifier_filtering(self):
-
         # packages to check filtering with single/multiple and unordered qualifier filtering
         pk_multi_qf = Package.objects.create(
             name="vlc", version="1.50-1.1", type="deb", qualifiers={"foo": "bar", "tar": "ball"}

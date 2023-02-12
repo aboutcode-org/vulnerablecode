@@ -128,7 +128,6 @@ class RubyImporterTest(TestCase):
         assert sorted(found_advisories) == sorted(expected_advisories)
 
     def test_categorize_versions(self):
-
         all_versions = ["1.0.0", "1.2.0", "9.0.2", "0.2.3"]
         safe_ver_ranges = ["==1.0.0", ">1.2.0"]
 

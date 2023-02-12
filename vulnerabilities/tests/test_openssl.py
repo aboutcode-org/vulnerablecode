@@ -117,7 +117,6 @@ class TestOpenssl(testcase.FileBasedTesting):
 
     @pytest.mark.django_db(transaction=True)
     def test_OpensslImporter(self):
-
         expected_file = self.get_test_loc(
             "security_advisories-importer-expected.json", must_exist=False
         )
@@ -153,7 +152,6 @@ class TestOpenssl(testcase.FileBasedTesting):
 
     @pytest.mark.django_db(transaction=True)
     def test_DefaultImprover_inferences_on_Openssl(self):
-
         with open(self.get_test_loc("improver/improver-advisories.json")) as vf:
             advisories_data = json.load(vf)
 

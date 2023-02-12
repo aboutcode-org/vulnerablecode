@@ -44,7 +44,6 @@ logger = logging.getLogger(__name__)
 
 
 class ApacheHTTPDImporter(Importer):
-
     base_url = "https://httpd.apache.org/security/json/"
     spdx_license_expression = "Apache-2.0"
     license_url = "https://www.apache.org/licenses/LICENSE-2.0"

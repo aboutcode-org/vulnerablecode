@@ -1,7 +1,7 @@
 [
   {
     "aliases": [
-      "Mitre CVE-2019-18348"
+      "CVE-2019-18348"
     ],
     "summary": "\n    An issue was discovered in urllib2 in Python 2.x through 2.7.17 and urllib in Python 3.x through 3.8.0. CRLF injection is possible if the attacker controls a url parameter, as demonstrated by the first argument to urllib.request.urlopen with \\r\\n (specifically in the host component of a URL) followed by an HTTP header. This is similar to the CVE-2019-9740 query string issue and the CVE-2019-9947 path string issue. (This is not exploitable when glibc has CVE-2016-10739 fixed.). This is fixed in: v2.7.18, v2.7.18rc1; v3.5.10, v3.5.10rc1; v3.6.11, v3.6.11rc1, v3.6.12; v3.7.8, v3.7.8rc1, v3.7.9; v3.8.3, v3.8.3rc1, v3.8.4, v3.8.4rc1, v3.8.5, v3.8.6, v3.8.6rc1.\n    ",
     "affected_packages": [
@@ -665,7 +665,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2019-2708"
+      "CVE-2019-2708"
     ],
     "summary": "\n    Vulnerability in the Data Store component of Oracle Berkeley DB. Supported versions that are affected are Prior to 6.138, prior to 6.2.38 and prior to 18.1.32. Easily exploitable vulnerability allows low privileged attacker having Local Logon privilege with logon to the infrastructure where Data Store executes to compromise Data Store. Successful attacks of this vulnerability can result in unauthorized ability to cause a partial denial of service (partial DOS) of Data Store. CVSS 3.0 Base Score 3.3 (Availability impacts). CVSS Vector: (CVSS:3.0/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L).\n    ",
     "affected_packages": [
@@ -778,7 +778,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2020-10735"
+      "CVE-2020-10735"
     ],
     "summary": "\n    A flaw was found in python. In algorithms with quadratic time complexity using non-binary bases, when using int(\"text\"), a system could take 50ms to parse an int string with 100,000 digits and 5s for 1,000,000 digits (float, decimal, int.from_bytes(), and int() for binary bases 2, 4, 8, 16, and 32 are not affected). The highest threat from this vulnerability is to system availability.\n    ",
     "affected_packages": [
@@ -1189,7 +1189,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2020-8492"
+      "CVE-2020-8492"
     ],
     "summary": "\n    Python 2.7 through 2.7.17, 3.5 through 3.5.9, 3.6 through 3.6.10, 3.7 through 3.7.6, and 3.8 through 3.8.1 allows an HTTP server to conduct Regular Expression Denial of Service (ReDoS) attacks against a client because of urllib.request.AbstractBasicAuthHandler catastrophic backtracking.\n    ",
     "affected_packages": [
@@ -2007,7 +2007,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2021-20199"
+      "CVE-2021-20199"
     ],
     "summary": "\n    Rootless containers run with Podman, receive all traffic with a source IP address of 127.0.0.1 (including from remote hosts). This impacts containerized applications that trust localhost (127.0.01) connections by default and do not require authentication. This issue affects Podman 1.8.0 onwards.\n    ",
     "affected_packages": [
@@ -2208,7 +2208,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2021-20206"
+      "CVE-2021-20206"
     ],
     "summary": "\n    An improper limitation of path name flaw was found in containernetworking/cni in versions before 0.8.1. When specifying the plugin to load in the 'type' field in the network configuration, it is possible to use special elements such as \"../\" separators to reference binaries elsewhere on the system. This flaw allows an attacker to execute other existing binaries other than the cni plugins/types, such as 'reboot'. The highest threat from this vulnerability is to confidentiality, integrity, as well as system availability.\n    ",
     "affected_packages": [
@@ -2554,7 +2554,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2021-20251"
+      "CVE-2021-20251"
     ],
     "summary": "\n    ** RESERVED ** This candidate has been reserved by an organization or individual that will use it when announcing a new security problem. When the candidate has been publicized, the details for this candidate will be provided.\n    ",
     "affected_packages": [
@@ -2699,7 +2699,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2021-3623"
+      "CVE-2021-3623"
     ],
     "summary": "\n    A flaw was found in libtpms. The flaw can be triggered by specially-crafted TPM 2 command packets containing illegal values and may lead to an out-of-bounds access when the volatile state of the TPM 2 is marshalled/written or unmarshalled/read. The highest threat from this vulnerability is to system availability.\n    ",
     "affected_packages": [
@@ -2778,7 +2778,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2021-3928"
+      "CVE-2021-3928"
     ],
     "summary": "\n    vim is vulnerable to Use of Uninitialized Variable\n    ",
     "affected_packages": [
@@ -3298,7 +3298,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2021-4024"
+      "CVE-2021-4024"
     ],
     "summary": "\n    A flaw was found in podman. The `podman machine` function (used to create and manage Podman virtual machine containing a Podman process) spawns a `gvproxy` process on the host system. The `gvproxy` API is accessible on port 7777 on all IP addresses on the host. If that port is open on the host's firewall, an attacker can potentially use the `gvproxy` API to forward ports on the host to ports in the VM, making private services on the VM accessible to the network. This issue could be also used to interrupt the host's services by forwarding all ports to the VM.\n    ",
     "affected_packages": [
@@ -3488,7 +3488,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2021-41190"
+      "CVE-2021-41190"
     ],
     "summary": "\n    The OCI Distribution Spec project defines an API protocol to facilitate and standardize the distribution of content. In the OCI Distribution Specification version 1.0.0 and prior, the Content-Type header alone was used to determine the type of document during push and pull operations. Documents that contain both \u201cmanifests\u201d and \u201clayers\u201d fields could be interpreted as either a manifest or an index in the absence of an accompanying Content-Type header. If a Content-Type header changed between two pulls of the same digest, a client may interpret the resulting content differently. The OCI Distribution Specification has been updated to require that a mediaType value present in a manifest or index match the Content-Type header used during the push and pull operations. Clients pulling from a registry may distrust the Content-Type header and reject an ambiguous document that contains both \u201cmanifests\u201d and \u201clayers\u201d fields or \u201cmanifests\u201d and \u201cconfig\u201d fields if they are unable to update to version 1.0.1 of the spec.\n    ",
     "affected_packages": [
@@ -3832,7 +3832,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-1708"
+      "CVE-2022-1708"
     ],
     "summary": "\n    A vulnerability was found in CRI-O that causes memory or disk space exhaustion on the node for anyone with access to the Kube API. The ExecSync request runs commands in a container and logs the output of the command. This output is then read by CRI-O after command execution, and it is read in a manner where the entire file corresponding to the output of the command is read in. Thus, if the output of the command is large it is possible to exhaust the memory or the disk space of the node when CRI-O reads the output of the command. The highest threat from this vulnerability is system availability.\n    ",
     "affected_packages": [
@@ -3944,7 +3944,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-2031"
+      "CVE-2022-2031"
     ],
     "summary": "\n    A flaw was found in Samba. The security vulnerability occurs when KDC and the kpasswd service share a single account and set of keys, allowing them to decrypt each other's tickets. A user who has been requested to change their password, can exploit this flaw to obtain and use tickets to other services.\n    ",
     "affected_packages": [
@@ -4221,7 +4221,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-23471"
+      "CVE-2022-23471"
     ],
     "summary": "\n    containerd is an open source container runtime. A bug was found in containerd's CRI implementation where a user can exhaust memory on the host. In the CRI stream server, a goroutine is launched to handle terminal resize events if a TTY is requested. If the user's process fails to launch due to, for example, a faulty command, the goroutine will be stuck waiting to send without a receiver, resulting in a memory leak. Kubernetes and crictl can both be configured to use containerd's CRI implementation and the stream server is used for handling container IO. This bug has been fixed in containerd 1.6.12 and 1.5.16. Users should update to these versions to resolve the issue. Users unable to upgrade should ensure that only trusted images and commands are used and that only trusted users have permissions to execute commands in running containers.\n    ",
     "affected_packages": [
@@ -4377,7 +4377,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-23491"
+      "CVE-2022-23491"
     ],
     "summary": "\n    Certifi is a curated collection of Root Certificates for validating the trustworthiness of SSL certificates while verifying the identity of TLS hosts. Certifi 2022.12.07 removes root certificates from \"TrustCor\" from the root store. These are in the process of being removed from Mozilla's trust store. TrustCor's root certificates are being removed pursuant to an investigation prompted by media reporting that TrustCor's ownership also operated a business that produced spyware. Conclusions of Mozilla's investigation can be found in the linked google group discussion.\n    ",
     "affected_packages": [
@@ -4650,7 +4650,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-23824"
+      "CVE-2022-23824"
     ],
     "summary": "\n    IBPB may not prevent return branch predictions from being specified by pre-IBPB branch targets leading to a potential information disclosure.\n    ",
     "affected_packages": [
@@ -4784,7 +4784,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-24805"
+      "CVE-2022-24805"
     ],
     "summary": "\n    ** RESERVED ** This candidate has been reserved by an organization or individual that will use it when announcing a new security problem. When the candidate has been publicized, the details for this candidate will be provided.\n    ",
     "affected_packages": [
@@ -4886,7 +4886,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-24806"
+      "CVE-2022-24806"
     ],
     "summary": "\n    ** RESERVED ** This candidate has been reserved by an organization or individual that will use it when announcing a new security problem. When the candidate has been publicized, the details for this candidate will be provided.\n    ",
     "affected_packages": [
@@ -4988,7 +4988,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-24807"
+      "CVE-2022-24807"
     ],
     "summary": "\n    ** RESERVED ** This candidate has been reserved by an organization or individual that will use it when announcing a new security problem. When the candidate has been publicized, the details for this candidate will be provided.\n    ",
     "affected_packages": [
@@ -5090,7 +5090,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-24808"
+      "CVE-2022-24808"
     ],
     "summary": "\n    ** RESERVED ** This candidate has been reserved by an organization or individual that will use it when announcing a new security problem. When the candidate has been publicized, the details for this candidate will be provided.\n    ",
     "affected_packages": [
@@ -5192,7 +5192,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-24809"
+      "CVE-2022-24809"
     ],
     "summary": "\n    ** RESERVED ** This candidate has been reserved by an organization or individual that will use it when announcing a new security problem. When the candidate has been publicized, the details for this candidate will be provided.\n    ",
     "affected_packages": [
@@ -5294,7 +5294,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-24810"
+      "CVE-2022-24810"
     ],
     "summary": "\n    ** RESERVED ** This candidate has been reserved by an organization or individual that will use it when announcing a new security problem. When the candidate has been publicized, the details for this candidate will be provided.\n    ",
     "affected_packages": [
@@ -5396,7 +5396,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-2601"
+      "CVE-2022-2601"
     ],
     "summary": "\n    A buffer overflow was found in grub_font_construct_glyph(). A malicious crafted pf2 font can lead to an overflow when calculating the max_glyph_size value, allocating a smaller than needed buffer for the glyph, this further leads to a buffer overflow and a heap based out-of-bounds write. An attacker may use this vulnerability to circumvent the secure boot mechanism.\n    ",
     "affected_packages": [
@@ -5678,7 +5678,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-27191"
+      "CVE-2022-27191"
     ],
     "summary": "\n    The golang.org/x/crypto/ssh package before 0.0.0-20220314234659-1baeb1ce4c0b for Go allows an attacker to crash a server in certain circumstances involving AddHostKey.\n    ",
     "affected_packages": [
@@ -5988,7 +5988,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-27649"
+      "CVE-2022-27649"
     ],
     "summary": "\n    A flaw was found in Podman, where containers were started incorrectly with non-empty default permissions. A vulnerability was found in Moby (Docker Engine), where containers were started incorrectly with non-empty inheritable Linux process capabilities. This flaw allows an attacker with access to programs with inheritable file capabilities to elevate those capabilities to the permitted set when execve(2) runs.\n    ",
     "affected_packages": [
@@ -6079,7 +6079,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-2980"
+      "CVE-2022-2980"
     ],
     "summary": "\n    NULL Pointer Dereference in GitHub repository vim/vim prior to 9.0.0259.\n    ",
     "affected_packages": [
@@ -6280,7 +6280,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-2982"
+      "CVE-2022-2982"
     ],
     "summary": "\n    Use After Free in GitHub repository vim/vim prior to 9.0.0260.\n    ",
     "affected_packages": [
@@ -6481,7 +6481,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-2989"
+      "CVE-2022-2989"
     ],
     "summary": "\n    An incorrect handling of the supplementary groups in the Podman container engine might lead to the sensitive information disclosure or possible data modification if an attacker has direct access to the affected container where supplementary groups are used to set access permissions and is able to execute a binary code in that container.\n    ",
     "affected_packages": [
@@ -6594,7 +6594,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3037"
+      "CVE-2022-3037"
     ],
     "summary": "\n    Use After Free in GitHub repository vim/vim prior to 9.0.0322.\n    ",
     "affected_packages": [
@@ -6795,7 +6795,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3099"
+      "CVE-2022-3099"
     ],
     "summary": "\n    Use After Free in GitHub repository vim/vim prior to 9.0.0360.\n    ",
     "affected_packages": [
@@ -6996,7 +6996,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3104"
+      "CVE-2022-3104"
     ],
     "summary": "\n    An issue was discovered in the Linux kernel through 5.16-rc6. lkdtm_ARRAY_BOUNDS in drivers/misc/lkdtm/bugs.c lacks check of the return value of kmalloc() and will cause the null pointer dereference.\n    ",
     "affected_packages": [
@@ -7121,7 +7121,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3105"
+      "CVE-2022-3105"
     ],
     "summary": "\n    An issue was discovered in the Linux kernel through 5.16-rc6. uapi_finalize in drivers/infiniband/core/uverbs_uapi.c lacks check of kmalloc_array().\n    ",
     "affected_packages": [
@@ -7268,7 +7268,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3106"
+      "CVE-2022-3106"
     ],
     "summary": "\n    An issue was discovered in the Linux kernel through 5.16-rc6. ef100_update_stats in drivers/net/ethernet/sfc/ef100_nic.c lacks check of the return value of kmalloc().\n    ",
     "affected_packages": [
@@ -7415,7 +7415,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3107"
+      "CVE-2022-3107"
     ],
     "summary": "\n    An issue was discovered in the Linux kernel through 5.16-rc6. netvsc_get_ethtool_stats in drivers/net/hyperv/netvsc_drv.c lacks check of the return value of kvmalloc_array() and will cause the null pointer dereference.\n    ",
     "affected_packages": [
@@ -7584,7 +7584,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3108"
+      "CVE-2022-3108"
     ],
     "summary": "\n    An issue was discovered in the Linux kernel through 5.16-rc6. kfd_parse_subtype_iolink in drivers/gpu/drm/amd/amdkfd/kfd_crat.c lacks check of the return value of kmemdup().\n    ",
     "affected_packages": [
@@ -7753,7 +7753,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3111"
+      "CVE-2022-3111"
     ],
     "summary": "\n    An issue was discovered in the Linux kernel through 5.16-rc6. free_charger_irq() in drivers/power/supply/wm8350_power.c lacks free of WM8350_IRQ_CHG_FAST_RDY, which is registered in wm8350_init_charger().\n    ",
     "affected_packages": [
@@ -7900,7 +7900,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3112"
+      "CVE-2022-3112"
     ],
     "summary": "\n    An issue was discovered in the Linux kernel through 5.16-rc6. amvdec_set_canvases in drivers/staging/media/meson/vdec/vdec_helpers.c lacks check of the return value of kzalloc() and will cause the null pointer dereference.\n    ",
     "affected_packages": [
@@ -8036,7 +8036,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3113"
+      "CVE-2022-3113"
     ],
     "summary": "\n    An issue was discovered in the Linux kernel through 5.16-rc6. mtk_vcodec_fw_vpu_init in drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_vpu.c lacks check of the return value of devm_kzalloc() and will cause the null pointer dereference.\n    ",
     "affected_packages": [
@@ -8161,7 +8161,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3114"
+      "CVE-2022-3114"
     ],
     "summary": "\n    An issue was discovered in the Linux kernel through 5.16-rc6. imx_register_uart_clocks in drivers/clk/imx/clk.c lacks check of the return value of kcalloc() and will cause the null pointer dereference.\n    ",
     "affected_packages": [
@@ -8274,7 +8274,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3115"
+      "CVE-2022-3115"
     ],
     "summary": "\n    An issue was discovered in the Linux kernel through 5.16-rc6. malidp_crtc_reset in drivers/gpu/drm/arm/malidp_crtc.c lacks check of the return value of kzalloc() and will cause the null pointer dereference.\n    ",
     "affected_packages": [
@@ -8410,7 +8410,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3134"
+      "CVE-2022-3134"
     ],
     "summary": "\n    Use After Free in GitHub repository vim/vim prior to 9.0.0389.\n    ",
     "affected_packages": [
@@ -8611,7 +8611,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3153"
+      "CVE-2022-3153"
     ],
     "summary": "\n    NULL Pointer Dereference in GitHub repository vim/vim prior to 9.0.0404.\n    ",
     "affected_packages": [
@@ -8812,7 +8812,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3234"
+      "CVE-2022-3234"
     ],
     "summary": "\n    Heap-based Buffer Overflow in GitHub repository vim/vim prior to 9.0.0483.\n    ",
     "affected_packages": [
@@ -9035,7 +9035,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3235"
+      "CVE-2022-3235"
     ],
     "summary": "\n    Use After Free in GitHub repository vim/vim prior to 9.0.0490.\n    ",
     "affected_packages": [
@@ -9236,7 +9236,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-32742"
+      "CVE-2022-32742"
     ],
     "summary": "\n    A flaw was found in Samba. Some SMB1 write requests were not correctly range-checked to ensure the client had sent enough data to fulfill the write, allowing server memory contents to be written into the file (or printer) instead of client-supplied data. The client cannot control the area of the server memory written to the file (or printer).\n    ",
     "affected_packages": [
@@ -9546,7 +9546,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-32744"
+      "CVE-2022-32744"
     ],
     "summary": "\n    A flaw was found in Samba. The KDC accepts kpasswd requests encrypted with any key known to it. By encrypting forged kpasswd requests with its own key, a user can change other users' passwords, enabling full domain takeover.\n    ",
     "affected_packages": [
@@ -9801,7 +9801,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-32745"
+      "CVE-2022-32745"
     ],
     "summary": "\n    A flaw was found in Samba. Samba AD users can cause the server to access uninitialized data with an LDAP add or modify the request, usually resulting in a segmentation fault.\n    ",
     "affected_packages": [
@@ -10045,7 +10045,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-32746"
+      "CVE-2022-32746"
     ],
     "summary": "\n    A flaw was found in the Samba AD LDAP server. The AD DC database audit logging module can access LDAP message values freed by a preceding database module, resulting in a use-after-free issue. This issue is only possible when modifying certain privileged attributes, such as userAccountControl.\n    ",
     "affected_packages": [
@@ -10289,7 +10289,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3278"
+      "CVE-2022-3278"
     ],
     "summary": "\n    NULL Pointer Dereference in GitHub repository vim/vim prior to 9.0.0552.\n    ",
     "affected_packages": [
@@ -10490,7 +10490,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3296"
+      "CVE-2022-3296"
     ],
     "summary": "\n    Stack-based Buffer Overflow in GitHub repository vim/vim prior to 9.0.0577.\n    ",
     "affected_packages": [
@@ -10702,7 +10702,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3297"
+      "CVE-2022-3297"
     ],
     "summary": "\n    Use After Free in GitHub repository vim/vim prior to 9.0.0579.\n    ",
     "affected_packages": [
@@ -10903,7 +10903,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3324"
+      "CVE-2022-3324"
     ],
     "summary": "\n    Stack-based Buffer Overflow in GitHub repository vim/vim prior to 9.0.0598.\n    ",
     "affected_packages": [
@@ -11126,7 +11126,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3344"
+      "CVE-2022-3344"
     ],
     "summary": "\n    A flaw was found in the KVM's AMD nested virtualization (SVM). A malicious L1 guest could purposely fail to intercept the shutdown of a cooperative nested guest (L2), possibly leading to a page fault and kernel panic in the host (L0).\n    ",
     "affected_packages": [
@@ -11251,7 +11251,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3352"
+      "CVE-2022-3352"
     ],
     "summary": "\n    Use After Free in GitHub repository vim/vim prior to 9.0.0614.\n    ",
     "affected_packages": [
@@ -11452,7 +11452,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3437"
+      "CVE-2022-3437"
     ],
     "summary": "\n    A heap-based buffer overflow vulnerability was found in Samba within the GSSAPI unwrap_des() and unwrap_des3() routines of Heimdal. The DES and Triple-DES decryption routines in the Heimdal GSSAPI library allow a length-limited write buffer overflow on malloc() allocated memory when presented with a maliciously small packet. This flaw allows a remote user to send specially crafted malicious data to the application, possibly resulting in a denial of service (DoS) attack.\n    ",
     "affected_packages": [
@@ -11619,7 +11619,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3479"
+      "CVE-2022-3479"
     ],
     "summary": "\n    A vulnerability found in nss. By this security vulnerability, nss client auth crash without a user certificate in the database and this can lead us to a segmentation fault or crash.\n    ",
     "affected_packages": [
@@ -11858,7 +11858,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3491"
+      "CVE-2022-3491"
     ],
     "summary": "\n    Heap-based Buffer Overflow in GitHub repository vim/vim prior to 9.0.0742.\n    ",
     "affected_packages": [
@@ -12037,7 +12037,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3520"
+      "CVE-2022-3520"
     ],
     "summary": "\n    Heap-based Buffer Overflow in GitHub repository vim/vim prior to 9.0.0765.\n    ",
     "affected_packages": [
@@ -12216,7 +12216,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3564"
+      "CVE-2022-3564"
     ],
     "summary": "\n    A vulnerability classified as critical was found in Linux Kernel. Affected by this vulnerability is the function l2cap_reassemble_sdu of the file net/bluetooth/l2cap_core.c of the component Bluetooth. The manipulation leads to use after free. It is recommended to apply a patch to fix this issue. The associated identifier of this vulnerability is VDB-211087.\n    ",
     "affected_packages": [
@@ -12385,7 +12385,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3570"
+      "CVE-2022-3570"
     ],
     "summary": "\n    Multiple heap buffer overflows in tiffcrop.c utility in libtiff library Version 4.4.0 allows attacker to trigger unsafe or out of bounds memory access via crafted TIFF image file which could result into application crash, potential information disclosure or any other context-dependent impact\n    ",
     "affected_packages": [
@@ -12475,7 +12475,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3591"
+      "CVE-2022-3591"
     ],
     "summary": "\n    Use After Free in GitHub repository vim/vim prior to 9.0.0789.\n    ",
     "affected_packages": [
@@ -12654,7 +12654,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3597"
+      "CVE-2022-3597"
     ],
     "summary": "\n    LibTIFF 4.4.0 has an out-of-bounds write in _TIFFmemcpy in libtiff/tif_unix.c:346 when called from extractImageSection, tools/tiffcrop.c:6826, allowing attackers to cause a denial-of-service via a crafted tiff file. For users that compile libtiff from sources, the fix is available with commit 236b7191.\n    ",
     "affected_packages": [
@@ -12755,7 +12755,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3598"
+      "CVE-2022-3598"
     ],
     "summary": "\n    LibTIFF 4.4.0 has an out-of-bounds write in extractContigSamplesShifted24bits in tools/tiffcrop.c:3604, allowing attackers to cause a denial-of-service via a crafted tiff file. For users that compile libtiff from sources, the fix is available with commit cfbb883b.\n    ",
     "affected_packages": [
@@ -12856,7 +12856,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3599"
+      "CVE-2022-3599"
     ],
     "summary": "\n    LibTIFF 4.4.0 has an out-of-bounds read in writeSingleSection in tools/tiffcrop.c:7345, allowing attackers to cause a denial-of-service via a crafted tiff file. For users that compile libtiff from sources, the fix is available with commit e8131125.\n    ",
     "affected_packages": [
@@ -12957,7 +12957,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-36227"
+      "CVE-2022-36227"
     ],
     "summary": "\n    In libarchive before 3.6.2, the software does not check for an error after calling calloc function that can return with a NULL pointer if the function fails, which leads to a resultant NULL pointer dereference. NOTE: the discoverer cites this CWE-476 remark but third parties dispute the code-execution impact: \"In rare circumstances, when NULL is equivalent to the 0x0 memory address and privileged code can access it, then writing or reading memory is possible, which may lead to code execution.\"\n    ",
     "affected_packages": [
@@ -13058,7 +13058,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3626"
+      "CVE-2022-3626"
     ],
     "summary": "\n    LibTIFF 4.4.0 has an out-of-bounds write in _TIFFmemset in libtiff/tif_unix.c:340 when called from processCropSelections, tools/tiffcrop.c:7619, allowing attackers to cause a denial-of-service via a crafted tiff file. For users that compile libtiff from sources, the fix is available with commit 236b7191.\n    ",
     "affected_packages": [
@@ -13159,7 +13159,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3627"
+      "CVE-2022-3627"
     ],
     "summary": "\n    LibTIFF 4.4.0 has an out-of-bounds write in _TIFFmemcpy in libtiff/tif_unix.c:346 when called from extractImageSection, tools/tiffcrop.c:6860, allowing attackers to cause a denial-of-service via a crafted tiff file. For users that compile libtiff from sources, the fix is available with commit 236b7191.\n    ",
     "affected_packages": [
@@ -13260,7 +13260,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3705"
+      "CVE-2022-3705"
     ],
     "summary": "\n    A vulnerability was found in vim and classified as problematic. Affected by this issue is the function qf_update_buffer of the file quickfix.c of the component autocmd Handler. The manipulation leads to use after free. The attack may be launched remotely. Upgrading to version 9.0.0805 is able to address this issue. The name of the patch is d0fab10ed2a86698937e3c3fed2f10bd9bb5e731. It is recommended to upgrade the affected component. The identifier of this vulnerability is VDB-212324.\n    ",
     "affected_packages": [
@@ -13560,7 +13560,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-37454"
+      "CVE-2022-37454"
     ],
     "summary": "\n    The Keccak XKCP SHA-3 reference implementation before fdc6fef has an integer overflow and resultant buffer overflow that allows attackers to execute arbitrary code or eliminate expected cryptographic properties. This occurs in the sponge function interface.\n    ",
     "affected_packages": [
@@ -13949,7 +13949,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3775"
+      "CVE-2022-3775"
     ],
     "summary": "\n    When rendering certain unicode sequences, grub2's font code doesn't proper validate if the informed glyph's width and height is constrained within bitmap size. As consequence an attacker can craft an input which will lead to a out-of-bounds write into grub2's heap, leading to memory corruption and availability issues. Although complex, arbitrary code execution could not be discarded.\n    ",
     "affected_packages": [
@@ -14231,7 +14231,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-37966"
+      "CVE-2022-37966"
     ],
     "summary": "\n    Windows Kerberos RC4-HMAC Elevation of Privilege Vulnerability.\n    ",
     "affected_packages": [
@@ -14376,7 +14376,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-37967"
+      "CVE-2022-37967"
     ],
     "summary": "\n    Windows Kerberos Elevation of Privilege Vulnerability.\n    ",
     "affected_packages": [
@@ -14466,7 +14466,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-38023"
+      "CVE-2022-38023"
     ],
     "summary": "\n    Netlogon RPC Elevation of Privilege Vulnerability.\n    ",
     "affected_packages": [
@@ -14633,7 +14633,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-3970"
+      "CVE-2022-3970"
     ],
     "summary": "\n    A vulnerability was found in LibTIFF. It has been classified as critical. This affects the function TIFFReadRGBATileExt of the file libtiff/tif_getimage.c. The manipulation leads to integer overflow. It is possible to initiate the attack remotely. The exploit has been disclosed to the public and may be used. The name of the patch is 227500897dfb07fb7d27f7aa570050e62617e3be. It is recommended to apply a patch to fix this issue. The identifier VDB-213549 was assigned to this vulnerability.\n    ",
     "affected_packages": [
@@ -14723,7 +14723,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-40897"
+      "CVE-2022-40897"
     ],
     "summary": "\n    Python Packaging Authority (PyPA) setuptools before 65.5.1 allows remote attackers to cause a denial of service via HTML in a crafted package or custom PackageIndex page. There is a Regular Expression Denial of Service (ReDoS) in package_index.py.\n    ",
     "affected_packages": [
@@ -14890,7 +14890,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-40899"
+      "CVE-2022-40899"
     ],
     "summary": "\n    An issue discovered in Python Charmers Future 0.18.2 and earlier allows remote attackers to cause a denial of service via crafted Set-Cookie header from malicious web server.\n    ",
     "affected_packages": [
@@ -15002,7 +15002,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-4141"
+      "CVE-2022-4141"
     ],
     "summary": "\n    Heap based buffer overflow in vim/vim 9.0.0946 and below by allowing an attacker to CTRL-W gf in the expression used in the RHS of the substitute command.\n    ",
     "affected_packages": [
@@ -15181,7 +15181,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-42898"
+      "CVE-2022-42898"
     ],
     "summary": "\n    PAC parsing in MIT Kerberos 5 (aka krb5) before 1.19.4 and 1.20.x before 1.20.1 has integer overflows that may lead to remote code execution (in KDC, kadmind, or a GSS or Kerberos application server) on 32-bit platforms (which have a resultant heap-based buffer overflow), and cause a denial of service on other platforms. This occurs in krb5_pac_parse in lib/krb5/krb/pac.c. Heimdal before 7.7.1 has \"a similar bug.\"\n    ",
     "affected_packages": [
@@ -15943,7 +15943,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-4292"
+      "CVE-2022-4292"
     ],
     "summary": "\n    Use After Free in GitHub repository vim/vim prior to 9.0.0882.\n    ",
     "affected_packages": [
@@ -16122,7 +16122,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-4293"
+      "CVE-2022-4293"
     ],
     "summary": "\n    Floating Point Comparison with Incorrect Operator in GitHub repository vim/vim prior to 9.0.0804.\n    ",
     "affected_packages": [
@@ -16301,7 +16301,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-42969"
+      "CVE-2022-42969"
     ],
     "summary": "\n    The py library through 1.11.0 for Python allows remote attackers to conduct a ReDoS (Regular expression Denial of Service) attack via a Subversion repository with crafted info data, because the InfoSvnCommand argument is mishandled.\n    ",
     "affected_packages": [
@@ -16380,7 +16380,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-4304"
+      "CVE-2022-4304"
     ],
     "summary": "\n    ** RESERVED ** This candidate has been reserved by an organization or individual that will use it when announcing a new security problem. When the candidate has been publicized, the details for this candidate will be provided.\n    ",
     "affected_packages": [
@@ -16572,7 +16572,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-43551"
+      "CVE-2022-43551"
     ],
     "summary": "\n    A vulnerability exists in curl <7.87.0 HSTS check that could be bypassed to trick it to keep using HTTP. Using its HSTS support, curl can be instructed to use HTTPS instead of using an insecure clear-text HTTP step even when HTTP is provided in the URL. However, the HSTS mechanism could be bypassed if the host name in the given URL first uses IDN characters that get replaced to ASCII counterparts as part of the IDN conversion. Like using the character UTF-8 U+3002 (IDEOGRAPHIC FULL STOP) instead of the common ASCII full stop (U+002E) `.`. Then in a subsequent request, it does not detect the HSTS state and makes a clear text transfer. Because it would store the info IDN encoded but look for it IDN decoded.\n    ",
     "affected_packages": [
@@ -17004,7 +17004,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-43552"
+      "CVE-2022-43552"
     ],
     "summary": "\n    ** RESERVED ** This candidate has been reserved by an organization or individual that will use it when announcing a new security problem. When the candidate has been publicized, the details for this candidate will be provided.\n    ",
     "affected_packages": [
@@ -17524,7 +17524,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-4379"
+      "CVE-2022-4379"
     ],
     "summary": "\n    A use-after-free vulnerability was found in __nfs42_ssc_open() in fs/nfs/nfs4file.c in the Linux kernel. This flaw allows an attacker to conduct a remote denial\n    ",
     "affected_packages": [
@@ -17704,7 +17704,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-4415"
+      "CVE-2022-4415"
     ],
     "summary": "\n    A vulnerability was found in systemd. This security flaw can cause a local information leak due to systemd-coredump not respecting the fs.suid_dumpable kernel setting.\n    ",
     "affected_packages": [
@@ -18647,7 +18647,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-4450"
+      "CVE-2022-4450"
     ],
     "summary": "\n    ** RESERVED ** This candidate has been reserved by an organization or individual that will use it when announcing a new security problem. When the candidate has been publicized, the details for this candidate will be provided.\n    ",
     "affected_packages": [
@@ -18795,7 +18795,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-44638"
+      "CVE-2022-44638"
     ],
     "summary": "\n    In libpixman in Pixman before 0.42.2, there is an out-of-bounds write (aka heap-based buffer overflow) in rasterize_edges_8 due to an integer overflow in pixman_sample_floor_y.\n    ",
     "affected_packages": [
@@ -18896,7 +18896,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-44792"
+      "CVE-2022-44792"
     ],
     "summary": "\n    handle_ipDefaultTTL in agent/mibgroup/ip-mib/ip_scalars.c in Net-SNMP 5.8 through 5.9.3 has a NULL Pointer Exception bug that can be used by a remote attacker (who has write access) to cause the instance to crash via a crafted UDP packet, resulting in Denial of Service.\n    ",
     "affected_packages": [
@@ -19009,7 +19009,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-44793"
+      "CVE-2022-44793"
     ],
     "summary": "\n    handle_ipv6IpForwarding in agent/mibgroup/ip-mib/ip_scalars.c in Net-SNMP 5.4.3 through 5.9.3 has a NULL Pointer Exception bug that can be used by a remote attacker to cause the instance to crash via a crafted UDP packet, resulting in Denial of Service.\n    ",
     "affected_packages": [
@@ -19122,7 +19122,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-4662"
+      "CVE-2022-4662"
     ],
     "summary": "\n    A flaw incorrect access control in the Linux kernel USB core subsystem was found in the way user attaches usb device. A local user could use this flaw to crash the system.\n    ",
     "affected_packages": [
@@ -19291,7 +19291,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-46908"
+      "CVE-2022-46908"
     ],
     "summary": "\n    SQLite through 3.40.0, when relying on --safe for execution of an untrusted CLI script, does not properly implement the azProhibitedFunctions protection mechanism, and instead allows UDF functions such as WRITEFILE.\n    ",
     "affected_packages": [
@@ -19613,7 +19613,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-47520"
+      "CVE-2022-47520"
     ],
     "summary": "\n    An issue was discovered in the Linux kernel before 6.0.11. Missing offset validation in drivers/net/wireless/microchip/wilc1000/hif.c in the WILC1000 wireless driver can trigger an out-of-bounds read when parsing a Robust Security Network (RSN) information element from a Netlink packet.\n    ",
     "affected_packages": [
@@ -19760,7 +19760,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2022-47629"
+      "CVE-2022-47629"
     ],
     "summary": "\n    Libksba before 1.6.3 is prone to an integer overflow vulnerability in the CRL signature parser.\n    ",
     "affected_packages": [
@@ -19993,7 +19993,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2023-0049"
+      "CVE-2023-0049"
     ],
     "summary": "\n    Out-of-bounds Read in GitHub repository vim/vim prior to 9.0.1143.\n    ",
     "affected_packages": [
@@ -20128,7 +20128,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2023-0051"
+      "CVE-2023-0051"
     ],
     "summary": "\n    Heap-based Buffer Overflow in GitHub repository vim/vim prior to 9.0.1144.\n    ",
     "affected_packages": [
@@ -20263,7 +20263,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2023-0054"
+      "CVE-2023-0054"
     ],
     "summary": "\n    Out-of-bounds Write in GitHub repository vim/vim prior to 9.0.1145.\n    ",
     "affected_packages": [
@@ -20398,7 +20398,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2023-0056"
+      "CVE-2023-0056"
     ],
     "summary": "\n    ** RESERVED ** This candidate has been reserved by an organization or individual that will use it when announcing a new security problem. When the candidate has been publicized, the details for this candidate will be provided.\n    ",
     "affected_packages": [
@@ -20477,7 +20477,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2023-0215"
+      "CVE-2023-0215"
     ],
     "summary": "\n    ** RESERVED ** This candidate has been reserved by an organization or individual that will use it when announcing a new security problem. When the candidate has been publicized, the details for this candidate will be provided.\n    ",
     "affected_packages": [
@@ -20669,7 +20669,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2023-0286"
+      "CVE-2023-0286"
     ],
     "summary": "\n    ** RESERVED ** This candidate has been reserved by an organization or individual that will use it when announcing a new security problem. When the candidate has been publicized, the details for this candidate will be provided.\n    ",
     "affected_packages": [
@@ -20872,7 +20872,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2023-0288"
+      "CVE-2023-0288"
     ],
     "summary": "\n    Heap-based Buffer Overflow in GitHub repository vim/vim prior to 9.0.1189.\n    ",
     "affected_packages": [
@@ -21007,7 +21007,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2023-0433"
+      "CVE-2023-0433"
     ],
     "summary": "\n    Heap-based Buffer Overflow in GitHub repository vim/vim prior to 9.0.1225.\n    ",
     "affected_packages": [
@@ -21142,7 +21142,7 @@
   },
   {
     "aliases": [
-      "Mitre CVE-2023-22809"
+      "CVE-2023-22809"
     ],
     "summary": "\n    In Sudo before 1.9.12p2, the sudoedit (aka -e) feature mishandles extra arguments passed in the user-provided environment variables (SUDO_EDITOR, VISUAL, and EDITOR), allowing a local attacker to append arbitrary entries to the list of files to process. This can lead to privilege escalation. Affected versions are 1.8.0 through 1.9.12.p1. The problem exists because a user-specified editor may contain a \"--\" argument that defeats a protection mechanism, e.g., an EDITOR='vim -- /path/to/extra/file' value.\n    ",
     "affected_packages": [

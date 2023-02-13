@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oval_definitions xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd"
+    xmlns="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5"
+    xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+    <definitions>
+        <definition id="oval:org.opensuse.security:def:2009030400" version="1" class="patch">
+            <metadata>
+                <title>CVE-2008-5679</title>
+                <affected family="unix">
+                </affected>
+                <reference ref_id="CVE-2008-5679" ref_url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-5679" source="CVE"/>
+                <description>
+	The HTML parsing engine in Opera before 9.63 allows remote attackers to execute arbitrary code via crafted web pages that trigger an invalid pointer calculation and heap corruption.
+                </description>
+            </metadata>
+        </definition>
+        <definition id="oval:org.opensuse.security:def:2009030400" version="1" class="patch">
+            <metadata>
+                <title>foobar-CVE-1234-5678</title>
+                <affected family="unix">
+                </affected>
+                <reference ref_id="foobar-CVE-1234-5678" ref_url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=foobar-CVE-1234-5678" source="CVE"/>
+                <description>
+            Blah blah blah.
+                </description>
+            </metadata>
+        </definition>
+        <definition id="oval:org.opensuse.security:def:2009030400" version="1" class="patch">
+            <metadata>
+                <title>nonesuchCVE-1111-2222</title>
+                <affected family="unix">
+                </affected>
+                <reference ref_id="nonesuchCVE-1111-2222" ref_url="http://cve.mitre.org/cgi-bin/cvename.cgi?name=nonesuchCVE-1111-2222" source="CVE"/>
+                <description>
+                    Blah blah blah.
+                </description>
+            </metadata>
+        </definition>
+    </definitions>
+</oval_definitions>

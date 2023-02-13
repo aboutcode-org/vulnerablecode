@@ -82,8 +82,7 @@ def test_suse_oval_parse_leap_micro_5_3():
     }
 
     # Get vuln_id from definition
-    # TODO: Delete `Mitre` prefix
-    vuln_id_1 = ["Mitre CVE-2019-18348"]
+    vuln_id_1 = ["CVE-2019-18348"]
     assert vuln_id_1 == parsed_oval.get_vuln_id_from_definition(definition_1)
 
     # Get total number of tests
@@ -137,85 +136,6 @@ def test_suse_oval_parse_leap_micro_5_3():
     assert def2_urls == parsed_oval.get_urls_from_definition(definition_2)
 
 
-def test_compare_name_gz_vs_name_affected_gz():
-    translations = {"less than": "<", "equals": "=", "greater than or equal": ">="}
-
-    # "name-affected.xml" example:
-
-    name_affected_gz = gzip.open(os.path.join(TEST_DATA, "opensuse.leap.15.3-affected.xml.gz"), "r")
-    name_affected_xml = ET.parse(name_affected_gz)
-    parsed_name_affected_xml = OvalParser(translations, name_affected_xml)
-
-    print("\n\nOVAL XML file = 'opensuse.leap.15.3-affected.xml.gz'\n")
-
-    # Get total number of definitions
-    assert len(parsed_name_affected_xml.all_definitions) == 9138
-
-    print(
-        "len(parsed_name_affected_xml.all_definitions) = {}\n".format(
-            len(parsed_name_affected_xml.all_definitions)
-        )
-    )
-
-    assert (
-        parsed_name_affected_xml.all_definitions[0].getId()
-        == "oval:org.opensuse.security:def:20042771"
-    )
-    assert (
-        parsed_name_affected_xml.all_definitions[1].getId()
-        == "oval:org.opensuse.security:def:20054900"
-    )
-
-    print(
-        "parsed_name_affected_xml.all_definitions[0] = {}\n".format(
-            parsed_name_affected_xml.all_definitions[0]
-        )
-    )
-
-    print(
-        "parsed_name_affected_xml.get_vuln_id_from_definition(parsed_name_affected_xml.all_definitions[0]) = {}\n".format(
-            parsed_name_affected_xml.get_vuln_id_from_definition(
-                parsed_name_affected_xml.all_definitions[0]
-            )
-        )
-    )
-
-    print(
-        "parsed_name_affected_xml.get_vuln_id_from_definition(parsed_name_affected_xml.all_definitions[-1]) = {}\n".format(
-            parsed_name_affected_xml.get_vuln_id_from_definition(
-                parsed_name_affected_xml.all_definitions[-1]
-            )
-        )
-    )
-
-    # Get definition `id`: the `<definition>` element.
-    definition_1_name_affected_xml = parsed_name_affected_xml.all_definitions[0]
-
-    # TODO: How can we efficiently/simply test that name_xml is a subset of name_affected_xml?
-
-    # "name.xml" example:
-
-    name_gz = gzip.open(os.path.join(TEST_DATA, "opensuse.leap.15.3.xml.gz"), "r")
-    name_xml = ET.parse(name_gz)
-    parsed_name_xml = OvalParser(translations, name_xml)
-
-    # Get total number of definitions
-    assert len(parsed_name_xml.all_definitions) == 9138
-
-    assert parsed_name_xml.all_definitions[0].getId() == "oval:org.opensuse.security:def:20042771"
-    assert parsed_name_xml.all_definitions[1].getId() == "oval:org.opensuse.security:def:20054900"
-
-    # Get definition `id`: the `<definition>` element.
-    definition_1_name_xml = parsed_name_xml.all_definitions[0]
-
-    # TODO: Repeating above TODO -- How can we efficiently/simply test that name_xml is a subset of name_affected_xml?
-
-    # =========================================================
-    # Compare the 2 lists of definitions, confirm every item in `parsed_name_xml.all_definitions`
-    # is also in `parsed_name_affected_xml.all_definitions`
-    # =========================================================
-
-
 def test_filter_suse_gz_files():
     initial_suse_gz_files = [
         "https://ftp.suse.com/pub/projects/security/oval/suse.openstack.cloud.7-affected.xml.gz",
@@ -249,3 +169,26 @@ def test_filter_suse_gz_files():
     ]
 
     assert filter(initial_suse_gz_files) == filtered_initial_suse_gz_files
+
+
+def test_cve_prefix_filter():
+    xml_doc = ET.parse(os.path.join(TEST_DATA, "mock-definitions-only.xml"))
+    translations = {"less than": "<", "equals": "=", "greater than or equal": ">="}
+    parsed_oval = OvalParser(translations, xml_doc)
+
+    assert len(parsed_oval.all_definitions) == 3
+
+    definition_1 = parsed_oval.all_definitions[0]
+
+    vuln_id_1 = ["CVE-2008-5679"]
+    assert vuln_id_1 == parsed_oval.get_vuln_id_from_definition(definition_1)
+
+    definition_2 = parsed_oval.all_definitions[1]
+
+    vuln_id_2 = ["CVE-1234-5678"]
+    assert vuln_id_2 == parsed_oval.get_vuln_id_from_definition(definition_2)
+
+    definition_3 = parsed_oval.all_definitions[2]
+
+    vuln_id_3 = ["CVE-1111-2222"]
+    assert vuln_id_3 == parsed_oval.get_vuln_id_from_definition(definition_3)

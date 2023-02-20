@@ -17,7 +17,7 @@ resources to help you get started.
 Do Your Homework
 ----------------
 
-Before adding a contribution or create a new issue, take a look at the project’s
+Before adding a contribution or creating a new issue, take a look at the project’s
 `README <https://github.com/nexB/vulnerablecode>`_, read through our
 `documentation <https://vulnerablecode.readthedocs.io/en/latest/>`_,
 and browse existing `issues <https://github.com/nexB/vulnerablecode/issues>`_,
@@ -52,7 +52,7 @@ For more established contributors, you can contribute to the codebase in several
 - Submit a `bug fix <https://github.com/nexB/vulnerablecode/labels/bug>`_ for any existing
   issue.
 - Create a `new issue <https://github.com/nexB/vulnerablecode/issues>`_ to request a
-  feature, submit a feedback, or ask a question.
+  feature, submit feedback, or ask a question.
 
 .. note::
     Make sure to check existing `issues <https://github.com/nexB/vulnerablecode/issues>`_,

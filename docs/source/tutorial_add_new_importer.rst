@@ -219,7 +219,7 @@ version management from `univers <https://github.com/nexB/univers>`_.
 
 .. note::
 
-   | Use ``make valid`` to format your new code using black and sort automatically.
+   | Use ``make valid`` to format your new code using black and isort automatically.
    | Use ``make check`` to check for formatting errors.
 
 Register the Importer

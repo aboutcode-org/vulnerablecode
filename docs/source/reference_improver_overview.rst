@@ -21,13 +21,13 @@ There are two categories of improvers:
 - **Importer Specific**: Improve upon data imported by a specific importer. These are defined in the
   corresponding importer file itself.
 
-Both types of improvers internally work in a similar fashion. They indicate which ``Advisory`` they
+Both types of improvers internally work similarly. They indicate which ``Advisory`` they
 are interested in and when supplied with those Advisories, they return Inferences.
-An ``Inference`` is more explicit than an ``Advisory`` and is able to answer questions like "Is
+An ``Inference`` is more explicit than an ``Advisory`` and can answer questions like "Is
 package A vulnerable to Vulnerability B ?". Of course, there is some confidence attached to the
 answer, which could also be ``MAX_CONFIDENCE`` in certain cases.
 
-The possibilities with improvers are endless; they are not restricted to take one approach. Features
+The possibilities with improvers are endless; they are not restricted to taking one approach. Features
 like *Time Travel* and *finding fix commits* could be implemented as well.
 
 You can find more in-code documentation about improvers in :file:`vulnerabilites/improver.py` and

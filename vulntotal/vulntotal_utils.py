@@ -145,6 +145,8 @@ def gitlab_constraints_satisfied(gitlab_constrain, version):
     for constraint in constraints:
         is_constraint_satisfied = True
         for subcontraint in constraint.strip().split(delimiter):
+            if not subcontraint:
+                continue
             gitlab_comparator, gitlab_version = parse_constraint(subcontraint.strip())
             if not gitlab_version:
                 continue

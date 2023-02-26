@@ -28,9 +28,9 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.utils import build_description
+from vulnerabilities.utils import get_cwe_id
 
 logger = logging.getLogger(__name__)
-
 
 PURL_TYPE_BY_GITLAB_SCHEME = {
     "conan": "conan",
@@ -43,7 +43,6 @@ PURL_TYPE_BY_GITLAB_SCHEME = {
     "packagist": "composer",
     "pypi": "pypi",
 }
-
 
 GITLAB_SCHEME_BY_PURL_TYPE = {v: k for k, v in PURL_TYPE_BY_GITLAB_SCHEME.items()}
 
@@ -186,6 +185,10 @@ def parse_gitlab_advisory(file):
     summary = build_description(gitlab_advisory.get("title"), gitlab_advisory.get("description"))
     urls = gitlab_advisory.get("urls")
     references = [Reference.from_url(u) for u in urls]
+
+    cwe_ids = gitlab_advisory.get("cwe_ids") or []
+    cwe_list = list(map(get_cwe_id, cwe_ids))
+
     date_published = dateparser.parse(gitlab_advisory.get("pubdate"))
     date_published = date_published.replace(tzinfo=pytz.UTC)
     package_slug = gitlab_advisory.get("package_slug")
@@ -251,4 +254,5 @@ def parse_gitlab_advisory(file):
         references=references,
         date_published=date_published,
         affected_packages=affected_packages,
+        weaknesses=cwe_list,
     )

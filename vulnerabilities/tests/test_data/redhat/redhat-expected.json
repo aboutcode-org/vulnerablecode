@@ -221,6 +221,6 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [400]
   }
 ]

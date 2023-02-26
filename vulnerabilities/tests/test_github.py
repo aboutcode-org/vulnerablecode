@@ -24,6 +24,7 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers.github import GitHubAPIImporter
+from vulnerabilities.importers.github import get_cwes_from_github_advisory
 from vulnerabilities.importers.github import process_response
 from vulnerabilities.improvers.valid_versions import GitHubBasicImprover
 from vulnerabilities.tests.util_tests import VULNERABLECODE_REGEN_TEST_FIXTURES as REGEN
@@ -311,3 +312,24 @@ def test_get_package_versions(mock_response):
     assert PackageURL(type="gem", name="foo") in improver.versions_fetcher_by_purl
     assert PackageURL(type="pypi", name="django") in improver.versions_fetcher_by_purl
     assert PackageURL(type="pypi", name="foo") in improver.versions_fetcher_by_purl
+
+
+def test_get_cwes_from_github_advisory():
+    assert get_cwes_from_github_advisory(
+        {"cwes": {"nodes": [{"cweId": "CWE-502"}, {"cweId": "CWE-770"}]}}
+    ) == [502, 770]
+    assert get_cwes_from_github_advisory(
+        {
+            "cwes": {
+                "nodes": [
+                    {"cweId": "CWE-173"},
+                    {"cweId": "CWE-200"},
+                    {"cweId": "CWE-378"},
+                    {"cweId": "CWE-732"},
+                ]
+            }
+        }
+    ) == [173, 200, 378, 732]
+    assert get_cwes_from_github_advisory(
+        {"cwes": {"nodes": [{"cweId": "CWE-11111111111"}, {"cweId": "CWE-200"}]}}  # invalid cwe-id
+    ) == [200]

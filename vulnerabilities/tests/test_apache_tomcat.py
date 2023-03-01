@@ -7,8 +7,9 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 import os
-from unittest import TestCase
+from unittest.mock import patch
 
 from univers.version_constraint import VersionConstraint
 from univers.version_range import ApacheVersionRange
@@ -16,10 +17,13 @@ from univers.version_range import MavenVersionRange
 from univers.versions import MavenVersion
 from univers.versions import SemverVersion
 
+from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatImporter
 from vulnerabilities.importers.apache_tomcat import extract_tomcat_advisory_data_from_page
 from vulnerabilities.importers.apache_tomcat import to_version_ranges_apache
 from vulnerabilities.importers.apache_tomcat import to_version_ranges_maven
+from vulnerabilities.improvers.default import DefaultImprover
+from vulnerabilities.improvers.valid_versions import ApacheTomcatImprover
 from vulnerabilities.tests import util_tests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -37,6 +41,34 @@ def test_method_extract_advisories_from_page():
         TEST_DATA, f"parse-apache_tomcat-selected-advisories-expected.json"
     )
     util_tests.check_results_against_json(results, expected_file)
+
+
+@patch("vulnerabilities.improvers.valid_versions.ApacheTomcatImprover.get_package_versions")
+def test_apache_tomcat_improver(mock_response):
+    advisory_file = os.path.join(
+        TEST_DATA, f"parse-apache_tomcat-selected-advisories-expected.json"
+    )
+    with open(advisory_file) as exp:
+        advisories = [AdvisoryData.from_dict(adv) for adv in (json.load(exp))]
+    mock_response.return_value = [
+        "1.1.0",
+        "1.1.1",
+        "1.1.2",
+        "1.1.3",
+        "1.1.4",
+        "1.1.5",
+        "1.1.6",
+        "1.1.7",
+        "1.1.8",
+    ]
+    improvers = [ApacheTomcatImprover(), DefaultImprover()]
+    result = []
+    for improver in improvers:
+        for advisory in advisories:
+            inference = [data.to_dict() for data in improver.get_inferences(advisory)]
+            result.extend(inference)
+    expected_file = os.path.join(TEST_DATA, f"apache-tomcat-improver-expected.json")
+    util_tests.check_results_against_json(result, expected_file)
 
 
 def test_extract_advisories_from_page():

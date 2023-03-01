@@ -692,6 +692,13 @@ VERSION_API_CLASSES = {
 
 VERSION_API_CLASSES_BY_PACKAGE_TYPE = {cls.package_type: cls for cls in VERSION_API_CLASSES}
 
+VERSION_API_CLASSES_BY_PACKAGE_TYPE["apache"] = GitHubTagsAPI
+
+VERSION_API_CLASS_BY_PACKAGE_NAMESPACE = {
+    "debian": DebianVersionAPI,
+    "ubuntu": LaunchpadVersionAPI,
+}
+
 
 def get_api_package_name(purl: PackageURL) -> str:
     """
@@ -703,11 +710,21 @@ def get_api_package_name(purl: PackageURL) -> str:
     """
     if not purl.name:
         return None
+    if purl.type == "apache":
+        return f"{purl.type}/{purl.name}"
     if purl.type in ("nuget", "pypi", "gem", "deb") or not purl.namespace:
         return purl.name
     if purl.type == "maven":
         return f"{purl.namespace}:{purl.name}"
-    if purl.type in ("composer", "golang", "npm"):
+    if purl.type in ("composer", "golang", "npm", "github"):
         return f"{purl.namespace}/{purl.name}"
 
     logger.error(f"get_api_package_name: Unknown PURL {purl!r}")
+
+
+def get_version_fetcher(package_url):
+    if package_url.type == "deb":
+        versions_fetcher: VersionAPI = VERSION_API_CLASS_BY_PACKAGE_NAMESPACE[package_url.namespace]
+    else:
+        versions_fetcher: VersionAPI = VERSION_API_CLASSES_BY_PACKAGE_TYPE[package_url.type]
+    return versions_fetcher

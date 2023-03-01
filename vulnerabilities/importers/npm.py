@@ -52,7 +52,9 @@ class NpmImporter(Importer):
         id = data.get("id")
         description = data.get("overview") or ""
         summary = data.get("title") or ""
-        date_published = parse(data.get("created_at")).replace(tzinfo=pytz.UTC)
+        date_published = None
+        if isinstance(data.get("created_at"), str):
+            date_published = parse(data.get("created_at")).replace(tzinfo=pytz.UTC)
         references = []
         cvss_vector = data.get("cvss_vector")
         cvss_score = data.get("cvss_score")

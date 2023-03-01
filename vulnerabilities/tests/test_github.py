@@ -24,8 +24,8 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers.github import GitHubAPIImporter
-from vulnerabilities.importers.github import GitHubBasicImprover
 from vulnerabilities.importers.github import process_response
+from vulnerabilities.improvers.valid_versions import GitHubBasicImprover
 from vulnerabilities.tests.util_tests import VULNERABLECODE_REGEN_TEST_FIXTURES as REGEN
 from vulnerabilities.utils import GitHubTokenError
 
@@ -175,7 +175,7 @@ def valid_versions():
     ]
 
 
-@mock.patch("vulnerabilities.importers.github.GitHubBasicImprover.get_package_versions")
+@mock.patch("vulnerabilities.improvers.valid_versions.GitHubBasicImprover.get_package_versions")
 def test_github_improver(mock_response, regen=REGEN):
     advisory_data = AdvisoryData(
         aliases=["CVE-2022-21831", "GHSA-w749-p3v6-hccq"],

@@ -14,7 +14,6 @@ from typing import List
 from typing import Mapping
 
 import requests
-from django.db.models.query import QuerySet
 from packageurl import PackageURL
 from univers.version_range import DebianVersionRange
 from univers.versions import DebianVersion
@@ -23,16 +22,8 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
-from vulnerabilities.importer import UnMergeablePackageError
-from vulnerabilities.improver import MAX_CONFIDENCE
-from vulnerabilities.improver import Improver
-from vulnerabilities.improver import Inference
-from vulnerabilities.models import Advisory
-from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
 from vulnerabilities.utils import dedupe
-from vulnerabilities.utils import get_affected_packages_by_patched_package
 from vulnerabilities.utils import get_item
-from vulnerabilities.utils import nearest_patched_package
 
 logger = logging.getLogger(__name__)
 
@@ -164,74 +155,3 @@ class DebianImporter(Importer):
                 affected_packages=affected_packages,
                 references=references,
             )
-
-
-class DebianBasicImprover(Improver):
-    @property
-    def interesting_advisories(self) -> QuerySet:
-        return Advisory.objects.filter(created_by=DebianImporter.qualified_name)
-
-    def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
-        """
-        Yield Inferences for the given advisory data
-        """
-        if not advisory_data.affected_packages:
-            return
-        try:
-            purl, affected_version_ranges, fixed_versions = AffectedPackage.merge(
-                advisory_data.affected_packages
-            )
-        except UnMergeablePackageError:
-            logger.error(f"Cannot merge with different purls {advisory_data.affected_packages!r}")
-            return
-
-        pkg_type = purl.type
-        pkg_namespace = purl.namespace
-        pkg_name = purl.name
-        pkg_qualifiers = purl.qualifiers
-        fixed_purls = [
-            PackageURL(
-                type=pkg_type,
-                namespace=pkg_namespace,
-                name=pkg_name,
-                version=str(version),
-                qualifiers=pkg_qualifiers,
-            )
-            for version in fixed_versions
-        ]
-        if not affected_version_ranges:
-            for fixed_purl in fixed_purls:
-                yield Inference.from_advisory_data(
-                    advisory_data,  # We are getting all valid versions to get this inference
-                    confidence=MAX_CONFIDENCE,
-                    affected_purls=[],
-                    fixed_purl=fixed_purl,
-                )
-        else:
-            aff_versions = set()
-            for affected_version_range in affected_version_ranges:
-                for constraint in affected_version_range.constraints:
-                    aff_versions.add(constraint.version.string)
-            affected_purls = [
-                PackageURL(
-                    type=pkg_type,
-                    namespace=pkg_namespace,
-                    name=pkg_name,
-                    version=version,
-                    qualifiers=pkg_qualifiers,
-                )
-                for version in aff_versions
-            ]
-            affected_packages: List[LegacyAffectedPackage] = nearest_patched_package(
-                vulnerable_packages=affected_purls, resolved_packages=fixed_purls
-            )
-
-            for (fixed_package, affected_packages,) in get_affected_packages_by_patched_package(
-                affected_packages=affected_packages
-            ).items():
-                yield Inference.from_advisory_data(
-                    advisory_data,
-                    confidence=MAX_CONFIDENCE,  # We are getting all valid versions to get this inference
-                    affected_purls=affected_packages,
-                    fixed_purl=fixed_package,
-                )

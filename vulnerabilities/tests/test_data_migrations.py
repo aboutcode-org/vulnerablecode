@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import pytest
 from django.apps import apps
 from django.db import connection
 from django.db.migrations.executor import MigrationExecutor
@@ -568,3 +569,29 @@ class RemoveCorrupteAdvisories(TestMigrations):
         # using get_model to avoid circular import
         Advisory = self.apps.get_model("vulnerabilities", "Advisory")
         Advisory.objects.all().count() == 0
+        assert Advisory.objects.all().count() == 0
+
+
+class AddDateCreationTestCase(TestMigrations):
+    app_name = "vulnerabilities"
+    migrate_from = "0039_alter_vulnerabilityseverity_scoring_system"
+    migrate_to = "0042_alter_advisory_date_created_alter_alias_date_created_and_more"
+
+    def setUpBeforeMigration(self, apps):
+        # using get_model to avoid circular import
+        Vulnerability = apps.get_model("vulnerabilities", "Vulnerability")
+
+        vulnerability1 = Vulnerability(vulnerability_id=1, summary="test-1")
+        vulnerability1.save()
+        self.vulnerability1 = vulnerability1
+        with pytest.raises(Exception):
+            date = vulnerability1.date_created
+
+    def test_auto_population_of_date_created(self):
+        # using get_model to avoid circular import
+        Vulnerability = self.apps.get_model("vulnerabilities", "Vulnerability")
+        vulnerability = Vulnerability.objects.get(
+            vulnerability_id=self.vulnerability1.vulnerability_id
+        )
+        assert vulnerability.date_created is not None
+        assert vulnerability.date_modified is not None

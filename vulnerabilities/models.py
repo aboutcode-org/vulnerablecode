@@ -165,6 +165,9 @@ class Vulnerability(models.Model):
         through="PackageRelatedVulnerability",
     )
 
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
     objects = VulnerabilityQuerySet.as_manager()
 
     class Meta:
@@ -260,6 +263,9 @@ class Weakness(models.Model):
     vulnerabilities = models.ManyToManyField(Vulnerability, related_name="weaknesses")
     db = Database()
 
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
     @property
     def name(self):
         """Return the weakness's name."""
@@ -304,6 +310,9 @@ class VulnerabilityReference(models.Model):
         blank=True,
     )
 
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
     objects = VulnerabilityReferenceQuerySet.as_manager()
 
     class Meta:
@@ -335,6 +344,9 @@ class VulnerabilityRelatedReference(models.Model):
         VulnerabilityReference,
         on_delete=models.CASCADE,
     )
+
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ["vulnerability", "reference"]
@@ -530,6 +542,9 @@ class Package(PackageURLMixin):
         db_index=True,
     )
 
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
     objects = PackageQuerySet.as_manager()
 
     def save(self, *args, **kwargs):
@@ -641,6 +656,9 @@ class PackageRelatedVulnerability(models.Model):
         help_text="Does this relation fix the specified vulnerability ?",
     )
 
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
     class Meta:
         unique_together = ["package", "vulnerability"]
         verbose_name_plural = "PackageRelatedVulnerabilities"
@@ -708,6 +726,9 @@ class VulnerabilitySeverity(models.Model):
         "For example a CVSS vector string as used to compute a CVSS score.",
     )
 
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
     class Meta:
         unique_together = ["reference", "scoring_system", "value"]
         ordering = ["reference", "scoring_system", "value"]
@@ -744,6 +765,9 @@ class Alias(models.Model):
         on_delete=models.CASCADE,
         related_name="aliases",
     )
+
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
 
     objects = AliasQuerySet.as_manager()
 
@@ -809,6 +833,9 @@ class Advisory(models.Model):
         "module name importing the advisory. Eg:"
         "vulnerabilities.importers.nginx.NginxImporter",
     )
+
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ["aliases", "unique_content_id", "date_published"]

@@ -36,7 +36,7 @@ PURL_TYPE_BY_GITLAB_SCHEME = {
     # "conan": "conan",
     "gem": "gem",
     # Entering issue to parse go package names https://github.com/nexB/vulnerablecode/issues/742
-    # "go": "golang",
+    "go": "golang",
     "maven": "maven",
     "npm": "npm",
     "nuget": "nuget",

@@ -450,12 +450,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         """
         Return a queryset matching the ``purl`` Package URL.
         """
-        if not isinstance(purl, PackageURL):
-            purl = PackageURL.from_string(purl)
-        if not with_qualifiers_and_subpath:
-            remove_qualifiers_and_subpath(purl)
-        purl = purl_to_dict(purl)
-        return self.filter(**purl)
+        return self.filter(package_url=str(purl))
 
     def with_cpes(self):
         """

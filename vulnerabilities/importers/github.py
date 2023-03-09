@@ -36,7 +36,7 @@ PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM = {
     "PIP": "pypi",
     "RUBYGEMS": "gem",
     "NPM": "npm",
-    # "GO": "golang",
+    "GO": "golang",
 }
 
 GITHUB_ECOSYSTEM_BY_PACKAGE_TYPE = {

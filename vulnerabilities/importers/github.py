@@ -216,12 +216,6 @@ def get_purl(pkg_type: str, github_name: str) -> Optional[PackageURL]:
     logger.error(f"get_purl: Unknown package type {pkg_type}")
 
 
-class InvalidVersionRange(Exception):
-    """
-    Raises exception when the version range is invalid
-    """
-
-
 def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
     """
     Yield `AdvisoryData` by taking `resp` and `ecosystem` as input
@@ -268,7 +262,7 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
                     affected_range = build_range_from_github_advisory_constraint(
                         package_type, affected_range
                     )
-                except InvalidVersionRange as e:
+                except Exception as e:
                     logger.error(f"Could not parse affected range {affected_range!r} {e!r}")
                     affected_range = None
             if fixed_version:

@@ -273,7 +273,8 @@ def parse_html_advisory(advisory_html, snyk_id, affected, purl) -> VendorData:
     cve_span = advisory_soup.find("span", class_="cve")
     if cve_span:
         cve_anchor = cve_span.find("a", class_="vue--anchor")
-        aliases.append(cve_anchor["id"])
+        if cve_anchor:
+            aliases.append(cve_anchor.get("id"))
 
     how_to_fix = advisory_soup.find(
         "div", class_="vue--block vuln-page__instruction-block vue--block--instruction"

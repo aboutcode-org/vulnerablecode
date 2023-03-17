@@ -32,10 +32,10 @@ Importer
 ^^^^^^^^^^
 
 Importers are responsible for scraping vulnerability data from various data sources without creating
-a complete relational model between vulnerabilites and their fixes and storing them in a structured
+a complete relational model between vulnerabilities and their fixes and storing them in a structured
 fashion. These data are stored in the ``Advisory`` model and can be converted to an equivalent
 ``AdvisoryData`` for various use cases.
-See :ref:`importer-overview` for a brief overview on importers.
+See :ref:`importer-overview` for a brief overview of importers.
 
 Importer Prerequisites
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -54,12 +54,12 @@ There is no notion of version ranges here: all package versions must be explicit
 
 Because this concrete relationship is rarely available anywhere upstream, we have to *infer*
 these values, thus the name.
-As inferring something is not always perfect, an Inference also comes with a confidence score.
+As inferring something is not always perfect, and Inference also comes with a confidence score.
 
 Improver
 ^^^^^^^^^
 
-All the Improvers must inherit from ``Improver`` superclass and implement the
+All the Improvers must inherit from the ``Improver`` superclass and implement the
 ``interesting_advisories`` property and the ``get_inferences`` method.
 
 Writing an improver
@@ -78,7 +78,7 @@ Explore Package Managers (Optional)
 If your Improver depends on the discrete versions of a package, the package managers' VersionAPI
 located at :file:`vulnerabilites/package_managers.py` could come in handy.  You will need to
 instantiate the relevant ``VersionAPI`` in the improver's constructor and use it later in the
-implemented methods. See an already implemented improver (NginxBasicImprover) for an example usage.
+implemented methods. See an already implemented improver (NginxBasicImprover) for example usage.
 
 Implement the ``interesting_advisories`` Property
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -100,7 +100,7 @@ the property can be implemented as
 Implement the ``get_inferences`` Method
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The framework calls ``get_inferences`` method for every ``AdvisoryData`` that is obtained from
+The framework calls the ``get_inferences`` method for every ``AdvisoryData`` that is obtained from
 the ``Advisory`` QuerySet returned by the ``interesting_advisories`` property.
 
 It is expected to return an iterable of ``Inference`` objects for the given ``AdvisoryData``. To
@@ -162,7 +162,7 @@ One such example, improving the importer written in the :ref:`importer tutorial
 .. note::
 
    | Use ``make valid`` to format your new code using black and isort automatically.
-   | Use ``make check`` to check for formatting errrors.
+   | Use ``make check`` to check for formatting errors.
 
 Register the Improver
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -268,4 +268,4 @@ Invoke the improve command now and you will see (in a fresh database, after impo
    Even though CVE-2021-23017 and CVE-2021-1234 are not supplied by this improver, the output above shows them
    because we left out running the ``DefaultImprover`` in the example. The ``DefaultImprover``
    inserts minimal data found via the importers in the database (here, the above two CVEs). Run
-   importer, DefaultImprover and then your improver in this sequence to avoid this anomaly.
+   importer, DefaultImprover, and then your improver in this sequence to avoid this anomaly.

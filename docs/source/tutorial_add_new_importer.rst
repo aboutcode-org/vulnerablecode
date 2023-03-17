@@ -17,7 +17,7 @@ TL;DR
 #. Specify the importer license.
 #. Implement the ``advisory_data`` method to process the data source you are
    writing an importer for.
-#. Add the newly created importer to the importers registry at
+#. Add the newly created importer to the importer's registry at
    ``vulnerabilites/importers/__init__.py``
 
 .. _tutorial_add_a_new_importer_prerequisites:
@@ -47,22 +47,22 @@ AdvisoryData
 
 ``AdvisoryData`` is an intermediate data format:
 it is expected that your importer will convert the raw scraped data into ``AdvisoryData`` objects.
-All the fields in ``AdvisoryData`` dataclass are optional; it is the importer's resposibility to
+All the fields in ``AdvisoryData`` dataclass are optional; it is the importer's responsibility to
 ensure that it contains meaningful information about a vulnerability.
 
 AffectedPackage
 ^^^^^^^^^^^^^^^^
 
 ``AffectedPackage`` data type is used to store a range of affected versions and a fixed version of a
-given package. For all version-related data, `univers <https://github.com/nexB/univers>`_ library
+given package. For all version-related data, the `univers <https://github.com/nexB/univers>`_ library
 is used.
 
 Univers
 ^^^^^^^^
 
-`univers <https://github.com/nexB/univers>`_ is a Python implementation of the `vers specification <https://github.com/package-url/purl-spec/pull/139>`_.
+`univers <https://github.com/nexB/univers>`_ is a Python implementation of `vers specification <https://github.com/package-url/purl-spec/pull/139>`_.
 It can parse and compare all the package versions and all the ranges,
-from debian, npm, pypi, ruby and more.
+from debian, npm, pypi, ruby, and more.
 It processes all the version range specs and expressions.
 
 Importer
@@ -74,7 +74,7 @@ For ``Git`` or ``Oval`` data source, ``GitImporter`` or ``OvalImporter`` could b
 .. note::
 
    ``GitImporter`` and ``OvalImporter`` need a complete rewrite.
-   Interested in :ref:`contributing` ?
+   Interested in :ref:`contributing`?
 
 Writing an importer
 ---------------------
@@ -90,13 +90,13 @@ implementing the unimplemented methods.
 Specify the Importer License
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Importers scrape data off the internet.  In order to make sure the data is useable, a license
+Importers scrape data off the internet.  To make sure the data is usable, a license
 must be provided.
 Populate the ``spdx_license_expression`` with the appropriate value.
 The SPDX license identifiers can be found at https://spdx.org/licenses/.
 
 .. note::
-   An SPDX license identifier by itself is a valid licence expression. In case you need more complex
+   An SPDX license identifier by itself is a valid license expression. In case you need more complex
    expressions, see https://spdx.github.io/spdx-spec/v2.3/SPDX-license-expressions/
 
 Implement the ``advisory_data`` Method
@@ -132,12 +132,12 @@ This importer is only a valid skeleton and does not import anything at all.
 
 Let us implement another dummy importer that actually imports some data.
 
-Here we have a ``dummy_package`` which follows ``NginxVersionRange`` and ``SemverVersion`` for
+Here we have a ``dummy_package`` that follows ``NginxVersionRange`` and ``SemverVersion`` for
 version management from `univers <https://github.com/nexB/univers>`_.
 
 .. note::
 
-   It is possible that the versioning scheme you are targetting has not yet been
+   It is possible that the versioning scheme you are targeting has not yet been
    implemented in the `univers <https://github.com/nexB/univers>`_ library.
    If this is the case, you will need to head over there and implement one.
 
@@ -220,7 +220,7 @@ version management from `univers <https://github.com/nexB/univers>`_.
 .. note::
 
    | Use ``make valid`` to format your new code using black and isort automatically.
-   | Use ``make check`` to check for formatting errrors.
+   | Use ``make check`` to check for formatting errors.
 
 Register the Importer
 ^^^^^^^^^^^^^^^^^^^^^^

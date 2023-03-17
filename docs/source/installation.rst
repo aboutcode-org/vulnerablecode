@@ -8,7 +8,7 @@ Installation
    installations are likely to not produce enough results.
    This is tracked in https://github.com/nexB/vulnerablecode/issues/597
 
-Welcome to **VulnerableCode** installation guide! This guide describes how to install
+Welcome to the **VulnerableCode** installation guide! This guide describes how to install
 VulnerableCode on various platforms.
 Please read and follow the instructions carefully to ensure your installation is
 functional and smooth.
@@ -63,7 +63,7 @@ Run the App
 
 At this point, the VulnerableCode app should be running at port ``8000`` on your Docker host.
 Go to http://localhost:8000/ on a web browser to access the web UI.
-Optionally, you can set ``NGINX_PORT`` environment variable in your shell or in the `.env` file
+Optionally, you can set the ``NGINX_PORT`` environment variable in your shell or in the `.env` file
 to run on a different port than 8000.
 
 .. note::
@@ -78,14 +78,14 @@ to run on a different port than 8000.
 
 .. warning::
 
-   Serving VulnerableCode on a network could lead to security issues and there
-   are several steps that may be needed to secure such a deployment.
-   Currently, this is not recommendend.
+   Serving VulnerableCode on a network could lead to security issues and 
+   several steps may be needed to secure such a deployment.
+   Currently, this is not recommended.
 
 Execute a Command
 ^^^^^^^^^^^^^^^^^
 
-You can execute a one of ``manage.py`` commands through the Docker command line
+You can execute one of the ``manage.py`` commands through the Docker command line
 interface, for example::
 
     docker-compose run vulnerablecode ./manage.py import --list
@@ -115,7 +115,7 @@ Supported Platforms
     #. **macOS** 12.1 and up
 
 .. warning::
-     On **Windows** VulnerableCode can **only** :ref:`run_with_docker` and is not supported.
+     On **Windows**, VulnerableCode can **only** :ref:`run_with_docker` and is not supported.
 
 Pre-installation Checklist
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -178,7 +178,7 @@ production servers.
     make postgres
 
 .. note::
-    You can also use a **SQLite** database for local development as a single user
+    You can also use an **SQLite** database for local development as a single user
     with::
 
         make sqlite
@@ -242,7 +242,7 @@ There are several options to use the Nix version::
     > ../../manage.py ... # invoke the local checkout
     > vulnerablecode-manage.py ... # invoke manage.py as installed in the nix store
 
-    # Test the import prodecure using the Nix version.
+    # Test the import procedure using the Nix version.
     etc/nix/test-import-using-nix.sh --all # import everything
     # Test the import using the local checkout.
     INSTALL_DIR=. etc/nix/test-import-using-nix.sh ruby # import ruby only

@@ -8,7 +8,7 @@ by known security vulnerabilities aka *"vulnerable packages"*.
 
 VulnerableCode is also a free and open source software (FOSS) project that
 provides the tools to build this open database. The tools handle collecting,
-aggregating and correlating these vulnerabilities and relating them to a correct
+aggregating, and correlating these vulnerabilities and relating them to a correct
 package version. Our project also supports a public cloud instance of this
 database - `VulnerableCode.io <https://public.vulnerablecode.io/>`__.
 
@@ -17,23 +17,24 @@ What can I do with VulnerableCode?
 ----------------------------------
 
 **For security researchers and software developers, VulnerableCode offers a web
-UI and a JSON API to efficiently find if the FOSS packages and dependencies that
+UI and a JSON API to efficiently find if the 
+packages and dependencies that
 you use are affected by known vulnerabilities and to determine whether a later package version
 fixes those vulnerabilities.**
 
 
 - With the web UI, you can search by package using Package URLs or search by
   vulnerability, e.g., by CVE. From there you can navigate to the package
-  vulnerabilities and to the vulnerable packages.
+  vulnerabilities and the vulnerable packages.
 
 - With the JSON API, you can perform package queries using Package URLs (`purl
   <https://github.com/package-url/purl-spec>`__) or query
   by vulnerability id ("VCID"). You can also query by CPEs and other vulnerability aliases.
-  The API provides paginated index and detail endpoints and includes indexes
+  The API provides a paginated index and detailed endpoints and includes indexes
   of vulnerable CPEs and vulnerable Package URLs.
 
 You can install VulnerableCode locally or use the provided publicly hosted instance,
-or host your own installation. You can contact the VulnerableCode team
+or host your installation. You can contact the VulnerableCode team
 for special needs including commercial support.
 
 
@@ -41,11 +42,11 @@ Why VulnerableCode?
 -------------------
 
 VulnerableCode provides open correlated data and will support curated
-data. Our approach is to prioritize upstream data sources and to merge multiple
+data. Our approach is to prioritize upstream data sources and merge multiple
 vulnerability data sources after comparison and correlation. The vulnerability
 data is keyed by Package URL ensuring quick and accurate lookup with minimal
 friction. We continuously validate and refine the collected data for
-quality, accuracy and consistency using "improver" jobs.
+quality, accuracy, and consistency using "improver" jobs.
 An example is an improver that can validate that a package version reported as
 vulnerable actually exists (some do not exist). Another example is to re-evaluate
 vulnerable version ranges based on the latest releases of a
@@ -70,7 +71,7 @@ address FOSS security issues because:
    due to the usage of `CPEs <https://nvd.nist.gov/products/cpe>`__ to map
    vulnerabilities to existing packages.
 3. CPEs were not designed to map FOSS to vulnerabilities owing to their
-   vendor-product centric semantics. This makes it really hard to answer the
+   vendor-product centric semantics. This makes it hard to answer the
    fundamental questions: "Is package *foo* vulnerable?" and "Is package *foo*
    vulnerable to vulnerability *bar*?"
 
@@ -79,11 +80,11 @@ How does it work?
 
 VulnerableCode independently aggregates many software vulnerability data sources
 and supports data re-creation in a decentralized fashion. These data sources
-(see complete list
+(see the complete list
 `here <https://vulnerablecode.readthedocs.io/en/latest/importers_link.html#importers-link>`__)
 include security advisories published by Linux and BSD distributions,
 application software package managers and package repositories, FOSS projects,
-GitHub and more. Thanks to this approach, the data is focused on specific ecosystems and
+GitHub, and more. Thanks to this approach, the data is focused on specific ecosystems and
 aggregated in a single database that enables querying a richer graph of relations between multiple
 representations of a package. Being specific increases the accuracy and validity
 of the data as the same version of an upstream package across different
@@ -96,9 +97,9 @@ to vulnerability *bar*?" more accurate and easier to interpret.
 
 The primary access to VulnerableCode data is through a REST API, but there
 is also a Web UI for searching and browsing vulnerabilities by package
-or by vulnerability. For the initial releases both access modes are
+or by the vulnerability. For the initial releases both access modes are
 read-only, but our longer-term goal is to enable community curation of
-the data including addition of new packages and vulnerabilities, and
+the data including the addition of new packages and vulnerabilities, and
 reviewing and updating their relationships.
 
 We also plan to mine for vulnerabilities that have not received any

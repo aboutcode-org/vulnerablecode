@@ -7,20 +7,23 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-from vulnerabilities import importers
 from vulnerabilities.improvers import default
-from vulnerabilities.improvers import oval
+from vulnerabilities.improvers import valid_versions
 
 IMPROVERS_REGISTRY = [
     default.DefaultImprover,
-    importers.nginx.NginxBasicImprover,
-    importers.github.GitHubBasicImprover,
-    importers.debian.DebianBasicImprover,
-    importers.gitlab.GitLabBasicImprover,
-    importers.istio.IstioImprover,
-    oval.DebianOvalBasicImprover,
-    oval.UbuntuOvalBasicImprover,
-    importers.apache_httpd.ApacheHTTPDImprover,
+    valid_versions.NginxBasicImprover,
+    valid_versions.ApacheHTTPDImprover,
+    valid_versions.DebianBasicImprover,
+    valid_versions.GitHubBasicImprover,
+    valid_versions.GitLabBasicImprover,
+    valid_versions.NpmImprover,
+    valid_versions.ElixirImprover,
+    valid_versions.ApacheTomcatImprover,
+    valid_versions.ApacheKafkaImprover,
+    valid_versions.IstioImprover,
+    valid_versions.DebianOvalImprover,
+    valid_versions.UbuntuOvalImprover,
 ]
 
 IMPROVERS_REGISTRY = {x.qualified_name: x for x in IMPROVERS_REGISTRY}

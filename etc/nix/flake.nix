@@ -9,12 +9,7 @@
     ref = "20.09";
   };
 
-  inputs.machnix = {
-    type = "github";
-    owner = "DavHau";
-    repo = "mach-nix";
-    ref = "fe5255e6fd8df57e9507b7af82fc59dda9e9ff2b"; # 3.4.0
-  };
+  inputs.machnix.url = "mach-nix/3.5.0";
 
   outputs = { self, nixpkgs, machnix }:
     let
@@ -25,9 +20,9 @@
       requirementsDev =
         builtins.readFile (vulnerablecode-src + "/requirements-dev.txt");
 
-      # Extract version from setup.py.
-      version = builtins.head (builtins.match ''.*version=["']?([^"',]+).*''
-        (builtins.readFile (vulnerablecode-src + "/setup.py")));
+      # Extract version from setup.cfg.
+      version = builtins.head (builtins.match ''.*version = ([^\\s]+).*''
+        (builtins.readFile (vulnerablecode-src + "/setup.cfg")));
 
       # System types to support.
       supportedSystems = [ "x86_64-linux" ];
@@ -53,11 +48,8 @@
           # Python deps. The default version (which is updated with every
           # mach-nix release) is usually insufficient. Use
           # ./get-latest-pypi-deps-db.sh to obtain the data rev & hash.
-          pypiDataRev =
-            "897a7471aa4e83aab21d2c501e00fee3f440e0fe"; # 2022-02-21T08:57:22Z
-          pypiDataSha256 =
-            "03gnaq687gg9afb6i6czw4kzr1gbnzna15lfb26f9nszyfq3iyaj";
-
+          pypiDataRev = "df9e0d20f5510282c5c2b51ab019a7451fd650e2"; # 2023-03-21T09:43:14Z
+          pypiDataSha256 = "151qbskwi1jgkxzdr8kf06n44hc61f2806hif61bf0cr6xhk00yn";
         });
       # This wrapper allows to setup both the production as well as the
       # development Python environments in the same way (albeit having

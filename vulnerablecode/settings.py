@@ -172,13 +172,21 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
 REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {
-    "vulnerable_packages": env.str("ALL_VULNERABLE_PACKAGES_THROTTLING_RATE", default="1/hour"),
-    "bulk_search_packages": env.str("BULK_SEARCH_PACKAGE_THROTTLING_RATE", default="5/hour"),
-    "packages": env.str("PACKAGES_SEARCH_THROTTLING_RATE", default="10/minute"),
-    "vulnerabilities": env.str("VULNERABILITIES_SEARCH_THROTTLING_RATE", default="10/minute"),
-    "aliases": env.str("ALIASES_SEARCH_THROTTLING_RATE", default="5/minute"),
-    "cpes": env.str("CPE_SEARCH_THROTTLING_RATE", default="5/minute"),
-    "bulk_search_cpes": env.str("BULK_SEARCH_CPE_THROTTLING_RATE", default="5/minute"),
+    "vulnerable_packages": env.str(
+        "VULNERABLECODE_ALL_VULNERABLE_PACKAGES_THROTTLING_RATE", default="1/hour"
+    ),
+    "bulk_search_packages": env.str(
+        "VULNERABLECODE_BULK_SEARCH_PACKAGE_THROTTLING_RATE", default="5/hour"
+    ),
+    "packages": env.str("VULNERABLECODE_PACKAGES_SEARCH_THROTTLING_RATE", default="10/minute"),
+    "vulnerabilities": env.str(
+        "VULNERABLECODE_VULNERABILITIES_SEARCH_THROTTLING_RATE", default="10/minute"
+    ),
+    "aliases": env.str("VULNERABLECODE_ALIASES_SEARCH_THROTTLING_RATE", default="5/minute"),
+    "cpes": env.str("VULNERABLECODE_CPE_SEARCH_THROTTLING_RATE", default="5/minute"),
+    "bulk_search_cpes": env.str(
+        "VULNERABLECODE_BULK_SEARCH_CPE_THROTTLING_RATE", default="5/minute"
+    ),
 }
 
 if IS_TESTS:

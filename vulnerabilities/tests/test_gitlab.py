@@ -14,9 +14,9 @@ from unittest import mock
 import pytest
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importers.gitlab import GitLabBasicImprover
 from vulnerabilities.importers.gitlab import parse_gitlab_advisory
 from vulnerabilities.improvers.default import DefaultImprover
+from vulnerabilities.improvers.valid_versions import GitLabBasicImprover
 from vulnerabilities.tests import util_tests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -70,7 +70,7 @@ def valid_versions(pkg_type):
     return valid_versions_by_package_type[pkg_type]
 
 
-@mock.patch("vulnerabilities.importers.gitlab.GitLabBasicImprover.get_package_versions")
+@mock.patch("vulnerabilities.improvers.valid_versions.GitLabBasicImprover.get_package_versions")
 @pytest.mark.parametrize("pkg_type", ["maven", "nuget", "gem", "composer", "pypi", "npm"])
 def test_gitlab_improver(mock_response, pkg_type):
     advisory_file = os.path.join(TEST_DATA, f"{pkg_type}-expected.json")

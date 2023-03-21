@@ -9,17 +9,14 @@
 
 import logging
 import traceback
-from datetime import datetime
 from pathlib import Path
 from typing import Iterable
 from typing import List
-from typing import Mapping
 from typing import Optional
 
 import pytz
 import saneyaml
 from dateutil import parser as dateparser
-from django.db.models.query import QuerySet
 from packageurl import PackageURL
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import VersionRange
@@ -30,19 +27,7 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
-from vulnerabilities.importer import UnMergeablePackageError
-from vulnerabilities.improver import Improver
-from vulnerabilities.improver import Inference
-from vulnerabilities.models import Advisory
-from vulnerabilities.package_managers import VERSION_API_CLASSES_BY_PACKAGE_TYPE
-from vulnerabilities.package_managers import GoproxyVersionAPI
-from vulnerabilities.package_managers import VersionAPI
-from vulnerabilities.package_managers import get_api_package_name
-from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
 from vulnerabilities.utils import build_description
-from vulnerabilities.utils import get_affected_packages_by_patched_package
-from vulnerabilities.utils import nearest_patched_package
-from vulnerabilities.utils import resolve_version_range
 
 logger = logging.getLogger(__name__)
 
@@ -269,100 +254,3 @@ def parse_gitlab_advisory(file):
         date_published=date_published,
         affected_packages=affected_packages,
     )
-
-
-class GitLabBasicImprover(Improver):
-    """
-    Get the nearest fixed_version and then resolve the version range with the help of all valid versions.
-    Generate inference between all the affected packages and the fixed_version that fixes all those affected packages.
-
-    In case of gitlab advisory data we get a list of fixed_versions and a affected_version_range.
-    Since we can not determine which package fixes which range.
-    """
-
-    def __init__(self) -> None:
-        self.versions_fetcher_by_purl: Mapping[str, VersionAPI] = {}
-
-    @property
-    def interesting_advisories(self) -> QuerySet:
-        return Advisory.objects.filter(created_by=GitLabAPIImporter.qualified_name)
-
-    def get_package_versions(
-        self, package_url: PackageURL, until: Optional[datetime] = None
-    ) -> List[str]:
-        """
-        Return a list of `valid_versions` for the `package_url`
-        """
-        api_name = get_api_package_name(purl=package_url)
-        if not api_name:
-            logger.error(f"Could not get versions for {package_url!r}")
-            return []
-        versions_fetcher = self.versions_fetcher_by_purl.get(package_url)
-        if not versions_fetcher:
-            versions_fetcher: VersionAPI = VERSION_API_CLASSES_BY_PACKAGE_TYPE[package_url.type]
-            self.versions_fetcher_by_purl[package_url] = versions_fetcher()
-
-        versions_fetcher = self.versions_fetcher_by_purl[package_url]
-
-        self.versions_fetcher_by_purl[package_url] = versions_fetcher
-        return versions_fetcher.get_until(package_name=api_name, until=until).valid_versions
-
-    def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
-        """
-        Yield Inferences for the given advisory data
-        """
-        if not advisory_data.affected_packages:
-            return iter([])
-        try:
-            purl, affected_version_ranges, _ = AffectedPackage.merge(
-                advisory_data.affected_packages
-            )
-        except UnMergeablePackageError:
-            logger.error(f"Cannot merge with different purls {advisory_data.affected_packages!r}")
-            return iter([])
-
-        pkg_type = purl.type
-        pkg_namespace = purl.namespace
-        pkg_name = purl.name
-        if purl.type == "golang":
-            # Problem with the Golang and Go that they provide full path
-            # FIXME: We need to get the PURL subpath for Go module
-            versions_fetcher = self.versions_fetcher_by_purl.get(purl)
-            if not versions_fetcher:
-                versions_fetcher = GoproxyVersionAPI()
-                self.versions_fetcher_by_purl[purl] = versions_fetcher
-            pkg_name = versions_fetcher.module_name_by_package_name.get(pkg_name, pkg_name)
-
-        valid_versions = self.get_package_versions(
-            package_url=purl, until=advisory_data.date_published
-        )
-        for affected_version_range in affected_version_ranges:
-            aff_vers, unaff_vers = resolve_version_range(
-                affected_version_range=affected_version_range,
-                package_versions=valid_versions,
-                ignorable_versions=[],
-            )
-            affected_purls = [
-                PackageURL(type=pkg_type, namespace=pkg_namespace, name=pkg_name, version=version)
-                for version in aff_vers
-            ]
-
-            unaffected_purls = [
-                PackageURL(type=pkg_type, namespace=pkg_namespace, name=pkg_name, version=version)
-                for version in unaff_vers
-            ]
-
-            affected_packages: List[LegacyAffectedPackage] = nearest_patched_package(
-                vulnerable_packages=affected_purls, resolved_packages=unaffected_purls
-            )
-
-            for (
-                fixed_package,
-                affected_packages,
-            ) in get_affected_packages_by_patched_package(affected_packages).items():
-                yield Inference.from_advisory_data(
-                    advisory_data,  # We are getting all valid versions to get this inference
-                    confidence=100,
-                    affected_purls=affected_packages,
-                    fixed_purl=fixed_package,
-                )

@@ -23,9 +23,11 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers import nginx
+from vulnerabilities.improvers.valid_versions import NginxBasicImprover
 from vulnerabilities.models import Advisory
 from vulnerabilities.package_managers import PackageVersion
 from vulnerabilities.tests import util_tests
+from vulnerabilities.utils import is_vulnerable_nginx_version
 
 ADVISORY_FIELDS_TO_TEST = (
     "unique_content_id",
@@ -50,43 +52,43 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
         fixed_versions = [vcls("1.17.3"), vcls("1.16.1")]
 
         version = vcls("1.9.4")
-        assert not nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+        assert not is_vulnerable_nginx_version(version, affected_version_range, fixed_versions)
 
         version = vcls("1.9.5")
-        assert nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+        assert is_vulnerable_nginx_version(version, affected_version_range, fixed_versions)
 
         version = vcls("1.9.6")
-        assert nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+        assert is_vulnerable_nginx_version(version, affected_version_range, fixed_versions)
 
         version = vcls("1.16.0")
-        assert nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+        assert is_vulnerable_nginx_version(version, affected_version_range, fixed_versions)
 
         version = vcls("1.16.1")
-        assert not nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+        assert not is_vulnerable_nginx_version(version, affected_version_range, fixed_versions)
 
         version = vcls("1.16.2")
-        assert not nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+        assert not is_vulnerable_nginx_version(version, affected_version_range, fixed_versions)
 
         version = vcls("1.16.99")
-        assert not nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+        assert not is_vulnerable_nginx_version(version, affected_version_range, fixed_versions)
 
         version = vcls("1.17.0")
-        assert nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+        assert is_vulnerable_nginx_version(version, affected_version_range, fixed_versions)
 
         version = vcls("1.17.1")
-        assert nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+        assert is_vulnerable_nginx_version(version, affected_version_range, fixed_versions)
 
         version = vcls("1.17.2")
-        assert nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+        assert is_vulnerable_nginx_version(version, affected_version_range, fixed_versions)
 
         version = vcls("1.17.3")
-        assert not nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+        assert not is_vulnerable_nginx_version(version, affected_version_range, fixed_versions)
 
         version = vcls("1.17.4")
-        assert not nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+        assert not is_vulnerable_nginx_version(version, affected_version_range, fixed_versions)
 
         version = vcls("1.18.0")
-        assert not nginx.is_vulnerable(version, affected_version_range, fixed_versions)
+        assert not is_vulnerable_nginx_version(version, affected_version_range, fixed_versions)
 
     def test_parse_advisory_data_from_paragraph(self):
         paragraph = (
@@ -186,7 +188,7 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
     def test_NginxBasicImprover__interesting_advisories(self):
         advisories, importer_class = self.run_import()
 
-        class MockNginxBasicImprover(nginx.NginxBasicImprover):
+        class MockNginxBasicImprover(NginxBasicImprover):
             @property
             def interesting_advisories(self) -> QuerySet:
                 return Advisory.objects.filter(created_by=importer_class.qualified_name)
@@ -213,9 +215,7 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
                 side_effects.append(json.load(f))
         mock_fetcher.side_effect = side_effects
 
-        results = [
-            pv.to_dict() for pv in nginx.NginxBasicImprover().fetch_nginx_version_from_git_tags()
-        ]
+        results = [pv.to_dict() for pv in NginxBasicImprover().fetch_nginx_version_from_git_tags()]
         expected_file = self.get_test_loc("improver/nginx-versions-expected.json", must_exist=False)
         util_tests.check_results_against_json(results, expected_file)
 
@@ -229,7 +229,7 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
             all_versions = [PackageVersion(**vd) for vd in json.load(vf)]
 
         results = []
-        improver = nginx.NginxBasicImprover()
+        improver = NginxBasicImprover()
         for advdata in advisories_data:
             advisory_data = AdvisoryData.from_dict(advdata)
 

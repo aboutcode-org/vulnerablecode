@@ -46,3 +46,20 @@ VulnerableCode first checks the file at `/etc/vulnerablecode/.env` and if not
 present, it will attempt to load a `.env` file from the checkout directory.
 
 The file at `/etc/vulnerablecode/.env` has precedence.
+
+
+Throttling rate configuration
+-------------------------------
+
+The default throttling settings are defined in ``settings.py``.
+
+To override the default settings, add env variables in ``.env`` file
+define the settings there. For example::
+
+    VULNERABLECODE_ALL_VULNERABLE_PACKAGES_THROTTLING_RATE = '1000/hour'
+    VULNERABLECODE_BULK_SEARCH_PACKAGE_THROTTLING_RATE = '10/minute'
+    VULNERABLECODE_PACKAGES_SEARCH_THROTTLING_RATE = '1000/second'
+    VULNERABLECODE_VULNERABILITIES_SEARCH_THROTTLING_RATE = '1000/hour'
+    VULNERABLECODE_ALIASES_SEARCH_THROTTLING_RATE = '1000/hour'
+    VULNERABLECODE_CPE_SEARCH_THROTTLING_RATE = '10/minute'
+    VULNERABLECODE_BULK_SEARCH_CPE_THROTTLING_RATE = '10/minute'

@@ -172,13 +172,21 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
 REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {
-    "vulnerable_packages": "1/hour",
-    "bulk_search_packages": "5/hour",
-    "packages": "10/minute",
-    "vulnerabilities": "10/minute",
-    "aliases": "5/minute",
-    "cpes": "5/minute",
-    "bulk_search_cpes": "5/hour",
+    "vulnerable_packages": env.str(
+        "VULNERABLECODE_ALL_VULNERABLE_PACKAGES_THROTTLING_RATE", default="1/hour"
+    ),
+    "bulk_search_packages": env.str(
+        "VULNERABLECODE_BULK_SEARCH_PACKAGE_THROTTLING_RATE", default="5/hour"
+    ),
+    "packages": env.str("VULNERABLECODE_PACKAGES_SEARCH_THROTTLING_RATE", default="10/minute"),
+    "vulnerabilities": env.str(
+        "VULNERABLECODE_VULNERABILITIES_SEARCH_THROTTLING_RATE", default="10/minute"
+    ),
+    "aliases": env.str("VULNERABLECODE_ALIASES_SEARCH_THROTTLING_RATE", default="5/minute"),
+    "cpes": env.str("VULNERABLECODE_CPE_SEARCH_THROTTLING_RATE", default="5/minute"),
+    "bulk_search_cpes": env.str(
+        "VULNERABLECODE_BULK_SEARCH_CPE_THROTTLING_RATE", default="5/minute"
+    ),
 }
 
 if IS_TESTS:

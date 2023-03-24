@@ -304,22 +304,22 @@ def prettyprint(purl, datasources, pagination, no_threading):
 
 def group_by_cve(vulnerabilities):
     grouped_by_cve = {}
-    nocve = []
-    noadvisory = []
+    no_cve = []
+    no_advisory = []
     for datasource, advisories in vulnerabilities.items():
         if not advisories:
-            noadvisory.append([datasource.upper(), "", "", ""])
+            no_advisory.append([datasource.upper(), "", "", ""])
 
         for advisory in advisories:
             cve = next((x for x in advisory.aliases if x.startswith("CVE")), None)
             if not cve:
-                nocve.append(formatted_row(datasource, advisory))
+                no_cve.append(formatted_row(datasource, advisory))
                 continue
             if cve not in grouped_by_cve:
                 grouped_by_cve[cve] = []
             grouped_by_cve[cve].append(formatted_row(datasource, advisory))
-    grouped_by_cve["NOCVE"] = nocve
-    grouped_by_cve["NOADVISORY"] = noadvisory
+    grouped_by_cve["no_cve"] = no_cve
+    grouped_by_cve["no_advisory"] = no_advisory
     return grouped_by_cve
 
 

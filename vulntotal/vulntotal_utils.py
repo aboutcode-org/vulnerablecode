@@ -98,15 +98,15 @@ def github_constraints_satisfied(github_constrain, version):
     return True
 
 
-def snky_constraints_satisfied(snyk_constrain, version):
+def snyk_constraints_satisfied(snyk_constraint, version):
     """
     Return True or False depending on whether the given version satisfies the snyk constraint
     For example:
-    >>> assert snky_constraints_satisfied(">=4.0.0, <4.0.10.16", "4.0.10.15") == True
-    >>> assert snky_constraints_satisfied(" >=4.1.0, <4.4.15.7", "4.0.10.15") == False
-    >>> assert snky_constraints_satisfied("[3.0.0,3.1.25)", "3.0.2") == True
+    >>> assert snyk_constraints_satisfied(">=4.0.0, <4.0.10.16", "4.0.10.15") == True
+    >>> assert snyk_constraints_satisfied(" >=4.1.0, <4.4.15.7", "4.0.10.15") == False
+    >>> assert snyk_constraints_satisfied("[3.0.0,3.1.25)", "3.0.2") == True
     """
-    snyk_constraints = snyk_constrain.strip().replace(" ", "")
+    snyk_constraints = snyk_constraint.strip().replace(" ", "")
     constraints = snyk_constraints.split(",")
     for constraint in constraints:
         snyk_comparator, snyk_version = parse_constraint(constraint)

@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
-from vulntotal.vulntotal_utils import snky_constraints_satisfied
+from vulntotal.vulntotal_utils import snyk_constraints_satisfied
 
 logger = logging.getLogger(__name__)
 
@@ -198,7 +198,7 @@ def parse_html_advisory(advisory_html, snyk_id, affected) -> VendorData:
 
 
 def is_purl_in_affected(version, affected):
-    return any(snky_constraints_satisfied(affected_range, version) for affected_range in affected)
+    return any(snyk_constraints_satisfied(affected_range, version) for affected_range in affected)
 
 
 def generate_advisory_payload(snyk_id):

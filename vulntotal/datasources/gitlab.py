@@ -30,19 +30,23 @@ class GitlabDataSource(DataSource):
     license_url = "TODO"
 
     def datasource_advisory(self, purl) -> Iterable[VendorData]:
+        """
+        Fetches advisories for a given purl from the GitLab API.
+
+        :param purl: A PackageURL object representing the package to query.
+        :return: An iterable of VendorData objects containing the advisory information.
+        """
         package_slug = get_package_slug(purl)
         location = download_subtree(package_slug, speculative_execution=True)
-        if not location:
-            clear_download(location)
-            path = self.supported_ecosystem()[purl.type]
-            casesensitive_package_slug = get_casesensitive_slug(path, package_slug)
-            location = download_subtree(casesensitive_package_slug)
         if location:
             interesting_advisories = parse_interesting_advisories(
                 location, purl.version, delete_download=True
             )
             return interesting_advisories
         clear_download(location)
+        path = self.supported_ecosystem()[purl.type]
+        case_sensitive_package_slug = get_case_sensitive_slug(path, package_slug)
+        location = download_subtree(case_sensitive_package_slug)
 
     @classmethod
     def supported_ecosystem(cls):
@@ -59,6 +63,12 @@ class GitlabDataSource(DataSource):
 
 
 def get_package_slug(purl):
+    """
+    Constructs a package slug from a given purl.
+
+    :param purl: A PackageURL object representing the package to query.
+    :return: A string representing the package slug, or None if the purl type is not supported.
+    """
     supported_ecosystem = GitlabDataSource.supported_ecosystem()
 
     if purl.type not in supported_ecosystem:
@@ -74,22 +84,35 @@ def get_package_slug(purl):
 
 
 def download_subtree(package_slug: str, speculative_execution=False):
+    """
+    Downloads and extracts a tar file from a given package slug.
+
+    :param package_slug: A string representing the package slug to query.
+    :param speculative_execution: A boolean indicating whether to log errors or not.
+    :return: A Path object representing the extracted location, or None if an error occurs.
+    """
     url = f"https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/archive/master/gemnasium-db-master.tar.gz?path={package_slug}"
     response = fetch(url)
-    if os.path.getsize(response.location) > 0:
-        extracted_location = Path(response.location).parent.joinpath(
-            "temp_vulntotal_gitlab_datasource"
-        )
-        with tarfile.open(response.location, "r") as file_obj:
-            file_obj.extractall(extracted_location)
+    with contextlib.suppress(FileNotFoundError):
+        if os.path.getsize(response.location) > 0:
+            extracted_location = Path(response.location).parent.joinpath(
+                "temp_vulntotal_gitlab_datasource"
+            )
+            with tarfile.open(response.location, "r") as file_obj:
+                file_obj.extractall(extracted_location)
+            os.remove(response.location)
+            return extracted_location
+        if speculative_execution is False:
+            logger.error(f"{package_slug} doesn't exist")
         os.remove(response.location)
-        return extracted_location
-    if not speculative_execution:
-        logger.error(f"{package_slug} doesn't exist")
-    os.remove(response.location)
 
 
 def clear_download(location):
+    """
+    Deletes a directory and its contents.
+
+    :param location: A Path object representing the directory to delete.
+    """
     if location:
         shutil.rmtree(location)
 
@@ -131,15 +154,15 @@ def get_casesensitive_slug(path, package_slug):
             } """,
         }
     ]
-    url = "https://gitlab.com/api/graphql"
-    hasnext = True
+    url = 'https://gitlab.com/api/graphql'
+    has_next = True
 
-    while hasnext:
+    while has_next:
         response = requests.post(url, json=payload).json()
-        paginated_tree = response[0]["data"]["project"]["repository"]["paginatedTree"]
+        paginated_tree = response[0]['data']['project']['repository']['paginatedTree']
 
-        for slug in paginated_tree["nodes"][0]["trees"]["nodes"]:
-            slug_flatpath = slug["flatPath"]
+        for slug in paginated_tree['nodes'][0]['trees']['nodes']:
+            slug_flatpath = slug['flatPath']
             if slug_flatpath.lower() == package_slug.lower():
                 return slug_flatpath
 
@@ -147,23 +170,31 @@ def get_casesensitive_slug(path, package_slug):
             if package_slug.lower().startswith(slug_flatpath.lower()):
                 return get_gitlab_style_slug(slug_flatpath, package_slug)
 
-        payload[0]["variables"]["nextPageCursor"] = paginated_tree["pageInfo"]["endCursor"]
-        hasnext = paginated_tree["pageInfo"]["hasNextPage"]
+        payload[0]['variables']['nextPageCursor'] = paginated_tree['pageInfo']['endCursor']
+        has_next = paginated_tree['pageInfo']['hasNextPage']
 
 
 def parse_interesting_advisories(location, version, delete_download=False) -> Iterable[VendorData]:
+    """
+    Parses advisories from YAML files in a given location that match a given version.
+
+    :param location: A Path object representing the location of the YAML files.
+    :param version: A string representing the version to check against the affected range.
+    :param delete_download: A boolean indicating whether to delete the downloaded files after parsing.
+    :return: An iterable of VendorData objects containing the advisory information.
+    """
     path = Path(location)
-    glob = "**/*.yml"
-    files = (p for p in path.glob(glob) if p.is_file())
+    pattern = '**/*.yml'
+    files = [p for p in path.glob(pattern) if p.is_file()]
     for file in sorted(files):
         with open(file) as f:
             gitlab_advisory = saneyaml.load(f)
-        affected_range = gitlab_advisory["affected_range"]
+        affected_range = gitlab_advisory['affected_range']
         if gitlab_constraints_satisfied(affected_range, version):
             yield VendorData(
-                aliases=gitlab_advisory["identifiers"],
+                aliases=gitlab_advisory['identifiers'],
                 affected_versions=[affected_range],
-                fixed_versions=gitlab_advisory["fixed_versions"],
+                fixed_versions=gitlab_advisory['fixed_versions'],
             )
     if delete_download:
         clear_download(location)

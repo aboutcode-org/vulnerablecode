@@ -25,12 +25,13 @@ class DepsDataSource(DataSource):
 
     def fetch_json_response(self, url):
         response = requests.get(url)
-        if not response.status_code == 200 or response.text == "Not Found":
+        if response.status_code != 200 or response.text == "Not Found":
             logger.error(f"Error while fetching {url}")
             return
         return response.json()
 
     def datasource_advisory(self, purl) -> Iterable[VendorData]:
+        """Fetch and parse advisories from a given purl."""
         payload = generate_meta_payload(purl)
         response = self.fetch_json_response(payload)
         if response:
@@ -57,6 +58,7 @@ class DepsDataSource(DataSource):
 
 
 def parse_advisory(advisory) -> Iterable[VendorData]:
+    """Parse an advisory into a VendorData object."""
     package = advisory["packages"][0]
     affected_versions = [event["version"] for event in package["versionsAffected"]]
     fixed_versions = [event["version"] for event in package["versionsUnaffected"]]
@@ -68,6 +70,7 @@ def parse_advisory(advisory) -> Iterable[VendorData]:
 
 
 def parse_advisories_from_meta(advisories_metadata):
+    """Parse advisories from a given metadata."""
     advisories = []
     dependencies = advisories_metadata.get("dependencies") or []
     for dependency in dependencies:
@@ -82,6 +85,7 @@ def generate_advisory_payload(advisory_meta):
 
 
 def generate_meta_payload(purl):
+    """Generate a payload for fetching advisories metadata from a given purl."""
     url_advisories_meta = "https://deps.dev/_/s/{ecosystem}/p/{package}/v/{version}/dependencies"
     supported_ecosystem = DepsDataSource.supported_ecosystem()
     if purl.type in supported_ecosystem:

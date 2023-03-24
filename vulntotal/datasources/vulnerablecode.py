@@ -30,28 +30,46 @@ class VulnerableCodeDataSource(DataSource):
     vc_purl_search_api_path = "api/packages/bulk_search/"
 
     def fetch_post_json(self, payload):
+        """
+        Fetches JSON data from the VulnerableCode API using a POST request with a given payload.
+
+        :param payload: A dictionary representing the data to send in the request body.
+        :return: A JSON object containing the response data, or None if an error occurs.
+        """
         url = urljoin(self.global_instance, self.vc_purl_search_api_path)
         response = fetch_vulnerablecode_query(url=url, payload=payload)
-        if not response.status_code == 200:
+        if response.status_code != 200:
             logger.error(f"Error while fetching {url}")
             return
         return response.json()
 
     def fetch_get_json(self, url):
+        """
+        Fetches JSON data from a given URL using the VulnerableCode API.
+
+        :param url: A string representing the URL to query.
+        :return: A JSON object containing the response data, or None if an error occurs.
+        """
         response = fetch_vulnerablecode_query(url=url, payload=None)
-        if not response.status_code == 200:
+        if response.status_code != 200:
             logger.error(f"Error while fetching {url}")
             return
         return response.json()
 
     def datasource_advisory(self, purl) -> Iterable[VendorData]:
-        if purl.type not in self.supported_ecosystem() or not purl.version:
+        """
+        Fetches advisories for a given purl from the VulnerableCode API.
+
+        :param purl: A PackageURL object representing the package to query.
+        :return: An iterable of VendorData objects containing the advisory information.
+        """
+        if purl.type not in self.supported_ecosystem() or purl.version is None:
             return
-        metadata_advisories = self.fetch_post_json({"purls": [str(purl)]})
+        metadata_advisories = self.fetch_post_json({'purls': [str(purl)]})
         self._raw_dump.append(metadata_advisories)
-        if metadata_advisories and "affected_by_vulnerabilities" in metadata_advisories[0]:
-            for advisory in metadata_advisories[0]["affected_by_vulnerabilities"]:
-                fetched_advisory = self.fetch_get_json(advisory["url"])
+        if metadata_advisories and 'affected_by_vulnerabilities' in metadata_advisories[0]:
+            for advisory in metadata_advisories[0]['affected_by_vulnerabilities']:
+                fetched_advisory = self.fetch_get_json(advisory['url'])
                 self._raw_dump.append(fetched_advisory)
                 yield parse_advisory(fetched_advisory)
 
@@ -75,15 +93,17 @@ class VulnerableCodeDataSource(DataSource):
 
 
 def parse_advisory(fetched_advisory) -> VendorData:
-    aliases = [aliase["alias"] for aliase in fetched_advisory["aliases"]]
+    aliases = [alias['alias'] for alias in fetched_advisory['aliases']]
     affected_versions = []
     fixed_versions = []
-    for instance in fetched_advisory["affected_packages"]:
-        affected_versions.append(PackageURL.from_string(instance["purl"]).version)
-    for instance in fetched_advisory["fixed_packages"]:
-        fixed_versions.append(PackageURL.from_string(instance["purl"]).version)
+    for instance in fetched_advisory['affected_packages']:
+        affected_versions.append(PackageURL.from_string(instance['purl']).version)
+    for instance in fetched_advisory['fixed_packages']:
+        fixed_versions.append(PackageURL.from_string(instance['purl']).version)
     return VendorData(
-        aliases=aliases, affected_versions=affected_versions, fixed_versions=fixed_versions
+        aliases=aliases,
+        affected_versions=affected_versions,
+        fixed_versions=fixed_versions
     )
 
 
@@ -96,19 +116,19 @@ def fetch_vulnerablecode_query(url: str, payload: dict):
     Requires VCIO API key in .env file
     For example::
 
-              VCIO_TOKEN="OJ78Os2IPfM80hqVT2ek+1QnrTKvsX1HdOMABq3pmQd"
+              VCIO_TOKEN='OJ78Os2IPfM80hqVT2ek+1QnrTKvsX1HdOMABq3pmQd'
     """
+
     load_dotenv()
-    vcio_token = os.environ.get("VCIO_TOKEN", None)
-    if not vcio_token:
-        msg = "Cannot call VulnerableCode API without a token set in the VCIO_TOKEN environment variable."
+    vcio_token = os.environ.get('VCIO_TOKEN', None)
+    if vcio_token is None:
+        msg = 'Cannot call VulnerableCode API without a token set in the VCIO_TOKEN environment variable.'
         raise VCIOTokenError(msg)
 
-    response = (
-        requests.post(url, headers={"Authorization": f"Token {vcio_token}"}, json=payload)
-        if payload is not None
-        else requests.get(url, headers={"Authorization": f"Token {vcio_token}"})
-    )
+    if payload is not None:
+        response = requests.post(url, headers={'Authorization': f'Token {vcio_token}'}, json=payload)
+    else:
+        response = requests.get(url, headers={'Authorization': f'Token {vcio_token}'})
 
     if response.text.startswith('{"detail":'):
         raise VCIOTokenError(f"{response.json().get('detail')}")

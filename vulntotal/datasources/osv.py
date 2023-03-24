@@ -29,8 +29,10 @@ class OSVDataSource(DataSource):
         """Fetch JSON advisory from OSV API for a given package payload"""
 
         response = requests.post(self.url, data=str(payload))
-        if not response.status_code == 200:
-            logger.error(f"Error while fetching {payload}: {response.status_code}")
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            logger.error(f'Error while fetching {payload}: {e}')
             return
         return response.json()
 
@@ -67,28 +69,26 @@ def parse_advisory(response) -> Iterable[VendorData]:
     Parse response from OSV API and yield VendorData
     """
 
-    for vuln in response.get("vulns") or []:
+    for vuln in response.get('vulns') or []:
         aliases = []
         affected_versions = []
         fixed = []
 
-        aliases.extend(vuln.get("aliases") or [])
-        vuln_id = vuln.get("id")
+        aliases.extend(vuln.get('aliases') or [])
+        vuln_id = vuln.get('id')
         aliases.append(vuln_id) if vuln_id else None
 
         try:
-            affected_versions.extend(get_item(vuln, "affected", 0, "versions") or [])
-        except:
-            pass
-
+            affected_versions.extend(get_item(vuln, 'affected', 0, 'versions') or [])
+        except KeyError as e:
+            logger.error(f'Error while parsing affected versions: {e}')
+        
         try:
-            for event in get_item(vuln, "affected", 0, "ranges", 0, "events") or []:
-                affected_versions.append(event.get("introduced")) if event.get(
-                    "introduced"
-                ) else None
-                fixed.append(event.get("fixed")) if event.get("fixed") else None
-        except:
-            pass
+            events = get_item(vuln, 'affected', 0, 'ranges', 0, 'events') or []
+            affected_versions.extend([event.get('introduced') for event in events if event.get('introduced')])
+            fixed.extend([event.get('fixed') for event in events if event.get('fixed')])
+        except KeyError as e:
+            logger.error(f'Error while parsing events: {e}')
 
         yield VendorData(
             aliases=sorted(list(set(aliases))),
@@ -102,44 +102,44 @@ def generate_payload(purl):
 
     supported_ecosystem = OSVDataSource.supported_ecosystem()
     payload = {}
-    payload["version"] = purl.version
-    package = payload["package"] = {}
+    payload['version'] = purl.version
+    package = payload['package'] = {}
 
     purl_type = purl.type
     purl_namespace = purl.namespace
 
     if purl_type in supported_ecosystem:
-        package["ecosystem"] = supported_ecosystem[purl_type]
+        package['ecosystem'] = supported_ecosystem[purl_type]
 
-    if purl_type == "maven":
+    if purl_type == 'maven':
         if not purl_namespace:
-            logger.error(f"Invalid Maven PURL {str(purl)}")
+            logger.error(f'Invalid Maven PURL {str(purl)}')
             return
-        package["name"] = f"{purl.namespace}:{purl.name}"
+        package['name'] = f'{purl.namespace}:{purl.name}'
 
-    elif purl_type == "packagist":
+    elif purl_type == 'packagist':
         if not purl_namespace:
-            logger.error(f"Invalid Packagist PURL {str(purl)}")
+            logger.error(f'Invalid Packagist PURL {str(purl)}')
             return
-        package["name"] = f"{purl.namespace}/{purl.name}"
+        package['name'] = f'{purl.namespace}/{purl.name}'
 
-    elif purl_type == "linux":
-        if purl.name not in ("kernel", "Kernel"):
-            logger.error(f"Invalid Linux PURL {str(purl)}")
+    elif purl_type == 'linux':
+        if purl.name not in ('kernel', 'Kernel'):
+            logger.error(f'Invalid Linux PURL {str(purl)}')
             return
-        package["name"] = "Kernel"
+        package['name'] = 'Kernel'
 
-    elif purl_type == "nuget":
+    elif purl_type == 'nuget':
         nuget_package = search_closest_nuget_package_name(purl.name)
         if not nuget_package:
-            logger.error(f"Invalid NuGet PURL {str(purl)}")
+            logger.error(f'Invalid NuGet PURL {str(purl)}')
             return
-        package["name"] = nuget_package
+        package['name'] = nuget_package
 
-    elif purl_type == "golang" and purl_namespace:
-        package["name"] = f"{purl.namespace}/{purl.name}"
+    elif purl_type == 'golang' and purl_namespace:
+        package['name'] = f'{purl.namespace}/{purl.name}'
 
     else:
-        package["name"] = purl.name
+        package['name'] = purl.name
 
     return payload

@@ -151,15 +151,15 @@ def get_casesensitive_slug(path, package_slug):
             } """,
         }
     ]
-    url = 'https://gitlab.com/api/graphql'
+    url = "https://gitlab.com/api/graphql"
     has_next = True
 
     while has_next:
         response = requests.post(url, json=payload).json()
-        paginated_tree = response[0]['data']['project']['repository']['paginatedTree']
+        paginated_tree = response[0]["data"]["project"]["repository"]["paginatedTree"]
 
-        for slug in paginated_tree['nodes'][0]['trees']['nodes']:
-            slug_flatpath = slug['flatPath']
+        for slug in paginated_tree["nodes"][0]["trees"]["nodes"]:
+            slug_flatpath = slug["flatPath"]
             if slug_flatpath.lower() == package_slug.lower():
                 return slug_flatpath
 
@@ -167,8 +167,8 @@ def get_casesensitive_slug(path, package_slug):
             if package_slug.lower().startswith(slug_flatpath.lower()):
                 return get_gitlab_style_slug(slug_flatpath, package_slug)
 
-        payload[0]['variables']['nextPageCursor'] = paginated_tree['pageInfo']['endCursor']
-        has_next = paginated_tree['pageInfo']['hasNextPage']
+        payload[0]["variables"]["nextPageCursor"] = paginated_tree["pageInfo"]["endCursor"]
+        has_next = paginated_tree["pageInfo"]["hasNextPage"]
 
 
 def parse_interesting_advisories(location, version, delete_download=False) -> Iterable[VendorData]:
@@ -180,17 +180,17 @@ def parse_interesting_advisories(location, version, delete_download=False) -> It
     :return: An iterable of VendorData objects containing the advisory information.
     """
     path = Path(location)
-    pattern = '**/*.yml'
+    pattern = "**/*.yml"
     files = [p for p in path.glob(pattern) if p.is_file()]
     for file in sorted(files):
         with open(file) as f:
             gitlab_advisory = saneyaml.load(f)
-        affected_range = gitlab_advisory['affected_range']
+        affected_range = gitlab_advisory["affected_range"]
         if gitlab_constraints_satisfied(affected_range, version):
             yield VendorData(
-                aliases=gitlab_advisory['identifiers'],
+                aliases=gitlab_advisory["identifiers"],
                 affected_versions=[affected_range],
-                fixed_versions=gitlab_advisory['fixed_versions'],
+                fixed_versions=gitlab_advisory["fixed_versions"],
             )
     if delete_download:
         clear_download(location)

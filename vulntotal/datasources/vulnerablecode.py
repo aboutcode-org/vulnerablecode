@@ -65,11 +65,11 @@ class VulnerableCodeDataSource(DataSource):
         """
         if purl.type not in self.supported_ecosystem() or purl.version is None:
             return
-        metadata_advisories = self.fetch_post_json({'purls': [str(purl)]})
+        metadata_advisories = self.fetch_post_json({"purls": [str(purl)]})
         self._raw_dump.append(metadata_advisories)
-        if metadata_advisories and 'affected_by_vulnerabilities' in metadata_advisories[0]:
-            for advisory in metadata_advisories[0]['affected_by_vulnerabilities']:
-                fetched_advisory = self.fetch_get_json(advisory['url'])
+        if metadata_advisories and "affected_by_vulnerabilities" in metadata_advisories[0]:
+            for advisory in metadata_advisories[0]["affected_by_vulnerabilities"]:
+                fetched_advisory = self.fetch_get_json(advisory["url"])
                 self._raw_dump.append(fetched_advisory)
                 yield parse_advisory(fetched_advisory)
 
@@ -93,17 +93,15 @@ class VulnerableCodeDataSource(DataSource):
 
 
 def parse_advisory(fetched_advisory) -> VendorData:
-    aliases = [alias['alias'] for alias in fetched_advisory['aliases']]
+    aliases = [alias["alias"] for alias in fetched_advisory["aliases"]]
     affected_versions = []
     fixed_versions = []
-    for instance in fetched_advisory['affected_packages']:
-        affected_versions.append(PackageURL.from_string(instance['purl']).version)
-    for instance in fetched_advisory['fixed_packages']:
-        fixed_versions.append(PackageURL.from_string(instance['purl']).version)
+    for instance in fetched_advisory["affected_packages"]:
+        affected_versions.append(PackageURL.from_string(instance["purl"]).version)
+    for instance in fetched_advisory["fixed_packages"]:
+        fixed_versions.append(PackageURL.from_string(instance["purl"]).version)
     return VendorData(
-        aliases=aliases,
-        affected_versions=affected_versions,
-        fixed_versions=fixed_versions
+        aliases=aliases, affected_versions=affected_versions, fixed_versions=fixed_versions
     )
 
 
@@ -120,15 +118,17 @@ def fetch_vulnerablecode_query(url: str, payload: dict):
     """
 
     load_dotenv()
-    vcio_token = os.environ.get('VCIO_TOKEN', None)
+    vcio_token = os.environ.get("VCIO_TOKEN", None)
     if vcio_token is None:
-        msg = 'Cannot call VulnerableCode API without a token set in the VCIO_TOKEN environment variable.'
+        msg = "Cannot call VulnerableCode API without a token set in the VCIO_TOKEN environment variable."
         raise VCIOTokenError(msg)
 
     if payload is not None:
-        response = requests.post(url, headers={'Authorization': f'Token {vcio_token}'}, json=payload)
+        response = requests.post(
+            url, headers={"Authorization": f"Token {vcio_token}"}, json=payload
+        )
     else:
-        response = requests.get(url, headers={'Authorization': f'Token {vcio_token}'})
+        response = requests.get(url, headers={"Authorization": f"Token {vcio_token}"})
 
     if response.text.startswith('{"detail":'):
         raise VCIOTokenError(f"{response.json().get('detail')}")

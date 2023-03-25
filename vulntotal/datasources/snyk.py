@@ -39,9 +39,9 @@ class SnykDataSource(DataSource):
         try:
             response.raise_for_status()
         except requests.exceptions.HTTPError as e:
-            logger.error(f'Error while fetching {url}: {e}')
+            logger.error(f"Error while fetching {url}: {e}")
             return
-        if response.headers['content-type'] == 'application/json, charset=utf-8':
+        if response.headers["content-type"] == "application/json, charset=utf-8":
             return response.json()
         return response.text
 
@@ -60,7 +60,7 @@ class SnykDataSource(DataSource):
         if package_advisories_list:
             advisories = extract_html_json_advisories(package_advisories_list)
             for snyk_id, affected in advisories.items():
-                if '*' in affected or is_purl_in_affected(purl.version, affected):
+                if "*" in affected or is_purl_in_affected(purl.version, affected):
                     advisory_payload = generate_advisory_payload(snyk_id)
                     advisory_html = self.fetch(advisory_payload)
                     self._raw_dump.append(advisory_html)
@@ -94,33 +94,33 @@ def generate_package_advisory_url(purl):
     Returns:
         A string containing the URL or None if the package is not supported.
     """
-    url_package_advisories = 'https://security.snyk.io/package/{ecosystem}/{package}'
+    url_package_advisories = "https://security.snyk.io/package/{ecosystem}/{package}"
 
     # Pseudo API, unfortunately gives only 30 vulnerability per package, but this is the best we have for unmanaged packages
     url_unmanaged_package_advisories = (
-        'https://security.snyk.io/api/listing?search={package}&type=unmanaged'
+        "https://security.snyk.io/api/listing?search={package}&type=unmanaged"
     )
     supported_ecosystem = SnykDataSource.supported_ecosystem()
 
-    if purl.type == 'unmanaged' or purl.type not in supported_ecosystem:
+    if purl.type == "unmanaged" or purl.type not in supported_ecosystem:
         return url_unmanaged_package_advisories.format(
-            package=purl.name if not purl.namespace else f'{purl.namespace}/{purl.name}',
+            package=purl.name if not purl.namespace else f"{purl.namespace}/{purl.name}",
         )
 
     purl_name = purl.name
-    if purl.type == 'maven':
+    if purl.type == "maven":
         if not purl.namespace:
-            logger.error(f'Invalid Maven PURL {str(purl)}')
+            logger.error(f"Invalid Maven PURL {str(purl)}")
             return
-        purl_name = quote(f'{purl.namespace}:{purl.name}', safe='')
+        purl_name = quote(f"{purl.namespace}:{purl.name}", safe="")
 
-    elif purl.type in ('golang', 'composer'):
+    elif purl.type in ("golang", "composer"):
         if purl.namespace:
-            purl_name = quote(f'{purl.namespace}/{purl.name}', safe='')
+            purl_name = quote(f"{purl.namespace}/{purl.name}", safe="")
 
-    elif purl.type == 'linux':
-        distro = purl.qualifiers['distro']
-        purl_name = f'{distro}/{purl.name}'
+    elif purl.type == "linux":
+        distro = purl.qualifiers["distro"]
+        purl_name = f"{distro}/{purl.name}"
 
     return url_package_advisories.format(
         ecosystem=supported_ecosystem[purl.type],
@@ -174,21 +174,21 @@ def parse_html_advisory(advisory_html, snyk_id, affected) -> VendorData:
     aliases = []
     fixed_versions = []
 
-    advisory_soup = BeautifulSoup(advisory_html, 'html.parser')
-    cve_span = advisory_soup.find('span', class_='cve')
+    advisory_soup = BeautifulSoup(advisory_html, "html.parser")
+    cve_span = advisory_soup.find("span", class_="cve")
     if cve_span:
-        cve_anchor = cve_span.find('a', class_='vue--anchor')
-        aliases.append(cve_anchor['id'])
+        cve_anchor = cve_span.find("a", class_="vue--anchor")
+        aliases.append(cve_anchor["id"])
 
     how_to_fix = advisory_soup.find(
-        'div', class_='vue--block vuln-page__instruction-block vue--block--instruction'
+        "div", class_="vue--block vuln-page__instruction-block vue--block--instruction"
     )
     if how_to_fix:
-        fixed = how_to_fix.find('p').text.split(' ')
-        if 'Upgrade' in fixed:
-            lower = fixed.index('version') if 'version' in fixed else fixed.index('versions')
-            upper = fixed.index('or')
-            fixed_versions = [ver.strip(',') for ver in fixed[lower + 1 : upper]]
+        fixed = how_to_fix.find("p").text.split(" ")
+        if "Upgrade" in fixed:
+            lower = fixed.index("version") if "version" in fixed else fixed.index("versions")
+            upper = fixed.index("or")
+            fixed_versions = [ver.strip(",") for ver in fixed[lower + 1 : upper]]
     aliases.append(snyk_id)
     return VendorData(
         aliases=aliases,

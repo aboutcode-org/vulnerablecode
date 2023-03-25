@@ -112,9 +112,8 @@ class VCIOTokenError(Exception):
 def fetch_vulnerablecode_query(url: str, payload: dict):
     """
     Requires VCIO API key in .env file
-    For example::
-
-              VCIO_TOKEN='OJ78Os2IPfM80hqVT2ek+1QnrTKvsX1HdOMABq3pmQd'
+    For example:
+        VCIO_TOKEN='OJ78Os2IPfM80hqVT2ek+1QnrTKvsX1HdOMABq3pmQd'
     """
 
     load_dotenv()
@@ -123,12 +122,11 @@ def fetch_vulnerablecode_query(url: str, payload: dict):
         msg = "Cannot call VulnerableCode API without a token set in the VCIO_TOKEN environment variable."
         raise VCIOTokenError(msg)
 
-    if payload is not None:
-        response = requests.post(
-            url, headers={"Authorization": f"Token {vcio_token}"}, json=payload
-        )
-    else:
-        response = requests.get(url, headers={"Authorization": f"Token {vcio_token}"})
+    response = (
+        requests.post(url, headers={"Authorization": f"Token {vcio_token}"}, json=payload)
+        if payload is not None
+        else requests.get(url, headers={"Authorization": f"Token {vcio_token}"})
+    )
 
     if response.text.startswith('{"detail":'):
         raise VCIOTokenError(f"{response.json().get('detail')}")

@@ -318,8 +318,8 @@ def group_by_cve(vulnerabilities):
             if cve not in grouped_by_cve:
                 grouped_by_cve[cve] = []
             grouped_by_cve[cve].append(formatted_row(datasource, advisory))
-    grouped_by_cve["no_cve"] = no_cve
-    grouped_by_cve["no_advisory"] = no_advisory
+    grouped_by_cve["NOCVE"] = no_cve
+    grouped_by_cve["NOADVISORY"] = no_advisory
     return grouped_by_cve
 
 

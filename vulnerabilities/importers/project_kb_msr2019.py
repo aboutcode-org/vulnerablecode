@@ -10,6 +10,7 @@
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
+from vulnerabilities.utils import fetch_and_read_from_csv
 from vulnerabilities.utils import is_cve
 
 # Reading CSV file from  a url using `requests` is bit too complicated.

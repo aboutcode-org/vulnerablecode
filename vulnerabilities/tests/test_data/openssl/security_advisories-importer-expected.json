@@ -1,6 +1,6 @@
 [
   {
-    "unique_content_id": "3b5d1987c5d35dd975de6517663fbf2f",
+    "unique_content_id": "ce9abea7bff38ea109dd6eea87f19f0c",
     "aliases": [
       "VC-OPENSSL-20141015"
     ],
@@ -16,7 +16,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zc",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb"
       },
       {
         "package": {
@@ -2475,7 +2475,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "e5eb2917af2b324b45323e80a932eaac",
+    "unique_content_id": "2707f5f7fd3a6b7beae291dfc6f90f2c",
     "aliases": [
       "CVE-2012-2110",
       "VC-OPENSSL-20120419-CVE-2012-2110"
@@ -2491,7 +2491,7 @@
           "namespace": null,
           "qualifiers": null
         },
-        "fixed_version": "0.9.8",
+        "fixed_version": "0.9.8v",
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u"
       },
       {
@@ -2535,7 +2535,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "4ec9eb4c6e5c622e43a6ea6ef15d52b4",
+    "unique_content_id": "5f5b071dc629702fa714047b28513921",
     "aliases": [
       "CVE-2012-2131",
       "VC-OPENSSL-20120424-CVE-2012-2131"
@@ -2552,7 +2552,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8w",
-        "affected_version_range": "vers:openssl/0.9.8"
+        "affected_version_range": "vers:openssl/0.9.8v"
       }
     ],
     "references": [
@@ -2571,7 +2571,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "6a0035c2e08c94d1f96c341c1c65308e",
+    "unique_content_id": "d7b3d043a54708a7e5a9e912d6d6cc3e",
     "aliases": [
       "CVE-2012-2333",
       "VC-OPENSSL-20120510-CVE-2012-2333"
@@ -2588,7 +2588,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8x",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w"
       },
       {
         "package": {
@@ -2667,7 +2667,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "9ead169dc70d8bbcfceb668bf99916b5",
+    "unique_content_id": "bf59bece682b12d78701e045142a2500",
     "aliases": [
       "CVE-2013-0166",
       "VC-OPENSSL-20130205-CVE-2013-0166"
@@ -2684,7 +2684,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8y",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x"
       },
       {
         "package": {
@@ -2727,7 +2727,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "5150b7bcb2a91bca5bbec4be5fd9707e",
+    "unique_content_id": "ad04f2a742c753a7d0c47b9cc1511044",
     "aliases": [
       "CVE-2013-0169",
       "VC-OPENSSL-20130204-CVE-2013-0169"
@@ -2744,7 +2744,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8y",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x"
       },
       {
         "package": {
@@ -2907,7 +2907,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "f088991977978985d6c22eae42e9ae0d",
+    "unique_content_id": "7c6158ea6c5c8ec99206e3be2452d229",
     "aliases": [
       "CVE-2014-0076",
       "VC-OPENSSL-20140214-CVE-2014-0076"
@@ -2924,7 +2924,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8za",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y"
       },
       {
         "package": {
@@ -3013,7 +3013,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "61d91c23f6b3cbb2cfe8c448285ced91",
+    "unique_content_id": "319e9d80b475409cf94ea4039c7508ce",
     "aliases": [
       "CVE-2014-0195",
       "VC-OPENSSL-20140605-CVE-2014-0195"
@@ -3030,7 +3030,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8za",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y"
+        "affected_version_range": "vers:openssl/0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y"
       },
       {
         "package": {
@@ -3121,7 +3121,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "9d281843d5f176d057383fdad48bf8b9",
+    "unique_content_id": "165b9b803e20838f4b00a319bbb09cf0",
     "aliases": [
       "CVE-2014-0221",
       "VC-OPENSSL-20140605-CVE-2014-0221"
@@ -3138,7 +3138,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8za",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y"
       },
       {
         "package": {
@@ -3181,7 +3181,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "acd1e3ac9746e2bf60f9e4356e42a244",
+    "unique_content_id": "5cc170fa94c9d077ef16624dc6fffb27",
     "aliases": [
       "CVE-2014-0224",
       "VC-OPENSSL-20140605-CVE-2014-0224"
@@ -3198,7 +3198,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8za",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y"
       },
       {
         "package": {
@@ -3241,7 +3241,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "928fd52bdf45973bd405785383f86ff9",
+    "unique_content_id": "39664e60581d002528b5faeecec64dcd",
     "aliases": [
       "CVE-2014-3470",
       "VC-OPENSSL-20140530-CVE-2014-3470"
@@ -3258,7 +3258,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8za",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y"
       },
       {
         "package": {
@@ -3301,7 +3301,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ddb7ca3a4fe071c0b0e2bce9159e80a9",
+    "unique_content_id": "c2d577c5139656109ce740b735a33c0e",
     "aliases": [
       "CVE-2014-3505",
       "VC-OPENSSL-20140806-CVE-2014-3505"
@@ -3318,7 +3318,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zb",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za"
+        "affected_version_range": "vers:openssl/0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za"
       },
       {
         "package": {
@@ -3361,7 +3361,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "9a0cc7af593e54b92b6972add5003c70",
+    "unique_content_id": "b44df06f64207912ad5c92beb4e12d55",
     "aliases": [
       "CVE-2014-3506",
       "VC-OPENSSL-20140806-CVE-2014-3506"
@@ -3378,7 +3378,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zb",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za"
       },
       {
         "package": {
@@ -3421,7 +3421,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "3f2bdad8de4efd2e68f4bf04d8cb7038",
+    "unique_content_id": "e9dda082c749bbcfb22f3b731dae314a",
     "aliases": [
       "CVE-2014-3507",
       "VC-OPENSSL-20140806-CVE-2014-3507"
@@ -3438,7 +3438,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zb",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za"
+        "affected_version_range": "vers:openssl/0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za"
       },
       {
         "package": {
@@ -3481,7 +3481,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "3c0bc908a2f8b2ec18eabf6b12757586",
+    "unique_content_id": "fa2d40b3f1ba2da2f021081c4d3e68d5",
     "aliases": [
       "CVE-2014-3508",
       "VC-OPENSSL-20140806-CVE-2014-3508"
@@ -3498,7 +3498,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zb",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za"
       },
       {
         "package": {
@@ -3589,7 +3589,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "f2c41d8c1f22980784c20b489c539cfb",
+    "unique_content_id": "f4455146853036102f12dc3d757a1ebf",
     "aliases": [
       "CVE-2014-3510",
       "VC-OPENSSL-20140806-CVE-2014-3510"
@@ -3606,7 +3606,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zb",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za"
       },
       {
         "package": {
@@ -3763,7 +3763,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "8d6fe58e87dc190b8862a94b4d2d8562",
+    "unique_content_id": "662263671f1b3187767e526145cc26bc",
     "aliases": [
       "CVE-2014-3567",
       "VC-OPENSSL-20141015-CVE-2014-3567"
@@ -3780,7 +3780,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zc",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb"
+        "affected_version_range": "vers:openssl/0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb"
       },
       {
         "package": {
@@ -3829,7 +3829,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "da97f3220903401cf9a9d0e1bcb5d216",
+    "unique_content_id": "496a1879db3efed784bdf39842075d72",
     "aliases": [
       "CVE-2014-3568",
       "VC-OPENSSL-20141015-CVE-2014-3568"
@@ -3846,7 +3846,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zc",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb"
       },
       {
         "package": {
@@ -3961,7 +3961,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "de6019028ac0c1f61b2791ea0b64dae4",
+    "unique_content_id": "1e8f7e09f828bbe22007a0b458c50da1",
     "aliases": [
       "CVE-2014-3570",
       "VC-OPENSSL-20150108-CVE-2014-3570"
@@ -3978,7 +3978,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zd",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc"
       },
       {
         "package": {
@@ -4027,7 +4027,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "e1a2c8490ee8ec555408bf1ba329ab5f",
+    "unique_content_id": "fbb05294e8a0fd0c63a6eb5effdb3bd7",
     "aliases": [
       "CVE-2014-3571",
       "VC-OPENSSL-20150105-CVE-2014-3571"
@@ -4044,7 +4044,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zd",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc"
       },
       {
         "package": {
@@ -4093,7 +4093,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "830d8ea55e127bf408bf1a96867fde9e",
+    "unique_content_id": "a91109537b306532a004e46b1a08b31d",
     "aliases": [
       "CVE-2014-3572",
       "VC-OPENSSL-20150105-CVE-2014-3572"
@@ -4110,7 +4110,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zd",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc"
       },
       {
         "package": {
@@ -4195,7 +4195,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ba9bf80219726629bf9ca25b9ec2d7ee",
+    "unique_content_id": "512759543e89dd90ea9e288132956faa",
     "aliases": [
       "CVE-2014-8176",
       "VC-OPENSSL-20150611-CVE-2014-8176"
@@ -4212,7 +4212,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8za",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y"
       },
       {
         "package": {
@@ -4261,7 +4261,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "17a2b9e6e7f20925bfa76eed64d97e63",
+    "unique_content_id": "0fb248b49cb73e90aaa7d7a459da2b3d",
     "aliases": [
       "CVE-2014-8275",
       "VC-OPENSSL-20150105-CVE-2014-8275"
@@ -4278,7 +4278,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zd",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc"
       },
       {
         "package": {
@@ -4327,7 +4327,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "da0b220dac069d120b1b47e18460563e",
+    "unique_content_id": "6f9adfa2af70387285b705bc03e39b92",
     "aliases": [
       "CVE-2015-0204",
       "VC-OPENSSL-20150106-CVE-2015-0204"
@@ -4344,7 +4344,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zd",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc"
       },
       {
         "package": {
@@ -4585,7 +4585,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "b76e9c597b1ed20726dd4b1927843303",
+    "unique_content_id": "056f780cb902f1081208a1a46fc56932",
     "aliases": [
       "CVE-2015-0209",
       "VC-OPENSSL-20150319-CVE-2015-0209"
@@ -4602,7 +4602,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zf",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze"
       },
       {
         "package": {
@@ -4783,7 +4783,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "7da3628b8b128b6e84e39d89d5f13c19",
+    "unique_content_id": "71dc206c8f5d7c6db42c6147ec1dcb41",
     "aliases": [
       "CVE-2015-0287",
       "VC-OPENSSL-20150319-CVE-2015-0287"
@@ -4800,7 +4800,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zf",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze"
       },
       {
         "package": {
@@ -4861,7 +4861,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ca59a8208ab9a2665834ce8f27cfdc0d",
+    "unique_content_id": "171990c6babc009cc8483f51d900fc3d",
     "aliases": [
       "CVE-2015-0288",
       "VC-OPENSSL-20150302-CVE-2015-0288"
@@ -4878,7 +4878,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zf",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze"
       },
       {
         "package": {
@@ -4939,7 +4939,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "7ba9c375172e33e587e6916a2c04abc2",
+    "unique_content_id": "c6598da4283b3126f536ef85c7bf8c17",
     "aliases": [
       "CVE-2015-0289",
       "VC-OPENSSL-20150319-CVE-2015-0289"
@@ -4956,7 +4956,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zf",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze"
       },
       {
         "package": {
@@ -5101,7 +5101,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "0f721e9aab1c62cb180baeb245335c9d",
+    "unique_content_id": "ef3da2d2d816eb2c4621f2ed2f1f1104",
     "aliases": [
       "CVE-2015-0292",
       "VC-OPENSSL-20150319-CVE-2015-0292"
@@ -5118,7 +5118,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8za",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y"
       },
       {
         "package": {
@@ -5167,7 +5167,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "e84f4ac47cc48005d56f018d2e65daf5",
+    "unique_content_id": "0d1c9597bb73b7ce5b3fb8c73a6a658f",
     "aliases": [
       "CVE-2015-0293",
       "VC-OPENSSL-20150319-CVE-2015-0293"
@@ -5184,7 +5184,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zf",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze"
       },
       {
         "package": {
@@ -5365,7 +5365,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "9a43962bbf90922aca933cf9313dd17e",
+    "unique_content_id": "f165ff461ed6f79adb84a2a214fd6678",
     "aliases": [
       "CVE-2015-1789",
       "VC-OPENSSL-20150611-CVE-2015-1789"
@@ -5382,7 +5382,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zg",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze|0.9.8zf"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze|0.9.8zf"
       },
       {
         "package": {
@@ -5443,7 +5443,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "52b243f95587be4795cf1b20e3d32d44",
+    "unique_content_id": "3fdb41bd599fd5fce6f0ff422f5d6fbd",
     "aliases": [
       "CVE-2015-1790",
       "VC-OPENSSL-20150611-CVE-2015-1790"
@@ -5460,7 +5460,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zg",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze|0.9.8zf"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze|0.9.8zf"
       },
       {
         "package": {
@@ -5521,7 +5521,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "7cb208b48e8a1b1a13ace73af9d072f5",
+    "unique_content_id": "ab9171effccd8bb58cac15b2a3bae6e2",
     "aliases": [
       "CVE-2015-1791",
       "VC-OPENSSL-20150602-CVE-2015-1791"
@@ -5538,7 +5538,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zg",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze|0.9.8zf"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze|0.9.8zf"
       },
       {
         "package": {
@@ -5599,7 +5599,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "2b161e2cb26f5f69adae525b1bb55be2",
+    "unique_content_id": "b7c0a2491e5967405420e149ee3363f1",
     "aliases": [
       "CVE-2015-1792",
       "VC-OPENSSL-20150611-CVE-2015-1792"
@@ -5616,7 +5616,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zg",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze|0.9.8zf"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze|0.9.8zf"
       },
       {
         "package": {
@@ -5869,7 +5869,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "cfa823ad1a1d8f66b8efc7472dfd1803",
+    "unique_content_id": "7ab06d9d510321d2c2b3b834f6e554a9",
     "aliases": [
       "CVE-2015-3195",
       "VC-OPENSSL-20151203-CVE-2015-3195"
@@ -5886,7 +5886,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zh",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze|0.9.8zf|0.9.8zg"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze|0.9.8zf|0.9.8zg"
       },
       {
         "package": {
@@ -6163,7 +6163,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ee14f55b7ca44f25383963f3632f5ce6",
+    "unique_content_id": "3b6b0770414d570106d81d48acd52512",
     "aliases": [
       "CVE-2016-0703",
       "VC-OPENSSL-20160301-CVE-2016-0703"
@@ -6180,7 +6180,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zf",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze"
       },
       {
         "package": {
@@ -6241,7 +6241,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "6e944e4ae9494a92c0524c9385ba57fa",
+    "unique_content_id": "1e1dadcb7f947e668a5901280eba8e98",
     "aliases": [
       "CVE-2016-0704",
       "VC-OPENSSL-20160301-CVE-2016-0704"
@@ -6258,7 +6258,7 @@
           "qualifiers": null
         },
         "fixed_version": "0.9.8zf",
-        "affected_version_range": "vers:openssl/0.9.8|0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze"
+        "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze"
       },
       {
         "package": {
@@ -9396,7 +9396,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "5d5c7aa4c1296dba54969e2f85a8f85d",
+    "unique_content_id": "161e7e97fdc79695e7d532625c18d7f7",
     "aliases": [
       "CVE-2020-1968",
       "VC-OPENSSL-20200909-CVE-2020-1968"
@@ -9413,7 +9413,7 @@
           "qualifiers": null
         },
         "fixed_version": "1.0.2w",
-        "affected_version_range": "vers:openssl/1.0.2|1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u"
+        "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2v"
       }
     ],
     "references": [
@@ -9438,7 +9438,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "4eca1baa3ab7532afce3f199f004c008",
+    "unique_content_id": "6c376de6bca40da567f26da08cd0bf16",
     "aliases": [
       "CVE-2020-1971",
       "VC-OPENSSL-20201208-CVE-2020-1971"
@@ -9467,7 +9467,7 @@
           "qualifiers": null
         },
         "fixed_version": "1.0.2x",
-        "affected_version_range": "vers:openssl/1.0.2|1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2w"
+        "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2v|1.0.2w"
       }
     ],
     "references": [
@@ -9502,7 +9502,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "f0110a9eed5251b83bc81a5735b0561b",
+    "unique_content_id": "2b3e4ebeb187bf8ee0e61d2b1aed2f8c",
     "aliases": [
       "CVE-2021-23839",
       "VC-OPENSSL-20210216-CVE-2021-23839"
@@ -9519,7 +9519,7 @@
           "qualifiers": null
         },
         "fixed_version": "1.0.2y",
-        "affected_version_range": "vers:openssl/1.0.2|1.0.2s|1.0.2t|1.0.2u|1.0.2w|1.0.2x"
+        "affected_version_range": "vers:openssl/1.0.2s|1.0.2t|1.0.2u|1.0.2v|1.0.2w|1.0.2x"
       }
     ],
     "references": [
@@ -9549,7 +9549,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "7195f653a74059978ec045dd4558d4d1",
+    "unique_content_id": "1606f28140dd0d92f0f15145113772c5",
     "aliases": [
       "CVE-2021-23840",
       "VC-OPENSSL-20210216-CVE-2021-23840"
@@ -9578,7 +9578,7 @@
           "qualifiers": null
         },
         "fixed_version": "1.0.2y",
-        "affected_version_range": "vers:openssl/1.0.2|1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2w|1.0.2x"
+        "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2v|1.0.2w|1.0.2x"
       }
     ],
     "references": [
@@ -9613,7 +9613,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "2a04eb07243878ddd179d5779cf4fd32",
+    "unique_content_id": "a6dc0399c1e1df9ff20b6ed7e14603ac",
     "aliases": [
       "CVE-2021-23841",
       "VC-OPENSSL-20210216-CVE-2021-23841"
@@ -9642,7 +9642,7 @@
           "qualifiers": null
         },
         "fixed_version": "1.0.2y",
-        "affected_version_range": "vers:openssl/1.0.2|1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2w|1.0.2x"
+        "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2v|1.0.2w|1.0.2x"
       }
     ],
     "references": [
@@ -9818,7 +9818,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "9bba434e660f689b603eba45f564f36b",
+    "unique_content_id": "6ad814cac15d1a68d4409e0d0ceaa7c8",
     "aliases": [
       "CVE-2021-3712",
       "VC-OPENSSL-20210824-CVE-2021-3712"
@@ -9847,7 +9847,7 @@
           "qualifiers": null
         },
         "fixed_version": "1.0.2za",
-        "affected_version_range": "vers:openssl/1.0.2|1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2w|1.0.2x|1.0.2y"
+        "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2v|1.0.2w|1.0.2x|1.0.2y"
       }
     ],
     "references": [
@@ -9929,7 +9929,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "7e6fa0286e37a5ab70e652291081bd09",
+    "unique_content_id": "bb39f85c2c3f5edd95bbd4d5a6ecdbea",
     "aliases": [
       "CVE-2021-4160",
       "VC-OPENSSL-20220128-CVE-2021-4160"
@@ -9969,8 +9969,8 @@
           "namespace": null,
           "qualifiers": null
         },
-        "fixed_version": "1.0.2zc-de",
-        "affected_version_range": "vers:openssl/1.0.2|1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2w|1.0.2x|1.0.2y|1.0.2za|1.0.2zb"
+        "fixed_version": "1.0.2zc-dev",
+        "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2v|1.0.2w|1.0.2x|1.0.2y|1.0.2za|1.0.2zb"
       }
     ],
     "references": [
@@ -10010,7 +10010,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "46263e25471907426341354aed6dc237",
+    "unique_content_id": "ed24498140ed5627d876972ac3cc498b",
     "aliases": [
       "CVE-2022-0778",
       "VC-OPENSSL-20220315-CVE-2022-0778"
@@ -10051,7 +10051,7 @@
           "qualifiers": null
         },
         "fixed_version": "1.0.2zd",
-        "affected_version_range": "vers:openssl/1.0.2|1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2w|1.0.2x|1.0.2y|1.0.2za|1.0.2zb|1.0.2zc"
+        "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2v|1.0.2w|1.0.2x|1.0.2y|1.0.2za|1.0.2zb|1.0.2zc"
       }
     ],
     "references": [

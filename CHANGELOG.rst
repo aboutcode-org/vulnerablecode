@@ -2,8 +2,21 @@ Release notes
 =============
 
 
+Next Release
+--------------
+
+- We added loading of env for GitHub datasource in vulntotal.
+- We fixed import process in github importer in vulnerablecode reported here 
+  https://github.com/nexB/vulnerablecode/issues/1142.
+- We added an improver to get all package versions 
+  of all ecosystems for a range of affected packages.
+- We added documentation for configuring throttling rate for API endpoints.
+- We fixed kbmsr2019 importer.
+- We added support for conan advisories through gitlab importer.
+
+
 Version v32.0.0rc3
-------------
+-------------------
 
 - Add aliases to package endpoint.
 - We added Apache HTTPD improver.

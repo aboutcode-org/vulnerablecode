@@ -558,7 +558,7 @@ class HexVersionAPI(VersionAPI):
 
 class ConanVersionAPI(VersionAPI):
     """
-    Fetch versions of Erlang packages from the hex API
+    Fetch versions of ``conan`` packages from the Conan API
     """
 
     package_type = "conan"

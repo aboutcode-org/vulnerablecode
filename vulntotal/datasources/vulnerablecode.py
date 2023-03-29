@@ -87,7 +87,10 @@ def parse_advisory(fetched_advisory, purl) -> VendorData:
         if fixed_purl.type == purl.type:
             fixed_versions.append(fixed_purl.version)
     return VendorData(
-        aliases=aliases, affected_versions=affected_versions, fixed_versions=fixed_versions
+        purl=PackageURL(purl.type, purl.namespace, purl.name),
+        aliases=aliases,
+        affected_versions=affected_versions,
+        fixed_versions=fixed_versions,
     )
 
 

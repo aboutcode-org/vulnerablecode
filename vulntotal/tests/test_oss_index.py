@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 from commoncode import testcase
+from packageurl import PackageURL
 
 from vulnerabilities.tests import util_tests
 from vulntotal.datasources import oss_index
@@ -23,6 +24,11 @@ class TestDeps(testcase.FileBasedTesting):
         advisory_file = self.get_test_loc("advisory.json")
         with open(advisory_file) as f:
             advisory = json.load(f)
-        results = [adv.to_dict() for adv in oss_index.parse_advisory(advisory)]
+        results = [
+            adv.to_dict()
+            for adv in oss_index.parse_advisory(
+                advisory, PackageURL("generic", "namespace", "test")
+            )
+        ]
         expected_file = self.get_test_loc("parse_advisory-expected.json", must_exist=False)
         util_tests.check_results_against_json(results, expected_file)

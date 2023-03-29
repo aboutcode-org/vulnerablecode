@@ -11,29 +11,48 @@ import dataclasses
 from typing import Iterable
 from typing import List
 
+from packageurl import PackageURL
+
 
 @dataclasses.dataclass(order=True)
 class VendorData:
+    purl: PackageURL
     aliases: List[str] = dataclasses.field(default_factory=list)
     affected_versions: List[str] = dataclasses.field(default_factory=list)
     fixed_versions: List[str] = dataclasses.field(default_factory=list)
 
     def to_dict(self):
         return {
+            "purl": str(self.purl),
             "affected_versions": self.affected_versions,
             "fixed_versions": self.fixed_versions,
             "aliases": self.aliases,
         }
 
 
+class InvalidCVEError(Exception):
+    def __init__(self, message="CVE identifier must start with 'CVE-'"):
+        self.message = message
+        super().__init__(self.message)
+
+
 class DataSource:
     def __init__(self):
         self._raw_dump = []
 
-    def datasource_advisory(self, purl) -> Iterable[VendorData]:
+    def datasource_advisory(self, purl: PackageURL) -> Iterable[VendorData]:
         """
-        Yield VendorData object corresponding to DataSource
+        Yield VendorData object for crossponding PURL.
         """
+        return NotImplementedError
+
+    def datasource_advisory_from_cve(self, cve: str) -> Iterable[VendorData]:
+        """
+        Yield VendorData objects for a given CVE identifier.
+        """
+        if not cve.upper().startswith("CVE-"):
+            raise InvalidCVEError
+
         return NotImplementedError
 
     @classmethod

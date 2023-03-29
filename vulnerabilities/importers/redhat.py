@@ -98,24 +98,12 @@ def to_advisory(advisory_data):
     bugzilla = advisory_data.get("bugzilla")
     if bugzilla:
         url = "https://bugzilla.redhat.com/show_bug.cgi?id={}".format(bugzilla)
-        bugzilla_url = f"https://bugzilla.redhat.com/rest/bug/{bugzilla}"
-        bugzilla_data = get_data_from_url(bugzilla_url)
-        bugs = bugzilla_data.get("bugs") or []
-        if bugs:
-            # why [0] only here?
-            severity = bugs[0].get("severity")
-            if severity:
-                bugzilla_severity = VulnerabilitySeverity(
-                    system=severity_systems.REDHAT_BUGZILLA,
-                    value=severity,
-                )
-                references.append(
-                    Reference(
-                        severities=[bugzilla_severity],
-                        url=url,
-                        reference_id=bugzilla,
-                    )
-                )
+        references.append(
+            Reference(
+                url=url,
+                reference_id=bugzilla,
+            )
+        )
 
     for rh_adv in advisory_data.get("advisories") or []:
         # RH provides 3 types of advisories RHSA, RHBA, RHEA. Only RHSA's contain severity score.
@@ -126,25 +114,8 @@ def to_advisory(advisory_data):
             continue
 
         if "RHSA" in rh_adv.upper():
-            rhsa_url = f"https://access.redhat.com/hydra/rest/securitydata/cvrf/{rh_adv}.json"
-            rhsa_data = get_data_from_url(rhsa_url)
-            if not rhsa_data:
-                continue
-            rhsa_aggregate_severities = []
-            if rhsa_data.get("cvrfdoc"):
-                # not all RHSA errata have a corresponding CVRF document
-                value = get_item(rhsa_data, "cvrfdoc", "aggregate_severity")
-                if value:
-                    rhsa_aggregate_severities.append(
-                        VulnerabilitySeverity(
-                            system=severity_systems.REDHAT_AGGREGATE,
-                            value=value,
-                        )
-                    )
-
             references.append(
                 Reference(
-                    severities=rhsa_aggregate_severities,
                     url="https://access.redhat.com/errata/{}".format(rh_adv),
                     reference_id=rh_adv,
                 )

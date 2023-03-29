@@ -58,9 +58,9 @@ class GithubDataSource(DataSource):
             "pypi": "PIP",
             "gem": "RUBYGEMS",
             "golang": "GO",
-            "rust": "RUST",
+            "cargo": "RUST",
             "npm": "NPM",
-            "erlang": "ERLANG",
+            "hex": "ERLANG",
         }
 
 

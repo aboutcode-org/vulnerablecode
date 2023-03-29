@@ -13,6 +13,7 @@ from urllib.parse import quote
 
 import requests
 from bs4 import BeautifulSoup
+from packageurl import PackageURL
 
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
@@ -46,7 +47,7 @@ class SnykDataSource(DataSource):
                     advisory_html = self.fetch(advisory_payload)
                     self._raw_dump.append(advisory_html)
                     if advisory_html:
-                        yield parse_html_advisory(advisory_html, snyk_id, affected)
+                        yield parse_html_advisory(advisory_html, snyk_id, affected, purl)
 
     @classmethod
     def supported_ecosystem(cls):
@@ -124,7 +125,7 @@ def extract_html_json_advisories(package_advisories):
     return vulnerablity
 
 
-def parse_html_advisory(advisory_html, snyk_id, affected) -> VendorData:
+def parse_html_advisory(advisory_html, snyk_id, affected, purl) -> VendorData:
     aliases = []
     fixed_versions = []
 
@@ -145,6 +146,7 @@ def parse_html_advisory(advisory_html, snyk_id, affected) -> VendorData:
             fixed_versions = "".join(fixed[lower + 1 : upper]).split(",")
     aliases.append(snyk_id)
     return VendorData(
+        purl=PackageURL(purl.type, purl.namespace, purl.name),
         aliases=aliases,
         affected_versions=affected,
         fixed_versions=fixed_versions,

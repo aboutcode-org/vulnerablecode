@@ -1,4 +1,5 @@
 {
+  "purl": "pkg:generic/namespace/test",
   "affected_versions": [
     "TEST-AFFECTED"
   ],

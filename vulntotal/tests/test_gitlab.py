@@ -40,7 +40,9 @@ class TestGitlab(testcase.FileBasedTesting):
         )
         results = [
             adv.to_dict()
-            for adv in gitlab.parse_interesting_advisories(advisory_folder, "0.1.1", False)
+            for adv in gitlab.parse_interesting_advisories(
+                advisory_folder, PackageURL("generic", "namespace", "test", "0.1.1"), False
+            )
         ]
         expected_file = self.get_test_loc("parsed_advisory-expected.json", must_exist=False)
         util_tests.check_results_against_json(results, expected_file)

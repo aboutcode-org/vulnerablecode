@@ -53,7 +53,7 @@ class VulnerableCodeDataSource(DataSource):
             for advisory in metadata_advisories[0]["affected_by_vulnerabilities"]:
                 fetched_advisory = self.fetch_get_json(advisory["url"])
                 self._raw_dump.append(fetched_advisory)
-                yield parse_advisory(fetched_advisory)
+                yield parse_advisory(fetched_advisory, purl)
 
     @classmethod
     def supported_ecosystem(cls):
@@ -74,7 +74,7 @@ class VulnerableCodeDataSource(DataSource):
         }
 
 
-def parse_advisory(fetched_advisory) -> VendorData:
+def parse_advisory(fetched_advisory, purl) -> VendorData:
     aliases = [aliase["alias"] for aliase in fetched_advisory["aliases"]]
     affected_versions = []
     fixed_versions = []
@@ -83,7 +83,10 @@ def parse_advisory(fetched_advisory) -> VendorData:
     for instance in fetched_advisory["fixed_packages"]:
         fixed_versions.append(PackageURL.from_string(instance["purl"]).version)
     return VendorData(
-        aliases=aliases, affected_versions=affected_versions, fixed_versions=fixed_versions
+        purl=PackageURL(purl.type, purl.namespace, purl.name),
+        aliases=aliases,
+        affected_versions=affected_versions,
+        fixed_versions=fixed_versions,
     )
 
 

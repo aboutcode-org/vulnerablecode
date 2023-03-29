@@ -1,5 +1,6 @@
 [
   {
+    "purl": "pkg:generic/namespace/test",
     "affected_versions": [
       "8.5.50",
       "9.0.30",
@@ -109,6 +110,7 @@
     ]
   },
   {
+    "purl": "pkg:generic/namespace/test",
     "affected_versions": [
       "7.0.0",
       "7.0.81",

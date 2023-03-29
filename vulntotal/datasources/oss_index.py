@@ -12,6 +12,7 @@ import os
 from typing import Iterable
 
 import requests
+from packageurl import PackageURL
 
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
@@ -57,7 +58,7 @@ class OSSDataSource(DataSource):
         response = self.fetch_json_response([str(purl)])
         if response:
             self._raw_dump.append(response)
-            return parse_advisory(response)
+            return parse_advisory(response, purl)
 
     @classmethod
     def supported_ecosystem(cls):
@@ -79,7 +80,7 @@ class OSSDataSource(DataSource):
         }
 
 
-def parse_advisory(component) -> Iterable[VendorData]:
+def parse_advisory(component, purl) -> Iterable[VendorData]:
     response = component[0]
     vulnerabilities = response.get("vulnerabilities") or []
     for vuln in vulnerabilities:
@@ -89,6 +90,7 @@ def parse_advisory(component) -> Iterable[VendorData]:
         version_ranges = vuln.get("versionRanges") or []
         affected_versions.extend(version_ranges)
         yield VendorData(
+            purl=PackageURL(purl.type, purl.namespace, purl.name),
             aliases=aliases,
             affected_versions=affected_versions,
             fixed_versions=fixed_versions,

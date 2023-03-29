@@ -24,9 +24,7 @@ class TestVulnerableCode(testcase.FileBasedTesting):
         advisory_file = self.get_test_loc("advisory.json")
         with open(advisory_file) as f:
             advisory = json.load(f)
-        results = [
-            vulnerablecode.parse_advisory(adv, PackageURL("generic", "namespace", "test")).to_dict()
-            for adv in advisory
-        ]
+        input_purl = PackageURL.from_string("pkg:maven/org.apache.tomcat/tomcat@10.1.0-M5")
+        results = [vulnerablecode.parse_advisory(adv, input_purl).to_dict() for adv in advisory]
         expected_file = self.get_test_loc("parse_advisory-expected.json", must_exist=False)
         util_tests.check_results_against_json(results, expected_file)

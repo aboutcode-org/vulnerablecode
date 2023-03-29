@@ -61,7 +61,7 @@ class SnykDataSource(DataSource):
             "npm": "npm",
             "nuget": "nuget",
             "pypi": "pip",
-            "rubygems": "rubygems",
+            "gem": "rubygems",
             # any purl.type not in supported_ecosystem shall implicitly be treated as unmanaged type
             "unmanaged": "unmanaged",
         }

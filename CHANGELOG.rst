@@ -2,8 +2,8 @@ Release notes
 =============
 
 
-Next Release
---------------
+Version v32.0.0rc4
+-------------------
 
 - We added loading of env for GitHub datasource in vulntotal.
 - We fixed import process in github importer in vulnerablecode reported here 

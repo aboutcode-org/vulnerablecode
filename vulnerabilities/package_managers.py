@@ -556,6 +556,22 @@ class HexVersionAPI(VersionAPI):
             )
 
 
+class ConanVersionAPI(VersionAPI):
+    """
+    Fetch versions of ``conan`` packages from the Conan API
+    """
+
+    package_type = "conan"
+
+    def fetch(self, pkg: str) -> Iterable[PackageVersion]:
+        response = get_response(
+            url=f"https://conan.io/center/api/ui/details?name={pkg}&user=_&channel=_",
+            content_type="json",
+        )
+        for release in response["versions"]:
+            yield PackageVersion(value=release["version"])
+
+
 class GoproxyVersionAPI(VersionAPI):
     """
     Fetch versions of Go "golang" packages from the Go proxy API
@@ -688,6 +704,7 @@ VERSION_API_CLASSES = {
     CratesVersionAPI,
     DebianVersionAPI,
     GitHubTagsAPI,
+    ConanVersionAPI,
 }
 
 VERSION_API_CLASSES_BY_PACKAGE_TYPE = {cls.package_type: cls for cls in VERSION_API_CLASSES}

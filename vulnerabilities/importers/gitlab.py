@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 
 PURL_TYPE_BY_GITLAB_SCHEME = {
-    # "conan": "conan",
+    "conan": "conan",
     "gem": "gem",
     # Entering issue to parse go package names https://github.com/nexB/vulnerablecode/issues/742
     # "go": "golang",
@@ -203,7 +203,7 @@ def parse_gitlab_advisory(file):
     affected_version_range = None
     fixed_versions = gitlab_advisory.get("fixed_versions") or []
     affected_range = gitlab_advisory.get("affected_range")
-    gitlab_native_schemes = set(["pypi", "gem", "npm", "go", "packagist"])
+    gitlab_native_schemes = set(["pypi", "gem", "npm", "go", "packagist", "conan"])
     vrc: VersionRange = RANGE_CLASS_BY_SCHEMES[purl.type]
     gitlab_scheme = GITLAB_SCHEME_BY_PURL_TYPE[purl.type]
     try:

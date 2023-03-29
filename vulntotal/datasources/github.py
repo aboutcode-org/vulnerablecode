@@ -83,7 +83,7 @@ class GithubDataSource(DataSource):
             "golang": "GO",
             "cargo": "RUST",
             "npm": "NPM",
-            "erlang": "ERLANG",
+            "hex": "ERLANG",
             "pub": "PUB",
         }
 

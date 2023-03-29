@@ -30,7 +30,7 @@ class TestSnyk(testcase.FileBasedTesting):
             "pkg:nuget/moment.js@2.18.0",
             "pkg:cocoapods/ffmpeg@0.2",
             "pkg:hex/coherence@0.2.1",
-            "pkg:rubygems/log4j-jars@0.2",
+            "pkg:gem/log4j-jars@0.2",
             "pkg:unmanaged/firefox@8.9.1",
         ]
         results = [

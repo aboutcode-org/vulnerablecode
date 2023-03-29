@@ -25,11 +25,11 @@ class TestOSV(testcase.FileBasedTesting):
         purls = [
             "pkg:pypi/jinja2@2.4.1",
             "pkg:android/System@10",
-            "pkg:debian:8/davical@1.1.3-1",
+            "pkg:deb:8/davical@1.1.3-1",
             "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M8",
             "pkg:linux/Kernel@v5.4.195",
             "pkg:packagist/dolibarr/dolibarr@12.0.5",
-            "pkg:crates.io/sha2@0.9.7",
+            "pkg:cargo/sha2@0.9.7",
             "pkg:npm/semver-regex@3.1.3",
             "pkg:golang/github.com/cloudflare/cfrpki@1.1.0",
         ]

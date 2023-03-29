@@ -28,8 +28,8 @@ class TestGithub(testcase.FileBasedTesting):
             "pkg:npm/semver-regex@3.1.3",
             "pkg:golang/github.com/cloudflare/cfrpki@0.1.0",
             "pkg:composer/symfony/symfony@2.7.1",
-            "pkg:rust/slice-deque@0.1.0",
-            "pkg:erlang/alchemist.vim@1.3.0",
+            "pkg:cargo/slice-deque@0.1.0",
+            "pkg:hex/alchemist.vim@1.3.0",
             "pkg:gem/ftpd@0.0.1",
         ]
         results = [

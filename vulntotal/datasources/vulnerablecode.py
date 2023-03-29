@@ -79,9 +79,13 @@ def parse_advisory(fetched_advisory, purl) -> VendorData:
     affected_versions = []
     fixed_versions = []
     for instance in fetched_advisory["affected_packages"]:
-        affected_versions.append(PackageURL.from_string(instance["purl"]).version)
+        affected_purl = PackageURL.from_string(instance["purl"])
+        if affected_purl.type == purl.type:
+            affected_versions.append(affected_purl.version)
     for instance in fetched_advisory["fixed_packages"]:
-        fixed_versions.append(PackageURL.from_string(instance["purl"]).version)
+        fixed_purl = PackageURL.from_string(instance["purl"])
+        if fixed_purl.type == purl.type:
+            fixed_versions.append(fixed_purl.version)
     return VendorData(
         purl=PackageURL(purl.type, purl.namespace, purl.name),
         aliases=aliases,

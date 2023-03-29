@@ -90,7 +90,7 @@ class GithubDataSource(DataSource):
 
 def parse_advisory(interesting_edges, purl) -> Iterable[VendorData]:
     """
-    Parses the GraphQL response and yields VendorData instances.
+    Parse the GraphQL response and yield VendorData instances.
 
     Parameters:
         interesting_edges (list): List of edges containing security advisory.
@@ -123,7 +123,7 @@ def extract_interesting_edge(edges, purl):
 
 def generate_graphql_payload_from_purl(purl, end_cursor=""):
     """
-    Generates a GraphQL payload for querying security vulnerabilities related to a PURL.
+    Generate a GraphQL payload for querying security vulnerabilities related to a PURL.
 
     Parameters:
         purl (PackageURL): The PURL to search for vulnerabilities.
@@ -198,7 +198,7 @@ def generate_graphql_payload_from_purl(purl, end_cursor=""):
 
 def generate_graphql_payload_from_cve(cve: str):
     """
-    Generates a GraphQL payload for querying security advisories related to a CVE.
+    Generate a GraphQL payload for querying security advisories related to a CVE.
 
     Parameters:
     - cve (str): CVE identifier string to search for.
@@ -237,7 +237,7 @@ def generate_graphql_payload_from_cve(cve: str):
 
 def get_purl_type(github_ecosystem):
     """
-    Returns the corresponding purl type for a given GitHub ecosystem string.
+    Return the corresponding purl type for a given GitHub ecosystem string.
 
     Parameters:
         github_ecosystem (str): The GitHub ecosystem string.
@@ -254,7 +254,7 @@ def get_purl_type(github_ecosystem):
 
 def group_advisory_by_package(advisories_dict, cve):
     """
-    Extracts security advisory information from a dictionary and groups them by package.
+    Extract security advisory information from a dictionary and groups them by package.
 
     Parameters:
         advisories_dict (dict): Dictionary containing security advisory. The dictionary

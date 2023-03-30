@@ -26,10 +26,11 @@ class SnykDataSource(DataSource):
     license_url = "TODO"
 
     def fetch(self, url):
-        """Fetch the content of a given URL.
+        """
+        Fetch the content of a given URL.
 
-        Args:
-            url: A string containing the URL to fetch.
+        Parameters:
+            url: A string representing the URL to fetch.
 
         Returns:
             A string of HTML or a dictionary of JSON if the response is successful,
@@ -46,13 +47,14 @@ class SnykDataSource(DataSource):
         return response.text
 
     def datasource_advisory(self, purl) -> Iterable[VendorData]:
-        """Fetch advisories from Snyk for a given package.
+        """
+        Fetch advisories from Snyk for a given package.
 
-        Args:
-            purl: A PackageURL object representing the package.
+        Parameters:
+            purl: A PackageURL instance representing the package.
 
-        Returns:
-            An iterable of VendorData objects containing advisory information.
+        Yields:
+            VendorData instance containing advisory information.
         """
         package_advisory_url = generate_package_advisory_url(purl)
         package_advisories_list = self.fetch(package_advisory_url)
@@ -86,13 +88,14 @@ class SnykDataSource(DataSource):
 
 
 def generate_package_advisory_url(purl):
-    """Generate a URL for fetching advisories from Snyk for a given package.
+    """
+    Generate a URL for fetching advisories from Snyk for a given package.
 
-    Args:
-        purl: A PackageURL object representing the package.
+    Parameters:
+        purl: A PackageURL instance representing the package.
 
     Returns:
-        A string containing the URL or None if the package is not supported.
+        A string containing the URL or None if the package is not supported by Snyk.
     """
     url_package_advisories = "https://security.snyk.io/package/{ecosystem}/{package}"
 
@@ -129,14 +132,14 @@ def generate_package_advisory_url(purl):
 
 
 def extract_html_json_advisories(package_advisories):
-    """Extract vulnerability information from HTML or JSON advisories.
+    """
+    Extract vulnerability information from HTML or JSON advisories.
 
-    Args:
-        package_advisories: A string of HTML or a dictionary of JSON containing
-            advisories for a package.
+    Parameters:
+        package_advisories: A string of HTML or a dictionary of JSON containing advisories for a package.
 
     Returns:
-        A dictionary mapping vulnerability IDs to lists of affected versions.
+        A dictionary mapping vulnerability IDs to lists of affected versions for the package.
     """
     vulnerability = {}
 
@@ -161,15 +164,16 @@ def extract_html_json_advisories(package_advisories):
 
 
 def parse_html_advisory(advisory_html, snyk_id, affected) -> VendorData:
-    """Parse HTML advisory from Snyk and extract vendor data.
+    """
+    Parse HTML advisory from Snyk and extract vendor data.
 
-    Args:
+    Parameters:
         advisory_html: A string of HTML containing the advisory details.
-        snyk_id: A string containing the Snyk ID of the vulnerability.
-        affected: A list of strings containing the affected versions.
+        snyk_id: A string representing the Snyk ID of the vulnerability.
+        affected: A list of strings representing the affected versions.
 
     Returns:
-        A VendorData object containing aliases, affected versions and fixed versions.
+        A VendorData instance containing aliases, affected versions and fixed versions for the vulnerability.
     """
     aliases = []
     fixed_versions = []

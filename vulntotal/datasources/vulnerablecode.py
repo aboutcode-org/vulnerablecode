@@ -33,8 +33,11 @@ class VulnerableCodeDataSource(DataSource):
         """
         Fetches JSON data from the VulnerableCode API using a POST request with a given payload.
 
-        :param payload: A dictionary representing the data to send in the request body.
-        :return: A JSON object containing the response data, or None if an error occurs.
+        Parameters:
+            payload: A dictionary representing the data to send in the request body.
+
+        Returns:
+            A JSON object containing the response data, or None if an error occurs while fetching data from the VulnerableCode API.
         """
         url = urljoin(self.global_instance, self.vc_purl_search_api_path)
         response = fetch_vulnerablecode_query(url=url, payload=payload)
@@ -47,8 +50,11 @@ class VulnerableCodeDataSource(DataSource):
         """
         Fetches JSON data from a given URL using the VulnerableCode API.
 
-        :param url: A string representing the URL to query.
-        :return: A JSON object containing the response data, or None if an error occurs.
+        Parameters:
+            url: A string representing the URL to query.
+
+        Returns:
+            A JSON object containing the response data, or None if an error occurs while fetching data from the URL.
         """
         response = fetch_vulnerablecode_query(url=url, payload=None)
         if response.status_code != 200:
@@ -60,8 +66,11 @@ class VulnerableCodeDataSource(DataSource):
         """
         Fetches advisories for a given purl from the VulnerableCode API.
 
-        :param purl: A PackageURL object representing the package to query.
-        :return: An iterable of VendorData objects containing the advisory information.
+        Parameters:
+            purl: A PackageURL instance representing the package to query.
+
+        Yields:
+            VendorData instance containing the advisory information for the package.
         """
         if purl.type not in self.supported_ecosystem() or purl.version is None:
             return

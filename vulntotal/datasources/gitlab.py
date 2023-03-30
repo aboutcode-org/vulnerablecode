@@ -32,8 +32,12 @@ class GitlabDataSource(DataSource):
     def datasource_advisory(self, purl) -> Iterable[VendorData]:
         """
         Fetches advisories for a given purl from the GitLab API.
-        :param purl: A PackageURL object representing the package to query.
-        :return: An iterable of VendorData objects containing the advisory information.
+
+        Parameters:
+            purl: A PackageURL instance representing the package to query.
+
+        Yields:
+            VendorData instance containing the advisory information for the package.
         """
         package_slug = get_package_slug(purl)
         location = download_subtree(package_slug, speculative_execution=True)
@@ -66,8 +70,12 @@ class GitlabDataSource(DataSource):
 def get_package_slug(purl):
     """
     Constructs a package slug from a given purl.
-    :param purl: A PackageURL object representing the package to query.
-    :return: A string representing the package slug, or None if the purl type is not supported.
+
+    Parameters:
+        purl: A PackageURL instance representing the package to query.
+
+    Returns:
+        A string representing the package slug, or None if the purl type is not supported by GitLab.
     """
     supported_ecosystem = GitlabDataSource.supported_ecosystem()
 
@@ -86,9 +94,13 @@ def get_package_slug(purl):
 def download_subtree(package_slug: str, speculative_execution=False):
     """
     Downloads and extracts a tar file from a given package slug.
-    :param package_slug: A string representing the package slug to query.
-    :param speculative_execution: A boolean indicating whether to log errors or not.
-    :return: A Path object representing the extracted location, or None if an error occurs.
+
+    Parameters:
+        package_slug: A string representing the package slug to query.
+        speculative_execution: A boolean indicating whether to log errors or not.
+
+    Returns:
+        A Path object representing the extracted location, or None if an error occurs.
     """
     url = f"https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/archive/master/gemnasium-db-master.tar.gz?path={package_slug}"
     response = fetch(url)
@@ -108,7 +120,9 @@ def download_subtree(package_slug: str, speculative_execution=False):
 def clear_download(location):
     """
     Deletes a directory and its contents.
-    :param location: A Path object representing the directory to delete.
+
+    Parameters:
+        location: A Path object representing the directory to delete.
     """
     if location:
         shutil.rmtree(location)
@@ -174,10 +188,14 @@ def get_casesensitive_slug(path, package_slug):
 def parse_interesting_advisories(location, version, delete_download=False) -> Iterable[VendorData]:
     """
     Parses advisories from YAML files in a given location that match a given version.
-    :param location: A Path object representing the location of the YAML files.
-    :param version: A string representing the version to check against the affected range.
-    :param delete_download: A boolean indicating whether to delete the downloaded files after parsing.
-    :return: An iterable of VendorData objects containing the advisory information.
+
+    Parameters:
+        location: A Path object representing the location of the YAML files.
+        version: A string representing the version to check against the affected range.
+        delete_download: A boolean indicating whether to delete the downloaded files after parsing.
+
+    Yields:
+        VendorData instance containing the advisory information for the package.
     """
     path = Path(location)
     pattern = "**/*.yml"

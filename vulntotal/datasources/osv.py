@@ -26,7 +26,15 @@ class OSVDataSource(DataSource):
     url = "https://api.osv.dev/v1/query"
 
     def fetch_advisory(self, payload):
-        """Fetch JSON advisory from OSV API for a given package payload"""
+        """
+        Fetch JSON advisory from OSV API for a given package payload
+
+        Parameters:
+            payload: A dictionary representing the package data to query.
+
+        Returns:
+            A JSON object containing the advisory information for the package, or None if an error occurs while fetching data from the OSV API.
+        """
 
         response = requests.post(self.url, data=str(payload))
         try:
@@ -67,6 +75,12 @@ class OSVDataSource(DataSource):
 def parse_advisory(response) -> Iterable[VendorData]:
     """
     Parse response from OSV API and yield VendorData
+
+    Parameters:
+        response: A JSON object containing the response data from the OSV API.
+
+    Yields:
+        VendorData instance containing the advisory information for the package.
     """
 
     for vuln in response.get("vulns") or []:
@@ -100,7 +114,15 @@ def parse_advisory(response) -> Iterable[VendorData]:
 
 
 def generate_payload(purl):
-    """Generate compatible payload for OSV API from a PURL"""
+    """
+    Generate compatible payload for OSV API from a PURL
+
+    Parameters:
+        purl: A PackageURL instance representing the package to query.
+
+    Returns:
+        A dictionary containing the package data compatible with the OSV API.
+    """
 
     supported_ecosystem = OSVDataSource.supported_ecosystem()
     payload = {}

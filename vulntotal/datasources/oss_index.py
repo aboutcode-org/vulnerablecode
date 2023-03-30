@@ -28,11 +28,11 @@ class OSSDataSource(DataSource):
     def fetch_json_response(self, coordinates):
         """Fetch JSON response from OSS Index API for a given list of coordinates.
 
-        Args:
-            coordinates: A list of strings containing the package coordinates.
+        Parameters:
+            coordinates: A list of strings representing the package coordinates.
 
         Returns:
-            A dictionary containing the JSON response or None if the response is unsuccessful.
+            A dictionary containing the JSON response from the OSS Index API, or None if the response is unsuccessful or an error occurs while fetching data.
         """
         username = os.environ.get("OSS_USERNAME", None)
         token = os.environ.get("OSS_TOKEN", None)
@@ -89,13 +89,14 @@ class OSSDataSource(DataSource):
 
 
 def parse_advisory(component) -> Iterable[VendorData]:
-    """Parse component from OSS Index API and yield VendorData.
+    """
+    Parse component from OSS Index API and yield VendorData.
 
-    Args:
+    Parameters:
         component: A list containing a dictionary with component details.
 
-    Returns:
-        An iterable of VendorData objects containing advisory information.
+    Yields:
+        VendorData instance containing advisory information for the component.
     """
     response = component[0]
     vulnerabilities = response.get("vulnerabilities") or []

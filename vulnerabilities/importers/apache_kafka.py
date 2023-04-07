@@ -9,6 +9,7 @@
 
 
 import pytz
+import logging
 import requests
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
@@ -18,6 +19,8 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
+
+logger = logging.getLogger(__name__)
 
 # The entries below with `"action": "omit"` have no useful/reportable fixed or affected version data.
 # See https://kafka.apache.org/cve-list
@@ -137,11 +140,20 @@ class ApacheKafkaImporter(Importer):
 
             # This throws a KeyError if the opening h2 tag `id` data changes or is not in the
             # hard-coded affected_version_range_mapping dictionary.
-            cve_version_mapping = affected_version_range_mapping[cve_id]
-            if cve_version_mapping["action"] == "include":
+            cve_version_mapping = affected_version_range_mapping.get(cve_id)
+            if not cve_version_mapping:
+                logger.error(
+                        f"Data for {cve_id} not found in mapping. Skipping."
+                    )
+            if cve_version_mapping and cve_version_mapping.get("action") == "include":
                 # These 2 variables (not used elsewhere) trigger the KeyError for changed/missing data.
-                check_affected_versions_key = cve_version_mapping[affected_versions]
-                check_fixed_versions_key = cve_version_mapping[fixed_versions]
+                check_affected_versions_key = cve_version_mapping.get(affected_versions) or []
+                check_fixed_versions_key = cve_version_mapping.get(fixed_versions) or []
+
+                if not check_affected_versions_key:
+                    logger.error(f"Affected versions for {cve_id} not found in mapping. Skipping.")
+                if not check_fixed_versions_key:
+                    logger.error(f"Fixed versions for {cve_id} not found in mapping. Skipping.")
 
                 references = [
                     Reference(
@@ -159,18 +171,24 @@ class ApacheKafkaImporter(Importer):
                 ]
 
                 affected_packages = []
-                affected_package = AffectedPackage(
-                    package=PackageURL(
-                        name="kafka",
-                        type="apache",
-                    ),
-                    affected_version_range=cve_version_mapping["affected_version_range"],
-                )
-                affected_packages.append(affected_package)
+                affected_version_range = cve_version_mapping.get("affected_version_range")
+                if cve_version_mapping.get("affected_version_range"):
+                    affected_package = AffectedPackage(
+                        package=PackageURL(
+                            name="kafka",
+                            type="apache",
+                        ),
+                        affected_version_range=affected_version_range,
+                    )
+                    affected_packages.append(affected_package)
 
-                date_published = parse(cve_version_mapping["Issue announced"]).replace(
-                    tzinfo=pytz.UTC
-                )
+                date_published = None
+                issue_announced = cve_version_mapping.get("Issue announced")
+
+                if issue_announced:
+                    date_published = parse(issue_announced).replace(
+                        tzinfo=pytz.UTC
+                    )
 
                 advisories.append(
                     AdvisoryData(

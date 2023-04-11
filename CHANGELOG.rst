@@ -1,6 +1,10 @@
 Release notes
 =============
 
+Next Release
+-------------
+
+- We added dark mode toggle in the documentation.
 
 Next release
 -------------

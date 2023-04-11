@@ -1,6 +1,10 @@
 Release notes
 =============
 
+Next Release
+-------------
+
+- We added dark mode toggle in the documentation.
 
 Version v32.0.0rc4
 -------------------

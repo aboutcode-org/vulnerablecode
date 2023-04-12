@@ -38,7 +38,7 @@ class ApacheHTTPDImporter(Importer):
         links = fetch_links(self.base_url)
         for link in links:
             data = requests.get(link).json()
-            yield self.to_advisory(data, link)
+            yield self.to_advisory(data)
 
     def to_advisory(self, data):
         alias = get_item(data, "CVE_data_meta", "ID")
@@ -73,7 +73,7 @@ class ApacheHTTPDImporter(Importer):
         versions_data = []
         for vendor in get_item(data, "affects", "vendor", "vendor_data") or []:
             for products in get_item(vendor, "product", "product_data") or []:
-                for version_data in  get_item(products, "version", "version_data") or []:
+                for version_data in get_item(products, "version", "version_data") or []:
                     versions_data.append(version_data)
 
         fixed_versions = []

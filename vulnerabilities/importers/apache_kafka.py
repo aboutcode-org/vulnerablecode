@@ -8,8 +8,9 @@
 #
 
 
-import pytz
 import logging
+
+import pytz
 import requests
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
@@ -138,13 +139,9 @@ class ApacheKafkaImporter(Importer):
             fixed_versions_clean = [v.strip() for v in fixed_versions.split(",")]
             fixed_versions_clean = [v for v in fixed_versions if v]
 
-            # This throws a KeyError if the opening h2 tag `id` data changes or is not in the
-            # hard-coded affected_version_range_mapping dictionary.
             cve_version_mapping = affected_version_range_mapping.get(cve_id)
             if not cve_version_mapping:
-                logger.error(
-                        f"Data for {cve_id} not found in mapping. Skipping."
-                    )
+                logger.error(f"Data for {cve_id} not found in mapping. Skipping.")
             if cve_version_mapping and cve_version_mapping.get("action") == "include":
                 # These 2 variables (not used elsewhere) trigger the KeyError for changed/missing data.
                 check_affected_versions_key = cve_version_mapping.get(affected_versions) or []
@@ -186,9 +183,7 @@ class ApacheKafkaImporter(Importer):
                 issue_announced = cve_version_mapping.get("Issue announced")
 
                 if issue_announced:
-                    date_published = parse(issue_announced).replace(
-                        tzinfo=pytz.UTC
-                    )
+                    date_published = parse(issue_announced).replace(tzinfo=pytz.UTC)
 
                 advisories.append(
                     AdvisoryData(

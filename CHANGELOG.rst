@@ -2,6 +2,13 @@ Release notes
 =============
 
 
+Next release
+-------------
+
+- We fixed Apache HTTPD and Apache Kafka importer.
+- We removed excessive network calls from Redhat importer.
+
+
 Version v32.0.0rc4
 -------------------
 

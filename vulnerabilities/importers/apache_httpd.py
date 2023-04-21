@@ -23,6 +23,7 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import APACHE_HTTPD
+from vulnerabilities.utils import get_item
 
 logger = logging.getLogger(__name__)
 
@@ -40,16 +41,18 @@ class ApacheHTTPDImporter(Importer):
             yield self.to_advisory(data)
 
     def to_advisory(self, data):
-        alias = data["CVE_data_meta"]["ID"]
-        descriptions = data["description"]["description_data"]
+        alias = get_item(data, "CVE_data_meta", "ID")
+        if not alias:
+            alias = get_item(data, "cveMetadata", "cveId")
+        descriptions = get_item(data, "description", "description_data") or []
         description = None
         for desc in descriptions:
-            if desc["lang"] == "eng":
+            if desc.get("lang") == "eng":
                 description = desc.get("value")
                 break
 
         severities = []
-        impacts = data.get("impact", [])
+        impacts = data.get("impact") or []
         for impact in impacts:
             value = impact.get("other")
             if value:
@@ -68,14 +71,14 @@ class ApacheHTTPDImporter(Importer):
         )
 
         versions_data = []
-        for vendor in data["affects"]["vendor"]["vendor_data"]:
-            for products in vendor["product"]["product_data"]:
-                for version_data in products["version"]["version_data"]:
+        for vendor in get_item(data, "affects", "vendor", "vendor_data") or []:
+            for products in get_item(vendor, "product", "product_data") or []:
+                for version_data in get_item(products, "version", "version_data") or []:
                     versions_data.append(version_data)
 
         fixed_versions = []
         for timeline_object in data.get("timeline") or []:
-            timeline_value = timeline_object["value"]
+            timeline_value = timeline_object.get("value")
             if "release" in timeline_value:
                 split_timeline_value = timeline_value.split(" ")
                 if "never" in timeline_value:
@@ -100,7 +103,7 @@ class ApacheHTTPDImporter(Importer):
 
         return AdvisoryData(
             aliases=[alias],
-            summary=description,
+            summary=description or "",
             affected_packages=affected_packages,
             references=[reference],
         )

@@ -143,7 +143,6 @@ class ApacheKafkaImporter(Importer):
             if not cve_version_mapping:
                 logger.error(f"Data for {cve_id} not found in mapping. Skipping.")
             if cve_version_mapping and cve_version_mapping.get("action") == "include":
-                # These 2 variables (not used elsewhere) trigger the KeyError for changed/missing data.
                 check_affected_versions_key = cve_version_mapping.get(affected_versions) or []
                 check_fixed_versions_key = cve_version_mapping.get(fixed_versions) or []
 

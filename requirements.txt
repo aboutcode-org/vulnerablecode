@@ -1,6 +1,6 @@
 aiosignal==1.2.0
 alabaster==0.7.12
-asgiref==3.5.0
+asgiref==3.5.2
 asttokens==2.0.5
 async-timeout==4.0.2
 attrs==21.4.0
@@ -65,7 +65,7 @@ pickleshare==0.7.5
 platformdirs==2.5.1
 pluggy==1.0.0
 pprintpp==0.4.0
-prompt-toolkit==3.0.29
+prompt-toolkit==3.0.30
 psycopg2-binary==2.9.3
 ptyprocess==0.7.0
 pure-eval==0.2.2

@@ -6,11 +6,12 @@ Next Release
 
 - We added dark mode toggle in the documentation.
 
-Next release
--------------
+Version v32.0.0
+-----------------
 
 - We fixed Apache HTTPD and Apache Kafka importer.
 - We removed excessive network calls from Redhat importer.
+- Add documentation for version 32.0.0.
 
 
 Version v32.0.0rc4

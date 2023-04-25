@@ -1,0 +1,20 @@
+name: Verify Git Clone on Windows
+
+on:
+  workflow_dispatch:
+
+jobs:
+  verify-git-clone:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Verify Git Clone
+        # if the architecture is AMD64 use cmd prompt or else use powershell to display an empty line is successful.
+        run: |
+          if "%PROCESSOR_ARCHITECTURE%"=="AMD64" {
+            echo.
+          } else {
+            Write-Host ""
+          }

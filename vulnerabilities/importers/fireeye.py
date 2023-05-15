@@ -13,7 +13,7 @@ from typing import Iterable
 from typing import List
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.utils import build_description
 from vulnerabilities.utils import dedupe
@@ -21,7 +21,7 @@ from vulnerabilities.utils import dedupe
 logger = logging.getLogger(__name__)
 
 
-class FireyeImporter(GitImporter):
+class FireyeImporter(Importer):
     spdx_license_expression = "CC-BY-SA-4.0 AND MIT"
     license_url = "https://github.com/mandiant/Vulnerability-Disclosures/blob/master/README.md"
     notice = """
@@ -30,23 +30,25 @@ class FireyeImporter(GitImporter):
     1. CC BY-SA 4.0 - For CVE related information not including source code (such as PoCs)
     2. MIT - For source code contained within provided CVE information
     """
-
-    def __init__(self):
-        super().__init__(repo_url="git+https://github.com/mandiant/Vulnerability-Disclosures")
+    repo_url = "git+https://github.com/mandiant/Vulnerability-Disclosures"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
-        self.clone()
-        files = filter(
-            lambda p: p.suffix in [".md", ".MD"], Path(self.vcs_response.dest_dir).glob("**/*")
-        )
-        for file in files:
-            if Path(file).stem == "README":
-                continue
-            try:
-                with open(file) as f:
-                    yield parse_advisory_data(f.read())
-            except UnicodeError:
-                logger.error(f"Invalid file {file}")
+        try:
+            self.clone(repo_url=self.repo_url)
+            files = filter(
+                lambda p: p.suffix in [".md", ".MD"], Path(self.vcs_response.dest_dir).glob("**/*")
+            )
+            for file in files:
+                if Path(file).stem == "README":
+                    continue
+                try:
+                    with open(file) as f:
+                        yield parse_advisory_data(f.read())
+                except UnicodeError:
+                    logger.error(f"Invalid file {file}")
+        finally:
+            if self.vcs_response:
+                self.vcs_response.delete()
 
 
 def parse_advisory_data(raw_data) -> AdvisoryData:

@@ -2,6 +2,12 @@ Release notes
 =============
 
 
+Version v32.0.1
+-----------------
+
+- Clean imported data after import process.
+
+
 Version v32.0.0
 -----------------
 

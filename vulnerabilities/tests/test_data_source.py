@@ -9,12 +9,23 @@
 
 import os
 import xml.etree.ElementTree as ET
+from unittest.mock import MagicMock
 from unittest.mock import patch
 
+from fetchcode.vcs import VCSResponse
 from packageurl import PackageURL
 
-from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Importer
 from vulnerabilities.importer import OvalImporter
+from vulnerabilities.importers.elixir_security import ElixirSecurityImporter
+from vulnerabilities.importers.fireeye import FireyeImporter
+from vulnerabilities.importers.gentoo import GentooImporter
+from vulnerabilities.importers.gitlab import GitLabAPIImporter
+from vulnerabilities.importers.istio import IstioImporter
+from vulnerabilities.importers.mozilla import MozillaImporter
+from vulnerabilities.importers.npm import NpmImporter
+from vulnerabilities.importers.pypa import PyPaImporter
+from vulnerabilities.importers.retiredotnet import RetireDotnetImporter
 from vulnerabilities.oval_parser import OvalParser
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -35,7 +46,7 @@ class MockOvalImporter(OvalImporter):
     spdx_license_expression = "FOO-BAR"
 
 
-class MockGitImporter(GitImporter):
+class MockGitImporter(Importer):
     spdx_license_expression = "FOO-BAR"
 
 
@@ -83,12 +94,43 @@ def test__collect_pkgs():
     assert found_ubuntu_pkgs == expected_ubuntu_pkgs
 
 
-def clone(self):
-    pass
-
-
-@patch("vulnerabilities.importer.GitImporter.clone")
+@patch("vulnerabilities.importer.fetch_via_vcs")
 def test_git_importer(mock_clone):
-    mock_clone.return_value = clone
-    imp = MockGitImporter("test-url")
-    assert imp.repo_url == "test-url"
+    mock_clone.return_value = VCSResponse(
+        dest_dir="test",
+        vcs_type="git",
+        domain="test",
+    )
+    git_importer = MockGitImporter()
+    git_importer.clone("test-url") == VCSResponse(
+        dest_dir="test",
+        vcs_type="git",
+        domain="test",
+    )
+
+
+def test_git_importer_clone():
+    git_importers = [
+        ElixirSecurityImporter,
+        FireyeImporter,
+        GentooImporter,
+        GitLabAPIImporter,
+        IstioImporter,
+        MozillaImporter,
+        NpmImporter,
+        RetireDotnetImporter,
+        PyPaImporter,
+    ]
+    for git_importer in git_importers:
+        mock_function = MagicMock(
+            return_value=VCSResponse(
+                dest_dir="test",
+                vcs_type="git",
+                domain="test",
+            )
+        )
+        with patch("vulnerabilities.importer.fetch_via_vcs", mock_function) as mock_fetch:
+            with patch.object(VCSResponse, "delete") as mock_delete:
+                list(git_importer().advisory_data())
+                mock_fetch.assert_called_once()
+                mock_delete.assert_called_once()

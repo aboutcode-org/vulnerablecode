@@ -24,6 +24,7 @@ from typing import Tuple
 
 import pytz
 from dateutil import parser as dateparser
+from fetchcode.vcs import VCSResponse
 from fetchcode.vcs import fetch_via_vcs
 from license_expression import Licensing
 from packageurl import PackageURL
@@ -288,6 +289,10 @@ class InvalidSPDXLicense(Exception):
     pass
 
 
+class ForkError(Exception):
+    pass
+
+
 class Importer:
     """
     An Importer collects data from various upstreams and returns corresponding AdvisoryData objects
@@ -297,7 +302,7 @@ class Importer:
     spdx_license_expression = ""
     license_url = ""
     notice = ""
-    vcs_response = None
+    vcs_response: VCSResponse = None
 
     def __init__(self):
         if not self.spdx_license_expression:
@@ -324,45 +329,16 @@ class Importer:
         raise NotImplementedError
 
     def clone(self, repo_url):
+        """
+        Clone the repo at repo_url and return the VCSResponse object
+        """
         try:
             self.vcs_response = fetch_via_vcs(repo_url)
+            return self.vcs_response
         except Exception as e:
             msg = f"Failed to fetch {repo_url} via vcs: {e}"
             logger.error(msg)
             raise ForkError(msg) from e
-
-
-class ForkError(Exception):
-    pass
-
-
-class GitImporter(Importer):
-    def __init__(self, repo_url):
-        super().__init__()
-        self.repo_url = repo_url
-        self.vcs_response = None
-
-    def __enter__(self):
-        super().__enter__()
-        self.clone()
-        return self
-
-    def __exit__(self):
-        self.vcs_response.delete()
-
-    def clone(self):
-        try:
-            self.vcs_response = fetch_via_vcs(self.repo_url)
-        except Exception as e:
-            msg = f"Failed to fetch {self.repo_url} via vcs: {e}"
-            logger.error(msg)
-            raise ForkError(msg) from e
-
-    def advisory_data(self) -> Iterable[AdvisoryData]:
-        """
-        Return AdvisoryData objects corresponding to the data being imported
-        """
-        raise NotImplementedError
 
 
 # TODO: Needs rewrite

@@ -22,13 +22,13 @@ from univers.version_range import VersionRange
 from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import CratesVersionAPI
 from vulnerabilities.utils import nearest_patched_package
 
 
-class RustImporter(GitImporter):
+class RustImporter(Importer):
     def __enter__(self):
         super(RustImporter, self).__enter__()
 

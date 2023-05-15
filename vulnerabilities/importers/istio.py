@@ -53,17 +53,21 @@ class IstioImporter(Importer):
     repo_url = "git+https://github.com/istio/istio.io/"
 
     def advisory_data(self) -> Set[AdvisoryData]:
-        self.clone(self.repo_url)
-        path = Path(self.vcs_response.dest_dir)
-        vuln = path / "content/en/news/security/"
-        for file in vuln.glob("**/*.md"):
-            # Istio website has files with name starting with underscore, these contain metadata
-            # required for rendering the website. We're not interested in these.
-            # See also https://github.com/nexB/vulnerablecode/issues/563
-            file = str(file)
-            if file.endswith("_index.md"):
-                continue
-            yield from self.process_file(file)
+        try:
+            self.clone(repo_url=self.repo_url)
+            path = Path(self.vcs_response.dest_dir)
+            vuln = path / "content/en/news/security/"
+            for file in vuln.glob("**/*.md"):
+                # Istio website has files with name starting with underscore, these contain metadata
+                # required for rendering the website. We're not interested in these.
+                # See also https://github.com/nexB/vulnerablecode/issues/563
+                file = str(file)
+                if file.endswith("_index.md"):
+                    continue
+                yield from self.process_file(file)
+        finally:
+            if self.vcs_response:
+                self.vcs_response.delete()
 
     def process_file(self, path):
 

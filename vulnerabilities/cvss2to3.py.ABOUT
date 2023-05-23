@@ -1,0 +1,6 @@
+about_resource: cvss2to3.py
+author: Marc Ruef @marcruef
+notes: convert_cvssv2_vector_to_cvssv3_vector function was written using Marc Ruef's answer from stackexchange question
+license_expression: cc-by-sa-3.0
+license_file: cvss2to3.py.LICENSE
+download_url: https://security.stackexchange.com/questions/127335/how-to-convert-risk-scores-cvssv1-cvssv2-cvssv3-owasp-risk-severity

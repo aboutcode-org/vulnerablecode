@@ -273,7 +273,7 @@ class AdvisoryData:
             "aliases": advisory_data["aliases"],
             "summary": advisory_data["summary"],
             "affected_packages": [
-                AffectedPackage.from_dict(pkg) for pkg in advisory_data["affected_packages"  if pkg is not None]
+                AffectedPackage.from_dict(pkg) for pkg in advisory_data["affected_packages"] if pkg is not None
             ],
             "references": [Reference.from_dict(ref) for ref in advisory_data["references"]],
             "date_published": datetime.datetime.fromisoformat(date_published)

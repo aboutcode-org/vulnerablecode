@@ -214,9 +214,12 @@ class AffectedPackage:
             affected_pkg["affected_version_range"]
             and affected_pkg["affected_version_range"] != "None"
         ):
-            affected_version_range = VersionRange.from_string(
-                affected_pkg["affected_version_range"]
-            )
+            try:
+                affected_version_range = VersionRange.from_string(
+                    affected_pkg["affected_version_range"]
+                )
+            except:
+                return None
         fixed_version = affected_pkg["fixed_version"]
         if fixed_version and affected_version_range:
             # TODO: revisit after https://github.com/nexB/univers/issues/10
@@ -270,7 +273,7 @@ class AdvisoryData:
             "aliases": advisory_data["aliases"],
             "summary": advisory_data["summary"],
             "affected_packages": [
-                AffectedPackage.from_dict(pkg) for pkg in advisory_data["affected_packages"]
+                AffectedPackage.from_dict(pkg) for pkg in advisory_data["affected_packages"  if pkg is not None]
             ],
             "references": [Reference.from_dict(ref) for ref in advisory_data["references"]],
             "date_published": datetime.datetime.fromisoformat(date_published)

@@ -2,6 +2,13 @@ Release notes
 =============
 
 
+Version v33.0.0
+-----------------
+
+- We have dropped ``unresolved_vulnerabilities`` from /api/package endpoint API response.
+- We have added missing quotes for href values in template.
+
+
 Version v32.0.1
 -----------------
 

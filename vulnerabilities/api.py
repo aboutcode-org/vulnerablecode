@@ -124,11 +124,6 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
     Lookup software package using Package URLs
     """
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data["unresolved_vulnerabilities"] = data["affected_by_vulnerabilities"]
-        return data
-
     purl = serializers.CharField(source="package_url")
 
     affected_by_vulnerabilities = serializers.SerializerMethodField("get_affected_vulnerabilities")

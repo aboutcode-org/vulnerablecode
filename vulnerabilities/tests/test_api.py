@@ -362,16 +362,6 @@ class APITestCasePackage(TestCase):
                     "aliases": ["CVE-2029-1234"],
                 },
             ],
-            "unresolved_vulnerabilities": [
-                {
-                    "url": f"http://testserver/api/vulnerabilities/{self.vuln1.id}",
-                    "vulnerability_id": self.vuln1.vulnerability_id,
-                    "summary": "test-vuln1",
-                    "references": [],
-                    "fixed_packages": [],
-                    "aliases": ["CVE-2019-1234", "GMS-1234-4321"],
-                }
-            ],
         }
 
     def test_api_with_single_vulnerability_and_vulnerable_package(self):
@@ -402,22 +392,6 @@ class APITestCasePackage(TestCase):
                 }
             ],
             "fixing_vulnerabilities": [],
-            "unresolved_vulnerabilities": [
-                {
-                    "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
-                    "vulnerability_id": self.vuln.vulnerability_id,
-                    "summary": "test-vuln",
-                    "references": [],
-                    "fixed_packages": [
-                        {
-                            "url": f"http://testserver/api/packages/{self.package.id}",
-                            "purl": "pkg:generic/nginx/test@11",
-                            "is_vulnerable": True,
-                        }
-                    ],
-                    "aliases": ["CVE-2029-1234"],
-                }
-            ],
         }
 
     def test_api_with_all_vulnerable_packages(self):

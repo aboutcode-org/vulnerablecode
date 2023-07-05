@@ -188,7 +188,7 @@ class AffectedPackage:
             purls.add(pkg.package)
         if len(purls) > 1:
             raise UnMergeablePackageError("Cannot merge with different purls", purls)
-        return purls.pop(), sorted(affected_version_ranges), sorted(fixed_versions)
+        return purls.pop(), list(affected_version_ranges), sorted(fixed_versions)
 
     def to_dict(self):
         """

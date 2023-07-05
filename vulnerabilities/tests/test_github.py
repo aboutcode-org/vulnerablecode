@@ -172,6 +172,8 @@ def valid_versions():
         "6.0.3.4",
         "6.0.3.rc1",
         "6.0.2.rc2",
+        "10.2.8",
+        "10.2.1",
     ]
 
 
@@ -203,7 +205,27 @@ def test_github_improver(mock_response, regen=REGEN):
                     )
                 ),
                 fixed_version=None,
-            )
+            ),
+            AffectedPackage(
+                package=PackageURL(
+                    type="gem",
+                    namespace=None,
+                    name="activestorage",
+                    version=None,
+                    qualifiers={},
+                    subpath=None,
+                ),
+                affected_version_range=GemVersionRange(
+                    constraints=(
+                        VersionConstraint(
+                            comparator=">=", version=RubygemsVersion(string="10.2.0")
+                        ),
+                        VersionConstraint(
+                            comparator="<=", version=RubygemsVersion(string="10.2.8")
+                        ),
+                    )
+                ),
+            ),
         ],
         references=[
             Reference(

@@ -39,14 +39,23 @@ class ImproveRunner:
     def __init__(self, improver_class):
         self.improver_class = improver_class
 
-    def run(self) -> None:
+    def __run_advisory_improver(self) -> None:
         improver = self.improver_class()
-        logger.info(f"Running improver: {improver.qualified_name}")
         for advisory in improver.interesting_advisories:
             inferences = improver.get_inferences(advisory_data=advisory.to_advisory_data())
             process_inferences(
                 inferences=inferences, advisory=advisory, improver_name=improver.qualified_name
             )
+
+    def __run_custom_improver(self) -> None:
+        self.improver_class().run()
+
+    def run(self) -> None:
+        logger.info(f"Running improver: {self.improver_class().qualified_name}")
+        if self.improver_class().is_custom_improver:
+            self.__run_custom_improver()
+        else:
+            self.__run_advisory_improver()
         logger.info("Finished improving using %s.", self.improver_class.qualified_name)
 
 

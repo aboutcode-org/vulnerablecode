@@ -893,7 +893,7 @@ class Commit(models.Model):
     Reference to a commit(s) that fixed the vulnerability
     """
 
-    reference = models.OneToOneField(
+    reference = models.ForeignKey(
         VulnerabilityReference,
         on_delete=models.CASCADE,
     )
@@ -907,7 +907,7 @@ class Commit(models.Model):
     chain_urls = models.JSONField(
         default=list,
         help_text="List of URLS used to reach the commit",
-        blank = True,
+        blank=True,
     )
 
     class Meta:

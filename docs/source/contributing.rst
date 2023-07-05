@@ -454,7 +454,10 @@ Improver
 ^^^^^^^^^
 
 All the Improvers must inherit from ``Improver`` superclass and implement the
-``interesting_advisories`` property and the ``get_inferences`` method.
+``interesting_advisories`` property and the ``get_inferences`` method,
+unless they are not improving advisory data. In this case they should override
+``is_custom_improver`` property to True and implement the ``run`` method.
+
 
 Writing an improver
 ---------------------

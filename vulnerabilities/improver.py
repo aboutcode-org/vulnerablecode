@@ -110,7 +110,15 @@ class Improver:
     required to override the ``interesting_advisories`` property method to return a QuerySet of
     ``Advisory`` objects. These advisories are then passed to ``get_inferences`` method which is
     responsible for returning an iterable of ``Inferences`` for that particular ``Advisory``
+
+    Some improvers are related to already imported data, but not related the advisories directly
+    Such improver must set 'custom_improver' to true and implement the run method in the improver file.
+
     """
+
+    @classproperty
+    def is_custom_improver(cls):
+        return False
 
     @classproperty
     def qualified_name(cls):
@@ -131,6 +139,14 @@ class Improver:
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         """
         Return an iterable of Inferences from the ``advisory data``.
+
+        Subclasses must implement.
+        """
+        raise NotImplementedError
+
+    def run(self) -> None:
+        """
+        Runs a custom Improver which doesn't improve the advisory data, and needs custom action.
 
         Subclasses must implement.
         """

@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from vulnerabilities.improvers import add_commit_ref
 from vulnerabilities.improvers import default
 from vulnerabilities.improvers import valid_versions
 
@@ -24,6 +25,7 @@ IMPROVERS_REGISTRY = [
     valid_versions.IstioImprover,
     valid_versions.DebianOvalImprover,
     valid_versions.UbuntuOvalImprover,
+    add_commit_ref.CommitRelationImprover,
 ]
 
 IMPROVERS_REGISTRY = {x.qualified_name: x for x in IMPROVERS_REGISTRY}

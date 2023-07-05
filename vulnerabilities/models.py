@@ -886,3 +886,33 @@ class ApiUser(UserModel):
 
     class Meta:
         proxy = True
+
+
+class Commit(models.Model):
+    """
+    Reference to a commit(s) that fixed the vulnerability
+    """
+
+    reference = models.OneToOneField(
+        VulnerabilityReference,
+        on_delete=models.CASCADE,
+    )
+
+    hash = models.CharField(
+        max_length=1024,
+        help_text="Hash of the commit",
+        blank=True,
+    )
+
+    chain_urls = models.JSONField(
+        default=list,
+        help_text="List of URLS used to reach the commit",
+        blank = True,
+    )
+
+    class Meta:
+        ordering = ["reference_id"]
+
+    def __str__(self):
+        reference_id = f" {self.reference_id}" if self.reference_id else ""
+        return f"{self.url}{reference_id}"

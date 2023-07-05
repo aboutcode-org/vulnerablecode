@@ -48,7 +48,7 @@ VulnerableCode Vulnerability Search
                             <td>
                                 {% for alias in vulnerability.alias %}
                                     {% if alias.url %}
-                                        <a href={{ alias.url }} target="_blank">{{ alias }}
+                                        <a href="{{ alias.url }}" target="_blank">{{ alias }}
                                             <i class="fa fa-external-link fa_link_custom"></i>
                                         </a>
                                     {% else %}

@@ -181,6 +181,8 @@ class Vulnerability(models.Model):
         through="PackageRelatedVulnerability",
     )
 
+    is_rejected = models.BooleanField(default=False)
+
     objects = VulnerabilityQuerySet.as_manager()
 
     class Meta:
@@ -839,6 +841,7 @@ class Advisory(models.Model):
         "vulnerabilities.importers.nginx.NginxImporter",
     )
     objects = AdvisoryQuerySet.as_manager()
+    is_rejected = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ["aliases", "unique_content_id", "date_published"]

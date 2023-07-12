@@ -13,7 +13,8 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "is_rejected": false
   },
   {
     "aliases": [
@@ -29,6 +30,7 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "is_rejected": false
   }
 ]

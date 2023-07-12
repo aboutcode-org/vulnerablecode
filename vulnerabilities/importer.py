@@ -248,6 +248,7 @@ class AdvisoryData:
     references: List[Reference] = dataclasses.field(default_factory=list)
     date_published: Optional[datetime.datetime] = None
     weaknesses: List[int] = dataclasses.field(default_factory=list)
+    is_rejected: bool = False
 
     def __post_init__(self):
         if self.date_published and not self.date_published.tzinfo:
@@ -271,6 +272,7 @@ class AdvisoryData:
             "references": [ref.to_dict() for ref in self.references],
             "date_published": self.date_published.isoformat() if self.date_published else None,
             "weaknesses": self.weaknesses,
+            "is_rejected": self.is_rejected,
         }
 
     @classmethod

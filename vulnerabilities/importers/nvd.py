@@ -127,6 +127,12 @@ class CveItem:
         return self.cve_item["cve"]["CVE_data_meta"]["ID"]
 
     @property
+    def is_rejected(self):
+        for desc in get_item(self.cve_item, "cve", "description", "description_data") or []:
+            if "** REJECT ** DO NOT USE THIS CANDIDATE NUMBER." in desc.get("value"):
+                return True
+
+    @property
     def summary(self):
         """
         Return a descriptive summary.
@@ -266,6 +272,7 @@ class CveItem:
             references=self.references,
             date_published=dateparser.parse(self.cve_item.get("publishedDate")),
             weaknesses=self.weaknesses,
+            is_rejected=self.is_rejected,
         )
 
 

@@ -31,5 +31,6 @@
     }
   ],
   "date_published": "2021-10-06T00:00:00+00:00",
-  "weaknesses": []
+  "weaknesses": [],
+  "is_rejected": false
 }

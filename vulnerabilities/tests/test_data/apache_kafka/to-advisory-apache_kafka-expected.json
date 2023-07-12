@@ -36,7 +36,8 @@
       }
     ],
     "date_published": "2022-09-19T00:00:00+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "is_rejected": false
   },
   {
     "aliases": [
@@ -75,7 +76,8 @@
       }
     ],
     "date_published": "2021-09-21T00:00:00+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "is_rejected": false
   },
   {
     "aliases": [
@@ -114,7 +116,8 @@
       }
     ],
     "date_published": "2020-01-13T00:00:00+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "is_rejected": false
   },
   {
     "aliases": [
@@ -153,7 +156,8 @@
       }
     ],
     "date_published": "2019-07-10T00:00:00+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "is_rejected": false
   },
   {
     "aliases": [
@@ -192,7 +196,8 @@
       }
     ],
     "date_published": "2018-07-26T00:00:00+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "is_rejected": false
   },
   {
     "aliases": [
@@ -231,6 +236,7 @@
       }
     ],
     "date_published": "2018-07-26T00:00:00+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "is_rejected": false
   }
 ]

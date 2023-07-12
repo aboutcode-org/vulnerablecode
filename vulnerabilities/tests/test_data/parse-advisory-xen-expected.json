@@ -13,6 +13,7 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "is_rejected": false
   }
 ]

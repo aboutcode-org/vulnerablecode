@@ -58,7 +58,7 @@ VulnerableCode Package Details - {{ package.purl }}
                         {% for vulnerability in affected_by_vulnerabilities %}
                             <tr>
                                 <td>
-                                    <a href="{{ vulnerability.get_absolute_url }}" target="_self">{{ vulnerability.vulnerability_id }}</a>
+                                    <a href="{{ vulnerability.get_absolute_url }}?package={{package.purl}}" target="_self">{{ vulnerability.vulnerability_id }}</a>
                                 </td>
                                 <td>
                                     {{ vulnerability.summary }}
@@ -105,7 +105,7 @@ VulnerableCode Package Details - {{ package.purl }}
                         {% for vulnerability in fixing_vulnerabilities %}
                             <tr>
                                 <td>
-                                    <a href="{{ vulnerability.get_absolute_url }}" target="_self">{{ vulnerability.vulnerability_id }}</a>
+                                    <a href="{{ vulnerability.get_absolute_url }}?package={{package.purl}}" target="_self">{{ vulnerability.vulnerability_id }}</a>
                                 </td>
                                 <td>
                                     {{ vulnerability.summary }}

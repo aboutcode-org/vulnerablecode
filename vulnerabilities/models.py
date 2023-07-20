@@ -356,28 +356,32 @@ class VulnerabilityRelatedReference(models.Model):
         ordering = ["vulnerability", "reference"]
 
 
-def purl_to_dict(purl: PackageURL):
+def purl_to_dict(purl: PackageURL, without_version=False):
     """
     Return a dict of purl components suitable for use in a queryset.
     We need to have specific empty values for using in querysets because of our peculiar model structure.
 
     For example::
     >>> purl_to_dict(PackageURL.from_string("pkg:generic/postgres"))
-    {'type': 'generic', 'namespace': '', 'name': 'postgres', 'version': '', 'qualifiers': {}, 'subpath': ''}
+    {'type': 'generic', 'namespace': '', 'name': 'postgres', 'qualifiers': {}, 'subpath': '', 'version': ''}
     >>> purl_to_dict(PackageURL.from_string("pkg:generic/postgres/postgres@1.2?foo=bar#baz"))
-    {'type': 'generic', 'namespace': 'postgres', 'name': 'postgres', 'version': '1.2', 'qualifiers': {'foo': 'bar'}, 'subpath': 'baz'}
+    {'type': 'generic', 'namespace': 'postgres', 'name': 'postgres', 'qualifiers': {'foo': 'bar'}, 'subpath': 'baz', 'version': '1.2'}
+    >>> purl_to_dict(purl = PackageURL.from_string("pkg:generic/postgres/postgres@1.2?foo=bar#baz"), without_version=True)
+    {'type': 'generic', 'namespace': 'postgres', 'name': 'postgres', 'qualifiers': {'foo': 'bar'}, 'subpath': 'baz'}
     """
     if isinstance(purl, str):
         purl = PackageURL.from_string(purl)
 
-    return dict(
+    lookup = dict(
         type=purl.type,
         namespace=purl.namespace or "",
         name=purl.name,
-        version=purl.version or "",
         qualifiers=purl.qualifiers or {},
         subpath=purl.subpath or "",
     )
+    if not without_version:
+        lookup["version"] = purl.version or ""
+    return lookup
 
 
 class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
@@ -430,17 +434,6 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
                 filter=Q(packagerelatedvulnerability__fix=True),
             ),
         )
-
-    def fixing_packages(self, package, with_qualifiers_and_subpath=True):
-        """
-        Return a queryset of packages that are fixing the vulnerability of
-        ``package``.
-        """
-
-        return self.match_purl(
-            purl=package.purl,
-            with_qualifiers_and_subpath=with_qualifiers_and_subpath,
-        ).fixing()
 
     def search(self, query=None):
         """
@@ -495,6 +488,15 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         Return a queryset of Vulnerability that have the the NVD CVE ``cve`` as an alias.
         """
         return self.filter(vulnerabilities__vulnerabilityreference__reference_id__exact=cve)
+
+    def matching_packages(self, purl):
+        if not purl:
+            return self
+        if not isinstance(purl, PackageURL):
+            purl = str(purl)
+            purl = PackageURL.from_string(purl)
+        lookups = purl_to_dict(purl=purl, without_version=True)
+        return self.filter(**lookups)
 
 
 def get_purl_query_lookups(purl):
@@ -598,13 +600,6 @@ class Package(PackageURLMixin):
 
     # legacy aliases
     resolved_to = fixing
-
-    @property
-    def fixed_packages(self):
-        """
-        Return a queryset of packages that are fixed.
-        """
-        return Package.objects.fixing_packages(package=self).distinct()
 
     @property
     def is_vulnerable(self) -> bool:

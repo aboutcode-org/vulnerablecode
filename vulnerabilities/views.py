@@ -18,6 +18,7 @@ from django.views import View
 from django.views import generic
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from packageurl import PackageURL
 
 from vulnerabilities import models
 from vulnerabilities.forms import ApiUserCreationForm
@@ -116,6 +117,14 @@ class VulnerabilityDetails(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        request_query = self.request.GET
+        package = request_query.get("package")
+        purl = None
+        if package:
+            try:
+                purl = PackageURL.from_string(package)
+            except:
+                purl = None
         context.update(
             {
                 "vulnerability": self.object,
@@ -123,8 +132,8 @@ class VulnerabilityDetails(DetailView):
                 "severities": list(self.object.severities),
                 "references": self.object.references.all(),
                 "aliases": self.object.aliases.all(),
-                "affected_packages": self.object.affected_packages.all(),
-                "fixed_by_packages": self.object.fixed_by_packages.all(),
+                "affected_packages": self.object.affected_packages.matching_packages(purl),
+                "fixed_by_packages": self.object.fixed_by_packages.matching_packages(purl),
                 "weaknesses": self.object.weaknesses.all(),
             }
         )

@@ -43,10 +43,14 @@ class ImproveRunner:
         improver = self.improver_class()
         logger.info(f"Running improver: {improver.qualified_name}")
         for advisory in improver.interesting_advisories:
-            inferences = improver.get_inferences(advisory_data=advisory.to_advisory_data())
-            process_inferences(
-                inferences=inferences, advisory=advisory, improver_name=improver.qualified_name
-            )
+            logger.info(f"Processing advisory: {advisory!r}")
+            try:
+                inferences = improver.get_inferences(advisory_data=advisory.to_advisory_data())
+                process_inferences(
+                    inferences=inferences, advisory=advisory, improver_name=improver.qualified_name
+                )
+            except Exception as e:
+                logger.info(f"Failed to process advisory: {advisory!r} with error {e!r}")
         logger.info("Finished improving using %s.", self.improver_class.qualified_name)
 
 

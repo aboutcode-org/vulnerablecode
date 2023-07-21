@@ -31,19 +31,20 @@ class Command(BaseCommand):
         parser.add_argument("sources", nargs="*", help="Fully qualified improver name to run")
 
     def handle(self, *args, **options):
-        if options["list"]:
-            self.list_sources()
-            return
-
-        if options["all"]:
-            self.improve_data(IMPROVERS_REGISTRY.values())
-            return
-
-        sources = options["sources"]
-        if not sources:
-            raise CommandError('Please provide at least one improver to run or use "--all".')
-
-        self.improve_data(validate_improvers(sources))
+        try:
+            if options["list"]:
+                self.list_sources()
+            elif options["all"]:
+                self.improve_data(IMPROVERS_REGISTRY.values())
+            else:
+                sources = options["sources"]
+                if not sources:
+                    raise CommandError(
+                        'Please provide at least one improver to run or use "--all".'
+                    )
+                self.improve_data(validate_improvers(sources))
+        except KeyboardInterrupt:
+            raise CommandError("Keyboard interrupt received. Stopping...")
 
     def list_sources(self):
         improvers = list(IMPROVERS_REGISTRY)

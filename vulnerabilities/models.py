@@ -17,6 +17,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import UserManager
 from django.core import exceptions
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -52,6 +53,20 @@ class BaseQuerySet(models.QuerySet):
         """
         with suppress(self.model.DoesNotExist, ValidationError):
             return self.get(*args, **kwargs)
+
+    def paginated(self, per_page=5000):
+        """
+        Iterate over a (large) QuerySet by chunks of ``per_page`` items.
+        This technique is essential for preventing memory issues when iterating
+        See these links for inspiration:
+        https://nextlinklabs.com/resources/insights/django-big-data-iteration
+        https://stackoverflow.com/questions/4222176/why-is-iterating-through-a-large-django-queryset-consuming-massive-amounts-of-me/
+        """
+        paginator = Paginator(self, per_page=per_page)
+        for page_number in paginator.page_range:
+            page = paginator.page(page_number)
+            for object in page.object_list:
+                yield object
 
 
 class VulnerabilityQuerySet(BaseQuerySet):
@@ -770,6 +785,10 @@ class Alias(models.Model):
             return f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json"
 
 
+class AdvisoryQuerySet(BaseQuerySet):
+    pass
+
+
 class Advisory(models.Model):
     """
     An advisory represents data directly obtained from upstream transformed
@@ -809,6 +828,7 @@ class Advisory(models.Model):
         "module name importing the advisory. Eg:"
         "vulnerabilities.importers.nginx.NginxImporter",
     )
+    objects = AdvisoryQuerySet.as_manager()
 
     class Meta:
         unique_together = ["aliases", "unique_content_id", "date_published"]

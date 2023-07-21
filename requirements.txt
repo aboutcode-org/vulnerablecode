@@ -81,10 +81,10 @@ pytest-django==4.5.2
 python-dateutil==2.8.2
 python-dotenv==0.20.0
 pytz==2022.1
-PyYAML==5.4.1
+PyYAML==6.0.1
 requests==2.27.1
 restructuredtext-lint==1.4.0
-saneyaml==0.5.2
+saneyaml==0.6.0
 semantic-version==2.9.0
 six==1.16.0
 smmap==5.0.0

@@ -2,6 +2,13 @@ Release notes
 =============
 
 
+Version v33.1.0
+-----------------
+
+- We have paginated the default improver and added keyboard interrupt support for import and improve processes. 
+- We bumped PyYaml to 6.0.1 and saneyaml to 0.6.0 and dropped docker-compose.
+
+
 Version v33.0.0
 -----------------
 

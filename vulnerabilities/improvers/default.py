@@ -36,7 +36,8 @@ class DefaultImprover(Improver):
 
     @property
     def interesting_advisories(self) -> QuerySet:
-        return Advisory.objects.all()
+        for advisory in Advisory.objects.all().paginated():
+            yield advisory
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         if not advisory_data:
@@ -94,11 +95,11 @@ def get_exact_purls(affected_package: AffectedPackage) -> Tuple[List[PackageURL]
     >>> assert expected == got
     """
 
-    vr = affected_package.affected_version_range
-    # We need ``if c`` below because univers returns None as version
-    # in case of vers:nginx/*
-    # TODO: Revisit after https://github.com/nexB/univers/issues/33
     try:
+        vr = affected_package.affected_version_range
+        # We need ``if c`` below because univers returns None as version
+        # in case of vers:nginx/*
+        # TODO: Revisit after https://github.com/nexB/univers/issues/33
         affected_purls = []
         fixed_versions = []
         if vr:
@@ -120,5 +121,5 @@ def get_exact_purls(affected_package: AffectedPackage) -> Tuple[List[PackageURL]
         ]
         return affected_purls, fixed_purls
     except Exception as e:
-        logger.error(f"Failed to get exact purls for {affected_package} {e}")
+        logger.error(f"Failed to get exact purls for: {affected_package!r} with error: {e!r}")
         return [], []

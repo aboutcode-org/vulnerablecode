@@ -29,19 +29,20 @@ class Command(BaseCommand):
         parser.add_argument("sources", nargs="*", help="Fully qualified importer name to run")
 
     def handle(self, *args, **options):
-        if options["list"]:
-            self.list_sources()
-            return
-
-        if options["all"]:
-            self.import_data(importers=IMPORTERS_REGISTRY.values())
-            return
-
-        sources = options["sources"]
-        if not sources:
-            raise CommandError('Please provide at least one importer to run or use "--all".')
-
-        self.import_data(validate_importers(sources))
+        try:
+            if options["list"]:
+                self.list_sources()
+            elif options["all"]:
+                self.import_data(importers=IMPORTERS_REGISTRY.values())
+            else:
+                sources = options["sources"]
+                if not sources:
+                    raise CommandError(
+                        'Please provide at least one importer to run or use "--all".'
+                    )
+                self.import_data(validate_importers(sources))
+        except KeyboardInterrupt:
+            raise CommandError("Keyboard interrupt received. Stopping...")
 
     def list_sources(self):
         self.stdout.write("Vulnerability data can be imported from the following importers:")

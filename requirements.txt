@@ -28,7 +28,6 @@ django-widget-tweaks==1.4.12
 djangorestframework==3.13.1
 doc8==0.11.1
 docker==5.0.3
-docker-compose==1.29.2
 dockerpty==0.4.1
 docopt==0.6.2
 docutils==0.17.1
@@ -79,12 +78,12 @@ pyrsistent==0.18.1
 pytest==7.1.1
 pytest-django==4.5.2
 python-dateutil==2.8.2
-python-dotenv==0.20.0
+python-dotenv==1.0.0
 pytz==2022.1
-PyYAML==5.4.1
+PyYAML==6.0.1
 requests==2.27.1
 restructuredtext-lint==1.4.0
-saneyaml==0.5.2
+saneyaml==0.6.0
 semantic-version==2.9.0
 six==1.16.0
 smmap==5.0.0

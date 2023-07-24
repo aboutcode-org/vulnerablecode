@@ -1,6 +1,6 @@
 [
   {
-    "unique_content_id": "9c968129f10b424807b830f0219b8d4c",
+    "unique_content_id": "dabe133c6355b18f153a511f5829492c",
     "aliases": [
       "CORE-2010-0121"
     ],
@@ -40,7 +40,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "b55c336a480792ece857368101645c0c",
+    "unique_content_id": "c9dcd3bec014b1f9e351d9c7514e5f01",
     "aliases": [
       "CVE-2009-3896"
     ],
@@ -116,7 +116,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "5df3f01df0d85143bc51ddbb453c1581",
+    "unique_content_id": "835e668ec8d9f005b4472e28421c2006",
     "aliases": [
       "CVE-2009-3898"
     ],
@@ -158,7 +158,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "480c77ca27341a47f11299017c7660b7",
+    "unique_content_id": "a0007fe2ea8f6ddf29ea126d21f6956d",
     "aliases": [
       "CVE-2009-4487"
     ],
@@ -188,7 +188,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "20cecfba57d0a66b04e1b4b6fb4efb26",
+    "unique_content_id": "a0928f78826f958a2432126b2a884e83",
     "aliases": [
       "CVE-2010-2263"
     ],
@@ -234,7 +234,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "646911f1d2f21611b0a3720f3523b3b2",
+    "unique_content_id": "6717167491546825b89448925539ffba",
     "aliases": [
       "CVE-2010-2266"
     ],
@@ -280,7 +280,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "56a7ea32d809aa1a3181ab87eea4fe43",
+    "unique_content_id": "73cb4dac8940113bcd2045ae82b8e2a8",
     "aliases": [
       "CVE-2011-4315"
     ],
@@ -322,7 +322,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "2bac8349cb492bcc4990b161b01dc414",
+    "unique_content_id": "602ad465c0476fdbc1254919ae6021e2",
     "aliases": [
       "CVE-2011-4963"
     ],
@@ -379,7 +379,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "aff5af1bcc53f6fa1a49917e044acf79",
+    "unique_content_id": "4d0d128ad68cd0640c62bfa2412269e0",
     "aliases": [
       "CVE-2012-1180"
     ],
@@ -436,7 +436,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "b0a336b612b378d72e93193756b3e376",
+    "unique_content_id": "34fdffdb5803857f20519de081d5aa47",
     "aliases": [
       "CVE-2012-2089"
     ],
@@ -493,7 +493,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "e35afe5b1aadcb66c5ad82c8894dff17",
+    "unique_content_id": "d4bc5fe3ed17d7a6eeebf9a4731ab245",
     "aliases": [
       "CVE-2013-2028"
     ],
@@ -550,7 +550,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "870c7bf846dc50554e9fa2290598b001",
+    "unique_content_id": "014359d8701d1b0220a1d4a53938167e",
     "aliases": [
       "CVE-2013-2070"
     ],
@@ -635,7 +635,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ce0711c66b7cdd60814c1abfbafdd3b9",
+    "unique_content_id": "a98e3e8cc6c61be3e0bb0c766422000a",
     "aliases": [
       "CVE-2013-4547"
     ],
@@ -698,7 +698,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "55dccce79c4247faa1ed8db0f8fbd44f",
+    "unique_content_id": "ca4a84fef474aa4dc5aec6cdedcb543a",
     "aliases": [
       "CVE-2014-0088"
     ],
@@ -743,7 +743,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "0c5952c29a54fdbc5526988c898e639d",
+    "unique_content_id": "023ec91ead7d7978f99823b1b00fd8d0",
     "aliases": [
       "CVE-2014-0133"
     ],
@@ -800,7 +800,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "3637800165bcb0cf3917364af7654fee",
+    "unique_content_id": "57b7911aa13a1c069fcd3dac8ec79a2f",
     "aliases": [
       "CVE-2014-3556"
     ],
@@ -863,7 +863,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "2024528d103453292ea1f23163cb7ad8",
+    "unique_content_id": "0fb96728d775c491b25b9c5d9e509169",
     "aliases": [
       "CVE-2014-3616"
     ],
@@ -916,7 +916,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "4a748f6cbd00bbafac23faa271396b3a",
+    "unique_content_id": "654bff8d56e5324da4c873438d75470e",
     "aliases": [
       "CVE-2016-0742"
     ],
@@ -969,7 +969,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "964babd1d8158846f348e9fa6df4e27f",
+    "unique_content_id": "48c76ecddb554fe1274ed090b1692081",
     "aliases": [
       "CVE-2016-0746"
     ],
@@ -1022,7 +1022,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "e96daddac5c29ad0b9e157638fbeb3b2",
+    "unique_content_id": "8c61e735eef0a9205cee0bcd64d86c59",
     "aliases": [
       "CVE-2016-0747"
     ],
@@ -1075,7 +1075,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "9cb4dc08fbceda238c4f45b00320ce42",
+    "unique_content_id": "04ebbd42272e64e6fc5a6f8d9f301fef",
     "aliases": [
       "CVE-2016-4450"
     ],
@@ -1148,7 +1148,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "4ebd7508e9aaa3c3c89cac10397f47d4",
+    "unique_content_id": "4e89029cf59ea68756e72973eace4a6b",
     "aliases": [
       "CVE-2017-7529"
     ],
@@ -1211,7 +1211,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "2fc1350472196c63ba9f7031fd456e76",
+    "unique_content_id": "f523c6c72d936bdb79de56b9fd46b1f0",
     "aliases": [
       "CVE-2018-16843"
     ],
@@ -1264,7 +1264,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "1ae05361ffd7ba4b2a466afc6a3de34c",
+    "unique_content_id": "fd888e77e0b3b025f1fa65f761442d8c",
     "aliases": [
       "CVE-2018-16844"
     ],
@@ -1317,7 +1317,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "c78f14d302f37c9241afbc18578c49b3",
+    "unique_content_id": "06084d7ef376d18305484283c2f3da73",
     "aliases": [
       "CVE-2018-16845"
     ],
@@ -1380,7 +1380,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "dbbf831a29a655709b98cb79a5f90fac",
+    "unique_content_id": "ef70ce1787dad53097a6394e92cee831",
     "aliases": [
       "CVE-2019-9511"
     ],
@@ -1433,7 +1433,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "834d4d1067390d7f84ebd3cea8f60fb4",
+    "unique_content_id": "42fe9391f57db8d38624dc2e07b35c33",
     "aliases": [
       "CVE-2019-9513"
     ],
@@ -1486,7 +1486,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "8e94de6ae6386d8e0af0241a0989cdcd",
+    "unique_content_id": "1bf350eb789fa415c4d971caf298be95",
     "aliases": [
       "CVE-2019-9516"
     ],
@@ -1539,7 +1539,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "fa52846658ab31e85334ad4af2fa7529",
+    "unique_content_id": "67435c71e6737dfa1a122184ee431e14",
     "aliases": [
       "CVE-2021-23017"
     ],
@@ -1602,7 +1602,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "34b7ff4154010452c4dd186b7cbbcc5d",
+    "unique_content_id": "56ee126958340832e9b235a38b0c4495",
     "aliases": [
       "VU#120541",
       "CVE-2009-3555"
@@ -1655,7 +1655,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "cef6afb87317112ea248571bd6991994",
+    "unique_content_id": "b6f863030bb4fe1e2d3061bbcbc54d0c",
     "aliases": [
       "VU#180065",
       "CVE-2009-2629"

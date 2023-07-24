@@ -54,19 +54,23 @@ def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: st
     for data in advisory_datas:
         # https://nvd.nist.gov/vuln/detail/CVE-2013-4314
         # https://github.com/cms-dev/cms/issues/888#issuecomment-516977572
-        data.summary = data.summary.replace("\x00", "\uFFFD")
-        obj, created = Advisory.objects.get_or_create(
-            aliases=data.aliases,
-            summary=data.summary,
-            affected_packages=[pkg.to_dict() for pkg in data.affected_packages],
-            references=[ref.to_dict() for ref in data.references],
-            date_published=data.date_published,
-            weaknesses=data.weaknesses,
-            defaults={
-                "created_by": importer_name,
-                "date_collected": datetime.datetime.now(tz=datetime.timezone.utc),
-            },
-        )
+        try:
+            data.summary = data.summary.replace("\x00", "\uFFFD")
+            obj, created = Advisory.objects.get_or_create(
+                aliases=data.aliases,
+                summary=data.summary,
+                affected_packages=[pkg.to_dict() for pkg in data.affected_packages],
+                references=[ref.to_dict() for ref in data.references],
+                date_published=data.date_published,
+                weaknesses=data.weaknesses,
+                defaults={
+                    "created_by": importer_name,
+                    "date_collected": datetime.datetime.now(tz=datetime.timezone.utc),
+                },
+            )
+        except Exception as e:
+            logger.error(f"Error while processing {data!r} with aliases {data.aliases!r}: {e!r}")
+            continue
         if created:
             logger.info(
                 f"[*] New Advisory with aliases: {obj.aliases!r}, created_by: {obj.created_by}"

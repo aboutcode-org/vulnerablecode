@@ -2,6 +2,13 @@ Release notes
 =============
 
 
+Version v33.2.0
+-----------------
+
+- We fixed NVD importer to import the latest data by adding weakness 
+  in unique content ID for advisories.
+
+
 Version v33.1.0
 -----------------
 

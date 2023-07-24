@@ -836,7 +836,7 @@ class Advisory(models.Model):
 
     def save(self, *args, **kwargs):
         checksum = hashlib.md5()
-        for field in (self.summary, self.affected_packages, self.references):
+        for field in (self.summary, self.affected_packages, self.references, self.weaknesses):
             value = json.dumps(field, separators=(",", ":")).encode("utf-8")
             checksum.update(value)
         self.unique_content_id = checksum.hexdigest()

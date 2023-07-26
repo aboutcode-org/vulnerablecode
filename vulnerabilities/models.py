@@ -589,6 +589,18 @@ class Package(PackageURLMixin):
     vulnerable_to = affected_by
 
     @property
+    def test_get_fixing_purls(self):
+        """
+        This is a test -- the goal is to display the closest fixing version for a PURL that is greater
+        than the affected version and is the same type.  We want to filter on type, namespace,
+        name, qualifiers and subpath for the affected PURL.
+        """
+        return [
+            abc.fixed_by_packages
+            for abc in self.vulnerabilities.filter(packagerelatedvulnerability__fix=False)
+        ]
+
+    @property
     # TODO: consider renaming to "fixes" or "fixing" ? (TBD) and updating the docstring
     def fixing(self):
         """

@@ -43,52 +43,131 @@ VulnerableCode Package Details - {{ package.purl }}
             <div class="content ml-3 mr-3" style="background-color: #f8f8f8; padding: 10px; border: solid 1px #d8d8d8; border-radius: 5px;">
                 <span style="font-weight: 700; color: #0066ff;">Let's try to display fixing packages for this package: {{ package.purl }}</span>
                 <div style="padding: 5px 0px;">
-                    <span style="font-weight: 700; color: #cc0099;">package.purl</span> = {{ package.purl }}
+                    <span style="font-weight: 700; color: #996633;">package.purl</span> = {{ package.purl }}
                 </div>
                 <div style="padding: 5px 0px;">
-                    <span style="font-weight: 700; color: #cc0099;">package.qualifiers</span> = {{ package.qualifiers }}
+                    <span style="font-weight: 700; color: #996633;">package.qualifiers</span> = {{ package.qualifiers }}
                 </div>
                 <div style="padding: 5px 0px;">
-                    <span style="font-weight: 700; color: #cc0099;">package.vulnerabilities</span> = {{ package.vulnerabilities }}
+                    <span style="font-weight: 700; color: #996633;">package.vulnerabilities</span> = {{ package.vulnerabilities }}
                 </div>
                 <div style="padding: 5px 0px;">
-                    <span style="font-weight: 700; color: #cc0099;">package.package_url</span> = {{ package.package_url }}
+                    <span style="font-weight: 700; color: #996633;">package.package_url</span> = {{ package.package_url }}
                 </div>
                 <div style="padding: 5px 0px;">
-                    <span style="font-weight: 700; color: #cc0099;">package.plain_package_url</span> = {{ package.plain_package_url }}
+                    <span style="font-weight: 700; color: #996633;">package.plain_package_url</span> = {{ package.plain_package_url }}
                 </div>
                 <div style="padding: 5px 0px;">
-                    <span style="font-weight: 700; color: #cc0099;">package.purl_object</span> = {{ package.purl_object }}
-                </div>
-
-                <div style="padding: 5px 0px;">
-                    <span style="font-weight: 700; color: #cc0099;">package.fixing</span> = {{ package.fixing }}
-                </div>
-                <div style="padding: 5px 0px;">
-                    <span style="font-weight: 700; color: #cc0099;">package.fixed_packages</span> = <span class="inline-code">Server Error (500)</span>
-                </div>
-                <div style="padding: 5px 0px;">
-                    <span style="font-weight: 700; color: #cc0099;">package.is_vulnerable</span> = {{ package.is_vulnerable }}
-                </div>
-                <div style="padding: 5px 0px;">
-                    <span style="font-weight: 700; color: #cc0099;">package.get_absolute_url</span> = {{ package.get_absolute_url }}
+                    <span style="font-weight: 700; color: #996633;">package.purl_object</span> = {{ package.purl_object }}
                 </div>
 
                 <div style="padding: 5px 0px;">
-                    <span style="font-weight: 700; color: #cc0099;">package.affected_by</span> = {{ package.affected_by }}
+                    <span style="font-weight: 700; color: #996633;">package.fixing</span> = {{ package.fixing }}
                 </div>
                 <div style="padding: 5px 0px;">
-                    <span style="font-weight: 700; color: #cc0099;">package.test_get_fixing_purls</span> = {{ package.test_get_fixing_purls }}
+                    <span style="font-weight: 700; color: #996633;">package.fixed_packages</span> = <span class="inline-code">Server Error (500)</span>
+                </div>
+                <div style="padding: 5px 0px;">
+                    <span style="font-weight: 700; color: #996633;">package.is_vulnerable</span> = {{ package.is_vulnerable }}
+                </div>
+                <div style="padding: 5px 0px;">
+                    <span style="font-weight: 700; color: #996633;">package.get_absolute_url</span> = {{ package.get_absolute_url }}
+                </div>
+
+                <div style="padding: 5px 0px;">
+                    <span style="font-weight: 700; color: #996633;">package.affected_by</span> = {{ package.affected_by }}
+                </div>
+
+                <div style="padding: 5px 0px;">
+                    <span style="font-weight: 700; color: #996633;">package.test_get_fixing_purls</span> = {{ package.test_get_fixing_purls }}
+                </div>
+
+                <div style="padding: 5px 0px;">
+                    <span style="font-weight: 700; color: #996633;">package.test_get_fixing_purls</span> = {{ package.test_get_fixing_purls }}
                 </div>
 
                 {% for abc in package.affected_by %}
 
-                    <div style="padding: 5px 0px;"><span style="font-weight: 700; color: #cc0099;">{{ abc }}</span> -- {{ abc.fixed_by_packages }}</div>
-                    <div style="padding: 5px 0px;"><span style="font-weight: 700; color: #cc0099;">{{ abc }}</span> -- {% for pkg in abc.fixed_by_packages %}{{ pkg.purl }}{% endfor %}</div>
+                    <div style="padding: 5px 0px;"><span style="font-weight: 700; color: #996633;">{{ abc }}</span> -- {{ abc.fixed_by_packages }}</div>
+                    <div style="padding: 5px 0px;"><span style="font-weight: 700; color: #996633;">{{ abc }}</span> -- {% for pkg in abc.fixed_by_packages %}{{ pkg.purl }}{% endfor %}</div>
 
                 {% endfor %}
 
+                <div style="padding: 5px 0px; font-weight: 700; color: #008888;">abc.test_matching_fixed_by_packages</div>
+                {% for abc in package.affected_by %}
 
+                    <!-- <div style="padding: 5px 0px;">
+                        <span style="font-weight: 700; color: #008888;"">{{ abc }}</span> -- {{ abc.test_matching_fixed_by_packages }}
+                    </div> -->
+
+                    <div style="padding: 5px 0px;"><span style="font-weight: 700; color: #008888;">{{ abc }}</span> --
+                        {% for pkg in abc.test_matching_fixed_by_packages %}
+                        <div style="padding: 5px 0px;">{{ pkg.purl }}</div>
+                        {% endfor %}
+                    </div>
+
+                {% endfor %}
+
+                <div>
+                    <div style="font-weight: 700; color: #ff0000;">test01</div>
+                    {% for thing in test01 %}
+                        {{ thing }}
+                        <br />
+                    {% endfor %}
+                </div>
+
+                <div>
+                    <div style="font-weight: 700; color: #ff0000;">test02</div>
+                    {% for thing in test02 %}
+                    - {{ thing }}
+                    <br />
+                    {% endfor %}
+                </div>
+
+                <div>
+                    <div style="font-weight: 700; color: #ff0000;">test03</div>
+                    {% for thing in test03 %}
+                        - {{ thing }}
+                        <br />
+                        {% for stuff in thing.test_matching_fixed_by_packages %}
+                            ==> {{ stuff }}
+                            <br />
+                        {% endfor %}
+                    <br />
+                    {% endfor %}
+                </div>
+
+                <div>
+                    <div style="font-weight: 700; color: #009933;">test04</div>
+                    {% for thing in test04 %}
+                    <span style="color: #009933;">- {{ thing }}</span>
+                    <br />
+                    {% endfor %}
+                </div>
+
+                <div style="padding: 10px 0px;">
+                    <!-- The next div formerly was named "test05 -- test_get_fixing_purls" -->
+                    <div style="font-weight: 700; color: #cc0099;">context["test_get_fixing_purls"]</div>
+                    {% for thing in test_get_fixing_purls %}
+                    <span style="color: #cc0099;">- {{ thing }}</span>
+                    <br />
+                    {% endfor %}
+
+                    {% for vulnerability in affected_by_vulnerabilities %}
+                        <div style="color: #cc0099; font-weight: 700; margin-left: 10px;">
+                            {{ vulnerability }}
+                        </div>
+                        <div style="margin-left: 20px;">
+                            {% for pkg in vulnerability.fixed_by_packages %}
+                                {% if pkg in test_get_fixing_purls %}
+                                    <div style="padding: 0px 0px 5px 0px; line-height: 18px;">
+                                        <span style="color: #cc0099;">{{ pkg.purl }}</span>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
 
             </div>
 
@@ -103,7 +182,7 @@ VulnerableCode Package Details - {{ package.purl }}
                             <th style="width: 175px;">Vulnerability</th>
                             <th>Summary</th>
                             <th style="width: 225px;">Aliases</th>
-                            <th style="color: #ff0000;">Test fixing PURLs</th>
+                            <th style="color: #ff0000;">Fixing Packages</th>
                         </tr>
                     </thead>
 
@@ -131,8 +210,31 @@ VulnerableCode Package Details - {{ package.purl }}
                                     <!-- {{ vulnerability.fixed_by_packages }} -->
                                     <!-- <br /> -->
                                     {% for pkg in vulnerability.fixed_by_packages %}
-                                        {{ pkg.purl }}
+                                        <div style="font-size: 14px; padding: 0px 0px 5px 0px; line-height: 18px;">
+                                            {{ pkg.purl }}
+                                        </div>
                                     {% endfor %}
+
+                                    <hr style="border-top: solid 1px #000000;">
+
+                                    {% for pkg in vulnerability.fixed_by_packages %}
+                                        {% if pkg in test04 %}
+                                            <div style="font-size: 14px; padding: 0px 0px 5px 0px; line-height: 18px;">
+                                                <span style="color: #009933;">{{ pkg.purl }}</span>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    <hr style="border-top: solid 1px #000000;">
+
+                                    {% for pkg in vulnerability.fixed_by_packages %}
+                                        {% if pkg in test_get_fixing_purls %}
+                                            <div style="font-size: 14px; padding: 0px 0px 5px 0px; line-height: 18px;">
+                                                <span style="color: #cc0099;">{{ pkg.purl }}</span>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+
                                 </td>
                             </tr>
                         {% empty %}

@@ -83,6 +83,41 @@ class PackageDetails(DetailView):
         context["affected_by_vulnerabilities"] = package.affected_by.order_by("vulnerability_id")
         context["fixing_vulnerabilities"] = package.fixing.order_by("vulnerability_id")
         context["package_search_form"] = PackageSearchForm(self.request.GET)
+        context["test01"] = [
+            "aaa",
+            "bbb",
+            "ccc",
+        ]
+        context["test02"] = [
+            package,
+            package.type,
+            package.namespace,
+            package.name,
+            package.version,
+            package.qualifiers,
+            package.subpath,
+        ]
+        context["test03"] = package.affected_by
+
+        # ========================================================
+        context["test04"] = [
+            fixing_pkg
+            for vuln in package.affected_by
+            # for fixing_pkg in vuln.test_matching_fixed_by_packages
+            for fixing_pkg in vuln.fixed_by_packages
+            if fixing_pkg.type == package.type
+            and fixing_pkg.namespace == package.namespace
+            and fixing_pkg.name == package.name
+            and fixing_pkg.qualifiers == package.qualifiers
+            and fixing_pkg.subpath == package.subpath
+            # I think this version comparison requires the use of univers.
+            # Plus we just need the closest one, not all that are greater than.
+            and fixing_pkg.version > package.version
+        ]
+        # ========================================================
+        context["test_get_fixing_purls"] = package.test_get_fixing_purls
+        # ========================================================
+
         return context
 
     def get_object(self, queryset=None):

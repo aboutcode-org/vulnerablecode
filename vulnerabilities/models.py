@@ -22,6 +22,7 @@ from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Count
+from django.db.models import Prefetch
 from django.db.models import Q
 from django.db.models.functions import Length
 from django.db.models.functions import Trim
@@ -589,18 +590,6 @@ class Package(PackageURLMixin):
     vulnerable_to = affected_by
 
     @property
-    def test_get_fixing_purls(self):
-        """
-        This is a test -- the goal is to display the closest fixing version for a PURL that is greater
-        than the affected version and is the same type.  We want to filter on type, namespace,
-        name, qualifiers and subpath for the affected PURL.
-        """
-        return [
-            abc.fixed_by_packages
-            for abc in self.vulnerabilities.filter(packagerelatedvulnerability__fix=False)
-        ]
-
-    @property
     # TODO: consider renaming to "fixes" or "fixing" ? (TBD) and updating the docstring
     def fixing(self):
         """
@@ -630,6 +619,73 @@ class Package(PackageURLMixin):
         Return this Package details URL.
         """
         return reverse("package_details", args=[self.purl])
+
+    def get_fixed_packages(self, package):
+        """
+        Return a queryset of all packages that fix a vulnerability with
+        same type, namespace, name, subpath and qualifiers of the `package`
+        """
+        return Package.objects.filter(
+            name=package.name,
+            namespace=package.namespace,
+            type=package.type,
+            qualifiers=package.qualifiers,
+            subpath=package.subpath,
+            packagerelatedvulnerability__fix=True,
+        ).distinct()
+
+    @property
+    def test_get_fixing_purls(self):
+        """
+        This is a test -- the goal is to display the closest fixing version for a PURL that is greater
+        than the affected version and is the same type.  We want to filter on type, namespace,
+        name, qualifiers and subpath for the affected PURL.
+        """
+
+        fixed_packages = self.get_fixed_packages(package=self)
+
+        # Prefetch:
+
+        # Where do we get "fix" from?
+        # qs = self.vulnerabilities.filter(packagerelatedvulnerability__fix=fix)
+
+        # Not clear to me how we use this:
+        # qs = qs.prefetch_related(
+        #     Prefetch(
+        #         "packages",
+        #         queryset=fixed_packages,
+        #         to_attr="filtered_fixed_packages",
+        #     )
+        # )
+
+        matching_fixed_packages = []
+
+        # closest_subsequent_fixed_package = []
+
+        test_dict = {"affected_purl": self.purl}
+        test_dict["vulnerabilities"] = []
+
+        for vuln in self.affected_by:
+            test_dict["vulnerabilities"].append({"vulnerability": vuln.vulnerability_id})
+
+            for fixing_pkg in vuln.fixed_by_packages:
+                # Do not add "backports".  TODO: Do we need to use univers to compare versions?
+                if fixing_pkg in fixed_packages and fixing_pkg.version > self.version:
+                    matching_fixed_packages.append(fixing_pkg)
+
+        # TODO: We also need to check if there is more than one fixing package and if so, keep only the package closest to the affect package's version.
+        # TODO: Do we want to check whether the fixing version has any vulnerabilities of its own?
+
+        # ========================================================
+        print("\ntest_dict = \n{}\n".format(test_dict))
+        print(json.dumps(test_dict, indent=4))
+        # ========================================================
+
+        return matching_fixed_packages
+
+
+# 2023-07-27 Thursday 09:50:45.  JMH: check this out re related api.py code
+# TODO: Not clear how this is involved.
 
 
 class PackageRelatedVulnerability(models.Model):

@@ -32,6 +32,7 @@ from packageurl.contrib.django.models import PackageURLMixin
 from packageurl.contrib.django.models import PackageURLQuerySet
 from packageurl.contrib.django.models import without_empty_values
 from rest_framework.authtoken.models import Token
+from univers import versions
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -634,58 +635,100 @@ class Package(PackageURLMixin):
             packagerelatedvulnerability__fix=True,
         ).distinct()
 
-    @property
-    def test_get_fixing_purls(self):
+    def assign_univers_version(self, fixing_pkg):
         """
-        This is a test -- the goal is to display the closest fixing version for a PURL that is greater
-        than the affected version and is the same type.  We want to filter on type, namespace,
-        name, qualifiers and subpath for the affected PURL.
+        Identify which univers version applies to the two packages to be compared (self and a fixing package),
+        evaluate whether the fixing_pkg version is > than the target affected package, and
+        return True or False.
         """
 
+        # TODO: We also need to find which fixing_pkg is closest to the affected version -- we don't do that yet.
+
+        # Many more to be added.
+        match_type_to_univers_version = {
+            "conan": versions.ConanVersion,
+            "maven": versions.MavenVersion,
+        }
+
+        command_name = ""
+
+        type_to_version = match_type_to_univers_version.get(fixing_pkg.type)
+        if type_to_version:
+            print("\t--------------------------")
+            print("\ttype_to_version = {}\n".format(type_to_version))
+            command_name = type_to_version
+
+        else:
+            print("\ttype_to_version = NO MATCH\n")
+            command_name = versions.Version
+
+        if command_name(fixing_pkg.version) > command_name(self.version):
+            return True
+        else:
+            return False
+
+    @property
+    def get_fixing_packages(self):
+        """
+        This function identifies the closest fixing version that is greater than the affected version and
+        is the same type, namespace, name, qualifiers and subpath as the affected package.
+        """
+
+        print("\nself = {}\n".format(self))
+
+        # This returns all fixing packages that match the target package (type etc.), regardless of fixed vuln.
         fixed_packages = self.get_fixed_packages(package=self)
 
-        # Prefetch:
+        # This returns a list of the vulnerabilities that affect this package (i.e., self).
+        qs = self.vulnerabilities.filter(packagerelatedvulnerability__fix=False)
 
-        # Where do we get "fix" from?
-        # qs = self.vulnerabilities.filter(packagerelatedvulnerability__fix=fix)
+        # This takes the list of vulns affecting the current package, retrieves a list of the fixing packages for each vuln, and assigns the result to a custom attribute, `filtered_fixed_packages`.
+        # We use this in a for loop below like this -- qs[vuln_count].filtered_fixed_packages -- where `vuln_count` is used to iterate through the list of vulns that affect the current package (i.e., self).
+        qs = qs.prefetch_related(
+            Prefetch(
+                "packages",
+                queryset=fixed_packages,
+                to_attr="filtered_fixed_packages",
+            )
+        )
 
-        # Not clear to me how we use this:
-        # qs = qs.prefetch_related(
-        #     Prefetch(
-        #         "packages",
-        #         queryset=fixed_packages,
-        #         to_attr="filtered_fixed_packages",
-        #     )
-        # )
+        # Ex: qs[0].filtered_fixed_packages gives us the fixed package(s) for the 1st vuln for this affected package (i.e., self).
+        print("qs = {}\n".format(qs))
 
-        matching_fixed_packages = []
+        prefetch_fixed_packages = []
 
-        # closest_subsequent_fixed_package = []
+        vuln_count = 0
+        for vuln in qs:
+            print("vuln = {}\n".format(vuln))
+            print(
+                "\tqs[vuln_count].filtered_fixed_packages = {}".format(
+                    qs[vuln_count].filtered_fixed_packages
+                )
+            )
+            print("")
 
-        test_dict = {"affected_purl": self.purl}
-        test_dict["vulnerabilities"] = []
+            # Check the Prefetch qs.
+            # TODO: Do we want to check whether the fixing version has any vulnerabilities of its own?
+            for fixing_pkg in qs[vuln_count].filtered_fixed_packages:
+                print("\tfixing_pkg = {}".format(fixing_pkg))
+                print("\tfixing_pkg.type = {}".format(fixing_pkg.type))
+                print("\tfixing_pkg.version = {}".format(fixing_pkg.version))
+                print("\t--------------------------")
+                print("\tself.type = {}".format(self.type))
+                print("\tself.version = {}".format(self.version))
 
-        for vuln in self.affected_by:
-            test_dict["vulnerabilities"].append({"vulnerability": vuln.vulnerability_id})
+                # Assign univers version and compare: False = fixing_pkg.version < self.version (affected version).
+                # TODO: We also need to find which fixing_pkg is closest to the affected version -- we don't do that yet.
+                immediate_fix = self.assign_univers_version(fixing_pkg)
+                print("\t--------------------------")
+                print("\timmediate_fix = {}\n".format(immediate_fix))
 
-            for fixing_pkg in vuln.fixed_by_packages:
-                # Do not add "backports".  TODO: Do we need to use univers to compare versions?
-                if fixing_pkg in fixed_packages and fixing_pkg.version > self.version:
-                    matching_fixed_packages.append(fixing_pkg)
+                if fixing_pkg in fixed_packages and immediate_fix:
+                    prefetch_fixed_packages.append(fixing_pkg)
 
-        # TODO: We also need to check if there is more than one fixing package and if so, keep only the package closest to the affect package's version.
-        # TODO: Do we want to check whether the fixing version has any vulnerabilities of its own?
+            vuln_count += 1
 
-        # ========================================================
-        print("\ntest_dict = \n{}\n".format(test_dict))
-        print(json.dumps(test_dict, indent=4))
-        # ========================================================
-
-        return matching_fixed_packages
-
-
-# 2023-07-27 Thursday 09:50:45.  JMH: check this out re related api.py code
-# TODO: Not clear how this is involved.
+        return prefetch_fixed_packages
 
 
 class PackageRelatedVulnerability(models.Model):

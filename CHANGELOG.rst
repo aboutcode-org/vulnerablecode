@@ -2,6 +2,12 @@ Release notes
 =============
 
 
+Next Release
+---------------
+
+- We added a new option ``vulnerability_only`` on /api/packages/ endpoint to get only vulnerabilities information.
+
+
 Version v33.2.0
 -----------------
 

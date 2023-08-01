@@ -124,6 +124,34 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
     Lookup software package using Package URLs
     """
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context["request"]
+        if not hasattr(request, "data"):
+            return data
+        vulnerabilities_only = request.data.get("vulnerabilities_only", False)
+        if not vulnerabilities_only:
+            return data
+        print(data["affected_by_vulnerabilities"])
+        vuln_only_data = {}
+        vuln_only_data["affected_by_vulnerabilities"] = [
+            vulnerability for vulnerability in data["affected_by_vulnerabilities"]
+        ]
+        vuln_only_data["affected_by_vulnerabilities"] = self.get_unique_vulnerabilities(
+            vuln_only_data["affected_by_vulnerabilities"]
+        )
+        vuln_only_data["fixing_vulnerabilities"] = [
+            vulnerability for vulnerability in data["fixing_vulnerabilities"]
+        ]
+        vuln_only_data["fixing_vulnerabilities"] = self.get_unique_vulnerabilities(
+            vuln_only_data["fixing_vulnerabilities"]
+        )
+        return vuln_only_data
+
+    def get_unique_vulnerabilities(self, vuln_list):
+        v = {v["vulnerability_id"]: v for v in vuln_list}
+        return list(v.values())
+
     purl = serializers.CharField(source="package_url")
 
     affected_by_vulnerabilities = serializers.SerializerMethodField("get_affected_vulnerabilities")

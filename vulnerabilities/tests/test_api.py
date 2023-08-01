@@ -507,7 +507,7 @@ class BulkSearchAPIPackage(TestCase):
             purl = PackageURL.from_string(package)
             attrs = {k: v for k, v in purl.to_dict().items() if v}
             pkg = Package.objects.create(**attrs)
-            PackageRelatedVulnerability.objects.create(package=pkg, vulnerability=vuln)
+            PackageRelatedVulnerability.objects.create(package=pkg, vulnerability=vuln, fix=False)
 
     def test_bulk_api_response(self):
         request_body = {
@@ -553,6 +553,19 @@ class BulkSearchAPIPackage(TestCase):
         ).json()
         assert len(response) == 1
         assert response[0] == "pkg:nginx/nginx@1.0.15"
+
+    def test_bulk_api_with_vuln_only_option(self):
+        request_body = {
+            "purls": ["pkg:nginx/nginx@1.0.15?foo=bar"],
+            "vulnerabilities_only": True,
+        }
+        response = self.csrf_client.post(
+            "/api/packages/bulk_search",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+        assert len(response) == 1
+        assert response[0]["affected_by_vulnerabilities"][0]["summary"] == "test"
 
 
 class BulkSearchAPICPE(TestCase):

@@ -565,6 +565,7 @@ class BulkSearchAPIPackage(TestCase):
             content_type="application/json",
         ).json()
         assert len(response) == 1
+        assert "purl" not in response[0]
         assert response[0]["affected_by_vulnerabilities"][0]["summary"] == "test"
 
 

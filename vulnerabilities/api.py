@@ -124,31 +124,8 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
     Lookup software package using Package URLs
     """
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        request = self.context["request"]
-        if not hasattr(request, "data"):
-            return data
-        vulnerabilities_only = request.data.get("vulnerabilities_only", False)
-        if not vulnerabilities_only:
-            return data
-        print(data["affected_by_vulnerabilities"])
-        vuln_only_data = {}
-        vuln_only_data["affected_by_vulnerabilities"] = [
-            vulnerability for vulnerability in data["affected_by_vulnerabilities"]
-        ]
-        vuln_only_data["affected_by_vulnerabilities"] = self.get_unique_vulnerabilities(
-            vuln_only_data["affected_by_vulnerabilities"]
-        )
-        vuln_only_data["fixing_vulnerabilities"] = [
-            vulnerability for vulnerability in data["fixing_vulnerabilities"]
-        ]
-        vuln_only_data["fixing_vulnerabilities"] = self.get_unique_vulnerabilities(
-            vuln_only_data["fixing_vulnerabilities"]
-        )
-        return vuln_only_data
-
-    def get_unique_vulnerabilities(self, vuln_list):
+    @staticmethod
+    def get_unique_vulnerabilities(vuln_list):
         v = {v["vulnerability_id"]: v for v in vuln_list}
         return list(v.values())
 
@@ -221,6 +198,25 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
 
+class VulnerabilityOnlyPackageSerializer(PackageSerializer):
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        affected_by = data["affected_by_vulnerabilities"]
+        fixing = data["fixing_vulnerabilities"]
+
+        return {
+            "affected_by_vulnerabilities": self.get_unique_vulnerabilities(affected_by),
+            "fixing_vulnerabilities": self.get_unique_vulnerabilities(fixing),
+        }
+
+    class Meta:
+        model = Package
+        fields = [
+            "affected_by_vulnerabilities",
+            "fixing_vulnerabilities",
+        ]
+
+
 class PackageFilterSet(filters.FilterSet):
     purl = filters.CharFilter(method="filter_purl")
 
@@ -272,12 +268,18 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         purls = request.data.get("purls", []) or []
         purl_only = request.data.get("purl_only", False)
         plain_purl = request.data.get("plain_purl", False)
+        vulnerabilities_only = request.data.get("vulnerabilities_only", False)
         if not purls or not isinstance(purls, list):
             return Response(
                 status=400,
                 data={"Error": "A non-empty 'purls' list of PURLs is required."},
             )
 
+        if purl_only and vulnerabilities_only:
+            return Response(
+                status=400,
+                data={"Error": "Cannot use both 'purl_only' and 'vulnerability_only' flags."},
+            )
         if plain_purl:
             purl_objects = [PackageURL.from_string(purl) for purl in purls]
             plain_purl_objects = [
@@ -298,6 +300,12 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
             )
 
             if not purl_only:
+                if vulnerabilities_only:
+                    return Response(
+                        VulnerabilityOnlyPackageSerializer(
+                            query, many=True, context={"request": request}
+                        ).data
+                    )
                 return Response(
                     PackageSerializer(query, many=True, context={"request": request}).data
                 )
@@ -311,6 +319,12 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         query = Package.objects.filter(package_url__in=purls).distinct()
 
         if not purl_only:
+            if vulnerabilities_only:
+                return Response(
+                    VulnerabilityOnlyPackageSerializer(
+                        query, many=True, context={"request": request}
+                    ).data
+                )
             return Response(PackageSerializer(query, many=True, context={"request": request}).data)
 
         vulnerable_purls = query.vulnerable().only("package_url")

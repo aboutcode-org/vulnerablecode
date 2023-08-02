@@ -298,38 +298,10 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                 .order_by("plain_package_url")
                 .distinct("plain_package_url")
             )
-
-            if not purl_only:
-                if vulnerabilities_only:
-                    return Response(
-                        VulnerabilityOnlyPackageSerializer(
-                            query, many=True, context={"request": request}
-                        ).data
-                    )
-                return Response(
-                    PackageSerializer(query, many=True, context={"request": request}).data
-                )
-
-            # using order by and distinct because there will be
-            # many fully qualified purl for a single plain purl
-            vulnerable_purls = query.vulnerable().only("plain_package_url")
-            vulnerable_purls = [str(package.plain_package_url) for package in vulnerable_purls]
-            return Response(data=vulnerable_purls)
+            return self.return_package_api_response(purl_only, vulnerabilities_only, query, request)
 
         query = Package.objects.filter(package_url__in=purls).distinct()
-
-        if not purl_only:
-            if vulnerabilities_only:
-                return Response(
-                    VulnerabilityOnlyPackageSerializer(
-                        query, many=True, context={"request": request}
-                    ).data
-                )
-            return Response(PackageSerializer(query, many=True, context={"request": request}).data)
-
-        vulnerable_purls = query.vulnerable().only("package_url")
-        vulnerable_purls = [str(package.package_url) for package in vulnerable_purls]
-        return Response(data=vulnerable_purls)
+        return self.return_package_api_response(purl_only, vulnerabilities_only, query, request)
 
     @action(detail=False, methods=["get"], throttle_scope="vulnerable_packages")
     def all(self, request):
@@ -339,6 +311,28 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         vulnerable_packages = Package.objects.vulnerable().only("package_url").distinct()
         vulnerable_purls = [str(package.package_url) for package in vulnerable_packages]
         return Response(vulnerable_purls)
+
+    @staticmethod
+    def return_package_api_response(purl_only, vulnerabilities_only, query, request):
+        """
+        Return the response for the bulk search API.
+        If purl_only is True, return only the purls of the packages.
+        If vulnerabilities_only is True, return only the vulnerabilities of the packages.
+        Otherwise, return the full package data.
+        """
+        if purl_only:
+            # using order by and distinct because there will be
+            # many fully qualified purl for a single plain purl
+            vulnerable_purls = query.vulnerable().only("plain_package_url")
+            vulnerable_purls = [str(package.plain_package_url) for package in vulnerable_purls]
+            return Response(data=vulnerable_purls)
+        if vulnerabilities_only:
+            return Response(
+                VulnerabilityOnlyPackageSerializer(
+                    query, many=True, context={"request": request}
+                ).data
+            )
+        return Response(PackageSerializer(query, many=True, context={"request": request}).data)
 
 
 class VulnerabilityFilterSet(filters.FilterSet):

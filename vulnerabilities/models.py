@@ -276,16 +276,26 @@ class Weakness(models.Model):
     db = Database()
 
     @property
+    def weakness(self):
+        """
+        Return a queryset of Weakness for this vulnerability.
+        """
+        try:
+            weakness = self.db.get(self.cwe_id)
+            return weakness
+        except Exception as e:
+            logger.warning(f"Could not find CWE {self.cwe_id}: {e}")
+            return None
+
+    @property
     def name(self):
         """Return the weakness's name."""
-        weakness = self.db.get(self.cwe_id)
-        return weakness.name
+        return self.weakness.name if self.weakness else ""
 
     @property
     def description(self):
         """Return the weakness's description."""
-        weakness = self.db.get(self.cwe_id)
-        return weakness.description
+        return self.weakness.description if self.weakness else ""
 
 
 class VulnerabilityReferenceQuerySet(BaseQuerySet):

@@ -285,7 +285,6 @@ class Weakness(models.Model):
             return weakness
         except Exception as e:
             logger.warning(f"Could not find CWE {self.cwe_id}: {e}")
-            return None
 
     @property
     def name(self):

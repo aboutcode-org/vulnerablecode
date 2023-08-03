@@ -88,3 +88,9 @@ class TestPackageRelatedVulnerablity(TestCase):
 
         assert v1.vulnerable_packages.all()[0] == p1
         assert v1.patched_packages.all()[0] == p2
+
+    def test_cwe_not_present_in_weaknesses_db(self):
+        w1 = models.Weakness.objects.create(name="189")
+        assert w1.weakness is None
+        assert w1.name is ""
+        assert w1.description is ""

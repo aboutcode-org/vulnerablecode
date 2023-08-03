@@ -71,7 +71,7 @@ pure-eval==0.2.2
 py==1.11.0
 pycodestyle==2.8.0
 pycparser==2.21
-Pygments==2.11.2
+Pygments==2.15.0
 PyNaCl==1.5.0
 pyparsing==3.0.7
 pyrsistent==0.18.1

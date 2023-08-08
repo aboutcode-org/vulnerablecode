@@ -39,7 +39,9 @@ VULNERABLECODE_PASSWORD_MIN_LENGTH = env.int("VULNERABLECODE_PASSWORD_MIN_LENGTH
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 # SECURITY WARNING: do not run with debug turned on in production
-DEBUG = env.bool("VULNERABLECODE_DEBUG", default=False)
+# DEBUG = env.bool("VULNERABLECODE_DEBUG", default=False)
+# DEBUG = "127.0.0.1"
+DEBUG = True
 
 # SECURITY WARNING: do not  run with debug turned on in production
 DEBUG_TOOLBAR = env.bool("VULNERABLECODE_DEBUG_TOOLBAR", default=False)

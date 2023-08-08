@@ -41,7 +41,6 @@ VulnerableCode Package Details - {{ package.purl }}
             </div>
 
             <div class="content ml-3 mr-3">
-                <div style="font-size: 15px; margin-bottom: 20px; padding: 10px; border: solid 1px #999999; border-radius: 5px; box-shadow: #505050 0px 5px 15px; line-height: 18px; color: #000000;">During testing, <span style="color: #ff0000; font-weight: 500;">red</span> = all packages that fix the vulnerability (<span style="font-style: italic;">for pkg in vulnerability.fixed_by_packages</span>) and <span style="color: #009933; font-weight: 500;">green</span> = the closest fixing package whose version is greater than the affected package's version (<span style="font-style: italic;">if pkg in get_fixing_packages</span>).</div>
                 <div class="has-text-weight-bold ml-1 mb-0">
                     Affected by vulnerabilities ({{ affected_by_vulnerabilities|length }})
                 </div>
@@ -52,7 +51,7 @@ VulnerableCode Package Details - {{ package.purl }}
                             <th style="width: 175px;">Vulnerability</th>
                             <th>Summary</th>
                             <th style="width: 225px;">Aliases</th>
-                            <th style="width: 300px;">Fixing Packages</th>
+                            <th style="width: 300px;">Fixed by packages</th>
                         </tr>
                     </thead>
 
@@ -76,22 +75,147 @@ VulnerableCode Package Details - {{ package.purl }}
                                         {% endif %}
                                     {% endfor %}
                                 </td>
-                                <td style="color: #ff0000;">
+                                <td style="color: #ff0000; word-wrap: break-word; word-break: break-all;">
+<!-- <span class="dev_fixed_by_headers">START 'for pkg in vulnerability.fixed_by_packages'</span>
                                     {% for pkg in vulnerability.fixed_by_packages %}
-                                        <div style="font-size: 13px; padding: 0px 0px 5px 0px; line-height: 18px;">
+                                        <div style="font-size: 13px; padding: 0px 0px 5px 0px; line-height: 17px;">
                                             {{ pkg.purl }}
                                         </div>
                                     {% endfor %}
+<span class="dev_fixed_by_headers">END 'for pkg in vulnerability.fixed_by_packages'</span>
 
-                                    <hr style="border-top: solid 1px #d8d8d8;">
+                                    <hr style="border-top: solid 1px #d8d8d8;"> -->
 
+<!-- <span class="dev_fixed_by_headers">START 'get_closest_fixed_package' context</span>
                                     {% for pkg in vulnerability.fixed_by_packages %}
-                                        {% if pkg in get_fixing_packages %}
-                                            <div style="font-size: 13px; padding: 0px 0px 5px 0px; line-height: 18px;">
+                                        {% if pkg in get_closest_fixed_package %}
+                                            <div style="font-size: 13px; padding: 0px 0px 5px 0px; line-height: 17px;">
                                                 <span style="color: #009933;">{{ pkg.purl }}</span>
                                             </div>
                                         {% endif %}
                                     {% endfor %}
+                                    <br />
+                                    <span style="color: #cc0099; font-size: 13px; padding: 0px 0px 5px 0px; font-weight: none;">get_closest_fixed_package list:</span>
+                                    <br />
+                                    <div style="color: #cc0099; font-size: 13px; padding: 0px 0px 5px 0px;">{{ get_closest_fixed_package }}</div>
+                                    <br />
+                                    <div style="color: #996633; font-size: 13px; padding: 0px 0px 5px 0px;">
+<span class="dev_fixed_by_headers">END 'get_closest_fixed_package' context</span>
+
+                                        <br /><br /> -->
+
+
+<!-- <span class="dev_fixed_by_headers">START 'fixed_package_details' context</span> -->
+
+                                            {% if package.purl in fixed_package_details.purl %}
+                                                {% for key, value in fixed_package_details.items %}
+                                                {% if key == "vulnerabilities" %}
+                                                {% for abc in value %}
+                                                    {% if abc.vulnerability == vulnerability.vulnerability_id %}
+                                                        <ul class="fixed_by_bullet" style="color: #000000;">
+                                                            <li>
+                                                                <span style="font-weight: bold;">PURL:</span> {{ fixed_package_details.purl }}
+
+        <!-- <div class="dropdown is-hoverable has-text-weight-normal is-right">
+            <div class="dropdown-trigger">
+                <i class="fa fa-question-circle ml-2 fa-lg has-background-white has-text-link"></i>
+            </div>
+            <div class="dropdown-menu dropdown-vuln-dict-width" id="dropdown-menu4" role="menu">
+                <div class="dropdown-content dropdown-instructions-box-shadow">
+                    <div class="dropdown-item">
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            This is a dictionary created as part of this affected-fixed matching work:
+                            <div style="padding-top: 5px;">
+
+{% for key, value in fixed_package_details.items %}
+{{ key }}: {{ value }}
+<br />
+{% endfor %}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+                                                            </li>
+                                                            <li>
+                                                                <span style="font-weight: bold;">Vulnerability:</span> {{ abc.vulnerability }}
+                                                            </li>
+                                                            <li>
+                                                                <span style="font-weight: bold;">Closest fixed-by PURL:</span>
+                                                                <a href="{{ abc.closest_fixed_by_url }}?search={{ abc.closest_fixed_by_purl }}" target="_self">{{ abc.closest_fixed_by_purl }}</a>
+                                                            </li>
+<li>
+    <span style="font-weight: bold;">Closest fixed-by vulnerability count:</span> {{ abc.closest_fixed_by_vulnerabilities|length }}
+    {% if abc.closest_fixed_by_vulnerabilities|length != 0 %}
+        <div class="dropdown is-hoverable has-text-weight-normal is-right">
+            <div class="dropdown-trigger">
+                <i class="fa fa-question-circle ml-2 fa-lg has-background-white has-text-danger"></i>
+            </div>
+            <div class="dropdown-menu dropdown-vuln-list-width" id="dropdown-menu4" role="menu">
+                <div class="dropdown-content dropdown-instructions-box-shadow">
+                    <div class="dropdown-item">
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            The <strong>closest fixed-by PURL</strong> has {{ abc.closest_fixed_by_vulnerabilities|length }}
+                            {% if abc.closest_fixed_by_vulnerabilities|length == 1 %}
+                                 vulnerability:
+                            {% else %}
+                                vulnerabilities:
+                            {% endif %}
+                            <div style="padding-top: 5px;">
+                                <!-- ALERT: We're using the namedtuple here -- but a dict might be better because we need the values as keyt-value pairs in the purl_dict we create in models.py. ATM all we have is the 2 values as items in a list, e.g.,
+
+            "closest_fixed_by_vulnerabilities": [
+                [
+                    "VCID-t7e4-g3fr-aaan",
+                    "/vulnerabilities/VCID-t7e4-g3fr-aaan"
+                ]
+            ]
+
+                                -->
+                                {% for closest_vuln in abc.closest_fixed_by_vulnerabilities %}
+                                <div>
+                                    <a href="{{ closest_vuln.vuln_get_absolute_url }}" target="_self">{{ closest_vuln.vuln_id }}</a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</li>
+                                                            <li style="border-top: solid 1px #cccccc; margin-top: 10px; padding-top: 10px;">
+                                                                <span style="font-weight: bold;">Closest non-vulnerable fix:</span>
+                                                                <!-- <a href="{{ abc.closest_non_vulnerable_fix_url }}?search={{ abc.closest_non_vulnerable_fix }}" target="_self">{{ abc.closest_non_vulnerable_fix }}</a> -->
+                                                                <!-- 2023-08-07 Monday 16:34:43.  Replace with higher-level key-value pair -->
+                                                                <a href="{{ fixed_package_details.closest_non_vulnerable_fix_url }}?search={{ fixed_package_details.closest_non_vulnerable_fix }}" target="_self">{{ fixed_package_details.closest_non_vulnerable_fix }}</a>
+                                                            </li>
+                                                            <li>
+                                                                <span style="font-weight: bold;">Most recent non-vulnerable fix:</span>
+                                                                <!-- <a href="{{ abc.most_recent_non_vulnerable_fix_url }}?search={{ abc.most_recent_non_vulnerable_fix }}" target="_self">{{ abc.most_recent_non_vulnerable_fix }}</a> -->
+                                                                <!-- 2023-08-07 Monday 16:34:43.  Replace with higher-level key-value pair -->
+                                                                <a href="{{ fixed_package_details.most_recent_non_vulnerable_fix_url }}?search={{ fixed_package_details.most_recent_non_vulnerable_fix }}" target="_self">{{ fixed_package_details.most_recent_non_vulnerable_fix }}</a>
+                                                            </li>
+                                                        </ul>
+                                                    {% endif %}
+                                                {% endfor %}
+
+
+                                                {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                            NO-- {{ package.purl }}
+                                            {% endif %}
+
+
+<!-- <span class="dev_fixed_by_headers">END 'fixed_package_details' context</span> -->
+
+
+                                    </div>
 
                                 </td>
                             </tr>
@@ -109,7 +233,7 @@ VulnerableCode Package Details - {{ package.purl }}
 
             <div class="content ml-3 mr-3">
                 <div class="has-text-weight-bold ml-1 mb-0">
-                    Fixing vulnerabilities ({{ fixing_vulnerabilities|length }})
+                    Fixed by vulnerabilities ({{ fixing_vulnerabilities|length }})
                 </div>
 
                 <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">

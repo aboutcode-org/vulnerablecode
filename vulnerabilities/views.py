@@ -83,7 +83,10 @@ class PackageDetails(DetailView):
         context["affected_by_vulnerabilities"] = package.affected_by.order_by("vulnerability_id")
         context["fixing_vulnerabilities"] = package.fixing.order_by("vulnerability_id")
         context["package_search_form"] = PackageSearchForm(self.request.GET)
-        context["get_fixing_packages"] = package.get_fixing_packages
+        # context["get_fixing_packages"] = package.get_fixing_packages
+        context["get_closest_fixed_package"] = package.get_closest_fixed_package
+        # context["test_property_01"] = package.test_property_01
+        context["fixed_package_details"] = package.fixed_package_details
 
         return context
 

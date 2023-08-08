@@ -7,12 +7,14 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import urllib.parse
 from datetime import datetime
 from unittest import TestCase
 
 import pytest
 from django.db.utils import IntegrityError
 from freezegun import freeze_time
+from univers import versions
 
 from vulnerabilities import models
 
@@ -88,3 +90,66 @@ class TestPackageRelatedVulnerablity(TestCase):
 
         assert v1.vulnerable_packages.all()[0] == p1
         assert v1.patched_packages.all()[0] == p2
+
+
+@pytest.mark.django_db
+class TestPackageModel(TestCase):
+    def test_univers_version_comparisons(self):
+        assert versions.PypiVersion("1.2.3") < versions.PypiVersion("1.2.4")
+
+        assert versions.PypiVersion("0.9") < versions.PypiVersion("0.10")
+
+        # pkg:deb/debian/jackson-databind@2.12.1-1%2Bdeb11u1 is a real PURL in the DB
+        # But I get an error when I try to compare 2 PURLs with the same suffix --
+        # univers.versions.InvalidVersion: '2.12.1-1%2Bdeb11u1' is not a valid <class 'univers.versions.DebianVersion'>
+        # Do we need to replace/delete the "%"?
+        # assert versions.DebianVersion("2.12.1-1%2Bdeb11u1") < versions.DebianVersion(
+        #     "2.13.1-1%2Bdeb11u1"
+        # )
+        # Test the error
+        with pytest.raises(versions.InvalidVersion):
+            assert versions.DebianVersion("2.12.1-1%2Bdeb11u1") < versions.DebianVersion(
+                "2.13.1-1%2Bdeb11u1"
+            )
+        # Decode the version and test.
+        assert versions.DebianVersion(
+            urllib.parse.unquote("2.12.1-1%2Bdeb11u1")
+        ) < versions.DebianVersion(urllib.parse.unquote("2.13.1-1%2Bdeb11u1"))
+
+        with pytest.raises(TypeError):
+            assert versions.PypiVersion("0.9") < versions.DebianVersion("0.10")
+
+        # Using versions.Version does not correctly make this comparison!
+        assert not versions.Version("0.9") < versions.Version("0.10")
+        # Use SemverVersion instead as a default fallback version for comparisons.
+        assert versions.SemverVersion("0.9") < versions.SemverVersion("0.10")
+
+    def test_assign_and_compare_univers_versions(self):
+        deb01 = models.Package.objects.create(type="deb", name="git", version="2.30.1")
+        deb02 = models.Package.objects.create(type="deb", name="git", version="2.31.1")
+
+        immediate_fix01 = deb01.assign_and_compare_univers_versions(deb02)
+        print("\nimmediate_fix01 = {}\n".format(immediate_fix01))
+        # assert deb01.assign_and_compare_univers_versions(deb02) is True
+        assert deb01.assign_and_compare_univers_versions(deb02)
+
+        immediate_fix02 = deb02.assign_and_compare_univers_versions(deb01)
+        print("\nimmediate_fix02 = {}\n".format(immediate_fix02))
+        # assert deb02.assign_and_compare_univers_versions(deb01) is False
+        assert not deb02.assign_and_compare_univers_versions(deb01)
+
+        pypi01 = models.Package.objects.create(type="pypi", name="pyopenssl", version="0.9")
+        pypi02 = models.Package.objects.create(type="pypi", name="pyopenssl", version="0.10")
+
+        immediate_fix03 = pypi01.assign_and_compare_univers_versions(pypi02)
+        print("\nimmediate_fix03 = {}\n".format(immediate_fix03))
+        # assert pypi01.assign_and_compare_univers_versions(pypi02) is True
+        assert pypi01.assign_and_compare_univers_versions(pypi02)
+
+        gem01 = models.Package.objects.create(type="gem", name="sidekiq", version="0.9")
+        gem02 = models.Package.objects.create(type="gem", name="sidekiq", version="0.10")
+
+        immediate_fix04 = gem01.assign_and_compare_univers_versions(gem02)
+        print("\nimmediate_fix04 = {}\n".format(immediate_fix04))
+        # assert gem01.assign_and_compare_univers_versions(gem02) is True
+        assert gem01.assign_and_compare_univers_versions(gem02)

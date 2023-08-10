@@ -198,16 +198,14 @@ code {
 }
 
 .two-col-left {
-    width: 160px;
+    width: 250px;
     text-align: right !important;
     font-weight: bold;
-    padding-right: 20px !important;
+    padding-right: 15px !important;
     line-height: 20px;
-    border: solid 1px #e8e8e8 !important;
 }
 
 .two-col-right {
-    border: solid 1px #e8e8e8 !important;
     line-height: 20px;
 }
 
@@ -378,85 +376,6 @@ span.tag.custom {
     margin: 0px 0px 6px 10px;
 }
 
-/* test bulleted list */
-
-ul.fixed_by_bullet {
-    list-style-type: disc;
-    /*margin-top: 2px;
-margin-bottom: 10px;*/
-    /*margin-left: -24px;*/
-    /*margin-left: -30px;*/
-    margin-top: 0.25em;
-    margin-left: 7px;
-    margin-bottom: 0.25em;
-    padding-left: 10px;
-}
-
-ul.fixed_by_bullet ul {
-    list-style-type: disc;
-    /*margin-top: 10px;*/
-    margin-top: 5px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    margin-left: 23px;
-    margin-left: 18px;
-    padding: 0;
-    border: none;
-}
-
-
-
-ul.fixed_by_bullet li {
-    margin-left: 0px;
-    font-family: Arial;
-    font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-    font-size: 13px;
-    font-weight: normal;
-    /*margin-bottom: 10px;*/
-    margin-bottom: 2px;
-}
-
-ul.fixed_by_bullet li:last-child {
-    margin-left: 0px;
-    font-family: Arial;
-    font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-    font-size: 13px;
-    font-weight: normal;
-    /*margin-bottom: 10px;*/
-    margin-bottom: 0px;
-}
-
-ul.fixed_by_bullet li li {
-    margin-left: 0px;
-    font-family: Arial;
-    font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-    font-size: 13px;
-    font-weight: normal;
-    margin-top: 0px;
-    color: #000000;
-}
-
-/* 10/10/15 add 3rd-level bullets */
-ul.fixed_by_bullet ul ul {
-    list-style-type: disc;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    margin-left: 50px;
-    margin-left: 17px;
-    padding: 0;
-    border: none;
-}
-
-ul.fixed_by_bullet li li li {
-    margin-left: 0px;
-    font-family: Arial;
-    font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-    font-size: 13px;
-    font-weight: normal;
-    margin-top: 0px;
-    color: #000000;
-}
-
 /* CSS for dev fixed by headers */
 .dev_fixed_by_headers {
     border: solid 1px #cccccc;
@@ -468,4 +387,28 @@ ul.fixed_by_bullet li li li {
     padding: 3px;
     margin-bottom: 3px;
     display: block;
+}
+
+.non-floating-purl {
+    position: relative;
+    width: 100%;
+    z-index: 100;
+    margin-bottom: 0px;
+}
+
+.non-floating-purl .table td,
+.non-floating-purl .table tbody tr:last-child td,
+.non-floating-purl .table th {
+    border: solid 1px #dbdbdb;
+    background-color: #ffffff;
+}
+
+.non-vuln {
+    margin-top: -25px;
+}
+
+.non-vuln .table td,
+.non-vuln .table tbody tr:last-child td,
+.non-vuln .table th {
+    border: solid 1px #dbdbdb;
 }

@@ -196,16 +196,14 @@ code {
 }
 
 .two-col-left {
-    width: 160px;
+    width: 250px;
     text-align: right !important;
     font-weight: bold;
-    padding-right: 20px !important;
+    padding-right: 15px !important;
     line-height: 20px;
-    border: solid 1px #e8e8e8 !important;
 }
 
 .two-col-right {
-    border: solid 1px #e8e8e8 !important;
     line-height: 20px;
 }
 
@@ -481,4 +479,28 @@ ul.fixed_by_bullet li li li {
     padding: 3px;
     margin-bottom: 3px;
     display: block;
+}
+
+.non-floating-purl {
+    position: relative;
+    width: 100%;
+    z-index: 100;
+    margin-bottom: 0px;
+}
+
+.non-floating-purl .table td,
+.non-floating-purl .table tbody tr:last-child td,
+.non-floating-purl .table th {
+    border: solid 1px #dbdbdb;
+    background-color: #ffffff;
+}
+
+.non-vuln {
+    margin-top: -25px;
+}
+
+.non-vuln .table td,
+.non-vuln .table tbody tr:last-child td,
+.non-vuln .table th {
+    border: solid 1px #dbdbdb;
 }

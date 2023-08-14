@@ -105,6 +105,7 @@ On a Debian system, use this::
     git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
     make dev envfile postgres
     make test
+    source venv/bin/activate
     ./manage.py import vulnerabilities.importers.nginx.NginxImporter
     ./manage.py improve --all
     make run

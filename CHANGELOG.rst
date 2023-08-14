@@ -2,6 +2,13 @@ Release notes
 =============
 
 
+Version v33.3.0
+----------------
+
+- We filtered out the weakness that are not presented in the 
+  cwe2.database before passing them into the vulnerability details view. 
+
+
 Version v33.2.0
 -----------------
 

@@ -400,3 +400,9 @@ class TestPackageModel(TestCase):
         )
         assert vulnerablecode_package.qualifiers == {}
         assert vulnerablecode_package.subpath == ""
+
+    def test_cwe_not_present_in_weaknesses_db(self):
+        w1 = models.Weakness.objects.create(name="189")
+        assert w1.weakness is None
+        assert w1.name is ""
+        assert w1.description is ""

@@ -118,6 +118,10 @@ class VulnerabilityDetails(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        weaknesses = self.object.weaknesses.all()
+        weaknesses_present_in_db = [
+            weakness_object for weakness_object in weaknesses if weakness_object.weakness
+        ]
         context.update(
             {
                 "vulnerability": self.object,
@@ -127,7 +131,7 @@ class VulnerabilityDetails(DetailView):
                 "aliases": self.object.aliases.all(),
                 "affected_packages": self.object.affected_packages.all(),
                 "fixed_by_packages": self.object.fixed_by_packages.all(),
-                "weaknesses": self.object.weaknesses.all(),
+                "weaknesses": weaknesses_present_in_db,
             }
         )
         return context

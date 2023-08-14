@@ -33,6 +33,7 @@ from packageurl.contrib.django.models import PackageURLQuerySet
 from packageurl.contrib.django.models import without_empty_values
 from rest_framework.authtoken.models import Token
 from univers import versions
+from univers.version_range import RANGE_CLASS_BY_SCHEMES
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -648,60 +649,16 @@ class Package(PackageURLMixin):
             subpath=package.subpath,
         ).distinct()
 
-    def assign_univers_version(self, fixed_pkg):
-        """
-        Identify which univers version applies to a package and return that version for use, e.g.,
-        in sorting a group of sibling  packages (same type etc.).
-        """
-        # TODO: Many more to be added.
-        match_type_to_univers_version = {
-            "conan": versions.ConanVersion,
-            "deb": versions.DebianVersion,
-            # The following throws an error: AttributeError: module 'univers.versions' has no attribute 'GemVersion'
-            # "gem": versions.GemVersion,
-            "maven": versions.MavenVersion,
-            "nginx": versions.NginxVersion,
-            # "npm":
-            "openssl": versions.OpensslVersion,
-            "pypi": versions.PypiVersion,
-            # from https://github.com/nexB/univers/blob/205da7ecbf7b0f195662373ea710b2b84a877eb0/tests/test_version_comparison.py
-            # versions.SemverVersion,
-            # versions.GolangVersion,
-            # versions.PypiVersion,
-            # versions.GenericVersion,
-            # versions.ComposerVersion,
-            # versions.NginxVersion,
-            # versions.ArchLinuxVersion,
-            # versions.DebianVersion,
-            # versions.RpmVersion,
-            # versions.MavenVersion,
-            # versions.NugetVersion,
-            # versions.GentooVersion,
-            # versions.OpensslVersion,
-            # versions.LegacyOpensslVersion,
-            # versions.AlpineLinuxVersion,
-        }
-
-        command_name = ""
-        matched_type_to_version = match_type_to_univers_version.get(fixed_pkg.type)
-        if matched_type_to_version:
-            command_name = matched_type_to_version
-        else:
-            command_name = versions.SemverVersion
-
-        return command_name
-
-    def sort_by_version(self, later_matching_fixed_packages):
+    def sort_by_version(self, packages_to_sort):
         # Incoming is a list of <class 'vulnerabilities.models.Package'>
-        # We'll use assign_univers_version() above to get the univers version as a command_name.
-        command_name = self.assign_univers_version(later_matching_fixed_packages[0])
-        test_sort_by_version = []
-        test_sort_by_version = sorted(
-            later_matching_fixed_packages,
-            key=lambda x: command_name(x.version),
+        univers_version = RANGE_CLASS_BY_SCHEMES[packages_to_sort[0].type].version_class
+        sorted_by_version = []
+        sorted_by_version = sorted(
+            packages_to_sort,
+            key=lambda x: univers_version(x.version),
         )
 
-        return test_sort_by_version
+        return sorted_by_version
 
     @property
     def fixed_package_details(self):
@@ -723,11 +680,10 @@ class Package(PackageURLMixin):
                 non_vuln_sibs.append(sib)
 
         # Add just the greater-than versions to a new list
-        command_name = self.assign_univers_version(self)
-
+        univers_version = RANGE_CLASS_BY_SCHEMES[self.type].version_class
         later_non_vuln_sibs = []
         for non_vuln_sib in non_vuln_sibs:
-            if command_name(non_vuln_sib.version) > command_name(self.version):
+            if univers_version(non_vuln_sib.version) > univers_version(self.version):
                 later_non_vuln_sibs.append(non_vuln_sib)
 
         # Take the list of vulns affecting the current package, retrieve a list of the fixed packages for each vuln, and assign the result to a custom attribute, 'matching_fixed_packages'.  Ex: qs[0].matching_fixed_packages gives us the fixed package(s) for the 1st vuln for this affected package (i.e., self).
@@ -743,20 +699,24 @@ class Package(PackageURLMixin):
         purl_dict["purl"] = self.purl
         purl_dict.update({"vulnerabilities": []})
 
-        # HOT: In constructing the purl_dict, I need to include packages that have no vulnerabilities -- we still want various dict fields to be populated to reflect the relevant structure and content all such packages.  atm only a few fields are included in the dict for such a package.  "closest_non_vulnerable_fix", "closest_non_vulnerable_fix_url", "most_recent_non_vulnerable_fix" and "most_recent_non_vulnerable_fix_url" are currently omitted.
+        purl_dict["closest_non_vulnerable_fix"] = ""
+        purl_dict["closest_non_vulnerable_fix_url"] = ""
+        purl_dict["most_recent_non_vulnerable_fix"] = ""
+        purl_dict["most_recent_non_vulnerable_fix_url"] = ""
 
         for vuln in qs:
             later_matching_fixed_packages = []
             purl_dict["vulnerabilities"].append({"vulnerability": vuln.vulnerability_id})
             vuln_matching_fixed_packages = vuln.matching_fixed_packages
-            command_name = self.assign_univers_version(self)
             closest_fixed_package = ""
+            # Need to define here to avoid "" vs. [] for some closest_fixed_by_vulnerabilities values?
+            closest_fixed_package_vulns_dict = []
 
             if len(vuln_matching_fixed_packages) > 0:
                 for fixed_pkg in vuln_matching_fixed_packages:
-                    if fixed_pkg in matching_fixed_packages and command_name(
+                    if fixed_pkg in matching_fixed_packages and univers_version(
                         fixed_pkg.version
-                    ) > command_name(self.version):
+                    ) > univers_version(self.version):
                         later_matching_fixed_packages.append(fixed_pkg)
 
                 sort_fixed_by_packages_by_version = self.sort_by_version(
@@ -765,7 +725,7 @@ class Package(PackageURLMixin):
 
                 closest_fixed_package = sort_fixed_by_packages_by_version[0]
                 closest_fixed_package_vulns = closest_fixed_package.affected_by
-
+                # 2023-08-13 Sunday 16:25:41.  Not sure but I think I need to define this initially above just after closest_fixed_package = ""
                 closest_fixed_package_vulns_dict = [
                     {
                         "vuln_id": fixed_pkg_vuln.vulnerability_id,
@@ -780,6 +740,7 @@ class Package(PackageURLMixin):
             for dict_vuln in purl_dict["vulnerabilities"]:
                 closest_non_vulnerable_fix = ""
 
+                # TODO: 2023-08-13 Sunday 16:01:57.  Refactor here and elsewhere!
                 if len(later_non_vuln_sibs) > 0:
                     closest_non_vulnerable_fix = self.sort_by_version(later_non_vuln_sibs)[0]
 
@@ -787,27 +748,45 @@ class Package(PackageURLMixin):
                 if len(later_non_vuln_sibs) > 0:
                     most_recent_non_vulnerable_fix = self.sort_by_version(later_non_vuln_sibs)[-1]
                 else:
-                    most_recent_non_vulnerable_fix = None
+                    most_recent_non_vulnerable_fix = ""
 
                 if dict_vuln["vulnerability"] == str(vuln):
                     dict_vuln["closest_fixed_by_purl"] = str(closest_fixed_package)
-                    dict_vuln["closest_fixed_by_url"] = closest_fixed_package.get_absolute_url()
-                    dict_vuln["closest_fixed_by_vulnerabilities"] = closest_fixed_package_vulns_dict
+                    if len(vuln_matching_fixed_packages) > 0:
+                        dict_vuln["closest_fixed_by_url"] = closest_fixed_package.get_absolute_url()
+                        closest_fixed_package_vulns_dict = [
+                            {
+                                "vuln_id": fixed_pkg_vuln.vulnerability_id,
+                                "vuln_get_absolute_url": fixed_pkg_vuln.get_absolute_url(),
+                            }
+                            for fixed_pkg_vuln in closest_fixed_package_vulns
+                        ]
+                        dict_vuln[
+                            "closest_fixed_by_vulnerabilities"
+                        ] = closest_fixed_package_vulns_dict
+                    else:
+                        dict_vuln["closest_fixed_by_url"] = ""
+                        dict_vuln["closest_fixed_by_vulnerabilities"] = []
 
                     purl_dict["closest_non_vulnerable_fix"] = str(closest_non_vulnerable_fix)
-                    purl_dict[
-                        "closest_non_vulnerable_fix_url"
-                    ] = closest_non_vulnerable_fix.get_absolute_url()
+                    if len(vuln_matching_fixed_packages) > 0:
+                        purl_dict[
+                            "closest_non_vulnerable_fix_url"
+                        ] = closest_non_vulnerable_fix.get_absolute_url()
+                        purl_dict[
+                            "most_recent_non_vulnerable_fix_url"
+                        ] = most_recent_non_vulnerable_fix.get_absolute_url()
+                    else:
+                        purl_dict["closest_non_vulnerable_fix_url"] = ""
+                        purl_dict["most_recent_non_vulnerable_fix_url"] = ""
+
                     purl_dict["most_recent_non_vulnerable_fix"] = str(
                         most_recent_non_vulnerable_fix
                     )
-                    purl_dict[
-                        "most_recent_non_vulnerable_fix_url"
-                    ] = most_recent_non_vulnerable_fix.get_absolute_url()
 
         # Temporary print output during dev/testing:
         # print("\npurl_dict = {}\n".format(purl_dict))
-        # print(json.dumps(purl_dict, indent=4, sort_keys=False))
+        print(json.dumps(purl_dict, indent=4, sort_keys=False))
 
         # TODO: Consider whether we want to provide the user with an option to output the dictionary to a file.
         # pretty_purl_dict = json.dumps(purl_dict, indent=4, sort_keys=False)

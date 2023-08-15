@@ -709,8 +709,11 @@ class Package(PackageURLMixin):
         purl_dict.update({"vulnerabilities": []})
 
         purl_dict["closest_non_vulnerable_fix"] = ""
+        purl_dict["closest_non_vulnerable_fix_version"] = ""
         purl_dict["closest_non_vulnerable_fix_url"] = ""
+
         purl_dict["most_recent_non_vulnerable_fix"] = ""
+        purl_dict["most_recent_non_vulnerable_fix_version"] = ""
         purl_dict["most_recent_non_vulnerable_fix_url"] = ""
 
         for vuln in qs:
@@ -761,7 +764,9 @@ class Package(PackageURLMixin):
 
                 if dict_vuln["vulnerability"] == str(vuln):
                     dict_vuln["closest_fixed_by_purl"] = str(closest_fixed_package)
+
                     if len(vuln_matching_fixed_packages) > 0:
+                        dict_vuln["closest_fixed_by_version"] = str(closest_fixed_package.version)
                         dict_vuln["closest_fixed_by_url"] = closest_fixed_package.get_absolute_url()
                         closest_fixed_package_vulns_dict = [
                             {
@@ -774,19 +779,29 @@ class Package(PackageURLMixin):
                             "closest_fixed_by_vulnerabilities"
                         ] = closest_fixed_package_vulns_dict
                     else:
+                        dict_vuln["closest_fixed_by_version"] = ""
                         dict_vuln["closest_fixed_by_url"] = ""
                         dict_vuln["closest_fixed_by_vulnerabilities"] = []
 
                     purl_dict["closest_non_vulnerable_fix"] = str(closest_non_vulnerable_fix)
+
                     if len(vuln_matching_fixed_packages) > 0:
+                        purl_dict["closest_non_vulnerable_fix_version"] = str(
+                            closest_non_vulnerable_fix.version
+                        )
                         purl_dict[
                             "closest_non_vulnerable_fix_url"
                         ] = closest_non_vulnerable_fix.get_absolute_url()
+                        purl_dict["most_recent_non_vulnerable_fix_version"] = str(
+                            most_recent_non_vulnerable_fix.version
+                        )
                         purl_dict[
                             "most_recent_non_vulnerable_fix_url"
                         ] = most_recent_non_vulnerable_fix.get_absolute_url()
                     else:
+                        purl_dict["closest_non_vulnerable_fix_version"] = ""
                         purl_dict["closest_non_vulnerable_fix_url"] = ""
+                        purl_dict["most_recent_non_vulnerable_fix_version"] = ""
                         purl_dict["most_recent_non_vulnerable_fix_url"] = ""
 
                     purl_dict["most_recent_non_vulnerable_fix"] = str(

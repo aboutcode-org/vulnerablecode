@@ -218,6 +218,7 @@ class TestPackageModel(TestCase):
                 {
                     "vulnerability": "VCID-123",
                     "closest_fixed_by_purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
+                    "closest_fixed_by_version": "2.13.2",
                     "closest_fixed_by_url": "/packages/pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
                     "closest_fixed_by_vulnerabilities": [
                         {
@@ -229,13 +230,16 @@ class TestPackageModel(TestCase):
                 {
                     "vulnerability": "VCID-456",
                     "closest_fixed_by_purl": "There are no reported fixed packages.",
+                    "closest_fixed_by_version": "",
                     "closest_fixed_by_url": "",
                     "closest_fixed_by_vulnerabilities": [],
                 },
             ],
             "closest_non_vulnerable_fix": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.0-rc1",
+            "closest_non_vulnerable_fix_version": "",
             "closest_non_vulnerable_fix_url": "",
             "most_recent_non_vulnerable_fix": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.0-rc1",
+            "most_recent_non_vulnerable_fix_version": "",
             "most_recent_non_vulnerable_fix_url": "",
         }
 

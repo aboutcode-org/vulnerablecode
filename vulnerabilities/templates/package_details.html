@@ -47,18 +47,18 @@ VulnerableCode Package Details - {{ package.purl }}
                     <tbody>
                         <tr>
                             <td class="two-col-left">
-                                Closest non-vulnerable purl
+                                Non-vulnerable version
                             </td>
                             <td class="two-col-right">
-                                <a href="{{ fixed_package_details.closest_non_vulnerable_fix_url }}?search={{ fixed_package_details.closest_non_vulnerable_fix }}" target="_self">{{ fixed_package_details.closest_non_vulnerable_fix }}</a>
+                                <a href="{{ fixed_package_details.closest_non_vulnerable_fix_url }}?search={{ fixed_package_details.closest_non_vulnerable_fix }}" target="_self">{{ fixed_package_details.closest_non_vulnerable_fix_version }}</a>
                             </td>
                         </tr>
                         <tr>
                             <td class="two-col-left">
-                                Latest non-vulnerable purl
+                                Latest non-vulnerable version
                             </td>
                             <td class="two-col-right">
-                                <a href="{{ fixed_package_details.most_recent_non_vulnerable_fix_url }}?search={{ fixed_package_details.most_recent_non_vulnerable_fix }}" target="_self">{{ fixed_package_details.most_recent_non_vulnerable_fix }}</a>
+                                <a href="{{ fixed_package_details.most_recent_non_vulnerable_fix_url }}?search={{ fixed_package_details.most_recent_non_vulnerable_fix }}" target="_self">{{ fixed_package_details.most_recent_non_vulnerable_fix_version }}</a>
                             </td>
                         </tr>
                     </tbody>
@@ -80,7 +80,7 @@ VulnerableCode Package Details - {{ package.purl }}
                             <th style="width: 175px;">Vulnerability</th>
                             <th>Summary</th>
                             <th style="width: 225px;">Aliases</th>
-                            <th style="width: 300px;">Closest fixed by packages</th>
+                            <th style="width: 300px;">Fixed by packages</th>
                         </tr>
                     </thead>
 
@@ -111,10 +111,24 @@ VulnerableCode Package Details - {{ package.purl }}
                                                 {% for abc in value %}
                                                     {% if abc.vulnerability == vulnerability.vulnerability_id %}
 
-                                                        <a href="{{ abc.closest_fixed_by_url }}?search={{ abc.closest_fixed_by_purl }}" target="_self">{{ abc.closest_fixed_by_purl }}</a>
+                                                        {% if abc.closest_fixed_by_purl == "There are no reported fixed packages." %}
+                                                            <span>There are no reported fixed packages.</span>
+                                                        {% else %}
+                                                            <a href="{{ abc.closest_fixed_by_url }}?search={{ abc.closest_fixed_by_purl }}" target="_self">{{ abc.closest_fixed_by_purl }}</a>
+                                                        {% endif %}
                                                         <br />
 
-                                                        <span>Vulnerabilities:</span> {{ abc.closest_fixed_by_vulnerabilities|length }}
+                                                        {% if abc.closest_fixed_by_purl == "There are no reported fixed packages." %}
+                                                            <span></span>
+                                                        {% else %}
+
+                                                            {% if abc.closest_fixed_by_vulnerabilities|length != 1 %}
+                                                            <span>Affected by {{ abc.closest_fixed_by_vulnerabilities|length }} other vulnerabilities.</span>
+                                                            {% else %}
+                                                            <span>Affected by {{ abc.closest_fixed_by_vulnerabilities|length }} other vulnerability.</span>
+                                                            {% endif %}
+
+                                                        {% endif %}
 
                                                         {% if abc.closest_fixed_by_vulnerabilities|length != 0 %}
                                                             <div class="dropdown is-hoverable has-text-weight-normal is-right">
@@ -125,12 +139,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                                                     <div class="dropdown-content dropdown-instructions-box-shadow">
                                                                         <div class="dropdown-item">
                                                                             <div style="max-height: 200px; overflow-y: auto;">
-                                                                                The <strong>closest fixed-by purl</strong> has {{ abc.closest_fixed_by_vulnerabilities|length }}
-                                                                                {% if abc.closest_fixed_by_vulnerabilities|length == 1 %}
-                                                                                    vulnerability:
-                                                                                {% else %}
-                                                                                    vulnerabilities:
-                                                                                {% endif %}
+                                                                                This version is affected by these other vulnerabilities:
                                                                                 <div style="padding-top: 5px;">
                                                                                     {% for closest_vuln in abc.closest_fixed_by_vulnerabilities %}
                                                                                     <div>

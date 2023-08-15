@@ -61,6 +61,12 @@ class TestVulnerabilityModel(TestCase):
                 == 1
             )
 
+    def test_cwe_not_present_in_weaknesses_db(self):
+        w1 = models.Weakness.objects.create(name="189")
+        assert w1.weakness is None
+        assert w1.name is ""
+        assert w1.description is ""
+
 
 # FIXME: The fixture code is duplicated. setUpClass is not working with the pytest mark.
 @pytest.mark.django_db
@@ -189,13 +195,6 @@ class TestPackageModel(TestCase):
         vuln_packages = Package.objects.vulnerable()
         assert vuln_packages.count() == 3
         assert vuln_packages.distinct().count() == 2
-
-        # matching_fixed_packages = vulnerablecode_package.get_fixed_packages(vulnerablecode_package)
-        # assert vuln_packages.distinct()[0]
-
-        # matching_fixed_packages = vuln_packages.distinct()[0].get_fixed_packages(
-        #     vuln_packages.distinct()[0]
-        # )
 
         first_vulnerable_package = vuln_packages.distinct()[0]
         matching_fixed_packages = first_vulnerable_package.get_fixed_packages(
@@ -400,9 +399,3 @@ class TestPackageModel(TestCase):
         )
         assert vulnerablecode_package.qualifiers == {}
         assert vulnerablecode_package.subpath == ""
-
-    def test_cwe_not_present_in_weaknesses_db(self):
-        w1 = models.Weakness.objects.create(name="189")
-        assert w1.weakness is None
-        assert w1.name is ""
-        assert w1.description is ""

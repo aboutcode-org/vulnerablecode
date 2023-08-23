@@ -12,11 +12,13 @@ from typing import Iterable
 from typing import List
 from typing import Tuple
 
+from django.db.models import Q
 from django.db.models.query import QuerySet
 from packageurl import PackageURL
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import Importer
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
@@ -34,10 +36,17 @@ class DefaultImprover(Improver):
     information source.
     """
 
+    importer: Importer
+
     @property
     def interesting_advisories(self) -> QuerySet:
-        for advisory in Advisory.objects.all().paginated():
-            yield advisory
+        if hasattr(self, "importer"):
+            return (
+                Advisory.objects.filter(Q(created_by=self.importer.qualified_name))
+                .order_by("-date_collected")
+                .paginated()
+            )
+        return Advisory.objects.all().order_by("-date_collected").paginated()
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         if not advisory_data:

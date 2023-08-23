@@ -138,7 +138,7 @@ class ApacheTomcatImporter(Importer):
         for tag in soup.find_all("a"):
             link = tag.get("href")
 
-            if "security-" in link and any(char.isdigit() for char in link):
+            if link and "security-" in link and any(char.isdigit() for char in link):
                 yield urllib.parse.urljoin(url, link)
 
     def advisory_data(self):

@@ -2,6 +2,12 @@ Release notes
 =============
 
 
+Version v33.4.0
+----------------
+
+- We added importer specific improvers and removed default improver
+  additionally improve recent advisories first.
+
 Version v33.3.0
 ----------------
 

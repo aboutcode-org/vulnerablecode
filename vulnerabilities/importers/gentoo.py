@@ -31,6 +31,7 @@ class GentooImporter(Importer):
     # The contents of this document, unless otherwise expressly stated, are licensed
     # under the [CC-BY-SA-4.0](https://creativecommons.org/licenses/by-sa/4.0/) license.
     license_url = "https://creativecommons.org/licenses/by-sa/4.0/"
+    importing_authority = "Gentoo Linux Security Advisories"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         try:
@@ -75,6 +76,9 @@ class GentooImporter(Importer):
                 summary=summary,
                 references=vuln_references,
                 affected_packages=affected_packages,
+                url=f"https://security.gentoo.org/glsa/{id}"
+                if id
+                else "https://security.gentoo.org/glsa",
             )
 
     @staticmethod

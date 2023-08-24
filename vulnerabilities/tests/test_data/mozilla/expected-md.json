@@ -37,6 +37,7 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/mozilla/foundation-security-advisories/blob/master/mfsa2006-02.md"
   }
 ]

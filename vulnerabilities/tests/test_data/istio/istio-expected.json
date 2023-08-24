@@ -38,6 +38,7 @@
       }
     ],
     "date_published": "2019-05-28T00:00:00+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/dependabot/elixir-security-advisories/blob/master/test_file.md"
   }
 ]

@@ -20,8 +20,10 @@ from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
+from vulnerabilities.models import PackageChangeLog
 from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityChangeLog
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
@@ -58,7 +60,11 @@ class ImproveRunner:
 
 
 @transaction.atomic
-def process_inferences(inferences: List[Inference], advisory: Advisory, improver_name: str):
+def process_inferences(
+    inferences: List[Inference],
+    advisory: Advisory,
+    improver_name: str,
+):
     """
     Return number of inferences processed.
     An atomic transaction that updates both the Advisory (e.g. date_imported)
@@ -82,6 +88,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
             vulnerability_id=inference.vulnerability_id,
             aliases=inference.aliases,
             summary=inference.summary,
+            advisory=advisory,
         )
 
         if not vulnerability:
@@ -124,24 +131,48 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                     )
 
         for affected_purl in inference.affected_purls or []:
-            vulnerable_package = Package.objects.get_or_create_from_purl(purl=affected_purl)
+            vulnerable_package, _ = Package.objects.get_or_create_from_purl(purl=affected_purl)
+            PackageChangeLog.log_import(
+                package=vulnerable_package,
+                importer=advisory.created_by,
+                supporting_data={
+                    "date_published": advisory.date_published.strftime("%d %B, %Y")
+                    if advisory.date_published
+                    else None,
+                    "url": advisory.url if advisory.url else None,
+                },
+            )
             PackageRelatedVulnerability(
                 vulnerability=vulnerability,
                 package=vulnerable_package,
                 created_by=improver_name,
                 confidence=inference.confidence,
                 fix=False,
-            ).update_or_create()
+            ).update_or_create(
+                advisory=advisory,
+            )
 
         if inference.fixed_purl:
-            fixed_package = Package.objects.get_or_create_from_purl(purl=inference.fixed_purl)
+            fixed_package, _ = Package.objects.get_or_create_from_purl(purl=inference.fixed_purl)
+            PackageChangeLog.log_import(
+                package=fixed_package,
+                importer=advisory.created_by,
+                supporting_data={
+                    "date_published": advisory.date_published.strftime("%d %B, %Y")
+                    if advisory.date_published
+                    else None,
+                    "url": advisory.url if advisory.url else None,
+                },
+            )
             PackageRelatedVulnerability(
                 vulnerability=vulnerability,
                 package=fixed_package,
                 created_by=improver_name,
                 confidence=inference.confidence,
                 fix=True,
-            ).update_or_create()
+            ).update_or_create(
+                advisory=advisory,
+            )
 
         if inference.weaknesses and vulnerability:
             for cwe_id in inference.weaknesses:

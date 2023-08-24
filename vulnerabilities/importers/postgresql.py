@@ -28,6 +28,7 @@ class PostgreSQLImporter(Importer):
     root_url = "https://www.postgresql.org/support/security/"
     license_url = "https://www.postgresql.org/about/licence/"
     spdx_license_expression = "PostgreSQL"
+    importing_authority = "PostgreSQL Security Team"
 
     def advisory_data(self):
         known_urls = {self.root_url}
@@ -128,6 +129,7 @@ def to_advisories(data):
                     summary=summary,
                     references=references,
                     affected_packages=affected_packages,
+                    url=f"https://www.postgresql.org/support/security/{cve_id}",
                 )
             )
     return advisories

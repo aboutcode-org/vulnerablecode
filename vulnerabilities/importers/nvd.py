@@ -60,6 +60,8 @@ class NVDImporter(Importer):
         MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
     """
 
+    importing_authority = "National Vulnerability Database"
+
     def advisory_data(self):
         for _year, cve_data in fetch_cve_data_1_1():
             yield from to_advisories(cve_data=cve_data)
@@ -72,7 +74,7 @@ def fetch(url):
     return json.loads(data)
 
 
-def fetch_cve_data_1_1(starting_year=2002):
+def fetch_cve_data_1_1(starting_year=2019):
     """
     Yield tuples of (year, lists of CVE mappings) from the NVD, one for each
     year since ``starting_year`` defaulting to 2002.
@@ -266,6 +268,7 @@ class CveItem:
             references=self.references,
             date_published=dateparser.parse(self.cve_item.get("publishedDate")),
             weaknesses=self.weaknesses,
+            url=f"https://nvd.nist.gov/vuln/detail/{self.cve_id}",
         )
 
 

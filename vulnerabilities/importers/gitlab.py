@@ -25,7 +25,7 @@ from univers.versions import Version
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Importer
+from vulnerabilities.importer import GitImporter
 from vulnerabilities.importer import Reference
 from vulnerabilities.utils import build_description
 from vulnerabilities.utils import get_cwe_id
@@ -47,14 +47,18 @@ PURL_TYPE_BY_GITLAB_SCHEME = {
 GITLAB_SCHEME_BY_PURL_TYPE = {v: k for k, v in PURL_TYPE_BY_GITLAB_SCHEME.items()}
 
 
-class GitLabAPIImporter(Importer):
+class GitLabAPIImporter(GitImporter):
     spdx_license_expression = "MIT"
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
-    repo_url = "git+https://gitlab.com/gitlab-org/advisories-community/"
+    importer_name = "GitLab Importer"
+    importing_authority = "Gitlab Security Advisory"
 
-    def advisory_data(self, _keep_clone=False) -> Iterable[AdvisoryData]:
+    def __init__(self):
+        super().__init__(repo_url="git+https://gitlab.com/gitlab-org/advisories-community/")
+
+    def advisory_data(self, _keep_clone=True) -> Iterable[AdvisoryData]:
         try:
-            self.clone(repo_url=self.repo_url)
+            self.clone()
             base_path = Path(self.vcs_response.dest_dir)
 
             for file_path in base_path.glob("**/*.yml"):
@@ -64,7 +68,7 @@ class GitLabAPIImporter(Importer):
                 )
 
                 if gitlab_type in PURL_TYPE_BY_GITLAB_SCHEME:
-                    yield parse_gitlab_advisory(file_path)
+                    yield parse_gitlab_advisory(file_path, base_path)
 
                 else:
                     logger.error(f"Unknow package type {gitlab_type!r} in {file_path!r}")
@@ -148,7 +152,7 @@ def extract_affected_packages(
         )
 
 
-def parse_gitlab_advisory(file):
+def parse_gitlab_advisory(file, base_path):
     """
     Parse a Gitlab advisory file and return an AdvisoryData or None.
     These files are YAML. There is a JSON schema documented at
@@ -248,6 +252,7 @@ def parse_gitlab_advisory(file):
                     affected_version_range=affected_version_range,
                 )
             ]
+    file_path = str(file.relative_to(base_path)).strip("/")
     return AdvisoryData(
         aliases=aliases,
         summary=summary,
@@ -255,4 +260,5 @@ def parse_gitlab_advisory(file):
         date_published=date_published,
         affected_packages=affected_packages,
         weaknesses=cwe_list,
+        url=f"https://gitlab.com/gitlab-org/advisories-community/-/blob/main/{file_path}",
     )

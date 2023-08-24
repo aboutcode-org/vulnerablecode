@@ -87,6 +87,7 @@ def test_process_advisories_idempotency_with_one_new_advisory(db):
     advisory_datas.append(
         AdvisoryData(
             aliases=["CVE-2022-1337"],
+            url="https://example.com/CVE-2022-1337",
         )
     )
     ImportRunner(DummyImporter).process_advisories(advisory_datas, "test_importer")

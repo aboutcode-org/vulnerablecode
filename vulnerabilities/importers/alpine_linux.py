@@ -35,6 +35,7 @@ BASE_URL = "https://secdb.alpinelinux.org/"
 class AlpineImporter(Importer):
     spdx_license_expression = "CC-BY-SA-4.0"
     license_url = "https://secdb.alpinelinux.org/license.txt"
+    importing_authority = "Alpine Security Database"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         page_response_content = fetch_response(BASE_URL).content
@@ -50,7 +51,7 @@ class AlpineImporter(Importer):
             if not record["packages"]:
                 LOGGER.error(f'"packages" not found in {link!r}')
                 continue
-            yield from process_record(record)
+            yield from process_record(record, link)
 
 
 def fetch_advisory_directory_links(page_response_content: str) -> List[str]:
@@ -98,7 +99,7 @@ def check_for_attributes(record) -> bool:
     return True
 
 
-def process_record(record: dict) -> Iterable[AdvisoryData]:
+def process_record(record: dict, url: str) -> Iterable[AdvisoryData]:
     """
     Return a list of AdvisoryData objects by processing data
     present in that `record`
@@ -114,10 +115,7 @@ def process_record(record: dict) -> Iterable[AdvisoryData]:
         if not check_for_attributes(record):
             continue
         yield from load_advisories(
-            package["pkg"],
-            record["distroversion"],
-            record["reponame"],
-            record["archs"],
+            package["pkg"], record["distroversion"], record["reponame"], record["archs"], url
         )
 
 
@@ -126,6 +124,7 @@ def load_advisories(
     distroversion: str,
     reponame: str,
     archs: List[str],
+    url: str,
 ) -> Iterable[AdvisoryData]:
     """
     Yield AdvisoryData by mapping data from `pkg_infos`
@@ -211,4 +210,5 @@ def load_advisories(
                 references=references,
                 affected_packages=affected_packages,
                 aliases=aliases,
+                url=url,
             )

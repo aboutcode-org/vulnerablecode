@@ -24,7 +24,6 @@ from typing import Tuple
 
 import pytz
 from dateutil import parser as dateparser
-from fetchcode.vcs import VCSResponse
 from fetchcode.vcs import fetch_via_vcs
 from license_expression import Licensing
 from packageurl import PackageURL
@@ -188,7 +187,7 @@ class AffectedPackage:
             purls.add(pkg.package)
         if len(purls) > 1:
             raise UnMergeablePackageError("Cannot merge with different purls", purls)
-        return purls.pop(), list(affected_version_ranges), sorted(fixed_versions)
+        return purls.pop(), sorted(affected_version_ranges), sorted(fixed_versions)
 
     def to_dict(self):
         """
@@ -248,6 +247,7 @@ class AdvisoryData:
     references: List[Reference] = dataclasses.field(default_factory=list)
     date_published: Optional[datetime.datetime] = None
     weaknesses: List[int] = dataclasses.field(default_factory=list)
+    url: Optional[str] = None
 
     def __post_init__(self):
         if self.date_published and not self.date_published.tzinfo:
@@ -271,6 +271,7 @@ class AdvisoryData:
             "references": [ref.to_dict() for ref in self.references],
             "date_published": self.date_published.isoformat() if self.date_published else None,
             "weaknesses": self.weaknesses,
+            "url": self.url if self.url else "",
         }
 
     @classmethod
@@ -299,10 +300,6 @@ class InvalidSPDXLicense(Exception):
     pass
 
 
-class ForkError(Exception):
-    pass
-
-
 class Importer:
     """
     An Importer collects data from various upstreams and returns corresponding AdvisoryData objects
@@ -312,7 +309,9 @@ class Importer:
     spdx_license_expression = ""
     license_url = ""
     notice = ""
-    vcs_response: VCSResponse = None
+    importing_authority = ""
+    importer_name = ""
+    vcs_response = None
 
     def __init__(self):
         if not self.spdx_license_expression:
@@ -339,16 +338,45 @@ class Importer:
         raise NotImplementedError
 
     def clone(self, repo_url):
-        """
-        Clone the repo at repo_url and return the VCSResponse object
-        """
         try:
             self.vcs_response = fetch_via_vcs(repo_url)
-            return self.vcs_response
         except Exception as e:
             msg = f"Failed to fetch {repo_url} via vcs: {e}"
             logger.error(msg)
             raise ForkError(msg) from e
+
+
+class ForkError(Exception):
+    pass
+
+
+class GitImporter(Importer):
+    def __init__(self, repo_url):
+        super().__init__()
+        self.repo_url = repo_url
+        self.vcs_response = None
+
+    def __enter__(self):
+        super().__enter__()
+        self.clone()
+        return self
+
+    def __exit__(self):
+        self.vcs_response.delete()
+
+    def clone(self):
+        try:
+            self.vcs_response = fetch_via_vcs(self.repo_url)
+        except Exception as e:
+            msg = f"Failed to fetch {self.repo_url} via vcs: {e}"
+            logger.error(msg)
+            raise ForkError(msg) from e
+
+    def advisory_data(self) -> Iterable[AdvisoryData]:
+        """
+        Return AdvisoryData objects corresponding to the data being imported
+        """
+        raise NotImplementedError
 
 
 # TODO: Needs rewrite
@@ -357,6 +385,8 @@ class OvalImporter(Importer):
     All data sources which collect data from OVAL files must inherit from this
     `OvalDataSource` class. Subclasses must implement the methods `_fetch` and `set_api`.
     """
+
+    data_url: str = ""
 
     @staticmethod
     def create_purl(pkg_name: str, pkg_data: Mapping) -> PackageURL:
@@ -472,4 +502,5 @@ class OvalImporter(Importer):
                 affected_packages=affected_packages,
                 references=sorted(references),
                 date_published=date_published,
+                url=self.data_url,
             )

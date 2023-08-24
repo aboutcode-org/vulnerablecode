@@ -32,7 +32,9 @@ from vulnerabilities.utils import get_cwe_id
 logger = logging.getLogger(__name__)
 
 
-def parse_advisory_data(raw_data: dict, supported_ecosystem) -> Optional[AdvisoryData]:
+def parse_advisory_data(
+    raw_data: dict, supported_ecosystem, advisory_url: str
+) -> Optional[AdvisoryData]:
     """
     Return an AdvisoryData build from a ``raw_data`` mapping of OSV advisory and
     a ``supported_ecosystem`` string.
@@ -48,7 +50,7 @@ def parse_advisory_data(raw_data: dict, supported_ecosystem) -> Optional[Advisor
 
     date_published = get_published_date(raw_data=raw_data)
     severities = list(get_severities(raw_data=raw_data))
-    references = get_references(raw_data=raw_data, severities=severities)
+    references = get_references_and_advisory_url(raw_data=raw_data, severities=severities)
 
     affected_packages = []
 
@@ -86,6 +88,7 @@ def parse_advisory_data(raw_data: dict, supported_ecosystem) -> Optional[Advisor
         affected_packages=affected_packages,
         date_published=date_published,
         weaknesses=weaknesses,
+        url=advisory_url,
     )
 
 
@@ -144,7 +147,7 @@ def get_severities(raw_data) -> Iterable[VulnerabilitySeverity]:
         )
 
 
-def get_references(raw_data, severities) -> List[Reference]:
+def get_references_and_advisory_url(raw_data, severities) -> List[Reference]:
     """
     Return a list Reference extracted from a mapping of OSV ``raw_data`` given a
     ``severities`` list of VulnerabilitySeverity.
@@ -153,7 +156,6 @@ def get_references(raw_data, severities) -> List[Reference]:
     for ref in raw_data.get("references") or []:
         if not ref:
             continue
-
         url = ref["url"]
         if not url:
             logger.error(f"Reference without URL : {ref!r} for OSV id: {raw_data['id']!r}")

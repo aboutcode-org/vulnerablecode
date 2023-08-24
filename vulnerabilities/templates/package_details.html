@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load humanize %}
 {% load widget_tweaks %}
+{% load static %}
 
 {% block title %}
 VulnerableCode Package Details - {{ package.purl }}
@@ -8,7 +9,7 @@ VulnerableCode Package Details - {{ package.purl }}
 
 {% block content %}
 <section class="section pt-0">
-    {% include "package_search_box.html"%}
+    {% include "package_search_box.html" %}
 </section>
 
 {% if package %}
@@ -16,28 +17,53 @@ VulnerableCode Package Details - {{ package.purl }}
         <div class="details-container">
             <article class="panel is-info panel-header-only">
                 <div class="panel-heading py-2 is-size-6">
-                Package details:
+                    Package details:
+                    <span class="tag is-white custom">
+                        {{ package.purl }}
+                    </span>
                 </div>
             </article>
 
-            <div class="pl-3 pr-3 mb-5 floating-purl">
-                <table class="table vcio-table width-100-pct mt-2">
-                    <tbody>
-                        <tr>
-                            <td class="two-col-left">
-                                <span
-                                    class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                    data-tooltip="The package url or purl is a URL string used to identify and locate a software package."
-                                >
-                                purl
-                                </span>
-                            </td>
-                            <td class="two-col-right">
-                                {{ fixed_package_details.purl.to_string }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="tabs is-boxed" id="tabs">
+                <ul>
+                    <li class="is-active" data-tab="essentials">
+                        <a>
+                            <span>Essentials</span>
+                        </a>
+                    </li>
+                    <li data-tab="history">
+                        <a>
+                            <span>
+                                History ({{ history|length }})
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div id="tab-content">
+                <div class="tab-div is-active" data-content="essentials">
+                    <div class="tab-nested-div">
+                        <div class="pl-3 pr-3 mb-5 floating-purl">
+                            <table class="table vcio-table width-100-pct mt-2">
+                                <tbody>
+                                    <tr>
+                                        <td class="two-col-left">
+                                            <span
+                                                class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                                data-tooltip="The package url or purl is a URL string used to identify and locate a software package."
+                                            >
+                                            purl
+                                            </span>
+                                        </td>
+                                        <td class="two-col-right">
+                                            {{ fixed_package_details.purl.to_string }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {% if affected_by_vulnerabilities|length != 0 %}
@@ -193,38 +219,37 @@ VulnerableCode Package Details - {{ package.purl }}
                     </thead>
                     <tbody>
                         {% for vulnerability in fixing_vulnerabilities %}
-                            <tr>
-                                <td>
-                                    <a href="{{ vulnerability.get_absolute_url }}" target="_self">{{ vulnerability.vulnerability_id }}</a>
-                                </td>
-                                <td>
-                                    {{ vulnerability.summary }}
-                                </td>
-                                <td>
-                                    {% for alias in vulnerability.alias %}
-                                        {% if alias.url %}
-                                            <a href="{{ alias.url }}" target="_blank">{{ alias }}<i class="fa fa-external-link fa_link_custom"></i></a>
-                                            <br />
-                                        {% else %}
-                                            {{ alias }}
-                                            <br />
-                                        {% endif %}
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
                                 <td colspan="3">
                                     This package is not known to <span class="affected-fixed">fix</span> vulnerabilities.
                                 </td>
-                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-
-            <br/>
+            </div>
+            <div class="tab-div content" data-content="history">
+                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
+                    <tr>
+                            <th> Date </th>
+                            <th> Changelog </th>
+                            <th> Source </th>
+                            <th> VulnerableCode Version </th>
+                        </tr>
+                    </thead>
+                    {% for log in history %}
+                        <tr>
+                        <td class="is-break-word">{{ log.date_published }}</td>
+                                <td class="is-break-word">{{ log.message|safe }}</td>
+                                <td class="is-break-word"> <a href="{{ log.source }}" target="_blank"> {{ log.source }} </a> </td>
+                                <td class="is-break-word"> {{ log.vulnerablecode_version }} </td>
+                        </tr>
+                    {% endfor %}
+            </table>
             </div>
         </div>
     </section>
 {% endif %}
+
+<script src="{% static 'js/main.js' %}" crossorigin="anonymous"></script>
+
 {% endblock %}

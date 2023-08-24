@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 class PyPIImporter(Importer):
     license_url = "https://github.com/pypa/advisory-database/blob/main/LICENSE"
     spdx_license_expression = "CC-BY-4.0"
+    importing_authority = "PyPa Advisory Database"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         """
@@ -38,4 +39,6 @@ class PyPIImporter(Importer):
                     continue
                 with zip_file.open(file_name) as f:
                     vul_info = json.load(f)
-                    yield parse_advisory_data(raw_data=vul_info, supported_ecosystem="pypi")
+                    yield parse_advisory_data(
+                        raw_data=vul_info, supported_ecosystem="pypi", advisory_url=url
+                    )

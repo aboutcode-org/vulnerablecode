@@ -33,10 +33,12 @@ class NpmImporter(Importer):
     spdx_license_expression = "MIT"
     license_url = "https://github.com/nodejs/security-wg/blob/main/LICENSE.md"
     repo_url = "git+https://github.com/nodejs/security-wg"
+    importer_name = "Npm Importer"
+    importing_authority = "Npm Security Advisories"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         try:
-            self.clone(repo_url=self.repo_url)
+            self.clone(self.repo_url)
             path = Path(self.vcs_response.dest_dir)
 
             vuln = path / "vuln"
@@ -104,6 +106,7 @@ class NpmImporter(Importer):
                 date_published=date_published,
                 affected_packages=affected_packages,
                 aliases=[alias],
+                url=f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json",
             )
 
     def get_affected_package(self, data, package_name):

@@ -9,6 +9,7 @@
 
 import json
 import re
+import urllib.parse as urlparse
 from pathlib import Path
 from typing import Iterable
 from typing import List
@@ -27,15 +28,16 @@ class RetireDotnetImporter(Importer):
     license_url = "https://github.com/RetireNet/Packages/blob/master/LICENSE"
     spdx_license_expression = "MIT"
     repo_url = "git+https://github.com/RetireNet/Packages/"
+    importing_authority = "RetireNet Security Advisories"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         try:
-            self.clone(repo_url=self.repo_url)
-            path = Path(self.vcs_response.dest_dir)
+            self.clone(self.repo_url)
+            base_path = Path(self.vcs_response.dest_dir)
 
-            vuln = path / "Content"
+            vuln = base_path / "Content"
             for file in vuln.glob("*.json"):
-                advisory = self.process_file(file)
+                advisory = self.process_file(file, base_path)
                 if advisory:
                     yield advisory
         finally:
@@ -51,8 +53,10 @@ class RetireDotnetImporter(Importer):
         else:
             return None
 
-    def process_file(self, path) -> List[AdvisoryData]:
-        with open(path) as f:
+    def process_file(self, file, base_path) -> List[AdvisoryData]:
+        relative_path = str(file.relative_to(base_path)).strip("/")
+        advisory_url = f"https://github.com/RetireNet/Packages/blob/master/{relative_path}"
+        with open(file) as f:
             json_doc = json.load(f)
             description = json_doc.get("description") or ""
             alias = self.vuln_id_from_desc(description)
@@ -90,4 +94,5 @@ class RetireDotnetImporter(Importer):
                     summary=description,
                     affected_packages=affected_packages,
                     references=vuln_reference,
+                    url=advisory_url,
                 )

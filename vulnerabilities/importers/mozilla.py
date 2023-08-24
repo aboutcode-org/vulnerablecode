@@ -36,41 +36,46 @@ class MozillaImporter(Importer):
     spdx_license_expression = "MPL-2.0"
     license_url = "https://github.com/mozilla/foundation-security-advisories/blob/master/LICENSE"
     repo_url = "git+https://github.com/mozilla/foundation-security-advisories/"
+    importing_authority = "Mozilla Foundation Security Advisories"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         try:
-            self.clone(repo_url=self.repo_url)
-            path = Path(self.vcs_response.dest_dir)
+            self.clone(self.repo_url)
+            base_path = Path(self.vcs_response.dest_dir)
 
-            vuln = path / "announce"
+            vuln = base_path / "announce"
             paths = list(vuln.glob("**/*.yml")) + list(vuln.glob("**/*.md"))
             for file_path in paths:
-                yield from to_advisories(file_path)
+                yield from to_advisories(file_path, base_path)
         finally:
             if self.vcs_response:
                 self.vcs_response.delete()
 
 
-def to_advisories(path: Path) -> List[AdvisoryData]:
+def to_advisories(file_path: Path, base_path: Path) -> List[AdvisoryData]:
     """
     Convert a file to corresponding advisories.
     This calls proper method to handle yml/md files.
     """
-    path = str(path)
-    mfsa_id = mfsa_id_from_filename(path)
+    relative_path = str(file_path.relative_to(base_path)).strip("/")
+    advisory_url = (
+        f"https://github.com/mozilla/foundation-security-advisories/blob/master/{relative_path}"
+    )
+    file_path = str(file_path)
+    mfsa_id = mfsa_id_from_filename(file_path)
     if not mfsa_id:
         return []
 
-    with open(path) as lines:
-        if path.endswith(".md"):
-            yield from get_advisories_from_md(mfsa_id, lines)
-        if path.endswith(".yml"):
-            yield from get_advisories_from_yml(mfsa_id, lines)
+    with open(file_path) as lines:
+        if file_path.endswith(".md"):
+            yield from get_advisories_from_md(mfsa_id, lines, advisory_url)
+        if file_path.endswith(".yml"):
+            yield from get_advisories_from_yml(mfsa_id, lines, advisory_url)
 
     return []
 
 
-def get_advisories_from_yml(mfsa_id, lines) -> List[AdvisoryData]:
+def get_advisories_from_yml(mfsa_id, lines, advisory_url) -> List[AdvisoryData]:
     data = yaml.safe_load(lines)
     data["mfsa_id"] = mfsa_id
 
@@ -89,10 +94,11 @@ def get_advisories_from_yml(mfsa_id, lines) -> List[AdvisoryData]:
                 aliases=[cve],
                 references=references,
                 affected_packages=list(affected_packages),
+                url=advisory_url,
             )
 
 
-def get_advisories_from_md(mfsa_id, lines) -> List[AdvisoryData]:
+def get_advisories_from_md(mfsa_id, lines, advisory_url) -> List[AdvisoryData]:
     yamltext, mdtext = split_markdown_front_matter(lines.read())
     data = yaml.safe_load(yamltext)
     data["mfsa_id"] = mfsa_id
@@ -111,6 +117,7 @@ def get_advisories_from_md(mfsa_id, lines) -> List[AdvisoryData]:
             aliases=[cve],
             affected_packages=list(affected_packages),
             references=references + [cve_ref],
+            url=advisory_url,
         )
 
 

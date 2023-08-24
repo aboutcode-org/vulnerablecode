@@ -6,9 +6,11 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+import urllib.parse as urlparse
 from pathlib import Path
 from typing import Set
 
+from dateutil import parser as dateparser
 from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
 from univers.version_range import HexVersionRange
@@ -26,21 +28,26 @@ class ElixirSecurityImporter(Importer):
     repo_url = "git+https://github.com/dependabot/elixir-security-advisories"
     license_url = "https://github.com/dependabot/elixir-security-advisories/blob/master/LICENSE.txt"
     spdx_license_expression = "CC0-1.0"
+    importing_authority = "Elixir Security Advisories"
 
     def advisory_data(self) -> Set[AdvisoryData]:
         try:
-            self.clone(repo_url=self.repo_url)
-            path = Path(self.vcs_response.dest_dir)
-            vuln = path / "packages"
+            self.clone(self.repo_url)
+            base_path = Path(self.vcs_response.dest_dir)
+            vuln = base_path / "packages"
             for file in vuln.glob("**/*.yml"):
-                yield from self.process_file(file)
+                yield from self.process_file(file, base_path)
         finally:
             if self.vcs_response:
                 self.vcs_response.delete()
 
-    def process_file(self, path):
-        path = str(path)
-        yaml_file = load_yaml(path)
+    def process_file(self, file, base_path):
+        relative_path = str(file.relative_to(base_path)).strip("/")
+        advisory_url = (
+            f"https://github.com/dependabot/elixir-security-advisories/blob/master/{relative_path}"
+        )
+        file = str(file)
+        yaml_file = load_yaml(file)
         cve_id = ""
         summary = yaml_file.get("description") or ""
         pkg_name = yaml_file.get("package") or ""
@@ -94,9 +101,15 @@ class ElixirSecurityImporter(Importer):
                 )
             )
 
+        date_published = None
+        if yaml_file.get("disclosure_date"):
+            date_published = dateparser.parse(yaml_file.get("disclosure_date"))
+
         yield AdvisoryData(
             aliases=[cve_id],
             summary=summary,
             references=references,
             affected_packages=affected_packages,
+            url=advisory_url,
+            date_published=date_published,
         )

@@ -21,7 +21,7 @@ from vulnerabilities.importers.osv import get_affected_purl
 from vulnerabilities.importers.osv import get_affected_version_range
 from vulnerabilities.importers.osv import get_fixed_versions
 from vulnerabilities.importers.osv import get_published_date
-from vulnerabilities.importers.osv import get_references
+from vulnerabilities.importers.osv import get_references_and_advisory_url
 from vulnerabilities.importers.osv import get_severities
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 
@@ -204,7 +204,7 @@ class TestOSVImporter(TestCase):
                 severities=[],
             )
         ]
-        results = get_references(
+        results = get_references_and_advisory_url(
             raw_data={
                 "id": "PYSEC-2022-10",
                 "references": [
@@ -230,7 +230,7 @@ class TestOSVImporter(TestCase):
             ),
         ]
 
-        results = get_references(
+        results = get_references_and_advisory_url(
             raw_data={
                 "id": "GHSA-j3f7-7rmc-6wqj",
                 "references": [
@@ -250,7 +250,9 @@ class TestOSVImporter(TestCase):
         assert results == expected
 
     def test_get_references3(self):
-        assert get_references(raw_data={"id": "PYSEC-2022-10"}, severities=[]) == []
+        assert (
+            get_references_and_advisory_url(raw_data={"id": "PYSEC-2022-10"}, severities=[]) == []
+        )
 
     def test_get_affected_purl1(self):
         results = get_affected_purl(

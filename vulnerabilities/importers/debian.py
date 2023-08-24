@@ -77,6 +77,7 @@ class DebianImporter(Importer):
     """
 
     api_url = "https://security-tracker.debian.org/tracker/data/json"
+    importing_authority = "Debian Security Tracker"
 
     def get_response(self):
         response = requests.get(self.api_url)
@@ -154,4 +155,5 @@ class DebianImporter(Importer):
                 summary=record.get("description", ""),
                 affected_packages=affected_packages,
                 references=references,
+                url=self.api_url,
             )

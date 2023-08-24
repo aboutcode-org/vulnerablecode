@@ -25,5 +25,6 @@
     }
   ],
   "date_published": "2018-03-15T00:00:00+00:00",
-  "weaknesses": [1035,937]
+  "weaknesses": [1035,937],
+  "url": "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/composer.yaml"
 }

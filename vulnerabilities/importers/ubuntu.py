@@ -61,6 +61,7 @@ class UbuntuImporter(OvalImporter):
     
     Thanks
     """
+    importing_authority = "Ubuntu Security Data"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -74,6 +75,7 @@ class UbuntuImporter(OvalImporter):
         releases = ["bionic", "trusty", "focal", "eoan", "xenial"]
         for release in releases:
             file_url = f"{base_url}/com.ubuntu.{release}.cve.oval.xml.bz2"  # nopep8
+            self.data_url = file_url
             logger.info(f"Fetching Ubuntu Oval: {file_url}")
             response = requests.get(file_url)
             if response.status_code != requests.codes.ok:

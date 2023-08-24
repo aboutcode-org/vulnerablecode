@@ -30,14 +30,6 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
-from vulnerabilities.importer import UnMergeablePackageError
-from vulnerabilities.improver import Improver
-from vulnerabilities.improver import Inference
-from vulnerabilities.models import Advisory
-from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
-from vulnerabilities.utils import get_affected_packages_by_patched_package
-from vulnerabilities.utils import nearest_patched_package
-from vulnerabilities.utils import resolve_version_range
 from vulnerabilities.utils import split_markdown_front_matter
 
 is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match
@@ -51,25 +43,24 @@ class IstioImporter(Importer):
     repo_url = "git+https://github.com/istio/istio.io/"
 
     def advisory_data(self) -> Set[AdvisoryData]:
-        try:
-            self.clone(repo_url=self.repo_url)
-            path = Path(self.vcs_response.dest_dir)
-            vuln = path / "content/en/news/security/"
-            for file in vuln.glob("**/*.md"):
-                # Istio website has files with name starting with underscore, these contain metadata
-                # required for rendering the website. We're not interested in these.
-                # See also https://github.com/nexB/vulnerablecode/issues/563
-                file = str(file)
-                if file.endswith("_index.md"):
-                    continue
-                yield from self.process_file(file)
-        finally:
-            if self.vcs_response:
-                self.vcs_response.delete()
+        self.clone(self.repo_url)
+        base_path = Path(self.vcs_response.dest_dir)
+        vuln = base_path / "content/en/news/security/"
+        for file in vuln.glob("**/*.md"):
+            # Istio website has files with name starting with underscore, these contain metadata
+            # required for rendering the website. We're not interested in these.
+            # See also https://github.com/nexB/vulnerablecode/issues/563
+            file = str(file)
+            if file.endswith("_index.md"):
+                continue
+            yield from self.process_file(file, base_path)
 
-    def process_file(self, path):
-
-        data = self.get_data_from_md(path)
+    def process_file(self, file, base_path):
+        relative_path = str(file.relative_to(base_path)).strip("/")
+        advisory_url = (
+            f"https://github.com/dependabot/elixir-security-advisories/blob/master/{relative_path}"
+        )
+        data = self.get_data_from_md(file)
         published_date = data.get("publishdate")
         release_date = None
         if published_date:
@@ -149,6 +140,7 @@ class IstioImporter(Importer):
                 affected_packages=affected_packages,
                 references=references,
                 date_published=release_date,
+                url=advisory_url,
             )
 
     def get_data_from_md(self, path):

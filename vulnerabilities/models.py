@@ -14,11 +14,15 @@ from contextlib import suppress
 from typing import Any
 
 from cwe2.database import Database
+from django.contrib.admin.models import ADDITION
+from django.contrib.admin.models import CHANGE
+from django.contrib.admin.models import DELETION
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import UserManager
+from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
 from django.core.exceptions import ValidationError
-from django.core.paginator import Paginator
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -28,6 +32,8 @@ from django.db.models import Q
 from django.db.models.functions import Length
 from django.db.models.functions import Trim
 from django.urls import reverse
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin
 from packageurl.contrib.django.models import PackageURLQuerySet
@@ -39,6 +45,7 @@ from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import build_vcid
 from vulnerabilities.utils import remove_qualifiers_and_subpath
+from vulnerablecode import __version__ as vulnerablecode_version
 
 logger = logging.getLogger(__name__)
 
@@ -53,20 +60,6 @@ class BaseQuerySet(models.QuerySet):
         """
         with suppress(self.model.DoesNotExist, ValidationError):
             return self.get(*args, **kwargs)
-
-    def paginated(self, per_page=5000):
-        """
-        Iterate over a (large) QuerySet by chunks of ``per_page`` items.
-        This technique is essential for preventing memory issues when iterating
-        See these links for inspiration:
-        https://nextlinklabs.com/resources/insights/django-big-data-iteration
-        https://stackoverflow.com/questions/4222176/why-is-iterating-through-a-large-django-queryset-consuming-massive-amounts-of-me/
-        """
-        paginator = Paginator(self, per_page=per_page)
-        for page_number in paginator.page_range:
-            page = paginator.page(page_number)
-            for object in page.object_list:
-                yield object
 
 
 class VulnerabilityQuerySet(BaseQuerySet):
@@ -245,6 +238,91 @@ class Vulnerability(models.Model):
         """
         return self.aliases.all()
 
+    @property
+    def history(self):
+        """
+        Return a queryset of Vulnerability that have one or more related packages.
+        """
+        from vulnerabilities.importers import IMPORTERS_REGISTRY
+
+        vuln_logs_qs = self.vulnerabilitychangelog_set.all()
+        for log in vuln_logs_qs.filter(action_type=1).distinct():
+            authority = IMPORTERS_REGISTRY[log.actor_name].importing_authority
+            importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
+            yield {
+                "date_published": log.supporting_data["date_published"]
+                if log.supporting_data["date_published"]
+                else None,
+                "message": f"Advisory published by { authority }"
+                if log.actor_name
+                else "Published by unknown source",
+                # "source" : ""
+                "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
+                "package": "",
+                "vulnerablecode_version": vulnerablecode_version,
+                "first_import": "",
+            }
+            yield {
+                "date_published": log.action_time.strftime("%d %B, %Y"),
+                "message": f"Imported at Vulnerablecode by {authority}",
+                "source": "",
+                "package": "",
+                "first_import": "",
+                "vulnerablecode_version": vulnerablecode_version,
+            }
+
+        for log in vuln_logs_qs.filter(action_type=3):
+            importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
+            conflict = False
+            if vuln_logs_qs.filter(
+                action_type=4,
+                vulnerability=log.vulnerability,
+                supporting_data__package=log.supporting_data["package"],
+            ).exists():
+                conflict = True
+            message = ""
+            if log.supporting_data["first_import"]:
+                message = f"""{importer_name} reports <a href="/packages/{log.supporting_data["package"]}?search={ log.supporting_data["package"] }" target="_self">{ log.supporting_data["package"] }</a> is affected by this vulnerability"""
+            else:
+                if conflict:
+                    message = "CONFLICT: " + message
+                else:
+                    message = f"""{importer_name} confirms <a href="/packages/{log.supporting_data["package"]}?search={ log.supporting_data["package"] }" target="_self">{ log.supporting_data["package"] }</a> is affected by this vulnerability"""
+            yield {
+                "date_published": log.action_time.strftime("%d %B, %Y"),
+                "message": message,
+                "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
+                "package": log.supporting_data["package"],
+                "first_import": log.supporting_data["first_import"],
+                "vulnerablecode_version": vulnerablecode_version,
+            }
+
+        for log in vuln_logs_qs.filter(action_type=4):
+            importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
+            conflict = False
+            if vuln_logs_qs.filter(
+                action_type=3,
+                actor_name=log.actor_name,
+                vulnerability=log.vulnerability,
+                supporting_data__package=log.supporting_data["package"],
+            ).exists():
+                conflict = True
+            if log.supporting_data["first_import"]:
+                message = f"""{importer_name} reports <a href="/packages/{log.supporting_data["package"]}?search={ log.supporting_data["package"] }" target="_self">{ log.supporting_data["package"] }</a> is fixing this vulnerability"""
+            else:
+                if conflict:
+                    message = "CONFLICT: " + message
+                else:
+                    message = f"""{importer_name} confirms <a href="/packages/{log.supporting_data["package"]}?search={ log.supporting_data["package"] }" target="_self">{ log.supporting_data["package"] }</a> is fixing this vulnerability"""
+            yield {
+                "date_published": log.action_time.strftime("%d %B, %Y"),
+                "message": message,
+                "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
+                "package": log.supporting_data["package"],
+                "first_import": log.supporting_data["first_import"],
+                "vulnerablecode_version": vulnerablecode_version,
+            }
+
     alias = get_aliases
 
     @property
@@ -299,25 +377,16 @@ class Weakness(models.Model):
     db = Database()
 
     @property
-    def weakness(self):
-        """
-        Return a queryset of Weakness for this vulnerability.
-        """
-        try:
-            weakness = self.db.get(self.cwe_id)
-            return weakness
-        except Exception as e:
-            logger.warning(f"Could not find CWE {self.cwe_id}: {e}")
-
-    @property
     def name(self):
         """Return the weakness's name."""
-        return self.weakness.name if self.weakness else ""
+        weakness = self.db.get(self.cwe_id)
+        return weakness.name
 
     @property
     def description(self):
         """Return the weakness's description."""
-        return self.weakness.description if self.weakness else ""
+        weakness = self.db.get(self.cwe_id)
+        return weakness.description
 
 
 class VulnerabilityReferenceQuerySet(BaseQuerySet):
@@ -439,8 +508,9 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         if isinstance(purl, str):
             purl = PackageURL.from_string(purl)
 
-        package, _ = Package.objects.get_or_create(**purl_to_dict(purl=purl))
-        return package
+        package, is_created = Package.objects.get_or_create(**purl_to_dict(purl=purl))
+
+        return package, is_created
 
     def for_package_url_object(self, purl):
         """
@@ -636,6 +706,92 @@ class Package(PackageURLMixin):
         Return a queryset of vulnerabilities affecting this package.
         """
         return self.vulnerabilities.filter(packagerelatedvulnerability__fix=False)
+
+    @property
+    def history(self):
+        """
+        Return a queryset of vulnerabilities affecting this package.
+        """
+        from vulnerabilities.importers import IMPORTERS_REGISTRY
+
+        vuln_logs_qs = self.packagechangelog_set.all()
+        print(vuln_logs_qs)
+        for log in vuln_logs_qs.filter(action_type=1).distinct():
+            authority = IMPORTERS_REGISTRY[log.actor_name].importing_authority
+            importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
+            yield {
+                "date_published": log.supporting_data["date_published"]
+                if log.supporting_data["date_published"]
+                else None,
+                "message": f"Advisory published by { authority }"
+                if log.actor_name
+                else "Published by unknown source",
+                # "source" : ""
+                "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
+                "package": "",
+                "vulnerablecode_version": vulnerablecode_version,
+                "first_import": "",
+            }
+            yield {
+                "date_published": log.action_time.strftime("%d %B, %Y"),
+                "message": f"Imported at Vulnerablecode by {authority}",
+                "source": "",
+                "package": "",
+                "first_import": "",
+                "vulnerablecode_version": vulnerablecode_version,
+            }
+
+        for log in vuln_logs_qs.filter(action_type=3):
+            importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
+            conflict = False
+            if vuln_logs_qs.filter(
+                action_type=4,
+                package=log.package,
+                supporting_data__vulnerability=log.supporting_data["vulnerability"],
+            ).exists():
+                conflict = True
+            message = ""
+            if log.supporting_data["first_import"]:
+                message = f"""{importer_name} reports <a href="/vulnerabilities/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }" target="_self">{ log.supporting_data["vulnerability"] }</a> is affecting this package"""
+            else:
+                if conflict:
+                    message = "CONFLICT: " + message
+                else:
+                    message = f"""{importer_name} confirms <a href="/vulnerabilities/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }" target="_self">{ log.supporting_data["vulnerability"] }</a> is affecting this package"""
+            yield {
+                "date_published": log.action_time.strftime("%d %B, %Y"),
+                "message": message,
+                "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
+                "vulnerability": log.supporting_data["vulnerability"],
+                "first_import": log.supporting_data["first_import"],
+                "vulnerablecode_version": vulnerablecode_version,
+            }
+
+        for log in vuln_logs_qs.filter(action_type=4):
+            importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
+            conflict = False
+            if vuln_logs_qs.filter(
+                action_type=3,
+                actor_name=log.actor_name,
+                package=log.package,
+                supporting_data__vulnerability=log.supporting_data["vulnerability"],
+            ).exists():
+                conflict = True
+            if log.supporting_data["first_import"]:
+                message = f"""{importer_name} reports <a href="/vulnerabilties/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }" target="_self">{ log.supporting_data["vulnerability"] }</a> is fixed by this package"""
+            else:
+                if conflict:
+                    message = "CONFLICT: " + message
+                else:
+                    message = f"""{importer_name} confirms <a href="/vulnerabilities/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }" target="_self">{ log.supporting_data["vulnerability"] }</a> is fixed by this package"""
+            yield {
+                "date_published": log.action_time.strftime("%d %B, %Y"),
+                "message": message,
+                "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
+                "vulnerability": log.supporting_data["vulnerability"],
+                "first_import": log.supporting_data["first_import"],
+                "vulnerablecode_version": vulnerablecode_version,
+            }
 
     # legacy aliases
     vulnerable_to = affected_by
@@ -856,7 +1012,7 @@ class PackageRelatedVulnerability(models.Model):
     def __str__(self):
         return f"{self.package.package_url} {self.vulnerability.vulnerability_id}"
 
-    def update_or_create(self):
+    def update_or_create(self, advisory):
         """
         Update if supplied record has more confidence than existing record
         Create if doesn't exist
@@ -875,6 +1031,7 @@ class PackageRelatedVulnerability(models.Model):
                     f"Confidence improved for {self.package} R {self.vulnerability}, "
                     f"new confidence: {self.confidence}"
                 )
+            self.add_vulnerability_changelog(advisory, False)
 
         except self.DoesNotExist:
             PackageRelatedVulnerability.objects.create(
@@ -884,9 +1041,60 @@ class PackageRelatedVulnerability(models.Model):
                 confidence=self.confidence,
                 fix=self.fix,
             )
+
             logger.info(
                 f"New relationship {self.package} R {self.vulnerability}, "
                 f"fix: {self.fix}, confidence: {self.confidence}"
+            )
+
+            self.add_vulnerability_changelog(advisory, True)
+
+    def add_vulnerability_changelog(self, advisory, first_import):
+        if VulnerabilityChangeLog.objects.filter(
+            vulnerability=self.vulnerability,
+            actor_name=advisory.created_by,
+            supporting_data__package=str(self.package),
+        ).exists():
+            return
+
+        if self.fix:
+            VulnerabilityChangeLog.log_fixed_by(
+                vulnerability=self.vulnerability,
+                importer=advisory.created_by,
+                supporting_data={
+                    "package": str(self.package),
+                    "url": advisory.url if advisory.url else None,
+                    "first_import": first_import,
+                },
+            )
+            PackageChangeLog.log_fixing(
+                package=self.package,
+                importer=advisory.created_by,
+                supporting_data={
+                    "vulnerability": str(self.vulnerability),
+                    "url": advisory.url if advisory.url else None,
+                    "first_import": first_import,
+                },
+            )
+        else:
+            VulnerabilityChangeLog.log_affects(
+                vulnerability=self.vulnerability,
+                importer=advisory.created_by,
+                supporting_data={
+                    "package": str(self.package),
+                    "url": advisory.url if advisory.url else None,
+                    "first_import": first_import,
+                },
+            )
+
+            PackageChangeLog.log_affected_by(
+                package=self.package,
+                importer=advisory.created_by,
+                supporting_data={
+                    "vulnerability": str(self.vulnerability),
+                    "url": advisory.url if advisory.url else None,
+                    "first_import": first_import,
+                },
             )
 
 
@@ -978,10 +1186,6 @@ class Alias(models.Model):
             return f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json"
 
 
-class AdvisoryQuerySet(BaseQuerySet):
-    pass
-
-
 class Advisory(models.Model):
     """
     An advisory represents data directly obtained from upstream transformed
@@ -1019,7 +1223,10 @@ class Advisory(models.Model):
         "module name importing the advisory. Eg:"
         "vulnerabilities.importers.nginx.NginxImporter",
     )
-    objects = AdvisoryQuerySet.as_manager()
+    url = models.URLField(
+        blank=True,
+        help_text="Link to the advisory on the upstream website",
+    )
 
     class Meta:
         unique_together = ["aliases", "unique_content_id", "date_published"]
@@ -1027,7 +1234,7 @@ class Advisory(models.Model):
 
     def save(self, *args, **kwargs):
         checksum = hashlib.md5()
-        for field in (self.summary, self.affected_packages, self.references, self.weaknesses):
+        for field in (self.summary, self.affected_packages, self.references):
             value = json.dumps(field, separators=(",", ":")).encode("utf-8")
             checksum.update(value)
         self.unique_content_id = checksum.hexdigest()
@@ -1045,6 +1252,7 @@ class Advisory(models.Model):
             references=[Reference.from_dict(ref) for ref in self.references],
             date_published=self.date_published,
             weaknesses=self.weaknesses,
+            url=self.url,
         )
 
 
@@ -1101,3 +1309,586 @@ class ApiUser(UserModel):
 
     class Meta:
         proxy = True
+
+
+class HistoryManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().select_related(None)
+
+    def get_for_object(self, vuln, **kwargs):
+        return self.filter(
+            vulnerability=vuln,
+            **kwargs,
+        )
+
+    def log_action(self, improver, vulnerability, date_published, importer, advisory, message=""):
+        """
+        Creates a History entry for a given `obj` on Addition, Change, and Deletion.
+        We do not log addition for object that inherit the HistoryFieldsMixin since
+        the `created_by` and `created_date` are already set on its model.
+        """
+        if isinstance(message, list):
+            message = json.dumps(message)
+
+        return self.model.objects.get_or_create(
+            date_published=date_published,
+            importer=importer,
+            vulnerability=vulnerability,
+            advisory=advisory,
+            # change_message=message,
+        )
+
+
+class ChangeLog(models.Model):
+
+    action_time = models.DateTimeField(
+        # check if dates are actually UTC
+        default=timezone.now,
+        editable=False,
+        help_text="UTC Date of the change",
+    )
+
+    action_message = models.TextField(
+        blank=True,
+    )
+
+    supporting_data = models.JSONField(
+        blank=True,
+        null=True,
+        help_text="JSON representation of the advisory data",
+    )
+
+    actor_name = models.CharField(
+        max_length=100,
+        help_text="Name of the actor: NVDImporter, NginxImprover etc.",
+    )
+
+    vulnerablecode_version = models.CharField(
+        max_length=100,
+        help_text="Version of the vulnerablecode at the time of change",
+        default=vulnerablecode_version,
+    )
+
+    objects = HistoryManager()
+
+    @classmethod
+    def log_change(cls, vulnerability, importer, date_published):
+        """
+        Creates History entry on Change.
+        """
+        return cls.objects.log_action(
+            importer=importer,
+            vulnerability=vulnerability,
+            date_published=date_published,
+        )
+
+    class Meta:
+        abstract = True
+
+
+class VulnerabilityHistoryManager(models.Manager):
+    def get_for_object(self, vuln, **kwargs):
+        return self.filter(
+            vulnerability=vuln,
+            **kwargs,
+        )
+
+    def log_action(
+        self,
+        vulnerability,
+        action_type,
+        actor_name,
+        supporting_data={},
+        action_message="",
+    ):
+        """
+        Creates a History entry for a given `obj` on Addition, Change, and Deletion.
+        We do not log addition for object that inherit the HistoryFieldsMixin since
+        the `created_by` and `created_date` are already set on its model.
+        """
+        if isinstance(action_message, list):
+            action_message = json.dumps(action_message)
+
+        return self.model.objects.get_or_create(
+            vulnerability=vulnerability,
+            action_type=action_type,
+            actor_name=actor_name,
+            supporting_data=supporting_data,
+            action_message=action_message,
+        )
+
+
+class VulnerabilityChangeLog(ChangeLog):
+    ACTION_TYPES = (
+        (1, "Import"),
+        (2, "Improve"),
+        (3, "Affects"),
+        (4, "Fixed By"),
+    )
+
+    vulnerability = models.ForeignKey(
+        Vulnerability,
+        on_delete=models.CASCADE,
+    )
+
+    action_type = models.PositiveSmallIntegerField(
+        choices=ACTION_TYPES,
+    )
+
+    objects = VulnerabilityHistoryManager()
+
+    @classmethod
+    def log_import(cls, vulnerability, importer, supporting_data={}):
+        """
+        Creates History entry on Addition.
+        """
+        return cls.objects.log_action(
+            vulnerability=vulnerability,
+            action_type=1,
+            actor_name=importer,
+            supporting_data=supporting_data,
+        )
+
+    @classmethod
+    def log_improve(cls, vulnerability, improver):
+        """
+        Creates History entry on Improvement.
+        """
+        return cls.objects.log_action(
+            vulnerability=vulnerability,
+            action_type=2,
+            actor_name=improver,
+        )
+
+    @classmethod
+    def log_affects(cls, vulnerability, importer, supporting_data={}):
+        """
+        Creates History entry on Vulnerabilitty affects package.
+        """
+        return cls.objects.log_action(
+            vulnerability=vulnerability,
+            action_type=3,
+            actor_name=importer,
+            supporting_data=supporting_data,
+        )
+
+    @classmethod
+    def log_fixed_by(cls, vulnerability, importer, supporting_data={}):
+        """
+        Creates History entry on Vulnerabilitty is fixed by package.
+        """
+        return cls.objects.log_action(
+            vulnerability=vulnerability,
+            action_type=4,
+            actor_name=importer,
+            supporting_data=supporting_data,
+        )
+
+
+class PackageHistoryManager(models.Manager):
+    def get_for_object(self, vuln, **kwargs):
+        return self.filter(
+            vulnerability=vuln,
+            **kwargs,
+        )
+
+    def log_action(
+        self,
+        package,
+        action_type,
+        actor_name,
+        supporting_data={},
+        action_message="",
+    ):
+        """
+        Creates a History entry for a given `obj` on Addition, Change, and Deletion.
+        We do not log addition for object that inherit the HistoryFieldsMixin since
+        the `created_by` and `created_date` are already set on its model.
+        """
+        if isinstance(action_message, list):
+            action_message = json.dumps(action_message)
+
+        return self.model.objects.get_or_create(
+            package=package,
+            action_type=action_type,
+            actor_name=actor_name,
+            supporting_data=supporting_data,
+            action_message=action_message,
+        )
+
+
+class PackageChangeLog(ChangeLog):
+    ACTION_TYPES = (
+        (1, "Import"),
+        (2, "Improve"),
+        (3, "Affected By"),
+        (4, "Fixing"),
+    )
+
+    package = models.ForeignKey(
+        Package,
+        on_delete=models.CASCADE,
+    )
+
+    action_type = models.PositiveSmallIntegerField(
+        choices=ACTION_TYPES,
+    )
+
+    objects = PackageHistoryManager()
+
+    @classmethod
+    def log_import(cls, package, importer, supporting_data={}):
+        """
+        Creates History entry on Addition.
+        """
+        print("PACKAGE IMPORTED")
+        return cls.objects.log_action(
+            package=package,
+            action_type=1,
+            actor_name=importer,
+            supporting_data=supporting_data,
+        )
+
+    @classmethod
+    def log_improve(cls, package, improver):
+        """
+        Creates History entry on Improvement.
+        """
+        return cls.objects.log_action(
+            package=package,
+            action_type=2,
+            actor_name=improver,
+        )
+
+    @classmethod
+    def log_affected_by(cls, package, importer, supporting_data={}):
+        """
+        Creates History entry on Vulnerabilitty affects package.
+        """
+        print("PACKAGE AFFECTED")
+        return cls.objects.log_action(
+            package=package,
+            action_type=3,
+            actor_name=importer,
+            supporting_data=supporting_data,
+        )
+
+    @classmethod
+    def log_fixing(cls, package, importer, supporting_data={}):
+        """
+        Creates History entry on Vulnerabilitty is fixed by package.
+        """
+        print("PACKAGE FIXED")
+        return cls.objects.log_action(
+            package=package,
+            action_type=4,
+            actor_name=importer,
+            supporting_data=supporting_data,
+        )
+
+
+# class PackageVulnerabilityChangeLog(ChangeLog):
+#     package = models.ForeignKey(
+#         Package,
+#         on_delete=models.CASCADE,
+#     )
+
+#     vulnerability = models.ForeignKey(
+#         Vulnerability,
+#         on_delete=models.CASCADE,
+#     )
+
+#     fix = models.BooleanField(
+#         default=False,
+#     )
+
+
+# class PackageVulnerabilityHistoryManager(models.Manager):
+#     def get_queryset(self):
+#         return super().get_queryset().select_related(None)
+
+#     def get_for_vulnerability(self, vuln, **kwargs):
+#         return self.filter(
+#             vulnerability=vuln,
+#             **kwargs,
+#         )
+
+#     def get_for_package(self, package, **kwargs):
+#         return self.filter(
+#             package=package,
+#             **kwargs,
+#         )
+
+#     def log_action(self, package, vulnerability, advisory, message=""):
+#         """
+#         Creates a History entry for a given `obj` on Addition, Change, and Deletion.
+#         We do not log addition for object that inherit the HistoryFieldsMixin since
+#         the `created_by` and `created_date` are already set on its model.
+#         """
+#         if isinstance(message, list):
+#             message = json.dumps(message)
+
+#         return self.model.objects.get_or_create(
+#             vulnerability=vulnerability,
+#             package=package,
+#             advisory=advisory,
+#             change_message=message,
+#         )
+
+
+# class PackageVulnerabilityChangeLog(models.Model):
+#     package = models.ForeignKey(
+#         Package,
+#         on_delete=models.CASCADE,
+#     )
+
+#     vulnerability = models.ForeignKey(
+#         Vulnerability,
+#         on_delete=models.CASCADE,
+#     )
+
+#     advisory = models.ForeignKey(
+#         Advisory,
+#         on_delete=models.CASCADE,
+#     )
+
+#     change_message = models.TextField(
+#         blank=True,
+#     )
+
+#     action_time = models.DateTimeField(
+#         default=timezone.now,
+#         editable=False,
+#     )
+
+#     objects = PackageVulnerabilityHistoryManager()
+
+#     @classmethod
+#     def log_change(cls, package, vulnerability, advisory, message=""):
+#         """
+#         Creates History entry on Change.
+#         """
+#         return cls.objects.log_action(
+#             vulnerability=vulnerability,
+#             package=package,
+#             message=message,
+#             advisory=advisory,
+#         )
+
+#     class Meta:
+#         abstract = True
+
+
+# class FixingPackageVulnerabilityChangeLog(PackageVulnerabilityChangeLog):
+#     """
+#     This class is used to log changes to the FixingPackageVulnerability model.
+#     """
+
+#     pass
+
+
+# class PackageAffectedByVulnerabilityChangeLog(PackageVulnerabilityChangeLog):
+#     """
+#     This class is used to log changes to the PackageAffectedByVulnerability model.
+#     """
+
+#     pass
+
+
+# class PackageHistoryManager(models.Manager):
+#     def get_queryset(self):
+#         return super().get_queryset().select_related(None)
+
+#     def get_for_object(self, vuln, **kwargs):
+#         return self.filter(
+#             vulnerability=vuln,
+#             **kwargs,
+#         )
+
+#     def log_action(self, improver, package, advisory, importer, message=""):
+#         """
+#         Creates a History entry for a given `obj` on Addition, Change, and Deletion.
+#         We do not log addition for object that inherit the HistoryFieldsMixin since
+#         the `created_by` and `created_date` are already set on its model.
+#         """
+#         if isinstance(message, list):
+#             message = json.dumps(message)
+
+#         return self.model.objects.get_or_create(
+#             advisory=advisory,
+#             importer=importer,
+#             package=package,
+#             change_message=message,
+#         )
+
+
+# class PackageChangeLog(models.Model):
+
+#     change_message = models.TextField(
+#         blank=True,
+#     )
+
+#     package = models.ForeignKey(
+#         Package,
+#         on_delete=models.CASCADE,
+#     )
+
+#     importer = models.ForeignKey(
+#         Importer,
+#         on_delete=models.CASCADE,
+#         null=True,
+#     )
+
+#     advisory = models.ForeignKey(
+#         Advisory,
+#         on_delete=models.CASCADE,
+#         null=True,
+#     )
+
+#     action_time = models.DateTimeField(
+#         default=timezone.now,
+#         editable=False,
+#     )
+
+#     objects = PackageHistoryManager()
+
+#     @classmethod
+#     def log_change(cls, improver, package, message, advisory, importer):
+#         """
+#         Creates History entry on Change.
+#         """
+#         return cls.objects.log_action(
+#             importer=importer,
+#             package=package,
+#             advisory=advisory,
+#             message=message,
+#         )
+
+
+# class History(models.Model):
+#     ADDITION = ADDITION
+#     CHANGE = CHANGE
+#     DELETION = DELETION
+
+#     ACTION_FLAG_CHOICES = (
+#         (ADDITION, _("Addition")),
+#         (CHANGE, _("Change")),
+#         (DELETION, _("Deletion")),
+#     )
+
+#     # consider removing this field
+#     serialized_data = models.TextField(
+#         null=True,
+#         blank=True,
+#         editable=False,
+#         help_text=_("Serialized data of the instance just before this change."),
+#     )
+
+#     # The following fields are directly taken from django.contrib.admin.models.LogEntry
+#     # Since the LogEntry is not abstract we cannot properly inherit from it.
+
+#     action_time = models.DateTimeField(
+#         _("action time"),
+#         default=timezone.now,
+#         editable=False,
+#     )
+
+#     improver = models.ForeignKey(
+#         Improver,
+#         models.CASCADE,
+#         verbose_name=_("improver"),
+#         null=True,
+#     )
+
+#     importer = models.ForeignKey(
+#         Importer,
+#         models.CASCADE,
+#         verbose_name=_("importer"),
+#         null=True,
+#     )
+
+#     content_type = models.ForeignKey(
+#         ContentType,
+#         models.SET_NULL,
+#         verbose_name=_("content type"),
+#         blank=True,
+#         null=True,
+#         # help_text="Type of object referenced by this log entry. for example, `Package`",
+#     )
+
+#     advisory = models.ForeignKey(
+#         Advisory,
+#         models.CASCADE,
+#         verbose_name=_("advisory"),
+#         null=True,
+#     )
+
+#     object_id = models.TextField(
+#         _("object id"),
+#         blank=True,
+#         null=True,
+#     )
+
+#     object_repr = models.CharField(
+#         _("object repr"),
+#         max_length=200,
+#     )
+
+#     action_flag = models.PositiveSmallIntegerField(
+#         _("action flag"),
+#         choices=ACTION_FLAG_CHOICES,
+#     )
+
+#     # change_message is either a string or a JSON structure
+#     change_message = models.TextField(
+#         _("change message"),
+#         blank=True,
+#     )
+
+#     objects = HistoryManager()
+
+#     class Meta:
+#         verbose_name = _("history entry")
+#         verbose_name_plural = _("history entries")
+#         ordering = ("-action_time",)
+
+#     # Clone the method from Django's LogEntry model.
+#     __repr__ = LogEntry.__repr__
+#     __str__ = LogEntry.__str__
+#     is_addition = LogEntry.is_addition
+#     is_change = LogEntry.is_change
+#     is_deletion = LogEntry.is_deletion
+#     get_change_message = LogEntry.get_change_message
+#     get_edited_object = LogEntry.get_edited_object
+
+#     @classmethod
+#     def log_addition(cls, improver, obj, advisory, importer, message=None):
+#         """
+#         Creates History entry on Addition with the proper `change_message`.
+#         """
+#         if not message:
+#             message = [{"added": {}}]
+
+#         return cls.objects.log_action(
+#             improver=improver,
+#             obj=obj,
+#             action_flag=cls.ADDITION,
+#             advisory=advisory,
+#             message=message,
+#             importer=importer,
+#         )
+
+#     @classmethod
+#     def log_change(cls, improver, obj, message, advisory, importer, serialized_data=None):
+#         """
+#         Creates History entry on Change.
+#         """
+#         return cls.objects.log_action(
+#             improver=improver,
+#             importer=importer,
+#             obj=obj,
+#             action_flag=cls.CHANGE,
+#             advisory=advisory,
+#             message=message,
+#             serialized_data=serialized_data,
+#         )

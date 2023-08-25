@@ -24,8 +24,8 @@ from typing import Tuple
 
 import pytz
 from dateutil import parser as dateparser
-from fetchcode.vcs import fetch_via_vcs
 from fetchcode.vcs import VCSResponse
+from fetchcode.vcs import fetch_via_vcs
 from license_expression import Licensing
 from packageurl import PackageURL
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
@@ -299,6 +299,7 @@ class NoLicenseError(Exception):
 
 class InvalidSPDXLicense(Exception):
     pass
+
 
 class ForkError(Exception):
     pass

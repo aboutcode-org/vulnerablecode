@@ -1201,6 +1201,10 @@ class Alias(models.Model):
             return f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json"
 
 
+class AdvisoryQuerySet(BaseQuerySet):
+    pass
+
+
 class Advisory(models.Model):
     """
     An advisory represents data directly obtained from upstream transformed
@@ -1242,6 +1246,8 @@ class Advisory(models.Model):
         blank=True,
         help_text="Link to the advisory on the upstream website",
     )
+
+    objects = AdvisoryQuerySet.as_manager()
 
     class Meta:
         unique_together = ["aliases", "unique_content_id", "date_published"]

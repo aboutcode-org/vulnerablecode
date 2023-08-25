@@ -74,7 +74,7 @@ def fetch(url):
     return json.loads(data)
 
 
-def fetch_cve_data_1_1(starting_year=2019):
+def fetch_cve_data_1_1(starting_year=2002):
     """
     Yield tuples of (year, lists of CVE mappings) from the NVD, one for each
     year since ``starting_year`` defaulting to 2002.

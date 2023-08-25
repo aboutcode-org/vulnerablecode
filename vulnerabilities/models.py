@@ -14,6 +14,7 @@ from contextlib import suppress
 from typing import Any
 
 from cwe2.database import Database
+from django.core.paginator import Paginator
 from django.contrib.admin.models import ADDITION
 from django.contrib.admin.models import CHANGE
 from django.contrib.admin.models import DELETION
@@ -60,6 +61,20 @@ class BaseQuerySet(models.QuerySet):
         """
         with suppress(self.model.DoesNotExist, ValidationError):
             return self.get(*args, **kwargs)
+    
+    def paginated(self, per_page=5000):
+        """
+        Iterate over a (large) QuerySet by chunks of ``per_page`` items.
+        This technique is essential for preventing memory issues when iterating
+        See these links for inspiration:
+        https://nextlinklabs.com/resources/insights/django-big-data-iteration
+        https://stackoverflow.com/questions/4222176/why-is-iterating-through-a-large-django-queryset-consuming-massive-amounts-of-me/
+        """
+        paginator = Paginator(self, per_page=per_page)
+        for page_number in paginator.page_range:
+            page = paginator.page(page_number)
+            for object in page.object_list:
+                yield object
 
 
 class VulnerabilityQuerySet(BaseQuerySet):
@@ -1234,7 +1249,7 @@ class Advisory(models.Model):
 
     def save(self, *args, **kwargs):
         checksum = hashlib.md5()
-        for field in (self.summary, self.affected_packages, self.references):
+        for field in (self.summary, self.affected_packages, self.references, self.weaknesses):
             value = json.dumps(field, separators=(",", ":")).encode("utf-8")
             checksum.update(value)
         self.unique_content_id = checksum.hexdigest()

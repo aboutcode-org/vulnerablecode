@@ -14,7 +14,6 @@ from contextlib import suppress
 from typing import Any
 
 from cwe2.database import Database
-from django.core.paginator import Paginator
 from django.contrib.admin.models import ADDITION
 from django.contrib.admin.models import CHANGE
 from django.contrib.admin.models import DELETION
@@ -24,6 +23,7 @@ from django.contrib.auth.models import UserManager
 from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -61,7 +61,7 @@ class BaseQuerySet(models.QuerySet):
         """
         with suppress(self.model.DoesNotExist, ValidationError):
             return self.get(*args, **kwargs)
-    
+
     def paginated(self, per_page=5000):
         """
         Iterate over a (large) QuerySet by chunks of ``per_page`` items.

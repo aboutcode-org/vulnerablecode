@@ -217,30 +217,25 @@ class TestPackageModel(TestCase):
             "vulnerabilities": [
                 {
                     "vulnerability": "VCID-123",
-                    "closest_fixed_by_purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
-                    "closest_fixed_by_version": "2.13.2",
-                    "closest_fixed_by_url": "/packages/pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
-                    "closest_fixed_by_vulnerabilities": [
-                        {
-                            "vuln_id": "VCID-000",
-                            "vuln_get_absolute_url": "/vulnerabilities/VCID-000",
-                        }
-                    ],
+                    "closest_fixed_by": {
+                        "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
+                        "type": "maven",
+                        "namespace": "com.fasterxml.jackson.core",
+                        "name": "jackson-databind",
+                        "version": "2.13.2",
+                        "qualifiers": {},
+                        "subpath": "",
+                    },
+                    "closest_fixed_by_vulnerabilities": [{"vuln_id": "VCID-000"}],
                 },
                 {
                     "vulnerability": "VCID-456",
-                    "closest_fixed_by_purl": "There are no reported fixed packages.",
-                    "closest_fixed_by_version": "",
-                    "closest_fixed_by_url": "",
+                    "closest_fixed_by": {},
                     "closest_fixed_by_vulnerabilities": [],
                 },
             ],
-            "closest_non_vulnerable_fix": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.0-rc1",
-            "closest_non_vulnerable_fix_version": "",
-            "closest_non_vulnerable_fix_url": "",
-            "most_recent_non_vulnerable_fix": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.0-rc1",
-            "most_recent_non_vulnerable_fix_version": "",
-            "most_recent_non_vulnerable_fix_url": "",
+            "closest_non_vulnerable": {},
+            "latest_non_vulnerable": {},
         }
 
         assert vuln_packages.distinct()[0].fixed_package_details == purl_dict
@@ -337,6 +332,7 @@ class TestPackageModel(TestCase):
         assert purl.subpath == None
 
         # Convert the PURL to a dictionary.
+        # ALERT: 2023-08-15 Tuesday 13:18:09.  What about using the function 'def purl_to_dict(purl: PackageURL)'?  Confusingly similar name but it seems designed to address the issue raised here (and looks useful for passing the data to the Jinja2 template).
         # It appears that this step is where the unwanted None values are created for qualifiers and
         # subpath when the PURL does not already contain values for those attributes.
         purl_to_dict = purl.to_dict()

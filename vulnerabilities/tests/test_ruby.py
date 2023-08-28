@@ -6,135 +6,91 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-
-
+import json
 import os
-import pathlib
-from unittest import TestCase
 from unittest.mock import patch
 
+import pytest
 from packageurl import PackageURL
+from univers.version_range import GemVersionRange
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import Reference
-from vulnerabilities.importers.ruby import RubyImporter
-from vulnerabilities.package_managers import RubyVersionAPI
-from vulnerabilities.package_managers import VersionResponse
-from vulnerabilities.utils import AffectedPackage
+from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importers.ruby import get_affected_packages
+from vulnerabilities.importers.ruby import parse_ruby_advisory
+from vulnerabilities.improvers.default import DefaultImprover
+from vulnerabilities.improvers.valid_versions import RubyImprover
+from vulnerabilities.tests import util_tests
+from vulnerabilities.tests.util_tests import check_results_against_json
+from vulnerabilities.utils import load_yaml
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "ruby")
 
-MOCK_ADDED_FILES = []
 
-for filepath in pathlib.Path(TEST_DATA).glob("**/*.yml"):
-    MOCK_ADDED_FILES.append(filepath.absolute())
+@pytest.mark.parametrize(
+    "filename,expected_filename,schema_type",
+    [
+        ("CVE-2018-7212.yml", "CVE-2018-7212-expected.json", "gems"),
+        ("CVE-2018-11627.yml", "CVE-2018-11627-expected.json", "gems"),
+        ("CVE-2007-5770.yml", "CVE-2007-5770-expected.json", "rubies"),
+        ("CVE-2010-1330.yml", "CVE-2010-1330-expected.json", "rubies"),
+    ],
+)
+def test_advisories(filename, expected_filename, schema_type):
+    file_path = os.path.join(TEST_DATA, filename)
+    mock_response = load_yaml(file_path)
+    results = parse_ruby_advisory(
+        mock_response, schema_type, "https://github.com/rubysec/ruby-advisory-db"
+    ).to_dict()
+    expected_file = os.path.join(TEST_DATA, expected_filename)
+    check_results_against_json(results=results, expected_file=expected_file)
 
 
-class RubyImporterTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        data_source_cfg = {
-            "repository_url": "https://github.com/rubysec/ruby-advisory-db.git",
-        }
-        cls.data_src = RubyImporter(1, config=data_source_cfg)
-        cls.data_src.pkg_manager_api = RubyVersionAPI()
+@patch("vulnerabilities.improvers.valid_versions.RubyImprover.get_package_versions")
+def test_ruby_improver(mock_response):
+    advisory_file = os.path.join(TEST_DATA, f"parse-advisory-ruby-expected.json")
+    with open(advisory_file) as exp:
+        advisories = [AdvisoryData.from_dict(adv) for adv in (json.load(exp))]
+    mock_response.return_value = ["0.2.6", "1.2.7", "1.3.6", "2.2.1", "3.0.2", "3.0.5"]
+    improvers = [RubyImprover(), DefaultImprover()]
+    result = []
+    for improver in improvers:
+        for advisory in advisories:
+            inference = [data.to_dict() for data in improver.get_inferences(advisory)]
+            result.extend(inference)
+    expected_file = os.path.join(TEST_DATA, f"ruby-improver-expected.json")
+    util_tests.check_results_against_json(result, expected_file)
 
-    @patch(
-        "vulnerabilities.package_managers.RubyVersionAPI.get",
-        return_value=VersionResponse(
-            valid_versions={"1.0.0", "1.8.0", "2.0.3"}, newer_versions=set()
+
+@pytest.mark.parametrize(
+    "record,purl,result",
+    [
+        (
+            {"patched_versions": [">= 1.6.5.1"]},
+            PackageURL(type="gem", name="jruby"),
+            [
+                AffectedPackage(
+                    package=PackageURL(type="gem", name="jruby"),
+                    affected_version_range=GemVersionRange.from_string("vers:gem/<1.6.5.1"),
+                )
+            ],
         ),
-    )
-    def test_process_file(self, mock_write):
-        expected_advisories = [
-            Advisory(
-                summary="An issue was discovered in rack-protection/lib/rack/protection/path_traversal.rb\nin Sinatra 2.x before 2.0.1 on Windows. Path traversal is possible via backslash\ncharacters.\n",
-                vulnerability_id="CVE-2018-7212",
-                affected_packages=[
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="gem",
-                            namespace=None,
-                            name="sinatra",
-                            version="1.8.0",
-                        ),
-                        patched_package=PackageURL(
-                            type="gem",
-                            namespace=None,
-                            name="sinatra",
-                            version="2.0.3",
-                        ),
-                    )
-                ],
-                references=[
-                    Reference(
-                        reference_id="",
-                        url="https://github.com/sinatra/sinatra/pull/1379",
-                        severities=[],
-                    )
-                ],
-            ),
-            Advisory(
-                summary="Sinatra before 2.0.2 has XSS via the 400 Bad Request page that occurs upon a params parser exception.\n",
-                vulnerability_id="CVE-2018-11627",
-                affected_packages=[
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="gem",
-                            namespace=None,
-                            name="sinatra",
-                            version="1.0.0",
-                        ),
-                        patched_package=PackageURL(
-                            type="gem",
-                            namespace=None,
-                            name="sinatra",
-                            version="2.0.3",
-                        ),
-                    ),
-                    AffectedPackage(
-                        vulnerable_package=PackageURL(
-                            type="gem",
-                            namespace=None,
-                            name="sinatra",
-                            version="1.8.0",
-                        ),
-                        patched_package=PackageURL(
-                            type="gem",
-                            namespace=None,
-                            name="sinatra",
-                            version="2.0.3",
-                        ),
-                    ),
-                ],
-                references=[
-                    Reference(
-                        reference_id="",
-                        url="https://github.com/sinatra/sinatra/issues/1428",
-                        severities=[],
-                    )
-                ],
-            ),
-        ]
-        found_advisories = []
-        for p in MOCK_ADDED_FILES:
-            advisory = self.data_src.process_file(p)
-            if advisory:
-                found_advisories.append(advisory)
-
-        found_advisories = list(map(Advisory.normalized, found_advisories))
-        expected_advisories = list(map(Advisory.normalized, expected_advisories))
-        assert sorted(found_advisories) == sorted(expected_advisories)
-
-    def test_categorize_versions(self):
-
-        all_versions = ["1.0.0", "1.2.0", "9.0.2", "0.2.3"]
-        safe_ver_ranges = ["==1.0.0", ">1.2.0"]
-
-        exp_safe_vers = ["1.0.0", "9.0.2"]
-        exp_aff_vers = ["1.2.0", "0.2.3"]
-
-        safe_vers, aff_vers = self.data_src.categorize_versions(all_versions, safe_ver_ranges)
-        assert exp_aff_vers == aff_vers
-        assert exp_safe_vers == safe_vers
+        (
+            {"patched_versions": [">= 1.1.3"], "unaffected_versions": ["< 0.1.33"]},
+            PackageURL(type="gem", name="'devise_token_auth'"),
+            [
+                AffectedPackage(
+                    package=PackageURL(type="gem", name="'devise_token_auth'"),
+                    affected_version_range=GemVersionRange.from_string("vers:gem/<1.1.3"),
+                ),
+                AffectedPackage(
+                    package=PackageURL(type="gem", name="'devise_token_auth'"),
+                    affected_version_range=GemVersionRange.from_string("vers:gem/>=0.1.33"),
+                ),
+            ],
+        ),
+    ],
+)
+def test_get_affected_packages(record, purl, result):
+    assert get_affected_packages(record, purl) == result

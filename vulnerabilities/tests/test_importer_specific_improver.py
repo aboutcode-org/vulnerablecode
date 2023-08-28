@@ -26,6 +26,6 @@ def test_improvement_of_importer_specific_advisories():
         created_by=NVDImporter.qualified_name,
         date_collected=datetime.datetime.now(tz=datetime.timezone.utc),
     )
-    ImproveRunner(NVDImprover).run()
+    ImproveRunner(improver_class=NVDImprover).run()
     alias = Alias.objects.filter(alias="CVE-2021-22").first()
     assert alias is not None

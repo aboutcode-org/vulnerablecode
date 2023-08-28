@@ -57,7 +57,7 @@ class Command(BaseCommand):
         for improver in improvers:
             self.stdout.write(f"Improving data using {improver.qualified_name}")
             try:
-                ImproveRunner(improver).run()
+                ImproveRunner(improver_class=improver).run()
                 self.stdout.write(
                     self.style.SUCCESS(
                         f"Successfully improved data using {improver.qualified_name}"

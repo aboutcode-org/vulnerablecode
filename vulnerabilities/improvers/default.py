@@ -132,3 +132,13 @@ def get_exact_purls(affected_package: AffectedPackage) -> Tuple[List[PackageURL]
     except Exception as e:
         logger.error(f"Failed to get exact purls for: {affected_package!r} with error: {e!r}")
         return [], []
+
+
+class AdvisoryBasedDefaultImprover(DefaultImprover):
+
+    def __init__(self, advisories) -> None:
+        self.advisories = advisories
+
+    @property
+    def interesting_advisories(self) -> QuerySet:
+        return self.advisories

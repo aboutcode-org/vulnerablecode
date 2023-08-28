@@ -14,6 +14,8 @@ from typing import List
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
+from vulnerabilities.improve_runner import ImproveRunner
+from vulnerabilities.improvers.default import AdvisoryBasedDefaultImprover
 from vulnerabilities.models import Advisory
 
 logger = logging.getLogger(__name__)
@@ -51,6 +53,7 @@ def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: st
     Return the number of inserted advisories.
     """
     count = 0
+    advisories = []
     for data in advisory_datas:
         # https://nvd.nist.gov/vuln/detail/CVE-2013-4314
         # https://github.com/cms-dev/cms/issues/888#issuecomment-516977572
@@ -68,6 +71,7 @@ def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: st
                     "date_collected": datetime.datetime.now(tz=datetime.timezone.utc),
                 },
             )
+            advisories.append(obj)
         except Exception as e:
             logger.error(f"Error while processing {data!r} with aliases {data.aliases!r}: {e!r}")
             continue
@@ -78,5 +82,11 @@ def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: st
             count += 1
         else:
             logger.debug(f"Advisory with aliases: {obj.aliases!r} already exists. Skipped.")
-
+    improve_advisories(importer_name, advisories)
     return count
+
+def improve_advisories(importer_name, advisories):
+    try:
+        ImproveRunner(improver=AdvisoryBasedDefaultImprover(advisories=advisories)).run()
+    except Exception as e:
+        logger.error(f"Error while processing advisories from {importer_name!r}: {e!r}")

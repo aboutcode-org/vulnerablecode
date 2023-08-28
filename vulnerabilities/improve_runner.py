@@ -15,7 +15,8 @@ from typing import List
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
-from vulnerabilities.improver import Improver, Inference
+from vulnerabilities.improver import Improver
+from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
@@ -36,12 +37,12 @@ class ImproveRunner:
     improver and parsing the returned Inferences into proper database fields
     """
 
-    def __init__(self, improver_class=None, improver: Improver=None):
+    def __init__(self, improver_class=None, improver: Improver = None):
         if improver and improver_class:
             raise Exception("Both ``improver`` and ``improver_class`` can't be send as argument")
         if not (improver_class or improver):
             raise Exception("Send either ``improver`` or ``improver_class`` argument")
-        if improver_class: 
+        if improver_class:
             self.improver = improver_class()
         else:
             self.improver = improver

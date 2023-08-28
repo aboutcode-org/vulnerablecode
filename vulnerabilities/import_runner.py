@@ -85,6 +85,7 @@ def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: st
     improve_advisories(importer_name, advisories)
     return count
 
+
 def improve_advisories(importer_name, advisories):
     try:
         ImproveRunner(improver=AdvisoryBasedDefaultImprover(advisories=advisories)).run()

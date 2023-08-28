@@ -135,7 +135,6 @@ def get_exact_purls(affected_package: AffectedPackage) -> Tuple[List[PackageURL]
 
 
 class AdvisoryBasedDefaultImprover(DefaultImprover):
-
     def __init__(self, advisories) -> None:
         self.advisories = advisories
 

@@ -13,7 +13,7 @@ from typing import Iterable
 from typing import List
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.utils import build_description
 from vulnerabilities.utils import dedupe
@@ -21,7 +21,7 @@ from vulnerabilities.utils import dedupe
 logger = logging.getLogger(__name__)
 
 
-class FireyeImporter(GitImporter):
+class FireyeImporter(Importer):
     spdx_license_expression = "CC-BY-SA-4.0 AND MIT"
     license_url = "https://github.com/mandiant/Vulnerability-Disclosures/blob/master/README.md"
     notice = """

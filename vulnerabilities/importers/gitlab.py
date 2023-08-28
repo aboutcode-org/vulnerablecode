@@ -25,7 +25,7 @@ from univers.versions import Version
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.utils import build_description
 from vulnerabilities.utils import get_cwe_id
@@ -47,7 +47,7 @@ PURL_TYPE_BY_GITLAB_SCHEME = {
 GITLAB_SCHEME_BY_PURL_TYPE = {v: k for k, v in PURL_TYPE_BY_GITLAB_SCHEME.items()}
 
 
-class GitLabAPIImporter(GitImporter):
+class GitLabAPIImporter(Importer):
     spdx_license_expression = "MIT"
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
     importer_name = "GitLab Importer"

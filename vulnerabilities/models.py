@@ -706,34 +706,17 @@ class Package(PackageURLMixin):
         )
 
         purl_dict = {}
-        # 2023-08-23 Wednesday 13:51:17.  Let's remove this next.
-        # purl_dict["purl"] = self.purl
         # Pass a PackageURL object to the Jinja2 template via the context dictionary.
         purl_dict["test_purl"] = PackageURL.from_string(self.purl)
-        # 2023-08-23 Wednesday 15:16:26.  Time to remove "vulnerabilities".
-        # purl_dict.update({"vulnerabilities": []})
         purl_dict.update({"test_vulnerabilities": []})
-
-        # # ID when there are 0 vulnerabilities.
-        # print("\nqs = {}\n".format(qs))
-        # print("\nlen(qs) = {}\n".format(len(qs)))
 
         for vuln in qs:
             later_matching_fixed_packages = []
-            # 2023-08-23 Wednesday 15:16:26.  Time to remove "vulnerabilities".
-            # purl_dict["vulnerabilities"].append({"vulnerability": vuln.vulnerability_id})
             # Pass a Vulnerability object.
             purl_dict["test_vulnerabilities"].append({"test_vulnerability": vuln})
-            # v1 = vuln
-            # print("\nv1 = {}\n".format(v1))
-            # print("\ntype(v1) = {}\n".format(type(v1)))
-            # print("\nv1.severities = {}\n".format(v1.severities))
-            # print("\nv1.affected_packages = {}\n".format(v1.affected_packages))
 
             vuln_matching_fixed_packages = vuln.matching_fixed_packages
             closest_fixed_package = ""
-            # 2023-08-23 Wednesday 13:45:12.  Apparently no longer used.
-            # closest_fixed_package_vulns_dict = []
 
             if len(vuln_matching_fixed_packages) > 0:
                 for fixed_pkg in vuln_matching_fixed_packages:
@@ -748,149 +731,13 @@ class Package(PackageURLMixin):
                         later_matching_fixed_packages
                     )
 
-                # closest_fixed_package is a 'vulnerabilities.models.Package'
                 closest_fixed_package = sort_fixed_by_packages_by_version[0]
 
                 closest_fixed_package_vulns = closest_fixed_package.affected_by
-                # 2023-08-23 Wednesday 13:45:12.  Apparently no longer used.
-                # closest_fixed_package_vulns_dict = [
-                #     {
-                #         "vuln_id": fixed_pkg_vuln.vulnerability_id,
-                #     }
-                #     for fixed_pkg_vuln in closest_fixed_package_vulns
-                # ]
 
             else:
                 closest_fixed_package = "There are no reported fixed packages."
 
-            # 2023-08-23 Wednesday 15:16:26.  Time to remove "vulnerabilities".
-            # for dict_vuln in purl_dict["vulnerabilities"]:
-            #     # for dict_vuln in purl_dict["test_vulnerabilities"]:
-            #     closest_non_vulnerable_sib = ""
-            #     if len(later_non_vuln_sibs) > 0:
-            #         closest_non_vulnerable_sib = self.sort_by_version(later_non_vuln_sibs)[0]
-            #     else:
-            #         closest_non_vulnerable_sib = ""
-
-            #     # most_recent_non_vulnerable_sib = ""
-            #     latest_non_vulnerable_sib = ""
-            #     if len(later_non_vuln_sibs) > 0:
-            #         latest_non_vulnerable_sib = self.sort_by_version(later_non_vuln_sibs)[-1]
-            #     else:
-            #         latest_non_vulnerable_sib = ""
-
-            #     if dict_vuln["vulnerability"] == str(vuln):
-            #         # ALERT: 2023-08-22 Tuesday 18:25:42.  Try this.  2023-08-22 Tuesday 18:27:13.  No does not work.
-            #         # if dict_vuln["test_vulnerability"] == str(vuln):
-
-            #         if len(vuln_matching_fixed_packages) > 0:
-            #             # dict_vuln["closest_fixed_by"] = purl_to_dict_with_purl(
-            #             #     closest_fixed_package.purl
-            #             # )
-
-            #             dict_vuln["test_fixed_by_purl"] = PackageURL.from_string(
-            #                 closest_fixed_package.purl
-            #             )
-            #             # print("For test_fixed_by_purl:")
-            #             # print(
-            #             #     "\nPackageURL.from_string(closest_fixed_package.purl) = {}\n".format(
-            #             #         PackageURL.from_string(closest_fixed_package.purl)
-            #             #     )
-            #             # )
-            #             # print(
-            #             #     "\ntype(PackageURL.from_string(closest_fixed_package.purl)) = {}\n".format(
-            #             #         type(PackageURL.from_string(closest_fixed_package.purl))
-            #             #     )
-            #             # )
-            #             # print(
-            #             #     "\nclosest_fixed_package.purl = {}\n".format(closest_fixed_package.purl)
-            #             # )
-            #             # print(
-            #             #     "\nPackageURL.from_string(closest_fixed_package.purl).type = {}\n".format(
-            #             #         PackageURL.from_string(closest_fixed_package.purl).type
-            #             #     )
-            #             # )
-            #             # print(
-            #             #     "\nPackageURL.from_string(closest_fixed_package.purl).namespace = {}\n".format(
-            #             #         PackageURL.from_string(closest_fixed_package.purl).namespace
-            #             #     )
-            #             # )
-            #             # print(
-            #             #     "\nPackageURL.from_string(closest_fixed_package.purl).name = {}\n".format(
-            #             #         PackageURL.from_string(closest_fixed_package.purl).name
-            #             #     )
-            #             # )
-            #             # print(
-            #             #     "\nPackageURL.from_string(closest_fixed_package.purl).version = {}\n".format(
-            #             #         PackageURL.from_string(closest_fixed_package.purl).version
-            #             #     )
-            #             # )
-            #             # print(
-            #             #     "\nPackageURL.from_string(closest_fixed_package.purl).qualifiers = {}\n".format(
-            #             #         PackageURL.from_string(closest_fixed_package.purl).qualifiers
-            #             #     )
-            #             # )
-            #             # print(
-            #             #     "\nPackageURL.from_string(closest_fixed_package.purl).subpath = {}\n".format(
-            #             #         PackageURL.from_string(closest_fixed_package.purl).subpath
-            #             #     )
-            #             # )
-
-            #             # 2023-08-23 Wednesday 13:45:12.  Apparently no longer used.
-            #             # closest_fixed_package_vulns_dict = [
-            #             #     {
-            #             #         "vuln_id": fixed_pkg_vuln.vulnerability_id,
-            #             #     }
-            #             #     for fixed_pkg_vuln in closest_fixed_package_vulns
-            #             # ]
-            #             # dict_vuln[
-            #             #     "closest_fixed_by_vulnerabilities"
-            #             # ] = closest_fixed_package_vulns_dict
-
-            #             dict_vuln["test_fixed_by_purl_vulnerabilities"] = [
-            #                 fixed_pkg_vuln for fixed_pkg_vuln in closest_fixed_package_vulns
-            #             ]
-            #         else:
-            #             # dict_vuln["closest_fixed_by"] = {}
-            #             # dict_vuln["closest_fixed_by_vulnerabilities"] = []
-
-            #             dict_vuln["test_fixed_by_purl"] = None
-            #             dict_vuln["test_fixed_by_purl_vulnerabilities"] = []
-
-            #         if len(vuln_matching_fixed_packages) > 0:
-            #             # purl_dict["closest_non_vulnerable"] = purl_to_dict_with_purl(
-            #             #     closest_non_vulnerable_sib.purl
-            #             # )
-            #             # purl_dict["latest_non_vulnerable"] = purl_to_dict_with_purl(
-            #             #     latest_non_vulnerable_sib.purl
-            #             # )
-
-            #             purl_dict["test_closest_non_vulnerable"] = PackageURL.from_string(
-            #                 closest_non_vulnerable_sib.purl
-            #             )
-            #             purl_dict["test_latest_non_vulnerable"] = PackageURL.from_string(
-            #                 latest_non_vulnerable_sib.purl
-            #             )
-
-            #             # purl_dict["most_recent_non_vulnerable_fix_version"] = str(
-            #             #     most_recent_non_vulnerable_fix.version
-            #             # )
-            #             # purl_dict[
-            #             #     "most_recent_non_vulnerable_fix_url"
-            #             # ] = most_recent_non_vulnerable_fix.get_absolute_url()
-            #         else:
-            #             # purl_dict["closest_non_vulnerable"] = {}
-            #             # purl_dict["latest_non_vulnerable"] = {}
-
-            #             # purl_dict["test_closest_non_vulnerable"] = ""
-            #             # purl_dict["test_latest_non_vulnerable"] = ""
-
-            #             purl_dict["test_closest_non_vulnerable"] = None
-            #             purl_dict["test_latest_non_vulnerable"] = None
-
-            # ======================================================
-            # TODO: 2023-08-22 Tuesday 18:37:15.  Adapt this new section, from above, to the "test_vulnerabilities" approach, changing names as needed.
-            # for dict_vuln in purl_dict["vulnerabilities"]:
             for dict_vuln in purl_dict["test_vulnerabilities"]:
                 closest_non_vulnerable_sib = ""
                 if len(later_non_vuln_sibs) > 0:
@@ -904,7 +751,6 @@ class Package(PackageURLMixin):
                 else:
                     latest_non_vulnerable_sib = ""
 
-                #     if dict_vuln["vulnerability"] == str(vuln):
                 if dict_vuln["test_vulnerability"] == vuln:
 
                     if len(vuln_matching_fixed_packages) > 0:
@@ -912,14 +758,6 @@ class Package(PackageURLMixin):
                         dict_vuln["test_fixed_by_purl"] = PackageURL.from_string(
                             closest_fixed_package.purl
                         )
-
-                        # 2023-08-23 Wednesday 13:45:12.  Apparently no longer used.
-                        # closest_fixed_package_vulns_dict = [
-                        #     {
-                        #         "vuln_id": fixed_pkg_vuln.vulnerability_id,
-                        #     }
-                        #     for fixed_pkg_vuln in closest_fixed_package_vulns
-                        # ]
 
                         dict_vuln["test_fixed_by_purl_vulnerabilities"] = [
                             fixed_pkg_vuln for fixed_pkg_vuln in closest_fixed_package_vulns
@@ -942,7 +780,6 @@ class Package(PackageURLMixin):
 
                         purl_dict["TEST_test_closest_non_vulnerable"] = None
                         purl_dict["TEST_test_latest_non_vulnerable"] = None
-            # ======================================================
 
         # Temporary print output during dev/testing.
         from pprint import pprint

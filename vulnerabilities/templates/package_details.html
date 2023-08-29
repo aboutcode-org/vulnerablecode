@@ -33,9 +33,6 @@ VulnerableCode Package Details - {{ package.purl }}
                                 </span>
                             </td>
                             <td class="two-col-right">
-                                <!-- {{ package.purl }}
-                                <br />
-                                <hr style="background-color: #000000; margin: 10px 0px 5px 0px;"> -->
                                 {{ fixed_package_details.test_purl.to_string }}
                             </td>
                         </tr>
@@ -45,60 +42,44 @@ VulnerableCode Package Details - {{ package.purl }}
 
             {% if affected_by_vulnerabilities|length != 0 %}
 
-            <div class="pl-3 pr-3 mb-5 non-vuln">
-                <table class="table vcio-table width-100-pct mt-2">
-                    <tbody>
-                        <tr>
-                            <td class="two-col-left">
-                                Non-vulnerable version
-                            </td>
-                            <td class="two-col-right">
-                                <span style="background-color: #ffcccc;">Non-vulnerable version</span>
-                                <!-- <span style="color: #ff0000;">{{ fixed_package_details.closest_non_vulnerable.purl}}</span>
-                                <br />
-                                <span style="color: #ff0000;">{{ fixed_package_details.closest_non_vulnerable.version}}</span>
-                                <br />
-                                <a href="/packages/{{ fixed_package_details.closest_non_vulnerable.purl }}?search={{ fixed_package_details.closest_non_vulnerable.purl }}" target="_self">{{ fixed_package_details.closest_non_vulnerable.version }}</a>
-                                <hr style="background-color: #000000; margin: 10px 0px 5px 0px;"> -->
-                                <a href="/packages/{{ fixed_package_details.TEST_test_closest_non_vulnerable }}?search={{ fixed_package_details.TEST_test_closest_non_vulnerable }}" target="_self">{{ fixed_package_details.TEST_test_closest_non_vulnerable.version }}</a>
-
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="two-col-left">
-                                Non-vulnerable version <br />(non-breaking)
-                            </td>
-                            <td class="two-col-right">
-                                <span style="color: #ff0000;">[to come]</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="two-col-left">
-                                Latest non-vulnerable version
-                            </td>
-                            <td class="two-col-right">
-                                <span style="background-color: #ffcccc;">Latest non-vulnerable version</span>
-                                <!-- <span style="color: #ff0000;">{{ fixed_package_details.latest_non_vulnerable.purl}}</span>
-                                <br />
-                                <span style="color: #ff0000;">{{ fixed_package_details.latest_non_vulnerable.version}}</span>
-                                <br />
-                                <a href="/packages/{{ fixed_package_details.latest_non_vulnerable.purl }}?search={{ fixed_package_details.latest_non_vulnerable.purl }}" target="_self">{{ fixed_package_details.latest_non_vulnerable.version }}</a>
-                                <hr style="background-color: #000000; margin: 10px 0px 5px 0px;"> -->
-                                <a href="/packages/{{ fixed_package_details.TEST_test_latest_non_vulnerable }}?search={{ fixed_package_details.TEST_test_latest_non_vulnerable }}" target="_self">{{ fixed_package_details.TEST_test_latest_non_vulnerable.version }}</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="two-col-left">
-                                Latest non-vulnerable version <br />(non-breaking)
-                            </td>
-                            <td class="two-col-right">
-                                <span style="color: #ff0000;">[to come]</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                <div class="pl-3 pr-3 mb-5 non-vuln">
+                    <table class="table vcio-table width-100-pct mt-2">
+                        <tbody>
+                            <tr>
+                                <td class="two-col-left">
+                                    Non-vulnerable version
+                                </td>
+                                <td class="two-col-right">
+                                    <a href="/packages/{{ fixed_package_details.TEST_test_closest_non_vulnerable }}?search={{ fixed_package_details.TEST_test_closest_non_vulnerable }}" target="_self">{{ fixed_package_details.TEST_test_closest_non_vulnerable.version }}</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="two-col-left">
+                                    Non-vulnerable version <br />(non-breaking)
+                                </td>
+                                <td class="two-col-right">
+                                    <span style="color: #ff0000;">[to come]</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="two-col-left">
+                                    Latest non-vulnerable version
+                                </td>
+                                <td class="two-col-right">
+                                    <a href="/packages/{{ fixed_package_details.TEST_test_latest_non_vulnerable }}?search={{ fixed_package_details.TEST_test_latest_non_vulnerable }}" target="_self">{{ fixed_package_details.TEST_test_latest_non_vulnerable.version }}</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="two-col-left">
+                                    Latest non-vulnerable version <br />(non-breaking)
+                                </td>
+                                <td class="two-col-right">
+                                    <span style="color: #ff0000;">[to come]</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
             {% endif %}
 
@@ -106,8 +87,6 @@ VulnerableCode Package Details - {{ package.purl }}
                 <div class="has-text-weight-bold ml-1 mb-0">
                     Vulnerabilities affecting this package ({{ affected_by_vulnerabilities|length }})
                 </div>
-
-
 
                 <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                     <thead>
@@ -140,154 +119,26 @@ VulnerableCode Package Details - {{ package.purl }}
                                     {{ vulnerability.summary }}
                                 </td>
                                 <td style="word-wrap: break-word; word-break: break-all;">
-                                    {# if package.purl in fixed_package_details.purl #}
-                                    {# if package.purl == fixed_package_details.test_purl.purl #}
                                     {% if package.purl == fixed_package_details.test_purl.to_string %}
-                                    package.purl = {{ package.purl }}
-                                    <br />
-                                    fixed_package_details.purl = {{ fixed_package_details.purl }}
-                                    <br />
-                                    yikes
-                                    <br />
-                                    fixed_package_details.test_purl = {{ fixed_package_details.test_purl }}
-                                    <br />
-                                    fixed_package_details.test_purl.to_string = {{ fixed_package_details.test_purl.to_string }}
-                                    <br />
-
                                         {% for key, value in fixed_package_details.items %}
-                                            {# if key == "vulnerabilities" #}
                                             {% if key == "test_vulnerabilities" %}
-                                            goodby
                                                 {% for vuln in value %}
-                                                <br />
-                                                <span style="background-color: #00ff00;">vulnerability</span> = {{ vulnerability }}
-                                                <br />
-                                                <span style="background-color: #ffff33;">vuln</span> = {{ vuln }}
-                                                <br />
-                                                <span style="background-color: #ffff33;">vuln.test_vulnerability</span> = {{ vuln.test_vulnerability }}
-                                                <br />
-                                                <span style="background-color: #ffff33;">vuln.test_vulnerability.to_string</span> = {{ vuln.test_vulnerability.to_string }}
-                                                <br />
-                                                <span style="background-color: #ffff33;">vuln.test_vulnerability.vulnerability_id</span> = {{ vuln.test_vulnerability.vulnerability_id }}
-                                                <br />
-                                                <span style="background-color: #ffff33;">vulnerability.vulnerability_id</span> = {{ vulnerability.vulnerability_id }}
-
-                                                    {# if vuln.vulnerability == vulnerability.vulnerability_id #}
                                                     {% if vuln.test_vulnerability.vulnerability_id == vulnerability.vulnerability_id %}
-                                                    <br />
-                                                    <span style="background-color: #ffcccc;">hello</span>
-
-                                                        <!-- {% if vuln.closest_fixed_by|length == 0 %}
-                                                        <span style="background-color: #ffff33;">No -- not fixed! There are no reported fixed packages, dude.<br /></span>
-
-                                                        {% else %}
-                                                        <span style="background-color: #ffff33;">Yes -- fixed!<br /></span>
-
-                                                        {% endif %} -->
-
-                                                        <!-- {% if vuln.closest_fixed_by|length == 0 %}
-                                                            <span>There are no reported fixed packages, mon ami.</span>
-                                                        {% else %}
-
-                                                            <span style="color: #ff0000;">{{ vuln.closest_fixed_by.purl}}</span>
-                                                            <br />
-                                                            <span style="color: #ff0000;">{{ vuln.closest_fixed_by.version}}</span>
-                                                            <br />
-                                                            <a href="/packages/{{ vuln.closest_fixed_by.purl }}?search={{ vuln.closest_fixed_by.purl }}" target="_self">{{ vuln.closest_fixed_by.version }}</a>
-                                                        {% endif %}
-                                                        <br /> -->
-
-                                                        <!-- {% if vuln.closest_fixed_by|length == 0 %}
-                                                            <span></span>
-                                                        {% else %}
-
-                                                            {% if vuln.closest_fixed_by_vulnerabilities|length != 1 %}
-                                                            <span>Affected by {{ vuln.closest_fixed_by_vulnerabilities|length }} other vulnerabilities.</span>
-                                                            {% else %}
-                                                            <span>Affected by {{ vuln.closest_fixed_by_vulnerabilities|length }} other vulnerability.</span>
-                                                            {% endif %}
-
-                                                        {% endif %} -->
-
-                                                        <!-- {% if vuln.closest_fixed_by_vulnerabilities|length != 0 %}
-                                                            <div class="dropdown is-hoverable has-text-weight-normal is-right">
-                                                                <div class="dropdown-trigger">
-                                                                    <i class="fa fa-question-circle ml-0 fa-sm has-background-white has-text-link"></i>
-                                                                </div>
-                                                                <div class="dropdown-menu dropdown-vuln-list-width" id="dropdown-menu4" role="menu">
-                                                                    <div class="dropdown-content dropdown-instructions-box-shadow">
-                                                                        <div class="dropdown-item">
-                                                                            <div style="max-height: 200px; overflow-y: auto;">
-                                                                                This version is affected by these other vulnerabilities:
-                                                                                <div style="padding-top: 5px;">
-                                                                                    {% for closest_vuln in vuln.closest_fixed_by_vulnerabilities %}
-                                                                                    <div>
-                                                                                        <a href="/vulnerabilities/{{ closest_vuln.vuln_id }}" target="_self">{{ closest_vuln.vuln_id }}</a>
-                                                                                    </div>
-                                                                                    {% endfor %}
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        {% endif %}
-
-                                                        <br /> -->
-
                                                         {% if vuln.test_fixed_by_purl is None %}
-
-                                                            <!-- <span style="background-color: #ccffcc;">vuln.test_fixed_by_purl</span> = <span style="background-color: #ccffcc;">There are no reported fixed versions.</span>
-                                                            <hr style="background-color: #000000; margin: 10px 0px 5px 0px;"> -->
-
-                                                            <hr style="background-color: #000000; margin: 10px 0px 5px 0px;">
-
                                                             There are no reported fixed versions.
-
-                                                            <hr style="background-color: #000000; margin: 10px 0px 5px 0px;">
-
                                                         {% else %}
-
                                                             {% if vuln.test_fixed_by_purl_vulnerabilities|length == 0 %}
-                                                                <!-- <span style="background-color: #ccffcc;">vuln.test_fixed_by_purl</span> = <span style="background-color: #ccffcc;">{{ vuln.test_fixed_by_purl }} <br />-- 0 vulnerabilties of its own</span>
-                                                                <br />
-                                                                <span style="background-color: #ccffcc;">vuln.test_fixed_by_purl.version</span> = <span style="background-color: #ccffcc;">{{ vuln.test_fixed_by_purl.version }} <br />-- 0 vulnerabilties of its own</span>
-                                                                <br />
-                                                                <span style="background-color: #ccffcc;">0 vulnerabilities</span>
-                                                                <br />
-                                                                <span style="background-color: #ccffcc;">{{ vuln.test_fixed_by_purl.version }}</span>
-                                                                <br />
-                                                                <hr style="background-color: #000000; margin: 10px 0px 5px 0px;"> -->
-
-                                                                <hr style="background-color: #000000; margin: 10px 0px 5px 0px;">
-
                                                                 <a href="/packages/{{ vuln.test_fixed_by_purl }}?search={{ vuln.test_fixed_by_purl }}" target="_self">{{ vuln.test_fixed_by_purl.version }}</a>
-
                                                                 <br />
                                                                 <span>Affected by 0 other vulnerabilities.</span>
-
-                                                                <hr style="background-color: #000000; margin: 10px 0px 5px 0px;">
-
                                                             {% else %}
-
-                                                                <!-- <span style="background-color: #ccffcc;">vuln.test_fixed_by_purl</span> = <span style="background-color: #ccffcc;">{{ vuln.test_fixed_by_purl }} <br />-- 1+ vulnerabilties of its own</span>
-                                                                <br />
-                                                                <span style="background-color: #ccffcc;">vuln.test_fixed_by_purl.version</span> = <span style="background-color: #ccffcc;">{{ vuln.test_fixed_by_purl.version }} <br />-- 1+ vulnerabilties of its own</span>
-                                                                <br />
-                                                                <span style="background-color: #ccffcc;">{{ vuln.test_fixed_by_purl.version }}</span>
-                                                                <br />
-                                                                <hr style="background-color: #000000; margin: 10px 0px 5px 0px;"> -->
-
-                                                                <hr style="background-color: #000000; margin: 10px 0px 5px 0px;">
-
                                                                 <a href="/packages/{{ vuln.test_fixed_by_purl }}?search={{ vuln.test_fixed_by_purl }}" target="_self">{{ vuln.test_fixed_by_purl.version }}</a>
-
                                                                 {% if vuln.test_fixed_by_purl_vulnerabilities|length != 1 %}
-                                                                <br />
-                                                                <span>Affected by {{ vuln.test_fixed_by_purl_vulnerabilities|length }} other vulnerabilities.</span>
-                                                                {% else %}
-                                                                <br />
-                                                                <span>Affected by {{ vuln.test_fixed_by_purl_vulnerabilities|length }} other vulnerability.</span>
+                                                                    <br />
+                                                                    <span>Affected by {{ vuln.test_fixed_by_purl_vulnerabilities|length }} other vulnerabilities.</span>
+                                                                    {% else %}
+                                                                    <br />
+                                                                    <span>Affected by {{ vuln.test_fixed_by_purl_vulnerabilities|length }} other vulnerability.</span>
                                                                 {% endif %}
 
                                                                 <div class="dropdown is-hoverable has-text-weight-normal is-right">
@@ -301,9 +152,9 @@ VulnerableCode Package Details - {{ package.purl }}
                                                                                     This version is affected by these other vulnerabilities:
                                                                                     <div style="padding-top: 5px;">
                                                                                         {% for fixed_by_vuln in vuln.test_fixed_by_purl_vulnerabilities %}
-                                                                                        <div>
-                                                                                            <a href="/vulnerabilities/{{ fixed_by_vuln.vulnerability_id }}" target="_self">{{ fixed_by_vuln.vulnerability_id }}</a>
-                                                                                        </div>
+                                                                                            <div>
+                                                                                                <a href="/vulnerabilities/{{ fixed_by_vuln.vulnerability_id }}" target="_self">{{ fixed_by_vuln.vulnerability_id }}</a>
+                                                                                            </div>
                                                                                         {% endfor %}
                                                                                     </div>
                                                                                 </div>
@@ -311,17 +162,12 @@ VulnerableCode Package Details - {{ package.purl }}
                                                                         </div>
                                                                     </div>
                                                                 </div>
-
-                                                                <hr style="background-color: #000000; margin: 10px 0px 5px 0px;">
-
                                                             {% endif %}
                                                         {% endif %}
-
                                                     {% endif %}
                                                 {% endfor %}
                                             {% endif %}
                                         {% endfor %}
-
                                     {% endif %}
                                 </td>
                             </tr>
@@ -385,5 +231,4 @@ VulnerableCode Package Details - {{ package.purl }}
         </div>
     </section>
 {% endif %}
-
 {% endblock %}

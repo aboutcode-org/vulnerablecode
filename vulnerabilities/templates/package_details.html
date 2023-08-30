@@ -33,7 +33,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                 </span>
                             </td>
                             <td class="two-col-right">
-                                {{ fixed_package_details.test_purl.to_string }}
+                                {{ fixed_package_details.purl.to_string }}
                             </td>
                         </tr>
                     </tbody>
@@ -50,33 +50,33 @@ VulnerableCode Package Details - {{ package.purl }}
                                     Non-vulnerable version
                                 </td>
                                 <td class="two-col-right">
-                                    <a href="/packages/{{ fixed_package_details.TEST_test_closest_non_vulnerable }}?search={{ fixed_package_details.TEST_test_closest_non_vulnerable }}" target="_self">{{ fixed_package_details.TEST_test_closest_non_vulnerable.version }}</a>
+                                    <a href="/packages/{{ fixed_package_details.closest_non_vulnerable }}?search={{ fixed_package_details.closest_non_vulnerable }}" target="_self">{{ fixed_package_details.closest_non_vulnerable.version }}</a>
                                 </td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td class="two-col-left">
                                     Non-vulnerable version <br />(non-breaking)
                                 </td>
                                 <td class="two-col-right">
                                     <span style="color: #ff0000;">[to come]</span>
                                 </td>
-                            </tr>
+                            </tr> -->
                             <tr>
                                 <td class="two-col-left">
                                     Latest non-vulnerable version
                                 </td>
                                 <td class="two-col-right">
-                                    <a href="/packages/{{ fixed_package_details.TEST_test_latest_non_vulnerable }}?search={{ fixed_package_details.TEST_test_latest_non_vulnerable }}" target="_self">{{ fixed_package_details.TEST_test_latest_non_vulnerable.version }}</a>
+                                    <a href="/packages/{{ fixed_package_details.latest_non_vulnerable }}?search={{ fixed_package_details.latest_non_vulnerable }}" target="_self">{{ fixed_package_details.latest_non_vulnerable.version }}</a>
                                 </td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td class="two-col-left">
                                     Latest non-vulnerable version <br />(non-breaking)
                                 </td>
                                 <td class="two-col-right">
                                     <span style="color: #ff0000;">[to come]</span>
                                 </td>
-                            </tr>
+                            </tr> -->
                         </tbody>
                     </table>
                 </div>
@@ -119,26 +119,26 @@ VulnerableCode Package Details - {{ package.purl }}
                                     {{ vulnerability.summary }}
                                 </td>
                                 <td style="word-wrap: break-word; word-break: break-all;">
-                                    {% if package.purl == fixed_package_details.test_purl.to_string %}
+                                    {% if package.purl == fixed_package_details.purl.to_string %}
                                         {% for key, value in fixed_package_details.items %}
-                                            {% if key == "test_vulnerabilities" %}
+                                            {% if key == "vulnerabilities" %}
                                                 {% for vuln in value %}
-                                                    {% if vuln.test_vulnerability.vulnerability_id == vulnerability.vulnerability_id %}
-                                                        {% if vuln.test_fixed_by_purl is None %}
+                                                    {% if vuln.vulnerability.vulnerability_id == vulnerability.vulnerability_id %}
+                                                        {% if vuln.fixed_by_purl is None %}
                                                             There are no reported fixed versions.
                                                         {% else %}
-                                                            {% if vuln.test_fixed_by_purl_vulnerabilities|length == 0 %}
-                                                                <a href="/packages/{{ vuln.test_fixed_by_purl }}?search={{ vuln.test_fixed_by_purl }}" target="_self">{{ vuln.test_fixed_by_purl.version }}</a>
+                                                            {% if vuln.fixed_by_purl_vulnerabilities|length == 0 %}
+                                                                <a href="/packages/{{ vuln.fixed_by_purl }}?search={{ vuln.fixed_by_purl }}" target="_self">{{ vuln.fixed_by_purl.version }}</a>
                                                                 <br />
-                                                                <span>Affected by 0 other vulnerabilities.</span>
+                                                                <span style="background-color: #b3ffb3;">Affected by 0 other vulnerabilities.</span>
                                                             {% else %}
-                                                                <a href="/packages/{{ vuln.test_fixed_by_purl }}?search={{ vuln.test_fixed_by_purl }}" target="_self">{{ vuln.test_fixed_by_purl.version }}</a>
-                                                                {% if vuln.test_fixed_by_purl_vulnerabilities|length != 1 %}
+                                                                <a href="/packages/{{ vuln.fixed_by_purl }}?search={{ vuln.fixed_by_purl }}" target="_self">{{ vuln.fixed_by_purl.version }}</a>
+                                                                {% if vuln.fixed_by_purl_vulnerabilities|length != 1 %}
                                                                     <br />
-                                                                    <span>Affected by {{ vuln.test_fixed_by_purl_vulnerabilities|length }} other vulnerabilities.</span>
+                                                                    <span>Affected by {{ vuln.fixed_by_purl_vulnerabilities|length }} other vulnerabilities.</span>
                                                                     {% else %}
                                                                     <br />
-                                                                    <span>Affected by {{ vuln.test_fixed_by_purl_vulnerabilities|length }} other vulnerability.</span>
+                                                                    <span>Affected by {{ vuln.fixed_by_purl_vulnerabilities|length }} other vulnerability.</span>
                                                                 {% endif %}
 
                                                                 <div class="dropdown is-hoverable has-text-weight-normal is-right">
@@ -151,7 +151,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                                                                 <div style="max-height: 200px; overflow-y: auto;">
                                                                                     This version is affected by these other vulnerabilities:
                                                                                     <div style="padding-top: 5px;">
-                                                                                        {% for fixed_by_vuln in vuln.test_fixed_by_purl_vulnerabilities %}
+                                                                                        {% for fixed_by_vuln in vuln.fixed_by_purl_vulnerabilities %}
                                                                                             <div>
                                                                                                 <a href="/vulnerabilities/{{ fixed_by_vuln.vulnerability_id }}" target="_self">{{ fixed_by_vuln.vulnerability_id }}</a>
                                                                                             </div>

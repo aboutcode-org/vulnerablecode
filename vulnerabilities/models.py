@@ -688,6 +688,7 @@ class Package(PackageURLMixin):
 
         # Add the greater-than versions to a new list.
         univers_version = RANGE_CLASS_BY_SCHEMES[self.type].version_class
+        print("\nunivers_version = {}".format(univers_version))
         later_non_vuln_sibs = []
         for non_vuln_sib in non_vuln_sibs:
             if univers_version(non_vuln_sib.version) > univers_version(self.version):
@@ -707,13 +708,34 @@ class Package(PackageURLMixin):
 
         purl_dict = {}
         # Pass a PackageURL object to the Jinja2 template via the context dictionary.
-        purl_dict["test_purl"] = PackageURL.from_string(self.purl)
-        purl_dict.update({"test_vulnerabilities": []})
+        # purl_dict["test_purl"] = PackageURL.from_string(self.purl)
+        # purl_dict.update({"test_vulnerabilities": []})
+        purl_dict["purl"] = PackageURL.from_string(self.purl)
+        print("\npurl = {}".format(purl_dict["purl"]))
+
+        purl_univers_version = univers_version(purl_dict["purl"].version)
+        print("\npurl_univers_version = {}".format(purl_univers_version))
+
+        # ALERT: This throws an error: AttributeError: 'MavenVersion' object has no attribute 'major'
+        # How do we compare major versions?
+        # purl_univers_version_major = purl_univers_version.major
+
+        # purl_semver_version = versions.SemverVersion(purl_dict["purl"].version)
+        # print("\npurl_semver_version = {}".format(purl_semver_version))
+
+        # purl_semver_version_major = purl_semver_version.major
+        # print("\npurl_semver_version_major = {}".format(purl_semver_version_major))
+
+        purl_semver_version_major = versions.SemverVersion(purl_dict["purl"].version).major
+        print("\npurl_semver_version_major = {}\n".format(purl_semver_version_major))
+
+        purl_dict.update({"vulnerabilities": []})
 
         for vuln in qs:
             later_matching_fixed_packages = []
             # Pass a Vulnerability object.
-            purl_dict["test_vulnerabilities"].append({"test_vulnerability": vuln})
+            # purl_dict["test_vulnerabilities"].append({"test_vulnerability": vuln})
+            purl_dict["vulnerabilities"].append({"vulnerability": vuln})
 
             vuln_matching_fixed_packages = vuln.matching_fixed_packages
             closest_fixed_package = ""
@@ -730,6 +752,29 @@ class Package(PackageURLMixin):
                     sort_fixed_by_packages_by_version = self.sort_by_version(
                         later_matching_fixed_packages
                     )
+                    print(
+                        "\nsort_fixed_by_packages_by_version = {}\n".format(
+                            sort_fixed_by_packages_by_version
+                        )
+                    )
+                    for fixed_by_pkg in sort_fixed_by_packages_by_version:
+                        print("\nfixed_by_pkg.version = {}\n".format(fixed_by_pkg.version))
+                        purl_from_fixed_by_pkg = PackageURL.from_string(fixed_by_pkg.purl)
+                        print("\npurl_from_fixed_by_pkg = {}\n".format(purl_from_fixed_by_pkg))
+
+                        print("\nfixed_by_pkg = {}\n".format(fixed_by_pkg))
+
+                        # purl_semver_version_major = versions.SemverVersion(purl_dict["purl"].version).major
+                        # print("\npurl_semver_version_major = {}\n".format(purl_semver_version_major))
+
+                        fixed_by_pkg_semver_version_major = versions.SemverVersion(
+                            fixed_by_pkg.version
+                        ).major
+                        print(
+                            "\nfixed_by_pkg_semver_version_major = {}\n".format(
+                                fixed_by_pkg_semver_version_major
+                            )
+                        )
 
                 closest_fixed_package = sort_fixed_by_packages_by_version[0]
 
@@ -738,48 +783,95 @@ class Package(PackageURLMixin):
             else:
                 closest_fixed_package = "There are no reported fixed packages."
 
-            for dict_vuln in purl_dict["test_vulnerabilities"]:
+            # for dict_vuln in purl_dict["test_vulnerabilities"]:
+            for dict_vuln in purl_dict["vulnerabilities"]:
                 closest_non_vulnerable_sib = ""
-                if len(later_non_vuln_sibs) > 0:
-                    closest_non_vulnerable_sib = self.sort_by_version(later_non_vuln_sibs)[0]
-                else:
-                    closest_non_vulnerable_sib = ""
+                # if len(later_non_vuln_sibs) > 0:
+                #     closest_non_vulnerable_sib = self.sort_by_version(later_non_vuln_sibs)[0]
+                # else:
+                #     closest_non_vulnerable_sib = ""
 
                 latest_non_vulnerable_sib = ""
-                if len(later_non_vuln_sibs) > 0:
-                    latest_non_vulnerable_sib = self.sort_by_version(later_non_vuln_sibs)[-1]
-                else:
-                    latest_non_vulnerable_sib = ""
+                # if len(later_non_vuln_sibs) > 0:
+                #     latest_non_vulnerable_sib = self.sort_by_version(later_non_vuln_sibs)[-1]
+                # else:
+                #     latest_non_vulnerable_sib = ""
 
-                if dict_vuln["test_vulnerability"] == vuln:
+                closest_non_vulnerable_sib_non_breaking = ""
+                latest_non_vulnerable_sib_non_breaking = ""
+
+                if len(later_non_vuln_sibs) > 0:
+                    closest_non_vulnerable_sib = self.sort_by_version(later_non_vuln_sibs)[0]
+                    latest_non_vulnerable_sib = self.sort_by_version(later_non_vuln_sibs)[-1]
+
+                    print("\nlater_non_vuln_sibs = {}\n".format(later_non_vuln_sibs))
+
+                    later_non_vuln_sibs_non_breaking = []
+                    for non_vuln_sib in later_non_vuln_sibs:
+                        print("\nnon_vuln_sib = {}\n".format(non_vuln_sib))
+                        print("\ntype(non_vuln_sib) = {}\n".format(type(non_vuln_sib)))
+
+                        # 2023-08-28 Monday 19:19:03.  I need to resume here and populate the list later_non_vuln_sibs_non_breaking, then see whether there are any non-breaking versions and in anmy event add 2 more dict entries for the closest non-breaking and latest non-breaking versions.
+                else:
+                    closest_non_vulnerable_sib = ""
+                    latest_non_vulnerable_sib = ""
+                    # FIXME: 2023-08-30 Wednesday 11:18:43.  Got an error when clicking from the Vulnerability details page Fixed by packages tab -- 'str' object has no attribute 'purl'.  I think the if condition below needs to be changed from if len(vuln_matching_fixed_packages) > 0: to if len(later_non_vuln_sibs) > 0:.  Yes that fixes the error!
+                    # TODO: With the fix above, we also need to consolidate this if with the if below -- both start with "if len(later_non_vuln_sibs) > 0:"
+
+                # if dict_vuln["test_vulnerability"] == vuln:
+                if dict_vuln["vulnerability"] == vuln:
 
                     if len(vuln_matching_fixed_packages) > 0:
 
-                        dict_vuln["test_fixed_by_purl"] = PackageURL.from_string(
+                        # dict_vuln["test_fixed_by_purl"] = PackageURL.from_string(
+                        #     closest_fixed_package.purl
+                        # )
+
+                        # dict_vuln["test_fixed_by_purl_vulnerabilities"] = [
+                        #     fixed_pkg_vuln for fixed_pkg_vuln in closest_fixed_package_vulns
+                        # ]
+
+                        dict_vuln["fixed_by_purl"] = PackageURL.from_string(
                             closest_fixed_package.purl
                         )
 
-                        dict_vuln["test_fixed_by_purl_vulnerabilities"] = [
+                        dict_vuln["fixed_by_purl_vulnerabilities"] = [
                             fixed_pkg_vuln for fixed_pkg_vuln in closest_fixed_package_vulns
                         ]
                     else:
 
-                        dict_vuln["test_fixed_by_purl"] = None
-                        dict_vuln["test_fixed_by_purl_vulnerabilities"] = []
+                        # dict_vuln["test_fixed_by_purl"] = None
+                        # dict_vuln["test_fixed_by_purl_vulnerabilities"] = []
 
-                    if len(vuln_matching_fixed_packages) > 0:
+                        dict_vuln["fixed_by_purl"] = None
+                        dict_vuln["fixed_by_purl_vulnerabilities"] = []
 
-                        purl_dict["TEST_test_closest_non_vulnerable"] = PackageURL.from_string(
+                    # FIXME: 2023-08-30 Wednesday 11:29:34.  Will this handle the error when clicking from the Vulnerability details page Fixed by packages tab -- 'str' object has no attribute 'purl'?  Yes!
+                    # TODO: Having fixed this, we also need to conslidate this if with the similar if above.
+                    # if len(vuln_matching_fixed_packages) > 0:
+                    if len(later_non_vuln_sibs) > 0:
+
+                        # purl_dict["TEST_test_closest_non_vulnerable"] = PackageURL.from_string(
+                        #     closest_non_vulnerable_sib.purl
+                        # )
+                        # purl_dict["TEST_test_latest_non_vulnerable"] = PackageURL.from_string(
+                        #     latest_non_vulnerable_sib.purl
+                        # )
+
+                        purl_dict["closest_non_vulnerable"] = PackageURL.from_string(
                             closest_non_vulnerable_sib.purl
                         )
-                        purl_dict["TEST_test_latest_non_vulnerable"] = PackageURL.from_string(
+                        purl_dict["latest_non_vulnerable"] = PackageURL.from_string(
                             latest_non_vulnerable_sib.purl
                         )
 
                     else:
 
-                        purl_dict["TEST_test_closest_non_vulnerable"] = None
-                        purl_dict["TEST_test_latest_non_vulnerable"] = None
+                        # purl_dict["TEST_test_closest_non_vulnerable"] = None
+                        # purl_dict["TEST_test_latest_non_vulnerable"] = None
+
+                        purl_dict["closest_non_vulnerable"] = None
+                        purl_dict["latest_non_vulnerable"] = None
 
         # Temporary print output during dev/testing.
         from pprint import pprint

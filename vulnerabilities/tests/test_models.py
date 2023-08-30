@@ -191,6 +191,87 @@ class TestPackageModel(TestCase):
             fix=False,
         )
 
+        # Create additional Package objects with various versions to test the major version identification and comparison process.
+
+        self.pypi_setuptools_affected_package = models.Package.objects.create(
+            type="pypi",
+            namespace="",
+            name="setuptools",
+            version="40.8.0",
+            qualifiers={},
+            subpath="",
+        )
+
+        self.pypi_setuptools_fixed_closest_and_latest_non_vulnerable_packages = (
+            models.Package.objects.create(
+                type="pypi",
+                namespace="",
+                name="setuptools",
+                version="65.5.1",
+                qualifiers={},
+                subpath="",
+            )
+        )
+
+        # pkg:maven/org.eclipse.jetty/jetty-util@9.3.20.v20170531
+
+        # from the string
+        jetty_util_purl = PackageURL.from_string(
+            "pkg:maven/org.eclipse.jetty/jetty-util@9.3.20.v20170531"
+        )
+
+        # # convert purl to dict
+        # jetty_util_purl_to_dict = jetty_util_purl.to_dict()
+        # # This will avoid the IntegrityError:
+        # if jetty_util_purl_to_dict.get("qualifiers") is None:
+        #     jetty_util_purl_to_dict["qualifiers"] = {}
+        # if jetty_util_purl_to_dict.get("subpath") is None:
+        #     jetty_util_purl_to_dict["subpath"] = ""
+
+        # This takes the place of the 2 preceding bits -- uses purl_to_dict() rather than just to_dict()
+        jetty_util_purl_to_dict = models.purl_to_dict(jetty_util_purl)
+
+        # convert dict to Package
+        # This needs self, right?
+        self.maven_jetty_util_affected_package = models.Package.objects.create(
+            type=jetty_util_purl_to_dict.get("type"),
+            namespace=jetty_util_purl_to_dict.get("namespace"),
+            name=jetty_util_purl_to_dict.get("name"),
+            version=jetty_util_purl_to_dict.get("version"),
+            qualifiers=jetty_util_purl_to_dict.get("qualifiers"),
+            subpath=jetty_util_purl_to_dict.get("subpath"),
+        )
+
+        # using the create method
+        # self.maven_jetty_util_affected_package = models.Package.objects.create(
+        #     type="maven",
+        #     namespace="org.eclipse.jetty",
+        #     name="jetty-util",
+        #     version="9.3.20.v20170531",
+        #     qualifiers={},
+        #     subpath="",
+        # )
+        # pkg:maven/org.eclipse.jetty/jetty-util@9.4.39.v20210325
+        self.maven_jetty_util_fixed_package = models.Package.objects.create(
+            type="maven",
+            namespace="org.eclipse.jetty",
+            name="jetty-util",
+            version="9.4.39.v20210325",
+            qualifiers={},
+            subpath="",
+        )
+        # pkg:maven/org.eclipse.jetty/jetty-util@11.0.14
+        self.maven_jetty_util_closest_and_latest_non_vulnerable_packages = (
+            models.Package.objects.create(
+                type="maven",
+                namespace="org.eclipse.jetty",
+                name="jetty-util",
+                version="11.0.14",
+                qualifiers={},
+                subpath="",
+            )
+        )
+
     def test_get_vulnerable_packages(self):
         vuln_packages = Package.objects.vulnerable()
         assert vuln_packages.count() == 3
@@ -399,3 +480,32 @@ class TestPackageModel(TestCase):
         )
         assert vulnerablecode_package.qualifiers == {}
         assert vulnerablecode_package.subpath == ""
+
+    def test_compare_package_major_versions(self):
+        # Convert a PURL string to a PURL to a dictionary to a VulnerableCode Package, i.e.,
+        # a <class 'vulnerabilities.models.Package'>.
+
+        # Convert a PURL string to a PURL.
+        purl_string = "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.31"
+        purl = PackageURL.from_string(purl_string)
+
+        assert type(purl) == PackageURL
+        assert purl.type == "maven"
+        assert purl.qualifiers == {}
+        assert purl.subpath == None
+
+        print("\npurl_string = {}".format(purl_string))
+
+        print("\npurl = {}".format(purl))
+
+        print("\nHello VulnerableCode!\n")
+
+        all_packages = Package.objects
+        print("\nPackage.objects = {}\n".format(Package.objects))
+        print("\nall_packages.distinct() = {}\n".format(all_packages.distinct()))
+        print("\nall_packages.distinct()[0] = {}\n".format(all_packages.distinct()[0]))
+
+        for pkg in all_packages.distinct():
+            print(PackageURL.from_string(pkg.purl))
+
+        print("")

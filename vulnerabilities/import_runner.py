@@ -9,6 +9,7 @@
 
 import datetime
 import logging
+from traceback import format_exc as traceback_format_exc
 from typing import Iterable
 from typing import List
 
@@ -74,7 +75,9 @@ def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: st
             if created:
                 advisories.append(obj)
         except Exception as e:
-            logger.error(f"Error while processing {data!r} with aliases {data.aliases!r}: {e!r}")
+            logger.error(
+                f"Error while processing {data!r} with aliases {data.aliases!r}: {e!r} \n {traceback_format_exc()}"
+            )
             continue
         if created:
             logger.info(
@@ -89,6 +92,8 @@ def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: st
 
 def improve_advisories(importer_name, advisories):
     try:
-        ImproveRunner(improver=AdvisoryBasedDefaultImprover, advisories=advisories).run()
+        ImproveRunner(improver_class=AdvisoryBasedDefaultImprover, advisories=advisories).run()
     except Exception as e:
-        logger.error(f"Error while processing advisories from {importer_name!r}: {e!r}")
+        logger.error(
+            f"Error while processing advisories from {importer_name!r}: {e!r} \n {traceback_format_exc()}"
+        )

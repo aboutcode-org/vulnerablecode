@@ -71,7 +71,8 @@ def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: st
                     "date_collected": datetime.datetime.now(tz=datetime.timezone.utc),
                 },
             )
-            advisories.append(obj)
+            if created:
+                advisories.append(obj)
         except Exception as e:
             logger.error(f"Error while processing {data!r} with aliases {data.aliases!r}: {e!r}")
             continue
@@ -88,6 +89,6 @@ def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: st
 
 def improve_advisories(importer_name, advisories):
     try:
-        ImproveRunner(improver=AdvisoryBasedDefaultImprover(advisories=advisories)).run()
+        ImproveRunner(improver=AdvisoryBasedDefaultImprover, advisories=advisories).run()
     except Exception as e:
         logger.error(f"Error while processing advisories from {importer_name!r}: {e!r}")

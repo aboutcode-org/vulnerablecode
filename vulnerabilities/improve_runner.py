@@ -37,15 +37,8 @@ class ImproveRunner:
     improver and parsing the returned Inferences into proper database fields
     """
 
-    def __init__(self, improver_class=None, improver: Improver = None):
-        if improver and improver_class:
-            raise Exception("Both ``improver`` and ``improver_class`` can't be send as argument")
-        if not (improver_class or improver):
-            raise Exception("Send either ``improver`` or ``improver_class`` argument")
-        if improver_class:
-            self.improver = improver_class()
-        else:
-            self.improver = improver
+    def __init__(self, improver_class, **kwargs):
+        self.improver = improver_class(**kwargs)
 
     def run(self) -> None:
         improver = self.improver

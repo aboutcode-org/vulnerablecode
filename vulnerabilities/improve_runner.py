@@ -57,6 +57,7 @@ class ImproveRunner:
 @transaction.atomic
 def process_inferences(inferences: List[Inference], advisory: Advisory, improver_name: str):
     """
+    Return number of inferences processed.
     An atomic transaction that updates both the Advisory (e.g. date_improved)
     and processes the given inferences to create or update corresponding
     database fields.
@@ -65,10 +66,11 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
     erroneous. Also, the atomic transaction for every advisory and its
     inferences makes sure that date_improved of advisory is consistent.
     """
+    inferences_processed_count = 0
 
     if not inferences:
-        logger.warn(f"Nothing to improve. Source: {improver_name} Advisory id: {advisory.id}")
-        return
+        logger.warning(f"Nothing to improve. Source: {improver_name} Advisory id: {advisory.id}")
+        return inferences_processed_count
 
     logger.info(f"Improving advisory id: {advisory.id}")
 
@@ -80,7 +82,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
         )
 
         if not vulnerability:
-            logger.warn(f"Unable to get vulnerability for inference: {inference!r}")
+            logger.warning(f"Unable to get vulnerability for inference: {inference!r}")
             continue
 
         for ref in inference.references:
@@ -143,8 +145,12 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                 cwe_obj, created = Weakness.objects.get_or_create(cwe_id=cwe_id)
                 cwe_obj.vulnerabilities.add(vulnerability)
                 cwe_obj.save()
+
+        inferences_processed_count += 1
+
     advisory.date_improved = datetime.now(timezone.utc)
     advisory.save()
+    return inferences_processed_count
 
 
 def create_valid_vulnerability_reference(url, reference_id=None):
@@ -168,7 +174,7 @@ def create_valid_vulnerability_reference(url, reference_id=None):
     return reference
 
 
-def get_or_create_vulnerability_and_aliases(vulnerability_id, alias_names, summary):
+def get_or_create_vulnerability_and_aliases(alias_names, vulnerability_id=None, summary=None):
     """
     Get or create vulnerabilitiy and aliases such that all existing and new
     aliases point to the same vulnerability
@@ -188,7 +194,7 @@ def get_or_create_vulnerability_and_aliases(vulnerability_id, alias_names, summa
     # TODO: It is possible that all those vulnerabilities are actually
     # the same at data level, figure out a way to merge them
     if len(existing_vulns) > 1:
-        logger.warn(
+        logger.warning(
             f"Given aliases {alias_names} already exist and do not point "
             f"to a single vulnerability. Cannot improve. Skipped."
         )
@@ -201,7 +207,7 @@ def get_or_create_vulnerability_and_aliases(vulnerability_id, alias_names, summa
         and vulnerability_id
         and existing_alias_vuln.vulnerability_id != vulnerability_id
     ):
-        logger.warn(
+        logger.warning(
             f"Given aliases {alias_names!r} already exist and point to existing"
             f"vulnerability {existing_alias_vuln}. Unable to create Vulnerability "
             f"with vulnerability_id {vulnerability_id}. Skipped"
@@ -214,7 +220,7 @@ def get_or_create_vulnerability_and_aliases(vulnerability_id, alias_names, summa
         try:
             vulnerability = Vulnerability.objects.get(vulnerability_id=vulnerability_id)
         except Vulnerability.DoesNotExist:
-            logger.warn(
+            logger.warning(
                 f"Given vulnerability_id: {vulnerability_id} does not exist in the database"
             )
             return
@@ -223,7 +229,7 @@ def get_or_create_vulnerability_and_aliases(vulnerability_id, alias_names, summa
         vulnerability.save()
 
     if summary and summary != vulnerability.summary:
-        logger.warn(
+        logger.warning(
             f"Inconsistent summary for {vulnerability!r}. "
             f"Existing: {vulnerability.summary}, provided: {summary}"
         )

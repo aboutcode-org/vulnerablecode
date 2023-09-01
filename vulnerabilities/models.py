@@ -826,17 +826,13 @@ class Advisory(models.Model):
     )
     weaknesses = models.JSONField(blank=True, default=list, help_text="A list of CWE ids")
     date_collected = models.DateTimeField(help_text="UTC Date on which the advisory was collected")
-    date_improved = models.DateTimeField(
-        blank=True,
-        null=True,
-        help_text="Latest date on which the advisory was improved by an improver",
-    )
     created_by = models.CharField(
         max_length=100,
         help_text="Fully qualified name of the importer prefixed with the"
         "module name importing the advisory. Eg:"
         "vulnerabilities.importers.nginx.NginxImporter",
     )
+    improvers = models.ManyToManyField(to="Improver", through="ImproverRelatedAdvisory")
     objects = AdvisoryQuerySet.as_manager()
 
     class Meta:
@@ -915,3 +911,20 @@ class ApiUser(UserModel):
 
     class Meta:
         proxy = True
+
+
+class Improver(models.Model):
+    improver_qualified_name = models.CharField(max_length=1000, blank=True)
+    advisories = models.ManyToManyField(to="Advisory", through="ImproverRelatedAdvisory")
+
+
+class ImproverRelatedAdvisory(models.Model):
+    improver = models.ForeignKey(
+        Improver,
+        on_delete=models.CASCADE,
+    )
+    advisory = models.ForeignKey(Advisory, on_delete=models.CASCADE)
+    date_improved = models.DateTimeField(
+        null=True,
+        help_text="Date on which the advisory was improved by an improver",
+    )

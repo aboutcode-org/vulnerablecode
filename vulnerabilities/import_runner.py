@@ -72,8 +72,6 @@ def process_advisories(advisory_datas: Iterable[AdvisoryData], importer_name: st
                     "date_collected": datetime.datetime.now(tz=datetime.timezone.utc),
                 },
             )
-            if created:
-                advisories.append(obj)
         except Exception as e:
             logger.error(
                 f"Error while processing {data!r} with aliases {data.aliases!r}: {e!r} \n {traceback_format_exc()}"

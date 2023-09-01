@@ -19,6 +19,8 @@ from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import Alias
+from vulnerabilities.models import Improver as ImproverModel
+from vulnerabilities.models import ImproverRelatedAdvisory
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
@@ -43,12 +45,23 @@ class ImproveRunner:
     def run(self) -> None:
         improver = self.improver
         logger.info(f"Running improver: {improver.qualified_name}")
+        improver_name = improver.qualified_name
+        advisories = []
         for advisory in improver.interesting_advisories:
+            if improver_name not in advisory.improvers.all():
+                advisories.append(advisory)
+        improver_model_object, _ = ImproverModel.objects.get_or_create(
+            improver_qualified_name=improver_name
+        )
+        for advisory in advisories:
             logger.info(f"Processing advisory: {advisory!r}")
+            improver_name = improver.qualified_name
             try:
                 inferences = improver.get_inferences(advisory_data=advisory.to_advisory_data())
                 process_inferences(
-                    inferences=inferences, advisory=advisory, improver_name=improver.qualified_name
+                    inferences=inferences,
+                    advisory=advisory,
+                    improver_model_object=improver_model_object,
                 )
             except Exception as e:
                 logger.info(f"Failed to process advisory: {advisory!r} with error {e!r}")
@@ -56,7 +69,9 @@ class ImproveRunner:
 
 
 @transaction.atomic
-def process_inferences(inferences: List[Inference], advisory: Advisory, improver_name: str):
+def process_inferences(
+    inferences: List[Inference], advisory: Advisory, improver_model_object: ImproverModel
+):
     """
     Return number of inferences processed.
     An atomic transaction that updates both the Advisory (e.g. date_improved)
@@ -68,6 +83,8 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
     inferences makes sure that date_improved of advisory is consistent.
     """
     inferences_processed_count = 0
+
+    improver_name = improver_model_object.improver_qualified_name
 
     if not inferences:
         logger.warning(f"Nothing to improve. Source: {improver_name} Advisory id: {advisory.id}")
@@ -146,12 +163,9 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                 cwe_obj, created = Weakness.objects.get_or_create(cwe_id=cwe_id)
                 cwe_obj.vulnerabilities.add(vulnerability)
                 cwe_obj.save()
-
-        inferences_processed_count += 1
-
-    advisory.date_improved = datetime.now(timezone.utc)
-    advisory.save()
-    return inferences_processed_count
+    ImproverRelatedAdvisory.objects.create(
+        improver=improver_model_object, advisory=advisory, date_improved=datetime.now(timezone.utc)
+    )
 
 
 def create_valid_vulnerability_reference(url, reference_id=None):

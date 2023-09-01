@@ -47,12 +47,16 @@ class ImproveRunner:
         logger.info(f"Running improver: {improver.qualified_name}")
         improver_name = improver.qualified_name
         advisories = []
-        for advisory in improver.interesting_advisories:
-            if improver_name not in advisory.improvers.all():
-                advisories.append(advisory)
         improver_model_object, _ = ImproverModel.objects.get_or_create(
             improver_qualified_name=improver_name
         )
+        improved_advisories = ImproverRelatedAdvisory.objects.filter(
+            improver = improver_model_object
+        ).values('advisory').distinct()
+        improved_advisories_id = [adv["advisory"] for adv in improved_advisories]
+        for advisory in improver.interesting_advisories: 
+            if advisory.id not in improved_advisories_id:
+                advisories.append(advisory)
         for advisory in advisories:
             logger.info(f"Processing advisory: {advisory!r}")
             improver_name = improver.qualified_name

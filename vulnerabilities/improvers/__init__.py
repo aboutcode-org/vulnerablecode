@@ -7,7 +7,6 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-from vulnerabilities.improvers import importer_specific_improver
 from vulnerabilities.improvers import valid_versions
 
 IMPROVERS_REGISTRY = [

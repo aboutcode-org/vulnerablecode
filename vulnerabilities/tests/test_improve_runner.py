@@ -22,7 +22,6 @@ from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import Alias
-from vulnerabilities.models import Improver as ImproverModel
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
@@ -149,20 +148,16 @@ DUMMY_ADVISORY = Advisory(summary="dummy", created_by="tests", date_collected=ti
 
 @pytest.mark.django_db
 def test_process_inferences_with_no_inference():
-    DUMMY_ADVISORY.save()
-    test_improver = ImproverModel.objects.create(improver_qualified_name="test_improver")
     assert not process_inferences(
-        inferences=[], advisory=DUMMY_ADVISORY, improver_model_object=test_improver
+        inferences=[], advisory=DUMMY_ADVISORY, improver_name="test_improver"
     )
 
 
 @pytest.mark.django_db
 def test_process_inferences_with_unknown_but_specified_vulnerability():
     inference = Inference(vulnerability_id="VCID-Does-Not-Exist-In-DB", aliases=["MATRIX-Neo"])
-    DUMMY_ADVISORY.save()
-    test_improver = ImproverModel.objects.create(improver_qualified_name="test_improver")
     assert not process_inferences(
-        inferences=[inference], advisory=DUMMY_ADVISORY, improver_model_object=test_improver
+        inferences=[inference], advisory=DUMMY_ADVISORY, improver_name="test_improver"
     )
 
 
@@ -195,25 +190,17 @@ def get_objects_in_all_tables_used_by_process_inferences():
 
 @pytest.mark.django_db
 def test_process_inferences_idempotency():
-    DUMMY_ADVISORY.save()
-    test_improver = ImproverModel.objects.create(improver_qualified_name="test_improver")
-    process_inferences(INFERENCES, DUMMY_ADVISORY, improver_model_object=test_improver)
+    process_inferences(INFERENCES, DUMMY_ADVISORY, improver_name="test_improver")
     all_objects = get_objects_in_all_tables_used_by_process_inferences()
-    process_inferences(INFERENCES, DUMMY_ADVISORY, improver_model_object=test_improver)
-    process_inferences(INFERENCES, DUMMY_ADVISORY, improver_model_object=test_improver)
+    process_inferences(INFERENCES, DUMMY_ADVISORY, improver_name="test_improver")
+    process_inferences(INFERENCES, DUMMY_ADVISORY, improver_name="test_improver")
     assert all_objects == get_objects_in_all_tables_used_by_process_inferences()
 
 
 @pytest.mark.django_db
 def test_process_inference_idempotency_with_different_improver_names():
-    DUMMY_ADVISORY.save()
-    test_improver_one = ImproverModel.objects.create(improver_qualified_name="test_improver_one")
-    process_inferences(INFERENCES, DUMMY_ADVISORY, improver_model_object=test_improver_one)
+    process_inferences(INFERENCES, DUMMY_ADVISORY, improver_name="test_improver_one")
     all_objects = get_objects_in_all_tables_used_by_process_inferences()
-    test_improver_two = ImproverModel.objects.create(improver_qualified_name="test_improver_two")
-    test_improver_three = ImproverModel.objects.create(
-        improver_qualified_name="test_improver_three"
-    )
-    process_inferences(INFERENCES, DUMMY_ADVISORY, improver_model_object=test_improver_two)
-    process_inferences(INFERENCES, DUMMY_ADVISORY, improver_model_object=test_improver_three)
+    process_inferences(INFERENCES, DUMMY_ADVISORY, improver_name="test_improver_two")
+    process_inferences(INFERENCES, DUMMY_ADVISORY, improver_name="test_improver_three")
     assert all_objects == get_objects_in_all_tables_used_by_process_inferences()

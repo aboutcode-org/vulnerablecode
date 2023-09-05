@@ -9,7 +9,6 @@
 
 import datetime
 import logging
-from datetime import timezone
 from traceback import format_exc as traceback_format_exc
 from typing import Iterable
 from typing import List
@@ -64,9 +63,9 @@ class ImportRunner:
         logger.info(f"Running improver: {improver.qualified_name}")
         improver_name = improver.qualified_name
         advisories = []
-        for advisory in improver.interesting_advisories.filter(date_imported__is_null=True).exclude(
-            date_imported__exact=""
-        ):
+        for advisory in improver.interesting_advisories:
+            if advisory.date_imported:
+                continue
             logger.info(f"Processing advisory: {advisory!r}")
             try:
                 inferences = improver.get_inferences(advisory_data=advisory.to_advisory_data())
@@ -221,7 +220,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                 cwe_obj.save()
         inferences_processed_count += 1
 
-    advisory.date_imported = datetime.now(timezone.utc)
+    advisory.date_imported = datetime.datetime.now(tz=datetime.timezone.utc)
     advisory.save()
     return inferences_processed_count
 
@@ -300,7 +299,6 @@ def get_or_create_vulnerability_and_aliases(alias_names, vulnerability_id=None, 
     else:
         vulnerability = Vulnerability(summary=summary)
         vulnerability.save()
-        # CHANGELOG: CREATED VULN ON THIS DATE IN VCIO USING ADVISORY SOURCE
 
     if summary and summary != vulnerability.summary:
         logger.warning(

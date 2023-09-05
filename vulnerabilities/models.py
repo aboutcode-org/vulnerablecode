@@ -26,6 +26,7 @@ from django.db.models import Q
 from django.db.models.functions import Length
 from django.db.models.functions import Trim
 from django.urls import reverse
+from django.utils import timezone
 from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin
 from packageurl.contrib.django.models import PackageURLQuerySet
@@ -39,6 +40,7 @@ from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import build_vcid
 from vulnerabilities.utils import remove_qualifiers_and_subpath
+from vulnerablecode import __version__ as vulnerablecode_version
 
 logger = logging.getLogger(__name__)
 
@@ -826,13 +828,13 @@ class Advisory(models.Model):
     )
     weaknesses = models.JSONField(blank=True, default=list, help_text="A list of CWE ids")
     date_collected = models.DateTimeField(help_text="UTC Date on which the advisory was collected")
+    date_imported = models.DateTimeField(help_text="UTC Date on which the advisory was imported")
     created_by = models.CharField(
         max_length=100,
         help_text="Fully qualified name of the importer prefixed with the"
         "module name importing the advisory. Eg:"
         "vulnerabilities.importers.nginx.NginxImporter",
     )
-    improvers = models.ManyToManyField(to="Improver", through="ImproverRelatedAdvisory")
     objects = AdvisoryQuerySet.as_manager()
 
     class Meta:
@@ -911,20 +913,3 @@ class ApiUser(UserModel):
 
     class Meta:
         proxy = True
-
-
-class Improver(models.Model):
-    improver_qualified_name = models.CharField(max_length=1000, blank=True)
-    advisories = models.ManyToManyField(to="Advisory", through="ImproverRelatedAdvisory")
-
-
-class ImproverRelatedAdvisory(models.Model):
-    improver = models.ForeignKey(
-        Improver,
-        on_delete=models.CASCADE,
-    )
-    advisory = models.ForeignKey(Advisory, on_delete=models.CASCADE)
-    date_improved = models.DateTimeField(
-        null=True,
-        help_text="Date on which the advisory was improved by an improver",
-    )

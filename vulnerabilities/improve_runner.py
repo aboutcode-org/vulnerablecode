@@ -39,32 +39,28 @@ class ImproveRunner:
     improver and parsing the returned Inferences into proper database fields
     """
 
-    def __init__(self, improver_class, **kwargs):
-        self.improver = improver_class(**kwargs)
+    def __init__(self, improver_class):
+        self.improver_class = improver_class
 
     def run(self) -> None:
-        improver = self.improver
+        improver = self.improver_class()
         logger.info(f"Running improver: {improver.qualified_name}")
-        improver_name = improver.qualified_name
         for advisory in improver.interesting_advisories:
             logger.info(f"Processing advisory: {advisory!r}")
-            improver_name = improver.qualified_name
             try:
                 inferences = improver.get_inferences(advisory_data=advisory.to_advisory_data())
                 process_inferences(
                     inferences=inferences,
                     advisory=advisory,
-                    improver_model_object=improver_model_object,
+                    improver_model_object=improver.qualified_name,
                 )
             except Exception as e:
                 logger.info(f"Failed to process advisory: {advisory!r} with error {e!r}")
-        logger.info("Finished improving using %s.", improver.__class__.qualified_name)
+        logger.info("Finished improving using %s.", self.improver_class.qualified_name)
 
 
 @transaction.atomic
-def process_inferences(
-    inferences: List[Inference], advisory: Advisory, improver_model_object: ImproverModel
-):
+def process_inferences(inferences: List[Inference], advisory: Advisory, improver_name: str):
     """
     Return number of inferences processed.
     An atomic transaction that updates both the Advisory (e.g. date_improved)
@@ -76,8 +72,6 @@ def process_inferences(
     inferences makes sure that date_improved of advisory is consistent.
     """
     inferences_processed_count = 0
-
-    improver_name = improver_model_object.improver_qualified_name
 
     if not inferences:
         logger.warning(f"Nothing to improve. Source: {improver_name} Advisory id: {advisory.id}")
@@ -156,9 +150,11 @@ def process_inferences(
                 cwe_obj, created = Weakness.objects.get_or_create(cwe_id=cwe_id)
                 cwe_obj.vulnerabilities.add(vulnerability)
                 cwe_obj.save()
-    ImproverRelatedAdvisory.objects.create(
-        improver=improver_model_object, advisory=advisory, date_improved=datetime.now(timezone.utc)
-    )
+        inferences_processed_count += 1
+
+    advisory.date_improved = datetime.now(timezone.utc)
+    advisory.save()
+    return inferences_processed_count
 
 
 def create_valid_vulnerability_reference(url, reference_id=None):

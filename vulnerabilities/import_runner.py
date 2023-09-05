@@ -9,6 +9,7 @@
 
 import datetime
 import logging
+from datetime import timezone
 from traceback import format_exc as traceback_format_exc
 from typing import Iterable
 from typing import List
@@ -219,7 +220,8 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                 cwe_obj.vulnerabilities.add(vulnerability)
                 cwe_obj.save()
         inferences_processed_count += 1
-    advisory.date_imported = datetime.now()
+
+    advisory.date_imported = datetime.now(timezone.utc)
     advisory.save()
     return inferences_processed_count
 

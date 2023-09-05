@@ -14,7 +14,6 @@ from univers.version_range import VersionRange
 
 from vulnerabilities import models
 from vulnerabilities.import_runner import ImportRunner
-from vulnerabilities.import_runner import process_advisories
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
@@ -53,21 +52,21 @@ def test_import_runner(db):
 
 
 def test_process_advisories_with_no_advisory(db):
-    process_advisories([], "")
+    ImportRunner(DummyImporter).process_advisories([], "")
     assert 0 == models.Advisory.objects.count()
 
 
 def test_process_advisories_with_advisories(db):
-    process_advisories(ADVISORY_DATAS, "test_importer")
+    ImportRunner(DummyImporter).process_advisories(ADVISORY_DATAS, "test_importer")
     advisories = models.Advisory.objects.all()
     advisory_datas = [x.to_advisory_data() for x in advisories]
     assert advisory_datas == ADVISORY_DATAS
 
 
 def test_process_advisories_idempotency(db):
-    process_advisories(ADVISORY_DATAS, "test_importer")
-    process_advisories(ADVISORY_DATAS, "test_importer")
-    process_advisories(ADVISORY_DATAS, "test_importer")
+    ImportRunner(DummyImporter).process_advisories(ADVISORY_DATAS, "test_importer")
+    ImportRunner(DummyImporter).process_advisories(ADVISORY_DATAS, "test_importer")
+    ImportRunner(DummyImporter).process_advisories(ADVISORY_DATAS, "test_importer")
     advisories = models.Advisory.objects.all()
     advisory_datas = [x.to_advisory_data() for x in advisories]
     assert advisory_datas == ADVISORY_DATAS
@@ -75,21 +74,21 @@ def test_process_advisories_idempotency(db):
 
 def test_process_advisories_idempotency_with_one_new_advisory(db):
     advisory_datas = ADVISORY_DATAS.copy()
-    process_advisories(advisory_datas, "test_importer")
+    ImportRunner(DummyImporter).process_advisories(advisory_datas, "test_importer")
     advisory_datas.append(
         AdvisoryData(
             aliases=["CVE-2022-1337"],
         )
     )
-    process_advisories(advisory_datas, "test_importer")
+    ImportRunner(DummyImporter).process_advisories(advisory_datas, "test_importer")
     advisories = models.Advisory.objects.all()
     advisory_datas_in_db = [x.to_advisory_data() for x in advisories]
     assert advisory_datas_in_db == advisory_datas
 
 
 def test_process_advisories_idempotency_with_different_importer_names(db):
-    process_advisories(ADVISORY_DATAS, "test_importer_one")
-    process_advisories(ADVISORY_DATAS, "test_importer_two")
+    ImportRunner(DummyImporter).process_advisories(ADVISORY_DATAS, "test_importer_one")
+    ImportRunner(DummyImporter).process_advisories(ADVISORY_DATAS, "test_importer_two")
     advisories = models.Advisory.objects.all()
     advisory_datas = [x.to_advisory_data() for x in advisories]
     assert advisory_datas == ADVISORY_DATAS

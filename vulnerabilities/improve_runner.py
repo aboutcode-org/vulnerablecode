@@ -15,12 +15,9 @@ from typing import List
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
-from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import Alias
-from vulnerabilities.models import Improver as ImproverModel
-from vulnerabilities.models import ImproverRelatedAdvisory
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
@@ -150,6 +147,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                 cwe_obj, created = Weakness.objects.get_or_create(cwe_id=cwe_id)
                 cwe_obj.vulnerabilities.add(vulnerability)
                 cwe_obj.save()
+
         inferences_processed_count += 1
 
     advisory.date_improved = datetime.now(timezone.utc)

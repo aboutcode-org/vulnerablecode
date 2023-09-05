@@ -502,3 +502,30 @@ def is_vulnerable_nginx_version(version, affected_version_range, fixed_versions)
                 return False
         return True
     return False
+
+
+def get_severity_range(severity_list):
+    """
+    >>> get_severity_range({'LOW','7.5','5'})
+    '0.1 - 7.5'
+    >>> get_severity_range({'LOW','Medium'})
+    '0.1 - 6.9'
+    >>> get_severity_range({'9.5','critical'})
+    '9.0 - 10.0'
+    """
+    if len(severity_list) > 1:
+        score_map = {
+            "low": [0.1, 3],
+            "moderate": [4.0, 6.9],
+            "medium": [4.0, 6.9],
+            "high": [7.0, 8.9],
+            "critical": [9.0, 10.0],
+        }
+
+        score_list = []
+        for score in severity_list:
+            try:
+                score_list.append(float(score))
+            except ValueError:
+                score_list.extend(score_map[score.lower()])
+        return f"{min(score_list)} - {max(score_list)}"

@@ -22,6 +22,7 @@ IMPROVERS_REGISTRY = [
     valid_versions.IstioImprover,
     valid_versions.DebianOvalImprover,
     valid_versions.UbuntuOvalImprover,
+    valid_versions.OSSFuzzImprover,
 ]
 
 IMPROVERS_REGISTRY = {x.qualified_name: x for x in IMPROVERS_REGISTRY}

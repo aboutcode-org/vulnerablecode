@@ -47,7 +47,7 @@ VulnerableCode Package Details - {{ package.purl }}
                         <tbody>
                             <tr>
                                 <td class="two-col-left">
-                                    Non-vulnerable version
+                                    Next non-vulnerable version
                                 </td>
                                 <td class="two-col-right">
                                     {% if fixed_package_details.closest_non_vulnerable.version %}
@@ -57,21 +57,11 @@ VulnerableCode Package Details - {{ package.purl }}
                                     {% endif %}
                                 </td>
                             </tr>
-                            <!-- <tr>
-                                <td class="two-col-left">
-                                    Non-vulnerable version <br />(non-breaking)
-                                </td>
-                                <td class="two-col-right">
-                                    <span style="color: #ff0000;">[to come]</span>
-                                </td>
-                            </tr> -->
                             <tr>
                                 <td class="two-col-left">
                                     Latest non-vulnerable version
                                 </td>
                                 <td class="two-col-right">
-                                    <!-- <a href="/packages/{{ fixed_package_details.latest_non_vulnerable }}?search={{ fixed_package_details.latest_non_vulnerable }}" target="_self">{{ fixed_package_details.latest_non_vulnerable.version }}</a> -->
-
                                     {% if fixed_package_details.latest_non_vulnerable.version %}
                                         <a href="/packages/{{ fixed_package_details.latest_non_vulnerable }}?search={{ fixed_package_details.latest_non_vulnerable }}" target="_self">{{ fixed_package_details.latest_non_vulnerable.version }}</a>
                                     {% else %}
@@ -79,14 +69,6 @@ VulnerableCode Package Details - {{ package.purl }}
                                     {% endif %}
                                 </td>
                             </tr>
-                            <!-- <tr>
-                                <td class="two-col-left">
-                                    Latest non-vulnerable version <br />(non-breaking)
-                                </td>
-                                <td class="two-col-right">
-                                    <span style="color: #ff0000;">[to come]</span>
-                                </td>
-                            </tr> -->
                         </tbody>
                     </table>
                 </div>
@@ -184,7 +166,6 @@ VulnerableCode Package Details - {{ package.purl }}
                         {% empty %}
                             <tr>
                                 <td colspan="3">
-                                    <!-- This package is not known to be affected by vulnerabilities. -->
                                     <span style="background-color: #b3ffb3;">This package is not known to be affected by vulnerabilities.</span>
                                 </td>
                             </tr>

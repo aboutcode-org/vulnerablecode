@@ -631,36 +631,31 @@ class Package(PackageURLMixin):
         """
         return reverse("package_details", args=[self.purl])
 
-    def get_fixed_packages(self, package):
+    def get_fixed_packages(self, package, fix=True):
         """
-        Return a queryset of all packages that fix a vulnerability with
-        same type, namespace, name, subpath and qualifiers of the `package`
+        With fix=True, return a queryset of all packages that fix a vulnerability and have the
+        same type, namespace, name, subpath and qualifiers as the `package`.
+        With fix=False, return a queryset of all packages that have the same type, namespace,
+        name, subpath and qualifiers as the `package`, whether or not they fix any vulnerability.
         """
-        return Package.objects.filter(
-            name=package.name,
-            namespace=package.namespace,
-            type=package.type,
-            qualifiers=package.qualifiers,
-            subpath=package.subpath,
-            packagerelatedvulnerability__fix=True,
-        ).distinct()
+        filter_dict = {
+            "name": package.name,
+            "namespace": package.namespace,
+            "type": package.type,
+            "qualifiers": package.qualifiers,
+            "subpath": package.subpath,
+        }
 
-    def get_sibling_packages(self, package):
-        """
-        Return a queryset of all packages with the same type, namespace, name, subpath and
-        qualifiers as the target package, whether or not the 'sibling packages' fix any vulnerability.
-        Identical to get_fixed_packages() above except for the removal of 'packagerelatedvulnerability__fix=True,'.
-        """
-        return Package.objects.filter(
-            name=package.name,
-            namespace=package.namespace,
-            type=package.type,
-            qualifiers=package.qualifiers,
-            subpath=package.subpath,
-        ).distinct()
+        if fix:
+            filter_dict["packagerelatedvulnerability__fix"] = True
+
+        return Package.objects.filter(**filter_dict).distinct()
 
     def sort_by_version(self, packages_to_sort):
-        # Incoming is a list of <class 'vulnerabilities.models.Package'> objects.
+        """
+        Use the univers version_class to sort the incoming list of vulnerabilities.models.Package
+        objects.
+        """
         univers_version = RANGE_CLASS_BY_SCHEMES[packages_to_sort[0].type].version_class
         return sorted(
             packages_to_sort,
@@ -670,110 +665,44 @@ class Package(PackageURLMixin):
     @property
     def fixed_package_details(self):
         """
-        Find and report all fixed by packages (and certain related versions) for each vulnerability in
-        each affected package.  Report packages with no vulnerabilities as well.
+        For a given package, report the closest subsequent fixed by version for each of that
+        package's vulnerabilities as well as the closest non-vulnerable version and the most recent
+        non-vulnerable version.
         """
-        # Get all fixed packages that match the target package (type etc.), regardless of fixed vuln.
-        matching_fixed_packages = self.get_fixed_packages(package=self)
-
-        # Get a list of the vulnerabilities that affect the current package (i.e., self).
+        fixed_packages = self.get_fixed_packages(package=self, fix=True)
         qs = self.vulnerabilities.filter(packagerelatedvulnerability__fix=False)
-
-        all_sibling_packages = self.get_sibling_packages(package=self)
+        all_sibling_packages = self.get_fixed_packages(package=self, fix=False)
 
         non_vuln_sibs = []
         for sib in all_sibling_packages:
             if sib.is_vulnerable is False:
                 non_vuln_sibs.append(sib)
 
-        # Get the univers version_class for the purl, i.e., the Package the user has searched for.
         univers_version_class = RANGE_CLASS_BY_SCHEMES[self.type].version_class
-        # print("\nunivers_version_class = {}".format(univers_version_class))
-
-        # =======================================================
-        # Get the univers version for the purl.
-        purl_univers_version = univers_version_class(PackageURL.from_string(self.purl).version)
-        # print("\n>>> purl_univers_version = {}\n".format(purl_univers_version))
-        # 2023-09-04 Monday 18:23:51.  Is the version just a string I can split?
-        # print("\n>>> type(purl_univers_version) = {}\n".format(type(purl_univers_version)))
-        # print(
-        #     "\n>>> type(purl_univers_version.__str__()) = {}\n".format(
-        #         type(purl_univers_version.__str__())
-        #     )
-        # )
-        # print(
-        #     "\n>>> purl_univers_version.__str__().split('.')[0] = {}\n".format(
-        #         purl_univers_version.__str__().split(".")[0]
-        #     )
-        # )
-
-        # Convert the univers version for the purl to a string, split the string at each '.', grab the first of these, and convert it to an int -- this is the major version.
-        purl_univers_version_major_int = int(purl_univers_version.__str__().split(".")[0])
-        # print("\n>>> purl_univers_version_major_int = {}\n".format(purl_univers_version_major_int))
-        # print(
-        #     "\n>>> type(purl_univers_version_major_int) = {}\n".format(
-        #         type(purl_univers_version_major_int)
-        #     )
-        # )
-
-        # Create a list for the later non-vuln siblings.
         later_non_vuln_sibs = []
-        # Each non_vuln_sib is a Package.
+
         for non_vuln_sib in non_vuln_sibs:
-
-            # print("\n### type(non_vuln_sib) = {}\n".format(type(non_vuln_sib)))
-
-            # Get the univers version for the non_vuln_sib.
             non_vuln_sib_univers_version = univers_version_class(
                 PackageURL.from_string(non_vuln_sib.purl).version
             )
 
-            # print("\n### non_vuln_sib_univers_version = {}\n".format(non_vuln_sib_univers_version))
-
-            # Convert the univers version for the purl to a string, split the string at each '.', grab the first of these, and convert it to an int -- this is the major version.
-            non_vuln_sib_univers_version_major_int = int(
-                non_vuln_sib_univers_version.__str__().split(".")[0]
-            )
-
-            # print(
-            #     "\n### non_vuln_sib_univers_version_major_int = {}\n".format(
-            #         non_vuln_sib_univers_version_major_int
-            #     )
-            # )
-
-            # Add it to the 'later_non_vuln_sibs' list if the major versions are the same.
-            # if univers_version_class(non_vuln_sib.version) > univers_version_class(self.version):
-            if (
-                univers_version_class(non_vuln_sib.version) > univers_version_class(self.version)
-                and purl_univers_version_major_int == non_vuln_sib_univers_version_major_int
-            ):
+            if univers_version_class(non_vuln_sib.version) > univers_version_class(self.version):
                 later_non_vuln_sibs.append(non_vuln_sib)
-
-        # Take the list of vulnerabilities affecting the current package, retrieve a list of the fixed
-        # packages for each (self.get_fixed_packages()), and assign the result to a custom attribute, 'matching_fixed_packages'.
-        # Ex: qs[0].matching_fixed_packages returns the fixed package(s) for the 1st vulnerability.
 
         qs = qs.prefetch_related(
             Prefetch(
                 "packages",
-                queryset=matching_fixed_packages,
-                to_attr="matching_fixed_packages",
+                queryset=fixed_packages,
+                to_attr="fixed_packages",
             )
         )
 
         purl_dict = {}
-        # Pass a PackageURL object to the Jinja2 template via the context dictionary.
         purl_dict["purl"] = PackageURL.from_string(self.purl)
-        # print("\npurl = {}".format(purl_dict["purl"]))
 
         closest_non_vulnerable_sib = ""
         latest_non_vulnerable_sib = ""
 
-        # closest_non_vulnerable_sib_non_breaking = ""
-        # latest_non_vulnerable_sib_non_breaking = ""
-
-        # We've already filled later_non_vuln_sibs with all non_vuln sibs with the same major
-        # version as the purl the user is searching for (i.e., self) -- but this could be an empty list.
         if len(later_non_vuln_sibs) > 0:
             closest_non_vulnerable_sib = self.sort_by_version(later_non_vuln_sibs)[0]
             latest_non_vulnerable_sib = self.sort_by_version(later_non_vuln_sibs)[-1]
@@ -785,136 +714,66 @@ class Package(PackageURLMixin):
                 latest_non_vulnerable_sib.purl
             )
 
-            # print("\nlater_non_vuln_sibs = {}\n".format(later_non_vuln_sibs))
-
-            # later_non_vuln_sibs_non_breaking = []
-            # for non_vuln_sib in later_non_vuln_sibs:
-            #     print("\nnon_vuln_sib = {}\n".format(non_vuln_sib))
-            #     print("\ntype(non_vuln_sib) = {}\n".format(type(non_vuln_sib)))
-
         else:
-            # closest_non_vulnerable_sib = ""
-            # latest_non_vulnerable_sib = ""
 
             purl_dict["closest_non_vulnerable"] = None
             purl_dict["latest_non_vulnerable"] = None
-        # ========================================================
-        # if len(later_non_vuln_sibs) > 0:
-        #     purl_dict["closest_non_vulnerable"] = PackageURL.from_string(
-        #         closest_non_vulnerable_sib.purl
-        #     )
-        #     purl_dict["latest_non_vulnerable"] = PackageURL.from_string(
-        #         latest_non_vulnerable_sib.purl
-        #     )
-        # else:
-        #     purl_dict["closest_non_vulnerable"] = None
-        #     purl_dict["latest_non_vulnerable"] = None
-        # ========================================================
-
-        # No longer need this.
-        # purl_univers_version_test = univers_version_class(purl_dict["purl"].version)
-        # print("\npurl_univers_version_test = {}".format(purl_univers_version_test))
 
         purl_dict.update({"vulnerabilities": []})
 
-        # For each vulnerability affecting the current Package...
         for vuln in qs:
-            later_matching_fixed_packages = []
-            # Pass a Vulnerability object.
             purl_dict["vulnerabilities"].append({"vulnerability": vuln})
 
-            # Using the qs prefetch, get a <class 'list'> of all the matching fixed packages for this vulnerability, all major versions to start with.
-            vuln_matching_fixed_packages = vuln.matching_fixed_packages
-            # print(
-            #     "\n??? type(vuln_matching_fixed_packages) = {}\n".format(
-            #         type(vuln_matching_fixed_packages)
-            #     )
-            # )
             closest_fixed_package = ""
-
-            # ALERT: 2023-09-05 Tuesday 17:42:58.  When refreshing a Package details page, I got an error: local variable 'sort_fixed_by_packages_by_version' referenced before assignment (referring to the definition of closest_fixed_package below)
-            # ALERT: Do I need to define it here?
+            closest_fixed_package_vulns = ""
+            later_fixed_packages = []
             sort_fixed_by_packages_by_version = []
+            vuln_fixed_packages = vuln.fixed_packages
 
-            if len(vuln_matching_fixed_packages) > 0:
-                for fixed_pkg in vuln_matching_fixed_packages:
-                    # fixed_pkg is a 'vulnerabilities.models.Package'
-                    # print("\n!!! type(fixed_pkg) = {}\n".format(type(fixed_pkg)))
+            if len(vuln_fixed_packages) > 0:
+                for fixed_pkg in vuln_fixed_packages:
 
-                    # Get the univers version for the fixed_pkg.
                     fixed_pkg_univers_version = univers_version_class(
                         PackageURL.from_string(fixed_pkg.purl).version
                     )
 
-                    # Convert the univers version for the fixed_pkg to a string, split the string at each '.', grab the first of these, and convert it to an int -- this is the major version.
-                    fixed_pkg_univers_version_major_int = int(
-                        fixed_pkg_univers_version.__str__().split(".")[0]
-                    )
+                    if fixed_pkg in fixed_packages and univers_version_class(
+                        fixed_pkg.version
+                    ) > univers_version_class(self.version):
 
-                    # Add it to the 'later_non_vuln_sibs' list if the major versions are the same.
-                    if (
-                        fixed_pkg in matching_fixed_packages
-                        and univers_version_class(fixed_pkg.version)
-                        > univers_version_class(self.version)
-                        and purl_univers_version_major_int == fixed_pkg_univers_version_major_int
-                    ):
-                        later_matching_fixed_packages.append(fixed_pkg)
+                        later_fixed_packages.append(fixed_pkg)
 
-                # We already identified a closest fixed package and are looking for a later fixed package.
-                if later_matching_fixed_packages:
-                    sort_fixed_by_packages_by_version = self.sort_by_version(
-                        later_matching_fixed_packages
-                    )
-                    # print(
-                    #     "\nsort_fixed_by_packages_by_version = {}\n".format(
-                    #         sort_fixed_by_packages_by_version
-                    #     )
-                    # )
-
-                    # ALERT: 2023-09-05 Tuesday 17:53:54.  I think these 2 lines need to be indented to be inside the if condition above.
+                if later_fixed_packages:
+                    sort_fixed_by_packages_by_version = self.sort_by_version(later_fixed_packages)
                     closest_fixed_package = sort_fixed_by_packages_by_version[0]
                     closest_fixed_package_vulns = closest_fixed_package.affected_by
-
-                # closest_fixed_package = sort_fixed_by_packages_by_version[0]
-                # closest_fixed_package_vulns = closest_fixed_package.affected_by
+                    print(
+                        "\nclosest_fixed_package_vulns = {}\n".format(closest_fixed_package_vulns)
+                    )
+                    print(
+                        "\ntype(closest_fixed_package_vulns) = {}\n".format(
+                            type(closest_fixed_package_vulns)
+                        )
+                    )
 
             else:
-                # ALERT: 2023-09-05 Tuesday 18:03:46.  I don't think we want this string but rather something like None, for the if condition below.
-                # closest_fixed_package = "There are no reported fixed packages."
                 closest_fixed_package = None
+                closest_fixed_package_vulns = None
 
             for dict_vuln in purl_dict["vulnerabilities"]:
                 if dict_vuln["vulnerability"] == vuln:
 
-                    # ALERT: 2023-09-05 Tuesday 17:58:24.  This is not the correct test because vuln_matching_fixed_packages might contain no major version identical to the purl major version!  Instead we want to check whether the closest_fixed_package exists, which we defined above as closest_fixed_package = sort_fixed_by_packages_by_version[0]
-                    # if len(vuln_matching_fixed_packages) > 0:
                     if closest_fixed_package:
                         dict_vuln["fixed_by_purl"] = PackageURL.from_string(
                             closest_fixed_package.purl
                         )
 
-                        # ALERT: 2023-09-05 Tuesday 18:00:09.  I expect we'll also see an error here and will need to define closest_fixed_package_vulns higher above than where it is currently defined.
                         dict_vuln["fixed_by_purl_vulnerabilities"] = [
                             fixed_pkg_vuln for fixed_pkg_vuln in closest_fixed_package_vulns
                         ]
                     else:
                         dict_vuln["fixed_by_purl"] = None
                         dict_vuln["fixed_by_purl_vulnerabilities"] = []
-
-                    # 2023-09-05 Tuesday 15:26:59.  Move this chunk up to just under the start of the dict.
-                    # # 2023-08-30 Wednesday 11:29:34.  Will this handle the error when clicking from the Vulnerability details page Fixed by packages tab -- 'str' object has no attribute 'purl'?  Yes!
-                    # # Having fixed this, we also need to consolidate this if with the similar if above.
-
-                    # if len(later_non_vuln_sibs) > 0:
-                    #     purl_dict["closest_non_vulnerable"] = PackageURL.from_string(
-                    #         closest_non_vulnerable_sib.purl
-                    #     )
-                    #     purl_dict["latest_non_vulnerable"] = PackageURL.from_string(
-                    #         latest_non_vulnerable_sib.purl
-                    #     )
-                    # else:
-                    #     purl_dict["closest_non_vulnerable"] = None
-                    #     purl_dict["latest_non_vulnerable"] = None
 
         # Temporary print output during dev/testing.
         from pprint import pprint

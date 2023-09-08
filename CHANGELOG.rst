@@ -2,6 +2,14 @@ Release notes
 =============
 
 
+Next Release
+------------
+
+- We fixed a text-overflow issue in the Essentials tab of the Vulnerability details template.
+- We added clickable links to the Essentials tab of the Vulnerability details template that enable
+  the user to navigate to the Fixed by packages tab and the Affected packages tab.
+
+
 Version v33.4.0
 ----------------
 
@@ -12,21 +20,21 @@ Version v33.4.0
 Version v33.3.0
 ----------------
 
-- We filtered out the weakness that are not presented in the 
-  cwe2.database before passing them into the vulnerability details view. 
+- We filtered out the weakness that are not presented in the
+  cwe2.database before passing them into the vulnerability details view.
 
 
 Version v33.2.0
 -----------------
 
-- We fixed NVD importer to import the latest data by adding weakness 
+- We fixed NVD importer to import the latest data by adding weakness
   in unique content ID for advisories.
 
 
 Version v33.1.0
 -----------------
 
-- We have paginated the default improver and added keyboard interrupt support for import and improve processes. 
+- We have paginated the default improver and added keyboard interrupt support for import and improve processes.
 - We bumped PyYaml to 6.0.1 and saneyaml to 0.6.0 and dropped docker-compose.
 
 
@@ -56,9 +64,9 @@ Version v32.0.0rc4
 -------------------
 
 - We added loading of env for GitHub datasource in vulntotal.
-- We fixed import process in github importer in vulnerablecode reported here 
+- We fixed import process in github importer in vulnerablecode reported here
   https://github.com/nexB/vulnerablecode/issues/1142.
-- We added an improver to get all package versions 
+- We added an improver to get all package versions
   of all ecosystems for a range of affected packages.
 - We added documentation for configuring throttling rate for API endpoints.
 - We fixed kbmsr2019 importer.

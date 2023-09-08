@@ -24,6 +24,7 @@ from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import VulnerabilitySearchForm
 from vulnerabilities.models import Weakness
+from vulnerabilities.utils import get_severity_range
 from vulnerablecode.settings import env
 
 PAGE_SIZE = 20
@@ -127,6 +128,9 @@ class VulnerabilityDetails(DetailView):
                 "vulnerability": self.object,
                 "vulnerability_search_form": VulnerabilitySearchForm(self.request.GET),
                 "severities": list(self.object.severities),
+                "severity_score_range": get_severity_range(
+                    {s.value for s in self.object.severities}
+                ),
                 "references": self.object.references.all(),
                 "aliases": self.object.aliases.all(),
                 "affected_packages": self.object.affected_packages.all(),

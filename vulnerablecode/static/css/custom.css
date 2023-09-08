@@ -185,16 +185,14 @@ code {
     border-color: #dbdbdb;
 }
 
-.table td {
+/* 2023-08-28 Monday 14:55:42.  Is this still needed or does wrap-strings take its place?  Keep eyes peeled for any odd <td> displays. */
+/* .table td {
     word-wrap: break-word;
-    /* 8/24/2022 Wednesday 4:56:57 PM.  We need this for just 1 table as I recall, displaying some sort of data with few/no word breaks
-    but this messes up the look of columns that need a word-break wrap
-    TODO: identify and create separate CSS class for that table */
-    /* word-break: break-all; */
-}
+} */
+
 
 .wrap-strings {
-    word-break: break-all;
+    word-break: break-word;
 }
 
 .two-col-left {

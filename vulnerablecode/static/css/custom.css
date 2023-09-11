@@ -410,3 +410,19 @@ span.tag.custom {
 .non-vuln .table th {
     border: solid 1px #dbdbdb;
 }
+
+/* Floating container to display the PURL on the Package details page as the user scrolls down. */
+.floating-purl {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    margin-bottom: 0px;
+}
+
+.floating-purl .table td,
+.floating-purl .table tbody tr:last-child td,
+.floating-purl .table th {
+    border: solid 1px #dbdbdb;
+    background-color: #ffffff;
+}

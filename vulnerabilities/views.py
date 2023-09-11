@@ -134,6 +134,7 @@ class VulnerabilityDetails(DetailView):
                 "affected_packages": self.object.affected_packages.all(),
                 "fixed_by_packages": self.object.fixed_by_packages.all(),
                 "weaknesses": weaknesses_present_in_db,
+                "is_rejected": "Yes" if self.object.is_rejected else "No",
             }
         )
         return context

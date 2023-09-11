@@ -131,6 +131,7 @@ class CveItem:
         for desc in get_item(self.cve_item, "cve", "description", "description_data") or []:
             if "** REJECT ** DO NOT USE THIS CANDIDATE NUMBER." in desc.get("value"):
                 return True
+        return False
 
     @property
     def summary(self):

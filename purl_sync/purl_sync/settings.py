@@ -14,7 +14,7 @@ if not Path(ENV_FILE).exists():
 env = environ.Env()
 environ.Env.read_env(str(ENV_FILE))
 
-DOMAIN = env.str("DOMAIN", "127.0.0.1")
+PURL_SYNC_DOMAIN = env.str("PURL_SYNC_DOMAIN", "127.0.0.1:8000")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

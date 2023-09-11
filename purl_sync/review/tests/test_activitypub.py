@@ -10,7 +10,7 @@ import json
 
 import pytest
 
-from purl_sync.settings import DOMAIN
+from purl_sync.settings import PURL_SYNC_DOMAIN
 from review.activitypub import AP_CONTEXT
 from review.activitypub import Activity
 from review.activitypub import create_activity_obj
@@ -49,7 +49,9 @@ def test_person_create_note(person):
     create_activity = activity.handler()
     assert Note.objects.count() == 1
     note = Note.objects.get(acct=person.acct, content="we should fix this purl")
-    assert json.loads(create_activity.content) == {"Location": f"https://127.0.0.1/notes/{note.id}"}
+    assert json.loads(create_activity.content) == {
+        "Location": f"https://127.0.0.1:8000/notes/{note.id}"
+    }
     assert create_activity.status_code == 201
 
 
@@ -81,7 +83,7 @@ def test_person_create_review(person, vulnerability, repo):
         status=0,
     )
     assert json.loads(create_activity.content) == {
-        "Location": f"https://127.0.0.1/reviews/{review.id}/"
+        "Location": f"https://127.0.0.1:8000/reviews/{review.id}/"
     }
     assert create_activity.status_code == 201
 
@@ -102,7 +104,9 @@ def test_purl_create_note(purl, service):
     activity = create_activity_obj(payload)
     create_activity = activity.handler()
     note = Note.objects.get(acct=purl.acct, content="we should fix this purl")
-    assert json.loads(create_activity.content) == {"Location": f"https://127.0.0.1/notes/{note.id}"}
+    assert json.loads(create_activity.content) == {
+        "Location": f"https://127.0.0.1:8000/notes/{note.id}"
+    }
     assert create_activity.status_code == 201
 
 
@@ -127,7 +131,7 @@ def test_service_create_repo(service):
         name="vulnerablecode", url="https://github.com/nexB/vulnerablecode-data"
     )
     assert json.loads(create_activity.content) == {
-        "Location": f"https://127.0.0.1/repository/{repo.id}/"
+        "Location": f"https://127.0.0.1:8000/repository/{repo.id}/"
     }
     assert create_activity.status_code == 201
 

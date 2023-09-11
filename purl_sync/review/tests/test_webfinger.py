@@ -3,7 +3,7 @@ import json
 import pytest
 from django.test import Client
 
-from purl_sync.settings import DOMAIN
+from purl_sync.settings import PURL_SYNC_DOMAIN
 
 from ..utils import generate_webfinger
 from .test_models import person
@@ -35,12 +35,12 @@ def test_webfinger(person, service, purl):
             {
                 "rel": "https://webfinger.net/rel/profile-page",
                 "type": "text/html",
-                "href": f"https://{DOMAIN}/users/@{person.user.username}",
+                "href": f"https://{PURL_SYNC_DOMAIN}/users/@{person.user.username}",
             },
             {
                 "rel": "self",
                 "type": "application/activity+json",
-                "href": f"https://{DOMAIN}/api/v0/users/@{person.user.username}",
+                "href": f"https://{PURL_SYNC_DOMAIN}/api/v0/users/@{person.user.username}",
             },
         ],
     }
@@ -51,12 +51,12 @@ def test_webfinger(person, service, purl):
             {
                 "rel": "https://webfinger.net/rel/profile-page",
                 "type": "text/html",
-                "href": f"https://{DOMAIN}/users/@{service.user.username}",
+                "href": f"https://{PURL_SYNC_DOMAIN}/users/@{service.user.username}",
             },
             {
                 "rel": "self",
                 "type": "application/activity+json",
-                "href": f"https://{DOMAIN}/api/v0/users/@{service.user.username}",
+                "href": f"https://{PURL_SYNC_DOMAIN}/api/v0/users/@{service.user.username}",
             },
         ],
     }
@@ -67,12 +67,12 @@ def test_webfinger(person, service, purl):
             {
                 "rel": "https://webfinger.net/rel/profile-page",
                 "type": "text/html",
-                "href": f"https://{DOMAIN}/purls/@{ purl.string }",
+                "href": f"https://{PURL_SYNC_DOMAIN}/purls/@{ purl.string }",
             },
             {
                 "rel": "self",
                 "type": "application/activity+json",
-                "href": f"https://{DOMAIN}/api/v0/purls/@{ purl.string }",
+                "href": f"https://{PURL_SYNC_DOMAIN}/api/v0/purls/@{ purl.string }",
             },
         ],
     }

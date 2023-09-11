@@ -29,7 +29,7 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import FormMixin
 
 from purl_sync.settings import AP_CONTENT_TYPE
-from purl_sync.settings import DOMAIN
+from purl_sync.settings import PURL_SYNC_DOMAIN
 from purl_sync.settings import GIT_PATH
 from purl_sync.settings import env
 from review.forms import PersonSignUpForm, SubscribePurlForm
@@ -71,7 +71,7 @@ class WebfingerView(View):
 
         obj, domain = parse_webfinger(resource)
 
-        if DOMAIN != domain or not obj:
+        if PURL_SYNC_DOMAIN != domain or not obj:
             return HttpResponseBadRequest("Invalid domain")
 
         if obj.startswith("pkg:"):
@@ -87,7 +87,7 @@ class WebfingerView(View):
                 content_type="application/jrd+json",
                 context={
                     "resource": resource,
-                    "domain": DOMAIN,
+                    "domain": PURL_SYNC_DOMAIN,
                     "purl_string": purl.string,
                 },
             )
@@ -104,7 +104,7 @@ class WebfingerView(View):
                 content_type="application/jrd+json",
                 context={
                     "resource": resource,
-                    "domain": DOMAIN,
+                    "domain": PURL_SYNC_DOMAIN,
                     "username": user.username,
                 },
             )
@@ -578,13 +578,14 @@ class UserOutbox(View):
     @csrf_exempt
     def post(self, request, *args, **kwargs):
         """You can POST to your outbox to send messages to the world (client-to-server)"""
-        if request.user.is_authenticated and request.user.username == kwargs["username"]:
-            activity = create_activity_obj(request.body)
-            HttpSignature.signed_request(activity.object.inbox, request.body, PURL_SYNC_PRIVATE_KEY, actor.key_id)
-            if activity:
-                return activity.handler()
-            else:
-                return HttpResponseBadRequest("Invalid message")
+        # if request.user.is_authenticated and request.user.username == kwargs["username"]:
+        #     activity = create_activity_obj(request.body)
+        #     actor = None
+        #     HttpSignature.signed_request(activity.object.inbox, request.body, PURL_SYNC_PRIVATE_KEY, actor.key_id)
+        #     if activity:
+        #         return activity.handler()
+        #     else:
+        #         return HttpResponseBadRequest("Invalid message")
 
 
 @method_decorator(has_valid_header, name="dispatch")

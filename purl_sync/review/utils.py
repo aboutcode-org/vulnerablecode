@@ -19,9 +19,7 @@ from django.urls import reverse
 from git.repo.base import Repo
 from packageurl import PackageURL
 
-from purl_sync.settings import DOMAIN
-
-
+from purl_sync.settings import PURL_SYNC_DOMAIN
 
 
 def parse_webfinger(subject):
@@ -45,8 +43,8 @@ def parse_webfinger(subject):
         return tuple(subject.split("@"))
 
 
-def generate_webfinger(username):
-    return username + "@" + DOMAIN
+def generate_webfinger(username, domain=PURL_SYNC_DOMAIN):
+    return username + "@" + domain
 
 
 def clone_git_repo(repo_path, repo_name, repo_url):
@@ -59,7 +57,7 @@ def clone_git_repo(repo_path, repo_name, repo_url):
 
 def full_reverse(page_name, *args, **kwargs):
     web_page = reverse(page_name, args=args, kwargs=kwargs)
-    return f'{"https://"}{DOMAIN}{web_page}'
+    return f'{"https://"}{PURL_SYNC_DOMAIN}{web_page}'
 
 
 def full_resolve(full_path):
@@ -90,9 +88,19 @@ def ap_collection(objects):
     }
 
 
-def fetch_actor(acct):
-    user, domain = parse_webfinger(acct)
-    url = f"https://{domain}/.well-known/webfinger?resource={acct}"
+def webfinger_actor(domain, user):
+    acct = generate_webfinger(user, domain)
+    url = f"https://{domain}/.well-known/webfinger?resource=acct:{acct}"
+    headers = {"User-Agent": ""}  # TODO
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        return response.json()["links"][1]["href"]  # TODO please check if type = "application/activity+json"
+    else:
+        raise Exception(f"Failed to fetch the actor {response.status_code} {response.content}")
+
+
+def fetch_actor(url):
     headers = {"User-Agent": ""}  # TODO
     response = requests.get(url, headers=headers)
 
@@ -100,3 +108,9 @@ def fetch_actor(acct):
         return response.json()
     else:
         raise Exception(f"Failed to fetch the actor {response.status_code} {response.content}")
+
+
+def file_data(file_name):
+    with open(file_name) as file:
+        data = file.read()
+        return json.loads(data)

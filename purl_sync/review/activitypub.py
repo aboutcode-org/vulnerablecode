@@ -12,6 +12,7 @@ from dataclasses import asdict
 from dataclasses import dataclass
 from typing import Literal
 from typing import Optional
+from urllib.parse import urlparse
 
 from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest
@@ -19,8 +20,8 @@ from django.http import HttpResponseForbidden
 from django.http import JsonResponse
 from git import Repo
 
-from purl_sync.settings import GIT_PATH
-from review.models import Follow
+from purl_sync.settings import GIT_PATH, PURL_SYNC_DOMAIN
+from review.models import Follow, RemoteActor
 from review.models import Note
 from review.models import Person
 from review.models import Purl
@@ -28,8 +29,9 @@ from review.models import Repository
 from review.models import Review
 from review.models import Service
 from review.models import Vulnerability
-from review.utils import full_resolve
+from review.utils import full_resolve, fetch_actor, webfinger_actor
 from review.utils import full_reverse
+from django.urls import resolve
 
 CONTENT_TYPE = "application/activity+json"
 ACTOR_TYPES = ["Person", "Purl"]
@@ -61,6 +63,15 @@ OBJ_Map = {
     "Review": "review-page",
     "Repository": "repository-page",
     "Vulnerability": "vulnerability-page",
+}
+
+URL_MAPPER = {
+    "user-ap-profile": "username",
+    "purl-ap-profile": "purl_string",
+    "review-page": "uuid",
+    "repository-page": "uuid",
+    "note-page": "uuid",
+    "vulnerability-page": "uuid",
 }
 
 
@@ -143,17 +154,22 @@ class ApActor:
     def get(self):
         obj_id, page_name = full_resolve(self.id)
         if page_name == "purl-ap-profile":
-            return Purl.objects.get(string=obj_id["purl_string"])
+            try:
+                purl = Purl.objects.get(string=obj_id["purl_string"])
+            except Purl.DoesNotExist:
+                purl = None
+            return purl
+
         elif page_name == "user-ap-profile":
-            user = User.objects.get(username=obj_id["username"])
-            if hasattr(user, "person"):
-                return user.person
-            elif hasattr(user, "service"):
-                return user.service
-            else:
-                raise AttributeError("Invalid actor type")
-        else:
-            raise AttributeError("Invalid actor")
+            try:
+                user = User.objects.get(username=obj_id["username"])
+                if hasattr(user, "person"):
+                    return user.person
+                elif hasattr(user, "service"):
+                    return user.service
+            except User.DoesNotExist:
+                user = None
+        return None
 
 
 @dataclass
@@ -172,19 +188,10 @@ class ApObject:
     vulnerability: str = None
     published: str = None
 
-    URL_MAPPER = {
-        "user-ap-profile": "username",
-        "purl-ap-profile": "purl_string",
-        "review-page": "uuid",
-        "repository-page": "uuid",
-        "note-page": "uuid",
-        "vulnerability-page": "uuid",
-    }
-
     def get_object(self):
         if self.id:
             obj_id, page_name = full_resolve(self.id)
-            identifier = self.URL_MAPPER[page_name]
+            identifier = URL_MAPPER[page_name]
             return OBJECT_TYPES[self.type].objects.get(id=obj_id[identifier])
         raise ValueError("Invalid object id")
 
@@ -197,18 +204,52 @@ class FollowActivity:
 
     def save(self):
         actor = self.actor.get()
-        if not actor:
-            return self.failed_ap_rs()
-        obj_id, page_name = full_resolve(self.object.id)
-        if type(actor) is Person:
-            purl = Purl.objects.get(string=obj_id["purl_string"])
-            new_obj, created = Follow.objects.get_or_create(person_id=actor.id, purl=purl)
+        parser = urlparse(self.actor.id)
+        if not actor and parser.netloc != PURL_SYNC_DOMAIN:
+            # remote person ( send a remote follow request if created and assume the request was accepted )
+            resolver = resolve(parser.path)
+            identity = URL_MAPPER[resolver.url_name]
+            url = webfinger_actor(parser.netloc, resolver.kwargs[identity])
+            actor_details = fetch_actor(url)
+            remote_actor, created = RemoteActor.objects.get_or_create(
+                username=actor_details["name"], url=actor_details["id"]
+            )
+            actor, created = Person.objects.get_or_create(remote_actor=remote_actor)
+
+        # --------------------------------------------
+        parser = urlparse(self.object.id)
+        resolver = resolve(parser.path)
+        obj_id, page_name = resolver.kwargs, resolver.url_name
+        identity = URL_MAPPER[page_name]
+        if parser.netloc == PURL_SYNC_DOMAIN:
+            # local purl
+            try:
+                purl = Purl.objects.get(string=obj_id["purl_string"])
+            except Purl.DoesNotExist:
+                purl = None
         else:
-            return self.failed_ap_rs()
+            # remote purl
+            url = webfinger_actor(parser.netloc, resolver.kwargs[identity])
+            purl_details = fetch_actor(url)
+            remote_actor, created = RemoteActor.objects.get_or_create(
+                username=purl_details["name"], url=purl_details["id"]
+            )
+            purl, created = Purl.objects.get_or_create(
+                remote_actor=remote_actor, string=purl_details["string"]
+            )
+        # TODO ( send a remote follow request if created and assume the request was accepted )
+        #  if actor or purl is remote
+
+        if purl and actor:
+            Follow.objects.get_or_create(person=actor, purl=purl)
+            return self.succeeded_ap_rs()
+
+        return self.failed_ap_rs()
+
 
     def succeeded_ap_rs(self):
         """Response for successfully deleting the object"""
-        return JsonResponse({"Location": {self.object}}, status=201)
+        return JsonResponse({"Location": "{self.object}"}, status=201)
 
     def failed_ap_rs(self):
         """Response for failure deleting the object"""

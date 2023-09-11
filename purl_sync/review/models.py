@@ -20,7 +20,7 @@ from django.urls import reverse
 from git import Repo
 
 from purl_sync import settings
-from purl_sync.settings import DOMAIN
+from purl_sync.settings import PURL_SYNC_DOMAIN
 from purl_sync.settings import GIT_PATH
 from review.utils import ap_collection
 from review.utils import check_purl_actor
@@ -34,29 +34,6 @@ class RemoteActor(models.Model):
     username = models.CharField(max_length=100)
     updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        abstract = True
-
-
-class RemotePerson(RemoteActor):
-    @property
-    def get_profile_data(self):
-        raise NotImplementedError
-
-    @property
-    def create_activity(self):
-        raise NotImplementedError
-
-
-class RemoteService(RemoteActor):
-    @property
-    def get_profile_data(self):
-        raise NotImplementedError
-
-    @property
-    def create_activity(self):
-        raise NotImplementedError
-
 
 class Actor(models.Model):
     avatar = models.ImageField(
@@ -68,7 +45,7 @@ class Actor(models.Model):
 
     @property
     def avatar_absolute_url(self):
-        return f'{"https://"}{DOMAIN}{self.avatar.url}'
+        return f'{"https://"}{PURL_SYNC_DOMAIN}{self.avatar.url}'
 
     class Meta:
         abstract = True
@@ -90,7 +67,7 @@ class Reputation(models.Model):
 class Service(models.Model):
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     remote_actor = models.OneToOneField(
-        RemoteService, on_delete=models.CASCADE, null=True, blank=True
+        RemoteActor, on_delete=models.CASCADE, null=True, blank=True
     )
 
     def __str__(self):
@@ -144,8 +121,8 @@ class Note(models.Model):
     @property
     def reputation_value(self):
         return (
-            self.reputation.filter(positive=True).count()
-            - self.reputation.filter(positive=False).count()
+                self.reputation.filter(positive=True).count()
+                - self.reputation.filter(positive=False).count()
         )
 
     @property
@@ -169,12 +146,17 @@ class Purl(Actor):
         editable=False,
         help_text="The object's unique global identifier",
     )
-
-    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    remote_actor = models.OneToOneField(
+        RemoteActor, on_delete=models.CASCADE, null=True, blank=True
+    )
+    service = models.ForeignKey(Service, null=True, blank=True, on_delete=models.CASCADE)
     string = models.CharField(
-        max_length=300, unique=True, help_text="PURL (no version) ex: @pkg:maven/org.apache.logging"
+        max_length=300, help_text="PURL (no version) ex: @pkg:maven/org.apache.logging"
     )
     notes = models.ManyToManyField(Note, blank=True, help_text="")
+
+    class Meta:
+        unique_together = [["service", "remote_actor", "string"]]
 
     @property
     def acct(self):
@@ -231,7 +213,7 @@ class Purl(Actor):
 class Person(Actor):
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     remote_actor = models.OneToOneField(
-        RemotePerson, on_delete=models.CASCADE, null=True, blank=True
+        RemoteActor, on_delete=models.CASCADE, null=True, blank=True
     )
 
     # TODO raise error if the user doesn't have a user or remote actor
@@ -240,8 +222,8 @@ class Person(Actor):
         """if someone like your ( review or note ) you will get +1, dislike: -1"""
         user_reputation = Reputation.objects.filter(voter=self.acct)
         return (
-            user_reputation.filter(positive=True).count()
-            - user_reputation.filter(positive=False).count()
+                user_reputation.filter(positive=True).count()
+                - user_reputation.filter(positive=False).count()
         )
 
     @property
@@ -306,6 +288,7 @@ class Repository(models.Model):
     url = models.URLField(help_text="")
     path = models.CharField(max_length=200, help_text="")
     admin = models.ForeignKey(Service, on_delete=models.CASCADE, help_text="")
+    remote_url = models.CharField(max_length=300, blank=True, null=True, help_text="")
 
     @property
     def review_count(self):
@@ -341,6 +324,7 @@ class Vulnerability(models.Model):
     repo = models.ForeignKey(Repository, on_delete=models.CASCADE)
     filename = models.CharField(max_length=255, help_text="")
     commit_id = models.CharField(max_length=50, help_text="")
+    remote_url = models.CharField(max_length=300, blank=True, null=True, help_text="")
 
     @property
     def load_file(self):
@@ -383,6 +367,7 @@ class Review(models.Model):
     notes = models.ManyToManyField(Note, blank=True, help_text="")
     created_at = models.DateTimeField(auto_now_add=True, help_text="")
     updated_at = models.DateTimeField(auto_now=True, help_text="")
+    remote_url = models.CharField(max_length=300, blank=True, null=True, help_text="")
 
     class ReviewStatus(models.IntegerChoices):
         OPEN = 0
@@ -409,8 +394,8 @@ class Review(models.Model):
     @property
     def reputation_value(self):
         return (
-            self.reputation.filter(positive=True).count()
-            - self.reputation.filter(positive=False).count()
+                self.reputation.filter(positive=True).count()
+                - self.reputation.filter(positive=False).count()
         )
 
     @property

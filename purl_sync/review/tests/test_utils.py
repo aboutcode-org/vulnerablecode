@@ -70,7 +70,7 @@ def test_load_activity(payload, expected):
 def test_full_reverse():
     assert (
         full_reverse("note-page", "7e676ad1-995d-405c-a829-cb39813c74e5")
-        == "https://127.0.0.1/notes/7e676ad1-995d-405c-a829-cb39813c74e5"
+        == "https://127.0.0.1:8000/notes/7e676ad1-995d-405c-a829-cb39813c74e5"
     )
 
 

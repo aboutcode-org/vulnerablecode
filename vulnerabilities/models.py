@@ -1092,6 +1092,7 @@ class PackageRelatedVulnerability(models.Model):
                 },
             )
         else:
+            print(advisory.url)
             VulnerabilityChangeLog.log_affects(
                 vulnerability=self.vulnerability,
                 importer=advisory.created_by,
@@ -1507,9 +1508,9 @@ class VulnerabilityChangeLog(ChangeLog):
 
 
 class PackageHistoryManager(models.Manager):
-    def get_for_object(self, vuln, **kwargs):
+    def get_for_object(self, package, **kwargs):
         return self.filter(
-            vulnerability=vuln,
+            package=package,
             **kwargs,
         )
 
@@ -1562,7 +1563,6 @@ class PackageChangeLog(ChangeLog):
         """
         Creates History entry on Addition.
         """
-        print("PACKAGE IMPORTED")
         return cls.objects.log_action(
             package=package,
             action_type=1,
@@ -1586,7 +1586,6 @@ class PackageChangeLog(ChangeLog):
         """
         Creates History entry on Vulnerabilitty affects package.
         """
-        print("PACKAGE AFFECTED")
         return cls.objects.log_action(
             package=package,
             action_type=3,

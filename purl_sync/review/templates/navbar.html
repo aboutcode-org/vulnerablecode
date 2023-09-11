@@ -1,0 +1,84 @@
+<nav class="navbar is-dark mb-6" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+     <div class="navbar-brand ml-3">
+        <a class="navbar-item is-size-4 has-text-weight-bold" href="/">
+            Purl Sync<span class="nexb-orange">.</span>io
+        </a>
+    </div>
+
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start">
+      {% if user.service %}
+          <a class="navbar-item" href="/home">
+            Home
+          </a>
+      {% endif %}
+      <a class="navbar-item" href="/review-list">
+        Review List
+      </a>
+
+      <a class="navbar-item" href="/repo-list">
+        Git Repo List
+      </a>
+
+      <a class="navbar-item" href="/purl-list">
+        Purl List
+      </a>
+
+      {% if user.service %}
+          <a class="navbar-item" href="/create-repo">
+            Create Git Repo
+          </a>
+      {% endif %}
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More
+        </a>
+
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://github.com/nexB/vulnerablecode#readme">
+            About
+          </a>
+          <hr class="navbar-divider">
+          <a class="navbar-item" href="https://github.com/nexB/vulnerablecode/issues/new">
+            Report an issue
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="buttons">
+          {% if not user.is_authenticated %}
+          <a class="button is-primary" href="/accounts/sign-up">
+            <strong>Sign up</strong>
+          </a>
+          <a class="button is-light" href="/accounts/login">
+            <strong>Log in</strong>
+          </a>
+          {% endif %}
+        {% if user.is_authenticated %}
+          <a class="button is-light" href="/accounts/logout">
+              <strong>Log out</strong>
+          </a>
+        {% endif %}
+        </div>
+      </div>
+        <figure class="image is-48x48 mt-1 ml-1 mr-1">
+            {% if user.person %}
+                <a href="{% url 'user-profile' user.username %}">
+                    <img class="is-rounded" src="{{ user.person.avatar.url }}" >
+                </a>
+            {% endif %}
+        </figure>
+    </div>
+  </div>
+</nav>

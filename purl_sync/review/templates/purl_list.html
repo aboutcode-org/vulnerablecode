@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}
+Review page
+{% endblock %}
+
+{% block extra-head %}
+{% endblock %}
+{% block content %}
+<div class="columns">
+  <div class="column">
+  </div>
+
+  <div class="column is-two-thirds">
+      <div class="content is-normal">
+            <h1>Purl List</h1>
+            <hr/>
+      </div>
+      <form method="post" class="has-text-centered box">
+          <input class="input is-rounded" type="text" placeholder="Search" style="width: 90%;">
+          <button type="submit" class="button is-link is-rounded">Search</button>
+      </form>
+      {% for purl in purl_list %}
+          <article class="media box mt-4 ">
+            <div class="media-left has-text-centered">
+                <h4>Number of Followers</h4>
+                <p>{{ purl.followers_count }}</p>
+            </div>
+            <div class="media-content ">
+              <div class="content" style="border-left: 4px solid black;">
+                  <h4 class="ml-3 mr-3"><a href="{% url 'purl-profile' purl.string %}"> {{ purl.string }} </a></h4>
+                  <small class="ml-2">Created by @{{ purl.service.user.username }}</small>
+                  <br>
+              </div>
+            </div>
+          </article>
+      {% endfor %}
+        {% if is_paginated %}
+            <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+          {% if page_obj.has_previous %}
+          <a class="pagination-previous" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+          {% endif %}
+
+          {% if page_obj.has_next %}
+          <a class="pagination-next" href="?page={{ page_obj.next_page_number }}">Next page</a>
+          {% endif %}
+          <ul class="pagination-list">
+            <li><a class="pagination-link" aria-label="Goto page 1" href="?page=1">1</a></li>
+            <li><span class="pagination-ellipsis">&hellip;</span></li>
+            <li><a class="pagination-link" aria-label="Goto page {{ page_obj.number }}" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+          </ul>
+        </nav>
+        {% endif %}
+    </div>
+
+  <div class="column"></div>
+</div>
+
+{% endblock %}

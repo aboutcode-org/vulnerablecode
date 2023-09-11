@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}
+Sign up page
+{% endblock %}
+
+{% block content %}
+<div class="columns">
+  <div class="column"></div>
+  <div class="column is-two-fifths">
+           {% if form.errors %}
+  <article class="message is-danger">
+  <div class="message-header">
+    <p>Error</p>
+  </div>
+  <div class="message-body">
+        {{ form.errors }}
+  </div>
+</article>
+{% endif %}
+
+      <h2 class="title">Sign up Form</h2>
+      <form method="post">
+          {% csrf_token %}
+          <div class="field">
+                <label class="label">Username</label>
+                <div class="control">
+                    <input class="input" placeholder="e.g. vcio" type="text" name="username" maxlength="150" autofocus required id="id_username">
+                    <span class="helptext">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
+                </div>
+         </div>
+          <div class="field">
+                <label class="label">Email</label>
+                <div class="control">
+                    <input class="input" type="email" name="email" maxlength="254" required id="id_email">
+                </div>
+          </div>
+          <div class="field">
+              <label class="label">Password</label>
+              <div class="control">
+                <input class="input" type="password" name="password1" autocomplete="new-password" required id="id_password1">
+                <span class="helptext"><ul><li>Your password can’t be too similar to your other personal information.</li><li>Your password must contain at least 8 characters.</li><li>Your password can’t be a commonly used password.</li><li>Your password can’t be entirely numeric.</li></ul></span>
+
+              </div>
+          </div>
+          <div class="field">
+              <label class="label">Password confirmation</label>
+              <div class="control">
+                <input class="input" type="password" name="password2" autocomplete="new-password" required id="id_password2" >
+              </div>
+          </div>
+          <input class="button is-fullwidth is-success" type="submit" value="Sign Up">
+   </form>
+  </div>
+
+  <div class="column"></div>
+</div>
+
+{% endblock %}

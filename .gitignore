@@ -103,3 +103,4 @@ Pipfile
 *.bak
 /.cache/
 /tmp/
+/purl_sync/venv_purl/

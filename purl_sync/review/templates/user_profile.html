@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}
+Your Profile
+{% endblock %}
+
+{% block json_ld_script %}
+<script type="application/ld+json">
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="columns">
+  <div class="column box content is-offset-1">
+      <figure class="image is-128x128 mb-2" style="margin: auto">
+        <img class="is-rounded" src="{{ person.avatar.url }}">
+      </figure>
+      <p class="is-size-5 has-text-centered">
+          <a href="#">@{{ person.user.username }}</a>
+      </p>
+      <nav class="level">
+          <div class="level-item has-text-centered">
+            <div>
+              <p class="heading">Following</p>
+              <p class="title">{{ follow_count }}</p>
+            </div>
+          </div>
+
+          <div class="level-item has-text-centered">
+              <div>
+                  <p class="heading">reputation</p>
+                  <p class="title">{{ person.reputation_value }}</p>
+              </div>
+          </div>
+      </nav>
+      <p class="is-size-6 has-text-centered">
+        {{ person.note }}
+      </p>
+  </div>
+  <div class="column is-8 ml-3 mr-6">
+  <div class="container">
+  <article class="panel is-info">
+          <p class="panel-heading">
+            Following List
+          </p>
+        {% for following in followings %}
+          <a class="panel-block is-active" href="#">
+            <a href="{% url 'purl-profile' following.purl.string %}" class="button is-fullwidth" >{{ following.purl.string }}@{{ following.purl.service.user.username }}</a>
+          </a>
+        {% endfor %}
+      </article>
+  <nav class="pagination is-rounded" role="navigation" aria-label="pagination">
+
+  {% if followings.has_previous %}
+  <a class="pagination-previous" href="?page={{ followings.previous_page_number }}">Previous</a>
+  {% endif %}
+
+  {% if followings.has_next %}
+  <a class="pagination-next" href="?page={{ followings.next_page_number }}">Next page</a>
+  {% endif %}
+</nav>
+  </div>
+  </div>
+</div>
+{% endblock %}

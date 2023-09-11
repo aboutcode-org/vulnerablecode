@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}
+Review page
+{% endblock %}
+
+{% block extra-head %}
+{% endblock %}
+{% block content %}
+<div class="columns">
+  <div class="column">
+  </div>
+  <div class="column is-two-thirds">
+
+  <div class="content is-normal">
+    <h1>Review List</h1>
+    <hr/>
+<div>
+  <form method="post" class="has-text-centered box">
+      <input class="input is-rounded" type="text" placeholder="Search" style="width: 90%;">
+      <button type="submit" class="button is-link is-rounded">Search</button>
+  </form>
+  {% for review in review_list %}
+    <article class="media box mt-4 ">
+    <div class="media-left has-text-centered">
+        <h2>Votes</h2>
+        <p>{{ review.reputation_value }}</p>
+    </div>
+    <div class="media-content ">
+      <div class="content" style="border-left: 4px solid black;">
+          <h2 class="ml-3 mr-3"><a href="{% url 'review-page' review.id %}"> {{ review.headline }} </a></h2>
+          <small class="ml-2">@{{ review.author.user.username }}</small>
+          <small class="ml-2">updated_at : {{ review.updated_at }}</small>
+          <br>
+      </div>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+
+  </div>
+  </div>
+  <div class="column"></div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "purl_sync.settings"
+python_files = "*.py"
+python_classes = "Test"
+python_functions = "test"
+addopts = "--doctest-modules"
+
+[tool.black]
+line-length = 100
+include = '\.pyi?$'
+skip_gitignore = true
+# 'extend-exclude' excludes files or directories in addition to the defaults
+extend-exclude = '''
+(
+  ^/venv/.*
+  | ^/purl_sync/migrations/.*
+)
+'''
+
+
+[tool.isort]
+profile = "black"
+line_length = 100
+force_single_line = true
+skip_gitignore = true
+skip_glob = "purl_sync/migrations/*"

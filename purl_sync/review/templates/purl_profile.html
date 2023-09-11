@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}
+Your Profile
+{% endblock %}
+{% block json_ld_script %}
+<script type="application/ld+json">
+</script>
+{% endblock %}
+{% block content %}
+<div class="columns">
+  <div class="column box content is-offset-1">
+      <p class="is-size-5 has-text-centered">
+          <a href="#">@{{ purl.string }}</a>
+      </p>
+
+      <nav class="level">
+          {% if followers %}
+              <div class="level-item has-text-centered">
+                <div>
+                  <p class="heading">Followers</p>
+                  <p class="title">{{ followers.count }}</p>
+                </div>
+              </div>
+          {% endif %}
+      </nav>
+
+      <p class="is-size-6 has-text-centered">
+        {{ purl.note }}
+      </p>
+
+     <div class="has-text-centered">
+     {% if user.is_authenticated %}
+         <form method="POST" action="follow">
+              {% csrf_token %}
+              {% if not is_user_follow and not user.service %}
+                  <button class="button is-link" type="submit" name="follow" value="follow">Follow</button>
+              {% endif %}
+
+              {% if is_user_follow and not user.service %}
+                  <button class="button is-danger" type="submit" name="unfollow" value="unfollow">Unfollow</button>
+              {% endif %}
+          </form>
+     {% endif %}
+
+     <hr>
+     {% if user.is_anonymous %}
+         <form method="POST" action="follow">
+             {% csrf_token %}
+             {{ subscribe_form }}
+             <button class="button is-link mt-2" type="submit" name="subscribe" value="subscribe">Subscribe</button>
+         </form>
+     {% endif %}
+
+     {% if user.service %}
+          <form method="POST" action=".">
+               {% csrf_token %}
+               {{ note_form }}
+              <button class="button is-link mt-2 mb-2" type="submit"> Publish!</button>
+          </form>
+      {% endif %}
+
+      </div>
+  </div>
+  <div class="column is-8">
+  <div class="container">
+      <article class="panel is-info mr-6">
+        {% if followers %}
+          <p class="panel-heading">
+            Followers
+          </p>
+        {% endif %}
+        {% for follower in followers %}
+          <div class="columns is-multiline panel-block">
+                  <figure class="image is-64x64 mb-5 mr-5 ml-5 mt-5">
+                       <img class="is-rounded" src="{{ follower.person.avatar.url }}" alt="{{ follower.person.user.username }} profile image">
+                       <p class="is-size-5 has-text-centered">
+                            <a href="{% url 'user-profile' follower.person.user.username %}">@{{ follower.person.user.username }}</a>
+                       </p>
+                  </figure>
+          </div>
+        {% endfor %}
+      </article>
+  </div>
+  <div class="container mt-5 mb-5">
+    <article class="panel is-info mr-6">
+      <p class="panel-heading">
+        Posts
+      </p>
+      <div class="panel-block">
+          <article class="media box" style="width: 100%">
+            <div class="media-content">
+              {% for post_note in purl_notes %}
+                <div class="content">
+                  <small>@{{ post_note.acct }} , updated_at  {{ post_note.updated_at }}</small>
+                  <br>
+                  <a href="/notes/{{ post_note.id }}"><pre>{{ post_note.content }}</pre></a>
+                </div>
+                  <hr>
+              {% endfor %}
+            </div>
+          </article>
+      </div>
+</article>
+  </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% block title %}
+Review page
+{% endblock %}
+
+{% block extra-head %}
+<style>
+        table.diff {font-family:Courier; border:medium;}
+        table {width: 100%}
+        .diff_header {background-color:#e0e0e0}
+        td.diff_header {
+            text-align:right;
+            width: 15px;
+        }
+        .diff_next {
+            background-color:#c0c0c0;
+            width: 1px;
+        }
+        .diff_add {background-color:#aaffaa}
+        .diff_chg {background-color:#ffff77}
+        .diff_sub {background-color:#ffaaaa}
+</style>
+<script type="text/javascript">
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + "=")) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+function sendVote(url, submit_button, current_value) {
+   $.ajax({
+      type: "PUT",
+      url: url,
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      data: JSON.stringify({"vote-type": submit_button.attr("name")}),
+      dataType: "json",
+      success: (data) => {
+          console.log(data);
+          if ((submit_button.attr("name") === "vote-up-review" && data["deleted"] === false) ||
+              (submit_button.attr("name") === "vote-down-review" && data["deleted"] === true)){
+              $("#votes-value").text(parseInt(parseFloat(current_value)) + 1);
+          }
+
+          if ((submit_button.attr("name") === "vote-down-review" && data["deleted"] === false )||
+              (submit_button.attr("name") === "vote-up-review" && data["deleted"] === true ))
+          {
+              $("#votes-value").text(parseInt(parseFloat(current_value)) - 1);
+          }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+   });
+}
+$(document).ready(function () {
+    $("form[name='vote-review']").submit(function (event) {
+      event.preventDefault();
+      let submit_button = $(event.originalEvent.submitter);
+      if ((submit_button.attr("name") === "vote-up-review") ||
+          (submit_button.attr("name") === "vote-down-review")) {
+          let url = "/reviews/{{ review.id}}/votes/"
+          let current_value = $("#votes-value").text();
+          sendVote(url, submit_button , current_value);
+       }
+    });
+
+    $("form[name='vote-notes']").submit(function (event) {
+      event.preventDefault();
+      let submit_button = $(event.originalEvent.submitter);
+      if ((submit_button.attr("name") === "vote-up-note") ||
+          (submit_button.attr("name") === "vote-down-note")) {
+          let url = "/notes/"+ submit_button.attr("value") +"/votes/"
+          let current_value = $("#votes-value").text();
+          sendVote(url, submit_button, current_value);
+      }
+  });
+});
+</script>
+{% endblock %}
+{% block content %}
+<h1 class="title has-text-centered">
+    {{ review.headline }}
+    {% if review.status == 0 %}
+    <span class="is-size-6">🟢 Open</span>
+    {% elif review.status == 1 %}
+    <span class="is-size-6">⚪ Draft</span>
+    {% elif review.status == 2 %}
+    <span class="is-size-6">🔴 Closed</span>
+    {% elif review.status == 3 %}
+    <span class="is-size-6">🔵 Merged</span>
+    {% endif %}
+
+</h1>
+<div class="columns">
+  <div class="column">
+  </div>
+  <div class="column is-four-fifths box">
+      <div class="columns" style="overflow-x:auto;font-size: 17px;">
+      {{ patch|safe }}
+      </div>
+
+      <div class="panel-block" style="justify-content: center">
+          <form class="level-left" name="vote-review">
+            <button class="button is-fullwidth mr-3 ml-3" name="vote-up-review" value="{{ review.id }}">
+              Vote up ▲
+            </button>
+
+            <div class="level-item has-text-centered mr-3 ml-3 mt-5 mb-5">
+                <div>
+                  <p class="heading">Votes</p>
+                  <p class="title" id="votes-value">{{ review.reputation_value }}</p>
+                </div>
+            </div>
+
+            <button class="button is-fullwidth mr-3 ml-3" name="vote-down-review" value="{{ review.id }}">
+              Vote down ▼
+            </button>
+          </form>
+          <form method="POST" action="." class="dropdown-item">
+            {% csrf_token %}
+            {{ status_form }}
+            <button class="button is-success mr-3 ml-3" type="submit">Save ⤴</button>
+            </form>
+      </div>
+      <div class="mt-5 mb-5 mt-5">
+      {% for note in review.notes.all %}
+          <article class="media">
+              <form class="ml-5 mr-4" name="vote-notes">
+                  <span class="icon ml-1">
+                       <button name="vote-up-note" class="button is-rounded is-white" value="{{ note.id }}" type="submit">▲</button>
+                  </span>
+                  <p class="ml-3 mt-1 mb-1">{{ note.reputation_value }}</p>
+                  <span class="icon ml-1">
+                       <button name="vote-down-note" class="button is-rounded is-white" value="{{ note.id }}"  type="submit">▼</button>
+                  </span>
+              </form>
+              <div class="media-content">
+                <div class="content">
+                  <p>
+                    <strong>{{ note.username }}</strong>
+                    <small>@{{ note.acct }}</small>
+                    <small>updated_at: {{ note.updated_at }}</small>
+                    <br>
+                    {{ note.content }}
+                  </p>
+                </div>
+              </div>
+          </article>
+      {% endfor %}
+      <form method="POST" class="media" id="comment-form" action=".">
+             {% csrf_token %}
+              <figure class="media-left">
+                <p class="image is-64x64">
+                    <img src="{{ user.person.avatar.url }}">
+                </p>
+              </figure>
+              <div class="media-content">
+                <div class="field">
+                    {{ comment_form.as_p }}
+                </div>
+                <nav class="level">
+                  <div class="level-left">
+                    <div class="level-item">
+                      <button class="button is-info">Submit</button>
+                    </div>
+                  </div>
+                </nav>
+              </div>
+          </form>
+      </div>
+  </div>
+  <div class="column">
+  </div>
+</div>
+{% endblock %}

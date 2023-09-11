@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}
+Login page
+{% endblock %}
+
+{% block content %}
+
+<div class="columns">
+  <div class="column"></div>
+  <div class="column is-two-fifths">
+    {% if form.errors %}
+    <p>Your username and password didn't match. Please try again.</p>
+    {% endif %}
+      <form action="{% url 'login' %}" method="post">
+          {% csrf_token %}
+
+          <div class="field">
+                <label class="label">Username</label>
+                <div class="control">
+                    <input class="input" type="text" name="username" autofocus autocapitalize="none" autocomplete="username" maxlength="150" required id="id_username">
+                </div>
+          </div>
+
+          <div class="field">
+              <label class="label">Password</label>
+              <div class="control">
+                  <input class="input"  type="password" name="password" autocomplete="current-password" required id="id_password">
+              </div>
+          </div>
+
+          <input class="button is-fullwidth is-success" type="submit" value="Login">
+   </form>
+  </div>
+  <div class="column"></div>
+</div>
+
+{% endblock %}

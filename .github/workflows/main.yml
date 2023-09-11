@@ -3,9 +3,9 @@ name: run tests
 on: [push, pull_request]
 
 env:
-  DB_NAME: vulnerablecode
-  DB_USER: vulnerablecode
-  DB_PASSWORD: vulnerablecode
+  DB_NAME: purl-sync
+  DB_USER: purl-sync
+  DB_PASSWORD: purl-sync
 
 jobs:
   build:

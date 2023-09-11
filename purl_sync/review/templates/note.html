@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}
+Note page
+{% endblock %}
+{% block extra-head %}
+<script type="text/javascript">
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + "=")) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+function sendVote(url, submit_button, current_value) {
+   $.ajax({
+      type: "PUT",
+      url: url,
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      data: JSON.stringify({"vote-type": submit_button.attr("name")}),
+      dataType: "json",
+      success: (data) => {
+          console.log(data);
+          if (
+              (submit_button.attr("name") === "vote-up-note" && data["deleted"] === false) ||
+              (submit_button.attr("name") === "vote-down-note" && data["deleted"] === true)
+          ){
+              $("#votes-value").text(parseInt(parseFloat(current_value)) + 1);
+          }
+
+          if ((submit_button.attr("name") === "vote-down-note" && data["deleted"] === false )||
+              (submit_button.attr("name") === "vote-up-note" && data["deleted"] === true )) {
+              $("#votes-value").text(parseInt(parseFloat(current_value)) - 1);
+          }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+   });
+}
+$(document).ready(function () {
+    $("form[name='vote-notes']").submit(function (event) {
+      event.preventDefault();
+      let submit_button = $(event.originalEvent.submitter);
+      if ((submit_button.attr("name") === "vote-up-note") ||
+          (submit_button.attr("name") === "vote-down-note")) {
+          let url = "/notes/"+ submit_button.attr("value") +"/votes/"
+          let current_value = $("#votes-value").text();
+          sendVote(url, submit_button, current_value);
+      }
+  });
+});
+</script>
+{% endblock %}
+{% block content %}
+<div class="columns">
+  <div class="column">
+  </div>
+  <div class="column is-four-fifths box">
+
+    <article class="media">
+      <figure class="media-left">
+        <p class="image is-64x64">
+          <img src="https://bulma.io/images/placeholders/128x128.png">
+        </p>
+      </figure>
+      <form class="ml-5 mr-5" name="vote-notes">
+                  <span class="icon ml-1">
+                       <button name="vote-up-note" class="button is-rounded is-white" value="{{ note.id }}" type="submit">▲</button>
+                  </span>
+                  <p class="ml-3 mt-1 mb-1" id="votes-value">{{ note.reputation_value }}</p>
+                  <span class="icon ml-1">
+                       <button name="vote-down-note" class="button is-rounded is-white" value="{{ note.id }}"  type="submit">▼</button>
+                  </span>
+              </form>
+      <div class="media-content">
+        <div class="content">
+          <p>
+            <a href="{% url 'purl-profile' note.username %}">{{ note.acct }}</a>
+            <br>
+             <pre>{{ note.content }}</pre>
+          </p>
+        </div>
+      </div>
+
+      <div class="media-right">
+         <small>last update: {{ note.updated_at }}</small>
+      </div>
+    </article>
+
+    {% for note_r in note.replies.all %}
+        <article class="media">
+          <figure class="media-left">
+            <p class="image is-48x48">
+              <img src="https://bulma.io/images/placeholders/96x96.png">
+            </p>
+          </figure>
+          <div class="media-content">
+            <div class="content">
+              <p>
+                <a href="{% url 'user-profile' note_r.username %}">@{{ note_r.acct }}</a>
+                <br>
+                {{ note_r.content }}
+                <br>
+              </p>
+            </div>
+          </div>
+          <div class="media-right">
+             <small>last update: {{ note.updated_at }}</small>
+          </div>
+        </article>
+    {% endfor %}
+
+    <article class="media">
+
+      <figure class="media-left">
+        <p class="image is-64x64">
+          <img src="https://bulma.io/images/placeholders/128x128.png">
+        </p>
+      </figure>
+      <div class="media-content">
+          <form method="POST" action="">
+            <div class="field">
+              <p class="control">
+                  {% csrf_token %}
+                  {{ form }}
+              </p>
+            </div>
+            <div class="field">
+              <p class="control">
+                <button class="button" type="submit">Post comment</button>
+              </p>
+            </div>
+          </form>
+      </div>
+    </article>
+  </div>
+  <div class="column">
+  </div>
+</div>
+{% endblock %}

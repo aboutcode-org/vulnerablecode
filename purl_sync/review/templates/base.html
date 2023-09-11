@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}VulnerableCode.io{% endblock %}</title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" />
+
+    <link rel="stylesheet" href="{% static 'css/bulma.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bulma-tooltip.css' %}" />
+    <script src="{% static 'js/jquery-3.7.0.min.js' %}"></script>
+
+    {% block json_ld_script %}
+    {% endblock %}
+
+    {% block extra-head %}{% endblock %}
+</head>
+
+<body class="Site" style="background-color: #f6f8fa">
+    {% include "navbar.html" %}
+    {% block content %}
+    {% endblock %}
+    {% include "footer.html" %}
+</body>
+
+</html>

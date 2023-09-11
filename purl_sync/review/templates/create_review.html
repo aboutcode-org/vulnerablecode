@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}
+Create Review
+{% endblock %}
+
+{% block extra-head %}
+<script>
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + "=")) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+$(document).ready(function () {
+    $("form[name='fetch-file']").submit(function (event) {
+        event.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "../fetch",
+            headers: {
+                'Accept': 'application/json',
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+            data: JSON.stringify({"path": $('select').val()}),
+            dataType: "json",
+            success: (data) => {
+                console.log(data);
+                $('textarea').val(data.text);
+                $("input[name='filename']").val($('select').val());
+            },
+            error: (error) => {
+                console.log(error);
+            }
+        });
+    });
+    function drawLineNumber() {
+         var comment_lines = $("textarea").val().split('\n');
+         $("#line_numbers").html('');
+         for(i = 0; i < comment_lines.length; i++) {
+            $("#line_numbers").html($("#line_numbers").html() + (i+1) + "<br/>");
+     };
+    }
+    drawLineNumber();
+    $("textarea").bind('load change', function () { drawLineNumber(); });
+});
+</script>
+{% endblock %}
+{% block content %}
+
+<div class="columns">
+  <div class="column box ml-5 ">
+      <h2 class="subtitle">Choose a File</h2>
+      <hr/>
+
+      <form name='fetch-file'>
+          {% csrf_token %}
+          <select class="select width-100-pct">
+              {% for i in git_files_tree %}
+                <option value="{{ i.path }}">{{ i.path }}</option>
+              {% endfor %}
+          </select>
+          <div class="buttons is-centered">
+              <button class="button is-info mt-5" type="submit">Fetch</button>
+          </div>
+      </form>
+
+  </div>
+  <div class="column is-two-thirds">
+      <form method="post" action=".">
+          {% csrf_token %}
+          <div class="columns">
+            <div class="column">
+
+                <article class="panel is-info">
+                   {{ create_review_form.headline }}
+                  <p class="panel-heading">
+                    Review
+                  </p>
+                  <div style="overflow: hidden;">
+                  <div id="line_numbers" style="clear:both; float: left; text-align: right;margin-top: 21px;" class="ml-3"></div>
+                  <a class="panel-block">
+                       {{ create_review_form.data }}
+                       {{ create_review_form.filename }}
+                  </a>
+                  </div>
+                </article>
+            </div>
+          </div>
+          <div class="panel-block">
+                <button class="button is-fullwidth is-success mr-5 ml-5" type="submit" name="create">
+                  Create Review
+                </button>
+                <p class="ml-2 mr-5"> OR </p>
+
+                <div class="file is-fullwidth">
+                  <label class="file-label">
+                    <input class="file-input" type="file" name="resume">
+                    <span class="file-cta">
+                      <span class="file-label">
+                        Upload a File
+                      </span>
+                    </span>
+                  </label>
+                </div>
+
+          </div>
+      </form>
+  </div>
+
+  <div class="column"></div>
+</div>
+
+{% endblock %}

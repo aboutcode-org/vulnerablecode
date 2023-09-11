@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}
+Home
+{% endblock %}
+
+{% block extra-head %}
+{% endblock %}
+{% block content %}
+<div class="columns">
+  <div class="column">
+  </div>
+  <div class="column is-two-thirds">
+
+  <div class="content is-normal">
+    <h1>Home</h1>
+    <hr/>
+  <div>
+  {% for note in notes %}
+  <article class="media box">
+     <figure>
+        <p class="image is-64x64">
+          <img src="https://bulma.io/images/placeholders/128x128.png" alt="purl-image">
+        </p>
+      </figure>
+     <form class="ml-5 mr-4" name="vote-comments">
+          <span class="icon ml-1">
+               <button name="vote-up-comment" class="button is-rounded is-white" value=".id" type="submit">▲</button>
+          </span>
+          <p class="ml-3 mt-1 mb-1">0</p>
+          <span class="icon ml-1">
+               <button name="vote-down-comment" class="button is-rounded is-white" value=".id"  type="submit">▼</button>
+          </span>
+     </form>
+     <div class="media-content">
+        <div class="content">
+            <a href="{% url 'purl-profile' note.username %}">{{ note.acct }}</a>
+            <hr/>
+             <pre>{{ note.content }}</pre>
+            <hr/>
+            <button class="button" onclick="window.open('{% url 'note-page' note.id %}');">Reply 💬</button>
+        </div>
+    </div>
+     <div class="media-right">
+        <small>last update: {{ note.updated_at }}</small>
+</div>
+  </article>
+
+  {% endfor %}
+</div>
+  </div>
+  </div>
+  <div class="column"></div>
+</div>
+
+{% endblock %}

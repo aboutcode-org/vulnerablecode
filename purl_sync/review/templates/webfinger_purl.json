@@ -1,0 +1,15 @@
+{
+  "subject": "{{ resource }}",
+  "links": [
+    {
+      "rel": "https://webfinger.net/rel/profile-page",
+      "type": "text/html",
+      "href": "https://{{ domain }}/purls/@{{ purl_string }}"
+    },
+    {
+      "rel": "self",
+      "type": "application/activity+json",
+      "href": "https://{{ domain }}/api/v0/purls/@{{ purl_string }}"
+    }
+  ]
+}

@@ -249,14 +249,16 @@ class AdvisoryData:
     date_published: Optional[datetime.datetime] = None
     weaknesses: List[int] = dataclasses.field(default_factory=list)
 
-
     def __post_init__(self):
         if self.date_published and not self.date_published.tzinfo:
             logger.warning(f"AdvisoryData with no tzinfo: {self!r}")
         self.clean_summary()
 
     def clean_summary(self):
-        self.summary = self.summary.replace("\x00", "\uFFFD")
+        # https://nvd.nist.gov/vuln/detail/CVE-2013-4314
+        # https://github.com/cms-dev/cms/issues/888#issuecomment-516977572
+        if self.summary:
+            self.summary = self.summary.replace("\x00", "\uFFFD")
 
     def to_dict(self):
         return {

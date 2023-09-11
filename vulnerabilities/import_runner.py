@@ -91,7 +91,6 @@ class ImportRunner:
             # https://nvd.nist.gov/vuln/detail/CVE-2013-4314
             # https://github.com/cms-dev/cms/issues/888#issuecomment-516977572
             try:
-                data.summary = data.summary.replace("\x00", "\uFFFD")
                 obj, created = Advisory.objects.get_or_create(
                     aliases=data.aliases,
                     summary=data.summary,

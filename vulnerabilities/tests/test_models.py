@@ -22,6 +22,7 @@ from univers import versions
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 
 from vulnerabilities import models
+from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 
 
@@ -107,6 +108,70 @@ class TestPackageRelatedVulnerablity(TestCase):
 @pytest.mark.django_db
 class TestPackageModel(TestCase):
     def setUp(self):
+        # ZAP: 2023-09-08 Friday 17:40:36.  Let's start over with a focused package/vuln/fix group we know from the DB/UI testing: pkg:pypi/redis@4.1.1
+        # It has 2 non-vulns versions, both the same: 5.0.0b1
+        # The first of its two vulns is VCID-g2fu-45jw-aaan (aliases: CVE-2023-28858 and GHSA-24wv-mv5m-xv4h), fixed by 4.3.6 w/1 vuln of its own
+        # The second is VCID-rqe1-dkmg-aaad (aliases: CVE-2023-28859 and GHSA-8fww-64cx-x8p5), fixed by 5.0.0b1 w/ 0 vulns of its own
+
+        # pkg
+        self.package_pypi_redis_4_1_1 = models.Package.objects.create(
+            type="pypi",
+            namespace="",
+            name="redix",
+            version="4.1.1",
+            qualifiers={},
+            subpath="",
+        )
+
+        # vuln
+        self.vuln_VCID_g2fu_45jw_aaan = models.Vulnerability.objects.create(
+            summary="This is VCID-g2fu-45jw-aaan",
+            vulnerability_id="VCID-g2fu-45jw-aaan",
+        )
+
+        # relationship
+        models.PackageRelatedVulnerability.objects.create(
+            package=self.package_pypi_redis_4_1_1,
+            vulnerability=self.vuln_VCID_g2fu_45jw_aaan,
+            fix=False,
+        )
+
+        # aliases
+        Alias.objects.create(alias="CVE-2023-28858", vulnerability=self.vuln_VCID_g2fu_45jw_aaan)
+        Alias.objects.create(
+            alias="GHSA-24wv-mv5m-xv4h", vulnerability=self.vuln_VCID_g2fu_45jw_aaan
+        )
+
+        # ZAP: Need fix for above vuln
+
+        # vuln
+        self.vuln_VCID_rqe1_dkmg_aaad = models.Vulnerability.objects.create(
+            summary="This is VCID-rqe1-dkmg-aaad",
+            vulnerability_id="VCID-rqe1-dkmg-aaad",
+        )
+
+        # relationship
+        models.PackageRelatedVulnerability.objects.create(
+            package=self.package_pypi_redis_4_1_1,
+            vulnerability=self.vuln_VCID_rqe1_dkmg_aaad,
+            fix=False,
+        )
+
+        # aliases
+        Alias.objects.create(alias="CVE-2023-28859", vulnerability=self.vuln_VCID_rqe1_dkmg_aaad)
+        Alias.objects.create(
+            alias="GHSA-8fww-64cx-x8p5", vulnerability=self.vuln_VCID_rqe1_dkmg_aaad
+        )
+
+        # ZAP: Need fix for above vuln
+
+        # ZAP: Need non-vuln version(s)
+
+        # ========================================================
+
+        # ========================================================
+
+        # ZAP: Not sure we want to keep any of this.
         self.vuln1 = models.Vulnerability.objects.create(
             summary="test-vuln1",
             vulnerability_id="VCID-123",
@@ -272,10 +337,58 @@ class TestPackageModel(TestCase):
             )
         )
 
+    # 2023-09-08 Friday 21:24:54.  New experiment
+    def test_explore_packages(self):
+        print("\nself.package_pypi_redis_4_1_1 = {}\n".format(self.package_pypi_redis_4_1_1))
+
+        print(
+            "\nself.package_pypi_redis_4_1_1.package_url = {}\n".format(
+                self.package_pypi_redis_4_1_1.package_url
+            )
+        )
+
+        print(
+            "\nself.package_pypi_redis_4_1_1.plain_package_url = {}\n".format(
+                self.package_pypi_redis_4_1_1.plain_package_url
+            )
+        )
+
+        print(
+            "\nself.package_pypi_redis_4_1_1.purl = {}\n".format(self.package_pypi_redis_4_1_1.purl)
+        )
+
+        print(
+            "\nself.package_pypi_redis_4_1_1.affected_by = {}\n".format(
+                self.package_pypi_redis_4_1_1.affected_by
+            )
+        )
+
+        for vuln in self.package_pypi_redis_4_1_1.affected_by:
+            print(vuln)
+            print(vuln.summary)
+            print("")
+
+        print(
+            "\nself.package_pypi_redis_4_1_1.fixing = {}\n".format(
+                self.package_pypi_redis_4_1_1.fixing
+            )
+        )
+
+        print(
+            "\nself.package_pypi_redis_4_1_1.get_absolute_url() = {}\n".format(
+                self.package_pypi_redis_4_1_1.get_absolute_url()
+            )
+        )
+
+    # ZAP: 2023-09-08 Friday 18:37:13.  Need to revise this after adding new pkgs, vulns, aliases above.
     def test_get_vulnerable_packages(self):
         vuln_packages = Package.objects.vulnerable()
-        assert vuln_packages.count() == 3
-        assert vuln_packages.distinct().count() == 2
+        print("\nvuln_packages = {}\n".format(vuln_packages))
+        # assert vuln_packages.count() == 3
+        # 2023-09-08 Friday 16:59:33.  Update given today's additions etc.
+        assert vuln_packages.count() == 5
+        # assert vuln_packages.distinct().count() == 2
+        assert vuln_packages.distinct().count() == 3
 
         first_vulnerable_package = vuln_packages.distinct()[0]
         matching_fixed_packages = first_vulnerable_package.get_fixed_packages(
@@ -293,33 +406,177 @@ class TestPackageModel(TestCase):
             == "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.12.6.1"
         )
 
-        purl_dict = {
-            "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
-            "vulnerabilities": [
-                {
-                    "vulnerability": "VCID-123",
-                    "closest_fixed_by": {
-                        "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
-                        "type": "maven",
-                        "namespace": "com.fasterxml.jackson.core",
-                        "name": "jackson-databind",
-                        "version": "2.13.2",
-                        "qualifiers": {},
-                        "subpath": "",
-                    },
-                    "closest_fixed_by_vulnerabilities": [{"vuln_id": "VCID-000"}],
-                },
-                {
-                    "vulnerability": "VCID-456",
-                    "closest_fixed_by": {},
-                    "closest_fixed_by_vulnerabilities": [],
-                },
-            ],
-            "closest_non_vulnerable": {},
-            "latest_non_vulnerable": {},
-        }
+        # purl_dict = {
+        #     "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
+        #     "vulnerabilities": [
+        #         {
+        #             "vulnerability": "VCID-123",
+        #             "closest_fixed_by": {
+        #                 "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
+        #                 "type": "maven",
+        #                 "namespace": "com.fasterxml.jackson.core",
+        #                 "name": "jackson-databind",
+        #                 "version": "2.13.2",
+        #                 "qualifiers": {},
+        #                 "subpath": "",
+        #             },
+        #             "closest_fixed_by_vulnerabilities": [{"vuln_id": "VCID-000"}],
+        #         },
+        #         {
+        #             "vulnerability": "VCID-456",
+        #             "closest_fixed_by": {},
+        #             "closest_fixed_by_vulnerabilities": [],
+        #         },
+        #     ],
+        #     "closest_non_vulnerable": {},
+        #     "latest_non_vulnerable": {},
+        # }
 
-        assert vuln_packages.distinct()[0].fixed_package_details == purl_dict
+        # purl_dict = {
+        #     "purl": PackageURL(
+        #         type="maven",
+        #         namespace="com.fasterxml.jackson.core",
+        #         name="jackson-databind",
+        #         version="2.13.1",
+        #         qualifiers={},
+        #         subpath=None,
+        #     ),
+        #     "closest_non_vulnerable": PackageURL(
+        #         type="maven",
+        #         namespace="com.fasterxml.jackson.core",
+        #         name="jackson-databind",
+        #         version="2.14.0-rc1",
+        #         qualifiers={},
+        #         subpath=None,
+        #     ),
+        #     "latest_non_vulnerable": PackageURL(
+        #         type="maven",
+        #         namespace="com.fasterxml.jackson.core",
+        #         name="jackson-databind",
+        #         version="2.14.0-rc1",
+        #         qualifiers={},
+        #         subpath=None,
+        #     ),
+        #     "vulnerabilities": [
+        #         {
+        #             "vulnerability": "<Vulnerability: VCID-123>",
+        #             "fixed_by_purl": PackageURL(
+        #                 type="maven",
+        #                 namespace="com.fasterxml.jackson.core",
+        #                 name="jackson-databind",
+        #                 version="2.13.2",
+        #                 qualifiers={},
+        #                 subpath=None,
+        #             ),
+        #             "fixed_by_purl_vulnerabilities": ["<Vulnerability: " "VCID-000>"],
+        #         },
+        #         {
+        #             "vulnerability": "<Vulnerability: VCID-456>",
+        #             "fixed_by_purl": None,
+        #             "fixed_by_purl_vulnerabilities": [],
+        #         },
+        #     ],
+        # }
+
+        print("\nfirst_vulnerable_package.purl = {}\n".format(first_vulnerable_package.purl))
+
+        print("\nfirst_vulnerable_package = {}\n".format(first_vulnerable_package))
+
+        assert (
+            first_vulnerable_package.purl
+            == "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1"
+        )
+
+        # assert (
+        #     first_vulnerable_package
+        #     # == "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1"
+        #     == "<Package: pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1>"
+        # )
+
+        purl_string = "pkg:pypi/redis@4.1.1"
+        purl = PackageURL.from_string(purl_string)
+        purl_to_dict = purl.to_dict()
+
+        # For namespace, version, qualifiers and subpath, we need to add the or * to avoid an IntegrityError, e.g., django.db.utils.IntegrityError: null value in column "subpath" violates not-null constraint
+        vulnerablecode_package = models.Package.objects.create(
+            type=purl_to_dict.get("type"),
+            namespace=purl_to_dict.get("namespace") or "",
+            name=purl_to_dict.get("name"),
+            version=purl_to_dict.get("version") or "",
+            qualifiers=purl_to_dict.get("qualifiers") or {},
+            subpath=purl_to_dict.get("subpath") or "",
+        )
+
+        print("\nvulnerablecode_package = {}\n".format(vulnerablecode_package))
+        print(
+            "\nvulnerablecode_package.fixed_package_details = {}\n".format(
+                vulnerablecode_package.fixed_package_details
+            )
+        )
+
+        # ===============================
+
+        # # Dictionary with class values
+        # my_dict = {"obj1": MyClass(1), "obj2": MyClass(2)}
+
+        # # Print the dictionary
+        # print(my_dict)
+
+        # assert vuln_packages.distinct()[0].fixed_package_details == purl_dict
+
+        # banana = {'purl': PackageURL(type='maven', namespace='com.fasterxml.jackson.core', name='jackson-databind', version='2.13.1', qualifiers={}, subpath=None), 'closest_non_vulnerable': PackageURL(type='maven', namespace='com.fasterxml.jackson.core', name='jackson-databind', version='2.14.0-rc1', qualifiers={}, subpath=None), 'latest_non_vulnerable': PackageURL(type='maven', namespace='com.fasterxml.jackson.core', name='jackson-databind', version='2.14.0-rc1', qualifiers={}, subpath=None), 'vulnerabilities': [{'vulnerability': <Vulnerability: VCID-123>, 'fixed_by_purl': PackageURL(type='maven', namespace='com.fasterxml.jackson.core', name='jackson-databind', version='2.13.2', qualifiers={}, subpath=None), 'fixed_by_purl_vulnerabilities': [<Vulnerability: VCID-000>]}, {'vulnerability': <Vulnerability: VCID-456>, 'fixed_by_purl': None, 'fixed_by_purl_vulnerabilities': []}]}
+
+        # print('\nbanana = {}\n'.format(banana))
+
+        # assert vuln_packages.distinct()[0].`fixed_package_details` == banana
+
+        print(
+            "\nvuln_packages.distinct()[0].fixed_package_details = {}\n".format(
+                vuln_packages.distinct()[0].fixed_package_details
+            )
+        )
+
+        # print(vuln_packages.distinct()[0]["vulnerabilities"].fixed_package_details)  # Error: TypeError: 'Package' object is not subscriptable
+
+        print(
+            "\ntype(vuln_packages.distinct()[0].fixed_package_details) = {}\n".format(
+                type(vuln_packages.distinct()[0].fixed_package_details)
+            )
+        )
+
+        print(
+            '\nvuln_packages.distinct()[0].fixed_package_details.get("purl") = {}\n'.format(
+                vuln_packages.distinct()[0].fixed_package_details.get("purl")
+            )
+        )
+
+        print(
+            '\nvuln_packages.distinct()[0].fixed_package_details["purl"] = {}\n'.format(
+                vuln_packages.distinct()[0].fixed_package_details["purl"]
+            )
+        )
+
+        print(
+            '\nvuln_packages.distinct()[0].fixed_package_details["vulnerabilities"] = {}\n'.format(
+                vuln_packages.distinct()[0].fixed_package_details["vulnerabilities"]
+            )
+        )
+
+        print(
+            '\nvuln_packages.distinct()[0].fixed_package_details["vulnerabilities"][0] = {}\n'.format(
+                vuln_packages.distinct()[0].fixed_package_details["vulnerabilities"][0]
+            )
+        )
+
+        print(
+            '\nvuln_packages.distinct()[0].fixed_package_details["vulnerabilities"][0]["vulnerability"] = {}\n'.format(
+                vuln_packages.distinct()[0].fixed_package_details["vulnerabilities"][0][
+                    "vulnerability"
+                ]
+            )
+        )
+
+        print("")
 
     def test_univers_version_comparisons(self):
         assert versions.PypiVersion("1.2.3") < versions.PypiVersion("1.2.4")
@@ -399,113 +656,115 @@ class TestPackageModel(TestCase):
         assert sorted_pkgs[0].purl == "pkg:npm/sequelize@3.9.1"
         assert sorted_pkgs[-1].purl == "pkg:npm/sequelize@3.40.1"
 
-    def test_string_to_purl_to_dict_to_package(self):
-        # Convert a PURL string to a PURL to a dictionary to a VulnerableCode Package, i.e.,
-        # a <class 'vulnerabilities.models.Package'>.
+    # # ZAP: 2023-09-07 Thursday 20:05:40.  This has served its purpose and can be removed after a last close look.
+    # def test_string_to_purl_to_dict_to_package(self):
+    #     # Convert a PURL string to a PURL to a dictionary to a VulnerableCode Package, i.e.,
+    #     # a <class 'vulnerabilities.models.Package'>.
 
-        # Convert a PURL string to a PURL.
-        purl_string = "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.31"
-        purl = PackageURL.from_string(purl_string)
+    #     # Convert a PURL string to a PURL.
+    #     purl_string = "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.31"
+    #     purl = PackageURL.from_string(purl_string)
 
-        assert type(purl) == PackageURL
-        assert purl.type == "maven"
-        assert purl.qualifiers == {}
-        assert purl.subpath == None
+    #     assert type(purl) == PackageURL
+    #     assert purl.type == "maven"
+    #     assert purl.qualifiers == {}
+    #     assert purl.subpath == None
 
-        # Convert the PURL to a dictionary.
-        # ALERT: 2023-08-15 Tuesday 13:18:09.  What about using the function 'def purl_to_dict(purl: PackageURL)'?  Confusingly similar name but it seems designed to address the issue raised here (and looks useful for passing the data to the Jinja2 template).
-        # It appears that this step is where the unwanted None values are created for qualifiers and
-        # subpath when the PURL does not already contain values for those attributes.
-        purl_to_dict = purl.to_dict()
+    #     # Convert the PURL to a dictionary.
+    #     # ALERT: 2023-08-15 Tuesday 13:18:09.  What about using the function 'def purl_to_dict(purl: PackageURL)'?  Confusingly similar name but it seems designed to address the issue raised here (and looks useful for passing the data to the Jinja2 template).
+    #     # It appears that this step is where the unwanted None values are created for qualifiers and
+    #     # subpath when the PURL does not already contain values for those attributes.
+    #     purl_to_dict = purl.to_dict()
 
-        assert purl_to_dict == {
-            "type": "maven",
-            "namespace": "org.apache.tomcat.embed",
-            "name": "tomcat-embed-core",
-            "version": "9.0.31",
-            "qualifiers": None,
-            "subpath": None,
-        }
-        assert purl_to_dict.get("qualifiers") == None
-        assert purl_to_dict.get("subpath") == None
+    #     assert purl_to_dict == {
+    #         "type": "maven",
+    #         "namespace": "org.apache.tomcat.embed",
+    #         "name": "tomcat-embed-core",
+    #         "version": "9.0.31",
+    #         "qualifiers": None,
+    #         "subpath": None,
+    #     }
+    #     assert purl_to_dict.get("qualifiers") == None
+    #     assert purl_to_dict.get("subpath") == None
 
-        # Convert the dictionary to a VulnerableCode Package, i.e.,
-        # a <class 'vulnerabilities.models.Package'>
+    #     # Convert the dictionary to a VulnerableCode Package, i.e.,
+    #     # a <class 'vulnerabilities.models.Package'>
 
-        # If subpath is None we get error: django.db.utils.IntegrityError: null value in column
-        # "subpath" violates not-null constraint -- need to convert value from None to empty string.
-        # Similar issue with qualifiers, which must be converted from None to {}.
+    #     # If subpath is None we get error: django.db.utils.IntegrityError: null value in column
+    #     # "subpath" violates not-null constraint -- need to convert value from None to empty string.
+    #     # Similar issue with qualifiers, which must be converted from None to {}.
 
-        # I've structured the following in this way because trying instead to use
-        # "with pytest.raises(IntegrityError):" will throw the error
-        # django.db.transaction.TransactionManagementError: An error occurred in the current
-        # transaction. You can't execute queries until the end of the 'atomic' block.
+    #     # I've structured the following in this way because trying instead to use
+    #     # "with pytest.raises(IntegrityError):" will throw the error
+    #     # django.db.transaction.TransactionManagementError: An error occurred in the current
+    #     # transaction. You can't execute queries until the end of the 'atomic' block.
 
-        try:
-            with transaction.atomic():
-                vulnerablecode_package = models.Package.objects.create(
-                    type=purl_to_dict.get("type"),
-                    namespace=purl_to_dict.get("namespace"),
-                    name=purl_to_dict.get("name"),
-                    version=purl_to_dict.get("version"),
-                    qualifiers=purl_to_dict.get("qualifiers"),
-                    subpath=purl_to_dict.get("subpath"),
-                )
-        except IntegrityError:
-            print("\nAs expected, an IntegrityError has occurred.\n")
+    #     try:
+    #         with transaction.atomic():
+    #             vulnerablecode_package = models.Package.objects.create(
+    #                 type=purl_to_dict.get("type"),
+    #                 namespace=purl_to_dict.get("namespace"),
+    #                 name=purl_to_dict.get("name"),
+    #                 version=purl_to_dict.get("version"),
+    #                 qualifiers=purl_to_dict.get("qualifiers"),
+    #                 subpath=purl_to_dict.get("subpath"),
+    #             )
+    #     except IntegrityError:
+    #         print("\nAs expected, an IntegrityError has occurred.\n")
 
-        # This will avoid the IntegrityError:
-        if purl_to_dict.get("qualifiers") is None:
-            purl_to_dict["qualifiers"] = {}
-        if purl_to_dict.get("subpath") is None:
-            purl_to_dict["subpath"] = ""
+    #     # This will avoid the IntegrityError:
+    #     if purl_to_dict.get("qualifiers") is None:
+    #         purl_to_dict["qualifiers"] = {}
+    #     if purl_to_dict.get("subpath") is None:
+    #         purl_to_dict["subpath"] = ""
 
-        # Check the qualifiers and subpath values again.
-        assert purl_to_dict.get("qualifiers") == {}
-        assert purl_to_dict.get("subpath") == ""
+    #     # Check the qualifiers and subpath values again.
+    #     assert purl_to_dict.get("qualifiers") == {}
+    #     assert purl_to_dict.get("subpath") == ""
 
-        vulnerablecode_package = models.Package.objects.create(
-            type=purl_to_dict.get("type"),
-            namespace=purl_to_dict.get("namespace"),
-            name=purl_to_dict.get("name"),
-            version=purl_to_dict.get("version"),
-            qualifiers=purl_to_dict.get("qualifiers"),
-            subpath=purl_to_dict.get("subpath"),
-        )
+    #     vulnerablecode_package = models.Package.objects.create(
+    #         type=purl_to_dict.get("type"),
+    #         namespace=purl_to_dict.get("namespace"),
+    #         name=purl_to_dict.get("name"),
+    #         version=purl_to_dict.get("version"),
+    #         qualifiers=purl_to_dict.get("qualifiers"),
+    #         subpath=purl_to_dict.get("subpath"),
+    #     )
 
-        assert type(vulnerablecode_package) == models.Package
-        assert (
-            vulnerablecode_package.purl
-            == "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.31"
-        )
-        assert vulnerablecode_package.qualifiers == {}
-        assert vulnerablecode_package.subpath == ""
+    #     assert type(vulnerablecode_package) == models.Package
+    #     assert (
+    #         vulnerablecode_package.purl
+    #         == "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.31"
+    #     )
+    #     assert vulnerablecode_package.qualifiers == {}
+    #     assert vulnerablecode_package.subpath == ""
 
-    def test_compare_package_major_versions(self):
-        # Convert a PURL string to a PURL to a dictionary to a VulnerableCode Package, i.e.,
-        # a <class 'vulnerabilities.models.Package'>.
+    # # ZAP: 2023-09-07 Thursday 20:32:35.  Ditch this, right?
+    # def test_compare_package_major_versions(self):
+    #     # Convert a PURL string to a PURL to a dictionary to a VulnerableCode Package, i.e.,
+    #     # a <class 'vulnerabilities.models.Package'>.
 
-        # Convert a PURL string to a PURL.
-        purl_string = "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.31"
-        purl = PackageURL.from_string(purl_string)
+    #     # Convert a PURL string to a PURL.
+    #     purl_string = "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.31"
+    #     purl = PackageURL.from_string(purl_string)
 
-        assert type(purl) == PackageURL
-        assert purl.type == "maven"
-        assert purl.qualifiers == {}
-        assert purl.subpath == None
+    #     assert type(purl) == PackageURL
+    #     assert purl.type == "maven"
+    #     assert purl.qualifiers == {}
+    #     assert purl.subpath == None
 
-        print("\npurl_string = {}".format(purl_string))
+    #     print("\npurl_string = {}".format(purl_string))
 
-        print("\npurl = {}".format(purl))
+    #     print("\npurl = {}".format(purl))
 
-        print("\nHello VulnerableCode!\n")
+    #     print("\nHello VulnerableCode!\n")
 
-        all_packages = Package.objects
-        print("\nPackage.objects = {}\n".format(Package.objects))
-        print("\nall_packages.distinct() = {}\n".format(all_packages.distinct()))
-        print("\nall_packages.distinct()[0] = {}\n".format(all_packages.distinct()[0]))
+    #     all_packages = Package.objects
+    #     print("\nPackage.objects = {}\n".format(Package.objects))
+    #     print("\nall_packages.distinct() = {}\n".format(all_packages.distinct()))
+    #     print("\nall_packages.distinct()[0] = {}\n".format(all_packages.distinct()[0]))
 
-        for pkg in all_packages.distinct():
-            print(PackageURL.from_string(pkg.purl))
+    #     for pkg in all_packages.distinct():
+    #         print(PackageURL.from_string(pkg.purl))
 
-        print("")
+    #     print("")

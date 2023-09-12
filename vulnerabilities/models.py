@@ -278,7 +278,7 @@ class Vulnerability(models.Model):
                 "first_import": "",
             }
             yield {
-                "date_published": log.action_time.strftime("%d %B, %Y"),
+                "date_published": log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
                 "message": f"Imported at Vulnerablecode by {authority}",
                 "source": "",
                 "package": "",
@@ -304,7 +304,7 @@ class Vulnerability(models.Model):
                 else:
                     message = f"""{importer_name} confirms <a href="/packages/{log.supporting_data["package"]}?search={ log.supporting_data["package"] }" target="_self">{ log.supporting_data["package"] }</a> is affected by this vulnerability"""
             yield {
-                "date_published": log.action_time.strftime("%d %B, %Y"),
+                "date_published": log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
                 "message": message,
                 "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
                 "package": log.supporting_data["package"],
@@ -330,7 +330,7 @@ class Vulnerability(models.Model):
                 else:
                     message = f"""{importer_name} confirms <a href="/packages/{log.supporting_data["package"]}?search={ log.supporting_data["package"] }" target="_self">{ log.supporting_data["package"] }</a> is fixing this vulnerability"""
             yield {
-                "date_published": log.action_time.strftime("%d %B, %Y"),
+                "date_published": log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
                 "message": message,
                 "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
                 "package": log.supporting_data["package"],
@@ -748,7 +748,7 @@ class Package(PackageURLMixin):
                 "first_import": "",
             }
             yield {
-                "date_published": log.action_time.strftime("%d %B, %Y"),
+                "date_published": log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
                 "message": f"Imported at Vulnerablecode by {authority}",
                 "source": "",
                 "package": "",
@@ -774,7 +774,7 @@ class Package(PackageURLMixin):
                 else:
                     message = f"""{importer_name} confirms <a href="/vulnerabilities/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }" target="_self">{ log.supporting_data["vulnerability"] }</a> is affecting this package"""
             yield {
-                "date_published": log.action_time.strftime("%d %B, %Y"),
+                "date_published": log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
                 "message": message,
                 "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
                 "vulnerability": log.supporting_data["vulnerability"],
@@ -800,7 +800,7 @@ class Package(PackageURLMixin):
                 else:
                     message = f"""{importer_name} confirms <a href="/vulnerabilities/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }" target="_self">{ log.supporting_data["vulnerability"] }</a> is fixed by this package"""
             yield {
-                "date_published": log.action_time.strftime("%d %B, %Y"),
+                "date_published": log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
                 "message": message,
                 "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
                 "vulnerability": log.supporting_data["vulnerability"],
@@ -1092,7 +1092,6 @@ class PackageRelatedVulnerability(models.Model):
                 },
             )
         else:
-            print(advisory.url)
             VulnerabilityChangeLog.log_affects(
                 vulnerability=self.vulnerability,
                 importer=advisory.created_by,

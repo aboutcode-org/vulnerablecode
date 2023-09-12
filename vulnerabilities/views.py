@@ -73,6 +73,13 @@ class VulnerabilitySearch(ListView):
         return self.model.objects.search(query=query).with_package_counts()
 
 
+key_func = lambda dict: (
+    True if dict["date_published"] else False,
+    datetime.strptime(dict["date_published"], "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%dT%H:%M:%S")  # Format as ISO datetime
+    if dict["date_published"]
+    else "",
+)
+
 class PackageDetails(DetailView):
     model = models.Package
     template_name = "package_details.html"

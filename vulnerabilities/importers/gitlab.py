@@ -52,13 +52,11 @@ class GitLabAPIImporter(Importer):
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
     importer_name = "GitLab Importer"
     importing_authority = "Gitlab Security Advisory"
+    repo_url = "git+https://gitlab.com/gitlab-org/advisories-community/"
 
-    def __init__(self):
-        super().__init__(repo_url="git+https://gitlab.com/gitlab-org/advisories-community/")
-
-    def advisory_data(self, _keep_clone=True) -> Iterable[AdvisoryData]:
+    def advisory_data(self, _keep_clone=False) -> Iterable[AdvisoryData]:
         try:
-            self.clone()
+            self.clone(repo_url=self.repo_url)
             base_path = Path(self.vcs_response.dest_dir)
 
             for file_path in base_path.glob("**/*.yml"):
@@ -68,7 +66,7 @@ class GitLabAPIImporter(Importer):
                 )
 
                 if gitlab_type in PURL_TYPE_BY_GITLAB_SCHEME:
-                    yield parse_gitlab_advisory(file_path, base_path)
+                    yield parse_gitlab_advisory(file=file_path, base_path=base_path)
 
                 else:
                     logger.error(f"Unknow package type {gitlab_type!r} in {file_path!r}")
@@ -197,6 +195,7 @@ def parse_gitlab_advisory(file, base_path):
     date_published = date_published.replace(tzinfo=pytz.UTC)
     package_slug = gitlab_advisory.get("package_slug")
     purl: PackageURL = get_purl(package_slug=package_slug)
+    file_path = str(file.relative_to(base_path)).strip("/")
     if not purl:
         logger.error(f"parse_yaml_file: purl is not valid: {file!r} {package_slug!r}")
         return AdvisoryData(
@@ -204,6 +203,7 @@ def parse_gitlab_advisory(file, base_path):
             summary=summary,
             references=references,
             date_published=date_published,
+            url=f"https://gitlab.com/gitlab-org/advisories-community/-/blob/main/{file_path}",
         )
     affected_version_range = None
     fixed_versions = gitlab_advisory.get("fixed_versions") or []
@@ -252,7 +252,6 @@ def parse_gitlab_advisory(file, base_path):
                     affected_version_range=affected_version_range,
                 )
             ]
-    file_path = str(file.relative_to(base_path)).strip("/")
     return AdvisoryData(
         aliases=aliases,
         summary=summary,

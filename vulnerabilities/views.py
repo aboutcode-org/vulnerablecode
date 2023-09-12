@@ -78,6 +78,7 @@ key_func = lambda dict: (
     datetime.strptime(dict["date_published"], "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%dT%H:%M:%S")  # Format as ISO datetime
     if dict["date_published"]
     else "",
+    False if dict.get("vcio_import") else True,
 )
 
 class PackageDetails(DetailView):

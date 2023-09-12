@@ -271,7 +271,6 @@ class Vulnerability(models.Model):
                 "message": f"Advisory published by { authority }"
                 if log.actor_name
                 else "Published by unknown source",
-                # "source" : ""
                 "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
                 "package": "",
                 "vulnerablecode_version": vulnerablecode_version,
@@ -283,6 +282,7 @@ class Vulnerability(models.Model):
                 "source": "",
                 "package": "",
                 "first_import": "",
+                "vcio_import": True,
                 "vulnerablecode_version": vulnerablecode_version,
             }
 
@@ -730,34 +730,37 @@ class Package(PackageURLMixin):
         from vulnerabilities.importers import IMPORTERS_REGISTRY
 
         vuln_logs_qs = self.packagechangelog_set.all()
-        print(vuln_logs_qs)
-        for log in vuln_logs_qs.filter(action_type=1).distinct():
-            authority = IMPORTERS_REGISTRY[log.actor_name].importing_authority
-            importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
-            yield {
-                "date_published": log.supporting_data["date_published"]
-                if log.supporting_data["date_published"]
-                else None,
-                "message": f"Advisory published by { authority }"
-                if log.actor_name
-                else "Published by unknown source",
-                # "source" : ""
-                "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
-                "package": "",
-                "vulnerablecode_version": vulnerablecode_version,
-                "first_import": "",
-            }
-            yield {
-                "date_published": log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                "message": f"Imported at Vulnerablecode by {authority}",
-                "source": "",
-                "package": "",
-                "first_import": "",
-                "vulnerablecode_version": vulnerablecode_version,
-            }
+        # print(vuln_logs_qs)
+        # for log in vuln_logs_qs.filter(action_type=1).distinct():
+        #     authority = IMPORTERS_REGISTRY[log.actor_name].importing_authority
+        #     importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
+        #     yield {
+        #         "date_published": log.supporting_data["date_published"]
+        #         if log.supporting_data["date_published"]
+        #         else None,
+        #         "message": f"Advisory published by { authority }"
+        #         if log.actor_name
+        #         else "Published by unknown source",
+        #         # "source" : ""
+        #         "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
+        #         "package": "",
+        #         "vulnerablecode_version": vulnerablecode_version,
+        #         "first_import": "",
+        #     }
+        #     yield {
+        #         "date_published": log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
+        #         "message": f"Imported at Vulnerablecode by {authority}",
+        #         "source": "",
+        #         "package": "",
+        #         "first_import": "",
+        #         "vcio_import": True,
+        #         "vulnerablecode_version": vulnerablecode_version,
+        #     }
 
         for log in vuln_logs_qs.filter(action_type=3):
+            print(log.actor_name)
             importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
+            print(importer_name, IMPORTERS_REGISTRY[log.actor_name])
             conflict = False
             if vuln_logs_qs.filter(
                 action_type=4,

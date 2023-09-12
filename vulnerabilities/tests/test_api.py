@@ -200,6 +200,10 @@ class APITestCaseVulnerability(TransactionTestCase):
             )
         self.weaknesses = Weakness.objects.create(cwe_id=119)
         self.weaknesses.vulnerabilities.add(self.vulnerability)
+        self.invalid_weaknesses = Weakness.objects.create(
+            cwe_id=10000
+        )  # cwe not present in weaknesses_db
+        self.invalid_weaknesses.vulnerabilities.add(self.vulnerability)
 
     def test_api_status(self):
         response = self.csrf_client.get("/api/vulnerabilities/")
@@ -240,7 +244,12 @@ class APITestCaseVulnerability(TransactionTestCase):
                     "cwe_id": 119,
                     "name": "Improper Restriction of Operations within the Bounds of a Memory Buffer",
                     "description": "The software performs operations on a memory buffer, but it can read from or write to a memory location that is outside of the intended boundary of the buffer.",
-                }
+                },
+                {
+                    "cwe_id": 10000,
+                    "name": "",
+                    "description": "",
+                },
             ],
         }
 
@@ -268,7 +277,12 @@ class APITestCaseVulnerability(TransactionTestCase):
                     "cwe_id": 119,
                     "name": "Improper Restriction of Operations within the Bounds of a Memory Buffer",
                     "description": "The software performs operations on a memory buffer, but it can read from or write to a memory location that is outside of the intended boundary of the buffer.",
-                }
+                },
+                {
+                    "cwe_id": 10000,
+                    "name": "",
+                    "description": "",
+                },
             ],
         }
 

@@ -747,14 +747,6 @@ class Package(PackageURLMixin):
                     sort_fixed_by_packages_by_version = self.sort_by_version(later_fixed_packages)
                     closest_fixed_package = sort_fixed_by_packages_by_version[0]
                     closest_fixed_package_vulns = closest_fixed_package.affected_by
-                    print(
-                        "\nclosest_fixed_package_vulns = {}\n".format(closest_fixed_package_vulns)
-                    )
-                    print(
-                        "\ntype(closest_fixed_package_vulns) = {}\n".format(
-                            type(closest_fixed_package_vulns)
-                        )
-                    )
 
             else:
                 closest_fixed_package = None
@@ -776,13 +768,13 @@ class Package(PackageURLMixin):
                         dict_vuln["fixed_by_purl_vulnerabilities"] = []
 
         # Temporary print output during dev/testing.
-        from pprint import pprint
+        # from pprint import pprint
 
-        pprint(
-            purl_dict,
-            sort_dicts=False,
-        )
-        print("")
+        # pprint(
+        #     purl_dict,
+        #     sort_dicts=False,
+        # )
+        # print("")
 
         return purl_dict
 

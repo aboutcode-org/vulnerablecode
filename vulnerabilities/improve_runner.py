@@ -60,13 +60,13 @@ class ImproveRunner:
 def process_inferences(inferences: List[Inference], advisory: Advisory, improver_name: str):
     """
     Return number of inferences processed.
-    An atomic transaction that updates both the Advisory (e.g. date_improved)
+    An atomic transaction that updates both the Advisory (e.g. date_imported)
     and processes the given inferences to create or update corresponding
     database fields.
 
     This avoids failing the entire improver when only a single inference is
     erroneous. Also, the atomic transaction for every advisory and its
-    inferences makes sure that date_improved of advisory is consistent.
+    inferences makes sure that date_imported of advisory is consistent.
     """
     inferences_processed_count = 0
 
@@ -150,7 +150,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
 
         inferences_processed_count += 1
 
-    advisory.date_improved = datetime.now(timezone.utc)
+    advisory.date_imported = datetime.now(timezone.utc)
     advisory.save()
     return inferences_processed_count
 

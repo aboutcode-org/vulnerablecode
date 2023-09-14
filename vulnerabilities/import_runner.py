@@ -59,16 +59,18 @@ class ImportRunner:
         logger.info(f"Finished import for {importer_name}. Imported {count} advisories.")
 
     def do_import(self, advisories) -> None:
-        improver = AdvisoryBasedDefaultImprover(advisories=advisories)
-        logger.info(f"Running improver: {improver.qualified_name}")
-        improver_name = improver.qualified_name
+        advisory_importer = AdvisoryBasedDefaultImprover(advisories=advisories)
+        logger.info(f"Running improver: {advisory_importer.qualified_name}")
+        improver_name = advisory_importer.qualified_name
         advisories = []
-        for advisory in improver.interesting_advisories:
+        for advisory in advisory_importer.interesting_advisories:
             if advisory.date_imported:
                 continue
             logger.info(f"Processing advisory: {advisory!r}")
             try:
-                inferences = improver.get_inferences(advisory_data=advisory.to_advisory_data())
+                inferences = advisory_importer.get_inferences(
+                    advisory_data=advisory.to_advisory_data()
+                )
                 process_inferences(
                     inferences=inferences,
                     advisory=advisory,
@@ -76,7 +78,7 @@ class ImportRunner:
                 )
             except Exception as e:
                 logger.info(f"Failed to process advisory: {advisory!r} with error {e!r}")
-        logger.info("Finished improving using %s.", improver.__class__.qualified_name)
+        logger.info("Finished improving using %s.", advisory_importer.__class__.qualified_name)
 
     def process_advisories(
         self, advisory_datas: Iterable[AdvisoryData], importer_name: str
@@ -128,13 +130,13 @@ class ImportRunner:
 def process_inferences(inferences: List[Inference], advisory: Advisory, improver_name: str):
     """
     Return number of inferences processed.
-    An atomic transaction that updates both the Advisory (e.g. date_improved)
+    An atomic transaction that updates both the Advisory (e.g. date_imported)
     and processes the given inferences to create or update corresponding
     database fields.
 
     This avoids failing the entire improver when only a single inference is
     erroneous. Also, the atomic transaction for every advisory and its
-    inferences makes sure that date_improved of advisory is consistent.
+    inferences makes sure that date_imported of advisory is consistent.
     """
     inferences_processed_count = 0
 

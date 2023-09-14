@@ -10,6 +10,7 @@
 from datetime import datetime
 from datetime import timezone
 
+import pytest
 from univers.version_range import VersionRange
 
 from vulnerabilities import models
@@ -43,6 +44,7 @@ class DummyImporter(Importer):
         return ADVISORY_DATAS
 
 
+@pytest.mark.django_db(transaction=True)
 def test_import_runner(db):
     runner = ImportRunner(DummyImporter)
     runner.run()
@@ -51,11 +53,13 @@ def test_import_runner(db):
     assert advisory_datas == ADVISORY_DATAS
 
 
+@pytest.mark.django_db(transaction=True)
 def test_process_advisories_with_no_advisory(db):
     ImportRunner(DummyImporter).process_advisories([], "")
     assert 0 == models.Advisory.objects.count()
 
 
+@pytest.mark.django_db(transaction=True)
 def test_process_advisories_with_advisories(db):
     ImportRunner(DummyImporter).process_advisories(ADVISORY_DATAS, "test_importer")
     advisories = models.Advisory.objects.all()
@@ -63,6 +67,7 @@ def test_process_advisories_with_advisories(db):
     assert advisory_datas == ADVISORY_DATAS
 
 
+@pytest.mark.django_db(transaction=True)
 def test_process_advisories_idempotency(db):
     ImportRunner(DummyImporter).process_advisories(ADVISORY_DATAS, "test_importer")
     ImportRunner(DummyImporter).process_advisories(ADVISORY_DATAS, "test_importer")
@@ -72,6 +77,7 @@ def test_process_advisories_idempotency(db):
     assert advisory_datas == ADVISORY_DATAS
 
 
+@pytest.mark.django_db(transaction=True)
 def test_process_advisories_idempotency_with_one_new_advisory(db):
     advisory_datas = ADVISORY_DATAS.copy()
     ImportRunner(DummyImporter).process_advisories(advisory_datas, "test_importer")
@@ -86,9 +92,17 @@ def test_process_advisories_idempotency_with_one_new_advisory(db):
     assert advisory_datas_in_db == advisory_datas
 
 
-def test_process_advisories_idempotency_with_different_importer_names(db):
+@pytest.mark.django_db(transaction=True)
+def test_process_advisories_idempotency_with_different_importer_names():
     ImportRunner(DummyImporter).process_advisories(ADVISORY_DATAS, "test_importer_one")
     ImportRunner(DummyImporter).process_advisories(ADVISORY_DATAS, "test_importer_two")
     advisories = models.Advisory.objects.all()
     advisory_datas = [x.to_advisory_data() for x in advisories]
     assert advisory_datas == ADVISORY_DATAS
+
+
+def test_advisory_summary_clean_up():
+    adv = AdvisoryData(
+        summary="The X509Extension in pyOpenSSL before 0.13.1 does not properly handle a '\x00' character in a domain name in the Subject Alternative Name field of an X.509 certificate, which allows man-in-the-middle attackers to spoof arbitrary SSL servers via a crafted certificate issued by a legitimate Certification Authority."
+    )
+    assert '\x00' not in adv.summary

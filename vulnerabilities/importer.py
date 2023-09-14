@@ -252,7 +252,8 @@ class AdvisoryData:
     def __post_init__(self):
         if self.date_published and not self.date_published.tzinfo:
             logger.warning(f"AdvisoryData with no tzinfo: {self!r}")
-        self.summary = self.clean_summary(self.summary)
+        if self.summary:
+            self.summary = self.clean_summary(self.summary)
 
     def clean_summary(self, summary):
         # https://nvd.nist.gov/vuln/detail/CVE-2013-4314

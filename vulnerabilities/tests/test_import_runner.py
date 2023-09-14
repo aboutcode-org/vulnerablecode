@@ -105,4 +105,4 @@ def test_advisory_summary_clean_up():
     adv = AdvisoryData(
         summary="The X509Extension in pyOpenSSL before 0.13.1 does not properly handle a '\x00' character in a domain name in the Subject Alternative Name field of an X.509 certificate, which allows man-in-the-middle attackers to spoof arbitrary SSL servers via a crafted certificate issued by a legitimate Certification Authority."
     )
-    assert '\x00' not in adv.summary
+    assert "\x00" not in adv.summary

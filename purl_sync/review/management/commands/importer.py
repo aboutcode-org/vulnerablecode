@@ -18,7 +18,6 @@ class Command(BaseCommand):
     help = "Import a git repository files"
 
     def add_arguments(self, parser):
-        parser.add_argument("import", nargs="*")
         parser.add_argument(
             "--all",
             action="store_true",
@@ -48,7 +47,8 @@ class Importer:
                     yaml_data = saneyaml.load(f.read())
                     if str(file.name).startswith("VCID") and str(file.name).endswith(".yaml"):
                         Vulnerability.objects.get_or_create(
-                            repo=self.repo_obj, filename=yaml_data.get("vulnerability_id")
+                            repo=self.repo_obj,
+                            filename=yaml_data.get("vulnerability_id"),
                         )
                     elif str(file.name).endswith(".yaml"):
                         self.register_pkg(yaml_data)

@@ -20,8 +20,8 @@ from django.urls import reverse
 from git import Repo
 
 from purl_sync import settings
-from purl_sync.settings import PURL_SYNC_DOMAIN
 from purl_sync.settings import GIT_PATH
+from purl_sync.settings import PURL_SYNC_DOMAIN
 from review.utils import ap_collection
 from review.utils import check_purl_actor
 from review.utils import clone_git_repo
@@ -121,8 +121,8 @@ class Note(models.Model):
     @property
     def reputation_value(self):
         return (
-                self.reputation.filter(positive=True).count()
-                - self.reputation.filter(positive=False).count()
+            self.reputation.filter(positive=True).count()
+            - self.reputation.filter(positive=False).count()
         )
 
     @property
@@ -222,8 +222,8 @@ class Person(Actor):
         """if someone like your ( review or note ) you will get +1, dislike: -1"""
         user_reputation = Reputation.objects.filter(voter=self.acct)
         return (
-                user_reputation.filter(positive=True).count()
-                - user_reputation.filter(positive=False).count()
+            user_reputation.filter(positive=True).count()
+            - user_reputation.filter(positive=False).count()
         )
 
     @property
@@ -323,20 +323,7 @@ class Vulnerability(models.Model):
     )
     repo = models.ForeignKey(Repository, on_delete=models.CASCADE)
     filename = models.CharField(max_length=255, help_text="")
-    commit_id = models.CharField(max_length=50, help_text="")
     remote_url = models.CharField(max_length=300, blank=True, null=True, help_text="")
-
-    @property
-    def load_file(self):
-        """
-        fetch the url
-        copied from https://stackoverflow.com/a/54900961/9871531
-        """
-        commit = self.repo.git_repo_obj.commit(self.commit_id)
-        target_file = commit.tree / self.filename
-
-        with io.BytesIO(target_file.data_stream.read()) as f:
-            return f.read().decode("utf-8")
 
     @property
     def absolute_url(self):
@@ -349,7 +336,6 @@ class Vulnerability(models.Model):
             "type": "Vulnerability",
             "repository": self.repo.absolute_url,
             "filename": self.filename,
-            "commit": self.commit_id,
         }
 
 
@@ -363,6 +349,7 @@ class Review(models.Model):
     headline = models.CharField(max_length=300, help_text="")
     author = models.ForeignKey(Person, on_delete=models.CASCADE, help_text="")
     vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE, help_text="")
+    commit_id = models.CharField(max_length=300, help_text="")
     data = models.TextField(help_text="")
     notes = models.ManyToManyField(Note, blank=True, help_text="")
     created_at = models.DateTimeField(auto_now_add=True, help_text="")
@@ -394,8 +381,8 @@ class Review(models.Model):
     @property
     def reputation_value(self):
         return (
-                self.reputation.filter(positive=True).count()
-                - self.reputation.filter(positive=False).count()
+            self.reputation.filter(positive=True).count()
+            - self.reputation.filter(positive=False).count()
         )
 
     @property
@@ -410,6 +397,7 @@ class Review(models.Model):
             "author": self.author.absolute_url_ap,
             "headline": self.headline,
             "vulnerability": self.vulnerability.id,
+            "commit_id": self.commit_id,
             "content": self.data,
             "comments": ap_collection(self.notes),
             "published": self.created_at,

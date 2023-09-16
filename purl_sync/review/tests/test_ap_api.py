@@ -265,6 +265,7 @@ def test_get_user_outbox(person, vulnerability, review, note):
 #     assert Note.objects.count() == 1
 #
 
+
 @pytest.mark.django_db
 def test_get_purl_inbox_empty(purl, service):
     client = APIClient()

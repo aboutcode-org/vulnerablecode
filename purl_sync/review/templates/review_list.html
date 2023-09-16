@@ -15,8 +15,8 @@ Review page
     <h1>Review List</h1>
     <hr/>
 <div>
-  <form method="post" class="has-text-centered box">
-      <input class="input is-rounded" type="text" placeholder="Search" style="width: 90%;">
+  <form method="get"  class="has-text-centered box">
+      {{ form }}
       <button type="submit" class="button is-link is-rounded">Search</button>
   </form>
   {% for review in review_list %}

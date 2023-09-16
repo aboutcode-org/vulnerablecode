@@ -18,20 +18,26 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponseForbidden
 from django.http import JsonResponse
+from django.urls import resolve
 from git import Repo
 
-from purl_sync.settings import GIT_PATH, PURL_SYNC_DOMAIN
-from review.models import Follow, RemoteActor
+from purl_sync.settings import GIT_PATH
+from purl_sync.settings import PURL_SYNC_DOMAIN
+from review.models import Follow
 from review.models import Note
 from review.models import Person
 from review.models import Purl
+from review.models import RemoteActor
 from review.models import Repository
 from review.models import Review
 from review.models import Service
 from review.models import Vulnerability
-from review.utils import full_resolve, fetch_actor, webfinger_actor
+from review.signatures import PURL_SYNC_PRIVATE_KEY
+from review.signatures import HttpSignature
+from review.utils import fetch_actor
+from review.utils import full_resolve
 from review.utils import full_reverse
-from django.urls import resolve
+from review.utils import webfinger_actor
 
 CONTENT_TYPE = "application/activity+json"
 ACTOR_TYPES = ["Person", "Purl"]
@@ -119,6 +125,7 @@ class Activity:
     type: Literal["Follow", "Create", "Update", "Delete"]
     actor: Optional[str | dict]
     object: Optional[str | dict]
+    to: list = None
     id: str = None
 
     def handler(self):
@@ -126,8 +133,13 @@ class Activity:
         ap_object = (
             ApObject(**self.object) if isinstance(self.object, dict) else ApObject(id=self.object)
         )
-
         return ACTIVITY_MAPPER[self.type](actor=ap_actor, object=ap_object).save()
+
+    def federated(self, body, key_id):
+        for target in self.to:
+            target_domain = urlparse(target).netloc
+            if target_domain != PURL_SYNC_DOMAIN:  # TODO Add a server whitelist if necessary
+                HttpSignature.signed_request(target, body, PURL_SYNC_PRIVATE_KEY, key_id)
 
 
 @dataclass
@@ -246,7 +258,6 @@ class FollowActivity:
 
         return self.failed_ap_rs()
 
-
     def succeeded_ap_rs(self):
         """Response for successfully deleting the object"""
         return JsonResponse({"Location": "{self.object}"}, status=201)
@@ -257,7 +268,13 @@ class FollowActivity:
 
     def to_ap(self):
         """Follow activity in activitypub format"""
-        return {**AP_CONTEXT, "type": self.type, "actor": self.actor, "to": self.object}
+        return {
+            **AP_CONTEXT,
+            "type": self.type,
+            "actor": self.actor,
+            "to": self.object,
+            **AP_TARGET,
+        }
 
 
 @dataclass
@@ -444,7 +461,13 @@ class UnFollowActivity:
 
     def to_ap(self):
         """Follow activity in activitypub format"""
-        return {**AP_CONTEXT, "type": self.type, "actor": self.actor, "to": self.object}
+        return {
+            **AP_CONTEXT,
+            "type": self.type,
+            "actor": self.actor,
+            "to": self.object,
+            **AP_TARGET,
+        }
 
 
 @dataclass

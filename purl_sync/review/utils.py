@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 import dataclasses
+import io
 import json
 import os
 import uuid
@@ -95,7 +96,9 @@ def webfinger_actor(domain, user):
     response = requests.get(url, headers=headers)
 
     if response.status_code == 200:
-        return response.json()["links"][1]["href"]  # TODO please check if type = "application/activity+json"
+        return response.json()["links"][1][
+            "href"
+        ]  # TODO please check if type = "application/activity+json"
     else:
         raise Exception(f"Failed to fetch the actor {response.status_code} {response.content}")
 
@@ -114,3 +117,15 @@ def file_data(file_name):
     with open(file_name) as file:
         data = file.read()
         return json.loads(data)
+
+
+def load_file(git_repo_obj, filename, commit_id):
+    """
+    Get file data from a specific git commit using gitpython
+    copied from https://stackoverflow.com/a/54900961/9871531
+    """
+    commit = git_repo_obj.commit(commit_id)
+    target_file = commit.tree / filename
+
+    with io.BytesIO(target_file.data_stream.read()) as f:
+        return f.read().decode("utf-8")

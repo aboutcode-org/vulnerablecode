@@ -30,12 +30,12 @@ $(document).ready(function () {
                 "X-Requested-With": "XMLHttpRequest",
                 "X-CSRFToken": getCookie("csrftoken"),
             },
-            data: JSON.stringify({"path": $('select').val()}),
+            data: JSON.stringify({"path": $("input[name='file_path']").val()}),
             dataType: "json",
             success: (data) => {
                 console.log(data);
                 $('textarea').val(data.text);
-                $("input[name='filename']").val($('select').val());
+                $("input[name='filename']").val($("input[name='file_path']").val());
             },
             error: (error) => {
                 console.log(error);
@@ -63,13 +63,9 @@ $(document).ready(function () {
 
       <form name='fetch-file'>
           {% csrf_token %}
-          <select class="select width-100-pct">
-              {% for i in git_files_tree %}
-                <option value="{{ i.path }}">{{ i.path }}</option>
-              {% endfor %}
-          </select>
+          {{ fetch_form }}
           <div class="buttons is-centered">
-              <button class="button is-info mt-5" type="submit">Fetch</button>
+            <input class="button is-info mt-5" type="submit" value="Fetch">
           </div>
       </form>
 
@@ -99,19 +95,6 @@ $(document).ready(function () {
                 <button class="button is-fullwidth is-success mr-5 ml-5" type="submit" name="create">
                   Create Review
                 </button>
-                <p class="ml-2 mr-5"> OR </p>
-
-                <div class="file is-fullwidth">
-                  <label class="file-label">
-                    <input class="file-input" type="file" name="resume">
-                    <span class="file-cta">
-                      <span class="file-label">
-                        Upload a File
-                      </span>
-                    </span>
-                  </label>
-                </div>
-
           </div>
       </form>
   </div>

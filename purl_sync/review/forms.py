@@ -76,10 +76,63 @@ class CreateReviewForm(forms.Form):
     filename = forms.CharField(widget=forms.HiddenInput())
 
 
+class FetchForm(forms.Form):
+    file_path = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "input",
+                "placeholder": "alpine/dia/VCID-xxx-xxx-xxx.yaml",
+            }
+        )
+    )
+
+
 class SubscribePurlForm(forms.Form):
     acct = forms.CharField(
         label="Subscribe with a remote account:",
         widget=forms.TextInput(
             attrs={"placeholder": "ziadhany@vulnerablecode.io", "class": "input"}
+        ),
+    )
+
+
+class SearchPurlForm(forms.Form):
+    search = forms.CharField(
+        required=True,
+        label=False,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Please entre a valid purl ex: pkg:maven/org.apache.commons/io@1.3.4",
+                "class": "input is-rounded",
+                "style": "width: 90%;",
+            },
+        ),
+    )
+
+
+class SearchReviewForm(forms.Form):
+    search = forms.CharField(
+        required=True,
+        label=False,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Please Entre a valid Review Name",
+                "class": "input is-rounded",
+                "style": "width: 90%;",
+            },
+        ),
+    )
+
+
+class SearchRepositoryForm(forms.Form):
+    search = forms.CharField(
+        required=True,
+        label=False,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Please Entre a Repository URL ex: https://github.com/nexB/vulnerablecode-data",
+                "class": "input is-rounded",
+                "style": "width: 90%;",
+            },
         ),
     )

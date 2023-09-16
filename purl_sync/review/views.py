@@ -29,10 +29,15 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import FormMixin
 
 from purl_sync.settings import AP_CONTENT_TYPE
-from purl_sync.settings import PURL_SYNC_DOMAIN
 from purl_sync.settings import GIT_PATH
+from purl_sync.settings import PURL_SYNC_DOMAIN
 from purl_sync.settings import env
-from review.forms import PersonSignUpForm, SubscribePurlForm
+from review.forms import FetchForm
+from review.forms import PersonSignUpForm
+from review.forms import SearchPurlForm
+from review.forms import SearchRepositoryForm
+from review.forms import SearchReviewForm
+from review.forms import SubscribePurlForm
 
 from .activitypub import create_activity_obj
 from .activitypub import has_valid_header
@@ -40,8 +45,6 @@ from .forms import CreateGitRepoForm
 from .forms import CreateNoteForm
 from .forms import CreateReviewForm
 from .forms import ReviewStatusForm
-from .signatures import HttpSignature, PURL_SYNC_PRIVATE_KEY
-from .signatures import VerificationFormatError
 from .models import Follow
 from .models import Note
 from .models import Person
@@ -51,14 +54,18 @@ from .models import Reputation
 from .models import Review
 from .models import Service
 from .models import Vulnerability
+from .signatures import PURL_SYNC_PRIVATE_KEY
+from .signatures import HttpSignature
+from .signatures import VerificationFormatError
 from .utils import ap_collection
 from .utils import clone_git_repo
 from .utils import full_reverse
 from .utils import generate_webfinger
+from .utils import load_file
 from .utils import parse_webfinger
 
-APP_CLIENT_ID = env.str("APP_CLIENT_ID")
-APP_CLIENT_SECRET = env.str("APP_CLIENT_SECRET")
+PURL_SYNC_CLIENT_ID = env.str("PURL_SYNC_CLIENT_ID")
+PURL_SYNC_CLIENT_SECRET = env.str("PURL_SYNC_CLIENT_SECRET")
 
 
 class WebfingerView(View):
@@ -185,10 +192,6 @@ class PurlView(DetailView, FormMixin):
             return self.form_invalid(note_form)
 
 
-def logout_view(request):
-    logout(request)
-
-
 def is_service_user(view):
     def wrapper(request, *args, **kwargs):
         if hasattr(request.user, "service"):
@@ -233,25 +236,46 @@ class PersonSignUp(FormView):
         return super(PersonSignUp, self).form_valid(form)
 
 
-class RepositoryListView(ListView):
+class RepositoryListView(ListView, FormMixin):
     model = Repository
     context_object_name = "repo_list"
     template_name = "repo_list.html"
     paginate_by = 10
+    form_class = SearchRepositoryForm
+
+    def get_queryset(self):
+        form = self.form_class(self.request.GET)
+        if form.is_valid():
+            return Repository.objects.filter(url__icontains=form.cleaned_data.get("search"))
+        return Repository.objects.all()
 
 
-class ReviewListView(ListView):
+class ReviewListView(ListView, FormMixin):
     model = Review
     context_object_name = "review_list"
     template_name = "review_list.html"
     paginate_by = 10
+    form_class = SearchReviewForm
+
+    def get_queryset(self):
+        form = self.form_class(self.request.GET)
+        if form.is_valid():
+            return Review.objects.filter(headline__icontains=form.cleaned_data.get("search"))
+        return Review.objects.all()
 
 
-class PurlListView(ListView):
+class PurlListView(ListView, FormMixin):
     model = Purl
     context_object_name = "purl_list"
     template_name = "purl_list.html"
     paginate_by = 20
+    form_class = SearchPurlForm
+
+    def get_queryset(self):
+        form = self.form_class(self.request.GET)
+        if form.is_valid():
+            return Purl.objects.filter(string__icontains=form.cleaned_data.get("search"))
+        return Purl.objects.all()
 
 
 class ReviewView(LoginRequiredMixin, TemplateView):
@@ -261,7 +285,11 @@ class ReviewView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context["review"] = get_object_or_404(Review, id=self.kwargs["review_id"])
         vul_source = context["review"].data.splitlines()
-        vul_target = context["review"].vulnerability.load_file.splitlines()
+        vul_target = load_file(
+            git_repo_obj=context["review"].vulnerability.repo.git_repo_obj,
+            filename=context["review"].vulnerability.filename,
+            commit_id=context["review"].commit_id,
+        ).splitlines()
         d = difflib.HtmlDiff()
         context["patch"] = d.make_table(
             vul_source, vul_target, fromdesc="original", todesc="modified"
@@ -406,7 +434,9 @@ class FollowPurlView(View):
         purl = Purl.objects.get(string=self.kwargs["purl_string"])
         if request.user.is_authenticated:
             if "follow" in request.POST:
-                follow_obj, _ = Follow.objects.get_or_create(person=self.request.user.person, purl=purl)
+                follow_obj, _ = Follow.objects.get_or_create(
+                    person=self.request.user.person, purl=purl
+                )
 
             elif "unfollow" in request.POST:
                 try:
@@ -418,7 +448,7 @@ class FollowPurlView(View):
                     )
         elif request.user.is_anonymous:
             if "subscribe" in request.POST:
-                acct = request.POST.get('acct')
+                acct = request.POST.get("acct")
                 person, host = parse_webfinger(acct)
                 # fetch remote
 
@@ -431,13 +461,19 @@ class CreateReview(LoginRequiredMixin, TemplateView):
     def get_context_data(self, request, **kwargs):
         context = super().get_context_data(**kwargs)
         repo = Repository.objects.get(id=self.kwargs["repository_id"])
-        context["git_files_tree"] = repo.git_repo_obj.commit().tree.traverse()
+        context["git_files_tree"] = [
+            entry.path
+            for entry in repo.git_repo_obj.commit().tree.traverse()
+            if entry.type == "blob"
+        ]
         return context
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(request, **kwargs)
         return render(
-            request, self.template_name, {**context, "create_review_form": CreateReviewForm()}
+            request,
+            self.template_name,
+            {**context, "create_review_form": CreateReviewForm(), "fetch_form": FetchForm()},
         )
 
     def post(self, request, *args, **kwargs):
@@ -448,7 +484,6 @@ class CreateReview(LoginRequiredMixin, TemplateView):
             vuln, _ = Vulnerability.objects.get_or_create(
                 repo=repo,
                 filename=create_review_form.cleaned_data["filename"],
-                commit_id=commit,
             )
 
             review = Review.objects.create(
@@ -456,11 +491,14 @@ class CreateReview(LoginRequiredMixin, TemplateView):
                 data=create_review_form.cleaned_data["data"],
                 author=request.user.person,
                 vulnerability=vuln,
+                commit_id=commit,
             )
             review.save()
         context = self.get_context_data(request, **kwargs)
         return render(
-            request, self.template_name, {**context, "create_review_form": CreateReviewForm()}
+            request,
+            self.template_name,
+            {**context, "create_review_form": CreateReviewForm(), "fetch_form": FetchForm()},
         )
 
 
@@ -498,8 +536,10 @@ class UserProfile(View):
         except User.DoesNotExist:
             return HttpResponseBadRequest("User doesn't exist")
 
-        if request.GET.get('main-key'):
-            return HttpResponse(user.person.public_key if hasattr(user, "person") else user.service.public_key)
+        if request.GET.get("main-key"):
+            return HttpResponse(
+                user.person.public_key if hasattr(user, "person") else user.service.public_key
+            )
 
         if hasattr(user, "person"):
             return JsonResponse(user.person.to_ap, content_type=AP_CONTENT_TYPE)
@@ -518,7 +558,7 @@ class PurlProfile(View):
         except Purl.DoesNotExist:
             return HttpResponseBadRequest("Invalid type user")
 
-        if request.GET.get('main-key'):
+        if request.GET.get("main-key"):
             return HttpResponse(purl.public_key)
 
         return JsonResponse(purl.to_ap, content_type=AP_CONTENT_TYPE)
@@ -706,8 +746,8 @@ def token(request):
             "grant_type": "password",
             "username": payload["username"],
             "password": payload["password"],
-            "client_id": APP_CLIENT_ID,
-            "client_secret": APP_CLIENT_SECRET,
+            "client_id": PURL_SYNC_CLIENT_ID,
+            "client_secret": PURL_SYNC_CLIENT_SECRET,
         },
     )
     return JsonResponse(json.loads(r.content), status=r.status_code, content_type=AP_CONTENT_TYPE)
@@ -722,8 +762,8 @@ def refresh_token(request):
         data={
             "grant_type": "refresh_token",
             "refresh_token": payload["refresh_token"],
-            "client_id": APP_CLIENT_ID,
-            "client_secret": APP_CLIENT_SECRET,
+            "client_id": PURL_SYNC_CLIENT_ID,
+            "client_secret": PURL_SYNC_CLIENT_SECRET,
         },
     )
     return JsonResponse(json.loads(r.text), status=r.status_code, content_type=AP_CONTENT_TYPE)
@@ -737,8 +777,8 @@ def revoke_token(request):
         headers={"content-type": "application/x-www-form-urlencoded"},
         data={
             "token": payload["token"],
-            "client_id": APP_CLIENT_ID,
-            "client_secret": APP_CLIENT_SECRET,
+            "client_id": PURL_SYNC_CLIENT_ID,
+            "client_secret": PURL_SYNC_CLIENT_SECRET,
         },
     )
     return JsonResponse(json.loads(r.content), status=r.status_code, content_type=AP_CONTENT_TYPE)

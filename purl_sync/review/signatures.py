@@ -1,17 +1,23 @@
 import base64
 import json
-from ssl import SSLCertVerificationError, SSLError
-from typing import Literal, TypedDict, cast
+from ssl import SSLCertVerificationError
+from ssl import SSLError
+from typing import Literal
+from typing import TypedDict
+from typing import cast
 from urllib.parse import urlparse
 
 import httpx
 from cryptography.exceptions import InvalidSignature
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import padding, rsa
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives.asymmetric import rsa
 from django.conf import settings
 from django.http import HttpRequest
 from django.utils import timezone
-from django.utils.http import http_date, parse_http_date
+from django.utils.http import http_date
+from django.utils.http import parse_http_date
 from httpx._types import TimeoutTypes
 from idna.core import InvalidCodepoint
 
@@ -63,6 +69,7 @@ class RsaKeys:
 
 
 PURL_SYNC_PUBLIC_KEY, PURL_SYNC_PRIVATE_KEY = RsaKeys.generate_keypair()
+
 
 class HttpSignature:
     """

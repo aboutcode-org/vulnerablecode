@@ -1,0 +1,15 @@
+{
+    "followers": "https://127.0.0.2:8000/api/v0/purls/@pkg:maven/org.apache.logging/followers/",
+    "id": "https://127.0.0.2:8000/api/v0/purls/@pkg:maven/org.apache.logging/",
+    "image": "https://127.0.0.2:8000/media/favicon16x16.png",
+    "inbox": "https://127.0.0.2:8000/api/v0/purls/@pkg:maven/org.apache.logging/inbox",
+    "name": "vcio",
+    "string": "pkg:maven/org.apache.logging",
+    "outbox": "https://127.0.0.2:8000/api/v0/purls/@pkg:maven/org.apache.logging/outbox",
+    "publicKey": {
+        "id": "https://127.0.0.2:8000/api/v0/purls/@pkg:maven/org.apache.logging/",
+        "owner": "https://127.0.0.2:8000/api/v0/users/@vcio",
+        "publicKeyPem": "BEGIN PUBLIC KEY...END PUBLIC KEY"
+    },
+    "type": "Purl"
+}

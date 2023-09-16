@@ -1,0 +1,15 @@
+{
+  "subject": "remoteziad@127.0.0.2:8000",
+  "links": [
+    {
+      "rel": "https://webfinger.net/rel/profilepage",
+      "type": "text/html",
+      "href": "https://127.0.0.2:8000/users/@ziad"
+    },
+    {
+      "rel": "self",
+      "type": "application/activity+json",
+      "href": "https://127.0.0.2:8000/api/v0/users/@ziad"
+    }
+  ]
+}

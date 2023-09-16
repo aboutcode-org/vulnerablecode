@@ -94,7 +94,6 @@ def webfinger_actor(domain, user):
     url = f"https://{domain}/.well-known/webfinger?resource=acct:{acct}"
     headers = {"User-Agent": ""}  # TODO
     response = requests.get(url, headers=headers)
-
     if response.status_code == 200:
         return response.json()["links"][1][
             "href"

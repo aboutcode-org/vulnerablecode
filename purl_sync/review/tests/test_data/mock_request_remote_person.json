@@ -1,0 +1,15 @@
+{
+    "following": "https://127.0.0.2:8000/api/v0/users/@ziad/following/",
+    "id": "https://127.0.0.2:8000/api/v0/users/@ziad",
+    "image": "https://127.0.0.2:8000/media/favicon16x16.png",
+    "inbox": "https://127.0.0.2:8000/api/v0/users/@ziad/inbox",
+    "name": "ziad",
+    "outbox": "https://127.0.0.2:8000/api/v0/users/@ziad/outbox",
+    "publicKey": {
+        "id": "https://127.0.0.2:8000/api/v0/users/@ziad",
+        "owner": "https://127.0.0.2:8000/api/v0/users/@ziad",
+        "publicKeyPem": "BEGIN PUBLIC KEY...END PUBLIC KEY"
+    },
+    "summary": "Hello World",
+    "type": "Person"
+}

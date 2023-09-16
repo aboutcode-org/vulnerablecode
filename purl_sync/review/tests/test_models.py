@@ -79,7 +79,6 @@ def vulnerability(db, repo):
     return Vulnerability.objects.create(
         repo=repo,
         filename="VCID-rf6e-vjeu-aaae.json",
-        commit_id="49d8c5fd4bea9488186a832b13ebdc83484f1b6a",
     )
 
 
@@ -90,6 +89,7 @@ def review(db, vulnerability, person):
         author=person,
         vulnerability=vulnerability,
         data="text diff",
+        commit_id="49d8c5fd4bea9488186a832b13ebdc83484f1b6a",
     )
 
 
@@ -117,12 +117,12 @@ def test_review(review, person, vulnerability):
     assert review.vulnerability == vulnerability
     assert review.data == "text diff"
     assert review.status == 0
+    assert review.commit_id == "49d8c5fd4bea9488186a832b13ebdc83484f1b6a"
 
 
 def test_vulnerability(vulnerability, repo):
     assert vulnerability.repo == repo
     assert vulnerability.filename == "VCID-rf6e-vjeu-aaae.json"
-    assert vulnerability.commit_id == "49d8c5fd4bea9488186a832b13ebdc83484f1b6a"
 
 
 @pytest.fixture(autouse=True)

@@ -8,10 +8,11 @@
 #
 from django.contrib import admin
 
-from review.models import Follow, RemoteActor
+from review.models import Follow
 from review.models import Note
 from review.models import Person
 from review.models import Purl
+from review.models import RemoteActor
 from review.models import Repository
 from review.models import Reputation
 from review.models import Review

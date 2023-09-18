@@ -512,20 +512,29 @@ def get_severity_range(severity_list):
     '0.1 - 6.9'
     >>> get_severity_range({'9.5','critical'})
     '9.0 - 10.0'
+    >>> get_severity_range({'9.5','critical','unknown'})
+    '9.0 - 10.0'
+    >>> get_severity_range({})
     """
-    if len(severity_list) > 1:
-        score_map = {
-            "low": [0.1, 3],
-            "moderate": [4.0, 6.9],
-            "medium": [4.0, 6.9],
-            "high": [7.0, 8.9],
-            "critical": [9.0, 10.0],
-        }
+    if len(severity_list) < 1:
+        return
+    score_map = {
+        "low": [0.1, 3],
+        "moderate": [4.0, 6.9],
+        "medium": [4.0, 6.9],
+        "high": [7.0, 8.9],
+        "important": [7.0, 8.9],
+        "critical": [9.0, 10.0],
+    }
 
-        score_list = []
-        for score in severity_list:
-            try:
-                score_list.append(float(score))
-            except ValueError:
-                score_list.extend(score_map[score.lower()])
-        return f"{min(score_list)} - {max(score_list)}"
+    score_list = []
+    for score in severity_list:
+        try:
+            score_list.append(float(score))
+        except ValueError:
+            score_range = score_map.get(score.lower()) or []
+            if score_range:
+                score_list.extend(score_range)
+    if not score_list:
+        return
+    return f"{min(score_list)} - {max(score_list)}"

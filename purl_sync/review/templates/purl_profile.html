@@ -4,6 +4,7 @@ Your Profile
 {% endblock %}
 {% block json_ld_script %}
 <script type="application/ld+json">
+{{ purl.to_ap }}
 </script>
 {% endblock %}
 {% block content %}

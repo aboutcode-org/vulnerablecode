@@ -5,6 +5,11 @@ Your Profile
 
 {% block json_ld_script %}
 <script type="application/ld+json">
+  {% if user.person %}
+  {{ user.person.to_ap }}
+  {% elif user.service %}
+  {{ user.service.to_ap }}
+  {% endif %}
 </script>
 {% endblock %}
 

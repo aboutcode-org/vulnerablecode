@@ -20,6 +20,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from django.views.generic import CreateView
 from django.views.generic import DetailView
 from django.views.generic import FormView
@@ -38,6 +39,8 @@ from review.forms import SearchRepositoryForm
 from review.forms import SearchReviewForm
 from review.forms import SubscribePurlForm
 
+from .activitypub import AP_CONTEXT
+from .activitypub import AP_TARGET
 from .activitypub import create_activity_obj
 from .activitypub import has_valid_header
 from .forms import CreateGitRepoForm
@@ -58,10 +61,13 @@ from .signatures import HttpSignature
 from .signatures import VerificationFormatError
 from .utils import ap_collection
 from .utils import clone_git_repo
+from .utils import fetch_actor
+from .utils import file_data
 from .utils import full_reverse
 from .utils import generate_webfinger
-from .utils import load_file
+from .utils import load_git_file
 from .utils import parse_webfinger
+from .utils import webfinger_actor
 
 PURL_SYNC_CLIENT_ID = env.str("PURL_SYNC_CLIENT_ID")
 PURL_SYNC_CLIENT_SECRET = env.str("PURL_SYNC_CLIENT_SECRET")
@@ -284,7 +290,7 @@ class ReviewView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context["review"] = get_object_or_404(Review, id=self.kwargs["review_id"])
         vul_source = context["review"].data.splitlines()
-        vul_target = load_file(
+        vul_target = load_git_file(
             git_repo_obj=context["review"].vulnerability.repo.git_repo_obj,
             filename=context["review"].vulnerability.filename,
             commit_id=context["review"].commit_id,
@@ -446,10 +452,37 @@ class FollowPurlView(View):
                         "Some thing went wrong when you try to unfollow this purl"
                     )
         elif request.user.is_anonymous:
-            if "subscribe" in request.POST:
-                acct = request.POST.get("acct")
-                person, host = parse_webfinger(acct)
-                # fetch remote
+            form = SubscribePurlForm(request.POST)
+            if form.is_valid():
+                user, domain = parse_webfinger(form.cleaned_data.get("acct"))
+                remote_actor_url = webfinger_actor(user, domain)
+
+                payload = json.dumps(
+                    {
+                        **AP_CONTEXT,
+                        "@type": "Follow",
+                        "actor": {
+                            "@type": "Person",
+                            "@id": remote_actor_url,
+                        },
+                        "object": {
+                            "@type": "Purl",
+                            "@id": purl.absolute_url_ap,
+                        },
+                        "to": [{"@type": "Person", "@id": remote_actor_url}],
+                        **AP_TARGET,
+                    }
+                )
+
+                activity = create_activity_obj(payload)
+                activity_response = activity.handler()
+                return JsonResponse(
+                    {
+                        "redirect_url": f"https://{domain}/authorize_interaction?uri={remote_actor_url}"
+                    }
+                )
+            else:
+                return HttpResponseBadRequest()
 
         return redirect(".")
 
@@ -617,14 +650,12 @@ class UserOutbox(View):
     @csrf_exempt
     def post(self, request, *args, **kwargs):
         """You can POST to your outbox to send messages to the world (client-to-server)"""
-        # if request.user.is_authenticated and request.user.username == kwargs["username"]:
-        #     activity = create_activity_obj(request.body)
-        #     actor = None
-        #     HttpSignature.signed_request(activity.object.inbox, request.body, PURL_SYNC_PRIVATE_KEY, actor.key_id)
-        #     if activity:
-        #         return activity.handler()
-        #     else:
-        #         return HttpResponseBadRequest("Invalid message")
+        if request.user.is_authenticated and request.user.username == kwargs["username"]:
+            activity = create_activity_obj(request.body)
+            if activity:
+                return activity.handler()
+
+        return HttpResponseBadRequest("Invalid message")
 
 
 @method_decorator(has_valid_header, name="dispatch")
@@ -654,21 +685,7 @@ class PurlInbox(View):
         You can POST to someone's inbox to send them a message
         (server-to-server / federation only... this is federation!)
         """
-        """let's say we have a remote mastodon user this user want to add 
-        a reply to one of purl posts or person review"""
-        # activity = create_activity_obj(request.body)
-        # if activity:
-        #     return activity.handler()
-        #
-        # actor = None
-        # try:
-        #     HttpSignature.verify_request(
-        #         request,
-        #         actor.public_key,
-        #     )
-        #
-        # except VerificationFormatError():
-        #     pass
+        return NotImplementedError
 
 
 @method_decorator(has_valid_header, name="dispatch")
@@ -686,19 +703,19 @@ class PurlOutbox(View):
 
     def post(self, request, *args, **kwargs):
         """You can POST to your outbox to send messages to the world (client-to-server)"""
-        # try:
-        #     actor = Purl.objects.get(string=kwargs["purl_string"])
-        # except Purl.DoesNotExist:
-        #     return HttpResponseBadRequest("Invalid purl")
-        #
-        # if (
-        #         request.user.is_authenticated
-        #         and hasattr(request.user, "service")
-        #         and actor.service == request.user.service
-        # ):
-        #     activity = create_activity_obj(request.body)
-        #     HttpSignature.signed_request(activity.object.inbox, request.body, PURL_SYNC_PRIVATE_KEY, actor.key_id)
-        return NotImplementedError
+        try:
+            actor = Purl.objects.get(string=kwargs["purl_string"])
+        except Purl.DoesNotExist:
+            return HttpResponseBadRequest("Invalid purl")
+
+        if (
+            request.user.is_authenticated
+            and hasattr(request.user, "service")
+            and actor.service == request.user.service
+        ):
+            activity = create_activity_obj(request.body)
+            return activity.handler()
+        return HttpResponseBadRequest("Invalid Message")
 
 
 def redirect_repository(request, repository_id):
@@ -735,7 +752,7 @@ class PurlFollowers(View):
         )
 
 
-@csrf_exempt
+@require_http_methods(["POST"])
 def token(request):
     payload = json.loads(request.body)
     r = requests.post(
@@ -752,7 +769,7 @@ def token(request):
     return JsonResponse(json.loads(r.content), status=r.status_code, content_type=AP_CONTENT_TYPE)
 
 
-@csrf_exempt
+@require_http_methods(["POST"])
 def refresh_token(request):
     payload = json.loads(request.body)
     r = requests.post(
@@ -768,7 +785,7 @@ def refresh_token(request):
     return JsonResponse(json.loads(r.text), status=r.status_code, content_type=AP_CONTENT_TYPE)
 
 
-@csrf_exempt
+@require_http_methods(["POST"])
 def revoke_token(request):
     payload = json.loads(request.body)
     r = requests.post(

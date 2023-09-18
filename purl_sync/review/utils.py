@@ -6,11 +6,9 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-import dataclasses
 import io
 import json
 import os
-import uuid
 from urllib.parse import urlparse
 
 import requests
@@ -90,26 +88,40 @@ def ap_collection(objects):
 
 
 def webfinger_actor(domain, user):
+    """ """
     acct = generate_webfinger(user, domain)
     url = f"https://{domain}/.well-known/webfinger?resource=acct:{acct}"
     headers = {"User-Agent": ""}  # TODO
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        return response.json()["links"][1][
-            "href"
-        ]  # TODO please check if type = "application/activity+json"
-    else:
-        raise Exception(f"Failed to fetch the actor {response.status_code} {response.content}")
+    try:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            return response.json()["links"][1][
+                "href"
+            ]  # TODO please check if type = "application/activity+json"
+    except requests.exceptions.RequestException as e:
+        return f"Failed to fetch the actor {e}"
 
 
 def fetch_actor(url):
+    """
+    fetch actor profile URL and return profile Json-LD
+    """
     headers = {"User-Agent": ""}  # TODO
-    response = requests.get(url, headers=headers)
+    try:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            return response.json()
 
-    if response.status_code == 200:
-        return response.json()
-    else:
-        raise Exception(f"Failed to fetch the actor {response.status_code} {response.content}")
+    except requests.exceptions.HTTPError as e:
+        return f"Http Error: {e}"
+    except requests.exceptions.ConnectionError as e:
+        return f"Error Connecting: {e}"
+    except requests.exceptions.Timeout as e:
+        return f"Timeout Error:{e}"
+    except requests.exceptions.RequestException as e:
+        return f"OOps: Something Else {e}"
+
+    return "Failed to fetch the actor"
 
 
 def file_data(file_name):
@@ -118,7 +130,7 @@ def file_data(file_name):
         return json.loads(data)
 
 
-def load_file(git_repo_obj, filename, commit_id):
+def load_git_file(git_repo_obj, filename, commit_id):
     """
     Get file data from a specific git commit using gitpython
     copied from https://stackoverflow.com/a/54900961/9871531

@@ -10,6 +10,7 @@ import functools
 import json
 from dataclasses import asdict
 from dataclasses import dataclass
+from dataclasses import field
 from typing import Literal
 from typing import Optional
 from urllib.parse import urlparse
@@ -122,10 +123,10 @@ def has_valid_header(view):
 
 @dataclass
 class Activity:
-    type: Literal["Follow", "Create", "Update", "Delete"]
+    type: Literal["Follow", "UnFollow", "Create", "Update", "Delete", "Sync"]
     actor: Optional[str | dict]
     object: Optional[str | dict]
-    to: list = None
+    to: list = field(default_factory=list)
     id: str = None
 
     def handler(self):
@@ -133,10 +134,11 @@ class Activity:
         ap_object = (
             ApObject(**self.object) if isinstance(self.object, dict) else ApObject(id=self.object)
         )
-        return ACTIVITY_MAPPER[self.type](actor=ap_actor, object=ap_object).save()
+        return ACTIVITY_MAPPER[self.type](actor=ap_actor, object=ap_object, to=self.to).save()
 
-    def federated(self, body, key_id):
-        for target in self.to:
+    @classmethod
+    def federated(cls, to, body, key_id):
+        for target in to:
             target_domain = urlparse(target).netloc
             if target_domain != PURL_SYNC_DOMAIN:  # TODO Add a server whitelist if necessary
                 HttpSignature.signed_request(target, body, PURL_SYNC_PRIVATE_KEY, key_id)
@@ -213,6 +215,7 @@ class FollowActivity:
     type = "Follow"
     actor: ApActor
     object: ApActor
+    to: list = field(default_factory=list)
 
     def save(self):
         actor = self.actor.get()
@@ -227,7 +230,7 @@ class FollowActivity:
                 username=actor_details["name"], url=actor_details["id"]
             )
             actor, created = Person.objects.get_or_create(remote_actor=remote_actor)
-
+            Activity.federated(to=self.to, body=self.to_ap(), key_id=actor.key_id)
         # --------------------------------------------
         parser = urlparse(self.object.id)
         resolver = resolve(parser.path)
@@ -249,9 +252,7 @@ class FollowActivity:
             purl, created = Purl.objects.get_or_create(
                 remote_actor=remote_actor, string=purl_details["string"]
             )
-        # TODO ( send a remote follow request if created and assume the request was accepted )
-        #  if actor or purl is remote
-
+            Activity.federated(to=self.to, body=self.to_ap(), key_id=actor.key_id)
         if purl and actor:
             Follow.objects.get_or_create(person=actor, purl=purl)
             return self.succeeded_ap_rs()
@@ -271,8 +272,9 @@ class FollowActivity:
         return {
             **AP_CONTEXT,
             "type": self.type,
-            "actor": self.actor,
-            "to": self.object,
+            "actor": asdict(self.actor),
+            "object": asdict(self.object),
+            "to": self.to,
             **AP_TARGET,
         }
 
@@ -282,6 +284,7 @@ class CreateActivity:
     type = "Create"
     actor: ApActor
     object: ApObject
+    to: list = field(default_factory=list)
 
     def save(self):
         new_obj, created = None, None
@@ -353,6 +356,7 @@ class UpdateActivity:
     type = "Update"
     actor: ApActor
     object: ApObject
+    to: list = field(default_factory=list)
 
     def save(self):
         updated_obj = None
@@ -397,6 +401,7 @@ class DeleteActivity:
     actor: ApActor
     object: ApObject
     type = "Delete"
+    to: list = field(default_factory=list)
 
     def save(self):
         actor = self.actor.get()
@@ -439,6 +444,7 @@ class UnFollowActivity:
     type = "UnFollow"
     actor: ApActor
     object: ApActor
+    to: list = field(default_factory=list)
 
     def save(self):
         actor = self.actor.get()
@@ -475,6 +481,7 @@ class SyncActivity:
     type = "Sync"
     actor: ApActor
     object: ApObject
+    to: list = field(default_factory=list)
 
     def save(self):
         actor = self.actor.get()

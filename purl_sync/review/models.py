@@ -251,6 +251,13 @@ class Person(Actor):
         return full_reverse("user-following", self.user.username)
 
     @property
+    def key_id(self):
+        if self.user:
+            return full_reverse("user-ap-profile", self.user.username) + "#main-key"
+        else:
+            return self.remote_actor.url + "#main-key"
+
+    @property
     def to_ap(self):
         return {
             "id": self.absolute_url_ap,
@@ -272,6 +279,12 @@ class Person(Actor):
 class Follow(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE, help_text="")
     purl = models.ForeignKey(Purl, on_delete=models.CASCADE, help_text="")
+
+    created_at = models.DateTimeField(auto_now_add=True, help_text="")
+    updated_at = models.DateTimeField(auto_now=True, help_text="")
+
+    class Meta:
+        ordering = ["-updated_at"]
 
     def __str__(self):
         return f"{self.person.user.username} - {self.purl.string}"

@@ -2,12 +2,13 @@ Release notes
 =============
 
 
-Next Release
-------------
+Version v33.5.0
+----------------
 
 - We fixed a text-overflow issue in the Essentials tab of the Vulnerability details template.
 - We added clickable links to the Essentials tab of the Vulnerability details template that enable
   the user to navigate to the Fixed by packages tab and the Affected packages tab.
+- We fixed severity range issue for handling unknown scores.
 
 
 Version v33.4.0

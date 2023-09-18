@@ -15,6 +15,7 @@ from univers.versions import RubygemsVersion
 from vulnerabilities.package_managers import PackageVersion
 from vulnerabilities.utils import AffectedPackage
 from vulnerabilities.utils import get_item
+from vulnerabilities.utils import get_severity_range
 from vulnerabilities.utils import nearest_patched_package
 from vulnerabilities.utils import resolve_version_range
 from vulnerabilities.utils import split_markdown_front_matter
@@ -145,3 +146,8 @@ def test_resolve_version_range_without_ignorable_versions():
             "10.0.0",
         ],
     )
+
+
+def test_get_severity_range():
+    assert get_severity_range({""}) is None
+    assert get_severity_range({}) is None

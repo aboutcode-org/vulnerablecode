@@ -2,8 +2,8 @@ Release notes
 =============
 
 
-Next Release
-------------
+Version v33.5.0
+----------------
 
 - We fixed a text-overflow issue in the Essentials tab of the Vulnerability details template.
 - We added clickable links to the Essentials tab of the Vulnerability details template that enable

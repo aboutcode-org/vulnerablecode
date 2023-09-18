@@ -631,19 +631,17 @@ class Package(PackageURLMixin):
         """
         return reverse("package_details", args=[self.purl])
 
-    def get_fixed_packages(self, package, fix=True):
+    def get_fixing_package_versions(self, fix=True):
         """
-        With fix=True, return a queryset of all packages that fix a vulnerability and have the
-        same type, namespace, name, subpath and qualifiers as the `package`.
-        With fix=False, return a queryset of all packages that have the same type, namespace,
-        name, subpath and qualifiers as the `package`, whether or not they fix any vulnerability.
+        Return a queryset of all the package versions of this `package` that fix any vulnerability.
+        If `fix` is False, return all package versions whether or not they fix a vulnerability.
         """
         filter_dict = {
-            "name": package.name,
-            "namespace": package.namespace,
-            "type": package.type,
-            "qualifiers": package.qualifiers,
-            "subpath": package.subpath,
+            "name": self.name,
+            "namespace": self.namespace,
+            "type": self.type,
+            "qualifiers": self.qualifiers,
+            "subpath": self.subpath,
         }
 
         if fix:
@@ -651,15 +649,14 @@ class Package(PackageURLMixin):
 
         return Package.objects.filter(**filter_dict).distinct()
 
-    def sort_by_version(self, packages_to_sort):
+    def sort_by_version(self, packages):
         """
-        Use the univers version_class to sort the incoming list of vulnerabilities.models.Package
-        objects.
+        Return a list of `packages` sorted by version.
         """
-        univers_version = RANGE_CLASS_BY_SCHEMES[packages_to_sort[0].type].version_class
+        version_class = RANGE_CLASS_BY_SCHEMES[packages[0].type].version_class
         return sorted(
-            packages_to_sort,
-            key=lambda x: univers_version(x.version),
+            packages,
+            key=lambda x: version_class(x.version),
         )
 
     @property
@@ -669,60 +666,61 @@ class Package(PackageURLMixin):
         package's vulnerabilities as well as the closest non-vulnerable version and the most recent
         non-vulnerable version.
         """
-        fixed_packages = self.get_fixed_packages(package=self, fix=True)
-        qs = self.vulnerabilities.filter(packagerelatedvulnerability__fix=False)
-        all_sibling_packages = self.get_fixed_packages(package=self, fix=False)
+        fixing_packages = self.get_fixing_package_versions(fix=True)
+        package_vulnerabilities = self.vulnerabilities.filter(
+            packagerelatedvulnerability__fix=False
+        )
+        package_versions = self.get_fixing_package_versions(fix=False)
 
-        non_vuln_sibs = []
-        for sib in all_sibling_packages:
-            if sib.is_vulnerable is False:
-                non_vuln_sibs.append(sib)
+        non_vulnerable_versions = []
+        for version in package_versions:
+            if not version.is_vulnerable:
+                non_vulnerable_versions.append(version)
 
-        univers_version_class = RANGE_CLASS_BY_SCHEMES[self.type].version_class
-        later_non_vuln_sibs = []
+        version_class = RANGE_CLASS_BY_SCHEMES[self.type].version_class
+        later_non_vulnerable_versions = []
 
-        for non_vuln_sib in non_vuln_sibs:
-            non_vuln_sib_univers_version = univers_version_class(
-                PackageURL.from_string(non_vuln_sib.purl).version
-            )
+        current_version = version_class(self.version)
+        for non_vuln_ver in non_vulnerable_versions:
+            if version_class(non_vuln_ver.version) > current_version:
+                later_non_vulnerable_versions.append(non_vuln_ver)
 
-            if univers_version_class(non_vuln_sib.version) > univers_version_class(self.version):
-                later_non_vuln_sibs.append(non_vuln_sib)
-
-        qs = qs.prefetch_related(
+        package_vulnerabilities = package_vulnerabilities.prefetch_related(
             Prefetch(
                 "packages",
-                queryset=fixed_packages,
+                queryset=fixing_packages,
                 to_attr="fixed_packages",
             )
         )
 
-        purl_dict = {}
-        purl_dict["purl"] = PackageURL.from_string(self.purl)
+        package_details = {}
+        package_details["purl"] = PackageURL.from_string(self.purl)
 
-        closest_non_vulnerable_sib = ""
-        latest_non_vulnerable_sib = ""
+        closest_non_vulnerable_version = ""
+        latest_non_vulnerable_version = ""
 
-        if len(later_non_vuln_sibs) > 0:
-            closest_non_vulnerable_sib = self.sort_by_version(later_non_vuln_sibs)[0]
-            latest_non_vulnerable_sib = self.sort_by_version(later_non_vuln_sibs)[-1]
+        # ZAP: 2023-09-18 Monday 11:40:05.  I think Philippe and I got up to this point during last Thursday's code review.  We also reviewed much of the API structure and output which still needs more updating -- and then some tests.
 
-            purl_dict["closest_non_vulnerable"] = PackageURL.from_string(
-                closest_non_vulnerable_sib.purl
+        if later_non_vulnerable_versions:
+            closest_non_vulnerable_version = self.sort_by_version(later_non_vulnerable_versions)[0]
+            latest_non_vulnerable_version = self.sort_by_version(later_non_vulnerable_versions)[-1]
+
+            package_details["closest_non_vulnerable"] = PackageURL.from_string(
+                closest_non_vulnerable_version.purl
             )
-            purl_dict["latest_non_vulnerable"] = PackageURL.from_string(
-                latest_non_vulnerable_sib.purl
+            package_details["latest_non_vulnerable"] = PackageURL.from_string(
+                latest_non_vulnerable_version.purl
             )
 
         else:
 
-            purl_dict["closest_non_vulnerable"] = None
-            purl_dict["latest_non_vulnerable"] = None
+            package_details["closest_non_vulnerable"] = None
+            package_details["latest_non_vulnerable"] = None
 
-        purl_dict.update({"vulnerabilities": []})
+        package_details.update({"vulnerabilities": []})
 
-        for vuln in qs:
-            purl_dict["vulnerabilities"].append({"vulnerability": vuln})
+        for vuln in package_vulnerabilities:
+            package_details["vulnerabilities"].append({"vulnerability": vuln})
 
             closest_fixed_package = ""
             closest_fixed_package_vulns = ""
@@ -733,13 +731,13 @@ class Package(PackageURLMixin):
             if len(vuln_fixed_packages) > 0:
                 for fixed_pkg in vuln_fixed_packages:
 
-                    fixed_pkg_univers_version = univers_version_class(
+                    fixed_pkg_univers_version = version_class(
                         PackageURL.from_string(fixed_pkg.purl).version
                     )
 
-                    if fixed_pkg in fixed_packages and univers_version_class(
+                    if fixed_pkg in fixing_packages and version_class(
                         fixed_pkg.version
-                    ) > univers_version_class(self.version):
+                    ) > version_class(self.version):
 
                         later_fixed_packages.append(fixed_pkg)
 
@@ -752,7 +750,7 @@ class Package(PackageURLMixin):
                 closest_fixed_package = None
                 closest_fixed_package_vulns = None
 
-            for dict_vuln in purl_dict["vulnerabilities"]:
+            for dict_vuln in package_details["vulnerabilities"]:
                 if dict_vuln["vulnerability"] == vuln:
 
                     if closest_fixed_package:
@@ -768,15 +766,15 @@ class Package(PackageURLMixin):
                         dict_vuln["fixed_by_purl_vulnerabilities"] = []
 
         # Temporary print output during dev/testing.
-        # from pprint import pprint
+        from pprint import pprint
 
-        # pprint(
-        #     purl_dict,
-        #     sort_dicts=False,
-        # )
-        # print("")
+        pprint(
+            package_details,
+            sort_dicts=False,
+        )
+        print("")
 
-        return purl_dict
+        return package_details
 
 
 class PackageRelatedVulnerability(models.Model):

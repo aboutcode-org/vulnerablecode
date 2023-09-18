@@ -312,7 +312,10 @@ class TestPackageModel(TestCase):
         assert vuln_packages.distinct().count() == 2
 
         first_vulnerable_package = vuln_packages.distinct()[0]
-        matching_fixed_packages = first_vulnerable_package.get_fixed_packages(
+        # matching_fixed_packages = first_vulnerable_package.get_fixed_packages(
+        #     first_vulnerable_package
+        # )
+        matching_fixed_packages = first_vulnerable_package.get_fixing_package_versions(
             first_vulnerable_package
         )
         first_fixed_by_package = matching_fixed_packages[0]

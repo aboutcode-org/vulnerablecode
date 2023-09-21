@@ -2,6 +2,12 @@ Release notes
 =============
 
 
+Version v33.6.0
+----------------
+
+- We added support to write packages and vulnerabilities at the time of import.
+
+
 Version v33.5.0
 ----------------
 
@@ -9,7 +15,6 @@ Version v33.5.0
 - We added clickable links to the Essentials tab of the Vulnerability details template that enable
   the user to navigate to the Fixed by packages tab and the Affected packages tab.
 - We fixed severity range issue for handling unknown scores.
-- We added support to write packages and vulnerabilities at the time of import.
 
 Version v33.4.0
 ----------------

@@ -19,7 +19,7 @@ from django.db import transaction
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.improver import Inference
-from vulnerabilities.improvers.default import AdvisoryBasedDefaultImprover
+from vulnerabilities.improvers.default import DefaultImporter
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
@@ -59,9 +59,9 @@ class ImportRunner:
         logger.info(f"Finished import for {importer_name}. Imported {count} advisories.")
 
     def do_import(self, advisories) -> None:
-        advisory_importer = AdvisoryBasedDefaultImprover(advisories=advisories)
-        logger.info(f"Running improver: {advisory_importer.qualified_name}")
-        improver_name = advisory_importer.qualified_name
+        advisory_importer = DefaultImporter(advisories=advisories)
+        logger.info(f"Running importer: {advisory_importer.qualified_name}")
+        importer_name = advisory_importer.qualified_name
         advisories = []
         for advisory in advisory_importer.interesting_advisories:
             if advisory.date_imported:
@@ -74,11 +74,11 @@ class ImportRunner:
                 process_inferences(
                     inferences=inferences,
                     advisory=advisory,
-                    improver_name=improver_name,
+                    improver_name=importer_name,
                 )
             except Exception as e:
                 logger.info(f"Failed to process advisory: {advisory!r} with error {e!r}")
-        logger.info("Finished improving using %s.", advisory_importer.__class__.qualified_name)
+        logger.info("Finished importing using %s.", advisory_importer.__class__.qualified_name)
 
     def process_advisories(
         self, advisory_datas: Iterable[AdvisoryData], importer_name: str

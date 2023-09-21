@@ -227,22 +227,16 @@ class TestPackageModel(TestCase):
 
         searched_for_package_details = searched_for_package.fixed_package_details
 
-        purl_dict = {
+        package_details = {
             "purl": PackageURL(
                 type="pypi",
-                namespace=None,
                 name="redis",
                 version="4.1.1",
-                qualifiers={},
-                subpath=None,
             ),
             "closest_non_vulnerable": PackageURL(
                 type="pypi",
-                namespace=None,
                 name="redis",
                 version="5.0.0b1",
-                qualifiers={},
-                subpath=None,
             ),
             "latest_non_vulnerable": PackageURL(
                 type="pypi",
@@ -280,7 +274,7 @@ class TestPackageModel(TestCase):
             ],
         }
 
-        assert searched_for_package_details == purl_dict
+        assert searched_for_package_details == package_details
 
         assert searched_for_package_details.get("closest_non_vulnerable") == PackageURL(
             type="pypi",
@@ -300,11 +294,11 @@ class TestPackageModel(TestCase):
             subpath=None,
         )
 
-        qs_searched_for_package_fixing = searched_for_package.fixing
-        assert type(qs_searched_for_package_fixing) == models.VulnerabilityQuerySet
-        assert qs_searched_for_package_fixing.count() == 0
-        assert len(qs_searched_for_package_fixing) == 0
-        assert list(qs_searched_for_package_fixing) == []
+        searched_for_package_fixing = searched_for_package.fixing
+        assert type(searched_for_package_fixing) == models.VulnerabilityQuerySet
+        assert searched_for_package_fixing.count() == 0
+        assert len(searched_for_package_fixing) == 0
+        assert list(searched_for_package_fixing) == []
 
     def test_get_vulnerable_packages(self):
         vuln_packages = Package.objects.vulnerable()
@@ -312,10 +306,8 @@ class TestPackageModel(TestCase):
         assert vuln_packages.distinct().count() == 2
 
         first_vulnerable_package = vuln_packages.distinct()[0]
-        # matching_fixed_packages = first_vulnerable_package.get_fixed_packages(
-        #     first_vulnerable_package
-        # )
-        matching_fixed_packages = first_vulnerable_package.get_fixing_package_versions(
+
+        matching_fixed_packages = first_vulnerable_package.get_fixed_by_package_versions(
             first_vulnerable_package
         )
         first_fixed_by_package = matching_fixed_packages[0]
@@ -330,7 +322,9 @@ class TestPackageModel(TestCase):
         purl = PackageURL.from_string(purl_string)
         purl_to_dict = purl.to_dict()
 
-        # For namespace, version, qualifiers and subpath, we need to add the or * to avoid an IntegrityError, e.g., django.db.utils.IntegrityError: null value in column "subpath" violates not-null constraint
+        # For namespace, version, qualifiers and subpath, we need to add the or * to avoid an
+        # IntegrityError, e.g., django.db.utils.IntegrityError: null value in column "subpath" violates
+        # not-null constraint
         vulnerablecode_package = models.Package.objects.create(
             type=purl_to_dict.get("type"),
             namespace=purl_to_dict.get("namespace") or "",

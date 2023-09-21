@@ -590,7 +590,6 @@ class Package(PackageURLMixin):
         return self.package_url
 
     @property
-    # TODO: consider renaming to "affected_by"
     def affected_by(self):
         """
         Return a queryset of vulnerabilities affecting this package.
@@ -631,7 +630,8 @@ class Package(PackageURLMixin):
         """
         return reverse("package_details", args=[self.purl])
 
-    def get_fixing_package_versions(self, fix=True):
+    # TODO: There are other methods, variables etc. in models.py that need similar renaming.
+    def get_fixed_by_package_versions(self, fix=True):
         """
         Return a queryset of all the package versions of this `package` that fix any vulnerability.
         If `fix` is False, return all package versions whether or not they fix a vulnerability.
@@ -653,6 +653,9 @@ class Package(PackageURLMixin):
         """
         Return a list of `packages` sorted by version.
         """
+        if not packages:
+            return []
+
         version_class = RANGE_CLASS_BY_SCHEMES[packages[0].type].version_class
         return sorted(
             packages,
@@ -660,121 +663,108 @@ class Package(PackageURLMixin):
         )
 
     @property
+    def version_class(self):
+        return RANGE_CLASS_BY_SCHEMES[self.type].version_class
+
+    @property
+    def current_version(self):
+        return self.version_class(self.version)
+
+    @property
     def fixed_package_details(self):
         """
-        For a given package, report the closest subsequent fixed by version for each of that
-        package's vulnerabilities as well as the closest non-vulnerable version and the most recent
-        non-vulnerable version.
+        Return a mapping of vulnerabilities that affect this package and the closest and
+        latest non-vulnerable versions.
         """
-        fixing_packages = self.get_fixing_package_versions(fix=True)
-        package_vulnerabilities = self.vulnerabilities.filter(
-            packagerelatedvulnerability__fix=False
-        )
-        package_versions = self.get_fixing_package_versions(fix=False)
+        package_details = {}
+        package_details["purl"] = PackageURL.from_string(self.purl)
+
+        closest_non_vulnerable, latest_non_vulnerable = self.get_non_vulnerable_versions()
+        package_details["closest_non_vulnerable"] = closest_non_vulnerable
+        package_details["latest_non_vulnerable"] = latest_non_vulnerable
+
+        package_details["vulnerabilities"] = self.get_affecting_vulnerabilities()
+
+        return package_details
+
+    def get_non_vulnerable_versions(self):
+        """
+        Return a tuple of the closest and latest non-vulnerable versions as PackageURLs.  Return a tuple of
+        (None, None) if there is no non-vulnerable version.
+        """
+        package_versions = self.get_fixed_by_package_versions(fix=False)
 
         non_vulnerable_versions = []
         for version in package_versions:
             if not version.is_vulnerable:
                 non_vulnerable_versions.append(version)
 
-        version_class = RANGE_CLASS_BY_SCHEMES[self.type].version_class
         later_non_vulnerable_versions = []
-
-        current_version = version_class(self.version)
         for non_vuln_ver in non_vulnerable_versions:
-            if version_class(non_vuln_ver.version) > current_version:
+            if self.version_class(non_vuln_ver.version) > self.current_version:
                 later_non_vulnerable_versions.append(non_vuln_ver)
 
-        package_vulnerabilities = package_vulnerabilities.prefetch_related(
+        if later_non_vulnerable_versions:
+            sorted_versions = self.sort_by_version(later_non_vulnerable_versions)
+            closest_non_vulnerable_version = sorted_versions[0]
+            latest_non_vulnerable_version = sorted_versions[-1]
+
+            closest_non_vulnerable = PackageURL.from_string(closest_non_vulnerable_version.purl)
+            latest_non_vulnerable = PackageURL.from_string(latest_non_vulnerable_version.purl)
+
+            return closest_non_vulnerable, latest_non_vulnerable
+
+        return None, None
+
+    def get_affecting_vulnerabilities(self):
+        """
+        Return a list of vulnerabilities that affect this package together with information regarding
+        the versions that fix the vulnerabilities.
+        """
+        package_details_vulns = []
+
+        fixed_by_packages = self.get_fixed_by_package_versions(fix=True)
+
+        package_vulnerabilities = self.vulnerabilities.filter(
+            packagerelatedvulnerability__fix=False
+        ).prefetch_related(
             Prefetch(
                 "packages",
-                queryset=fixing_packages,
+                queryset=fixed_by_packages,
                 to_attr="fixed_packages",
             )
         )
 
-        package_details = {}
-        package_details["purl"] = PackageURL.from_string(self.purl)
-
-        closest_non_vulnerable_version = ""
-        latest_non_vulnerable_version = ""
-
-        # ZAP: 2023-09-18 Monday 11:40:05.  I think Philippe and I got up to this point during last Thursday's code review.  We also reviewed much of the API structure and output which still needs more updating -- and then some tests.
-
-        if later_non_vulnerable_versions:
-            closest_non_vulnerable_version = self.sort_by_version(later_non_vulnerable_versions)[0]
-            latest_non_vulnerable_version = self.sort_by_version(later_non_vulnerable_versions)[-1]
-
-            package_details["closest_non_vulnerable"] = PackageURL.from_string(
-                closest_non_vulnerable_version.purl
-            )
-            package_details["latest_non_vulnerable"] = PackageURL.from_string(
-                latest_non_vulnerable_version.purl
-            )
-
-        else:
-
-            package_details["closest_non_vulnerable"] = None
-            package_details["latest_non_vulnerable"] = None
-
-        package_details.update({"vulnerabilities": []})
-
         for vuln in package_vulnerabilities:
-            package_details["vulnerabilities"].append({"vulnerability": vuln})
-
-            closest_fixed_package = ""
-            closest_fixed_package_vulns = ""
+            package_details_vulns.append({"vulnerability": vuln})
             later_fixed_packages = []
-            sort_fixed_by_packages_by_version = []
-            vuln_fixed_packages = vuln.fixed_packages
 
-            if len(vuln_fixed_packages) > 0:
-                for fixed_pkg in vuln_fixed_packages:
+            for fixed_pkg in vuln.fixed_packages:
+                if fixed_pkg not in fixed_by_packages:
+                    continue
+                fixed_version = self.version_class(fixed_pkg.version)
+                if fixed_version > self.current_version:
+                    later_fixed_packages.append(fixed_pkg)
 
-                    fixed_pkg_univers_version = version_class(
-                        PackageURL.from_string(fixed_pkg.purl).version
-                    )
+            closest_fixed_package = None
+            closest_fixed_package_vulns = []
 
-                    if fixed_pkg in fixing_packages and version_class(
-                        fixed_pkg.version
-                    ) > version_class(self.version):
+            if later_fixed_packages:
+                sort_fixed_by_packages_by_version = self.sort_by_version(later_fixed_packages)
+                closest_fixed_package = sort_fixed_by_packages_by_version[0]
+                fixed_by_purl = PackageURL.from_string(closest_fixed_package.purl)
+                closest_fixed_package_vulns = list(closest_fixed_package.affected_by)
 
-                        later_fixed_packages.append(fixed_pkg)
+            for vuln_details in package_details_vulns:
+                if vuln_details["vulnerability"] != vuln:
+                    continue
+                vuln_details["fixed_by_purl"] = None
+                vuln_details["fixed_by_purl_vulnerabilities"] = []
+                if closest_fixed_package:
+                    vuln_details["fixed_by_purl"] = fixed_by_purl
+                    vuln_details["fixed_by_purl_vulnerabilities"] = closest_fixed_package_vulns
 
-                if later_fixed_packages:
-                    sort_fixed_by_packages_by_version = self.sort_by_version(later_fixed_packages)
-                    closest_fixed_package = sort_fixed_by_packages_by_version[0]
-                    closest_fixed_package_vulns = closest_fixed_package.affected_by
-
-            else:
-                closest_fixed_package = None
-                closest_fixed_package_vulns = None
-
-            for dict_vuln in package_details["vulnerabilities"]:
-                if dict_vuln["vulnerability"] == vuln:
-
-                    if closest_fixed_package:
-                        dict_vuln["fixed_by_purl"] = PackageURL.from_string(
-                            closest_fixed_package.purl
-                        )
-
-                        dict_vuln["fixed_by_purl_vulnerabilities"] = [
-                            fixed_pkg_vuln for fixed_pkg_vuln in closest_fixed_package_vulns
-                        ]
-                    else:
-                        dict_vuln["fixed_by_purl"] = None
-                        dict_vuln["fixed_by_purl_vulnerabilities"] = []
-
-        # Temporary print output during dev/testing.
-        from pprint import pprint
-
-        pprint(
-            package_details,
-            sort_dicts=False,
-        )
-        print("")
-
-        return package_details
+        return package_details_vulns
 
 
 class PackageRelatedVulnerability(models.Model):

@@ -3,7 +3,7 @@
     "aliases": [
       "CVE-2017-9800"
     ],
-    "summary": "A command injection vulnerability in Subversion may allow remote\n    attackers to execute arbitrary code.\n  ",
+    "summary": "A command injection vulnerability in Subversion may allow remote\n    attackers to execute arbitrary code.",
     "affected_packages": [
       {
         "package": {

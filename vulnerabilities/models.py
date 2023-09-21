@@ -964,10 +964,8 @@ class Advisory(models.Model):
     )
     weaknesses = models.JSONField(blank=True, default=list, help_text="A list of CWE ids")
     date_collected = models.DateTimeField(help_text="UTC Date on which the advisory was collected")
-    date_improved = models.DateTimeField(
-        blank=True,
-        null=True,
-        help_text="Latest date on which the advisory was improved by an improver",
+    date_imported = models.DateTimeField(
+        blank=True, null=True, help_text="UTC Date on which the advisory was imported"
     )
     created_by = models.CharField(
         max_length=100,

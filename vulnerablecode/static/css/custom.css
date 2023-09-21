@@ -504,3 +504,35 @@ ul.fixed_by_bullet li li li {
 .non-vuln .table th {
     border: solid 1px #dbdbdb;
 }
+
+/* Floating container to display the PURL on the Package details page as the user scrolls down. */
+.floating-purl {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    margin-bottom: 0px;
+}
+
+.floating-purl .table td,
+.floating-purl .table tbody tr:last-child td,
+.floating-purl .table th {
+    border: solid 1px #dbdbdb;
+    background-color: #ffffff;
+}
+
+/* Emphasis for affected/fixed headings and related references. */
+.affected-fixed {
+    color: #ff0000;
+    font-weight: 700;
+}
+
+/* Emphasis for not vulnerable. */
+.emphasis-not-vulnerable {
+    background-color: #e6ffe6;
+}
+
+/* Emphasis for vulnerable. */
+.emphasis-vulnerable {
+    background-color: #ffe6e6;
+}

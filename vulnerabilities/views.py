@@ -23,7 +23,7 @@ from vulnerabilities import models
 from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import VulnerabilitySearchForm
-from vulnerabilities.models import Weakness
+from vulnerabilities.models import VulnerabilityStatusType, Weakness
 from vulnerabilities.utils import get_severity_range
 from vulnerablecode.settings import env
 
@@ -114,6 +114,14 @@ class VulnerabilityDetails(DetailView):
 
     def get_queryset(self):
         return super().get_queryset().prefetch_related("references", "aliases", "weaknesses")
+    
+    def get_status(self, status):
+        status_by_keys = {
+            VulnerabilityStatus.PUBLISHED.name : "Published",
+            VulnerabilityStatus.REJECTED.name : "Rejected" 
+        }
+        print(status, status_by_keys)
+        return status_by_keys[status]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -121,6 +129,7 @@ class VulnerabilityDetails(DetailView):
         weaknesses_present_in_db = [
             weakness_object for weakness_object in weaknesses if weakness_object.weakness
         ]
+        status = self.get_status(self.object.status)
         context.update(
             {
                 "vulnerability": self.object,
@@ -134,7 +143,7 @@ class VulnerabilityDetails(DetailView):
                 "affected_packages": self.object.affected_packages.all(),
                 "fixed_by_packages": self.object.fixed_by_packages.all(),
                 "weaknesses": weaknesses_present_in_db,
-                "is_rejected": "Yes" if self.object.is_rejected else "No",
+                "status": status,
             }
         )
         return context

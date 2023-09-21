@@ -22,6 +22,7 @@ from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.utils import get_cwe_id
 from vulnerabilities.utils import get_item
+from vulnerabilities.models import VulnerabilityStatusType
 
 
 class NVDImporter(Importer):
@@ -79,7 +80,7 @@ def fetch_cve_data_1_1(starting_year=2002):
     """
     current_year = date.today().year
     # NVD json feeds start from 2002.
-    for year in range(starting_year, current_year + 1):
+    for year in range(2021, current_year + 1):
         download_url = f"https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-{year}.json.gz"
         yield year, fetch(url=download_url)
 
@@ -267,13 +268,16 @@ class CveItem:
         """
         Return an AdvisoryData object from this CVE item
         """
+        status = VulnerabilityStatusType.PUBLISHED
+        if self.is_rejected:
+            status = VulnerabilityStatusType.REJECTED
         return AdvisoryData(
             aliases=[self.cve_id],
             summary=self.summary,
             references=self.references,
             date_published=dateparser.parse(self.cve_item.get("publishedDate")),
             weaknesses=self.weaknesses,
-            is_rejected=self.is_rejected,
+            status=status,
         )
 
 

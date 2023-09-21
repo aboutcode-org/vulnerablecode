@@ -33,10 +33,6 @@ from packageurl.contrib.django.models import PackageURLQuerySet
 from packageurl.contrib.django.models import without_empty_values
 from rest_framework.authtoken.models import Token
 
-from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Reference
-from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import build_vcid
 from vulnerabilities.utils import remove_qualifiers_and_subpath
@@ -152,6 +148,13 @@ class VulnerabilityQuerySet(BaseQuerySet):
             ),
         )
 
+class VulnerabilityStatusType(models.IntegerChoices):
+    """List of vulnerability statuses."""
+
+    PUBLISHED = 1, 'published'
+    RESERVED = 2, 'reserved'
+    DISPUTED = 3, 'disputed'
+    REJECTED = 4, 'rejected'
 
 class Vulnerability(models.Model):
     """
@@ -181,7 +184,7 @@ class Vulnerability(models.Model):
         through="PackageRelatedVulnerability",
     )
 
-    is_rejected = models.BooleanField(default=False)
+    status = models.IntegerField(max_length=100, choices=VulnerabilityStatusType.choices(), default=VulnerabilityStatusType.PUBLISHED)
 
     objects = VulnerabilityQuerySet.as_manager()
 
@@ -655,6 +658,7 @@ class PackageRelatedVulnerability(models.Model):
         "module name responsible for creating this relation. Eg:"
         "vulnerabilities.importers.nginx.NginxBasicImprover",
     )
+    from vulnerabilities.improver import MAX_CONFIDENCE
 
     confidence = models.PositiveIntegerField(
         default=MAX_CONFIDENCE,
@@ -840,8 +844,8 @@ class Advisory(models.Model):
         "module name importing the advisory. Eg:"
         "vulnerabilities.importers.nginx.NginxImporter",
     )
+    status = models.IntegerField(choices=VulnerabilityStatusType, default=VulnerabilityStatusType.PUBLISHED)
     objects = AdvisoryQuerySet.as_manager()
-    is_rejected = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ["aliases", "unique_content_id", "date_published"]
@@ -855,7 +859,10 @@ class Advisory(models.Model):
         self.unique_content_id = checksum.hexdigest()
         super().save(*args, **kwargs)
 
-    def to_advisory_data(self) -> AdvisoryData:
+    def to_advisory_data(self) -> "AdvisoryData":
+        from vulnerabilities.importer import AdvisoryData
+        from vulnerabilities.importer import AffectedPackage
+        from vulnerabilities.importer import Reference
         return AdvisoryData(
             aliases=self.aliases,
             summary=self.summary,
@@ -863,7 +870,7 @@ class Advisory(models.Model):
             references=[Reference.from_dict(ref) for ref in self.references],
             date_published=self.date_published,
             weaknesses=self.weaknesses,
-            is_rejected=self.is_rejected,
+            status=self.status,
         )
 
 

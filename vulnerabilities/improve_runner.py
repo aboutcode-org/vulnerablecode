@@ -83,6 +83,9 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
             aliases=inference.aliases,
             summary=inference.summary,
         )
+        if vulnerability.status != inference.status:
+            vulnerability.status = inference.status
+            vulnerability.save()
 
         if not vulnerability:
             logger.warning(f"Unable to get vulnerability for inference: {inference!r}")

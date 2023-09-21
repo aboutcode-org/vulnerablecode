@@ -64,6 +64,7 @@ class DefaultImprover(Improver):
                         affected_purls=affected_purls,
                         fixed_purl=None,
                         references=advisory_data.references,
+                        status=advisory_data.status,
                     )
                 else:
                     for fixed_purl in fixed_purls or []:
@@ -74,6 +75,7 @@ class DefaultImprover(Improver):
                             affected_purls=affected_purls,
                             fixed_purl=fixed_purl,
                             references=advisory_data.references,
+                            status=advisory_data.status,
                         )
 
         else:

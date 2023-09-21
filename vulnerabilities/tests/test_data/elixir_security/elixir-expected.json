@@ -3,7 +3,7 @@
     "aliases": [
       "CVE-2018-20301"
     ],
-    "summary": "The Coherence library has \"Mass Assignment\"-like vulnerabilities.\n",
+    "summary": "The Coherence library has \"Mass Assignment\"-like vulnerabilities.",
     "affected_packages": [
       {
         "package": {

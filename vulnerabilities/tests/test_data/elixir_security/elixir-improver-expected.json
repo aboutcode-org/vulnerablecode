@@ -5,7 +5,7 @@
       "CVE-2018-20301"
     ],
     "confidence": 100,
-    "summary": "The Coherence library has \"Mass Assignment\"-like vulnerabilities.\n",
+    "summary": "The Coherence library has \"Mass Assignment\"-like vulnerabilities.",
     "affected_purls": [
       {
         "type": "hex",
@@ -39,7 +39,7 @@
       "CVE-2018-20301"
     ],
     "confidence": 100,
-    "summary": "The Coherence library has \"Mass Assignment\"-like vulnerabilities.\n",
+    "summary": "The Coherence library has \"Mass Assignment\"-like vulnerabilities.",
     "affected_purls": [],
     "fixed_purl": null,
     "references": [

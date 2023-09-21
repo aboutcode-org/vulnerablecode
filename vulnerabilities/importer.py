@@ -252,6 +252,16 @@ class AdvisoryData:
     def __post_init__(self):
         if self.date_published and not self.date_published.tzinfo:
             logger.warning(f"AdvisoryData with no tzinfo: {self!r}")
+        if self.summary:
+            self.summary = self.clean_summary(self.summary)
+
+    def clean_summary(self, summary):
+        # https://nvd.nist.gov/vuln/detail/CVE-2013-4314
+        # https://github.com/cms-dev/cms/issues/888#issuecomment-516977572
+        summary = summary.strip()
+        if summary:
+            summary = summary.replace("\x00", "\uFFFD")
+        return summary
 
     def to_dict(self):
         return {

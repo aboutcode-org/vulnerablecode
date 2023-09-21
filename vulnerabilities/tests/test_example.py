@@ -79,8 +79,8 @@ class TestExampleImporter(testcase.FileBasedTesting):
     @pytest.mark.django_db(transaction=True)
     def test_improve_framework_using_example_improver(self):
         ImportRunner(ExampleImporter).run()
-        ImproveRunner(DefaultImprover).run()
-        ImproveRunner(ExampleAliasImprover).run()
+        ImproveRunner(improver_class=DefaultImprover).run()
+        ImproveRunner(improver_class=ExampleAliasImprover).run()
 
         assert models.Package.objects.count() == 3
         assert models.PackageRelatedVulnerability.objects.filter(fix=True).count() == 1

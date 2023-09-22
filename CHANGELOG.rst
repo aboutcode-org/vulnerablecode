@@ -2,6 +2,12 @@ Release notes
 =============
 
 
+Version v33.6.1
+----------------
+
+- We added pagination to valid versions improver.
+
+
 Version v33.6.0
 ----------------
 

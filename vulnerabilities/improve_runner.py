@@ -151,6 +151,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
         inferences_processed_count += 1
     return inferences_processed_count
 
+
 def create_valid_vulnerability_reference(url, reference_id=None):
     """
     Create and return a new validated VulnerabilityReference from a

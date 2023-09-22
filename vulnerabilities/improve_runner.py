@@ -49,7 +49,7 @@ class ImproveRunner:
                 process_inferences(
                     inferences=inferences,
                     advisory=advisory,
-                    improver_model_object=improver.qualified_name,
+                    improver_name=improver.qualified_name,
                 )
             except Exception as e:
                 logger.info(f"Failed to process advisory: {advisory!r} with error {e!r}")
@@ -149,11 +149,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                 cwe_obj.save()
 
         inferences_processed_count += 1
-
-    advisory.date_imported = datetime.now(timezone.utc)
-    advisory.save()
     return inferences_processed_count
-
 
 def create_valid_vulnerability_reference(url, reference_id=None):
     """

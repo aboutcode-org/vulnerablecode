@@ -16,9 +16,10 @@ from .test_models import purl
 from .test_models import service
 
 
-@pytest.mark.django_db
+@mock.patch("httpx.Client")
 @mock.patch("requests.get")
-def test_remote_person_follow_purl(mock_get, purl):
+@pytest.mark.django_db
+def test_remote_person_follow_purl(mock_get, _, purl):
     payload = json.dumps(
         {
             **AP_CONTEXT,
@@ -42,12 +43,12 @@ def test_remote_person_follow_purl(mock_get, purl):
         "review/tests/test_data/mock_request_remote_person.json"
     )
 
-    # mock_request_server_to_server = mock.Mock()  #
-    # mock_request_server_to_server.status_code.return_value = 200
+    mock_request_server_to_server = mock.Mock(status_code=200)
 
     mock_get.side_effect = [
         mock_request_remote_person_webfinger,
         mock_request_remote_person,
+        mock_request_server_to_server
     ]
 
     activity = create_activity_obj(payload)
@@ -60,9 +61,10 @@ def test_remote_person_follow_purl(mock_get, purl):
     assert Follow.objects.count() == 1
 
 
-@pytest.mark.django_db
+@mock.patch("httpx.Client")
 @mock.patch("requests.get")
-def test_person_follow_remote_purl(mock_get, person):
+@pytest.mark.django_db
+def test_person_follow_remote_purl(mock_get, _, person):
     payload = json.dumps(
         {
             **AP_CONTEXT,
@@ -86,7 +88,11 @@ def test_person_follow_remote_purl(mock_get, person):
     mock_request_remote_purl.json.return_value = file_data(
         "review/tests/test_data/mock_request_remote_purl.json"
     )
-    mock_get.side_effect = [mock_request_remote_purl_webfinger, mock_request_remote_purl]
+    mock_request_server_to_server = mock.Mock(status_code=200)
+
+    mock_get.side_effect = [mock_request_remote_purl_webfinger,
+                            mock_request_remote_purl,
+                            mock_request_server_to_server]
 
     follow_activity = activity.handler()
     remote_purl = RemoteActor.objects.get(

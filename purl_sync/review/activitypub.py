@@ -265,7 +265,7 @@ class FollowActivity:
 
     def failed_ap_rs(self):
         """Response for failure deleting the object"""
-        return JsonResponse({self.object}, status=405)
+        return JsonResponse({"sd":"self.object"}, status=405)
 
     def to_ap(self):
         """Follow activity in activitypub format"""

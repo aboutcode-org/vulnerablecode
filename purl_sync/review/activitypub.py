@@ -38,6 +38,7 @@ from review.signatures import HttpSignature
 from review.utils import fetch_actor
 from review.utils import full_resolve
 from review.utils import full_reverse
+from review.utils import parse_webfinger
 from review.utils import webfinger_actor
 
 CONTENT_TYPE = "application/activity+json"
@@ -65,7 +66,7 @@ AP_CONTEXT = {
 
 AP_TARGET = {"cc": "https://www.w3.org/ns/activitystreams#Public"}
 
-OBJ_Map = {
+OBJ_Page = {
     "Note": "note-page",
     "Review": "review-page",
     "Repository": "repository-page",
@@ -261,11 +262,11 @@ class FollowActivity:
 
     def succeeded_ap_rs(self):
         """Response for successfully deleting the object"""
-        return JsonResponse({"Location": "{self.object}"}, status=201)
+        return JsonResponse({"Location": ""}, status=201)
 
     def failed_ap_rs(self):
         """Response for failure deleting the object"""
-        return JsonResponse({"sd":"self.object"}, status=405)
+        return JsonResponse({}, status=405)
 
     def to_ap(self):
         """Follow activity in activitypub format"""
@@ -314,7 +315,7 @@ class CreateActivity:
                     vulnerability=vulnerability,
                     data=self.object.content,
                 )
-
+            Activity.federated(to=self.to, body=self.to_ap(), key_id=actor.key_id)
         elif isinstance(actor, Purl):
             if self.object.type == "Note":
                 reply_to = None
@@ -327,7 +328,7 @@ class CreateActivity:
                     content=self.object.content,
                     reply_to=reply_to,
                 )
-
+            Activity.federated(to=self.to, body=self.to_ap(), key_id=actor.key_id)
         elif isinstance(actor, Service):
             if self.object.type == "Repository":
                 new_obj, created = Repository.objects.get_or_create(
@@ -339,7 +340,7 @@ class CreateActivity:
     def succeeded_ap_rs(self, new_obj):
         """Response for successfully deleting the object"""
         return JsonResponse(
-            {"Location": full_reverse(OBJ_Map[self.object.type], new_obj.id)}, status=201
+            {"Location": full_reverse(OBJ_Page[self.object.type], new_obj.id)}, status=201
         )
 
     def failed_ap_rs(self):
@@ -348,7 +349,14 @@ class CreateActivity:
 
     def to_ap(self):
         """Request for creating object in activitypub format"""
-        return {**AP_CONTEXT, "type": self.type, "actor": self.actor, "to": self.object}
+        return {
+            **AP_CONTEXT,
+            "type": self.type,
+            "actor": asdict(self.actor),
+            "object": asdict(self.object),
+            "to": self.to,
+            **AP_TARGET,
+        }
 
 
 @dataclass
@@ -381,6 +389,7 @@ class UpdateActivity:
                     setattr(old_obj, key, value)
             old_obj.save()
 
+        Activity.federated(to=self.to, body=self.to_ap(), key_id=actor.key_id)
         return self.succeeded_ap_rs(old_obj.to_ap)
 
     def succeeded_ap_rs(self, update_obj):
@@ -393,7 +402,14 @@ class UpdateActivity:
 
     def to_ap(self):
         """Request for updating object in activitypub format"""
-        return {**AP_CONTEXT, "type": self.type, "actor": self.actor, "to": self.object}
+        return {
+            **AP_CONTEXT,
+            "type": self.type,
+            "actor": asdict(self.actor),
+            "object": asdict(self.object),
+            "to": self.object,
+            **AP_TARGET,
+        }
 
 
 @dataclass
@@ -415,6 +431,7 @@ class DeleteActivity:
         ):
             instance = self.object.get_object()
             instance.delete()
+            Activity.federated(to=self.to, body=self.to_ap(), key_id=actor.key_id)
             return self.succeeded_ap_rs()
         else:
             return self.failed_ap_rs()
@@ -430,6 +447,16 @@ class DeleteActivity:
     def failed_ap_rs(self):
         """Response for failure deleting the object"""
         return JsonResponse("Invalid object", status=404)
+
+    def to_ap(self):
+        return {
+            **AP_CONTEXT,
+            "type": self.type,
+            "actor": asdict(self.actor),
+            "object": asdict(self.object),
+            "to": self.object,
+            **AP_TARGET,
+        }
 
 
 def create_activity_obj(data):
@@ -459,18 +486,19 @@ class UnFollowActivity:
 
     def succeeded_ap_rs(self):
         """Response for successfully deleting the object"""
-        return JsonResponse({"Location": "{self.object}"}, status=201)
+        return JsonResponse({"Location": ""}, status=201)
 
     def failed_ap_rs(self):
         """Response for failure deleting the object"""
-        return JsonResponse({self.object}, status=405)
+        return JsonResponse({}, status=405)
 
     def to_ap(self):
         """Follow activity in activitypub format"""
         return {
             **AP_CONTEXT,
             "type": self.type,
-            "actor": self.actor,
+            "actor": asdict(self.actor),
+            "object": asdict(self.object),
             "to": self.object,
             **AP_TARGET,
         }
@@ -497,7 +525,7 @@ class SyncActivity:
 
     def failed_ap_rs(self):
         """Response for failure deleting the object"""
-        return JsonResponse({self.object}, status=405)
+        return JsonResponse({}, status=405)
 
 
 ACTIVITY_MAPPER = {

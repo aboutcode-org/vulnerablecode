@@ -13,6 +13,7 @@ from review.models import RemoteActor
 from ..utils import file_data
 from .test_models import person
 from .test_models import purl
+from .test_models import remote_person
 from .test_models import service
 
 
@@ -48,7 +49,7 @@ def test_remote_person_follow_purl(mock_get, _, purl):
     mock_get.side_effect = [
         mock_request_remote_person_webfinger,
         mock_request_remote_person,
-        mock_request_server_to_server
+        mock_request_server_to_server,
     ]
 
     activity = create_activity_obj(payload)
@@ -90,9 +91,11 @@ def test_person_follow_remote_purl(mock_get, _, person):
     )
     mock_request_server_to_server = mock.Mock(status_code=200)
 
-    mock_get.side_effect = [mock_request_remote_purl_webfinger,
-                            mock_request_remote_purl,
-                            mock_request_server_to_server]
+    mock_get.side_effect = [
+        mock_request_remote_purl_webfinger,
+        mock_request_remote_purl,
+        mock_request_server_to_server,
+    ]
 
     follow_activity = activity.handler()
     remote_purl = RemoteActor.objects.get(
@@ -103,31 +106,29 @@ def test_person_follow_remote_purl(mock_get, _, person):
     assert Follow.objects.count() == 1
 
 
-# @pytest.mark.django_db
-# @mock.patch("requests.get")
-# def test_purl_with_follower_create_note(mock_get, purl, person):
-#     Follow.objects.create(purl, person)
-#
-#     payload = json.dumps(
-#         {
-#             **AP_CONTEXT,
-#             "type": "Create",
-#             "actor": f"https://127.0.0.1:8000/api/v0/purls/@{purl.string}/",
-#             "object": {
-#                 "type": "Note",
-#                 "content": "we should fix this purl",
-#             },
-#         }
-#     )
-#     activity = create_activity_obj(payload)
-#     create_activity = activity.handler()
-#     note = Note.objects.get(acct=purl.acct, content="we should fix this purl")
-#     assert json.loads(create_activity.content) == {
-#         "Location": f"https://127.0.0.1:8000/notes/{note.id}"
-#     }
-#     assert create_activity.status_code == 201
-#
-#     mock_request_remote_person_webfinger = mock.Mock(status_code=200)
-#     mock_request_remote_person_webfinger.json.return_value = file_data(
-#         "review/tests/test_data/mock_request_remote_person_webfinger.json"
-#     )
+@pytest.mark.django_db
+@mock.patch("httpx.Client")
+def test_purl_with_remote_follower_create_note(mock_get, purl, remote_person):
+    Follow.objects.create(purl=purl, person=remote_person)
+    payload = json.dumps(
+        {
+            **AP_CONTEXT,
+            "type": "Create",
+            "actor": f"https://127.0.0.1:8000/api/v0/purls/@{purl.string}/",
+            "object": {
+                "type": "Note",
+                "content": "we should fix this purl",
+            },
+            "to": ["https://127.0.0.1/remote-user/"],
+        }
+    )
+    activity = create_activity_obj(payload)
+    create_activity = activity.handler()
+    note = Note.objects.get(acct=purl.acct, content="we should fix this purl")
+    assert json.loads(create_activity.content) == {
+        "Location": f"https://127.0.0.1:8000/notes/{note.id}"
+    }
+    assert create_activity.status_code == 201
+
+    mock_get.status_code.return_value = 200
+    mock_get.json.return_value = {}

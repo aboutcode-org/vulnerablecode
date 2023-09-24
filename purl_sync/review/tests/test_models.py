@@ -15,6 +15,7 @@ from ..models import Follow
 from ..models import Note
 from ..models import Person
 from ..models import Purl
+from ..models import RemoteActor
 from ..models import Repository
 from ..models import Review
 from ..models import Service
@@ -42,6 +43,12 @@ def purl(db, service):
 
 
 @pytest.fixture
+def remote_purl(db):
+    remote_user1 = RemoteActor.objects.create(url="127.0.0.1", username="remote-ziad")
+    return Purl.objects.create(remote_user=remote_user1, string="pkg:maven/org.apache.logging")
+
+
+@pytest.fixture
 def person(db):
     user1 = User.objects.create(
         username="ziad",
@@ -51,11 +58,22 @@ def person(db):
     return Person.objects.create(user=user1, summary="Hello World", public_key="PUBLIC_KEY")
 
 
+@pytest.fixture
+def remote_person(db):
+    remote_user1 = RemoteActor.objects.create(url="127.0.0.2", username="remote-ziad")
+    return Person.objects.create(remote_actor=remote_user1)
+
+
 def test_person(person):
     assert person.user.username == "ziad"
     assert person.user.email == "ziad@nexb.com"
     assert person.summary == "Hello World"
     assert person.public_key == "PUBLIC_KEY"
+
+
+def test_remote_person(remote_person):
+    assert remote_person.remote_actor.url == "127.0.0.2"
+    assert remote_person.remote_actor.username == "remote-ziad"
 
 
 def test_purl(purl, service):

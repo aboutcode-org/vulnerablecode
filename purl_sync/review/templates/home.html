@@ -4,6 +4,64 @@ Home
 {% endblock %}
 
 {% block extra-head %}
+<script type="text/javascript">
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + "=")) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+function sendVote(url, submit_button, current_value, note_id) {
+   $.ajax({
+      type: "PUT",
+      url: url,
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      data: JSON.stringify({"vote-type": submit_button.attr("name")}),
+      dataType: "json",
+      success: (data) => {
+          console.log(data);
+          if (
+              (submit_button.attr("name") === "vote-up-note" && data["deleted"] === false) ||
+              (submit_button.attr("name") === "vote-down-note" && data["deleted"] === true)
+          ){
+              $("#"+note_id).text(parseInt(parseFloat(current_value)) + 1);
+          }
+
+          if ((submit_button.attr("name") === "vote-down-note" && data["deleted"] === false )||
+              (submit_button.attr("name") === "vote-up-note" && data["deleted"] === true )) {
+              $("#"+note_id).text(parseInt(parseFloat(current_value)) - 1);
+          }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+   });
+}
+$(document).ready(function () {
+    $("form[name='vote-notes']").submit(function (event) {
+      event.preventDefault();
+      let submit_button = $(event.originalEvent.submitter);
+      if ((submit_button.attr("name") === "vote-up-note") ||
+          (submit_button.attr("name") === "vote-down-note")) {
+          let note_id = submit_button.attr("value")
+          let url = "/notes/"+ note_id +"/votes/"
+          let current_value = $("#" + note_id).text();
+          sendVote(url, submit_button, current_value, note_id);
+      }
+  });
+});
+</script>
 {% endblock %}
 {% block content %}
 <div class="columns">
@@ -22,20 +80,20 @@ Home
           <img src="https://bulma.io/images/placeholders/128x128.png" alt="purl-image">
         </p>
       </figure>
-     <form class="ml-5 mr-4" name="vote-comments">
+     <form class="ml-5 mr-4" name="vote-notes">
           <span class="icon ml-1">
-               <button name="vote-up-comment" class="button is-rounded is-white" value=".id" type="submit">▲</button>
+               <button name="vote-up-note" class="button is-rounded is-white" value="{{ note.id }}" type="submit">▲</button>
           </span>
-          <p class="ml-3 mt-1 mb-1">0</p>
+          <p class="ml-3 mt-1 mb-1" id="{{ note.id }}">{{ note.reputation_value }}</p>
           <span class="icon ml-1">
-               <button name="vote-down-comment" class="button is-rounded is-white" value=".id"  type="submit">▼</button>
+               <button name="vote-down-note" class="button is-rounded is-white" value="{{ note.id }}"  type="submit">▼</button>
           </span>
      </form>
      <div class="media-content">
         <div class="content">
             <a href="{% url 'purl-profile' note.username %}">{{ note.acct }}</a>
             <hr/>
-             <pre>{{ note.content }}</pre>
+             <pre class="has-text-black">{{ note.content }}</pre>
             <hr/>
             <button class="button" onclick="window.open('{% url 'note-page' note.id %}');">Reply 💬</button>
         </div>

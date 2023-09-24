@@ -74,20 +74,21 @@ $(document).ready(function () {
         </p>
       </figure>
       <form class="ml-5 mr-5" name="vote-notes">
-                  <span class="icon ml-1">
-                       <button name="vote-up-note" class="button is-rounded is-white" value="{{ note.id }}" type="submit">▲</button>
-                  </span>
-                  <p class="ml-3 mt-1 mb-1" id="votes-value">{{ note.reputation_value }}</p>
-                  <span class="icon ml-1">
-                       <button name="vote-down-note" class="button is-rounded is-white" value="{{ note.id }}"  type="submit">▼</button>
-                  </span>
-              </form>
+          <span class="icon ml-1">
+               <button name="vote-up-note" class="button is-rounded is-white" value="{{ note.id }}" type="submit">▲</button>
+          </span>
+          <p class="ml-3 mt-1 mb-1" id="votes-value">{{ note.reputation_value }}</p>
+          <span class="icon ml-1">
+               <button name="vote-down-note" class="button is-rounded is-white" value="{{ note.id }}"  type="submit">▼</button>
+          </span>
+      </form>
+
       <div class="media-content">
         <div class="content">
           <p>
             <a href="{% url 'purl-profile' note.username %}">{{ note.acct }}</a>
             <br>
-             <pre>{{ note.content }}</pre>
+             <pre class="has-text-black">{{ note.content }}</pre>
           </p>
         </div>
       </div>

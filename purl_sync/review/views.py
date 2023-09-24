@@ -237,7 +237,7 @@ class PersonSignUp(FormView):
         if user:
             person = Person.objects.create(user=user)
             person.save()
-            login(self.request, user)
+            login(self.request, user, backend="django.contrib.auth.backends.ModelBackend")
         return super(PersonSignUp, self).form_valid(form)
 
 
@@ -460,17 +460,16 @@ class FollowPurlView(View):
                 payload = json.dumps(
                     {
                         **AP_CONTEXT,
-                        "@type": "Follow",
+                        "type": "Follow",
                         "actor": {
-                            "@type": "Person",
-                            "@id": remote_actor_url,
+                            "type": "Person",
+                            "id": remote_actor_url,
                         },
                         "object": {
-                            "@type": "Purl",
-                            "@id": purl.absolute_url_ap,
+                            "type": "Purl",
+                            "id": purl.absolute_url_ap,
                         },
-                        "to": [{"@type": "Person", "@id": remote_actor_url}],
-                        **AP_TARGET,
+                        "to": [remote_actor_url],
                     }
                 )
 

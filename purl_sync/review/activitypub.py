@@ -262,7 +262,7 @@ class FollowActivity:
 
     def succeeded_ap_rs(self):
         """Response for successfully deleting the object"""
-        return JsonResponse({"Location": ""}, status=201)
+        return JsonResponse({}, status=201)
 
     def failed_ap_rs(self):
         """Response for failure deleting the object"""

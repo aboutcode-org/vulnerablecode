@@ -752,6 +752,7 @@ class PurlFollowers(View):
 
 
 @require_http_methods(["POST"])
+@csrf_exempt
 def token(request):
     payload = json.loads(request.body)
     r = requests.post(
@@ -769,6 +770,7 @@ def token(request):
 
 
 @require_http_methods(["POST"])
+@csrf_exempt
 def refresh_token(request):
     payload = json.loads(request.body)
     r = requests.post(
@@ -785,6 +787,7 @@ def refresh_token(request):
 
 
 @require_http_methods(["POST"])
+@csrf_exempt
 def revoke_token(request):
     payload = json.loads(request.body)
     r = requests.post(

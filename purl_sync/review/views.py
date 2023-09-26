@@ -601,10 +601,14 @@ class UserInbox(View):
         """You can GET from your inbox to read your latest messages
         (client-to-server; this is like reading your social network stream)"""
         if hasattr(request.user, "person") and request.user.username == kwargs["username"]:
-            notes = Note.objects.filter(acct=request.user.person.acct)
+            purl_followers = [
+                generate_webfinger(follow.purl.string)
+                for follow in Follow.objects.filter(person=request.user.person)
+            ]
+            note_list = Note.objects.filter(acct__in=purl_followers).order_by("updated_at__minute")
             reviews = Review.objects.filter(author=request.user.person)
             return JsonResponse(
-                {"notes": ap_collection(notes), "reviews": ap_collection(reviews)},
+                {"notes": ap_collection(note_list), "reviews": ap_collection(reviews)},
                 content_type=AP_CONTENT_TYPE,
             )
 

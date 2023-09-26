@@ -75,11 +75,14 @@ class VulnerabilitySearch(ListView):
 
 key_func = lambda dict: (
     True if dict["date_published"] else False,
-    datetime.strptime(dict["date_published"], "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%dT%H:%M:%S")  # Format as ISO datetime
+    datetime.strptime(dict["date_published"], "%Y-%m-%dT%H:%M:%S").strftime(
+        "%Y-%m-%dT%H:%M:%S"
+    )  # Format as ISO datetime
     if dict["date_published"]
     else "",
     False if dict.get("vcio_import") else True,
 )
+
 
 class PackageDetails(DetailView):
     model = models.Package

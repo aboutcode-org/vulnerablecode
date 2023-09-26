@@ -23,8 +23,10 @@ from vulnerabilities.improvers.default import DefaultImporter
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
+from vulnerabilities.models import PackageChangeLog
 from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityChangeLog
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
@@ -77,6 +79,7 @@ class ImportRunner:
                     improver_name=importer_name,
                 )
             except Exception as e:
+                print("AA", e)
                 logger.info(f"Failed to process advisory: {advisory!r} with error {e!r}")
         logger.info("Finished importing using %s.", advisory_importer.__class__.qualified_name)
 
@@ -102,6 +105,7 @@ class ImportRunner:
                         "created_by": importer_name,
                         "date_collected": datetime.datetime.now(tz=datetime.timezone.utc),
                     },
+                    url=data.url,
                 )
                 if not obj.date_imported:
                     advisories.append(obj)
@@ -151,6 +155,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
             vulnerability_id=inference.vulnerability_id,
             aliases=inference.aliases,
             summary=inference.summary,
+            advisory=advisory,
         )
 
         if not vulnerability:
@@ -193,24 +198,50 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                     )
 
         for affected_purl in inference.affected_purls or []:
-            vulnerable_package = Package.objects.get_or_create_from_purl(purl=affected_purl)
+            vulnerable_package, created = Package.objects.get_or_create_from_purl(
+                purl=affected_purl
+            )
+            if created:
+                PackageChangeLog.log_import(
+                    package=vulnerable_package,
+                    importer=advisory.created_by,
+                    supporting_data={
+                        "date_published": advisory.date_published.strftime("%Y-%m-%dT%H:%M:%S")
+                        if advisory.date_published
+                        else None,
+                        "url": advisory.url if advisory.url else None,
+                    },
+                )
             PackageRelatedVulnerability(
                 vulnerability=vulnerability,
                 package=vulnerable_package,
                 created_by=improver_name,
                 confidence=inference.confidence,
                 fix=False,
-            ).update_or_create()
+            ).update_or_create(advisory=advisory)
 
         if inference.fixed_purl:
-            fixed_package = Package.objects.get_or_create_from_purl(purl=inference.fixed_purl)
+            fixed_package, created = Package.objects.get_or_create_from_purl(
+                purl=inference.fixed_purl
+            )
+            if created:
+                PackageChangeLog.log_import(
+                    package=vulnerable_package,
+                    importer=advisory.created_by,
+                    supporting_data={
+                        "date_published": advisory.date_published.strftime("%Y-%m-%dT%H:%M:%S")
+                        if advisory.date_published
+                        else None,
+                        "url": advisory.url if advisory.url else None,
+                    },
+                )
             PackageRelatedVulnerability(
                 vulnerability=vulnerability,
                 package=fixed_package,
                 created_by=improver_name,
                 confidence=inference.confidence,
                 fix=True,
-            ).update_or_create()
+            ).update_or_create(advisory=advisory)
 
         if inference.weaknesses and vulnerability:
             for cwe_id in inference.weaknesses:

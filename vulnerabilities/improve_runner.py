@@ -131,7 +131,9 @@ def process_inferences(
                     )
 
         for affected_purl in inference.affected_purls or []:
-            vulnerable_package, created = Package.objects.get_or_create_from_purl(purl=affected_purl)
+            vulnerable_package, created = Package.objects.get_or_create_from_purl(
+                purl=affected_purl
+            )
             if created:
                 PackageChangeLog.log_import(
                     package=vulnerable_package,
@@ -154,7 +156,9 @@ def process_inferences(
             )
 
         if inference.fixed_purl:
-            fixed_package, created = Package.objects.get_or_create_from_purl(purl=inference.fixed_purl)
+            fixed_package, created = Package.objects.get_or_create_from_purl(
+                purl=inference.fixed_purl
+            )
             if created:
                 PackageChangeLog.log_import(
                     package=fixed_package,

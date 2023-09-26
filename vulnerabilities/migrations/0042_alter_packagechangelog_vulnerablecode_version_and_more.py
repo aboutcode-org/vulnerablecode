@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('vulnerabilities', '0040_advisory_url_vulnerabilitychangelog_packagechangelog'),
+        ('vulnerabilities', '0041_advisory_url_vulnerabilitychangelog_packagechangelog'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='packagechangelog',
             name='vulnerablecode_version',
-            field=models.CharField(default='32.0.0rc4', help_text='Version of the vulnerablecode at the time of change', max_length=100),
+            field=models.CharField(default='33.6.1', help_text='Version of the vulnerablecode at the time of change', max_length=100),
         ),
         migrations.AlterField(
             model_name='vulnerabilitychangelog',
             name='vulnerablecode_version',
-            field=models.CharField(default='32.0.0rc4', help_text='Version of the vulnerablecode at the time of change', max_length=100),
+            field=models.CharField(default='33.6.1', help_text='Version of the vulnerablecode at the time of change', max_length=100),
         ),
     ]

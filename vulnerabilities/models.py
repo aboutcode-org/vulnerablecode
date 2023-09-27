@@ -673,14 +673,14 @@ class Package(PackageURLMixin):
     @property
     def fixed_package_details(self):
         """
-        Return a mapping of vulnerabilities that affect this package and the closest and
+        Return a mapping of vulnerabilities that affect this package and the next and
         latest non-vulnerable versions.
         """
         package_details = {}
         package_details["purl"] = PackageURL.from_string(self.purl)
 
-        closest_non_vulnerable, latest_non_vulnerable = self.get_non_vulnerable_versions()
-        package_details["closest_non_vulnerable"] = closest_non_vulnerable
+        next_non_vulnerable, latest_non_vulnerable = self.get_non_vulnerable_versions()
+        package_details["next_non_vulnerable"] = next_non_vulnerable
         package_details["latest_non_vulnerable"] = latest_non_vulnerable
 
         package_details["vulnerabilities"] = self.get_affecting_vulnerabilities()
@@ -689,7 +689,7 @@ class Package(PackageURLMixin):
 
     def get_non_vulnerable_versions(self):
         """
-        Return a tuple of the closest and latest non-vulnerable versions as PackageURLs.  Return a tuple of
+        Return a tuple of the next and latest non-vulnerable versions as PackageURLs.  Return a tuple of
         (None, None) if there is no non-vulnerable version.
         """
         package_versions = self.get_fixed_by_package_versions(fix=False)
@@ -706,13 +706,13 @@ class Package(PackageURLMixin):
 
         if later_non_vulnerable_versions:
             sorted_versions = self.sort_by_version(later_non_vulnerable_versions)
-            closest_non_vulnerable_version = sorted_versions[0]
+            next_non_vulnerable_version = sorted_versions[0]
             latest_non_vulnerable_version = sorted_versions[-1]
 
-            closest_non_vulnerable = PackageURL.from_string(closest_non_vulnerable_version.purl)
+            next_non_vulnerable = PackageURL.from_string(next_non_vulnerable_version.purl)
             latest_non_vulnerable = PackageURL.from_string(latest_non_vulnerable_version.purl)
 
-            return closest_non_vulnerable, latest_non_vulnerable
+            return next_non_vulnerable, latest_non_vulnerable
 
         return None, None
 
@@ -746,23 +746,33 @@ class Package(PackageURLMixin):
                 if fixed_version > self.current_version:
                     later_fixed_packages.append(fixed_pkg)
 
-            closest_fixed_package = None
-            closest_fixed_package_vulns = []
+            next_fixed_package = None
+            next_fixed_package_vulns = []
 
+            sort_fixed_by_packages_by_version = []
             if later_fixed_packages:
                 sort_fixed_by_packages_by_version = self.sort_by_version(later_fixed_packages)
-                closest_fixed_package = sort_fixed_by_packages_by_version[0]
-                fixed_by_purl = PackageURL.from_string(closest_fixed_package.purl)
-                closest_fixed_package_vulns = list(closest_fixed_package.affected_by)
+
+            fixed_by_pkgs = []
 
             for vuln_details in package_details_vulns:
                 if vuln_details["vulnerability"] != vuln:
                     continue
-                vuln_details["fixed_by_purl"] = None
+                vuln_details["fixed_by_purl"] = []
                 vuln_details["fixed_by_purl_vulnerabilities"] = []
-                if closest_fixed_package:
-                    vuln_details["fixed_by_purl"] = fixed_by_purl
-                    vuln_details["fixed_by_purl_vulnerabilities"] = closest_fixed_package_vulns
+
+                for fixed_by_pkg in sort_fixed_by_packages_by_version:
+                    fixed_by_package_details = {}
+                    fixed_by_purl = PackageURL.from_string(fixed_by_pkg.purl)
+                    next_fixed_package_vulns = list(fixed_by_pkg.affected_by)
+
+                    fixed_by_package_details["fixed_by_purl"] = fixed_by_purl
+                    fixed_by_package_details[
+                        "fixed_by_purl_vulnerabilities"
+                    ] = next_fixed_package_vulns
+                    fixed_by_pkgs.append(fixed_by_package_details)
+
+                    vuln_details["fixed_by_package_details"] = fixed_by_pkgs
 
         return package_details_vulns
 

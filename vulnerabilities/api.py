@@ -49,84 +49,26 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
     affected_by_vulnerabilities = serializers.SerializerMethodField("get_affected_vulnerabilities")
 
     def get_affected_vulnerabilities(self, package):
-        # HOT: 2023-09-13 Wednesday 13:48:01.  'parent_affected_vulnerabilities' identifies (1) the vulnerabilities (if any) that affect the given package that itself fixes one of the target purl's vulnerabilities, and (2)
-        # Ex:
-        # package.purl = pkg:pypi/redis@4.3.6
-        # parent_affected_vulnerabilities = [{'vulnerability': <Vulnerability: VCID-rqe1-dkmg-aaad>, 'fixed_by_purl': PackageURL(type='pypi', namespace=None, name='redis', version='5.0.0b1', qualifiers={}, subpath=None), 'fixed_by_purl_vulnerabilities': []}]
-
         parent_affected_vulnerabilities = package.fixed_package_details.get("vulnerabilities", None)
         affected_vulnerabilities = []
-
-        print("\npackage.purl = {}".format(package.purl))
-        print("\nparent_affected_vulnerabilities = {}\n".format(parent_affected_vulnerabilities))
-        # print(
-        #     "\nparent_affected_vulnerabilities.get('vulnerability', None) = {}\n".format(
-        #         parent_affected_vulnerabilities.get("vulnerability", None)
-        #     )
-        # )
-        # print(
-        #     "\nparent_affected_vulnerabilities.get('fixed_by_purl', None) = {}\n".format(
-        #         parent_affected_vulnerabilities.get("fixed_by_purl", None)
-        #     )
-        # )
-        # print(
-        #     "\nparent_affected_vulnerabilities.get('fixed_by_purl_vulnerabilities', None) = {}\n".format(
-        #         parent_affected_vulnerabilities.get("fixed_by_purl_vulnerabilities", None)
-        #     )
-        # )
 
         if parent_affected_vulnerabilities:
             for vuln in parent_affected_vulnerabilities:
                 affected_vulnerability = {}
 
-                print(
-                    '\nvuln.get("vulnerability", None) = {}'.format(vuln.get("vulnerability", None))
-                )
                 affected_vulnerability["vulnerability"] = vuln.get(
                     "vulnerability", None
                 ).vulnerability_id
 
-                print(
-                    '\nvuln.get("fixed_by_purl", None) = {}'.format(vuln.get("fixed_by_purl", None))
-                )
-                affected_vulnerability["fixed_by_purl"] = vuln.get(
-                    "fixed_by_purl", None
-                ).to_string()
-
-                print(
-                    '\nvuln.get("fixed_by_purl_vulnerabilities", None) = {}'.format(
-                        vuln.get("fixed_by_purl_vulnerabilities", None)
-                    )
-                )
-                affected_vulnerability["fixed_by_purl_vulnerabilities"] = [
-                    fixed_by_purl_vulnerability.vulnerability_id
-                    for fixed_by_purl_vulnerability in vuln.get(
-                        "fixed_by_purl_vulnerabilities", None
-                    )
-                ]
-
                 affected_vulnerabilities.append(affected_vulnerability)
 
-                print("affected_vulnerability = {}".format(affected_vulnerability))
-                print("affected_vulnerabilities = {}".format(affected_vulnerabilities))
-
         return affected_vulnerabilities
-
-        # ZAP: 2023-09-12 Tuesday 19:12:22.  Not what we want but this does return the purl, which we can use to find all of its own vulns (if any).
-        # return package.purl
-
-    # def get_affected_vulnerabilities_saved(self, package) -> dict:
-    #     """
-    #     Return a mapping of vulnerabilities that affects the given `package`.
-    #     """
-    #     # return self.get_vulnerabilities_for_a_package(package=package, fix=False)
-    #     return self.get_vulnerabilities_for_a_package(package=self, fix=False)
 
     purl = serializers.CharField(source="package_url")
 
     class Meta:
         model = Package
-        fields = ["url", "purl", "is_vulnerable", "affected_by_vulnerabilities"]
+        fields = ["url", "purl", "affected_by_vulnerabilities"]
 
 
 class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
@@ -167,41 +109,9 @@ class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
     aliases = AliasSerializer(many=True, source="alias")
 
-    # ZAP: 2023-09-14 Thursday 11:34:26.  Add closest fixed package from the Package UI here.
-
-    closest_fixed_package = serializers.SerializerMethodField("get_closest_fixed_package")
-
-    def get_closest_fixed_package(self, instance):
-        return "Coming soon!"
-
-    #     test_data = super().to_representation(instance)
-    #     vulnerabilities = [vuln["vulnerability"] for vuln in test_data["vulnerabilities"]]
-    #     test_data["vulnerabilities"] = vulnerabilities
-
-    #     return test_data
-
-    # # ZAP: From the PackageSerializer class:
-    # # next_non_vulnerable_version = serializers.SerializerMethodField("get_closest_non_vulnerable")
-
-    # def get_closest_non_vulnerable(self, package):
-    #     closest_non_vulnerable = package.fixed_package_details.get("closest_non_vulnerable", None)
-    #     if closest_non_vulnerable:
-    #         return closest_non_vulnerable.version
-    #     else:
-    #         return None
-
     class Meta:
         model = Vulnerability
-        # fields = ["url", "vulnerability_id", "summary", "references", "fixed_packages", "aliases"]
-        fields = [
-            "url",
-            "vulnerability_id",
-            "summary",
-            "references",
-            "fixed_packages",
-            "closest_fixed_package",
-            "aliases",
-        ]
+        fields = ["url", "vulnerability_id", "summary", "references", "fixed_packages", "aliases"]
 
 
 class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
@@ -214,34 +124,8 @@ class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
     aliases = AliasSerializer(many=True, source="alias")
 
-    # ALERT: 2023-09-14 Thursday 15:16:05.  For some reason, favorite_color is not appearing in the output.
-    # favorite_color = serializers.SerializerMethodField("get_favorite_color")
-
-    # # def get_closest_non_vulnerable(self, package):
-    # def get_favorite_color(self, package):
-    #     # closest_non_vulnerable = package.fixed_package_details.get("closest_non_vulnerable", None)
-    #     # if closest_non_vulnerable:
-    #     #     return closest_non_vulnerable.version
-    #     # else:
-    #     #     return None
-    #     return "red!"
-
-    favorite_color = MinimalPackageSerializer(
-        many=True, source="filtered_fixed_packages", read_only=True
-    )
-
     class Meta:
         model = Vulnerability
-        # fields = [
-        #     "url",
-        #     "vulnerability_id",
-        #     "summary",
-        #     "aliases",
-        #     "fixed_packages",
-        #     "affected_packages",
-        #     "references",
-        # ]
-
         fields = [
             "url",
             "vulnerability_id",
@@ -250,7 +134,6 @@ class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
             "fixed_packages",
             "affected_packages",
             "references",
-            "favorite_color",
         ]
 
 
@@ -259,12 +142,12 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
     Lookup software package using Package URLs
     """
 
-    next_non_vulnerable_version = serializers.SerializerMethodField("get_closest_non_vulnerable")
+    next_non_vulnerable_version = serializers.SerializerMethodField("get_next_non_vulnerable")
 
-    def get_closest_non_vulnerable(self, package):
-        closest_non_vulnerable = package.fixed_package_details.get("closest_non_vulnerable", None)
-        if closest_non_vulnerable:
-            return closest_non_vulnerable.version
+    def get_next_non_vulnerable(self, package):
+        next_non_vulnerable = package.fixed_package_details.get("next_non_vulnerable", None)
+        if next_non_vulnerable:
+            return next_non_vulnerable.version
         else:
             return None
 
@@ -285,7 +168,7 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_fixed_packages(self, package):
         """
-        Return a queryset of all packages that fixes a vulnerability with
+        Return a queryset of all packages that fix a vulnerability with
         same type, namespace, name, subpath and qualifiers of the `package`
         """
         return Package.objects.filter(
@@ -300,7 +183,7 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
     def get_vulnerabilities_for_a_package(self, package, fix) -> dict:
         """
         Return a mapping of vulnerabilities data related to the given `package`.
-        Return vulnerabilities that affects the `package` if given `fix` flag is False,
+        Return vulnerabilities that affect the `package` if given `fix` flag is False,
         otherwise return vulnerabilities fixed by the `package`.
         """
         fixed_packages = self.get_fixed_packages(package=package)
@@ -312,7 +195,6 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
                 to_attr="filtered_fixed_packages",
             )
         )
-        # so this calls VulnSerializerRefsAndSummary
         return VulnSerializerRefsAndSummary(
             instance=qs,
             many=True,
@@ -342,10 +224,10 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
             "version",
             "qualifiers",
             "subpath",
-            "affected_by_vulnerabilities",
-            "fixing_vulnerabilities",
             "next_non_vulnerable_version",
             "latest_non_vulnerable_version",
+            "affected_by_vulnerabilities",
+            "fixing_vulnerabilities",
         ]
 
 

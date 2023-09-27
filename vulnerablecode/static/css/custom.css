@@ -429,13 +429,14 @@ span.tag.custom {
 
 /* Emphasis for affected/fixed headings and related references. */
 .affected-fixed {
-    color: #ff0000;
-    font-weight: 700;
+    color: #000000;
+    font-weight: 800;
 }
 
 /* Emphasis for not vulnerable. */
 .emphasis-not-vulnerable {
     background-color: #e6ffe6;
+    /* background-color: #e6ffff; */
 }
 
 /* Emphasis for vulnerable. */

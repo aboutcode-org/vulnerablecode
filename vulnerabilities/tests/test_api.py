@@ -327,25 +327,203 @@ class APITestCasePackage(TestCase):
 
     def test_api_with_single_vulnerability_and_fixed_package(self):
         response = self.csrf_client.get(f"/api/packages/{self.package.id}", format="json").data
-        assert response == {
-            "url": f"http://testserver/api/packages/{self.package.id}",
-            "purl": "pkg:generic/nginx/test@11",
-            "type": "generic",
-            "namespace": "nginx",
-            "name": "test",
-            "version": "11",
-            "qualifiers": {},
-            "subpath": "",
+        # assert response == {
+        #     "url": f"http://testserver/api/packages/{self.package.id}",
+        #     "purl": "pkg:generic/nginx/test@11",
+        #     "type": "generic",
+        #     "namespace": "nginx",
+        #     "name": "test",
+        #     "version": "11",
+        #     "qualifiers": {},
+        #     "subpath": "",
+        #     "affected_by_vulnerabilities": [
+        #         {
+        #             "url": f"http://testserver/api/vulnerabilities/{self.vuln1.id}",
+        #             "vulnerability_id": self.vuln1.vulnerability_id,
+        #             "summary": "test-vuln1",
+        #             "references": [],
+        #             "fixed_packages": [],
+        #             "aliases": ["CVE-2019-1234", "GMS-1234-4321"],
+        #         }
+        #     ],
+        #     "fixing_vulnerabilities": [
+        #         {
+        #             "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
+        #             "vulnerability_id": self.vuln.vulnerability_id,
+        #             "summary": "test-vuln",
+        #             "references": [],
+        #             "fixed_packages": [
+        #                 {
+        #                     "url": f"http://testserver/api/packages/{self.package.id}",
+        #                     "purl": "pkg:generic/nginx/test@11",
+        #                     "is_vulnerable": True,
+        #                 }
+        #             ],
+        #             "aliases": ["CVE-2029-1234"],
+        #         },
+        #     ],
+        # }
+
+        # assert response == {
+        #     "affected_by_vulnerabilities": [
+        #         {
+        #             "url": "http://testserver/api/vulnerabilities/2",
+        #             "vulnerability_id": "VCID-gufq-4v88-aaaa",
+        #             "summary": "test-vuln1",
+        #             "references": [],
+        #             "fixed_packages": [],
+        #             "aliases": ["CVE-2019-1234", "GMS-1234-4321"],
+        #         }
+        #     ],
+        #     "fixing_vulnerabilities": [
+        #         {
+        #             "url": "http://testserver/api/vulnerabilities/1",
+        #             "vulnerability_id": "VCID-54ya-n1q4-aaag",
+        #             "summary": "test-vuln",
+        #             "references": [],
+        #             "aliases": ["CVE-2029-1234"],
+        #             "fixed_packages": [
+        #                 {
+        #                     "url": "http://testserver/api/packages/11",
+        #                     "purl": "pkg:generic/nginx/test@11",
+        #                     "affected_by_vulnerabilities": [
+        #                         {"vulnerability": "VCID-gufq-4v88-aaaa"},
+        #                     ],
+        #                 }
+        #             ],
+        #         }
+        #     ],
+        #     "latest_non_vulnerable_version": None,
+        #     "name": "test",
+        #     "namespace": "nginx",
+        #     "next_non_vulnerable_version": None,
+        #     "purl": "pkg:generic/nginx/test@11",
+        #     "qualifiers": {},
+        #     "subpath": "",
+        #     "type": "generic",
+        #     "url": f"http://testserver/api/packages/{self.package.id}",
+        #     "version": "11",
+        #     # "affected_by_vulnerabilities": [
+        #     #     {
+        #     #         "url": f"http://testserver/api/vulnerabilities/{self.vuln1.id}",
+        #     #         "vulnerability_id": self.vuln1.vulnerability_id,
+        #     #         "summary": "test-vuln1",
+        #     #         "references": [],
+        #     #         "fixed_packages": [],
+        #     #         "aliases": ["CVE-2019-1234", "GMS-1234-4321"],
+        #     #     }
+        #     # ],
+        #     # "fixing_vulnerabilities": [
+        #     #     {
+        #     #         "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
+        #     #         "vulnerability_id": self.vuln.vulnerability_id,
+        #     #         "summary": "test-vuln",
+        #     #         "references": [],
+        #     #         "fixed_packages": [
+        #     #             {
+        #     #                 "url": f"http://testserver/api/packages/{self.package.id}",
+        #     #                 "purl": "pkg:generic/nginx/test@11",
+        #     #                 "is_vulnerable": True,
+        #     #             }
+        #     #         ],
+        #     #         "aliases": ["CVE-2029-1234"],
+        #     #     },
+        #     # ],
+        # }
+
+        # expected = {
+        #     "affected_by_vulnerabilities": [
+        #         {
+        #             "url": "http://testserver/api/vulnerabilities/2",
+        #             "vulnerability_id": "VCID-gufq-4v88-aaaa",
+        #             "summary": "test-vuln1",
+        #             "references": [],
+        #             "fixed_packages": [],
+        #             "aliases": ["CVE-2019-1234", "GMS-1234-4321"],
+        #         }
+        #     ],
+        #     "fixing_vulnerabilities": [
+        #         {
+        #             "url": "http://testserver/api/vulnerabilities/1",
+        #             "vulnerability_id": "VCID-54ya-n1q4-aaag",
+        #             "summary": "test-vuln",
+        #             "references": [],
+        #             "fixed_packages": [
+        #                 {
+        #                     "url": "http://testserver/api/packages/11",
+        #                     "purl": "pkg:generic/nginx/test@11",
+        #                     "affected_by_vulnerabilities": [
+        #                         {"vulnerability": "VCID-gufq-4v88-aaaa"},
+        #                     ],
+        #                     "aliases": ["CVE-2029-1234"],
+        #                 }
+        #             ],
+        #         }
+        #     ],
+        #     "next_non_vulnerable_version": None,
+        #     "latest_non_vulnerable_version": None,
+        #     "url": f"http://testserver/api/packages/{self.package.id}",
+        #     "purl": "pkg:generic/nginx/test@11",
+        #     "type": "generic",
+        #     "namespace": "nginx",
+        #     "name": "test",
+        #     "version": "11",
+        #     "qualifiers": {},
+        #     "subpath": "",
+        # }
+
+        # JMH modif.
+
+        from collections import OrderedDict
+
+        expected = {
             "affected_by_vulnerabilities": [
                 {
+                    # "url": "http://testserver/api/vulnerabilities/2",
                     "url": f"http://testserver/api/vulnerabilities/{self.vuln1.id}",
-                    "vulnerability_id": self.vuln1.vulnerability_id,
-                    "summary": "test-vuln1",
-                    "references": [],
-                    "fixed_packages": [],
                     "aliases": ["CVE-2019-1234", "GMS-1234-4321"],
+                    "fixed_packages": [],
+                    "references": [],
+                    "summary": "test-vuln1",
+                    # "vulnerability_id": "VCID-gufq-4v88-aaaa",
+                    "vulnerability_id": self.vuln1.vulnerability_id,
                 }
             ],
+            # "affected_by_vulnerabilities": [
+            #     OrderedDict(
+            #         [
+            #             ("url", f"http://testserver/api/vulnerabilities/{self.vuln1.id}"),
+            #             ("vulnerability_id", self.vuln1.vulnerability_id),
+            #             ("summary", "test-vuln1"),
+            #             ("references", []),
+            #             ("fixed_packages", []),
+            #             ("aliases", ["CVE-2019-1234", "GMS-1234-4321"]),
+            #         ]
+            #     )
+            # ],
+            # "fixing_vulnerabilities": [
+            #     {
+            #         "fixed_packages": [
+            #             {
+            #                 # "url": "http://testserver/api/packages/11",
+            #                 "url": f"http://testserver/api/packages/{self.package.id}",
+            #                 "purl": "pkg:generic/nginx/test@11",
+            #                 "affected_by_vulnerabilities": [
+            #                     # {"vulnerability": "VCID-gufq-4v88-aaaa"},
+            #                     {"vulnerability": self.vuln1.vulnerability_id},
+            #                 ],
+            #                 "aliases": ["CVE-2029-1234"],
+            #             }
+            #         ],
+            #         "references": [],
+            #         "summary": "test-vuln",
+            #         # "url": "http://testserver/api/vulnerabilities/1",
+            #         "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
+            #         # "vulnerability_id": "VCID-54ya-n1q4-aaag",
+            #         "vulnerability_id": self.vuln.vulnerability_id,
+            #     }
+            # ],
+            # temp experiment -- this works!
             "fixing_vulnerabilities": [
                 {
                     "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
@@ -356,13 +534,58 @@ class APITestCasePackage(TestCase):
                         {
                             "url": f"http://testserver/api/packages/{self.package.id}",
                             "purl": "pkg:generic/nginx/test@11",
-                            "is_vulnerable": True,
+                            # "is_vulnerable": True,
+                            "affected_by_vulnerabilities": [
+                                {"vulnerability": self.vuln1.vulnerability_id}
+                            ],
                         }
                     ],
                     "aliases": ["CVE-2029-1234"],
                 },
             ],
+            # end temp experiment
+            # "fixing_vulnerabilities": [
+            #     OrderedDict(
+            #         [
+            #             ("url", f"http://testserver/api/vulnerabilities/{self.vuln.id}"),
+            #             ("vulnerability_id", self.vuln.vulnerability_id),
+            #             ("summary", "test-vuln"),
+            #             ("references", []),
+            #             (
+            #                 "fixed_packages",
+            #                 [
+            #                     OrderedDict(
+            #                         [
+            #                             (
+            #                                 "url",
+            #                                 f"http://testserver/api/packages/{self.package.id}",
+            #                             ),
+            #                             ("purl", "pkg:generic/nginx/test@11"),
+            #                             (
+            #                                 "affected_by_vulnerabilities",
+            #                                 [{"vulnerability": self.vuln1.vulnerability_id}],
+            #                             ),
+            #                         ]
+            #                     )
+            #                 ],
+            #             ),
+            #             ("aliases", ["CVE-2029-1234"]),
+            #         ]
+            #     )
+            # ],
+            "next_non_vulnerable_version": None,
+            "latest_non_vulnerable_version": None,
+            "url": f"http://testserver/api/packages/{self.package.id}",
+            "purl": "pkg:generic/nginx/test@11",
+            "type": "generic",
+            "namespace": "nginx",
+            "name": "test",
+            "version": "11",
+            "qualifiers": {},
+            "subpath": "",
         }
+
+        assert response == expected
 
     def test_api_with_single_vulnerability_and_vulnerable_package(self):
         response = self.csrf_client.get(f"/api/packages/{self.vuln_package.id}", format="json").data

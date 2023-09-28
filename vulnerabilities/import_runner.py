@@ -79,7 +79,6 @@ class ImportRunner:
                     improver_name=importer_name,
                 )
             except Exception as e:
-                print("AA", e)
                 logger.info(f"Failed to process advisory: {advisory!r} with error {e!r}")
         logger.info("Finished importing using %s.", advisory_importer.__class__.qualified_name)
 

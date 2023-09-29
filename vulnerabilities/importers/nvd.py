@@ -79,7 +79,7 @@ def fetch_cve_data_1_1(starting_year=2002):
     """
     current_year = date.today().year
     # NVD json feeds start from 2002.
-    for year in range(2021, current_year + 1):
+    for year in range(starting_year, current_year + 1):
         download_url = f"https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-{year}.json.gz"
         yield year, fetch(url=download_url)
 

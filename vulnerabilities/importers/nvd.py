@@ -22,7 +22,6 @@ from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.utils import get_cwe_id
 from vulnerabilities.utils import get_item
-from vulnerabilities.models import VulnerabilityStatusType
 
 
 class NVDImporter(Importer):
@@ -126,13 +125,6 @@ class CveItem:
     @property
     def cve_id(self):
         return self.cve_item["cve"]["CVE_data_meta"]["ID"]
-
-    @property
-    def is_rejected(self):
-        for desc in get_item(self.cve_item, "cve", "description", "description_data") or []:
-            if "** REJECT ** DO NOT USE THIS CANDIDATE NUMBER." in desc.get("value"):
-                return True
-        return False
 
     @property
     def summary(self):
@@ -268,16 +260,12 @@ class CveItem:
         """
         Return an AdvisoryData object from this CVE item
         """
-        status = VulnerabilityStatusType.PUBLISHED
-        if self.is_rejected:
-            status = VulnerabilityStatusType.REJECTED
         return AdvisoryData(
             aliases=[self.cve_id],
             summary=self.summary,
             references=self.references,
             date_published=dateparser.parse(self.cve_item.get("publishedDate")),
             weaknesses=self.weaknesses,
-            status=status,
         )
 
 

@@ -46,8 +46,7 @@
     "date_published": "2012-07-25T19:55:00+00:00",
     "weaknesses": [
       189
-    ],
-    "is_rejected": null
+    ]
   },
   {
     "aliases": [
@@ -331,7 +330,6 @@
     "date_published": "2003-01-17T05:00:00+00:00",
     "weaknesses": [
       200
-    ],
-    "is_rejected": null
+    ]
   }
 ]

@@ -83,8 +83,7 @@
       }
     ],
     "date_published": "2017-10-24T18:33:38+00:00",
-    "weaknesses": [],
-    "is_rejected": false
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -140,8 +139,7 @@
       }
     ],
     "date_published": "2022-03-08T21:25:54+00:00",
-    "weaknesses": [],
-    "is_rejected": false
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -197,8 +195,7 @@
       }
     ],
     "date_published": "2022-03-08T21:25:54+00:00",
-    "weaknesses": [],
-    "is_rejected": false
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -254,8 +251,7 @@
       }
     ],
     "date_published": "2022-03-08T21:25:54+00:00",
-    "weaknesses": [],
-    "is_rejected": false
+    "weaknesses": []
   },
   {
     "aliases": [
@@ -311,7 +307,6 @@
       }
     ],
     "date_published": "2022-03-08T21:25:54+00:00",
-    "weaknesses": [],
-    "is_rejected": false
+    "weaknesses": []
   }
 ]

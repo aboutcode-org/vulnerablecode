@@ -874,7 +874,6 @@ class Advisory(models.Model):
             references=[Reference.from_dict(ref) for ref in self.references],
             date_published=self.date_published,
             weaknesses=self.weaknesses,
-            status=self.status,
         )
 
 

@@ -19,7 +19,6 @@ from packageurl import PackageURL
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
-from vulnerabilities.models import VulnerabilityStatusType
 from vulnerabilities.utils import classproperty
 
 logger = logging.getLogger(__name__)
@@ -44,7 +43,6 @@ class Inference:
     fixed_purl: PackageURL = None
     references: List[Reference] = dataclasses.field(default_factory=list)
     weaknesses: List[int] = dataclasses.field(default_factory=list)
-    status: int = dataclasses.field(default=VulnerabilityStatusType.PUBLISHED)
 
     def __post_init__(self):
         if self.confidence > MAX_CONFIDENCE or self.confidence < 0:
@@ -87,7 +85,6 @@ class Inference:
             "fixed_purl": self.fixed_purl.to_dict() if self.fixed_purl else None,
             "references": [ref.to_dict() for ref in self.references],
             "weaknesses": self.weaknesses,
-            "status": self.status,
         }
 
     @classmethod
@@ -104,7 +101,6 @@ class Inference:
             fixed_purl=fixed_purl,
             references=advisory_data.references,
             weaknesses=advisory_data.weaknesses,
-            status=advisory_data.status,
         )
 
 

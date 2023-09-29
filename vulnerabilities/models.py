@@ -148,13 +148,15 @@ class VulnerabilityQuerySet(BaseQuerySet):
             ),
         )
 
+
 class VulnerabilityStatusType(models.IntegerChoices):
     """List of vulnerability statuses."""
 
-    PUBLISHED = 1, 'published'
-    RESERVED = 2, 'reserved'
-    DISPUTED = 3, 'disputed'
-    REJECTED = 4, 'rejected'
+    PUBLISHED = 1, "published"
+    RESERVED = 2, "reserved"
+    DISPUTED = 3, "disputed"
+    REJECTED = 4, "rejected"
+
 
 class Vulnerability(models.Model):
     """
@@ -184,7 +186,9 @@ class Vulnerability(models.Model):
         through="PackageRelatedVulnerability",
     )
 
-    status = models.IntegerField(max_length=100, choices=VulnerabilityStatusType.choices(), default=VulnerabilityStatusType.PUBLISHED)
+    status = models.IntegerField(
+        choices=VulnerabilityStatusType.choices, default=VulnerabilityStatusType.PUBLISHED
+    )
 
     objects = VulnerabilityQuerySet.as_manager()
 
@@ -844,7 +848,6 @@ class Advisory(models.Model):
         "module name importing the advisory. Eg:"
         "vulnerabilities.importers.nginx.NginxImporter",
     )
-    status = models.IntegerField(choices=VulnerabilityStatusType, default=VulnerabilityStatusType.PUBLISHED)
     objects = AdvisoryQuerySet.as_manager()
 
     class Meta:
@@ -863,6 +866,7 @@ class Advisory(models.Model):
         from vulnerabilities.importer import AdvisoryData
         from vulnerabilities.importer import AffectedPackage
         from vulnerabilities.importer import Reference
+
         return AdvisoryData(
             aliases=self.aliases,
             summary=self.summary,

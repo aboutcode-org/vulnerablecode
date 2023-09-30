@@ -70,7 +70,7 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Package
-        fields = ["url", "purl", "affected_by_vulnerabilities"]
+        fields = ["url", "purl", "is_vulnerable", "affected_by_vulnerabilities"]
 
 
 class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
@@ -211,9 +211,25 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_affected_vulnerabilities(self, package) -> dict:
         """
-        Return a mapping of vulnerabilities that affects the given `package`.
+        Return a mapping of vulnerabilities that affect the given `package` (including packages that
+        fix each vulnerability and whose version is greater than the `package` version).
         """
-        return self.get_vulnerabilities_for_a_package(package=package, fix=False)
+        excluded_purls = []
+        filtered_vuln_serializer = self.get_vulnerabilities_for_a_package(
+            package=package, fix=False
+        )
+
+        for vuln in filtered_vuln_serializer:
+            for pkg in vuln["fixed_packages"]:
+                real_PURL = PackageURL.from_string(pkg["purl"])
+                if package.version_class(real_PURL.version) <= package.current_version:
+                    excluded_purls.append(pkg)
+
+            vuln["fixed_packages"] = [
+                pkg for pkg in vuln["fixed_packages"] if pkg not in excluded_purls
+            ]
+
+        return filtered_vuln_serializer
 
     class Meta:
         model = Package

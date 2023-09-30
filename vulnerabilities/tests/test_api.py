@@ -192,7 +192,7 @@ class APITestCaseVulnerability(TransactionTestCase):
             )
         self.vulnerability = Vulnerability.objects.create(summary="test")
         self.pkg1 = Package.objects.create(name="flask", type="pypi", version="0.1.2")
-        self.pkg2 = Package.objects.create(name="flask", type="debian", version="0.1.2")
+        self.pkg2 = Package.objects.create(name="flask", type="deb", version="0.1.2")
         for pkg in [self.pkg1, self.pkg2]:
             PackageRelatedVulnerability.objects.create(
                 package=pkg, vulnerability=self.vulnerability, fix=True
@@ -210,6 +210,7 @@ class APITestCaseVulnerability(TransactionTestCase):
         response = self.csrf_client.get(
             f"/api/vulnerabilities/{self.vulnerability.id}", format="json"
         ).data
+
         assert response == {
             "url": f"http://testserver/api/vulnerabilities/{self.vulnerability.id}",
             "vulnerability_id": self.vulnerability.vulnerability_id,
@@ -218,13 +219,15 @@ class APITestCaseVulnerability(TransactionTestCase):
             "fixed_packages": [
                 {
                     "url": f"http://testserver/api/packages/{self.pkg2.id}",
-                    "purl": "pkg:debian/flask@0.1.2",
+                    "purl": "pkg:deb/flask@0.1.2",
                     "is_vulnerable": False,
+                    "affected_by_vulnerabilities": [],
                 },
                 {
                     "url": f"http://testserver/api/packages/{self.pkg1.id}",
                     "purl": "pkg:pypi/flask@0.1.2",
                     "is_vulnerable": False,
+                    "affected_by_vulnerabilities": [],
                 },
             ],
             "affected_packages": [],
@@ -245,6 +248,7 @@ class APITestCaseVulnerability(TransactionTestCase):
                     "url": f"http://testserver/api/packages/{self.pkg1.id}",
                     "purl": "pkg:pypi/flask@0.1.2",
                     "is_vulnerable": False,
+                    "affected_by_vulnerabilities": [],
                 },
             ],
             "affected_packages": [],
@@ -293,6 +297,35 @@ class APITestCasePackage(TestCase):
             vulnerability=vuln,
             fix=True,
         )
+
+        self.test_package_lesser = Package.objects.create(
+            type="generic",
+            namespace="nginx",
+            name="test",
+            version="4.1.1",
+            qualifiers={},
+            subpath="",
+        )
+        PackageRelatedVulnerability.objects.create(
+            package=self.test_package_lesser,
+            vulnerability=vuln,
+            fix=True,
+        )
+
+        self.test_package_greater = Package.objects.create(
+            type="generic",
+            namespace="nginx",
+            name="test",
+            version="40.1.1",
+            qualifiers={},
+            subpath="",
+        )
+        PackageRelatedVulnerability.objects.create(
+            package=self.test_package_greater,
+            vulnerability=vuln,
+            fix=True,
+        )
+
         vuln1 = Vulnerability.objects.create(
             summary="test-vuln1",
         )
@@ -315,11 +348,11 @@ class APITestCasePackage(TestCase):
 
     def test_api_response(self):
         response = self.csrf_client.get("/api/packages/", format="json").data
-        self.assertEqual(response["count"], 11)
+        self.assertEqual(response["count"], 13)
 
     def test_api_with_namespace_filter(self):
         response = self.csrf_client.get("/api/packages/?namespace=nginx", format="json").data
-        self.assertEqual(response["count"], 11)
+        self.assertEqual(response["count"], 13)
 
     def test_api_with_wrong_namespace_filter(self):
         response = self.csrf_client.get("/api/packages/?namespace=foo-bar", format="json").data
@@ -328,52 +361,7 @@ class APITestCasePackage(TestCase):
     def test_api_with_single_vulnerability_and_fixed_package(self):
         response = self.csrf_client.get(f"/api/packages/{self.package.id}", format="json").data
 
-        from collections import OrderedDict
-
-        expected01 = {
-            "affected_by_vulnerabilities": [
-                OrderedDict(
-                    [
-                        ("url", f"http://testserver/api/vulnerabilities/{self.vuln1.id}"),
-                        ("vulnerability_id", self.vuln1.vulnerability_id),
-                        ("summary", "test-vuln1"),
-                        ("references", []),
-                        ("fixed_packages", []),
-                        ("aliases", ["CVE-2019-1234", "GMS-1234-4321"]),
-                    ]
-                )
-            ],
-            "fixing_vulnerabilities": [
-                OrderedDict(
-                    [
-                        ("url", f"http://testserver/api/vulnerabilities/{self.vuln.id}"),
-                        ("vulnerability_id", self.vuln.vulnerability_id),
-                        ("summary", "test-vuln"),
-                        ("references", []),
-                        (
-                            "fixed_packages",
-                            [
-                                OrderedDict(
-                                    [
-                                        (
-                                            "url",
-                                            f"http://testserver/api/packages/{self.package.id}",
-                                        ),
-                                        ("purl", "pkg:generic/nginx/test@11"),
-                                        (
-                                            "affected_by_vulnerabilities",
-                                            [{"vulnerability": self.vuln1.vulnerability_id}],
-                                        ),
-                                    ]
-                                )
-                            ],
-                        ),
-                        ("aliases", ["CVE-2029-1234"]),
-                    ]
-                )
-            ],
-            "next_non_vulnerable_version": None,
-            "latest_non_vulnerable_version": None,
+        assert response == {
             "url": f"http://testserver/api/packages/{self.package.id}",
             "purl": "pkg:generic/nginx/test@11",
             "type": "generic",
@@ -382,17 +370,16 @@ class APITestCasePackage(TestCase):
             "version": "11",
             "qualifiers": {},
             "subpath": "",
-        }
-
-        expected02 = {
+            "latest_non_vulnerable_version": "40.1.1",
+            "next_non_vulnerable_version": "40.1.1",
             "affected_by_vulnerabilities": [
                 {
                     "url": f"http://testserver/api/vulnerabilities/{self.vuln1.id}",
-                    "aliases": ["CVE-2019-1234", "GMS-1234-4321"],
-                    "fixed_packages": [],
-                    "references": [],
-                    "summary": "test-vuln1",
                     "vulnerability_id": self.vuln1.vulnerability_id,
+                    "summary": "test-vuln1",
+                    "references": [],
+                    "fixed_packages": [],
+                    "aliases": ["CVE-2019-1234", "GMS-1234-4321"],
                 }
             ],
             "fixing_vulnerabilities": [
@@ -405,28 +392,28 @@ class APITestCasePackage(TestCase):
                         {
                             "url": f"http://testserver/api/packages/{self.package.id}",
                             "purl": "pkg:generic/nginx/test@11",
+                            "is_vulnerable": True,
                             "affected_by_vulnerabilities": [
                                 {"vulnerability": self.vuln1.vulnerability_id}
                             ],
-                        }
+                        },
+                        {
+                            "url": f"http://testserver/api/packages/{self.test_package_lesser.id}",
+                            "purl": "pkg:generic/nginx/test@4.1.1",
+                            "is_vulnerable": False,
+                            "affected_by_vulnerabilities": [],
+                        },
+                        {
+                            "url": f"http://testserver/api/packages/{self.test_package_greater.id}",
+                            "purl": "pkg:generic/nginx/test@40.1.1",
+                            "is_vulnerable": False,
+                            "affected_by_vulnerabilities": [],
+                        },
                     ],
                     "aliases": ["CVE-2029-1234"],
                 },
             ],
-            "next_non_vulnerable_version": None,
-            "latest_non_vulnerable_version": None,
-            "url": f"http://testserver/api/packages/{self.package.id}",
-            "purl": "pkg:generic/nginx/test@11",
-            "type": "generic",
-            "namespace": "nginx",
-            "name": "test",
-            "version": "11",
-            "qualifiers": {},
-            "subpath": "",
         }
-
-        assert response == expected01
-        assert response == expected02
 
     def test_api_with_single_vulnerability_and_vulnerable_package(self):
         response = self.csrf_client.get(f"/api/packages/{self.vuln_package.id}", format="json").data
@@ -439,6 +426,8 @@ class APITestCasePackage(TestCase):
             "version": "9",
             "qualifiers": {},
             "subpath": "",
+            "latest_non_vulnerable_version": "40.1.1",
+            "next_non_vulnerable_version": "40.1.1",
             "affected_by_vulnerabilities": [
                 {
                     "url": f"http://testserver/api/vulnerabilities/{self.vuln.id}",
@@ -450,7 +439,16 @@ class APITestCasePackage(TestCase):
                             "url": f"http://testserver/api/packages/{self.package.id}",
                             "purl": "pkg:generic/nginx/test@11",
                             "is_vulnerable": True,
-                        }
+                            "affected_by_vulnerabilities": [
+                                {"vulnerability": self.vuln1.vulnerability_id}
+                            ],
+                        },
+                        {
+                            "url": f"http://testserver/api/packages/{self.test_package_greater.id}",
+                            "purl": "pkg:generic/nginx/test@40.1.1",
+                            "is_vulnerable": False,
+                            "affected_by_vulnerabilities": [],
+                        },
                     ],
                     "aliases": ["CVE-2029-1234"],
                 }

@@ -19,6 +19,7 @@ from oauth2_provider.models import Application
 from rest_framework.test import APIClient
 
 from purl_sync.settings import AP_CONTENT_TYPE
+from review.models import Follow
 from review.models import Note
 from review.models import Person
 from review.models import Review
@@ -134,9 +135,10 @@ def test_get_user_inbox_empty(person):
 
 
 @pytest.mark.django_db
-def test_get_user_inbox(person, vulnerability, review):
-    note1 = Note.objects.create(acct=person.acct, content="We should fix this purl")
-    note2 = Note.objects.create(acct=person.acct, content="We should fix this purl agian")
+def test_get_user_inbox(person, vulnerability, review, purl):
+    note1 = Note.objects.create(acct=purl.acct, content="yaml data1")
+    note2 = Note.objects.create(acct=purl.acct, content="yaml data2")
+    Follow.objects.create(person=person, purl=purl)
 
     client = APIClient(enforce_csrf_checks=True)
     auth = create_token(person.user)
@@ -156,16 +158,16 @@ def test_get_user_inbox(person, vulnerability, review):
             "totalItems": 2,
             "orderedItems": [
                 {
-                    "id": f"https://127.0.0.1:8000/notes/{note2.id}",
-                    "type": "Note",
-                    "author": "ziad@127.0.0.1:8000",
-                    "content": "We should fix this purl agian",
-                },
-                {
                     "id": f"https://127.0.0.1:8000/notes/{note1.id}",
                     "type": "Note",
-                    "author": "ziad@127.0.0.1:8000",
-                    "content": "We should fix this purl",
+                    "author": "pkg:maven/org.apache.logging@127.0.0.1:8000",
+                    "content": "yaml data1",
+                },
+                {
+                    "id": f"https://127.0.0.1:8000/notes/{note2.id}",
+                    "type": "Note",
+                    "author": "pkg:maven/org.apache.logging@127.0.0.1:8000",
+                    "content": "yaml data2",
                 },
             ],
         },
@@ -244,28 +246,27 @@ def test_get_user_outbox(person, vulnerability, review, note):
     assert response.status_code == 200
 
 
-# @pytest.mark.django_db
-# def test_post_user_outbox(person):
-#     client = APIClient()
-#     auth = create_token(person.user)
-#     client.credentials(HTTP_AUTHORIZATION=auth)
-#     path = reverse("user-outbox", args=[person.user.username])
-#     response = client.post(
-#         path,
-#         {
-#             **AP_CONTEXT,
-#             "type": "Create",
-#             "actor": f"https://127.0.0.1:8000/api/v0/users/@{person.user.username}",
-#             "object": {
-#                 "type": "Note",
-#                 "content": "we should fix this purl",
-#             },
-#         },
-#         headers={"Content-Type": AP_CONTENT_TYPE},
-#         format="json",
-#     )
-#     assert Note.objects.count() == 1
-#
+@pytest.mark.django_db
+def test_post_user_outbox(person):
+    client = APIClient()
+    auth = create_token(person.user)
+    client.credentials(HTTP_AUTHORIZATION=auth)
+    path = reverse("user-outbox", args=[person.user.username])
+    response = client.post(
+        path,
+        {
+            **AP_CONTEXT,
+            "type": "Create",
+            "actor": f"https://127.0.0.1:8000/api/v0/users/@{person.user.username}",
+            "object": {
+                "type": "Note",
+                "content": "we should fix this purl",
+            },
+        },
+        headers={"Content-Type": AP_CONTENT_TYPE},
+        format="json",
+    )
+    assert Note.objects.count() == 1
 
 
 @pytest.mark.django_db
@@ -322,24 +323,31 @@ def test_get_purl_inbox(purl, service):
     }
 
 
-# @pytest.mark.django_db
-# def test_post_purl_inbox(purl):
-#     client = APIClient()
-#     auth = create_token(service.user)
-#     client.credentials(HTTP_AUTHORIZATION=auth)
-#
-#     response = client.post(
-#         reverse("purl-inbox", args=[purl.string]),
-#         headers={"Content-Type": AP_CONTENT_TYPE},
-#         format="json",
-#     )
+@pytest.mark.django_db
+def test_get_purl_outbox(service, purl):
+    client = APIClient()
+    auth = create_token(service.user)
+    client.credentials(HTTP_AUTHORIZATION=auth)
+    note1 = Note.objects.create(acct=purl.acct, content="yaml data1")
+    purl.notes.add(note1)
 
+    response = client.get(
+        reverse("purl-outbox", args=[purl.string]),
+        headers={"Content-Type": AP_CONTENT_TYPE},
+        format="json",
+    )
 
-# @pytest.mark.django_db
-# def test_get_purl_outbox(db):
-#     pass
-#
-#
-# @pytest.mark.django_db
-# def test_post_purl_outbox(db):
-#     pass
+    assert json.loads(response.content) == {
+        "notes": {
+            "orderedItems": [
+                {
+                    "author": "pkg:maven/org.apache.logging@127.0.0.1:8000",
+                    "content": "yaml data1",
+                    "id": f"https://127.0.0.1:8000/notes/{note1.id}",
+                    "type": "Note",
+                }
+            ],
+            "totalItems": 1,
+            "type": "OrderedCollection",
+        }
+    }

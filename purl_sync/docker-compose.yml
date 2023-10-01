@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:16
+    env_file:
+      - docker.env
+    volumes:
+      - db_data:/var/lib/postgresql/data/
+  purl_sync:
+    build: .
+    command: /bin/sh -c "
+      apt-get update && apt-get install -y gunicorn &&   
+      python manage.py migrate &&
+      gunicorn purl_sync.wsgi:application -u nobody -g nogroup --bind :8000 --timeout 600 --workers 8"
+    env_file:
+      - docker.env
+    expose:
+      - 8000
+    volumes:
+      - /etc/purl_sync/:/etc/purl_sync/
+    depends_on:
+      - db
+  nginx:
+    image: nginx
+    ports:
+      - 80:80
+      - 443:443
+    env_file:
+      - docker.env
+    volumes:
+      - ./etc/nginx/conf.d/:/etc/nginx/conf.d
+    depends_on:
+      - purl_sync
+volumes:
+  db_data:

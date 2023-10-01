@@ -1,9 +1,11 @@
 anyio==4.0.0
 asgiref==3.7.2
 attrs==23.1.0
+black==23.7.0
 certifi==2023.5.7
 cffi==1.15.1
 charset-normalizer==3.1.0
+click==8.1.7
 cryptography==41.0.1
 dateparser==1.1.8
 Deprecated==1.2.14
@@ -15,6 +17,7 @@ djangorestframework==3.14.0
 exceptiongroup==1.1.1
 gitdb==4.0.10
 GitPython==3.1.31
+gunicorn==21.2.0
 h11==0.14.0
 http-message-signatures==0.4.4
 http-sfv==0.9.8
@@ -22,11 +25,15 @@ httpcore==0.17.3
 httpx==0.24.1
 idna==3.4
 iniconfig==2.0.0
+isort==5.12.0
 jwcrypto==1.5.0
+mypy-extensions==1.0.0
 oauthlib==3.2.2
 packageurl-python==0.11.1
 packaging==23.1
+pathspec==0.11.2
 Pillow==9.5.0
+platformdirs==3.10.0
 pluggy==1.0.0
 pycparser==2.21
 pytest==7.3.2

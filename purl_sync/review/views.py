@@ -700,7 +700,7 @@ class PurlOutbox(View):
 
         actor = Purl.objects.get(string=kwargs["purl_string"])
         return JsonResponse(
-            [note.to_ap() for note in actor.notes],
+            {"notes": ap_collection(actor.notes)},
             content_type=AP_CONTENT_TYPE,
         )
 

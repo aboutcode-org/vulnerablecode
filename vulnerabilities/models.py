@@ -14,13 +14,8 @@ from contextlib import suppress
 from typing import Any
 
 from cwe2.database import Database
-from django.contrib.admin.models import ADDITION
-from django.contrib.admin.models import CHANGE
-from django.contrib.admin.models import DELETION
-from django.contrib.admin.models import LogEntry
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import UserManager
-from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
@@ -44,6 +39,7 @@ from univers import versions
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.utils import History
 from vulnerabilities.utils import build_vcid
 from vulnerabilities.utils import remove_qualifiers_and_subpath
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
@@ -264,58 +260,52 @@ class Vulnerability(models.Model):
         for log in vuln_logs_qs.filter(action_type=1).distinct():
             authority = IMPORTERS_REGISTRY[log.actor_name].importing_authority
             importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
-            yield {
-                "date_published": log.supporting_data["date_published"]
+            yield History(
+                message=f"Imported at Vulnerablecode by {authority}",
+                log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
+                source_url="",
+                vulnerablecode_version=log.vulnerablecode_version,
+            )
+            yield History(
+                message=f"Advisory published by { authority }",
+                log_date=log.supporting_data["date_published"]
                 if log.supporting_data["date_published"]
                 else None,
-                "message": f"Advisory published by { authority }"
-                if log.actor_name
-                else "Published by unknown source",
-                "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
-                "package": "",
-                "vulnerablecode_version": log.vulnerablecode_version,
-                "first_import": "",
-            }
-            yield {
-                "date_published": log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                "message": f"Imported at Vulnerablecode by {authority}",
-                "source": "",
-                "package": "",
-                "first_import": "",
-                "vcio_import": True,
-                "vulnerablecode_version": log.vulnerablecode_version,
-            }
+                source_url=log.supporting_data["url"]
+                if log.supporting_data["url"]
+                else "No source",
+                vulnerablecode_version=log.vulnerablecode_version,
+            )
 
         for log in vuln_logs_qs.filter(action_type=3):
             importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
-            message = ""
-            if log.supporting_data["first_import"]:
-                message = f"""{importer_name} reports <a href="/packages/{log.supporting_data["package"]}?search={ log.supporting_data["package"] }" target="_self">{ log.supporting_data["package"] }</a> is affected by this vulnerability"""
-            else:
-                message = f"""{importer_name} confirms <a href="/packages/{log.supporting_data["package"]}?search={ log.supporting_data["package"] }" target="_self">{ log.supporting_data["package"] }</a> is affected by this vulnerability"""
-            yield {
-                "date_published": log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                "message": message,
-                "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
-                "package": log.supporting_data["package"],
-                "first_import": log.supporting_data["first_import"],
-                "vulnerablecode_version": log.vulnerablecode_version,
-            }
+            reports_or_confirms = "reports"
+            if not log.supporting_data["first_import"]:
+                reports_or_confirms = "confirms"
+            message = f"""{importer_name} {reports_or_confirms}  <a href="/packages/{log.supporting_data["package"]}?search={ log.supporting_data["package"] }" target="_self">{ log.supporting_data["package"] }</a> is affected by this vulnerability"""
+            yield History(
+                message=message,
+                log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
+                source_url=log.supporting_data["url"]
+                if log.supporting_data["url"]
+                else "No source",
+                vulnerablecode_version=log.vulnerablecode_version,
+            )
 
         for log in vuln_logs_qs.filter(action_type=4):
             importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
-            if log.supporting_data["first_import"]:
-                message = f"""{importer_name} reports <a href="/packages/{log.supporting_data["package"]}?search={ log.supporting_data["package"] }" target="_self">{ log.supporting_data["package"] }</a> is fixing this vulnerability"""
-            else:
-                message = f"""{importer_name} confirms <a href="/packages/{log.supporting_data["package"]}?search={ log.supporting_data["package"] }" target="_self">{ log.supporting_data["package"] }</a> is fixing this vulnerability"""
-            yield {
-                "date_published": log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                "message": message,
-                "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
-                "package": log.supporting_data["package"],
-                "first_import": log.supporting_data["first_import"],
-                "vulnerablecode_version": log.vulnerablecode_version,
-            }
+            reports_or_confirms = "reports"
+            if not log.supporting_data["first_import"]:
+                reports_or_confirms = "confirms"
+            message = f"""{importer_name} {reports_or_confirms}  <a href="/packages/{log.supporting_data["package"]}?search={ log.supporting_data["package"] }" target="_self">{ log.supporting_data["package"] }</a> is fixing this vulnerability"""
+            yield History(
+                message=message,
+                log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
+                source_url=log.supporting_data["url"]
+                if log.supporting_data["url"]
+                else "No source",
+                vulnerablecode_version=log.vulnerablecode_version,
+            )
 
     alias = get_aliases
 
@@ -717,61 +707,37 @@ class Package(PackageURLMixin):
         """
         from vulnerabilities.importers import IMPORTERS_REGISTRY
 
-        vuln_logs_qs = self.packagechangelog_set.all()
+        package_logs_qs = self.packagechangelog_set.all()
 
-        for log in vuln_logs_qs.filter(action_type=3):
-            print(log.actor_name)
+        for log in package_logs_qs.filter(action_type=3):
             importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
-            print(importer_name, IMPORTERS_REGISTRY[log.actor_name])
-            conflict = False
-            if vuln_logs_qs.filter(
-                action_type=4,
-                package=log.package,
-                supporting_data__vulnerability=log.supporting_data["vulnerability"],
-            ).exists():
-                conflict = True
-            message = ""
-            if log.supporting_data["first_import"]:
-                message = f"""{importer_name} reports <a href="/vulnerabilities/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }" target="_self">{ log.supporting_data["vulnerability"] }</a> is affecting this package"""
-            else:
-                if conflict:
-                    message = "CONFLICT: " + message
-                else:
-                    message = f"""{importer_name} confirms <a href="/vulnerabilities/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }" target="_self">{ log.supporting_data["vulnerability"] }</a> is affecting this package"""
-            yield {
-                "date_published": log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                "message": message,
-                "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
-                "vulnerability": log.supporting_data["vulnerability"],
-                "first_import": log.supporting_data["first_import"],
-                "vulnerablecode_version": log.vulnerablecode_version,
-            }
+            reports_or_confirms = "reports"
+            if not log.supporting_data["first_import"]:
+                reports_or_confirms = "confirms"
+            message = f"""{importer_name} {reports_or_confirms}  <a href="/vulnerabilties/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }"</a> is affecting this package"""
+            yield History(
+                message=message,
+                log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
+                source_url=log.supporting_data["url"]
+                if log.supporting_data["url"]
+                else "No source",
+                vulnerablecode_version=log.vulnerablecode_version,
+            )
 
-        for log in vuln_logs_qs.filter(action_type=4):
+        for log in package_logs_qs.filter(action_type=4):
             importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
-            conflict = False
-            if vuln_logs_qs.filter(
-                action_type=3,
-                actor_name=log.actor_name,
-                package=log.package,
-                supporting_data__vulnerability=log.supporting_data["vulnerability"],
-            ).exists():
-                conflict = True
-            if log.supporting_data["first_import"]:
-                message = f"""{importer_name} reports <a href="/vulnerabilties/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }" target="_self">{ log.supporting_data["vulnerability"] }</a> is fixed by this package"""
-            else:
-                if conflict:
-                    message = "CONFLICT: " + message
-                else:
-                    message = f"""{importer_name} confirms <a href="/vulnerabilities/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }" target="_self">{ log.supporting_data["vulnerability"] }</a> is fixed by this package"""
-            yield {
-                "date_published": log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                "message": message,
-                "source": log.supporting_data["url"] if log.supporting_data["url"] else "No source",
-                "vulnerability": log.supporting_data["vulnerability"],
-                "first_import": log.supporting_data["first_import"],
-                "vulnerablecode_version": log.vulnerablecode_version,
-            }
+            reports_or_confirms = "reports"
+            if not log.supporting_data["first_import"]:
+                reports_or_confirms = "confirms"
+            message = f"""{importer_name} {reports_or_confirms}  <a href="/vulnerabilties/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }"</a> is fixed by this package"""
+            yield History(
+                message=message,
+                log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
+                source_url=log.supporting_data["url"]
+                if log.supporting_data["url"]
+                else "No source",
+                vulnerablecode_version=log.vulnerablecode_version,
+            )
 
     # legacy aliases
     vulnerable_to = affected_by
@@ -1297,6 +1263,24 @@ class ApiUser(UserModel):
         proxy = True
 
 
+class VulnerabilityChangeLogActionType(models.IntegerChoices):
+    """List of vulnerability statuses."""
+
+    IMPORT = 1, "import"
+    IMPROVE = 2, "improve"
+    AFFECTS = 3, "affects"
+    FIXED_BY = 4, "fixed_by"
+
+
+class PackageChangeLogActionType(models.IntegerChoices):
+    """List of vulnerability statuses."""
+
+    PUBLISHED = 1, "import"
+    RESERVED = 2, "improve"
+    AFFECTED_BY = 3, "affected_by"
+    FIXING = 4, "fixing"
+
+
 class ChangeLog(models.Model):
 
     action_time = models.DateTimeField(
@@ -1365,21 +1349,12 @@ class VulnerabilityHistoryManager(models.Manager):
 
 
 class VulnerabilityChangeLog(ChangeLog):
-    ACTION_TYPES = (
-        (1, "Import"),
-        (2, "Improve"),
-        (3, "Affects"),
-        (4, "Fixed By"),
-    )
-
     vulnerability = models.ForeignKey(
         Vulnerability,
         on_delete=models.CASCADE,
     )
 
-    action_type = models.PositiveSmallIntegerField(
-        choices=ACTION_TYPES,
-    )
+    action_type = models.PositiveSmallIntegerField(choices=VulnerabilityChangeLogActionType.choices)
 
     objects = VulnerabilityHistoryManager()
 
@@ -1465,21 +1440,13 @@ class PackageHistoryManager(models.Manager):
 
 
 class PackageChangeLog(ChangeLog):
-    ACTION_TYPES = (
-        (1, "Import"),
-        (2, "Improve"),
-        (3, "Affected By"),
-        (4, "Fixing"),
-    )
 
     package = models.ForeignKey(
         Package,
         on_delete=models.CASCADE,
     )
 
-    action_type = models.PositiveSmallIntegerField(
-        choices=ACTION_TYPES,
-    )
+    action_type = models.PositiveSmallIntegerField(choices=PackageChangeLogActionType.choices)
 
     objects = PackageHistoryManager()
 

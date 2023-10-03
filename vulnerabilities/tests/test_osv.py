@@ -250,9 +250,7 @@ class TestOSVImporter(TestCase):
         assert results == expected
 
     def test_get_references3(self):
-        assert (
-            get_references(raw_data={"id": "PYSEC-2022-10"}, severities=[]) == []
-        )
+        assert get_references(raw_data={"id": "PYSEC-2022-10"}, severities=[]) == []
 
     def test_get_affected_purl1(self):
         results = get_affected_purl(

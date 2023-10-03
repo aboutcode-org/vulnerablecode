@@ -318,7 +318,6 @@ class Importer:
     vcs_response: VCSResponse = None
     importing_authority = ""
     importer_name = ""
-    vcs_response = None
 
     def __init__(self):
         if not self.spdx_license_expression:

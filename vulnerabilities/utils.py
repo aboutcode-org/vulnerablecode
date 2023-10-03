@@ -538,3 +538,10 @@ def get_severity_range(severity_list):
     if not score_list:
         return
     return f"{min(score_list)} - {max(score_list)}"
+
+
+class History:
+    message = ""
+    source_url = ""
+    vulnerablecode_version = ""
+    log_date = ""

@@ -10,6 +10,7 @@
 import bisect
 import csv
 import dataclasses
+import datetime
 import json
 import logging
 import os
@@ -540,8 +541,9 @@ def get_severity_range(severity_list):
     return f"{min(score_list)} - {max(score_list)}"
 
 
+@dataclasses.dataclass
 class History:
-    message = ""
-    source_url = ""
-    vulnerablecode_version = ""
-    log_date = ""
+    message: str
+    source_url: str
+    vulnerablecode_version: str
+    log_date: datetime.datetime

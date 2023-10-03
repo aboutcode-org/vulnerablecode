@@ -74,11 +74,11 @@ class VulnerabilitySearch(ListView):
 
 
 key_func = lambda dict: (
-    True if dict["log_date"] else False,
-    datetime.strptime(dict["log_date"], "%Y-%m-%dT%H:%M:%S").strftime(
+    True if dict.log_date else False,
+    datetime.strptime(dict.log_date, "%Y-%m-%dT%H:%M:%S").strftime(
         "%Y-%m-%dT%H:%M:%S"
     )  # Format as ISO datetime
-    if dict["log_date"]
+    if dict.log_date
     else "",
 )
 

@@ -370,7 +370,6 @@ class Weakness(models.Model):
     vulnerabilities = models.ManyToManyField(Vulnerability, related_name="weaknesses")
     db = Database()
 
-
     @property
     def weakness(self):
         """
@@ -1530,4 +1529,3 @@ class PackageChangeLog(ChangeLog):
             actor_name=importer,
             supporting_data=supporting_data,
         )
-

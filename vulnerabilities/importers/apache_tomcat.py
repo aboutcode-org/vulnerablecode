@@ -119,6 +119,7 @@ class ApacheTomcatImporter(Importer):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://www.apache.org/licenses/LICENSE-2.0"
     importing_authority = "Apache Tomcat Security Team"
+    importer_name = "Apache Tomcat Importer"
 
     def fetch_advisory_pages(self):
         """
@@ -139,7 +140,7 @@ class ApacheTomcatImporter(Importer):
         for tag in soup.find_all("a"):
             link = tag.get("href")
 
-            if "security-" in link and any(char.isdigit() for char in link):
+            if link and "security-" in link and any(char.isdigit() for char in link):
                 yield urllib.parse.urljoin(url, link)
 
     def advisory_data(self):

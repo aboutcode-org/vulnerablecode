@@ -29,10 +29,11 @@ class RetireDotnetImporter(Importer):
     spdx_license_expression = "MIT"
     repo_url = "git+https://github.com/RetireNet/Packages/"
     importing_authority = "RetireNet Security Advisories"
+    importer_name = "RetireDotNet Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         try:
-            self.clone(self.repo_url)
+            self.clone(repo_url=self.repo_url)
             base_path = Path(self.vcs_response.dest_dir)
 
             vuln = base_path / "Content"

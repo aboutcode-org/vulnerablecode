@@ -55,6 +55,7 @@ class DebianOvalImporter(OvalImporter):
         Moritz
     """
     importing_authority = "Debian Security Tracker"
+    importer_name = "Debian Oval Importer"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

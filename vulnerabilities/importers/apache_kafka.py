@@ -96,6 +96,7 @@ class ApacheKafkaImporter(Importer):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://www.apache.org/licenses/"
     importing_authority = "Apache Kafka Security Vulnerabilities"
+    importer_name = "Apache Kafka Importer"
 
     @staticmethod
     def fetch_advisory_page(self):

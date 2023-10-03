@@ -10,13 +10,13 @@
 from packageurl import PackageURL
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.utils import load_yaml
 from vulnerabilities.utils import nearest_patched_package
 
 
-class KaybeeImporter(GitImporter):
+class KaybeeImporter(Importer):
     def __enter__(self):
         super(KaybeeImporter, self).__enter__()
         self._added_files, self._updated_files = self.file_changes(

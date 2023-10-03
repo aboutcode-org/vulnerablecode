@@ -34,6 +34,7 @@ class ApacheHTTPDImporter(Importer):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://www.apache.org/licenses/LICENSE-2.0"
     importing_authority = "Apache Security Team"
+    importer_name = "Apache HTTPD Importer"
 
     def advisory_data(self):
         links = fetch_links(self.base_url)

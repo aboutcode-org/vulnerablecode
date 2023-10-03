@@ -32,6 +32,7 @@ class GentooImporter(Importer):
     # under the [CC-BY-SA-4.0](https://creativecommons.org/licenses/by-sa/4.0/) license.
     license_url = "https://creativecommons.org/licenses/by-sa/4.0/"
     importing_authority = "Gentoo Linux Security Advisories"
+    importer_name = "Gentoo Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         try:

@@ -23,6 +23,7 @@ class ProjectKBMSRImporter(Importer):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/SAP/project-kb/blob/main/LICENSE.txt"
     importing_authority = "Project KB MSR2019"
+    importer_name = "ProjectKB MSRImporter"
 
     def advisory_data(self):
         raw_data = fetch_and_read_from_csv(self.url)

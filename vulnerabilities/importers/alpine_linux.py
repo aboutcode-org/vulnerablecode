@@ -36,6 +36,7 @@ class AlpineImporter(Importer):
     spdx_license_expression = "CC-BY-SA-4.0"
     license_url = "https://secdb.alpinelinux.org/license.txt"
     importing_authority = "Alpine Security Database"
+    importer_name = "Alpine Linux Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         page_response_content = fetch_response(BASE_URL).content

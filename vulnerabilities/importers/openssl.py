@@ -34,6 +34,7 @@ class OpensslImporter(Importer):
     license_url = "https://github.com/openssl/openssl/blob/master/LICENSE.txt"
     url = "https://www.openssl.org/news/vulnerabilities.xml"
     importing_authority = "OpenSSL Security Team"
+    importer_name = "OpenSSL Importer"
 
     def fetch(self):
         response = requests.get(url=self.url)

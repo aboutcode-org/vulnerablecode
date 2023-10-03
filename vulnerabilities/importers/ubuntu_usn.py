@@ -63,6 +63,7 @@ class UbuntuUSNImporter(Importer):
     Thanks
     """
     importing_authority = "Ubuntu Security Data"
+    importer_name = "Ubuntu USN Importer"
 
     def advisory_data(self):
         usn_db = fetch(self.db_url)

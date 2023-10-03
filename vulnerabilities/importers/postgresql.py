@@ -29,6 +29,7 @@ class PostgreSQLImporter(Importer):
     license_url = "https://www.postgresql.org/about/licence/"
     spdx_license_expression = "PostgreSQL"
     importing_authority = "PostgreSQL Security Team"
+    importer_name = "PostgreSQL Importer"
 
     def advisory_data(self):
         known_urls = {self.root_url}

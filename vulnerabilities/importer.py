@@ -289,7 +289,7 @@ class AdvisoryData:
             if date_published
             else None,
             "weaknesses": advisory_data["weaknesses"],
-            "url": advisory_data["url"] or None
+            "url": advisory_data.get("url") or None,
         }
         return cls(**transformed)
 

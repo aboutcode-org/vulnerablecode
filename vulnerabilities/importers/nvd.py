@@ -61,6 +61,7 @@ class NVDImporter(Importer):
     """
 
     importing_authority = "National Vulnerability Database"
+    importer_name = "NVD Importer"
 
     def advisory_data(self):
         for _year, cve_data in fetch_cve_data_1_1():

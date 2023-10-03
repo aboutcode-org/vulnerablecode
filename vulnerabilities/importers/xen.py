@@ -45,6 +45,7 @@ class XenImporter(Importer):
      -George
     """
     importing_authority = "Xen Project Security Team"
+    importer_name = "Xen Importer"
 
     def advisory_data(self):
         data = fetch_response(self.url).json()

@@ -50,7 +50,7 @@ def parse_advisory_data(
 
     date_published = get_published_date(raw_data=raw_data)
     severities = list(get_severities(raw_data=raw_data))
-    references = get_references_and_advisory_url(raw_data=raw_data, severities=severities)
+    references = get_references(raw_data=raw_data, severities=severities)
 
     affected_packages = []
 
@@ -147,7 +147,7 @@ def get_severities(raw_data) -> Iterable[VulnerabilitySeverity]:
         )
 
 
-def get_references_and_advisory_url(raw_data, severities) -> List[Reference]:
+def get_references(raw_data, severities) -> List[Reference]:
     """
     Return a list Reference extracted from a mapping of OSV ``raw_data`` given a
     ``severities`` list of VulnerabilitySeverity.

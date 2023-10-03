@@ -1275,8 +1275,8 @@ class VulnerabilityChangeLogActionType(models.IntegerChoices):
 class PackageChangeLogActionType(models.IntegerChoices):
     """List of vulnerability statuses."""
 
-    PUBLISHED = 1, "import"
-    RESERVED = 2, "improve"
+    IMPORT = 1, "import"
+    IMPROVE = 2, "improve"
     AFFECTED_BY = 3, "affected_by"
     FIXING = 4, "fixing"
 
@@ -1365,7 +1365,7 @@ class VulnerabilityChangeLog(ChangeLog):
         """
         return cls.objects.log_action(
             vulnerability=vulnerability,
-            action_type=1,
+            action_type=VulnerabilityChangeLogActionType.IMPORT,
             actor_name=importer,
             supporting_data=supporting_data,
         )
@@ -1377,7 +1377,7 @@ class VulnerabilityChangeLog(ChangeLog):
         """
         return cls.objects.log_action(
             vulnerability=vulnerability,
-            action_type=2,
+            action_type=VulnerabilityChangeLogActionType.IMPROVE,
             actor_name=improver,
         )
 
@@ -1388,7 +1388,7 @@ class VulnerabilityChangeLog(ChangeLog):
         """
         return cls.objects.log_action(
             vulnerability=vulnerability,
-            action_type=3,
+            action_type=VulnerabilityChangeLogActionType.AFFECTS,
             actor_name=importer,
             supporting_data=supporting_data,
         )
@@ -1400,7 +1400,7 @@ class VulnerabilityChangeLog(ChangeLog):
         """
         return cls.objects.log_action(
             vulnerability=vulnerability,
-            action_type=4,
+            action_type=VulnerabilityChangeLogActionType.FIXED_BY,
             actor_name=importer,
             supporting_data=supporting_data,
         )
@@ -1457,7 +1457,7 @@ class PackageChangeLog(ChangeLog):
         """
         return cls.objects.log_action(
             package=package,
-            action_type=1,
+            action_type=PackageChangeLogActionType.IMPORT,
             actor_name=importer,
             supporting_data=supporting_data,
         )
@@ -1469,7 +1469,7 @@ class PackageChangeLog(ChangeLog):
         """
         return cls.objects.log_action(
             package=package,
-            action_type=2,
+            action_type=PackageChangeLogActionType.IMPROVE,
             actor_name=improver,
         )
 
@@ -1480,7 +1480,7 @@ class PackageChangeLog(ChangeLog):
         """
         return cls.objects.log_action(
             package=package,
-            action_type=3,
+            action_type=PackageChangeLogActionType.AFFECTED_BY,
             actor_name=importer,
             supporting_data=supporting_data,
         )
@@ -1492,7 +1492,7 @@ class PackageChangeLog(ChangeLog):
         """
         return cls.objects.log_action(
             package=package,
-            action_type=4,
+            action_type=PackageChangeLogActionType.FIXING,
             actor_name=importer,
             supporting_data=supporting_data,
         )

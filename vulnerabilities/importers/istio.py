@@ -41,6 +41,8 @@ class IstioImporter(Importer):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/istio/istio.io/blob/master/LICENSE"
     repo_url = "git+https://github.com/istio/istio.io/"
+    importer_name = "Istio Importer"
+    importing_authority = "Istio Vulnerability Advisory"
 
     def advisory_data(self) -> Set[AdvisoryData]:
         try:

@@ -257,53 +257,60 @@ class Vulnerability(models.Model):
         from vulnerabilities.importers import IMPORTERS_REGISTRY
 
         vuln_logs_qs = self.vulnerabilitychangelog_set.all()
-        for log in vuln_logs_qs.filter(action_type=1).distinct():
+        for log in vuln_logs_qs.filter(
+            action_type=VulnerabilityChangeLogActionType.IMPORT
+        ).distinct():
             authority = IMPORTERS_REGISTRY[log.actor_name].importing_authority
             importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
             yield History(
                 message=f"Imported at Vulnerablecode by {authority}",
                 log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                source_url="",
+                source_url=None,
                 vulnerablecode_version=log.vulnerablecode_version,
             )
+            source_url = ""
+            if log.supporting_data.get("url"):
+                source_url = (
+                    f"""<a href="{ log.source_url }" target="_blank"> { log.source_url } </a>"""
+                )
             yield History(
                 message=f"Advisory published by { authority }",
-                log_date=log.supporting_data["date_published"]
-                if log.supporting_data["date_published"]
-                else None,
-                source_url=log.supporting_data["url"]
-                if log.supporting_data["url"]
-                else "No source",
+                log_date=log.supporting_data.get("date_published") or None,
+                source_url=source_url,
                 vulnerablecode_version=log.vulnerablecode_version,
             )
 
-        for log in vuln_logs_qs.filter(action_type=3):
+        for log in vuln_logs_qs.filter(action_type=VulnerabilityChangeLogActionType.AFFECTS):
             importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
             reports_or_confirms = "reports"
             if not log.supporting_data["first_import"]:
                 reports_or_confirms = "confirms"
             message = f"""{importer_name} {reports_or_confirms}  <a href="/packages/{log.supporting_data["package"]}?search={ log.supporting_data["package"] }" target="_self">{ log.supporting_data["package"] }</a> is affected by this vulnerability"""
+            source_url = ""
+            if log.supporting_data.get("url"):
+                url = log.supporting_data["url"]
+                source_url = f"""<a href="{ url }" target="_blank"> { url } </a>"""
             yield History(
                 message=message,
                 log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                source_url=log.supporting_data["url"]
-                if log.supporting_data["url"]
-                else "No source",
+                source_url=source_url,
                 vulnerablecode_version=log.vulnerablecode_version,
             )
 
-        for log in vuln_logs_qs.filter(action_type=4):
+        for log in vuln_logs_qs.filter(action_type=VulnerabilityChangeLogActionType.FIXED_BY):
             importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
             reports_or_confirms = "reports"
             if not log.supporting_data["first_import"]:
                 reports_or_confirms = "confirms"
             message = f"""{importer_name} {reports_or_confirms}  <a href="/packages/{log.supporting_data["package"]}?search={ log.supporting_data["package"] }" target="_self">{ log.supporting_data["package"] }</a> is fixing this vulnerability"""
+            source_url = ""
+            if log.supporting_data.get("url"):
+                url = log.supporting_data["url"]
+                source_url = f"""<a href="{ url }" target="_blank"> { url } </a>"""
             yield History(
                 message=message,
                 log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                source_url=log.supporting_data["url"]
-                if log.supporting_data["url"]
-                else "No source",
+                source_url=source_url,
                 vulnerablecode_version=log.vulnerablecode_version,
             )
 
@@ -709,33 +716,37 @@ class Package(PackageURLMixin):
 
         package_logs_qs = self.packagechangelog_set.all()
 
-        for log in package_logs_qs.filter(action_type=3):
+        for log in package_logs_qs.filter(action_type=PackageChangeLogActionType.AFFECTED_BY):
             importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
             reports_or_confirms = "reports"
             if not log.supporting_data["first_import"]:
                 reports_or_confirms = "confirms"
             message = f"""{importer_name} {reports_or_confirms}  <a href="/vulnerabilties/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }"</a> is affecting this package"""
+            source_url = ""
+            if log.supporting_data.get("url"):
+                url = log.supporting_data["url"]
+                source_url = f"""<a href="{ url }" target="_blank"> { url } </a>"""
             yield History(
                 message=message,
                 log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                source_url=log.supporting_data["url"]
-                if log.supporting_data["url"]
-                else "No source",
+                source_url=source_url,
                 vulnerablecode_version=log.vulnerablecode_version,
             )
 
-        for log in package_logs_qs.filter(action_type=4):
+        for log in package_logs_qs.filter(action_type=PackageChangeLogActionType.FIXING):
             importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
             reports_or_confirms = "reports"
             if not log.supporting_data["first_import"]:
                 reports_or_confirms = "confirms"
             message = f"""{importer_name} {reports_or_confirms}  <a href="/vulnerabilties/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }"</a> is fixed by this package"""
+            source_url = ""
+            if log.supporting_data.get("url"):
+                url = log.supporting_data["url"]
+                source_url = f"""<a href="{ url }" target="_blank"> { url } </a>"""
             yield History(
                 message=message,
                 log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                source_url=log.supporting_data["url"]
-                if log.supporting_data["url"]
-                else "No source",
+                source_url=source_url,
                 vulnerablecode_version=log.vulnerablecode_version,
             )
 

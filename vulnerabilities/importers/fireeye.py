@@ -31,24 +31,27 @@ class FireyeImporter(Importer):
     2. MIT - For source code contained within provided CVE information
     """
     importing_authority = "Mandiant Vulnerability Disclosure"
-
-    def __init__(self):
-        super().__init__(repo_url="git+https://github.com/mandiant/Vulnerability-Disclosures")
+    repo_url = "git+https://github.com/mandiant/Vulnerability-Disclosures"
+    importer_name = "FireEye Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
-        self.clone()
-        base_path = Path(self.vcs_response.dest_dir)
-        files = filter(
-            lambda p: p.suffix in [".md", ".MD"], Path(self.vcs_response.dest_dir).glob("**/*")
-        )
-        for file in files:
-            if Path(file).stem == "README":
-                continue
-            try:
-                with open(file) as f:
-                    yield parse_advisory_data(f.read(), file, base_path)
-            except UnicodeError:
-                logger.error(f"Invalid file {file}")
+        try:
+            self.vcs_response = self.clone(repo_url=self.repo_url)
+            base_path = Path(self.vcs_response.dest_dir)
+            files = filter(
+                lambda p: p.suffix in [".md", ".MD"], Path(self.vcs_response.dest_dir).glob("**/*")
+            )
+            for file in files:
+                if Path(file).stem == "README":
+                    continue
+                try:
+                    with open(file) as f:
+                        yield parse_advisory_data(raw_data=f.read(), file=file, base_path=base_path)
+                except UnicodeError:
+                    logger.error(f"Invalid file {file}")
+        finally:
+            if self.vcs_response:
+                self.vcs_response.delete()
 
 
 def parse_advisory_data(raw_data, file, base_path) -> AdvisoryData:
@@ -75,7 +78,6 @@ def parse_advisory_data(raw_data, file, base_path) -> AdvisoryData:
     disc_credits = md_dict.get("## Discovery Credits")  # not used
     disc_timeline = md_dict.get("## Disclosure Timeline")  # not used
     references = md_dict.get("## References") or []
-
     return AdvisoryData(
         aliases=get_aliases(database_id, cve_ref),
         summary=build_description(" ".join(summary), " ".join(description)),

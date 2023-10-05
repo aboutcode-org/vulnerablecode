@@ -1053,18 +1053,22 @@ class PackageRelatedVulnerability(models.Model):
             )
 
     def vulnerability_package_affecting_relationship_exists(self, advisory):
-        return self.vuln_package_relationship_logged(advisory, action_type=VulnerabilityChangeLogActionType.AFFECTS)
+        return self.vuln_package_relationship_logged(
+            advisory, action_type=VulnerabilityChangeLogActionType.AFFECTS
+        )
 
     def vuln_package_relationship_logged(self, advisory, action_type):
         return VulnerabilityChangeLog.objects.filter(
-                vulnerability=self.vulnerability,
-                actor_name=advisory.created_by,
-                supporting_data__package=str(self.package),
-                action_type=action_type,
-            ).exists()
+            vulnerability=self.vulnerability,
+            actor_name=advisory.created_by,
+            supporting_data__package=str(self.package),
+            action_type=action_type,
+        ).exists()
 
     def vulnerability_package_fix_relationship_exists(self, advisory, action_type):
-        return self.vuln_package_relationship_logged(advisory, action_type=VulnerabilityChangeLogActionType.FIXED_BY)
+        return self.vuln_package_relationship_logged(
+            advisory, action_type=VulnerabilityChangeLogActionType.FIXED_BY
+        )
 
 
 class VulnerabilitySeverity(models.Model):
@@ -1209,7 +1213,13 @@ class Advisory(models.Model):
 
     def save(self, *args, **kwargs):
         checksum = hashlib.md5()
-        for field in (self.summary, self.affected_packages, self.references, self.weaknesses):
+        for field in (
+            self.summary,
+            self.affected_packages,
+            self.references,
+            self.weaknesses,
+            self.url,
+        ):
             value = json.dumps(field, separators=(",", ":")).encode("utf-8")
             checksum.update(value)
         self.unique_content_id = checksum.hexdigest()

@@ -197,20 +197,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                     )
 
         for affected_purl in inference.affected_purls or []:
-            vulnerable_package, created = Package.objects.get_or_create_from_purl(
-                purl=affected_purl
-            )
-            if created:
-                PackageChangeLog.log_import(
-                    package=vulnerable_package,
-                    importer=advisory.created_by,
-                    supporting_data={
-                        "date_published": advisory.date_published.strftime("%Y-%m-%dT%H:%M:%S")
-                        if advisory.date_published
-                        else None,
-                        "url": advisory.url if advisory.url else None,
-                    },
-                )
+            vulnerable_package, _ = Package.objects.get_or_create_from_purl(purl=affected_purl)
             PackageRelatedVulnerability(
                 vulnerability=vulnerability,
                 package=vulnerable_package,
@@ -220,20 +207,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
             ).update_or_create(advisory=advisory)
 
         if inference.fixed_purl:
-            fixed_package, created = Package.objects.get_or_create_from_purl(
-                purl=inference.fixed_purl
-            )
-            if created:
-                PackageChangeLog.log_import(
-                    package=vulnerable_package,
-                    importer=advisory.created_by,
-                    supporting_data={
-                        "date_published": advisory.date_published.strftime("%Y-%m-%dT%H:%M:%S")
-                        if advisory.date_published
-                        else None,
-                        "url": advisory.url if advisory.url else None,
-                    },
-                )
+            fixed_package, _ = Package.objects.get_or_create_from_purl(purl=inference.fixed_purl)
             PackageRelatedVulnerability(
                 vulnerability=vulnerability,
                 package=fixed_package,

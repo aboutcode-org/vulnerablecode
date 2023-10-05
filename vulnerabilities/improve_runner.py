@@ -134,17 +134,6 @@ def process_inferences(
             vulnerable_package, created = Package.objects.get_or_create_from_purl(
                 purl=affected_purl
             )
-            if created:
-                PackageChangeLog.log_import(
-                    package=vulnerable_package,
-                    importer=advisory.created_by,
-                    supporting_data={
-                        "date_published": advisory.date_published.strftime("%Y-%m-%dT%H:%M:%S")
-                        if advisory.date_published
-                        else None,
-                        "url": advisory.url if advisory.url else None,
-                    },
-                )
             PackageRelatedVulnerability(
                 vulnerability=vulnerability,
                 package=vulnerable_package,
@@ -159,17 +148,6 @@ def process_inferences(
             fixed_package, created = Package.objects.get_or_create_from_purl(
                 purl=inference.fixed_purl
             )
-            if created:
-                PackageChangeLog.log_import(
-                    package=fixed_package,
-                    importer=advisory.created_by,
-                    supporting_data={
-                        "date_published": advisory.date_published.strftime("%Y-%m-%dT%H:%M:%S")
-                        if advisory.date_published
-                        else None,
-                        "url": advisory.url if advisory.url else None,
-                    },
-                )
             PackageRelatedVulnerability(
                 vulnerability=vulnerability,
                 package=fixed_package,

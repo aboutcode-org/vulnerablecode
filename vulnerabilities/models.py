@@ -22,6 +22,7 @@ from django.core.paginator import Paginator
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db import transaction
 from django.db.models import Count
 from django.db.models import Prefetch
 from django.db.models import Q
@@ -265,14 +266,13 @@ class Vulnerability(models.Model):
             yield History(
                 message=f"Imported at Vulnerablecode by {authority}",
                 log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                source_url=None,
+                source_url="",
                 vulnerablecode_version=log.vulnerablecode_version,
             )
             source_url = ""
             if log.supporting_data.get("url"):
-                source_url = (
-                    f"""<a href="{ log.source_url }" target="_blank"> { log.source_url } </a>"""
-                )
+                url = log.supporting_data["url"]
+                source_url = f"""<a href="{ url }" target="_blank"> { url } </a>"""
             yield History(
                 message=f"Advisory published by { authority }",
                 log_date=log.supporting_data.get("date_published") or None,
@@ -721,7 +721,7 @@ class Package(PackageURLMixin):
             reports_or_confirms = "reports"
             if not log.supporting_data["first_import"]:
                 reports_or_confirms = "confirms"
-            message = f"""{importer_name} {reports_or_confirms}  <a href="/vulnerabilties/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }"</a> is affecting this package"""
+            message = f"""{importer_name} {reports_or_confirms}  <a href="/vulnerabilities/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }"> { log.supporting_data["vulnerability"] } </a> is affecting this package"""
             source_url = ""
             if log.supporting_data.get("url"):
                 url = log.supporting_data["url"]
@@ -738,7 +738,7 @@ class Package(PackageURLMixin):
             reports_or_confirms = "reports"
             if not log.supporting_data["first_import"]:
                 reports_or_confirms = "confirms"
-            message = f"""{importer_name} {reports_or_confirms}  <a href="/vulnerabilties/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }"</a> is fixed by this package"""
+            message = f"""{importer_name} {reports_or_confirms}  <a href="/vulnerabilities/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }"> { log.supporting_data["vulnerability"] } </a> is fixed by this package"""
             source_url = ""
             if log.supporting_data.get("url"):
                 url = log.supporting_data["url"]
@@ -1006,15 +1006,11 @@ class PackageRelatedVulnerability(models.Model):
 
             self.add_package_vulnerability_changelog(advisory, True)
 
+    @transaction.atomic
     def add_package_vulnerability_changelog(self, advisory, first_import):
-        if VulnerabilityChangeLog.objects.filter(
-            vulnerability=self.vulnerability,
-            actor_name=advisory.created_by,
-            supporting_data__package=str(self.package),
-        ).exists():
-            return
-
         if self.fix:
+            if self.vulnerability_package_fix_relationship_exists(advisory):
+                return
             VulnerabilityChangeLog.log_fixed_by(
                 vulnerability=self.vulnerability,
                 importer=advisory.created_by,
@@ -1034,6 +1030,8 @@ class PackageRelatedVulnerability(models.Model):
                 },
             )
         else:
+            if self.vulnerability_package_affecting_relationship_exists(advisory):
+                return
             VulnerabilityChangeLog.log_affects(
                 vulnerability=self.vulnerability,
                 importer=advisory.created_by,
@@ -1053,6 +1051,20 @@ class PackageRelatedVulnerability(models.Model):
                     "first_import": first_import,
                 },
             )
+
+    def vulnerability_package_affecting_relationship_exists(self, advisory):
+        return self.vuln_package_relationship_logged(advisory, action_type=VulnerabilityChangeLogActionType.AFFECTS)
+
+    def vuln_package_relationship_logged(self, advisory, action_type):
+        return VulnerabilityChangeLog.objects.filter(
+                vulnerability=self.vulnerability,
+                actor_name=advisory.created_by,
+                supporting_data__package=str(self.package),
+                action_type=action_type,
+            ).exists()
+
+    def vulnerability_package_fix_relationship_exists(self, advisory, action_type):
+        return self.vuln_package_relationship_logged(advisory, action_type=VulnerabilityChangeLogActionType.FIXED_BY)
 
 
 class VulnerabilitySeverity(models.Model):

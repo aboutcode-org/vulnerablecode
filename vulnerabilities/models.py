@@ -1052,10 +1052,6 @@ class PackageRelatedVulnerability(models.Model):
                 },
             )
 
-    def vulnerability_package_affecting_relationship_exists(self, advisory):
-        return self.vuln_package_relationship_logged(
-            advisory, action_type=VulnerabilityChangeLogActionType.AFFECTS
-        )
 
     def vuln_package_relationship_logged(self, advisory, action_type):
         return VulnerabilityChangeLog.objects.filter(
@@ -1064,6 +1060,11 @@ class PackageRelatedVulnerability(models.Model):
             supporting_data__package=str(self.package),
             action_type=action_type,
         ).exists()
+
+    def vulnerability_package_affecting_relationship_exists(self, advisory):
+        return self.vuln_package_relationship_logged(
+            advisory, action_type=VulnerabilityChangeLogActionType.AFFECTS
+        )
 
     def vulnerability_package_fix_relationship_exists(self, advisory):
         return self.vuln_package_relationship_logged(

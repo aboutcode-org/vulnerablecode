@@ -547,3 +547,4 @@ class History:
     source_url: str
     vulnerablecode_version: str
     log_date: datetime.datetime
+    associated_package: str = None

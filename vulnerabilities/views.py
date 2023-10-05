@@ -80,6 +80,7 @@ key_func = lambda log: (
     )  # Format as ISO datetime
     if log.log_date
     else "",
+    True if log.associated_package else False,
 )
 
 

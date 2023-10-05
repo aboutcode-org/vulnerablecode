@@ -295,6 +295,7 @@ class Vulnerability(models.Model):
                 log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
                 source_url=source_url,
                 vulnerablecode_version=log.vulnerablecode_version,
+                associated_package=log.supporting_data["package"],
             )
 
         for log in vuln_logs_qs.filter(action_type=VulnerabilityChangeLogActionType.FIXED_BY):
@@ -312,6 +313,7 @@ class Vulnerability(models.Model):
                 log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
                 source_url=source_url,
                 vulnerablecode_version=log.vulnerablecode_version,
+                associated_package=log.supporting_data["package"],
             )
 
     alias = get_aliases
@@ -1052,7 +1054,6 @@ class PackageRelatedVulnerability(models.Model):
                 },
             )
 
-
     def vuln_package_relationship_logged(self, advisory, action_type):
         return VulnerabilityChangeLog.objects.filter(
             vulnerability=self.vulnerability,
@@ -1219,7 +1220,6 @@ class Advisory(models.Model):
             self.affected_packages,
             self.references,
             self.weaknesses,
-            self.url,
         ):
             value = json.dumps(field, separators=(",", ":")).encode("utf-8")
             checksum.update(value)

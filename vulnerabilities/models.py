@@ -1065,7 +1065,7 @@ class PackageRelatedVulnerability(models.Model):
             action_type=action_type,
         ).exists()
 
-    def vulnerability_package_fix_relationship_exists(self, advisory, action_type):
+    def vulnerability_package_fix_relationship_exists(self, advisory):
         return self.vuln_package_relationship_logged(
             advisory, action_type=VulnerabilityChangeLogActionType.FIXED_BY
         )

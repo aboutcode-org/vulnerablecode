@@ -118,7 +118,7 @@ class VulnerabilityDetails(DetailView):
     def get_status(self, status):
         status_by_keys = {
             VulnerabilityStatusType.PUBLISHED: "Published",
-            VulnerabilityStatusType.REJECTED: "Rejected",
+            VulnerabilityStatusType.INVALID: "Invalid",
             VulnerabilityStatusType.DISPUTED: "Disputed",
         }
         return status_by_keys[status]

@@ -153,9 +153,8 @@ class VulnerabilityStatusType(models.IntegerChoices):
     """List of vulnerability statuses."""
 
     PUBLISHED = 1, "published"
-    RESERVED = 2, "reserved"
-    DISPUTED = 3, "disputed"
-    REJECTED = 4, "rejected"
+    DISPUTED = 2, "disputed"
+    INVALID = 3, "invalid"
 
 
 class Vulnerability(models.Model):

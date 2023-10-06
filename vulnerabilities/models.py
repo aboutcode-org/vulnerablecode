@@ -31,6 +31,8 @@ from packageurl.contrib.django.models import PackageURLMixin
 from packageurl.contrib.django.models import PackageURLQuerySet
 from packageurl.contrib.django.models import without_empty_values
 from rest_framework.authtoken.models import Token
+from univers import versions
+from univers.version_range import RANGE_CLASS_BY_SCHEMES
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -627,6 +629,46 @@ class Package(PackageURLMixin):
         Return this Package details URL.
         """
         return reverse("package_details", args=[self.purl])
+
+    # 2023-10-03 Tuesday 16:44:20.  Add this from 1228-fixed-affected-version-matching branch.
+    def get_fixed_by_package_versions(self, fix=True):
+        """
+        Return a queryset of all the package versions of this `package` that fix any vulnerability.
+        If `fix` is False, return all package versions whether or not they fix a vulnerability.
+        """
+        filter_dict = {
+            "name": self.name,
+            "namespace": self.namespace,
+            "type": self.type,
+            "qualifiers": self.qualifiers,
+            "subpath": self.subpath,
+        }
+
+        if fix:
+            filter_dict["packagerelatedvulnerability__fix"] = True
+
+        # return Package.objects.filter(**filter_dict).distinct()
+        # ZAP: 2023-10-04 Wednesday 08:42:40.  Will this sort?  Yes.
+        fixed_by_package_versions = Package.objects.filter(**filter_dict).distinct()
+        return self.sort_by_version(fixed_by_package_versions)
+
+    def sort_by_version(self, packages):
+        """
+        Return a list of `packages` sorted by version.
+        """
+        if not packages:
+            return []
+
+        version_class = RANGE_CLASS_BY_SCHEMES[packages[0].type].version_class
+        return sorted(
+            packages,
+            key=lambda x: version_class(x.version),
+        )
+
+    # Test
+    def getFruits(self):
+        fruits = ["apple", "banana", "cantelope", "strawberry"]
+        return fruits
 
 
 class PackageRelatedVulnerability(models.Model):

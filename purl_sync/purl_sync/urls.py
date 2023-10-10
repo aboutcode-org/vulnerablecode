@@ -20,6 +20,7 @@ from review.views import FollowPurlView
 from review.views import HomeView
 from review.views import NoteView
 from review.views import PersonSignUp
+from review.views import PersonUpdateView
 from review.views import PersonView
 from review.views import PurlFollowers
 from review.views import PurlInbox
@@ -47,6 +48,7 @@ urlpatterns = [
     path(".well-known/webfinger", WebfingerView.as_view(), name="web-finger"),
     path("", HomeView.as_view(), name="home-page"),
     path("users/@<str:slug>", PersonView.as_view(), name="user-profile"),
+    path("users/@<str:slug>/edit", PersonUpdateView.as_view(), name="user-edit"),
     path("purls/@<path:slug>/", PurlView.as_view(), name="purl-profile"),
     path("purls/@<path:purl_string>/follow", FollowPurlView.as_view(), name="purl-follow"),
     path("accounts/sign-up", PersonSignUp.as_view(), name="signup"),

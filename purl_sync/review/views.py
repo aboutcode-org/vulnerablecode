@@ -27,6 +27,7 @@ from django.views.generic import FormView
 from django.views.generic import ListView
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormMixin
+from django.views.generic.edit import UpdateView
 
 from purl_sync.settings import AP_CONTENT_TYPE
 from purl_sync.settings import GIT_PATH
@@ -578,6 +579,22 @@ class UserProfile(View):
             return JsonResponse(user.service.to_ap, content_type=AP_CONTENT_TYPE)
         else:
             return HttpResponseBadRequest("Invalid type user")
+
+
+class PersonUpdateView(UpdateView):
+    model = Person
+    fields = ["avatar", "summary"]
+    template_name = "update_profile.html"
+    slug_field = "user__username"
+
+    def get_success_url(self):
+        return reverse_lazy("user-profile", kwargs={"slug": self.object.user.username})
+
+    def get_form(self, *args, **kwargs):
+        form = super(PersonUpdateView, self).get_form(*args, **kwargs)
+        form.fields["summary"].widget.attrs["class"] = "textarea"
+        form.fields["avatar"].label = ""
+        return form
 
 
 @method_decorator(has_valid_header, name="dispatch")

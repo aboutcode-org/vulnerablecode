@@ -37,9 +37,9 @@ class RemoteActor(models.Model):
 
 class Actor(models.Model):
     avatar = models.ImageField(
-        upload_to="uploads/", help_text="the profile image", default="favicon-16x16.png", null=True
+        upload_to="uploads/", help_text="", default="favicon-16x16.png", null=True
     )
-    summary = models.CharField(help_text="the profile description", max_length=100)
+    summary = models.CharField(help_text="", max_length=100)
     public_key = models.TextField(blank=False)
     local = models.BooleanField(default=True)
 

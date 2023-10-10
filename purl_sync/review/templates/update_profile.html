@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}
+Update Profile
+{% endblock %}
+
+{% block content %}
+<div class="columns">
+  <div class="column box content">
+      <figure class="image is-128x128 mb-2" style="margin: auto">
+        <img class="is-rounded" src="{{ person.avatar.url }}">
+      </figure>
+      <p class="is-size-5 has-text-centered"><a href="#">@{{ person.user.username }}</a></p>
+      <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="is-size-5 has-text-centered">
+              {{ form.as_p }}
+              <input type="submit" value="Update" class="button is-link">
+          </div>
+
+      </form>
+  </div>
+  </div>
+</div>
+{% endblock %}

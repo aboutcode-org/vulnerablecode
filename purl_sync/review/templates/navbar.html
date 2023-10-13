@@ -15,15 +15,11 @@
   <div class="navbar-menu">
     <div class="navbar-start">
       <a class="navbar-item" href="/review-list">
-        Review List
-      </a>
-
-      <a class="navbar-item" href="/repo-list">
-        Git Repo List
+        Reviews
       </a>
 
       <a class="navbar-item" href="/purl-list">
-        Purl List
+        Packages
       </a>
 
       {% if user.service %}
@@ -38,13 +34,24 @@
         </a>
 
         <div class="navbar-dropdown">
+         <a class="navbar-item" href="/repo-list">
+            Git Repo List
+         </a>
+
           <a class="navbar-item" href="https://github.com/nexB/vulnerablecode#readme">
             About
           </a>
+
           <hr class="navbar-divider">
           <a class="navbar-item" href="https://github.com/nexB/vulnerablecode/issues/new">
             Report an issue
           </a>
+        {% if user.is_authenticated %}
+          <hr class="navbar-divider">
+          <a class="navbar-item is-light" href="/accounts/logout">
+              Log out
+          </a>
+        {% endif %}
         </div>
       </div>
     </div>
@@ -60,11 +67,6 @@
             <strong>Log in</strong>
           </a>
           {% endif %}
-        {% if user.is_authenticated %}
-          <a class="button is-light" href="/accounts/logout">
-              <strong>Log out</strong>
-          </a>
-        {% endif %}
         </div>
       </div>
         <figure class="image is-48x48 mt-1 ml-1 mr-1">

@@ -17,10 +17,8 @@ from urllib.parse import urlparse
 
 from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest
-from django.http import HttpResponseForbidden
 from django.http import JsonResponse
 from django.urls import resolve
-from git import Repo
 
 from purl_sync.settings import GIT_PATH
 from purl_sync.settings import PURL_SYNC_DOMAIN
@@ -38,7 +36,6 @@ from review.signatures import HttpSignature
 from review.utils import fetch_actor
 from review.utils import full_resolve
 from review.utils import full_reverse
-from review.utils import parse_webfinger
 from review.utils import webfinger_actor
 
 CONTENT_TYPE = "application/activity+json"
@@ -515,7 +512,7 @@ class SyncActivity:
         actor = self.actor.get()
         if not actor:
             return self.failed_ap_rs()
-        repo = self.object.get_object().git_repo
+        repo = self.object.get_object().git_repo_obj
         repo.remotes.origin.pull()
         return self.succeeded_ap_rs()
 

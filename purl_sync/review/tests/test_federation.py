@@ -4,7 +4,6 @@ from unittest import mock
 import pytest
 
 from review.activitypub import AP_CONTEXT
-from review.activitypub import AP_TARGET
 from review.activitypub import create_activity_obj
 from review.models import Follow
 from review.models import Note

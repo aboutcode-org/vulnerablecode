@@ -41,13 +41,13 @@ from review.forms import SearchReviewForm
 from review.forms import SubscribePurlForm
 
 from .activitypub import AP_CONTEXT
-from .activitypub import AP_TARGET
 from .activitypub import create_activity_obj
 from .activitypub import has_valid_header
 from .forms import CreateGitRepoForm
 from .forms import CreateNoteForm
 from .forms import CreateReviewForm
 from .forms import ReviewStatusForm
+from .management.commands.importer import Importer
 from .models import Follow
 from .models import Note
 from .models import Person
@@ -55,15 +55,8 @@ from .models import Purl
 from .models import Repository
 from .models import Reputation
 from .models import Review
-from .models import Service
 from .models import Vulnerability
-from .signatures import PURL_SYNC_PRIVATE_KEY
-from .signatures import HttpSignature
-from .signatures import VerificationFormatError
 from .utils import ap_collection
-from .utils import clone_git_repo
-from .utils import fetch_actor
-from .utils import file_data
 from .utils import full_reverse
 from .utils import generate_webfinger
 from .utils import load_git_file
@@ -221,6 +214,23 @@ class CreatGitView(LoginRequiredMixin, CreateView):
         self.object.path = os.path.join(GIT_PATH, form.cleaned_data["name"])
         self.object.save()
         return super(CreatGitView, self).form_valid(form)
+
+
+@method_decorator(is_service_user, name="dispatch")
+class CreatSync(LoginRequiredMixin, View):
+    def post(self, request, repository_id):
+        try:
+            repo = Repository.objects.get(id=repository_id).git_repo_obj
+            if repo.admin == self.request.user.service:
+                repo.remotes.origin.pull()
+                # TODO this part should be in a task schedule
+                importer = Importer(repo, repo.admin)
+                importer.run()
+            else:
+                return HttpResponseForbidden("Invalid Git Repository Admin")
+        except Repository.DoesNotExist:
+            return HttpResponseBadRequest("Invalid Git Repository")
+        return redirect("repo-list")
 
 
 class UserLogin(LoginView):

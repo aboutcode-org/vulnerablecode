@@ -10,16 +10,12 @@ import json
 
 import pytest
 
-from purl_sync.settings import PURL_SYNC_DOMAIN
 from review.activitypub import AP_CONTEXT
-from review.activitypub import Activity
 from review.activitypub import create_activity_obj
 from review.models import Follow
 from review.models import Note
-from review.models import Purl
 from review.models import Repository
 from review.models import Review
-from review.models import Service
 
 from .test_models import follow
 from .test_models import mute_post_save_signal

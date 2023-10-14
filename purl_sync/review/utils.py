@@ -12,7 +12,6 @@ import os
 from urllib.parse import urlparse
 
 import requests
-from django.contrib.auth.models import User
 from django.urls import resolve
 from django.urls import reverse
 from git.repo.base import Repo

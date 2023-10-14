@@ -30,7 +30,13 @@ Review page
     <div class="media-content ">
       <div class="content" style="border-left: 4px solid black;">
           <h3 class="ml-3 mr-3"><a href="{{ repo.url }}"> {{ repo.name }} </a></h3>
+          {% if user.person %}
           <a class="is-center button ml-3" href="{% url 'review-create' repo.id %}">Create Review </a>
+          {% endif %}
+          <form method="post" action="{% url 'sync-activity' repo.id %}">
+            {% csrf_token %}
+            <input type="submit" class="is-center button mt-2 ml-3 is-info" value="Sync">
+          </form>
       </div>
 
     </div>

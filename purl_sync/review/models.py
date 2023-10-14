@@ -7,23 +7,17 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import io
 import uuid
 
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.http import request
-from django.urls import reverse
 from git import Repo
 
-from purl_sync import settings
 from purl_sync.settings import GIT_PATH
 from purl_sync.settings import PURL_SYNC_DOMAIN
 from review.utils import ap_collection
-from review.utils import check_purl_actor
 from review.utils import clone_git_repo
 from review.utils import full_reverse
 from review.utils import generate_webfinger
@@ -161,6 +155,9 @@ class Purl(Actor):
     @property
     def acct(self):
         return generate_webfinger(self.string)
+
+    def __str__(self):
+        return self.string
 
     @property
     def followers_count(self):
@@ -303,6 +300,9 @@ class Repository(models.Model):
     admin = models.ForeignKey(Service, on_delete=models.CASCADE, help_text="")
     remote_url = models.CharField(max_length=300, blank=True, null=True, help_text="")
 
+    def __str__(self):
+        return self.name
+
     @property
     def review_count(self):
         return Review.objects.filter(vulnerability__repo=self).count()
@@ -341,6 +341,9 @@ class Vulnerability(models.Model):
     @property
     def absolute_url(self):
         return full_reverse("vulnerability-page", self.id)
+
+    def __str__(self):
+        return self.filename
 
     @property
     def to_ap(self):

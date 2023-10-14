@@ -46,9 +46,11 @@ Your Profile
   <div class="column is-8 ml-3 mr-6">
   <div class="container">
   <article class="panel is-info">
+        {% if followings %}
           <p class="panel-heading">
             Following List
           </p>
+        {% endif %}
         {% for following in followings %}
           <a class="panel-block is-active" href="#">
             <a href="{% url 'purl-profile' following.purl.string %}" class="button is-fullwidth" >{{ following.purl.string }}@{{ following.purl.service.user.username }}</a>

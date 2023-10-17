@@ -1,0 +1,26 @@
+{
+  "name": "java",
+  "source": {
+    "url": "http://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Java_logo_and_wordmark.svg/500px-Java_logo_and_wordmark.svg.png",
+    "referrer": "http://commons.wikimedia.org/wiki/File:Java_logo_and_wordmark.svg",
+    "headers": {
+      "x-object-meta-sha1base36": "pwh107guwerk22u42wk4fgl5xlzn0jo",
+      "last-modified": "Thu, 31 Oct 2013 06:04:09 GMT",
+      "etag": "d0a95bc97c5792f6db1a4f3538ef0cd6",
+      "x-timestamp": "1383199448.25672",
+      "content-type": "image/png",
+      "x-trans-id": "tx91ec8e3a835a414eb562b-0055060cb8",
+      "x-varnish": "2265994897, 1099177107, 2216060245 2215958784",
+      "via": "1.1 varnish, 1.1 varnish, 1.1 varnish",
+      "content-length": "43989",
+      "accept-ranges": "bytes",
+      "date": "Sun, 15 Mar 2015 22:51:18 GMT",
+      "age": "46",
+      "connection": "keep-alive",
+      "x-cache": "cp1064 miss (0), cp3005 miss (0), cp3007 frontend hit (1)",
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache, X-Varnish",
+      "timing-allow-origin": "*"
+    }
+  }
+}

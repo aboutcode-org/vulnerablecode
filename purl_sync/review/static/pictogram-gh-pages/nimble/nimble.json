@@ -1,0 +1,35 @@
+{
+  "name": "nimble",
+  "source": {
+    "url": "https://avatars3.githubusercontent.com/u/603863?v=3&s=200",
+    "referrer": "https://github.com/nim-lang",
+    "headers": {
+      "date": "Tue, 17 Mar 2015 21:33:37 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "etag": "\"a513c8a1ca00d2b756d1aab7dd2929cdb7ae34a6\"",
+      "last-modified": "Thu, 05 Mar 2015 22:44:09 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "57a175a2-c97f-11e4-8e1f-3e2a3c6c6171",
+      "x-xss-protection": "1; mode=block",
+      "host": "avatars.githubusercontent.com",
+      "content-length": "113754",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-lcy1124-LCY",
+      "x-cache": "HIT",
+      "x-cache-hits": "1",
+      "expires": "Tue, 17 Mar 2015 21:38:37 GMT",
+      "source-age": "377067",
+      "vary": "AuthorizationAccept-Encoding",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "coffeescript",
+  "source": {
+    "url": "http://coffeescript.org/documentation/images/logo.png",
+    "referrer": "http://coffeescript.org/",
+    "headers": {
+      "server": "GitHub.com",
+      "date": "Sat, 14 Mar 2015 19:01:28 GMT",
+      "content-type": "image/png",
+      "content-length": "12591",
+      "last-modified": "Wed, 18 Feb 2015 20:48:58 GMT",
+      "expires": "Sat, 14 Mar 2015 19:11:28 GMT",
+      "cache-control": "max-age=600",
+      "access-control-allow-origin": "*",
+      "accept-ranges": "bytes"
+    }
+  }
+}

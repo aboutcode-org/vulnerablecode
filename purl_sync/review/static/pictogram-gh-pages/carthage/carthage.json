@@ -1,0 +1,33 @@
+{
+  "name": "carthage",
+  "source": {
+    "url": "https://avatars0.githubusercontent.com/u/9146792?v=3&s=200",
+    "referrer": "https://github.com/carthage",
+    "headers": {
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "etag": "\"66e578efa7494ef9ba0ede5f0ae71ecfbb9700ff\"",
+      "last-modified": "Mon, 01 Dec 2014 19:58:19 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-xss-protection": "1; mode=block",
+      "x-github-request-id": "B91F131A:3F6A:13554528:56C3B3FE",
+      "content-length": "124979",
+      "accept-ranges": "bytes",
+      "date": "Fri, 26 Feb 2016 19:12:22 GMT",
+      "via": "1.1 varnish",
+      "connection": "close",
+      "x-served-by": "cache-lhr6323-LHR",
+      "x-cache": "HIT",
+      "x-cache-hits": "1",
+      "access-control-allow-origin": "*",
+      "x-fastly-request-id": "708eb9bfa0fc544d75a385f6847617ca8f267878",
+      "expires": "Fri, 26 Feb 2016 19:17:22 GMT",
+      "source-age": "847767",
+      "vary": "Authorization,Accept-Encoding"
+    }
+  }
+}

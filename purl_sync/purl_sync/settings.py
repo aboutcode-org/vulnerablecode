@@ -76,22 +76,14 @@ WSGI_APPLICATION = "purl_sync.wsgi.application"
 
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 # postgresql database
-# DATABASES = {
-#     "default": {
-#         "ENGINE": env.str("PURL_SYNC_DB_ENGINE", "django.db.backends.postgresql"),
-#         "HOST": env.str("PURL_SYNC_DB_HOST", "localhost"),
-#         "NAME": env.str("PURL_SYNC_DB_NAME", "purl-sync"),
-#         "USER": env.str("PURL_SYNC_DB_USER", "vulnerablecode"),
-#         "PASSWORD": env.str("PURL_SYNC_DB_PASSWORD", "vulnerablecode"),
-#         "PORT": env.str("PURL_SYNC_DB_PORT", "5432"),
-#     }
-# }
-
-# sqlite3 database :
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "mydatabase.db",
+        "ENGINE": env.str("PURL_SYNC_DB_ENGINE", "django.db.backends.postgresql"),
+        "HOST": "127.0.0.1",
+        "NAME": env.str("PURL_SYNC_DB_NAME", "purl-sync"),
+        "USER": env.str("PURL_SYNC_DB_USER", "vulnerablecode"),
+        "PASSWORD": env.str("PURL_SYNC_DB_PASSWORD", "vulnerablecode"),
+        "PORT": env.str("PURL_SYNC_DB_PORT", "5432"),
     }
 }
 

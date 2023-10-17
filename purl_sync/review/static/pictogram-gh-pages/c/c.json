@@ -1,0 +1,27 @@
+{
+  "name": "c",
+  "source": {
+    "url": "http://upload.wikimedia.org/wikipedia/commons/thumb/3/35/The_C_Programming_Language_logo.svg/200px-The_C_Programming_Language_logo.svg.png",
+    "referrer": "http://commons.wikimedia.org/wiki/File:The_C_Programming_Language_logo.svg",
+    "headers": {
+      "x-object-meta-sha1base36": "5wzecx02acldqfbbn9z9gsa2s78zjwv",
+      "content-disposition": "inline;filename*=UTF-8''The_C_Programming_Language_logo.svg.png",
+      "last-modified": "Sat, 03 May 2014 06:33:17 GMT",
+      "etag": "a7c96e0cd2cf40302b0cea4731d3ddc1",
+      "x-timestamp": "1399098796.67508",
+      "content-type": "image/png",
+      "x-trans-id": "tx6d193c09670a41a29e5f8-00550b5c66",
+      "x-varnish": "3288601965 3250119526, 948536444 891627264, 4230760775",
+      "via": "1.1 varnish, 1.1 varnish, 1.1 varnish",
+      "content-length": "11871",
+      "accept-ranges": "bytes",
+      "date": "Fri, 20 Mar 2015 13:53:39 GMT",
+      "age": "51709",
+      "connection": "keep-alive",
+      "x-cache": "cp1051 hit (3), cp3015 hit (3), cp3015 frontend miss (0)",
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache, X-Varnish",
+      "timing-allow-origin": "*"
+    }
+  }
+}

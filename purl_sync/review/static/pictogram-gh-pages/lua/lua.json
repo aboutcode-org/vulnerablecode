@@ -1,0 +1,34 @@
+{
+  "name": "lua",
+  "source": {
+    "url": "https://avatars0.githubusercontent.com/u/2319114?v=3&s=200",
+    "referrer": "https://github.com/lua",
+    "headers": {
+      "date": "Tue, 17 Mar 2015 00:14:36 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "last-modified": "Sun, 07 Jul 2013 00:20:33 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "98866c33-cc3a-11e4-8491-cf2de38bf09a",
+      "x-xss-protection": "1; mode=block",
+      "host": "avatars.githubusercontent.com",
+      "content-length": "11885",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-lcy1132-LCY",
+      "x-cache": "MISS",
+      "x-cache-hits": "0",
+      "expires": "Tue, 17 Mar 2015 00:19:36 GMT",
+      "source-age": "0",
+      "vary": "AuthorizationAccept-Encoding",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "typescript",
+  "source": {
+    "url": "http://upload.wikimedia.org/wikipedia/commons/a/a6/TypeScript_Logo.png",
+    "referrer": "http://commons.wikimedia.org/wiki/File:TypeScript_Logo.png",
+    "headers": {
+      "x-object-meta-sha1base36": "ta8zk9e0sbxw3dgndt2gf5az2lm2550",
+      "last-modified": "Fri, 08 Aug 2014 13:37:25 GMT",
+      "etag": "bd3114606fdd1882d29146523420bcaf",
+      "x-timestamp": "1407505044.06077",
+      "content-type": "image/png",
+      "x-trans-id": "tx9a3ac9c48dc64eea9e35b-00550d72c5",
+      "x-varnish": "2120026215 2105357961, 3309311353 3276531616, 2561116907",
+      "content-length": "3617",
+      "accept-ranges": "bytes",
+      "date": "Sat, 21 Mar 2015 19:52:00 GMT",
+      "age": "22810",
+      "x-cache": "cp1063 hit (13), cp3007 hit (18), cp3005 frontend miss (0), MISS from cache_server",
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache, X-Varnish",
+      "timing-allow-origin": "*",
+      "x-cache-lookup": "MISS from cache_server:3128",
+      "via": "1.1 varnish, 1.1 varnish, 1.1 varnish, 1.0 cache_server:3128 (squid/2.6.STABLE21)",
+      "connection": "keep-alive"
+    }
+  }
+}

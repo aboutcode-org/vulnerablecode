@@ -1,0 +1,35 @@
+{
+  "name": "scala",
+  "source": {
+    "url": "https://avatars1.githubusercontent.com/u/57059?v=3&s=200",
+    "referrer": "https://github.com/scala",
+    "headers": {
+      "date": "Sat, 14 Mar 2015 18:16:57 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "etag": "\"b33c1827875a985cc1c32ad87377a1aad4afa2e5\"",
+      "last-modified": "Mon, 14 Apr 2014 14:09:58 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "f36a2b9c-b4f4-11e4-86b5-bc82ab0ff7bb",
+      "x-xss-protection": "1; mode=block",
+      "host": "avatars.githubusercontent.com",
+      "content-length": "13018",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-lhr6326-LHR",
+      "x-cache": "HIT",
+      "x-cache-hits": "1",
+      "expires": "Sat, 14 Mar 2015 18:21:57 GMT",
+      "source-age": "2364528",
+      "vary": "AuthorizationAccept-Encoding",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

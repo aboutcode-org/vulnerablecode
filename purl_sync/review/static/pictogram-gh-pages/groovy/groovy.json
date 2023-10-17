@@ -1,0 +1,34 @@
+{
+  "name": "groovy",
+  "source": {
+    "url": "https://avatars3.githubusercontent.com/u/64846?v=3&s=200",
+    "referrer": "https://github.com/groovy",
+    "headers": {
+      "date": "Mon, 16 Mar 2015 23:03:12 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "last-modified": "Mon, 19 Sep 2011 07:30:15 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "8ec6f362-cc30-11e4-8422-bbbe7f107df2",
+      "x-xss-protection": "1; mode=block",
+      "host": "avatars.githubusercontent.com",
+      "content-length": "21804",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-lcy1128-LCY",
+      "x-cache": "HIT",
+      "x-cache-hits": "1",
+      "expires": "Mon, 16 Mar 2015 23:08:12 GMT",
+      "source-age": "27",
+      "vary": "AuthorizationAccept-Encoding",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

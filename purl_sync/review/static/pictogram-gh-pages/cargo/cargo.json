@@ -1,0 +1,31 @@
+{
+  "name": "cargo",
+  "source": {
+    "url": "https://raw.githubusercontent.com/rust-lang/crates.io/master/public/assets/Cargo-Logo-Small.png",
+    "referrer": "https://github.com/rust-lang/crates.io/blob/master/public/assets/Cargo-Logo-Small.png",
+    "headers": {
+      "date": "Mon, 16 Mar 2015 23:45:39 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "https://render.githubusercontent.com",
+      "content-security-policy": "default-src 'none'",
+      "x-xss-protection": "1; mode=block",
+      "x-frame-options": "deny",
+      "x-content-type-options": "nosniff",
+      "strict-transport-security": "max-age=31536000",
+      "etag": "\"9a94dcc871a3bd606cef6f0647924a3447840304\"",
+      "content-type": "image/png",
+      "cache-control": "max-age=300",
+      "content-length": "58730",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-lhr6323-LHR",
+      "x-cache": "MISS",
+      "x-cache-hits": "0",
+      "vary": "Authorization,Accept-Encoding",
+      "expires": "Mon, 16 Mar 2015 23:50:39 GMT",
+      "source-age": "0",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

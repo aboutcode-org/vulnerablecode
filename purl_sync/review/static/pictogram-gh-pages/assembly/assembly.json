@@ -1,0 +1,27 @@
+{
+  "name": "assembly",
+  "source": {
+    "url": "http://i.imgur.com/c18lFaQ.png",
+    "referrer": "http://imgur.com/gallery/72ouk",
+    "headers": {
+      "last-modified": "Sat, 17 Jan 2015 11:08:15 GMT",
+      "etag": "\"6415d32fde1d3dadb654a4fc023c8b5f\"",
+      "content-type": "image/png",
+      "cache-control": "public, max-age=31536000",
+      "content-length": "18343",
+      "accept-ranges": "bytes",
+      "date": "Sat, 21 Mar 2015 20:46:36 GMT",
+      "x-served-by": "cache-iad2127-IAD, cache-lhr6322-LHR",
+      "x-cache": "HIT, HIT, HIT from cache_server",
+      "x-cache-hits": "1, 1",
+      "x-timer": "S1426970796.664084,VS0,VE0",
+      "access-control-allow-methods": "GET, OPTIONS",
+      "access-control-allow-origin": "*",
+      "server": "cat factory 1.0",
+      "age": "2705717",
+      "x-cache-lookup": "HIT from cache_server:3128",
+      "via": "1.0 cache_server:3128 (squid/2.6.STABLE21)",
+      "connection": "keep-alive"
+    }
+  }
+}

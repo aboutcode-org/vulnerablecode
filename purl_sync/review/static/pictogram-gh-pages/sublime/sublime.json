@@ -1,0 +1,26 @@
+{
+  "name": "sublime",
+  "source": {
+    "url": "http://upload.wikimedia.org/wikipedia/en/4/4c/Sublime_Text_Logo.png",
+    "referrer": "http://en.wikipedia.org/wiki/File:Sublime_Text_Logo.png",
+    "headers": {
+      "x-object-meta-sha1base36": "hv36qmmssteu7h0ukpm2uccspz5zryx",
+      "last-modified": "Thu, 03 Oct 2013 23:05:16 GMT",
+      "etag": "8a483f7a7efcf995491cb6d6a6474010",
+      "x-timestamp": "1380841515.42109",
+      "content-type": "image/png",
+      "x-trans-id": "txcfd34f52c6e646a1b81c0-005506ed92",
+      "x-varnish": "2645010696 2614188073, 1824459470 1793825958, 3545802880",
+      "via": "1.1 varnish, 1.1 varnish, 1.1 varnish",
+      "content-length": "31566",
+      "accept-ranges": "bytes",
+      "date": "Mon, 16 Mar 2015 23:48:14 GMT",
+      "age": "32299",
+      "connection": "keep-alive",
+      "x-cache": "cp1048 hit (91), cp3017 hit (24), cp3018 frontend miss (0)",
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache, X-Varnish",
+      "timing-allow-origin": "*"
+    }
+  }
+}

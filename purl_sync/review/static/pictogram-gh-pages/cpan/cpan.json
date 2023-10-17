@@ -1,0 +1,27 @@
+{
+  "name": "cpan",
+  "source": {
+    "url": "http://upload.wikimedia.org/wikipedia/en/1/14/The_logo_of_CPAN.png",
+    "referrer": "http://en.wikipedia.org/wiki/File:The_logo_of_CPAN.png",
+    "headers": {
+      "x-object-meta-sha1base36": "hjx38dzcq6mldoe4oi7n0ml41c1ej6f",
+      "last-modified": "Fri, 18 Apr 2014 18:32:39 GMT",
+      "etag": "cad4d0c6684a04cff9e221fa07ba1448",
+      "x-timestamp": "1397845958.02096",
+      "content-type": "image/png",
+      "x-trans-id": "tx5ef1c302903a41f6a5535-00550b1869",
+      "x-varnish": "2701087188 2682602333, 2182943610 1989768456, 2266467108",
+      "content-length": "4282",
+      "accept-ranges": "bytes",
+      "date": "Sat, 21 Mar 2015 10:09:18 GMT",
+      "age": "142053",
+      "x-cache": "cp1062 hit (1), cp3003 hit (7), cp3006 frontend miss (0), MISS from cache_server",
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache, X-Varnish",
+      "timing-allow-origin": "*",
+      "x-cache-lookup": "MISS from cache_server:3128",
+      "via": "1.1 varnish, 1.1 varnish, 1.1 varnish, 1.0 cache_server:3128 (squid/2.6.STABLE21)",
+      "connection": "keep-alive"
+    }
+  }
+}

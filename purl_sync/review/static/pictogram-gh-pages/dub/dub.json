@@ -1,0 +1,18 @@
+{
+  "name": "dub",
+  "source": {
+    "url": "http://code.dlang.org/images/logo-small.png",
+    "referrer": "http://code.dlang.org/",
+    "headers": {
+      "server": "vibe.d/0.7.22",
+      "date": "Tue, 17 Mar 2015 22:01:17 GMT",
+      "keep-alive": "timeout=10",
+      "last-modified": "Fri, 07 Dec 2012 16:30:27 GMT",
+      "etag": "\"09CE4277EF625410C1F51424793E5EC7\"",
+      "expires": "Wed, 18 Mar 2015 22:01:17 GMT",
+      "cache-control": "max-age=86400",
+      "content-type": "image/png",
+      "content-length": "2255"
+    }
+  }
+}

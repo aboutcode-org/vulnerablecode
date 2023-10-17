@@ -1,0 +1,35 @@
+{
+  "name": "f#",
+  "source": {
+    "url": "https://avatars2.githubusercontent.com/u/485415?v=3&s=200",
+    "referrer": "https://github.com/fsharp",
+    "headers": {
+      "date": "Fri, 20 Mar 2015 13:50:03 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "etag": "\"f392a0ef9ac460573056b23fdc397be8a1f6cbea\"",
+      "last-modified": "Fri, 03 Oct 2014 14:25:35 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "87303463-c5d9-11e4-8c90-7ea81075bd94",
+      "x-xss-protection": "1; mode=block",
+      "host": "avatars.githubusercontent.com",
+      "content-length": "6229",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-lhr6322-LHR",
+      "x-cache": "HIT",
+      "x-cache-hits": "1",
+      "expires": "Fri, 20 Mar 2015 13:55:03 GMT",
+      "source-age": "1009524",
+      "vary": "AuthorizationAccept-Encoding",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

@@ -18,6 +18,7 @@ from git.repo.base import Repo
 from packageurl import PackageURL
 
 from purl_sync.settings import PURL_SYNC_DOMAIN
+from purl_sync.settings import STATIC_URL
 
 
 def parse_webfinger(subject):

@@ -1,0 +1,21 @@
+{
+  "name": "jam",
+  "source": {
+    "url": "http://jamjs.org/img/jam_large.png",
+    "referrer": "http://jamjs.org/",
+    "headers": {
+      "server": "CouchDB/1.2.0 (Erlang OTP/R15B01)",
+      "etag": "\"X2b5KkOOeVZgrc1YLa8kYg==\"",
+      "date": "Sat, 21 Mar 2015 09:53:45 GMT",
+      "content-type": "image/png",
+      "content-md5": "X2b5KkOOeVZgrc1YLa8kYg==",
+      "content-length": "8088",
+      "cache-control": "must-revalidate",
+      "accept-ranges": "bytes",
+      "x-cache": "MISS from cache_server",
+      "x-cache-lookup": "MISS from cache_server:3128",
+      "via": "1.0 cache_server:3128 (squid/2.6.STABLE21)",
+      "connection": "keep-alive"
+    }
+  }
+}

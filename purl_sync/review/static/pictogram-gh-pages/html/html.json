@@ -1,0 +1,18 @@
+{
+  "name": "html",
+  "source": {
+    "url": "http://www.bobbyberberyan.com/wp-content/uploads/2012/03/HTML5CSS3Logos.svg",
+    "referrer": "http://www.bobbyberberyan.com/2012/03/html-5-css-3-logos/",
+    "headers": {
+      "date": "Sat, 14 Mar 2015 18:43:03 GMT",
+      "server": "Apache",
+      "last-modified": "Thu, 22 Mar 2012 17:12:34 GMT",
+      "etag": "\"ddc-4bbd80395e597\"",
+      "accept-ranges": "bytes",
+      "content-length": "3548",
+      "keep-alive": "timeout=5, max=100",
+      "connection": "Keep-Alive",
+      "content-type": "image/svg+xml"
+    }
+  }
+}

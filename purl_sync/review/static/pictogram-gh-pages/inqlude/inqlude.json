@@ -1,0 +1,26 @@
+{
+  "name": "inqlude",
+  "source": {
+    "url": "http://i.imgur.com/nxdK4ID.png",
+    "referrer": "https://inqlude.org/",
+    "headers": {
+      "last-modified": "Sun, 14 Feb 2016 12:40:57 GMT",
+      "etag": "\"ee2a41bad2b8bdea420394654fef7f7e\"",
+      "content-type": "image/png",
+      "fastly-debug-digest": "2ca73e610654849e26001be963ac45b7d1c9b112c74c8086d5a06b0fb77978fa",
+      "cache-control": "public, max-age=31536000",
+      "content-length": "5921",
+      "accept-ranges": "bytes",
+      "date": "Sun, 14 Feb 2016 12:42:13 GMT",
+      "age": "76",
+      "connection": "close",
+      "x-served-by": "cache-iad2144-IAD, cache-lhr6328-LHR",
+      "x-cache": "HIT, MISS",
+      "x-cache-hits": "1, 0",
+      "x-timer": "S1455453733.534115,VS0,VE76",
+      "access-control-allow-methods": "GET, OPTIONS",
+      "access-control-allow-origin": "*",
+      "server": "cat factory 1.0"
+    }
+  }
+}

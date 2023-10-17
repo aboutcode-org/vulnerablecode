@@ -1,0 +1,34 @@
+{
+  "name": "pypi",
+  "source": {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1024px-Python-logo-notext.svg.png",
+    "referrer": "wikipedia",
+    "headers": {
+      "server": "nginx/1.9.4",
+      "date": "Tue, 23 Feb 2016 18:48:11 GMT",
+      "content-type": "image/png",
+      "content-length": "73663",
+      "connection": "close",
+      "x-object-meta-sha1base36": "b7r64q960agb9lzuxhj43w7t9nbx6m2",
+      "content-disposition": "inline;filename*=UTF-8''Python-logo-notext.svg.png",
+      "last-modified": "Thu, 28 Aug 2014 14:31:18 GMT",
+      "etag": "ed666327dd3ce274d94f2b3547155891",
+      "x-timestamp": "1409236277.65046",
+      "x-trans-id": "txdcd1f30413644a95a4e96-0056cab8c7",
+      "x-varnish": "174832178 92364174, 3852301110 3599779678, 3631330066 3630947417",
+      "via": "1.1 varnish, 1.1 varnish, 1.1 varnish",
+      "accept-ranges": "bytes",
+      "age": "127140",
+      "x-cache": "cp1074 hit(30), cp3046 hit(117), cp3048 frontend hit(2)",
+      "strict-transport-security": "max-age=31536000",
+      "set-cookie": [
+        "WMF-Last-Access=23-Feb-2016;Path=/;HttpOnly;Expires=Sat, 26 Mar 2016 12:00:00 GMT"
+      ],
+      "x-analytics": "https=1;nocookies=1",
+      "x-client-ip": "81.187.162.80",
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache, X-Varnish",
+      "timing-allow-origin": "*"
+    }
+  }
+}

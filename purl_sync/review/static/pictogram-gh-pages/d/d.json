@@ -1,0 +1,34 @@
+{
+  "name": "d",
+  "source": {
+    "url": "https://avatars3.githubusercontent.com/u/565913?v=3&s=200",
+    "referrer": "https://github.com/D-Programming-Language",
+    "headers": {
+      "date": "Tue, 17 Mar 2015 21:57:00 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "last-modified": "Sat, 15 Jan 2011 08:35:22 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "898ccc4f-ccf0-11e4-82c1-661745da0098",
+      "x-xss-protection": "1; mode=block",
+      "host": "avatars.githubusercontent.com",
+      "content-length": "24001",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-lhr6335-LHR",
+      "x-cache": "MISS",
+      "x-cache-hits": "0",
+      "expires": "Tue, 17 Mar 2015 22:02:00 GMT",
+      "source-age": "0",
+      "vary": "AuthorizationAccept-Encoding",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

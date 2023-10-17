@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load webfinger_image %}
 {% block title %}
 Note page
 {% endblock %}
@@ -70,7 +71,7 @@ $(document).ready(function () {
     <article class="media">
       <figure class="media-left">
         <p class="image is-64x64">
-          <img src="https://bulma.io/images/placeholders/128x128.png">
+            <img src="{{ note.acct | get_purl_image }}" alt="purl-image">
         </p>
       </figure>
       <form class="ml-5 mr-5" name="vote-notes">

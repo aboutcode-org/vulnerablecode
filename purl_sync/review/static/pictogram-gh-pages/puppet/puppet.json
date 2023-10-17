@@ -1,0 +1,34 @@
+{
+  "name": "puppet",
+  "source": {
+    "url": "https://avatars3.githubusercontent.com/u/234268?v=3&s=200",
+    "referrer": "https://github.com/puppetlabs",
+    "headers": {
+      "date": "Fri, 20 Mar 2015 22:40:44 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "last-modified": "Fri, 09 Jul 2010 17:49:51 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "9c8b3fc5-cf4c-11e4-8ea4-a165337637e8",
+      "x-xss-protection": "1; mode=block",
+      "host": "avatars.githubusercontent.com",
+      "content-length": "16770",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-lhr6335-LHR",
+      "x-cache": "HIT",
+      "x-cache-hits": "1",
+      "expires": "Fri, 20 Mar 2015 22:45:44 GMT",
+      "source-age": "2377",
+      "vary": "AuthorizationAccept-Encoding",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

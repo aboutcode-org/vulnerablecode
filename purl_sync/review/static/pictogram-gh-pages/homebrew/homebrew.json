@@ -1,0 +1,32 @@
+{
+  "name": "homebrew",
+  "source": {
+    "url": "https://avatars2.githubusercontent.com/u/1503512?v=3&s=200",
+    "referrer": "https://github.com/homebrew",
+    "headers": {
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "last-modified": "Sat, 07 Jun 2014 10:21:41 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-xss-protection": "1; mode=block",
+      "x-github-request-id": "B91F1221:3F69:D2FEA3B:56C0D2F8",
+      "content-length": "33056",
+      "accept-ranges": "bytes",
+      "date": "Sun, 14 Feb 2016 20:04:06 GMT",
+      "via": "1.1 varnish",
+      "connection": "close",
+      "x-served-by": "cache-lcy1135-LCY",
+      "x-cache": "HIT",
+      "x-cache-hits": "1",
+      "access-control-allow-origin": "*",
+      "x-fastly-request-id": "d2b0b79562e8079857220f6626ce9ec7d49843fc",
+      "expires": "Sun, 14 Feb 2016 20:09:06 GMT",
+      "source-age": "2750",
+      "vary": "Authorization,Accept-Encoding"
+    }
+  }
+}

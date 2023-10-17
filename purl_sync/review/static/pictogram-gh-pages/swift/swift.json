@@ -1,0 +1,26 @@
+{
+  "name": "swift",
+  "source": {
+    "url": "http://upload.wikimedia.org/wikipedia/en/4/43/Apple_Swift_Logo.png",
+    "referrer": "http://en.wikipedia.org/wiki/File:Apple_Swift_Logo.png",
+    "headers": {
+      "x-object-meta-sha1base36": "2ptisrx1l054z84wesbuph4ksw8jxac",
+      "last-modified": "Mon, 02 Jun 2014 19:58:39 GMT",
+      "etag": "7aa4103a8f6eb0040d3c2d665987c864",
+      "x-timestamp": "1401739118.51794",
+      "content-type": "image/png",
+      "x-trans-id": "tx7163bad1fc1c4552b58b2-0055097825",
+      "x-varnish": "1445163199, 2769866930 2768810317, 2260152190",
+      "via": "1.1 varnish, 1.1 varnish, 1.1 varnish",
+      "content-length": "26325",
+      "accept-ranges": "bytes",
+      "date": "Wed, 18 Mar 2015 13:15:38 GMT",
+      "age": "597",
+      "connection": "keep-alive",
+      "x-cache": "cp1050 miss (0), cp3008 hit (1), cp3009 frontend miss (0)",
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache, X-Varnish",
+      "timing-allow-origin": "*"
+    }
+  }
+}

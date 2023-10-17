@@ -1,0 +1,28 @@
+{
+  "name": "tex",
+  "source": {
+    "url": "http://upload.wikimedia.org/wikipedia/commons/thumb/6/68/TeX_logo.svg/200px-TeX_logo.svg.png",
+    "referrer": "http://commons.wikimedia.org/wiki/File:TeX_logo.svg",
+    "headers": {
+      "x-object-meta-sha1base36": "qp6w2uvrsdvwrva95lt8iinuxo6zifz",
+      "content-disposition": "inline;filename*=UTF-8''TeX_logo.svg.png",
+      "last-modified": "Sun, 02 Mar 2014 07:48:08 GMT",
+      "etag": "fdb248fa6053759fd85453b9e04ce6f9",
+      "x-timestamp": "1393746487.81891",
+      "content-type": "image/png",
+      "x-trans-id": "tx760ce7dca40c4a83b38a9-00550bfbcf",
+      "x-varnish": "1807553663 1764028894, 1606043310 1466343979, 2471478251 2471362502",
+      "content-length": "3739",
+      "accept-ranges": "bytes",
+      "date": "Sat, 21 Mar 2015 20:18:58 GMT",
+      "age": "120420",
+      "x-cache": "cp1050 hit (12), cp3006 hit (39), cp3010 frontend hit (1), MISS from cache_server",
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache, X-Varnish",
+      "timing-allow-origin": "*",
+      "x-cache-lookup": "MISS from cache_server:3128",
+      "via": "1.1 varnish, 1.1 varnish, 1.1 varnish, 1.0 cache_server:3128 (squid/2.6.STABLE21)",
+      "connection": "keep-alive"
+    }
+  }
+}

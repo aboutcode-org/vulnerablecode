@@ -1,4 +1,3 @@
-import json
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -39,24 +38,18 @@ class Importer:
     default_service: Service
 
     def run(self):
-        git_repo = self.repo_obj.git_repo_obj
-        for commit in git_repo.commit().tree.traverse():
-            file = Path(commit.abspath)
-            if file.is_file():
-                with open(commit.abspath) as f:
-                    yaml_data = saneyaml.load(f.read())
-                    if str(file.name).startswith("VCID") and str(file.name).endswith(".yaml"):
-                        Vulnerability.objects.get_or_create(
-                            repo=self.repo_obj,
-                            filename=yaml_data.get("vulnerability_id"),
-                        )
-                    elif str(file.name).endswith(".yaml"):
-                        self.register_pkg(yaml_data)
-
-    def register_pkg(self, data):
-        pacakge = data.get("pacakge")
-        if pacakge:
-            Purl.objects.get_or_create(string=pacakge, service=self.default_service)
-            for version in data.get("versions", []):
-                acct = generate_webfinger(pacakge)
-                Note.objects.get_or_create(acct=acct, content=saneyaml.dump(version))
+        for file in Path(self.repo_obj.path).glob("**/*.yaml"):
+            with open(file) as f:
+                yaml_data = saneyaml.load(f.read())
+                if str(file.name).startswith("VCID"):
+                    Vulnerability.objects.get_or_create(
+                        repo=self.repo_obj,
+                        filename=yaml_data.get("vulnerability_id"),
+                    )
+                else:
+                    pacakge = yaml_data.get("pacakge")
+                    if pacakge:
+                        Purl.objects.get_or_create(string=pacakge, service=self.default_service)
+                        for version in yaml_data.get("versions", []):
+                            acct = generate_webfinger(pacakge)
+                            Note.objects.get_or_create(acct=acct, content=saneyaml.dump(version))

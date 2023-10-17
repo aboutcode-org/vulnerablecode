@@ -1,0 +1,18 @@
+{
+  "name": "perl",
+  "source": {
+    "url": "http://www.onlamp.com/images/perl/camel.gif",
+    "referrer": "http://www.onlamp.com/pub/a/oreilly/perl/usage/",
+    "headers": {
+      "server": "Apache",
+      "last-modified": "Fri, 24 Jan 2003 20:01:36 GMT",
+      "accept-ranges": "bytes",
+      "content-length": "4265",
+      "content-type": "image/gif",
+      "cache-control": "max-age=86334",
+      "expires": "Sat, 21 Mar 2015 22:49:00 GMT",
+      "date": "Fri, 20 Mar 2015 22:50:06 GMT",
+      "connection": "keep-alive"
+    }
+  }
+}

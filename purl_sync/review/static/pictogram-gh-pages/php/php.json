@@ -1,0 +1,34 @@
+{
+  "name": "php",
+  "source": {
+    "url": "https://avatars3.githubusercontent.com/u/25158?v=3&s=200",
+    "referrer": "https://github.com/php",
+    "headers": {
+      "date": "Sat, 14 Mar 2015 16:11:57 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "last-modified": "Tue, 15 Oct 2013 14:10:47 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "55f44d3e-ca64-11e4-8837-566d0201505c",
+      "x-xss-protection": "1; mode=block",
+      "host": "avatars.githubusercontent.com",
+      "content-length": "15299",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-lhr6321-LHR",
+      "x-cache": "HIT",
+      "x-cache-hits": "2",
+      "expires": "Sat, 14 Mar 2015 16:16:57 GMT",
+      "source-age": "216",
+      "vary": "AuthorizationAccept-Encoding",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "go",
+  "source": {
+    "url": "https://avatars3.githubusercontent.com/u/4314092?v=3&s=200",
+    "referrer": "https://github.com/golang",
+    "headers": {
+      "date": "Sat, 14 Mar 2015 09:45:04 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "etag": "\"94a4d9e18dd02badeaeb772757d530218acdd677\"",
+      "last-modified": "Tue, 29 Apr 2014 15:16:14 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "73aa078e-c0fc-11e4-893a-e199b1f411c7",
+      "x-xss-protection": "1; mode=block",
+      "host": "avatars.githubusercontent.com",
+      "content-length": "17189",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-lhr6325-LHR",
+      "x-cache": "HIT",
+      "x-cache-hits": "6",
+      "expires": "Sat, 14 Mar 2015 09:50:04 GMT",
+      "source-age": "1011180",
+      "vary": "AuthorizationAccept-Encoding",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

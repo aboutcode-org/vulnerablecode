@@ -1,0 +1,35 @@
+{
+  "name": "javascript",
+  "source": {
+    "url": "https://avatars2.githubusercontent.com/u/1782180?v=3&s=200",
+    "referrer": "https://github.com/javascript",
+    "headers": {
+      "date": "Sat, 14 Mar 2015 18:16:20 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "etag": "\"d3aea59fec2c937e534dfe6a0629346901fb4a06\"",
+      "last-modified": "Fri, 28 Mar 2014 14:33:48 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "ddf81d16-ca75-11e4-81e4-eaff48c4ed6c",
+      "x-xss-protection": "1; mode=block",
+      "host": "avatars.githubusercontent.com",
+      "content-length": "7978",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-lhr6335-LHR",
+      "x-cache": "HIT",
+      "x-cache-hits": "1",
+      "expires": "Sat, 14 Mar 2015 18:21:20 GMT",
+      "source-age": "149",
+      "vary": "AuthorizationAccept-Encoding",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

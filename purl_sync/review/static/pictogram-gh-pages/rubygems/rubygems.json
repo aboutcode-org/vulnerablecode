@@ -1,0 +1,32 @@
+{
+  "name": "rubygems",
+  "source": {
+    "url": "https://avatars1.githubusercontent.com/u/208761?v=3&s=200",
+    "referrer": "https://github.com/rubygems",
+    "headers": {
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/jpeg",
+      "etag": "\"f730df7964c5bf7044a913e758d216fb917f5fd4\"",
+      "last-modified": "Tue, 12 May 2015 02:52:03 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "c367552b-f880-11e4-8c16-ca7939fa6deb",
+      "x-xss-protection": "1; mode=block",
+      "content-length": "5719",
+      "accept-ranges": "bytes",
+      "date": "Tue, 19 May 2015 05:51:19 GMT",
+      "via": "1.1 varnish",
+      "connection": "keep-alive",
+      "x-served-by": "cache-ams4132-AMS",
+      "x-cache": "HIT",
+      "x-cache-hits": "1",
+      "expires": "Tue, 19 May 2015 05:56:19 GMT",
+      "source-age": "595415",
+      "vary": "Authorization,Accept-Encoding"
+    }
+  }
+}

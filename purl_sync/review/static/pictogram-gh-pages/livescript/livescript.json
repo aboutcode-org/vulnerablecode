@@ -1,0 +1,27 @@
+{
+  "name": "livescript",
+  "source": {
+    "url": "http://livescript.net/images/icon.png",
+    "referrer": "http://livescript.net/",
+    "headers": {
+      "date": "Sat, 21 Mar 2015 19:59:43 GMT",
+      "content-type": "image/png",
+      "content-length": "1014",
+      "set-cookie": [
+        "__cfduid=dc08b9d32eaa07436c6c9e6be50534ed81426967983; expires=Sun, 20-Mar-16 19:59:43 GMT; path=/; domain=.livescript.net; HttpOnly"
+      ],
+      "last-modified": "Tue, 24 Feb 2015 02:39:36 GMT",
+      "expires": "Thu, 26 Mar 2015 19:59:43 GMT",
+      "cache-control": "public, max-age=432000",
+      "access-control-allow-origin": "*",
+      "cf-cache-status": "HIT",
+      "accept-ranges": "bytes",
+      "server": "cloudflare-nginx",
+      "cf-ray": "1cac3d2691410b7b-LHR",
+      "x-cache": "MISS from cache_server",
+      "x-cache-lookup": "MISS from cache_server:3128",
+      "via": "1.0 cache_server:3128 (squid/2.6.STABLE21)",
+      "connection": "keep-alive"
+    }
+  }
+}

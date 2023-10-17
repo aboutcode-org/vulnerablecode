@@ -1,0 +1,34 @@
+{
+  "name": "elixir",
+  "source": {
+    "url": "https://avatars0.githubusercontent.com/u/1481354?v=3&s=200",
+    "referrer": "https://github.com/elixir-lang",
+    "headers": {
+      "date": "Sat, 14 Mar 2015 18:01:45 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "last-modified": "Sun, 25 Nov 2012 17:23:59 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "2d71b851-ca74-11e4-80f1-b761e8b8d339",
+      "x-xss-protection": "1; mode=block",
+      "host": "avatars.githubusercontent.com",
+      "content-length": "23016",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-lhr6331-LHR",
+      "x-cache": "MISS",
+      "x-cache-hits": "0",
+      "expires": "Sat, 14 Mar 2015 18:06:45 GMT",
+      "source-age": "0",
+      "vary": "AuthorizationAccept-Encoding",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "r",
+  "source": {
+    "url": "http://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/R_logo.svg/200px-R_logo.svg.png",
+    "referrer": "http://commons.wikimedia.org/wiki/File:R_logo.svg",
+    "headers": {
+      "x-object-meta-sha1base36": "4k5u08r0xmrgw9as845n2yxbcfx2ohl",
+      "content-disposition": "inline;filename*=UTF-8''R_logo.svg.png",
+      "last-modified": "Wed, 24 Sep 2014 00:32:30 GMT",
+      "etag": "4d2a3c398e6dfebc8db0049b2d74055b",
+      "x-timestamp": "1411518749.34215",
+      "content-type": "image/png",
+      "x-trans-id": "tx2f2ab271ce2e4e2686449-00550c4ed7",
+      "x-varnish": "2379257310 2363119544, 2379253562 2317379629, 3417700854",
+      "content-length": "35295",
+      "accept-ranges": "bytes",
+      "date": "Sat, 21 Mar 2015 10:07:47 GMT",
+      "x-cache": "cp1049 hit (121), cp3017 hit (351), cp3004 frontend miss (0), HIT from cache_server",
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache, X-Varnish",
+      "timing-allow-origin": "*",
+      "age": "62518",
+      "x-cache-lookup": "HIT from cache_server:3128",
+      "via": "1.1 varnish, 1.1 varnish, 1.1 varnish, 1.0 cache_server:3128 (squid/2.6.STABLE21)",
+      "connection": "keep-alive"
+    }
+  }
+}

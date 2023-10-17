@@ -1,0 +1,27 @@
+{
+  "name": "c#",
+  "source": {
+    "url": "http://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/C_Sharp_wordmark.svg/200px-C_Sharp_wordmark.svg.png",
+    "referrer": "http://commons.wikimedia.org/wiki/File:C_Sharp_wordmark.svg",
+    "headers": {
+      "x-object-meta-sha1base36": "ml2eicl9c1m16cq0odrib38cel1ux6v",
+      "content-disposition": "inline;filename*=UTF-8''C_Sharp_wordmark.svg.png",
+      "last-modified": "Sun, 19 Jan 2014 18:16:45 GMT",
+      "etag": "4d188cbf2629549d7a3bbd8291388e93",
+      "x-timestamp": "1390155404.18857",
+      "content-type": "image/png",
+      "x-trans-id": "txe325d071e61f40ec8c0e0-00550a9ce0",
+      "x-varnish": "2844179884 2811213489, 2767017012 2621554093, 3191517447",
+      "via": "1.1 varnish, 1.1 varnish, 1.1 varnish",
+      "content-length": "2982",
+      "accept-ranges": "bytes",
+      "date": "Fri, 20 Mar 2015 13:55:50 GMT",
+      "age": "100870",
+      "connection": "keep-alive",
+      "x-cache": "cp1061 hit (1), cp3010 hit (24), cp3007 frontend miss (0)",
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache, X-Varnish",
+      "timing-allow-origin": "*"
+    }
+  }
+}

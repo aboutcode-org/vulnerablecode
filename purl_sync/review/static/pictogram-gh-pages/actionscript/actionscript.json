@@ -1,0 +1,21 @@
+{
+  "name": "actionscript",
+  "source": {
+    "url": "http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/authors/large/a/actionscript_lg.jpg.adimg.mw.138.png",
+    "referrer": "http://www.adobe.com/devnet/actionscript.html",
+    "headers": {
+      "server": "Apache",
+      "last-modified": "Tue, 17 Mar 2015 23:12:24 GMT",
+      "etag": "\"17fb36fd9-1191-5118419803ca3\"",
+      "accept-ranges": "bytes",
+      "content-length": "4497",
+      "cache-control": "max-age=900, s-maxage=300",
+      "content-type": "image/png",
+      "date": "Sat, 21 Mar 2015 20:16:47 GMT",
+      "x-cache": "MISS from cache_server",
+      "x-cache-lookup": "MISS from cache_server:3128",
+      "via": "1.0 cache_server:3128 (squid/2.6.STABLE21)",
+      "connection": "keep-alive"
+    }
+  }
+}

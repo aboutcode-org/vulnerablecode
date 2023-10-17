@@ -37,8 +37,9 @@ Your Profile
               </div>
           </div>
       </nav>
+
+      <p class="is-size-6 has-text-centered">{{ person.summary }}</p>
       <p class="is-size-6 has-text-centered">
-        {{ person.note }}
         <a href="{% url 'user-edit' person.user.username %}"><button type="submit" class="button is-link">Update</button></a>
       </p>
 

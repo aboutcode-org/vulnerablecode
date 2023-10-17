@@ -1,0 +1,34 @@
+{
+  "name": "rust",
+  "source": {
+    "url": "https://avatars1.githubusercontent.com/u/5430905?v=3&s=200",
+    "referrer": "https://github.com/rust-lang",
+    "headers": {
+      "date": "Mon, 16 Mar 2015 22:21:44 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "last-modified": "Fri, 10 Jan 2014 04:29:00 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "c11a7bc3-cc2a-11e4-89be-4556c9ef9d95",
+      "x-xss-protection": "1; mode=block",
+      "host": "avatars.githubusercontent.com",
+      "content-length": "15811",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-lcy1125-LCY",
+      "x-cache": "HIT",
+      "x-cache-hits": "1",
+      "expires": "Mon, 16 Mar 2015 22:26:44 GMT",
+      "source-age": "32",
+      "vary": "AuthorizationAccept-Encoding",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

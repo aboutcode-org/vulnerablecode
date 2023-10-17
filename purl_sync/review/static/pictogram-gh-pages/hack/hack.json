@@ -1,0 +1,27 @@
+{
+  "name": "hack",
+  "source": {
+    "url": "http://upload.wikimedia.org/wikipedia/commons/a/a0/Hack_-_Logo.png",
+    "referrer": "http://commons.wikimedia.org/wiki/File:Hack_-_Logo.png",
+    "headers": {
+      "x-object-meta-sha1base36": "h35fejthfmy9xqfpcs62q6z3wp5omt7",
+      "last-modified": "Fri, 11 Jul 2014 09:02:48 GMT",
+      "etag": "9f0eee0e34ff13f0f5e1796566a76603",
+      "x-timestamp": "1405069367.28998",
+      "content-type": "image/png",
+      "x-trans-id": "tx7b847aa2cc2d468eaeee8-00550c046a",
+      "x-varnish": "3369011968 3323710527, 1063756058 990870583, 2262677973",
+      "content-length": "4827",
+      "accept-ranges": "bytes",
+      "date": "Sat, 21 Mar 2015 09:43:16 GMT",
+      "age": "80074",
+      "x-cache": "cp1051 hit (9), cp3004 hit (18), cp3006 frontend miss (0), MISS from cache_server",
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache, X-Varnish",
+      "timing-allow-origin": "*",
+      "x-cache-lookup": "MISS from cache_server:3128",
+      "via": "1.1 varnish, 1.1 varnish, 1.1 varnish, 1.0 cache_server:3128 (squid/2.6.STABLE21)",
+      "connection": "keep-alive"
+    }
+  }
+}

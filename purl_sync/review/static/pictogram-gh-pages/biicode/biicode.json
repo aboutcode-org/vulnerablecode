@@ -1,0 +1,31 @@
+{
+  "name": "biicode",
+  "source": {
+    "url": "https://avatars2.githubusercontent.com/u/4687531?v=3&s=200",
+    "referrer": "https://github.com/biicode",
+    "headers": {
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "last-modified": "Tue, 05 Nov 2013 10:54:24 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "f578c538-00a7-11e5-862a-21d76f3a5017",
+      "x-xss-protection": "1; mode=block",
+      "content-length": "21333",
+      "accept-ranges": "bytes",
+      "date": "Fri, 22 May 2015 17:28:28 GMT",
+      "via": "1.1 varnish",
+      "connection": "keep-alive",
+      "x-served-by": "cache-lcy1131-LCY",
+      "x-cache": "MISS",
+      "x-cache-hits": "0",
+      "expires": "Fri, 22 May 2015 17:33:28 GMT",
+      "source-age": "0",
+      "vary": "Authorization,Accept-Encoding"
+    }
+  }
+}

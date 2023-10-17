@@ -1,0 +1,22 @@
+{
+  "name": "alcatraz",
+  "source": {
+    "url": "http://alcatraz.io/images/logo.svg",
+    "referrer": "http://alcatraz.io/",
+    "headers": {
+      "server": "GitHub.com",
+      "date": "Sat, 21 Mar 2015 09:58:21 GMT",
+      "content-type": "image/svg+xml",
+      "content-length": "2834",
+      "last-modified": "Wed, 11 Mar 2015 19:16:07 GMT",
+      "expires": "Sat, 21 Mar 2015 10:08:21 GMT",
+      "cache-control": "max-age=600",
+      "access-control-allow-origin": "*",
+      "accept-ranges": "bytes",
+      "x-cache": "MISS from cache_server",
+      "x-cache-lookup": "MISS from cache_server:3128",
+      "via": "1.0 cache_server:3128 (squid/2.6.STABLE21)",
+      "connection": "keep-alive"
+    }
+  }
+}

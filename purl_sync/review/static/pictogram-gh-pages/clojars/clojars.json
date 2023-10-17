@@ -1,0 +1,31 @@
+{
+  "name": "clojars",
+  "source": {
+    "url": "https://raw.githubusercontent.com/ato/clojars-web/master/resources/public/images/clojars-logo-big.png",
+    "referrer": "https://clojars.org/",
+    "headers": {
+      "date": "Wed, 18 Mar 2015 00:13:25 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "https://render.githubusercontent.com",
+      "content-security-policy": "default-src 'none'",
+      "x-xss-protection": "1; mode=block",
+      "x-frame-options": "deny",
+      "x-content-type-options": "nosniff",
+      "strict-transport-security": "max-age=31536000",
+      "etag": "\"1d13e9b92e80e87bc0e6cca6ab2a21cef2acc869\"",
+      "content-type": "image/png",
+      "cache-control": "max-age=300",
+      "content-length": "7274",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-lhr6322-LHR",
+      "x-cache": "MISS",
+      "x-cache-hits": "0",
+      "vary": "Authorization,Accept-Encoding",
+      "expires": "Wed, 18 Mar 2015 00:18:25 GMT",
+      "source-age": "0",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

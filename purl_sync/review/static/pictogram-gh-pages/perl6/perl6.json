@@ -1,0 +1,26 @@
+{
+  "name": "perl6",
+  "source": {
+    "url": "http://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Camelia.svg/200px-Camelia.svg.png",
+    "referrer": "http://commons.wikimedia.org/wiki/File:Camelia.svg",
+    "headers": {
+      "last-modified": "Wed, 30 Oct 2013 01:14:29 GMT",
+      "etag": "edd268c201ec56a28a618d7e9955e995",
+      "x-timestamp": "1383095668.99091",
+      "content-type": "image/png",
+      "x-trans-id": "tx8db83b396e70478f95e64-00550d6ce3",
+      "x-varnish": "1935352789 1919981991, 3318640027 3274448579, 2392106862",
+      "content-length": "13887",
+      "accept-ranges": "bytes",
+      "date": "Sat, 21 Mar 2015 21:08:37 GMT",
+      "x-cache": "cp1050 hit (25), cp3007 hit (65), cp3006 frontend miss (0), HIT from cache_server",
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache, X-Varnish",
+      "timing-allow-origin": "*",
+      "age": "28946",
+      "x-cache-lookup": "HIT from cache_server:3128",
+      "via": "1.1 varnish, 1.1 varnish, 1.1 varnish, 1.0 cache_server:3128 (squid/2.6.STABLE21)",
+      "connection": "keep-alive"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "scheme",
+  "source": {
+    "url": "http://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Lambda_lc.svg/200px-Lambda_lc.svg.png",
+    "referrer": "http://commons.wikimedia.org/wiki/File:Lambda_lc.svg",
+    "headers": {
+      "last-modified": "Wed, 23 Oct 2013 08:41:09 GMT",
+      "etag": "d5e647ec2c09dd8d78e4dd9e17af985c",
+      "x-timestamp": "1382517668.24772",
+      "content-type": "image/png",
+      "x-trans-id": "tx4e212ff236e447819fd40-00550a6320",
+      "x-varnish": "2865338136 2830755169, 2833241096 2603490708, 2397153080",
+      "via": "1.1 varnish, 1.1 varnish, 1.1 varnish",
+      "content-length": "3625",
+      "accept-ranges": "bytes",
+      "date": "Fri, 20 Mar 2015 22:27:26 GMT",
+      "age": "146350",
+      "connection": "keep-alive",
+      "x-cache": "cp1064 hit (14), cp3010 hit (60), cp3005 frontend miss (0)",
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache, X-Varnish",
+      "timing-allow-origin": "*"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "dart",
+  "source": {
+    "url": "https://avatars3.githubusercontent.com/u/1609975?v=3&s=200",
+    "referrer": "https://github.com/dart-lang",
+    "headers": {
+      "date": "Mon, 16 Mar 2015 23:11:23 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "etag": "\"5bb0f27e278424f9b2b57d13d5963798eeffde44\"",
+      "last-modified": "Tue, 29 Apr 2014 15:18:02 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "156c8588-c2a6-11e4-8e0b-5ea87ed5aba0",
+      "x-xss-protection": "1; mode=block",
+      "host": "avatars.githubusercontent.com",
+      "content-length": "29207",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-lhr6334-LHR",
+      "x-cache": "HIT",
+      "x-cache-hits": "1",
+      "expires": "Mon, 16 Mar 2015 23:16:23 GMT",
+      "source-age": "1049552",
+      "vary": "AuthorizationAccept-Encoding",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

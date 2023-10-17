@@ -1,0 +1,35 @@
+{
+  "name": "powershell",
+  "source": {
+    "url": "https://avatars0.githubusercontent.com/u/11524380?v=3&s=200",
+    "referrer": "https://github.com/powershell",
+    "headers": {
+      "date": "Fri, 20 Mar 2015 13:50:44 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "etag": "\"e39dde03263468f440b359ec09095bdbfee92fd6\"",
+      "last-modified": "Tue, 17 Mar 2015 16:25:40 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "1aa8647a-cf08-11e4-83bc-9823d777ddf9",
+      "x-xss-protection": "1; mode=block",
+      "host": "avatars.githubusercontent.com",
+      "content-length": "18816",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-lcy1133-LCY",
+      "x-cache": "MISS",
+      "x-cache-hits": "0",
+      "expires": "Fri, 20 Mar 2015 13:55:44 GMT",
+      "source-age": "0",
+      "vary": "AuthorizationAccept-Encoding",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

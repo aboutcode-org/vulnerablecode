@@ -1,0 +1,35 @@
+{
+  "name": "meteor",
+  "source": {
+    "url": "https://avatars3.githubusercontent.com/u/789528?v=3&s=200",
+    "referrer": "https://github.com/meteor",
+    "headers": {
+      "date": "Mon, 16 Mar 2015 23:41:06 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "etag": "\"ea3ad9c5a3e51faaa74685e71f40e29c77367e37\"",
+      "last-modified": "Tue, 28 Oct 2014 18:20:15 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "27ae5a03-c94a-11e4-8967-0c0973f56157",
+      "x-xss-protection": "1; mode=block",
+      "host": "avatars.githubusercontent.com",
+      "content-length": "3926",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-lcy1129-LCY",
+      "x-cache": "HIT",
+      "x-cache-hits": "1",
+      "expires": "Mon, 16 Mar 2015 23:46:06 GMT",
+      "source-age": "321160",
+      "vary": "AuthorizationAccept-Encoding",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

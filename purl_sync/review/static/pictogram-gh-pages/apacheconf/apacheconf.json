@@ -1,0 +1,18 @@
+{
+  "name": "apacheconf",
+  "source": {
+    "url": "https://accumulo.apache.org/images/feather-small.gif",
+    "referrer": "https://accumulo.apache.org",
+    "headers": {
+      "date": "Fri, 20 Mar 2015 22:40:14 GMT",
+      "server": "Apache/2.4.12 (Unix) OpenSSL/1.0.1l",
+      "last-modified": "Sun, 01 Apr 2012 01:27:29 GMT",
+      "etag": "\"1d4c-4bc93fa2003e8\"",
+      "accept-ranges": "bytes",
+      "content-length": "7500",
+      "keep-alive": "timeout=5, max=100",
+      "connection": "Keep-Alive",
+      "content-type": "image/gif"
+    }
+  }
+}

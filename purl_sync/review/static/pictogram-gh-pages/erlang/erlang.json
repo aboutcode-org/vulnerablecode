@@ -1,0 +1,26 @@
+{
+  "name": "erlang",
+  "source": {
+    "url": "http://upload.wikimedia.org/wikipedia/commons/4/42/Erlang_logo.png",
+    "referrer": "http://commons.wikimedia.org/wiki/File:Erlang_logo.png",
+    "headers": {
+      "x-object-meta-sha1base36": "9fnc3q5zjgdogh1ts5xghu6rcwweko4",
+      "last-modified": "Sat, 05 Oct 2013 04:15:57 GMT",
+      "etag": "4f325ef346b07fe5139af2f4b8d983a9",
+      "x-timestamp": "1380946556.00977",
+      "content-type": "image/png",
+      "x-trans-id": "tx9f0f1b6e8f784f5693e1a-00550949eb",
+      "x-varnish": "2031717282 1982343325, 1739242467 1477335145, 2301118869",
+      "via": "1.1 varnish, 1.1 varnish, 1.1 varnish",
+      "content-length": "13204",
+      "accept-ranges": "bytes",
+      "date": "Fri, 20 Mar 2015 13:52:03 GMT",
+      "age": "187416",
+      "connection": "keep-alive",
+      "x-cache": "cp1049 hit (5), cp3005 hit (46), cp3005 frontend miss (0)",
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache, X-Varnish",
+      "timing-allow-origin": "*"
+    }
+  }
+}

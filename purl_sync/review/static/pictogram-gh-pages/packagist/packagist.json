@@ -1,0 +1,34 @@
+{
+  "name": "packagist",
+  "source": {
+    "url": "https://avatars3.githubusercontent.com/u/5014846?v=3&s=200",
+    "referrer": "https://github.com/packagist",
+    "headers": {
+      "date": "Sun, 15 Mar 2015 10:17:29 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "last-modified": "Tue, 16 Jul 2013 09:43:29 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "7c5f0873-cafc-11e4-8ad7-436f9ae371f7",
+      "x-xss-protection": "1; mode=block",
+      "host": "avatars.githubusercontent.com",
+      "content-length": "33759",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-fra1244-FRA",
+      "x-cache": "MISS",
+      "x-cache-hits": "0",
+      "expires": "Sun, 15 Mar 2015 10:22:29 GMT",
+      "source-age": "0",
+      "vary": "AuthorizationAccept-Encoding",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

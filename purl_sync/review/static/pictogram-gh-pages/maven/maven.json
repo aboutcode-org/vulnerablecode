@@ -1,0 +1,26 @@
+{
+  "name": "maven",
+  "source": {
+    "url": "http://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Maven_logo.svg/200px-Maven_logo.svg.png",
+    "referrer": "http://commons.wikimedia.org/wiki/File:Maven_logo.svg",
+    "headers": {
+      "x-object-meta-sha1base36": "05bje88vsirv1p1ba9k8ocl7wix6lx0",
+      "last-modified": "Wed, 23 Oct 2013 13:45:32 GMT",
+      "etag": "2ed277e3826f0d1eea4212fef7e6d5c2",
+      "x-timestamp": "1382535931.78982",
+      "content-type": "image/png",
+      "x-trans-id": "txb667e00095384da29b894-005505ef03",
+      "x-varnish": "2073997766 2057322608, 2031911708 2031659727, 1252298227",
+      "via": "1.1 varnish, 1.1 varnish, 1.1 varnish",
+      "content-length": "2269",
+      "accept-ranges": "bytes",
+      "date": "Sun, 15 Mar 2015 22:49:35 GMT",
+      "age": "7548",
+      "connection": "keep-alive",
+      "x-cache": "cp1062 hit (1), cp3016 hit (1), cp3010 frontend miss (0)",
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache, X-Varnish",
+      "timing-allow-origin": "*"
+    }
+  }
+}

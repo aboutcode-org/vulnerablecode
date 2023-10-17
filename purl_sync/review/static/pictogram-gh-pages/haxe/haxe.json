@@ -1,0 +1,28 @@
+{
+  "name": "haxe",
+  "source": {
+    "url": "http://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Haxe_logo.svg/200px-Haxe_logo.svg.png",
+    "referrer": "http://commons.wikimedia.org/wiki/File:Haxe_logo.svg",
+    "headers": {
+      "x-object-meta-sha1base36": "l1cgijtjx7vm1mhwcrafhrolscqboqd",
+      "content-disposition": "inline;filename*=UTF-8''Haxe_logo.svg.png",
+      "last-modified": "Mon, 26 Jan 2015 20:56:00 GMT",
+      "etag": "de1bd27446ee95f11e76d5f7bc475b33",
+      "x-timestamp": "1422305759.09582",
+      "content-type": "image/png",
+      "x-trans-id": "tx7b3e5487e39841c381a8b-00550dcad9",
+      "x-varnish": "3530181081, 3218751181 3218708352, 260505383",
+      "content-length": "8295",
+      "accept-ranges": "bytes",
+      "date": "Sat, 21 Mar 2015 19:48:00 GMT",
+      "age": "23",
+      "x-cache": "cp1051 miss (0), cp3008 hit (1), cp3018 frontend miss (0), MISS from cache_server",
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache, X-Varnish",
+      "timing-allow-origin": "*",
+      "x-cache-lookup": "MISS from cache_server:3128",
+      "via": "1.1 varnish, 1.1 varnish, 1.1 varnish, 1.0 cache_server:3128 (squid/2.6.STABLE21)",
+      "connection": "keep-alive"
+    }
+  }
+}

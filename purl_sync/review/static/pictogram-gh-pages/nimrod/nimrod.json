@@ -1,0 +1,35 @@
+{
+  "name": "nimrod",
+  "source": {
+    "url": "https://avatars3.githubusercontent.com/u/603863?v=3&s=200",
+    "referrer": "https://github.com/nim-lang",
+    "headers": {
+      "date": "Tue, 17 Mar 2015 21:34:35 GMT",
+      "server": "Apache",
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "etag": "\"a513c8a1ca00d2b756d1aab7dd2929cdb7ae34a6\"",
+      "last-modified": "Thu, 05 Mar 2015 22:44:09 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "0913fffe-c3d2-11e4-8f71-74323f6a3667",
+      "x-xss-protection": "1; mode=block",
+      "host": "avatars.githubusercontent.com",
+      "content-length": "113754",
+      "accept-ranges": "bytes",
+      "via": "1.1 varnish",
+      "x-served-by": "cache-ams4143-AMS",
+      "x-cache": "HIT",
+      "x-cache-hits": "1",
+      "expires": "Tue, 17 Mar 2015 21:39:35 GMT",
+      "source-age": "1001316",
+      "vary": "AuthorizationAccept-Encoding",
+      "keep-alive": "timeout=10, max=50",
+      "connection": "Keep-Alive"
+    }
+  }
+}

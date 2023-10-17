@@ -1,0 +1,33 @@
+{
+  "name": "crystal",
+  "source": {
+    "url": "https://avatars0.githubusercontent.com/u/6539796?v=3&s=200",
+    "referrer": "https://github.com/crystal-lang",
+    "headers": {
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "etag": "\"385531d498d8d3083523aa2eb9510d4160fc3f47\"",
+      "last-modified": "Fri, 28 Aug 2015 20:04:02 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-xss-protection": "1; mode=block",
+      "x-github-request-id": "B91F121F:4C0D:8668712:56CDD763",
+      "content-length": "5510",
+      "accept-ranges": "bytes",
+      "date": "Tue, 01 Mar 2016 09:40:49 GMT",
+      "via": "1.1 varnish",
+      "connection": "close",
+      "x-served-by": "cache-lcy1122-LCY",
+      "x-cache": "HIT",
+      "x-cache-hits": "1",
+      "access-control-allow-origin": "*",
+      "x-fastly-request-id": "cc0dcec264acb2224de22404096688835e70b466",
+      "expires": "Tue, 01 Mar 2016 09:45:49 GMT",
+      "source-age": "494653",
+      "vary": "Authorization,Accept-Encoding"
+    }
+  }
+}

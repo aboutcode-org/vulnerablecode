@@ -1,0 +1,32 @@
+{
+  "name": "atom",
+  "source": {
+    "url": "https://avatars0.githubusercontent.com/u/1089146?v=3&s=200",
+    "referrer": "https://github.com/atom",
+    "headers": {
+      "access-control-allow-origin": "*",
+      "cache-control": "max-age=300",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "image/png",
+      "etag": "\"4d17a873f85c8704e8464279e7a57c6267fd7176\"",
+      "last-modified": "Tue, 06 May 2014 14:29:46 GMT",
+      "strict-transport-security": "max-age=31557600",
+      "timing-allow-origin": "https://github.com",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-request-id": "cda92f04-0148-11e5-89db-f7ea2b8b01eb",
+      "x-xss-protection": "1; mode=block",
+      "content-length": "10458",
+      "accept-ranges": "bytes",
+      "date": "Sat, 23 May 2015 18:15:21 GMT",
+      "via": "1.1 varnish",
+      "connection": "keep-alive",
+      "x-served-by": "cache-lcy1131-LCY",
+      "x-cache": "HIT",
+      "x-cache-hits": "12",
+      "expires": "Sat, 23 May 2015 18:20:21 GMT",
+      "source-age": "20131",
+      "vary": "Authorization,Accept-Encoding"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+about_resource: pictogram-gh-pages
+download_url: https://codeload.github.com/librariesio/pictogram/zip/refs/heads/gh-pages
+
+name: pictogram-gh-pages
+license: mit
+license_file: pictogram-gh-pages.LICENSE
+
+copyright: Code copyright 2020 Jeremy Thomas. Code released under the MIT license.

@@ -1,0 +1,27 @@
+{
+  "name": "handlebars",
+  "source": {
+    "url": "http://handlebarsjs.com/images/handlebars_logo.png",
+    "referrer": "http://handlebarsjs.com/",
+    "headers": {
+      "server": "GitHub.com",
+      "content-type": "image/png",
+      "last-modified": "Tue, 10 Feb 2015 06:30:21 GMT",
+      "expires": "Thu, 12 Mar 2015 09:31:05 GMT",
+      "cache-control": "max-age=600",
+      "access-control-allow-origin": "*",
+      "content-length": "25946",
+      "accept-ranges": "bytes",
+      "date": "Sat, 21 Mar 2015 19:42:14 GMT",
+      "age": "0",
+      "x-served-by": "cache-ams4145-AMS",
+      "x-cache": "HIT, MISS from cache_server",
+      "x-cache-hits": "1",
+      "x-timer": "S1426966934.602372,VS0,VE90",
+      "vary": "Accept-Encoding",
+      "x-cache-lookup": "MISS from cache_server:3128",
+      "via": "1.1 varnish, 1.0 cache_server:3128 (squid/2.6.STABLE21)",
+      "connection": "keep-alive"
+    }
+  }
+}

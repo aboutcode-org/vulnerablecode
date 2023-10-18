@@ -392,6 +392,52 @@ class APITestCasePackage(TestCase):
             subpath="",
         )
 
+    def test_api_with_package_with_no_vulnerabilities(self):
+        """
+        This test Package has no vulnerabilities and thus its vuln dictionary includes an empty
+        "vulnerabilities" list, i.e., the vuln dictionary does not have a "vulnerability" property
+        (which would be inside the "vulnerabilities" list).
+        """
+        searched_for_package = self.package_maven_jackson_databind_2_14_0_rc1
+        searched_for_package_details = searched_for_package.fixed_package_details
+
+        expected_searched_for_package_details = {
+            "purl": PackageURL(
+                type="maven",
+                namespace="com.fasterxml.jackson.core",
+                name="jackson-databind",
+                version="2.14.0-rc1",
+                qualifiers={},
+                subpath=None,
+            ),
+            "next_non_vulnerable": None,
+            "latest_non_vulnerable": None,
+            "vulnerabilities": [],
+        }
+
+        assert searched_for_package_details == expected_searched_for_package_details
+
+        response = self.csrf_client.get(
+            f"/api/packages/{self.package_maven_jackson_databind_2_14_0_rc1.id}", format="json"
+        ).data
+
+        expected_response = {
+            "url": f"http://testserver/api/packages/{self.package_maven_jackson_databind_2_14_0_rc1.id}",
+            "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.0-rc1",
+            "type": "maven",
+            "namespace": "com.fasterxml.jackson.core",
+            "name": "jackson-databind",
+            "version": "2.14.0-rc1",
+            "qualifiers": {},
+            "subpath": "",
+            "next_non_vulnerable_version": None,
+            "latest_non_vulnerable_version": None,
+            "affected_by_vulnerabilities": [],
+            "fixing_vulnerabilities": [],
+        }
+
+        assert response == expected_response
+
     def test_api_with_lesser_and_greater_fixed_by_packages(self):
         response = self.csrf_client.get(
             f"/api/packages/{self.package_maven_jackson_databind_2_13_1.id}", format="json"

@@ -51,18 +51,17 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
     affected_by_vulnerabilities = serializers.SerializerMethodField("get_affected_vulnerabilities")
 
     def get_affected_vulnerabilities(self, package):
-        parent_affected_vulnerabilities = package.fixed_package_details.get("vulnerabilities", None)
+        parent_affected_vulnerabilities = package.fixed_package_details.get("vulnerabilities") or []
         affected_vulnerabilities = []
 
-        if parent_affected_vulnerabilities:
-            for vuln in parent_affected_vulnerabilities:
-                affected_vulnerability = {}
+        for vuln in parent_affected_vulnerabilities:
+            affected_vulnerability = {}
 
-                affected_vulnerability["vulnerability"] = vuln.get(
-                    "vulnerability", None
-                ).vulnerability_id
+            affected_vulnerability["vulnerability"] = vuln.get(
+                "vulnerability", None
+            ).vulnerability_id
 
-                affected_vulnerabilities.append(affected_vulnerability)
+            affected_vulnerabilities.append(affected_vulnerability)
 
         return affected_vulnerabilities
 
@@ -117,7 +116,6 @@ class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
 
 
 class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
-
     fixed_packages = MinimalPackageSerializer(
         many=True, source="filtered_fixed_packages", read_only=True
     )

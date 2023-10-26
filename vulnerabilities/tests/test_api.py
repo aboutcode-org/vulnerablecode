@@ -18,6 +18,7 @@ from packageurl import PackageURL
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from vulnerabilities.api import MinimalPackageSerializer
 from vulnerabilities.api import PackageSerializer
 from vulnerabilities.models import Alias
 from vulnerabilities.models import ApiUser
@@ -88,7 +89,6 @@ class TestDebianResponse(TransactionTestCase):
         self.client.credentials(HTTP_AUTHORIZATION=self.auth)
 
     def test_query_qualifier_filtering(self):
-
         # packages to check filtering with single/multiple and unordered qualifier filtering
         pk_multi_qf = Package.objects.create(
             name="vlc", version="1.50-1.1", type="deb", qualifiers={"foo": "bar", "tar": "ball"}
@@ -393,12 +393,13 @@ class APITestCasePackage(TestCase):
         )
 
     def test_api_with_package_with_no_vulnerabilities(self):
-        """
-        This test Package has no vulnerabilities and thus its vuln dictionary includes an empty
-        "vulnerabilities" list, i.e., the vuln dictionary does not have a "vulnerability" property
-        (which would be inside the "vulnerabilities" list).
-        """
         searched_for_package = self.package_maven_jackson_databind_2_14_0_rc1
+        MinimalPackageSerializer.get_affected_vulnerabilities(self, searched_for_package)
+
+        assert (
+            MinimalPackageSerializer.get_affected_vulnerabilities(self, searched_for_package) == []
+        )
+
         searched_for_package_details = searched_for_package.fixed_package_details
 
         expected_searched_for_package_details = {

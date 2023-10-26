@@ -323,7 +323,6 @@ class TestPackageModel(TestCase):
         assert first_fixed_by_package.purl == "pkg:pypi/redis@4.3.6"
 
     def test_string_to_package(self):
-
         purl_string = "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M4"
         purl = PackageURL.from_string(purl_string)
         purl_to_dict = purl.to_dict()
@@ -401,6 +400,9 @@ class TestPackageModel(TestCase):
         pypi_package = models.Package.objects.create(type="pypi", name="pyopenssl", version="0.9")
         pypi_package_version = RANGE_CLASS_BY_SCHEMES[pypi_package.type].version_class
         assert pypi_package_version == versions.PypiVersion
+
+        alpine_version = RANGE_CLASS_BY_SCHEMES["alpine"].version_class
+        assert alpine_version == versions.AlpineLinuxVersion
 
     def test_sort_by_version(self):
         list_to_sort = [

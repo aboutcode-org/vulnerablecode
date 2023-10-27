@@ -127,11 +127,11 @@ class HomeView(View):
             paginator = Paginator(note_list, 10)
             page_number = request.GET.get("page")
             page_note = paginator.get_page(page_number)
-            return render(request, "home.html", context={"notes": page_note})
+            return render(request, "home.html", context={"page_note": page_note})
         elif hasattr(self.request.user, "service"):
             return redirect("repo-list")
         else:
-            return HttpResponseBadRequest("Invalid User Type")
+            return redirect("login")
 
 
 class PersonView(DetailView):

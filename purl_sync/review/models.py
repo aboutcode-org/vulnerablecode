@@ -30,16 +30,9 @@ class RemoteActor(models.Model):
 
 
 class Actor(models.Model):
-    avatar = models.ImageField(
-        upload_to="uploads/", help_text="", default="favicon-16x16.png", null=True
-    )
     summary = models.CharField(help_text="", max_length=100)
     public_key = models.TextField(blank=False)
     local = models.BooleanField(default=True)
-
-    @property
-    def avatar_absolute_url(self):
-        return f'{"https://"}{PURL_SYNC_DOMAIN}{self.avatar.url}'
 
     class Meta:
         abstract = True
@@ -96,8 +89,12 @@ class Note(models.Model):
         related_name="replies",
         help_text="",
     )
-    created_at = models.DateTimeField(auto_now_add=True, help_text="")
-    updated_at = models.DateTimeField(auto_now=True, help_text="")
+    created_at = models.DateTimeField(
+        auto_now_add=True, help_text="A field to track when notes are created"
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True, help_text="A field to track when notes are updated"
+    )
 
     reputation = models.ManyToManyField(
         Reputation,
@@ -205,7 +202,6 @@ class Purl(Actor):
             "inbox": self.inbox_url,
             "outbox": self.outbox_url,
             "followers": self.followers_url,
-            "image": self.avatar_absolute_url,
             "publicKey": {
                 "id": self.absolute_url_ap,
                 "owner": self.service.absolute_url_ap,
@@ -215,10 +211,17 @@ class Purl(Actor):
 
 
 class Person(Actor):
+    avatar = models.ImageField(
+        upload_to="uploads/", help_text="", default="favicon-16x16.png", null=True
+    )
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     remote_actor = models.OneToOneField(
         RemoteActor, on_delete=models.CASCADE, null=True, blank=True
     )
+
+    @property
+    def avatar_absolute_url(self):
+        return f'{"https://"}{PURL_SYNC_DOMAIN}{self.avatar.url}'
 
     # TODO raise error if the user doesn't have a user or remote actor
     @property

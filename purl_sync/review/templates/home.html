@@ -74,7 +74,7 @@ $(document).ready(function () {
     <h1>Home</h1>
     <hr/>
   <div>
-  {% for note in notes %}
+  {% for note in page_note %}
   <article class="media box">
      <figure>
         <p class="image is-64x64">
@@ -103,8 +103,21 @@ $(document).ready(function () {
         <small>last update: {{ note.updated_at }}</small>
 </div>
   </article>
-
   {% endfor %}
+  <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+      {% if page_note.has_previous %}
+      <a class="pagination-previous" href="?page={{ page_note.previous_page_number }}">Previous</a>
+      {% endif %}
+
+      {% if page_note.has_next %}
+      <a class="pagination-next" href="?page={{ page_note.next_page_number }}">Next page</a>
+      {% endif %}
+      <ul class="pagination-list">
+        <li><a class="pagination-link" aria-label="Goto page 1" href="?page=1">1</a></li>
+        <li><span class="pagination-ellipsis">&hellip;</span></li>
+        <li><a class="pagination-link" aria-label="Goto page {{ page_note.number }}" href="?page={{ page_note.paginator.num_pages }}">{{ page_note.paginator.num_pages }}</a></li>
+      </ul>
+  </nav>
 </div>
   </div>
   </div>

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load webfinger_image %}
 {% block title %}
 Your Profile
 {% endblock %}
@@ -13,6 +14,12 @@ Your Profile
       <p class="is-size-5 has-text-centered">
           <a href="#">@{{ purl.string }}</a>
       </p>
+
+      <figure class="media-left">
+        <p class="image is-64x64" style="margin: auto">
+            <img src="{{ purl.acct | get_purl_image }}" alt="purl-image">
+        </p>
+      </figure>
 
       <nav class="level">
           {% if followers %}

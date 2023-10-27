@@ -101,7 +101,6 @@ def test_get_ap_profile_purl(purl):
     assert json.loads(response.content) == {
         "followers": "https://127.0.0.1:8000/api/v0/purls/@pkg:maven/org.apache.logging/followers/",
         "id": "https://127.0.0.1:8000/api/v0/purls/@pkg:maven/org.apache.logging/",
-        "image": "https://127.0.0.1:8000/media/favicon-16x16.png",
         "inbox": "https://127.0.0.1:8000/api/v0/purls/@pkg:maven/org.apache.logging/inbox",
         "name": "vcio",
         "outbox": "https://127.0.0.1:8000/api/v0/purls/@pkg:maven/org.apache.logging/outbox",

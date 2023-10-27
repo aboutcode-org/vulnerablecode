@@ -53,7 +53,9 @@ class Importer:
                         pacakge_acct = generate_webfinger(pacakge)
                         old_notes = Note.objects.filter(acct=pacakge_acct)
                         for version in yaml_data.get("versions", []):
-                            obj, created = Note.objects.get_or_create(acct=pacakge_acct, content=saneyaml.dump(version))
+                            obj, created = Note.objects.get_or_create(
+                                acct=pacakge_acct, content=saneyaml.dump(version)
+                            )
                             if not created:
                                 old_notes = old_notes.exclude(obj)
                         old_notes.delete()

@@ -372,14 +372,14 @@ class Review(models.Model):
         default=uuid.uuid4,
         help_text="The object's unique global identifier",
     )
-    headline = models.CharField(max_length=300, help_text="")
-    author = models.ForeignKey(Person, on_delete=models.CASCADE, help_text="")
-    vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE, help_text="")
+    headline = models.CharField(max_length=300, help_text="the review title")
+    author = models.ForeignKey(Person, on_delete=models.CASCADE)
+    vulnerability = models.ForeignKey(Vulnerability, on_delete=models.CASCADE)
     commit_id = models.CharField(max_length=300, help_text="")
-    data = models.TextField(help_text="")
+    data = models.TextField(help_text="review data ex: vulnerability file")
     notes = models.ManyToManyField(Note, blank=True, help_text="")
-    created_at = models.DateTimeField(auto_now_add=True, help_text="")
-    updated_at = models.DateTimeField(auto_now=True, help_text="")
+    created_at = models.DateTimeField(auto_now_add=True, help_text="A field to track when review are created")
+    updated_at = models.DateTimeField(auto_now=True, help_text="A field to track when review are updated")
     remote_url = models.CharField(max_length=300, blank=True, null=True, help_text="")
 
     class ReviewStatus(models.IntegerChoices):
@@ -389,7 +389,7 @@ class Review(models.Model):
         MERGED = 3
 
     status = models.SmallIntegerField(
-        choices=ReviewStatus.choices, null=False, blank=False, default=0, help_text=""
+        choices=ReviewStatus.choices, null=False, blank=False, default=0, help_text="status of review"
     )
 
     reputation = models.ManyToManyField(

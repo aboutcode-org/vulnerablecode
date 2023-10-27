@@ -153,6 +153,13 @@ class Purl(Actor):
         unique_together = [["service", "remote_actor", "string"]]
 
     @property
+    def reputation_value(self):
+        return (
+            self.reputation.filter(positive=True).count()
+            - self.reputation.filter(positive=False).count()
+        )
+
+    @property
     def acct(self):
         return generate_webfinger(self.string)
 
@@ -217,7 +224,7 @@ class Person(Actor):
     @property
     def reputation_value(self):
         """if someone like your ( review or note ) you will get +1, dislike: -1"""
-        user_reputation = Reputation.objects.filter(voter=self.acct)
+        user_reputation = Reputation.objects.filter(acceptor=self.acct)
         return (
             user_reputation.filter(positive=True).count()
             - user_reputation.filter(positive=False).count()

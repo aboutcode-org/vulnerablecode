@@ -50,6 +50,10 @@ class Importer:
                     pacakge = yaml_data.get("pacakge")
                     if pacakge:
                         Purl.objects.get_or_create(string=pacakge, service=self.default_service)
+                        pacakge_acct = generate_webfinger(pacakge)
+                        old_notes = Note.objects.filter(acct=pacakge_acct)
                         for version in yaml_data.get("versions", []):
-                            acct = generate_webfinger(pacakge)
-                            Note.objects.get_or_create(acct=acct, content=saneyaml.dump(version))
+                            obj, created = Note.objects.get_or_create(acct=pacakge_acct, content=saneyaml.dump(version))
+                            if not created:
+                                old_notes = old_notes.exclude(obj)
+                        old_notes.delete()

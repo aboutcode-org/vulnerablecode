@@ -62,8 +62,7 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
 
         if vuln.get("vulnerability"):
             affected_vulnerability["vulnerability"] = vuln.get("vulnerability").vulnerability_id
-
-        affected_vulnerabilities.append(affected_vulnerability)
+            affected_vulnerabilities.append(affected_vulnerability)
 
     affected_by_vulnerabilities = serializers.SerializerMethodField("get_affected_vulnerabilities")
 

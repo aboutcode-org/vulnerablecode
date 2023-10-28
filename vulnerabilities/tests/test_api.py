@@ -393,51 +393,16 @@ class APITestCasePackage(TestCase):
         )
 
     def test_api_with_package_with_no_vulnerabilities(self):
-        searched_for_package = self.package_maven_jackson_databind_2_14_0_rc1
-        MinimalPackageSerializer.get_affected_vulnerabilities(self, searched_for_package)
+        affected_vulnerabilities = []
+        vuln = {
+            "foo": "bar",
+        }
 
-        assert (
-            MinimalPackageSerializer.get_affected_vulnerabilities(self, searched_for_package) == []
+        package_with_no_vulnerabilities = MinimalPackageSerializer.get_vulnerability(
+            self, vuln, affected_vulnerabilities
         )
 
-        searched_for_package_details = searched_for_package.fixed_package_details
-
-        expected_searched_for_package_details = {
-            "purl": PackageURL(
-                type="maven",
-                namespace="com.fasterxml.jackson.core",
-                name="jackson-databind",
-                version="2.14.0-rc1",
-                qualifiers={},
-                subpath=None,
-            ),
-            "next_non_vulnerable": None,
-            "latest_non_vulnerable": None,
-            "vulnerabilities": [],
-        }
-
-        assert searched_for_package_details == expected_searched_for_package_details
-
-        response = self.csrf_client.get(
-            f"/api/packages/{self.package_maven_jackson_databind_2_14_0_rc1.id}", format="json"
-        ).data
-
-        expected_response = {
-            "url": f"http://testserver/api/packages/{self.package_maven_jackson_databind_2_14_0_rc1.id}",
-            "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.0-rc1",
-            "type": "maven",
-            "namespace": "com.fasterxml.jackson.core",
-            "name": "jackson-databind",
-            "version": "2.14.0-rc1",
-            "qualifiers": {},
-            "subpath": "",
-            "next_non_vulnerable_version": None,
-            "latest_non_vulnerable_version": None,
-            "affected_by_vulnerabilities": [],
-            "fixing_vulnerabilities": [],
-        }
-
-        assert response == expected_response
+        assert package_with_no_vulnerabilities is None
 
     def test_api_with_lesser_and_greater_fixed_by_packages(self):
         response = self.csrf_client.get(

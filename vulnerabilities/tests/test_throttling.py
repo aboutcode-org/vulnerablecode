@@ -29,6 +29,8 @@ class ThrottleApiTests(APITestCase):
         self.staff_csrf_client = APIClient(enforce_csrf_checks=True)
         self.staff_csrf_client.credentials(HTTP_AUTHORIZATION=self.staff_auth)
 
+        self.csrf_client_anon = APIClient(enforce_csrf_checks=True)
+
     def test_packages_endpoint_throttling(self):
 
         # A basic user can only access /packages endpoint 10 times a day

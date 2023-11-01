@@ -52,11 +52,10 @@ class ThrottleApiTests(APITestCase):
         for i in range(0, 10):
             response = self.csrf_client_anon.get("/api/packages")
             self.assertEqual(response.status_code, 200)
-        
+
         response = self.csrf_client_anon.get("/api/packages")
         # 429 - too many requests for anon user
         self.assertEqual(response.status_code, 429)
-
 
     def test_cpes_endpoint_throttling(self):
 

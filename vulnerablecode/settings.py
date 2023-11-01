@@ -210,6 +210,7 @@ if IS_TESTS:
         "auth_vulnerable_packages": "1/day",
         "auth_bulk_search_packages": "6/day",
         "auth_packages": "10/day",
+        "anon_packages": "10/day",
         "auth_vulnerabilities": "8/day",
         "auth_aliases": "2/day",
         "auth_cpes": "4/day",

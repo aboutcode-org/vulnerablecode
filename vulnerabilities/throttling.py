@@ -17,4 +17,12 @@ class StaffUserRateThrottle(ScopedRateThrottle):
         if request.user.is_superuser or request.user.is_staff:
             return True
 
+        scope = view.throttle_scope
+        if request.user:
+            scope = f"auth_{scope}"
+        else:
+            scope = f"anon_{scope}"
+
+        view.throttle_scope = scope
+
         return super().allow_request(request, view)

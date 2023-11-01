@@ -205,7 +205,7 @@ REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {
 }
 
 if IS_TESTS:
-    VULNERABLECODEIO_REQUIRE_AUTHENTICATION = True
+    VULNERABLECODEIO_REQUIRE_AUTHENTICATION = False
     REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {
         "auth_vulnerable_packages": "1/day",
         "auth_bulk_search_packages": "6/day",

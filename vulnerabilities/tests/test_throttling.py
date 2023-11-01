@@ -48,6 +48,16 @@ class ThrottleApiTests(APITestCase):
         # 200 - staff user can access API unlimited times
         self.assertEqual(response.status_code, 200)
 
+        # A anonymous user can only access /packages endpoint 10 times a day
+        for i in range(0, 10):
+            response = self.csrf_client_anon.get("/api/packages")
+            self.assertEqual(response.status_code, 200)
+        
+        response = self.csrf_client_anon.get("/api/packages")
+        # 429 - too many requests for anon user
+        self.assertEqual(response.status_code, 429)
+
+
     def test_cpes_endpoint_throttling(self):
 
         # A basic user can only access /cpes endpoint 4 times a day

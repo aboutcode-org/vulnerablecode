@@ -146,3 +146,20 @@ See https://creativecommons.org/licenses/by-sa/4.0/legalcode for the license tex
 See https://github.com/nexB/vulnerablecode for support or download. 
 
 See https://aboutcode.org for more information about nexB OSS projects.
+
+Acknowledgements
+^^^^^^^^^^
+
+This project was funded through the NGI0 PET Fund, a fund established by
+NLnet with financial support from the European Commission's Next Generation
+Internet programme, under the aegis of DG Communications Networks, Content
+and Technology under grant agreement No 825310.
+
+https://nlnet.nl/project/VulnerableCode/
+
+This project was funded through the NGI0 Discovery Fund, a fund established
+by NLnet with financial support from the European Commission's Next Generation
+Internet programme, under the aegis of DG Communications Networks, Content
+and Technology under grant agreement No 825322.
+
+https://nlnet.nl/project/vulnerabilitydatabase/

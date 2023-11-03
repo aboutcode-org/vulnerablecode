@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  db1:
+    image: postgres:16
+    env_file:
+      - ./docker-compose-dev-test-federation1.env
+    volumes:
+      - db_data1:/var/lib/postgresql/data/
+  db2:
+    image: postgres:16
+    env_file:
+      - ./docker-compose-dev-test-federation2.env
+    volumes:
+      - db_data2:/var/lib/postgresql/data/
+
+  purl_sync1:
+    build:  ../../
+    command: /bin/sh -c "apt-get update && pip install psycopg2 --force-reinstall --no-cache-dir && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    env_file:
+      - docker-compose-dev-test-federation1.env
+    volumes:
+      - /etc/purl_sync1/:/etc/purl_sync1/
+    expose:
+      - 8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db1
+
+  purl_sync2:
+    build: ../../
+    command: /bin/sh -c "apt-get update && pip install psycopg2 --force-reinstall --no-cache-dir && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    env_file:
+      - docker-compose-dev-test-federation2.env
+    volumes:
+      - /etc/purl_sync2/:/etc/purl_sync2/
+    expose:
+      - 8000
+    ports:
+      - "8001:8000"
+    depends_on:
+      - db2
+
+
+volumes:
+  db_data1:
+  db_data2:
+  purl_sync1:
+  purl_sync2:
+

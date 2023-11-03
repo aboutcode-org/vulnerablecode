@@ -87,11 +87,11 @@ WSGI_APPLICATION = "purl_sync.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": env.str("PURL_SYNC_DB_ENGINE", "django.db.backends.postgresql"),
-        "HOST": "127.0.0.1",
-        "NAME": env.str("PURL_SYNC_DB_NAME", "purl-sync"),
-        "USER": env.str("PURL_SYNC_DB_USER", "vulnerablecode"),
-        "PASSWORD": env.str("PURL_SYNC_DB_PASSWORD", "vulnerablecode"),
-        "PORT": env.str("PURL_SYNC_DB_PORT", "5432"),
+        "HOST": env.str("POSTGRES_HOST", "127.0.0.1"),
+        "NAME": env.str("POSTGRES_DB_NAME", "purl-sync"),
+        "USER": env.str("POSTGRES_USER", "vulnerablecode"),
+        "PASSWORD": env.str("POSTGRES_PASSWORD", "vulnerablecode"),
+        "PORT": env.str("POSTGRES_PORT", "5432"),
     }
 }
 

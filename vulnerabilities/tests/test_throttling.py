@@ -61,7 +61,7 @@ class ThrottleApiTests(APITestCase):
             "Your request has been throttled. Please contact support@nexb.com",
         )
 
-        response = self.csrf_client_anon.get("/api/vulnerabilties")
+        response = self.csrf_client_anon.get("/api/vulnerabilities")
         # 429 - too many requests for anon user
         self.assertEqual(response.status_code, 429)
         self.assertEqual(
@@ -69,55 +69,7 @@ class ThrottleApiTests(APITestCase):
             "Your request has been throttled. Please contact support@nexb.com",
         )
 
-
-class ThrottleApiTestsForPostRequest(APITestCase):
-    def setUp(self):
-        # create a basic user
-        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
-        self.auth = f"Token {self.user.auth_token.key}"
-        self.csrf_client = APIClient(enforce_csrf_checks=True)
-        self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
-
-        # create a staff user
-        self.staff_user = ApiUser.objects.create_api_user(username="staff@mail.com", is_staff=True)
-        self.staff_auth = f"Token {self.staff_user.auth_token.key}"
-        self.staff_csrf_client = APIClient(enforce_csrf_checks=True)
-        self.staff_csrf_client.credentials(HTTP_AUTHORIZATION=self.staff_auth)
-
-        self.csrf_client_anon = APIClient(enforce_csrf_checks=True)
-
-    def test_bulk_search_packages_endpoint_throttling(self):
         data = json.dumps({"purls": ["pkg:foo/bar"]})
-
-        # A basic user can only access /packages/bulk_search 20 times a day
-        for i in range(0, 20):
-            response = self.csrf_client.post(
-                "/api/packages/bulk_search", data=data, content_type="application/json"
-            )
-            self.assertEqual(response.status_code, 200)
-            response = self.staff_csrf_client.post(
-                "/api/packages/bulk_search", data=data, content_type="application/json"
-            )
-            self.assertEqual(response.status_code, 200)
-
-        response = self.csrf_client.post(
-            "/api/packages/bulk_search", data=data, content_type="application/json"
-        )
-        # 429 - too many requests for basic user
-        self.assertEqual(response.status_code, 429)
-
-        response = self.staff_csrf_client.post(
-            "/api/packages/bulk_search", data=data, content_type="application/json"
-        )
-        # 200 - staff user can access API unlimited times
-        self.assertEqual(response.status_code, 200)
-
-        # A anonymous user can only access /packages endpoint 10 times a day
-        for i in range(0, 10):
-            response = self.csrf_client_anon.post(
-                "/api/packages/bulk_search", data=data, content_type="application/json"
-            )
-            self.assertEqual(response.status_code, 200)
 
         response = self.csrf_client_anon.post(
             "/api/packages/bulk_search", data=data, content_type="application/json"

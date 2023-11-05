@@ -148,7 +148,7 @@ See https://github.com/nexB/vulnerablecode for support or download.
 See https://aboutcode.org for more information about nexB OSS projects.
 
 Acknowledgements
-^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 
 This project was funded through the NGI0 PET Fund, a fund established by
 NLnet with financial support from the European Commission's Next Generation

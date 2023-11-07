@@ -2,6 +2,13 @@ Release notes
 =============
 
 
+Version v33.6.2
+----------------
+
+- We added note about CSRF_TRUSTED_ORIGINS.
+- We added proper acknowledgements for NGI projects.
+- We added throttling for anonymous users.
+
 Version v33.6.1
 ----------------
 

@@ -250,10 +250,14 @@ def get_or_create_vulnerability_and_aliases(alias_names, vulnerability_id=None, 
     Get or create vulnerabilitiy and aliases such that all existing and new
     aliases point to the same vulnerability
     """
+    if not alias_names:
+        return
     existing_vulns = set()
     alias_names = set(alias_names)
     new_alias_names = set()
     for alias_name in alias_names:
+        if not alias_name:
+            continue
         try:
             alias = Alias.objects.get(alias=alias_name)
             existing_vulns.add(alias.vulnerability)

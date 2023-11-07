@@ -204,3 +204,7 @@ def test_process_inference_idempotency_with_different_improver_names():
     process_inferences(INFERENCES, DUMMY_ADVISORY, improver_name="test_improver_two")
     process_inferences(INFERENCES, DUMMY_ADVISORY, improver_name="test_improver_three")
     assert all_objects == get_objects_in_all_tables_used_by_process_inferences()
+
+
+def test_get_or_created_vulnerability_and_aliases_with_empty_aliases():
+    assert get_or_create_vulnerability_and_aliases(alias_names=[], summary="EMPTY ALIASES") == None

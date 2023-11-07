@@ -11,6 +11,7 @@ import hashlib
 import json
 import logging
 from contextlib import suppress
+from typing import Any
 
 from cwe2.database import Database
 from django.contrib.auth import get_user_model
@@ -150,6 +151,12 @@ class VulnerabilityQuerySet(BaseQuerySet):
                 "packages", filter=Q(packagerelatedvulnerability__fix=True), distinct=True
             ),
         )
+    
+    def create(self, **kwargs: Any) -> Any:
+        if not kwargs.get("aliases"):
+            logger.error(f"Vulnerability {kwargs!r} can not be formed without aliases")
+            return
+        return super().create(**kwargs)
 
 
 class Vulnerability(models.Model):

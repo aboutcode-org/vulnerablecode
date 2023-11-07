@@ -12,7 +12,7 @@ import sys
 import warnings
 from pathlib import Path
 
-__version__ = "33.6.1"
+__version__ = "33.6.2"
 
 
 def command_line():

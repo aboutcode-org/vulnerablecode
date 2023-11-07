@@ -18,6 +18,7 @@ from vulnerabilities.importer import Reference
 from vulnerabilities.improve_runner import create_valid_vulnerability_reference
 from vulnerabilities.improve_runner import get_or_create_vulnerability_and_aliases
 from vulnerabilities.improve_runner import process_inferences
+from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
@@ -208,3 +209,20 @@ def test_process_inference_idempotency_with_different_improver_names():
 
 def test_get_or_created_vulnerability_and_aliases_with_empty_aliases():
     assert get_or_create_vulnerability_and_aliases(alias_names=[], summary="EMPTY ALIASES") == None
+
+
+@pytest.mark.django_db
+def test_process_inferences_with_empty_aliases():
+    with pytest.raises(AssertionError):
+        process_inferences(
+            inferences=[
+                Inference(
+                    aliases=[],
+                    vulnerability_id=None,
+                    confidence=MAX_CONFIDENCE,
+                    summary="",
+                )
+            ],
+            advisory=Advisory.objects.create(summary="", date_collected=timezone.now()),
+            improver_name="NO_ALIASES_IMPROVER",
+        )

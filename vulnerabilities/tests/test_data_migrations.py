@@ -578,13 +578,19 @@ class RemoveVulnerabilitiesWithEmptyAliases(TestMigrations):
     def setUpBeforeMigration(self, apps):
         # using get_model to avoid circular import
         Vulnerability = apps.get_model("vulnerabilities", "Vulnerability")
+        Alias = apps.get_model("vulnerabilities", "Alias")
 
         vuln = Vulnerability.objects.create(
             summary="Corrupted vuln",
         )
         vuln.save()
+        vuln = Vulnerability.objects.create(
+            summary="vuln",
+        )
+        vuln.save()
+        Alias.objects.create(alias="CVE-123", vulnerability=vuln)
 
     def test_removal_of_corrupted_vulns(self):
         # using get_model to avoid circular import
         Vulnerability = self.apps.get_model("vulnerabilities", "Vulnerability")
-        Vulnerability.objects.all().count() == 0
+        Vulnerability.objects.all().count() == 1

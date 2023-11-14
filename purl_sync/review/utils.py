@@ -90,7 +90,7 @@ def ap_collection(objects):
 def webfinger_actor(domain, user):
     """ """
     acct = generate_webfinger(user, domain)
-    url = f"https://{domain}/.well-known/webfinger?resource=acct:{acct}"
+    url = f"http://{domain}/.well-known/webfinger?resource=acct:{acct}"  # TODO http -> https
     headers = {"User-Agent": ""}  # TODO
     try:
         response = requests.get(url, headers=headers)

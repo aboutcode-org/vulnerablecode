@@ -474,7 +474,7 @@ class FollowPurlView(View):
             form = SubscribePurlForm(request.POST)
             if form.is_valid():
                 user, domain = parse_webfinger(form.cleaned_data.get("acct"))
-                remote_actor_url = webfinger_actor(user, domain)
+                remote_actor_url = webfinger_actor(domain, user)
 
                 payload = json.dumps(
                     {

@@ -16,7 +16,7 @@ services:
 
   purl_sync1:
     build:  ../../
-    command: /bin/sh -c "apt-get update && pip install psycopg2 --force-reinstall --no-cache-dir && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: /bin/sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8001"
     env_file:
       - docker-compose-dev-test-federation1.env
     volumes:
@@ -24,13 +24,13 @@ services:
     expose:
       - 8000
     ports:
-      - "8000:8000"
+      - "8001:8001"
     depends_on:
       - db1
 
   purl_sync2:
     build: ../../
-    command: /bin/sh -c "apt-get update && pip install psycopg2 --force-reinstall --no-cache-dir && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: /bin/sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8002"
     env_file:
       - docker-compose-dev-test-federation2.env
     volumes:
@@ -38,7 +38,7 @@ services:
     expose:
       - 8000
     ports:
-      - "8001:8000"
+      - "8002:8002"
     depends_on:
       - db2
 

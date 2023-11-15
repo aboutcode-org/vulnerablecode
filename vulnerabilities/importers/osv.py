@@ -27,6 +27,7 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import build_description
 from vulnerabilities.utils import dedupe
+from vulnerabilities.utils import get_cwe_id
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +75,9 @@ def parse_advisory_data(raw_data: dict, supported_ecosystem) -> Optional[Advisor
                         fixed_version=version,
                     )
                 )
+    database_specific = raw_data.get("database_specific") or {}
+    cwe_ids = database_specific.get("cwe_ids") or []
+    weaknesses = list(map(get_cwe_id, cwe_ids))
 
     return AdvisoryData(
         aliases=aliases,
@@ -81,6 +85,7 @@ def parse_advisory_data(raw_data: dict, supported_ecosystem) -> Optional[Advisor
         references=references,
         affected_packages=affected_packages,
         date_published=date_published,
+        weaknesses=weaknesses,
     )
 
 

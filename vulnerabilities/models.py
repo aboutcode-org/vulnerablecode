@@ -240,10 +240,7 @@ class Vulnerability(models.Model):
 
     @property
     def get_status_label(self):
-        label_by_status = {
-            choice[0] : choice[1] 
-            for choice in VulnerabilityStatusType.choices
-        }
+        label_by_status = {choice[0]: choice[1] for choice in VulnerabilityStatusType.choices}
         return label_by_status.get(self.status) or VulnerabilityStatusType.PUBLISHED.label
 
     def get_absolute_url(self):

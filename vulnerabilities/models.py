@@ -33,10 +33,6 @@ from packageurl.contrib.django.models import PackageURLQuerySet
 from packageurl.contrib.django.models import without_empty_values
 from rest_framework.authtoken.models import Token
 
-from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Reference
-from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import build_vcid
 from vulnerabilities.utils import remove_qualifiers_and_subpath
@@ -153,6 +149,14 @@ class VulnerabilityQuerySet(BaseQuerySet):
         )
 
 
+class VulnerabilityStatusType(models.IntegerChoices):
+    """List of vulnerability statuses."""
+
+    PUBLISHED = 1, "Published"
+    DISPUTED = 2, "Disputed"
+    INVALID = 3, "Invalid"
+
+
 class Vulnerability(models.Model):
     """
     A software vulnerability with a unique identifier and alternate ``aliases``.
@@ -179,6 +183,10 @@ class Vulnerability(models.Model):
     packages = models.ManyToManyField(
         to="Package",
         through="PackageRelatedVulnerability",
+    )
+
+    status = models.IntegerField(
+        choices=VulnerabilityStatusType.choices, default=VulnerabilityStatusType.PUBLISHED
     )
 
     objects = VulnerabilityQuerySet.as_manager()
@@ -229,6 +237,11 @@ class Vulnerability(models.Model):
         return self.aliases.all()
 
     alias = get_aliases
+
+    @property
+    def get_status_label(self):
+        label_by_status = {choice[0]: choice[1] for choice in VulnerabilityStatusType.choices}
+        return label_by_status.get(self.status) or VulnerabilityStatusType.PUBLISHED.label
 
     def get_absolute_url(self):
         """
@@ -653,6 +666,7 @@ class PackageRelatedVulnerability(models.Model):
         "module name responsible for creating this relation. Eg:"
         "vulnerabilities.importers.nginx.NginxBasicImprover",
     )
+    from vulnerabilities.improver import MAX_CONFIDENCE
 
     confidence = models.PositiveIntegerField(
         default=MAX_CONFIDENCE,
@@ -852,7 +866,11 @@ class Advisory(models.Model):
         self.unique_content_id = checksum.hexdigest()
         super().save(*args, **kwargs)
 
-    def to_advisory_data(self) -> AdvisoryData:
+    def to_advisory_data(self) -> "AdvisoryData":
+        from vulnerabilities.importer import AdvisoryData
+        from vulnerabilities.importer import AffectedPackage
+        from vulnerabilities.importer import Reference
+
         return AdvisoryData(
             aliases=self.aliases,
             summary=self.summary,

@@ -44,7 +44,9 @@
       }
     ],
     "date_published": "2012-07-25T19:55:00+00:00",
-    "weaknesses": [189]
+    "weaknesses": [
+      189
+    ]
   },
   {
     "aliases": [
@@ -326,6 +328,8 @@
       }
     ],
     "date_published": "2003-01-17T05:00:00+00:00",
-    "weaknesses": [200]
+    "weaknesses": [
+      200
+    ]
   }
 ]

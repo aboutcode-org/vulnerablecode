@@ -298,7 +298,9 @@ def get_or_create_vulnerability_and_aliases(
                 aliases=new_alias_names, summary=summary
             )
         except Exception as e:
-            logger.error(f"Cannot create vulnerability with summary {summary!r} {e!r}.")
+            logger.error(
+                f"Cannot create vulnerability with summary {summary!r} and {new_alias_names!r} {e!r}.\n{traceback_format_exc()}."
+            )
             return
 
     return vulnerability

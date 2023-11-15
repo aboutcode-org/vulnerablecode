@@ -115,21 +115,13 @@ class VulnerabilityDetails(DetailView):
     def get_queryset(self):
         return super().get_queryset().prefetch_related("references", "aliases", "weaknesses")
 
-    def get_status(self, status):
-        status_by_keys = {
-            VulnerabilityStatusType.PUBLISHED: "Published",
-            VulnerabilityStatusType.INVALID: "Invalid",
-            VulnerabilityStatusType.DISPUTED: "Disputed",
-        }
-        return status_by_keys[status]
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         weaknesses = self.object.weaknesses.all()
         weaknesses_present_in_db = [
             weakness_object for weakness_object in weaknesses if weakness_object.weakness
         ]
-        status = self.get_status(self.object.status)
+        status = self.object.get_status_label
         context.update(
             {
                 "vulnerability": self.object,

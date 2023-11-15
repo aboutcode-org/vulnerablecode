@@ -152,9 +152,9 @@ class VulnerabilityQuerySet(BaseQuerySet):
 class VulnerabilityStatusType(models.IntegerChoices):
     """List of vulnerability statuses."""
 
-    PUBLISHED = 1, "published"
-    DISPUTED = 2, "disputed"
-    INVALID = 3, "invalid"
+    PUBLISHED = 1, "Published"
+    DISPUTED = 2, "Disputed"
+    INVALID = 3, "Invalid"
 
 
 class Vulnerability(models.Model):
@@ -237,6 +237,14 @@ class Vulnerability(models.Model):
         return self.aliases.all()
 
     alias = get_aliases
+
+    @property
+    def get_status_label(self):
+        label_by_status = {
+            choice[0] : choice[1] 
+            for choice in VulnerabilityStatusType.choices
+        }
+        return label_by_status.get(self.status) or VulnerabilityStatusType.PUBLISHED.label
 
     def get_absolute_url(self):
         """

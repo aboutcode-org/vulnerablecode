@@ -18,3 +18,14 @@ div.rst-content {
     padding: 0px 80px 10px 80px;
     margin-left: 50px;
 }
+
+
+@media (max-width: 768px) {
+    div.rst-content {
+            max-width: 1300px;
+            background-color: #fcfcfc;
+            border: 0;
+            padding: 0px 10px 10px 10px;
+            margin-left: 0px;
+        }
+}

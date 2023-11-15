@@ -16,8 +16,11 @@ from pytest_django.asserts import assertQuerysetEqual
 
 from vulnerabilities.importer import Reference
 from vulnerabilities.improve_runner import create_valid_vulnerability_reference
+from vulnerabilities.improve_runner import create_vulnerability_and_add_aliases
 from vulnerabilities.improve_runner import get_or_create_vulnerability_and_aliases
+from vulnerabilities.improve_runner import get_vulns_for_aliases_and_get_new_aliases
 from vulnerabilities.improve_runner import process_inferences
+from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
@@ -61,9 +64,7 @@ def test_create_valid_vulnerability_reference_accepts_long_references():
 def test_get_or_create_vulnerability_and_aliases_with_new_vulnerability_and_new_aliases():
     alias_names = ["TAYLOR-1337", "SWIFT-1337"]
     summary = "Melodious vulnerability"
-    vulnerability = get_or_create_vulnerability_and_aliases(
-        alias_names=alias_names, summary=summary
-    )
+    vulnerability = get_or_create_vulnerability_and_aliases(aliases=alias_names, summary=summary)
     assert vulnerability
     alias_names_in_db = vulnerability.get_aliases.values_list("alias", flat=True)
     assert Counter(alias_names_in_db) == Counter(alias_names)
@@ -82,7 +83,7 @@ def test_get_or_create_vulnerability_and_aliases_with_different_vulnerability_an
     different_vulnerability = Vulnerability(vulnerability_id="VCID-New")
     different_vulnerability.save()
     assert not get_or_create_vulnerability_and_aliases(
-        alias_names=existing_alias_names, vulnerability_id=different_vulnerability.vulnerability_id
+        aliases=existing_alias_names, vulnerability_id=different_vulnerability.vulnerability_id
     )
 
 
@@ -93,7 +94,7 @@ def test_get_or_create_vulnerability_and_aliases_with_existing_vulnerability_and
 
     existing_alias_names = ["ALIAS-1", "ALIAS-2"]
     vulnerability = get_or_create_vulnerability_and_aliases(
-        vulnerability_id="VCID-Existing", alias_names=existing_alias_names
+        vulnerability_id="VCID-Existing", aliases=existing_alias_names
     )
     assert existing_vulnerability == vulnerability
 
@@ -113,7 +114,7 @@ def test_get_or_create_vulnerability_and_aliases_with_existing_vulnerability_and
     Alias.objects.bulk_create(existing_aliases)
 
     vulnerability = get_or_create_vulnerability_and_aliases(
-        vulnerability_id="VCID-Existing", alias_names=existing_alias_names
+        vulnerability_id="VCID-Existing", aliases=existing_alias_names
     )
     assert existing_vulnerability == vulnerability
 
@@ -135,7 +136,7 @@ def test_get_or_create_vulnerability_and_aliases_with_existing_vulnerability_and
     new_alias_names = ["ALIAS-3", "ALIAS-4"]
     alias_names = existing_alias_names + new_alias_names
     vulnerability = get_or_create_vulnerability_and_aliases(
-        vulnerability_id="VCID-Existing", alias_names=alias_names
+        vulnerability_id="VCID-Existing", aliases=alias_names
     )
     assert existing_vulnerability == vulnerability
 
@@ -204,3 +205,54 @@ def test_process_inference_idempotency_with_different_improver_names():
     process_inferences(INFERENCES, DUMMY_ADVISORY, improver_name="test_improver_two")
     process_inferences(INFERENCES, DUMMY_ADVISORY, improver_name="test_improver_three")
     assert all_objects == get_objects_in_all_tables_used_by_process_inferences()
+
+
+@pytest.mark.django_db
+def test_get_or_created_vulnerability_and_aliases_with_empty_aliases():
+    assert get_or_create_vulnerability_and_aliases(aliases=[], summary="EMPTY ALIASES") == None
+
+
+@pytest.mark.django_db
+def test_process_inferences_with_empty_aliases():
+    with pytest.raises(AssertionError):
+        process_inferences(
+            inferences=[
+                Inference(
+                    aliases=[],
+                    vulnerability_id=None,
+                    confidence=MAX_CONFIDENCE,
+                    summary="",
+                )
+            ],
+            advisory=Advisory.objects.create(summary="", date_collected=timezone.now()),
+            improver_name="NO_ALIASES_IMPROVER",
+        )
+
+
+@pytest.mark.django_db
+def test_get_vulns_for_aliases_and_get_new_aliases():
+    v = Vulnerability.objects.create(summary="TEST")
+    Alias.objects.create(alias="CVE-1", vulnerability=v)
+    new_aliases, existing_vulns = get_vulns_for_aliases_and_get_new_aliases(
+        aliases=["CVE-1", "CVE-2"]
+    )
+    assert new_aliases == set(["CVE-2"])
+    assert existing_vulns == set([v])
+    new_aliases, existing_vulns = get_vulns_for_aliases_and_get_new_aliases(aliases=["CVE-3"])
+    assert new_aliases == set(["CVE-3"])
+    assert existing_vulns == set()
+
+
+@pytest.mark.django_db
+def test_create_vulnerability_and_add_aliases():
+    vuln = create_vulnerability_and_add_aliases(aliases=["CVE-1", "GHSA-1"], summary="NEW-VULN")
+    assert vuln is not None
+    assert vuln.aliases.all().count() == 2
+    assert [alias["alias"] for alias in vuln.alias.all().values("alias")] == ["CVE-1", "GHSA-1"]
+    assert vuln.summary == "NEW-VULN"
+
+
+@pytest.mark.django_db
+def test_create_vulnerability_and_add_aliases_with_no_aliases():
+    with pytest.raises(Exception):
+        create_vulnerability_and_add_aliases(aliases=[], summary="NEW-VULN")

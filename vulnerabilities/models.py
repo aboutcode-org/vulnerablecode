@@ -11,6 +11,7 @@ import hashlib
 import json
 import logging
 from contextlib import suppress
+from typing import Any
 
 from cwe2.database import Database
 from django.contrib.auth import get_user_model
@@ -759,6 +760,8 @@ class Alias(models.Model):
     alias = models.CharField(
         max_length=50,
         unique=True,
+        blank=False,
+        null=False,
         help_text="An alias is a unique vulnerability identifier in some database, "
         "such as CVE-2020-2233",
     )

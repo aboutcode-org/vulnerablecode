@@ -225,12 +225,12 @@ class CreatGitView(LoginRequiredMixin, CreateView):
 
 
 @method_decorator(is_service_user, name="dispatch")
-class CreatSync(LoginRequiredMixin, View):
+class CreateSync(LoginRequiredMixin, View):
     def post(self, request, repository_id):
         try:
-            repo = Repository.objects.get(id=repository_id).git_repo_obj
+            repo = Repository.objects.get(id=repository_id)
             if repo.admin == self.request.user.service:
-                repo.remotes.origin.pull()
+                repo.git_repo_obj.remotes.origin.pull()
                 # TODO this part should be in a task schedule
                 importer = Importer(repo, repo.admin)
                 importer.run()

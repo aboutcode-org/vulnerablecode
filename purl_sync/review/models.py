@@ -79,8 +79,8 @@ class Note(models.Model):
         default=uuid.uuid4,
         help_text="The object's unique global identifier",
     )
-    acct = models.CharField(max_length=100)
-    content = models.TextField(max_length=500)
+    acct = models.CharField(max_length=200)
+    content = models.TextField()
     reply_to = models.ForeignKey(
         "self",
         on_delete=models.SET_NULL,

@@ -15,8 +15,8 @@ from django.urls import path
 
 from review import views
 from review.views import CreateReview
+from review.views import CreateSync
 from review.views import CreatGitView
-from review.views import CreatSync
 from review.views import FollowPurlView
 from review.views import HomeView
 from review.views import NoteView
@@ -65,7 +65,7 @@ urlpatterns = [
     ),
     path(
         "repository/<uuid:repository_id>/sync-repo/",
-        CreatSync.as_view(),
+        CreateSync.as_view(),
         name="sync-activity",
     ),
     path("review-list", ReviewListView.as_view(), name="review-list"),

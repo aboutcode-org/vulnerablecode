@@ -167,6 +167,20 @@ class Purl(Actor):
     def followers_count(self):
         return Follow.objects.filter(purl=self).count()
 
+    @property
+    def followers(self):
+        return Follow.objects.filter(purl=self).values("person_id")
+
+    @property
+    def followers_inboxes(self):
+        """Return a followers inbox list"""
+        # TODO Try to avoid for loop
+        inboxes = []
+        for person in self.followers:
+            person_inbox = Person.objects.get(id=person["person_id"]).inbox_url
+            inboxes.append(person_inbox)
+        return inboxes
+
     # TODO raise error if the purl have a version or qualifiers or subpath
     # def save(self, *args, **kwargs):
     #     if not check_purl_actor(self.string):

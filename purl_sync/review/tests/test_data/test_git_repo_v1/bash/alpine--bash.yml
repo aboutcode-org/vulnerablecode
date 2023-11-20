@@ -1,0 +1,10 @@
+package: pkg:alpine/bash
+versions:
+  - purl: pkg:alpine/bash@4.3.33-r2?arch=armhf&distroversion=v3.2&reponame=main
+    affected_by_vulnerabilities: []
+    fixing_vulnerabilities:
+      - VCID-afb1-1rt7-aaac
+  - purl: pkg:alpine/bash@4.3.33-r2?arch=x86&distroversion=v3.2&reponame=main
+    affected_by_vulnerabilities: []
+    fixing_vulnerabilities:
+      - VCID-afb1-1rt7-aaac

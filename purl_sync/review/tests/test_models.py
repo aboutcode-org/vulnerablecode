@@ -84,10 +84,11 @@ def test_purl(purl, service):
 
 @pytest.fixture
 def repo(db, service, mute_post_save_signal):
+    """Simple Git Repository"""
     return Repository.objects.create(
         name="vulnerablecode_data",
         url="https://github.com/nexB/fake-repo",
-        path="./review/test_data/test_git_repo",
+        path="./review/tests/test_data/test_git_repo_v1",
         admin=service,
     )
 

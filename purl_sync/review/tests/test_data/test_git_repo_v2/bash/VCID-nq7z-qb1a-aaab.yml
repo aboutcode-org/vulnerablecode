@@ -1,0 +1,121 @@
+vulnerability_id: VCID-nq7z-qb1a-aaab
+aliases:
+  - CVE-2016-0634
+summary:
+severities:
+  - id: 665660
+    reference_id: 1432213
+    scoring_system: generic_textual
+    value: Low
+    scoring_elements:
+  - id: 53059
+    reference_id: 178043
+    scoring_system: cvssv3
+    value: '4.9'
+    scoring_elements: CVSS:3.0/AV:L/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:L
+  - id: 665662
+    reference_id: 1432214
+    scoring_system: generic_textual
+    value: Low
+    scoring_elements:
+  - id: 665664
+    reference_id: 1432216
+    scoring_system: generic_textual
+    value: Negligible
+    scoring_elements:
+  - id: 665663
+    reference_id: 1432215
+    scoring_system: generic_textual
+    value: Negligible
+    scoring_elements:
+  - id: 665661
+    reference_id: 624516
+    scoring_system: generic_textual
+    value: Low
+    scoring_elements:
+  - id: 210784
+    reference_id: 624529
+    scoring_system: cvssv2
+    value: '6.0'
+    scoring_elements: AV:N/AC:M/Au:S/C:P/I:P/A:P
+  - id: 210782
+    reference_id: 624529
+    scoring_system: cvssv3
+    value: '7.5'
+    scoring_elements: CVSS:3.0/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H
+  - id: 53058
+    reference_id: 178042
+    scoring_system: rhas
+    value: Moderate
+    scoring_elements:
+references:
+  - id: 1432213
+    url: http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-0634.html
+    reference_id:
+  - id: 624514
+    url: http://rhn.redhat.com/errata/RHSA-2017-0725.html
+    reference_id:
+  - id: 624526
+    url: https://access.redhat.com/errata/RHSA-2017:1931
+    reference_id:
+  - id: 178043
+    url: https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-0634.json
+    reference_id:
+  - id: 624527
+    url: https://bugzilla.redhat.com/show_bug.cgi?id=1377613
+    reference_id:
+  - id: 1432214
+    url: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0634
+    reference_id:
+  - id: 624528
+    url: https://security.gentoo.org/glsa/201612-39
+    reference_id:
+  - id: 1432216
+    url: https://ubuntu.com/security/notices/USN-3294-1
+    reference_id:
+  - id: 1432215
+    url: https://usn.ubuntu.com/usn/usn-3294-1
+    reference_id:
+  - id: 624515
+    url: http://www.openwall.com/lists/oss-security/2016/09/16/12
+    reference_id:
+  - id: 624516
+    url: http://www.openwall.com/lists/oss-security/2016/09/16/8
+    reference_id:
+  - id: 624517
+    url: http://www.openwall.com/lists/oss-security/2016/09/18/11
+    reference_id:
+  - id: 624518
+    url: http://www.openwall.com/lists/oss-security/2016/09/19/7
+    reference_id:
+  - id: 624519
+    url: http://www.openwall.com/lists/oss-security/2016/09/20/1
+    reference_id:
+  - id: 624520
+    url: http://www.openwall.com/lists/oss-security/2016/09/27/9
+    reference_id:
+  - id: 624521
+    url: http://www.openwall.com/lists/oss-security/2016/09/29/27
+    reference_id:
+  - id: 624522
+    url: http://www.openwall.com/lists/oss-security/2016/10/07/6
+    reference_id:
+  - id: 624523
+    url: http://www.openwall.com/lists/oss-security/2016/10/10/3
+    reference_id:
+  - id: 624524
+    url: http://www.openwall.com/lists/oss-security/2016/10/10/4
+    reference_id:
+  - id: 624525
+    url: http://www.securityfocus.com/bid/92999
+    reference_id:
+  - id: 579351
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:gnu:bash:4.3:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:a:gnu:bash:4.3:*:*:*:*:*:*:*
+  - id: 624529
+    url: https://nvd.nist.gov/vuln/detail/CVE-2016-0634
+    reference_id: CVE-2016-0634
+  - id: 178042
+    url: https://access.redhat.com/errata/RHSA-2017:0725
+    reference_id: RHSA-2017:0725
+weaknesses: []

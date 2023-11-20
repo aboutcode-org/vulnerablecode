@@ -349,8 +349,8 @@ class CreateActivity:
         return {
             **AP_CONTEXT,
             "type": self.type,
-            "actor": asdict(self.actor),
-            "object": asdict(self.object),
+            "actor": self.actor if isinstance(self.actor, dict) else asdict(self.actor),
+            "object": self.object if isinstance(self.actor, dict) else asdict(self.object),
             "to": self.to,
             **AP_TARGET,
         }

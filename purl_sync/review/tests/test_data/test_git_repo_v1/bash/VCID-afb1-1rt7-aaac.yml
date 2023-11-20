@@ -1,0 +1,171 @@
+vulnerability_id: VCID-afb1-1rt7-aaac
+aliases:
+  - CVE-2016-9401
+summary:
+severities:
+  - id: 672194
+    reference_id: 1437552
+    scoring_system: generic_textual
+    value: Negligible
+    scoring_elements:
+  - id: 625841
+    reference_id: 942647
+    scoring_system: cvssv3
+    value: '3.3'
+    scoring_elements: CVSS:3.0/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L
+  - id: 672196
+    reference_id: 1437553
+    scoring_system: generic_textual
+    value: Negligible
+    scoring_elements:
+  - id: 665664
+    reference_id: 1432216
+    scoring_system: generic_textual
+    value: Negligible
+    scoring_elements:
+  - id: 665663
+    reference_id: 1432215
+    scoring_system: generic_textual
+    value: Negligible
+    scoring_elements:
+  - id: 672195
+    reference_id: 662487
+    scoring_system: generic_textual
+    value: Negligible
+    scoring_elements:
+  - id: 625840
+    reference_id: 942646
+    scoring_system: rhbs
+    value: low
+    scoring_elements:
+  - id: 243668
+    reference_id: 662491
+    scoring_system: cvssv2
+    value: '2.1'
+    scoring_elements: AV:L/AC:L/Au:N/C:N/I:N/A:P
+  - id: 243666
+    reference_id: 662491
+    scoring_system: cvssv3
+    value: '5.5'
+    scoring_elements: CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H
+  - id: 53058
+    reference_id: 178042
+    scoring_system: rhas
+    value: Moderate
+    scoring_elements:
+references:
+  - id: 1437552
+    url: http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-9401.html
+    reference_id:
+  - id: 624514
+    url: http://rhn.redhat.com/errata/RHSA-2017-0725.html
+    reference_id:
+  - id: 624526
+    url: https://access.redhat.com/errata/RHSA-2017:1931
+    reference_id:
+  - id: 942647
+    url: https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2016-9401.json
+    reference_id:
+  - id: 1437553
+    url: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-9401
+    reference_id:
+  - id: 662490
+    url: https://lists.debian.org/debian-lts-announce/2019/03/msg00028.html
+    reference_id:
+  - id: 657259
+    url: https://security.gentoo.org/glsa/201701-02
+    reference_id:
+  - id: 1432216
+    url: https://ubuntu.com/security/notices/USN-3294-1
+    reference_id:
+  - id: 1432215
+    url: https://usn.ubuntu.com/usn/usn-3294-1
+    reference_id:
+  - id: 662487
+    url: http://www.openwall.com/lists/oss-security/2016/11/17/5
+    reference_id:
+  - id: 662488
+    url: http://www.openwall.com/lists/oss-security/2016/11/17/9
+    reference_id:
+  - id: 662489
+    url: http://www.securityfocus.com/bid/94398
+    reference_id:
+  - id: 942646
+    url: https://bugzilla.redhat.com/show_bug.cgi?id=1396383
+    reference_id: 1396383
+  - id: 39719
+    url: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=844727
+    reference_id: 844727
+  - id: 44845
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:gnu:bash:*:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:a:gnu:bash:*:*:*:*:*:*:*:*
+  - id: 662492
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:gnu:bash:4.4:patch1:*:*:*:*:*:*
+    reference_id: cpe:2.3:a:gnu:bash:4.4:patch1:*:*:*:*:*:*
+  - id: 662493
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:gnu:bash:4.4:patch2:*:*:*:*:*:*
+    reference_id: cpe:2.3:a:gnu:bash:4.4:patch2:*:*:*:*:*:*
+  - id: 662494
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:gnu:bash:4.4:patch3:*:*:*:*:*:*
+    reference_id: cpe:2.3:a:gnu:bash:4.4:patch3:*:*:*:*:*:*
+  - id: 662495
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:gnu:bash:4.4:patch4:*:*:*:*:*:*
+    reference_id: cpe:2.3:a:gnu:bash:4.4:patch4:*:*:*:*:*:*
+  - id: 662496
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:gnu:bash:4.4:patch5:*:*:*:*:*:*
+    reference_id: cpe:2.3:a:gnu:bash:4.4:patch5:*:*:*:*:*:*
+  - id: 79275
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:debian:debian_linux:8.0:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:o:debian:debian_linux:8.0:*:*:*:*:*:*:*
+  - id: 79283
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:redhat:enterprise_linux_desktop:6.0:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:o:redhat:enterprise_linux_desktop:6.0:*:*:*:*:*:*:*
+  - id: 157854
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:redhat:enterprise_linux_desktop:7.0:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:o:redhat:enterprise_linux_desktop:7.0:*:*:*:*:*:*:*
+  - id: 79287
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:redhat:enterprise_linux_server:6.0:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:o:redhat:enterprise_linux_server:6.0:*:*:*:*:*:*:*
+  - id: 157857
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:redhat:enterprise_linux_server:7.0:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:o:redhat:enterprise_linux_server:7.0:*:*:*:*:*:*:*
+  - id: 162129
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:redhat:enterprise_linux_server_aus:7.4:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:o:redhat:enterprise_linux_server_aus:7.4:*:*:*:*:*:*:*
+  - id: 162130
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:redhat:enterprise_linux_server_aus:7.6:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:o:redhat:enterprise_linux_server_aus:7.6:*:*:*:*:*:*:*
+  - id: 540946
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:redhat:enterprise_linux_server_aus:7.7:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:o:redhat:enterprise_linux_server_aus:7.7:*:*:*:*:*:*:*
+  - id: 162132
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:redhat:enterprise_linux_server_eus:7.4:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:o:redhat:enterprise_linux_server_eus:7.4:*:*:*:*:*:*:*
+  - id: 162133
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:redhat:enterprise_linux_server_eus:7.5:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:o:redhat:enterprise_linux_server_eus:7.5:*:*:*:*:*:*:*
+  - id: 162134
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:redhat:enterprise_linux_server_eus:7.6:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:o:redhat:enterprise_linux_server_eus:7.6:*:*:*:*:*:*:*
+  - id: 571564
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:redhat:enterprise_linux_server_eus:7.7:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:o:redhat:enterprise_linux_server_eus:7.7:*:*:*:*:*:*:*
+  - id: 162137
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:redhat:enterprise_linux_server_tus:7.6:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:o:redhat:enterprise_linux_server_tus:7.6:*:*:*:*:*:*:*
+  - id: 540947
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:redhat:enterprise_linux_server_tus:7.7:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:o:redhat:enterprise_linux_server_tus:7.7:*:*:*:*:*:*:*
+  - id: 79290
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:redhat:enterprise_linux_workstation:6.0:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:o:redhat:enterprise_linux_workstation:6.0:*:*:*:*:*:*:*
+  - id: 157858
+    url: https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:redhat:enterprise_linux_workstation:7.0:*:*:*:*:*:*:*
+    reference_id: cpe:2.3:o:redhat:enterprise_linux_workstation:7.0:*:*:*:*:*:*:*
+  - id: 662491
+    url: https://nvd.nist.gov/vuln/detail/CVE-2016-9401
+    reference_id: CVE-2016-9401
+  - id: 178042
+    url: https://access.redhat.com/errata/RHSA-2017:0725
+    reference_id: RHSA-2017:0725
+weaknesses: []

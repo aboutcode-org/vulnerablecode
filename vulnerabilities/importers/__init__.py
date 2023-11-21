@@ -18,6 +18,7 @@ from vulnerabilities.importers import elixir_security
 from vulnerabilities.importers import fireeye
 from vulnerabilities.importers import gentoo
 from vulnerabilities.importers import github
+from vulnerabilities.importers import github_osv
 from vulnerabilities.importers import gitlab
 from vulnerabilities.importers import istio
 from vulnerabilities.importers import mozilla
@@ -69,6 +70,7 @@ IMPORTERS_REGISTRY = [
     apache_kafka.ApacheKafkaImporter,
     oss_fuzz.OSSFuzzImporter,
     ruby.RubyImporter,
+    github_osv.GithubOSVImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

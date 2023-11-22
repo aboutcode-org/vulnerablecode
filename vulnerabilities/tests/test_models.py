@@ -20,6 +20,7 @@ from freezegun import freeze_time
 from packageurl import PackageURL
 from univers import versions
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
+from univers.version_range import AlpineLinuxVersionRange
 
 from vulnerabilities import models
 from vulnerabilities.models import Alias
@@ -62,8 +63,9 @@ class TestVulnerabilityModel(TestCase):
                 == 1
             )
 
+    @pytest.mark.django_db
     def test_cwe_not_present_in_weaknesses_db(self):
-        w1 = models.Weakness.objects.create(name="189")
+        w1 = models.Weakness.objects.create(cwe_id=189)
         assert w1.weakness is None
         assert w1.name is ""
         assert w1.description is ""
@@ -239,7 +241,7 @@ class TestPackageModel(TestCase):
                 name="redis",
                 version="4.1.1",
             ),
-            "closest_non_vulnerable": PackageURL(
+            "next_non_vulnerable": PackageURL(
                 type="pypi",
                 name="redis",
                 version="5.0.0b1",
@@ -255,41 +257,44 @@ class TestPackageModel(TestCase):
             "vulnerabilities": [
                 {
                     "vulnerability": self.vuln_VCID_g2fu_45jw_aaan,
-                    "fixed_by_purl": PackageURL(
-                        type="pypi",
-                        namespace=None,
-                        name="redis",
-                        version="4.3.6",
-                        qualifiers={},
-                        subpath=None,
-                    ),
-                    "fixed_by_purl_vulnerabilities": [self.vuln_VCID_rqe1_dkmg_aaad],
+                    "fixed_by_package_details": [
+                        {
+                            "fixed_by_purl": PackageURL(
+                                type="pypi",
+                                namespace=None,
+                                name="redis",
+                                version="4.3.6",
+                                qualifiers={},
+                                subpath=None,
+                            ),
+                            "fixed_by_purl_vulnerabilities": [self.vuln_VCID_rqe1_dkmg_aaad],
+                        }
+                    ],
+                    "fixed_by_purl": [],
+                    "fixed_by_purl_vulnerabilities": [],
                 },
                 {
                     "vulnerability": self.vuln_VCID_rqe1_dkmg_aaad,
-                    "fixed_by_purl": PackageURL(
-                        type="pypi",
-                        namespace=None,
-                        name="redis",
-                        version="5.0.0b1",
-                        qualifiers={},
-                        subpath=None,
-                    ),
+                    "fixed_by_package_details": [
+                        {
+                            "fixed_by_purl": PackageURL(
+                                type="pypi",
+                                namespace=None,
+                                name="redis",
+                                version="5.0.0b1",
+                                qualifiers={},
+                                subpath=None,
+                            ),
+                            "fixed_by_purl_vulnerabilities": [],
+                        }
+                    ],
+                    "fixed_by_purl": [],
                     "fixed_by_purl_vulnerabilities": [],
                 },
             ],
         }
 
         assert searched_for_package_details == package_details
-
-        assert searched_for_package_details.get("closest_non_vulnerable") == PackageURL(
-            type="pypi",
-            namespace=None,
-            name="redis",
-            version="5.0.0b1",
-            qualifiers={},
-            subpath=None,
-        )
 
         assert searched_for_package_details.get("latest_non_vulnerable") == PackageURL(
             type="pypi",
@@ -401,6 +406,7 @@ class TestPackageModel(TestCase):
         pypi_package_version = RANGE_CLASS_BY_SCHEMES[pypi_package.type].version_class
         assert pypi_package_version == versions.PypiVersion
 
+        RANGE_CLASS_BY_SCHEMES["alpine"] = AlpineLinuxVersionRange
         alpine_version = RANGE_CLASS_BY_SCHEMES["alpine"].version_class
         assert alpine_version == versions.AlpineLinuxVersion
 

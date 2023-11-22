@@ -399,7 +399,8 @@ class APITestCasePackage(TestCase):
         }
 
         package_with_no_vulnerabilities = MinimalPackageSerializer.get_vulnerability(
-            self, vuln, affected_vulnerabilities
+            self,
+            vuln,
         )
 
         assert package_with_no_vulnerabilities is None

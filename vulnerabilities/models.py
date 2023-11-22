@@ -70,6 +70,12 @@ class BaseQuerySet(models.QuerySet):
 
 
 class VulnerabilityQuerySet(BaseQuerySet):
+    def affected_packages(self):
+        """
+        Return only packages affected by a vulnerability.
+        """
+        return self.filter(packagerelatedvulnerability__fix=False)
+
     def with_cpes(self):
         """
         Return a queryset of Vulnerability that have one or more NVD CPE references.
@@ -644,7 +650,6 @@ class Package(PackageURLMixin):
         """
         return reverse("package_details", args=[self.purl])
 
-    # TODO: There are other methods, variables etc. in models.py that need similar renaming.
     def get_fixed_by_package_versions(self, fix=True):
         """
         Return a queryset of all the package versions of this `package` that fix any vulnerability.
@@ -670,10 +675,14 @@ class Package(PackageURLMixin):
         if not packages:
             return []
 
-        version_class = RANGE_CLASS_BY_SCHEMES[packages[0].type].version_class
+        # version_class = RANGE_CLASS_BY_SCHEMES[packages[0].type].version_class
+        # return sorted(
+        #     packages,
+        #     key=lambda x: version_class(x.version),
+        # )
         return sorted(
             packages,
-            key=lambda x: version_class(x.version),
+            key=lambda x: self.version_class(x.version),
         )
 
     @property
@@ -739,9 +748,59 @@ class Package(PackageURLMixin):
 
         fixed_by_packages = self.get_fixed_by_package_versions(fix=True)
 
-        package_vulnerabilities = self.vulnerabilities.filter(
-            packagerelatedvulnerability__fix=False
-        ).prefetch_related(
+        # This is my original code and it works:
+
+        # package_vulnerabilities = self.vulnerabilities.filter(
+        #     packagerelatedvulnerability__fix=False
+        # ).prefetch_related(
+        #     Prefetch(
+        #         "packages",
+        #         queryset=fixed_by_packages,
+        #         to_attr="fixed_packages",
+        #     )
+        # )
+
+        # package_vulnerabilities = Package.objects.affected()
+        # package_vulnerabilities.prefetch_related(
+        #     Prefetch(
+        #         "packages",
+        #         queryset=fixed_by_packages,
+        #         to_attr="fixed_packages",
+        #     )
+        # )
+
+        # package_vulnerabilities = Package.objects.affected().prefetch_related(
+        #     Prefetch(
+        #         "package",
+        #         queryset=fixed_by_packages,
+        #         to_attr="fixed_packages",
+        #     )
+        # )
+
+        # package_vulnerabilities = self.vulnerabilities.affected().prefetch_related(
+        #     # package_vulnerabilities = self.vulnerabilities.filter(
+        #     #     packagerelatedvulnerability__fix=False
+        #     # ).prefetch_related(
+        #     Prefetch(
+        #         "packages",
+        #         queryset=fixed_by_packages,
+        #         to_attr="fixed_packages",
+        #     )
+        # )
+
+        # package_vulnerabilities = self.vulnerabilities.affected().prefetch_related(
+        #     Prefetch(
+        #         "packages",
+        #         queryset=fixed_by_packages,
+        #         to_attr="fixed_packages",
+        #     )
+        # )
+
+        # package_vulnerabilities = self.vulnerabilities.affected()
+
+        # 2023-11-22 Wednesday 08:54:04.  Try my new vuln queryset manager method.  This works, no failed tests!!!
+
+        package_vulnerabilities = self.vulnerabilities.affected_packages().prefetch_related(
             Prefetch(
                 "packages",
                 queryset=fixed_by_packages,

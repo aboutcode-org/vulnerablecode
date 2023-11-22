@@ -53,17 +53,21 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
         affected_vulnerabilities = []
 
         for vuln in parent_affected_vulnerabilities:
-            self.get_vulnerability(vuln, affected_vulnerabilities)
+            # self.get_vulnerability(vuln, affected_vulnerabilities)
+            # affected_vulnerabilities.append(self.get_vulnerability(vuln, affected_vulnerabilities))
+            affected_vulnerabilities.append(self.get_vulnerability(vuln))
 
         return affected_vulnerabilities
 
-    def get_vulnerability(self, vuln, affected_vulnerabilities):
+    # def get_vulnerability(self, vuln, affected_vulnerabilities):
+    def get_vulnerability(self, vuln):
         affected_vulnerability = {}
 
         vulnerability = vuln.get("vulnerability")
         if vulnerability:
             affected_vulnerability["vulnerability"] = vulnerability.vulnerability_id
-            affected_vulnerabilities.append(affected_vulnerability)
+            # affected_vulnerabilities.append(affected_vulnerability)
+            return affected_vulnerability
 
     affected_by_vulnerabilities = serializers.SerializerMethodField("get_affected_vulnerabilities")
 
@@ -150,8 +154,6 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
         next_non_vulnerable = package.fixed_package_details.get("next_non_vulnerable", None)
         if next_non_vulnerable:
             return next_non_vulnerable.version
-        else:
-            return None
 
     latest_non_vulnerable_version = serializers.SerializerMethodField("get_latest_non_vulnerable")
 
@@ -159,8 +161,6 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
         latest_non_vulnerable = package.fixed_package_details.get("latest_non_vulnerable", None)
         if latest_non_vulnerable:
             return latest_non_vulnerable.version
-        else:
-            return None
 
     purl = serializers.CharField(source="package_url")
 
@@ -215,21 +215,19 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
         fix each vulnerability and whose version is greater than the `package` version).
         """
         excluded_purls = []
-        filtered_vuln_serializer = self.get_vulnerabilities_for_a_package(
-            package=package, fix=False
-        )
+        package_vulnerabilities = self.get_vulnerabilities_for_a_package(package=package, fix=False)
 
-        for vuln in filtered_vuln_serializer:
+        for vuln in package_vulnerabilities:
             for pkg in vuln["fixed_packages"]:
-                real_PURL = PackageURL.from_string(pkg["purl"])
-                if package.version_class(real_PURL.version) <= package.current_version:
+                real_purl = PackageURL.from_string(pkg["purl"])
+                if package.version_class(real_purl.version) <= package.current_version:
                     excluded_purls.append(pkg)
 
             vuln["fixed_packages"] = [
                 pkg for pkg in vuln["fixed_packages"] if pkg not in excluded_purls
             ]
 
-        return filtered_vuln_serializer
+        return package_vulnerabilities
 
     class Meta:
         model = Package

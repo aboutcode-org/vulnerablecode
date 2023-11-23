@@ -23,7 +23,7 @@ from vulnerabilities import models
 from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import VulnerabilitySearchForm
-from vulnerabilities.models import Weakness
+from vulnerabilities.models import VulnerabilityStatusType
 from vulnerabilities.utils import get_severity_range
 from vulnerablecode.settings import env
 
@@ -123,6 +123,7 @@ class VulnerabilityDetails(DetailView):
         weaknesses_present_in_db = [
             weakness_object for weakness_object in weaknesses if weakness_object.weakness
         ]
+        status = self.object.get_status_label
         context.update(
             {
                 "vulnerability": self.object,
@@ -136,6 +137,7 @@ class VulnerabilityDetails(DetailView):
                 "affected_packages": self.object.affected_packages.all(),
                 "fixed_by_packages": self.object.fixed_by_packages.all(),
                 "weaknesses": weaknesses_present_in_db,
+                "status": status,
             }
         )
         return context

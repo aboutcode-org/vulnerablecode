@@ -11,6 +11,7 @@ import hashlib
 import json
 import logging
 from contextlib import suppress
+from typing import Any
 
 from cwe2.database import Database
 from django.contrib.auth import get_user_model
@@ -35,10 +36,6 @@ from rest_framework.authtoken.models import Token
 from univers import versions
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 
-from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Reference
-from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import build_vcid
 from vulnerabilities.utils import remove_qualifiers_and_subpath
@@ -73,6 +70,12 @@ class BaseQuerySet(models.QuerySet):
 
 
 class VulnerabilityQuerySet(BaseQuerySet):
+    def affecting_vulnerabilities(self):
+        """
+        Return a queryset of Vulnerability that affect a package.
+        """
+        return self.filter(packagerelatedvulnerability__fix=False)
+
     def with_cpes(self):
         """
         Return a queryset of Vulnerability that have one or more NVD CPE references.
@@ -155,6 +158,14 @@ class VulnerabilityQuerySet(BaseQuerySet):
         )
 
 
+class VulnerabilityStatusType(models.IntegerChoices):
+    """List of vulnerability statuses."""
+
+    PUBLISHED = 1, "Published"
+    DISPUTED = 2, "Disputed"
+    INVALID = 3, "Invalid"
+
+
 class Vulnerability(models.Model):
     """
     A software vulnerability with a unique identifier and alternate ``aliases``.
@@ -181,6 +192,10 @@ class Vulnerability(models.Model):
     packages = models.ManyToManyField(
         to="Package",
         through="PackageRelatedVulnerability",
+    )
+
+    status = models.IntegerField(
+        choices=VulnerabilityStatusType.choices, default=VulnerabilityStatusType.PUBLISHED
     )
 
     objects = VulnerabilityQuerySet.as_manager()
@@ -231,6 +246,11 @@ class Vulnerability(models.Model):
         return self.aliases.all()
 
     alias = get_aliases
+
+    @property
+    def get_status_label(self):
+        label_by_status = {choice[0]: choice[1] for choice in VulnerabilityStatusType.choices}
+        return label_by_status.get(self.status) or VulnerabilityStatusType.PUBLISHED.label
 
     def get_absolute_url(self):
         """
@@ -393,6 +413,24 @@ def purl_to_dict(purl: PackageURL):
 
 
 class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
+    def get_fixed_by_package_versions(self, purl: PackageURL, fix=True):
+        """
+        Return a queryset of all the package versions of this `package` that fix any vulnerability.
+        If `fix` is False, return all package versions whether or not they fix a vulnerability.
+        """
+        filter_dict = {
+            "name": purl.name,
+            "namespace": purl.namespace,
+            "type": purl.type,
+            "qualifiers": purl.qualifiers,
+            "subpath": purl.subpath,
+        }
+
+        if fix:
+            filter_dict["packagerelatedvulnerability__fix"] = True
+
+        return Package.objects.filter(**filter_dict).distinct()
+
     def get_or_create_from_purl(self, purl: PackageURL):
         """
         Return an existing or new Package (created if neeed) given a
@@ -630,25 +668,6 @@ class Package(PackageURLMixin):
         """
         return reverse("package_details", args=[self.purl])
 
-    # TODO: There are other methods, variables etc. in models.py that need similar renaming.
-    def get_fixed_by_package_versions(self, fix=True):
-        """
-        Return a queryset of all the package versions of this `package` that fix any vulnerability.
-        If `fix` is False, return all package versions whether or not they fix a vulnerability.
-        """
-        filter_dict = {
-            "name": self.name,
-            "namespace": self.namespace,
-            "type": self.type,
-            "qualifiers": self.qualifiers,
-            "subpath": self.subpath,
-        }
-
-        if fix:
-            filter_dict["packagerelatedvulnerability__fix"] = True
-
-        return Package.objects.filter(**filter_dict).distinct()
-
     def sort_by_version(self, packages):
         """
         Return a list of `packages` sorted by version.
@@ -656,10 +675,9 @@ class Package(PackageURLMixin):
         if not packages:
             return []
 
-        version_class = RANGE_CLASS_BY_SCHEMES[packages[0].type].version_class
         return sorted(
             packages,
-            key=lambda x: version_class(x.version),
+            key=lambda x: self.version_class(x.version),
         )
 
     @property
@@ -692,7 +710,7 @@ class Package(PackageURLMixin):
         Return a tuple of the next and latest non-vulnerable versions as PackageURLs.  Return a tuple of
         (None, None) if there is no non-vulnerable version.
         """
-        package_versions = self.get_fixed_by_package_versions(fix=False)
+        package_versions = Package.objects.get_fixed_by_package_versions(self, fix=False)
 
         non_vulnerable_versions = []
         for version in package_versions:
@@ -723,11 +741,9 @@ class Package(PackageURLMixin):
         """
         package_details_vulns = []
 
-        fixed_by_packages = self.get_fixed_by_package_versions(fix=True)
+        fixed_by_packages = Package.objects.get_fixed_by_package_versions(self, fix=True)
 
-        package_vulnerabilities = self.vulnerabilities.filter(
-            packagerelatedvulnerability__fix=False
-        ).prefetch_related(
+        package_vulnerabilities = self.vulnerabilities.affecting_vulnerabilities().prefetch_related(
             Prefetch(
                 "packages",
                 queryset=fixed_by_packages,
@@ -800,6 +816,7 @@ class PackageRelatedVulnerability(models.Model):
         "module name responsible for creating this relation. Eg:"
         "vulnerabilities.importers.nginx.NginxBasicImprover",
     )
+    from vulnerabilities.improver import MAX_CONFIDENCE
 
     confidence = models.PositiveIntegerField(
         default=MAX_CONFIDENCE,
@@ -907,6 +924,8 @@ class Alias(models.Model):
     alias = models.CharField(
         max_length=50,
         unique=True,
+        blank=False,
+        null=False,
         help_text="An alias is a unique vulnerability identifier in some database, "
         "such as CVE-2020-2233",
     )
@@ -997,7 +1016,11 @@ class Advisory(models.Model):
         self.unique_content_id = checksum.hexdigest()
         super().save(*args, **kwargs)
 
-    def to_advisory_data(self) -> AdvisoryData:
+    def to_advisory_data(self) -> "AdvisoryData":
+        from vulnerabilities.importer import AdvisoryData
+        from vulnerabilities.importer import AffectedPackage
+        from vulnerabilities.importer import Reference
+
         return AdvisoryData(
             aliases=self.aliases,
             summary=self.summary,

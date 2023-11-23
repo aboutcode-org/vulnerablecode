@@ -35,6 +35,7 @@ from vulnerabilities.importers.gitlab import GitLabAPIImporter
 from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.importers.nginx import NginxImporter
 from vulnerabilities.importers.npm import NpmImporter
+from vulnerabilities.importers.oss_fuzz import OSSFuzzImporter
 from vulnerabilities.importers.ubuntu import UbuntuImporter
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.improver import Improver
@@ -476,4 +477,9 @@ class DebianOvalImprover(ValidVersionImprover):
 
 class UbuntuOvalImprover(ValidVersionImprover):
     importer = UbuntuImporter
+    ignorable_versions = []
+
+
+class OSSFuzzImprover(ValidVersionImprover):
+    importer = OSSFuzzImporter
     ignorable_versions = []

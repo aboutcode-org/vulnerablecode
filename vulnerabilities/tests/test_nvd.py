@@ -15,10 +15,11 @@ from vulnerabilities.tests.util_tests import VULNERABLECODE_REGEN_TEST_FIXTURES 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/nvd/nvd_test.json")
+REJECTED_CVE = os.path.join(BASE_DIR, "test_data/nvd/rejected_nvd.json")
 
 
-def load_test_data():
-    with open(TEST_DATA) as f:
+def load_test_data(file):
+    with open(file) as f:
         return json.load(f)
 
 
@@ -38,7 +39,26 @@ def sorted_advisory_data(advisory_data):
 def test_to_advisories_skips_hardware(regen=REGEN):
     expected_file = os.path.join(BASE_DIR, "test_data/nvd/nvd-expected.json")
 
-    test_data = load_test_data()
+    test_data = load_test_data(file=TEST_DATA)
+    result = [data.to_dict() for data in nvd.to_advisories(test_data)]
+    result = sorted_advisory_data(result)
+
+    if regen:
+        with open(expected_file, "w") as f:
+            json.dump(result, f, indent=2)
+        expected = result
+    else:
+        with open(expected_file) as f:
+            expected = json.load(f)
+    expected = sorted_advisory_data(expected)
+
+    assert result == expected
+
+
+def test_to_advisories_marks_rejected_cve(regen=REGEN):
+    expected_file = os.path.join(BASE_DIR, "test_data/nvd/nvd-rejected-expected.json")
+
+    test_data = load_test_data(file=REJECTED_CVE)
     result = [data.to_dict() for data in nvd.to_advisories(test_data)]
     result = sorted_advisory_data(result)
 

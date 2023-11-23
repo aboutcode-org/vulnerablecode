@@ -8,6 +8,7 @@
 #
 
 import logging
+import re
 from typing import Dict
 from typing import Iterable
 from typing import List
@@ -23,6 +24,7 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.rpm_utils import rpm_to_purl
+from vulnerabilities.utils import get_cwe_id
 from vulnerabilities.utils import get_item
 from vulnerabilities.utils import requests_with_5xx_retry
 
@@ -61,7 +63,6 @@ def get_data_from_url(url):
 
 
 class RedhatImporter(Importer):
-
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://access.redhat.com/documentation/en-us/red_hat_security_data_api/1.0/html/red_hat_security_data_api/legal-notice"
 
@@ -135,6 +136,11 @@ def to_advisory(advisory_data):
                 scoring_elements=cvssv3_vector,
             )
         )
+    cwe_list = []
+    # cwe_string : CWE-409","CWE-121->CWE-787","(CWE-401|CWE-404)","(CWE-190|CWE-911)->CWE-416"
+    cwe_string = advisory_data.get("CWE")
+    if cwe_string:
+        cwe_list = list(map(get_cwe_id, re.findall("CWE-[0-9]+", cwe_string)))
 
     aliases = []
     alias = advisory_data.get("CVE")
@@ -148,4 +154,5 @@ def to_advisory(advisory_data):
         summary=advisory_data.get("bugzilla_description") or "",
         affected_packages=affected_packages,
         references=references,
+        weaknesses=cwe_list,
     )

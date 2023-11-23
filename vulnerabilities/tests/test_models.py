@@ -318,8 +318,8 @@ class TestPackageModel(TestCase):
 
         first_vulnerable_package = vuln_packages.distinct()[0]
 
-        matching_fixed_packages = first_vulnerable_package.get_fixed_by_package_versions(
-            first_vulnerable_package
+        matching_fixed_packages = Package.objects.get_fixed_by_package_versions(
+            first_vulnerable_package, fix=True
         )
         first_fixed_by_package = matching_fixed_packages[0]
 

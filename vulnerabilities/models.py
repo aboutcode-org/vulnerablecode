@@ -70,9 +70,9 @@ class BaseQuerySet(models.QuerySet):
 
 
 class VulnerabilityQuerySet(BaseQuerySet):
-    def affected_packages(self):
+    def affecting_vulnerabilities(self):
         """
-        Return only packages affected by a vulnerability.
+        Return a queryset of Vulnerability that affect a package.
         """
         return self.filter(packagerelatedvulnerability__fix=False)
 
@@ -413,6 +413,24 @@ def purl_to_dict(purl: PackageURL):
 
 
 class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
+    def get_fixed_by_package_versions(self, purl: PackageURL, fix=True):
+        """
+        Return a queryset of all the package versions of this `package` that fix any vulnerability.
+        If `fix` is False, return all package versions whether or not they fix a vulnerability.
+        """
+        filter_dict = {
+            "name": purl.name,
+            "namespace": purl.namespace,
+            "type": purl.type,
+            "qualifiers": purl.qualifiers,
+            "subpath": purl.subpath,
+        }
+
+        if fix:
+            filter_dict["packagerelatedvulnerability__fix"] = True
+
+        return Package.objects.filter(**filter_dict).distinct()
+
     def get_or_create_from_purl(self, purl: PackageURL):
         """
         Return an existing or new Package (created if neeed) given a
@@ -650,24 +668,6 @@ class Package(PackageURLMixin):
         """
         return reverse("package_details", args=[self.purl])
 
-    def get_fixed_by_package_versions(self, fix=True):
-        """
-        Return a queryset of all the package versions of this `package` that fix any vulnerability.
-        If `fix` is False, return all package versions whether or not they fix a vulnerability.
-        """
-        filter_dict = {
-            "name": self.name,
-            "namespace": self.namespace,
-            "type": self.type,
-            "qualifiers": self.qualifiers,
-            "subpath": self.subpath,
-        }
-
-        if fix:
-            filter_dict["packagerelatedvulnerability__fix"] = True
-
-        return Package.objects.filter(**filter_dict).distinct()
-
     def sort_by_version(self, packages):
         """
         Return a list of `packages` sorted by version.
@@ -675,11 +675,6 @@ class Package(PackageURLMixin):
         if not packages:
             return []
 
-        # version_class = RANGE_CLASS_BY_SCHEMES[packages[0].type].version_class
-        # return sorted(
-        #     packages,
-        #     key=lambda x: version_class(x.version),
-        # )
         return sorted(
             packages,
             key=lambda x: self.version_class(x.version),
@@ -715,7 +710,7 @@ class Package(PackageURLMixin):
         Return a tuple of the next and latest non-vulnerable versions as PackageURLs.  Return a tuple of
         (None, None) if there is no non-vulnerable version.
         """
-        package_versions = self.get_fixed_by_package_versions(fix=False)
+        package_versions = Package.objects.get_fixed_by_package_versions(self, fix=False)
 
         non_vulnerable_versions = []
         for version in package_versions:
@@ -746,61 +741,9 @@ class Package(PackageURLMixin):
         """
         package_details_vulns = []
 
-        fixed_by_packages = self.get_fixed_by_package_versions(fix=True)
+        fixed_by_packages = Package.objects.get_fixed_by_package_versions(self, fix=True)
 
-        # This is my original code and it works:
-
-        # package_vulnerabilities = self.vulnerabilities.filter(
-        #     packagerelatedvulnerability__fix=False
-        # ).prefetch_related(
-        #     Prefetch(
-        #         "packages",
-        #         queryset=fixed_by_packages,
-        #         to_attr="fixed_packages",
-        #     )
-        # )
-
-        # package_vulnerabilities = Package.objects.affected()
-        # package_vulnerabilities.prefetch_related(
-        #     Prefetch(
-        #         "packages",
-        #         queryset=fixed_by_packages,
-        #         to_attr="fixed_packages",
-        #     )
-        # )
-
-        # package_vulnerabilities = Package.objects.affected().prefetch_related(
-        #     Prefetch(
-        #         "package",
-        #         queryset=fixed_by_packages,
-        #         to_attr="fixed_packages",
-        #     )
-        # )
-
-        # package_vulnerabilities = self.vulnerabilities.affected().prefetch_related(
-        #     # package_vulnerabilities = self.vulnerabilities.filter(
-        #     #     packagerelatedvulnerability__fix=False
-        #     # ).prefetch_related(
-        #     Prefetch(
-        #         "packages",
-        #         queryset=fixed_by_packages,
-        #         to_attr="fixed_packages",
-        #     )
-        # )
-
-        # package_vulnerabilities = self.vulnerabilities.affected().prefetch_related(
-        #     Prefetch(
-        #         "packages",
-        #         queryset=fixed_by_packages,
-        #         to_attr="fixed_packages",
-        #     )
-        # )
-
-        # package_vulnerabilities = self.vulnerabilities.affected()
-
-        # 2023-11-22 Wednesday 08:54:04.  Try my new vuln queryset manager method.  This works, no failed tests!!!
-
-        package_vulnerabilities = self.vulnerabilities.affected_packages().prefetch_related(
+        package_vulnerabilities = self.vulnerabilities.affecting_vulnerabilities().prefetch_related(
             Prefetch(
                 "packages",
                 queryset=fixed_by_packages,

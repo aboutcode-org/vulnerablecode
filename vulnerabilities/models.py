@@ -792,6 +792,20 @@ class Package(PackageURLMixin):
 
         return package_details_vulns
 
+    @property
+    def fixing_vulnerabilities(self):
+        """
+        Return only packages fixing a vulnerability .
+        """
+        return self.vulnerabilities.all().filter(packagerelatedvulnerability__fix=True)
+
+    @property
+    def affecting_vulnerabilities(self):
+        """
+        Return only packages fixing a vulnerability .
+        """
+        return self.vulnerabilities.all().filter(packagerelatedvulnerability__fix=False)
+
 
 class PackageRelatedVulnerability(models.Model):
     """

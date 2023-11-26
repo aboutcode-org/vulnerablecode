@@ -650,3 +650,9 @@ class BulkSearchAPICPE(TestCase):
             content_type="application/json",
         ).json()
         assert response == {"Error": "Invalid CPE: CVE-2022-2022"}
+
+
+class TesBanUserAgent(TestCase):
+    def test_ban_request_with_bytedance_user_agent(self):
+        response = self.client.get(f"/api/packages", format="json", HTTP_USER_AGENT="bytedance")
+        assert "banned" in str(response.content)

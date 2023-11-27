@@ -7,7 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseNotFound
 from django.utils.deprecation import MiddlewareMixin
 
 
@@ -15,4 +15,4 @@ class BanUserAgent(MiddlewareMixin):
     def process_request(self, request):
         user_agent = request.META.get("HTTP_USER_AGENT", None)
         if user_agent and "bytedance" in user_agent:
-            return HttpResponseForbidden("You are banned!", content_type="text/html")
+            return HttpResponseNotFound(404)

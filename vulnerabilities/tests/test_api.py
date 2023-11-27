@@ -655,4 +655,4 @@ class BulkSearchAPICPE(TestCase):
 class TesBanUserAgent(TestCase):
     def test_ban_request_with_bytedance_user_agent(self):
         response = self.client.get(f"/api/packages", format="json", HTTP_USER_AGENT="bytedance")
-        assert "banned" in str(response.content)
+        assert 404 == response.status_code

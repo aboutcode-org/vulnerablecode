@@ -2,6 +2,16 @@ Release notes
 =============
 
 
+Version v33.6.3
+----------------
+
+- We updated RTD build configuration.
+- We added importer for OSS-Fuzz.
+- We removed vulnerabilities with empty aliases.
+- We fixed search encoding issue https://github.com/nexB/vulnerablecode/issues/1336.
+- We added middleware to ban "bytedance" user-agent.
+
+
 Version v33.6.2
 ----------------
 

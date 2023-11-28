@@ -7,19 +7,12 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import os
-import sys
-import warnings
-from pathlib import Path
-
-__version__ = "33.6.3"
+from django.http import HttpResponseNotFound
+from django.utils.deprecation import MiddlewareMixin
 
 
-def command_line():
-    """
-    Command line entry point.
-    """
-    from django.core.management import execute_from_command_line
-
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "vulnerablecode.settings")
-    execute_from_command_line(sys.argv)
+class BanUserAgent(MiddlewareMixin):
+    def process_request(self, request):
+        user_agent = request.META.get("HTTP_USER_AGENT", None)
+        if user_agent and "bytedance" in user_agent:
+            return HttpResponseNotFound(404)

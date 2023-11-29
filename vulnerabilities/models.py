@@ -250,72 +250,6 @@ class Vulnerability(models.Model):
         """
         return self.aliases.all()
 
-    @property
-    def history(self):
-        """
-        Return a queryset of Vulnerability that have one or more related packages.
-        """
-        from vulnerabilities.importers import IMPORTERS_REGISTRY
-
-        vuln_logs_qs = self.vulnerabilitychangelog_set.all()
-        for log in vuln_logs_qs.filter(
-            action_type=VulnerabilityChangeLogActionType.IMPORT
-        ).distinct():
-            authority = IMPORTERS_REGISTRY[log.actor_name].importing_authority
-            importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
-            yield History(
-                message=f"Imported at Vulnerablecode by {authority}",
-                log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                source_url="",
-                vulnerablecode_version=log.vulnerablecode_version,
-            )
-            source_url = ""
-            if log.supporting_data.get("url"):
-                url = log.supporting_data["url"]
-                source_url = f"""<a href="{ url }" target="_blank"> { url } </a>"""
-            yield History(
-                message=f"Advisory published by { authority }",
-                log_date=log.supporting_data.get("date_published") or None,
-                source_url=source_url,
-                vulnerablecode_version=log.vulnerablecode_version,
-            )
-
-        for log in vuln_logs_qs.filter(action_type=VulnerabilityChangeLogActionType.AFFECTS):
-            importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
-            reports_or_confirms = "reports"
-            if not log.supporting_data["first_import"]:
-                reports_or_confirms = "confirms"
-            message = f"""{importer_name} {reports_or_confirms}  <a href="/packages/{log.supporting_data["package"]}?search={ log.supporting_data["package"] }" target="_self">{ log.supporting_data["package"] }</a> is affected by this vulnerability"""
-            source_url = ""
-            if log.supporting_data.get("url"):
-                url = log.supporting_data["url"]
-                source_url = f"""<a href="{ url }" target="_blank"> { url } </a>"""
-            yield History(
-                message=message,
-                log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                source_url=source_url,
-                vulnerablecode_version=log.vulnerablecode_version,
-                associated_package=log.supporting_data["package"],
-            )
-
-        for log in vuln_logs_qs.filter(action_type=VulnerabilityChangeLogActionType.FIXED_BY):
-            importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
-            reports_or_confirms = "reports"
-            if not log.supporting_data["first_import"]:
-                reports_or_confirms = "confirms"
-            message = f"""{importer_name} {reports_or_confirms}  <a href="/packages/{log.supporting_data["package"]}?search={ log.supporting_data["package"] }" target="_self">{ log.supporting_data["package"] }</a> is fixing this vulnerability"""
-            source_url = ""
-            if log.supporting_data.get("url"):
-                url = log.supporting_data["url"]
-                source_url = f"""<a href="{ url }" target="_blank"> { url } </a>"""
-            yield History(
-                message=message,
-                log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                source_url=source_url,
-                vulnerablecode_version=log.vulnerablecode_version,
-                associated_package=log.supporting_data["package"],
-            )
-
     alias = get_aliases
 
     @property
@@ -709,49 +643,6 @@ class Package(PackageURLMixin):
         """
         return self.vulnerabilities.filter(packagerelatedvulnerability__fix=False)
 
-    @property
-    def history(self):
-        """
-        Return a queryset of vulnerabilities affecting this package.
-        """
-        from vulnerabilities.importers import IMPORTERS_REGISTRY
-
-        package_logs_qs = self.packagechangelog_set.all()
-
-        for log in package_logs_qs.filter(action_type=PackageChangeLogActionType.AFFECTED_BY):
-            importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
-            reports_or_confirms = "reports"
-            if not log.supporting_data["first_import"]:
-                reports_or_confirms = "confirms"
-            message = f"""{importer_name} {reports_or_confirms}  <a href="/vulnerabilities/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }"> { log.supporting_data["vulnerability"] } </a> is affecting this package"""
-            source_url = ""
-            if log.supporting_data.get("url"):
-                url = log.supporting_data["url"]
-                source_url = f"""<a href="{ url }" target="_blank"> { url } </a>"""
-            yield History(
-                message=message,
-                log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                source_url=source_url,
-                vulnerablecode_version=log.vulnerablecode_version,
-            )
-
-        for log in package_logs_qs.filter(action_type=PackageChangeLogActionType.FIXING):
-            importer_name = IMPORTERS_REGISTRY[log.actor_name].importer_name
-            reports_or_confirms = "reports"
-            if not log.supporting_data["first_import"]:
-                reports_or_confirms = "confirms"
-            message = f"""{importer_name} {reports_or_confirms}  <a href="/vulnerabilities/{log.supporting_data["vulnerability"]}?search={ log.supporting_data["vulnerability"] }"> { log.supporting_data["vulnerability"] } </a> is fixed by this package"""
-            source_url = ""
-            if log.supporting_data.get("url"):
-                url = log.supporting_data["url"]
-                source_url = f"""<a href="{ url }" target="_blank"> { url } </a>"""
-            yield History(
-                message=message,
-                log_date=log.action_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                source_url=source_url,
-                vulnerablecode_version=log.vulnerablecode_version,
-            )
-
     # legacy aliases
     vulnerable_to = affected_by
 
@@ -1011,66 +902,60 @@ class PackageRelatedVulnerability(models.Model):
     @transaction.atomic
     def add_package_vulnerability_changelog(self, advisory, first_import):
         if self.fix:
-            if self.vulnerability_package_fix_relationship_exists(advisory):
-                return
-            VulnerabilityChangeLog.log_fixed_by(
-                vulnerability=self.vulnerability,
-                importer=advisory.created_by,
-                supporting_data={
-                    "package": str(self.package),
-                    "url": advisory.url if advisory.url else None,
-                    "first_import": first_import,
-                },
-            )
+            # if self.vulnerability_package_fix_relationship_exists(advisory):
+            #     return
+            # VulnerabilityChangeLog.log_fixed_by(
+            #     vulnerability=self.vulnerability,
+            #     importer=advisory.created_by,
+            #     supporting_data={
+            #         "package": str(self.package),
+            #         "url": advisory.url if advisory.url else None,
+            #         "first_import": first_import,
+            #     },
+            # )
             PackageChangeLog.log_fixing(
                 package=self.package,
                 importer=advisory.created_by,
-                supporting_data={
-                    "vulnerability": str(self.vulnerability),
-                    "url": advisory.url if advisory.url else None,
-                    "first_import": first_import,
-                },
+                source_url=advisory.url if advisory.url else None,
+                related_vulnerability=str(self.vulnerability),
             )
         else:
-            if self.vulnerability_package_affecting_relationship_exists(advisory):
-                return
-            VulnerabilityChangeLog.log_affects(
-                vulnerability=self.vulnerability,
-                importer=advisory.created_by,
-                supporting_data={
-                    "package": str(self.package),
-                    "url": advisory.url if advisory.url else None,
-                    "first_import": first_import,
-                },
-            )
+            # if self.vulnerability_package_affecting_relationship_exists(advisory):
+            #     return
+            # VulnerabilityChangeLog.log_affects(
+            #     vulnerability=self.vulnerability,
+            #     importer=advisory.created_by,
+            #     supporting_data={
+            #         "package": str(self.package),
+            #         "url": advisory.url if advisory.url else None,
+            #         "first_import": first_import,
+            #     },
+            # )
 
             PackageChangeLog.log_affected_by(
                 package=self.package,
                 importer=advisory.created_by,
-                supporting_data={
-                    "vulnerability": str(self.vulnerability),
-                    "url": advisory.url if advisory.url else None,
-                    "first_import": first_import,
-                },
+                source_url=advisory.url if advisory.url else None,
+                related_vulnerability=str(self.vulnerability),
             )
 
-    def vuln_package_relationship_logged(self, advisory, action_type):
-        return VulnerabilityChangeLog.objects.filter(
-            vulnerability=self.vulnerability,
-            actor_name=advisory.created_by,
-            supporting_data__package=str(self.package),
-            action_type=action_type,
-        ).exists()
+    # def vuln_package_relationship_logged(self, advisory, action_type):
+    #     return VulnerabilityChangeLog.objects.filter(
+    #         vulnerability=self.vulnerability,
+    #         actor_name=advisory.created_by,
+    #         supporting_data__package=str(self.package),
+    #         action_type=action_type,
+    #     ).exists()
 
-    def vulnerability_package_affecting_relationship_exists(self, advisory):
-        return self.vuln_package_relationship_logged(
-            advisory, action_type=VulnerabilityChangeLogActionType.AFFECTS
-        )
+    # def vulnerability_package_affecting_relationship_exists(self, advisory):
+    #     return self.vuln_package_relationship_logged(
+    #         advisory, action_type=VulnerabilityChangeLogActionType.AFFECTS
+    #     )
 
-    def vulnerability_package_fix_relationship_exists(self, advisory):
-        return self.vuln_package_relationship_logged(
-            advisory, action_type=VulnerabilityChangeLogActionType.FIXED_BY
-        )
+    # def vulnerability_package_fix_relationship_exists(self, advisory):
+    #     return self.vuln_package_relationship_logged(
+    #         advisory, action_type=VulnerabilityChangeLogActionType.FIXED_BY
+    #     )
 
 
 class VulnerabilitySeverity(models.Model):
@@ -1297,51 +1182,46 @@ class ApiUser(UserModel):
         proxy = True
 
 
-class VulnerabilityChangeLogActionType(models.IntegerChoices):
-    """List of vulnerability statuses."""
-
-    IMPORT = 1, "import"
-    IMPROVE = 2, "improve"
-    AFFECTS = 3, "affects"
-    FIXED_BY = 4, "fixed_by"
-
-
-class PackageChangeLogActionType(models.IntegerChoices):
-    """List of vulnerability statuses."""
-
-    IMPORT = 1, "import"
-    IMPROVE = 2, "improve"
-    AFFECTED_BY = 3, "affected_by"
-    FIXING = 4, "fixing"
-
-
 class ChangeLog(models.Model):
+
+    # A changelog should have
+    # which actor has performed what sorts of action on a particluar entity at which time
+    # Use cases:
+    # Talking about a particular vulnerability VCID-1234
+    # Actor action supporting software_version action_time
+    # NVDImporter | imported | with aliases CVE-1
+    # NVDImporter | affecting | package-A
+    # NVDImporter | fixed by | package-B
+    # GHSAImporter | imported | with aliases GHSA-2, CVE-1
+    # GHSAImporter | affecting | package-B
+    # StatusImprover | updated | status to rejected
 
     action_time = models.DateTimeField(
         # check if dates are actually UTC
         default=timezone.now,
         editable=False,
-        help_text="UTC Date of the change",
-    )
-
-    action_message = models.TextField(
-        blank=True,
-    )
-
-    supporting_data = models.JSONField(
-        blank=True,
-        null=True,
-        help_text="JSON representation of the advisory data",
+        help_text="Time of the change",
     )
 
     actor_name = models.CharField(
         max_length=100,
-        help_text="Name of the actor: NVDImporter, NginxImprover etc.",
+        help_text="Name of the actor: either a script or username for instance tgoel, NVDImporter or NginxImprover.",
     )
 
-    vulnerablecode_version = models.CharField(
+    action_type = models.PositiveSmallIntegerField(
+        help_text="Action type such as: update, create. Possible values are defined in subclasses"
+    )
+
+    source_url = models.URLField(
+        max_length=1024,
+        help_text="URL to the source of this change",
+        blank=True,
+        null=True,
+    )
+
+    software_version = models.CharField(
         max_length=100,
-        help_text="Version of the vulnerablecode at the time of change",
+        help_text="Version of the software at the time of change",
         default=VULNERABLECODE_VERSION,
     )
 
@@ -1349,95 +1229,79 @@ class ChangeLog(models.Model):
         abstract = True
 
 
-class VulnerabilityHistoryManager(models.Manager):
-    def get_for_object(self, vuln, **kwargs):
-        return self.filter(
-            vulnerability=vuln,
-            **kwargs,
-        )
+# class VulnerabilityHistoryManager(models.Manager):
+#     def get_for_object(self, vuln, **kwargs):
+#         return self.filter(
+#             vulnerability=vuln,
+#             **kwargs,
+#         )
 
-    def log_action(
-        self,
-        vulnerability,
-        action_type,
-        actor_name,
-        supporting_data={},
-        action_message="",
-    ):
-        """
-        Creates a History entry for a given `obj` on Addition, Change, and Deletion.
-        We do not log addition for object that inherit the HistoryFieldsMixin since
-        the `created_by` and `created_date` are already set on its model.
-        """
-        if isinstance(action_message, list):
-            action_message = json.dumps(action_message)
+#     def log_action(
+#         self,
+#         vulnerability,
+#         action_type,
+#         actor_name,
+#         supporting_data={},
+#         action_message="",
+#     ):
+#         """
+#         Creates a History entry for a given `obj` on Addition, Change, and Deletion.
+#         We do not log addition for object that inherit the HistoryFieldsMixin since
+#         the `created_by` and `created_date` are already set on its model.
+#         """
+#         if isinstance(action_message, list):
+#             action_message = json.dumps(action_message)
 
-        return self.model.objects.get_or_create(
-            vulnerability=vulnerability,
-            action_type=action_type,
-            actor_name=actor_name,
-            supporting_data=supporting_data,
-            action_message=action_message,
-            vulnerablecode_version=VULNERABLECODE_VERSION,
-        )
+#         return self.model.objects.get_or_create(
+#             vulnerability=vulnerability,
+#             action_type=action_type,
+#             actor_name=actor_name,
+#             supporting_data=supporting_data,
+#             action_message=action_message,
+#             vulnerablecode_version=VULNERABLECODE_VERSION,
+#         )
 
 
-class VulnerabilityChangeLog(ChangeLog):
-    vulnerability = models.ForeignKey(
-        Vulnerability,
-        on_delete=models.CASCADE,
-    )
+# class VulnerabilityChangeLog(ChangeLog):
+#     IMPORT = 1
+#     IMPROVE = 2
 
-    action_type = models.PositiveSmallIntegerField(choices=VulnerabilityChangeLogActionType.choices)
+#     ACTION_TYPE_CHOICES = (
+#         (IMPORT, "import"),
+#         (IMPROVE, "improve"),
+#     )
 
-    objects = VulnerabilityHistoryManager()
+#     vulnerability = models.ForeignKey(
+#         Vulnerability,
+#         on_delete=models.CASCADE,
+#     )
 
-    @classmethod
-    def log_import(cls, vulnerability, importer, supporting_data={}):
-        """
-        Creates History entry on Addition.
-        """
-        return cls.objects.log_action(
-            vulnerability=vulnerability,
-            action_type=VulnerabilityChangeLogActionType.IMPORT,
-            actor_name=importer,
-            supporting_data=supporting_data,
-        )
+#     action_type = models.PositiveSmallIntegerField(choices=ACTION_TYPE_CHOICES)
 
-    @classmethod
-    def log_improve(cls, vulnerability, improver):
-        """
-        Creates History entry on Improvement.
-        """
-        return cls.objects.log_action(
-            vulnerability=vulnerability,
-            action_type=VulnerabilityChangeLogActionType.IMPROVE,
-            actor_name=improver,
-        )
+#     objects = VulnerabilityHistoryManager()
 
-    @classmethod
-    def log_affects(cls, vulnerability, importer, supporting_data={}):
-        """
-        Creates History entry on Vulnerabilitty affects package.
-        """
-        return cls.objects.log_action(
-            vulnerability=vulnerability,
-            action_type=VulnerabilityChangeLogActionType.AFFECTS,
-            actor_name=importer,
-            supporting_data=supporting_data,
-        )
+#     @classmethod
+#     def log_import(cls, vulnerability, importer, supporting_data={}):
+#         """
+#         Creates History entry on Addition.
+#         """
+#         return cls.objects.log_action(
+#             vulnerability=vulnerability,
+#             action_type=VulnerabilityChangeLog.IMPORT,
+#             actor_name=importer,
+#             supporting_data=supporting_data,
+#         )
 
-    @classmethod
-    def log_fixed_by(cls, vulnerability, importer, supporting_data={}):
-        """
-        Creates History entry on Vulnerabilitty is fixed by package.
-        """
-        return cls.objects.log_action(
-            vulnerability=vulnerability,
-            action_type=VulnerabilityChangeLogActionType.FIXED_BY,
-            actor_name=importer,
-            supporting_data=supporting_data,
-        )
+#     @classmethod
+#     def log_improve(cls, vulnerability, improver):
+#         """
+#         Creates History entry on Improvement.
+#         """
+#         return cls.objects.log_action(
+#             vulnerability=vulnerability,
+#             action_type=VulnerabilityChangeLog.IMPROVE,
+#             actor_name=improver,
+#         )
 
 
 class PackageHistoryManager(models.Manager):
@@ -1447,86 +1311,72 @@ class PackageHistoryManager(models.Manager):
             **kwargs,
         )
 
-    def log_action(
-        self,
-        package,
-        action_type,
-        actor_name,
-        supporting_data={},
-        action_message="",
-    ):
+    def log_action(self, package, action_type, actor_name, source_url, related_vulnerability):
         """
         Creates a History entry for a given `obj` on Addition, Change, and Deletion.
         We do not log addition for object that inherit the HistoryFieldsMixin since
         the `created_by` and `created_date` are already set on its model.
         """
-        if isinstance(action_message, list):
-            action_message = json.dumps(action_message)
-
         return self.model.objects.get_or_create(
             package=package,
             action_type=action_type,
             actor_name=actor_name,
-            supporting_data=supporting_data,
-            action_message=action_message,
-            vulnerablecode_version=VULNERABLECODE_VERSION,
+            source_url=source_url,
+            related_vulnerability=related_vulnerability,
+            software_version=VULNERABLECODE_VERSION,
         )
 
 
 class PackageChangeLog(ChangeLog):
+
+    IMPORT = 1
+    AFFECTED_BY = 2
+    FIXING = 3
+
+    ACTION_TYPE_CHOICES = ((IMPORT, "import"), (AFFECTED_BY, "affected by"), (FIXING, "fixing"))
 
     package = models.ForeignKey(
         Package,
         on_delete=models.CASCADE,
     )
 
-    action_type = models.PositiveSmallIntegerField(choices=PackageChangeLogActionType.choices)
+    # NOTES: We are not using foreign key because this is a log
+    # that we want to persist in case the VCID is not any more.
+
+    # TODO: We will change to foeign key in future once the models get stable
+    related_vulnerability = models.CharField(
+        max_length=1024,
+        null=True,
+        blank=True,
+        help_text="VCID of the vulnerability related to this package",
+    )
+
+    action_type = models.PositiveSmallIntegerField(choices=ACTION_TYPE_CHOICES)
 
     objects = PackageHistoryManager()
 
     @classmethod
-    def log_import(cls, package, importer, supporting_data={}):
-        """
-        Creates History entry on Addition.
-        """
-        return cls.objects.log_action(
-            package=package,
-            action_type=PackageChangeLogActionType.IMPORT,
-            actor_name=importer,
-            supporting_data=supporting_data,
-        )
-
-    @classmethod
-    def log_improve(cls, package, improver):
-        """
-        Creates History entry on Improvement.
-        """
-        return cls.objects.log_action(
-            package=package,
-            action_type=PackageChangeLogActionType.IMPROVE,
-            actor_name=improver,
-        )
-
-    @classmethod
-    def log_affected_by(cls, package, importer, supporting_data={}):
+    def log_affected_by(cls, package, importer, source_url, related_vulnerability):
         """
         Creates History entry on Vulnerabilitty affects package.
         """
         return cls.objects.log_action(
             package=package,
-            action_type=PackageChangeLogActionType.AFFECTED_BY,
+            action_type=PackageChangeLog.AFFECTED_BY,
             actor_name=importer,
-            supporting_data=supporting_data,
+            source_url=source_url,
+            related_vulnerability=related_vulnerability,
         )
 
     @classmethod
-    def log_fixing(cls, package, importer, supporting_data={}):
+    def log_fixing(cls, package, importer, source_url, related_vulnerability):
         """
         Creates History entry on Vulnerabilitty is fixed by package.
         """
         return cls.objects.log_action(
             package=package,
-            action_type=PackageChangeLogActionType.FIXING,
+            action_type=PackageChangeLog.FIXING,
             actor_name=importer,
-            supporting_data=supporting_data,
+            source_url=source_url,
+            related_vulnerability=related_vulnerability,
         )

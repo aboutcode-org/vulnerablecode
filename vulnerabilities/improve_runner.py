@@ -8,8 +8,6 @@
 #
 
 import logging
-from datetime import datetime
-from datetime import timezone
 from traceback import format_exc as traceback_format_exc
 from typing import List
 
@@ -20,10 +18,8 @@ from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
-from vulnerabilities.models import PackageChangeLog
 from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
-from vulnerabilities.models import VulnerabilityChangeLog
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
@@ -88,7 +84,6 @@ def process_inferences(
             vulnerability_id=inference.vulnerability_id,
             aliases=inference.aliases,
             summary=inference.summary,
-            advisory=advisory,
         )
 
         if not vulnerability:

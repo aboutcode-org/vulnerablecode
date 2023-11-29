@@ -40,6 +40,7 @@ from univers import versions
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from vulnerabilities.importers import IMPORTERS_REGISTRY
 
+from vulnerabilities.importers import IMPORTERS_REGISTRY
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import History
 from vulnerabilities.utils import build_vcid
@@ -257,6 +258,10 @@ class Vulnerability(models.Model):
     def get_status_label(self):
         label_by_status = {choice[0]: choice[1] for choice in VulnerabilityStatusType.choices}
         return label_by_status.get(self.status) or VulnerabilityStatusType.PUBLISHED.label
+
+    @property
+    def history(self):
+        return self.changelog.all()
 
     def get_absolute_url(self):
         """
@@ -671,7 +676,7 @@ class Package(PackageURLMixin):
         Returns True if this package is vulnerable to any vulnerability.
         """
         return self.affected_by.exists()
-    
+
     @property
     def history(self):
         return self.changelog.all()
@@ -907,17 +912,6 @@ class PackageRelatedVulnerability(models.Model):
     @transaction.atomic
     def add_package_vulnerability_changelog(self, advisory, first_import):
         if self.fix:
-            # if self.vulnerability_package_fix_relationship_exists(advisory):
-            #     return
-            # VulnerabilityChangeLog.log_fixed_by(
-            #     vulnerability=self.vulnerability,
-            #     importer=advisory.created_by,
-            #     supporting_data={
-            #         "package": str(self.package),
-            #         "url": advisory.url if advisory.url else None,
-            #         "first_import": first_import,
-            #     },
-            # )
             PackageChangeLog.log_fixing(
                 package=self.package,
                 importer=advisory.created_by,
@@ -925,42 +919,12 @@ class PackageRelatedVulnerability(models.Model):
                 related_vulnerability=str(self.vulnerability),
             )
         else:
-            # if self.vulnerability_package_affecting_relationship_exists(advisory):
-            #     return
-            # VulnerabilityChangeLog.log_affects(
-            #     vulnerability=self.vulnerability,
-            #     importer=advisory.created_by,
-            #     supporting_data={
-            #         "package": str(self.package),
-            #         "url": advisory.url if advisory.url else None,
-            #         "first_import": first_import,
-            #     },
-            # )
-
             PackageChangeLog.log_affected_by(
                 package=self.package,
                 importer=advisory.created_by,
                 source_url=advisory.url if advisory.url else None,
                 related_vulnerability=str(self.vulnerability),
             )
-
-    # def vuln_package_relationship_logged(self, advisory, action_type):
-    #     return VulnerabilityChangeLog.objects.filter(
-    #         vulnerability=self.vulnerability,
-    #         actor_name=advisory.created_by,
-    #         supporting_data__package=str(self.package),
-    #         action_type=action_type,
-    #     ).exists()
-
-    # def vulnerability_package_affecting_relationship_exists(self, advisory):
-    #     return self.vuln_package_relationship_logged(
-    #         advisory, action_type=VulnerabilityChangeLogActionType.AFFECTS
-    #     )
-
-    # def vulnerability_package_fix_relationship_exists(self, advisory):
-    #     return self.vuln_package_relationship_logged(
-    #         advisory, action_type=VulnerabilityChangeLogActionType.FIXED_BY
-    #     )
 
 
 class VulnerabilitySeverity(models.Model):
@@ -1218,6 +1182,22 @@ class ChangeLog(models.Model):
         default=VULNERABLECODE_VERSION,
     )
 
+    @property
+    def get_action_type_label(self):
+        label_by_status = {choice[0]: choice[1] for choice in self.ACTION_TYPE_CHOICES}
+        return label_by_status.get(self.action_type)
+
+    @property
+    def get_actor_name(self):
+        try:
+            return IMPORTERS_REGISTRY[self.actor_name].importer_name
+        except:
+            return self.actor_name
+
+    @property
+    def get_iso_time(self):
+        return self.action_time.isoformat()
+
     class Meta:
         abstract = True
 
@@ -1234,24 +1214,19 @@ class VulnerabilityHistoryManager(models.Manager):
         vulnerability,
         action_type,
         actor_name,
-        supporting_data={},
-        action_message="",
+        source_url,
     ):
         """
         Creates a History entry for a given `obj` on Addition, Change, and Deletion.
         We do not log addition for object that inherit the HistoryFieldsMixin since
         the `created_by` and `created_date` are already set on its model.
         """
-        if isinstance(action_message, list):
-            action_message = json.dumps(action_message)
-
         return self.model.objects.get_or_create(
             vulnerability=vulnerability,
             action_type=action_type,
             actor_name=actor_name,
-            supporting_data=supporting_data,
-            action_message=action_message,
-            vulnerablecode_version=VULNERABLECODE_VERSION,
+            source_url=source_url,
+            software_version=VULNERABLECODE_VERSION,
         )
 
 
@@ -1260,13 +1235,12 @@ class VulnerabilityChangeLog(ChangeLog):
     IMPROVE = 2
 
     ACTION_TYPE_CHOICES = (
-        (IMPORT, "import"),
-        (IMPROVE, "improve"),
+        (IMPORT, "Import"),
+        (IMPROVE, "Improve"),
     )
 
     vulnerability = models.ForeignKey(
-        Vulnerability,
-        on_delete=models.CASCADE,
+        Vulnerability, on_delete=models.CASCADE, related_name="changelog"
     )
 
     action_type = models.PositiveSmallIntegerField(choices=ACTION_TYPE_CHOICES)
@@ -1274,7 +1248,7 @@ class VulnerabilityChangeLog(ChangeLog):
     objects = VulnerabilityHistoryManager()
 
     @classmethod
-    def log_import(cls, vulnerability, importer, supporting_data={}):
+    def log_import(cls, vulnerability, importer, source_url):
         """
         Creates History entry on Addition.
         """
@@ -1282,7 +1256,7 @@ class VulnerabilityChangeLog(ChangeLog):
             vulnerability=vulnerability,
             action_type=VulnerabilityChangeLog.IMPORT,
             actor_name=importer,
-            supporting_data=supporting_data,
+            source_url=source_url,
         )
 
     @classmethod
@@ -1328,11 +1302,7 @@ class PackageChangeLog(ChangeLog):
 
     ACTION_TYPE_CHOICES = ((IMPORT, "Import"), (AFFECTED_BY, "Affected by"), (FIXING, "Fixing"))
 
-    package = models.ForeignKey(
-        Package,
-        on_delete=models.CASCADE,
-        related_name="changelog"
-    )
+    package = models.ForeignKey(Package, on_delete=models.CASCADE, related_name="changelog")
 
     # NOTES: We are not using foreign key because this is a log
     # that we want to persist in case the VCID is not any more.
@@ -1374,16 +1344,3 @@ class PackageChangeLog(ChangeLog):
             source_url=source_url,
             related_vulnerability=related_vulnerability,
         )
-
-    @property
-    def get_action_type_label(self):
-        label_by_status = {choice[0]: choice[1] for choice in self.ACTION_TYPE_CHOICES}
-        return label_by_status.get(self.action_type)
-
-    @property
-    def get_actor_name(self):
-        return IMPORTERS_REGISTRY[self.actor_name].importer_name
-
-    @property
-    def get_iso_time(self):
-        return self.action_time.isoformat()

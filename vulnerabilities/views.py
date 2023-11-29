@@ -153,6 +153,7 @@ class VulnerabilityDetails(DetailView):
                 "fixed_by_packages": self.object.fixed_by_packages.all(),
                 "weaknesses": weaknesses_present_in_db,
                 "status": status,
+                "history": self.object.history,
             }
         )
         return context

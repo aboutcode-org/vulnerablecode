@@ -25,6 +25,7 @@ from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityChangeLog
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
@@ -248,7 +249,7 @@ def create_valid_vulnerability_reference(url, reference_id=None):
 
 
 def get_or_create_vulnerability_and_aliases(
-    aliases: List[str], vulnerability_id=None, summary=None, advisory=None,
+    aliases: List[str], vulnerability_id=None, summary=None, advisory=None
 ):
     """
     Get or create vulnerabilitiy and aliases such that all existing and new
@@ -298,6 +299,9 @@ def get_or_create_vulnerability_and_aliases(
         try:
             vulnerability = create_vulnerability_and_add_aliases(
                 aliases=new_alias_names, summary=summary
+            )
+            VulnerabilityChangeLog.log_import(
+                importer=advisory.created_by, source_url=advisory.url, vulnerability=vulnerability
             )
         except Exception as e:
             logger.error(

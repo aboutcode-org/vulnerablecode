@@ -139,8 +139,6 @@ class VulnerabilityDetails(DetailView):
             weakness_object for weakness_object in weaknesses if weakness_object.weakness
         ]
         status = self.object.get_status_label
-        # history = list(self.object.history)
-        # sorted_history = sorted(history, key=key_func, reverse=True)
         context.update(
             {
                 "vulnerability": self.object,

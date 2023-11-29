@@ -248,7 +248,7 @@ def create_valid_vulnerability_reference(url, reference_id=None):
 
 
 def get_or_create_vulnerability_and_aliases(
-    aliases: List[str], vulnerability_id=None, summary=None
+    aliases: List[str], vulnerability_id=None, summary=None, advisory=None,
 ):
     """
     Get or create vulnerabilitiy and aliases such that all existing and new

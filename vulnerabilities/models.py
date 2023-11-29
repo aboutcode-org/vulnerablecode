@@ -38,6 +38,7 @@ from packageurl.contrib.django.models import without_empty_values
 from rest_framework.authtoken.models import Token
 from univers import versions
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
+from vulnerabilities.importers import IMPORTERS_REGISTRY
 
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import History
@@ -670,6 +671,10 @@ class Package(PackageURLMixin):
         Returns True if this package is vulnerable to any vulnerability.
         """
         return self.affected_by.exists()
+    
+    @property
+    def history(self):
+        return self.changelog.all()
 
     def get_absolute_url(self):
         """
@@ -1333,11 +1338,12 @@ class PackageChangeLog(ChangeLog):
     AFFECTED_BY = 2
     FIXING = 3
 
-    ACTION_TYPE_CHOICES = ((IMPORT, "import"), (AFFECTED_BY, "affected by"), (FIXING, "fixing"))
+    ACTION_TYPE_CHOICES = ((IMPORT, "Import"), (AFFECTED_BY, "Affected by"), (FIXING, "Fixing"))
 
     package = models.ForeignKey(
         Package,
         on_delete=models.CASCADE,
+        related_name="changelog"
     )
 
     # NOTES: We are not using foreign key because this is a log
@@ -1380,3 +1386,16 @@ class PackageChangeLog(ChangeLog):
             source_url=source_url,
             related_vulnerability=related_vulnerability,
         )
+
+    @property
+    def get_action_type_label(self):
+        label_by_status = {choice[0]: choice[1] for choice in self.ACTION_TYPE_CHOICES}
+        return label_by_status.get(self.action_type)
+
+    @property
+    def get_actor_name(self):
+        return IMPORTERS_REGISTRY[self.actor_name].importer_name
+
+    @property
+    def get_iso_time(self):
+        return self.action_time.isoformat()

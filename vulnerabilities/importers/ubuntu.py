@@ -61,7 +61,6 @@ class UbuntuImporter(OvalImporter):
     
     Thanks
     """
-    importing_authority = "Ubuntu Security Data"
     importer_name = "Ubuntu OVAL Importer"
 
     def __init__(self, *args, **kwargs):

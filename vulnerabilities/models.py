@@ -1189,18 +1189,6 @@ class ApiUser(UserModel):
 
 class ChangeLog(models.Model):
 
-    # A changelog should have
-    # which actor has performed what sorts of action on a particluar entity at which time
-    # Use cases:
-    # Talking about a particular vulnerability VCID-1234
-    # Actor action supporting software_version action_time
-    # NVDImporter | imported | with aliases CVE-1
-    # NVDImporter | affecting | package-A
-    # NVDImporter | fixed by | package-B
-    # GHSAImporter | imported | with aliases GHSA-2, CVE-1
-    # GHSAImporter | affecting | package-B
-    # StatusImprover | updated | status to rejected
-
     action_time = models.DateTimeField(
         # check if dates are actually UTC
         default=timezone.now,
@@ -1234,79 +1222,79 @@ class ChangeLog(models.Model):
         abstract = True
 
 
-# class VulnerabilityHistoryManager(models.Manager):
-#     def get_for_object(self, vuln, **kwargs):
-#         return self.filter(
-#             vulnerability=vuln,
-#             **kwargs,
-#         )
+class VulnerabilityHistoryManager(models.Manager):
+    def get_for_object(self, vuln, **kwargs):
+        return self.filter(
+            vulnerability=vuln,
+            **kwargs,
+        )
 
-#     def log_action(
-#         self,
-#         vulnerability,
-#         action_type,
-#         actor_name,
-#         supporting_data={},
-#         action_message="",
-#     ):
-#         """
-#         Creates a History entry for a given `obj` on Addition, Change, and Deletion.
-#         We do not log addition for object that inherit the HistoryFieldsMixin since
-#         the `created_by` and `created_date` are already set on its model.
-#         """
-#         if isinstance(action_message, list):
-#             action_message = json.dumps(action_message)
+    def log_action(
+        self,
+        vulnerability,
+        action_type,
+        actor_name,
+        supporting_data={},
+        action_message="",
+    ):
+        """
+        Creates a History entry for a given `obj` on Addition, Change, and Deletion.
+        We do not log addition for object that inherit the HistoryFieldsMixin since
+        the `created_by` and `created_date` are already set on its model.
+        """
+        if isinstance(action_message, list):
+            action_message = json.dumps(action_message)
 
-#         return self.model.objects.get_or_create(
-#             vulnerability=vulnerability,
-#             action_type=action_type,
-#             actor_name=actor_name,
-#             supporting_data=supporting_data,
-#             action_message=action_message,
-#             vulnerablecode_version=VULNERABLECODE_VERSION,
-#         )
+        return self.model.objects.get_or_create(
+            vulnerability=vulnerability,
+            action_type=action_type,
+            actor_name=actor_name,
+            supporting_data=supporting_data,
+            action_message=action_message,
+            vulnerablecode_version=VULNERABLECODE_VERSION,
+        )
 
 
-# class VulnerabilityChangeLog(ChangeLog):
-#     IMPORT = 1
-#     IMPROVE = 2
+class VulnerabilityChangeLog(ChangeLog):
+    IMPORT = 1
+    IMPROVE = 2
 
-#     ACTION_TYPE_CHOICES = (
-#         (IMPORT, "import"),
-#         (IMPROVE, "improve"),
-#     )
+    ACTION_TYPE_CHOICES = (
+        (IMPORT, "import"),
+        (IMPROVE, "improve"),
+    )
 
-#     vulnerability = models.ForeignKey(
-#         Vulnerability,
-#         on_delete=models.CASCADE,
-#     )
+    vulnerability = models.ForeignKey(
+        Vulnerability,
+        on_delete=models.CASCADE,
+    )
 
-#     action_type = models.PositiveSmallIntegerField(choices=ACTION_TYPE_CHOICES)
+    action_type = models.PositiveSmallIntegerField(choices=ACTION_TYPE_CHOICES)
 
-#     objects = VulnerabilityHistoryManager()
+    objects = VulnerabilityHistoryManager()
 
-#     @classmethod
-#     def log_import(cls, vulnerability, importer, supporting_data={}):
-#         """
-#         Creates History entry on Addition.
-#         """
-#         return cls.objects.log_action(
-#             vulnerability=vulnerability,
-#             action_type=VulnerabilityChangeLog.IMPORT,
-#             actor_name=importer,
-#             supporting_data=supporting_data,
-#         )
+    @classmethod
+    def log_import(cls, vulnerability, importer, supporting_data={}):
+        """
+        Creates History entry on Addition.
+        """
+        return cls.objects.log_action(
+            vulnerability=vulnerability,
+            action_type=VulnerabilityChangeLog.IMPORT,
+            actor_name=importer,
+            supporting_data=supporting_data,
+        )
 
-#     @classmethod
-#     def log_improve(cls, vulnerability, improver):
-#         """
-#         Creates History entry on Improvement.
-#         """
-#         return cls.objects.log_action(
-#             vulnerability=vulnerability,
-#             action_type=VulnerabilityChangeLog.IMPROVE,
-#             actor_name=improver,
-#         )
+    @classmethod
+    def log_improve(cls, vulnerability, improver):
+        """
+        Creates History entry on Improvement.
+        """
+        return cls.objects.log_action(
+            vulnerability=vulnerability,
+            action_type=VulnerabilityChangeLog.IMPROVE,
+            actor_name=improver,
+        )
 
 
 class PackageHistoryManager(models.Manager):

@@ -28,7 +28,6 @@ class RetireDotnetImporter(Importer):
     license_url = "https://github.com/RetireNet/Packages/blob/master/LICENSE"
     spdx_license_expression = "MIT"
     repo_url = "git+https://github.com/RetireNet/Packages/"
-    importing_authority = "RetireNet Security Advisories"
     importer_name = "RetireDotNet Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:

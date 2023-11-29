@@ -51,7 +51,6 @@ class GitLabAPIImporter(Importer):
     spdx_license_expression = "MIT"
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
     importer_name = "GitLab Importer"
-    importing_authority = "Gitlab Security Advisory"
     repo_url = "git+https://gitlab.com/gitlab-org/advisories-community/"
 
     def advisory_data(self, _keep_clone=False) -> Iterable[AdvisoryData]:

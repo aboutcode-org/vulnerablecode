@@ -91,7 +91,6 @@ query{
 
 class GitHubAPIImporter(Importer):
     spdx_license_expression = "CC-BY-4.0"
-    importing_authority = "Github Security Advisory"
     importer_name = "GHSA Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:

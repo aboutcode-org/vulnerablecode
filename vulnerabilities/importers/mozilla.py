@@ -36,7 +36,6 @@ class MozillaImporter(Importer):
     spdx_license_expression = "MPL-2.0"
     license_url = "https://github.com/mozilla/foundation-security-advisories/blob/master/LICENSE"
     repo_url = "git+https://github.com/mozilla/foundation-security-advisories/"
-    importing_authority = "Mozilla Foundation Security Advisories"
     importer_name = "Mozilla Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:

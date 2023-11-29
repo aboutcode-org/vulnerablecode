@@ -24,7 +24,6 @@ class SUSESeverityScoreImporter(Importer):
 
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://ftp.suse.com/pub/projects/security/yaml/LICENSE"
-    importing_authority = "SUSE Linux Security Team"
     importer_name = "SUSE Severity Score Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:

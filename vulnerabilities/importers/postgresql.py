@@ -28,7 +28,6 @@ class PostgreSQLImporter(Importer):
     root_url = "https://www.postgresql.org/support/security/"
     license_url = "https://www.postgresql.org/about/licence/"
     spdx_license_expression = "PostgreSQL"
-    importing_authority = "PostgreSQL Security Team"
     importer_name = "PostgreSQL Importer"
 
     def advisory_data(self):

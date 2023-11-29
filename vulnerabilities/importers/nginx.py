@@ -36,7 +36,6 @@ class NginxImporter(Importer):
     spdx_license_expression = "BSD-2-Clause"
     license_url = "https://nginx.org/LICENSE"
     importer_name = "Nginx Importer"
-    importing_authority = "Nginx Security Advisories"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         text = self.fetch()

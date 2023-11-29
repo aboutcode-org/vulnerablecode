@@ -59,8 +59,6 @@ class NVDImporter(Importer):
         INFORMATION THEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
         MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
     """
-
-    importing_authority = "National Vulnerability Database"
     importer_name = "NVD Importer"
 
     def advisory_data(self):

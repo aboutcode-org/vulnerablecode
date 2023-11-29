@@ -30,7 +30,6 @@ class FireyeImporter(Importer):
     1. CC BY-SA 4.0 - For CVE related information not including source code (such as PoCs)
     2. MIT - For source code contained within provided CVE information
     """
-    importing_authority = "Mandiant Vulnerability Disclosure"
     repo_url = "git+https://github.com/mandiant/Vulnerability-Disclosures"
     importer_name = "FireEye Importer"
 

@@ -316,7 +316,6 @@ class Importer:
     license_url = ""
     notice = ""
     vcs_response: VCSResponse = None
-    importing_authority = ""
     importer_name = ""
 
     def __init__(self):

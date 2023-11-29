@@ -28,7 +28,6 @@ class ArchlinuxImporter(Importer):
     url = "https://security.archlinux.org/json"
     spdx_license_expression = "MIT"
     license_url = "https://github.com/archlinux/arch-security-tracker/blob/master/LICENSE"
-    importing_authority = "Arch Linux Security Tracker"
     importer_name = "Arch Linux Importer"
 
     def fetch(self) -> Iterable[Mapping]:

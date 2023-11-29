@@ -77,7 +77,6 @@ class DebianImporter(Importer):
     """
 
     api_url = "https://security-tracker.debian.org/tracker/data/json"
-    importing_authority = "Debian Security Tracker"
     importer_name = "Debian Importer"
 
     def get_response(self):

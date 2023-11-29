@@ -25,7 +25,6 @@ class PyPaImporter(Importer):
     spdx_license_expression = "CC-BY-4.0"
     repo_url = "git+https://github.com/pypa/advisory-database"
     importer_name = "pypa"
-    importing_authority = "PyPa Advisory Database"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         try:

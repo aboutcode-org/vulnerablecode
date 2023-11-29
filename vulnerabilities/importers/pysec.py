@@ -24,7 +24,6 @@ logger = logging.getLogger(__name__)
 class PyPIImporter(Importer):
     license_url = "https://github.com/pypa/advisory-database/blob/main/LICENSE"
     spdx_license_expression = "CC-BY-4.0"
-    importing_authority = "PyPa Advisory Database"
     importer_name = "PyPI Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:

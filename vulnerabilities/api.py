@@ -50,10 +50,10 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_affected_vulnerabilities(self, package):
         parent_affected_vulnerabilities = package.fixed_package_details.get("vulnerabilities") or []
-        affected_vulnerabilities = []
 
-        for vuln in parent_affected_vulnerabilities:
-            affected_vulnerabilities.append(self.get_vulnerability(vuln))
+        affected_vulnerabilities = [
+            self.get_vulnerability(vuln) for vuln in parent_affected_vulnerabilities
+        ]
 
         return affected_vulnerabilities
 

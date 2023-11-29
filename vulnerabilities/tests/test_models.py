@@ -25,6 +25,8 @@ from univers.version_range import AlpineLinuxVersionRange
 from vulnerabilities import models
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
+from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityQuerySet
 
 
 class TestVulnerabilityModel(TestCase):
@@ -184,6 +186,35 @@ class TestPackageModel(TestCase):
             fix=True,
         )
 
+        # This vulnerability does not affect any redis packages in this set of tests but does affect a made-up package, self.package_pypi_bogus_1_2_3.
+        self.vuln_VCID_abcd_efgh_1234 = models.Vulnerability.objects.create(
+            summary="This is VCID-abcd-efgh-1234",
+            vulnerability_id="VCID-abcd-efgh-1234",
+        )
+
+        # pkg
+        self.package_pypi_bogus_1_2_3 = models.Package.objects.create(
+            type="pypi",
+            namespace="",
+            name="bogus",
+            version="1.2.3",
+            qualifiers={},
+            subpath="",
+        )
+
+        # relationship
+        models.PackageRelatedVulnerability.objects.create(
+            package=self.package_pypi_bogus_1_2_3,
+            vulnerability=self.vuln_VCID_abcd_efgh_1234,
+            fix=False,
+        )
+
+        # This vulnerability does not affect any packages in this set of tests included to test .all().
+        self.vuln_VCID_wxyz_0000_0000 = models.Vulnerability.objects.create(
+            summary="This is VCID-wxyz-0000-0000",
+            vulnerability_id="VCID-wxyz-0000-0000",
+        )
+
     def test_fixed_package_details(self):
         searched_for_package = self.package_pypi_redis_4_1_1
 
@@ -280,18 +311,21 @@ class TestPackageModel(TestCase):
 
     def test_get_vulnerable_packages(self):
         vuln_packages = Package.objects.vulnerable()
-        assert vuln_packages.count() == 3
-        assert vuln_packages.distinct().count() == 2
+        assert vuln_packages.count() == 4
+        assert vuln_packages.distinct().count() == 3
 
         first_vulnerable_package = vuln_packages.distinct()[0]
+        assert first_vulnerable_package.purl == "pkg:pypi/bogus@1.2.3"
 
-        matching_fixed_packages = Package.objects.get_fixed_by_package_versions(
-            first_vulnerable_package, fix=True
+        second_vulnerable_package = vuln_packages.distinct()[1]
+        assert second_vulnerable_package.purl == "pkg:pypi/redis@4.1.1"
+
+        second_vulnerable_package_matching_fixed_packages = (
+            Package.objects.get_fixed_by_package_versions(second_vulnerable_package, fix=True)
         )
-        first_fixed_by_package = matching_fixed_packages[0]
+        first_fixed_by_package = second_vulnerable_package_matching_fixed_packages[0]
 
-        assert first_vulnerable_package.purl == "pkg:pypi/redis@4.1.1"
-        assert len(matching_fixed_packages) == 2
+        assert len(second_vulnerable_package_matching_fixed_packages) == 2
         assert first_fixed_by_package.purl == "pkg:pypi/redis@4.3.6"
 
     def test_string_to_package(self):
@@ -404,3 +438,205 @@ class TestPackageModel(TestCase):
 
         assert sorted_pkgs[0].purl == "pkg:npm/sequelize@3.9.1"
         assert sorted_pkgs[-1].purl == "pkg:npm/sequelize@3.40.1"
+
+    def test_affecting_vulnerabilities_vulnerabilityqueryset_method(self):
+        """
+        Return querysets of Vulnerabilities using the VulnerabilityQuerySet affecting_vulnerabilities() method.
+        """
+        searched_for_package = self.package_pypi_redis_4_1_1
+
+        # Return a queryset of Vulnerabilities that affect this Package.
+        this_package_vulnerabilities = (
+            searched_for_package.vulnerabilities.affecting_vulnerabilities()
+        )
+
+        assert this_package_vulnerabilities[0] == self.vuln_VCID_g2fu_45jw_aaan
+        assert this_package_vulnerabilities[1] == self.vuln_VCID_rqe1_dkmg_aaad
+
+        # Return a queryset of Vulnerabilities that affect any Package.
+        any_package_vulnerabilities = Vulnerability.objects.affecting_vulnerabilities()
+
+        assert any_package_vulnerabilities[0] == self.vuln_VCID_abcd_efgh_1234
+        assert any_package_vulnerabilities[1] == self.vuln_VCID_g2fu_45jw_aaan
+        assert any_package_vulnerabilities[2] == self.vuln_VCID_rqe1_dkmg_aaad
+        assert any_package_vulnerabilities[3] == self.vuln_VCID_rqe1_dkmg_aaad
+
+        # Return a queryset of distinct Vulnerabilities that affect any Package.
+        any_package_vulnerabilities_distinct = (
+            Vulnerability.objects.affecting_vulnerabilities().distinct()
+        )
+
+        assert any_package_vulnerabilities_distinct[0] == self.vuln_VCID_abcd_efgh_1234
+        assert any_package_vulnerabilities_distinct[1] == self.vuln_VCID_g2fu_45jw_aaan
+        assert any_package_vulnerabilities_distinct[2] == self.vuln_VCID_rqe1_dkmg_aaad
+
+        # Return a count of the queryset of distinct Vulnerabilities that affect any Package.
+        any_package_vulnerabilities_distinct_count = (
+            Vulnerability.objects.affecting_vulnerabilities().distinct().count()
+        )
+
+        assert any_package_vulnerabilities_distinct_count == 3
+
+        # Return a queryset of all Vulnerabilities, regardless of whether they affect a package.
+        all_vulnerabilities = Vulnerability.objects.all()
+
+        assert all_vulnerabilities[0] == self.vuln_VCID_abcd_efgh_1234
+        assert all_vulnerabilities[1] == self.vuln_VCID_g2fu_45jw_aaan
+        assert all_vulnerabilities[2] == self.vuln_VCID_rqe1_dkmg_aaad
+        assert all_vulnerabilities[3] == self.vuln_VCID_wxyz_0000_0000
+
+        # Return a count of the queryset of all Vulnerabilities, regardless of whether they affect a package.
+        all_vulnerabilities_count = Vulnerability.objects.all().count()
+
+        assert all_vulnerabilities_count == 4
+
+    def test_affecting_vulnerabilities_package_property_method(self):
+        """
+        Return a queryset of Vulnerabilities using the Package affecting_vulnerabilities() property
+        method.
+        """
+        searched_for_package = self.package_pypi_redis_4_1_1
+
+        # Return a queryset of Vulnerabilities that affect a specific Package.
+        this_package_vulnerabilities = searched_for_package.affecting_vulnerabilities
+
+        assert this_package_vulnerabilities[0] == self.vuln_VCID_g2fu_45jw_aaan
+        assert this_package_vulnerabilities[1] == self.vuln_VCID_rqe1_dkmg_aaad
+
+    def test_fixing_vulnerabilities_package_property_method(self):
+        """
+        Return a queryset of Vulnerabilities using the Package fixing_vulnerabilities() property
+        method.
+        """
+        # Return a queryset of Vulnerabilities that are fixed by a specific Package.
+        searched_for_package_redis_4_1_1 = self.package_pypi_redis_4_1_1
+        redis_4_1_1_fixing_vulnerabilities = searched_for_package_redis_4_1_1.fixing_vulnerabilities
+
+        assert redis_4_1_1_fixing_vulnerabilities.count() == 0
+
+        searched_for_package_redis_4_3_6 = self.package_pypi_redis_4_3_6
+        redis_4_3_6_fixing_vulnerabilities = searched_for_package_redis_4_3_6.fixing_vulnerabilities
+
+        assert redis_4_3_6_fixing_vulnerabilities.count() == 1
+        assert redis_4_3_6_fixing_vulnerabilities[0] == self.vuln_VCID_g2fu_45jw_aaan
+
+        searched_for_package_redis_5_0_0b1 = self.package_pypi_redis_5_0_0b1
+        redis_5_0_0b1_fixing_vulnerabilities = (
+            searched_for_package_redis_5_0_0b1.fixing_vulnerabilities
+        )
+
+        assert redis_5_0_0b1_fixing_vulnerabilities.count() == 1
+        assert redis_5_0_0b1_fixing_vulnerabilities[0] == self.vuln_VCID_rqe1_dkmg_aaad
+
+    def test_get_affecting_vulnerabilities_package_method(self):
+        """
+        Return a list of vulnerabilities that affect this package.
+        """
+        searched_for_package_redis_4_1_1 = self.package_pypi_redis_4_1_1
+        redis_4_1_1_affecting_vulnerabilities = (
+            searched_for_package_redis_4_1_1.get_affecting_vulnerabilities()
+        )
+
+        affecting_vulnerabilities = [
+            {
+                "vulnerability": self.vuln_VCID_g2fu_45jw_aaan,
+                "fixed_by_purl": [],
+                "fixed_by_purl_vulnerabilities": [],
+                "fixed_by_package_details": [
+                    {
+                        "fixed_by_purl": PackageURL(
+                            type="pypi",
+                            namespace=None,
+                            name="redis",
+                            version="4.3.6",
+                            qualifiers={},
+                            subpath=None,
+                        ),
+                        "fixed_by_purl_vulnerabilities": [self.vuln_VCID_rqe1_dkmg_aaad],
+                    }
+                ],
+            },
+            {
+                "vulnerability": self.vuln_VCID_rqe1_dkmg_aaad,
+                "fixed_by_purl": [],
+                "fixed_by_purl_vulnerabilities": [],
+                "fixed_by_package_details": [
+                    {
+                        "fixed_by_purl": PackageURL(
+                            type="pypi",
+                            namespace=None,
+                            name="redis",
+                            version="5.0.0b1",
+                            qualifiers={},
+                            subpath=None,
+                        ),
+                        "fixed_by_purl_vulnerabilities": [],
+                    }
+                ],
+            },
+        ]
+
+        assert redis_4_1_1_affecting_vulnerabilities == affecting_vulnerabilities
+
+    def test_get_non_vulnerable_versions(self):
+        """
+        Return a tuple of the next and latest non-vulnerable versions of this package as PackageURLs.
+        """
+        searched_for_package_redis_4_1_1 = self.package_pypi_redis_4_1_1
+        redis_4_1_1_non_vulnerable_versions = (
+            searched_for_package_redis_4_1_1.get_non_vulnerable_versions()
+        )
+
+        non_vulnerable_versions = (
+            PackageURL(
+                type="pypi",
+                namespace=None,
+                name="redis",
+                version="5.0.0b1",
+                qualifiers={},
+                subpath=None,
+            ),
+            PackageURL(
+                type="pypi",
+                namespace=None,
+                name="redis",
+                version="5.0.0b1",
+                qualifiers={},
+                subpath=None,
+            ),
+        )
+
+        assert redis_4_1_1_non_vulnerable_versions == non_vulnerable_versions
+
+    def test_version_class_and_current_version(self):
+        searched_for_package_redis_4_1_1 = self.package_pypi_redis_4_1_1
+
+        package_version_class = RANGE_CLASS_BY_SCHEMES[
+            searched_for_package_redis_4_1_1.type
+        ].version_class
+
+        assert package_version_class == versions.PypiVersion
+        assert searched_for_package_redis_4_1_1.current_version == package_version_class(
+            string="4.1.1"
+        )
+        assert str(searched_for_package_redis_4_1_1.current_version) == "4.1.1"
+
+    def test_get_fixed_by_package_versions(self):
+        searched_for_package_redis_4_1_1 = self.package_pypi_redis_4_1_1
+
+        fixed_by_package_versions = Package.objects.get_fixed_by_package_versions(
+            searched_for_package_redis_4_1_1, fix=True
+        )
+
+        all_package_versions = Package.objects.get_fixed_by_package_versions(
+            searched_for_package_redis_4_1_1, fix=False
+        )
+
+        assert fixed_by_package_versions[0] == self.package_pypi_redis_4_3_6
+        assert fixed_by_package_versions[1] == self.package_pypi_redis_5_0_0b1
+        assert fixed_by_package_versions.count() == 2
+
+        assert all_package_versions[0] == self.package_pypi_redis_4_1_1
+        assert all_package_versions[1] == self.package_pypi_redis_4_3_6
+        assert all_package_versions[2] == self.package_pypi_redis_5_0_0b1
+        assert all_package_versions.count() == 3

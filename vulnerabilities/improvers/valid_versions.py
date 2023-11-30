@@ -153,15 +153,6 @@ class ValidVersionImprover(Improver):
                         fixed_purl=fixed_purl,
                     )
             else:
-                if purl.type == "golang":
-                    # Problem with the Golang and Go that they provide full path
-                    # FIXME: We need to get the PURL subpath for Go module
-                    versions_fetcher = self.versions_fetcher_by_purl.get(purl)
-                    if not versions_fetcher:
-                        versions_fetcher = GoproxyVersionAPI()
-                        self.versions_fetcher_by_purl[purl] = versions_fetcher
-                    pkg_name = versions_fetcher.module_name_by_package_name.get(pkg_name, pkg_name)
-
                 valid_versions = self.get_package_versions(
                     package_url=purl, until=advisory_data.date_published
                 )

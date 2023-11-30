@@ -24,7 +24,7 @@ VulnerableCode Package Details - {{ package.purl }}
                 <table class="table vcio-table width-100-pct mt-2">
                     <tbody>
                         <tr>
-                            <td class="two-col-left" style="width: 175px;">
+                            <td class="two-col-left">
                                 <span
                                     class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
                                     data-tooltip="The package url or purl is a URL string used to identify and locate a software package."
@@ -33,24 +33,59 @@ VulnerableCode Package Details - {{ package.purl }}
                                 </span>
                             </td>
                             <td class="two-col-right">
-                                {{ package.purl }}
+                                {{ fixed_package_details.purl.to_string }}
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
+            {% if affected_by_vulnerabilities|length != 0 %}
+
+                <div class="pl-3 pr-3 mb-5 non-vuln">
+                    <table class="table vcio-table width-100-pct mt-2">
+                        <tbody>
+                            <tr>
+                                <td class="two-col-left">
+                                    Next non-vulnerable version
+                                </td>
+                                <td class="two-col-right">
+                                    {% if fixed_package_details.next_non_vulnerable.version %}
+                                        <a href="/packages/{{ fixed_package_details.next_non_vulnerable }}?search={{ fixed_package_details.next_non_vulnerable }}" target="_self">{{ fixed_package_details.next_non_vulnerable.version }}</a>
+                                    {% else %}
+                                        <span class="emphasis-vulnerable">None.</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="two-col-left">
+                                    Latest non-vulnerable version
+                                </td>
+                                <td class="two-col-right">
+                                    {% if fixed_package_details.latest_non_vulnerable.version %}
+                                        <a href="/packages/{{ fixed_package_details.latest_non_vulnerable }}?search={{ fixed_package_details.latest_non_vulnerable }}" target="_self">{{ fixed_package_details.latest_non_vulnerable.version }}</a>
+                                    {% else %}
+                                        <span class="emphasis-vulnerable">None.</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            {% endif %}
+
             <div class="content ml-3 mr-3">
                 <div class="has-text-weight-bold ml-1 mb-0">
-                    Affected by vulnerabilities ({{ affected_by_vulnerabilities|length }})
+                    <span class="affected-fixed">Vulnerabilities affecting</span> this package ({{ affected_by_vulnerabilities|length }})
                 </div>
 
                 <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                     <thead>
                         <tr>
-                            <th style="width: 175px;">Vulnerability</th>
+                            <th style="width: 200px;">Vulnerability</th>
                             <th>Summary</th>
-                            <th style="width: 225px;">Aliases</th>
+                            <th style="width: 310px;"><span class="affected-fixed">Fixed by</span></th>
                         </tr>
                     </thead>
 
@@ -59,11 +94,9 @@ VulnerableCode Package Details - {{ package.purl }}
                             <tr>
                                 <td>
                                     <a href="{{ vulnerability.get_absolute_url }}" target="_self">{{ vulnerability.vulnerability_id }}</a>
-                                </td>
-                                <td>
-                                    {{ vulnerability.summary }}
-                                </td>
-                                <td>
+                                    <br />
+                                    Aliases:
+                                    <br />
                                     {% for alias in vulnerability.alias %}
                                         {% if alias.url %}
                                             <a href="{{ alias.url }}" target="_blank">{{ alias }}<i class="fa fa-external-link fa_link_custom"></i></a>
@@ -74,33 +107,90 @@ VulnerableCode Package Details - {{ package.purl }}
                                         {% endif %}
                                     {% endfor %}
                                 </td>
+                                <td style="word-wrap: break-word; word-break: break-word;">
+                                    {{ vulnerability.summary }}
+                                </td>
+                                <td style="word-wrap: break-word; word-break: break-all;">
+                                    {% if package.purl == fixed_package_details.purl.to_string %}
+                                        {% for key, value in fixed_package_details.items %}
+                                            {% if key == "vulnerabilities" %}
+                                                {% for vuln in value %}
+                                                    {% if vuln.vulnerability.vulnerability_id == vulnerability.vulnerability_id %}
+                                                        {% if vuln.fixed_by_package_details is None %}
+                                                            <span class="emphasis-vulnerable">There are no reported <span class="affected-fixed">fixed by</span> versions.</span>
+                                                        {% else %}
+                                                            {% for fixed_pkg in vuln.fixed_by_package_details %}
+                                                                <div>
+                                                                    {% if fixed_pkg.fixed_by_purl_vulnerabilities|length == 0 %}
+                                                                        <a href="/packages/{{ fixed_pkg.fixed_by_purl }}?search={{ fixed_pkg.fixed_by_purl }}" target="_self">{{ fixed_pkg.fixed_by_purl.version }}</a>
+                                                                        <br />
+                                                                        <span class="emphasis-not-vulnerable"><span class="affected-fixed">Affected by</span> 0 other vulnerabilities.</span>
+                                                                    {% else %}
+                                                                        <a href="/packages/{{ fixed_pkg.fixed_by_purl }}?search={{ fixed_pkg.fixed_by_purl }}" target="_self">{{ fixed_pkg.fixed_by_purl.version }}</a>
+                                                                            {% if fixed_pkg.fixed_by_purl_vulnerabilities|length != 1 %}
+                                                                                <br />
+                                                                                <span class="emphasis-vulnerable"><span class="affected-fixed">Affected by</span> {{ fixed_pkg.fixed_by_purl_vulnerabilities|length }} other vulnerabilities.</span>
+                                                                            {% else %}
+                                                                                <br />
+                                                                                <span class="emphasis-vulnerable"><span class="affected-fixed">Affected by</span> {{ fixed_pkg.fixed_by_purl_vulnerabilities|length }} other vulnerability.</span>
+                                                                            {% endif %}
+
+                                                                        <div class="dropdown is-hoverable has-text-weight-normal is-right">
+                                                                            <div class="dropdown-trigger">
+                                                                                <i class="fa fa-question-circle ml-0 fa-sm has-background-white has-text-link"></i>
+                                                                            </div>
+                                                                            <div class="dropdown-menu dropdown-vuln-list-width" id="dropdown-menu4" role="menu">
+                                                                                <div class="dropdown-content dropdown-instructions-box-shadow">
+                                                                                    <div class="dropdown-item">
+                                                                                        <div style="max-height: 200px; overflow-y: auto;">
+                                                                                            This version is <span class="affected-fixed">affected by</span> these other vulnerabilities:
+                                                                                            <div style="padding-top: 5px;">
+                                                                                                {% for fixed_by_vuln in fixed_pkg.fixed_by_purl_vulnerabilities %}
+                                                                                                <div>
+                                                                                                    <a href="/vulnerabilities/{{ fixed_by_vuln.vulnerability_id }}" target="_self">{{ fixed_by_vuln.vulnerability_id }}</a>
+                                                                                                </div>
+                                                                                                {% endfor %}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    {% endif %}
+                                                                </div>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% empty %}
                             <tr>
                                 <td colspan="3">
-                                    This package is not known to be affected by vulnerabilities.
+                                    <span class="emphasis-not-vulnerable">This package is not known to be <span class="affected-fixed">affected by</span> vulnerabilities.</span>
                                 </td>
                             </tr>
                         {% endfor %}
                     </tbody>
-
                 </table>
             </div>
 
             <div class="content ml-3 mr-3">
                 <div class="has-text-weight-bold ml-1 mb-0">
-                    Fixing vulnerabilities ({{ fixing_vulnerabilities|length }})
+                    <span class="affected-fixed">Vulnerabilities fixed by</span> this package ({{ fixing_vulnerabilities|length }})
                 </div>
 
                 <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                     <thead>
                         <tr>
-                            <th style="width: 175px;">Vulnerability</th>
+                            <th style="width: 200px;">Vulnerability</th>
                             <th>Summary</th>
                             <th style="width: 225px;">Aliases</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         {% for vulnerability in fixing_vulnerabilities %}
                             <tr>
@@ -125,7 +215,7 @@ VulnerableCode Package Details - {{ package.purl }}
                         {% empty %}
                             <tr>
                                 <td colspan="3">
-                                    This package is not known to fix vulnerabilities.
+                                    This package is not known to <span class="affected-fixed">fix</span> vulnerabilities.
                                 </td>
                             </tr>
                         {% endfor %}
@@ -137,5 +227,4 @@ VulnerableCode Package Details - {{ package.purl }}
         </div>
     </section>
 {% endif %}
-
 {% endblock %}

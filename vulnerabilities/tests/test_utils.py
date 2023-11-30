@@ -7,12 +7,12 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from fetchcode.package_versions import PackageVersion
 from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
 from univers.version_range import GemVersionRange
 from univers.versions import RubygemsVersion
 
-from vulnerabilities.package_managers import PackageVersion
 from vulnerabilities.utils import AffectedPackage
 from vulnerabilities.utils import get_item
 from vulnerabilities.utils import get_severity_range

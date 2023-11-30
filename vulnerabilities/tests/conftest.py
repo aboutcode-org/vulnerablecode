@@ -25,7 +25,7 @@ def no_rmtree(monkeypatch):
 # Step 2: Run test for importer only if it is activated (pytestmark = pytest.mark.skipif(...))
 # Step 3: Migrate all the tests
 collect_ignore = [
-    "test_package_managers.py",
+    "test_models.py",
     "test_ruby.py",
     "test_rust.py",
     "test_suse_backports.py",

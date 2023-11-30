@@ -25,7 +25,6 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers import nginx
 from vulnerabilities.improvers.valid_versions import NginxBasicImprover
 from vulnerabilities.models import Advisory
-from vulnerabilities.package_managers import PackageVersion
 from vulnerabilities.tests import util_tests
 from vulnerabilities.utils import is_vulnerable_nginx_version
 
@@ -199,7 +198,7 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
         )
         assert interesting_advisories == advisories
 
-    @mock.patch("vulnerabilities.utils.fetch_github_graphql_query")
+    @mock.patch("fetchcode.package_versions.github_response")
     def test_NginxBasicImprover_fetch_nginx_version_from_git_tags(self, mock_fetcher):
         reponse_files = [
             "github-nginx-nginx-0.json",
@@ -215,7 +214,7 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
                 side_effects.append(json.load(f))
         mock_fetcher.side_effect = side_effects
 
-        results = [pv.to_dict() for pv in NginxBasicImprover().fetch_nginx_version_from_git_tags()]
+        results = list(NginxBasicImprover().fetch_nginx_version_from_git_tags())
         expected_file = self.get_test_loc("improver/nginx-versions-expected.json", must_exist=False)
         util_tests.check_results_against_json(results, expected_file)
 
@@ -226,7 +225,7 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
             advisories_data = json.load(vf)
 
         with open(self.get_test_loc("improver/improver-versions.json")) as vf:
-            all_versions = [PackageVersion(**vd) for vd in json.load(vf)]
+            all_versions = [vd["value"] for vd in json.load(vf)]
 
         results = []
         improver = NginxBasicImprover()

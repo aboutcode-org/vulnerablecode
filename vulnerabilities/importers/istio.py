@@ -34,8 +34,6 @@ from vulnerabilities.importer import UnMergeablePackageError
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
-from vulnerabilities.package_managers import GitHubTagsAPI
-from vulnerabilities.package_managers import VersionAPI
 from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
 from vulnerabilities.utils import get_affected_packages_by_patched_package
 from vulnerabilities.utils import nearest_patched_package

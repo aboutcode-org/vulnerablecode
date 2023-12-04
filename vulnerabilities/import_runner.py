@@ -18,6 +18,7 @@ from django.db import transaction
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
+from vulnerabilities.importers import IMPORTERS_REGISTRY
 from vulnerabilities.improver import Inference
 from vulnerabilities.improvers.default import DefaultImporter
 from vulnerabilities.models import Advisory
@@ -300,8 +301,14 @@ def get_or_create_vulnerability_and_aliases(
             vulnerability = create_vulnerability_and_add_aliases(
                 aliases=new_alias_names, summary=summary
             )
+            importer_name = ""
+            importer = IMPORTERS_REGISTRY.get(advisory.created_by) or ""
+            if hasattr(importer, "importer_name"):
+                importer_name = importer.importer_name
             VulnerabilityChangeLog.log_import(
-                importer=advisory.created_by, source_url=advisory.url, vulnerability=vulnerability
+                importer=importer_name,
+                source_url=advisory.url,
+                vulnerability=vulnerability,
             )
         except Exception as e:
             logger.error(

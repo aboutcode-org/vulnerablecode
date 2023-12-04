@@ -42,9 +42,7 @@ def test_package_changelog():
     ImportRunner(NpmImporter).do_import([adv])
     assert PackageChangeLog.objects.filter(package=pkg).count() == 1
     assert (
-        PackageChangeLog.objects.filter(
-            action_type=PackageChangeLogActionType.FIXING, package=pkg
-        ).count()
+        PackageChangeLog.objects.filter(action_type=PackageChangeLog.FIXING, package=pkg).count()
         == 1
     )
     pkg1, _ = Package.objects.get_or_create_from_purl("pkg:npm/foo@2.0.0")
@@ -70,7 +68,7 @@ def test_package_changelog():
     assert PackageChangeLog.objects.filter(package=pkg1).count() == 1
     assert (
         PackageChangeLog.objects.filter(
-            action_type=PackageChangeLogActionType.AFFECTED_BY, package=pkg1
+            action_type=PackageChangeLog.AFFECTED_BY, package=pkg1
         ).count()
         == 1
     )
@@ -106,13 +104,7 @@ def test_vulnerability_changelog():
     assert VulnerabilityChangeLog.objects.filter(vulnerability=vuln).count() == 2
     assert (
         VulnerabilityChangeLog.objects.filter(
-            action_type=VulnerabilityChangeLogActionType.FIXED_BY, vulnerability=vuln
-        ).count()
-        == 1
-    )
-    assert (
-        VulnerabilityChangeLog.objects.filter(
-            action_type=VulnerabilityChangeLogActionType.IMPORT, vulnerability=vuln
+            action_type=VulnerabilityChangeLog.IMPORT, vulnerability=vuln
         ).count()
         == 1
     )

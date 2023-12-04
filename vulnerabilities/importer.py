@@ -316,6 +316,7 @@ class Importer:
     license_url = ""
     notice = ""
     vcs_response: VCSResponse = None
+    # It needs to be unique and immutable
     importer_name = ""
 
     def __init__(self):

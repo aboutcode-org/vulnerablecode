@@ -222,7 +222,9 @@
       }
     ],
     "date_published": null,
-    "weaknesses": [400],
+    "weaknesses": [
+      400
+    ],
     "url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2022-21426.json"
   }
 ]

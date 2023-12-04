@@ -14,12 +14,14 @@ from typing import List
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
+from vulnerabilities.importers import IMPORTERS_REGISTRY
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityChangeLog
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
@@ -84,6 +86,7 @@ def process_inferences(
             vulnerability_id=inference.vulnerability_id,
             aliases=inference.aliases,
             summary=inference.summary,
+            advisory=advisory,
         )
 
         if not vulnerability:
@@ -185,7 +188,7 @@ def create_valid_vulnerability_reference(url, reference_id=None):
 
 
 def get_or_create_vulnerability_and_aliases(
-    aliases: List[str], vulnerability_id=None, summary=None
+    aliases: List[str], vulnerability_id=None, summary=None, advisory=None
 ):
     """
     Get or create vulnerabilitiy and aliases such that all existing and new
@@ -235,6 +238,15 @@ def get_or_create_vulnerability_and_aliases(
         try:
             vulnerability = create_vulnerability_and_add_aliases(
                 aliases=new_alias_names, summary=summary
+            )
+            importer_name = ""
+            importer = IMPORTERS_REGISTRY.get(advisory.created_by) or ""
+            if hasattr(importer, "importer_name"):
+                importer_name = importer.importer_name
+            VulnerabilityChangeLog.log_import(
+                importer=importer_name,
+                source_url=advisory.url,
+                vulnerability=vulnerability,
             )
         except Exception as e:
             logger.error(

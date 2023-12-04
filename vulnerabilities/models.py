@@ -911,17 +911,21 @@ class PackageRelatedVulnerability(models.Model):
 
     @transaction.atomic
     def add_package_vulnerability_changelog(self, advisory, first_import):
+        importer_name = ""
+        importer = IMPORTERS_REGISTRY.get(advisory.created_by) or ""
+        if hasattr(importer, "importer_name"):
+            importer_name = importer.importer_name
         if self.fix:
             PackageChangeLog.log_fixing(
                 package=self.package,
-                importer=advisory.created_by,
+                importer=importer_name,
                 source_url=advisory.url if advisory.url else None,
                 related_vulnerability=str(self.vulnerability),
             )
         else:
             PackageChangeLog.log_affected_by(
                 package=self.package,
-                importer=advisory.created_by,
+                importer=importer_name,
                 source_url=advisory.url if advisory.url else None,
                 related_vulnerability=str(self.vulnerability),
             )
@@ -1188,13 +1192,6 @@ class ChangeLog(models.Model):
         return label_by_status.get(self.action_type)
 
     @property
-    def get_actor_name(self):
-        try:
-            return IMPORTERS_REGISTRY[self.actor_name].importer_name
-        except:
-            return self.actor_name
-
-    @property
     def get_iso_time(self):
         return self.action_time.isoformat()
 
@@ -1260,7 +1257,7 @@ class VulnerabilityChangeLog(ChangeLog):
         )
 
     @classmethod
-    def log_improve(cls, vulnerability, improver):
+    def log_improve(cls, vulnerability, improver, source_url):
         """
         Creates History entry on Improvement.
         """
@@ -1268,6 +1265,7 @@ class VulnerabilityChangeLog(ChangeLog):
             vulnerability=vulnerability,
             action_type=VulnerabilityChangeLog.IMPROVE,
             actor_name=improver,
+            source_url=source_url,
         )
 
 

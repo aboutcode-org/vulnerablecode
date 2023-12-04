@@ -46,6 +46,10 @@
     }
   ],
   "date_published": "2021-11-15T00:00:00+00:00",
-  "weaknesses": [1035,937,94],
+  "weaknesses": [
+    1035,
+    937,
+    94
+  ],
   "url": "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/maven.yaml"
 }

@@ -50,7 +50,10 @@
         "severities": []
       }
     ],
-    "weaknesses": [1035,937]
+    "weaknesses": [
+      1035,
+      937
+    ]
   },
   {
     "vulnerability_id": null,
@@ -86,6 +89,9 @@
         "severities": []
       }
     ],
-    "weaknesses": [1035,937]
+    "weaknesses": [
+      1035,
+      937
+    ]
   }
 ]

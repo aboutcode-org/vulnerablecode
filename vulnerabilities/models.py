@@ -622,6 +622,29 @@ class Package(PackageURLMixin):
 
     objects = PackageQuerySet.as_manager()
 
+    def save2(self, *args, **kwargs):
+        """
+        Save, normalizing PURL fields.
+        """
+        purl = PackageURL(
+            type=self.type,
+            namespace=self.namespace,
+            name=self.name,
+            version=self.version,
+            qualifiers=self.qualifiers,
+            subpath=self.subpath,
+        )
+
+        normalized = PackageURL.from_string(str(purl))
+        
+        self.type = normalized.type or ""
+        self.namespace = normalized.namespace or ""
+        self.name = normalized.name or ""
+        self.version = normalized.version or ""
+        self.qualifiers = normalized.qualifiers or ""
+        self.subpath = normalized.subpath or ""
+        super().save(*args, **kwargs)
+
     def save(self, *args, **kwargs):
         purl_object = PackageURL(
             type=self.type,

@@ -173,8 +173,9 @@ code {
 
 /* end tabset */
 
+.table.vcio-table tr:last-child td,
 .table.vcio-table td {
-    border: 0;
+    border: solid 1px #dbdbdb;
 }
 
 .table th {

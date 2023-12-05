@@ -8,6 +8,7 @@
 #
 import functools
 import json
+import logging
 from dataclasses import asdict
 from dataclasses import dataclass
 from dataclasses import field
@@ -79,6 +80,8 @@ URL_MAPPER = {
     "vulnerability-page": "uuid",
 }
 
+logger = logging.getLogger(__name__)
+
 
 def check_and_r_ap_context(request):
     """
@@ -139,7 +142,10 @@ class Activity:
         for target in to:
             target_domain = urlparse(target).netloc
             if target_domain != PURL_SYNC_DOMAIN:  # TODO Add a server whitelist if necessary
-                HttpSignature.signed_request(target, body, PURL_SYNC_PRIVATE_KEY, key_id)
+                try:
+                    HttpSignature.signed_request(target, body, PURL_SYNC_PRIVATE_KEY, key_id)
+                except Exception as e:
+                    logger.error(f"{e}")
 
 
 @dataclass

@@ -55,7 +55,7 @@ from .forms import CreateGitRepoForm
 from .forms import CreateNoteForm
 from .forms import CreateReviewForm
 from .forms import ReviewStatusForm
-from .management.commands.importer import Importer
+from .importer import Importer
 from .models import Follow
 from .models import Note
 from .models import Person
@@ -230,9 +230,9 @@ class CreateSync(LoginRequiredMixin, View):
         try:
             repo = Repository.objects.get(id=repository_id)
             if repo.admin == self.request.user.service:
+                commit_hash_before_pull = repo.heads.master.commit.hexsha
                 repo.git_repo_obj.remotes.origin.pull()
-                # TODO this part should be in a task schedule
-                importer = Importer(repo, repo.admin)
+                importer = Importer(commit_hash_before_pull, repo.git_repo_obj, repo.admin)
                 importer.run()
             else:
                 return HttpResponseForbidden("Invalid Git Repository Admin")

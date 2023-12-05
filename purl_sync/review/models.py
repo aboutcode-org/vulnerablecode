@@ -233,6 +233,8 @@ class Person(Actor):
         RemoteActor, on_delete=models.CASCADE, null=True, blank=True
     )
 
+    notes = models.ManyToManyField(Note, blank=True, help_text="")
+
     @property
     def avatar_absolute_url(self):
         return f'{"https://"}{PURL_SYNC_DOMAIN}{self.avatar.url}'
@@ -323,6 +325,7 @@ class Repository(models.Model):
     path = models.CharField(max_length=200, help_text="")
     admin = models.ForeignKey(Service, on_delete=models.CASCADE, help_text="")
     remote_url = models.CharField(max_length=300, blank=True, null=True, help_text="")
+    last_imported_commit = models.CharField(max_length=64, blank=True, null=True, help_text="")
 
     def __str__(self):
         return self.name
@@ -361,6 +364,9 @@ class Vulnerability(models.Model):
     repo = models.ForeignKey(Repository, on_delete=models.CASCADE)
     filename = models.CharField(max_length=255, help_text="")
     remote_url = models.CharField(max_length=300, blank=True, null=True, help_text="")
+
+    class Meta:
+        unique_together = [["repo", "filename"]]
 
     @property
     def absolute_url(self):

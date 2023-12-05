@@ -6,13 +6,13 @@ services:
     env_file:
       - ./docker-compose-dev-test-federation1.env
     volumes:
-      - db_data1:/var/lib/postgresql/data/
+      - db_data1:/var/lib/postgresql/data1/
   db2:
     image: postgres:16
     env_file:
       - ./docker-compose-dev-test-federation2.env
     volumes:
-      - db_data2:/var/lib/postgresql/data/
+      - db_data2:/var/lib/postgresql/data2/
 
   purl_sync1:
     build:  ../../

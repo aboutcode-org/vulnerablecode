@@ -31,6 +31,7 @@ from vulnerabilities.severity_systems import SCORING_SYSTEMS
 class ExampleImporter(Importer):
 
     spdx_license_expression = "BSD-2-Clause"
+    importer_name = "Example Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         raw_data = fetch_advisory_data()

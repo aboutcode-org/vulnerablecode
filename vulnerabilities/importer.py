@@ -364,6 +364,7 @@ class OvalImporter(Importer):
     """
 
     data_url: str = ""
+    importer_name = "Oval Importer"
 
     @staticmethod
     def create_purl(pkg_name: str, pkg_data: Mapping) -> PackageURL:

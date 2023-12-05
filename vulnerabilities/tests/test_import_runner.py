@@ -42,6 +42,7 @@ ADVISORY_DATAS = [
 
 class DummyImporter(Importer):
     spdx_license_expression = "dummy license"
+    importer_name = "Dummy Importer 2"
 
     def advisory_data(self):
         return ADVISORY_DATAS

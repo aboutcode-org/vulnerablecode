@@ -23,6 +23,7 @@ class OSSFuzzImporter(Importer):
     license_url = "https://github.com/google/oss-fuzz-vulns/blob/main/LICENSE"
     spdx_license_expression = "CC-BY-4.0"
     url = "git+https://github.com/google/oss-fuzz-vulns"
+    importer_name = "OSS Fuzz Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         try:

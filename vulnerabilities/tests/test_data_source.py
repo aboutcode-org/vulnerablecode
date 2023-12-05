@@ -49,6 +49,7 @@ class MockOvalImporter(OvalImporter):
 
 class MockGitImporter(Importer):
     spdx_license_expression = "FOO-BAR"
+    importer_name = "Mock Git Importer"
 
 
 def test_create_purl():

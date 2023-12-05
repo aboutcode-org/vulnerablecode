@@ -38,7 +38,6 @@ from packageurl.contrib.django.models import without_empty_values
 from rest_framework.authtoken.models import Token
 from univers import versions
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
-from vulnerabilities.importers import IMPORTERS_REGISTRY
 
 from vulnerabilities.importers import IMPORTERS_REGISTRY
 from vulnerabilities.severity_systems import SCORING_SYSTEMS

@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         updatables = []
         for package in Package.objects.all():
             qualifiers =package.qualifiers
-            normalized_string = normalize_qualifiers(qualifiers, encode=True)
+            normalized_string = normalize_qualifiers(qualifiers, encode=True) or ""
             package.qualifiers_temp = normalized_string
             updatables.append(package)
         

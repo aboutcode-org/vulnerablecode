@@ -576,6 +576,15 @@ class Package(PackageURLMixin):
     """
     A software package with related vulnerabilities.
     """
+    """
+    - X schema migration: create qualifiers_temp
+    - data migration copy as string the normalized qualifiers to qualifiers_temp
+    - schema migration: add qualifiers_temp to unique together
+    - schema migration: remove qualifiers override and from unique together
+    - data migration copy as string the normalized qualifiers_temp to qualifiers
+    - schema migration: add qualifiers to unique together
+    - schema migration: delete qualifiers_temp
+    """
 
     # Remove the `qualifers` and `set_package_url` overrides after
     # https://github.com/package-url/packageurl-python/pull/35
@@ -588,6 +597,8 @@ class Package(PackageURLMixin):
         blank=True,
         null=False,
     )
+
+    qualifiers_temp = models.CharField(max_length=1024, blank=True)
 
     vulnerabilities = models.ManyToManyField(
         to="Vulnerability", through="PackageRelatedVulnerability"

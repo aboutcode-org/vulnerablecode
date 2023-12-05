@@ -578,7 +578,7 @@ class Package(PackageURLMixin):
     """
     """
     - X schema migration: create qualifiers_temp
-    - data migration copy as string the normalized qualifiers to qualifiers_temp
+    - X data migration copy as string the normalized qualifiers to qualifiers_temp
     - schema migration: add qualifiers_temp to unique together
     - schema migration: remove qualifiers override and from unique together
     - data migration copy as string the normalized qualifiers_temp to qualifiers

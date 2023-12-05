@@ -576,6 +576,7 @@ class Package(PackageURLMixin):
     """
     A software package with related vulnerabilities.
     """
+
     """
     - X schema migration: create qualifiers_temp
     - X data migration copy as string the normalized qualifiers to qualifiers_temp

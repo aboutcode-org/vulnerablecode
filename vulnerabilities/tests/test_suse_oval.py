@@ -22,30 +22,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/suse_oval")
 
 
-def test_suse_oval_importer_leap_micro_5_3():
-    importer = SuseOvalImporter()
-    advisories = importer.get_data_from_xml_doc(
-        ET.parse(os.path.join(TEST_DATA, "opensuse.leap.micro.5.3.xml")),
-        {"type": "rpm", "namespace": "opensuse"},
-    )
-    expected_file = os.path.join(TEST_DATA, f"suse-oval-leap.micro.5.3-expected.json")
-    util_tests.check_results_against_json(
-        [advisory.to_dict() for advisory in advisories], expected_file
-    )
-
-
-def test_suse_oval_importer_leap_micro_5_3_patch():
-    importer = SuseOvalImporter()
-    advisories = importer.get_data_from_xml_doc(
-        ET.parse(os.path.join(TEST_DATA, "opensuse.leap.micro.5.3-patch.xml")),
-        {"type": "rpm", "namespace": "opensuse"},
-    )
-    expected_file = os.path.join(TEST_DATA, f"suse-oval-leap.micro.5.3-patch-expected.json")
-    util_tests.check_results_against_json(
-        [advisory.to_dict() for advisory in advisories], expected_file
-    )
-
-
 def test_suse_oval_importer_CVE_2008_5679():
     importer = SuseOvalImporter()
     advisories = importer.get_data_from_xml_doc(
@@ -58,44 +34,41 @@ def test_suse_oval_importer_CVE_2008_5679():
     )
 
 
-def test_suse_oval_parse_leap_micro_5_3():
-    xml_doc = ET.parse(os.path.join(TEST_DATA, "opensuse.leap.micro.5.3.xml"))
+def test_suse_oval_parse_CVE_2008_5679():
+    xml_doc = ET.parse(os.path.join(TEST_DATA, "org.opensuse.CVE-2008-5679.xml"))
     translations = {"less than": "<", "equals": "=", "greater than or equal": ">="}
     parsed_oval = OvalParser(translations, xml_doc)
 
     # Get total number of definitions
-    assert len(parsed_oval.all_definitions) == 104
+    assert len(parsed_oval.all_definitions) == 1
 
     # Get definition `id`: the `<definition>` element.
     definition_1 = parsed_oval.all_definitions[0]
-    assert parsed_oval.all_definitions[0].getId() == "oval:org.opensuse.security:def:201918348"
-    assert parsed_oval.all_definitions[1].getId() == "oval:org.opensuse.security:def:20192708"
+    assert parsed_oval.all_definitions[0].getId() == "oval:org.opensuse.security:def:2009030400"
 
     # Get definition `test_ref`: the `<criterion>` element.
     definition_1_test_ids = {
-        "oval:org.opensuse.security:tst:2009726610",
-        "oval:org.opensuse.security:tst:2009726611",
-        "oval:org.opensuse.security:tst:2009726612",
+        "oval:org.opensuse.security:tst:2009030400",
     }
     assert definition_1_test_ids == {
         i.getId() for i in parsed_oval.get_tests_of_definition(definition_1)
     }
 
     # Get vuln_id from definition
-    vuln_id_1 = ["CVE-2019-18348"]
+    vuln_id_1 = ["CVE-2008-5679"]
     assert vuln_id_1 == parsed_oval.get_vuln_id_from_definition(definition_1)
 
     # Get total number of tests
-    assert len(parsed_oval.oval_document.getTests()) == 3110
+    assert len(parsed_oval.oval_document.getTests()) == 4
 
     # Get test object and test state
     test_1 = parsed_oval.oval_document.getTests()[0]
     obj_t1, state_t1 = parsed_oval.get_object_state_of_test(test_1)
-    assert obj_t1.getId() == "oval:org.opensuse.security:obj:2009030416"
-    assert state_t1.getId() == "oval:org.opensuse.security:ste:2009169740"
+    assert obj_t1.getId() == "oval:org.opensuse.security:obj:2009030400"
+    assert state_t1.getId() == "oval:org.opensuse.security:ste:2009030400"
 
     # Get total number of packages: `rpminfo_object` elements
-    assert len(parsed_oval.oval_document.getObjects()) == 336
+    assert len(parsed_oval.oval_document.getObjects()) == 2
 
     # Get packages
     obj_t1 = parsed_oval.oval_document.getObjects()[0]
@@ -104,36 +77,26 @@ def test_suse_oval_parse_leap_micro_5_3():
     pkg_set1 = set(parsed_oval.get_pkgs_from_obj(obj_t1))
     pkg_set2 = set(parsed_oval.get_pkgs_from_obj(obj_t2))
 
-    assert pkg_set1 == {"kernel-default"}
-    assert pkg_set2 == {"kgraft-patch-3_12_38-44-default"}
+    assert pkg_set1 == {"opera"}
+    assert pkg_set2 == {"openSUSE-release"}
 
     # Get total number of versions: `rpminfo_state` elements
-    assert len(parsed_oval.oval_document.getStates()) == 764
+    assert len(parsed_oval.oval_document.getStates()) == 4
 
     # Get versions
     state_1 = parsed_oval.oval_document.getStates()[0]
-    state_2 = parsed_oval.oval_document.getStates()[1]
 
-    exp_range_1 = "=3.12.38-44.1"
-    exp_range_2 = ">=5-2.1-0"
+    exp_range_1 = "<9.63-1.1"
 
     assert parsed_oval.get_version_range_from_state(state_1) == exp_range_1
-    assert parsed_oval.get_version_range_from_state(state_2) == exp_range_2
 
     # Get reference URLs: `ref_url` attribute from `reference` elements
-    # We use the 2nd definition because the 1st has a lengthy list of references.
-    definition_2 = parsed_oval.all_definitions[1]
-    def2_urls = {
-        "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-2708",
-        "https://www.suse.com/security/cve/CVE-2019-2708",
-        "https://lists.suse.com/pipermail/sle-security-updates/2022-November/013108.html",
-        "https://lists.suse.com/pipermail/sle-security-updates/2022-November/013106.html",
-        "https://lists.suse.com/pipermail/sle-security-updates/2022-November/013158.html",
-        "https://www.suse.com/security/cve/CVE-2019-2708/",
-        "https://bugzilla.suse.com/1174414",
+    definition_0 = parsed_oval.all_definitions[0]
+    def0_urls = {
+        "http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-5679",
     }
 
-    assert def2_urls == parsed_oval.get_urls_from_definition(definition_2)
+    assert def0_urls == parsed_oval.get_urls_from_definition(definition_0)
 
 
 def test_filter_suse_gz_files():

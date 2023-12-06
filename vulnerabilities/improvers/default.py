@@ -12,11 +12,13 @@ from typing import Iterable
 from typing import List
 from typing import Tuple
 
+from django.db.models import Q
 from django.db.models.query import QuerySet
 from packageurl import PackageURL
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import Importer
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
@@ -34,9 +36,17 @@ class DefaultImprover(Improver):
     information source.
     """
 
+    importer: Importer
+
     @property
     def interesting_advisories(self) -> QuerySet:
-        return Advisory.objects.all()
+        if hasattr(self, "importer"):
+            return (
+                Advisory.objects.filter(Q(created_by=self.importer.qualified_name))
+                .order_by("-date_collected")
+                .paginated()
+            )
+        return Advisory.objects.all().order_by("-date_collected").paginated()
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         if not advisory_data:
@@ -54,6 +64,7 @@ class DefaultImprover(Improver):
                         affected_purls=affected_purls,
                         fixed_purl=None,
                         references=advisory_data.references,
+                        weaknesses=advisory_data.weaknesses,
                     )
                 else:
                     for fixed_purl in fixed_purls or []:
@@ -64,6 +75,7 @@ class DefaultImprover(Improver):
                             affected_purls=affected_purls,
                             fixed_purl=fixed_purl,
                             references=advisory_data.references,
+                            weaknesses=advisory_data.weaknesses,
                         )
 
         else:
@@ -94,11 +106,11 @@ def get_exact_purls(affected_package: AffectedPackage) -> Tuple[List[PackageURL]
     >>> assert expected == got
     """
 
-    vr = affected_package.affected_version_range
-    # We need ``if c`` below because univers returns None as version
-    # in case of vers:nginx/*
-    # TODO: Revisit after https://github.com/nexB/univers/issues/33
     try:
+        vr = affected_package.affected_version_range
+        # We need ``if c`` below because univers returns None as version
+        # in case of vers:nginx/*
+        # TODO: Revisit after https://github.com/nexB/univers/issues/33
         affected_purls = []
         fixed_versions = []
         if vr:
@@ -120,5 +132,14 @@ def get_exact_purls(affected_package: AffectedPackage) -> Tuple[List[PackageURL]
         ]
         return affected_purls, fixed_purls
     except Exception as e:
-        logger.error(f"Failed to get exact purls for {affected_package} {e}")
+        logger.error(f"Failed to get exact purls for: {affected_package!r} with error: {e!r}")
         return [], []
+
+
+class DefaultImporter(DefaultImprover):
+    def __init__(self, advisories) -> None:
+        self.advisories = advisories
+
+    @property
+    def interesting_advisories(self) -> QuerySet:
+        return self.advisories

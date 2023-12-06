@@ -1,0 +1,54 @@
+[
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2018-20301"
+    ],
+    "confidence": 100,
+    "summary": "The Coherence library has \"Mass Assignment\"-like vulnerabilities.",
+    "affected_purls": [
+      {
+        "type": "hex",
+        "namespace": null,
+        "name": "coherence",
+        "version": "0.1.0",
+        "qualifiers": null,
+        "subpath": null
+      }
+    ],
+    "fixed_purl": {
+      "type": "hex",
+      "namespace": null,
+      "name": "coherence",
+      "version": "0.5.2",
+      "qualifiers": null,
+      "subpath": null
+    },
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://github.com/smpallen99/coherence/issues/270",
+        "severities": []
+      }
+    ],
+    "weaknesses": []
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2018-20301"
+    ],
+    "confidence": 100,
+    "summary": "The Coherence library has \"Mass Assignment\"-like vulnerabilities.",
+    "affected_purls": [],
+    "fixed_purl": null,
+    "references": [
+      {
+        "reference_id": "",
+        "url": "https://github.com/smpallen99/coherence/issues/270",
+        "severities": []
+      }
+    ],
+    "weaknesses": []
+  }
+]

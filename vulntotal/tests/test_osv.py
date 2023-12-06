@@ -25,11 +25,11 @@ class TestOSV(testcase.FileBasedTesting):
         purls = [
             "pkg:pypi/jinja2@2.4.1",
             "pkg:android/System@10",
-            "pkg:debian:8/davical@1.1.3-1",
+            "pkg:deb:8/davical@1.1.3-1",
             "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M8",
             "pkg:linux/Kernel@v5.4.195",
             "pkg:packagist/dolibarr/dolibarr@12.0.5",
-            "pkg:crates.io/sha2@0.9.7",
+            "pkg:cargo/sha2@0.9.7",
             "pkg:npm/semver-regex@3.1.3",
             "pkg:golang/github.com/cloudflare/cfrpki@1.1.0",
         ]
@@ -58,7 +58,10 @@ class TestOSV(testcase.FileBasedTesting):
         advisory_page = self.get_test_loc("advisory.txt")
         with open(advisory_page) as f:
             advisory = json.load(f)
-        results = [adv.to_dict() for adv in osv.parse_advisory(advisory)]
+        results = [
+            adv.to_dict()
+            for adv in osv.parse_advisory(advisory, PackageURL("generic", "namespace", "test"))
+        ]
         expected_file = self.get_test_loc("parse_advisory_data-expected.json", must_exist=False)
         util_tests.check_results_against_json(results, expected_file)
 
@@ -66,7 +69,7 @@ class TestOSV(testcase.FileBasedTesting):
 @pytest.mark.webtest
 class TestOSVLive(testcase.FileBasedTesting):
     def test_generate_payload_nuget_with_api_call(self):
-        # this test makes like API calls
+        # this test makes live API calls
         purl = PackageURL.from_string("pkg:nuget/moment.js@2.18.0")
         results = osv.generate_payload(purl)
         expected = {"package": {"ecosystem": "NuGet", "name": "Moment.js"}, "version": "2.18.0"}

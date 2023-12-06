@@ -568,3 +568,29 @@ class RemoveCorrupteAdvisories(TestMigrations):
         # using get_model to avoid circular import
         Advisory = self.apps.get_model("vulnerabilities", "Advisory")
         Advisory.objects.all().count() == 0
+
+
+class RemoveVulnerabilitiesWithEmptyAliases(TestMigrations):
+    app_name = "vulnerabilities"
+    migrate_from = "0040_remove_advisory_date_improved_advisory_date_imported"
+    migrate_to = "0041_remove_vulns_with_empty_aliases"
+
+    def setUpBeforeMigration(self, apps):
+        # using get_model to avoid circular import
+        Vulnerability = apps.get_model("vulnerabilities", "Vulnerability")
+        Alias = apps.get_model("vulnerabilities", "Alias")
+
+        vuln = Vulnerability.objects.create(
+            summary="Corrupted vuln",
+        )
+        vuln.save()
+        vuln = Vulnerability.objects.create(
+            summary="vuln",
+        )
+        vuln.save()
+        Alias.objects.create(alias="CVE-123", vulnerability=vuln)
+
+    def test_removal_of_corrupted_vulns(self):
+        # using get_model to avoid circular import
+        Vulnerability = self.apps.get_model("vulnerabilities", "Vulnerability")
+        Vulnerability.objects.all().count() == 1

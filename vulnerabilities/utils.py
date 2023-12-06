@@ -30,6 +30,7 @@ import toml
 import urllib3
 from packageurl import PackageURL
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
+from univers.version_range import NginxVersionRange
 from univers.version_range import VersionRange
 
 logger = logging.getLogger(__name__)
@@ -453,3 +454,87 @@ def get_cwe_id(cwe_string: str) -> int:
     """
     cwe_id = cwe_string.split("-")[1]
     return int(cwe_id)
+
+
+def clean_nginx_git_tag(tag):
+    """
+    Return a cleaned ``version`` string from an nginx git tag.
+
+    Nginx tags git release as in `release-1.2.3`
+    This removes the the `release-` prefix.
+
+    For example:
+    >>> clean_nginx_git_tag("release-1.2.3") == "1.2.3"
+    True
+    >>> clean_nginx_git_tag("1.2.3") == "1.2.3"
+    True
+    """
+    if tag.startswith("release-"):
+        _, _, tag = tag.partition("release-")
+    return tag
+
+
+def is_vulnerable_nginx_version(version, affected_version_range, fixed_versions):
+    """
+    Return True if the ``version`` Version for nginx is vulnerable according to
+    the nginx approach.
+
+    A ``version`` is vulnerable as explained by @mdounin
+    in https://marc.info/?l=nginx&m=164070162912710&w=2 :
+
+        "Note that it is generally trivial to find out if a version is
+        vulnerable or not from the information about a vulnerability,
+        without any knowledge about nginx branches.  That is:
+
+        - Check if the version is in "Vulnerable" range.  If it's not, the
+          version is not vulnerable.
+
+        - If it is, check if the branch is explicitly listed in the "Not
+          vulnerable".  If it's not, the version is vulnerable.  If it
+          is, check the minor number: if it's greater or equal to the
+          version listed as not vulnerable, the version is not vulnerable,
+          else the version is vulnerable."
+
+    """
+    if version in NginxVersionRange.from_string(affected_version_range.to_string()):
+        for fixed_version in fixed_versions:
+            if version.value.minor == fixed_version.value.minor and version >= fixed_version:
+                return False
+        return True
+    return False
+
+
+def get_severity_range(severity_list):
+    """
+    >>> get_severity_range({'LOW','7.5','5'})
+    '0.1 - 7.5'
+    >>> get_severity_range({'LOW','Medium'})
+    '0.1 - 6.9'
+    >>> get_severity_range({'9.5','critical'})
+    '9.0 - 10.0'
+    >>> get_severity_range({'9.5','critical','unknown'})
+    '9.0 - 10.0'
+    >>> get_severity_range({})
+    """
+    if len(severity_list) < 1:
+        return
+    score_map = {
+        "low": [0.1, 3],
+        "moderate": [4.0, 6.9],
+        "medium": [4.0, 6.9],
+        "high": [7.0, 8.9],
+        "important": [7.0, 8.9],
+        "critical": [9.0, 10.0],
+    }
+
+    score_list = []
+    for score in severity_list:
+        try:
+            score_list.append(float(score))
+        except ValueError:
+            score_range = score_map.get(score.lower()) or []
+            if score_range:
+                score_list.extend(score_range)
+    if not score_list:
+        return
+    return f"{min(score_list)} - {max(score_list)}"

@@ -24,8 +24,9 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importers.github import GitHubAPIImporter
-from vulnerabilities.importers.github import GitHubBasicImprover
+from vulnerabilities.importers.github import get_cwes_from_github_advisory
 from vulnerabilities.importers.github import process_response
+from vulnerabilities.improvers.valid_versions import GitHubBasicImprover
 from vulnerabilities.tests.util_tests import VULNERABLECODE_REGEN_TEST_FIXTURES as REGEN
 from vulnerabilities.utils import GitHubTokenError
 
@@ -172,10 +173,12 @@ def valid_versions():
         "6.0.3.4",
         "6.0.3.rc1",
         "6.0.2.rc2",
+        "10.2.8",
+        "10.2.1",
     ]
 
 
-@mock.patch("vulnerabilities.importers.github.GitHubBasicImprover.get_package_versions")
+@mock.patch("vulnerabilities.improvers.valid_versions.GitHubBasicImprover.get_package_versions")
 def test_github_improver(mock_response, regen=REGEN):
     advisory_data = AdvisoryData(
         aliases=["CVE-2022-21831", "GHSA-w749-p3v6-hccq"],
@@ -203,7 +206,27 @@ def test_github_improver(mock_response, regen=REGEN):
                     )
                 ),
                 fixed_version=None,
-            )
+            ),
+            AffectedPackage(
+                package=PackageURL(
+                    type="gem",
+                    namespace=None,
+                    name="activestorage",
+                    version=None,
+                    qualifiers={},
+                    subpath=None,
+                ),
+                affected_version_range=GemVersionRange(
+                    constraints=(
+                        VersionConstraint(
+                            comparator=">=", version=RubygemsVersion(string="10.2.0")
+                        ),
+                        VersionConstraint(
+                            comparator="<=", version=RubygemsVersion(string="10.2.8")
+                        ),
+                    )
+                ),
+            ),
         ],
         references=[
             Reference(
@@ -289,3 +312,24 @@ def test_get_package_versions(mock_response):
     assert PackageURL(type="gem", name="foo") in improver.versions_fetcher_by_purl
     assert PackageURL(type="pypi", name="django") in improver.versions_fetcher_by_purl
     assert PackageURL(type="pypi", name="foo") in improver.versions_fetcher_by_purl
+
+
+def test_get_cwes_from_github_advisory():
+    assert get_cwes_from_github_advisory(
+        {"cwes": {"nodes": [{"cweId": "CWE-502"}, {"cweId": "CWE-770"}]}}
+    ) == [502, 770]
+    assert get_cwes_from_github_advisory(
+        {
+            "cwes": {
+                "nodes": [
+                    {"cweId": "CWE-173"},
+                    {"cweId": "CWE-200"},
+                    {"cweId": "CWE-378"},
+                    {"cweId": "CWE-732"},
+                ]
+            }
+        }
+    ) == [173, 200, 378, 732]
+    assert get_cwes_from_github_advisory(
+        {"cwes": {"nodes": [{"cweId": "CWE-11111111111"}, {"cweId": "CWE-200"}]}}  # invalid cwe-id
+    ) == [200]

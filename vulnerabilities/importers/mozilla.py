@@ -39,7 +39,7 @@ class MozillaImporter(Importer):
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         try:
-            self.clone(self.repo_url)
+            self.clone(repo_url=self.repo_url)
             path = Path(self.vcs_response.dest_dir)
 
             vuln = path / "announce"

@@ -16,6 +16,8 @@ from rest_framework import serializers
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.throttling import AnonRateThrottle
+from rest_framework.throttling import UserRateThrottle
 
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
@@ -46,11 +48,30 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
     Used for nesting inside vulnerability focused APIs.
     """
 
+    def get_affected_vulnerabilities(self, package):
+        parent_affected_vulnerabilities = package.fixed_package_details.get("vulnerabilities") or []
+
+        affected_vulnerabilities = [
+            self.get_vulnerability(vuln) for vuln in parent_affected_vulnerabilities
+        ]
+
+        return affected_vulnerabilities
+
+    def get_vulnerability(self, vuln):
+        affected_vulnerability = {}
+
+        vulnerability = vuln.get("vulnerability")
+        if vulnerability:
+            affected_vulnerability["vulnerability"] = vulnerability.vulnerability_id
+            return affected_vulnerability
+
+    affected_by_vulnerabilities = serializers.SerializerMethodField("get_affected_vulnerabilities")
+
     purl = serializers.CharField(source="package_url")
 
     class Meta:
         model = Package
-        fields = ["url", "purl", "is_vulnerable"]
+        fields = ["url", "purl", "is_vulnerable", "affected_by_vulnerabilities"]
 
 
 class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
@@ -97,7 +118,6 @@ class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
 
 
 class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
-
     fixed_packages = MinimalPackageSerializer(
         many=True, source="filtered_fixed_packages", read_only=True
     )
@@ -124,10 +144,19 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
     Lookup software package using Package URLs
     """
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data["unresolved_vulnerabilities"] = data["affected_by_vulnerabilities"]
-        return data
+    next_non_vulnerable_version = serializers.SerializerMethodField("get_next_non_vulnerable")
+
+    def get_next_non_vulnerable(self, package):
+        next_non_vulnerable = package.fixed_package_details.get("next_non_vulnerable", None)
+        if next_non_vulnerable:
+            return next_non_vulnerable.version
+
+    latest_non_vulnerable_version = serializers.SerializerMethodField("get_latest_non_vulnerable")
+
+    def get_latest_non_vulnerable(self, package):
+        latest_non_vulnerable = package.fixed_package_details.get("latest_non_vulnerable", None)
+        if latest_non_vulnerable:
+            return latest_non_vulnerable.version
 
     purl = serializers.CharField(source="package_url")
 
@@ -137,7 +166,7 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_fixed_packages(self, package):
         """
-        Return a queryset of all packages that fixes a vulnerability with
+        Return a queryset of all packages that fix a vulnerability with
         same type, namespace, name, subpath and qualifiers of the `package`
         """
         return Package.objects.filter(
@@ -152,7 +181,7 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
     def get_vulnerabilities_for_a_package(self, package, fix) -> dict:
         """
         Return a mapping of vulnerabilities data related to the given `package`.
-        Return vulnerabilities that affects the `package` if given `fix` flag is False,
+        Return vulnerabilities that affect the `package` if given `fix` flag is False,
         otherwise return vulnerabilities fixed by the `package`.
         """
         fixed_packages = self.get_fixed_packages(package=package)
@@ -178,9 +207,23 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_affected_vulnerabilities(self, package) -> dict:
         """
-        Return a mapping of vulnerabilities that affects the given `package`.
+        Return a mapping of vulnerabilities that affect the given `package` (including packages that
+        fix each vulnerability and whose version is greater than the `package` version).
         """
-        return self.get_vulnerabilities_for_a_package(package=package, fix=False)
+        excluded_purls = []
+        package_vulnerabilities = self.get_vulnerabilities_for_a_package(package=package, fix=False)
+
+        for vuln in package_vulnerabilities:
+            for pkg in vuln["fixed_packages"]:
+                real_purl = PackageURL.from_string(pkg["purl"])
+                if package.version_class(real_purl.version) <= package.current_version:
+                    excluded_purls.append(pkg)
+
+            vuln["fixed_packages"] = [
+                pkg for pkg in vuln["fixed_packages"] if pkg not in excluded_purls
+            ]
+
+        return package_vulnerabilities
 
     class Meta:
         model = Package
@@ -193,6 +236,8 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
             "version",
             "qualifiers",
             "subpath",
+            "next_non_vulnerable_version",
+            "latest_non_vulnerable_version",
             "affected_by_vulnerabilities",
             "fixing_vulnerabilities",
         ]
@@ -236,11 +281,10 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PackageSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageFilterSet
-    throttle_classes = [StaffUserRateThrottle]
-    throttle_scope = "packages"
+    throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
 
     # TODO: Fix the swagger documentation for this endpoint
-    @action(detail=False, methods=["post"], throttle_scope="bulk_search_packages")
+    @action(detail=False, methods=["post"])
     def bulk_search(self, request):
         """
         Lookup for vulnerable packages using many Package URLs at once.
@@ -294,7 +338,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         vulnerable_purls = [str(package.package_url) for package in vulnerable_purls]
         return Response(data=vulnerable_purls)
 
-    @action(detail=False, methods=["get"], throttle_scope="vulnerable_packages")
+    @action(detail=False, methods=["get"])
     def all(self, request):
         """
         Return the Package URLs of all packages known to be vulnerable.
@@ -346,8 +390,7 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = VulnerabilityFilterSet
-    throttle_classes = [StaffUserRateThrottle]
-    throttle_scope = "vulnerabilities"
+    throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
 
 
 class CPEFilterSet(filters.FilterSet):
@@ -368,11 +411,10 @@ class CPEViewSet(viewsets.ReadOnlyModelViewSet):
     ).distinct()
     serializer_class = VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    throttle_classes = [StaffUserRateThrottle]
+    throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
     filterset_class = CPEFilterSet
-    throttle_scope = "cpes"
 
-    @action(detail=False, methods=["post"], throttle_scope="bulk_search_cpes")
+    @action(detail=False, methods=["post"])
     def bulk_search(self, request):
         """
         Lookup for vulnerabilities using many CPEs at once.
@@ -414,5 +456,4 @@ class AliasViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AliasFilterSet
-    throttle_classes = [StaffUserRateThrottle]
-    throttle_scope = "aliases"
+    throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]

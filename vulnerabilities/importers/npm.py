@@ -36,7 +36,7 @@ class NpmImporter(Importer):
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         try:
-            self.clone(self.repo_url)
+            self.clone(repo_url=self.repo_url)
             path = Path(self.vcs_response.dest_dir)
 
             vuln = path / "vuln"
@@ -52,7 +52,9 @@ class NpmImporter(Importer):
         id = data.get("id")
         description = data.get("overview") or ""
         summary = data.get("title") or ""
-        date_published = parse(data.get("created_at")).replace(tzinfo=pytz.UTC)
+        date_published = None
+        if isinstance(data.get("created_at"), str):
+            date_published = parse(data.get("created_at")).replace(tzinfo=pytz.UTC)
         references = []
         cvss_vector = data.get("cvss_vector")
         cvss_score = data.get("cvss_score")

@@ -5,12 +5,25 @@
 # Required
 version: 2
 
+# Build in latest ubuntu/python
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.11"
+
+# Build PDF & ePub
+formats:
+  - epub
+  - pdf
+
 # Where the Sphinx conf.py file is located
 sphinx:
    configuration: docs/source/conf.py
 
-# Setting the doc build requirements
+# Setting the python version and doc build requirements
 python:
-  version: "3.7"
   install:
-    - requirements: docs/requirements.txt
+    - method: pip
+      path: .
+      extra_requirements:
+        - dev

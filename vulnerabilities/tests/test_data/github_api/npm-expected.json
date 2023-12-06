@@ -345,7 +345,6 @@
     ],
     "date_published": "2022-11-28T22:06:24+00:00",
     "weaknesses": []
-
   },
   {
     "aliases": [
@@ -584,7 +583,7 @@
       "CVE-2022-41940",
       "GHSA-r7qp-cfhv-p84w"
     ],
-    "summary": "Uncaught exception in engine.io ",
+    "summary": "Uncaught exception in engine.io",
     "affected_packages": [
       {
         "package": {
@@ -646,7 +645,7 @@
       "CVE-2022-41940",
       "GHSA-r7qp-cfhv-p84w"
     ],
-    "summary": "Uncaught exception in engine.io ",
+    "summary": "Uncaught exception in engine.io",
     "affected_packages": [
       {
         "package": {
@@ -708,7 +707,7 @@
       "CVE-2022-41919",
       "GHSA-3fjj-p79j-c9hh"
     ],
-    "summary": "Fastify: Incorrect Content-Type parsing can lead to CSRF attack ",
+    "summary": "Fastify: Incorrect Content-Type parsing can lead to CSRF attack",
     "affected_packages": [
       {
         "package": {
@@ -770,7 +769,7 @@
       "CVE-2022-41919",
       "GHSA-3fjj-p79j-c9hh"
     ],
-    "summary": "Fastify: Incorrect Content-Type parsing can lead to CSRF attack ",
+    "summary": "Fastify: Incorrect Content-Type parsing can lead to CSRF attack",
     "affected_packages": [
       {
         "package": {
@@ -1451,7 +1450,7 @@
     "aliases": [
       "GHSA-3qmc-2r76-4rqp"
     ],
-    "summary": "Redwood is vulnerable to account takeover via dbAuth \"forgot-password\" ",
+    "summary": "Redwood is vulnerable to account takeover via dbAuth \"forgot-password\"",
     "affected_packages": [
       {
         "package": {
@@ -1517,7 +1516,7 @@
     "aliases": [
       "GHSA-3qmc-2r76-4rqp"
     ],
-    "summary": "Redwood is vulnerable to account takeover via dbAuth \"forgot-password\" ",
+    "summary": "Redwood is vulnerable to account takeover via dbAuth \"forgot-password\"",
     "affected_packages": [
       {
         "package": {
@@ -4234,7 +4233,7 @@
       "CVE-2022-25918",
       "GHSA-cr84-xvw4-qx3c"
     ],
-    "summary": "Inefficient Regular Expression Complexity in shescape ",
+    "summary": "Inefficient Regular Expression Complexity in shescape",
     "affected_packages": [
       {
         "package": {

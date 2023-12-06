@@ -18,8 +18,8 @@ from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDImporter
-from vulnerabilities.importers.apache_httpd import ApacheHTTPDImprover
 from vulnerabilities.improvers.default import DefaultImprover
+from vulnerabilities.improvers.valid_versions import ApacheHTTPDImprover
 from vulnerabilities.tests import util_tests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -122,7 +122,7 @@ def test_to_advisory_CVE_2022_28614():
     util_tests.check_results_against_json(result, expected_file)
 
 
-@mock.patch("vulnerabilities.importers.apache_httpd.ApacheHTTPDImprover.get_package_versions")
+@mock.patch("vulnerabilities.improvers.valid_versions.ApacheHTTPDImprover.get_package_versions")
 def test_apache_httpd_improver(mock_response):
     advisory_file = os.path.join(TEST_DATA, f"CVE-2021-44224-apache-httpd-expected.json")
     expected_file = os.path.join(TEST_DATA, f"apache-httpd-improver-expected.json")

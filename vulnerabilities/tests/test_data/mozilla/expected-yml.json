@@ -3,7 +3,7 @@
     "aliases": [
       "CVE-2022-22746"
     ],
-    "summary": "A race condition could have allowed bypassing the fullscreen notification which could have lead to a fullscreen window spoof being unnoticed.*This bug only affects Firefox for Windows. Other operating systems are unaffected.*\n",
+    "summary": "A race condition could have allowed bypassing the fullscreen notification which could have lead to a fullscreen window spoof being unnoticed.*This bug only affects Firefox for Windows. Other operating systems are unaffected.*",
     "affected_packages": [
       {
         "package": {
@@ -38,7 +38,7 @@
     "aliases": [
       "CVE-2022-22743"
     ],
-    "summary": "When navigating from inside an iframe while requesting fullscreen access, an attacker-controlled tab could have made the browser unable to leave fullscreen mode.\n",
+    "summary": "When navigating from inside an iframe while requesting fullscreen access, an attacker-controlled tab could have made the browser unable to leave fullscreen mode.",
     "affected_packages": [],
     "references": [
       {
@@ -60,7 +60,7 @@
     "aliases": [
       "CVE-2022-22742"
     ],
-    "summary": "When inserting text while in edit mode, some characters might have lead to out-of-bounds memory access causing a potentially exploitable crash.\n",
+    "summary": "When inserting text while in edit mode, some characters might have lead to out-of-bounds memory access causing a potentially exploitable crash.",
     "affected_packages": [],
     "references": [
       {
@@ -82,7 +82,7 @@
     "aliases": [
       "CVE-2022-22741"
     ],
-    "summary": "When resizing a popup while requesting fullscreen access, the popup would have become unable to leave fullscreen mode.\n",
+    "summary": "When resizing a popup while requesting fullscreen access, the popup would have become unable to leave fullscreen mode.",
     "affected_packages": [],
     "references": [
       {
@@ -104,7 +104,7 @@
     "aliases": [
       "CVE-2022-22740"
     ],
-    "summary": "Certain network request objects were freed too early when releasing a network request handle. This could have lead to a use-after-free causing a potentially exploitable crash.\n",
+    "summary": "Certain network request objects were freed too early when releasing a network request handle. This could have lead to a use-after-free causing a potentially exploitable crash.",
     "affected_packages": [],
     "references": [
       {
@@ -126,7 +126,7 @@
     "aliases": [
       "CVE-2022-22738"
     ],
-    "summary": "Applying a CSS filter effect could have accessed out of bounds memory. This could have lead to a heap-buffer-overflow causing a potentially exploitable crash.\n",
+    "summary": "Applying a CSS filter effect could have accessed out of bounds memory. This could have lead to a heap-buffer-overflow causing a potentially exploitable crash.",
     "affected_packages": [],
     "references": [
       {
@@ -148,7 +148,7 @@
     "aliases": [
       "CVE-2022-22737"
     ],
-    "summary": "Constructing audio sinks could have lead to a race condition when playing audio files and closing windows. This could have lead to a use-after-free causing a potentially exploitable crash.\n",
+    "summary": "Constructing audio sinks could have lead to a race condition when playing audio files and closing windows. This could have lead to a use-after-free causing a potentially exploitable crash.",
     "affected_packages": [],
     "references": [
       {
@@ -170,7 +170,7 @@
     "aliases": [
       "CVE-2021-4140"
     ],
-    "summary": "It was possible to construct specific XSLT markup that would be able to bypass an iframe sandbox.\n",
+    "summary": "It was possible to construct specific XSLT markup that would be able to bypass an iframe sandbox.",
     "affected_packages": [],
     "references": [
       {
@@ -192,7 +192,7 @@
     "aliases": [
       "CVE-2022-22750"
     ],
-    "summary": "By generally accepting and passing resource handles across processes, a compromised content process might have confused higher privileged processes to interact with handles that the unprivileged process should not have access to.*This bug only affects Firefox for Windows and MacOS. Other operating systems are unaffected.*\n",
+    "summary": "By generally accepting and passing resource handles across processes, a compromised content process might have confused higher privileged processes to interact with handles that the unprivileged process should not have access to.*This bug only affects Firefox for Windows and MacOS. Other operating systems are unaffected.*",
     "affected_packages": [],
     "references": [
       {
@@ -214,7 +214,7 @@
     "aliases": [
       "CVE-2022-22749"
     ],
-    "summary": "When scanning QR codes, Firefox for Android would have allowed navigation to some URLs that do not point to web content.*This bug only affects Firefox for Android. Other operating systems are unaffected.*\n",
+    "summary": "When scanning QR codes, Firefox for Android would have allowed navigation to some URLs that do not point to web content.*This bug only affects Firefox for Android. Other operating systems are unaffected.*",
     "affected_packages": [],
     "references": [
       {
@@ -236,7 +236,7 @@
     "aliases": [
       "CVE-2022-22748"
     ],
-    "summary": "Malicious websites could have confused Firefox into showing the wrong origin when asking to launch a program and handling an external URL protocol.\n",
+    "summary": "Malicious websites could have confused Firefox into showing the wrong origin when asking to launch a program and handling an external URL protocol.",
     "affected_packages": [],
     "references": [
       {
@@ -258,7 +258,7 @@
     "aliases": [
       "CVE-2022-22745"
     ],
-    "summary": "Securitypolicyviolation events could have leaked cross-origin information for frame-ancestors violations\n",
+    "summary": "Securitypolicyviolation events could have leaked cross-origin information for frame-ancestors violations",
     "affected_packages": [],
     "references": [
       {
@@ -280,7 +280,7 @@
     "aliases": [
       "CVE-2022-22744"
     ],
-    "summary": "The constructed curl command from the \"Copy as curl\" feature in DevTools was not properly escaped for PowerShell.  This could have lead to command injection if pasted into a Powershell prompt.*This bug only affects Firefox for Windows. Other operating systems are unaffected.*\n",
+    "summary": "The constructed curl command from the \"Copy as curl\" feature in DevTools was not properly escaped for PowerShell.  This could have lead to command injection if pasted into a Powershell prompt.*This bug only affects Firefox for Windows. Other operating systems are unaffected.*",
     "affected_packages": [],
     "references": [
       {
@@ -302,7 +302,7 @@
     "aliases": [
       "CVE-2022-22763"
     ],
-    "summary": "When a worker is shutdown, it was possible to cause script to run late in the lifecycle, at a point after where it should not be possible.\n",
+    "summary": "When a worker is shutdown, it was possible to cause script to run late in the lifecycle, at a point after where it should not be possible.",
     "affected_packages": [],
     "references": [
       {
@@ -324,7 +324,7 @@
     "aliases": [
       "CVE-2022-22747"
     ],
-    "summary": "After accepting an untrusted certificate, handling an empty pkcs7 sequence as part of the certificate data could have lead to a crash. This crash is believed to be unexploitable.\n",
+    "summary": "After accepting an untrusted certificate, handling an empty pkcs7 sequence as part of the certificate data could have lead to a crash. This crash is believed to be unexploitable.",
     "affected_packages": [],
     "references": [
       {
@@ -346,7 +346,7 @@
     "aliases": [
       "CVE-2022-22736"
     ],
-    "summary": "If Firefox was installed to a world-writable directory, a local privilege escalation could occur when Firefox searched the current directory for system libraries. However the install directory is not world-writable by default.*This bug only affects Firefox for Windows in a non-default installation. Other operating systems are unaffected.*\n",
+    "summary": "If Firefox was installed to a world-writable directory, a local privilege escalation could occur when Firefox searched the current directory for system libraries. However the install directory is not world-writable by default.*This bug only affects Firefox for Windows in a non-default installation. Other operating systems are unaffected.*",
     "affected_packages": [],
     "references": [
       {
@@ -368,7 +368,7 @@
     "aliases": [
       "CVE-2022-22739"
     ],
-    "summary": "Malicious websites could have tricked users into accepting launching a program to handle an external URL protocol.\n",
+    "summary": "Malicious websites could have tricked users into accepting launching a program to handle an external URL protocol.",
     "affected_packages": [],
     "references": [
       {
@@ -390,7 +390,7 @@
     "aliases": [
       "CVE-2022-22751"
     ],
-    "summary": "Mozilla developers Calixte Denizet, Kershaw Chang, Christian Holler, Jason Kratzer, Gabriele Svelto, Tyson Smith, Simon Giesecke, and Steve Fink reported memory safety bugs present in Firefox 95 and Firefox ESR 91.4. Some of these bugs showed evidence of memory corruption and we presume that with enough effort some of these could have been exploited to run arbitrary code.\n",
+    "summary": "Mozilla developers Calixte Denizet, Kershaw Chang, Christian Holler, Jason Kratzer, Gabriele Svelto, Tyson Smith, Simon Giesecke, and Steve Fink reported memory safety bugs present in Firefox 95 and Firefox ESR 91.4. Some of these bugs showed evidence of memory corruption and we presume that with enough effort some of these could have been exploited to run arbitrary code.",
     "affected_packages": [],
     "references": [
       {
@@ -412,7 +412,7 @@
     "aliases": [
       "CVE-2022-22752"
     ],
-    "summary": "Mozilla developers Christian Holler and Jason Kratzer reported memory safety bugs present in Firefox 95. Some of these bugs showed evidence of memory corruption and we presume that with enough effort some of these could have been exploited to run arbitrary code.\n",
+    "summary": "Mozilla developers Christian Holler and Jason Kratzer reported memory safety bugs present in Firefox 95. Some of these bugs showed evidence of memory corruption and we presume that with enough effort some of these could have been exploited to run arbitrary code.",
     "affected_packages": [],
     "references": [
       {

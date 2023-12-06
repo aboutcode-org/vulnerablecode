@@ -15,8 +15,10 @@ from unittest import mock
 
 import pytest
 from dateutil.tz import tzlocal
+from packageurl import PackageURL
 
 from vulnerabilities.package_managers import ComposerVersionAPI
+from vulnerabilities.package_managers import DebianVersionAPI
 from vulnerabilities.package_managers import GitHubTagsAPI
 from vulnerabilities.package_managers import GoproxyVersionAPI
 from vulnerabilities.package_managers import MavenVersionAPI
@@ -25,6 +27,7 @@ from vulnerabilities.package_managers import PackageVersion
 from vulnerabilities.package_managers import PypiVersionAPI
 from vulnerabilities.package_managers import RubyVersionAPI
 from vulnerabilities.package_managers import VersionResponse
+from vulnerabilities.package_managers import get_version_fetcher
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data", "package_manager_data")
@@ -450,3 +453,10 @@ class TestGitHubTagsAPI:
             PackageVersion(value="v22.01", release_date=dt_local(2022, 1, 24, 23, 48, 4)),
         ]
         assert results == expected
+
+
+def test_get_version_fetcher():
+    purl = "pkg:deb/debian/foo@1.2.3"
+    purl = PackageURL.from_string(purl)
+    fetcher = get_version_fetcher(purl)
+    assert isinstance(fetcher, DebianVersionAPI)

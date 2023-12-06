@@ -11,6 +11,7 @@ import logging
 from typing import Iterable
 
 import requests
+from packageurl import PackageURL
 
 from vulntotal.ecosystem.nuget import search_closest_nuget_package_name
 from vulntotal.validator import DataSource
@@ -40,7 +41,7 @@ class OSVDataSource(DataSource):
             return
         advisory = self.fetch_advisory(payload)
         self._raw_dump.append(advisory)
-        return parse_advisory(advisory)
+        return parse_advisory(advisory, purl)
 
     @classmethod
     def supported_ecosystem(cls):
@@ -51,18 +52,18 @@ class OSVDataSource(DataSource):
             "golang": "Go",
             "nuget": "NuGet",
             "pypi": "PyPI",
-            "rubygems": "RubyGems",
-            "crates.io": "crates.io",
+            "gem": "RubyGems",
+            "cargo": "crates.io",
             "composer": "Packagist",
             "linux": "Linux",
             "oss-fuzz": "OSS-Fuzz",
-            "debian": "Debian",
+            "deb": "Debian",
             "hex": "Hex",
             "android": "Android",
         }
 
 
-def parse_advisory(response) -> Iterable[VendorData]:
+def parse_advisory(response, purl) -> Iterable[VendorData]:
     """
     Parse response from OSV API and yield VendorData
     """
@@ -91,6 +92,7 @@ def parse_advisory(response) -> Iterable[VendorData]:
             pass
 
         yield VendorData(
+            purl=PackageURL(purl.type, purl.namespace, purl.name),
             aliases=sorted(list(set(aliases))),
             affected_versions=sorted(list(set(affected_versions))),
             fixed_versions=sorted(list(set(fixed))),

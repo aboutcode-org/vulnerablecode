@@ -25,6 +25,7 @@ from vulnerabilities.importers import nginx
 from vulnerabilities.importers import npm
 from vulnerabilities.importers import nvd
 from vulnerabilities.importers import openssl
+from vulnerabilities.importers import oss_fuzz
 from vulnerabilities.importers import postgresql
 from vulnerabilities.importers import project_kb_msr2019
 from vulnerabilities.importers import pypa
@@ -37,21 +38,21 @@ from vulnerabilities.importers import ubuntu_usn
 from vulnerabilities.importers import xen
 
 IMPORTERS_REGISTRY = [
-    nginx.NginxImporter,
-    alpine_linux.AlpineImporter,
-    github.GitHubAPIImporter,
     nvd.NVDImporter,
+    github.GitHubAPIImporter,
+    gitlab.GitLabAPIImporter,
+    npm.NpmImporter,
+    pypa.PyPaImporter,
+    nginx.NginxImporter,
+    pysec.PyPIImporter,
+    alpine_linux.AlpineImporter,
     openssl.OpensslImporter,
     redhat.RedhatImporter,
-    pysec.PyPIImporter,
     debian.DebianImporter,
-    gitlab.GitLabAPIImporter,
     postgresql.PostgreSQLImporter,
-    pypa.PyPaImporter,
     archlinux.ArchlinuxImporter,
     ubuntu.UbuntuImporter,
     debian_oval.DebianOvalImporter,
-    npm.NpmImporter,
     retiredotnet.RetireDotnetImporter,
     apache_httpd.ApacheHTTPDImporter,
     mozilla.MozillaImporter,
@@ -65,6 +66,7 @@ IMPORTERS_REGISTRY = [
     ubuntu_usn.UbuntuUSNImporter,
     fireeye.FireyeImporter,
     apache_kafka.ApacheKafkaImporter,
+    oss_fuzz.OSSFuzzImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

@@ -89,6 +89,7 @@ MIDDLEWARE = (
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "vulnerabilities.middleware.ban_user_agent.BanUserAgent",
 )
 
 ROOT_URLCONF = "vulnerablecode.urls"
@@ -171,27 +172,11 @@ VULNERABLECODEIO_REQUIRE_AUTHENTICATION = env.bool(
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
-REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {
-    "vulnerable_packages": "1/hour",
-    "bulk_search_packages": "5/hour",
-    "packages": "10/minute",
-    "vulnerabilities": "10/minute",
-    "aliases": "5/minute",
-    "cpes": "5/minute",
-    "bulk_search_cpes": "5/hour",
-}
+REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {"anon": "3600/hour", "user": "10800/hour"}
 
 if IS_TESTS:
-    VULNERABLECODEIO_REQUIRE_AUTHENTICATION = True
-    REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {
-        "vulnerable_packages": "1/day",
-        "bulk_search_packages": "6/day",
-        "packages": "10/day",
-        "vulnerabilities": "8/day",
-        "aliases": "2/day",
-        "cpes": "4/day",
-        "bulk_search_cpes": "5/day",
-    }
+    VULNERABLECODEIO_REQUIRE_AUTHENTICATION = False
+    REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {"anon": "10/day", "user": "20/day"}
 
 
 USE_L10N = True
@@ -229,8 +214,11 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_THROTTLE_CLASSES": [
         "vulnerabilities.throttling.StaffUserRateThrottle",
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": REST_FRAMEWORK_DEFAULT_THROTTLE_RATES,
+    "EXCEPTION_HANDLER": "vulnerabilities.throttling.throttled_exception_handler",
     "DEFAULT_PAGINATION_CLASS": "vulnerabilities.pagination.SmallResultSetPagination",
     # Limit the load on the Database returning a small number of records by default. https://github.com/nexB/vulnerablecode/issues/819
     "PAGE_SIZE": 10,

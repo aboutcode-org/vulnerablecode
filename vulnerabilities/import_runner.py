@@ -149,7 +149,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
     for inference in inferences:
         vulnerability = get_or_create_vulnerability_and_aliases(
             vulnerability_id=inference.vulnerability_id,
-            alias_names=inference.aliases,
+            aliases=inference.aliases,
             summary=inference.summary,
         )
 

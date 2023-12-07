@@ -431,7 +431,6 @@ class OvalImporter(Importer):
             # connected/linked to an OvalDefinition
             vuln_id = definition_data["vuln_id"]
             description = definition_data["description"]
-
             severities = []
             severity = definition_data.get("severity")
             if severity:
@@ -453,7 +452,8 @@ class OvalImporter(Importer):
                         except Exception as e:
                             logger.error(
                                 f"Failed to parse version range {affected_version_range!r} "
-                                f"for package {package_name!r}:\n{e}"
+                                f"for package {package_name!r}:\n{e}\n"
+                                f"{definition_data!r}"
                             )
                             continue
                     if package_name:

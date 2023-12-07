@@ -8,6 +8,7 @@
 #
 
 
+import bz2
 import xml.etree.ElementTree as ET
 
 import requests
@@ -64,9 +65,10 @@ class DebianOvalImporter(OvalImporter):
     def _fetch(self):
         releases = ["wheezy", "stretch", "jessie", "buster", "bullseye"]
         for release in releases:
-            file_url = f"https://www.debian.org/security/oval/oval-definitions-{release}.xml"
+            file_url = f"https://www.debian.org/security/oval/oval-definitions-{release}.xml.bz2"
             resp = requests.get(file_url).content
+            extracted = bz2.decompress(resp)
             yield (
                 {"type": "deb", "namespace": "debian", "qualifiers": {"distro": release}},
-                ET.ElementTree(ET.fromstring(resp.decode("utf-8"))),
+                ET.ElementTree(ET.fromstring(extracted.decode("utf-8"))),
             )

@@ -36,6 +36,7 @@ ADVISORY_DATAS = [
         ],
         references=[Reference(url="https://example.com/with/more/info/CVE-2020-13371337")],
         date_published=timezone.now(),
+        url="https://test.com",
     )
 ]
 
@@ -49,7 +50,7 @@ class DummyImporter(Importer):
 
 
 @pytest.mark.django_db(transaction=True)
-def test_import_runner(db):
+def test_import_runner_1(db):
     runner = ImportRunner(DummyImporter)
     runner.run()
     advisories = models.Advisory.objects.all()

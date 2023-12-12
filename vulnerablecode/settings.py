@@ -70,6 +70,7 @@ INSTALLED_APPS = (
     "django.contrib.admin",
     "django.contrib.humanize",
     # Third-party apps
+    "django_extensions",
     "django_filters",
     "rest_framework",
     "rest_framework.authtoken",

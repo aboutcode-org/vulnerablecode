@@ -829,3 +829,18 @@ class TestLookup(TestCase):
             content_type="application/json",
         ).json()
         assert response == []
+
+    def test_bulk_lookup_endpoint(self):
+        request_body = {
+            "purls": [
+                "pkg:pypi/microweber/microweber@1.2?foo=bar",
+                "pkg:pypi/microweber/microweber@1.2",
+                "pkg:pypi/foo/bar@1.0",
+            ],
+        }
+        response = self.csrf_client.post(
+            "/api/packages/bulk_lookup",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+        assert len(response) == 1

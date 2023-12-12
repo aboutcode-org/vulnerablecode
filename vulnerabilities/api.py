@@ -377,7 +377,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
             )
         return Response(
             PackageSerializer(
-                PackageSerializer(Package.objects.for_purls(purls)),
+                Package.objects.for_purls(purls),
                 many=True,
                 context={"request": request},
             ).data

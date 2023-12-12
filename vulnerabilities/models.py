@@ -546,6 +546,9 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         """
         return self.filter(vulnerabilities__vulnerabilityreference__reference_id__exact=cve)
 
+    def for_purls(self, purls=[]):
+        return Package.objects.filter(package_url__in=purls).distinct()
+
 
 def get_purl_query_lookups(purl):
     """

@@ -91,7 +91,9 @@ class OvalParser:
                     ):
                         matching_tests.append(self.oval_document.getElementByID(ref))
 
-        return list(set(matching_tests))
+        # return list(set(matching_tests))
+        # FIXME: 2023-12-13 Wednesday 10:00:57.  This change currently throws an error: FAILED vulnerabilities/tests/test_data_source.py::test__collect_pkgs - TypeError: '<' not supported between instances of 'OvalTest' and 'OvalTest'.  Waiting for response to my 2023-12-12 GH comments.
+        return sorted(set(matching_tests))
 
     def get_object_state_of_test(self, test: OvalTest) -> Tuple[OvalObject, OvalState]:
         """

@@ -11,8 +11,10 @@ from urllib.parse import unquote
 
 from django.db.models import Prefetch
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema
 from packageurl import PackageURL
 from rest_framework import serializers
+from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -272,6 +274,16 @@ class PackageFilterSet(filters.FilterSet):
         return self.queryset.filter(**lookups)
 
 
+class PackageBulkSearchRequestSerializer(serializers.Serializer):
+    purls = serializers.ListField(
+        child=serializers.CharField(),
+        allow_empty=False,
+        help_text="List of PackageURL strings in canonical form.",
+    )
+    purl_only = serializers.BooleanField(required=False, default=False)
+    plain_purl = serializers.BooleanField(required=False, default=False)
+
+
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Lookup for vulnerable packages by Package URL.
@@ -283,21 +295,36 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = PackageFilterSet
     throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
 
-    # TODO: Fix the swagger documentation for this endpoint
-    @action(detail=False, methods=["post"])
+    @extend_schema(
+        request=PackageBulkSearchRequestSerializer,
+        responses={
+            200: PackageSerializer(many=True),
+        },
+    )
+    @action(
+        detail=False,
+        methods=["post"],
+        serializer_class=PackageBulkSearchRequestSerializer,
+        filter_backends=[],
+        pagination_class=None,
+    )
     def bulk_search(self, request):
         """
         Lookup for vulnerable packages using many Package URLs at once.
         """
-
-        purls = request.data.get("purls", []) or []
-        purl_only = request.data.get("purl_only", False)
-        plain_purl = request.data.get("plain_purl", False)
-        if not purls or not isinstance(purls, list):
+        serializer = self.serializer_class(data=request.data)
+        if not serializer.is_valid():
             return Response(
-                status=400,
-                data={"Error": "A non-empty 'purls' list of PURLs is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "error": serializer.errors,
+                    "message": "A non-empty 'purls' list of PURLs is required.",
+                },
             )
+        validated_data = serializer.validated_data
+        purls = validated_data.get("purls")
+        purl_only = validated_data.get("purl_only", False)
+        plain_purl = validated_data.get("plain_purl", False)
 
         if plain_purl:
             purl_objects = [PackageURL.from_string(purl) for purl in purls]

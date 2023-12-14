@@ -749,3 +749,98 @@ class TesBanUserAgent(TestCase):
     def test_ban_request_with_bytedance_user_agent(self):
         response = self.client.get(f"/api/packages", format="json", HTTP_USER_AGENT="bytedance")
         assert 404 == response.status_code
+
+
+class TestLookup(TestCase):
+    def setUp(self):
+        Package.objects.create(
+            type="pypi", namespace="", name="microweber/microweber", version="1.2"
+        )
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
+        self.auth = f"Token {self.user.auth_token.key}"
+        self.csrf_client = APIClient(enforce_csrf_checks=True)
+        self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
+
+    def test_lookup_endpoint_failure(self):
+        request_body = {"purl": None}
+        response = self.csrf_client.post(
+            "/api/packages/lookup",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+        assert response == {"Error": "A 'purl' is required."}
+
+    def test_lookup_endpoint(self):
+        request_body = {"purl": "pkg:pypi/microweber/microweber@1.2"}
+        response = self.csrf_client.post(
+            "/api/packages/lookup",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+        assert len(response) == 1
+        assert response[0]["purl"] == "pkg:pypi/microweber/microweber@1.2"
+
+    def test_lookup_endpoint_1(self):
+        Package.objects.create(
+            type="pypi", namespace="microweber", name="microweber", version="1.2"
+        )
+        request_body = {"purl": "pkg:pypi/microweber/microweber@1.2"}
+        response = self.csrf_client.post(
+            "/api/packages/lookup",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+        assert len(response) == 2
+        assert response[0]["purl"] == "pkg:pypi/microweber/microweber@1.2"
+        assert response[0]["purl"] == response[1]["purl"]
+
+    def test_lookup_endpoint_with_one_purl_with_qualifier(self):
+        Package.objects.create(
+            type="pypi", namespace="microweber", name="microweber", version="1.2"
+        )
+        Package.objects.create(
+            type="pypi",
+            namespace="microweber",
+            name="microweber",
+            version="1.2",
+            qualifiers={"foo": "bar"},
+        )
+        request_body = {"purl": "pkg:pypi/microweber/microweber@1.2"}
+        response = self.csrf_client.post(
+            "/api/packages/lookup",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+        assert len(response) == 2
+        assert response[0]["purl"] == "pkg:pypi/microweber/microweber@1.2"
+        assert response[0]["purl"] == response[1]["purl"]
+        request_body = {"purl": "pkg:pypi/microweber/microweber@1.2?foo=bar"}
+        response = self.csrf_client.post(
+            "/api/packages/lookup",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+        assert len(response) == 1
+        assert response[0]["purl"] == "pkg:pypi/microweber/microweber@1.2?foo=bar"
+        request_body = {"purl": "pkg:pypi/microweber/microweber@1.2?foo=baz"}
+        response = self.csrf_client.post(
+            "/api/packages/lookup",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+        assert response == []
+
+    def test_bulk_lookup_endpoint(self):
+        request_body = {
+            "purls": [
+                "pkg:pypi/microweber/microweber@1.2?foo=bar",
+                "pkg:pypi/microweber/microweber@1.2",
+                "pkg:pypi/foo/bar@1.0",
+            ],
+        }
+        response = self.csrf_client.post(
+            "/api/packages/bulk_lookup",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+        assert len(response) == 1

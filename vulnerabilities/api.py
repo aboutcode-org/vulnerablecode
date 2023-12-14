@@ -12,6 +12,7 @@ from urllib.parse import unquote
 from django.db.models import Prefetch
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import inline_serializer
 from packageurl import PackageURL
 from rest_framework import serializers
 from rest_framework import status
@@ -284,6 +285,10 @@ class PackageBulkSearchRequestSerializer(serializers.Serializer):
     plain_purl = serializers.BooleanField(required=False, default=False)
 
 
+class LookupRequestSerializer(serializers.Serializer):
+    purl = serializers.CharField(required=True, help_text="PackageURL strings in canonical form.")
+
+
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Lookup for vulnerable packages by Package URL.
@@ -374,17 +379,33 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         vulnerable_purls = [str(package.package_url) for package in vulnerable_packages]
         return Response(vulnerable_purls)
 
-    @action(detail=False, methods=["post"])
+    @extend_schema(
+        request=LookupRequestSerializer,
+        responses=PackageSerializer(many=True),
+    )
+    @action(
+        detail=False,
+        methods=["post"],
+        serializer_class=LookupRequestSerializer,
+        filter_backends=[],
+        pagination_class=None,
+    )
     def lookup(self, request):
         """
         Return the response for exact PackageURL requested for.
         """
-        purl = request.data.get("purl")
-        if not purl:
+        serializer = self.serializer_class(data=request.data)
+        if not serializer.is_valid():
             return Response(
-                status=400,
-                data={"Error": "A 'purl' is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "error": serializer.errors,
+                    "message": "A 'purl' is required.",
+                },
             )
+        validated_data = serializer.validated_data
+        purl = validated_data.get("purl")
+
         return Response(
             PackageSerializer(
                 Package.objects.for_purls([purl]), many=True, context={"request": request}

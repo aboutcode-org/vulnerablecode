@@ -817,7 +817,13 @@ class TestLookup(TestCase):
             data=json.dumps(request_body),
             content_type="application/json",
         ).json()
-        assert response == {"Error": "A 'purl' is required."}
+
+        expected = {
+            "error": {"purl": ["This field may not be null."]},
+            "message": "A 'purl' is required.",
+        }
+
+        self.assertEqual(response, expected)
 
     def test_lookup_endpoint(self):
         request_body = {"purl": "pkg:pypi/microweber/microweber@1.2"}

@@ -681,6 +681,21 @@ class BulkSearchAPIPackage(TestCase):
 
         self.assertEqual(response, expected)
 
+    def test_bulk_api_with_empty_request_body(self):
+        request_body = {}
+        response = self.csrf_client.post(
+            "/api/packages/bulk_search",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+
+        expected = {
+            "error": {"purls": ["This field is required."]},
+            "message": "A non-empty 'purls' list of PURLs is required.",
+        }
+
+        self.assertEqual(response, expected)
+
 
 class BulkSearchAPICPE(TestCase):
     def setUp(self):

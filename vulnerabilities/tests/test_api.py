@@ -647,6 +647,40 @@ class BulkSearchAPIPackage(TestCase):
         assert len(response) == 1
         assert response[0] == "pkg:nginx/nginx@1.0.15"
 
+    def test_bulk_api_without_purls_list(self):
+        request_body = {
+            "purls": None,
+        }
+        response = self.csrf_client.post(
+            "/api/packages/bulk_search",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+
+        expected = {
+            "error": {"purls": ["This field may not be null."]},
+            "message": "A non-empty 'purls' list of PURLs is required.",
+        }
+
+        self.assertEqual(response, expected)
+
+    def test_bulk_api_without_purls_empty_list(self):
+        request_body = {
+            "purls": [],
+        }
+        response = self.csrf_client.post(
+            "/api/packages/bulk_search",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+
+        expected = {
+            "error": {"purls": ["This list may not be empty."]},
+            "message": "A non-empty 'purls' list of PURLs is required.",
+        }
+
+        self.assertEqual(response, expected)
+
 
 class BulkSearchAPICPE(TestCase):
     def setUp(self):

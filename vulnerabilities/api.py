@@ -374,6 +374,42 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         vulnerable_purls = [str(package.package_url) for package in vulnerable_packages]
         return Response(vulnerable_purls)
 
+    @action(detail=False, methods=["post"])
+    def lookup(self, request):
+        """
+        Return the response for exact PackageURL requested for.
+        """
+        purl = request.data.get("purl")
+        if not purl:
+            return Response(
+                status=400,
+                data={"Error": "A 'purl' is required."},
+            )
+        return Response(
+            PackageSerializer(
+                Package.objects.for_purls([purl]), many=True, context={"request": request}
+            ).data
+        )
+
+    @action(detail=False, methods=["post"])
+    def bulk_lookup(self, request):
+        """
+        Return the response for exact PackageURLs requested for.
+        """
+        purls = request.data.get("purls") or []
+        if not purls:
+            return Response(
+                status=400,
+                data={"Error": "A non-empty 'purls' list of PURLs is required."},
+            )
+        return Response(
+            PackageSerializer(
+                Package.objects.for_purls(purls),
+                many=True,
+                context={"request": request},
+            ).data
+        )
+
 
 class VulnerabilityFilterSet(filters.FilterSet):
     class Meta:

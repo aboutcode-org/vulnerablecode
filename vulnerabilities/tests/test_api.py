@@ -899,3 +899,18 @@ class TestLookup(TestCase):
             content_type="application/json",
         ).json()
         assert len(response) == 1
+
+    def test_bulk_lookup_endpoint_failure(self):
+        request_body = {"purls": None}
+        response = self.csrf_client.post(
+            "/api/packages/bulk_lookup",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+
+        expected = {
+            "error": {"purls": ["This field may not be null."]},
+            "message": "A non-empty 'purls' list of PURLs is required.",
+        }
+
+        self.assertEqual(response, expected)

@@ -275,18 +275,24 @@ class PackageFilterSet(filters.FilterSet):
         return self.queryset.filter(**lookups)
 
 
-class PackageBulkSearchRequestSerializer(serializers.Serializer):
+class PackageurlListSerializer(serializers.Serializer):
     purls = serializers.ListField(
         child=serializers.CharField(),
         allow_empty=False,
         help_text="List of PackageURL strings in canonical form.",
     )
+
+
+class PackageBulkSearchRequestSerializer(PackageurlListSerializer):
     purl_only = serializers.BooleanField(required=False, default=False)
     plain_purl = serializers.BooleanField(required=False, default=False)
 
 
 class LookupRequestSerializer(serializers.Serializer):
-    purl = serializers.CharField(required=True, help_text="PackageURL strings in canonical form.")
+    purl = serializers.CharField(
+        required=True,
+        help_text="PackageURL strings in canonical form.",
+    )
 
 
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -302,9 +308,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
     @extend_schema(
         request=PackageBulkSearchRequestSerializer,
-        responses={
-            200: PackageSerializer(many=True),
-        },
+        responses={200: PackageSerializer(many=True)},
     )
     @action(
         detail=False,
@@ -381,7 +385,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
     @extend_schema(
         request=LookupRequestSerializer,
-        responses=PackageSerializer(many=True),
+        responses={200: PackageSerializer(many=True)},
     )
     @action(
         detail=False,
@@ -412,17 +416,33 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
             ).data
         )
 
-    @action(detail=False, methods=["post"])
+    @extend_schema(
+        request=PackageurlListSerializer,
+        responses={200: PackageSerializer(many=True)},
+    )
+    @action(
+        detail=False,
+        methods=["post"],
+        serializer_class=PackageurlListSerializer,
+        filter_backends=[],
+        pagination_class=None,
+    )
     def bulk_lookup(self, request):
         """
         Return the response for exact PackageURLs requested for.
         """
-        purls = request.data.get("purls") or []
-        if not purls:
+        serializer = self.serializer_class(data=request.data)
+        if not serializer.is_valid():
             return Response(
-                status=400,
-                data={"Error": "A non-empty 'purls' list of PURLs is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "error": serializer.errors,
+                    "message": "A non-empty 'purls' list of PURLs is required.",
+                },
             )
+        validated_data = serializer.validated_data
+        purls = validated_data.get("purls")
+
         return Response(
             PackageSerializer(
                 Package.objects.for_purls(purls),

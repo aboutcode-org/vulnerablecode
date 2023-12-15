@@ -647,6 +647,55 @@ class BulkSearchAPIPackage(TestCase):
         assert len(response) == 1
         assert response[0] == "pkg:nginx/nginx@1.0.15"
 
+    def test_bulk_api_without_purls_list(self):
+        request_body = {
+            "purls": None,
+        }
+        response = self.csrf_client.post(
+            "/api/packages/bulk_search",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+
+        expected = {
+            "error": {"purls": ["This field may not be null."]},
+            "message": "A non-empty 'purls' list of PURLs is required.",
+        }
+
+        self.assertEqual(response, expected)
+
+    def test_bulk_api_without_purls_empty_list(self):
+        request_body = {
+            "purls": [],
+        }
+        response = self.csrf_client.post(
+            "/api/packages/bulk_search",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+
+        expected = {
+            "error": {"purls": ["This list may not be empty."]},
+            "message": "A non-empty 'purls' list of PURLs is required.",
+        }
+
+        self.assertEqual(response, expected)
+
+    def test_bulk_api_with_empty_request_body(self):
+        request_body = {}
+        response = self.csrf_client.post(
+            "/api/packages/bulk_search",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+
+        expected = {
+            "error": {"purls": ["This field is required."]},
+            "message": "A non-empty 'purls' list of PURLs is required.",
+        }
+
+        self.assertEqual(response, expected)
+
 
 class BulkSearchAPICPE(TestCase):
     def setUp(self):
@@ -768,7 +817,13 @@ class TestLookup(TestCase):
             data=json.dumps(request_body),
             content_type="application/json",
         ).json()
-        assert response == {"Error": "A 'purl' is required."}
+
+        expected = {
+            "error": {"purl": ["This field may not be null."]},
+            "message": "A 'purl' is required.",
+        }
+
+        self.assertEqual(response, expected)
 
     def test_lookup_endpoint(self):
         request_body = {"purl": "pkg:pypi/microweber/microweber@1.2"}
@@ -844,3 +899,18 @@ class TestLookup(TestCase):
             content_type="application/json",
         ).json()
         assert len(response) == 1
+
+    def test_bulk_lookup_endpoint_failure(self):
+        request_body = {"purls": None}
+        response = self.csrf_client.post(
+            "/api/packages/bulk_lookup",
+            data=json.dumps(request_body),
+            content_type="application/json",
+        ).json()
+
+        expected = {
+            "error": {"purls": ["This field may not be null."]},
+            "message": "A non-empty 'purls' list of PURLs is required.",
+        }
+
+        self.assertEqual(response, expected)

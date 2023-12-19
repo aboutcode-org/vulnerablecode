@@ -45,10 +45,10 @@ class Migration(migrations.Migration):
 
         # save back with a side effect to normalize package name and namspaces
         for pkg in to_update:
-            pkg.save2()
+            pkg.save()
 
     dependencies = [
-        ("vulnerabilities", "0044_remove_duplicated_purls_with_same_qualifiers"),
+        ("vulnerabilities", "0049_alter_package_unique_together_and_more"),
     ]
 
     operations = [

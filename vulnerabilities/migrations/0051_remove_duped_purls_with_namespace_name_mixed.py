@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
             pkg.save()
 
     dependencies = [
-        ("vulnerabilities", "0049_alter_package_unique_together_and_more"),
+        ("vulnerabilities", "0050_alter_package_unique_together_and_more"),
     ]
 
     operations = [

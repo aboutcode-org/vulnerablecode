@@ -73,7 +73,7 @@ class ValidVersionImprover(Improver):
         """
         versions = package_versions.versions(str(package_url))
         versions_before_until = set()
-        for version in versions:
+        for version in versions or []:
             if until and version.release_date and version.release_date > until:
                 continue
             versions_before_until.add(version.value)
@@ -277,7 +277,7 @@ class NginxBasicImprover(Improver):
         Yield all nginx version from its git tags.
         """
         nginx_versions = package_versions.versions("pkg:github/nginx/nginx")
-        for version in nginx_versions:
+        for version in nginx_versions or []:
             cleaned = clean_nginx_git_tag(version.value)
             yield cleaned
 

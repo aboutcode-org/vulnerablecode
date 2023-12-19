@@ -53,13 +53,10 @@ from vulnerabilities.utils import resolve_version_range
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass(order=True)
+@dataclasses.dataclass(order=True, init=False)
 class ValidVersionImprover(Improver):
     importer: Importer
     ignorable_versions: List[str] = dataclasses.field(default_factory=list)
-
-    def __init__(self):
-        pass
 
     @property
     def interesting_advisories(self) -> QuerySet:

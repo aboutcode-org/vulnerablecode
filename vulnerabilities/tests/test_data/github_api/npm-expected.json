@@ -9,11 +9,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "mongoose",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>5.13.15|<6.4.6",
         "fixed_version": null
@@ -76,11 +76,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "tooljet",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.27.0",
         "fixed_version": null
@@ -133,11 +133,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "static-dev-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/1.0.0",
         "fixed_version": null
@@ -185,11 +185,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "decode-uri-component",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<0.2.1",
         "fixed_version": null
@@ -247,11 +247,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "electron",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=19.0.0|<19.1.8",
         "fixed_version": null
@@ -309,11 +309,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "ghost",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=4.46.0|<4.48.8",
         "fixed_version": null
@@ -362,11 +362,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "ghost",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=5.0.0|<5.22.7",
         "fixed_version": null
@@ -414,11 +414,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "sweetalert2",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=8.19.1|<9.0.0",
         "fixed_version": null
@@ -460,11 +460,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "sweetalert2",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=9.17.4|<10.0.0",
         "fixed_version": null
@@ -506,11 +506,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "sweetalert2",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=10.16.10|<11.0.0",
         "fixed_version": null
@@ -552,11 +552,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "sweetalert2",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=11.4.9",
         "fixed_version": null
@@ -599,11 +599,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "engine.io",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=4.0.0|<6.2.1",
         "fixed_version": null
@@ -662,11 +662,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "engine.io",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<3.6.1",
         "fixed_version": null
@@ -725,11 +725,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "fastify",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=3.0.0|<3.29.4",
         "fixed_version": null
@@ -788,11 +788,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "fastify",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=4.0.0|<4.10.2",
         "fixed_version": null
@@ -851,11 +851,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "deep-object-diff",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=1.1.6|<1.1.9",
         "fixed_version": null
@@ -918,11 +918,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "nodebb",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<2.5.8",
         "fixed_version": null
@@ -980,11 +980,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "matrix-appservice-irc",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<0.36.0",
         "fixed_version": null
@@ -1042,11 +1042,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "loader-utils",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=3.0.0|<3.2.1",
         "fixed_version": null
@@ -1104,11 +1104,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "loader-utils",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=2.0.0|<2.0.4",
         "fixed_version": null
@@ -1166,11 +1166,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "loader-utils",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=1.0.0|<1.4.2",
         "fixed_version": null
@@ -1228,11 +1228,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "loader-utils",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=3.0.0|<3.2.1",
         "fixed_version": null
@@ -1295,11 +1295,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "loader-utils",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=2.0.0|<2.0.4",
         "fixed_version": null
@@ -1362,11 +1362,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "loader-utils",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=1.0.0|<1.4.2",
         "fixed_version": null
@@ -1428,11 +1428,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "readthedocs",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<8.8.1",
         "fixed_version": null
@@ -1482,9 +1482,9 @@
           "type": "npm",
           "namespace": "@redwoodjs",
           "name": "api",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=3.0.0|<3.3.1",
         "fixed_version": null
@@ -1549,9 +1549,9 @@
           "type": "npm",
           "namespace": "@redwoodjs",
           "name": "api",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=0.38.0|<2.2.5",
         "fixed_version": null
@@ -1615,11 +1615,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "parse-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=5.0.0|<5.3.3",
         "fixed_version": null
@@ -1698,11 +1698,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "parse-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.10.20",
         "fixed_version": null
@@ -1781,11 +1781,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "electron",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=19.0.0-beta.1|<19.0.11",
         "fixed_version": null
@@ -1834,11 +1834,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "electron",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=20.0.0-beta.1|<20.0.1",
         "fixed_version": null
@@ -1887,11 +1887,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "electron",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<18.3.7",
         "fixed_version": null
@@ -1940,11 +1940,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "socket.io-parser",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=3.4.0|<3.4.2",
         "fixed_version": null
@@ -2012,11 +2012,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "socket.io-parser",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<3.3.3",
         "fixed_version": null
@@ -2084,11 +2084,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "socket.io-parser",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=4.0.0|<4.0.5",
         "fixed_version": null
@@ -2156,11 +2156,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "parse-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=5.0.0|<5.3.2",
         "fixed_version": null
@@ -2229,11 +2229,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "parse-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.10.19",
         "fixed_version": null
@@ -2302,11 +2302,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "octocat.js",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.2.0",
         "fixed_version": null
@@ -2355,11 +2355,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "parse-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=5.0.0|<5.3.1",
         "fixed_version": null
@@ -2428,11 +2428,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "parse-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.10.18",
         "fixed_version": null
@@ -2501,11 +2501,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "fastest-json-copy",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<=1.0.1",
         "fixed_version": null
@@ -2553,11 +2553,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "deep-parse-json",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<=1.0.2",
         "fixed_version": null
@@ -2605,11 +2605,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "loader-utils",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.4.1",
         "fixed_version": null
@@ -2682,11 +2682,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "loader-utils",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=2.0.0|<2.0.3",
         "fixed_version": null
@@ -2761,9 +2761,9 @@
           "type": "npm",
           "namespace": "@fastify",
           "name": "websocket",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=5.0.0|<5.0.1",
         "fixed_version": null
@@ -2822,11 +2822,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "fastify-websocket",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<=4.3.0",
         "fixed_version": null
@@ -2887,9 +2887,9 @@
           "type": "npm",
           "namespace": "@fastify",
           "name": "websocket",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=6.0.0|<7.1.1",
         "fixed_version": null
@@ -2948,11 +2948,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "electron-markdownify",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<=1.4.1",
         "fixed_version": null
@@ -3002,9 +3002,9 @@
           "type": "npm",
           "namespace": "@keystone-6",
           "name": "core",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=3.0.0|<3.0.2",
         "fixed_version": null
@@ -3064,9 +3064,9 @@
           "type": "npm",
           "namespace": "@apollo",
           "name": "server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.1.0",
         "fixed_version": null
@@ -3119,11 +3119,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "apollo-server-core",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=3.0.0|<3.11.0",
         "fixed_version": null
@@ -3177,11 +3177,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "hummus",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.0.111",
         "fixed_version": null
@@ -3250,11 +3250,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "muhammara",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<2.6.0",
         "fixed_version": null
@@ -3323,11 +3323,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "hummus",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=1.0.0|<=1.0.110",
         "fixed_version": null
@@ -3395,11 +3395,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "hummus",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.0.111",
         "fixed_version": null
@@ -3477,11 +3477,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "muhammara",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<2.6.0",
         "fixed_version": null
@@ -3549,11 +3549,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "muhammara",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=3.0.0|<3.1.1",
         "fixed_version": null
@@ -3631,11 +3631,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "muhammara",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<2.6.1",
         "fixed_version": null
@@ -3713,11 +3713,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "node-red-dashboard",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<3.2.0",
         "fixed_version": null
@@ -3772,9 +3772,9 @@
           "type": "npm",
           "namespace": "@xmldom",
           "name": "xmldom",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=0.9.0-beta.1|<0.9.0-beta.4",
         "fixed_version": null
@@ -3845,9 +3845,9 @@
           "type": "npm",
           "namespace": "@xmldom",
           "name": "xmldom",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=0.8.0|<0.8.4",
         "fixed_version": null
@@ -3918,9 +3918,9 @@
           "type": "npm",
           "namespace": "@xmldom",
           "name": "xmldom",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<0.7.7",
         "fixed_version": null
@@ -3989,11 +3989,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "xmldom",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<=0.6.0",
         "fixed_version": null
@@ -4062,11 +4062,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "feathers-sequelize",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=6.0.0|<6.3.3",
         "fixed_version": null
@@ -4119,11 +4119,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "feathers-sequelize",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=6.0.0|<6.3.4",
         "fixed_version": null
@@ -4176,11 +4176,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "feathers-sequelize",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=6.0.0|<6.3.4",
         "fixed_version": null
@@ -4233,11 +4233,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "socket.io-parser",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=4.1.0|<4.2.1",
         "fixed_version": null
@@ -4305,11 +4305,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "shescape",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=1.5.10|<1.6.1",
         "fixed_version": null
@@ -4380,9 +4380,9 @@
           "type": "npm",
           "namespace": "@dependencytrack",
           "name": "frontend",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.6.1",
         "fixed_version": null
@@ -4441,11 +4441,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "electron-markdownify",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<=1.4.1",
         "fixed_version": null
@@ -4492,11 +4492,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "ses",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<0.16.0",
         "fixed_version": null
@@ -4545,11 +4545,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "react-native-reanimated",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<2.10.0",
         "fixed_version": null
@@ -4617,11 +4617,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "minimatch",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<3.0.5",
         "fixed_version": null
@@ -4674,11 +4674,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "mongoose",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.13.21",
         "fixed_version": null
@@ -4736,11 +4736,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "mongoose",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=5.0.0|<5.7.5",
         "fixed_version": null
@@ -4800,9 +4800,9 @@
           "type": "npm",
           "namespace": "@keystone-6",
           "name": "core",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=2.2.0|<2.3.1",
         "fixed_version": null
@@ -4856,11 +4856,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "parse-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=5.0.0|<5.2.8",
         "fixed_version": null
@@ -4914,11 +4914,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "parse-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.10.17",
         "fixed_version": null
@@ -4974,9 +4974,9 @@
           "type": "npm",
           "namespace": "@xmldom",
           "name": "xmldom",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<0.7.6",
         "fixed_version": null
@@ -5057,9 +5057,9 @@
           "type": "npm",
           "namespace": "@xmldom",
           "name": "xmldom",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=0.8.0|<0.8.3",
         "fixed_version": null
@@ -5138,11 +5138,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "node-saml",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.0.0-beta.5",
         "fixed_version": null
@@ -5198,9 +5198,9 @@
           "type": "npm",
           "namespace": "@node-saml",
           "name": "passport-saml",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.0.0-beta.3",
         "fixed_version": null
@@ -5266,9 +5266,9 @@
           "type": "npm",
           "namespace": "@node-saml",
           "name": "node-saml",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.0.0-beta.5",
         "fixed_version": null
@@ -5332,11 +5332,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "node-saml",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.0.0-beta.5",
         "fixed_version": null
@@ -5400,11 +5400,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "passport-saml",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<3.2.2",
         "fixed_version": null
@@ -5468,11 +5468,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "metro4",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=4.4.0|<=4.5.1",
         "fixed_version": null
@@ -5519,11 +5519,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "apollo-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=2.0.0|<2.25.4",
         "fixed_version": null
@@ -5579,9 +5579,9 @@
           "type": "npm",
           "namespace": "@xmldom",
           "name": "xmldom",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/0.9.0-beta.1",
         "fixed_version": null
@@ -5660,11 +5660,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "xmldom",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<=0.6.0",
         "fixed_version": null
@@ -5743,11 +5743,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "fastify",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=4.0.0|<4.8.1",
         "fixed_version": null
@@ -5810,11 +5810,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "csrf-csrf",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<2.2.1",
         "fixed_version": null
@@ -5863,11 +5863,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "nocodb",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<0.92.0",
         "fixed_version": null
@@ -5915,11 +5915,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "tiny-csrf",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.1.0",
         "fixed_version": null
@@ -5973,11 +5973,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "v8n",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.5.1",
         "fixed_version": null
@@ -6035,11 +6035,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "generator-jhipster",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>6.8.0|<6.9.0",
         "fixed_version": null
@@ -6093,11 +6093,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "snyk-go-plugin",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.19.1",
         "fixed_version": null
@@ -6155,11 +6155,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "snyk",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.996.0",
         "fixed_version": null
@@ -6216,11 +6216,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "require-node",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=2.0.0|<2.0.4",
         "fixed_version": null
@@ -6258,11 +6258,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "jquery",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/3.0.0-rc.1",
         "fixed_version": null
@@ -6325,11 +6325,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "css-what",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<2.1.3",
         "fixed_version": null

@@ -10,9 +10,9 @@
           "type": "ebuild",
           "namespace": "dev-vcs",
           "name": "subversion",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:ebuild/0.1.1|!=1.9.7",
         "fixed_version": null

@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("vulnerabilities", "0049_alter_package_unique_together_and_more"),
+        ("vulnerabilities", "0049_copy_qualifiers_temp_back_to_qualifiers"),
     ]
 
     operations = [

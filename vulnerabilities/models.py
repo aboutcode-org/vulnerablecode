@@ -34,15 +34,17 @@ from django.utils.translation import gettext_lazy as _
 from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin
 from packageurl.contrib.django.models import PackageURLQuerySet
-from packageurl.contrib.django.models import without_empty_values
 from rest_framework.authtoken.models import Token
 from univers import versions
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 
+from vulnerabilities import utils
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import build_vcid
 from vulnerabilities.utils import remove_qualifiers_and_subpath
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
+from vulnerabilities.utils import normalize_purl
+from vulnerabilities.utils import purl_to_dict
 
 logger = logging.getLogger(__name__)
 
@@ -110,28 +112,17 @@ class VulnerabilityQuerySet(BaseQuerySet):
         """
         return self.filter(packages__isnull=False)
 
-    def for_package(self, package):
-        """
-        Return a queryset of Vulnerability related to ``package``.
-        """
-        return self.filter(packages=package)
-
-    def for_purl(self, package):
-        """
-        Return a queryset of Vulnerability related to ``package``.
-        """
-        return self.filter(packages=package)
-
-    def search(self, query):
+    def search(self, query: str = None):
         """
         Return a Vulnerability queryset searching for the ``query``.
-        Make a best effort approach to search a vulnerability.
+        Make a best effort approach to search a vulnerability using various heuristics.
         """
 
-        qs = self
         query = query and query.strip()
         if not query:
-            return qs.none()
+            return self.none()
+
+        qs = self
 
         # middle ground, exact on vulnerability_id
         qssearch = qs.filter(vulnerability_id=query)
@@ -179,7 +170,7 @@ class Vulnerability(models.Model):
         unique=True,
         blank=True,
         max_length=20,
-        default=build_vcid,
+        default=utils.build_vcid,
         help_text="Unique identifier for a vulnerability in the external representation. "
         "It is prefixed with VCID-",
     )
@@ -396,30 +387,6 @@ class VulnerabilityRelatedReference(models.Model):
         ordering = ["vulnerability", "reference"]
 
 
-def purl_to_dict(purl: PackageURL):
-    """
-    Return a dict of purl components suitable for use in a queryset.
-    We need to have specific empty values for using in querysets because of our peculiar model structure.
-
-    For example::
-    >>> purl_to_dict(PackageURL.from_string("pkg:generic/postgres"))
-    {'type': 'generic', 'namespace': '', 'name': 'postgres', 'version': '', 'qualifiers': {}, 'subpath': ''}
-    >>> purl_to_dict(PackageURL.from_string("pkg:generic/postgres/postgres@1.2?foo=bar#baz"))
-    {'type': 'generic', 'namespace': 'postgres', 'name': 'postgres', 'version': '1.2', 'qualifiers': {'foo': 'bar'}, 'subpath': 'baz'}
-    """
-    if isinstance(purl, str):
-        purl = PackageURL.from_string(purl)
-
-    return dict(
-        type=purl.type,
-        namespace=purl.namespace or "",
-        name=purl.name,
-        version=purl.version or "",
-        qualifiers=purl.qualifiers or {},
-        subpath=purl.subpath or "",
-    )
-
-
 class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
     def get_fixed_by_package_versions(self, purl: PackageURL, fix=True):
         """
@@ -450,19 +417,6 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         package, is_created = Package.objects.get_or_create(**purl_to_dict(purl=purl))
 
         return package, is_created
-
-    def for_package_url_object(self, purl):
-        """
-        Filter the QuerySet with the provided Package URL object or string. The
-        ``purl`` string is validated and transformed into filtering lookups. If
-        this is a PackageURL object it is reused as-is.
-        """
-        if not purl:
-            return self.none()
-        if isinstance(purl, str):
-            purl = PackageURL.from_string(purl)
-        lookups = without_empty_values(purl.to_dict(encode=True))
-        return self.filter(**lookups)
 
     def affected(self):
         """
@@ -501,7 +455,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
             with_qualifiers_and_subpath=with_qualifiers_and_subpath,
         ).fixing()
 
-    def search(self, query=None):
+    def search(self, query: str = None):
         """
         Return a Package queryset searching for the ``query``.
         Make a best effort approach to find matching packages either based
@@ -513,23 +467,19 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         qs = self
 
         try:
-            # if it's a valid purl, use it as is
-            purl = PackageURL.from_string(query)
-            purl = str(remove_qualifiers_and_subpath(purl))
-            return qs.filter(package_url__istartswith=purl)
+            # if it's a valid purl, try to parse it and use it as is
+            purl = str(utils.plain_purl(query))
+            qs = qs.filter(package_url__istartswith=purl)
         except ValueError:
-            return qs.filter(package_url__icontains=query)
+            # otherwise use query as a plain string
+            qs = qs.filter(package_url__icontains=query)
+        return qs.order_by("package_url")
 
-    def for_purl(self, purl, with_qualifiers_and_subpath=True):
+    def for_purl(self, purl):
         """
         Return a queryset matching the ``purl`` Package URL.
         """
-        if not isinstance(purl, PackageURL):
-            purl = PackageURL.from_string(purl)
-        if not with_qualifiers_and_subpath:
-            remove_qualifiers_and_subpath(purl)
-        purl = purl_to_dict(purl)
-        return self.filter(**purl)
+        return self.filter(**purl_to_dict(purl))
 
     def with_cpes(self):
         """
@@ -561,15 +511,12 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
 
 def get_purl_query_lookups(purl):
     """
+    Return a dictionary of non-empty plain purl fields
     Do not reference all the possible qualifiers and relax the
     purl matching to only lookup the type, namespace, name and version fields.
     """
-    lookup_fields = ["type", "namespace", "name", "version"]
-    return {
-        field_name: value
-        for field_name, value in purl.to_dict().items()
-        if value and field_name in lookup_fields
-    }
+    plain_purl = utils.plain_purl(purl=purl)
+    return purl_to_dict(plain_purl, with_empty=False)
 
 
 class Package(PackageURLMixin):
@@ -578,13 +525,14 @@ class Package(PackageURLMixin):
     """
 
     """
-    - X schema migration: create qualifiers_temp
-    - X data migration copy as string the normalized qualifiers to qualifiers_temp
-    - X schema migration: add qualifiers_temp to unique together
-    - X schema migration: remove qualifiers override and from unique together
-    - X data migration copy as string the normalized qualifiers_temp to qualifiers
-    - X schema migration: add qualifiers to unique together
-    - X schema migration: delete qualifiers_temp
+    - 44 X remove dupes
+    - 45 X schema migration: create qualifiers_temp
+    - 46 X data migration copy as string the normalized qualifiers to qualifiers_temp
+    - 47 X schema migration: add qualifiers_temp to unique together
+    - 48 X schema migration: remove qualifiers override and remove qualifiers from unique together
+    - 49 X data migration copy as string the normalized qualifiers_temp to qualifiers
+    - 50 X schema migration: add qualifiers to unique together and delete qualifiers_temp
+    - 51 X data migration: delete purls with namespace and name mixed 
     """
 
     """
@@ -635,30 +583,15 @@ class Package(PackageURLMixin):
             subpath=self.subpath,
         )
 
-        normalized = PackageURL.from_string(str(purl))
+        # We re-parse the purl to ensure name and namespace
+        # are set correctly
+        normalized = normalize_purl(purl=purl)
 
-        self.type = normalized.type or ""
-        self.namespace = normalized.namespace or ""
-        self.name = normalized.name or ""
-        self.version = normalized.version or ""
-        self.qualifiers = normalized.qualifiers or ""
-        self.subpath = normalized.subpath or ""
+        for name, value in purl_to_dict(normalized).items():
+            setattr(self, name, value)
 
-        purl_object = PackageURL(
-            type=self.type,
-            namespace=self.namespace,
-            name=self.name,
-            version=self.version,
-            qualifiers=self.qualifiers,
-            subpath=self.subpath,
-        )
-        plain_purl = PackageURL(
-            type=self.type,
-            namespace=self.namespace,
-            name=self.name,
-            version=self.version,
-        )
-        self.package_url = str(purl_object)
+        self.package_url = str(normalized)
+        plain_purl = utils.plain_purl(normalized)
         self.plain_package_url = str(plain_purl)
         super().save(*args, **kwargs)
 

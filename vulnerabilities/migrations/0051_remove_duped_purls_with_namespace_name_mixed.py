@@ -7,7 +7,6 @@ from django.db.models import Count
 
 from packageurl import PackageURL
 
-
 class Migration(migrations.Migration):
 
     def remove_dupes(apps, _):
@@ -45,7 +44,7 @@ class Migration(migrations.Migration):
 
         # save back with a side effect to normalize package name and namspaces
         for pkg in to_update:
-            pkg.save()
+            normalize_and_save_package(pkg)
 
     dependencies = [
         ("vulnerabilities", "0050_alter_package_unique_together_and_more"),
@@ -54,3 +53,22 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunPython(remove_dupes, reverse_code=migrations.RunPython.noop),
     ]
+
+
+def normalize_and_save_package(package):
+    """
+    Normalize and save package
+    """
+
+    purl = PackageURL(
+        type=package.type,
+        namespace=package.namespace,
+        name=package.name,
+    )
+
+    normalized = PackageURL.from_string(str(purl))
+
+    package.namespace = normalized.namespace or ""
+    package.name = normalized.name or ""
+
+    package.save()

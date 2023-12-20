@@ -31,6 +31,9 @@ import saneyaml
 import toml
 import urllib3
 from packageurl import PackageURL
+from packageurl import normalize_qualifiers
+from packageurl import normalize_subpath
+from packageurl.contrib.django.models import without_empty_values
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import NginxVersionRange
 from univers.version_range import VersionRange
@@ -138,28 +141,23 @@ class VersionedPackage:
         return self.version < other.version
 
 
-def evolve_purl(purl, **kwargs):
+def update_purl_version(purl, version):
     """
-    Return a new PackageURL derived from the ``purl`` PackageURL where any of
-    the provided kwarg replaces the corresponding attribute of this PackageURL.
-    Qaulifiers if provided must be a mapping
+    Return a new PackageURL derived from the ``purl`` PackageURL object or string
+    with the new version.
+
     For example::
     >>> purl = PackageURL.from_string("pkg:generic/this@1.2.3")
-    >>> evolved = PackageURL.from_string("pkg:npm/@baz/that@2.2.3?foo=bar")
-    >>> evolve_purl(purl,
-    ...   type="npm", namespace="@baz", name="that",
-    ...   version="2.2.3", qualifiers={"foo": "bar"}
-    ... ) == evolved
+    >>> evolved = PackageURL.from_string("pkg:generic/this@2.2.3")
+    >>> update_purl_version(purl, version="2.2.3") == evolved
     True
-
     """
-    if not kwargs:
-        return PackageURL.from_string(str(purl))
-
-    kwargs = {name: value for name, value in kwargs.items() if hasattr(purl, name)}
+    purl = normalize_purl(purl=purl)
+    if not version:
+        return purl
     merged = purl.to_dict()
-    merged.update(kwargs)
-    return PackageURL(**merged)
+    merged["version"] = version
+    return normalize_purl(PackageURL(**merged))
 
 
 def nearest_patched_package(
@@ -428,9 +426,10 @@ def fetch_response(url):
 
 
 # This should be a method on PackageURL
-def remove_qualifiers_and_subpath(purl):
+def plain_purl(purl):
     """
-    Return a package URL without qualifiers and subpath
+    Return a PackageURL without qualifiers and subpath
+    given a purl string or PackageURL object
     """
     if not isinstance(purl, PackageURL):
         purl = PackageURL.from_string(purl)
@@ -561,3 +560,35 @@ def get_advisory_url(file, base_path, url):
     relative_path = str(file.relative_to(base_path)).strip("/")
     advisory_url = urljoin(url, relative_path)
     return advisory_url
+
+
+def purl_to_dict(purl: PackageURL, with_empty: bool = True):
+    """
+    Return a dict of purl components suitable for use in a queryset.
+    We need to have specific empty values for using in querysets because of our peculiar model structure.
+
+    For example::
+    >>> purl_to_dict(PackageURL.from_string("pkg:generic/postgres"))
+    {'type': 'generic', 'namespace': '', 'name': 'postgres', 'version': '', 'qualifiers': '', 'subpath': ''}
+    >>> purl_to_dict(PackageURL.from_string("pkg:generic/postgres/postgres@1.2?foo=bar#baz"))
+    {'type': 'generic', 'namespace': 'postgres', 'name': 'postgres', 'version': '1.2', 'qualifiers': 'foo=bar', 'subpath': 'baz'}
+    """
+    if isinstance(purl, str):
+        purl = PackageURL.from_string(purl)
+
+    mapping = purl.to_dict(encode=True, empty="")
+
+    if not with_empty:
+        return without_empty_values(mapping)
+
+    return mapping
+
+
+def normalize_purl(purl: str):
+    """
+    Return a normalized purl object from a purl
+    string or purl object.
+    """
+    if isinstance(purl, PackageURL):
+        purl = str(purl)
+    return PackageURL.from_string(purl)

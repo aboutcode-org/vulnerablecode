@@ -23,7 +23,7 @@ from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
-from vulnerabilities.utils import evolve_purl
+from vulnerabilities.utils import update_purl_version
 
 logger = logging.getLogger(__name__)
 
@@ -120,14 +120,16 @@ def get_exact_purls(affected_package: AffectedPackage) -> Tuple[List[PackageURL]
             fixed_versions = [c.version for c in vr.constraints if c and c.comparator == "!="]
             resolved_versions = [v for v in range_versions if v and v in vr]
             for version in resolved_versions:
-                affected_purl = evolve_purl(purl=affected_package.package, version=str(version))
+                affected_purl = update_purl_version(
+                    purl=affected_package.package, version=str(version)
+                )
                 affected_purls.append(affected_purl)
 
         if affected_package.fixed_version:
             fixed_versions.append(affected_package.fixed_version)
 
         fixed_purls = [
-            evolve_purl(purl=affected_package.package, version=str(version))
+            update_purl_version(purl=affected_package.package, version=str(version))
             for version in fixed_versions
         ]
         return affected_purls, fixed_purls

@@ -285,7 +285,7 @@ def test_get_package_versions(mock_response):
         mock_response.return_value = json.load(f)
 
     improver = GitHubBasicImprover()
-    valid_versions = {
+    valid_versions = [
         "1.1.3",
         "1.1.4",
         "1.10",
@@ -300,11 +300,12 @@ def test_get_package_versions(mock_response):
         "1.10a1",
         "1.10b1",
         "1.10rc1",
-    }
-    assert (
+    ]
+    result = sorted(
         improver.get_package_versions(package_url=PackageURL(type="pypi", name="django"))
-        == valid_versions
     )
+    expected = sorted(valid_versions)
+    assert result == expected
 
 
 def test_get_cwes_from_github_advisory():

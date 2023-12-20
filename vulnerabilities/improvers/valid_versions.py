@@ -69,11 +69,11 @@ class ValidVersionImprover(Improver):
         Return a list of versions published before `until` for the `package_url`
         """
         versions = package_versions.versions(str(package_url))
-        versions_before_until = set()
+        versions_before_until = []
         for version in versions or []:
             if until and version.release_date and version.release_date > until:
                 continue
-            versions_before_until.add(version.value)
+            versions_before_until.append(version.value)
 
         return versions_before_until
 

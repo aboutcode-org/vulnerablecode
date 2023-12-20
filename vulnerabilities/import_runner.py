@@ -158,6 +158,8 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
             advisory=advisory,
         )
 
+        advisory.vulnerabilities.add(vulnerability)
+
         if not vulnerability:
             logger.warning(f"Unable to get vulnerability for inference: {inference!r}")
             continue

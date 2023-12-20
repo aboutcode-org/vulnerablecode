@@ -90,6 +90,8 @@ def process_inferences(
             advisory=advisory,
         )
 
+        advisory.vulnerabilities.add(vulnerability)
+
         if not vulnerability:
             logger.warning(f"Unable to get vulnerability for inference: {inference!r}")
             continue

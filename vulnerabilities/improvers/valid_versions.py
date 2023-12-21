@@ -17,6 +17,7 @@ from typing import Optional
 
 from django.db.models import Q
 from django.db.models.query import QuerySet
+from fetchcode import package_versions
 from packageurl import PackageURL
 from univers.versions import NginxVersion
 
@@ -41,12 +42,6 @@ from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
-from vulnerabilities.package_managers import GitHubTagsAPI
-from vulnerabilities.package_managers import GoproxyVersionAPI
-from vulnerabilities.package_managers import PackageVersion
-from vulnerabilities.package_managers import VersionAPI
-from vulnerabilities.package_managers import get_api_package_name
-from vulnerabilities.package_managers import get_version_fetcher
 from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
 from vulnerabilities.utils import clean_nginx_git_tag
 from vulnerabilities.utils import evolve_purl
@@ -58,13 +53,10 @@ from vulnerabilities.utils import resolve_version_range
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass(order=True)
+@dataclasses.dataclass(order=True, init=False)
 class ValidVersionImprover(Improver):
     importer: Importer
     ignorable_versions: List[str] = dataclasses.field(default_factory=list)
-
-    def __init__(self) -> None:
-        self.versions_fetcher_by_purl: Mapping[str, VersionAPI] = {}
 
     @property
     def interesting_advisories(self) -> QuerySet:
@@ -74,21 +66,16 @@ class ValidVersionImprover(Improver):
         self, package_url: PackageURL, until: Optional[datetime] = None
     ) -> List[str]:
         """
-        Return a list of `valid_versions` for the `package_url`
+        Return a list of versions published before `until` for the `package_url`
         """
-        api_name = get_api_package_name(package_url)
-        if not api_name:
-            logger.error(f"Could not get versions for {package_url!r}")
-            return []
-        versions_fetcher = self.versions_fetcher_by_purl.get(package_url)
-        if not versions_fetcher:
-            versions_fetcher = get_version_fetcher(package_url)
-            self.versions_fetcher_by_purl[package_url] = versions_fetcher()
+        versions = package_versions.versions(str(package_url))
+        versions_before_until = []
+        for version in versions or []:
+            if until and version.release_date and version.release_date > until:
+                continue
+            versions_before_until.append(version.value)
 
-        versions_fetcher = self.versions_fetcher_by_purl[package_url]
-
-        self.versions_fetcher_by_purl[package_url] = versions_fetcher
-        return versions_fetcher.get_until(package_name=api_name, until=until).valid_versions
+        return versions_before_until
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         """
@@ -163,15 +150,6 @@ class ValidVersionImprover(Improver):
                         fixed_purl=fixed_purl,
                     )
             else:
-                if purl.type == "golang":
-                    # Problem with the Golang and Go that they provide full path
-                    # FIXME: We need to get the PURL subpath for Go module
-                    versions_fetcher = self.versions_fetcher_by_purl.get(purl)
-                    if not versions_fetcher:
-                        versions_fetcher = GoproxyVersionAPI()
-                        self.versions_fetcher_by_purl[purl] = versions_fetcher
-                    pkg_name = versions_fetcher.module_name_by_package_name.get(pkg_name, pkg_name)
-
                 valid_versions = self.get_package_versions(
                     package_url=purl, until=advisory_data.date_published
                 )
@@ -248,11 +226,10 @@ class NginxBasicImprover(Improver):
         )
 
     def get_inferences_from_versions(
-        self, advisory_data: AdvisoryData, all_versions: List[PackageVersion]
+        self, advisory_data: AdvisoryData, all_versions: List[str]
     ) -> Iterable[Inference]:
         """
-        Yield inferences given an ``advisory_data`` and a ``all_versions`` of
-        PackageVersion.
+        Yield inferences given an ``advisory_data`` and a ``all_versions``.
         """
 
         try:
@@ -268,9 +245,9 @@ class NginxBasicImprover(Improver):
 
         affected_purls = []
         for affected_version_range in affected_version_ranges:
-            for package_version in all_versions:
+            for version in all_versions:
                 # FIXME: we should reference an NginxVersion tbd in univers
-                version = NginxVersion(package_version.value)
+                version = NginxVersion(version)
                 if is_vulnerable_nginx_version(
                     version=version,
                     affected_version_range=affected_version_range,
@@ -294,12 +271,12 @@ class NginxBasicImprover(Improver):
 
     def fetch_nginx_version_from_git_tags(self):
         """
-        Yield all nginx PackageVersion from its git tags.
+        Yield all nginx version from its git tags.
         """
-        nginx_versions = GitHubTagsAPI().fetch("nginx/nginx")
-        for version in nginx_versions:
+        nginx_versions = package_versions.versions("pkg:github/nginx/nginx")
+        for version in nginx_versions or []:
             cleaned = clean_nginx_git_tag(version.value)
-            yield PackageVersion(value=cleaned, release_date=version.release_date)
+            yield cleaned
 
 
 class ApacheHTTPDImprover(ValidVersionImprover):

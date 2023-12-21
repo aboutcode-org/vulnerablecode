@@ -21,7 +21,6 @@ services:
     volumes:
       - /etc/vulnerablecode/:/etc/vulnerablecode/
       - static:/var/vulnerablecode/static/
-      - /var/www/html:/var/www/html
     depends_on:
       - db
 
@@ -35,6 +34,7 @@ services:
     volumes:
       - ./etc/nginx/conf.d/:/etc/nginx/conf.d/
       - static:/var/vulnerablecode/static/
+      - /var/www/html:/var/www/html
     depends_on:
       - vulnerablecode
 

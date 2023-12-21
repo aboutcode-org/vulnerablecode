@@ -145,7 +145,7 @@ class Migration(migrations.Migration):
                 (
                     "action_type",
                     models.PositiveSmallIntegerField(
-                        choices=[(1, "Import"), (2, "Affected by"), (3, "Fixing")]
+                        choices=[(1, "Affected by"), (2, "Fixing")]
                     ),
                 ),
                 (

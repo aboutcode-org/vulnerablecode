@@ -1293,11 +1293,10 @@ class PackageHistoryManager(models.Manager):
 
 class PackageChangeLog(ChangeLog):
 
-    IMPORT = 1
-    AFFECTED_BY = 2
-    FIXING = 3
+    AFFECTED_BY = 1
+    FIXING = 2
 
-    ACTION_TYPE_CHOICES = ((IMPORT, "Import"), (AFFECTED_BY, "Affected by"), (FIXING, "Fixing"))
+    ACTION_TYPE_CHOICES = ((AFFECTED_BY, "Affected by"), (FIXING, "Fixing"))
 
     package = models.ForeignKey(Package, on_delete=models.CASCADE, related_name="changelog")
 

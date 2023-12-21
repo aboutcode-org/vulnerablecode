@@ -1331,7 +1331,7 @@ class PackageChangeLog(ChangeLog):
     @classmethod
     def log_fixing(cls, package, importer, source_url, related_vulnerability):
         """
-        Creates History entry on Vulnerabilitty is fixed by package.
+        Creates History entry on Vulnerability is fixed by package.
         """
         return cls.objects.log_action(
             package=package,

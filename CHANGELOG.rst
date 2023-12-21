@@ -2,6 +2,12 @@ Release notes
 =============
 
 
+Version v33.6.5
+-------------------
+
+- We added /var/www/html as volume in nginx Docker compose (#1373).
+
+
 Version v33.6.4
 -------------------
 

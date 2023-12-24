@@ -279,13 +279,13 @@ def test_github_improver(mock_response, regen=REGEN):
     assert result == expected
 
 
-@mock.patch("vulnerabilities.package_managers.get_response")
+@mock.patch("fetchcode.package_versions.get_response")
 def test_get_package_versions(mock_response):
     with open(os.path.join(BASE_DIR, "test_data", "package_manager_data", "pypi.json"), "r") as f:
         mock_response.return_value = json.load(f)
 
     improver = GitHubBasicImprover()
-    valid_versions = {
+    valid_versions = [
         "1.1.3",
         "1.1.4",
         "1.10",
@@ -300,18 +300,12 @@ def test_get_package_versions(mock_response):
         "1.10a1",
         "1.10b1",
         "1.10rc1",
-    }
-    assert (
+    ]
+    result = sorted(
         improver.get_package_versions(package_url=PackageURL(type="pypi", name="django"))
-        == valid_versions
     )
-    mock_response.return_value = None
-    assert not improver.get_package_versions(package_url=PackageURL(type="gem", name="foo"))
-    assert not improver.get_package_versions(package_url=PackageURL(type="pypi", name="foo"))
-
-    assert PackageURL(type="gem", name="foo") in improver.versions_fetcher_by_purl
-    assert PackageURL(type="pypi", name="django") in improver.versions_fetcher_by_purl
-    assert PackageURL(type="pypi", name="foo") in improver.versions_fetcher_by_purl
+    expected = sorted(valid_versions)
+    assert result == expected
 
 
 def test_get_cwes_from_github_advisory():

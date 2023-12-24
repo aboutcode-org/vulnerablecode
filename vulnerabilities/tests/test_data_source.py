@@ -30,6 +30,7 @@ from vulnerabilities.oval_parser import OvalParser
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")
+TEST_DATA_01 = os.path.join(BASE_DIR, "test_data/suse_oval")
 
 
 def load_oval_data():
@@ -74,7 +75,6 @@ def test_create_purl():
 
 
 def test__collect_pkgs():
-
     xmls = load_oval_data()
 
     expected_suse_pkgs = {"cacti-spine", "apache2-mod_perl", "cacti", "apache2-mod_perl-devel"}
@@ -134,3 +134,36 @@ def test_git_importer_clone():
                 list(git_importer().advisory_data())
                 mock_fetch.assert_called_once()
                 mock_delete.assert_called_once()
+
+
+# Here we use a modified copy of org.opensuse.CVE-2008-5679.xml -- the test versions are modified to illustrate sort order.
+def test_ovaltest_sorting():
+    xml_doc = ET.parse(
+        os.path.join(TEST_DATA_01, "org.opensuse.CVE-2008-5679-modified-versions.xml")
+    )
+    translations = {"less than": "<", "equals": "=", "greater than or equal": ">="}
+    parsed_oval = OvalParser(translations, xml_doc)
+
+    # Get the list of all tests and check the total number of tests.
+    get_all_tests = parsed_oval.oval_document.getTests()
+    assert len(get_all_tests) == 4
+
+    # Check the order of the four tests in the sorted `get_all_tests` list.  (Testing suggests that the
+    # original list of tests, `get_all_tests`, is unsorted and is ordered in the same order as the test
+    # elements appear in the .xml file.)
+    for test in sorted(get_all_tests):
+        if test.getId() == "oval:org.opensuse.security:tst:2009030400":
+            assert test.getVersion() == "11"
+            assert test == sorted(get_all_tests)[3]
+
+        if test.getId() == "oval:org.opensuse.security:tst:2009030401":
+            assert test.getVersion() == "1"
+            assert test == sorted(get_all_tests)[0]
+
+        if test.getId() == "oval:org.opensuse.security:tst:2009030402":
+            assert test.getVersion() == "9"
+            assert test == sorted(get_all_tests)[2]
+
+        if test.getId() == "oval:org.opensuse.security:tst:2009030403":
+            assert test.getVersion() == "4"
+            assert test == sorted(get_all_tests)[1]

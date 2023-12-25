@@ -8,9 +8,10 @@
 #
 import traceback
 
+import progress
 from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
-
+from progress.bar import  IncrementalBar
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.importers import IMPORTERS_REGISTRY
 
@@ -54,9 +55,10 @@ class Command(BaseCommand):
         names for the importers.
         """
         failed_importers = []
-
+        progress_bar_for_import = IncrementalBar("Fetching Data from Databases", max=len(importers))
+        progress_bar_for_import.start()
         for importer in importers:
-            self.stdout.write(f"Importing data using {importer.qualified_name}")
+            self.stdout.write(f"\nImporting data using {importer.qualified_name}")
             try:
                 ImportRunner(importer).run()
                 self.stdout.write(
@@ -72,6 +74,9 @@ class Command(BaseCommand):
                         f"Failed to run importer {importer.qualified_name}. Continuing..."
                     )
                 )
+            finally:
+                progress_bar_for_import.next()
+        progress_bar_for_import.finish()
 
         if failed_importers:
             raise CommandError(f"{len(failed_importers)} failed!: {','.join(failed_importers)}")

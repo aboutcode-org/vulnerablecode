@@ -120,3 +120,4 @@ drf-spectacular==0.24.2
 coreapi==2.3.3
 coreschema==0.0.4
 itypes==1.2.0
+progress==1.6

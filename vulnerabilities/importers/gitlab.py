@@ -28,6 +28,7 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.utils import build_description
+from vulnerabilities.utils import get_advisory_url
 from vulnerabilities.utils import get_cwe_id
 
 logger = logging.getLogger(__name__)
@@ -193,8 +194,12 @@ def parse_gitlab_advisory(file, base_path):
     date_published = dateparser.parse(gitlab_advisory.get("pubdate"))
     date_published = date_published.replace(tzinfo=pytz.UTC)
     package_slug = gitlab_advisory.get("package_slug")
+    advisory_url = get_advisory_url(
+        file=file,
+        base_path=base_path,
+        url="https://gitlab.com/gitlab-org/advisories-community/-/blob/main/",
+    )
     purl: PackageURL = get_purl(package_slug=package_slug)
-    file_path = str(file.relative_to(base_path)).strip("/")
     if not purl:
         logger.error(f"parse_yaml_file: purl is not valid: {file!r} {package_slug!r}")
         return AdvisoryData(
@@ -202,7 +207,7 @@ def parse_gitlab_advisory(file, base_path):
             summary=summary,
             references=references,
             date_published=date_published,
-            url=f"https://gitlab.com/gitlab-org/advisories-community/-/blob/main/{file_path}",
+            url=advisory_url,
         )
     affected_version_range = None
     fixed_versions = gitlab_advisory.get("fixed_versions") or []
@@ -258,5 +263,5 @@ def parse_gitlab_advisory(file, base_path):
         date_published=date_published,
         affected_packages=affected_packages,
         weaknesses=cwe_list,
-        url=f"https://gitlab.com/gitlab-org/advisories-community/-/blob/main/{file_path}",
+        url=advisory_url,
     )

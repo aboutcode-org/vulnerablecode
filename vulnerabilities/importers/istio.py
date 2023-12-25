@@ -30,6 +30,7 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
+from vulnerabilities.utils import get_advisory_url
 from vulnerabilities.utils import split_markdown_front_matter
 
 is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match
@@ -61,9 +62,8 @@ class IstioImporter(Importer):
                 self.vcs_response.delete()
 
     def process_file(self, file, base_path):
-        relative_path = str(file.relative_to(base_path)).strip("/")
-        advisory_url = (
-            f"https://github.com/dependabot/elixir-security-advisories/blob/master/{relative_path}"
+        advisory_url = get_advisory_url(
+            file, base_path, url="https://github.com/istio/istio.io/blob/master/"
         )
         data = self.get_data_from_md(file)
         published_date = data.get("publishdate")

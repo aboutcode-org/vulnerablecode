@@ -39,9 +39,7 @@ from rest_framework.authtoken.models import Token
 from univers import versions
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 
-from vulnerabilities.importers import IMPORTERS_REGISTRY
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
-from vulnerabilities.utils import History
 from vulnerabilities.utils import build_vcid
 from vulnerabilities.utils import remove_qualifiers_and_subpath
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
@@ -890,7 +888,7 @@ class PackageRelatedVulnerability(models.Model):
                     f"Confidence improved for {self.package} R {self.vulnerability}, "
                     f"new confidence: {self.confidence}"
                 )
-            self.add_package_vulnerability_changelog(advisory, False)
+            self.add_package_vulnerability_changelog(advisory=advisory)
 
         except self.DoesNotExist:
             PackageRelatedVulnerability.objects.create(
@@ -906,28 +904,23 @@ class PackageRelatedVulnerability(models.Model):
                 f"fix: {self.fix}, confidence: {self.confidence}"
             )
 
-            self.add_package_vulnerability_changelog(advisory, True)
+            self.add_package_vulnerability_changelog(advisory=advisory)
 
     @transaction.atomic
-    def add_package_vulnerability_changelog(self, advisory, first_import):
-        importer_name = ""
-        importer = IMPORTERS_REGISTRY.get(advisory.created_by) or ""
-        if hasattr(importer, "importer_name"):
-            importer_name = importer.importer_name
+    def add_package_vulnerability_changelog(self, advisory):
+        from vulnerabilities.utils import get_importer_name
+
+        importer_name = get_importer_name(advisory)
         if self.fix:
-            PackageChangeLog.log_fixing(
-                package=self.package,
-                importer=importer_name,
-                source_url=advisory.url if advisory.url else None,
-                related_vulnerability=str(self.vulnerability),
-            )
+            change_logger = PackageChangeLog.log_fixing
         else:
-            PackageChangeLog.log_affected_by(
-                package=self.package,
-                importer=importer_name,
-                source_url=advisory.url if advisory.url else None,
-                related_vulnerability=str(self.vulnerability),
-            )
+            change_logger = PackageChangeLog.log_affected_by
+        change_logger(
+            package=self.package,
+            importer=importer_name,
+            source_url=advisory.url or None,
+            related_vulnerability=str(self.vulnerability),
+        )
 
 
 class VulnerabilitySeverity(models.Model):
@@ -1187,7 +1180,9 @@ class ChangeLog(models.Model):
 
     @property
     def get_action_type_label(self):
-        label_by_status = {choice[0]: choice[1] for choice in self.ACTION_TYPE_CHOICES}
+        label_by_status = {
+            choice_code: choice_label for choice_code, choice_label in self.ACTION_TYPE_CHOICES
+        }
         return label_by_status.get(self.action_type)
 
     @property

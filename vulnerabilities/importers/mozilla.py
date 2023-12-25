@@ -25,6 +25,7 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.utils import get_advisory_url
 from vulnerabilities.utils import is_cve
 from vulnerabilities.utils import split_markdown_front_matter
 
@@ -57,9 +58,10 @@ def to_advisories(file_path: Path, base_path: Path) -> List[AdvisoryData]:
     Convert a file to corresponding advisories.
     This calls proper method to handle yml/md files.
     """
-    relative_path = str(file_path.relative_to(base_path)).strip("/")
-    advisory_url = (
-        f"https://github.com/mozilla/foundation-security-advisories/blob/master/{relative_path}"
+    advisory_url = get_advisory_url(
+        file=file_path,
+        base_path=base_path,
+        url="https://github.com/mozilla/foundation-security-advisories/blob/master/",
     )
     file_path = str(file_path)
     mfsa_id = mfsa_id_from_filename(file_path)

@@ -9,7 +9,6 @@
 
 import json
 import re
-import urllib.parse as urlparse
 from pathlib import Path
 from typing import Iterable
 from typing import List
@@ -22,6 +21,7 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
+from vulnerabilities.utils import get_advisory_url
 
 
 class RetireDotnetImporter(Importer):
@@ -54,8 +54,9 @@ class RetireDotnetImporter(Importer):
             return None
 
     def process_file(self, file, base_path) -> List[AdvisoryData]:
-        relative_path = str(file.relative_to(base_path)).strip("/")
-        advisory_url = f"https://github.com/RetireNet/Packages/blob/master/{relative_path}"
+        advisory_url = get_advisory_url(
+            file=file, base_path=base_path, url="https://github.com/RetireNet/Packages/blob/master/"
+        )
         with open(file) as f:
             json_doc = json.load(f)
             description = json_doc.get("description") or ""

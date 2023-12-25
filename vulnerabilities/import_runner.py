@@ -31,6 +31,7 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
+from vulnerabilities.utils import get_importer_name
 
 logger = logging.getLogger(__name__)
 
@@ -301,10 +302,7 @@ def get_or_create_vulnerability_and_aliases(
             vulnerability = create_vulnerability_and_add_aliases(
                 aliases=new_alias_names, summary=summary
             )
-            importer_name = ""
-            importer = IMPORTERS_REGISTRY.get(advisory.created_by) or ""
-            if hasattr(importer, "importer_name"):
-                importer_name = importer.importer_name
+            importer_name = get_importer_name(advisory)
             VulnerabilityChangeLog.log_import(
                 importer=importer_name,
                 source_url=advisory.url,

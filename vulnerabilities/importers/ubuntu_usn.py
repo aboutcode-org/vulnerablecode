@@ -83,7 +83,7 @@ class UbuntuUSNImporter(Importer):
                     aliases=[cve],
                     summary="",
                     references=[usn_reference],
-                    url=usn_reference.url if usn_reference else self.db_url,
+                    url=usn_reference.url or self.db_url,
                 )
 
 

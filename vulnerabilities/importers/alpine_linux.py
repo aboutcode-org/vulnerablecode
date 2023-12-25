@@ -51,7 +51,7 @@ class AlpineImporter(Importer):
             if not record["packages"]:
                 LOGGER.error(f'"packages" not found in {link!r}')
                 continue
-            yield from process_record(record, link)
+            yield from process_record(record=record, url=link)
 
 
 def fetch_advisory_directory_links(page_response_content: str) -> List[str]:
@@ -104,7 +104,7 @@ def process_record(record: dict, url: str) -> Iterable[AdvisoryData]:
     Return a list of AdvisoryData objects by processing data
     present in that `record`
     """
-    if not record["packages"]:
+    if not record.get("packages"):
         LOGGER.error(f'"packages" not found in this record {record!r}')
         return []
 
@@ -115,7 +115,11 @@ def process_record(record: dict, url: str) -> Iterable[AdvisoryData]:
         if not check_for_attributes(record):
             continue
         yield from load_advisories(
-            package["pkg"], record["distroversion"], record["reponame"], record["archs"], url
+            pkg_infos=package["pkg"],
+            distroversion=record["distroversion"],
+            reponame=record["reponame"],
+            archs=record["archs"],
+            url=url,
         )
 
 

@@ -23,6 +23,7 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 from unittest.mock import MagicMock
+from urllib.parse import urljoin
 from uuid import uuid4
 
 import requests
@@ -541,10 +542,22 @@ def get_severity_range(severity_list):
     return f"{min(score_list)} - {max(score_list)}"
 
 
-@dataclasses.dataclass
-class History:
-    message: str
-    source_url: str
-    vulnerablecode_version: str
-    log_date: datetime.datetime
-    associated_package: str = None
+def get_importer_name(advisory):
+    """
+    Return the ``importer_name`` of the ``advisory`` that created
+    the ``advisory``
+    """
+    # Importer name can be empty for importers that are being tested
+    importer_name = ""
+    from vulnerabilities.importers import IMPORTERS_REGISTRY
+
+    importer = IMPORTERS_REGISTRY.get(advisory.created_by) or ""
+    if hasattr(importer, "importer_name"):
+        importer_name = importer.importer_name
+    return importer_name
+
+
+def get_advisory_url(file, base_path, url):
+    relative_path = str(file.relative_to(base_path)).strip("/")
+    advisory_url = urljoin(url, relative_path)
+    return advisory_url

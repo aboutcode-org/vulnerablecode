@@ -40,11 +40,9 @@ from univers.version_range import RANGE_CLASS_BY_SCHEMES
 
 from vulnerabilities import utils
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
-from vulnerabilities.utils import build_vcid
-from vulnerabilities.utils import remove_qualifiers_and_subpath
-from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerabilities.utils import normalize_purl
 from vulnerabilities.utils import purl_to_dict
+from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 
 logger = logging.getLogger(__name__)
 

@@ -6,30 +6,31 @@ from packageurl import normalize_qualifiers
 
 class Migration(migrations.Migration):
 
-    def copy_qualifiers_temp(apps, schema_editor):
+    def copy_qualifiers(apps, schema_editor):
         """
         Bulk update qualifiers_temp from the legacy JSON field
         """
         Package = apps.get_model("vulnerabilities", "Package")
         updatables = []
         for package in Package.objects.all():
-            qualifiers_temp = package.qualifiers_temp
-            package.qualifiers = qualifiers_temp
+            qualifiers = package.qualifiers
+            normalized_string = normalize_qualifiers(qualifiers, encode=True) or ""
+            package.qualifiers_temp = normalized_string
             updatables.append(package)
         
         updated = Package.objects.bulk_update(
             objs = updatables,
-            fields=["qualifiers",], 
+            fields=["qualifiers_temp",], 
             batch_size=500,
         )
-        print(f"Copied {updated} qualifiers_temp to qualifiers")            
+        print(f"Copied {updated} qualifiers to qualifiers_temp")            
 
 
 
     dependencies = [
-        ("vulnerabilities", "0048_alter_package_unique_together_and_more"),
+        ("vulnerabilities", "0046_package_qualifiers_temp"),
     ]
 
     operations = [
-        migrations.RunPython(copy_qualifiers_temp, reverse_code=migrations.RunPython.noop),
+        migrations.RunPython(copy_qualifiers, reverse_code=migrations.RunPython.noop),
     ]

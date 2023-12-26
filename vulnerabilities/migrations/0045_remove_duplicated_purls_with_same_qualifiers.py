@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
         print(f"Deleted {deleted} duplicated Packages")
 
     dependencies = [
-        ("vulnerabilities", "0043_alter_vulnerability_status"),
+        ("vulnerabilities", "0044_alter_packagechangelog_options_and_more"),
     ]
 
     operations = [

@@ -47,7 +47,7 @@ class Migration(migrations.Migration):
             normalize_and_save_package(pkg)
 
     dependencies = [
-        ("vulnerabilities", "0050_alter_package_unique_together_and_more"),
+        ("vulnerabilities", "0051_alter_package_unique_together_and_more"),
     ]
 
     operations = [

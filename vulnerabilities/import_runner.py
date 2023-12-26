@@ -18,6 +18,7 @@ from django.db import transaction
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
+from vulnerabilities.importers import IMPORTERS_REGISTRY
 from vulnerabilities.improver import Inference
 from vulnerabilities.improvers.default import DefaultImporter
 from vulnerabilities.models import Advisory
@@ -25,10 +26,12 @@ from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityChangeLog
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
+from vulnerabilities.utils import get_importer_name
 
 logger = logging.getLogger(__name__)
 
@@ -102,6 +105,7 @@ class ImportRunner:
                         "created_by": importer_name,
                         "date_collected": datetime.datetime.now(tz=datetime.timezone.utc),
                     },
+                    url=data.url,
                 )
                 if not obj.date_imported:
                     advisories.append(obj)
@@ -151,6 +155,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
             vulnerability_id=inference.vulnerability_id,
             aliases=inference.aliases,
             summary=inference.summary,
+            advisory=advisory,
         )
 
         if not vulnerability:
@@ -193,24 +198,24 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                     )
 
         for affected_purl in inference.affected_purls or []:
-            vulnerable_package = Package.objects.get_or_create_from_purl(purl=affected_purl)
+            vulnerable_package, _ = Package.objects.get_or_create_from_purl(purl=affected_purl)
             PackageRelatedVulnerability(
                 vulnerability=vulnerability,
                 package=vulnerable_package,
                 created_by=improver_name,
                 confidence=inference.confidence,
                 fix=False,
-            ).update_or_create()
+            ).update_or_create(advisory=advisory)
 
         if inference.fixed_purl:
-            fixed_package = Package.objects.get_or_create_from_purl(purl=inference.fixed_purl)
+            fixed_package, _ = Package.objects.get_or_create_from_purl(purl=inference.fixed_purl)
             PackageRelatedVulnerability(
                 vulnerability=vulnerability,
                 package=fixed_package,
                 created_by=improver_name,
                 confidence=inference.confidence,
                 fix=True,
-            ).update_or_create()
+            ).update_or_create(advisory=advisory)
 
         if inference.weaknesses and vulnerability:
             for cwe_id in inference.weaknesses:
@@ -246,7 +251,7 @@ def create_valid_vulnerability_reference(url, reference_id=None):
 
 
 def get_or_create_vulnerability_and_aliases(
-    aliases: List[str], vulnerability_id=None, summary=None
+    aliases: List[str], vulnerability_id=None, summary=None, advisory=None
 ):
     """
     Get or create vulnerabilitiy and aliases such that all existing and new
@@ -296,6 +301,12 @@ def get_or_create_vulnerability_and_aliases(
         try:
             vulnerability = create_vulnerability_and_add_aliases(
                 aliases=new_alias_names, summary=summary
+            )
+            importer_name = get_importer_name(advisory)
+            VulnerabilityChangeLog.log_import(
+                importer=importer_name,
+                source_url=advisory.url,
+                vulnerability=vulnerability,
             )
         except Exception as e:
             logger.error(

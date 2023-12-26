@@ -15,6 +15,7 @@ import saneyaml
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importers.osv import parse_advisory_data
+from vulnerabilities.utils import get_advisory_url
 
 logger = logging.getLogger(__name__)
 
@@ -23,15 +24,24 @@ class OSSFuzzImporter(Importer):
     license_url = "https://github.com/google/oss-fuzz-vulns/blob/main/LICENSE"
     spdx_license_expression = "CC-BY-4.0"
     url = "git+https://github.com/google/oss-fuzz-vulns"
+    importer_name = "OSS Fuzz Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         try:
             self.clone(repo_url=self.url)
-            path = Path(self.vcs_response.dest_dir) / "vulns"
+            base_path = Path(self.vcs_response.dest_dir)
+            path = base_path / "vulns"
             for file in path.glob("**/*.yaml"):
                 with open(file) as f:
                     yaml_data = saneyaml.load(f.read())
-                    yield parse_advisory_data(yaml_data, supported_ecosystem="oss-fuzz")
+                    advisory_url = get_advisory_url(
+                        file=file,
+                        base_path=base_path,
+                        url="https://github.com/pypa/advisory-database/blob/main/",
+                    )
+                    yield parse_advisory_data(
+                        yaml_data, supported_ecosystem="oss-fuzz", advisory_url=advisory_url
+                    )
         finally:
             if self.vcs_response:
                 self.vcs_response.delete()

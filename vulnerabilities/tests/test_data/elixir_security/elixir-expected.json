@@ -25,7 +25,8 @@
         "severities": []
       }
     ],
-    "date_published": null,
-    "weaknesses": []
+    "date_published": "2017-08-02T00:00:00",
+    "weaknesses": [],
+    "url": "https://github.com/dependabot/elixir-security-advisories/blob/master/test_file.yml"
   }
 ]

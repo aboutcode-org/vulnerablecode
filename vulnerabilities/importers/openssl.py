@@ -33,6 +33,7 @@ class OpensslImporter(Importer):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/openssl/openssl/blob/master/LICENSE.txt"
     url = "https://www.openssl.org/news/vulnerabilities.xml"
+    importer_name = "OpenSSL Importer"
 
     def fetch(self):
         response = requests.get(url=self.url)
@@ -157,4 +158,5 @@ def to_advisory_data(xml_issue) -> AdvisoryData:
         affected_packages=affected_packages,
         references=references,
         date_published=parsed_date_published,
+        url=advisory_url if advisory_url else "https://www.openssl.org/news/vulnerabilities.xml",
     )

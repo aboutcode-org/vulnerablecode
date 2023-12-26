@@ -59,6 +59,7 @@ class NVDImporter(Importer):
         INFORMATION THEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
         MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
     """
+    importer_name = "NVD Importer"
 
     def advisory_data(self):
         for _year, cve_data in fetch_cve_data_1_1():
@@ -266,6 +267,7 @@ class CveItem:
             references=self.references,
             date_published=dateparser.parse(self.cve_item.get("publishedDate")),
             weaknesses=self.weaknesses,
+            url=f"https://nvd.nist.gov/vuln/detail/{self.cve_id}",
         )
 
 

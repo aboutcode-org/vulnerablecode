@@ -23,7 +23,9 @@ class TestOSSFuzzImporter(TestCase):
         with open(os.path.join(TEST_DATA, "oss-fuzz-data1.yaml")) as f:
             mock_response = saneyaml.load(f)
         expected_file = os.path.join(TEST_DATA, "oss-fuzz-data1.yaml-expected.json")
-        imported_data = parse_advisory_data(mock_response, "oss-fuzz")
+        imported_data = parse_advisory_data(
+            mock_response, "oss-fuzz", advisory_url="http://test.com"
+        )
         result = imported_data.to_dict()
         util_tests.check_results_against_json(result, expected_file)
 
@@ -31,6 +33,8 @@ class TestOSSFuzzImporter(TestCase):
         with open(os.path.join(TEST_DATA, "oss-fuzz-data2.yaml")) as f:
             mock_response = saneyaml.load(f)
         expected_file = os.path.join(TEST_DATA, "oss-fuzz-data2.yaml-expected.json")
-        imported_data = parse_advisory_data(mock_response, "oss-fuzz")
+        imported_data = parse_advisory_data(
+            mock_response, "oss-fuzz", advisory_url="http://test.com"
+        )
         result = imported_data.to_dict()
         util_tests.check_results_against_json(result, expected_file)

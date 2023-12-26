@@ -54,6 +54,7 @@ class DebianOvalImporter(OvalImporter):
     Cheers,
         Moritz
     """
+    importer_name = "Debian Oval Importer"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -66,6 +67,7 @@ class DebianOvalImporter(OvalImporter):
         releases = ["wheezy", "stretch", "jessie", "buster", "bullseye"]
         for release in releases:
             file_url = f"https://www.debian.org/security/oval/oval-definitions-{release}.xml.bz2"
+            self.data_url = file_url
             resp = requests.get(file_url).content
             extracted = bz2.decompress(resp)
             yield (

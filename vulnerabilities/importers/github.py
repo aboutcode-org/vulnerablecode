@@ -14,6 +14,7 @@ from typing import Optional
 from cwe2.database import Database
 from dateutil import parser as dateparser
 from packageurl import PackageURL
+from progress.bar import ChargingBar
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import build_range_from_github_advisory_constraint
 
@@ -88,27 +89,42 @@ query{
 }
 """
 
+progress_bar_for_package_fetch = ChargingBar(
+    "\tFetching Packages", max=len(PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM.items())
+)
+
 
 class GitHubAPIImporter(Importer):
     spdx_license_expression = "CC-BY-4.0"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
-        for ecosystem, package_type in PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM.items():
-            end_cursor_exp = ""
-            while True:
-                graphql_query = {"query": GRAPHQL_QUERY_TEMPLATE % (ecosystem, end_cursor_exp)}
-                response = utils.fetch_github_graphql_query(graphql_query)
+        progress_bar_for_package_fetch.start()
+        try:
+            for ecosystem, package_type in PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM.items():
+                yield from send_graphql_query(ecosystem, package_type)
+        finally:
+            progress_bar_for_package_fetch.finish()
 
-                page_info = get_item(response, "data", "securityVulnerabilities", "pageInfo")
-                end_cursor = get_item(page_info, "endCursor")
-                if end_cursor:
-                    end_cursor = f'"{end_cursor}"'
-                    end_cursor_exp = f"after: {end_cursor}"
 
-                yield from process_response(response, package_type=package_type)
+def send_graphql_query(ecosystem, package_type) -> Iterable[AdvisoryData]:
+    try:
+        end_cursor_exp = ""
+        while True:
+            graphql_query = {"query": GRAPHQL_QUERY_TEMPLATE % (ecosystem, end_cursor_exp)}
+            response = utils.fetch_github_graphql_query(graphql_query)
 
-                if not get_item(page_info, "hasNextPage"):
-                    break
+            page_info = get_item(response, "data", "securityVulnerabilities", "pageInfo")
+            end_cursor = get_item(page_info, "endCursor")
+            if end_cursor:
+                end_cursor = f'"{end_cursor}"'
+                end_cursor_exp = f"after: {end_cursor}"
+
+            yield from process_response(response, package_type=package_type)
+
+            if not get_item(page_info, "hasNextPage"):
+                break
+    finally:
+        progress_bar_for_package_fetch.next()
 
 
 def get_purl(pkg_type: str, github_name: str) -> Optional[PackageURL]:

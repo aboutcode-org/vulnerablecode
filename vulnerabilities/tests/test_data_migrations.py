@@ -598,8 +598,8 @@ class RemoveVulnerabilitiesWithEmptyAliases(TestMigrations):
 
 class TestRemoveDupedPurlsWithSameQualifiers(TestMigrations):
     app_name = "vulnerabilities"
-    migrate_from = "0043_alter_vulnerability_status"
-    migrate_to = "0044_remove_duplicated_purls_with_same_qualifiers"
+    migrate_from = "0043_alter_advisory_unique_together_advisory_url_and_more"
+    migrate_to = "0045_remove_duplicated_purls_with_same_qualifiers"
 
     def setUpBeforeMigration(self, apps):
         Package = apps.get_model("vulnerabilities", "Package")

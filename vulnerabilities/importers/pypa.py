@@ -58,7 +58,7 @@ def fork_and_get_files(base_path) -> dict:
                 logger.warning(f"Unsupported non-YAML PyPA advisory file: {path}")
                 continue
             advisory_url = get_advisory_url(
-                file=file,
+                file=Path(path),
                 base_path=base_path,
                 url="https://github.com/pypa/advisory-database/blob/main/",
             )

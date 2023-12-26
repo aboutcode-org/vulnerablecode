@@ -1191,6 +1191,7 @@ class ChangeLog(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ("-action_time",)
 
 
 class VulnerabilityHistoryManager(models.Manager):

@@ -89,7 +89,6 @@ class PackageDetails(DetailView):
         context["fixed_package_details"] = package.fixed_package_details
 
         context["history"] = list(package.history)
-        print(context["history"])
         return context
 
     def get_object(self, queryset=None):

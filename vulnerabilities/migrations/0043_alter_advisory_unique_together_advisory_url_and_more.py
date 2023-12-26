@@ -70,7 +70,7 @@ class Migration(migrations.Migration):
                 (
                     "software_version",
                     models.CharField(
-                        default="33.6.3",
+                        default="33.6.5",
                         help_text="Version of the software at the time of change",
                         max_length=100,
                     ),
@@ -128,7 +128,7 @@ class Migration(migrations.Migration):
                 (
                     "software_version",
                     models.CharField(
-                        default="33.6.3",
+                        default="33.6.5",
                         help_text="Version of the software at the time of change",
                         max_length=100,
                     ),

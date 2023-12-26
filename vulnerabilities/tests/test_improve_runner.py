@@ -64,7 +64,9 @@ def test_create_valid_vulnerability_reference_accepts_long_references():
 def test_get_or_create_vulnerability_and_aliases_with_new_vulnerability_and_new_aliases():
     alias_names = ["TAYLOR-1337", "SWIFT-1337"]
     summary = "Melodious vulnerability"
-    vulnerability = get_or_create_vulnerability_and_aliases(aliases=alias_names, summary=summary)
+    vulnerability = get_or_create_vulnerability_and_aliases(
+        aliases=alias_names, summary=summary, advisory=Advisory(created_by="")
+    )
     assert vulnerability
     alias_names_in_db = vulnerability.get_aliases.values_list("alias", flat=True)
     assert Counter(alias_names_in_db) == Counter(alias_names)

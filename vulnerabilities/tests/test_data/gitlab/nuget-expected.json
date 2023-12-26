@@ -31,5 +31,10 @@
     }
   ],
   "date_published": "2022-01-08T00:00:00+00:00",
-  "weaknesses": [1035,770,937]
+  "weaknesses": [
+    1035,
+    770,
+    937
+  ],
+  "url": "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/nuget.yaml"
 }

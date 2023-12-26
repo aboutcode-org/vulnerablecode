@@ -33,7 +33,8 @@
       }
     ],
     "date_published": "2021-05-24T18:12:20+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-qcxh-w3j9-58qr"
   },
   {
     "aliases": [
@@ -69,7 +70,8 @@
       }
     ],
     "date_published": "2021-05-24T18:12:20+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-qcxh-w3j9-58qr"
   },
   {
     "aliases": [
@@ -105,7 +107,8 @@
       }
     ],
     "date_published": "2021-05-24T18:12:20+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-c9hw-wf7x-jp9j"
   },
   {
     "aliases": [
@@ -141,7 +144,8 @@
       }
     ],
     "date_published": "2021-05-24T18:12:20+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-c9hw-wf7x-jp9j"
   },
   {
     "aliases": [
@@ -177,6 +181,7 @@
       }
     ],
     "date_published": "2021-05-24T18:12:20+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-c9hw-wf7x-jp9j"
   }
 ]

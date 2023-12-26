@@ -42,7 +42,8 @@
       }
     ],
     "date_published": "2022-03-11T23:39:27+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-4fx9-vc88-q2xc"
   },
   {
     "aliases": [
@@ -108,7 +109,8 @@
       }
     ],
     "date_published": "2022-01-12T20:07:33+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-8vj2-vxx3-667w"
   },
   {
     "aliases": [
@@ -159,7 +161,8 @@
       }
     ],
     "date_published": "2022-03-11T23:10:32+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-9j59-75qj-795w"
   },
   {
     "aliases": [
@@ -221,6 +224,7 @@
       }
     ],
     "date_published": "2022-02-10T00:33:13+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-8r7c-3cm2-3h8f"
   }
 ]

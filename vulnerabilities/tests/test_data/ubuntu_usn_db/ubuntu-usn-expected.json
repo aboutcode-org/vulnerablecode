@@ -13,7 +13,8 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://usn.ubuntu.com/763-1/"
   },
   {
     "aliases": [
@@ -29,6 +30,7 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://usn.ubuntu.com/763-1/"
   }
 ]

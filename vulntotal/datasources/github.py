@@ -292,7 +292,7 @@ def group_advisory_by_package(advisories_dict, cve):
               }
             }
 
-        cve (str): Used for filtering out advisory non maching CVEs.
+        cve (str): Used for filtering out advisory non-matching CVEs.
 
     Returns:
         list: List of dict containing advisory for package. Each dict

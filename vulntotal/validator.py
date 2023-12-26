@@ -42,7 +42,7 @@ class DataSource:
 
     def datasource_advisory(self, purl: PackageURL) -> Iterable[VendorData]:
         """
-        Yield VendorData object for crossponding PURL.
+        Yield VendorData object for corresponding PURL.
         """
         return NotImplementedError
 

@@ -44,6 +44,7 @@ class XenImporter(Importer):
 
      -George
     """
+    importer_name = "Xen Importer"
 
     def advisory_data(self):
         data = fetch_response(self.url).json()
@@ -69,8 +70,11 @@ class XenImporter(Importer):
     def to_advisories(self, xsa):
         xsa_id = xsa.get("xsa")
         references = []
+        url = self.url
         if xsa_id:
-            references.append(XsaReference.from_number(number=xsa_id))
+            xsa_reference = XsaReference.from_number(number=xsa_id)
+            url = xsa_reference.url
+            references.append(xsa_reference)
         title = xsa.get("title")
         for cve in xsa.get("cve") or []:
             # TODO: https://github.com/nexB/vulnerablecode/issues/981
@@ -80,4 +84,5 @@ class XenImporter(Importer):
                 aliases=[cve],
                 summary=title,
                 references=references,
+                url=url,
             )

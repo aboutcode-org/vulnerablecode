@@ -7,6 +7,8 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from datetime import datetime
+
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
@@ -86,6 +88,7 @@ class PackageDetails(DetailView):
         context["package_search_form"] = PackageSearchForm(self.request.GET)
         context["fixed_package_details"] = package.fixed_package_details
 
+        context["history"] = list(package.history)
         return context
 
     def get_object(self, queryset=None):
@@ -138,6 +141,7 @@ class VulnerabilityDetails(DetailView):
                 "fixed_by_packages": self.object.fixed_by_packages.all(),
                 "weaknesses": weaknesses_present_in_db,
                 "status": status,
+                "history": self.object.history,
             }
         )
         return context

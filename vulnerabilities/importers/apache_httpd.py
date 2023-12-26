@@ -33,6 +33,7 @@ class ApacheHTTPDImporter(Importer):
     base_url = "https://httpd.apache.org/security/json/"
     spdx_license_expression = "Apache-2.0"
     license_url = "https://www.apache.org/licenses/LICENSE-2.0"
+    importer_name = "Apache HTTPD Importer"
 
     def advisory_data(self):
         links = fetch_links(self.base_url)
@@ -106,6 +107,7 @@ class ApacheHTTPDImporter(Importer):
             summary=description or "",
             affected_packages=affected_packages,
             references=[reference],
+            url=reference.url,
         )
 
     def to_version_ranges(self, versions_data, fixed_versions):

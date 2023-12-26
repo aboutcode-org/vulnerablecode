@@ -8,24 +8,25 @@
 #
 
 import logging
-from datetime import datetime
-from datetime import timezone
 from traceback import format_exc as traceback_format_exc
 from typing import List
 
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
+from vulnerabilities.importers import IMPORTERS_REGISTRY
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityChangeLog
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
+from vulnerabilities.utils import get_importer_name
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +59,11 @@ class ImproveRunner:
 
 
 @transaction.atomic
-def process_inferences(inferences: List[Inference], advisory: Advisory, improver_name: str):
+def process_inferences(
+    inferences: List[Inference],
+    advisory: Advisory,
+    improver_name: str,
+):
     """
     Return number of inferences processed.
     An atomic transaction that updates both the Advisory (e.g. date_imported)
@@ -82,6 +87,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
             vulnerability_id=inference.vulnerability_id,
             aliases=inference.aliases,
             summary=inference.summary,
+            advisory=advisory,
         )
 
         if not vulnerability:
@@ -124,24 +130,32 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                     )
 
         for affected_purl in inference.affected_purls or []:
-            vulnerable_package = Package.objects.get_or_create_from_purl(purl=affected_purl)
+            vulnerable_package, created = Package.objects.get_or_create_from_purl(
+                purl=affected_purl
+            )
             PackageRelatedVulnerability(
                 vulnerability=vulnerability,
                 package=vulnerable_package,
                 created_by=improver_name,
                 confidence=inference.confidence,
                 fix=False,
-            ).update_or_create()
+            ).update_or_create(
+                advisory=advisory,
+            )
 
         if inference.fixed_purl:
-            fixed_package = Package.objects.get_or_create_from_purl(purl=inference.fixed_purl)
+            fixed_package, created = Package.objects.get_or_create_from_purl(
+                purl=inference.fixed_purl
+            )
             PackageRelatedVulnerability(
                 vulnerability=vulnerability,
                 package=fixed_package,
                 created_by=improver_name,
                 confidence=inference.confidence,
                 fix=True,
-            ).update_or_create()
+            ).update_or_create(
+                advisory=advisory,
+            )
 
         if inference.weaknesses and vulnerability:
             for cwe_id in inference.weaknesses:
@@ -175,7 +189,7 @@ def create_valid_vulnerability_reference(url, reference_id=None):
 
 
 def get_or_create_vulnerability_and_aliases(
-    aliases: List[str], vulnerability_id=None, summary=None
+    aliases: List[str], vulnerability_id=None, summary=None, advisory=None
 ):
     """
     Get or create vulnerabilitiy and aliases such that all existing and new
@@ -225,6 +239,12 @@ def get_or_create_vulnerability_and_aliases(
         try:
             vulnerability = create_vulnerability_and_add_aliases(
                 aliases=new_alias_names, summary=summary
+            )
+            importer_name = get_importer_name(advisory)
+            VulnerabilityChangeLog.log_import(
+                importer=importer_name,
+                source_url=advisory.url,
+                vulnerability=vulnerability,
             )
         except Exception as e:
             logger.error(

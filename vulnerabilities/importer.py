@@ -74,7 +74,6 @@ class VulnerabilitySeverity:
 
 @dataclasses.dataclass(order=True)
 class Reference:
-
     reference_id: str = ""
     url: str = ""
     severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
@@ -248,6 +247,7 @@ class AdvisoryData:
     references: List[Reference] = dataclasses.field(default_factory=list)
     date_published: Optional[datetime.datetime] = None
     weaknesses: List[int] = dataclasses.field(default_factory=list)
+    url: Optional[str] = None
 
     def __post_init__(self):
         if self.date_published and not self.date_published.tzinfo:
@@ -271,6 +271,7 @@ class AdvisoryData:
             "references": [ref.to_dict() for ref in self.references],
             "date_published": self.date_published.isoformat() if self.date_published else None,
             "weaknesses": self.weaknesses,
+            "url": self.url if self.url else "",
         }
 
     @classmethod
@@ -287,6 +288,7 @@ class AdvisoryData:
             if date_published
             else None,
             "weaknesses": advisory_data["weaknesses"],
+            "url": advisory_data.get("url") or None,
         }
         return cls(**transformed)
 
@@ -313,6 +315,8 @@ class Importer:
     license_url = ""
     notice = ""
     vcs_response: VCSResponse = None
+    # It needs to be unique and immutable
+    importer_name = ""
 
     def __init__(self):
         if not self.spdx_license_expression:
@@ -357,6 +361,9 @@ class OvalImporter(Importer):
     All data sources which collect data from OVAL files must inherit from this
     `OvalDataSource` class. Subclasses must implement the methods `_fetch` and `set_api`.
     """
+
+    data_url: str = ""
+    importer_name = "Oval Importer"
 
     @staticmethod
     def create_purl(pkg_name: str, pkg_data: Mapping) -> PackageURL:
@@ -479,4 +486,5 @@ class OvalImporter(Importer):
                     affected_packages=sorted(affected_packages),
                     references=sorted(references),
                     date_published=date_published,
+                    url=self.data_url,
                 )

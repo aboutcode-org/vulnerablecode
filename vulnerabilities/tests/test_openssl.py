@@ -111,6 +111,7 @@ class TestOpenssl(testcase.FileBasedTesting):
                 ),
             ],
             date_published=datetime.datetime(2017, 12, 7, 0, 0, tzinfo=datetime.timezone.utc),
+            url="https://www.openssl.org/news/secadv/20171207.txt",
         )
         issue_parsed = DET.fromstring(issue_string)
         assert expected == openssl.to_advisory_data(issue_parsed)

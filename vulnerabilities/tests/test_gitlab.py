@@ -9,6 +9,7 @@
 
 import json
 import os
+from pathlib import Path
 from unittest import mock
 
 import pytest
@@ -27,7 +28,7 @@ TEST_DATA = os.path.join(BASE_DIR, "test_data", "gitlab")
 def test_parse_yaml_file(pkg_type):
     response_file = os.path.join(TEST_DATA, f"{pkg_type}.yaml")
     expected_file = os.path.join(TEST_DATA, f"{pkg_type}-expected.json")
-    advisory = parse_gitlab_advisory(response_file)
+    advisory = parse_gitlab_advisory(Path(response_file), Path(response_file).parent)
     util_tests.check_results_against_json(advisory.to_dict(), expected_file)
 
 

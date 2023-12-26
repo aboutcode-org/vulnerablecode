@@ -22,6 +22,9 @@
         "severities": []
       }
     ],
-    "weaknesses": [1035,937]
+    "weaknesses": [
+      1035,
+      937
+    ]
   }
 ]

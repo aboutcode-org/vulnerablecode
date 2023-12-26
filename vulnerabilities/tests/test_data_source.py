@@ -12,6 +12,7 @@ import xml.etree.ElementTree as ET
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
+import pytest
 from fetchcode.vcs import VCSResponse
 from packageurl import PackageURL
 
@@ -49,6 +50,7 @@ class MockOvalImporter(OvalImporter):
 
 class MockGitImporter(Importer):
     spdx_license_expression = "FOO-BAR"
+    importer_name = "Mock Git Importer"
 
 
 def test_create_purl():
@@ -109,8 +111,9 @@ def test_git_importer(mock_clone):
     )
 
 
-def test_git_importer_clone():
-    git_importers = [
+@pytest.mark.parametrize(
+    "git_importer",
+    [
         ElixirSecurityImporter,
         FireyeImporter,
         GentooImporter,
@@ -120,20 +123,21 @@ def test_git_importer_clone():
         NpmImporter,
         RetireDotnetImporter,
         PyPaImporter,
-    ]
-    for git_importer in git_importers:
-        mock_function = MagicMock(
-            return_value=VCSResponse(
-                dest_dir="test",
-                vcs_type="git",
-                domain="test",
-            )
+    ],
+)
+def test_git_importer_clone(git_importer):
+    mock_function = MagicMock(
+        return_value=VCSResponse(
+            dest_dir="test",
+            vcs_type="git",
+            domain="test",
         )
-        with patch("vulnerabilities.importer.fetch_via_vcs", mock_function) as mock_fetch:
-            with patch.object(VCSResponse, "delete") as mock_delete:
-                list(git_importer().advisory_data())
-                mock_fetch.assert_called_once()
-                mock_delete.assert_called_once()
+    )
+    with patch("vulnerabilities.importer.fetch_via_vcs", mock_function) as mock_fetch:
+        with patch.object(VCSResponse, "delete") as mock_delete:
+            list(git_importer().advisory_data())
+            mock_fetch.assert_called_once()
+            mock_delete.assert_called_once()
 
 
 # Here we use a modified copy of org.opensuse.CVE-2008-5679.xml -- the test versions are modified to illustrate sort order.

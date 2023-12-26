@@ -31,6 +31,7 @@ from vulnerabilities.severity_systems import SCORING_SYSTEMS
 class ExampleImporter(Importer):
 
     spdx_license_expression = "BSD-2-Clause"
+    importer_name = "Example Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         raw_data = fetch_advisory_data()
@@ -48,6 +49,7 @@ def fetch_advisory_data():
             "fixed": "1.20.1",
             "reference": "http://mailman.nginx.org/pipermail/nginx-announce/2021/000300.html",
             "published_on": "14-02-2021 UTC",
+            "url": "http://example.com/cve-2021-1234",
         },
         {
             "id": "CVE-2021-12341337",
@@ -57,6 +59,7 @@ def fetch_advisory_data():
             "fixed": "1.20.1",
             "reference": "http://example.com/cve-2021-1234",
             "published_on": "06-10-2021 UTC",
+            "url": "http://example.com/cve-2021-1234",
         },
     ]
 
@@ -86,6 +89,7 @@ def parse_advisory_data(raw_data) -> AdvisoryData:
         affected_packages=[affected_package],
         references=references,
         date_published=date_published,
+        url=raw_data["url"],
     )
 
 

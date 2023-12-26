@@ -33,7 +33,9 @@ TEST_DATA = os.path.join(BASE_DIR, "test_data/apache_tomcat")
 def test_method_extract_advisories_from_page():
     with open(os.path.join(TEST_DATA, "apache_tomcat-selected-advisories.html")) as f:
         raw_data = f.read()
-    extracted_advisories = ApacheTomcatImporter().extract_advisories_from_page(raw_data)
+    extracted_advisories = ApacheTomcatImporter().extract_advisories_from_page(
+        "https://test.com", raw_data
+    )
 
     results = [adv.to_dict() for adv in extracted_advisories]
 

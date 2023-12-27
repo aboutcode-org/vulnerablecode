@@ -16,6 +16,7 @@ import requests
 from bs4 import BeautifulSoup
 from django.db.models.query import QuerySet
 from packageurl import PackageURL
+from progress.bar import ChargingBar
 from univers.version_range import NginxVersionRange
 from univers.versions import NginxVersion
 
@@ -52,10 +53,17 @@ def advisory_data_from_text(text):
     """
     soup = BeautifulSoup(text, features="lxml")
     vuln_list = soup.select("li p")
-    for vuln_info in vuln_list:
-        ngnix_adv = parse_advisory_data_from_paragraph(vuln_info)
-        yield to_advisory_data(ngnix_adv)
-
+    progress_bar_for_package_fetch = ChargingBar("\tFetching Packages", max=len(vuln_list))
+    try:
+        progress_bar_for_package_fetch.start()
+        for vuln_info in vuln_list:
+            try:
+                ngnix_adv = parse_advisory_data_from_paragraph(vuln_info)
+                yield to_advisory_data(ngnix_adv)
+            finally:
+                progress_bar_for_package_fetch.next()
+    finally:
+        progress_bar_for_package_fetch.finish()
 
 class NginxAdvisory(NamedTuple):
     aliases: list

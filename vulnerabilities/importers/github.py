@@ -106,7 +106,7 @@ class GitHubAPIImporter(Importer):
             progress_bar_for_package_fetch.finish()
 
 
-def send_graphql_query(ecosystem, package_type) -> Iterable[AdvisoryData]:
+def send_graphql_query(ecosystem: str, package_type: str) -> Iterable[AdvisoryData]:
     try:
         end_cursor_exp = ""
         while True:

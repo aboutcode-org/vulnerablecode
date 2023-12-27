@@ -16,6 +16,7 @@ from typing import List
 import pytz
 from dateutil.parser import parse
 from packageurl import PackageURL
+from progress.bar import ChargingBar
 from univers.version_range import NpmVersionRange
 
 from vulnerabilities.importer import AdvisoryData
@@ -36,15 +37,23 @@ class NpmImporter(Importer):
     importer_name = "Npm Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
+        progress_bar_for_fetched_files = ChargingBar("\tFetching Files")
         try:
             self.clone(self.repo_url)
             path = Path(self.vcs_response.dest_dir)
-
             vuln = path / "vuln"
             npm_vulns = vuln / "npm"
-            for file in npm_vulns.glob("*.json"):
-                yield from self.to_advisory_data(file)
+            paths_for_files_fetched = list(npm_vulns.glob("*.json"))
+            progress_bar_for_fetched_files.max = len(paths_for_files_fetched)
+            progress_bar_for_fetched_files.start()
+
+            for file in paths_for_files_fetched:
+                try:
+                    yield from self.to_advisory_data(file)
+                finally:
+                    progress_bar_for_fetched_files.next()
         finally:
+            progress_bar_for_fetched_files.finish()
             if self.vcs_response:
                 self.vcs_response.delete()
 

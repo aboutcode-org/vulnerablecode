@@ -9,6 +9,7 @@
 
 
 import os
+from pathlib import Path
 
 from vulnerabilities.importers.retiredotnet import RetireDotnetImporter
 from vulnerabilities.tests import util_tests
@@ -31,5 +32,5 @@ def test_process_file():
     path = os.path.join(BASE_DIR, "test_data/retiredotnet/test_file.json")
     importer = RetireDotnetImporter()
     expected_file = os.path.join(BASE_DIR, "test_data/retiredotnet/expected_file.json")
-    advisory = importer.process_file(path)
+    advisory = importer.process_file(Path(path), Path(path).parent)
     util_tests.check_results_against_json(advisory.to_dict(), expected_file)

@@ -36,19 +36,21 @@ ADVISORY_DATAS = [
         ],
         references=[Reference(url="https://example.com/with/more/info/CVE-2020-13371337")],
         date_published=timezone.now(),
+        url="https://test.com",
     )
 ]
 
 
 class DummyImporter(Importer):
     spdx_license_expression = "dummy license"
+    importer_name = "Dummy Importer 2"
 
     def advisory_data(self):
         return ADVISORY_DATAS
 
 
 @pytest.mark.django_db(transaction=True)
-def test_import_runner(db):
+def test_import_runner_1(db):
     runner = ImportRunner(DummyImporter)
     runner.run()
     advisories = models.Advisory.objects.all()
@@ -87,6 +89,7 @@ def test_process_advisories_idempotency_with_one_new_advisory(db):
     advisory_datas.append(
         AdvisoryData(
             aliases=["CVE-2022-1337"],
+            url="https://example.com/CVE-2022-1337",
         )
     )
     ImportRunner(DummyImporter).process_advisories(advisory_datas, "test_importer")

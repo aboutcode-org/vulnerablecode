@@ -83,7 +83,8 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://www.postgresql.org/support/security/CVE-2020-10733"
   },
   {
     "aliases": [
@@ -161,6 +162,7 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://www.postgresql.org/support/security/CVE-2020-1720"
   }
 ]

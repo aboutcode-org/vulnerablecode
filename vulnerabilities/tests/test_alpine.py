@@ -133,6 +133,7 @@ def test_process_record(caplog):
                 )
             ],
             date_published=None,
+            url="https://secdb.alpinelinux.org/v3.11/",
         ),
         AdvisoryData(
             aliases=["CVE-2018-7540"],
@@ -239,6 +240,7 @@ def test_process_record(caplog):
                 )
             ],
             date_published=None,
+            url="https://secdb.alpinelinux.org/v3.11/",
         ),
         AdvisoryData(
             aliases=["CVE-2017-9669"],
@@ -339,6 +341,7 @@ def test_process_record(caplog):
             ],
             references=[],
             date_published=None,
+            url="https://secdb.alpinelinux.org/v3.11/",
         ),
         AdvisoryData(
             aliases=["CVE-2017-9671"],
@@ -439,10 +442,13 @@ def test_process_record(caplog):
             ],
             references=[],
             date_published=None,
+            url="https://secdb.alpinelinux.org/v3.11/",
         ),
     ]
     with open(os.path.join(TEST_DATA, os.path.join(TEST_DATA, "v3.11", "main.json"))) as f:
-        found_advisories = list(process_record(json.loads(f.read())))
+        found_advisories = list(
+            process_record(json.loads(f.read()), "https://secdb.alpinelinux.org/v3.11/")
+        )
         assert found_advisories == expected_advisories
     assert (
         "'4.10-1-r1' is not a valid AlpineVersion InvalidVersion(\"'4.10-1-r1' is not a valid <class 'univers.versions.AlpineLinuxVersion'>\")"
@@ -497,7 +503,7 @@ def test_fetch_advisory_links_failure(caplog):
 
 def test_process_record_without_packages(caplog):
     with open(os.path.join(TEST_DATA, os.path.join(TEST_DATA, "v3.3", "community.json"))) as f:
-        assert list(process_record(json.loads(f.read()))) == []
+        assert list(process_record(json.loads(f.read()), "")) == []
         assert (
             "\"packages\" not found in this record {'apkurl': '{{urlprefix}}/{{distroversion}}/{{reponame}}/{{arch}}/{{pkg.name}}-{{pkg.ver}}.apk', 'archs': ['armhf', 'x86', 'x86_64'], 'reponame': 'community', 'urlprefix': 'https://dl-cdn.alpinelinux.org/alpine', 'distroversion': 'v3.3', 'packages': []}"
             in caplog.text
@@ -508,7 +514,7 @@ def test_load_advisories_package_without_name(caplog):
     package = {
         "secfixes": {"4.10.0-r1": ["XSA-248"], "4.10.0-r2": ["CVE-2018-7540 XSA-252"]},
     }
-    list(load_advisories(package, "v3.11", "main", archs=[]))
+    list(load_advisories(package, "v3.11", "main", archs=[], url=""))
     assert (
         "\"name\" is not available in package {'secfixes': {'4.10.0-r1': ['XSA-248'], '4.10.0-r2': ['CVE-2018-7540 XSA-252']}}"
         in caplog.text
@@ -520,7 +526,7 @@ def test_load_advisories_package_without_secfixes(caplog):
         "name": "xen",
         "secfixes": {"4.10.0-r1": []},
     }
-    list(load_advisories(package, "v3.11", "main", archs=[]))
+    list(load_advisories(package, "v3.11", "main", archs=[], url=""))
     assert "No fixed vulnerabilities in version '4.10.0-r1'" in caplog.text
 
 
@@ -541,7 +547,7 @@ def test_load_advisories_package_with_invalid_alpine_version(test_case, caplog):
         "name": "xen",
         "secfixes": {f"{test_case}": ["XSA-248"]},
     }
-    list(load_advisories(package, "v3.11", "main", archs=[]))
+    list(load_advisories(package, "v3.11", "main", archs=[], url=""))
     assert (
         f"{test_case!r} is not a valid AlpineVersion InvalidVersion(\"{test_case!r} is not a valid <class 'univers.versions.AlpineLinuxVersion'>\")"
         in caplog.text

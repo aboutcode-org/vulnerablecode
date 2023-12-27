@@ -31,10 +31,12 @@ class FireyeImporter(Importer):
     2. MIT - For source code contained within provided CVE information
     """
     repo_url = "git+https://github.com/mandiant/Vulnerability-Disclosures"
+    importer_name = "FireEye Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         try:
-            self.clone(repo_url=self.repo_url)
+            self.vcs_response = self.clone(repo_url=self.repo_url)
+            base_path = Path(self.vcs_response.dest_dir)
             files = filter(
                 lambda p: p.suffix in [".md", ".MD"], Path(self.vcs_response.dest_dir).glob("**/*")
             )
@@ -43,7 +45,7 @@ class FireyeImporter(Importer):
                     continue
                 try:
                     with open(file) as f:
-                        yield parse_advisory_data(f.read())
+                        yield parse_advisory_data(raw_data=f.read(), file=file, base_path=base_path)
                 except UnicodeError:
                     logger.error(f"Invalid file {file}")
         finally:
@@ -51,11 +53,15 @@ class FireyeImporter(Importer):
                 self.vcs_response.delete()
 
 
-def parse_advisory_data(raw_data) -> AdvisoryData:
+def parse_advisory_data(raw_data, file, base_path) -> AdvisoryData:
     """
     Parse a fireeye advisory repo and return an AdvisoryData or None.
     These files are in Markdown format.
     """
+    relative_path = str(file.relative_to(base_path)).strip("/")
+    advisory_url = (
+        f"https://github.com/mandiant/Vulnerability-Disclosures/blob/master/{relative_path}"
+    )
     raw_data = raw_data.replace("\n\n", "\n")
     md_list = raw_data.split("\n")
     md_dict = md_list_to_dict(md_list)
@@ -71,11 +77,11 @@ def parse_advisory_data(raw_data) -> AdvisoryData:
     disc_credits = md_dict.get("## Discovery Credits")  # not used
     disc_timeline = md_dict.get("## Disclosure Timeline")  # not used
     references = md_dict.get("## References") or []
-
     return AdvisoryData(
         aliases=get_aliases(database_id, cve_ref),
         summary=build_description(" ".join(summary), " ".join(description)),
         references=get_references(references),
+        url=advisory_url,
     )
 
 

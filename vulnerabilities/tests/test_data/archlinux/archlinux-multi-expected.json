@@ -32,7 +32,8 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://security.archlinux.org/AVG-2781"
   },
   {
     "aliases": [
@@ -67,7 +68,8 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://security.archlinux.org/AVG-2780"
   },
   {
     "aliases": [
@@ -102,7 +104,8 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://security.archlinux.org/AVG-2780"
   },
   {
     "aliases": [
@@ -137,7 +140,8 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://security.archlinux.org/AVG-2780"
   },
   {
     "aliases": [
@@ -177,6 +181,7 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://security.archlinux.org/AVG-4"
   }
 ]

@@ -65,6 +65,7 @@ def get_data_from_url(url):
 class RedhatImporter(Importer):
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://access.redhat.com/documentation/en-us/red_hat_security_data_api/1.0/html/red_hat_security_data_api/legal-notice"
+    importer_name = "RedHat Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         for redhat_cves in fetch_cves():
@@ -155,4 +156,7 @@ def to_advisory(advisory_data):
         affected_packages=affected_packages,
         references=references,
         weaknesses=cwe_list,
+        url=resource_url
+        if resource_url
+        else "https://access.redhat.com/hydra/rest/securitydata/cve.json",
     )

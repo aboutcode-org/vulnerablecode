@@ -28,6 +28,7 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.utils import build_description
+from vulnerabilities.utils import get_advisory_url
 from vulnerabilities.utils import get_cwe_id
 
 logger = logging.getLogger(__name__)
@@ -50,6 +51,7 @@ GITLAB_SCHEME_BY_PURL_TYPE = {v: k for k, v in PURL_TYPE_BY_GITLAB_SCHEME.items(
 class GitLabAPIImporter(Importer):
     spdx_license_expression = "MIT"
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
+    importer_name = "GitLab Importer"
     repo_url = "git+https://gitlab.com/gitlab-org/advisories-community/"
 
     def advisory_data(self, _keep_clone=False) -> Iterable[AdvisoryData]:
@@ -64,7 +66,7 @@ class GitLabAPIImporter(Importer):
                 )
 
                 if gitlab_type in PURL_TYPE_BY_GITLAB_SCHEME:
-                    yield parse_gitlab_advisory(file_path)
+                    yield parse_gitlab_advisory(file=file_path, base_path=base_path)
 
                 else:
                     logger.error(f"Unknow package type {gitlab_type!r} in {file_path!r}")
@@ -148,7 +150,7 @@ def extract_affected_packages(
         )
 
 
-def parse_gitlab_advisory(file):
+def parse_gitlab_advisory(file, base_path):
     """
     Parse a Gitlab advisory file and return an AdvisoryData or None.
     These files are YAML. There is a JSON schema documented at
@@ -192,6 +194,11 @@ def parse_gitlab_advisory(file):
     date_published = dateparser.parse(gitlab_advisory.get("pubdate"))
     date_published = date_published.replace(tzinfo=pytz.UTC)
     package_slug = gitlab_advisory.get("package_slug")
+    advisory_url = get_advisory_url(
+        file=file,
+        base_path=base_path,
+        url="https://gitlab.com/gitlab-org/advisories-community/-/blob/main/",
+    )
     purl: PackageURL = get_purl(package_slug=package_slug)
     if not purl:
         logger.error(f"parse_yaml_file: purl is not valid: {file!r} {package_slug!r}")
@@ -200,6 +207,7 @@ def parse_gitlab_advisory(file):
             summary=summary,
             references=references,
             date_published=date_published,
+            url=advisory_url,
         )
     affected_version_range = None
     fixed_versions = gitlab_advisory.get("fixed_versions") or []
@@ -255,4 +263,5 @@ def parse_gitlab_advisory(file):
         date_published=date_published,
         affected_packages=affected_packages,
         weaknesses=cwe_list,
+        url=advisory_url,
     )

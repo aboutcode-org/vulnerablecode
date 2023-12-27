@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Iterable
 
 import saneyaml
+from progress.bar import ChargingBar
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
@@ -28,16 +29,24 @@ class PyPaImporter(Importer):
     importer_name = "Pypa Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
+        progress_bar_for_package_fetch = ChargingBar("\tFetching Packages")
         try:
             vcs_response = self.clone(repo_url=self.repo_url)
             path = Path(vcs_response.dest_dir)
+            progress_bar_for_package_fetch.max = len(dict(fork_and_get_files(base_path=path)))
+            progress_bar_for_package_fetch.start()
+
             for advisory_url, raw_data in fork_and_get_files(base_path=path):
-                yield parse_advisory_data(
-                    raw_data=raw_data,
-                    supported_ecosystem="pypi",
-                    advisory_url=advisory_url,
-                )
+                try:
+                    yield parse_advisory_data(
+                        raw_data=raw_data,
+                        supported_ecosystem="pypi",
+                        advisory_url=advisory_url,
+                    )
+                finally:
+                    progress_bar_for_package_fetch.next()
         finally:
+            progress_bar_for_package_fetch.finish()
             if self.vcs_response:
                 self.vcs_response.delete()
 

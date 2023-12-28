@@ -150,24 +150,16 @@ def test_ovaltest_sorting():
 
     # Get the list of all tests and check the total number of tests.
     get_all_tests = parsed_oval.oval_document.getTests()
-    assert len(get_all_tests) == 4
 
     # Check the order of the four tests in the sorted `get_all_tests` list.  (Testing suggests that the
     # original list of tests, `get_all_tests`, is unsorted and is ordered in the same order as the test
     # elements appear in the .xml file.)
-    for test in sorted(get_all_tests):
-        if test.getId() == "oval:org.opensuse.security:tst:2009030400":
-            assert test.getVersion() == "11"
-            assert test == sorted(get_all_tests)[3]
-
-        if test.getId() == "oval:org.opensuse.security:tst:2009030401":
-            assert test.getVersion() == "1"
-            assert test == sorted(get_all_tests)[0]
-
-        if test.getId() == "oval:org.opensuse.security:tst:2009030402":
-            assert test.getVersion() == "9"
-            assert test == sorted(get_all_tests)[2]
-
-        if test.getId() == "oval:org.opensuse.security:tst:2009030403":
-            assert test.getVersion() == "4"
-            assert test == sorted(get_all_tests)[1]
+    sorted_tests = sorted(get_all_tests)
+    test_results = [(test.getId(), test.getVersion()) for test in sorted_tests]
+    expected = [
+        ("oval:org.opensuse.security:tst:2009030401", "1"),
+        ("oval:org.opensuse.security:tst:2009030403", "4"),
+        ("oval:org.opensuse.security:tst:2009030402", "9"),
+        ("oval:org.opensuse.security:tst:2009030400", "11"),
+    ]
+    assert test_results == expected

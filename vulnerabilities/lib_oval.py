@@ -767,7 +767,10 @@ class OvalElement(object):
         return True
 
     def __lt__(self, other):
-        return int(self.element.get("version")) < int(other.element.get("version"))
+        try:
+            return int(self.element.get("version")) < int(other.element.get("version"))
+        except:
+            return NotImplemented
 
     def incrementVersion(self):
         version = self.getVersion()

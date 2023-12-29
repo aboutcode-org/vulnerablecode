@@ -37,10 +37,11 @@ from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.utils import classproperty
-from vulnerabilities.utils import evolve_purl
 from vulnerabilities.utils import get_reference_id
 from vulnerabilities.utils import is_cve
 from vulnerabilities.utils import nearest_patched_package
+from vulnerabilities.utils import purl_to_dict
+from vulnerabilities.utils import update_purl_version
 
 logger = logging.getLogger(__name__)
 
@@ -154,8 +155,7 @@ class AffectedPackage:
         """
         if not self.fixed_version:
             raise ValueError(f"Affected Package {self.package!r} does not have a fixed version")
-        fixed_purl = evolve_purl(purl=self.package, version=str(self.fixed_version))
-        return fixed_purl
+        return update_purl_version(purl=self.package, version=str(self.fixed_version))
 
     @classmethod
     def merge(
@@ -198,7 +198,7 @@ class AffectedPackage:
         if self.affected_version_range:
             affected_version_range = str(self.affected_version_range)
         return {
-            "package": self.package.to_dict(),
+            "package": purl_to_dict(self.package),
             "affected_version_range": affected_version_range,
             "fixed_version": str(self.fixed_version) if self.fixed_version else None,
         }

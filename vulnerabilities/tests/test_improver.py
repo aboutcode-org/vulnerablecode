@@ -14,6 +14,7 @@ from vulnerabilities.importer import Reference
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.improver import Inference
 from vulnerabilities.improver import PackageURL
+from vulnerabilities.utils import purl_to_dict
 
 
 def test_empty_inference_raises_exception():
@@ -44,8 +45,8 @@ def test_inference_to_dict_method_with_purls():
         "aliases": [],
         "confidence": MAX_CONFIDENCE,
         "summary": "",
-        "affected_purls": [purl.to_dict()],
-        "fixed_purl": purl.to_dict(),
+        "affected_purls": [purl_to_dict(purl)],
+        "fixed_purl": purl_to_dict(purl),
         "references": [],
         "weaknesses": [],
     }

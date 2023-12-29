@@ -8,11 +8,11 @@
       {
         "package": {
           "type": "mozilla",
-          "namespace": null,
+          "namespace": "",
           "name": "Firefox",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": null,
         "fixed_version": "96.0.0"

@@ -8,11 +8,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "npm",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.3.3",
         "fixed_version": "1.3.3"

@@ -131,6 +131,15 @@ class WeaknessSerializer(serializers.HyperlinkedModelSerializer):
         model = Weakness
         fields = ["cwe_id", "name", "description"]
 
+    def to_representation(self, instance):
+        """
+        Override to include 'weakness' only if it is not None.
+        """
+        representation = super().to_representation(instance)
+        if instance.weakness is None:
+            return None
+        return representation
+
 
 class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
     fixed_packages = MinimalPackageSerializer(
@@ -141,6 +150,15 @@ class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
     aliases = AliasSerializer(many=True, source="alias")
     weaknesses = WeaknessSerializer(many=True)
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        # Exclude None values from the weaknesses list
+        weaknesses = representation.get("weaknesses", [])
+        representation["weaknesses"] = [weakness for weakness in weaknesses if weakness is not None]
+
+        return representation
 
     class Meta:
         model = Vulnerability

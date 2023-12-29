@@ -316,6 +316,9 @@ class Weakness(models.Model):
         """Return the weakness's description."""
         return self.weakness.description if self.weakness else ""
 
+    def to_dict(self):
+        return {"cwe_id": self.cwe_id, "name": self.name, "description": self.description}
+
 
 class VulnerabilityReferenceQuerySet(BaseQuerySet):
     def for_cpe(self):

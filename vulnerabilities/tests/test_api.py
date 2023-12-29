@@ -245,11 +245,6 @@ class APITestCaseVulnerability(TransactionTestCase):
                     "name": "Improper Restriction of Operations within the Bounds of a Memory Buffer",
                     "description": "The software performs operations on a memory buffer, but it can read from or write to a memory location that is outside of the intended boundary of the buffer.",
                 },
-                {
-                    "cwe_id": 10000,
-                    "name": "",
-                    "description": "",
-                },
             ],
         }
 
@@ -277,11 +272,6 @@ class APITestCaseVulnerability(TransactionTestCase):
                     "cwe_id": 119,
                     "name": "Improper Restriction of Operations within the Bounds of a Memory Buffer",
                     "description": "The software performs operations on a memory buffer, but it can read from or write to a memory location that is outside of the intended boundary of the buffer.",
-                },
-                {
-                    "cwe_id": 10000,
-                    "name": "",
-                    "description": "",
                 },
             ],
         }

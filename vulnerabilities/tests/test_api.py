@@ -27,6 +27,7 @@ from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
+from vulnerabilities.models import Weakness
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")
@@ -197,6 +198,12 @@ class APITestCaseVulnerability(TransactionTestCase):
             PackageRelatedVulnerability.objects.create(
                 package=pkg, vulnerability=self.vulnerability, fix=True
             )
+        self.weaknesses = Weakness.objects.create(cwe_id=119)
+        self.weaknesses.vulnerabilities.add(self.vulnerability)
+        self.invalid_weaknesses = Weakness.objects.create(
+            cwe_id=10000
+        )  # cwe not present in weaknesses_db
+        self.invalid_weaknesses.vulnerabilities.add(self.vulnerability)
 
     def test_api_status(self):
         response = self.csrf_client.get("/api/vulnerabilities/")
@@ -232,6 +239,13 @@ class APITestCaseVulnerability(TransactionTestCase):
             ],
             "affected_packages": [],
             "references": [],
+            "weaknesses": [
+                {
+                    "cwe_id": 119,
+                    "name": "Improper Restriction of Operations within the Bounds of a Memory Buffer",
+                    "description": "The software performs operations on a memory buffer, but it can read from or write to a memory location that is outside of the intended boundary of the buffer.",
+                },
+            ],
         }
 
     def test_api_with_single_vulnerability_with_filters(self):
@@ -253,6 +267,13 @@ class APITestCaseVulnerability(TransactionTestCase):
             ],
             "affected_packages": [],
             "references": [],
+            "weaknesses": [
+                {
+                    "cwe_id": 119,
+                    "name": "Improper Restriction of Operations within the Bounds of a Memory Buffer",
+                    "description": "The software performs operations on a memory buffer, but it can read from or write to a memory location that is outside of the intended boundary of the buffer.",
+                },
+            ],
         }
 
 

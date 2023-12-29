@@ -15,6 +15,7 @@ from typing import Mapping
 
 import requests
 from packageurl import PackageURL
+from progress.bar import ChargingBar
 from univers.version_range import DebianVersionRange
 from univers.versions import DebianVersion
 
@@ -89,8 +90,16 @@ class DebianImporter(Importer):
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         response = self.get_response()
-        for pkg_name, records in response.items():
-            yield from self.parse(pkg_name, records)
+        progress_bar_for_package_fetch = ChargingBar("\tFetching Packages", max=len(response.items()))
+        progress_bar_for_package_fetch.start()
+        try:
+            for pkg_name, records in response.items():
+                try:
+                    yield from self.parse(pkg_name, records)
+                finally:
+                    progress_bar_for_package_fetch.next()
+        finally:
+            progress_bar_for_package_fetch.finish()
 
     def parse(self, pkg_name: str, records: Mapping[str, Any]) -> Iterable[AdvisoryData]:
         for cve_id, record in records.items():

@@ -9,20 +9,20 @@
     "affected_purls": [
       {
         "type": "hex",
-        "namespace": null,
+        "namespace": "",
         "name": "coherence",
         "version": "0.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "hex",
-      "namespace": null,
+      "namespace": "",
       "name": "coherence",
       "version": "0.5.2",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {

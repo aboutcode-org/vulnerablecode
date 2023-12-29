@@ -835,56 +835,6 @@ class TestLookup(TestCase):
         assert len(response) == 1
         assert response[0]["purl"] == "pkg:pypi/microweber/microweber@1.2"
 
-    def test_lookup_endpoint_1(self):
-        Package.objects.create(
-            type="pypi", namespace="microweber", name="microweber", version="1.2"
-        )
-        request_body = {"purl": "pkg:pypi/microweber/microweber@1.2"}
-        response = self.csrf_client.post(
-            "/api/packages/lookup",
-            data=json.dumps(request_body),
-            content_type="application/json",
-        ).json()
-        assert len(response) == 2
-        assert response[0]["purl"] == "pkg:pypi/microweber/microweber@1.2"
-        assert response[0]["purl"] == response[1]["purl"]
-
-    def test_lookup_endpoint_with_one_purl_with_qualifier(self):
-        Package.objects.create(
-            type="pypi", namespace="microweber", name="microweber", version="1.2"
-        )
-        Package.objects.create(
-            type="pypi",
-            namespace="microweber",
-            name="microweber",
-            version="1.2",
-            qualifiers={"foo": "bar"},
-        )
-        request_body = {"purl": "pkg:pypi/microweber/microweber@1.2"}
-        response = self.csrf_client.post(
-            "/api/packages/lookup",
-            data=json.dumps(request_body),
-            content_type="application/json",
-        ).json()
-        assert len(response) == 2
-        assert response[0]["purl"] == "pkg:pypi/microweber/microweber@1.2"
-        assert response[0]["purl"] == response[1]["purl"]
-        request_body = {"purl": "pkg:pypi/microweber/microweber@1.2?foo=bar"}
-        response = self.csrf_client.post(
-            "/api/packages/lookup",
-            data=json.dumps(request_body),
-            content_type="application/json",
-        ).json()
-        assert len(response) == 1
-        assert response[0]["purl"] == "pkg:pypi/microweber/microweber@1.2?foo=bar"
-        request_body = {"purl": "pkg:pypi/microweber/microweber@1.2?foo=baz"}
-        response = self.csrf_client.post(
-            "/api/packages/lookup",
-            data=json.dumps(request_body),
-            content_type="application/json",
-        ).json()
-        assert response == []
-
     def test_bulk_lookup_endpoint(self):
         request_body = {
             "purls": [

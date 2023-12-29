@@ -14,6 +14,7 @@ from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from drf_spectacular.utils import inline_serializer
 from packageurl import PackageURL
+from packageurl import normalize_qualifiers
 from rest_framework import serializers
 from rest_framework import status
 from rest_framework import viewsets
@@ -147,6 +148,11 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
     Lookup software package using Package URLs
     """
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["qualifiers"] = normalize_qualifiers(data["qualifiers"], encode=False)
+        return data
+
     next_non_vulnerable_version = serializers.SerializerMethodField("get_next_non_vulnerable")
 
     def get_next_non_vulnerable(self, package):
@@ -252,12 +258,13 @@ class PackageFilterSet(filters.FilterSet):
     class Meta:
         model = Package
         fields = [
-            "name",
             "type",
+            "namespace",
+            "name",
             "version",
+            "qualifiers",
             "subpath",
             "purl",
-            "namespace",
             "packagerelatedvulnerability__fix",
         ]
 

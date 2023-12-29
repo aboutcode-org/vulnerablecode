@@ -12,10 +12,8 @@
       "namespace": "debian",
       "name": "mimetex",
       "version": "1.50-1.1",
-      "qualifiers": {
-        "distro": "buster"
-      },
-      "subpath": null
+      "qualifiers": "distro=buster",
+      "subpath": ""
     },
     "references": [
       {
@@ -39,10 +37,8 @@
       "namespace": "debian",
       "name": "mimetex",
       "version": "1.74-1",
-      "qualifiers": {
-        "distro": "buster"
-      },
-      "subpath": null
+      "qualifiers": "distro=buster",
+      "subpath": ""
     },
     "references": [
       {
@@ -66,10 +62,8 @@
       "namespace": "debian",
       "name": "mimetex",
       "version": "1.76-1",
-      "qualifiers": {
-        "distro": "buster"
-      },
-      "subpath": null
+      "qualifiers": "distro=buster",
+      "subpath": ""
     },
     "references": [
       {
@@ -93,10 +87,8 @@
       "namespace": "debian",
       "name": "mimetex",
       "version": "1.50-1.1",
-      "qualifiers": {
-        "distro": "buster"
-      },
-      "subpath": null
+      "qualifiers": "distro=buster",
+      "subpath": ""
     },
     "references": [
       {
@@ -120,10 +112,8 @@
       "namespace": "debian",
       "name": "mimetex",
       "version": "1.74-1",
-      "qualifiers": {
-        "distro": "buster"
-      },
-      "subpath": null
+      "qualifiers": "distro=buster",
+      "subpath": ""
     },
     "references": [
       {
@@ -147,10 +137,8 @@
       "namespace": "debian",
       "name": "mimetex",
       "version": "1.76-1",
-      "qualifiers": {
-        "distro": "buster"
-      },
-      "subpath": null
+      "qualifiers": "distro=buster",
+      "subpath": ""
     },
     "references": [
       {
@@ -192,10 +180,8 @@
       "namespace": "debian",
       "name": "mimetex",
       "version": "1.74-1",
-      "qualifiers": {
-        "distro": "buster"
-      },
-      "subpath": null
+      "qualifiers": "distro=buster",
+      "subpath": ""
     },
     "references": [
       {
@@ -219,10 +205,8 @@
       "namespace": "debian",
       "name": "mimetex",
       "version": "1.50-1.1",
-      "qualifiers": {
-        "distro": "buster"
-      },
-      "subpath": null
+      "qualifiers": "distro=buster",
+      "subpath": ""
     },
     "references": [
       {
@@ -246,10 +230,8 @@
       "namespace": "debian",
       "name": "mimetex",
       "version": "1.76-1",
-      "qualifiers": {
-        "distro": "buster"
-      },
-      "subpath": null
+      "qualifiers": "distro=buster",
+      "subpath": ""
     },
     "references": [
       {
@@ -273,10 +255,8 @@
       "namespace": "debian",
       "name": "mimetex",
       "version": "1.74-1",
-      "qualifiers": {
-        "distro": "buster"
-      },
-      "subpath": null
+      "qualifiers": "distro=buster",
+      "subpath": ""
     },
     "references": [
       {
@@ -300,10 +280,8 @@
       "namespace": "debian",
       "name": "mimetex",
       "version": "1.50-1.1",
-      "qualifiers": {
-        "distro": "buster"
-      },
-      "subpath": null
+      "qualifiers": "distro=buster",
+      "subpath": ""
     },
     "references": [
       {
@@ -327,10 +305,8 @@
       "namespace": "debian",
       "name": "mimetex",
       "version": "1.76-1",
-      "qualifiers": {
-        "distro": "buster"
-      },
-      "subpath": null
+      "qualifiers": "distro=buster",
+      "subpath": ""
     },
     "references": [
       {
@@ -354,20 +330,16 @@
         "namespace": "debian",
         "name": "atomicparsley",
         "version": "0.9.6-1",
-        "qualifiers": {
-          "distro": "stretch"
-        },
-        "subpath": null
+        "qualifiers": "distro=stretch",
+        "subpath": ""
       },
       {
         "type": "deb",
         "namespace": "debian",
         "name": "atomicparsley",
         "version": "0.9.6-2",
-        "qualifiers": {
-          "distro": "stretch"
-        },
-        "subpath": null
+        "qualifiers": "distro=stretch",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -375,10 +347,8 @@
       "namespace": "debian",
       "name": "atomicparsley",
       "version": "20210715.151551.e7ad03a-1",
-      "qualifiers": {
-        "distro": "stretch"
-      },
-      "subpath": null
+      "qualifiers": "distro=stretch",
+      "subpath": ""
     },
     "references": [
       {
@@ -402,20 +372,16 @@
         "namespace": "debian",
         "name": "atomicparsley",
         "version": "0.9.6-1",
-        "qualifiers": {
-          "distro": "stretch"
-        },
-        "subpath": null
+        "qualifiers": "distro=stretch",
+        "subpath": ""
       },
       {
         "type": "deb",
         "namespace": "debian",
         "name": "atomicparsley",
         "version": "0.9.6-2",
-        "qualifiers": {
-          "distro": "stretch"
-        },
-        "subpath": null
+        "qualifiers": "distro=stretch",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -423,10 +389,8 @@
       "namespace": "debian",
       "name": "atomicparsley",
       "version": "20210715.151551.e7ad03a-1",
-      "qualifiers": {
-        "distro": "stretch"
-      },
-      "subpath": null
+      "qualifiers": "distro=stretch",
+      "subpath": ""
     },
     "references": [
       {

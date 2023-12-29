@@ -75,7 +75,6 @@ class VulnerabilitySeverity:
 
 @dataclasses.dataclass(order=True)
 class Reference:
-
     reference_id: str = ""
     url: str = ""
     severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
@@ -437,48 +436,55 @@ class OvalImporter(Importer):
         for definition_data in raw_data:
             # These fields are definition level, i.e common for all elements
             # connected/linked to an OvalDefinition
-            vuln_id = definition_data["vuln_id"]
-            description = definition_data["description"]
-            severities = []
-            severity = definition_data.get("severity")
-            if severity:
-                severities.append(
-                    VulnerabilitySeverity(system=severity_systems.GENERIC, value=severity)
+
+            # NOTE: This is where we loop through the list of CVEs/aliases.
+            vuln_id_list = definition_data["vuln_id"]
+
+            for vuln_id_item in vuln_id_list:
+                vuln_id = vuln_id_item
+                description = definition_data["description"]
+
+                severities = []
+                severity = definition_data.get("severity")
+                if severity:
+                    severities.append(
+                        VulnerabilitySeverity(system=severity_systems.GENERIC, value=severity)
+                    )
+                references = [
+                    Reference(url=url, severities=severities)
+                    for url in definition_data["reference_urls"]
+                ]
+                affected_packages = []
+
+                for test_data in definition_data["test_data"]:
+                    for package_name in test_data["package_list"]:
+                        affected_version_range = test_data["version_ranges"]
+                        vrc = RANGE_CLASS_BY_SCHEMES[pkg_metadata["type"]]
+                        if affected_version_range:
+                            try:
+                                affected_version_range = vrc.from_native(affected_version_range)
+                            except Exception as e:
+                                logger.error(
+                                    f"Failed to parse version range {affected_version_range!r} "
+                                    f"for package {package_name!r}:\n{e}"
+                                )
+                                continue
+                        if package_name:
+                            affected_packages.append(
+                                AffectedPackage(
+                                    package=self.create_purl(package_name, pkg_metadata),
+                                    affected_version_range=affected_version_range,
+                                )
+                            )
+
+                date_published = dateparser.parse(timestamp)
+                if not date_published.tzinfo:
+                    date_published = date_published.replace(tzinfo=pytz.UTC)
+                yield AdvisoryData(
+                    aliases=[vuln_id],
+                    summary=description,
+                    affected_packages=sorted(affected_packages),
+                    references=sorted(references),
+                    date_published=date_published,
+                    url=self.data_url,
                 )
-            references = [
-                Reference(url=url, severities=severities)
-                for url in definition_data["reference_urls"]
-            ]
-            affected_packages = []
-            for test_data in definition_data["test_data"]:
-                for package_name in test_data["package_list"]:
-                    affected_version_range = test_data["version_ranges"]
-                    vrc = RANGE_CLASS_BY_SCHEMES[pkg_metadata["type"]]
-                    if affected_version_range:
-                        try:
-                            affected_version_range = vrc.from_native(affected_version_range)
-                        except Exception as e:
-                            logger.error(
-                                f"Failed to parse version range {affected_version_range!r} "
-                                f"for package {package_name!r}:\n{e}\n"
-                                f"{definition_data!r}"
-                            )
-                            continue
-                    if package_name:
-                        affected_packages.append(
-                            AffectedPackage(
-                                package=self.create_purl(package_name, pkg_metadata),
-                                affected_version_range=affected_version_range,
-                            )
-                        )
-            date_published = dateparser.parse(timestamp)
-            if not date_published.tzinfo:
-                date_published = date_published.replace(tzinfo=pytz.UTC)
-            yield AdvisoryData(
-                aliases=[vuln_id],
-                summary=description,
-                affected_packages=affected_packages,
-                references=sorted(references),
-                date_published=date_published,
-                url=self.data_url,
-            )

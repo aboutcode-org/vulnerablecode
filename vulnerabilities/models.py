@@ -522,27 +522,6 @@ class Package(PackageURLMixin):
     A software package with related vulnerabilities.
     """
 
-    """
-    - 44 X remove dupes
-    - 45 X schema migration: create qualifiers_temp
-    - 46 X data migration copy as string the normalized qualifiers to qualifiers_temp
-    - 47 X schema migration: add qualifiers_temp to unique together
-    - 48 X schema migration: remove qualifiers override and remove qualifiers from unique together
-    - 49 X data migration copy as string the normalized qualifiers_temp to qualifiers
-    - 50 X schema migration: add qualifiers to unique together and delete qualifiers_temp
-    - 51 X data migration: delete purls with namespace and name mixed 
-    """
-
-    """
-    - X schema migration: create qualifiers_temp
-    - X data migration copy as string the normalized qualifiers to qualifiers_temp
-    - X schema migration: add qualifiers_temp to unique together
-    - X schema migration: remove qualifiers override and from unique together
-    - X data migration copy as string the normalized qualifiers_temp to qualifiers
-    - X schema migration: add qualifiers to unique together
-    - X schema migration: delete qualifiers_temp
-    """
-
     # Remove the `qualifers` and `set_package_url` overrides after
     # https://github.com/package-url/packageurl-python/pull/35
     # https://github.com/package-url/packageurl-python/pull/67

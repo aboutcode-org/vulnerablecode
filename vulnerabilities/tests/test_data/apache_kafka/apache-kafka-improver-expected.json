@@ -9,75 +9,75 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "1.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "1.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "1.1.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "1.1.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "1.1.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "1.1.5",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "1.1.6",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "1.1.7",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "1.1.8",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": null,
@@ -110,76 +110,76 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.8.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.8.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.0.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.2.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.2.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "kafka",
       "version": "2.8.2",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -210,76 +210,76 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.8.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.8.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.0.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.2.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.2.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "kafka",
       "version": "3.0.2",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -310,76 +310,76 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.8.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.8.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.0.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.2.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.2.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "kafka",
       "version": "3.1.2",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -410,76 +410,76 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.8.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.8.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.0.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.2.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "3.2.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "kafka",
       "version": "3.2.3",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -510,164 +510,164 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.0.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.2.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.2.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.2.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.3.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.3.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.4.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.4.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.5.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.6.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.6.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.6.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.7.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.7.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.8.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "kafka",
       "version": "2.6.3",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -698,164 +698,164 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.0.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.2.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.2.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.2.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.3.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.3.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.4.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.4.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.5.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.6.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.6.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.6.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.7.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.7.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.8.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "kafka",
       "version": "2.7.2",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -886,164 +886,164 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.0.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.2.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.2.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.2.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.3.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.3.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.4.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.4.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.5.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.6.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.6.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.6.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.7.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.7.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.8.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "kafka",
       "version": "2.8.1",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1074,68 +1074,68 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.0.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.2.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.2.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "2.3.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "kafka",
       "version": "2.2.2",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1166,11 +1166,11 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.11.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": null,
@@ -1203,68 +1203,68 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.9.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.9.0+1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.10.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.10.2+1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.11.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.11.0+2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "1.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "kafka",
       "version": "0.10.2+2",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1295,68 +1295,68 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.9.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.9.0+1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.10.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.10.2+1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.11.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.11.0+2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "1.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "kafka",
       "version": "0.11.0+3",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1387,68 +1387,68 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.9.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.9.0+1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.10.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.10.2+1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.11.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.11.0+2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "1.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "kafka",
       "version": "1.0.1",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1479,68 +1479,68 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.9.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.9.0+1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.10.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.10.2+1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.11.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.11.0+2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "1.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "kafka",
       "version": "1.1.0",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1571,44 +1571,44 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.10.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.10.2+1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.11.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.11.0+1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "kafka",
       "version": "0.10.2+2",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1639,44 +1639,44 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.10.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.10.2+1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.11.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.11.0+1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "kafka",
       "version": "0.11.0+2",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1707,44 +1707,44 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.10.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.10.2+1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.11.0+0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "kafka",
         "version": "0.11.0+1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "kafka",
       "version": "1.0.0",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {

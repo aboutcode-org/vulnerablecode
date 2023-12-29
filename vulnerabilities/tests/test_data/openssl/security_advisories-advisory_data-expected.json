@@ -9,11 +9,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/3.0.0|3.0.1",
         "fixed_version": "3.0.2"
@@ -21,11 +21,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c|1.1.1d|1.1.1e|1.1.1f|1.1.1g|1.1.1h|1.1.1i|1.1.1j|1.1.1k|1.1.1l|1.1.1m",
         "fixed_version": "1.1.1n"
@@ -33,11 +33,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2v|1.0.2w|1.0.2x|1.0.2y|1.0.2za|1.0.2zb|1.0.2zc",
         "fixed_version": "1.0.2zd"
@@ -90,11 +90,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/3.0.0",
         "fixed_version": "3.0.1"
@@ -102,11 +102,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c|1.1.1d|1.1.1e|1.1.1f|1.1.1g|1.1.1h|1.1.1i|1.1.1j|1.1.1k|1.1.1l",
         "fixed_version": "1.1.1m"
@@ -114,11 +114,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2v|1.0.2w|1.0.2x|1.0.2y|1.0.2za|1.0.2zb",
         "fixed_version": "1.0.2zc-dev"
@@ -171,11 +171,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/3.0.0",
         "fixed_version": "3.0.1"
@@ -218,11 +218,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c|1.1.1d|1.1.1e|1.1.1f|1.1.1g|1.1.1h|1.1.1i|1.1.1j|1.1.1k",
         "fixed_version": "1.1.1l"
@@ -265,11 +265,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c|1.1.1d|1.1.1e|1.1.1f|1.1.1g|1.1.1h|1.1.1i|1.1.1j|1.1.1k",
         "fixed_version": "1.1.1l"
@@ -277,11 +277,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2v|1.0.2w|1.0.2x|1.0.2y",
         "fixed_version": "1.0.2za"
@@ -329,11 +329,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1h|1.1.1i|1.1.1j",
         "fixed_version": "1.1.1k"
@@ -376,11 +376,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c|1.1.1d|1.1.1e|1.1.1f|1.1.1g|1.1.1h|1.1.1i|1.1.1j",
         "fixed_version": "1.1.1k"
@@ -423,11 +423,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c|1.1.1d|1.1.1e|1.1.1f|1.1.1g|1.1.1h|1.1.1i",
         "fixed_version": "1.1.1j"
@@ -435,11 +435,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2v|1.0.2w|1.0.2x",
         "fixed_version": "1.0.2y"
@@ -487,11 +487,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2s|1.0.2t|1.0.2u|1.0.2v|1.0.2w|1.0.2x",
         "fixed_version": "1.0.2y"
@@ -534,11 +534,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c|1.1.1d|1.1.1e|1.1.1f|1.1.1g|1.1.1h|1.1.1i",
         "fixed_version": "1.1.1j"
@@ -546,11 +546,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2v|1.0.2w|1.0.2x",
         "fixed_version": "1.0.2y"
@@ -598,11 +598,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c|1.1.1d|1.1.1e|1.1.1f|1.1.1g|1.1.1h",
         "fixed_version": "1.1.1i"
@@ -610,11 +610,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2v|1.0.2w",
         "fixed_version": "1.0.2x"
@@ -662,11 +662,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t|1.0.2u|1.0.2v",
         "fixed_version": "1.0.2w"
@@ -704,11 +704,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1d|1.1.1e|1.1.1f",
         "fixed_version": "1.1.1g"
@@ -751,11 +751,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c|1.1.1d",
         "fixed_version": "1.1.1e"
@@ -763,11 +763,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s|1.0.2t",
         "fixed_version": "1.0.2u"
@@ -815,11 +815,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c",
         "fixed_version": "1.1.1d"
@@ -827,11 +827,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c|1.1.0d|1.1.0e|1.1.0f|1.1.0g|1.1.0h|1.1.0i|1.1.0j|1.1.0k",
         "fixed_version": "1.1.0l"
@@ -839,11 +839,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s",
         "fixed_version": "1.0.2t"
@@ -896,11 +896,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c",
         "fixed_version": "1.1.1d"
@@ -943,11 +943,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c",
         "fixed_version": "1.1.1d"
@@ -955,11 +955,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c|1.1.0d|1.1.0e|1.1.0f|1.1.0g|1.1.0h|1.1.0i|1.1.0j|1.1.0k",
         "fixed_version": "1.1.0l"
@@ -967,11 +967,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s",
         "fixed_version": "1.0.2t"
@@ -1024,11 +1024,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b|1.1.1c",
         "fixed_version": "1.1.1d"
@@ -1036,11 +1036,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c|1.1.0d|1.1.0e|1.1.0f|1.1.0g|1.1.0h|1.1.0i|1.1.0j|1.1.0k",
         "fixed_version": "1.1.0l"
@@ -1048,11 +1048,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q|1.0.2r|1.0.2s",
         "fixed_version": "1.0.2t"
@@ -1110,11 +1110,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1|1.1.1a|1.1.1b",
         "fixed_version": "1.1.1c"
@@ -1122,11 +1122,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c|1.1.0d|1.1.0e|1.1.0f|1.1.0g|1.1.0h|1.1.0i|1.1.0j",
         "fixed_version": "1.1.0k"
@@ -1174,11 +1174,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p|1.0.2q",
         "fixed_version": "1.0.2r"
@@ -1221,11 +1221,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c|1.1.0d|1.1.0e|1.1.0f|1.1.0g|1.1.0h",
         "fixed_version": "1.1.0i"
@@ -1233,11 +1233,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p",
         "fixed_version": "1.0.2q"
@@ -1285,11 +1285,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1",
         "fixed_version": "1.1.1a"
@@ -1297,11 +1297,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c|1.1.0d|1.1.0e|1.1.0f|1.1.0g|1.1.0h|1.1.0i",
         "fixed_version": "1.1.0j"
@@ -1309,11 +1309,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o|1.0.2p",
         "fixed_version": "1.0.2q"
@@ -1366,11 +1366,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.1",
         "fixed_version": "1.1.1a"
@@ -1378,11 +1378,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c|1.1.0d|1.1.0e|1.1.0f|1.1.0g|1.1.0h|1.1.0i",
         "fixed_version": "1.1.0j"
@@ -1430,11 +1430,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c|1.1.0d|1.1.0e|1.1.0f|1.1.0g|1.1.0h",
         "fixed_version": "1.1.0i"
@@ -1442,11 +1442,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o",
         "fixed_version": "1.0.2p"
@@ -1494,11 +1494,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c|1.1.0d|1.1.0e|1.1.0f|1.1.0g|1.1.0h",
         "fixed_version": "1.1.0i"
@@ -1506,11 +1506,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n|1.0.2o",
         "fixed_version": "1.0.2p"
@@ -1558,11 +1558,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c|1.1.0d|1.1.0e|1.1.0f|1.1.0g",
         "fixed_version": "1.1.0h"
@@ -1570,11 +1570,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m|1.0.2n",
         "fixed_version": "1.0.2o"
@@ -1622,11 +1622,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c|1.1.0d|1.1.0e|1.1.0f|1.1.0g",
         "fixed_version": "1.1.0h"
@@ -1669,11 +1669,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m",
         "fixed_version": "1.0.2n"
@@ -1716,11 +1716,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c|1.1.0d|1.1.0e|1.1.0f|1.1.0g",
         "fixed_version": "1.1.0h"
@@ -1728,11 +1728,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l|1.0.2m",
         "fixed_version": "1.0.2n"
@@ -1780,11 +1780,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c|1.1.0d|1.1.0e|1.1.0f",
         "fixed_version": "1.1.0g"
@@ -1792,11 +1792,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l",
         "fixed_version": "1.0.2m"
@@ -1844,11 +1844,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c|1.1.0d|1.1.0e|1.1.0f",
         "fixed_version": "1.1.0g"
@@ -1856,11 +1856,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j|1.0.2k|1.0.2l",
         "fixed_version": "1.0.2m"
@@ -1908,11 +1908,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c|1.1.0d",
         "fixed_version": "1.1.0e"
@@ -1955,11 +1955,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c",
         "fixed_version": "1.1.0d"
@@ -1967,11 +1967,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j",
         "fixed_version": "1.0.2k"
@@ -2019,11 +2019,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c",
         "fixed_version": "1.1.0d"
@@ -2066,11 +2066,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b|1.1.0c",
         "fixed_version": "1.1.0d"
@@ -2078,11 +2078,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j",
         "fixed_version": "1.0.2k"
@@ -2130,11 +2130,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h",
         "fixed_version": "1.0.2i"
@@ -2172,11 +2172,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b",
         "fixed_version": "1.1.0c"
@@ -2219,11 +2219,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b",
         "fixed_version": "1.1.0c"
@@ -2266,11 +2266,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0|1.1.0a|1.1.0b",
         "fixed_version": "1.1.0c"
@@ -2278,11 +2278,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h|1.0.2i|1.0.2j",
         "fixed_version": "1.0.2k"
@@ -2330,11 +2330,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0a",
         "fixed_version": "1.1.0b"
@@ -2377,11 +2377,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2i",
         "fixed_version": "1.0.2j"
@@ -2424,11 +2424,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r|1.0.1s|1.0.1t",
         "fixed_version": "1.0.1u"
@@ -2436,11 +2436,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h",
         "fixed_version": "1.0.2i"
@@ -2448,11 +2448,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0",
         "fixed_version": "1.1.0a"
@@ -2505,11 +2505,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0",
         "fixed_version": "1.1.0a"
@@ -2552,11 +2552,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r|1.0.1s|1.0.1t",
         "fixed_version": "1.0.1u"
@@ -2564,11 +2564,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h",
         "fixed_version": "1.0.2i"
@@ -2616,11 +2616,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r|1.0.1s|1.0.1t",
         "fixed_version": "1.0.1u"
@@ -2628,11 +2628,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h",
         "fixed_version": "1.0.2i"
@@ -2680,11 +2680,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r|1.0.1s|1.0.1t",
         "fixed_version": "1.0.1u"
@@ -2692,11 +2692,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h",
         "fixed_version": "1.0.2i"
@@ -2734,11 +2734,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r|1.0.1s|1.0.1t",
         "fixed_version": "1.0.1u"
@@ -2746,11 +2746,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h",
         "fixed_version": "1.0.2i"
@@ -2788,11 +2788,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r|1.0.1s|1.0.1t",
         "fixed_version": "1.0.1u"
@@ -2800,11 +2800,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h",
         "fixed_version": "1.0.2i"
@@ -2842,11 +2842,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r|1.0.1s|1.0.1t",
         "fixed_version": "1.0.1u"
@@ -2854,11 +2854,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h",
         "fixed_version": "1.0.2i"
@@ -2896,11 +2896,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r|1.0.1s|1.0.1t",
         "fixed_version": "1.0.1u"
@@ -2908,11 +2908,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h",
         "fixed_version": "1.0.2i"
@@ -2960,11 +2960,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r|1.0.1s|1.0.1t",
         "fixed_version": "1.0.1u"
@@ -2972,11 +2972,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h",
         "fixed_version": "1.0.2i"
@@ -3024,11 +3024,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r|1.0.1s|1.0.1t",
         "fixed_version": "1.0.1u"
@@ -3036,11 +3036,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g|1.0.2h",
         "fixed_version": "1.0.2i"
@@ -3088,11 +3088,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0",
         "fixed_version": "1.1.0a"
@@ -3135,11 +3135,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.1.0",
         "fixed_version": "1.1.0a"
@@ -3182,11 +3182,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n",
         "fixed_version": "1.0.1o"
@@ -3194,11 +3194,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b",
         "fixed_version": "1.0.2c"
@@ -3236,11 +3236,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r|1.0.1s",
         "fixed_version": "1.0.1t"
@@ -3248,11 +3248,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g",
         "fixed_version": "1.0.2h"
@@ -3295,11 +3295,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r|1.0.1s",
         "fixed_version": "1.0.1t"
@@ -3307,11 +3307,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g",
         "fixed_version": "1.0.2h"
@@ -3349,11 +3349,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r|1.0.1s",
         "fixed_version": "1.0.1t"
@@ -3361,11 +3361,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g",
         "fixed_version": "1.0.2h"
@@ -3403,11 +3403,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r|1.0.1s",
         "fixed_version": "1.0.1t"
@@ -3415,11 +3415,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g",
         "fixed_version": "1.0.2h"
@@ -3457,11 +3457,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r|1.0.1s",
         "fixed_version": "1.0.1t"
@@ -3469,11 +3469,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f|1.0.2g",
         "fixed_version": "1.0.2h"
@@ -3511,11 +3511,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r",
         "fixed_version": "1.0.1s"
@@ -3523,11 +3523,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f",
         "fixed_version": "1.0.2g"
@@ -3565,11 +3565,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r",
         "fixed_version": "1.0.1s"
@@ -3577,11 +3577,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f",
         "fixed_version": "1.0.2g"
@@ -3619,11 +3619,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r",
         "fixed_version": "1.0.1s"
@@ -3631,11 +3631,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f",
         "fixed_version": "1.0.2g"
@@ -3673,11 +3673,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r",
         "fixed_version": "1.0.1s"
@@ -3685,11 +3685,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f",
         "fixed_version": "1.0.2g"
@@ -3727,11 +3727,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r",
         "fixed_version": "1.0.1s"
@@ -3739,11 +3739,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f",
         "fixed_version": "1.0.2g"
@@ -3781,11 +3781,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q|1.0.1r",
         "fixed_version": "1.0.1s"
@@ -3793,11 +3793,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e|1.0.2f",
         "fixed_version": "1.0.2g"
@@ -3835,11 +3835,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze",
         "fixed_version": "0.9.8zf"
@@ -3847,11 +3847,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o|1.0.0p|1.0.0q",
         "fixed_version": "1.0.0r"
@@ -3859,11 +3859,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l",
         "fixed_version": "1.0.1m"
@@ -3871,11 +3871,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2",
         "fixed_version": "1.0.2a"
@@ -3913,11 +3913,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze",
         "fixed_version": "0.9.8zf"
@@ -3925,11 +3925,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o|1.0.0p|1.0.0q",
         "fixed_version": "1.0.0r"
@@ -3937,11 +3937,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l",
         "fixed_version": "1.0.1m"
@@ -3949,11 +3949,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2",
         "fixed_version": "1.0.2a"
@@ -3991,11 +3991,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e",
         "fixed_version": "1.0.2f"
@@ -4033,11 +4033,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p|1.0.1q",
         "fixed_version": "1.0.1r"
@@ -4045,11 +4045,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d|1.0.2e",
         "fixed_version": "1.0.2f"
@@ -4087,11 +4087,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d",
         "fixed_version": "1.0.2e"
@@ -4129,11 +4129,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d",
         "fixed_version": "1.0.2e"
@@ -4171,11 +4171,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p",
         "fixed_version": "1.0.1q"
@@ -4183,11 +4183,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d",
         "fixed_version": "1.0.2e"
@@ -4225,11 +4225,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze|0.9.8zf|0.9.8zg",
         "fixed_version": "0.9.8zh"
@@ -4237,11 +4237,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0h|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o|1.0.0p|1.0.0q|1.0.0r|1.0.0s",
         "fixed_version": "1.0.0t"
@@ -4249,11 +4249,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o|1.0.1p",
         "fixed_version": "1.0.1q"
@@ -4261,11 +4261,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c|1.0.2d",
         "fixed_version": "1.0.2e"
@@ -4303,11 +4303,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0h|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o|1.0.0p|1.0.0q|1.0.0r|1.0.0s",
         "fixed_version": "1.0.0t"
@@ -4315,11 +4315,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m|1.0.1n|1.0.1o",
         "fixed_version": "1.0.1p"
@@ -4327,11 +4327,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a|1.0.2b|1.0.2c",
         "fixed_version": "1.0.2d"
@@ -4369,11 +4369,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1n|1.0.1o",
         "fixed_version": "1.0.1p"
@@ -4381,11 +4381,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2b|1.0.2c",
         "fixed_version": "1.0.2d"
@@ -4423,11 +4423,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r",
         "fixed_version": "0.9.8s"
@@ -4435,11 +4435,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d",
         "fixed_version": "1.0.0e"
@@ -4447,11 +4447,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m",
         "fixed_version": "1.0.1n"
@@ -4459,11 +4459,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a",
         "fixed_version": "1.0.2b"
@@ -4501,11 +4501,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze|0.9.8zf",
         "fixed_version": "0.9.8zg"
@@ -4513,11 +4513,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o|1.0.0p|1.0.0q|1.0.0r",
         "fixed_version": "1.0.0s"
@@ -4525,11 +4525,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m",
         "fixed_version": "1.0.1n"
@@ -4537,11 +4537,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a",
         "fixed_version": "1.0.2b"
@@ -4579,11 +4579,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze|0.9.8zf",
         "fixed_version": "0.9.8zg"
@@ -4591,11 +4591,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o|1.0.0p|1.0.0q|1.0.0r",
         "fixed_version": "1.0.0s"
@@ -4603,11 +4603,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m",
         "fixed_version": "1.0.1n"
@@ -4615,11 +4615,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a",
         "fixed_version": "1.0.2b"
@@ -4657,11 +4657,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze|0.9.8zf",
         "fixed_version": "0.9.8zg"
@@ -4669,11 +4669,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o|1.0.0p|1.0.0q|1.0.0r",
         "fixed_version": "1.0.0s"
@@ -4681,11 +4681,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m",
         "fixed_version": "1.0.1n"
@@ -4693,11 +4693,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a",
         "fixed_version": "1.0.2b"
@@ -4735,11 +4735,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze|0.9.8zf",
         "fixed_version": "0.9.8zg"
@@ -4747,11 +4747,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o|1.0.0p|1.0.0q|1.0.0r",
         "fixed_version": "1.0.0s"
@@ -4759,11 +4759,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l|1.0.1m",
         "fixed_version": "1.0.1n"
@@ -4771,11 +4771,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2|1.0.2a",
         "fixed_version": "1.0.2b"
@@ -4813,11 +4813,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y",
         "fixed_version": "0.9.8za"
@@ -4825,11 +4825,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l",
         "fixed_version": "1.0.0m"
@@ -4837,11 +4837,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g",
         "fixed_version": "1.0.1h"
@@ -4879,11 +4879,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2",
         "fixed_version": "1.0.2a"
@@ -4921,11 +4921,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2",
         "fixed_version": "1.0.2a"
@@ -4963,11 +4963,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2",
         "fixed_version": "1.0.2a"
@@ -5005,11 +5005,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8zd|0.9.8ze",
         "fixed_version": "0.9.8zf"
@@ -5017,11 +5017,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o|1.0.0p|1.0.0q",
         "fixed_version": "1.0.0r"
@@ -5029,11 +5029,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l",
         "fixed_version": "1.0.1m"
@@ -5041,11 +5041,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2",
         "fixed_version": "1.0.2a"
@@ -5083,11 +5083,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2",
         "fixed_version": "1.0.2a"
@@ -5125,11 +5125,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze",
         "fixed_version": "0.9.8zf"
@@ -5137,11 +5137,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o|1.0.0p|1.0.0q",
         "fixed_version": "1.0.0r"
@@ -5149,11 +5149,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l",
         "fixed_version": "1.0.1m"
@@ -5161,11 +5161,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2",
         "fixed_version": "1.0.2a"
@@ -5203,11 +5203,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze",
         "fixed_version": "0.9.8zf"
@@ -5215,11 +5215,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o|1.0.0p|1.0.0q",
         "fixed_version": "1.0.0r"
@@ -5227,11 +5227,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l",
         "fixed_version": "1.0.1m"
@@ -5239,11 +5239,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2",
         "fixed_version": "1.0.2a"
@@ -5281,11 +5281,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y",
         "fixed_version": "0.9.8za"
@@ -5293,11 +5293,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l",
         "fixed_version": "1.0.0m"
@@ -5305,11 +5305,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g",
         "fixed_version": "1.0.1h"
@@ -5347,11 +5347,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze",
         "fixed_version": "0.9.8zf"
@@ -5359,11 +5359,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o|1.0.0p|1.0.0q",
         "fixed_version": "1.0.0r"
@@ -5371,11 +5371,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l",
         "fixed_version": "1.0.1m"
@@ -5383,11 +5383,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2",
         "fixed_version": "1.0.2a"
@@ -5425,11 +5425,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2",
         "fixed_version": "1.0.2a"
@@ -5467,11 +5467,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2",
         "fixed_version": "1.0.2a"
@@ -5509,11 +5509,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze",
         "fixed_version": "0.9.8zf"
@@ -5521,11 +5521,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o|1.0.0p|1.0.0q",
         "fixed_version": "1.0.0r"
@@ -5533,11 +5533,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l",
         "fixed_version": "1.0.1m"
@@ -5545,11 +5545,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2",
         "fixed_version": "1.0.2a"
@@ -5587,11 +5587,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc|0.9.8zd|0.9.8ze",
         "fixed_version": "0.9.8zf"
@@ -5599,11 +5599,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o|1.0.0p|1.0.0q",
         "fixed_version": "1.0.0r"
@@ -5611,11 +5611,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j|1.0.1k|1.0.1l",
         "fixed_version": "1.0.1m"
@@ -5623,11 +5623,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.2",
         "fixed_version": "1.0.2a"
@@ -5665,11 +5665,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o",
         "fixed_version": "1.0.0p"
@@ -5677,11 +5677,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j",
         "fixed_version": "1.0.1k"
@@ -5719,11 +5719,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8zc",
         "fixed_version": "0.9.8zd"
@@ -5731,11 +5731,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0o",
         "fixed_version": "1.0.0p"
@@ -5743,11 +5743,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1j",
         "fixed_version": "1.0.1k"
@@ -5785,11 +5785,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc",
         "fixed_version": "0.9.8zd"
@@ -5797,11 +5797,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o",
         "fixed_version": "1.0.0p"
@@ -5809,11 +5809,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j",
         "fixed_version": "1.0.1k"
@@ -5851,11 +5851,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc",
         "fixed_version": "0.9.8zd"
@@ -5863,11 +5863,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o",
         "fixed_version": "1.0.0p"
@@ -5875,11 +5875,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j",
         "fixed_version": "1.0.1k"
@@ -5917,11 +5917,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc",
         "fixed_version": "0.9.8zd"
@@ -5929,11 +5929,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o",
         "fixed_version": "1.0.0p"
@@ -5941,11 +5941,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j",
         "fixed_version": "1.0.1k"
@@ -5983,11 +5983,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o",
         "fixed_version": "1.0.0p"
@@ -5995,11 +5995,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j",
         "fixed_version": "1.0.1k"
@@ -6037,11 +6037,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc",
         "fixed_version": "0.9.8zd"
@@ -6049,11 +6049,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o",
         "fixed_version": "1.0.0p"
@@ -6061,11 +6061,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j",
         "fixed_version": "1.0.1k"
@@ -6103,11 +6103,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb|0.9.8zc",
         "fixed_version": "0.9.8zd"
@@ -6115,11 +6115,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n|1.0.0o",
         "fixed_version": "1.0.0p"
@@ -6127,11 +6127,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i|1.0.1j",
         "fixed_version": "1.0.1k"
@@ -6169,11 +6169,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i",
         "fixed_version": "1.0.1j"
@@ -6211,11 +6211,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb",
         "fixed_version": "0.9.8zc"
@@ -6223,11 +6223,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n",
         "fixed_version": "1.0.0o"
@@ -6235,11 +6235,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i",
         "fixed_version": "1.0.1j"
@@ -6276,11 +6276,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb",
         "fixed_version": "0.9.8zc"
@@ -6288,11 +6288,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n",
         "fixed_version": "1.0.0o"
@@ -6300,11 +6300,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i",
         "fixed_version": "1.0.1j"
@@ -6325,11 +6325,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za|0.9.8zb",
         "fixed_version": "0.9.8zc"
@@ -6337,11 +6337,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m|1.0.0n",
         "fixed_version": "1.0.0o"
@@ -6349,11 +6349,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h|1.0.1i",
         "fixed_version": "1.0.1j"
@@ -6391,11 +6391,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za",
         "fixed_version": "0.9.8zb"
@@ -6403,11 +6403,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m",
         "fixed_version": "1.0.0n"
@@ -6415,11 +6415,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h",
         "fixed_version": "1.0.1i"
@@ -6451,11 +6451,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h",
         "fixed_version": "1.0.1i"
@@ -6487,11 +6487,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m",
         "fixed_version": "1.0.0n"
@@ -6499,11 +6499,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h",
         "fixed_version": "1.0.1i"
@@ -6535,11 +6535,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za",
         "fixed_version": "0.9.8zb"
@@ -6547,11 +6547,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m",
         "fixed_version": "1.0.0n"
@@ -6559,11 +6559,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h",
         "fixed_version": "1.0.1i"
@@ -6595,11 +6595,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za",
         "fixed_version": "0.9.8zb"
@@ -6607,11 +6607,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m",
         "fixed_version": "1.0.0n"
@@ -6619,11 +6619,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h",
         "fixed_version": "1.0.1i"
@@ -6655,11 +6655,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za",
         "fixed_version": "0.9.8zb"
@@ -6667,11 +6667,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m",
         "fixed_version": "1.0.0n"
@@ -6679,11 +6679,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h",
         "fixed_version": "1.0.1i"
@@ -6715,11 +6715,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y|0.9.8za",
         "fixed_version": "0.9.8zb"
@@ -6727,11 +6727,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l|1.0.0m",
         "fixed_version": "1.0.0n"
@@ -6739,11 +6739,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h",
         "fixed_version": "1.0.1i"
@@ -6775,11 +6775,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h",
         "fixed_version": "1.0.1i"
@@ -6811,11 +6811,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g|1.0.1h",
         "fixed_version": "1.0.1i"
@@ -6847,11 +6847,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6|0.9.6a|0.9.6b|0.9.6c|0.9.6d",
         "fixed_version": "0.9.6e"
@@ -6883,11 +6883,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6|0.9.6a|0.9.6b|0.9.6c|0.9.6d",
         "fixed_version": "0.9.6e"
@@ -6919,11 +6919,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.7-beta3",
         "fixed_version": "0.9.7"
@@ -6955,11 +6955,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6a|0.9.6b|0.9.6c|0.9.6d",
         "fixed_version": "0.9.6e"
@@ -6991,11 +6991,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6e",
         "fixed_version": "0.9.6f"
@@ -7027,11 +7027,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.7",
         "fixed_version": "0.9.7a"
@@ -7039,11 +7039,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6|0.9.6a|0.9.6b|0.9.6c|0.9.6d|0.9.6e|0.9.6f|0.9.6g|0.9.6h",
         "fixed_version": "0.9.6i"
@@ -7075,11 +7075,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6|0.9.6a|0.9.6b|0.9.6c|0.9.6d|0.9.6e|0.9.6f|0.9.6g|0.9.6h|0.9.6i",
         "fixed_version": "0.9.6j"
@@ -7087,11 +7087,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.7|0.9.7a",
         "fixed_version": "0.9.7b"
@@ -7123,11 +7123,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6|0.9.6a|0.9.6b|0.9.6c|0.9.6d|0.9.6e|0.9.6f|0.9.6g|0.9.6h|0.9.6i",
         "fixed_version": "0.9.6j"
@@ -7135,11 +7135,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.7|0.9.7a",
         "fixed_version": "0.9.7b"
@@ -7171,11 +7171,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6|0.9.6a|0.9.6b|0.9.6c|0.9.6d|0.9.6e|0.9.6f|0.9.6g|0.9.6h|0.9.6i|0.9.6j",
         "fixed_version": "0.9.6k"
@@ -7183,11 +7183,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.7|0.9.7a|0.9.7b",
         "fixed_version": "0.9.7c"
@@ -7219,11 +7219,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.7|0.9.7a|0.9.7b",
         "fixed_version": "0.9.7c"
@@ -7231,11 +7231,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6|0.9.6a|0.9.6b|0.9.6c|0.9.6d|0.9.6e|0.9.6f|0.9.6g|0.9.6h|0.9.6i|0.9.6j",
         "fixed_version": "0.9.6k"
@@ -7267,11 +7267,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.7|0.9.7a|0.9.7b",
         "fixed_version": "0.9.7c"
@@ -7303,11 +7303,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6k",
         "fixed_version": "0.9.6l"
@@ -7339,11 +7339,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6c|0.9.6d|0.9.6e|0.9.6f|0.9.6g|0.9.6h|0.9.6i|0.9.6j|0.9.6k|0.9.6l",
         "fixed_version": "0.9.6m"
@@ -7351,11 +7351,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.7|0.9.7a|0.9.7b|0.9.7c",
         "fixed_version": "0.9.7d"
@@ -7387,11 +7387,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6|0.9.6a|0.9.6b|0.9.6c",
         "fixed_version": "0.9.6d"
@@ -7423,11 +7423,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.7a|0.9.7b|0.9.7c",
         "fixed_version": "0.9.7d"
@@ -7459,11 +7459,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.7|0.9.7a|0.9.7b|0.9.7c|0.9.7d|0.9.7e",
         "fixed_version": "0.9.7f"
@@ -7471,11 +7471,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6|0.9.6a|0.9.6b|0.9.6c|0.9.6d|0.9.6e|0.9.6f|0.9.6g|0.9.6h|0.9.6i|0.9.6j|0.9.6k|0.9.6l|0.9.6m",
         "fixed_version": "0.9.6-cvs"
@@ -7507,11 +7507,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.7|0.9.7a|0.9.7b|0.9.7c|0.9.7d|0.9.7e|0.9.7f|0.9.7g",
         "fixed_version": "0.9.7h"
@@ -7519,11 +7519,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8",
         "fixed_version": "0.9.8a"
@@ -7531,11 +7531,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6|0.9.6a|0.9.6b|0.9.6c|0.9.6d|0.9.6e|0.9.6f|0.9.6g|0.9.6h|0.9.6i|0.9.6j|0.9.6k|0.9.6l|0.9.6m",
         "fixed_version": null
@@ -7567,11 +7567,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.7|0.9.7a|0.9.7b|0.9.7c|0.9.7d|0.9.7e|0.9.7f|0.9.7g|0.9.7h|0.9.7i|0.9.7j",
         "fixed_version": "0.9.7k"
@@ -7579,11 +7579,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b",
         "fixed_version": "0.9.8c"
@@ -7591,11 +7591,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6|0.9.6a|0.9.6b|0.9.6c|0.9.6d|0.9.6e|0.9.6f|0.9.6g|0.9.6h|0.9.6i|0.9.6j|0.9.6k|0.9.6l|0.9.6m",
         "fixed_version": null
@@ -7627,11 +7627,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.7|0.9.7a|0.9.7b|0.9.7c|0.9.7d|0.9.7e|0.9.7f|0.9.7g|0.9.7h|0.9.7i|0.9.7j|0.9.7k",
         "fixed_version": "0.9.7l"
@@ -7639,11 +7639,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c",
         "fixed_version": "0.9.8d"
@@ -7675,11 +7675,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.7|0.9.7a|0.9.7b|0.9.7c|0.9.7d|0.9.7e|0.9.7f|0.9.7g|0.9.7h|0.9.7i|0.9.7j|0.9.7k",
         "fixed_version": "0.9.7l"
@@ -7687,11 +7687,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c",
         "fixed_version": "0.9.8d"
@@ -7699,11 +7699,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6|0.9.6a|0.9.6b|0.9.6c|0.9.6d|0.9.6e|0.9.6f|0.9.6g|0.9.6h|0.9.6i|0.9.6j|0.9.6k|0.9.6l|0.9.6m",
         "fixed_version": null
@@ -7735,11 +7735,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.7|0.9.7a|0.9.7b|0.9.7c|0.9.7d|0.9.7e|0.9.7f|0.9.7g|0.9.7h|0.9.7i|0.9.7j|0.9.7k",
         "fixed_version": "0.9.7l"
@@ -7747,11 +7747,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c",
         "fixed_version": "0.9.8d"
@@ -7759,11 +7759,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6|0.9.6a|0.9.6b|0.9.6c|0.9.6d|0.9.6e|0.9.6f|0.9.6g|0.9.6h|0.9.6i|0.9.6j|0.9.6k|0.9.6l|0.9.6m",
         "fixed_version": null
@@ -7795,11 +7795,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.7|0.9.7a|0.9.7b|0.9.7c|0.9.7d|0.9.7e|0.9.7f|0.9.7g|0.9.7h|0.9.7i|0.9.7j|0.9.7k",
         "fixed_version": "0.9.7l"
@@ -7807,11 +7807,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c",
         "fixed_version": "0.9.8d"
@@ -7819,11 +7819,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.6|0.9.6a|0.9.6b|0.9.6c|0.9.6d|0.9.6e|0.9.6f|0.9.6g|0.9.6h|0.9.6i|0.9.6j|0.9.6k|0.9.6l|0.9.6m",
         "fixed_version": null
@@ -7855,11 +7855,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e",
         "fixed_version": "0.9.8f"
@@ -7891,11 +7891,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e",
         "fixed_version": "0.9.8f"
@@ -7927,11 +7927,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8f|0.9.8g",
         "fixed_version": "0.9.8h"
@@ -7963,11 +7963,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8f|0.9.8g",
         "fixed_version": "0.9.8h"
@@ -7999,11 +7999,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i",
         "fixed_version": "0.9.8j"
@@ -8035,11 +8035,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j",
         "fixed_version": "0.9.8k"
@@ -8071,11 +8071,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8h|0.9.8i|0.9.8j",
         "fixed_version": "0.9.8k"
@@ -8107,11 +8107,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j",
         "fixed_version": "0.9.8k"
@@ -8143,11 +8143,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h",
         "fixed_version": "0.9.8i"
@@ -8179,11 +8179,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l",
         "fixed_version": "0.9.8m"
@@ -8215,11 +8215,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l",
         "fixed_version": "0.9.8m"
@@ -8251,11 +8251,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l",
         "fixed_version": "0.9.8m"
@@ -8292,11 +8292,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l",
         "fixed_version": "0.9.8m"
@@ -8333,11 +8333,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l",
         "fixed_version": "0.9.8m"
@@ -8374,11 +8374,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l",
         "fixed_version": "0.9.8m"
@@ -8410,11 +8410,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l",
         "fixed_version": "0.9.8m"
@@ -8446,11 +8446,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m",
         "fixed_version": "0.9.8n"
@@ -8482,11 +8482,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m",
         "fixed_version": "0.9.8n"
@@ -8518,11 +8518,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0",
         "fixed_version": "1.0.0a"
@@ -8530,11 +8530,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n",
         "fixed_version": "0.9.8o"
@@ -8566,11 +8566,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0",
         "fixed_version": "1.0.0a"
@@ -8602,11 +8602,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o",
         "fixed_version": "0.9.8p"
@@ -8614,11 +8614,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a",
         "fixed_version": "1.0.0b"
@@ -8650,11 +8650,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b",
         "fixed_version": "1.0.0c"
@@ -8686,11 +8686,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p",
         "fixed_version": "0.9.8q"
@@ -8698,11 +8698,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b",
         "fixed_version": "1.0.0c"
@@ -8734,11 +8734,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d",
         "fixed_version": "1.0.0e"
@@ -8770,11 +8770,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r",
         "fixed_version": null
@@ -8782,11 +8782,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d",
         "fixed_version": "1.0.0e"
@@ -8818,11 +8818,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r",
         "fixed_version": "0.9.8s"
@@ -8830,11 +8830,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e",
         "fixed_version": "1.0.0f"
@@ -8866,11 +8866,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r",
         "fixed_version": "0.9.8s"
@@ -8902,11 +8902,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r",
         "fixed_version": "0.9.8s"
@@ -8914,11 +8914,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e",
         "fixed_version": "1.0.0f"
@@ -8950,11 +8950,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r",
         "fixed_version": "0.9.8s"
@@ -8962,11 +8962,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e",
         "fixed_version": "1.0.0f"
@@ -8998,11 +8998,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r",
         "fixed_version": "0.9.8s"
@@ -9010,11 +9010,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e",
         "fixed_version": "1.0.0f"
@@ -9046,11 +9046,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e",
         "fixed_version": "1.0.0f"
@@ -9082,11 +9082,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8s",
         "fixed_version": "0.9.8t"
@@ -9094,11 +9094,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0f",
         "fixed_version": "1.0.0g"
@@ -9130,11 +9130,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t",
         "fixed_version": "0.9.8u"
@@ -9142,11 +9142,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g",
         "fixed_version": "1.0.0h"
@@ -9178,11 +9178,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q",
         "fixed_version": "0.9.8r"
@@ -9190,11 +9190,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c",
         "fixed_version": "1.0.0d"
@@ -9226,11 +9226,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8v",
         "fixed_version": "0.9.8w"
@@ -9262,11 +9262,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u",
         "fixed_version": "0.9.8v"
@@ -9274,11 +9274,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g",
         "fixed_version": "1.0.0i"
@@ -9286,11 +9286,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1",
         "fixed_version": "1.0.1a"
@@ -9322,11 +9322,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w",
         "fixed_version": "0.9.8x"
@@ -9334,11 +9334,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i",
         "fixed_version": "1.0.0j"
@@ -9346,11 +9346,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b",
         "fixed_version": "1.0.1c"
@@ -9382,11 +9382,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x",
         "fixed_version": "0.9.8y"
@@ -9394,11 +9394,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j",
         "fixed_version": "1.0.0k"
@@ -9406,11 +9406,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c",
         "fixed_version": "1.0.1d"
@@ -9442,11 +9442,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c",
         "fixed_version": "1.0.1d"
@@ -9478,11 +9478,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x",
         "fixed_version": "0.9.8y"
@@ -9490,11 +9490,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j",
         "fixed_version": "1.0.0k"
@@ -9502,11 +9502,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c",
         "fixed_version": "1.0.1d"
@@ -9538,11 +9538,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k",
         "fixed_version": "1.0.0l"
@@ -9550,11 +9550,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e",
         "fixed_version": "1.0.1f"
@@ -9586,11 +9586,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e",
         "fixed_version": "1.0.1f"
@@ -9622,11 +9622,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e",
         "fixed_version": "1.0.1f"
@@ -9658,11 +9658,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y",
         "fixed_version": "0.9.8za"
@@ -9670,11 +9670,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l",
         "fixed_version": "1.0.0m"
@@ -9682,11 +9682,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f",
         "fixed_version": "1.0.1g"
@@ -9728,11 +9728,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f",
         "fixed_version": "1.0.1g"
@@ -9764,11 +9764,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y",
         "fixed_version": "0.9.8za"
@@ -9776,11 +9776,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l",
         "fixed_version": "1.0.0m"
@@ -9788,11 +9788,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g",
         "fixed_version": "1.0.1h"
@@ -9824,11 +9824,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y",
         "fixed_version": "0.9.8za"
@@ -9836,11 +9836,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l",
         "fixed_version": "1.0.0m"
@@ -9848,11 +9848,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g",
         "fixed_version": "1.0.1h"
@@ -9884,11 +9884,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y",
         "fixed_version": "0.9.8za"
@@ -9896,11 +9896,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l",
         "fixed_version": "1.0.0m"
@@ -9908,11 +9908,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g",
         "fixed_version": "1.0.1h"
@@ -9944,11 +9944,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l",
         "fixed_version": "1.0.0m"
@@ -9956,11 +9956,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g",
         "fixed_version": "1.0.1h"
@@ -9992,11 +9992,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l",
         "fixed_version": "1.0.0m"
@@ -10004,11 +10004,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g",
         "fixed_version": "1.0.1h"
@@ -10040,11 +10040,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/0.9.8|0.9.8a|0.9.8b|0.9.8c|0.9.8d|0.9.8e|0.9.8f|0.9.8g|0.9.8h|0.9.8i|0.9.8j|0.9.8k|0.9.8l|0.9.8m|0.9.8n|0.9.8o|0.9.8p|0.9.8q|0.9.8r|0.9.8s|0.9.8t|0.9.8u|0.9.8v|0.9.8w|0.9.8x|0.9.8y",
         "fixed_version": "0.9.8za"
@@ -10052,11 +10052,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.0|1.0.0a|1.0.0b|1.0.0c|1.0.0d|1.0.0e|1.0.0f|1.0.0g|1.0.0i|1.0.0j|1.0.0k|1.0.0l",
         "fixed_version": "1.0.0m"
@@ -10064,11 +10064,11 @@
       {
         "package": {
           "type": "openssl",
-          "namespace": null,
+          "namespace": "",
           "name": "openssl",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:openssl/1.0.1|1.0.1a|1.0.1b|1.0.1c|1.0.1d|1.0.1e|1.0.1f|1.0.1g",
         "fixed_version": "1.0.1h"

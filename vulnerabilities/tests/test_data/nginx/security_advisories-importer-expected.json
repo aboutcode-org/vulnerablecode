@@ -1,6 +1,6 @@
 [
   {
-    "unique_content_id": "dabe133c6355b18f153a511f5829492c",
+    "unique_content_id": "e06ef4fb12b1b0817736222cc219c5be",
     "aliases": [
       "CORE-2010-0121"
     ],
@@ -10,12 +10,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": {
-            "os": "windows"
-          }
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": "os=windows"
         },
         "fixed_version": "0.8.33",
         "affected_version_range": "vers:nginx/>=0.7.52|<=0.8.32"
@@ -24,12 +22,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": {
-            "os": "windows"
-          }
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": "os=windows"
         },
         "fixed_version": "0.7.65",
         "affected_version_range": "vers:nginx/>=0.7.52|<=0.8.32"
@@ -40,7 +36,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "c9dcd3bec014b1f9e351d9c7514e5f01",
+    "unique_content_id": "201ad593b1d4ec683ad69640e6dd32dd",
     "aliases": [
       "CVE-2009-3896"
     ],
@@ -50,10 +46,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "0.8.14",
         "affected_version_range": "vers:nginx/>=0.1.0|<=0.8.13"
@@ -62,10 +58,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "0.7.62",
         "affected_version_range": "vers:nginx/>=0.1.0|<=0.8.13"
@@ -74,10 +70,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "0.6.39",
         "affected_version_range": "vers:nginx/>=0.1.0|<=0.8.13"
@@ -86,10 +82,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "0.5.38",
         "affected_version_range": "vers:nginx/>=0.1.0|<=0.8.13"
@@ -116,7 +112,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "835e668ec8d9f005b4472e28421c2006",
+    "unique_content_id": "ba4be6f636643998c25573a6c426c137",
     "aliases": [
       "CVE-2009-3898"
     ],
@@ -126,10 +122,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "0.8.17",
         "affected_version_range": "vers:nginx/>=0.1.0|<=0.8.16"
@@ -138,10 +134,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "0.7.63",
         "affected_version_range": "vers:nginx/>=0.1.0|<=0.8.16"
@@ -158,7 +154,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "a0007fe2ea8f6ddf29ea126d21f6956d",
+    "unique_content_id": "a2321a84e71de30fe366a47eb5113d7c",
     "aliases": [
       "CVE-2009-4487"
     ],
@@ -168,10 +164,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": null,
         "affected_version_range": "vers:nginx/*"
@@ -188,7 +184,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "a0928f78826f958a2432126b2a884e83",
+    "unique_content_id": "950e21f0dee389398935f66a6c8989cd",
     "aliases": [
       "CVE-2010-2263"
     ],
@@ -198,12 +194,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": {
-            "os": "windows"
-          }
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": "os=windows"
         },
         "fixed_version": "0.8.40",
         "affected_version_range": "vers:nginx/>=0.7.52|<=0.8.39"
@@ -212,12 +206,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": {
-            "os": "windows"
-          }
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": "os=windows"
         },
         "fixed_version": "0.7.66",
         "affected_version_range": "vers:nginx/>=0.7.52|<=0.8.39"
@@ -234,7 +226,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "6717167491546825b89448925539ffba",
+    "unique_content_id": "fee29bd63e6703da11794654cfe11767",
     "aliases": [
       "CVE-2010-2266"
     ],
@@ -244,12 +236,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": {
-            "os": "windows"
-          }
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": "os=windows"
         },
         "fixed_version": "0.8.41",
         "affected_version_range": "vers:nginx/>=0.7.52|<=0.8.40"
@@ -258,12 +248,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": {
-            "os": "windows"
-          }
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": "os=windows"
         },
         "fixed_version": "0.7.67",
         "affected_version_range": "vers:nginx/>=0.7.52|<=0.8.40"
@@ -280,7 +268,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "73cb4dac8940113bcd2045ae82b8e2a8",
+    "unique_content_id": "02b21b4054dae6467356f443d746a896",
     "aliases": [
       "CVE-2011-4315"
     ],
@@ -290,10 +278,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.1.8",
         "affected_version_range": "vers:nginx/>=0.6.18|<=1.1.7"
@@ -302,10 +290,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.0.10",
         "affected_version_range": "vers:nginx/>=0.6.18|<=1.1.7"
@@ -322,7 +310,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "602ad465c0476fdbc1254919ae6021e2",
+    "unique_content_id": "3469e1b5eb067a646207ace468f064fc",
     "aliases": [
       "CVE-2011-4963"
     ],
@@ -332,12 +320,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": {
-            "os": "windows"
-          }
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": "os=windows"
         },
         "fixed_version": "1.3.1",
         "affected_version_range": "vers:nginx/>=0.7.52|<=1.3.0"
@@ -346,12 +332,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": {
-            "os": "windows"
-          }
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": "os=windows"
         },
         "fixed_version": "1.2.1",
         "affected_version_range": "vers:nginx/>=0.7.52|<=1.3.0"
@@ -379,7 +363,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "4d0d128ad68cd0640c62bfa2412269e0",
+    "unique_content_id": "47162d53f9f444a6d02c3920b43b79f1",
     "aliases": [
       "CVE-2012-1180"
     ],
@@ -389,10 +373,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.1.17",
         "affected_version_range": "vers:nginx/>=0.1.0|<=1.1.16"
@@ -401,10 +385,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.0.14",
         "affected_version_range": "vers:nginx/>=0.1.0|<=1.1.16"
@@ -436,7 +420,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "34fdffdb5803857f20519de081d5aa47",
+    "unique_content_id": "d3d660cde6ed53a35133f336680482a8",
     "aliases": [
       "CVE-2012-2089"
     ],
@@ -446,10 +430,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.1.19",
         "affected_version_range": "vers:nginx/>=1.0.7|<=1.0.14|>=1.1.3|<=1.1.18"
@@ -458,10 +442,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.0.15",
         "affected_version_range": "vers:nginx/>=1.0.7|<=1.0.14|>=1.1.3|<=1.1.18"
@@ -493,7 +477,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "d4bc5fe3ed17d7a6eeebf9a4731ab245",
+    "unique_content_id": "8877418e6030a769796e29f5e2a02f81",
     "aliases": [
       "CVE-2013-2028"
     ],
@@ -503,10 +487,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.5.0",
         "affected_version_range": "vers:nginx/>=1.3.9|<=1.4.0"
@@ -515,10 +499,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.4.1",
         "affected_version_range": "vers:nginx/>=1.3.9|<=1.4.0"
@@ -550,7 +534,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "014359d8701d1b0220a1d4a53938167e",
+    "unique_content_id": "374e29bb5f6b426d3964f3fda41b8868",
     "aliases": [
       "CVE-2013-2070"
     ],
@@ -560,10 +544,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.5.0",
         "affected_version_range": "vers:nginx/>=1.1.4|<=1.2.8|>=1.3.9|<=1.4.0"
@@ -572,10 +556,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.4.1",
         "affected_version_range": "vers:nginx/>=1.1.4|<=1.2.8|>=1.3.9|<=1.4.0"
@@ -584,10 +568,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.2.9",
         "affected_version_range": "vers:nginx/>=1.1.4|<=1.2.8|>=1.3.9|<=1.4.0"
@@ -635,7 +619,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "a98e3e8cc6c61be3e0bb0c766422000a",
+    "unique_content_id": "c8f992c54c212ee4a40e6c0cde5c3059",
     "aliases": [
       "CVE-2013-4547"
     ],
@@ -645,10 +629,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.5.7",
         "affected_version_range": "vers:nginx/>=0.8.41|<=1.5.6"
@@ -657,10 +641,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.4.4",
         "affected_version_range": "vers:nginx/>=0.8.41|<=1.5.6"
@@ -698,7 +682,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ca4a84fef474aa4dc5aec6cdedcb543a",
+    "unique_content_id": "0c05639ec5f2d6715dcf0ebb9b2e3dca",
     "aliases": [
       "CVE-2014-0088"
     ],
@@ -708,10 +692,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.5.11",
         "affected_version_range": "vers:nginx/1.5.10"
@@ -743,7 +727,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "023ec91ead7d7978f99823b1b00fd8d0",
+    "unique_content_id": "7684af6336be453f0f9b2571d3e649cf",
     "aliases": [
       "CVE-2014-0133"
     ],
@@ -753,10 +737,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.5.12",
         "affected_version_range": "vers:nginx/>=1.3.15|<=1.5.11"
@@ -765,10 +749,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.4.7",
         "affected_version_range": "vers:nginx/>=1.3.15|<=1.5.11"
@@ -800,7 +784,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "57b7911aa13a1c069fcd3dac8ec79a2f",
+    "unique_content_id": "b88cdd9ce070d35ee7ba7a6fc6d02b9c",
     "aliases": [
       "CVE-2014-3556"
     ],
@@ -810,10 +794,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.7.4",
         "affected_version_range": "vers:nginx/>=1.5.6|<=1.7.3"
@@ -822,10 +806,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.6.1",
         "affected_version_range": "vers:nginx/>=1.5.6|<=1.7.3"
@@ -863,7 +847,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "0fb96728d775c491b25b9c5d9e509169",
+    "unique_content_id": "498b3a69eec292acd7b88f111ce81726",
     "aliases": [
       "CVE-2014-3616"
     ],
@@ -873,10 +857,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.7.5",
         "affected_version_range": "vers:nginx/>=0.5.6|<=1.7.4"
@@ -885,10 +869,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.6.2",
         "affected_version_range": "vers:nginx/>=0.5.6|<=1.7.4"
@@ -916,7 +900,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "654bff8d56e5324da4c873438d75470e",
+    "unique_content_id": "aec3f466ea10da286f986e00717fe91a",
     "aliases": [
       "CVE-2016-0742"
     ],
@@ -926,10 +910,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.9.10",
         "affected_version_range": "vers:nginx/>=0.6.18|<=1.9.9"
@@ -938,10 +922,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.8.1",
         "affected_version_range": "vers:nginx/>=0.6.18|<=1.9.9"
@@ -969,7 +953,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "48c76ecddb554fe1274ed090b1692081",
+    "unique_content_id": "8ccb0c3a96e767c99b180b3fe7fda3fe",
     "aliases": [
       "CVE-2016-0746"
     ],
@@ -979,10 +963,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.9.10",
         "affected_version_range": "vers:nginx/>=0.6.18|<=1.9.9"
@@ -991,10 +975,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.8.1",
         "affected_version_range": "vers:nginx/>=0.6.18|<=1.9.9"
@@ -1022,7 +1006,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "8c61e735eef0a9205cee0bcd64d86c59",
+    "unique_content_id": "e743de486cc3f5594763cf8e339b1e11",
     "aliases": [
       "CVE-2016-0747"
     ],
@@ -1032,10 +1016,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.9.10",
         "affected_version_range": "vers:nginx/>=0.6.18|<=1.9.9"
@@ -1044,10 +1028,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.8.1",
         "affected_version_range": "vers:nginx/>=0.6.18|<=1.9.9"
@@ -1075,7 +1059,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "04ebbd42272e64e6fc5a6f8d9f301fef",
+    "unique_content_id": "1e36ddf9e2fc9e18600f318491bd1d1c",
     "aliases": [
       "CVE-2016-4450"
     ],
@@ -1085,10 +1069,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.11.1",
         "affected_version_range": "vers:nginx/>=1.3.9|<=1.11.0"
@@ -1097,10 +1081,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.10.1",
         "affected_version_range": "vers:nginx/>=1.3.9|<=1.11.0"
@@ -1148,7 +1132,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "4e89029cf59ea68756e72973eace4a6b",
+    "unique_content_id": "70206378e2ed98fc6f6e888219118f5b",
     "aliases": [
       "CVE-2017-7529"
     ],
@@ -1158,10 +1142,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.13.3",
         "affected_version_range": "vers:nginx/>=0.5.6|<=1.13.2"
@@ -1170,10 +1154,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.12.1",
         "affected_version_range": "vers:nginx/>=0.5.6|<=1.13.2"
@@ -1211,7 +1195,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "f523c6c72d936bdb79de56b9fd46b1f0",
+    "unique_content_id": "b0f2c3199dbcdd15e09189b3271fc776",
     "aliases": [
       "CVE-2018-16843"
     ],
@@ -1221,10 +1205,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.15.6",
         "affected_version_range": "vers:nginx/>=1.9.5|<=1.15.5"
@@ -1233,10 +1217,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.14.1",
         "affected_version_range": "vers:nginx/>=1.9.5|<=1.15.5"
@@ -1264,7 +1248,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "fd888e77e0b3b025f1fa65f761442d8c",
+    "unique_content_id": "c4c1cae095c436f27da122c81489d793",
     "aliases": [
       "CVE-2018-16844"
     ],
@@ -1274,10 +1258,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.15.6",
         "affected_version_range": "vers:nginx/>=1.9.5|<=1.15.5"
@@ -1286,10 +1270,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.14.1",
         "affected_version_range": "vers:nginx/>=1.9.5|<=1.15.5"
@@ -1317,7 +1301,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "06084d7ef376d18305484283c2f3da73",
+    "unique_content_id": "768ce513dcbec332edde67f4b816a738",
     "aliases": [
       "CVE-2018-16845"
     ],
@@ -1327,10 +1311,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.15.6",
         "affected_version_range": "vers:nginx/>=1.0.7|<=1.0.15|>=1.1.3|<=1.15.5"
@@ -1339,10 +1323,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.14.1",
         "affected_version_range": "vers:nginx/>=1.0.7|<=1.0.15|>=1.1.3|<=1.15.5"
@@ -1380,7 +1364,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ef70ce1787dad53097a6394e92cee831",
+    "unique_content_id": "70d923faf6669ffd9619987fb0aec523",
     "aliases": [
       "CVE-2019-9511"
     ],
@@ -1390,10 +1374,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.17.3",
         "affected_version_range": "vers:nginx/>=1.9.5|<=1.17.2"
@@ -1402,10 +1386,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.16.1",
         "affected_version_range": "vers:nginx/>=1.9.5|<=1.17.2"
@@ -1433,7 +1417,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "42fe9391f57db8d38624dc2e07b35c33",
+    "unique_content_id": "1a4ae6b3702f0428209dce0f88159598",
     "aliases": [
       "CVE-2019-9513"
     ],
@@ -1443,10 +1427,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.17.3",
         "affected_version_range": "vers:nginx/>=1.9.5|<=1.17.2"
@@ -1455,10 +1439,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.16.1",
         "affected_version_range": "vers:nginx/>=1.9.5|<=1.17.2"
@@ -1486,7 +1470,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "1bf350eb789fa415c4d971caf298be95",
+    "unique_content_id": "31dbfc4959801ed7b910527c43a8574c",
     "aliases": [
       "CVE-2019-9516"
     ],
@@ -1496,10 +1480,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.17.3",
         "affected_version_range": "vers:nginx/>=1.9.5|<=1.17.2"
@@ -1508,10 +1492,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.16.1",
         "affected_version_range": "vers:nginx/>=1.9.5|<=1.17.2"
@@ -1539,7 +1523,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "67435c71e6737dfa1a122184ee431e14",
+    "unique_content_id": "a0449a69dc067723abeac19e39556097",
     "aliases": [
       "CVE-2021-23017"
     ],
@@ -1549,10 +1533,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.21.0",
         "affected_version_range": "vers:nginx/>=0.6.18|<=1.20.0"
@@ -1561,10 +1545,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "1.20.1",
         "affected_version_range": "vers:nginx/>=0.6.18|<=1.20.0"
@@ -1602,7 +1586,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "56ee126958340832e9b235a38b0c4495",
+    "unique_content_id": "a7e9b8a4bed77907e4969674757b9a6f",
     "aliases": [
       "VU#120541",
       "CVE-2009-3555"
@@ -1613,10 +1597,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "0.8.23",
         "affected_version_range": "vers:nginx/>=0.1.0|<=0.8.22"
@@ -1625,10 +1609,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "0.7.64",
         "affected_version_range": "vers:nginx/>=0.1.0|<=0.8.22"
@@ -1655,7 +1639,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "b6f863030bb4fe1e2d3061bbcbc54d0c",
+    "unique_content_id": "b64c3007d212529b24073f00435478e5",
     "aliases": [
       "VU#180065",
       "CVE-2009-2629"
@@ -1666,10 +1650,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "0.8.15",
         "affected_version_range": "vers:nginx/>=0.1.0|<=0.8.14"
@@ -1678,10 +1662,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "0.7.62",
         "affected_version_range": "vers:nginx/>=0.1.0|<=0.8.14"
@@ -1690,10 +1674,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "0.6.39",
         "affected_version_range": "vers:nginx/>=0.1.0|<=0.8.14"
@@ -1702,10 +1686,10 @@
         "package": {
           "name": "nginx",
           "type": "nginx",
-          "subpath": null,
-          "version": null,
-          "namespace": null,
-          "qualifiers": null
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
         },
         "fixed_version": "0.5.38",
         "affected_version_range": "vers:nginx/>=0.1.0|<=0.8.14"

@@ -13,6 +13,7 @@ import urllib
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
+from progress.bar import ChargingBar
 from univers.version_constraint import VersionConstraint
 from univers.version_range import ApacheVersionRange
 from univers.versions import SemverVersion
@@ -37,9 +38,17 @@ class ApacheHTTPDImporter(Importer):
 
     def advisory_data(self):
         links = fetch_links(self.base_url)
-        for link in links:
-            data = requests.get(link).json()
-            yield self.to_advisory(data)
+        progress_bar_for_fetch_links = ChargingBar("\tFetching Vulnerabilitites", max=len(links))
+        try:
+            progress_bar_for_fetch_links.start()
+            for link in links:
+                try:
+                    data = requests.get(link).json()
+                    yield self.to_advisory(data)
+                finally:
+                    progress_bar_for_fetch_links.next()
+        finally:
+            progress_bar_for_fetch_links.finish()
 
     def to_advisory(self, data):
         alias = get_item(data, "CVE_data_meta", "ID")

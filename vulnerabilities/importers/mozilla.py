@@ -17,6 +17,7 @@ import yaml
 from bs4 import BeautifulSoup
 from markdown import markdown
 from packageurl import PackageURL
+from progress.bar import ChargingBar
 from univers.versions import SemverVersion
 
 from vulnerabilities import severity_systems
@@ -40,15 +41,22 @@ class MozillaImporter(Importer):
     importer_name = "Mozilla Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
+        progress_bar_for_fetched_files: ChargingBar
         try:
             self.clone(self.repo_url)
             base_path = Path(self.vcs_response.dest_dir)
 
             vuln = base_path / "announce"
             paths = list(vuln.glob("**/*.yml")) + list(vuln.glob("**/*.md"))
+            progress_bar_for_fetched_files = ChargingBar("\tFetching Vulnerabilities", max=len(paths))
+            progress_bar_for_fetched_files.start()
             for file_path in paths:
-                yield from to_advisories(file_path, base_path)
+                try:
+                    yield from to_advisories(file_path, base_path)
+                finally:
+                    progress_bar_for_fetched_files.next()
         finally:
+            progress_bar_for_fetched_files.finish()
             if self.vcs_response:
                 self.vcs_response.delete()
 

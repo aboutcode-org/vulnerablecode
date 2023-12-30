@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Iterable
 
 from packageurl import PackageURL
+from progress.bar import ChargingBar
 from univers.version_constraint import VersionConstraint
 from univers.version_range import EbuildVersionRange
 from univers.versions import GentooVersion
@@ -34,12 +35,20 @@ class GentooImporter(Importer):
     importer_name = "Gentoo Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
+        progress_bar_for_package_fetch: ChargingBar
         try:
             self.clone(repo_url=self.repo_url)
             base_path = Path(self.vcs_response.dest_dir)
-            for file_path in base_path.glob("**/*.xml"):
-                yield from self.process_file(file_path)
+            base_paths = list(base_path.glob("**/*.xml"))
+            progress_bar_for_package_fetch = ChargingBar("\tFetching Packages", max=len(base_paths))
+            progress_bar_for_package_fetch.start()
+            for file_path in base_paths:
+                try:
+                    yield from self.process_file(file_path)
+                finally:
+                    progress_bar_for_package_fetch.next()
         finally:
+            progress_bar_for_package_fetch.finish()
             if self.vcs_response:
                 self.vcs_response.delete()
 

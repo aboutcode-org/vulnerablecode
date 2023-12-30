@@ -12,6 +12,7 @@ import bz2
 import xml.etree.ElementTree as ET
 
 import requests
+from progress.bar import ChargingBar
 
 from vulnerabilities.importer import OvalImporter
 
@@ -65,12 +66,20 @@ class DebianOvalImporter(OvalImporter):
 
     def _fetch(self):
         releases = ["wheezy", "stretch", "jessie", "buster", "bullseye"]
-        for release in releases:
-            file_url = f"https://www.debian.org/security/oval/oval-definitions-{release}.xml.bz2"
-            self.data_url = file_url
-            resp = requests.get(file_url).content
-            extracted = bz2.decompress(resp)
-            yield (
-                {"type": "deb", "namespace": "debian", "qualifiers": {"distro": release}},
-                ET.ElementTree(ET.fromstring(extracted.decode("utf-8"))),
-            )
+        progress_bar_for_package_fetch = ChargingBar("\tFetching Packages", max=len(releases))
+        progress_bar_for_package_fetch.start()
+        try:
+            for release in releases:
+                try:
+                    file_url = f"https://www.debian.org/security/oval/oval-definitions-{release}.xml.bz2"
+                    self.data_url = file_url
+                    resp = requests.get(file_url).content
+                    extracted = bz2.decompress(resp)
+                    yield (
+                        {"type": "deb", "namespace": "debian", "qualifiers": {"distro": release}},
+                        ET.ElementTree(ET.fromstring(extracted.decode("utf-8"))),
+                    )
+                finally:
+                    progress_bar_for_package_fetch.next()
+        finally:
+            progress_bar_for_package_fetch.finish()

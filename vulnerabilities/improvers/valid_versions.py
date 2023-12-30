@@ -44,11 +44,11 @@ from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
 from vulnerabilities.utils import clean_nginx_git_tag
-from vulnerabilities.utils import evolve_purl
 from vulnerabilities.utils import get_affected_packages_by_patched_package
 from vulnerabilities.utils import is_vulnerable_nginx_version
 from vulnerabilities.utils import nearest_patched_package
 from vulnerabilities.utils import resolve_version_range
+from vulnerabilities.utils import update_purl_version
 
 logger = logging.getLogger(__name__)
 
@@ -253,13 +253,13 @@ class NginxBasicImprover(Improver):
                     affected_version_range=affected_version_range,
                     fixed_versions=fixed_versions,
                 ):
-                    new_purl = evolve_purl(purl=purl, version=str(version))
+                    new_purl = update_purl_version(purl=purl, version=str(version))
                     affected_purls.append(new_purl)
 
         # TODO: This also yields with a lower fixed version, maybe we should
         # only yield fixes that are upgrades ?
         for fixed_version in fixed_versions:
-            fixed_purl = evolve_purl(purl=purl, version=str(fixed_version))
+            fixed_purl = update_purl_version(purl=purl, version=str(fixed_version))
 
             yield Inference.from_advisory_data(
                 advisory_data,

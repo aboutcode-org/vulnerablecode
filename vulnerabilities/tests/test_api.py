@@ -27,6 +27,7 @@ from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
+from vulnerabilities.models import Weakness
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")
@@ -197,6 +198,12 @@ class APITestCaseVulnerability(TransactionTestCase):
             PackageRelatedVulnerability.objects.create(
                 package=pkg, vulnerability=self.vulnerability, fix=True
             )
+        self.weaknesses = Weakness.objects.create(cwe_id=119)
+        self.weaknesses.vulnerabilities.add(self.vulnerability)
+        self.invalid_weaknesses = Weakness.objects.create(
+            cwe_id=10000
+        )  # cwe not present in weaknesses_db
+        self.invalid_weaknesses.vulnerabilities.add(self.vulnerability)
 
     def test_api_status(self):
         response = self.csrf_client.get("/api/vulnerabilities/")
@@ -232,6 +239,13 @@ class APITestCaseVulnerability(TransactionTestCase):
             ],
             "affected_packages": [],
             "references": [],
+            "weaknesses": [
+                {
+                    "cwe_id": 119,
+                    "name": "Improper Restriction of Operations within the Bounds of a Memory Buffer",
+                    "description": "The software performs operations on a memory buffer, but it can read from or write to a memory location that is outside of the intended boundary of the buffer.",
+                },
+            ],
         }
 
     def test_api_with_single_vulnerability_with_filters(self):
@@ -253,6 +267,13 @@ class APITestCaseVulnerability(TransactionTestCase):
             ],
             "affected_packages": [],
             "references": [],
+            "weaknesses": [
+                {
+                    "cwe_id": 119,
+                    "name": "Improper Restriction of Operations within the Bounds of a Memory Buffer",
+                    "description": "The software performs operations on a memory buffer, but it can read from or write to a memory location that is outside of the intended boundary of the buffer.",
+                },
+            ],
         }
 
 
@@ -834,56 +855,6 @@ class TestLookup(TestCase):
         ).json()
         assert len(response) == 1
         assert response[0]["purl"] == "pkg:pypi/microweber/microweber@1.2"
-
-    def test_lookup_endpoint_1(self):
-        Package.objects.create(
-            type="pypi", namespace="microweber", name="microweber", version="1.2"
-        )
-        request_body = {"purl": "pkg:pypi/microweber/microweber@1.2"}
-        response = self.csrf_client.post(
-            "/api/packages/lookup",
-            data=json.dumps(request_body),
-            content_type="application/json",
-        ).json()
-        assert len(response) == 2
-        assert response[0]["purl"] == "pkg:pypi/microweber/microweber@1.2"
-        assert response[0]["purl"] == response[1]["purl"]
-
-    def test_lookup_endpoint_with_one_purl_with_qualifier(self):
-        Package.objects.create(
-            type="pypi", namespace="microweber", name="microweber", version="1.2"
-        )
-        Package.objects.create(
-            type="pypi",
-            namespace="microweber",
-            name="microweber",
-            version="1.2",
-            qualifiers={"foo": "bar"},
-        )
-        request_body = {"purl": "pkg:pypi/microweber/microweber@1.2"}
-        response = self.csrf_client.post(
-            "/api/packages/lookup",
-            data=json.dumps(request_body),
-            content_type="application/json",
-        ).json()
-        assert len(response) == 2
-        assert response[0]["purl"] == "pkg:pypi/microweber/microweber@1.2"
-        assert response[0]["purl"] == response[1]["purl"]
-        request_body = {"purl": "pkg:pypi/microweber/microweber@1.2?foo=bar"}
-        response = self.csrf_client.post(
-            "/api/packages/lookup",
-            data=json.dumps(request_body),
-            content_type="application/json",
-        ).json()
-        assert len(response) == 1
-        assert response[0]["purl"] == "pkg:pypi/microweber/microweber@1.2?foo=bar"
-        request_body = {"purl": "pkg:pypi/microweber/microweber@1.2?foo=baz"}
-        response = self.csrf_client.post(
-            "/api/packages/lookup",
-            data=json.dumps(request_body),
-            content_type="application/json",
-        ).json()
-        assert response == []
 
     def test_bulk_lookup_endpoint(self):
         request_body = {

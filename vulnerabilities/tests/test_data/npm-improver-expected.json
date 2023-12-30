@@ -9,91 +9,91 @@
     "affected_purls": [
       {
         "type": "npm",
-        "namespace": null,
+        "namespace": "",
         "name": "npm",
         "version": "0.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "npm",
-        "namespace": null,
+        "namespace": "",
         "name": "npm",
         "version": "0.5.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "npm",
-        "namespace": null,
+        "namespace": "",
         "name": "npm",
         "version": "0.5.6",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "npm",
-        "namespace": null,
+        "namespace": "",
         "name": "npm",
         "version": "1.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "npm",
-        "namespace": null,
+        "namespace": "",
         "name": "npm",
         "version": "1.1.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "npm",
-        "namespace": null,
+        "namespace": "",
         "name": "npm",
         "version": "1.1.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "npm",
-        "namespace": null,
+        "namespace": "",
         "name": "npm",
         "version": "1.1.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "npm",
-        "namespace": null,
+        "namespace": "",
         "name": "npm",
         "version": "1.1.5",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "npm",
-        "namespace": null,
+        "namespace": "",
         "name": "npm",
         "version": "1.1.6",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "npm",
-        "namespace": null,
+        "namespace": "",
         "name": "npm",
         "version": "1.1.7",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "npm",
-        "namespace": null,
+        "namespace": "",
         "name": "npm",
         "version": "1.1.8",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": null,
@@ -144,11 +144,11 @@
     "affected_purls": [],
     "fixed_purl": {
       "type": "npm",
-      "namespace": null,
+      "namespace": "",
       "name": "npm",
       "version": "1.3.3",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {

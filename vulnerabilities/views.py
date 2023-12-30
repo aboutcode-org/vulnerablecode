@@ -52,7 +52,12 @@ class PackageSearch(ListView):
         on exact purl, partial purl or just name and namespace.
         """
         query = query or self.request.GET.get("search") or ""
-        return self.model.objects.search(query).with_vulnerability_counts().prefetch_related()
+        return (
+            self.model.objects.search(query)
+            .with_vulnerability_counts()
+            .prefetch_related()
+            .order_by("package_url")
+        )
 
 
 class VulnerabilitySearch(ListView):
@@ -81,6 +86,7 @@ class PackageDetails(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        print(context)
         package = self.object
         context["package"] = package
         context["affected_by_vulnerabilities"] = package.affected_by.order_by("vulnerability_id")

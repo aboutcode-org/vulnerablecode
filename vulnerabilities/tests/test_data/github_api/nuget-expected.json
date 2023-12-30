@@ -9,11 +9,11 @@
       {
         "package": {
           "type": "nuget",
-          "namespace": null,
+          "namespace": "",
           "name": "RazorEngine",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:nuget/<=4.5.1-alpha001",
         "fixed_version": "4.5.1"
@@ -56,11 +56,11 @@
       {
         "package": {
           "type": "nuget",
-          "namespace": null,
+          "namespace": "",
           "name": "jquery.cookie",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:nuget/<=1.4.1",
         "fixed_version": null
@@ -103,11 +103,11 @@
       {
         "package": {
           "type": "nuget",
-          "namespace": null,
+          "namespace": "",
           "name": "CefSharp.Wpf.NETCore",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:nuget/<=98.1.190",
         "fixed_version": null
@@ -151,11 +151,11 @@
       {
         "package": {
           "type": "nuget",
-          "namespace": null,
+          "namespace": "",
           "name": "Microsoft.AspNetCore.Mvc.Razor.Host",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:nuget/>=1.1.0|<1.1.3",
         "fixed_version": null

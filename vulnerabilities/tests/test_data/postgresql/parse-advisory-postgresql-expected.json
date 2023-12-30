@@ -8,13 +8,11 @@
       {
         "package": {
           "type": "generic",
-          "namespace": null,
+          "namespace": "",
           "name": "postgresql",
-          "version": null,
-          "qualifiers": {
-            "os": "windows"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "os=windows",
+          "subpath": ""
         },
         "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
         "fixed_version": "12.3"
@@ -22,13 +20,11 @@
       {
         "package": {
           "type": "generic",
-          "namespace": null,
+          "namespace": "",
           "name": "postgresql",
-          "version": null,
-          "qualifiers": {
-            "os": "windows"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "os=windows",
+          "subpath": ""
         },
         "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
         "fixed_version": "11.8"
@@ -36,13 +32,11 @@
       {
         "package": {
           "type": "generic",
-          "namespace": null,
+          "namespace": "",
           "name": "postgresql",
-          "version": null,
-          "qualifiers": {
-            "os": "windows"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "os=windows",
+          "subpath": ""
         },
         "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
         "fixed_version": "10.13"
@@ -50,13 +44,11 @@
       {
         "package": {
           "type": "generic",
-          "namespace": null,
+          "namespace": "",
           "name": "postgresql",
-          "version": null,
-          "qualifiers": {
-            "os": "windows"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "os=windows",
+          "subpath": ""
         },
         "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
         "fixed_version": "9.6.18"
@@ -95,11 +87,11 @@
       {
         "package": {
           "type": "generic",
-          "namespace": null,
+          "namespace": "",
           "name": "postgresql",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
         "fixed_version": "12.2"
@@ -107,11 +99,11 @@
       {
         "package": {
           "type": "generic",
-          "namespace": null,
+          "namespace": "",
           "name": "postgresql",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
         "fixed_version": "11.7"
@@ -119,11 +111,11 @@
       {
         "package": {
           "type": "generic",
-          "namespace": null,
+          "namespace": "",
           "name": "postgresql",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
         "fixed_version": "10.12"
@@ -131,11 +123,11 @@
       {
         "package": {
           "type": "generic",
-          "namespace": null,
+          "namespace": "",
           "name": "postgresql",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:generic/9.6.0|10.0.0|11.0.0|12.0.0",
         "fixed_version": "9.6.17"

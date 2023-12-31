@@ -6,6 +6,7 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+from progress.bar import ChargingBar
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
@@ -30,17 +31,32 @@ class ProjectKBMSRImporter(Importer):
 
     def to_advisories(self, csv_reader):
         # Project KB MSR csv file has no header row
-        for row in csv_reader:
-            vuln_id, proj_home, fix_commit, _ = row
-            commit_link = proj_home + "/commit/" + fix_commit
 
-            if not is_cve(vuln_id):
-                continue
+        # This refactoring can cause excessive memory usage.
+        # But there was no better way to do with current library.
+        # Might consider upgrading to TQDM in future
+        rows = list(csv_reader)
+        progress_bar_for_cve_fetch = ChargingBar("\tFetching CVEs", max=len(rows))
+        progress_bar_for_cve_fetch.start()
+        counter = 0
+        try:
+            for row in rows:
+                try:
+                    vuln_id, proj_home, fix_commit, _ = row
+                    commit_link = proj_home + "/commit/" + fix_commit
 
-            reference = Reference(url=commit_link)
-            yield AdvisoryData(
-                aliases=[vuln_id],
-                summary="",
-                references=[reference],
-                url=self.url,
-            )
+                    if not is_cve(vuln_id):
+                        continue
+
+                    reference = Reference(url=commit_link)
+                    yield AdvisoryData(
+                        aliases=[vuln_id],
+                        summary="",
+                        references=[reference],
+                        url=self.url,
+                    )
+                finally:
+                    progress_bar_for_cve_fetch.next()
+        finally:
+            progress_bar_for_cve_fetch.finish()
+            print("Finish")

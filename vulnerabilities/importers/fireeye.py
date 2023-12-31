@@ -12,6 +12,8 @@ from pathlib import Path
 from typing import Iterable
 from typing import List
 
+from progress.bar import ChargingBar
+
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
@@ -34,12 +36,16 @@ class FireyeImporter(Importer):
     importer_name = "FireEye Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
+        progress_bar_for_advisory_fetch: ChargingBar
         try:
             self.vcs_response = self.clone(repo_url=self.repo_url)
             base_path = Path(self.vcs_response.dest_dir)
-            files = filter(
+            files = list(filter(
                 lambda p: p.suffix in [".md", ".MD"], Path(self.vcs_response.dest_dir).glob("**/*")
-            )
+            ))
+            progress_bar_for_advisory_fetch = ChargingBar("\tFetching Advisories", max=len(files))
+            progress_bar_for_advisory_fetch.start()
+
             for file in files:
                 if Path(file).stem == "README":
                     continue
@@ -48,7 +54,10 @@ class FireyeImporter(Importer):
                         yield parse_advisory_data(raw_data=f.read(), file=file, base_path=base_path)
                 except UnicodeError:
                     logger.error(f"Invalid file {file}")
+                finally:
+                    progress_bar_for_advisory_fetch.next()
         finally:
+            progress_bar_for_advisory_fetch.finish()
             if self.vcs_response:
                 self.vcs_response.delete()
 
@@ -64,6 +73,7 @@ def parse_advisory_data(raw_data, file, base_path) -> AdvisoryData:
     )
     raw_data = raw_data.replace("\n\n", "\n")
     md_list = raw_data.split("\n")
+    print(md_list)
     md_dict = md_list_to_dict(md_list)
 
     database_id = md_list[0][1::]

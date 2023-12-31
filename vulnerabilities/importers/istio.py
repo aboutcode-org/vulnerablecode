@@ -21,6 +21,7 @@ import saneyaml
 from dateutil import parser
 from django.db.models.query import QuerySet
 from packageurl import PackageURL
+from progress.bar import ChargingBar
 from univers.version_constraint import VersionConstraint
 from univers.version_range import GitHubVersionRange
 from univers.version_range import GolangVersionRange
@@ -45,19 +46,27 @@ class IstioImporter(Importer):
     importer_name = "Istio Importer"
 
     def advisory_data(self) -> Set[AdvisoryData]:
+        progress_bar_for_vuln_fetch: ChargingBar
         try:
             self.clone(repo_url=self.repo_url)
             base_path = Path(self.vcs_response.dest_dir)
             vuln = base_path / "content/en/news/security/"
-            for file in vuln.glob("**/*.md"):
+            file_paths_for_fetched_files = list(vuln.glob("**/*.md"))
+            progress_bar_for_vuln_fetch = ChargingBar("\tFetching Advisories", max=len(file_paths_for_fetched_files))
+            progress_bar_for_vuln_fetch.start()
+            for file in file_paths_for_fetched_files:
                 # Istio website has files with name starting with underscore, these contain metadata
                 # required for rendering the website. We're not interested in these.
                 # See also https://github.com/nexB/vulnerablecode/issues/563
-                file = str(file)
-                if file.endswith("_index.md"):
-                    continue
-                yield from self.process_file(file=file, base_path=base_path)
+                try:
+                    file = str(file)
+                    if file.endswith("_index.md"):
+                        continue
+                    yield from self.process_file(file=file, base_path=base_path)
+                finally:
+                    progress_bar_for_vuln_fetch.next()
         finally:
+            progress_bar_for_vuln_fetch.finish()
             if self.vcs_response:
                 self.vcs_response.delete()
 

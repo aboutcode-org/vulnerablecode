@@ -15,6 +15,7 @@ import requests
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
 from packageurl import PackageURL
+from progress.bar import ChargingBar
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -113,6 +114,8 @@ class ApacheKafkaImporter(Importer):
 
         advisory_page = BeautifulSoup(advisory_page, features="lxml")
         cve_section_beginnings = advisory_page.find_all("h2")
+        progress_bar_for_cve_fetch = ChargingBar("\tFetching CVEs", max=len(cve_section_beginnings))
+        progress_bar_for_cve_fetch.start()
         for cve_section_beginning in cve_section_beginnings:
             # This sometimes includes text that follows the CVE on the same line -- sometimes there is a carriage return, sometimes there is not
             # cve_id = cve_section_beginning.text.split("\n")[0]
@@ -195,5 +198,8 @@ class ApacheKafkaImporter(Importer):
                         url=f"{self.ASF_PAGE_URL}#{cve_id}",
                     )
                 )
+            progress_bar_for_cve_fetch.next()
+
+        progress_bar_for_cve_fetch.finish()
 
         return advisories

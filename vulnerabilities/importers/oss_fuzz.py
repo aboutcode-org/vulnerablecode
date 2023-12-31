@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Iterable
 
 import saneyaml
+from progress.bar import ChargingBar
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
@@ -27,21 +28,29 @@ class OSSFuzzImporter(Importer):
     importer_name = "OSS Fuzz Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
+        progress_bar_for_cve_fetch = ChargingBar("\tFetching CVEs")
         try:
             self.clone(repo_url=self.url)
             base_path = Path(self.vcs_response.dest_dir)
             path = base_path / "vulns"
-            for file in path.glob("**/*.yaml"):
-                with open(file) as f:
-                    yaml_data = saneyaml.load(f.read())
-                    advisory_url = get_advisory_url(
-                        file=file,
-                        base_path=base_path,
-                        url="https://github.com/pypa/advisory-database/blob/main/",
-                    )
-                    yield parse_advisory_data(
-                        yaml_data, supported_ecosystem="oss-fuzz", advisory_url=advisory_url
-                    )
+            files = list(path.glob("**/*.yaml"))
+            progress_bar_for_cve_fetch.max = len(files)
+            progress_bar_for_cve_fetch.start()
+            for file in files:
+                try:
+                    with open(file) as f:
+                        yaml_data = saneyaml.load(f.read())
+                        advisory_url = get_advisory_url(
+                            file=file,
+                            base_path=base_path,
+                            url="https://github.com/pypa/advisory-database/blob/main/",
+                        )
+                        yield parse_advisory_data(
+                            yaml_data, supported_ecosystem="oss-fuzz", advisory_url=advisory_url
+                        )
+                finally:
+                    progress_bar_for_cve_fetch.next()
         finally:
+            progress_bar_for_cve_fetch.next()
             if self.vcs_response:
                 self.vcs_response.delete()

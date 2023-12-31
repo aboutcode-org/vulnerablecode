@@ -15,6 +15,7 @@ from collections import namedtuple
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
+from progress.bar import ChargingBar
 from univers.version_constraint import VersionConstraint
 from univers.version_range import ApacheVersionRange
 from univers.version_range import MavenVersionRange
@@ -124,9 +125,17 @@ class ApacheTomcatImporter(Importer):
         """
         Yield the content of each HTML page containing version-related security data.
         """
-        links = self.fetch_advisory_links("https://tomcat.apache.org/security")
-        for page_url in links:
-            yield page_url, requests.get(page_url).content
+        links = list(self.fetch_advisory_links("https://tomcat.apache.org/security"))
+        progress_bar_for_advisory_fetch = ChargingBar("\tFetching Advisories", max=len(links))
+        progress_bar_for_advisory_fetch.start()
+        try:
+            for page_url in links:
+                try:
+                    yield page_url, requests.get(page_url).content
+                finally:
+                    progress_bar_for_advisory_fetch.next()
+        finally:
+            progress_bar_for_advisory_fetch.finish()
 
     def fetch_advisory_links(self, url):
         """

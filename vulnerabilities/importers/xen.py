@@ -6,6 +6,7 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+from progress.bar import ChargingBar
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
@@ -64,8 +65,16 @@ class XenImporter(Importer):
         if not data:
             return []
         xsas = data[0]["xsas"]
-        for xsa in xsas:
-            yield from self.to_advisories(xsa)
+        progress_bar_for_advisory_fetch = ChargingBar("\tFetching Advisories", max=len(xsas))
+        progress_bar_for_advisory_fetch.start()
+        try:
+            for xsa in xsas:
+                try:
+                    yield from self.to_advisories(xsa)
+                finally:
+                    progress_bar_for_advisory_fetch.next()
+        finally:
+            progress_bar_for_advisory_fetch.finish()
 
     def to_advisories(self, xsa):
         xsa_id = xsa.get("xsa")

@@ -12,6 +12,7 @@ from typing import Set
 
 from dateutil import parser as dateparser
 from packageurl import PackageURL
+from progress.bar import ChargingBar
 from univers.version_constraint import VersionConstraint
 from univers.version_range import HexVersionRange
 
@@ -31,13 +32,21 @@ class ElixirSecurityImporter(Importer):
     importer_name = "Elixir Security Importer"
 
     def advisory_data(self) -> Set[AdvisoryData]:
+        progress_bar_for_cve_fetch: ChargingBar
         try:
             self.clone(self.repo_url)
             base_path = Path(self.vcs_response.dest_dir)
             vuln = base_path / "packages"
-            for file in vuln.glob("**/*.yml"):
-                yield from self.process_file(file, base_path)
+            vuln_files = list(vuln.glob("**/*.yml"))
+            progress_bar_for_cve_fetch = ChargingBar("\tFetching CVEs", max=len(vuln_files))
+            progress_bar_for_cve_fetch.start()
+            for file in vuln_files:
+                try:
+                    yield from self.process_file(file, base_path)
+                finally:
+                    progress_bar_for_cve_fetch.next()
         finally:
+            progress_bar_for_cve_fetch.finish()
             if self.vcs_response:
                 self.vcs_response.delete()
 

@@ -9,6 +9,8 @@
 
 from typing import Iterable
 
+from progress.bar import ChargingBar
+
 from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
@@ -37,28 +39,36 @@ class SUSESeverityScoreImporter(Importer):
             "3.1": severity_systems.CVSSV31,
         }
 
-        for cve_id in score_data or []:
-            severities = []
-            for cvss_score in score_data[cve_id].get("cvss") or []:
-                cvss_version = cvss_score.get("version") or ""
-                scoring_system = systems_by_version.get(cvss_version)
-                if not scoring_system:
-                    continue
-                base_score = str(cvss_score.get("score") or "")
-                vector = str(cvss_score.get("vector") or "")
-                score = VulnerabilitySeverity(
-                    system=scoring_system,
-                    value=base_score,
-                    scoring_elements=vector,
-                )
-                severities.append(score)
+        progress_bar_for_cve_fetch = ChargingBar("\tFetching CVEs", max=len(score_data or []))
+        progress_bar_for_cve_fetch.start()
+        try:
+            for cve_id in score_data or []:
+                try:
+                    severities = []
+                    for cvss_score in score_data[cve_id].get("cvss") or []:
+                        cvss_version = cvss_score.get("version") or ""
+                        scoring_system = systems_by_version.get(cvss_version)
+                        if not scoring_system:
+                            continue
+                        base_score = str(cvss_score.get("score") or "")
+                        vector = str(cvss_score.get("vector") or "")
+                        score = VulnerabilitySeverity(
+                            system=scoring_system,
+                            value=base_score,
+                            scoring_elements=vector,
+                        )
+                        severities.append(score)
 
-            if not is_cve(cve_id):
-                continue
+                    if not is_cve(cve_id):
+                        continue
 
-            yield AdvisoryData(
-                aliases=[cve_id],
-                summary="",
-                references=[Reference(url=URL, severities=severities)],
-                url=URL,
-            )
+                    yield AdvisoryData(
+                        aliases=[cve_id],
+                        summary="",
+                        references=[Reference(url=URL, severities=severities)],
+                        url=URL,
+                    )
+                finally:
+                    progress_bar_for_cve_fetch.next()
+        finally:
+            progress_bar_for_cve_fetch.finish()

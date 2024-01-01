@@ -42,8 +42,12 @@ VulnerableCode Package Details - {{ package.purl }}
 
         <div id="tab-content">
             <div class="tab-div is-active" data-content="essentials">
-                <div class="tab-nested-div">
-                    <div class="pl-3 pr-3 mb-5 floating-purl">
+                <div class="tab-nested-div mb-1 pb-0">
+                        {% if affected_by_vulnerabilities|length == 0 %}
+                        <div class="pl-3 pr-3 mb-5 floating-purl pb-0">
+                            {% else %}
+                        <div class="pl-3 pr-3 mb-5 floating-purl pb-2">
+                            {% endif %}
                         <table class="table vcio-table width-100-pct mt-2">
                             <tbody>
                                 <tr>
@@ -61,10 +65,10 @@ VulnerableCode Package Details - {{ package.purl }}
                             </tbody>
                         </table>
                     </div>
-                    {% if affected_by_vulnerabilities|length != 0 %}
+                    {% if affected_by_vulnerabilities|length == 0 %}
 
-                    <div class="pl-3 pr-3 mb-5 non-vuln">
-                        <table class="table vcio-table width-100-pct mt-2">
+                    <div class="pl-3 pr-3 mb-6 non-vuln pb-0">
+                        <table class="table vcio-table width-100-pct">
                             <tbody>
                                 <tr>
                                     <td class="two-col-left">
@@ -98,8 +102,8 @@ VulnerableCode Package Details - {{ package.purl }}
 
                     {% endif %}
 
-                    <div class="content ml-3 mr-3">
-                        <div class="has-text-weight-bold ml-1 mb-0">
+                    <div class="content ml-3 mr-3 pb-1">
+                        <div class="has-text-weight-bold ml-1 mb-0 pb-0">
                             <span class="affected-fixed">Vulnerabilities affecting</span> this package ({{ affected_by_vulnerabilities|length }})
                         </div>
 
@@ -145,56 +149,56 @@ VulnerableCode Package Details - {{ package.purl }}
                                                 class="affected-fixed">fixed by</span> versions.</span>
                                         {% else %}
                                         {% for fixed_pkg in vuln.fixed_by_package_details %}
-                                        <div>
-                                            {% if fixed_pkg.fixed_by_purl_vulnerabilities|length == 0 %}
-                                            <a href="/packages/{{ fixed_pkg.fixed_by_purl }}?search={{ fixed_pkg.fixed_by_purl }}"
-                                                target="_self">{{ fixed_pkg.fixed_by_purl.version }}</a>
-                                            <br />
-                                            <span class="emphasis-not-vulnerable"><span class="affected-fixed">Affected
-                                                    by</span> 0 other vulnerabilities.</span>
-                                            {% else %}
-                                            <a href="/packages/{{ fixed_pkg.fixed_by_purl }}?search={{ fixed_pkg.fixed_by_purl }}"
-                                                target="_self">{{ fixed_pkg.fixed_by_purl.version }}</a>
-                                            {% if fixed_pkg.fixed_by_purl_vulnerabilities|length != 1 %}
-                                            <br />
-                                            <span class="emphasis-vulnerable"><span class="affected-fixed">Affected
-                                                    by</span> {{ fixed_pkg.fixed_by_purl_vulnerabilities|length }} other
-                                                vulnerabilities.</span>
-                                            {% else %}
-                                            <br />
-                                            <span class="emphasis-vulnerable"><span class="affected-fixed">Affected
-                                                    by</span> {{ fixed_pkg.fixed_by_purl_vulnerabilities|length }} other
-                                                vulnerability.</span>
-                                            {% endif %}
-
-                                            <div class="dropdown is-hoverable has-text-weight-normal is-right">
-                                                <div class="dropdown-trigger">
-                                                    <i
-                                                        class="fa fa-question-circle ml-0 fa-sm has-background-white has-text-link"></i>
-                                                </div>
-                                                <div class="dropdown-menu dropdown-vuln-list-width" id="dropdown-menu4"
-                                                    role="menu">
-                                                    <div class="dropdown-content dropdown-instructions-box-shadow">
-                                                        <div class="dropdown-item">
-                                                            <div style="max-height: 200px; overflow-y: auto;">
-                                                                This version is <span class="affected-fixed">affected
-                                                                    by</span> these other vulnerabilities:
-                                                                <div style="padding-top: 5px;">
-                                                                    {% for fixed_by_vuln in fixed_pkg.fixed_by_purl_vulnerabilities %}
-                                                                    <div>
-                                                                        <a href="/vulnerabilities/{{ fixed_by_vuln.vulnerability_id }}"
-                                                                            target="_self">{{
-                                                                            fixed_by_vuln.vulnerability_id }}</a>
+                                            <section>
+                                                {% if fixed_pkg.fixed_by_purl_vulnerabilities|length == 0 %}
+                                                <a href="/packages/{{ fixed_pkg.fixed_by_purl }}?search={{ fixed_pkg.fixed_by_purl }}"
+                                                    target="_self">{{ fixed_pkg.fixed_by_purl.version }}</a>
+                                                <br />
+                                                <span class="emphasis-not-vulnerable"><span class="affected-fixed">Affected
+                                                        by</span> 0 other vulnerabilities.</span>
+                                                {% else %}
+                                                <a href="/packages/{{ fixed_pkg.fixed_by_purl }}?search={{ fixed_pkg.fixed_by_purl }}"
+                                                    target="_self">{{ fixed_pkg.fixed_by_purl.version }}</a>
+                                                {% if fixed_pkg.fixed_by_purl_vulnerabilities|length != 1 %}
+                                                <br />
+                                                <span class="emphasis-vulnerable"><span class="affected-fixed">Affected
+                                                        by</span> {{ fixed_pkg.fixed_by_purl_vulnerabilities|length }} other
+                                                    vulnerabilities.</span>
+                                                {% else %}
+                                                <br />
+                                                <span class="emphasis-vulnerable"><span class="affected-fixed">Affected
+                                                        by</span> {{ fixed_pkg.fixed_by_purl_vulnerabilities|length }} other
+                                                    vulnerability.</span>
+                                                {% endif %}
+    
+                                                <div class="dropdown is-hoverable has-text-weight-normal is-right">
+                                                    <div class="dropdown-trigger">
+                                                        <i
+                                                            class="fa fa-question-circle ml-0 fa-sm has-background-white has-text-link"></i>
+                                                    </div>
+                                                    <div class="dropdown-menu dropdown-vuln-list-width" id="dropdown-menu4"
+                                                        role="menu">
+                                                        <div class="dropdown-content dropdown-instructions-box-shadow">
+                                                            <div class="dropdown-item">
+                                                                <div style="max-height: 200px; overflow-y: auto;">
+                                                                    This version is <span class="affected-fixed">affected
+                                                                        by</span> these other vulnerabilities:
+                                                                    <div style="padding-top: 5px;">
+                                                                        {% for fixed_by_vuln in fixed_pkg.fixed_by_purl_vulnerabilities %}
+                                                                        <div>
+                                                                            <a href="/vulnerabilities/{{ fixed_by_vuln.vulnerability_id }}"
+                                                                                target="_self">{{
+                                                                                fixed_by_vuln.vulnerability_id }}</a>
+                                                                        </div>
+                                                                        {% endfor %}
                                                                     </div>
-                                                                    {% endfor %}
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            {% endif %}
-                                        </div>
+                                                {% endif %}
+                                            </section>
                                         {% endfor %}
                                         {% endif %}
                                         {% endif %}
@@ -216,8 +220,8 @@ VulnerableCode Package Details - {{ package.purl }}
                         </table>
                     </div>
 
-                    <div class="content ml-3 mr-3">
-                        <div class="has-text-weight-bold ml-1 mb-0">
+                    <div class="content ml-3 mr-3 pb-0 mb-0">
+                        <div class="has-text-weight-bold ml-1 mb-0 pb-0">
                             <span class="affected-fixed">Vulnerabilities fixed by</span> this package ({{ fixing_vulnerabilities|length }})
                         </div>
 

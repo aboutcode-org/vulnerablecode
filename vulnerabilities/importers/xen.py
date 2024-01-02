@@ -67,14 +67,12 @@ class XenImporter(Importer):
         xsas = data[0]["xsas"]
         progress_bar_for_advisory_fetch = ChargingBar("\tFetching Advisories", max=len(xsas))
         progress_bar_for_advisory_fetch.start()
-        try:
-            for xsa in xsas:
-                try:
-                    yield from self.to_advisories(xsa)
-                finally:
-                    progress_bar_for_advisory_fetch.next()
-        finally:
-            progress_bar_for_advisory_fetch.finish()
+
+        for xsa in xsas:
+            yield from self.to_advisories(xsa)
+            progress_bar_for_advisory_fetch.next()
+
+        progress_bar_for_advisory_fetch.finish()
 
     def to_advisories(self, xsa):
         xsa_id = xsa.get("xsa")

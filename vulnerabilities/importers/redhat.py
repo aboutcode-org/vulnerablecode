@@ -71,12 +71,14 @@ class RedhatImporter(Importer):
     def advisory_data(self) -> Iterable[AdvisoryData]:
         page_no = 1
         for redhat_cves in fetch_cves():
-            progress_bar_for_cve_fetch = ChargingBar(f"\tFetching CVE Set-{page_no}", max=len(redhat_cves))
+            progress_bar_for_cve_fetch = ChargingBar(
+                f"\tFetching CVE Set-{page_no}", max=len(redhat_cves)
+            )
             for redhat_cve in redhat_cves:
                 yield to_advisory(redhat_cve)
                 progress_bar_for_cve_fetch.next()
             progress_bar_for_cve_fetch.finish()
-            page_no+=1
+            page_no += 1
 
 
 def to_advisory(advisory_data):

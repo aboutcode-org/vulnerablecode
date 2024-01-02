@@ -41,10 +41,8 @@ class ElixirSecurityImporter(Importer):
             progress_bar_for_cve_fetch = ChargingBar("\tFetching CVEs", max=len(vuln_files))
             progress_bar_for_cve_fetch.start()
             for file in vuln_files:
-                try:
-                    yield from self.process_file(file, base_path)
-                finally:
-                    progress_bar_for_cve_fetch.next()
+                yield from self.process_file(file, base_path)
+                progress_bar_for_cve_fetch.next()
         finally:
             progress_bar_for_cve_fetch.finish()
             if self.vcs_response:

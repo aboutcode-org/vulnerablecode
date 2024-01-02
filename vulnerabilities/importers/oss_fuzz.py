@@ -37,20 +37,18 @@ class OSSFuzzImporter(Importer):
             progress_bar_for_cve_fetch.max = len(files)
             progress_bar_for_cve_fetch.start()
             for file in files:
-                try:
-                    with open(file) as f:
-                        yaml_data = saneyaml.load(f.read())
-                        advisory_url = get_advisory_url(
-                            file=file,
-                            base_path=base_path,
-                            url="https://github.com/pypa/advisory-database/blob/main/",
-                        )
-                        yield parse_advisory_data(
-                            yaml_data, supported_ecosystem="oss-fuzz", advisory_url=advisory_url
-                        )
-                finally:
-                    progress_bar_for_cve_fetch.next()
+                with open(file) as f:
+                    yaml_data = saneyaml.load(f.read())
+                    advisory_url = get_advisory_url(
+                        file=file,
+                        base_path=base_path,
+                        url="https://github.com/pypa/advisory-database/blob/main/",
+                    )
+                    yield parse_advisory_data(
+                        yaml_data, supported_ecosystem="oss-fuzz", advisory_url=advisory_url
+                    )
+                progress_bar_for_cve_fetch.next()
         finally:
-            progress_bar_for_cve_fetch.next()
+            progress_bar_for_cve_fetch.finish()
             if self.vcs_response:
                 self.vcs_response.delete()

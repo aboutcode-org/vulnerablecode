@@ -71,32 +71,29 @@ class UbuntuUSNImporter(Importer):
 
     def to_advisories(self, usn_db):
         progress_bar_for_advisory_fetch = ChargingBar("\tFetching Advisories", max=len(usn_db))
-        try:
-            progress_bar_for_advisory_fetch.start()
-            for usn in usn_db:
-                try:
-                    usn_data = usn_db[usn]
-                    usn_reference = get_usn_reference(usn_data.get("id"))
-                    usn_references = []
-                    if usn_reference:
-                        usn_references = [usn_reference]
-                    for cve in usn_data.get("cves", []):
-                        # The db sometimes contains entries like
-                        # {'cves': ['python-pgsql vulnerabilities', 'CVE-2006-2313', 'CVE-2006-2314']}
-                        # This `if` filters entries like 'python-pgsql vulnerabilities'
-                        if not is_cve(cve):
-                            continue
+        progress_bar_for_advisory_fetch.start()
+        for usn in usn_db:
+            usn_data = usn_db[usn]
+            usn_reference = get_usn_reference(usn_data.get("id"))
+            usn_references = []
+            if usn_reference:
+                usn_references = [usn_reference]
+            for cve in usn_data.get("cves", []):
+                # The db sometimes contains entries like
+                # {'cves': ['python-pgsql vulnerabilities', 'CVE-2006-2313', 'CVE-2006-2314']}
+                # This `if` filters entries like 'python-pgsql vulnerabilities'
+                if not is_cve(cve):
+                    continue
 
-                        yield AdvisoryData(
-                            aliases=[cve],
-                            summary="",
-                            references=usn_references,
-                            url=usn_reference.url or self.db_url,
-                        )
-                finally:
-                    progress_bar_for_advisory_fetch.next()
-        finally:
-            progress_bar_for_advisory_fetch.finish()
+                yield AdvisoryData(
+                    aliases=[cve],
+                    summary="",
+                    references=usn_references,
+                    url=usn_reference.url or self.db_url,
+                )
+                progress_bar_for_advisory_fetch.next()
+
+        progress_bar_for_advisory_fetch.finish()
 
 
 def get_usn_reference(usn_id):

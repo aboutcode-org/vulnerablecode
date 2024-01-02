@@ -128,14 +128,11 @@ class ApacheTomcatImporter(Importer):
         links = list(self.fetch_advisory_links("https://tomcat.apache.org/security"))
         progress_bar_for_advisory_fetch = ChargingBar("\tFetching Advisories", max=len(links))
         progress_bar_for_advisory_fetch.start()
-        try:
-            for page_url in links:
-                try:
-                    yield page_url, requests.get(page_url).content
-                finally:
-                    progress_bar_for_advisory_fetch.next()
-        finally:
-            progress_bar_for_advisory_fetch.finish()
+        for page_url in links:
+            yield page_url, requests.get(page_url).content
+            progress_bar_for_advisory_fetch.next()
+
+        progress_bar_for_advisory_fetch.finish()
 
     def fetch_advisory_links(self, url):
         """

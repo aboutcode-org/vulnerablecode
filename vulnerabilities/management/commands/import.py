@@ -11,7 +11,8 @@ import traceback
 import progress
 from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
-from progress.bar import  IncrementalBar
+from progress.bar import IncrementalBar
+
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.importers import IMPORTERS_REGISTRY
 

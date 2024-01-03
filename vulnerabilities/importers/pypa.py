@@ -35,16 +35,13 @@ class PyPaImporter(Importer):
             path = Path(vcs_response.dest_dir)
             progress_bar_for_package_fetch.max = len(dict(fork_and_get_files(base_path=path)))
             progress_bar_for_package_fetch.start()
-
             for advisory_url, raw_data in fork_and_get_files(base_path=path):
-                try:
-                    yield parse_advisory_data(
-                        raw_data=raw_data,
-                        supported_ecosystem="pypi",
-                        advisory_url=advisory_url,
-                    )
-                finally:
-                    progress_bar_for_package_fetch.next()
+                yield parse_advisory_data(
+                    raw_data=raw_data,
+                    supported_ecosystem="pypi",
+                    advisory_url=advisory_url,
+                )
+                progress_bar_for_package_fetch.next()
         finally:
             progress_bar_for_package_fetch.finish()
             if self.vcs_response:

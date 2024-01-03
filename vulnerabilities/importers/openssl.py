@@ -52,18 +52,13 @@ def parse_vulnerabilities(xml_response) -> Iterable[AdvisoryData]:
     root = DET.fromstring(xml_response)
     progress_bar_for_vulnerability_fetch = ChargingBar("\tFetching Vulnerabilities", max=len(root))
     progress_bar_for_vulnerability_fetch.start()
-    try:
-        for xml_issue in root:
-            try:
-                if xml_issue.tag == "issue":
-                    advisory = to_advisory_data(xml_issue)
-                    if advisory:
-                        yield advisory
-            finally:
-                progress_bar_for_vulnerability_fetch.next()
-    finally:
-        progress_bar_for_vulnerability_fetch.finish()
-
+    for xml_issue in root:
+        if xml_issue.tag == "issue":
+            advisory = to_advisory_data(xml_issue)
+            if advisory:
+                yield advisory
+        progress_bar_for_vulnerability_fetch.next()
+    progress_bar_for_vulnerability_fetch.finish()
 
 
 def to_advisory_data(xml_issue) -> AdvisoryData:

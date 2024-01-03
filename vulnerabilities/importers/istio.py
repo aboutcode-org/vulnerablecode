@@ -52,19 +52,19 @@ class IstioImporter(Importer):
             base_path = Path(self.vcs_response.dest_dir)
             vuln = base_path / "content/en/news/security/"
             file_paths_for_fetched_files = list(vuln.glob("**/*.md"))
-            progress_bar_for_vuln_fetch = ChargingBar("\tFetching Advisories", max=len(file_paths_for_fetched_files))
+            progress_bar_for_vuln_fetch = ChargingBar(
+                "\tFetching Advisories", max=len(file_paths_for_fetched_files)
+            )
             progress_bar_for_vuln_fetch.start()
             for file in file_paths_for_fetched_files:
                 # Istio website has files with name starting with underscore, these contain metadata
                 # required for rendering the website. We're not interested in these.
                 # See also https://github.com/nexB/vulnerablecode/issues/563
-                try:
-                    file = str(file)
-                    if file.endswith("_index.md"):
-                        continue
-                    yield from self.process_file(file=file, base_path=base_path)
-                finally:
-                    progress_bar_for_vuln_fetch.next()
+                file = str(file)
+                if file.endswith("_index.md"):
+                    continue
+                yield from self.process_file(file=file, base_path=base_path)
+                progress_bar_for_vuln_fetch.next()
         finally:
             progress_bar_for_vuln_fetch.finish()
             if self.vcs_response:

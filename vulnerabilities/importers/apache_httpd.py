@@ -39,16 +39,12 @@ class ApacheHTTPDImporter(Importer):
     def advisory_data(self):
         links = fetch_links(self.base_url)
         progress_bar_for_fetch_links = ChargingBar("\tFetching Vulnerabilitites", max=len(links))
-        try:
-            progress_bar_for_fetch_links.start()
-            for link in links:
-                try:
-                    data = requests.get(link).json()
-                    yield self.to_advisory(data)
-                finally:
-                    progress_bar_for_fetch_links.next()
-        finally:
-            progress_bar_for_fetch_links.finish()
+        progress_bar_for_fetch_links.start()
+        for link in links:
+            data = requests.get(link).json()
+            yield self.to_advisory(data)
+            progress_bar_for_fetch_links.next()
+        progress_bar_for_fetch_links.finish()
 
     def to_advisory(self, data):
         alias = get_item(data, "CVE_data_meta", "ID")

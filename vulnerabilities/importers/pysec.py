@@ -22,6 +22,7 @@ from vulnerabilities.importers.osv import parse_advisory_data
 logger = logging.getLogger(__name__)
 progress_bar_for_package_fetch = ChargingBar("\tFetching Packages")
 
+
 class PyPIImporter(Importer):
     license_url = "https://github.com/pypa/advisory-database/blob/main/LICENSE"
     spdx_license_expression = "CC-BY-4.0"
@@ -39,19 +40,15 @@ class PyPIImporter(Importer):
 
 
 def process_zipfile_response(zip_file: ZipFile, url: str) -> Iterable[AdvisoryData]:
-    try:
-        progress_bar_for_package_fetch.start()
-        for file_name in zip_file.namelist():
-            try:
-                if not file_name.startswith("PYSEC-"):
-                    logger.error(f"Unsupported PyPI advisory data file: {file_name}")
-                    continue
-                with zip_file.open(file_name) as f:
-                    vul_info = json.load(f)
-                    yield parse_advisory_data(
-                        raw_data=vul_info, supported_ecosystem="pypi", advisory_url=url
-                    )
-            finally:
-                progress_bar_for_package_fetch.next()
-    finally:
-        progress_bar_for_package_fetch.finish()
+    progress_bar_for_package_fetch.start()
+    for file_name in zip_file.namelist():
+        if not file_name.startswith("PYSEC-"):
+            logger.error(f"Unsupported PyPI advisory data file: {file_name}")
+            continue
+        with zip_file.open(file_name) as f:
+            vul_info = json.load(f)
+            yield parse_advisory_data(
+                raw_data=vul_info, supported_ecosystem="pypi", advisory_url=url
+            )
+        progress_bar_for_package_fetch.next()
+    progress_bar_for_package_fetch.finish()

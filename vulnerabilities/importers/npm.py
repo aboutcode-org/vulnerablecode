@@ -46,12 +46,9 @@ class NpmImporter(Importer):
             paths_for_files_fetched = list(npm_vulns.glob("*.json"))
             progress_bar_for_fetched_files.max = len(paths_for_files_fetched)
             progress_bar_for_fetched_files.start()
-
             for file in paths_for_files_fetched:
-                try:
-                    yield from self.to_advisory_data(file)
-                finally:
-                    progress_bar_for_fetched_files.next()
+                yield from self.to_advisory_data(file)
+                progress_bar_for_fetched_files.next()
         finally:
             progress_bar_for_fetched_files.finish()
             if self.vcs_response:

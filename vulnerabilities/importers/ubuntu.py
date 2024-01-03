@@ -76,25 +76,20 @@ class UbuntuImporter(OvalImporter):
         releases = ["bionic", "trusty", "focal", "eoan", "xenial"]
         progress_bar_for_package_fetch = ChargingBar("\tFetching Packages", max=len(releases))
         progress_bar_for_package_fetch.start()
-        try:
-            for release in releases:
-                try:
-                    file_url = f"{base_url}/com.ubuntu.{release}.cve.oval.xml.bz2"  # nopep8
-                    self.data_url = file_url
-                    logger.info(f"Fetching Ubuntu Oval: {file_url}")
-                    response = requests.get(file_url)
-                    if response.status_code != requests.codes.ok:
-                        logger.error(
-                            f"Failed to fetch Ubuntu Oval: HTTP {response.status_code} : {file_url}"
-                        )
-                        continue
-
-                    extracted = bz2.decompress(response.content)
-                    yield (
-                        {"type": "deb", "namespace": "ubuntu"},
-                        ET.ElementTree(ET.fromstring(extracted.decode("utf-8"))),
-                    )
-                finally:
-                    progress_bar_for_package_fetch.next()
-        finally:
-            progress_bar_for_package_fetch.finish()
+        for release in releases:
+            file_url = f"{base_url}/com.ubuntu.{release}.cve.oval.xml.bz2"  # nopep8
+            self.data_url = file_url
+            logger.info(f"Fetching Ubuntu Oval: {file_url}")
+            response = requests.get(file_url)
+            if response.status_code != requests.codes.ok:
+                logger.error(
+                    f"Failed to fetch Ubuntu Oval: HTTP {response.status_code} : {file_url}"
+                )
+                continue
+            extracted = bz2.decompress(response.content)
+            yield (
+                {"type": "deb", "namespace": "ubuntu"},
+                ET.ElementTree(ET.fromstring(extracted.decode("utf-8"))),
+            )
+            progress_bar_for_package_fetch.next()
+        progress_bar_for_package_fetch.finish()

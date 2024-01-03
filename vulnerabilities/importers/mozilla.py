@@ -48,13 +48,13 @@ class MozillaImporter(Importer):
 
             vuln = base_path / "announce"
             paths = list(vuln.glob("**/*.yml")) + list(vuln.glob("**/*.md"))
-            progress_bar_for_fetched_files = ChargingBar("\tFetching Vulnerabilities", max=len(paths))
+            progress_bar_for_fetched_files = ChargingBar(
+                "\tFetching Vulnerabilities", max=len(paths)
+            )
             progress_bar_for_fetched_files.start()
             for file_path in paths:
-                try:
-                    yield from to_advisories(file_path, base_path)
-                finally:
-                    progress_bar_for_fetched_files.next()
+                yield from to_advisories(file_path, base_path)
+                progress_bar_for_fetched_files.next()
         finally:
             progress_bar_for_fetched_files.finish()
             if self.vcs_response:

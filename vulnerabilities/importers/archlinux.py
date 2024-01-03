@@ -39,14 +39,10 @@ class ArchlinuxImporter(Importer):
         records = self.fetch()
         progress_bar_for_package_fetch = ChargingBar("\tFetching Packages", max=len(records or []))
         progress_bar_for_package_fetch.start()
-        try:
-            for record in records:
-                try:
-                    yield from self.parse_advisory(record)
-                finally:
-                    progress_bar_for_package_fetch.next()
-        finally:
-            progress_bar_for_package_fetch.finish()
+        for record in records:
+            yield from self.parse_advisory(record)
+            progress_bar_for_package_fetch.next()
+        progress_bar_for_package_fetch.finish()
 
     def parse_advisory(self, record) -> List[AdvisoryData]:
         advisories = []

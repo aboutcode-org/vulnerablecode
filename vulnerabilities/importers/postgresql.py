@@ -49,14 +49,11 @@ class PostgreSQLImporter(Importer):
 
         progress_bar_for_advisory_fetch.max = len(data_by_url)
         progress_bar_for_advisory_fetch.start()
-        try:
-            for url, data in data_by_url.items():
-                try:
-                    yield from to_advisories(data)
-                finally:
-                    progress_bar_for_advisory_fetch.next()
-        finally:
-            progress_bar_for_advisory_fetch.finish()
+        for url, data in data_by_url.items():
+            yield from to_advisories(data)
+            progress_bar_for_advisory_fetch.next()
+        progress_bar_for_advisory_fetch.finish()
+
 
 def to_advisories(data):
     advisories = []

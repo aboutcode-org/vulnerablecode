@@ -42,26 +42,24 @@ class AlpineImporter(Importer):
         page_response_content = fetch_response(BASE_URL).content
         advisory_directory_links = fetch_advisory_directory_links(page_response_content)
         advisory_links = []
-        progress_for_package_fetch = ChargingBar("\tFetching Packages", max=len(advisory_directory_links))
+        progress_for_package_fetch = ChargingBar(
+            "\tFetching Packages", max=len(advisory_directory_links)
+        )
+        progress_for_package_fetch.start()
+        for advisory_directory_link in advisory_directory_links:
+            advisory_directory_page = fetch_response(advisory_directory_link).content
+            advisory_links.extend(
+                fetch_advisory_links(advisory_directory_page, advisory_directory_link)
+            )
+        for link in advisory_links:
+            record = fetch_response(link).json()
+            if not record["packages"]:
+                LOGGER.error(f'"packages" not found in {link!r}')
+                continue
+            yield from process_record(record=record, url=link)
+            progress_for_package_fetch.next()
+        progress_for_package_fetch.finish()
 
-        try:
-            progress_for_package_fetch.start()
-            for advisory_directory_link in advisory_directory_links:
-                advisory_directory_page = fetch_response(advisory_directory_link).content
-                advisory_links.extend(
-                    fetch_advisory_links(advisory_directory_page, advisory_directory_link)
-                )
-            for link in advisory_links:
-                try:
-                    record = fetch_response(link).json()
-                    if not record["packages"]:
-                        LOGGER.error(f'"packages" not found in {link!r}')
-                        continue
-                    yield from process_record(record=record, url=link)
-                finally:
-                    progress_for_package_fetch.next()
-        finally:
-            progress_for_package_fetch.finish()
 
 def fetch_advisory_directory_links(page_response_content: str) -> List[str]:
     """

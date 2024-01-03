@@ -38,25 +38,17 @@ class ProjectKBMSRImporter(Importer):
         rows = list(csv_reader)
         progress_bar_for_cve_fetch = ChargingBar("\tFetching CVEs", max=len(rows))
         progress_bar_for_cve_fetch.start()
-        counter = 0
-        try:
-            for row in rows:
-                try:
-                    vuln_id, proj_home, fix_commit, _ = row
-                    commit_link = proj_home + "/commit/" + fix_commit
-
-                    if not is_cve(vuln_id):
-                        continue
-
-                    reference = Reference(url=commit_link)
-                    yield AdvisoryData(
-                        aliases=[vuln_id],
-                        summary="",
-                        references=[reference],
-                        url=self.url,
-                    )
-                finally:
-                    progress_bar_for_cve_fetch.next()
-        finally:
-            progress_bar_for_cve_fetch.finish()
-            print("Finish")
+        for row in rows:
+            vuln_id, proj_home, fix_commit, _ = row
+            commit_link = proj_home + "/commit/" + fix_commit
+            if not is_cve(vuln_id):
+                continue
+            reference = Reference(url=commit_link)
+            yield AdvisoryData(
+                aliases=[vuln_id],
+                summary="",
+                references=[reference],
+                url=self.url,
+            )
+            progress_bar_for_cve_fetch.next()
+        progress_bar_for_cve_fetch.finish()

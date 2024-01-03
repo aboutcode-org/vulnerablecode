@@ -36,18 +36,17 @@ class RetireDotnetImporter(Importer):
         try:
             self.clone(repo_url=self.repo_url)
             base_path = Path(self.vcs_response.dest_dir)
-
             vuln = base_path / "Content"
             paths_for_vulnerabilities = list(vuln.glob("*.json"))
-            progress_bar_for_fetched_files = ChargingBar("\tFetching Vulnerabilities", max=len(paths_for_vulnerabilities))
+            progress_bar_for_fetched_files = ChargingBar(
+                "\tFetching Vulnerabilities", max=len(paths_for_vulnerabilities)
+            )
             progress_bar_for_fetched_files.start()
             for file in paths_for_vulnerabilities:
-                try:
-                    advisory = self.process_file(file, base_path)
-                    if advisory:
-                        yield advisory
-                finally:
-                    progress_bar_for_fetched_files.next()
+                advisory = self.process_file(file, base_path)
+                if advisory:
+                    yield advisory
+                progress_bar_for_fetched_files.next()
         finally:
             progress_bar_for_fetched_files.finish()
             if self.vcs_response:

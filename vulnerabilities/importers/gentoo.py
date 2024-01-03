@@ -43,10 +43,8 @@ class GentooImporter(Importer):
             progress_bar_for_package_fetch = ChargingBar("\tFetching Packages", max=len(base_paths))
             progress_bar_for_package_fetch.start()
             for file_path in base_paths:
-                try:
-                    yield from self.process_file(file_path)
-                finally:
-                    progress_bar_for_package_fetch.next()
+                yield from self.process_file(file_path)
+                progress_bar_for_package_fetch.next()
         finally:
             progress_bar_for_package_fetch.finish()
             if self.vcs_response:

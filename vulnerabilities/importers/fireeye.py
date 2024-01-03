@@ -40,9 +40,12 @@ class FireyeImporter(Importer):
         try:
             self.vcs_response = self.clone(repo_url=self.repo_url)
             base_path = Path(self.vcs_response.dest_dir)
-            files = list(filter(
-                lambda p: p.suffix in [".md", ".MD"], Path(self.vcs_response.dest_dir).glob("**/*")
-            ))
+            files = list(
+                filter(
+                    lambda p: p.suffix in [".md", ".MD"],
+                    Path(self.vcs_response.dest_dir).glob("**/*"),
+                )
+            )
             progress_bar_for_advisory_fetch = ChargingBar("\tFetching Advisories", max=len(files))
             progress_bar_for_advisory_fetch.start()
 

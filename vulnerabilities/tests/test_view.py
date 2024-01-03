@@ -168,3 +168,11 @@ class VulnerabilitySearchTestCase(TestCase):
     def test_vulnerabilties_search_view_can_find_alias(self):
         response = self.client.get(f"/vulnerabilities/search?search=TEST-2022")
         self.assertEqual(response.status_code, 200)
+
+
+class CheckRobotsTxtTestCase(TestCase):
+    def test_robots_txt(self):
+        response = self.client.get("/robots.txt")
+        assert response.status_code == 200
+        response = self.client.post("/robots.txt")
+        assert response.status_code == 405

@@ -100,11 +100,9 @@ class GitHubAPIImporter(Importer):
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         progress_bar_for_package_fetch.start()
-        try:
-            for ecosystem, package_type in PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM.items():
-                yield from send_graphql_query(ecosystem, package_type)
-        finally:
-            progress_bar_for_package_fetch.finish()
+        for ecosystem, package_type in PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM.items():
+            yield from send_graphql_query(ecosystem, package_type)
+        progress_bar_for_package_fetch.finish()
 
 
 def send_graphql_query(ecosystem: str, package_type: str) -> Iterable[AdvisoryData]:

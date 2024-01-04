@@ -43,7 +43,7 @@ VulnerableCode Package Details - {{ package.purl }}
         <div id="tab-content">
             <div class="tab-div is-active" data-content="essentials">
                 <div class="tab-nested-div mb-1 pb-0">
-                        {% if affected_by_vulnerabilities|length == 0 %}
+                        {% if affected_by_vulnerabilities|length != 0 %}
                         <div class="pl-3 pr-3 mb-5 floating-purl pb-0">
                             {% else %}
                         <div class="pl-3 pr-3 mb-5 floating-purl pb-2">
@@ -65,7 +65,7 @@ VulnerableCode Package Details - {{ package.purl }}
                             </tbody>
                         </table>
                     </div>
-                    {% if affected_by_vulnerabilities|length == 0 %}
+                    {% if affected_by_vulnerabilities|length != 0 %}
 
                     <div class="pl-3 pr-3 mb-6 non-vuln pb-0">
                         <table class="table vcio-table width-100-pct">

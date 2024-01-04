@@ -147,6 +147,7 @@ class VulnerabilityDetails(DetailView):
                 "weaknesses": weaknesses_present_in_db,
                 "status": status,
                 "history": self.object.history,
+                "date_published": self.object.get_date_published
             }
         )
         return context

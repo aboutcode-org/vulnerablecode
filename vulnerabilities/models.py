@@ -37,6 +37,8 @@ from packageurl.contrib.django.models import PackageURLQuerySet
 from rest_framework.authtoken.models import Token
 from univers import versions
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
+from univers.version_range import AlpineLinuxVersionRange
+from univers.versions import Version
 
 from vulnerabilities import utils
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
@@ -645,7 +647,11 @@ class Package(PackageURLMixin):
 
     @property
     def version_class(self):
-        return RANGE_CLASS_BY_SCHEMES[self.type].version_class
+        RANGE_CLASS_BY_SCHEMES["alpine"] = AlpineLinuxVersionRange
+        range_class = RANGE_CLASS_BY_SCHEMES.get(self.type)
+        if not range_class:
+            return Version
+        return range_class.version_class
 
     @property
     def current_version(self):

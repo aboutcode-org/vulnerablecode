@@ -93,6 +93,8 @@ class GitHubAPIImporter(Importer):
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://github.com/github/advisory-database/blob/main/LICENSE.md" 
     
+    importer_name = "GHSA Importer"
+
     def advisory_data(self) -> Iterable[AdvisoryData]:
         for ecosystem, package_type in PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM.items():
             end_cursor_exp = ""
@@ -210,6 +212,7 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
                     )
                 )
         identifiers = get_item(advisory, "identifiers") or []
+        ghsa_id = ""
         for identifier in identifiers:
             value = identifier["value"]
             identifier_type = identifier["type"]
@@ -218,6 +221,7 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
             if identifier_type == "GHSA":
                 # Each Node has only one GHSA, hence exit after attaching
                 # score to this GHSA
+                ghsa_id = value
                 for ref in references:
                     if ref.reference_id == value:
                         severity = get_item(advisory, "severity")
@@ -243,6 +247,7 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
             affected_packages=affected_packages,
             date_published=date_published,
             weaknesses=weaknesses,
+            url=f"https://github.com/advisories/{ghsa_id}",
         )
 
 

@@ -92,7 +92,6 @@ query{
 class GitHubAPIImporter(Importer):
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://github.com/github/advisory-database/blob/main/LICENSE.md" 
-    
     importer_name = "GHSA Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:

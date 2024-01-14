@@ -407,8 +407,8 @@ class TestPackageModel(TestCase):
         pypi_package_version = RANGE_CLASS_BY_SCHEMES[pypi_package.type].version_class
         assert pypi_package_version == versions.PypiVersion
 
-        RANGE_CLASS_BY_SCHEMES["alpine"] = AlpineLinuxVersionRange
-        alpine_version = RANGE_CLASS_BY_SCHEMES["alpine"].version_class
+        alpine_package = models.Package.objects.create(type="alpine", name="lxml", version="0.9")
+        alpine_version = RANGE_CLASS_BY_SCHEMES[alpine_package.type].version_class
         assert alpine_version == versions.AlpineLinuxVersion
 
     def test_sort_by_version(self):

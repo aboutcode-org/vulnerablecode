@@ -1,13 +1,30 @@
 Release notes
 =============
 
+Version v34.0.0rc2
+-------------------
+
+- We updated package-url models, WARNING: in next major version of 
+  vulnerablecode i.e v35.0.0 qualifiers will be of type ``string`` and not ``dict``.
+- We added changelog and dates on packages and vulnerabilities.
+- We fixed table borders in Vulnerability details UI #1356 (#1358)
+- We added robots.txt in views.
+- We fixed import runner's process_inferences (#1360)
+- We fixed debian OVAL importer (#1361)
+- We added graph model diagrams #977(#1350)
+- We added endpoint for purl lookup (#1359)
+- We fixed swagger API docs generation (#1366)
+- Fix issues https://github.com/nexB/vulnerablecode/issues/1385, https://github.com/nexB/vulnerablecode/issues/1387
+
 
 Version v34.0.0rc1
 -------------------
 
 - We updated package-url models, WARNING: in next major version of 
   vulnerablecode i.e v35.0.0 qualifiers will be of type ``string`` and not ``dict``.
+- We added changelog and dates on packages and vulnerabilities.
 - We fixed table borders in Vulnerability details UI #1356 (#1358)
+- We added robots.txt in views.
 - We fixed import runner's process_inferences (#1360)
 - We fixed debian OVAL importer (#1361)
 - We added graph model diagrams #977(#1350)

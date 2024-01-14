@@ -45,6 +45,10 @@ api_router.register("aliases", AliasViewSet, basename="alias")
 
 urlpatterns = [
     path(
+        "robots.txt",
+        TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
+    ),
+    path(
         "",
         HomePage.as_view(),
         name="home",

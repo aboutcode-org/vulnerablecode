@@ -97,6 +97,7 @@ progress_bar_for_package_fetch = ChargingBar(
 class GitHubAPIImporter(Importer):
     spdx_license_expression = "CC-BY-4.0"
     importer_name = "GHSA Importer"
+    license_url = "https://github.com/github/advisory-database/blob/main/LICENSE.md"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         progress_bar_for_package_fetch.start()

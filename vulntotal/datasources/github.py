@@ -68,8 +68,8 @@ class GithubDataSource(DataSource):
             yield VendorData(
                 purl=purl,
                 aliases=sorted(list(set(advisory.get("identifiers", None)))),
-                affected_versions=sorted(list(set(advisory.get("firstPatchedVersion", None)))),
-                fixed_versions=sorted(list(set(advisory.get("vulnerableVersionRange", None)))),
+                affected_versions=sorted(list(set(advisory.get("vulnerableVersionRange", None)))),
+                fixed_versions=sorted(list(set(advisory.get("firstPatchedVersion", None)))),
             )
 
     @classmethod

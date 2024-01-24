@@ -95,7 +95,7 @@ def parse_advisory(response, purl) -> Iterable[VendorData]:
 
         try:
             affected_versions.extend(get_item(vuln, "affected", 0, "versions") or [])
-        except KeyError as e:
+        except (KeyError, TypeError, IndexError) as e:
             logger.error(f"Error while parsing affected versions: {e}")
 
         try:
@@ -104,7 +104,7 @@ def parse_advisory(response, purl) -> Iterable[VendorData]:
                 [event.get("introduced") for event in events if event.get("introduced")]
             )
             fixed.extend([event.get("fixed") for event in events if event.get("fixed")])
-        except KeyError as e:
+        except (KeyError, TypeError, IndexError) as e:
             logger.error(f"Error while parsing events: {e}")
 
         yield VendorData(

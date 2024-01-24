@@ -194,7 +194,7 @@ def parse_html_advisory(advisory_html, snyk_id, affected, purl) -> VendorData:
         if "Upgrade" in fixed:
             lower = fixed.index("version") if "version" in fixed else fixed.index("versions")
             upper = fixed.index("or")
-            fixed_versions = [ver.strip(",") for ver in fixed[lower + 1 : upper]]
+            fixed_versions = "".join(fixed[lower + 1 : upper]).split(",")
     aliases.append(snyk_id)
     return VendorData(
         purl=PackageURL(purl.type, purl.namespace, purl.name),

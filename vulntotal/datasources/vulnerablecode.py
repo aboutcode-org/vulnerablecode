@@ -134,7 +134,7 @@ def fetch_vulnerablecode_query(url: str, payload: dict):
 
     load_dotenv()
     vcio_token = os.environ.get("VCIO_TOKEN", None)
-    if vcio_token is None:
+    if not vcio_token:
         msg = "Cannot call VulnerableCode API without a token set in the VCIO_TOKEN environment variable."
         raise VCIOTokenError(msg)
 

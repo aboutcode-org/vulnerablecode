@@ -1,5 +1,6 @@
 [
   {
+    "purl": "pkg:generic/namespace/test",
     "affected_versions": [
       "0",
       "2.0",
@@ -31,6 +32,7 @@
     ]
   },
   {
+    "purl": "pkg:generic/namespace/test",
     "affected_versions": [
       "0",
       "2.0",
@@ -63,6 +65,7 @@
     ]
   },
   {
+    "purl": "pkg:generic/namespace/test",
     "affected_versions": [
       "0",
       "2.0",
@@ -107,6 +110,7 @@
     ]
   },
   {
+    "purl": "pkg:generic/namespace/test",
     "affected_versions": [
       "0",
       "2.0",
@@ -142,6 +146,7 @@
     ]
   },
   {
+    "purl": "pkg:generic/namespace/test",
     "affected_versions": [
       "0",
       "2.0",

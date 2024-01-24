@@ -24,6 +24,7 @@ from typing import Tuple
 
 import pytz
 from dateutil import parser as dateparser
+from fetchcode.vcs import VCSResponse
 from fetchcode.vcs import fetch_via_vcs
 from license_expression import Licensing
 from packageurl import PackageURL
@@ -36,10 +37,11 @@ from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.utils import classproperty
-from vulnerabilities.utils import evolve_purl
 from vulnerabilities.utils import get_reference_id
 from vulnerabilities.utils import is_cve
 from vulnerabilities.utils import nearest_patched_package
+from vulnerabilities.utils import purl_to_dict
+from vulnerabilities.utils import update_purl_version
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +75,6 @@ class VulnerabilitySeverity:
 
 @dataclasses.dataclass(order=True)
 class Reference:
-
     reference_id: str = ""
     url: str = ""
     severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
@@ -153,8 +154,7 @@ class AffectedPackage:
         """
         if not self.fixed_version:
             raise ValueError(f"Affected Package {self.package!r} does not have a fixed version")
-        fixed_purl = evolve_purl(purl=self.package, version=str(self.fixed_version))
-        return fixed_purl
+        return update_purl_version(purl=self.package, version=str(self.fixed_version))
 
     @classmethod
     def merge(
@@ -187,7 +187,7 @@ class AffectedPackage:
             purls.add(pkg.package)
         if len(purls) > 1:
             raise UnMergeablePackageError("Cannot merge with different purls", purls)
-        return purls.pop(), sorted(affected_version_ranges), sorted(fixed_versions)
+        return purls.pop(), list(affected_version_ranges), sorted(fixed_versions)
 
     def to_dict(self):
         """
@@ -197,7 +197,7 @@ class AffectedPackage:
         if self.affected_version_range:
             affected_version_range = str(self.affected_version_range)
         return {
-            "package": self.package.to_dict(),
+            "package": purl_to_dict(self.package),
             "affected_version_range": affected_version_range,
             "fixed_version": str(self.fixed_version) if self.fixed_version else None,
         }
@@ -247,10 +247,21 @@ class AdvisoryData:
     references: List[Reference] = dataclasses.field(default_factory=list)
     date_published: Optional[datetime.datetime] = None
     weaknesses: List[int] = dataclasses.field(default_factory=list)
+    url: Optional[str] = None
 
     def __post_init__(self):
         if self.date_published and not self.date_published.tzinfo:
             logger.warning(f"AdvisoryData with no tzinfo: {self!r}")
+        if self.summary:
+            self.summary = self.clean_summary(self.summary)
+
+    def clean_summary(self, summary):
+        # https://nvd.nist.gov/vuln/detail/CVE-2013-4314
+        # https://github.com/cms-dev/cms/issues/888#issuecomment-516977572
+        summary = summary.strip()
+        if summary:
+            summary = summary.replace("\x00", "\uFFFD")
+        return summary
 
     def to_dict(self):
         return {
@@ -260,6 +271,7 @@ class AdvisoryData:
             "references": [ref.to_dict() for ref in self.references],
             "date_published": self.date_published.isoformat() if self.date_published else None,
             "weaknesses": self.weaknesses,
+            "url": self.url if self.url else "",
         }
 
     @classmethod
@@ -276,6 +288,7 @@ class AdvisoryData:
             if date_published
             else None,
             "weaknesses": advisory_data["weaknesses"],
+            "url": advisory_data.get("url") or None,
         }
         return cls(**transformed)
 
@@ -288,6 +301,10 @@ class InvalidSPDXLicense(Exception):
     pass
 
 
+class ForkError(Exception):
+    pass
+
+
 class Importer:
     """
     An Importer collects data from various upstreams and returns corresponding AdvisoryData objects
@@ -297,7 +314,9 @@ class Importer:
     spdx_license_expression = ""
     license_url = ""
     notice = ""
-    vcs_response = None
+    vcs_response: VCSResponse = None
+    # It needs to be unique and immutable
+    importer_name = ""
 
     def __init__(self):
         if not self.spdx_license_expression:
@@ -324,45 +343,16 @@ class Importer:
         raise NotImplementedError
 
     def clone(self, repo_url):
+        """
+        Clone the repo at repo_url and return the VCSResponse object
+        """
         try:
             self.vcs_response = fetch_via_vcs(repo_url)
+            return self.vcs_response
         except Exception as e:
             msg = f"Failed to fetch {repo_url} via vcs: {e}"
             logger.error(msg)
             raise ForkError(msg) from e
-
-
-class ForkError(Exception):
-    pass
-
-
-class GitImporter(Importer):
-    def __init__(self, repo_url):
-        super().__init__()
-        self.repo_url = repo_url
-        self.vcs_response = None
-
-    def __enter__(self):
-        super().__enter__()
-        self.clone()
-        return self
-
-    def __exit__(self):
-        self.vcs_response.delete()
-
-    def clone(self):
-        try:
-            self.vcs_response = fetch_via_vcs(self.repo_url)
-        except Exception as e:
-            msg = f"Failed to fetch {self.repo_url} via vcs: {e}"
-            logger.error(msg)
-            raise ForkError(msg) from e
-
-    def advisory_data(self) -> Iterable[AdvisoryData]:
-        """
-        Return AdvisoryData objects corresponding to the data being imported
-        """
-        raise NotImplementedError
 
 
 # TODO: Needs rewrite
@@ -371,6 +361,9 @@ class OvalImporter(Importer):
     All data sources which collect data from OVAL files must inherit from this
     `OvalDataSource` class. Subclasses must implement the methods `_fetch` and `set_api`.
     """
+
+    data_url: str = ""
+    importer_name = "Oval Importer"
 
     @staticmethod
     def create_purl(pkg_name: str, pkg_data: Mapping) -> PackageURL:
@@ -443,47 +436,55 @@ class OvalImporter(Importer):
         for definition_data in raw_data:
             # These fields are definition level, i.e common for all elements
             # connected/linked to an OvalDefinition
-            vuln_id = definition_data["vuln_id"]
-            description = definition_data["description"]
 
-            severities = []
-            severity = definition_data.get("severity")
-            if severity:
-                severities.append(
-                    VulnerabilitySeverity(system=severity_systems.GENERIC, value=severity)
+            # NOTE: This is where we loop through the list of CVEs/aliases.
+            vuln_id_list = definition_data["vuln_id"]
+
+            for vuln_id_item in vuln_id_list:
+                vuln_id = vuln_id_item
+                description = definition_data["description"]
+
+                severities = []
+                severity = definition_data.get("severity")
+                if severity:
+                    severities.append(
+                        VulnerabilitySeverity(system=severity_systems.GENERIC, value=severity)
+                    )
+                references = [
+                    Reference(url=url, severities=severities)
+                    for url in definition_data["reference_urls"]
+                ]
+                affected_packages = []
+
+                for test_data in definition_data["test_data"]:
+                    for package_name in test_data["package_list"]:
+                        affected_version_range = test_data["version_ranges"]
+                        vrc = RANGE_CLASS_BY_SCHEMES[pkg_metadata["type"]]
+                        if affected_version_range:
+                            try:
+                                affected_version_range = vrc.from_native(affected_version_range)
+                            except Exception as e:
+                                logger.error(
+                                    f"Failed to parse version range {affected_version_range!r} "
+                                    f"for package {package_name!r}:\n{e}"
+                                )
+                                continue
+                        if package_name:
+                            affected_packages.append(
+                                AffectedPackage(
+                                    package=self.create_purl(package_name, pkg_metadata),
+                                    affected_version_range=affected_version_range,
+                                )
+                            )
+
+                date_published = dateparser.parse(timestamp)
+                if not date_published.tzinfo:
+                    date_published = date_published.replace(tzinfo=pytz.UTC)
+                yield AdvisoryData(
+                    aliases=[vuln_id],
+                    summary=description,
+                    affected_packages=sorted(affected_packages),
+                    references=sorted(references),
+                    date_published=date_published,
+                    url=self.data_url,
                 )
-            references = [
-                Reference(url=url, severities=severities)
-                for url in definition_data["reference_urls"]
-            ]
-            affected_packages = []
-            for test_data in definition_data["test_data"]:
-                for package_name in test_data["package_list"]:
-                    affected_version_range = test_data["version_ranges"]
-                    vrc = RANGE_CLASS_BY_SCHEMES[pkg_metadata["type"]]
-                    if affected_version_range:
-                        try:
-                            affected_version_range = vrc.from_native(affected_version_range)
-                        except Exception as e:
-                            logger.error(
-                                f"Failed to parse version range {affected_version_range!r} "
-                                f"for package {package_name!r}:\n{e}"
-                            )
-                            continue
-                    if package_name:
-                        affected_packages.append(
-                            AffectedPackage(
-                                package=self.create_purl(package_name, pkg_metadata),
-                                affected_version_range=affected_version_range,
-                            )
-                        )
-            date_published = dateparser.parse(timestamp)
-            if not date_published.tzinfo:
-                date_published = date_published.replace(tzinfo=pytz.UTC)
-            yield AdvisoryData(
-                aliases=[vuln_id],
-                summary=description,
-                affected_packages=affected_packages,
-                references=sorted(references),
-                date_published=date_published,
-            )

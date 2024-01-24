@@ -7,6 +7,8 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from datetime import datetime
+
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
@@ -23,7 +25,8 @@ from vulnerabilities import models
 from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import VulnerabilitySearchForm
-from vulnerabilities.models import Weakness
+from vulnerabilities.models import VulnerabilityStatusType
+from vulnerabilities.utils import get_severity_range
 from vulnerablecode.settings import env
 
 PAGE_SIZE = 20
@@ -49,7 +52,12 @@ class PackageSearch(ListView):
         on exact purl, partial purl or just name and namespace.
         """
         query = query or self.request.GET.get("search") or ""
-        return self.model.objects.search(query).with_vulnerability_counts().prefetch_related()
+        return (
+            self.model.objects.search(query)
+            .with_vulnerability_counts()
+            .prefetch_related()
+            .order_by("package_url")
+        )
 
 
 class VulnerabilitySearch(ListView):
@@ -83,6 +91,9 @@ class PackageDetails(DetailView):
         context["affected_by_vulnerabilities"] = package.affected_by.order_by("vulnerability_id")
         context["fixing_vulnerabilities"] = package.fixing.order_by("vulnerability_id")
         context["package_search_form"] = PackageSearchForm(self.request.GET)
+        context["fixed_package_details"] = package.fixed_package_details
+
+        context["history"] = list(package.history)
         return context
 
     def get_object(self, queryset=None):
@@ -116,16 +127,26 @@ class VulnerabilityDetails(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        weaknesses = self.object.weaknesses.all()
+        weaknesses_present_in_db = [
+            weakness_object for weakness_object in weaknesses if weakness_object.weakness
+        ]
+        status = self.object.get_status_label
         context.update(
             {
                 "vulnerability": self.object,
                 "vulnerability_search_form": VulnerabilitySearchForm(self.request.GET),
                 "severities": list(self.object.severities),
+                "severity_score_range": get_severity_range(
+                    {s.value for s in self.object.severities}
+                ),
                 "references": self.object.references.all(),
                 "aliases": self.object.aliases.all(),
                 "affected_packages": self.object.affected_packages.all(),
                 "fixed_by_packages": self.object.fixed_by_packages.all(),
-                "weaknesses": self.object.weaknesses.all(),
+                "weaknesses": weaknesses_present_in_db,
+                "status": status,
+                "history": self.object.history,
             }
         )
         return context
@@ -176,7 +197,6 @@ class ApiUserCreateView(generic.CreateView):
     template_name = "api_user_creation_form.html"
 
     def form_valid(self, form):
-
         try:
             response = super().form_valid(form)
         except ValidationError:

@@ -6,8 +6,8 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-import json
 import os
+from pathlib import Path
 from unittest import TestCase
 
 from vulnerabilities.importer import Reference
@@ -155,7 +155,9 @@ class TestFireeyeImporter(TestCase):
             mock_response = f.read()
         expected_file = os.path.join(TEST_DATA, f"fireeye_test1_expect.json")
 
-        imported_data = parse_advisory_data(mock_response)
+        imported_data = parse_advisory_data(
+            mock_response, Path(expected_file), Path(expected_file).parent
+        )
         result = imported_data.to_dict()
 
         util_tests.check_results_against_json(result, expected_file)
@@ -164,7 +166,9 @@ class TestFireeyeImporter(TestCase):
         with open(os.path.join(TEST_DATA, "fireeye_test2.md")) as f:
             mock_response = f.read()
         expected_file = os.path.join(TEST_DATA, f"fireeye_test2_expect.json")
-        imported_data = parse_advisory_data(mock_response)
+        imported_data = parse_advisory_data(
+            mock_response, Path(expected_file), Path(expected_file).parent
+        )
         result = imported_data.to_dict()
 
         util_tests.check_results_against_json(result, expected_file)

@@ -1,0 +1,34 @@
+[
+  {
+    "package": {
+      "ecosystem": "NUGET",
+      "name": "DotNetNuke.Web"
+    },
+    "identifiers": [
+      "GHSA-9w72-2f23-57gm",
+      "CVE-2022-2922"
+    ],
+    "firstPatchedVersion": [
+      "9.11.0"
+    ],
+    "vulnerableVersionRange": [
+      "< 9.11.0"
+    ]
+  },
+  {
+    "package": {
+      "ecosystem": "NUGET",
+      "name": "DotNetNuke.Core"
+    },
+    "identifiers": [
+      "GHSA-9w72-2f23-57gm",
+      "CVE-2022-2922"
+    ],
+    "firstPatchedVersion": [
+      "9.11.0"
+    ],
+    "vulnerableVersionRange": [
+      "< 9.11.0"
+    ]
+  }
+]

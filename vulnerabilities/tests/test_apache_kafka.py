@@ -69,34 +69,13 @@ def to_advisory_changed_cve():
     advisories = ApacheKafkaImporter().to_advisory(raw_data)
 
 
-def test_to_advisory_changed_cve_exception():
-    with pytest.raises(KeyError) as excinfo:
-        to_advisory_changed_cve()
-
-    assert "CVE-2022-34918" in str(excinfo.value)
-
-
 def to_advisory_changed_versions_affected():
     with open(os.path.join(TEST_DATA, "cve-list-changed-versions-affected.html")) as f:
         raw_data = f.read()
     advisories = ApacheKafkaImporter().to_advisory(raw_data)
 
 
-def test_to_advisory_changed_versions_affected_exception():
-    with pytest.raises(KeyError) as excinfo:
-        to_advisory_changed_versions_affected()
-
-    assert "2.8.0 - 2.8.1, 3.0.0 - 3.0.1, 3.1.0 - 3.1.1, 3.2.0 - 3.2.2" in str(excinfo.value)
-
-
 def to_advisory_changed_fixed_versions():
     with open(os.path.join(TEST_DATA, "cve-list-changed-fixed-versions.html")) as f:
         raw_data = f.read()
     advisories = ApacheKafkaImporter().to_advisory(raw_data)
-
-
-def test_to_advisory_changed_fixed_versions_exception():
-    with pytest.raises(KeyError) as excinfo:
-        to_advisory_changed_fixed_versions()
-
-    assert "2.8.2, 3.0.2, 3.1.2, 3.2.4" in str(excinfo.value)

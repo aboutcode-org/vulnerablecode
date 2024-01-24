@@ -10,20 +10,20 @@
     "affected_purls": [
       {
         "type": "nuget",
-        "namespace": null,
+        "namespace": "",
         "name": "Apache.Avro",
         "version": "1.09.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "nuget",
-      "namespace": null,
+      "namespace": "",
       "name": "Apache.Avro",
       "version": "1.11.0",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -37,7 +37,11 @@
         "severities": []
       }
     ],
-    "weaknesses": []
+    "weaknesses": [
+      1035,
+      770,
+      937
+    ]
   },
   {
     "vulnerability_id": null,
@@ -50,11 +54,11 @@
     "affected_purls": [],
     "fixed_purl": {
       "type": "nuget",
-      "namespace": null,
+      "namespace": "",
       "name": "Apache.Avro",
       "version": "1.11.0",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -68,6 +72,10 @@
         "severities": []
       }
     ],
-    "weaknesses": []
+    "weaknesses": [
+      1035,
+      770,
+      937
+    ]
   }
 ]

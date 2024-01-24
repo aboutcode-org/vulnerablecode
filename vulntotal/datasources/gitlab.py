@@ -17,6 +17,7 @@ from typing import Iterable
 import requests
 import saneyaml
 from fetchcode import fetch
+from packageurl import PackageURL
 
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
@@ -48,7 +49,7 @@ class GitlabDataSource(DataSource):
             location = download_subtree(casesensitive_package_slug)
         if location:
             interesting_advisories = parse_interesting_advisories(
-                location, purl.version, delete_download=True
+                location, purl, delete_download=True
             )
             return interesting_advisories
         clear_download(location)
@@ -185,18 +186,20 @@ def get_casesensitive_slug(path, package_slug):
         has_next = paginated_tree["pageInfo"]["hasNextPage"]
 
 
-def parse_interesting_advisories(location, version, delete_download=False) -> Iterable[VendorData]:
+def parse_interesting_advisories(location, purl, delete_download=False) -> Iterable[VendorData]:
     """
     Parses advisories from YAML files in a given location that match a given version.
 
     Parameters:
         location: A Path object representing the location of the YAML files.
+        purl: PURL for the advisory.
         version: A string representing the version to check against the affected range.
         delete_download: A boolean indicating whether to delete the downloaded files after parsing.
 
     Yields:
         VendorData instance containing the advisory information for the package.
     """
+    version = purl.version
     path = Path(location)
     pattern = "**/*.yml"
     files = [p for p in path.glob(pattern) if p.is_file()]
@@ -206,6 +209,7 @@ def parse_interesting_advisories(location, version, delete_download=False) -> It
         affected_range = gitlab_advisory["affected_range"]
         if gitlab_constraints_satisfied(affected_range, version):
             yield VendorData(
+                purl=PackageURL(purl.type, purl.namespace, purl.name),
                 aliases=gitlab_advisory["identifiers"],
                 affected_versions=[affected_range],
                 fixed_versions=gitlab_advisory["fixed_versions"],

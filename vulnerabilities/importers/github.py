@@ -11,6 +11,7 @@ import logging
 from typing import Iterable
 from typing import Optional
 
+from cwe2.database import Database
 from dateutil import parser as dateparser
 from packageurl import PackageURL
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
@@ -24,10 +25,10 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.utils import dedupe
+from vulnerabilities.utils import get_cwe_id
 from vulnerabilities.utils import get_item
 
 logger = logging.getLogger(__name__)
-
 
 PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM = {
     "MAVEN": "maven",
@@ -63,6 +64,11 @@ query{
                         url
                     }
                     severity
+                    cwes(first: 10){ 
+                        nodes {
+                            cweId       
+                        }
+                    }
                     publishedAt
                 }
                 firstPatchedVersion{
@@ -85,6 +91,8 @@ query{
 
 class GitHubAPIImporter(Importer):
     spdx_license_expression = "CC-BY-4.0"
+    importer_name = "GHSA Importer"
+    license_url = "https://github.com/github/advisory-database/blob/main/LICENSE.md"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         for ecosystem, package_type in PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM.items():
@@ -203,6 +211,7 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
                     )
                 )
         identifiers = get_item(advisory, "identifiers") or []
+        ghsa_id = ""
         for identifier in identifiers:
             value = identifier["value"]
             identifier_type = identifier["type"]
@@ -211,6 +220,7 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
             if identifier_type == "GHSA":
                 # Each Node has only one GHSA, hence exit after attaching
                 # score to this GHSA
+                ghsa_id = value
                 for ref in references:
                     if ref.reference_id == value:
                         severity = get_item(advisory, "severity")
@@ -227,10 +237,35 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
             else:
                 logger.error(f"Unknown identifier type {identifier_type!r} and value {value!r}")
 
+        weaknesses = get_cwes_from_github_advisory(advisory)
+
         yield AdvisoryData(
             aliases=sorted(dedupe(aliases)),
             summary=summary,
             references=references,
             affected_packages=affected_packages,
             date_published=date_published,
+            weaknesses=weaknesses,
+            url=f"https://github.com/advisories/{ghsa_id}",
         )
+
+
+def get_cwes_from_github_advisory(advisory) -> [int]:
+    """
+    Return the cwe-id list from advisory ex: [ 522 ]
+    by extracting the cwe_list from advisory ex: [{'cweId': 'CWE-522'}]
+    then remove the CWE- from string and convert it to integer 522 and Check if the CWE in CWE-Database
+    """
+    weaknesses = []
+    db = Database()
+    cwe_list = get_item(advisory, "cwes", "nodes") or []
+    for cwe_item in cwe_list:
+        cwe_string = get_item(cwe_item, "cweId")
+        if cwe_string:
+            cwe_id = get_cwe_id(cwe_string)
+            try:
+                db.get(cwe_id)
+                weaknesses.append(cwe_id)
+            except Exception:
+                logger.error("Invalid CWE id")
+    return weaknesses

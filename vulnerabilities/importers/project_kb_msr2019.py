@@ -10,6 +10,7 @@
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
+from vulnerabilities.utils import fetch_and_read_from_csv
 from vulnerabilities.utils import is_cve
 
 # Reading CSV file from  a url using `requests` is bit too complicated.
@@ -21,6 +22,7 @@ class ProjectKBMSRImporter(Importer):
     url = "https://raw.githubusercontent.com/SAP/project-kb/master/MSR2019/dataset/vulas_db_msr2019_release.csv"
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/SAP/project-kb/blob/main/LICENSE.txt"
+    importer_name = "ProjectKB MSRImporter"
 
     def advisory_data(self):
         raw_data = fetch_and_read_from_csv(self.url)
@@ -40,4 +42,5 @@ class ProjectKBMSRImporter(Importer):
                 aliases=[vuln_id],
                 summary="",
                 references=[reference],
+                url=self.url,
             )

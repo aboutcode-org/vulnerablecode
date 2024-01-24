@@ -12,6 +12,7 @@ from typing import Iterable
 from urllib.parse import quote
 
 import requests
+from packageurl import PackageURL
 
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
@@ -50,7 +51,7 @@ class DepsDataSource(DataSource):
                     fetched_advisory = self.fetch_json_response(advisory_payload)
                     self._raw_dump.append(fetched_advisory)
                     if fetched_advisory:
-                        return parse_advisory(fetched_advisory)
+                        return parse_advisory(fetched_advisory, purl)
 
     @classmethod
     def supported_ecosystem(cls):
@@ -65,12 +66,13 @@ class DepsDataSource(DataSource):
         }
 
 
-def parse_advisory(advisory) -> Iterable[VendorData]:
+def parse_advisory(advisory, purl) -> Iterable[VendorData]:
     """
     Parse an advisory into a VendorData object.
 
     Parameters:
         advisory: A dictionary representing the advisory data.
+        purl: PURL for the advisory.
 
     Yields:
         VendorData instance containing purl, aliases, affected_versions and fixed_versions.
@@ -79,6 +81,7 @@ def parse_advisory(advisory) -> Iterable[VendorData]:
     affected_versions = [event["version"] for event in package["versionsAffected"]]
     fixed_versions = [event["version"] for event in package["versionsUnaffected"]]
     yield VendorData(
+        purl=PackageURL(purl.type, purl.namespace, purl.name),
         aliases=sorted(set(advisory["aliases"])),
         affected_versions=sorted(set(affected_versions)),
         fixed_versions=sorted(set(fixed_versions)),

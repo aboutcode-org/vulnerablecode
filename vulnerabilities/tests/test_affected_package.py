@@ -57,6 +57,19 @@ def test_affected_package_merge():
                 ),
             ),
             AffectedPackage(package=PackageURL(type="npm", name="foo"), fixed_version="2.0.0"),
+            AffectedPackage(
+                package=PackageURL(type="npm", name="foo"),
+                affected_version_range=GemVersionRange(
+                    constraints=(
+                        VersionConstraint(
+                            comparator=">=", version=RubygemsVersion(string="10.2.0")
+                        ),
+                        VersionConstraint(
+                            comparator="<=", version=RubygemsVersion(string="10.5.0")
+                        ),
+                    )
+                ),
+            ),
         ]
     )
     expected = (
@@ -69,7 +82,13 @@ def test_affected_package_merge():
                     VersionConstraint(comparator=">=", version=RubygemsVersion(string="5.2.0")),
                     VersionConstraint(comparator="<=", version=RubygemsVersion(string="5.2.6.2")),
                 )
-            )
+            ),
+            GemVersionRange(
+                constraints=(
+                    VersionConstraint(comparator=">=", version=RubygemsVersion(string="10.2.0")),
+                    VersionConstraint(comparator="<=", version=RubygemsVersion(string="10.5.0")),
+                )
+            ),
         ],
         ["1.0.0", "2.0.0"],
     )

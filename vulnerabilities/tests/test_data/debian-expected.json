@@ -13,7 +13,8 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://security-tracker.debian.org/tracker/data/json"
   },
   {
     "aliases": [
@@ -26,11 +27,9 @@
           "type": "deb",
           "namespace": "debian",
           "name": "mimetex",
-          "version": null,
-          "qualifiers": {
-            "distro": "buster"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "distro=buster",
+          "subpath": ""
         },
         "affected_version_range": null,
         "fixed_version": "1.74-1"
@@ -40,11 +39,9 @@
           "type": "deb",
           "namespace": "debian",
           "name": "mimetex",
-          "version": null,
-          "qualifiers": {
-            "distro": "buster"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "distro=buster",
+          "subpath": ""
         },
         "affected_version_range": null,
         "fixed_version": "1.50-1.1"
@@ -54,11 +51,9 @@
           "type": "deb",
           "namespace": "debian",
           "name": "mimetex",
-          "version": null,
-          "qualifiers": {
-            "distro": "buster"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "distro=buster",
+          "subpath": ""
         },
         "affected_version_range": null,
         "fixed_version": "1.76-1"
@@ -72,7 +67,8 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://security-tracker.debian.org/tracker/data/json"
   },
   {
     "aliases": [
@@ -85,11 +81,9 @@
           "type": "deb",
           "namespace": "debian",
           "name": "mimetex",
-          "version": null,
-          "qualifiers": {
-            "distro": "buster"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "distro=buster",
+          "subpath": ""
         },
         "affected_version_range": null,
         "fixed_version": "1.74-1"
@@ -99,11 +93,9 @@
           "type": "deb",
           "namespace": "debian",
           "name": "mimetex",
-          "version": null,
-          "qualifiers": {
-            "distro": "buster"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "distro=buster",
+          "subpath": ""
         },
         "affected_version_range": null,
         "fixed_version": "1.50-1.1"
@@ -113,11 +105,9 @@
           "type": "deb",
           "namespace": "debian",
           "name": "mimetex",
-          "version": null,
-          "qualifiers": {
-            "distro": "buster"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "distro=buster",
+          "subpath": ""
         },
         "affected_version_range": null,
         "fixed_version": "1.76-1"
@@ -131,7 +121,8 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://security-tracker.debian.org/tracker/data/json"
   },
   {
     "aliases": [
@@ -144,11 +135,9 @@
           "type": "deb",
           "namespace": "debian",
           "name": "atomicparsley",
-          "version": null,
-          "qualifiers": {
-            "distro": "stretch"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "distro=stretch",
+          "subpath": ""
         },
         "affected_version_range": "vers:deb/0.9.6-1|0.9.6-2",
         "fixed_version": "20210715.151551.e7ad03a-1"
@@ -162,7 +151,8 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://security-tracker.debian.org/tracker/data/json"
   },
   {
     "aliases": [
@@ -175,11 +165,9 @@
           "type": "deb",
           "namespace": "debian",
           "name": "atomicparsley",
-          "version": null,
-          "qualifiers": {
-            "distro": "stretch"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "distro=stretch",
+          "subpath": ""
         },
         "affected_version_range": "vers:deb/0.9.6-1|0.9.6-2",
         "fixed_version": "20210715.151551.e7ad03a-1"
@@ -193,6 +181,7 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://security-tracker.debian.org/tracker/data/json"
   }
 ]

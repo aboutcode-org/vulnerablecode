@@ -28,6 +28,7 @@ class ArchlinuxImporter(Importer):
     url = "https://security.archlinux.org/json"
     spdx_license_expression = "MIT"
     license_url = "https://github.com/archlinux/arch-security-tracker/blob/master/LICENSE"
+    importer_name = "Arch Linux Importer"
 
     def fetch(self) -> Iterable[Mapping]:
         response = fetch_response(self.url)
@@ -91,6 +92,7 @@ class ArchlinuxImporter(Importer):
                     summary=summary,
                     affected_packages=affected_packages,
                     references=references,
+                    url=f"https://security.archlinux.org/{record['name']}",
                 )
             )
 

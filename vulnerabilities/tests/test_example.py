@@ -33,6 +33,7 @@ def mock_fetch_advisory_data():
             "fixed": "1.20.1",
             "reference": "http://example.com/cve-2021-1234",
             "published_on": "06-10-2021 UTC",
+            "url": "http://example.com/cve-2021-1234",
         }
     ]
 
@@ -64,6 +65,7 @@ class TestExampleImporter(testcase.FileBasedTesting):
             "fixed": "1.20.1",
             "reference": "http://example.com/cve-2021-1234",
             "published_on": "06-10-2021 UTC",
+            "url": "http://example.com/cve-2021-1234",
         }
         expected_file = self.get_test_loc("parse_advisory_data-expected.json", must_exist=False)
         result = parse_advisory_data(raw_data).to_dict()
@@ -79,8 +81,8 @@ class TestExampleImporter(testcase.FileBasedTesting):
     @pytest.mark.django_db(transaction=True)
     def test_improve_framework_using_example_improver(self):
         ImportRunner(ExampleImporter).run()
-        ImproveRunner(DefaultImprover).run()
-        ImproveRunner(ExampleAliasImprover).run()
+        ImproveRunner(improver_class=DefaultImprover).run()
+        ImproveRunner(improver_class=ExampleAliasImprover).run()
 
         assert models.Package.objects.count() == 3
         assert models.PackageRelatedVulnerability.objects.filter(fix=True).count() == 1

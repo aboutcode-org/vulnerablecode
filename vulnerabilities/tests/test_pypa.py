@@ -23,6 +23,8 @@ class TestPyPaImporter(TestCase):
         with open(os.path.join(TEST_DATA, "pypa_test.yaml")) as f:
             mock_response = saneyaml.load(f)
         expected_file = os.path.join(TEST_DATA, f"pypa-expected.json")
-        imported_data = parse_advisory_data(mock_response, "pypi")
+        imported_data = parse_advisory_data(
+            mock_response, "pypi", "https://github.com/pypa/advisory-database"
+        )
         result = imported_data.to_dict()
         util_tests.check_results_against_json(result, expected_file)

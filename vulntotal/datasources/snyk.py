@@ -13,6 +13,7 @@ from urllib.parse import quote
 
 import requests
 from bs4 import BeautifulSoup
+from packageurl import PackageURL
 
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
@@ -67,7 +68,7 @@ class SnykDataSource(DataSource):
                     advisory_html = self.fetch(advisory_payload)
                     self._raw_dump.append(advisory_html)
                     if advisory_html:
-                        yield parse_html_advisory(advisory_html, snyk_id, affected)
+                        yield parse_html_advisory(advisory_html, snyk_id, affected, purl)
 
     @classmethod
     def supported_ecosystem(cls):
@@ -81,7 +82,7 @@ class SnykDataSource(DataSource):
             "npm": "npm",
             "nuget": "nuget",
             "pypi": "pip",
-            "rubygems": "rubygems",
+            "gem": "rubygems",
             # any purl.type not in supported_ecosystem shall implicitly be treated as unmanaged type
             "unmanaged": "unmanaged",
         }
@@ -163,7 +164,7 @@ def extract_html_json_advisories(package_advisories):
     return vulnerability
 
 
-def parse_html_advisory(advisory_html, snyk_id, affected) -> VendorData:
+def parse_html_advisory(advisory_html, snyk_id, affected, purl) -> VendorData:
     """
     Parse HTML advisory from Snyk and extract vendor data.
 
@@ -171,6 +172,7 @@ def parse_html_advisory(advisory_html, snyk_id, affected) -> VendorData:
         advisory_html: A string of HTML containing the advisory details.
         snyk_id: A string representing the Snyk ID of the vulnerability.
         affected: A list of strings representing the affected versions.
+        purl: PURL for the advisory.
 
     Returns:
         A VendorData instance containing aliases, affected versions and fixed versions for the vulnerability.
@@ -195,6 +197,7 @@ def parse_html_advisory(advisory_html, snyk_id, affected) -> VendorData:
             fixed_versions = [ver.strip(",") for ver in fixed[lower + 1 : upper]]
     aliases.append(snyk_id)
     return VendorData(
+        purl=PackageURL(purl.type, purl.namespace, purl.name),
         aliases=aliases,
         affected_versions=affected,
         fixed_versions=fixed_versions,

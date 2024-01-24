@@ -69,11 +69,13 @@ to run on a different port than 8000.
 .. note::
 
     To access a dockerized VulnerableCode app from a remote location, the ``ALLOWED_HOSTS``
-    setting need to be provided in your ``docker.env`` file::
+    and ``CSRF_TRUSTED_ORIGINS`` setting need to be provided in your ``docker.env`` file::
 
         ALLOWED_HOSTS=.domain.com,127.0.0.1
+        CSRF_TRUSTED_ORIGINS=https://*.domain.com,http://127.0.0.1
 
-    Refer to `Django ALLOWED_HOSTS settings <https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts>`_
+    Refer to Django `ALLOWED_HOSTS settings <https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts>`_
+    and `CSRF_TRUSTED_ORIGINS settings <https://docs.djangoproject.com/en/dev/ref/settings/#std-setting-CSRF_TRUSTED_ORIGINS>`_
     for more details.
 
 .. warning::

@@ -11,9 +11,9 @@
           "type": "composer",
           "namespace": "pimcore",
           "name": "pimcore",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:composer/<=10.3.2",
         "fixed_version": null
@@ -48,7 +48,8 @@
       }
     ],
     "date_published": "2022-03-05T00:00:45+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-6qcc-whgp-pjj2"
   },
   {
     "aliases": [
@@ -62,9 +63,9 @@
           "type": "composer",
           "namespace": "pimcore",
           "name": "pimcore",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:composer/<=10.3.2",
         "fixed_version": null
@@ -99,7 +100,8 @@
       }
     ],
     "date_published": "2022-03-05T00:00:45+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-q67f-3jq4-mww2"
   },
   {
     "aliases": [
@@ -113,9 +115,9 @@
           "type": "composer",
           "namespace": "microweber",
           "name": "microweber",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:composer/<1.3.0",
         "fixed_version": null
@@ -150,7 +152,8 @@
       }
     ],
     "date_published": "2022-03-11T00:02:35+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-x28w-hvwc-mp75"
   },
   {
     "aliases": [
@@ -164,9 +167,9 @@
           "type": "composer",
           "namespace": "librenms",
           "name": "librenms",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:composer/<22.1.0",
         "fixed_version": "22.1.0"
@@ -206,6 +209,7 @@
       }
     ],
     "date_published": "2022-02-16T00:01:51+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-gj26-g5qf-jrh7"
   }
 ]

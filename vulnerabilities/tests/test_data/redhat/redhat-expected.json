@@ -9,13 +9,7 @@
       {
         "reference_id": 2077736,
         "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2077736",
-        "severities": [
-          {
-            "system": "rhbs",
-            "value": "medium",
-            "scoring_elements": ""
-          }
-        ]
+        "severities": []
       },
       {
         "reference_id": "",
@@ -30,7 +24,8 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2022-24272.json"
   },
   {
     "aliases": [
@@ -43,11 +38,9 @@
           "type": "rpm",
           "namespace": "redhat",
           "name": "java-11-openjdk",
-          "version": null,
-          "qualifiers": {
-            "arch": "el8_1"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "arch=el8_1",
+          "subpath": ""
         },
         "affected_version_range": "vers:rpm/1:11.0.15.0.9-2",
         "fixed_version": null
@@ -57,11 +50,9 @@
           "type": "rpm",
           "namespace": "redhat",
           "name": "java-11-openjdk",
-          "version": null,
-          "qualifiers": {
-            "arch": "el8_2"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "arch=el8_2",
+          "subpath": ""
         },
         "affected_version_range": "vers:rpm/1:11.0.15.0.9-2",
         "fixed_version": null
@@ -71,11 +62,9 @@
           "type": "rpm",
           "namespace": "redhat",
           "name": "java-11-openjdk",
-          "version": null,
-          "qualifiers": {
-            "arch": "el7_9"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "arch=el7_9",
+          "subpath": ""
         },
         "affected_version_range": "vers:rpm/1:11.0.15.0.9-2",
         "fixed_version": null
@@ -85,11 +74,9 @@
           "type": "rpm",
           "namespace": "redhat",
           "name": "java-11-openjdk",
-          "version": null,
-          "qualifiers": {
-            "arch": "el8_5"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "arch=el8_5",
+          "subpath": ""
         },
         "affected_version_range": "vers:rpm/1:11.0.15.0.9-2",
         "fixed_version": null
@@ -99,11 +86,9 @@
           "type": "rpm",
           "namespace": "redhat",
           "name": "java-1.8.0-openjdk",
-          "version": null,
-          "qualifiers": {
-            "arch": "el8_5"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "arch=el8_5",
+          "subpath": ""
         },
         "affected_version_range": "vers:rpm/1:1.8.0.332.b09-1",
         "fixed_version": null
@@ -113,11 +98,9 @@
           "type": "rpm",
           "namespace": "redhat",
           "name": "java-11-openjdk",
-          "version": null,
-          "qualifiers": {
-            "arch": "el8_4"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "arch=el8_4",
+          "subpath": ""
         },
         "affected_version_range": "vers:rpm/1:11.0.15.0.9-2",
         "fixed_version": null
@@ -127,11 +110,9 @@
           "type": "rpm",
           "namespace": "redhat",
           "name": "java-1.8.0-openjdk",
-          "version": null,
-          "qualifiers": {
-            "arch": "el7_9"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "arch=el7_9",
+          "subpath": ""
         },
         "affected_version_range": "vers:rpm/1:1.8.0.332.b09-1",
         "fixed_version": null
@@ -141,11 +122,9 @@
           "type": "rpm",
           "namespace": "redhat",
           "name": "java-1.8.0-openjdk",
-          "version": null,
-          "qualifiers": {
-            "arch": "el8_1"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "arch=el8_1",
+          "subpath": ""
         },
         "affected_version_range": "vers:rpm/1:1.8.0.332.b09-1",
         "fixed_version": null
@@ -155,11 +134,9 @@
           "type": "rpm",
           "namespace": "redhat",
           "name": "java-1.8.0-openjdk",
-          "version": null,
-          "qualifiers": {
-            "arch": "el8_2"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "arch=el8_2",
+          "subpath": ""
         },
         "affected_version_range": "vers:rpm/1:1.8.0.332.b09-1",
         "fixed_version": null
@@ -169,11 +146,9 @@
           "type": "rpm",
           "namespace": "redhat",
           "name": "java-17-openjdk",
-          "version": null,
-          "qualifiers": {
-            "arch": "el8_5"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "arch=el8_5",
+          "subpath": ""
         },
         "affected_version_range": "vers:rpm/1:17.0.3.0.6-2",
         "fixed_version": null
@@ -183,11 +158,9 @@
           "type": "rpm",
           "namespace": "redhat",
           "name": "java-1.8.0-openjdk",
-          "version": null,
-          "qualifiers": {
-            "arch": "el8_4"
-          },
-          "subpath": null
+          "version": "",
+          "qualifiers": "arch=el8_4",
+          "subpath": ""
         },
         "affected_version_range": "vers:rpm/1:1.8.0.332.b09-1",
         "fixed_version": null
@@ -197,35 +170,22 @@
       {
         "reference_id": 2075788,
         "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2075788",
-        "severities": [
-          {
-            "system": "rhbs",
-            "value": "medium",
-            "scoring_elements": ""
-          }
-        ]
+        "severities": []
       },
       {
         "reference_id": "RHSA-2022:1439",
         "url": "https://access.redhat.com/errata/RHSA-2022:1439",
-        "severities": [
-          {
-            "system": "rhas",
-            "value": "Important",
-            "scoring_elements": ""
-          }
-        ]
+        "severities": []
       },
       {
         "reference_id": "RHSA-2022:1437",
         "url": "https://access.redhat.com/errata/RHSA-2022:1437",
-        "severities": [
-          {
-            "system": "rhas",
-            "value": "Important",
-            "scoring_elements": ""
-          }
-        ]
+        "severities": []
+      },
+      {
+        "reference_id": "RHSA-2022:1436",
+        "url": "https://access.redhat.com/errata/RHSA-2022:1436",
+        "severities": []
       },
       {
         "reference_id": "",
@@ -240,6 +200,9 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [
+      400
+    ],
+    "url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2022-21426.json"
   }
 ]

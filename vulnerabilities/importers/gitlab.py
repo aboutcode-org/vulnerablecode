@@ -25,15 +25,16 @@ from univers.versions import Version
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import GitImporter
+from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.utils import build_description
+from vulnerabilities.utils import get_advisory_url
+from vulnerabilities.utils import get_cwe_id
 
 logger = logging.getLogger(__name__)
 
-
 PURL_TYPE_BY_GITLAB_SCHEME = {
-    # "conan": "conan",
+    "conan": "conan",
     "gem": "gem",
     # Entering issue to parse go package names https://github.com/nexB/vulnerablecode/issues/742
     # "go": "golang",
@@ -44,20 +45,18 @@ PURL_TYPE_BY_GITLAB_SCHEME = {
     "pypi": "pypi",
 }
 
-
 GITLAB_SCHEME_BY_PURL_TYPE = {v: k for k, v in PURL_TYPE_BY_GITLAB_SCHEME.items()}
 
 
-class GitLabAPIImporter(GitImporter):
+class GitLabAPIImporter(Importer):
     spdx_license_expression = "MIT"
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
+    importer_name = "GitLab Importer"
+    repo_url = "git+https://gitlab.com/gitlab-org/advisories-community/"
 
-    def __init__(self):
-        super().__init__(repo_url="git+https://gitlab.com/gitlab-org/advisories-community/")
-
-    def advisory_data(self, _keep_clone=True) -> Iterable[AdvisoryData]:
+    def advisory_data(self, _keep_clone=False) -> Iterable[AdvisoryData]:
         try:
-            self.clone()
+            self.clone(repo_url=self.repo_url)
             base_path = Path(self.vcs_response.dest_dir)
 
             for file_path in base_path.glob("**/*.yml"):
@@ -67,7 +66,7 @@ class GitLabAPIImporter(GitImporter):
                 )
 
                 if gitlab_type in PURL_TYPE_BY_GITLAB_SCHEME:
-                    yield parse_gitlab_advisory(file_path)
+                    yield parse_gitlab_advisory(file=file_path, base_path=base_path)
 
                 else:
                     logger.error(f"Unknow package type {gitlab_type!r} in {file_path!r}")
@@ -151,7 +150,7 @@ def extract_affected_packages(
         )
 
 
-def parse_gitlab_advisory(file):
+def parse_gitlab_advisory(file, base_path):
     """
     Parse a Gitlab advisory file and return an AdvisoryData or None.
     These files are YAML. There is a JSON schema documented at
@@ -188,9 +187,18 @@ def parse_gitlab_advisory(file):
     summary = build_description(gitlab_advisory.get("title"), gitlab_advisory.get("description"))
     urls = gitlab_advisory.get("urls")
     references = [Reference.from_url(u) for u in urls]
+
+    cwe_ids = gitlab_advisory.get("cwe_ids") or []
+    cwe_list = list(map(get_cwe_id, cwe_ids))
+
     date_published = dateparser.parse(gitlab_advisory.get("pubdate"))
     date_published = date_published.replace(tzinfo=pytz.UTC)
     package_slug = gitlab_advisory.get("package_slug")
+    advisory_url = get_advisory_url(
+        file=file,
+        base_path=base_path,
+        url="https://gitlab.com/gitlab-org/advisories-community/-/blob/main/",
+    )
     purl: PackageURL = get_purl(package_slug=package_slug)
     if not purl:
         logger.error(f"parse_yaml_file: purl is not valid: {file!r} {package_slug!r}")
@@ -199,11 +207,12 @@ def parse_gitlab_advisory(file):
             summary=summary,
             references=references,
             date_published=date_published,
+            url=advisory_url,
         )
     affected_version_range = None
     fixed_versions = gitlab_advisory.get("fixed_versions") or []
     affected_range = gitlab_advisory.get("affected_range")
-    gitlab_native_schemes = set(["pypi", "gem", "npm", "go", "packagist"])
+    gitlab_native_schemes = set(["pypi", "gem", "npm", "go", "packagist", "conan"])
     vrc: VersionRange = RANGE_CLASS_BY_SCHEMES[purl.type]
     gitlab_scheme = GITLAB_SCHEME_BY_PURL_TYPE[purl.type]
     try:
@@ -253,4 +262,6 @@ def parse_gitlab_advisory(file):
         references=references,
         date_published=date_published,
         affected_packages=affected_packages,
+        weaknesses=cwe_list,
+        url=advisory_url,
     )

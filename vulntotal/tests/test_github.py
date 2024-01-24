@@ -20,7 +20,7 @@ from vulntotal.datasources import github
 class TestGithub(testcase.FileBasedTesting):
     test_data_dir = str(Path(__file__).resolve().parent / "test_data" / "github")
 
-    def test_generate_graphql_payload(self):
+    def test_generate_graphql_payload_from_purl(self):
         purls = [
             "pkg:pypi/jinja2@2.4.1",
             "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M8",
@@ -28,12 +28,13 @@ class TestGithub(testcase.FileBasedTesting):
             "pkg:npm/semver-regex@3.1.3",
             "pkg:golang/github.com/cloudflare/cfrpki@0.1.0",
             "pkg:composer/symfony/symfony@2.7.1",
-            "pkg:rust/slice-deque@0.1.0",
-            "pkg:erlang/alchemist.vim@1.3.0",
+            "pkg:cargo/slice-deque@0.1.0",
+            "pkg:hex/alchemist.vim@1.3.0",
             "pkg:gem/ftpd@0.0.1",
         ]
         results = [
-            github.generate_graphql_payload(PackageURL.from_string(purl), "") for purl in purls
+            github.generate_graphql_payload_from_purl(PackageURL.from_string(purl), "")
+            for purl in purls
         ]
         expected_file = self.get_test_loc("graphql_payload-expected.json", must_exist=False)
         util_tests.check_results_against_json(results, expected_file)
@@ -54,6 +55,24 @@ class TestGithub(testcase.FileBasedTesting):
         advisory_file = self.get_test_loc("interesting_edge.json")
         with open(advisory_file) as f:
             advisory = json.load(f)
-        results = [adv.to_dict() for adv in github.parse_advisory(advisory)]
+        results = [
+            adv.to_dict()
+            for adv in github.parse_advisory(advisory, PackageURL("generic", "namespace", "test"))
+        ]
         expected_file = self.get_test_loc("parse_advisory-expected.json", must_exist=False)
+        util_tests.check_results_against_json(results, expected_file)
+
+    def test_generate_graphql_payload_from_cve(self):
+        results = github.generate_graphql_payload_from_cve("CVE-2022-2922")
+        expected_file = self.get_test_loc("graphql_pyaload_cve-expected.json", must_exist=False)
+        util_tests.check_results_against_json(results, expected_file)
+
+    def test_group_advisory_by_package(self):
+        file = self.get_test_loc("graphql_cve-2022-2922_response.json")
+        with open(file) as f:
+            response = json.load(f)
+        results = github.group_advisory_by_package(response, "CVE-2022-2922")
+        expected_file = self.get_test_loc(
+            "group_advisory_by_package-expected.json", must_exist=False
+        )
         util_tests.check_results_against_json(results, expected_file)

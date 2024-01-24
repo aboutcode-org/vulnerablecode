@@ -12,8 +12,8 @@
       "namespace": "amphp",
       "name": "http",
       "version": "1.0.1",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -22,6 +22,9 @@
         "severities": []
       }
     ],
-    "weaknesses": []
+    "weaknesses": [
+      1035,
+      937
+    ]
   }
 ]

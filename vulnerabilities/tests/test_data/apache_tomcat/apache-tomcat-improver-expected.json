@@ -9,75 +9,75 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.5",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.6",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.7",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.8",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": null,
@@ -109,72 +109,72 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.5",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.6",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.7",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.8",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": null,
@@ -203,28 +203,28 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.0+M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.41",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "9.0.43",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -259,16 +259,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.0.M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.41",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -276,8 +276,8 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "9.0.43",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -309,28 +309,28 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.0+M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.41",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "9.0.43",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -365,16 +365,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.0.M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.41",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -382,8 +382,8 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "9.0.43",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -415,28 +415,28 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.0+M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.41",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "9.0.43",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -471,16 +471,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.0.M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.41",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -488,8 +488,8 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "9.0.43",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -521,28 +521,28 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.0+M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.34",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "9.0.35",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -577,16 +577,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.0.M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.34",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -594,8 +594,8 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "9.0.35",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -627,28 +627,28 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.0+M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.8",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "9.0.9",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -683,16 +683,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.0.M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.8",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -700,8 +700,8 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "9.0.9",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -733,44 +733,44 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "8.0.0+RC1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "8.0.35",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "8.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "8.5.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "8.0.36",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -807,44 +807,44 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "8.0.0+RC1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "8.0.35",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "8.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "8.5.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "8.5.3",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -884,32 +884,32 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "8.0.0.RC1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "8.0.35",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "8.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "8.5.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -917,8 +917,8 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "8.0.36",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -958,32 +958,32 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "8.0.0.RC1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "8.0.35",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "8.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "8.5.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -991,8 +991,8 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "8.5.3",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1029,28 +1029,28 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1090,16 +1090,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -1107,8 +1107,8 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1145,28 +1145,28 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1201,16 +1201,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -1218,8 +1218,8 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1251,28 +1251,28 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1307,16 +1307,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -1324,8 +1324,8 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1357,28 +1357,28 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1413,16 +1413,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -1430,8 +1430,8 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1463,28 +1463,28 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1524,16 +1524,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -1541,8 +1541,8 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1579,19 +1579,19 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.1.0+SVN",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.1.15",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": null,
@@ -1623,16 +1623,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.1.SVN",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.1.15",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": null,
@@ -1661,28 +1661,28 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.1.32",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.1.34",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "4.1.35",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1712,16 +1712,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.1.32",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.1.34",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -1729,8 +1729,8 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "4.1.35",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1757,68 +1757,68 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.0.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.0.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.0.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.0.6",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.1.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "4.1.3",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1848,56 +1848,56 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.0.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.0.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.0.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.0.6",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.1.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -1905,8 +1905,8 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "4.1.3",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1933,28 +1933,28 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.2.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.2.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "3.3.0-a",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1984,16 +1984,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.2.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.2.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -2001,8 +2001,8 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "3.3a",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -2029,44 +2029,44 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.2.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.2.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "3.3.0-a",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -2096,32 +2096,32 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.2.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -2129,8 +2129,8 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "3.3a",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -2157,44 +2157,44 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.2.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.2.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "3.3.0-a",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -2224,32 +2224,32 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.2.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -2257,8 +2257,8 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "3.3a",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {

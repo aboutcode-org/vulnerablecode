@@ -76,7 +76,6 @@ def parse_advisory_data(raw_data, file, base_path) -> AdvisoryData:
     )
     raw_data = raw_data.replace("\n\n", "\n")
     md_list = raw_data.split("\n")
-    print(md_list)
     md_dict = md_list_to_dict(md_list)
 
     database_id = md_list[0][1::]

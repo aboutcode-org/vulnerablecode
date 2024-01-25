@@ -68,8 +68,8 @@ class GithubDataSource(DataSource):
             yield VendorData(
                 purl=purl,
                 aliases=sorted(list(set(advisory.get("identifiers", None)))),
-                affected_versions=sorted(list(set(advisory.get("firstPatchedVersion", None)))),
-                fixed_versions=sorted(list(set(advisory.get("vulnerableVersionRange", None)))),
+                affected_versions=sorted(list(set(advisory.get("vulnerableVersionRange", None)))),
+                fixed_versions=sorted(list(set(advisory.get("firstPatchedVersion", None)))),
             )
 
     @classmethod
@@ -101,7 +101,7 @@ def parse_advisory(interesting_edges, purl) -> Iterable[VendorData]:
     """
     for edge in interesting_edges:
         node = edge["node"]
-        aliases = [aliase["value"] for aliase in get_item(node, "advisory", "identifiers")]
+        aliases = [alias["value"] for alias in get_item(node, "advisory", "identifiers")]
         affected_versions = node["vulnerableVersionRange"].strip().replace(" ", "").split(",")
         parsed_fixed_versions = get_item(node, "firstPatchedVersion", "identifier")
         fixed_versions = [parsed_fixed_versions] if parsed_fixed_versions else []

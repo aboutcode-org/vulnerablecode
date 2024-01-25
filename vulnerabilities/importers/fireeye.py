@@ -44,7 +44,7 @@ class FireyeImporter(Importer):
                 if Path(file).stem == "README":
                     continue
                 try:
-                    with open(file) as f:
+                    with open(file, encoding="utf-8-sig") as f:
                         yield parse_advisory_data(raw_data=f.read(), file=file, base_path=base_path)
                 except UnicodeError:
                     logger.error(f"Invalid file {file}")

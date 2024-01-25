@@ -172,3 +172,48 @@ class TestFireeyeImporter(TestCase):
         result = imported_data.to_dict()
 
         util_tests.check_results_against_json(result, expected_file)
+
+    def test_md_list_to_dict_2(self):
+        expected_output = {
+            "# MNDT-2023-0017\n": [
+                "\n",
+                "The IBM Personal Communications (PCOMM) application 13.0.0 and earlier caused a user's plaintext password to be written to the `C:\\Temp\\pcsnp_init.log` file when re-connection was made through a remote desktop protocol.\n",
+                "\n",
+            ],
+            "## Common Weakness Enumeration\n": [
+                "CWE-312: Cleartext Storage of Sensitive Information\n",
+                "\n",
+            ],
+            "## Impact\n": [
+                "High - An attacker with low-privilege access to a host with IBM PCOMM could recover the plaintext password of another user.\n",
+                "\n",
+            ],
+            "## Exploitability\n": [
+                "Low - Exploitability varies depending on the environment in which IBM PCOMM is installed. Mandiant identified this vulnerability when conducting independent security research for a client that used Citrix to connect to shared Windows Server instances. In certain environments where remote desktop is used to connect to shared hosts with IBM PCOMM installed, the exploitability is greatly increased.\n",
+                "\n",
+            ],
+            "## CVE Reference\n": ["CVE-2016-0321 - scope expanded\n", "\n"],
+            "## Technical Details\n": [
+                "While conducting independent security research, Mandiant identified a plaintext Active Directory password stored within the `C:\\Temp\\pcsnp_init.log` file. The affected host had IBM PCOMM version 13.0.0 installed and was used by multiple users who connected with Citrix. Upon a user connecting, disconnecting, and connecting again, the user's plaintext password was stored in the `C:\\Temp\\pcsnp_init.log` file.\n",
+                "\n",
+            ],
+            "## Discovery Credits\n": [
+                "- Adin Drabkin, Mandiant\n",
+                "- Matthew Rotlevi, Mandiant\n",
+                "\n",
+            ],
+            "## Disclosure Timeline\n": [
+                "- 2023-09-26 - Issue reported to the vendor.\n",
+                "- 2023-11-03 - The vendor updated the security bulletin for CVE-2016-0321 to include all known affected and fixed versions.\n",
+                "\n",
+            ],
+            "## References\n": [
+                "- [IBM Security Bulletin](https://www.ibm.com/support/pages/security-bulletin-ibm-personal-communications-could-allow-remote-user-obtain-sensitive-information-including-user-passwords-allowing-unauthorized-access-cve-2016-0321)\n",
+                "- [IBM Personal Communications](https://www.ibm.com/support/pages/ibm-personal-communications)\n",
+                "- [Mitre CVE-2016-0321](https://www.cve.org/CVERecord?id=CVE-2016-0321)\n",
+            ],
+        }
+        with open(os.path.join(TEST_DATA, "fireeye_test3.md"), encoding="utf-8-sig") as f:
+            md_list = f.readlines()
+            md_dict = md_list_to_dict(md_list)
+            assert md_dict == expected_output

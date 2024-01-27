@@ -51,6 +51,36 @@ class TestSnyk(testcase.FileBasedTesting):
             "https://security.snyk.io/api/listing?search=firefox&type=unmanaged",
         ]
         util_tests.check_results_against_expected(results, expected)
+    
+    def test_generate_purl(self):
+        package_advisory_urls = [
+            "https://security.snyk.io/package/pip/jinja2",
+            "https://security.snyk.io/package/maven/org.apache.tomcat%3Atomcat",
+            "https://security.snyk.io/package/npm/semver-regex",
+            "https://security.snyk.io/package/composer/bolt%2Fcore",
+            "https://security.snyk.io/package/linux/debain:11/trafficserver",
+            "https://security.snyk.io/package/nuget/moment.js",
+            "https://security.snyk.io/package/cocoapods/ffmpeg",
+            "https://security.snyk.io/package/hex/coherence",
+            "https://security.snyk.io/package/rubygems/log4j-jars"
+        ]
+
+        results = [
+            PackageURL.to_string(snyk.generate_purl(package_advisory_url)) for package_advisory_url in package_advisory_urls
+        ]
+
+        expected = [
+            "pkg:pip/jinja2",
+            "pkg:maven/org.apache.tomcat/tomcat",
+            "pkg:npm/semver-regex",
+            "pkg:composer/bolt/core",
+            "pkg:linux/trafficserver?distro=debain:11",
+            "pkg:nuget/moment.js",
+            "pkg:cocoapods/ffmpeg",
+            "pkg:hex/coherence",
+            "pkg:rubygems/log4j-jars",
+        ]
+        util_tests.check_results_against_expected(results, expected)
 
     def test_parse_html_advisory_0(self):
         file = self.get_test_loc("html/0.html")

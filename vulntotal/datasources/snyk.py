@@ -14,6 +14,7 @@ from urllib.parse import quote
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
+from urllib.parse import unquote_plus
 
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
@@ -130,6 +131,54 @@ def generate_package_advisory_url(purl):
         ecosystem=supported_ecosystem[purl.type],
         package=purl_name,
     )
+
+def generate_purl(package_advisory_url):
+    """
+    Generates purl from Package advisory url.
+
+    Parameters:
+        package_advisory_url: URL of the package on Snyk.
+
+    Returns:
+        A PackageURL instance representing the package
+    """
+    package_advisory_url = unquote_plus(package_advisory_url.replace("https://security.snyk.io/package/", ""))
+    
+    package_url_split = package_advisory_url.split("/")
+    pkg_type = package_url_split[0]
+
+    pkg_name = None
+    namespace = None
+    version = None
+    qualifiers = {}
+        
+    if pkg_type == "maven":
+        pkg_name = package_url_split[1].split(":")[1]
+        namespace = package_url_split[1].split(":")[0]
+
+    elif pkg_type in ("golang", "composer"):
+        if package_url_split[1] == 'github.com':
+            pkg_name = package_url_split[-2]
+            namespace = f"{package_url_split[1]}/{package_url_split[2]}"            
+            version = package_url_split[-1]
+        else:
+            pkg_name = package_url_split[-1]
+            namespace = package_url_split[-2]
+
+    elif pkg_type == "linux":
+        pkg_name = package_url_split[-1]
+        qualifiers["distro"] = package_url_split[1]
+
+    else:
+        pkg_name = package_url_split[-1]
+
+    return PackageURL(
+        type=pkg_type, 
+        name=pkg_name, 
+        namespace=namespace, 
+        version=version, 
+        qualifiers=qualifiers
+        )
 
 
 def extract_html_json_advisories(package_advisories):

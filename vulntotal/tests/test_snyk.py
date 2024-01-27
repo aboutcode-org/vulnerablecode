@@ -128,7 +128,7 @@ class TestSnyk(testcase.FileBasedTesting):
             page = f.read()
         result = snyk.parse_cve_advisory_html(
             page
-        ).to_dict()
+        )
         expected_file = f"{file}-expected.json"
         util_tests.check_results_against_json(result, expected_file)
 
@@ -138,6 +138,6 @@ class TestSnyk(testcase.FileBasedTesting):
             page = f.read()
         result = snyk.parse_cve_advisory_html(
             page
-        ).to_dict()
+        )
         expected_file = f"{file}-expected.json"
         util_tests.check_results_against_json(result, expected_file)   

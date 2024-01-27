@@ -91,3 +91,23 @@ class TestSnyk(testcase.FileBasedTesting):
         ).to_dict()
         expected_file = f"{file}-expected.json"
         util_tests.check_results_against_json(result, expected_file)
+
+    def test_parse_cve_advisory_html_0(self):
+        file = self.get_test_loc("html/4.html")
+        with open(file) as f:
+            page = f.read()
+        result = snyk.parse_cve_advisory_html(
+            page
+        ).to_dict()
+        expected_file = f"{file}-expected.json"
+        util_tests.check_results_against_json(result, expected_file)
+
+    def test_parse_cve_advisory_html_1(self):
+        file = self.get_test_loc("html/5.html")
+        with open(file) as f:
+            page = f.read()
+        result = snyk.parse_cve_advisory_html(
+            page
+        ).to_dict()
+        expected_file = f"{file}-expected.json"
+        util_tests.check_results_against_json(result, expected_file)   

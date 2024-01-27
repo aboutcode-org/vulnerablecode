@@ -9,14 +9,14 @@
 
 import logging
 from typing import Iterable
-from urllib.parse import quote
+from urllib.parse import quote, unquote_plus
 
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
-from urllib.parse import unquote_plus
 
 from vulntotal.validator import DataSource
+from vulntotal.validator import InvalidCVEError
 from vulntotal.validator import VendorData
 from vulntotal.vulntotal_utils import snyk_constraints_satisfied
 
@@ -70,6 +70,38 @@ class SnykDataSource(DataSource):
                     self._raw_dump.append(advisory_html)
                     if advisory_html:
                         yield parse_html_advisory(advisory_html, snyk_id, affected, purl)
+
+    def datasource_advisory_from_cve(self, cve: str) -> Iterable[VendorData]:
+        """
+        Fetch advisories from Snyk for a given CVE.
+
+        Parameters:
+            cve : CVE ID
+
+        Yields:
+            VendorData instance containing advisory information.
+        """
+        if not cve.upper().startswith("CVE-"):
+            raise InvalidCVEError
+        
+        package_list = generate_payload_from_cve(cve)
+        response = self.fetch(package_list)
+        self._raw_dump = [response]
+
+        # get list of vulnerabilities for cve id
+        vulns_list = parse_cve_advisory_html(response)
+       
+        # for each vulnerability get fixed version from snyk_id_url, get affected version from package_advisory_url
+        for snyk_id, package_advisory_url in vulns_list.items():
+            package_advisories_list = self.fetch(package_advisory_url)
+            package_advisories = extract_html_json_advisories(package_advisories_list) 
+            affected_versions = package_advisories[snyk_id]
+            advisory_payload = generate_advisory_payload(snyk_id)
+            advisory_html = self.fetch(advisory_payload)
+            self._raw_dump.append(advisory_html)
+            purl = generate_purl(package_advisory_url)
+            if advisory_html:
+                yield parse_html_advisory(advisory_html, snyk_id, affected_versions, purl)
 
     @classmethod
     def supported_ecosystem(cls):

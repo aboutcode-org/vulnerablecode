@@ -83,18 +83,18 @@ class SnykDataSource(DataSource):
         """
         if not cve.upper().startswith("CVE-"):
             raise InvalidCVEError
-        
+
         package_list = generate_payload_from_cve(cve)
         response = self.fetch(package_list)
         self._raw_dump = [response]
 
         # get list of vulnerabilities for cve id
         vulns_list = parse_cve_advisory_html(response)
-       
+
         # for each vulnerability get fixed version from snyk_id_url, get affected version from package_advisory_url
         for snyk_id, package_advisory_url in vulns_list.items():
             package_advisories_list = self.fetch(package_advisory_url)
-            package_advisories = extract_html_json_advisories(package_advisories_list) 
+            package_advisories = extract_html_json_advisories(package_advisories_list)
             affected_versions = package_advisories[snyk_id]
             advisory_payload = generate_advisory_payload(snyk_id)
             advisory_html = self.fetch(advisory_payload)
@@ -164,6 +164,7 @@ def generate_package_advisory_url(purl):
         package=purl_name,
     )
 
+
 def generate_purl(package_advisory_url):
     """
     Generates purl from Package advisory url.
@@ -174,8 +175,10 @@ def generate_purl(package_advisory_url):
     Returns:
         A PackageURL instance representing the package
     """
-    package_advisory_url = unquote_plus(package_advisory_url.replace("https://security.snyk.io/package/", ""))
-    
+    package_advisory_url = unquote_plus(
+        package_advisory_url.replace("https://security.snyk.io/package/", "")
+    )
+
     package_url_split = package_advisory_url.split("/")
     pkg_type = package_url_split[0]
 
@@ -183,15 +186,15 @@ def generate_purl(package_advisory_url):
     namespace = None
     version = None
     qualifiers = {}
-        
+
     if pkg_type == "maven":
         pkg_name = package_url_split[1].split(":")[1]
         namespace = package_url_split[1].split(":")[0]
 
     elif pkg_type in ("golang", "composer"):
-        if package_url_split[1] == 'github.com':
+        if package_url_split[1] == "github.com":
             pkg_name = package_url_split[-2]
-            namespace = f"{package_url_split[1]}/{package_url_split[2]}"            
+            namespace = f"{package_url_split[1]}/{package_url_split[2]}"
             version = package_url_split[-1]
         else:
             pkg_name = package_url_split[-1]
@@ -205,12 +208,8 @@ def generate_purl(package_advisory_url):
         pkg_name = package_url_split[-1]
 
     return PackageURL(
-        type=pkg_type, 
-        name=pkg_name, 
-        namespace=namespace, 
-        version=version, 
-        qualifiers=qualifiers
-        )
+        type=pkg_type, name=pkg_name, namespace=namespace, version=version, qualifiers=qualifiers
+    )
 
 
 def extract_html_json_advisories(package_advisories):
@@ -284,32 +283,34 @@ def parse_html_advisory(advisory_html, snyk_id, affected, purl) -> VendorData:
         fixed_versions=fixed_versions,
     )
 
+
 def parse_cve_advisory_html(cve_advisory_html):
     """
     Parse CVE HTML advisory from Snyk and extract list of vulnerabilities and corresponding packages for that CVE.
-    
+
     Parameters:
         advisory_html: A string of HTML containing the vulnerabilities for given CVE.
-        
+
     Returns:
         A dictionary with each item representing a vulnerability. Key of each item is the SNYK_ID and value is the package advisory url on snyk website
     """
-    cve_advisory_soup = BeautifulSoup(cve_advisory_html, 'html.parser')
+    cve_advisory_soup = BeautifulSoup(cve_advisory_html, "html.parser")
     vulns_table = cve_advisory_soup.find("tbody", class_="vue--table__tbody")
     if not vulns_table:
-        return None   
+        return None
     vulns_rows = vulns_table.find_all("tr", class_="vue--table__row")
     vulns_list = {}
-    
+
     for row in vulns_rows:
-        anchors = row.find_all("a", {"class" :"vue--anchor"})
+        anchors = row.find_all("a", {"class": "vue--anchor"})
         if len(anchors) != 2:
             continue
-        snyk_id = anchors[0]['href'].split("/")[1]
+        snyk_id = anchors[0]["href"].split("/")[1]
         package_advisory_url = f"https://security.snyk.io{anchors[1]['href']}"
         vulns_list[snyk_id] = package_advisory_url
-    
+
     return vulns_list
+
 
 def is_purl_in_affected(version, affected):
     return any(snyk_constraints_satisfied(affected_range, version) for affected_range in affected)
@@ -317,6 +318,7 @@ def is_purl_in_affected(version, affected):
 
 def generate_advisory_payload(snyk_id):
     return f"https://security.snyk.io/vuln/{snyk_id}"
+
 
 def generate_payload_from_cve(cve_id):
     return f"https://security.snyk.io/vuln?search={cve_id}"

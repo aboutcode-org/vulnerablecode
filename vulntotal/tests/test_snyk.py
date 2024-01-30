@@ -51,7 +51,7 @@ class TestSnyk(testcase.FileBasedTesting):
             "https://security.snyk.io/api/listing?search=firefox&type=unmanaged",
         ]
         util_tests.check_results_against_expected(results, expected)
-    
+
     def test_generate_purl(self):
         package_advisory_urls = [
             "https://security.snyk.io/package/pip/jinja2",
@@ -62,11 +62,12 @@ class TestSnyk(testcase.FileBasedTesting):
             "https://security.snyk.io/package/nuget/moment.js",
             "https://security.snyk.io/package/cocoapods/ffmpeg",
             "https://security.snyk.io/package/hex/coherence",
-            "https://security.snyk.io/package/rubygems/log4j-jars"
+            "https://security.snyk.io/package/rubygems/log4j-jars",
         ]
 
         results = [
-            PackageURL.to_string(snyk.generate_purl(package_advisory_url)) for package_advisory_url in package_advisory_urls
+            PackageURL.to_string(snyk.generate_purl(package_advisory_url))
+            for package_advisory_url in package_advisory_urls
         ]
 
         expected = [
@@ -126,9 +127,7 @@ class TestSnyk(testcase.FileBasedTesting):
         file = self.get_test_loc("html/4.html")
         with open(file) as f:
             page = f.read()
-        result = snyk.parse_cve_advisory_html(
-            page
-        )
+        result = snyk.parse_cve_advisory_html(page)
         expected_file = f"{file}-expected.json"
         util_tests.check_results_against_json(result, expected_file)
 
@@ -136,8 +135,6 @@ class TestSnyk(testcase.FileBasedTesting):
         file = self.get_test_loc("html/5.html")
         with open(file) as f:
             page = f.read()
-        result = snyk.parse_cve_advisory_html(
-            page
-        )
+        result = snyk.parse_cve_advisory_html(page)
         expected_file = f"{file}-expected.json"
-        util_tests.check_results_against_json(result, expected_file)   
+        util_tests.check_results_against_json(result, expected_file)

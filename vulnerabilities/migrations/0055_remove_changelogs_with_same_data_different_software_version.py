@@ -39,7 +39,8 @@ class Migration(migrations.Migration):
                 # Delete the records with the newer software version
                 to_be_deleted.extend(records_to_delete.exclude(id=record_to_keep.id))
 
-            to_be_deleted = set(to_be_deleted)
+            to_be_deleted = list(set(to_be_deleted))
+            to_be_deleted = [rec.id for rec in to_be_deleted]
             model.objects.filter(id__in = to_be_deleted).delete()
 
     dependencies = [

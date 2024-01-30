@@ -9,7 +9,8 @@
 
 import logging
 from typing import Iterable
-from urllib.parse import quote, unquote_plus
+from urllib.parse import quote
+from urllib.parse import unquote_plus
 
 import requests
 from bs4 import BeautifulSoup

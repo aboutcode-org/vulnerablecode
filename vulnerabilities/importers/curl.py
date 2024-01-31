@@ -1,12 +1,24 @@
+#
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
+#
+
 import logging
 from datetime import datetime
 from datetime import timezone
 from typing import Iterable
+from typing import Mapping
 
 import requests
 from packageurl import PackageURL
 from univers.version_range import NginxVersionRange
 from univers.versions import SemverVersion
+from utils import fetch_response
+from utils import get_item
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -17,6 +29,7 @@ from vulnerabilities.severity_systems import SCORING_SYSTEMS
 
 logger = logging.getLogger(__name__)
 
+
 class CurlImporter(Importer):
 
     spdx_license_expression = "MIT"
@@ -25,49 +38,47 @@ class CurlImporter(Importer):
     importer_name = "Curl Importer"
     api_url = "https://curl.se/docs/vuln.json"
 
-    def get_response(self):
-        response = requests.get(self.api_url)
-        if response.status_code == 200:
-            return response.json()
-        raise Exception(
-            f"Failed to fetch data from {self.api_url} with status code: {response.status_code!r}"
-        )
-    
-    def advisory_data(self) -> Iterable[AdvisoryData]:
+    def fetch(self) -> Iterable[Mapping]:
+        response = fetch_response(self.url)
+        return response.json()
 
-        raw_data = self.get_response()
+    def advisory_data(self) -> Iterable[AdvisoryData]:
+        raw_data = self.fetch()
         for data in raw_data:
-            cve_id = data["aliases"]
+            cve_id = data.get["aliases"] or []
+            cve_id = cve_id[0] if len(cve_id) > 0 else None
             if not cve_id.startswith("CVE"):
-                logger.error(f"Invalid CVE ID: {cve_id} in package {data['database_specific']['package']}")
+                logger.error(
+                    f"Invalid CVE ID: {cve_id} in package {data.get['database_specific']['package']}"
+                )
                 continue
             yield parse_advisory_data(data)
 
-# Single dictionary is coming from the list of dictionaries in the input of below func.
+
 def parse_advisory_data(raw_data) -> AdvisoryData:
-
     purl = PackageURL(type="curl", name="curl")
-    # add range of raw data accordingly as f string using first and last value of the list.
-    affected_version_range = NginxVersionRange.from_native(raw_data["vulnerable"])
+    affected_version_range = NginxVersionRange.from_native(raw_data.get("vulnerable", ""))
 
-    fixed_version = SemverVersion(raw_data["affected"][0]["ranges"][0]["events"][1]["fixed"])
+    d1 = get_item(raw_data, "affected")[0] if len(get_item(raw_data, "affected")) > 0 else []
+    d2 = get_item(d1, "ranges")[0] if len(get_item(d1, "ranges")) > 0 else []
+    d3 = get_item(d2, "events")[1] if len(get_item(d2, "events")) > 1 else {}
+    fixed_version = SemverVersion(d3.get("fixed") or "")
     affected_package = AffectedPackage(
-        package=purl, affected_version_range = affected_version_range, fixed_version=fixed_version
+        package=purl, affected_version_range=affected_version_range, fixed_version=fixed_version
     )
-
+    database_specific = raw_data.get("database_specific") or {}
     severity = VulnerabilitySeverity(
-        system=SCORING_SYSTEMS["generic_textual"], value=raw_data["database_specific"]["severity"]
+        system=SCORING_SYSTEMS["generic_textual"], value=database_specific.get("severity", "")
     )
-    references = [Reference(url=raw_data["database_specific"]["www"], severities=[severity])]
-    date_published = datetime.strptime(raw_data["published"], "%d-%m-%Y %Z").replace(
+    references = [Reference(url=database_specific.get("www") or "", severities=[severity])]
+    date_published = datetime.strptime(raw_data.get("published") or "", "%d-%m-%Y %Z").replace(
         tzinfo=timezone.utc
     )
-
     return AdvisoryData(
-        aliases=[raw_data["aliases"]],
-        summary=raw_data["summary"],
-        affected_packages=[affected_package],# under progress
+        aliases=raw_data.get("aliases", []),
+        summary=raw_data.get("summary", ""),
+        affected_packages=[affected_package],
         references=references,
         date_published=date_published,
-        url = raw_data["database_specific"]["URL"]
+        url=raw_data.get("database_specific", {}).get("URL", ""),
     )

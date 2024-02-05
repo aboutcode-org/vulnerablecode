@@ -1,0 +1,43 @@
+{
+    "modified": "2023-07-12T14:53:05Z",
+    "published": "2023-07-12T14:53:05Z",
+    "schema_version": "1.5.0",
+    "id": "MAL-2023-1077",
+    "summary": "Malicious code in 1password-postman-integration (npm)",
+    "details": "\n---\n_-= Per source details. Do not edit below this line.=-_\n\n## Source: ossf-package-analysis (93be26c7bf7ce939a783f5c98c26ecd585430bdb1c993cf3f78dd213a316a058)\nThe OpenSSF Package Analysis project identified '1password-postman-integration' @ 1.0.0 (npm) as malicious.\n\nIt is considered malicious because:\n- The package communicates with a domain associated with malicious activity.\n",
+    "affected": [
+      {
+        "package": {
+          "ecosystem": "npm",
+          "name": "1password-postman-integration"
+        },
+        "versions": [
+          "1.0.0"
+        ]
+      }
+    ],
+    "credits": [
+      {
+        "name": "OpenSSF: Package Analysis",
+        "type": "FINDER",
+        "contact": [
+          "https://github.com/ossf/package-analysis",
+          "https://openssf.slack.com/channels/package_analysis"
+        ]
+      }
+    ],
+    "database_specific": {
+      "malicious-packages-origins": [
+        {
+          "import_time": "2023-08-10T06:16:31.337614734Z",
+          "modified_time": "2023-07-12T14:53:05.954866979Z",
+          "sha256": "93be26c7bf7ce939a783f5c98c26ecd585430bdb1c993cf3f78dd213a316a058",
+          "source": "ossf-package-analysis",
+          "versions": [
+            "1.0.0"
+          ]
+        }
+      ]
+    }
+  }
+  

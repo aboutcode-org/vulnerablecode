@@ -1,0 +1,9 @@
+{
+  "aliases": ["MAL-2023-1426"],
+  "summary": "Malicious code in google-apis-androidpublisher_v2 (RubyGems)\n---\n_-= Per source details. Do not edit below this line.=-_\n\n## Source: ossf-package-analysis (715b9e91530380e15e848bc0374f342584cdd61853308582683eb214e0da9927)\nThe OpenSSF Package Analysis project identified 'google-apis-androidpublisher_v2' @ 0.0 (rubygems) as malicious.\n\nIt is considered malicious because:\n- The package communicates with a domain associated with malicious activity.",
+  "affected_packages": [],
+  "references": [],
+  "date_published": "2023-07-19T06:30:24+00:00",
+  "weaknesses": [],
+  "url": "http://test.com"
+}

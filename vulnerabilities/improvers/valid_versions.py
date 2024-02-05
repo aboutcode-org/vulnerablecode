@@ -36,6 +36,7 @@ from vulnerabilities.importers.gitlab import GitLabAPIImporter
 from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.importers.nginx import NginxImporter
 from vulnerabilities.importers.npm import NpmImporter
+from vulnerabilities.importers.openssf import OpenSSFImporter
 from vulnerabilities.importers.oss_fuzz import OSSFuzzImporter
 from vulnerabilities.importers.ubuntu import UbuntuImporter
 from vulnerabilities.improver import MAX_CONFIDENCE
@@ -459,4 +460,8 @@ class UbuntuOvalImprover(ValidVersionImprover):
 
 class OSSFuzzImprover(ValidVersionImprover):
     importer = OSSFuzzImporter
+    ignorable_versions = []
+
+class OpenSSFImprover(ValidVersionImprover):
+    importer = OpenSSFImporter
     ignorable_versions = []

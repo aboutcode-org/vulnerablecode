@@ -7,11 +7,11 @@
     {
       "package": {
         "type": "pypi",
-        "namespace": null,
+        "namespace": "",
         "name": "flask",
-        "version": null,
-        "qualifiers": null,
-        "subpath": null
+        "version": "",
+        "qualifiers": "",
+        "subpath": ""
       },
       "affected_version_range": "vers:pypi/<1.0",
       "fixed_version": "1.0"
@@ -30,5 +30,9 @@
     }
   ],
   "date_published": "2019-07-17T00:00:00+00:00",
-  "weaknesses": []
+  "weaknesses": [
+    1035,
+    937
+  ],
+  "url": "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/pypi.yaml"
 }

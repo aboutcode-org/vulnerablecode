@@ -1,5 +1,6 @@
 [
   {
+    "purl": "pkg:generic/namespace/test",
     "affected_versions": [
       "2.0",
       "2.0rc1",

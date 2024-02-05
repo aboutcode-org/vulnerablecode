@@ -6,10 +6,12 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-from rest_framework.throttling import ScopedRateThrottle
+from rest_framework.exceptions import Throttled
+from rest_framework.throttling import UserRateThrottle
+from rest_framework.views import exception_handler
 
 
-class StaffUserRateThrottle(ScopedRateThrottle):
+class StaffUserRateThrottle(UserRateThrottle):
     def allow_request(self, request, view):
         """
         Do not apply throttling for superusers and admins.
@@ -18,3 +20,19 @@ class StaffUserRateThrottle(ScopedRateThrottle):
             return True
 
         return super().allow_request(request, view)
+
+
+def throttled_exception_handler(exception, context):
+    """
+    Return this response whenever a request has been throttled
+    """
+
+    response = exception_handler(exception, context)
+
+    if isinstance(exception, Throttled):
+        response_data = {
+            "message": "Your request has been throttled. Please contact support@nexb.com"
+        }
+        response.data = response_data
+
+    return response

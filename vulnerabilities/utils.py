@@ -10,6 +10,7 @@
 import bisect
 import csv
 import dataclasses
+import datetime
 import json
 import logging
 import os
@@ -22,6 +23,7 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 from unittest.mock import MagicMock
+from urllib.parse import urljoin
 from uuid import uuid4
 
 import requests
@@ -29,7 +31,11 @@ import saneyaml
 import toml
 import urllib3
 from packageurl import PackageURL
+from packageurl import normalize_qualifiers
+from packageurl import normalize_subpath
+from packageurl.contrib.django.models import without_empty_values
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
+from univers.version_range import NginxVersionRange
 from univers.version_range import VersionRange
 
 logger = logging.getLogger(__name__)
@@ -135,28 +141,23 @@ class VersionedPackage:
         return self.version < other.version
 
 
-def evolve_purl(purl, **kwargs):
+def update_purl_version(purl, version):
     """
-    Return a new PackageURL derived from the ``purl`` PackageURL where any of
-    the provided kwarg replaces the corresponding attribute of this PackageURL.
-    Qaulifiers if provided must be a mapping
+    Return a new PackageURL derived from the ``purl`` PackageURL object or string
+    with the new version.
+
     For example::
     >>> purl = PackageURL.from_string("pkg:generic/this@1.2.3")
-    >>> evolved = PackageURL.from_string("pkg:npm/@baz/that@2.2.3?foo=bar")
-    >>> evolve_purl(purl,
-    ...   type="npm", namespace="@baz", name="that",
-    ...   version="2.2.3", qualifiers={"foo": "bar"}
-    ... ) == evolved
+    >>> evolved = PackageURL.from_string("pkg:generic/this@2.2.3")
+    >>> update_purl_version(purl, version="2.2.3") == evolved
     True
-
     """
-    if not kwargs:
-        return PackageURL.from_string(str(purl))
-
-    kwargs = {name: value for name, value in kwargs.items() if hasattr(purl, name)}
+    purl = normalize_purl(purl=purl)
+    if not version:
+        return purl
     merged = purl.to_dict()
-    merged.update(kwargs)
-    return PackageURL(**merged)
+    merged["version"] = version
+    return normalize_purl(PackageURL(**merged))
 
 
 def nearest_patched_package(
@@ -425,9 +426,10 @@ def fetch_response(url):
 
 
 # This should be a method on PackageURL
-def remove_qualifiers_and_subpath(purl):
+def plain_purl(purl):
     """
-    Return a package URL without qualifiers and subpath
+    Return a PackageURL without qualifiers and subpath
+    given a purl string or PackageURL object
     """
     if not isinstance(purl, PackageURL):
         purl = PackageURL.from_string(purl)
@@ -453,3 +455,140 @@ def get_cwe_id(cwe_string: str) -> int:
     """
     cwe_id = cwe_string.split("-")[1]
     return int(cwe_id)
+
+
+def clean_nginx_git_tag(tag):
+    """
+    Return a cleaned ``version`` string from an nginx git tag.
+
+    Nginx tags git release as in `release-1.2.3`
+    This removes the the `release-` prefix.
+
+    For example:
+    >>> clean_nginx_git_tag("release-1.2.3") == "1.2.3"
+    True
+    >>> clean_nginx_git_tag("1.2.3") == "1.2.3"
+    True
+    """
+    if tag.startswith("release-"):
+        _, _, tag = tag.partition("release-")
+    return tag
+
+
+def is_vulnerable_nginx_version(version, affected_version_range, fixed_versions):
+    """
+    Return True if the ``version`` Version for nginx is vulnerable according to
+    the nginx approach.
+
+    A ``version`` is vulnerable as explained by @mdounin
+    in https://marc.info/?l=nginx&m=164070162912710&w=2 :
+
+        "Note that it is generally trivial to find out if a version is
+        vulnerable or not from the information about a vulnerability,
+        without any knowledge about nginx branches.  That is:
+
+        - Check if the version is in "Vulnerable" range.  If it's not, the
+          version is not vulnerable.
+
+        - If it is, check if the branch is explicitly listed in the "Not
+          vulnerable".  If it's not, the version is vulnerable.  If it
+          is, check the minor number: if it's greater or equal to the
+          version listed as not vulnerable, the version is not vulnerable,
+          else the version is vulnerable."
+
+    """
+    if version in NginxVersionRange.from_string(affected_version_range.to_string()):
+        for fixed_version in fixed_versions:
+            if version.value.minor == fixed_version.value.minor and version >= fixed_version:
+                return False
+        return True
+    return False
+
+
+def get_severity_range(severity_list):
+    """
+    >>> get_severity_range({'LOW','7.5','5'})
+    '0.1 - 7.5'
+    >>> get_severity_range({'LOW','Medium'})
+    '0.1 - 6.9'
+    >>> get_severity_range({'9.5','critical'})
+    '9.0 - 10.0'
+    >>> get_severity_range({'9.5','critical','unknown'})
+    '9.0 - 10.0'
+    >>> get_severity_range({})
+    """
+    if len(severity_list) < 1:
+        return
+    score_map = {
+        "low": [0.1, 3],
+        "moderate": [4.0, 6.9],
+        "medium": [4.0, 6.9],
+        "high": [7.0, 8.9],
+        "important": [7.0, 8.9],
+        "critical": [9.0, 10.0],
+    }
+
+    score_list = []
+    for score in severity_list:
+        try:
+            score_list.append(float(score))
+        except ValueError:
+            score_range = score_map.get(score.lower()) or []
+            if score_range:
+                score_list.extend(score_range)
+    if not score_list:
+        return
+    return f"{min(score_list)} - {max(score_list)}"
+
+
+def get_importer_name(advisory):
+    """
+    Return the ``importer_name`` of the ``advisory`` that created
+    the ``advisory``
+    """
+    # Importer name can be empty for importers that are being tested
+    importer_name = ""
+    from vulnerabilities.importers import IMPORTERS_REGISTRY
+
+    importer = IMPORTERS_REGISTRY.get(advisory.created_by) or ""
+    if hasattr(importer, "importer_name"):
+        importer_name = importer.importer_name
+    return importer_name
+
+
+def get_advisory_url(file, base_path, url):
+    relative_path = str(file.relative_to(base_path)).strip("/")
+    advisory_url = urljoin(url, relative_path)
+    return advisory_url
+
+
+def purl_to_dict(purl: PackageURL, with_empty: bool = True):
+    """
+    Return a dict of purl components suitable for use in a queryset.
+    We need to have specific empty values for using in querysets because of our peculiar model structure.
+
+    For example::
+    >>> purl_to_dict(PackageURL.from_string("pkg:generic/postgres"))
+    {'type': 'generic', 'namespace': '', 'name': 'postgres', 'version': '', 'qualifiers': '', 'subpath': ''}
+    >>> purl_to_dict(PackageURL.from_string("pkg:generic/postgres/postgres@1.2?foo=bar#baz"))
+    {'type': 'generic', 'namespace': 'postgres', 'name': 'postgres', 'version': '1.2', 'qualifiers': 'foo=bar', 'subpath': 'baz'}
+    """
+    if isinstance(purl, str):
+        purl = PackageURL.from_string(purl)
+
+    mapping = purl.to_dict(encode=True, empty="")
+
+    if not with_empty:
+        return without_empty_values(mapping)
+
+    return mapping
+
+
+def normalize_purl(purl: str):
+    """
+    Return a normalized purl object from a purl
+    string or purl object.
+    """
+    if isinstance(purl, PackageURL):
+        purl = str(purl)
+    return PackageURL.from_string(purl)

@@ -9,12 +9,13 @@
 
 import json
 import os
+from pathlib import Path
 from unittest import mock
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importers.istio import IstioImporter
-from vulnerabilities.importers.istio import IstioImprover
 from vulnerabilities.improvers.default import DefaultImprover
+from vulnerabilities.improvers.valid_versions import IstioImprover
 from vulnerabilities.tests import util_tests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -46,11 +47,13 @@ def test_istio_get_data_from_md():
 def test_istio_process_file():
     path = os.path.join(TEST_DIR, "test_file.md")
     expected_file = os.path.join(TEST_DIR, f"istio-expected.json")
-    result = [data.to_dict() for data in list(IstioImporter().process_file(path))]
+    result = [
+        data.to_dict() for data in list(IstioImporter().process_file(Path(path), Path(path).parent))
+    ]
     util_tests.check_results_against_json(result, expected_file)
 
 
-@mock.patch("vulnerabilities.importers.istio.IstioImprover.get_package_versions")
+@mock.patch("vulnerabilities.improvers.valid_versions.IstioImprover.get_package_versions")
 def test_istio_improver(mock_response):
     advisory_file = os.path.join(TEST_DIR, f"istio-expected.json")
     expected_file = os.path.join(TEST_DIR, f"istio-improver-expected.json")

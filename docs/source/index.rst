@@ -21,18 +21,13 @@ In this documentation you will find information on:
     :caption: Getting Started
 
     introduction
+    user-interface
     installation
+    api
+    api-admin
     contributing
     faq
     misc
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Tutorial
-
-   tutorial_add_new_importer
-   tutorial_add_new_improver
-
 
 .. toctree::
     :maxdepth: 2
@@ -41,9 +36,9 @@ In this documentation you will find information on:
     reference_importer_overview
     reference_improver_overview
     reference_framework_overview
+    reference_model_overview
     command-line-interface
     importers_link
-    api
 
 .. toctree::
    :maxdepth: 1

@@ -118,6 +118,7 @@ class ApacheTomcatImporter(Importer):
 
     spdx_license_expression = "Apache-2.0"
     license_url = "https://www.apache.org/licenses/LICENSE-2.0"
+    importer_name = "Apache Tomcat Importer"
 
     def fetch_advisory_pages(self):
         """
@@ -125,7 +126,7 @@ class ApacheTomcatImporter(Importer):
         """
         links = self.fetch_advisory_links("https://tomcat.apache.org/security")
         for page_url in links:
-            yield requests.get(page_url).content
+            yield page_url, requests.get(page_url).content
 
     def fetch_advisory_links(self, url):
         """
@@ -138,7 +139,7 @@ class ApacheTomcatImporter(Importer):
         for tag in soup.find_all("a"):
             link = tag.get("href")
 
-            if "security-" in link and any(char.isdigit() for char in link):
+            if link and "security-" in link and any(char.isdigit() for char in link):
                 yield urllib.parse.urljoin(url, link)
 
     def advisory_data(self):
@@ -147,12 +148,12 @@ class ApacheTomcatImporter(Importer):
         """
         advisories = []
 
-        for advisory_page in self.fetch_advisory_pages():
-            advisories.extend(self.extract_advisories_from_page(advisory_page))
+        for url, advisory_page in self.fetch_advisory_pages():
+            advisories.extend(self.extract_advisories_from_page(url, advisory_page))
 
         return advisories
 
-    def extract_advisories_from_page(self, apache_tomcat_advisory_html):
+    def extract_advisories_from_page(self, url, apache_tomcat_advisory_html):
         """
         Yield AdvisoryData objects extracted from the HTML text ``apache_tomcat_advisory_html``.
         """
@@ -162,7 +163,7 @@ class ApacheTomcatImporter(Importer):
         )
 
         for advisory_group in fixed_version_advisory_groups:
-            yield from generate_advisory_data_objects(advisory_group)
+            yield from generate_advisory_data_objects(url, advisory_group)
 
 
 @dataclasses.dataclass(order=True)
@@ -265,7 +266,7 @@ def extract_tomcat_advisory_data_from_page(apache_tomcat_advisory_html):
         )
 
 
-def generate_advisory_data_objects(tomcat_advisory_data_object):
+def generate_advisory_data_objects(url, tomcat_advisory_data_object):
     fixed_versions = tomcat_advisory_data_object.fixed_versions
     severity_scores = ("Low:", "Moderate:", "Important:", "High:", "Critical:")
 
@@ -361,6 +362,7 @@ def generate_advisory_data_objects(tomcat_advisory_data_object):
                 summary="",
                 affected_packages=affected_packages,
                 references=references,
+                url=url,
             )
 
 

@@ -9,12 +9,20 @@
 
 import csv
 import os
+from unittest import mock
 
 from vulnerabilities.importers.project_kb_msr2019 import ProjectKBMSRImporter
 from vulnerabilities.tests import util_tests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DIR = os.path.join(BASE_DIR, "test_data/kbmsr2019")
+
+
+@mock.patch("vulnerabilities.importers.project_kb_msr2019.fetch_and_read_from_csv")
+def test_data_fetch(mock_value):
+    importer = ProjectKBMSRImporter()
+    mock_value.return_value = []
+    importer.advisory_data()
 
 
 def test_kbmsr_to_advisories():

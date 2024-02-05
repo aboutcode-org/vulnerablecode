@@ -27,11 +27,14 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import build_description
 from vulnerabilities.utils import dedupe
+from vulnerabilities.utils import get_cwe_id
 
 logger = logging.getLogger(__name__)
 
 
-def parse_advisory_data(raw_data: dict, supported_ecosystem) -> Optional[AdvisoryData]:
+def parse_advisory_data(
+    raw_data: dict, supported_ecosystem, advisory_url: str
+) -> Optional[AdvisoryData]:
     """
     Return an AdvisoryData build from a ``raw_data`` mapping of OSV advisory and
     a ``supported_ecosystem`` string.
@@ -74,6 +77,9 @@ def parse_advisory_data(raw_data: dict, supported_ecosystem) -> Optional[Advisor
                         fixed_version=version,
                     )
                 )
+    database_specific = raw_data.get("database_specific") or {}
+    cwe_ids = database_specific.get("cwe_ids") or []
+    weaknesses = list(map(get_cwe_id, cwe_ids))
 
     return AdvisoryData(
         aliases=aliases,
@@ -81,6 +87,8 @@ def parse_advisory_data(raw_data: dict, supported_ecosystem) -> Optional[Advisor
         references=references,
         affected_packages=affected_packages,
         date_published=date_published,
+        weaknesses=weaknesses,
+        url=advisory_url,
     )
 
 
@@ -148,7 +156,6 @@ def get_references(raw_data, severities) -> List[Reference]:
     for ref in raw_data.get("references") or []:
         if not ref:
             continue
-
         url = ref["url"]
         if not url:
             logger.error(f"Reference without URL : {ref!r} for OSV id: {raw_data['id']!r}")

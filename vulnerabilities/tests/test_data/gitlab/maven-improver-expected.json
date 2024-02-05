@@ -13,56 +13,56 @@
         "namespace": "com.cronutils",
         "name": "cron-utils",
         "version": "1.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "com.cronutils",
         "name": "cron-utils",
         "version": "1.0.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "com.cronutils",
         "name": "cron-utils",
         "version": "1.0.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "com.cronutils",
         "name": "cron-utils",
         "version": "2.0.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "com.cronutils",
         "name": "cron-utils",
         "version": "2.0.5",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "com.cronutils",
         "name": "cron-utils",
         "version": "9.0.6",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "com.cronutils",
         "name": "cron-utils",
         "version": "9.0.7",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -70,8 +70,8 @@
       "namespace": "com.cronutils",
       "name": "cron-utils",
       "version": "9.1.6",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -100,7 +100,11 @@
         "severities": []
       }
     ],
-    "weaknesses": []
+    "weaknesses": [
+      1035,
+      937,
+      94
+    ]
   },
   {
     "vulnerability_id": null,
@@ -116,8 +120,8 @@
       "namespace": "com.cronutils",
       "name": "cron-utils",
       "version": "9.1.6",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -146,6 +150,10 @@
         "severities": []
       }
     ],
-    "weaknesses": []
+    "weaknesses": [
+      1035,
+      937,
+      94
+    ]
   }
 ]

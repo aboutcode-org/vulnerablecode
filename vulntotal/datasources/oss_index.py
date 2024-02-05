@@ -12,6 +12,7 @@ import os
 from typing import Iterable
 
 import requests
+from packageurl import PackageURL
 
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
@@ -26,6 +27,14 @@ class OSSDataSource(DataSource):
     api_authenticated = "https://ossindex.sonatype.org/api/v3/authorized/component-report"
 
     def fetch_json_response(self, coordinates):
+        """Fetch JSON response from OSS Index API for a given list of coordinates.
+
+        Parameters:
+            coordinates: A list of strings representing the package coordinates.
+
+        Returns:
+            A dictionary containing the JSON response from the OSS Index API, or None if the response is unsuccessful or an error occurs while fetching data.
+        """
         username = os.environ.get("OSS_USERNAME", None)
         token = os.environ.get("OSS_TOKEN", None)
         auth = None
@@ -34,20 +43,21 @@ class OSSDataSource(DataSource):
             auth = (username, token)
             url = self.api_authenticated
         response = requests.post(url, auth=auth, json={"coordinates": coordinates})
-
-        if response.status_code == 200:
+        try:
+            response.raise_for_status()
             return response.json()
-        elif response.status_code == 401:
-            logger.error("Invalid credentials")
-        elif response.status_code == 429:
-            msg = (
-                "Too many requests"
-                if auth
-                else "Too many requests: add OSS_USERNAME and OSS_TOKEN in .env file"
-            )
-            logger.error(msg)
-        else:
-            logger.error(f"unknown status code: {response.status_code} while fetching: {url}")
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 401:
+                logger.error("Invalid credentials")
+            elif e.response.status_code == 429:
+                msg = (
+                    "Too many requests"
+                    if auth
+                    else "Too many requests: add OSS_USERNAME and OSS_TOKEN in .env file"
+                )
+                logger.error(msg)
+            else:
+                logger.error(f"Unknown status code: {e.response.status_code} while fetching: {url}")
 
     def datasource_advisory(self, purl) -> Iterable[VendorData]:
         if purl.type not in self.supported_ecosystem():
@@ -57,7 +67,7 @@ class OSSDataSource(DataSource):
         response = self.fetch_json_response([str(purl)])
         if response:
             self._raw_dump.append(response)
-            return parse_advisory(response)
+            return parse_advisory(response, purl)
 
     @classmethod
     def supported_ecosystem(cls):
@@ -79,7 +89,17 @@ class OSSDataSource(DataSource):
         }
 
 
-def parse_advisory(component) -> Iterable[VendorData]:
+def parse_advisory(component, purl) -> Iterable[VendorData]:
+    """
+    Parse component from OSS Index API and yield VendorData.
+
+    Parameters:
+        component: A list containing a dictionary with component details.
+        purl: PURL for the advisory.
+
+    Yields:
+        VendorData instance containing advisory information for the component.
+    """
     response = component[0]
     vulnerabilities = response.get("vulnerabilities") or []
     for vuln in vulnerabilities:
@@ -89,6 +109,7 @@ def parse_advisory(component) -> Iterable[VendorData]:
         version_ranges = vuln.get("versionRanges") or []
         affected_versions.extend(version_ranges)
         yield VendorData(
+            purl=PackageURL(purl.type, purl.namespace, purl.name),
             aliases=aliases,
             affected_versions=affected_versions,
             fixed_versions=fixed_versions,

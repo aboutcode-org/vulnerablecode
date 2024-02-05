@@ -13,10 +13,11 @@ from urllib.parse import quote
 
 import requests
 from bs4 import BeautifulSoup
+from packageurl import PackageURL
 
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
-from vulntotal.vulntotal_utils import snky_constraints_satisfied
+from vulntotal.vulntotal_utils import snyk_constraints_satisfied
 
 logger = logging.getLogger(__name__)
 
@@ -26,15 +27,36 @@ class SnykDataSource(DataSource):
     license_url = "TODO"
 
     def fetch(self, url):
+        """
+        Fetch the content of a given URL.
+
+        Parameters:
+            url: A string representing the URL to fetch.
+
+        Returns:
+            A string of HTML or a dictionary of JSON if the response is successful,
+            or None if the response is unsuccessful.
+        """
         response = requests.get(url)
-        if not response.status_code == 200:
-            logger.error(f"Error while fetching {url}")
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            logger.error(f"Error while fetching {url}: {e}")
             return
         if response.headers["content-type"] == "application/json, charset=utf-8":
             return response.json()
         return response.text
 
     def datasource_advisory(self, purl) -> Iterable[VendorData]:
+        """
+        Fetch advisories from Snyk for a given package.
+
+        Parameters:
+            purl: A PackageURL instance representing the package.
+
+        Yields:
+            VendorData instance containing advisory information.
+        """
         package_advisory_url = generate_package_advisory_url(purl)
         package_advisories_list = self.fetch(package_advisory_url)
         self._raw_dump.append(package_advisories_list)
@@ -46,7 +68,7 @@ class SnykDataSource(DataSource):
                     advisory_html = self.fetch(advisory_payload)
                     self._raw_dump.append(advisory_html)
                     if advisory_html:
-                        yield parse_html_advisory(advisory_html, snyk_id, affected)
+                        yield parse_html_advisory(advisory_html, snyk_id, affected, purl)
 
     @classmethod
     def supported_ecosystem(cls):
@@ -60,13 +82,22 @@ class SnykDataSource(DataSource):
             "npm": "npm",
             "nuget": "nuget",
             "pypi": "pip",
-            "rubygems": "rubygems",
+            "gem": "rubygems",
             # any purl.type not in supported_ecosystem shall implicitly be treated as unmanaged type
             "unmanaged": "unmanaged",
         }
 
 
 def generate_package_advisory_url(purl):
+    """
+    Generate a URL for fetching advisories from Snyk for a given package.
+
+    Parameters:
+        purl: A PackageURL instance representing the package.
+
+    Returns:
+        A string containing the URL or None if the package is not supported by Snyk.
+    """
     url_package_advisories = "https://security.snyk.io/package/{ecosystem}/{package}"
 
     # Pseudo API, unfortunately gives only 30 vulnerability per package, but this is the best we have for unmanaged packages
@@ -102,13 +133,22 @@ def generate_package_advisory_url(purl):
 
 
 def extract_html_json_advisories(package_advisories):
-    vulnerablity = {}
+    """
+    Extract vulnerability information from HTML or JSON advisories.
+
+    Parameters:
+        package_advisories: A string of HTML or a dictionary of JSON containing advisories for a package.
+
+    Returns:
+        A dictionary mapping vulnerability IDs to lists of affected versions for the package.
+    """
+    vulnerability = {}
 
     # If advisories are json and is obtained through pseudo API
     if isinstance(package_advisories, dict):
         if package_advisories["status"] == "ok":
             for vuln in package_advisories["vulnerabilities"]:
-                vulnerablity[vuln["id"]] = vuln["semver"]["vulnerable"]
+                vulnerability[vuln["id"]] = vuln["semver"]["vulnerable"]
     else:
         soup = BeautifulSoup(package_advisories, "html.parser")
         vulns_table = soup.find("tbody", class_="vue--table__tbody")
@@ -120,11 +160,23 @@ def extract_html_json_advisories(package_advisories):
                     "span", class_="vue--chip vulnerable-versions__chip vue--chip--default"
                 )
                 affected_versions = [vers.text.strip() for vers in ranges]
-                vulnerablity[anchor["href"].rsplit("/", 1)[-1]] = affected_versions
-    return vulnerablity
+                vulnerability[anchor["href"].rsplit("/", 1)[-1]] = affected_versions
+    return vulnerability
 
 
-def parse_html_advisory(advisory_html, snyk_id, affected) -> VendorData:
+def parse_html_advisory(advisory_html, snyk_id, affected, purl) -> VendorData:
+    """
+    Parse HTML advisory from Snyk and extract vendor data.
+
+    Parameters:
+        advisory_html: A string of HTML containing the advisory details.
+        snyk_id: A string representing the Snyk ID of the vulnerability.
+        affected: A list of strings representing the affected versions.
+        purl: PURL for the advisory.
+
+    Returns:
+        A VendorData instance containing aliases, affected versions and fixed versions for the vulnerability.
+    """
     aliases = []
     fixed_versions = []
 
@@ -145,6 +197,7 @@ def parse_html_advisory(advisory_html, snyk_id, affected) -> VendorData:
             fixed_versions = "".join(fixed[lower + 1 : upper]).split(",")
     aliases.append(snyk_id)
     return VendorData(
+        purl=PackageURL(purl.type, purl.namespace, purl.name),
         aliases=aliases,
         affected_versions=affected,
         fixed_versions=fixed_versions,
@@ -152,10 +205,7 @@ def parse_html_advisory(advisory_html, snyk_id, affected) -> VendorData:
 
 
 def is_purl_in_affected(version, affected):
-    for affected_range in affected:
-        if snky_constraints_satisfied(affected_range, version):
-            return True
-    return False
+    return any(snyk_constraints_satisfied(affected_range, version) for affected_range in affected)
 
 
 def generate_advisory_payload(snyk_id):

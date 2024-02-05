@@ -17,6 +17,7 @@ from typing import Iterable
 import requests
 import saneyaml
 from fetchcode import fetch
+from packageurl import PackageURL
 
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
@@ -30,6 +31,15 @@ class GitlabDataSource(DataSource):
     license_url = "TODO"
 
     def datasource_advisory(self, purl) -> Iterable[VendorData]:
+        """
+        Fetches advisories for a given purl from the GitLab API.
+
+        Parameters:
+            purl: A PackageURL instance representing the package to query.
+
+        Yields:
+            VendorData instance containing the advisory information for the package.
+        """
         package_slug = get_package_slug(purl)
         location = download_subtree(package_slug, speculative_execution=True)
         if not location:
@@ -39,7 +49,7 @@ class GitlabDataSource(DataSource):
             location = download_subtree(casesensitive_package_slug)
         if location:
             interesting_advisories = parse_interesting_advisories(
-                location, purl.version, delete_download=True
+                location, purl, delete_download=True
             )
             return interesting_advisories
         clear_download(location)
@@ -59,6 +69,15 @@ class GitlabDataSource(DataSource):
 
 
 def get_package_slug(purl):
+    """
+    Constructs a package slug from a given purl.
+
+    Parameters:
+        purl: A PackageURL instance representing the package to query.
+
+    Returns:
+        A string representing the package slug, or None if the purl type is not supported by GitLab.
+    """
     supported_ecosystem = GitlabDataSource.supported_ecosystem()
 
     if purl.type not in supported_ecosystem:
@@ -74,6 +93,16 @@ def get_package_slug(purl):
 
 
 def download_subtree(package_slug: str, speculative_execution=False):
+    """
+    Downloads and extracts a tar file from a given package slug.
+
+    Parameters:
+        package_slug: A string representing the package slug to query.
+        speculative_execution: A boolean indicating whether to log errors or not.
+
+    Returns:
+        A Path object representing the extracted location, or None if an error occurs.
+    """
     url = f"https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/archive/master/gemnasium-db-master.tar.gz?path={package_slug}"
     response = fetch(url)
     if os.path.getsize(response.location) > 0:
@@ -90,6 +119,12 @@ def download_subtree(package_slug: str, speculative_execution=False):
 
 
 def clear_download(location):
+    """
+    Deletes a directory and its contents.
+
+    Parameters:
+        location: A Path object representing the directory to delete.
+    """
     if location:
         shutil.rmtree(location)
 
@@ -132,9 +167,9 @@ def get_casesensitive_slug(path, package_slug):
         }
     ]
     url = "https://gitlab.com/api/graphql"
-    hasnext = True
+    has_next = True
 
-    while hasnext:
+    while has_next:
         response = requests.post(url, json=payload).json()
         paginated_tree = response[0]["data"]["project"]["repository"]["paginatedTree"]
 
@@ -148,19 +183,33 @@ def get_casesensitive_slug(path, package_slug):
                 return get_gitlab_style_slug(slug_flatpath, package_slug)
 
         payload[0]["variables"]["nextPageCursor"] = paginated_tree["pageInfo"]["endCursor"]
-        hasnext = paginated_tree["pageInfo"]["hasNextPage"]
+        has_next = paginated_tree["pageInfo"]["hasNextPage"]
 
 
-def parse_interesting_advisories(location, version, delete_download=False) -> Iterable[VendorData]:
+def parse_interesting_advisories(location, purl, delete_download=False) -> Iterable[VendorData]:
+    """
+    Parses advisories from YAML files in a given location that match a given version.
+
+    Parameters:
+        location: A Path object representing the location of the YAML files.
+        purl: PURL for the advisory.
+        version: A string representing the version to check against the affected range.
+        delete_download: A boolean indicating whether to delete the downloaded files after parsing.
+
+    Yields:
+        VendorData instance containing the advisory information for the package.
+    """
+    version = purl.version
     path = Path(location)
-    glob = "**/*.yml"
-    files = (p for p in path.glob(glob) if p.is_file())
+    pattern = "**/*.yml"
+    files = [p for p in path.glob(pattern) if p.is_file()]
     for file in sorted(files):
         with open(file) as f:
             gitlab_advisory = saneyaml.load(f)
         affected_range = gitlab_advisory["affected_range"]
         if gitlab_constraints_satisfied(affected_range, version):
             yield VendorData(
+                purl=PackageURL(purl.type, purl.namespace, purl.name),
                 aliases=gitlab_advisory["identifiers"],
                 affected_versions=[affected_range],
                 fixed_versions=gitlab_advisory["fixed_versions"],

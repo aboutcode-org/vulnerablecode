@@ -10,28 +10,28 @@
     "affected_purls": [
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "3.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "3.0.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "openssl",
-      "namespace": null,
+      "namespace": "",
       "name": "openssl",
       "version": "3.0.2",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -79,124 +79,124 @@
     "affected_purls": [
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1a",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1b",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1c",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1d",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1e",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1f",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1g",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1h",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1i",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1j",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1k",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1l",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1m",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "openssl",
-      "namespace": null,
+      "namespace": "",
       "name": "openssl",
       "version": "1.1.1n",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -244,244 +244,244 @@
     "affected_purls": [
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2a",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2b",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2c",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2d",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2e",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2f",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2g",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2h",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2i",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2j",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2k",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2l",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2m",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2n",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2o",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2p",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2q",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2r",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2s",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2t",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2u",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2w",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2x",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2y",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2za",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2zb",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2zc",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "openssl",
-      "namespace": null,
+      "namespace": "",
       "name": "openssl",
       "version": "1.0.2zd",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -529,20 +529,20 @@
     "affected_purls": [
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "3.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "openssl",
-      "namespace": null,
+      "namespace": "",
       "name": "openssl",
       "version": "3.0.1",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -590,116 +590,116 @@
     "affected_purls": [
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1a",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1b",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1c",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1d",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1e",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1f",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1g",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1h",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1i",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1j",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1k",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1l",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "openssl",
-      "namespace": null,
+      "namespace": "",
       "name": "openssl",
       "version": "1.1.1m",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -747,236 +747,236 @@
     "affected_purls": [
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2a",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2b",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2c",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2d",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2e",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2f",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2g",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2h",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2i",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2j",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2k",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2l",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2m",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2n",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2o",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2p",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2q",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2r",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2s",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2t",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2u",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2w",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2x",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2y",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2za",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2zb",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "openssl",
-      "namespace": null,
+      "namespace": "",
       "name": "openssl",
       "version": "1.0.2zc-de",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1024,20 +1024,20 @@
     "affected_purls": [
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "3.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "openssl",
-      "namespace": null,
+      "namespace": "",
       "name": "openssl",
       "version": "3.0.1",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1075,84 +1075,84 @@
     "affected_purls": [
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1a",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1b",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1c",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1d",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1e",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1f",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1g",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.1.1h",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "openssl",
-      "namespace": null,
+      "namespace": "",
       "name": "openssl",
       "version": "1.1.1i",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -1195,204 +1195,204 @@
     "affected_purls": [
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2a",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2b",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2c",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2d",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2e",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2f",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2g",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2h",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2i",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2j",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2k",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2l",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2m",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2n",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2o",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2p",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2q",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2r",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2s",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2t",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2u",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "openssl",
-        "namespace": null,
+        "namespace": "",
         "name": "openssl",
         "version": "1.0.2w",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "openssl",
-      "namespace": null,
+      "namespace": "",
       "name": "openssl",
       "version": "1.0.2x",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {

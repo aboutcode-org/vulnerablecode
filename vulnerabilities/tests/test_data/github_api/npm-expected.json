@@ -9,11 +9,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "mongoose",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>5.13.15|<6.4.6",
         "fixed_version": null
@@ -63,7 +63,8 @@
       }
     ],
     "date_published": "2022-07-29T00:00:18+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-f825-f98c-gj3g"
   },
   {
     "aliases": [
@@ -75,11 +76,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "tooljet",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.27.0",
         "fixed_version": null
@@ -119,7 +120,8 @@
       }
     ],
     "date_published": "2022-11-22T03:30:56+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-hgp8-w8fj-r4cm"
   },
   {
     "aliases": [
@@ -131,11 +133,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "static-dev-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/1.0.0",
         "fixed_version": null
@@ -170,7 +172,8 @@
       }
     ],
     "date_published": "2022-11-29T18:30:18+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-7fxm-c848-89q8"
   },
   {
     "aliases": [
@@ -182,11 +185,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "decode-uri-component",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<0.2.1",
         "fixed_version": null
@@ -231,7 +234,8 @@
       }
     ],
     "date_published": "2022-11-28T15:30:24+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-w573-4hg7-7wgq"
   },
   {
     "aliases": [
@@ -243,11 +247,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "electron",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=19.0.0|<19.1.8",
         "fixed_version": null
@@ -292,7 +296,8 @@
       }
     ],
     "date_published": "2022-11-25T03:30:19+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-995f-9x5r-2rcj"
   },
   {
     "aliases": [
@@ -304,11 +309,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "ghost",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=4.46.0|<4.48.8",
         "fixed_version": null
@@ -344,8 +349,8 @@
       }
     ],
     "date_published": "2022-11-28T22:06:24+00:00",
-    "weaknesses": []
-
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-9gh8-wp53-ccc6"
   },
   {
     "aliases": [
@@ -357,11 +362,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "ghost",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=5.0.0|<5.22.7",
         "fixed_version": null
@@ -397,7 +402,8 @@
       }
     ],
     "date_published": "2022-11-28T22:06:24+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-9gh8-wp53-ccc6"
   },
   {
     "aliases": [
@@ -408,11 +414,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "sweetalert2",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=8.19.1|<9.0.0",
         "fixed_version": null
@@ -442,7 +448,8 @@
       }
     ],
     "date_published": "2022-11-23T15:49:51+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-8jh9-wqpf-q52c"
   },
   {
     "aliases": [
@@ -453,11 +460,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "sweetalert2",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=9.17.4|<10.0.0",
         "fixed_version": null
@@ -487,7 +494,8 @@
       }
     ],
     "date_published": "2022-11-23T15:44:52+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-pg98-6v7f-2xfv"
   },
   {
     "aliases": [
@@ -498,11 +506,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "sweetalert2",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=10.16.10|<11.0.0",
         "fixed_version": null
@@ -532,7 +540,8 @@
       }
     ],
     "date_published": "2022-11-23T15:39:50+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-457r-cqc8-9vj9"
   },
   {
     "aliases": [
@@ -543,11 +552,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "sweetalert2",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=11.4.9",
         "fixed_version": null
@@ -577,23 +586,24 @@
       }
     ],
     "date_published": "2022-11-23T15:26:43+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-qq6h-5g6j-q3cm"
   },
   {
     "aliases": [
       "CVE-2022-41940",
       "GHSA-r7qp-cfhv-p84w"
     ],
-    "summary": "Uncaught exception in engine.io ",
+    "summary": "Uncaught exception in engine.io",
     "affected_packages": [
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "engine.io",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=4.0.0|<6.2.1",
         "fixed_version": null
@@ -639,23 +649,24 @@
       }
     ],
     "date_published": "2022-11-21T23:55:41+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-r7qp-cfhv-p84w"
   },
   {
     "aliases": [
       "CVE-2022-41940",
       "GHSA-r7qp-cfhv-p84w"
     ],
-    "summary": "Uncaught exception in engine.io ",
+    "summary": "Uncaught exception in engine.io",
     "affected_packages": [
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "engine.io",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<3.6.1",
         "fixed_version": null
@@ -701,23 +712,24 @@
       }
     ],
     "date_published": "2022-11-21T23:55:41+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-r7qp-cfhv-p84w"
   },
   {
     "aliases": [
       "CVE-2022-41919",
       "GHSA-3fjj-p79j-c9hh"
     ],
-    "summary": "Fastify: Incorrect Content-Type parsing can lead to CSRF attack ",
+    "summary": "Fastify: Incorrect Content-Type parsing can lead to CSRF attack",
     "affected_packages": [
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "fastify",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=3.0.0|<3.29.4",
         "fixed_version": null
@@ -763,23 +775,24 @@
       }
     ],
     "date_published": "2022-11-21T22:28:11+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-3fjj-p79j-c9hh"
   },
   {
     "aliases": [
       "CVE-2022-41919",
       "GHSA-3fjj-p79j-c9hh"
     ],
-    "summary": "Fastify: Incorrect Content-Type parsing can lead to CSRF attack ",
+    "summary": "Fastify: Incorrect Content-Type parsing can lead to CSRF attack",
     "affected_packages": [
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "fastify",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=4.0.0|<4.10.2",
         "fixed_version": null
@@ -825,7 +838,8 @@
       }
     ],
     "date_published": "2022-11-21T22:28:11+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-3fjj-p79j-c9hh"
   },
   {
     "aliases": [
@@ -837,11 +851,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "deep-object-diff",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=1.1.6|<1.1.9",
         "fixed_version": null
@@ -891,7 +905,8 @@
       }
     ],
     "date_published": "2022-11-04T12:00:25+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-653v-rqx9-j85p"
   },
   {
     "aliases": [
@@ -903,11 +918,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "nodebb",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<2.5.8",
         "fixed_version": null
@@ -952,7 +967,8 @@
       }
     ],
     "date_published": "2022-11-13T19:00:41+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-5gwx-wf9g-r5mx"
   },
   {
     "aliases": [
@@ -964,11 +980,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "matrix-appservice-irc",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<0.36.0",
         "fixed_version": null
@@ -1013,7 +1029,8 @@
       }
     ],
     "date_published": "2022-11-13T12:00:17+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-ffwf-47x2-jpr8"
   },
   {
     "aliases": [
@@ -1025,11 +1042,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "loader-utils",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=3.0.0|<3.2.1",
         "fixed_version": null
@@ -1074,7 +1091,8 @@
       }
     ],
     "date_published": "2022-10-14T19:00:38+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-3rfm-jhwj-7488"
   },
   {
     "aliases": [
@@ -1086,11 +1104,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "loader-utils",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=2.0.0|<2.0.4",
         "fixed_version": null
@@ -1135,7 +1153,8 @@
       }
     ],
     "date_published": "2022-10-14T19:00:38+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-3rfm-jhwj-7488"
   },
   {
     "aliases": [
@@ -1147,11 +1166,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "loader-utils",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=1.0.0|<1.4.2",
         "fixed_version": null
@@ -1196,7 +1215,8 @@
       }
     ],
     "date_published": "2022-10-14T19:00:38+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-3rfm-jhwj-7488"
   },
   {
     "aliases": [
@@ -1208,11 +1228,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "loader-utils",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=3.0.0|<3.2.1",
         "fixed_version": null
@@ -1262,7 +1282,8 @@
       }
     ],
     "date_published": "2022-10-12T12:00:27+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-hhq3-ff78-jv3g"
   },
   {
     "aliases": [
@@ -1274,11 +1295,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "loader-utils",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=2.0.0|<2.0.4",
         "fixed_version": null
@@ -1328,7 +1349,8 @@
       }
     ],
     "date_published": "2022-10-12T12:00:27+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-hhq3-ff78-jv3g"
   },
   {
     "aliases": [
@@ -1340,11 +1362,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "loader-utils",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=1.0.0|<1.4.2",
         "fixed_version": null
@@ -1394,7 +1416,8 @@
       }
     ],
     "date_published": "2022-10-12T12:00:27+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-hhq3-ff78-jv3g"
   },
   {
     "aliases": [
@@ -1405,11 +1428,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "readthedocs",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<8.8.1",
         "fixed_version": null
@@ -1445,22 +1468,23 @@
       }
     ],
     "date_published": "2022-11-10T16:02:51+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-98pf-gfh3-x3mp"
   },
   {
     "aliases": [
       "GHSA-3qmc-2r76-4rqp"
     ],
-    "summary": "Redwood is vulnerable to account takeover via dbAuth \"forgot-password\" ",
+    "summary": "Redwood is vulnerable to account takeover via dbAuth \"forgot-password\"",
     "affected_packages": [
       {
         "package": {
           "type": "npm",
           "namespace": "@redwoodjs",
           "name": "api",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=3.0.0|<3.3.1",
         "fixed_version": null
@@ -1511,22 +1535,23 @@
       }
     ],
     "date_published": "2022-11-10T15:51:01+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-3qmc-2r76-4rqp"
   },
   {
     "aliases": [
       "GHSA-3qmc-2r76-4rqp"
     ],
-    "summary": "Redwood is vulnerable to account takeover via dbAuth \"forgot-password\" ",
+    "summary": "Redwood is vulnerable to account takeover via dbAuth \"forgot-password\"",
     "affected_packages": [
       {
         "package": {
           "type": "npm",
           "namespace": "@redwoodjs",
           "name": "api",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=0.38.0|<2.2.5",
         "fixed_version": null
@@ -1577,7 +1602,8 @@
       }
     ],
     "date_published": "2022-11-10T15:51:01+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-3qmc-2r76-4rqp"
   },
   {
     "aliases": [
@@ -1589,11 +1615,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "parse-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=5.0.0|<5.3.3",
         "fixed_version": null
@@ -1659,7 +1685,8 @@
       }
     ],
     "date_published": "2022-11-10T13:02:35+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-93vw-8fm5-p2jf"
   },
   {
     "aliases": [
@@ -1671,11 +1698,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "parse-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.10.20",
         "fixed_version": null
@@ -1741,7 +1768,8 @@
       }
     ],
     "date_published": "2022-11-10T13:02:35+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-93vw-8fm5-p2jf"
   },
   {
     "aliases": [
@@ -1753,11 +1781,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "electron",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=19.0.0-beta.1|<19.0.11",
         "fixed_version": null
@@ -1793,7 +1821,8 @@
       }
     ],
     "date_published": "2022-11-10T12:38:57+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-p2jh-44qj-pf2v"
   },
   {
     "aliases": [
@@ -1805,11 +1834,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "electron",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=20.0.0-beta.1|<20.0.1",
         "fixed_version": null
@@ -1845,7 +1874,8 @@
       }
     ],
     "date_published": "2022-11-10T12:38:57+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-p2jh-44qj-pf2v"
   },
   {
     "aliases": [
@@ -1857,11 +1887,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "electron",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<18.3.7",
         "fixed_version": null
@@ -1897,7 +1927,8 @@
       }
     ],
     "date_published": "2022-11-10T12:38:57+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-p2jh-44qj-pf2v"
   },
   {
     "aliases": [
@@ -1909,11 +1940,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "socket.io-parser",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=3.4.0|<3.4.2",
         "fixed_version": null
@@ -1968,7 +1999,8 @@
       }
     ],
     "date_published": "2022-10-26T12:00:28+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-qm95-pgcg-qqfq"
   },
   {
     "aliases": [
@@ -1980,11 +2012,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "socket.io-parser",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<3.3.3",
         "fixed_version": null
@@ -2039,7 +2071,8 @@
       }
     ],
     "date_published": "2022-10-26T12:00:28+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-qm95-pgcg-qqfq"
   },
   {
     "aliases": [
@@ -2051,11 +2084,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "socket.io-parser",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=4.0.0|<4.0.5",
         "fixed_version": null
@@ -2110,7 +2143,8 @@
       }
     ],
     "date_published": "2022-10-26T12:00:28+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-qm95-pgcg-qqfq"
   },
   {
     "aliases": [
@@ -2122,11 +2156,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "parse-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=5.0.0|<5.3.2",
         "fixed_version": null
@@ -2182,7 +2216,8 @@
       }
     ],
     "date_published": "2022-11-09T20:47:27+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-xprv-wvh7-qqqx"
   },
   {
     "aliases": [
@@ -2194,11 +2229,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "parse-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.10.19",
         "fixed_version": null
@@ -2254,7 +2289,8 @@
       }
     ],
     "date_published": "2022-11-09T20:47:27+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-xprv-wvh7-qqqx"
   },
   {
     "aliases": [
@@ -2266,11 +2302,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "octocat.js",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.2.0",
         "fixed_version": null
@@ -2306,7 +2342,8 @@
       }
     ],
     "date_published": "2022-11-08T20:48:49+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-r4jg-5v89-9v62"
   },
   {
     "aliases": [
@@ -2318,11 +2355,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "parse-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=5.0.0|<5.3.1",
         "fixed_version": null
@@ -2378,7 +2415,8 @@
       }
     ],
     "date_published": "2022-11-08T17:29:16+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-prm5-8g2m-24gg"
   },
   {
     "aliases": [
@@ -2390,11 +2428,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "parse-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.10.18",
         "fixed_version": null
@@ -2450,7 +2488,8 @@
       }
     ],
     "date_published": "2022-11-08T17:29:16+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-prm5-8g2m-24gg"
   },
   {
     "aliases": [
@@ -2462,11 +2501,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "fastest-json-copy",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<=1.0.1",
         "fixed_version": null
@@ -2501,7 +2540,8 @@
       }
     ],
     "date_published": "2022-11-04T12:00:25+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-p5g9-rjcf-95vj"
   },
   {
     "aliases": [
@@ -2513,11 +2553,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "deep-parse-json",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<=1.0.2",
         "fixed_version": null
@@ -2552,7 +2592,8 @@
       }
     ],
     "date_published": "2022-11-04T12:00:25+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-ff9j-pwxg-q5p2"
   },
   {
     "aliases": [
@@ -2564,11 +2605,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "loader-utils",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.4.1",
         "fixed_version": null
@@ -2628,7 +2669,8 @@
       }
     ],
     "date_published": "2022-10-13T12:00:28+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-76p3-8jx3-jpfq"
   },
   {
     "aliases": [
@@ -2640,11 +2682,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "loader-utils",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=2.0.0|<2.0.3",
         "fixed_version": null
@@ -2704,7 +2746,8 @@
       }
     ],
     "date_published": "2022-10-13T12:00:28+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-76p3-8jx3-jpfq"
   },
   {
     "aliases": [
@@ -2718,9 +2761,9 @@
           "type": "npm",
           "namespace": "@fastify",
           "name": "websocket",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=5.0.0|<5.0.1",
         "fixed_version": null
@@ -2766,7 +2809,8 @@
       }
     ],
     "date_published": "2022-11-07T21:13:57+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-4pcg-wr6c-h9cq"
   },
   {
     "aliases": [
@@ -2778,11 +2822,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "fastify-websocket",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<=4.3.0",
         "fixed_version": null
@@ -2828,7 +2872,8 @@
       }
     ],
     "date_published": "2022-11-07T21:13:57+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-4pcg-wr6c-h9cq"
   },
   {
     "aliases": [
@@ -2842,9 +2887,9 @@
           "type": "npm",
           "namespace": "@fastify",
           "name": "websocket",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=6.0.0|<7.1.1",
         "fixed_version": null
@@ -2890,7 +2935,8 @@
       }
     ],
     "date_published": "2022-11-07T21:13:57+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-4pcg-wr6c-h9cq"
   },
   {
     "aliases": [
@@ -2902,11 +2948,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "electron-markdownify",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<=1.4.1",
         "fixed_version": null
@@ -2941,7 +2987,8 @@
       }
     ],
     "date_published": "2022-11-04T12:00:25+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-qqhf-xfhw-7884"
   },
   {
     "aliases": [
@@ -2955,9 +3002,9 @@
           "type": "npm",
           "namespace": "@keystone-6",
           "name": "core",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=3.0.0|<3.0.2",
         "fixed_version": null
@@ -3003,7 +3050,8 @@
       }
     ],
     "date_published": "2022-11-03T18:14:05+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-25mx-2mxm-6343"
   },
   {
     "aliases": [
@@ -3016,9 +3064,9 @@
           "type": "npm",
           "namespace": "@apollo",
           "name": "server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.1.0",
         "fixed_version": null
@@ -3059,7 +3107,8 @@
       }
     ],
     "date_published": "2022-11-02T18:18:10+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-8r69-3cvp-wxc3"
   },
   {
     "aliases": [
@@ -3070,11 +3119,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "apollo-server-core",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=3.0.0|<3.11.0",
         "fixed_version": null
@@ -3115,7 +3164,8 @@
       }
     ],
     "date_published": "2022-11-02T18:18:10+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-8r69-3cvp-wxc3"
   },
   {
     "aliases": [
@@ -3127,11 +3177,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "hummus",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.0.111",
         "fixed_version": null
@@ -3187,7 +3237,8 @@
       }
     ],
     "date_published": "2022-11-02T18:10:47+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-rcrx-fpjp-mfrw"
   },
   {
     "aliases": [
@@ -3199,11 +3250,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "muhammara",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<2.6.0",
         "fixed_version": null
@@ -3259,7 +3310,8 @@
       }
     ],
     "date_published": "2022-11-02T18:10:47+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-rcrx-fpjp-mfrw"
   },
   {
     "aliases": [
@@ -3271,11 +3323,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "hummus",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=1.0.0|<=1.0.110",
         "fixed_version": null
@@ -3330,7 +3382,8 @@
       }
     ],
     "date_published": "2022-11-01T12:00:30+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-frp9-2v6r-gj97"
   },
   {
     "aliases": [
@@ -3342,11 +3395,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "hummus",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.0.111",
         "fixed_version": null
@@ -3411,7 +3464,8 @@
       }
     ],
     "date_published": "2022-11-01T12:00:30+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-9cv5-4wqv-9w94"
   },
   {
     "aliases": [
@@ -3423,11 +3477,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "muhammara",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<2.6.0",
         "fixed_version": null
@@ -3482,7 +3536,8 @@
       }
     ],
     "date_published": "2022-11-01T12:00:30+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-frp9-2v6r-gj97"
   },
   {
     "aliases": [
@@ -3494,11 +3549,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "muhammara",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=3.0.0|<3.1.1",
         "fixed_version": null
@@ -3563,7 +3618,8 @@
       }
     ],
     "date_published": "2022-11-01T12:00:30+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-9cv5-4wqv-9w94"
   },
   {
     "aliases": [
@@ -3575,11 +3631,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "muhammara",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<2.6.1",
         "fixed_version": null
@@ -3644,7 +3700,8 @@
       }
     ],
     "date_published": "2022-11-01T12:00:30+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-9cv5-4wqv-9w94"
   },
   {
     "aliases": [
@@ -3656,11 +3713,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "node-red-dashboard",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<3.2.0",
         "fixed_version": null
@@ -3700,7 +3757,8 @@
       }
     ],
     "date_published": "2022-11-01T12:00:36+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-vrv9-3x3w-ffxw"
   },
   {
     "aliases": [
@@ -3714,9 +3772,9 @@
           "type": "npm",
           "namespace": "@xmldom",
           "name": "xmldom",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=0.9.0-beta.1|<0.9.0-beta.4",
         "fixed_version": null
@@ -3772,7 +3830,8 @@
       }
     ],
     "date_published": "2022-11-01T17:29:11+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-crh6-fp67-6883"
   },
   {
     "aliases": [
@@ -3786,9 +3845,9 @@
           "type": "npm",
           "namespace": "@xmldom",
           "name": "xmldom",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=0.8.0|<0.8.4",
         "fixed_version": null
@@ -3844,7 +3903,8 @@
       }
     ],
     "date_published": "2022-11-01T17:29:11+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-crh6-fp67-6883"
   },
   {
     "aliases": [
@@ -3858,9 +3918,9 @@
           "type": "npm",
           "namespace": "@xmldom",
           "name": "xmldom",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<0.7.7",
         "fixed_version": null
@@ -3916,7 +3976,8 @@
       }
     ],
     "date_published": "2022-11-01T17:29:11+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-crh6-fp67-6883"
   },
   {
     "aliases": [
@@ -3928,11 +3989,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "xmldom",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<=0.6.0",
         "fixed_version": null
@@ -3988,7 +4049,8 @@
       }
     ],
     "date_published": "2022-11-01T17:29:11+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-crh6-fp67-6883"
   },
   {
     "aliases": [
@@ -4000,11 +4062,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "feathers-sequelize",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=6.0.0|<6.3.3",
         "fixed_version": null
@@ -4044,7 +4106,8 @@
       }
     ],
     "date_published": "2022-10-26T12:00:28+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-p5m3-27vh-52j4"
   },
   {
     "aliases": [
@@ -4056,11 +4119,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "feathers-sequelize",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=6.0.0|<6.3.4",
         "fixed_version": null
@@ -4100,7 +4163,8 @@
       }
     ],
     "date_published": "2022-10-26T12:00:28+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-5hq7-j5wq-p227"
   },
   {
     "aliases": [
@@ -4112,11 +4176,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "feathers-sequelize",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=6.0.0|<6.3.4",
         "fixed_version": null
@@ -4156,7 +4220,8 @@
       }
     ],
     "date_published": "2022-10-26T12:00:28+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-qpv8-4pjq-qqh7"
   },
   {
     "aliases": [
@@ -4168,11 +4233,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "socket.io-parser",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=4.1.0|<4.2.1",
         "fixed_version": null
@@ -4227,23 +4292,24 @@
       }
     ],
     "date_published": "2022-10-26T12:00:28+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-qm95-pgcg-qqfq"
   },
   {
     "aliases": [
       "CVE-2022-25918",
       "GHSA-cr84-xvw4-qx3c"
     ],
-    "summary": "Inefficient Regular Expression Complexity in shescape ",
+    "summary": "Inefficient Regular Expression Complexity in shescape",
     "affected_packages": [
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "shescape",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=1.5.10|<1.6.1",
         "fixed_version": null
@@ -4299,7 +4365,8 @@
       }
     ],
     "date_published": "2022-10-25T22:27:32+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-cr84-xvw4-qx3c"
   },
   {
     "aliases": [
@@ -4313,9 +4380,9 @@
           "type": "npm",
           "namespace": "@dependencytrack",
           "name": "frontend",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.6.1",
         "fixed_version": null
@@ -4361,7 +4428,8 @@
       }
     ],
     "date_published": "2022-10-25T20:22:01+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-c33w-pm52-mqvf"
   },
   {
     "aliases": [
@@ -4373,11 +4441,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "electron-markdownify",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<=1.4.1",
         "fixed_version": null
@@ -4412,7 +4480,8 @@
       }
     ],
     "date_published": "2022-10-19T19:00:17+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-c942-mfmp-p4fh"
   },
   {
     "aliases": [
@@ -4423,11 +4492,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "ses",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<0.16.0",
         "fixed_version": null
@@ -4463,7 +4532,8 @@
       }
     ],
     "date_published": "2022-10-20T18:38:35+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-whpx-q3rq-w8jc"
   },
   {
     "aliases": [
@@ -4475,11 +4545,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "react-native-reanimated",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<2.10.0",
         "fixed_version": null
@@ -4534,7 +4604,8 @@
       }
     ],
     "date_published": "2022-10-01T00:00:24+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-2j79-8pqc-r7x6"
   },
   {
     "aliases": [
@@ -4546,11 +4617,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "minimatch",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<3.0.5",
         "fixed_version": null
@@ -4590,7 +4661,8 @@
       }
     ],
     "date_published": "2022-10-18T12:00:32+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-f8q6-p94x-37v3"
   },
   {
     "aliases": [
@@ -4602,11 +4674,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "mongoose",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.13.21",
         "fixed_version": null
@@ -4651,7 +4723,8 @@
       }
     ],
     "date_published": "2019-10-22T20:19:54+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-8687-vv9j-hgph"
   },
   {
     "aliases": [
@@ -4663,11 +4736,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "mongoose",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=5.0.0|<5.7.5",
         "fixed_version": null
@@ -4712,7 +4785,8 @@
       }
     ],
     "date_published": "2019-10-22T20:19:54+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-8687-vv9j-hgph"
   },
   {
     "aliases": [
@@ -4726,9 +4800,9 @@
           "type": "npm",
           "namespace": "@keystone-6",
           "name": "core",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=2.2.0|<2.3.1",
         "fixed_version": null
@@ -4769,7 +4843,8 @@
       }
     ],
     "date_published": "2022-10-18T17:12:46+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-6mhr-52mv-6v6f"
   },
   {
     "aliases": [
@@ -4781,11 +4856,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "parse-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=5.0.0|<5.2.8",
         "fixed_version": null
@@ -4826,7 +4901,8 @@
       }
     ],
     "date_published": "2022-10-18T16:08:49+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-h423-w6qv-2wj3"
   },
   {
     "aliases": [
@@ -4838,11 +4914,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "parse-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.10.17",
         "fixed_version": null
@@ -4883,7 +4959,8 @@
       }
     ],
     "date_published": "2022-10-18T16:08:49+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-h423-w6qv-2wj3"
   },
   {
     "aliases": [
@@ -4897,9 +4974,9 @@
           "type": "npm",
           "namespace": "@xmldom",
           "name": "xmldom",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<0.7.6",
         "fixed_version": null
@@ -4965,7 +5042,8 @@
       }
     ],
     "date_published": "2022-10-11T20:42:57+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-9pgh-qqpf-7wqj"
   },
   {
     "aliases": [
@@ -4979,9 +5057,9 @@
           "type": "npm",
           "namespace": "@xmldom",
           "name": "xmldom",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=0.8.0|<0.8.3",
         "fixed_version": null
@@ -5047,7 +5125,8 @@
       }
     ],
     "date_published": "2022-10-11T20:42:57+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-9pgh-qqpf-7wqj"
   },
   {
     "aliases": [
@@ -5059,11 +5138,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "node-saml",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.0.0-beta.5",
         "fixed_version": null
@@ -5104,7 +5183,8 @@
       }
     ],
     "date_published": "2022-10-12T22:05:44+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-5p8w-2mvw-38pv"
   },
   {
     "aliases": [
@@ -5118,9 +5198,9 @@
           "type": "npm",
           "namespace": "@node-saml",
           "name": "passport-saml",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.0.0-beta.3",
         "fixed_version": null
@@ -5171,7 +5251,8 @@
       }
     ],
     "date_published": "2022-10-12T22:05:41+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-m974-647v-whv7"
   },
   {
     "aliases": [
@@ -5185,9 +5266,9 @@
           "type": "npm",
           "namespace": "@node-saml",
           "name": "node-saml",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.0.0-beta.5",
         "fixed_version": null
@@ -5238,7 +5319,8 @@
       }
     ],
     "date_published": "2022-10-12T22:05:41+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-m974-647v-whv7"
   },
   {
     "aliases": [
@@ -5250,11 +5332,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "node-saml",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<4.0.0-beta.5",
         "fixed_version": null
@@ -5305,7 +5387,8 @@
       }
     ],
     "date_published": "2022-10-12T22:05:41+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-m974-647v-whv7"
   },
   {
     "aliases": [
@@ -5317,11 +5400,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "passport-saml",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<3.2.2",
         "fixed_version": null
@@ -5372,7 +5455,8 @@
       }
     ],
     "date_published": "2022-10-12T22:05:41+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-m974-647v-whv7"
   },
   {
     "aliases": [
@@ -5384,11 +5468,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "metro4",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=4.4.0|<=4.5.1",
         "fixed_version": null
@@ -5423,7 +5507,8 @@
       }
     ],
     "date_published": "2022-10-11T19:00:26+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-633r-r4p8-pw3w"
   },
   {
     "aliases": [
@@ -5434,11 +5519,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "apollo-server",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=2.0.0|<2.25.4",
         "fixed_version": null
@@ -5479,7 +5564,8 @@
       }
     ],
     "date_published": "2022-10-12T14:15:48+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-2p3c-p3qw-69r4"
   },
   {
     "aliases": [
@@ -5493,9 +5579,9 @@
           "type": "npm",
           "namespace": "@xmldom",
           "name": "xmldom",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/0.9.0-beta.1",
         "fixed_version": null
@@ -5561,7 +5647,8 @@
       }
     ],
     "date_published": "2022-10-11T20:42:57+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-9pgh-qqpf-7wqj"
   },
   {
     "aliases": [
@@ -5573,11 +5660,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "xmldom",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<=0.6.0",
         "fixed_version": null
@@ -5643,7 +5730,8 @@
       }
     ],
     "date_published": "2022-10-11T20:42:57+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-9pgh-qqpf-7wqj"
   },
   {
     "aliases": [
@@ -5655,11 +5743,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "fastify",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=4.0.0|<4.8.1",
         "fixed_version": null
@@ -5710,7 +5798,8 @@
       }
     ],
     "date_published": "2022-10-11T13:45:14+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-455w-c45v-86rg"
   },
   {
     "aliases": [
@@ -5721,11 +5810,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "csrf-csrf",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<2.2.1",
         "fixed_version": null
@@ -5761,7 +5850,8 @@
       }
     ],
     "date_published": "2022-10-10T20:59:02+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-jjmg-x456-w976"
   },
   {
     "aliases": [
@@ -5773,11 +5863,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "nocodb",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<0.92.0",
         "fixed_version": null
@@ -5812,7 +5902,8 @@
       }
     ],
     "date_published": "2022-10-07T18:16:01+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-grv6-m753-3w2g"
   },
   {
     "aliases": [
@@ -5824,11 +5915,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "tiny-csrf",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.1.0",
         "fixed_version": null
@@ -5869,7 +5960,8 @@
       }
     ],
     "date_published": "2022-10-07T21:23:18+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-pj2c-h76w-vv6f"
   },
   {
     "aliases": [
@@ -5881,11 +5973,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "v8n",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.5.1",
         "fixed_version": null
@@ -5931,7 +6023,8 @@
       }
     ],
     "date_published": "2022-10-07T07:33:44+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-xrx9-gj26-5wx9"
   },
   {
     "aliases": [
@@ -5942,11 +6035,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "generator-jhipster",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>6.8.0|<6.9.0",
         "fixed_version": null
@@ -5987,7 +6080,8 @@
       }
     ],
     "date_published": "2022-10-06T22:56:29+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-8w7w-67mw-r5p7"
   },
   {
     "aliases": [
@@ -5999,11 +6093,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "snyk-go-plugin",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.19.1",
         "fixed_version": null
@@ -6048,7 +6142,8 @@
       }
     ],
     "date_published": "2022-10-04T00:00:22+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-hpqj-7cj6-hfj8"
   },
   {
     "aliases": [
@@ -6060,11 +6155,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "snyk",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<1.996.0",
         "fixed_version": null
@@ -6109,7 +6204,8 @@
       }
     ],
     "date_published": "2022-10-04T00:00:22+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-hpqj-7cj6-hfj8"
   },
   {
     "aliases": [
@@ -6120,11 +6216,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "require-node",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/>=2.0.0|<2.0.4",
         "fixed_version": null
@@ -6149,7 +6245,8 @@
       }
     ],
     "date_published": "2020-09-03T17:02:52+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-8j6j-4h2c-c65p"
   },
   {
     "aliases": [
@@ -6161,11 +6258,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "jquery",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/3.0.0-rc.1",
         "fixed_version": null
@@ -6215,7 +6312,8 @@
       }
     ],
     "date_published": "2018-01-22T13:32:42+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-mhpp-875w-9cpv"
   },
   {
     "aliases": [
@@ -6227,11 +6325,11 @@
       {
         "package": {
           "type": "npm",
-          "namespace": null,
+          "namespace": "",
           "name": "css-what",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:npm/<2.1.3",
         "fixed_version": null
@@ -6271,6 +6369,7 @@
       }
     ],
     "date_published": "2022-10-01T00:00:24+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-p28h-cc7q-c4fg"
   }
 ]

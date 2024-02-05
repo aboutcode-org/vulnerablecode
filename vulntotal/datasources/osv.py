@@ -11,6 +11,7 @@ import logging
 from typing import Iterable
 
 import requests
+from packageurl import PackageURL
 
 from vulntotal.ecosystem.nuget import search_closest_nuget_package_name
 from vulntotal.validator import DataSource
@@ -26,11 +27,21 @@ class OSVDataSource(DataSource):
     url = "https://api.osv.dev/v1/query"
 
     def fetch_advisory(self, payload):
-        """Fetch JSON advisory from OSV API for a given package payload"""
+        """
+        Fetch JSON advisory from OSV API for a given package payload
+
+        Parameters:
+            payload: A dictionary representing the package data to query.
+
+        Returns:
+            A JSON object containing the advisory information for the package, or None if an error occurs while fetching data from the OSV API.
+        """
 
         response = requests.post(self.url, data=str(payload))
-        if not response.status_code == 200:
-            logger.error(f"Error while fetching {payload}: {response.status_code}")
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            logger.error(f"Error while fetching {payload}: {e}")
             return
         return response.json()
 
@@ -40,7 +51,7 @@ class OSVDataSource(DataSource):
             return
         advisory = self.fetch_advisory(payload)
         self._raw_dump.append(advisory)
-        return parse_advisory(advisory)
+        return parse_advisory(advisory, purl)
 
     @classmethod
     def supported_ecosystem(cls):
@@ -51,20 +62,26 @@ class OSVDataSource(DataSource):
             "golang": "Go",
             "nuget": "NuGet",
             "pypi": "PyPI",
-            "rubygems": "RubyGems",
-            "crates.io": "crates.io",
+            "gem": "RubyGems",
+            "cargo": "crates.io",
             "composer": "Packagist",
             "linux": "Linux",
             "oss-fuzz": "OSS-Fuzz",
-            "debian": "Debian",
+            "deb": "Debian",
             "hex": "Hex",
             "android": "Android",
         }
 
 
-def parse_advisory(response) -> Iterable[VendorData]:
+def parse_advisory(response, purl) -> Iterable[VendorData]:
     """
     Parse response from OSV API and yield VendorData
+
+    Parameters:
+        response: A JSON object containing the response data from the OSV API.
+
+    Yields:
+        VendorData instance containing the advisory information for the package.
     """
 
     for vuln in response.get("vulns") or []:
@@ -78,19 +95,20 @@ def parse_advisory(response) -> Iterable[VendorData]:
 
         try:
             affected_versions.extend(get_item(vuln, "affected", 0, "versions") or [])
-        except:
-            pass
+        except (KeyError, TypeError, IndexError) as e:
+            logger.error(f"Error while parsing affected versions: {e}")
 
         try:
-            for event in get_item(vuln, "affected", 0, "ranges", 0, "events") or []:
-                affected_versions.append(event.get("introduced")) if event.get(
-                    "introduced"
-                ) else None
-                fixed.append(event.get("fixed")) if event.get("fixed") else None
-        except:
-            pass
+            events = get_item(vuln, "affected", 0, "ranges", 0, "events") or []
+            affected_versions.extend(
+                [event.get("introduced") for event in events if event.get("introduced")]
+            )
+            fixed.extend([event.get("fixed") for event in events if event.get("fixed")])
+        except (KeyError, TypeError, IndexError) as e:
+            logger.error(f"Error while parsing events: {e}")
 
         yield VendorData(
+            purl=PackageURL(purl.type, purl.namespace, purl.name),
             aliases=sorted(list(set(aliases))),
             affected_versions=sorted(list(set(affected_versions))),
             fixed_versions=sorted(list(set(fixed))),
@@ -98,7 +116,15 @@ def parse_advisory(response) -> Iterable[VendorData]:
 
 
 def generate_payload(purl):
-    """Generate compatible payload for OSV API from a PURL"""
+    """
+    Generate compatible payload for OSV API from a PURL
+
+    Parameters:
+        purl: A PackageURL instance representing the package to query.
+
+    Returns:
+        A dictionary containing the package data compatible with the OSV API.
+    """
 
     supported_ecosystem = OSVDataSource.supported_ecosystem()
     payload = {}

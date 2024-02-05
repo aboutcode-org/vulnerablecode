@@ -10,9 +10,9 @@
         "type": "maven",
         "namespace": "com.cronutils",
         "name": "cron-utils",
-        "version": null,
-        "qualifiers": null,
-        "subpath": null
+        "version": "",
+        "qualifiers": "",
+        "subpath": ""
       },
       "affected_version_range": "vers:maven/<9.1.6",
       "fixed_version": "9.1.6"
@@ -46,5 +46,10 @@
     }
   ],
   "date_published": "2021-11-15T00:00:00+00:00",
-  "weaknesses": []
+  "weaknesses": [
+    1035,
+    937,
+    94
+  ],
+  "url": "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/maven.yaml"
 }

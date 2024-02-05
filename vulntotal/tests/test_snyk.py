@@ -30,7 +30,7 @@ class TestSnyk(testcase.FileBasedTesting):
             "pkg:nuget/moment.js@2.18.0",
             "pkg:cocoapods/ffmpeg@0.2",
             "pkg:hex/coherence@0.2.1",
-            "pkg:rubygems/log4j-jars@0.2",
+            "pkg:gem/log4j-jars@0.2",
             "pkg:unmanaged/firefox@8.9.1",
         ]
         results = [
@@ -56,7 +56,9 @@ class TestSnyk(testcase.FileBasedTesting):
         file = self.get_test_loc("html/0.html")
         with open(file) as f:
             page = f.read()
-        result = snyk.parse_html_advisory(page, "TEST-SNYKID", ["TEST-AFFECTED"]).to_dict()
+        result = snyk.parse_html_advisory(
+            page, "TEST-SNYKID", ["TEST-AFFECTED"], PackageURL("generic", "namespace", "test")
+        ).to_dict()
         expected_file = f"{file}-expected.json"
         util_tests.check_results_against_json(result, expected_file)
 
@@ -64,7 +66,9 @@ class TestSnyk(testcase.FileBasedTesting):
         file = self.get_test_loc("html/1.html")
         with open(file) as f:
             page = f.read()
-        result = snyk.parse_html_advisory(page, "TEST-SNYKID", ["TEST-AFFECTED"]).to_dict()
+        result = snyk.parse_html_advisory(
+            page, "TEST-SNYKID", ["TEST-AFFECTED"], PackageURL("generic", "namespace", "test")
+        ).to_dict()
         expected_file = f"{file}-expected.json"
         util_tests.check_results_against_json(result, expected_file)
 
@@ -72,7 +76,9 @@ class TestSnyk(testcase.FileBasedTesting):
         file = self.get_test_loc("html/2.html")
         with open(file) as f:
             page = f.read()
-        result = snyk.parse_html_advisory(page, "TEST-SNYKID", ["TEST-AFFECTED"]).to_dict()
+        result = snyk.parse_html_advisory(
+            page, "TEST-SNYKID", ["TEST-AFFECTED"], PackageURL("generic", "namespace", "test")
+        ).to_dict()
         expected_file = f"{file}-expected.json"
         util_tests.check_results_against_json(result, expected_file)
 
@@ -80,6 +86,8 @@ class TestSnyk(testcase.FileBasedTesting):
         file = self.get_test_loc("html/3.html")
         with open(file) as f:
             page = f.read()
-        result = snyk.parse_html_advisory(page, "TEST-SNYKID", ["TEST-AFFECTED"]).to_dict()
+        result = snyk.parse_html_advisory(
+            page, "TEST-SNYKID", ["TEST-AFFECTED"], PackageURL("generic", "namespace", "test")
+        ).to_dict()
         expected_file = f"{file}-expected.json"
         util_tests.check_results_against_json(result, expected_file)

@@ -9,28 +9,28 @@
     "affected_purls": [
       {
         "type": "pypi",
-        "namespace": null,
+        "namespace": "",
         "name": "flask",
         "version": "0.8",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "pypi",
-        "namespace": null,
+        "namespace": "",
         "name": "flask",
         "version": "0.9",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "pypi",
-      "namespace": null,
+      "namespace": "",
       "name": "flask",
       "version": "1.0",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -44,7 +44,10 @@
         "severities": []
       }
     ],
-    "weaknesses": []
+    "weaknesses": [
+      1035,
+      937
+    ]
   },
   {
     "vulnerability_id": null,
@@ -56,11 +59,11 @@
     "affected_purls": [],
     "fixed_purl": {
       "type": "pypi",
-      "namespace": null,
+      "namespace": "",
       "name": "flask",
       "version": "1.0",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -74,6 +77,9 @@
         "severities": []
       }
     ],
-    "weaknesses": []
+    "weaknesses": [
+      1035,
+      937
+    ]
   }
 ]

@@ -24,6 +24,7 @@ from vulnerabilities.importers import mozilla
 from vulnerabilities.importers import nginx
 from vulnerabilities.importers import npm
 from vulnerabilities.importers import nvd
+from vulnerabilities.importers import openssf
 from vulnerabilities.importers import openssl
 from vulnerabilities.importers import oss_fuzz
 from vulnerabilities.importers import postgresql
@@ -67,6 +68,7 @@ IMPORTERS_REGISTRY = [
     fireeye.FireyeImporter,
     apache_kafka.ApacheKafkaImporter,
     oss_fuzz.OSSFuzzImporter,
+    openssf.OpenSSFImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

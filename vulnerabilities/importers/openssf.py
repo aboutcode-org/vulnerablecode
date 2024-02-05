@@ -6,11 +6,10 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+import json
 import logging
 from pathlib import Path
 from typing import Iterable
-
-import json
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
@@ -31,12 +30,12 @@ class OpenSSFImporter(Importer):
             supported_ecosystems = ["crates.io", "npm", "pypi", "rubygems"]
             self.clone(repo_url=self.url)
             base_path = Path(self.vcs_response.dest_dir)
-            
+
             for supported_ecosystem in supported_ecosystems:
                 path = base_path / "osv" / "malicious" / supported_ecosystem
-                
+
                 for file in path.glob("**/*.json"):
-                    try:                    
+                    try:
                         with open(file) as f:
                             json_data = json.load(f)
                             advisory_url = get_advisory_url(
@@ -45,7 +44,9 @@ class OpenSSFImporter(Importer):
                                 url="https://github.com/ossf/malicious-packages/blob/main",
                             )
                             yield parse_advisory_data(
-                                json_data, supported_ecosystem=supported_ecosystem, advisory_url=advisory_url
+                                json_data,
+                                supported_ecosystem=supported_ecosystem,
+                                advisory_url=advisory_url,
                             )
                     except Exception as e:
                         logger.debug(f"Filepath {file} threw an Exception {type(e).__name__}")

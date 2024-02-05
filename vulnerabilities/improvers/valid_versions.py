@@ -462,6 +462,7 @@ class OSSFuzzImprover(ValidVersionImprover):
     importer = OSSFuzzImporter
     ignorable_versions = []
 
+
 class OpenSSFImprover(ValidVersionImprover):
     importer = OpenSSFImporter
     ignorable_versions = []

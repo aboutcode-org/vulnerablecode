@@ -49,7 +49,7 @@ class OpenSSFImporter(Importer):
                                 advisory_url=advisory_url,
                             )
                     except Exception as e:
-                        logger.debug(f"Filepath {file} threw an Exception {type(e).__name__}")
+                        logger.debug(f"Filepath {file} threw an Exception {type(e).__name__} {e!r}")
         finally:
             if self.vcs_response:
                 self.vcs_response.delete()

@@ -185,32 +185,38 @@ def generate_purl(package_advisory_url):
 
     pkg_name = None
     namespace = None
-    version = None
     qualifiers = {}
 
     if pkg_type == "maven":
         pkg_name = package_url_split[1].split(":")[1]
         namespace = package_url_split[1].split(":")[0]
 
-    elif pkg_type in ("golang", "composer"):
+    elif pkg_type == "composer":
+        pkg_name = package_url_split[-1]
+        namespace = package_url_split[-2]
+
+    elif pkg_type == "golang":
         if package_url_split[1] == "github.com":
-            pkg_name = package_url_split[-2]
-            namespace = f"{package_url_split[1]}/{package_url_split[2]}"
-            version = package_url_split[-1]
-        else:
+            ns_start = package_advisory_url.find("github.com")
+            ns_end = package_advisory_url.rfind("/")
+            namespace = package_advisory_url[ns_start:ns_end]
             pkg_name = package_url_split[-1]
+
+    elif pkg_type == "npm":
+        # handle scoped npm packages
+        if "@" in package_advisory_url:
             namespace = package_url_split[-2]
+
+        pkg_name = package_url_split[-1]
 
     elif pkg_type == "linux":
         pkg_name = package_url_split[-1]
         qualifiers["distro"] = package_url_split[1]
 
-    else:
+    elif pkg_type in ("cocoapods", "hex", "nuget", "pip", "rubygems", "unmanaged"):
         pkg_name = package_url_split[-1]
 
-    return PackageURL(
-        type=pkg_type, name=pkg_name, namespace=namespace, version=version, qualifiers=qualifiers
-    )
+    return PackageURL(type=pkg_type, name=pkg_name, namespace=namespace)
 
 
 def extract_html_json_advisories(package_advisories):

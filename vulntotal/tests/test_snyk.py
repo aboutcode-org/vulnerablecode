@@ -57,12 +57,19 @@ class TestSnyk(testcase.FileBasedTesting):
             "https://security.snyk.io/package/pip/jinja2",
             "https://security.snyk.io/package/maven/org.apache.tomcat%3Atomcat",
             "https://security.snyk.io/package/npm/semver-regex",
+            "https://security.snyk.io/package/npm/@urql%2Fnext",
+            "https://security.snyk.io/package/npm/@lobehub%2Fchat",
+            "https://security.snyk.io/package/npm/meshcentral",
             "https://security.snyk.io/package/composer/bolt%2Fcore",
             "https://security.snyk.io/package/linux/debain:11/trafficserver",
+            "https://security.snyk.io/package/linux/almalinux:8/rpm-plugin-fapolicyd",
             "https://security.snyk.io/package/nuget/moment.js",
             "https://security.snyk.io/package/cocoapods/ffmpeg",
             "https://security.snyk.io/package/hex/coherence",
             "https://security.snyk.io/package/rubygems/log4j-jars",
+            "https://security.snyk.io/package/golang/github.com%2Fgrafana%2Fgrafana%2Fpkg%2Fservices%2Fsqlstore%2Fmigrator",
+            "https://security.snyk.io/package/golang/github.com%2Fanswerdev%2Fanswer%2Finternal%2Frepo%2Factivity",
+            "https://security.snyk.io/package/golang/github.com%2Fargoproj%2Fargo-cd%2Fv2%2Futil%2Fhelm",
         ]
 
         results = [
@@ -74,13 +81,21 @@ class TestSnyk(testcase.FileBasedTesting):
             "pkg:pip/jinja2",
             "pkg:maven/org.apache.tomcat/tomcat",
             "pkg:npm/semver-regex",
+            "pkg:npm/%40urql/next",
+            "pkg:npm/%40lobehub/chat",
+            "pkg:npm/meshcentral",
             "pkg:composer/bolt/core",
-            "pkg:linux/trafficserver?distro=debain:11",
+            "pkg:linux/trafficserver",
+            "pkg:linux/rpm-plugin-fapolicyd",
             "pkg:nuget/moment.js",
             "pkg:cocoapods/ffmpeg",
             "pkg:hex/coherence",
             "pkg:rubygems/log4j-jars",
+            "pkg:golang/github.com/grafana/grafana/pkg/services/sqlstore/migrator",
+            "pkg:golang/github.com/answerdev/answer/internal/repo/activity",
+            "pkg:golang/github.com/argoproj/argo-cd/v2/util/helm",
         ]
+
         util_tests.check_results_against_expected(results, expected)
 
     def test_parse_html_advisory_0(self):

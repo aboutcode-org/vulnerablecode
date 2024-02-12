@@ -1,0 +1,494 @@
+[
+  {
+    "aliases": [
+      "CVE-2023-26154",
+      "GHSA-5844-q3fc-56rh"
+    ],
+    "summary": "pubnub Insufficient Entropy vulnerability",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2023-26154",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-26154",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/pubnub/javascript/commit/fb6cd0417cbb4ba87ea2d5d86a9c94774447e119",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://gist.github.com/vargad/20237094fce7a0a28f0723d7ce395bb0",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-COCOAPODS-PUBNUB-6098384",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-DOTNET-PUBNUB-6098372",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-GOLANG-GITHUBCOMPUBNUBGO-6098373",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-GOLANG-GITHUBCOMPUBNUBGOV7-6098374",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-JAVA-COMPUBNUB-6098371",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-JAVA-COMPUBNUB-6098380",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-JS-PUBNUB-5840690",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-PHP-PUBNUBPUBNUB-6098376",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-PUB-PUBNUB-6098385",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-PYTHON-PUBNUB-6098375",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-RUBY-PUBNUB-6098377",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-RUST-PUBNUB-6098378",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-SWIFT-PUBNUBSWIFT-6098381",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-UNMANAGED-PUBNUBCCORE-6098379",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/pubnub/javascript/blob/master/src/crypto/modules/web.js#L70",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-5844-q3fc-56rh",
+        "url": "https://github.com/advisories/GHSA-5844-q3fc-56rh",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2023-26154.YML",
+        "url": "https://github.com/rubysec/ruby-advisory-db/blob/master/gems/pubnub/CVE-2023-26154.yml",
+        "severities": []
+      }
+    ],
+    "date_published": "2023-12-06T06:30:20+00:00",
+    "weaknesses": [
+      331
+    ],
+    "url": "https://github.com/advisories/GHSA-5844-q3fc-56rh"
+  },
+  {
+    "aliases": [
+      "GHSA-jwpw-q68h-r678"
+    ],
+    "summary": "Duplicate Advisory: Improper Neutralization of CRLF Sequences in dio",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2021-31402",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-31402",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/cfug/dio/issues/1130",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/cfug/dio/commit/927f79e93ba39f3c3a12c190624a55653d577984",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-jwpw-q68h-r678",
+        "url": "https://osv.dev/GHSA-jwpw-q68h-r678",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "GHSA-jwpw-q68h-r678",
+        "url": "https://github.com/advisories/GHSA-jwpw-q68h-r678",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-05-24T17:47:44+00:00",
+    "weaknesses": [
+      74,
+      88,
+      93
+    ],
+    "url": "https://github.com/advisories/GHSA-jwpw-q68h-r678"
+  },
+  {
+    "aliases": [
+      "CVE-2021-31402",
+      "GHSA-9324-jv53-9cc8"
+    ],
+    "summary": "dio vulnerable to CRLF injection with HTTP method string",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "GHSA-9324-jv53-9cc8",
+        "url": "https://github.com/cfug/dio/security/advisories/GHSA-9324-jv53-9cc8",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2021-31402",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-31402",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/cfug/dio/issues/1752",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/flutterchina/dio/issues/1130",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/cfug/dio/commit/927f79e93ba39f3c3a12c190624a55653d577984",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-jwpw-q68h-r678",
+        "url": "https://osv.dev/GHSA-jwpw-q68h-r678",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://security.snyk.io/vuln/SNYK-PUB-DIO-5891148",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-9324-jv53-9cc8",
+        "url": "https://github.com/advisories/GHSA-9324-jv53-9cc8",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2023-03-21T22:41:11+00:00",
+    "weaknesses": [
+      93
+    ],
+    "url": "https://github.com/advisories/GHSA-9324-jv53-9cc8"
+  },
+  {
+    "aliases": [
+      "CVE-2023-39137",
+      "GHSA-r285-q736-9v95"
+    ],
+    "summary": "Filename spoofing in archive",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2023-39137",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-39137",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/brendan-duncan/archive/issues/266",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://blog.ostorlab.co/zip-packages-exploitation.html",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://ostorlab.co/vulndb/advisory/OVE-2023-3",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://www.rapid7.com/db/modules/exploit/windows/fileformat/winrar_name_spoofing/",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/brendan-duncan/archive/commit/0d17b270a3c33d3bed56cadd9a43da7717ab11f4",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-r285-q736-9v95",
+        "url": "https://github.com/advisories/GHSA-r285-q736-9v95",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2023-08-31T00:30:17+00:00",
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-r285-q736-9v95"
+  },
+  {
+    "aliases": [
+      "CVE-2023-39139",
+      "GHSA-9v85-q87q-g4vg"
+    ],
+    "summary": "Path traversal in Archive",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2023-39139",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-39139",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/brendan-duncan/archive/issues/265",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://blog.ostorlab.co/zip-packages-exploitation.html",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://ostorlab.co/vulndb/advisory/OVE-2023-5",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/brendan-duncan/archive/commit/6de492385d72af044231c4163dff13a43d991c83",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/brendan-duncan/archive/commit/edb0d480733a44d28ff3d5e4e2779153ba645ce7",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-9v85-q87q-g4vg",
+        "url": "https://github.com/advisories/GHSA-9v85-q87q-g4vg",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2023-08-31T00:30:17+00:00",
+    "weaknesses": [
+      22
+    ],
+    "url": "https://github.com/advisories/GHSA-9v85-q87q-g4vg"
+  },
+  {
+    "aliases": [
+      "GHSA-9f2c-xxfm-32mj"
+    ],
+    "summary": "Duplicate of GHSA-4xh4-v2pq-jvhm",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "GHSA-4xh4-v2pq-jvhm",
+        "url": "https://github.com/personnummer/dart/security/advisories/GHSA-4xh4-v2pq-jvhm",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2023-22963",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-22963",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-4xh4-v2pq-jvhm",
+        "url": "https://github.com/advisories/GHSA-4xh4-v2pq-jvhm",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-9f2c-xxfm-32mj",
+        "url": "https://github.com/advisories/GHSA-9f2c-xxfm-32mj",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "LOW",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2023-01-11T06:30:20+00:00",
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-9f2c-xxfm-32mj"
+  },
+  {
+    "aliases": [
+      "CVE-2023-22963",
+      "GHSA-4xh4-v2pq-jvhm"
+    ],
+    "summary": "personnummer/dart vulnerable to Improper Input Validation",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "GHSA-4xh4-v2pq-jvhm",
+        "url": "https://github.com/personnummer/dart/security/advisories/GHSA-4xh4-v2pq-jvhm",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "LOW",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "url": "https://pub.dev/packages/personnummer",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2023-22963",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-22963",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-4xh4-v2pq-jvhm",
+        "url": "https://github.com/advisories/GHSA-4xh4-v2pq-jvhm",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "LOW",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-09-19T22:47:29+00:00",
+    "weaknesses": [
+      20
+    ],
+    "url": "https://github.com/advisories/GHSA-4xh4-v2pq-jvhm"
+  },
+  {
+    "aliases": [
+      "CVE-2020-35669",
+      "GHSA-4rgh-jx4f-qfcq"
+    ],
+    "summary": "http before 0.13.3 vulnerable to header injection",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2020-35669",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-35669",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/dart-lang/http/issues/511",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/dart-lang/http/blob/master/CHANGELOG.md#0133",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/dart-lang/http/pull/512",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://github.com/dart-lang/http/commit/abb2bb182fbd7f03aafd1f889b902d7b3bdb8769",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "url": "https://pub.dev/packages/http/changelog#0133",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-4rgh-jx4f-qfcq",
+        "url": "https://github.com/advisories/GHSA-4rgh-jx4f-qfcq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "MODERATE",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "date_published": "2022-05-24T17:37:16+00:00",
+    "weaknesses": [
+      74
+    ],
+    "url": "https://github.com/advisories/GHSA-4rgh-jx4f-qfcq"
+  }
+]

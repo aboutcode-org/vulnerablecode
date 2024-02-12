@@ -37,6 +37,7 @@ PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM = {
     "PIP": "pypi",
     "RUBYGEMS": "gem",
     "NPM": "npm",
+    "PUB": "pub",
     # "GO": "golang",
 }
 
@@ -47,7 +48,7 @@ GITHUB_ECOSYSTEM_BY_PACKAGE_TYPE = {
 # TODO: We will try to gather more info from GH API
 # Check https://github.com/nexB/vulnerablecode/issues/1039#issuecomment-1366458885
 # Check https://github.com/nexB/vulnerablecode/issues/645
-# set of all possible values of first '%s' = {'MAVEN','COMPOSER', 'NUGET', 'RUBYGEMS', 'PYPI', 'NPM'}
+# set of all possible values of first '%s' = {'MAVEN','COMPOSER', 'NUGET', 'RUBYGEMS', 'PYPI', 'NPM', 'PUB'}
 # second '%s' is interesting, it will have the value '' for the first request,
 GRAPHQL_QUERY_TEMPLATE = """
 query{
@@ -139,7 +140,7 @@ def get_purl(pkg_type: str, github_name: str) -> Optional[PackageURL]:
         vendor, _, name = github_name.partition("/")
         return PackageURL(type=pkg_type, namespace=vendor, name=name)
 
-    if pkg_type in ("nuget", "pypi", "gem", "golang", "npm"):
+    if pkg_type in ("nuget", "pypi", "gem", "golang", "npm", "pub"):
         return PackageURL(type=pkg_type, name=github_name)
 
     logger.error(f"get_purl: Unknown package type {pkg_type}")

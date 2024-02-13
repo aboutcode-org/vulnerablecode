@@ -32,6 +32,7 @@ from vulnerabilities.importers.debian import DebianImporter
 from vulnerabilities.importers.debian_oval import DebianOvalImporter
 from vulnerabilities.importers.elixir_security import ElixirSecurityImporter
 from vulnerabilities.importers.github import GitHubAPIImporter
+from vulnerabilities.importers.github_osv import GithubOSVImporter
 from vulnerabilities.importers.gitlab import GitLabAPIImporter
 from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.importers.nginx import NginxImporter
@@ -465,4 +466,9 @@ class OSSFuzzImprover(ValidVersionImprover):
 
 class RubyImprover(ValidVersionImprover):
     importer = RubyImporter
+    ignorable_versions = []
+
+
+class GithubOSVImprover(ValidVersionImprover):
+    importer = GithubOSVImporter
     ignorable_versions = []

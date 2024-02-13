@@ -34,7 +34,7 @@ class PyPaImporter(Importer):
             for advisory_url, raw_data in fork_and_get_files(base_path=path):
                 yield parse_advisory_data(
                     raw_data=raw_data,
-                    supported_ecosystem="pypi",
+                    supported_ecosystems=["pypi"],
                     advisory_url=advisory_url,
                 )
         finally:

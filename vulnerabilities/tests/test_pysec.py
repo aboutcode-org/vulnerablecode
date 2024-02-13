@@ -22,7 +22,7 @@ class TestPyPIImporter(TestCase):
     def test_to_advisories_with_summary(self):
         with open(os.path.join(TEST_DATA, "pysec-advisories_with_summary.json")) as f:
             mock_response = json.load(f)
-        results = parse_advisory_data(mock_response, "pypi", "https://test.com").to_dict()
+        results = parse_advisory_data(mock_response, ["pypi"], "https://test.com").to_dict()
 
         expected_file = os.path.join(TEST_DATA, "pysec-advisories_with_summary-expected.json")
         check_results_against_json(
@@ -35,7 +35,7 @@ class TestPyPIImporter(TestCase):
         with open(os.path.join(TEST_DATA, "pysec-advisories_without_summary.json")) as f:
             mock_response = json.load(f)
 
-        results = parse_advisory_data(mock_response, "pypi", "https://test.com").to_dict()
+        results = parse_advisory_data(mock_response, ["pypi"], "https://test.com").to_dict()
 
         expected_file = os.path.join(TEST_DATA, "pysec-advisories_without_summary-expected.json")
         check_results_against_json(
@@ -49,7 +49,7 @@ class TestPyPIImporter(TestCase):
             mock_response = json.load(f)
 
         results = parse_advisory_data(
-            raw_data=mock_response, supported_ecosystem="pypi", advisory_url="https://tes.com"
+            raw_data=mock_response, supported_ecosystems=["pypi"], advisory_url="https://tes.com"
         ).to_dict()
 
         expected_file = os.path.join(TEST_DATA, "pysec-advisories_with_cwe-expected.json")

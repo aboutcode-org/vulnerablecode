@@ -37,6 +37,7 @@ from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.importers.nginx import NginxImporter
 from vulnerabilities.importers.npm import NpmImporter
 from vulnerabilities.importers.oss_fuzz import OSSFuzzImporter
+from vulnerabilities.importers.ruby import RubyImporter
 from vulnerabilities.importers.ubuntu import UbuntuImporter
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.improver import Improver
@@ -459,4 +460,9 @@ class UbuntuOvalImprover(ValidVersionImprover):
 
 class OSSFuzzImprover(ValidVersionImprover):
     importer = OSSFuzzImporter
+    ignorable_versions = []
+
+
+class RubyImprover(ValidVersionImprover):
+    importer = RubyImporter
     ignorable_versions = []

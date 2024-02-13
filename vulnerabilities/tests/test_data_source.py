@@ -21,6 +21,7 @@ from vulnerabilities.importer import OvalImporter
 from vulnerabilities.importers.elixir_security import ElixirSecurityImporter
 from vulnerabilities.importers.fireeye import FireyeImporter
 from vulnerabilities.importers.gentoo import GentooImporter
+from vulnerabilities.importers.github_osv import GithubOSVImporter
 from vulnerabilities.importers.gitlab import GitLabAPIImporter
 from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.importers.mozilla import MozillaImporter
@@ -125,6 +126,7 @@ def test_git_importer(mock_clone):
         RetireDotnetImporter,
         PyPaImporter,
         RubyImporter,
+        GithubOSVImporter,
     ],
 )
 def test_git_importer_clone(git_importer):

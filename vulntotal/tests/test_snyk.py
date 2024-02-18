@@ -93,7 +93,10 @@ class TestSnyk(testcase.FileBasedTesting):
             "pkg:rubygems/log4j-jars",
             "pkg:golang/github.com/grafana/grafana/pkg/services/sqlstore/migrator",
             "pkg:golang/github.com/answerdev/answer/internal/repo/activity",
-            "pkg:golang/github.com/argoproj/argo-cd/v2/util/helm",
+            "pkg:golang/go.etcd.io/etcd/v3/auth",
+            "pkg:golang/gopkg.in/kubernetes/kubernetes.v0/pkg/registry/pod",
+            "pkg:golang/gogs.io/gogs/internal/db",
+            "pkg:golang/golang.org/x/crypto/ssh",
         ]
 
         util_tests.check_results_against_expected(results, expected)

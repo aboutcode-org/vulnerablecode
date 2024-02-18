@@ -101,7 +101,7 @@ class SnykDataSource(DataSource):
             advisory_html = self.fetch(advisory_payload)
             self._raw_dump.append(advisory_html)
             purl = generate_purl(package_advisory_url)
-            if advisory_html:
+            if advisory_html and purl:
                 yield parse_html_advisory(advisory_html, snyk_id, affected_versions, purl)
 
     @classmethod
@@ -196,11 +196,8 @@ def generate_purl(package_advisory_url):
         namespace = package_url_split[-2]
 
     elif pkg_type == "golang":
-        if package_url_split[1] == "github.com":
-            ns_start = package_advisory_url.find("github.com")
-            ns_end = package_advisory_url.rfind("/")
-            namespace = package_advisory_url[ns_start:ns_end]
-            pkg_name = package_url_split[-1]
+        pkg_name = package_url_split[-1]
+        namespace = "/".join(package_url_split[1:-1])
 
     elif pkg_type == "npm":
         # handle scoped npm packages
@@ -215,6 +212,10 @@ def generate_purl(package_advisory_url):
 
     elif pkg_type in ("cocoapods", "hex", "nuget", "pip", "rubygems", "unmanaged"):
         pkg_name = package_url_split[-1]
+
+    if pkg_type is None or pkg_name is None:
+        logger.error("Invalid package advisory url, package type or name is missing")
+        return
 
     return PackageURL(type=pkg_type, name=pkg_name, namespace=namespace)
 

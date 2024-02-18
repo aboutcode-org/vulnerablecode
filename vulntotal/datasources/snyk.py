@@ -179,6 +179,7 @@ def generate_purl(package_advisory_url):
     package_advisory_url = unquote_plus(
         package_advisory_url.replace("https://security.snyk.io/package/", "")
     )
+    supported_ecosystems = {v: k for (k, v) in SnykDataSource.supported_ecosystem().items()}
 
     package_url_split = package_advisory_url.split("/")
     pkg_type = package_url_split[0]
@@ -217,7 +218,7 @@ def generate_purl(package_advisory_url):
         logger.error("Invalid package advisory url, package type or name is missing")
         return
 
-    return PackageURL(type=pkg_type, name=pkg_name, namespace=namespace)
+    return PackageURL(type=supported_ecosystems[pkg_type], name=pkg_name, namespace=namespace)
 
 
 def extract_html_json_advisories(package_advisories):

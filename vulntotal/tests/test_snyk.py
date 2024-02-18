@@ -69,7 +69,10 @@ class TestSnyk(testcase.FileBasedTesting):
             "https://security.snyk.io/package/rubygems/log4j-jars",
             "https://security.snyk.io/package/golang/github.com%2Fgrafana%2Fgrafana%2Fpkg%2Fservices%2Fsqlstore%2Fmigrator",
             "https://security.snyk.io/package/golang/github.com%2Fanswerdev%2Fanswer%2Finternal%2Frepo%2Factivity",
-            "https://security.snyk.io/package/golang/github.com%2Fargoproj%2Fargo-cd%2Fv2%2Futil%2Fhelm",
+            "https://security.snyk.io/package/golang/go.etcd.io%2Fetcd%2Fv3%2Fauth",
+            "https://security.snyk.io/package/golang/gopkg.in%2Fkubernetes%2Fkubernetes.v0%2Fpkg%2Fregistry%2Fpod",
+            "https://security.snyk.io/package/golang/gogs.io%2Fgogs%2Finternal%2Fdb",
+            "https://security.snyk.io/package/golang/golang.org%2Fx%2Fcrypto%2Fssh",
         ]
 
         results = [
@@ -78,7 +81,7 @@ class TestSnyk(testcase.FileBasedTesting):
         ]
 
         expected = [
-            "pkg:pip/jinja2",
+            "pkg:pypi/jinja2",
             "pkg:maven/org.apache.tomcat/tomcat",
             "pkg:npm/semver-regex",
             "pkg:npm/%40urql/next",
@@ -90,7 +93,7 @@ class TestSnyk(testcase.FileBasedTesting):
             "pkg:nuget/moment.js",
             "pkg:cocoapods/ffmpeg",
             "pkg:hex/coherence",
-            "pkg:rubygems/log4j-jars",
+            "pkg:gem/log4j-jars",
             "pkg:golang/github.com/grafana/grafana/pkg/services/sqlstore/migrator",
             "pkg:golang/github.com/answerdev/answer/internal/repo/activity",
             "pkg:golang/go.etcd.io/etcd/v3/auth",

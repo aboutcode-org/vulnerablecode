@@ -58,8 +58,7 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
         data = super().to_representation(instance)
 
         request = self.context.get("request")
-        package_url = get_package_details_url(data=data, request=request)
-        data["package_url"] = package_url
+        data["resource_url"] = instance.get_details_url(request=request)
 
         return data
 
@@ -97,8 +96,7 @@ class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         request = self.context.get("request")
-        vulnerability_url = get_vulnerability_details_url(request=request, data=data)
-        data["vulnerability_url"] = vulnerability_url
+        data["resource_url"] = instance.get_details_url(request=request)
         return data
 
     class Meta:
@@ -126,8 +124,7 @@ class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
         aliases = [alias["alias"] for alias in data["aliases"]]
         data["aliases"] = aliases
         request = self.context.get("request")
-        vulnerability_url = get_vulnerability_details_url(request=request, data=data)
-        data["vulnerability_url"] = vulnerability_url
+        data["resource_url"] = instance.get_details_url(request=request)
         return data
 
     fixed_packages = MinimalPackageSerializer(
@@ -178,8 +175,7 @@ class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
         data["weaknesses"] = [weakness for weakness in weaknesses if weakness is not None]
 
         request = self.context.get("request")
-        vulnerability_url = get_vulnerability_details_url(request=request, data=data)
-        data["vulnerability_url"] = vulnerability_url
+        data["resource_url"] = instance.get_details_url(request=request)
 
         return data
 
@@ -207,8 +203,9 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
         data["qualifiers"] = normalize_qualifiers(data["qualifiers"], encode=False)
 
         request = self.context.get("request")
-        package_url = get_package_details_url(request=request, data=data)
-        data["package_url"] = package_url
+
+        request = self.context.get("request")
+        data["resource_url"] = instance.get_details_url(request=request)
 
         return data
 
@@ -628,17 +625,3 @@ class AliasViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AliasFilterSet
     throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
-
-
-def get_package_details_url(request, data):
-    purl = data.get("purl")
-    package_url = reverse("package_details", kwargs={"purl": purl}, request=request)
-    return package_url
-
-
-def get_vulnerability_details_url(request, data):
-    vulnerability_id = data.get("vulnerability_id")
-    vulnerability_url = reverse(
-        "vulnerability_details", kwargs={"vulnerability_id": vulnerability_id}, request=request
-    )
-    return vulnerability_url

@@ -187,6 +187,12 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["qualifiers"] = normalize_qualifiers(data["qualifiers"], encode=False)
+
+        request = self.context.get("request")
+        purl = data.get("purl")
+        package_url = reverse("package_details", kwargs={"purl": purl}, request=request)
+        data["package_url"] = package_url
+
         return data
 
     next_non_vulnerable_version = serializers.SerializerMethodField("get_next_non_vulnerable")

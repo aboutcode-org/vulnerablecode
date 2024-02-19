@@ -54,6 +54,15 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
     Used for nesting inside vulnerability focused APIs.
     """
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        request = self.context.get("request")
+        package_url = get_package_details_url(data=data, request=request)
+        data["package_url"] = package_url
+
+        return data
+
     def get_affected_vulnerabilities(self, package):
         parent_affected_vulnerabilities = package.fixed_package_details.get("vulnerabilities") or []
 
@@ -85,6 +94,13 @@ class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
     Lookup vulnerabilities by aliases (such as a CVE).
     """
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get("request")
+        vulnerability_url = get_vulnerability_details_url(request=request, data=data)
+        data["vulnerability_url"] = vulnerability_url
+        return data
+
     class Meta:
         model = Vulnerability
         fields = ["url", "vulnerability_id"]
@@ -109,6 +125,9 @@ class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
         data = super().to_representation(instance)
         aliases = [alias["alias"] for alias in data["aliases"]]
         data["aliases"] = aliases
+        request = self.context.get("request")
+        vulnerability_url = get_vulnerability_details_url(request=request, data=data)
+        data["vulnerability_url"] = vulnerability_url
         return data
 
     fixed_packages = MinimalPackageSerializer(
@@ -153,17 +172,16 @@ class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
     weaknesses = WeaknessSerializer(many=True)
 
     def to_representation(self, instance):
-        representation = super().to_representation(instance)
+        data = super().to_representation(instance)
 
-        weaknesses = representation.get("weaknesses", [])
-        representation["weaknesses"] = [weakness for weakness in weaknesses if weakness is not None]
+        weaknesses = data.get("weaknesses", [])
+        data["weaknesses"] = [weakness for weakness in weaknesses if weakness is not None]
 
         request = self.context.get("request")
-        vulnerability_id = representation.get("vulnerability_id")
-        vulnerability_url = reverse("vulnerability_details", kwargs={"vulnerability_id": vulnerability_id}, request=request)
-        representation["vulnerability_url"] = vulnerability_url
+        vulnerability_url = get_vulnerability_details_url(request=request, data=data)
+        data["vulnerability_url"] = vulnerability_url
 
-        return representation
+        return data
 
     class Meta:
         model = Vulnerability
@@ -189,8 +207,7 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
         data["qualifiers"] = normalize_qualifiers(data["qualifiers"], encode=False)
 
         request = self.context.get("request")
-        purl = data.get("purl")
-        package_url = reverse("package_details", kwargs={"purl": purl}, request=request)
+        package_url = get_package_details_url(request=request, data=data)
         data["package_url"] = package_url
 
         return data
@@ -611,3 +628,17 @@ class AliasViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AliasFilterSet
     throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
+
+
+def get_package_details_url(request, data):
+    purl = data.get("purl")
+    package_url = reverse("package_details", kwargs={"purl": purl}, request=request)
+    return package_url
+
+
+def get_vulnerability_details_url(request, data):
+    vulnerability_id = data.get("vulnerability_id")
+    vulnerability_url = reverse(
+        "vulnerability_details", kwargs={"vulnerability_id": vulnerability_id}, request=request
+    )
+    return vulnerability_url

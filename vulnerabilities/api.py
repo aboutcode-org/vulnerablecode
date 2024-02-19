@@ -20,6 +20,7 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.throttling import UserRateThrottle
 
@@ -154,9 +155,13 @@ class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
 
-        # Exclude None values from the weaknesses list
         weaknesses = representation.get("weaknesses", [])
         representation["weaknesses"] = [weakness for weakness in weaknesses if weakness is not None]
+
+        request = self.context.get("request")
+        vulnerability_id = representation.get("vulnerability_id")
+        vulnerability_url = reverse("vulnerability_details", kwargs={"vulnerability_id": vulnerability_id}, request=request)
+        representation["vulnerability_url"] = vulnerability_url
 
         return representation
 

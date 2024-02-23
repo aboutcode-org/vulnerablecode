@@ -257,6 +257,18 @@ class Vulnerability(models.Model):
         """
         return reverse("vulnerability_details", args=[self.vulnerability_id])
 
+    def get_details_url(self, request):
+        """
+        Return this Package details URL.
+        """
+        from rest_framework.reverse import reverse
+
+        return reverse(
+            "vulnerability_details",
+            kwargs={"vulnerability_id": self.vulnerability_id},
+            request=request,
+        )
+
     def get_related_cpes(self):
         """
         Return a list of CPE strings of this vulnerability.
@@ -632,6 +644,14 @@ class Package(PackageURLMixin):
         Return this Package details URL.
         """
         return reverse("package_details", args=[self.purl])
+
+    def get_details_url(self, request):
+        """
+        Return this Package details URL.
+        """
+        from rest_framework.reverse import reverse
+
+        return reverse("package_details", kwargs={"purl": self.purl}, request=request)
 
     def sort_by_version(self, packages):
         """

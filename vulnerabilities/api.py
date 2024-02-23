@@ -49,18 +49,35 @@ class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
         fields = ["reference_url", "reference_id", "scores", "url"]
 
 
-class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
+class BaseResourceSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Base serializer containing common methods.
+    """
+
+    def get_fields(self):
+        fields = super().get_fields()
+        fields["resource_url"] = serializers.SerializerMethodField(method_name="get_resource_url")
+        return fields
+
+    def get_resource_url(self, instance):
+        """
+        Return the instance fully qualified URL including the schema and domain.
+
+        Usage:
+            resource_url = serializers.SerializerMethodField()
+        """
+        resource_url = instance.get_absolute_url()
+
+        if request := self.context.get("request", None):
+            return request.build_absolute_uri(location=resource_url)
+
+        return resource_url
+
+
+class MinimalPackageSerializer(BaseResourceSerializer):
     """
     Used for nesting inside vulnerability focused APIs.
     """
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-
-        request = self.context.get("request")
-        data["resource_url"] = instance.get_details_url(request=request)
-
-        return data
 
     def get_affected_vulnerabilities(self, package):
         parent_affected_vulnerabilities = package.fixed_package_details.get("vulnerabilities") or []
@@ -88,16 +105,10 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
         fields = ["url", "purl", "is_vulnerable", "affected_by_vulnerabilities"]
 
 
-class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
+class MinimalVulnerabilitySerializer(BaseResourceSerializer):
     """
     Lookup vulnerabilities by aliases (such as a CVE).
     """
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        request = self.context.get("request")
-        data["resource_url"] = instance.get_details_url(request=request)
-        return data
 
     class Meta:
         model = Vulnerability
@@ -114,7 +125,7 @@ class AliasSerializer(serializers.HyperlinkedModelSerializer):
         fields = ["alias"]
 
 
-class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
+class VulnSerializerRefsAndSummary(BaseResourceSerializer):
     """
     Lookup vulnerabilities references by aliases (such as a CVE).
     """
@@ -123,8 +134,6 @@ class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
         data = super().to_representation(instance)
         aliases = [alias["alias"] for alias in data["aliases"]]
         data["aliases"] = aliases
-        request = self.context.get("request")
-        data["resource_url"] = instance.get_details_url(request=request)
         return data
 
     fixed_packages = MinimalPackageSerializer(
@@ -158,7 +167,7 @@ class WeaknessSerializer(serializers.HyperlinkedModelSerializer):
         return representation
 
 
-class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
+class VulnerabilitySerializer(BaseResourceSerializer):
     fixed_packages = MinimalPackageSerializer(
         many=True, source="filtered_fixed_packages", read_only=True
     )
@@ -173,9 +182,6 @@ class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
 
         weaknesses = data.get("weaknesses", [])
         data["weaknesses"] = [weakness for weakness in weaknesses if weakness is not None]
-
-        request = self.context.get("request")
-        data["resource_url"] = instance.get_details_url(request=request)
 
         return data
 
@@ -193,7 +199,7 @@ class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
         ]
 
 
-class PackageSerializer(serializers.HyperlinkedModelSerializer):
+class PackageSerializer(BaseResourceSerializer):
     """
     Lookup software package using Package URLs
     """
@@ -201,11 +207,6 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["qualifiers"] = normalize_qualifiers(data["qualifiers"], encode=False)
-
-        request = self.context.get("request")
-
-        request = self.context.get("request")
-        data["resource_url"] = instance.get_details_url(request=request)
 
         return data
 

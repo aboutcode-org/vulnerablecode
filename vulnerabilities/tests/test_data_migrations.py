@@ -610,3 +610,53 @@ class TestRemoveDupedPurlsWithSameQualifiers(TestMigrations):
     def test_removal_of_duped_purls(self):
         Package = apps.get_model("vulnerabilities", "Package")
         assert Package.objects.count() == 1
+
+
+class TestRemoveDupedChangeLogWithSameData(TestMigrations):
+    app_name = "vulnerabilities"
+    migrate_from = "0054_alter_packagechangelog_software_version_and_more"
+    migrate_to = "0055_remove_changelogs_with_same_data_different_software_version"
+
+    def setUpBeforeMigration(self, apps):
+        PackageChangeLog = apps.get_model("vulnerabilities", "PackageChangeLog")
+        VulnerabilityChangeLog = apps.get_model("vulnerabilities", "VulnerabilityChangeLog")
+        Package = apps.get_model("vulnerabilities", "Package")
+        Vulnerability = apps.get_model("vulnerabilities", "Vulnerability")
+        pkg1 = Package.objects.create(type="nginx", name="nginx", qualifiers={"os": "windows"})
+        vuln = Vulnerability.objects.create(summary="NEW")
+        PackageChangeLog.objects.create(
+            actor_name="Nginx",
+            action_type=1,
+            source_url="test",
+            software_version="1",
+            package=pkg1,
+            related_vulnerability=vuln,
+        )
+        PackageChangeLog.objects.create(
+            actor_name="Nginx",
+            action_type=1,
+            source_url="test",
+            software_version="2",
+            package=pkg1,
+            related_vulnerability=vuln,
+        )
+        VulnerabilityChangeLog.objects.create(
+            actor_name="Nginx",
+            action_type=1,
+            source_url="test",
+            software_version="2",
+            vulnerability=vuln,
+        )
+        VulnerabilityChangeLog.objects.create(
+            actor_name="Nginx",
+            action_type=1,
+            source_url="test",
+            software_version="1",
+            vulnerability=vuln,
+        )
+
+    def test_removal_of_changelog(self):
+        PackageChangeLog = apps.get_model("vulnerabilities", "PackageChangeLog")
+        VulnerabilityChangeLog = apps.get_model("vulnerabilities", "VulnerabilityChangeLog")
+        assert PackageChangeLog.objects.all().count() == 1
+        assert VulnerabilityChangeLog.objects.all().count() == 1

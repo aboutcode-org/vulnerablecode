@@ -67,5 +67,5 @@
   ],
   "date_published": "2022-01-05T00:15:00+00:00",
   "weaknesses": [],
-  "url": "https://github.com/pypa/advisory-database"
+  "url": "https://github.com/pypa/advisory-database/blob/main/vulns/pypa-expected.json"
 }

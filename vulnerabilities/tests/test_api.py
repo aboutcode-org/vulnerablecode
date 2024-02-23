@@ -438,7 +438,7 @@ class APITestCasePackage(TestCase):
         ).data
 
         expected_response = {
-            "url": "http://testserver/api/packages/1",
+            "url": f"http://testserver/api/packages/{self.package_maven_jackson_databind_2_13_1.id}",
             "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
             "type": "maven",
             "namespace": "com.fasterxml.jackson.core",
@@ -451,7 +451,10 @@ class APITestCasePackage(TestCase):
             "affected_by_vulnerabilities": [
                 OrderedDict(
                     [
-                        ("url", "http://testserver/api/vulnerabilities/1"),
+                        (
+                            "url",
+                            f"http://testserver/api/vulnerabilities/{self.vuln_VCID_2nyb_8rwu_aaag.id}",
+                        ),
                         ("vulnerability_id", "VCID-2nyb-8rwu-aaag"),
                         ("summary", "This is VCID-2nyb-8rwu-aaag"),
                         ("references", []),
@@ -460,7 +463,10 @@ class APITestCasePackage(TestCase):
                             [
                                 OrderedDict(
                                     [
-                                        ("url", "http://testserver/api/packages/3"),
+                                        (
+                                            "url",
+                                            f"http://testserver/api/packages/{self.package_maven_jackson_databind_2_13_2.id}",
+                                        ),
                                         (
                                             "purl",
                                             "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
@@ -486,7 +492,10 @@ class APITestCasePackage(TestCase):
             "fixing_vulnerabilities": [
                 OrderedDict(
                     [
-                        ("url", "http://testserver/api/vulnerabilities/3"),
+                        (
+                            "url",
+                            f"http://testserver/api/vulnerabilities/{self.vuln_VCID_ftmk_wbwx_aaar.id}",
+                        ),
                         ("vulnerability_id", "VCID-ftmk-wbwx-aaar"),
                         ("summary", "This is VCID-ftmk-wbwx-aaar"),
                         ("references", []),
@@ -495,7 +504,10 @@ class APITestCasePackage(TestCase):
                             [
                                 OrderedDict(
                                     [
-                                        ("url", "http://testserver/api/packages/4"),
+                                        (
+                                            "url",
+                                            f"http://testserver/api/packages/{self.package_maven_jackson_databind_2_12_6.id}",
+                                        ),
                                         (
                                             "purl",
                                             "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.12.6",
@@ -510,7 +522,10 @@ class APITestCasePackage(TestCase):
                                 ),
                                 OrderedDict(
                                     [
-                                        ("url", "http://testserver/api/packages/1"),
+                                        (
+                                            "url",
+                                            f"http://testserver/api/packages/{self.package_maven_jackson_databind_2_13_1.id}",
+                                        ),
                                         (
                                             "purl",
                                             "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",

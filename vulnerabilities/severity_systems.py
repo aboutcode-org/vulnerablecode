@@ -37,6 +37,9 @@ class ScoringSystem:
         """
         return NotImplementedError
 
+    def get(self, scoring_elements: str):
+        return NotImplementedError
+
 
 @dataclasses.dataclass(order=True)
 class Cvssv2ScoringSystem(ScoringSystem):
@@ -48,6 +51,10 @@ class Cvssv2ScoringSystem(ScoringSystem):
         '5.0'
         """
         return str(CVSS2(vector=scoring_elements).base_score)
+
+    def get(self, scoring_elements: str) -> dict:
+        scoring_elements = scoring_elements.strip()
+        return CVSS2(vector=scoring_elements).as_json()
 
 
 CVSSV2 = Cvssv2ScoringSystem(
@@ -70,6 +77,10 @@ class Cvssv3ScoringSystem(ScoringSystem):
         '8.6'
         """
         return str(CVSS3(vector=scoring_elements).base_score)
+
+    def get(self, scoring_elements: str) -> dict:
+        scoring_elements = scoring_elements.strip()
+        return CVSS3(vector=scoring_elements).as_json()
 
 
 CVSSV3 = Cvssv3ScoringSystem(

@@ -20,6 +20,7 @@ from vulnerabilities.importers import gentoo
 from vulnerabilities.importers import github
 from vulnerabilities.importers import github_osv
 from vulnerabilities.importers import gitlab
+from vulnerabilities.importers import glibc
 from vulnerabilities.importers import istio
 from vulnerabilities.importers import mozilla
 from vulnerabilities.importers import nginx
@@ -71,6 +72,7 @@ IMPORTERS_REGISTRY = [
     oss_fuzz.OSSFuzzImporter,
     ruby.RubyImporter,
     github_osv.GithubOSVImporter,
+    glibc.GlibcImporter
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

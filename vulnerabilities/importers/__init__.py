@@ -72,7 +72,7 @@ IMPORTERS_REGISTRY = [
     oss_fuzz.OSSFuzzImporter,
     ruby.RubyImporter,
     github_osv.GithubOSVImporter,
-    glibc.GlibcImporter
+    glibc.GlibcImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

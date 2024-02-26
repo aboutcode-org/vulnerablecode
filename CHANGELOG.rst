@@ -10,6 +10,7 @@ Version v34.0.0rc3
 - Remove duplicated changelogs (#1400)
 - Fix Encoding Type in Fireeye Importer (#1404)
 - Add license_url for GitHub Importer (#1392)
+- Add support for CVSS vectors display (#1312)
 
 
 Version v34.0.0rc2

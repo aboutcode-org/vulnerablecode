@@ -640,6 +640,14 @@ class TestRemoveDupedChangeLogWithSameData(TestMigrations):
             package=pkg1,
             related_vulnerability=vuln,
         )
+        PackageChangeLog.objects.create(
+            actor_name="Nginx",
+            action_type=1,
+            source_url="test",
+            software_version="2",
+            package=pkg1,
+            related_vulnerability=vuln,
+        )
         VulnerabilityChangeLog.objects.create(
             actor_name="Nginx",
             action_type=1,

@@ -15,7 +15,7 @@ from typing import Mapping
 
 import requests
 from packageurl import PackageURL
-from univers.version_range import NginxVersionRange
+from univers.version_range import GenericVersionRange
 from univers.versions import SemverVersion
 from utils import fetch_response
 from utils import get_item
@@ -45,38 +45,44 @@ class CurlImporter(Importer):
     def advisory_data(self) -> Iterable[AdvisoryData]:
         raw_data = self.fetch()
         for data in raw_data:
-            cve_id = data.get["aliases"] or []
+            cve_id = data.get("aliases") or []
             cve_id = cve_id[0] if len(cve_id) > 0 else None
             if not cve_id.startswith("CVE"):
-                logger.error(
-                    f"Invalid CVE ID: {cve_id} in package {data.get['database_specific']['package']}"
-                )
+                package = data.get("database_specific").get("package")
+                logger.error(f"Invalid CVE ID: {cve_id} in package {package}")
                 continue
             yield parse_advisory_data(data)
 
 
 def parse_advisory_data(raw_data) -> AdvisoryData:
-    purl = PackageURL(type="curl", name="curl")
-    affected_version_range = NginxVersionRange.from_native(raw_data.get("vulnerable", ""))
 
     d1 = get_item(raw_data, "affected")[0] if len(get_item(raw_data, "affected")) > 0 else []
     d2 = get_item(d1, "ranges")[0] if len(get_item(d1, "ranges")) > 0 else []
     d3 = get_item(d2, "events")[1] if len(get_item(d2, "events")) > 1 else {}
+
     fixed_version = SemverVersion(d3.get("fixed") or "")
+    purl = PackageURL(type="generic", namespace="curl.se", name="curl")
+    affected_version_range = GenericVersionRange.from_versions(
+        raw_data.get("affected")[0].get("versions") or []
+    )
+
     affected_package = AffectedPackage(
         package=purl, affected_version_range=affected_version_range, fixed_version=fixed_version
     )
+
     database_specific = raw_data.get("database_specific") or {}
     severity = VulnerabilitySeverity(
         system=SCORING_SYSTEMS["generic_textual"], value=database_specific.get("severity", "")
     )
+
     references = [Reference(url=database_specific.get("www") or "", severities=[severity])]
     date_published = datetime.strptime(raw_data.get("published") or "", "%d-%m-%Y %Z").replace(
         tzinfo=timezone.utc
     )
+
     return AdvisoryData(
-        aliases=raw_data.get("aliases", []),
-        summary=raw_data.get("summary", ""),
+        aliases=raw_data.get("aliases") or [],
+        summary=raw_data.get("summary") or "",
         affected_packages=[affected_package],
         references=references,
         date_published=date_published,

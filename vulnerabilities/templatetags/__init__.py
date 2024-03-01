@@ -6,20 +6,3 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-
-import os
-import sys
-import warnings
-from pathlib import Path
-
-__version__ = "34.0.0rc3"
-
-
-def command_line():
-    """
-    Command line entry point.
-    """
-    from django.core.management import execute_from_command_line
-
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "vulnerablecode.settings")
-    execute_from_command_line(sys.argv)

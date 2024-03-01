@@ -20,6 +20,7 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.throttling import UserRateThrottle
 
@@ -48,7 +49,32 @@ class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
         fields = ["reference_url", "reference_id", "scores", "url"]
 
 
-class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
+class BaseResourceSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Base serializer containing common methods.
+    """
+
+    def get_fields(self):
+        fields = super().get_fields()
+        fields["resource_url"] = serializers.SerializerMethodField(method_name="get_resource_url")
+        return fields
+
+    def get_resource_url(self, instance):
+        """
+        Return the instance fully qualified URL including the schema and domain.
+
+        Usage:
+            resource_url = serializers.SerializerMethodField()
+        """
+        resource_url = instance.get_absolute_url()
+
+        if request := self.context.get("request", None):
+            return request.build_absolute_uri(location=resource_url)
+
+        return resource_url
+
+
+class MinimalPackageSerializer(BaseResourceSerializer):
     """
     Used for nesting inside vulnerability focused APIs.
     """
@@ -79,7 +105,7 @@ class MinimalPackageSerializer(serializers.HyperlinkedModelSerializer):
         fields = ["url", "purl", "is_vulnerable", "affected_by_vulnerabilities"]
 
 
-class MinimalVulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
+class MinimalVulnerabilitySerializer(BaseResourceSerializer):
     """
     Lookup vulnerabilities by aliases (such as a CVE).
     """
@@ -99,7 +125,7 @@ class AliasSerializer(serializers.HyperlinkedModelSerializer):
         fields = ["alias"]
 
 
-class VulnSerializerRefsAndSummary(serializers.HyperlinkedModelSerializer):
+class VulnSerializerRefsAndSummary(BaseResourceSerializer):
     """
     Lookup vulnerabilities references by aliases (such as a CVE).
     """
@@ -141,7 +167,7 @@ class WeaknessSerializer(serializers.HyperlinkedModelSerializer):
         return representation
 
 
-class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
+class VulnerabilitySerializer(BaseResourceSerializer):
     fixed_packages = MinimalPackageSerializer(
         many=True, source="filtered_fixed_packages", read_only=True
     )
@@ -152,13 +178,12 @@ class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
     weaknesses = WeaknessSerializer(many=True)
 
     def to_representation(self, instance):
-        representation = super().to_representation(instance)
+        data = super().to_representation(instance)
 
-        # Exclude None values from the weaknesses list
-        weaknesses = representation.get("weaknesses", [])
-        representation["weaknesses"] = [weakness for weakness in weaknesses if weakness is not None]
+        weaknesses = data.get("weaknesses", [])
+        data["weaknesses"] = [weakness for weakness in weaknesses if weakness is not None]
 
-        return representation
+        return data
 
     class Meta:
         model = Vulnerability
@@ -174,7 +199,7 @@ class VulnerabilitySerializer(serializers.HyperlinkedModelSerializer):
         ]
 
 
-class PackageSerializer(serializers.HyperlinkedModelSerializer):
+class PackageSerializer(BaseResourceSerializer):
     """
     Lookup software package using Package URLs
     """
@@ -182,6 +207,7 @@ class PackageSerializer(serializers.HyperlinkedModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["qualifiers"] = normalize_qualifiers(data["qualifiers"], encode=False)
+
         return data
 
     next_non_vulnerable_version = serializers.SerializerMethodField("get_next_non_vulnerable")

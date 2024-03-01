@@ -40,7 +40,7 @@ class OSSFuzzImporter(Importer):
                         url="https://github.com/pypa/advisory-database/blob/main/",
                     )
                     yield parse_advisory_data(
-                        yaml_data, supported_ecosystem="oss-fuzz", advisory_url=advisory_url
+                        yaml_data, supported_ecosystems=["oss-fuzz"], advisory_url=advisory_url
                     )
         finally:
             if self.vcs_response:

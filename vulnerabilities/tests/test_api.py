@@ -9,6 +9,7 @@
 
 import json
 import os
+from collections import OrderedDict
 from urllib.parse import quote
 
 from django.test import TestCase
@@ -223,18 +224,21 @@ class APITestCaseVulnerability(TransactionTestCase):
             "vulnerability_id": self.vulnerability.vulnerability_id,
             "summary": "test",
             "aliases": [],
+            "resource_url": f"http://testserver/vulnerabilities/{self.vulnerability.vulnerability_id}",
             "fixed_packages": [
                 {
                     "url": f"http://testserver/api/packages/{self.pkg2.id}",
                     "purl": "pkg:deb/flask@0.1.2",
                     "is_vulnerable": False,
                     "affected_by_vulnerabilities": [],
+                    "resource_url": f"http://testserver/packages/{self.pkg2.purl}",
                 },
                 {
                     "url": f"http://testserver/api/packages/{self.pkg1.id}",
                     "purl": "pkg:pypi/flask@0.1.2",
                     "is_vulnerable": False,
                     "affected_by_vulnerabilities": [],
+                    "resource_url": f"http://testserver/packages/{self.pkg1.purl}",
                 },
             ],
             "affected_packages": [],
@@ -257,11 +261,13 @@ class APITestCaseVulnerability(TransactionTestCase):
             "vulnerability_id": self.vulnerability.vulnerability_id,
             "summary": "test",
             "aliases": [],
+            "resource_url": f"http://testserver/vulnerabilities/{self.vulnerability.vulnerability_id}",
             "fixed_packages": [
                 {
                     "url": f"http://testserver/api/packages/{self.pkg1.id}",
                     "purl": "pkg:pypi/flask@0.1.2",
                     "is_vulnerable": False,
+                    "resource_url": f"http://testserver/packages/{self.pkg1.purl}",
                     "affected_by_vulnerabilities": [],
                 },
             ],
@@ -443,49 +449,106 @@ class APITestCasePackage(TestCase):
             "next_non_vulnerable_version": "2.14.0-rc1",
             "latest_non_vulnerable_version": "2.14.0-rc1",
             "affected_by_vulnerabilities": [
-                {
-                    "url": f"http://testserver/api/vulnerabilities/{self.vuln_VCID_2nyb_8rwu_aaag.id}",
-                    "vulnerability_id": "VCID-2nyb-8rwu-aaag",
-                    "summary": "This is VCID-2nyb-8rwu-aaag",
-                    "references": [],
-                    "fixed_packages": [
-                        {
-                            "url": f"http://testserver/api/packages/{self.package_maven_jackson_databind_2_13_2.id}",
-                            "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
-                            "is_vulnerable": True,
-                            "affected_by_vulnerabilities": [
-                                {"vulnerability": "VCID-gqhw-ngh8-aaap"}
+                OrderedDict(
+                    [
+                        (
+                            "url",
+                            f"http://testserver/api/vulnerabilities/{self.vuln_VCID_2nyb_8rwu_aaag.id}",
+                        ),
+                        ("vulnerability_id", "VCID-2nyb-8rwu-aaag"),
+                        ("summary", "This is VCID-2nyb-8rwu-aaag"),
+                        ("references", []),
+                        (
+                            "fixed_packages",
+                            [
+                                OrderedDict(
+                                    [
+                                        (
+                                            "url",
+                                            f"http://testserver/api/packages/{self.package_maven_jackson_databind_2_13_2.id}",
+                                        ),
+                                        (
+                                            "purl",
+                                            "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
+                                        ),
+                                        ("is_vulnerable", True),
+                                        (
+                                            "affected_by_vulnerabilities",
+                                            [{"vulnerability": "VCID-gqhw-ngh8-aaap"}],
+                                        ),
+                                        (
+                                            "resource_url",
+                                            "http://testserver/packages/pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
+                                        ),
+                                    ]
+                                )
                             ],
-                        }
-                    ],
-                    "aliases": ["CVE-2020-36518", "GHSA-57j2-w4cx-62h2"],
-                }
+                        ),
+                        ("aliases", ["CVE-2020-36518", "GHSA-57j2-w4cx-62h2"]),
+                        ("resource_url", "http://testserver/vulnerabilities/VCID-2nyb-8rwu-aaag"),
+                    ]
+                )
             ],
             "fixing_vulnerabilities": [
-                {
-                    "url": f"http://testserver/api/vulnerabilities/{self.vuln_VCID_ftmk_wbwx_aaar.id}",
-                    "vulnerability_id": "VCID-ftmk-wbwx-aaar",
-                    "summary": "This is VCID-ftmk-wbwx-aaar",
-                    "references": [],
-                    "fixed_packages": [
-                        {
-                            "url": f"http://testserver/api/packages/{self.package_maven_jackson_databind_2_12_6.id}",
-                            "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.12.6",
-                            "is_vulnerable": False,
-                            "affected_by_vulnerabilities": [],
-                        },
-                        {
-                            "url": f"http://testserver/api/packages/{self.package_maven_jackson_databind_2_13_1.id}",
-                            "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
-                            "is_vulnerable": True,
-                            "affected_by_vulnerabilities": [
-                                {"vulnerability": "VCID-2nyb-8rwu-aaag"}
+                OrderedDict(
+                    [
+                        (
+                            "url",
+                            f"http://testserver/api/vulnerabilities/{self.vuln_VCID_ftmk_wbwx_aaar.id}",
+                        ),
+                        ("vulnerability_id", "VCID-ftmk-wbwx-aaar"),
+                        ("summary", "This is VCID-ftmk-wbwx-aaar"),
+                        ("references", []),
+                        (
+                            "fixed_packages",
+                            [
+                                OrderedDict(
+                                    [
+                                        (
+                                            "url",
+                                            f"http://testserver/api/packages/{self.package_maven_jackson_databind_2_12_6.id}",
+                                        ),
+                                        (
+                                            "purl",
+                                            "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.12.6",
+                                        ),
+                                        ("is_vulnerable", False),
+                                        ("affected_by_vulnerabilities", []),
+                                        (
+                                            "resource_url",
+                                            "http://testserver/packages/pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.12.6",
+                                        ),
+                                    ]
+                                ),
+                                OrderedDict(
+                                    [
+                                        (
+                                            "url",
+                                            f"http://testserver/api/packages/{self.package_maven_jackson_databind_2_13_1.id}",
+                                        ),
+                                        (
+                                            "purl",
+                                            "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
+                                        ),
+                                        ("is_vulnerable", True),
+                                        (
+                                            "affected_by_vulnerabilities",
+                                            [{"vulnerability": "VCID-2nyb-8rwu-aaag"}],
+                                        ),
+                                        (
+                                            "resource_url",
+                                            "http://testserver/packages/pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
+                                        ),
+                                    ]
+                                ),
                             ],
-                        },
-                    ],
-                    "aliases": ["CVE-2021-46877", "GHSA-3x8x-79m2-3w2w"],
-                },
+                        ),
+                        ("aliases", ["CVE-2021-46877", "GHSA-3x8x-79m2-3w2w"]),
+                        ("resource_url", "http://testserver/vulnerabilities/VCID-ftmk-wbwx-aaar"),
+                    ]
+                )
             ],
+            "resource_url": "http://testserver/packages/pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
         }
 
         assert response == expected_response

@@ -18,6 +18,7 @@ from vulnerabilities.importers import elixir_security
 from vulnerabilities.importers import fireeye
 from vulnerabilities.importers import gentoo
 from vulnerabilities.importers import github
+from vulnerabilities.importers import github_osv
 from vulnerabilities.importers import gitlab
 from vulnerabilities.importers import istio
 from vulnerabilities.importers import mozilla
@@ -32,6 +33,7 @@ from vulnerabilities.importers import pypa
 from vulnerabilities.importers import pysec
 from vulnerabilities.importers import redhat
 from vulnerabilities.importers import retiredotnet
+from vulnerabilities.importers import ruby
 from vulnerabilities.importers import suse_scores
 from vulnerabilities.importers import ubuntu
 from vulnerabilities.importers import ubuntu_usn
@@ -67,6 +69,8 @@ IMPORTERS_REGISTRY = [
     fireeye.FireyeImporter,
     apache_kafka.ApacheKafkaImporter,
     oss_fuzz.OSSFuzzImporter,
+    ruby.RubyImporter,
+    github_osv.GithubOSVImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

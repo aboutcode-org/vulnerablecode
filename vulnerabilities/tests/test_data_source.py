@@ -21,12 +21,14 @@ from vulnerabilities.importer import OvalImporter
 from vulnerabilities.importers.elixir_security import ElixirSecurityImporter
 from vulnerabilities.importers.fireeye import FireyeImporter
 from vulnerabilities.importers.gentoo import GentooImporter
+from vulnerabilities.importers.github_osv import GithubOSVImporter
 from vulnerabilities.importers.gitlab import GitLabAPIImporter
 from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.importers.mozilla import MozillaImporter
 from vulnerabilities.importers.npm import NpmImporter
 from vulnerabilities.importers.pypa import PyPaImporter
 from vulnerabilities.importers.retiredotnet import RetireDotnetImporter
+from vulnerabilities.importers.ruby import RubyImporter
 from vulnerabilities.oval_parser import OvalParser
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -123,6 +125,8 @@ def test_git_importer(mock_clone):
         NpmImporter,
         RetireDotnetImporter,
         PyPaImporter,
+        RubyImporter,
+        GithubOSVImporter,
     ],
 )
 def test_git_importer_clone(git_importer):

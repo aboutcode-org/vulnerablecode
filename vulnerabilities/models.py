@@ -37,6 +37,8 @@ from packageurl.contrib.django.models import PackageURLQuerySet
 from rest_framework.authtoken.models import Token
 from univers import versions
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
+from univers.version_range import AlpineLinuxVersionRange
+from univers.versions import Version
 
 from vulnerabilities import utils
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
@@ -254,6 +256,18 @@ class Vulnerability(models.Model):
         Return this Vulnerability details absolute URL.
         """
         return reverse("vulnerability_details", args=[self.vulnerability_id])
+
+    def get_details_url(self, request):
+        """
+        Return this Package details URL.
+        """
+        from rest_framework.reverse import reverse
+
+        return reverse(
+            "vulnerability_details",
+            kwargs={"vulnerability_id": self.vulnerability_id},
+            request=request,
+        )
 
     def get_related_cpes(self):
         """
@@ -631,6 +645,14 @@ class Package(PackageURLMixin):
         """
         return reverse("package_details", args=[self.purl])
 
+    def get_details_url(self, request):
+        """
+        Return this Package details URL.
+        """
+        from rest_framework.reverse import reverse
+
+        return reverse("package_details", kwargs={"purl": self.purl}, request=request)
+
     def sort_by_version(self, packages):
         """
         Return a list of `packages` sorted by version.
@@ -645,7 +667,11 @@ class Package(PackageURLMixin):
 
     @property
     def version_class(self):
-        return RANGE_CLASS_BY_SCHEMES[self.type].version_class
+        RANGE_CLASS_BY_SCHEMES["alpine"] = AlpineLinuxVersionRange
+        range_class = RANGE_CLASS_BY_SCHEMES.get(self.type)
+        if not range_class:
+            return Version
+        return range_class.version_class
 
     @property
     def current_version(self):
@@ -1139,6 +1165,7 @@ class ChangeLog(models.Model):
     class Meta:
         abstract = True
         ordering = ("-action_time",)
+        unique_together = ("action_time", "actor_name", "action_type", "source_url")
 
 
 class VulnerabilityHistoryManager(models.Manager):

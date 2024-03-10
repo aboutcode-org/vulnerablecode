@@ -80,14 +80,14 @@ def parse_constraint(constraint):
         return constraint[-1], constraint[:-1]
 
 
-def github_constraints_satisfied(github_constrain, version):
+def github_constraints_satisfied(github_constraint, version):
     """
     Return True or False depending on whether the given version satisfies the github constraint
     For example:
     >>> assert github_constraints_satisfied(">= 7.0.0, <= 7.6.57", "7.1.1") == True
     >>> assert github_constraints_satisfied(">= 10.4.0, <= 10.4.1", "10.6.0") == False
     """
-    gh_constraints = github_constrain.strip().replace(" ", "")
+    gh_constraints = github_constraint.strip().replace(" ", "")
     constraints = gh_constraints.split(",")
     for constraint in constraints:
         gh_comparator, gh_version = parse_constraint(constraint)
@@ -98,15 +98,15 @@ def github_constraints_satisfied(github_constrain, version):
     return True
 
 
-def snky_constraints_satisfied(snyk_constrain, version):
+def snyk_constraints_satisfied(snyk_constraint, version):
     """
     Return True or False depending on whether the given version satisfies the snyk constraint
     For example:
-    >>> assert snky_constraints_satisfied(">=4.0.0, <4.0.10.16", "4.0.10.15") == True
-    >>> assert snky_constraints_satisfied(" >=4.1.0, <4.4.15.7", "4.0.10.15") == False
-    >>> assert snky_constraints_satisfied("[3.0.0,3.1.25)", "3.0.2") == True
+    >>> assert snyk_constraints_satisfied(">=4.0.0, <4.0.10.16", "4.0.10.15") == True
+    >>> assert snyk_constraints_satisfied(" >=4.1.0, <4.4.15.7", "4.0.10.15") == False
+    >>> assert snyk_constraints_satisfied("[3.0.0,3.1.25)", "3.0.2") == True
     """
-    snyk_constraints = snyk_constrain.strip().replace(" ", "")
+    snyk_constraints = snyk_constraint.strip().replace(" ", "")
     constraints = snyk_constraints.split(",")
     for constraint in constraints:
         snyk_comparator, snyk_version = parse_constraint(constraint)
@@ -117,7 +117,7 @@ def snky_constraints_satisfied(snyk_constrain, version):
     return True
 
 
-def gitlab_constraints_satisfied(gitlab_constrain, version):
+def gitlab_constraints_satisfied(gitlab_constraint, version):
     """
     Return True or False depending on whether the given version satisfies the gitlab constraint
     For example:
@@ -128,7 +128,7 @@ def gitlab_constraints_satisfied(gitlab_constrain, version):
     >>> assert gitlab_constraints_satisfied( ">=1.5,<1.5.2", "2.2") == False
     """
 
-    gitlab_constraints = gitlab_constrain.strip()
+    gitlab_constraints = gitlab_constraint.strip()
     if gitlab_constraints.startswith(("[", "(")):
         # transform "[7.0.0,7.0.11),[7.2.0,7.2.4)" -> [ "[7.0.0,7.0.11)", "[7.2.0,7.2.4)" ]
         splitted = gitlab_constraints.split(",")
@@ -144,10 +144,10 @@ def gitlab_constraints_satisfied(gitlab_constrain, version):
 
     for constraint in constraints:
         is_constraint_satisfied = True
-        for subcontraint in constraint.strip().split(delimiter):
-            if not subcontraint:
+        for subconstraint in constraint.strip().split(delimiter):
+            if not subconstraint:
                 continue
-            gitlab_comparator, gitlab_version = parse_constraint(subcontraint.strip())
+            gitlab_comparator, gitlab_version = parse_constraint(subconstraint.strip())
             if not gitlab_version:
                 continue
             if not compare(

@@ -40,5 +40,5 @@ class PyPIImporter(Importer):
                 with zip_file.open(file_name) as f:
                     vul_info = json.load(f)
                     yield parse_advisory_data(
-                        raw_data=vul_info, supported_ecosystem="pypi", advisory_url=url
+                        raw_data=vul_info, supported_ecosystems=["pypi"], advisory_url=url
                     )

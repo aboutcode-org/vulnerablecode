@@ -32,11 +32,13 @@ from vulnerabilities.importers.debian import DebianImporter
 from vulnerabilities.importers.debian_oval import DebianOvalImporter
 from vulnerabilities.importers.elixir_security import ElixirSecurityImporter
 from vulnerabilities.importers.github import GitHubAPIImporter
+from vulnerabilities.importers.github_osv import GithubOSVImporter
 from vulnerabilities.importers.gitlab import GitLabAPIImporter
 from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.importers.nginx import NginxImporter
 from vulnerabilities.importers.npm import NpmImporter
 from vulnerabilities.importers.oss_fuzz import OSSFuzzImporter
+from vulnerabilities.importers.ruby import RubyImporter
 from vulnerabilities.importers.ubuntu import UbuntuImporter
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.improver import Improver
@@ -459,4 +461,14 @@ class UbuntuOvalImprover(ValidVersionImprover):
 
 class OSSFuzzImprover(ValidVersionImprover):
     importer = OSSFuzzImporter
+    ignorable_versions = []
+
+
+class RubyImprover(ValidVersionImprover):
+    importer = RubyImporter
+    ignorable_versions = []
+
+
+class GithubOSVImprover(ValidVersionImprover):
+    importer = GithubOSVImporter
     ignorable_versions = []

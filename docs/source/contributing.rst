@@ -97,7 +97,7 @@ Add a new importer
 
 This tutorial contains all the things one should know to quickly implement an importer.
 Many internal details about importers can be found inside the
-:file:`vulnerabilites/importer.py` file.
+:file:`vulnerabilities/importer.py` file.
 Make sure to go through :ref:`importer-overview` before you begin writing one.
 
 TL;DR
@@ -105,12 +105,12 @@ TL;DR
 
 #. Create a new :file:`vulnerabilities/importers/{importer_name.py}` file.
 #. Create a new importer subclass inheriting from the ``Importer`` superclass defined in
-   ``vulnerabilites.importer``. It is conventional to end an importer name with *Importer*.
+   ``vulnerabilities.importer``. It is conventional to end an importer name with *Importer*.
 #. Specify the importer license.
 #. Implement the ``advisory_data`` method to process the data source you are
    writing an importer for.
 #. Add the newly created importer to the importers registry at
-   ``vulnerabilites/importers/__init__.py``
+   ``vulnerabilities/importers/__init__.py``
 
 .. _tutorial_add_a_new_importer_prerequisites:
 
@@ -174,7 +174,7 @@ Writing an importer
 Create Importer Source File
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-All importers are located in the :file:`vulnerabilites/importers` directory.
+All importers are located in the :file:`vulnerabilities/importers` directory.
 Create a new file to put your importer code in.
 Generic importers are implemented by writing a subclass for the ``Importer`` superclass and
 implementing the unimplemented methods.
@@ -201,7 +201,7 @@ from this method after creating each AdvisoryData object.
 
 At this point, an example importer will look like this:
 
-:file:`vulnerabilites/importers/example.py`
+:file:`vulnerabilities/importers/example.py`
 
 .. code-block:: python
 
@@ -318,7 +318,7 @@ Register the Importer
 ^^^^^^^^^^^^^^^^^^^^^^
 
 Finally, register your importer in the importer registry at
-:file:`vulnerabilites/importers/__init__.py`
+:file:`vulnerabilities/importers/__init__.py`
 
 .. code-block:: python
    :emphasize-lines: 1, 4
@@ -400,7 +400,7 @@ Add a new improver
 This tutorial contains all the things one should know to quickly
 implement an improver.
 Many internal details about improvers can be found inside the
-:file:`vulnerabilites/improver.py` file.
+:file:`vulnerabilities/improver.py` file.
 Make sure to go through :ref:`improver-overview` before you begin writing one.
 
 TL;DR
@@ -409,13 +409,13 @@ TL;DR
 #. Locate the importer that this improver will be improving data of at
    :file:`vulnerabilities/importers/{importer_name.py}` file.
 #. Create a new improver subclass inheriting from the ``Improver`` superclass defined in
-   ``vulnerabilites.improver``. It is conventional to end an improver name with *Improver*.
+   ``vulnerabilities.improver``. It is conventional to end an improver name with *Improver*.
 #. Implement the ``interesting_advisories`` property to return a QuerySet of imported data
    (``Advisory``) you are interested in.
 #. Implement the ``get_inferences`` method to return an iterable of ``Inference`` objects for the
    given ``AdvisoryData``.
 #. Add the newly created improver to the improvers registry at
-   ``vulnerabilites/improvers/__init__.py``.
+   ``vulnerabilities/improvers/__init__.py``.
 
 Prerequisites
 --------------
@@ -426,7 +426,7 @@ Importer
 ^^^^^^^^^^
 
 Importers are responsible for scraping vulnerability data from various data sources without creating
-a complete relational model between vulnerabilites and their fixes and storing them in a structured
+a complete relational model between vulnerabilities and their fixes and storing them in a structured
 fashion. These data are stored in the ``Advisory`` model and can be converted to an equivalent
 ``AdvisoryData`` for various use cases.
 See :ref:`importer-overview` for a brief overview on importers.
@@ -463,14 +463,14 @@ Locate the Source File
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 If the improver will be working on data imported by a specific importer, it  will be located in
-the same file at :file:`vulnerabilites/importers/{importer-name.py}`.  Otherwise, if it is a
-generic improver, create a new file :file:`vulnerabilites/improvers/{improver-name.py}`.
+the same file at :file:`vulnerabilities/importers/{importer-name.py}`.  Otherwise, if it is a
+generic improver, create a new file :file:`vulnerabilities/improvers/{improver-name.py}`.
 
 Explore Package Managers (Optional)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If your Improver depends on the discrete versions of a package, the package managers' VersionAPI
-located at :file:`vulnerabilites/package_managers.py` could come in handy.  You will need to
+located at :file:`vulnerabilities/package_managers.py` could come in handy.  You will need to
 instantiate the relevant ``VersionAPI`` in the improver's constructor and use it later in the
 implemented methods. See an already implemented improver (NginxBasicImprover) for an example usage.
 
@@ -501,9 +501,9 @@ It is expected to return an iterable of ``Inference`` objects for the given ``Ad
 avoid storing a lot of Inferences in memory, it is preferable to yield from this method.
 
 A very simple Improver that processes all Advisories to create the minimal relationships that can
-be obtained by existing data can be found at :file:`vulnerabilites/improvers/default.py`, which is
+be obtained by existing data can be found at :file:`vulnerabilities/improvers/default.py`, which is
 an example of a generic improver.  For a more sophisticated and targeted example, you can look
-at an already implemented improver (e.g., :file:`vulnerabilites/importers/nginx.py`).
+at an already implemented improver (e.g., :file:`vulnerabilities/importers/nginx.py`).
 
 Improvers are not limited to improving discrete versions and may also improve ``aliases``.
 One such example, improving the importer written in the :ref:`importer tutorial
@@ -562,7 +562,7 @@ Register the Improver
 ^^^^^^^^^^^^^^^^^^^^^^
 
 Finally, register your improver in the improver registry at
-:file:`vulnerabilites/improvers/__init__.py`.
+:file:`vulnerabilities/improvers/__init__.py`.
 
 .. code-block:: python
    :emphasize-lines: 7

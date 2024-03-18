@@ -10,6 +10,7 @@
 import hashlib
 import json
 import logging
+from urllib.parse import quote
 from contextlib import suppress
 from typing import Any
 
@@ -639,11 +640,14 @@ class Package(PackageURLMixin):
     def history(self):
         return self.changelog.all()
 
-    def get_absolute_url(self):
+    def get_absolute_url(self, quote_purl=False):
         """
         Return this Package details URL.
         """
-        return reverse("package_details", args=[self.purl])
+        purl = self.purl
+        if quote_purl:
+            purl = quote(purl)
+        return reverse("package_details", args=[purl])
 
     def get_details_url(self, request):
         """

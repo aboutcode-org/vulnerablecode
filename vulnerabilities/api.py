@@ -8,6 +8,7 @@
 #
 
 from urllib.parse import unquote
+from urllib.parse import quote
 
 from django.db.models import Prefetch
 from django_filters import rest_framework as filters
@@ -67,6 +68,8 @@ class BaseResourceSerializer(serializers.HyperlinkedModelSerializer):
             resource_url = serializers.SerializerMethodField()
         """
         resource_url = instance.get_absolute_url()
+        if isinstance(instance, Package):
+            resource_url = instance.get_absolute_url(quote_purl=True)
 
         if request := self.context.get("request", None):
             return request.build_absolute_uri(location=resource_url)

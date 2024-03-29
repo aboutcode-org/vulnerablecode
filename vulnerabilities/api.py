@@ -27,6 +27,7 @@ from rest_framework.throttling import UserRateThrottle
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import Advisory
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
@@ -182,7 +183,12 @@ class VulnerabilitySerializer(BaseResourceSerializer):
 
         weaknesses = data.get("weaknesses", [])
         data["weaknesses"] = [weakness for weakness in weaknesses if weakness is not None]
-
+        alias_queryset = instance.aliases.all()
+        data["advisory"] = []
+        for itr in alias_queryset:
+            advisory_objects = Advisory.objects.filter(aliases=[itr.alias])
+            for i in advisory_objects:
+                data["advisory"].append({"unique_content_id" : i.unique_content_id,"url" : i.url,"summary" : i.summary}) 
         return data
 
     class Meta:

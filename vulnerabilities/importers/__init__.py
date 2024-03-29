@@ -38,6 +38,7 @@ from vulnerabilities.importers import suse_scores
 from vulnerabilities.importers import ubuntu
 from vulnerabilities.importers import ubuntu_usn
 from vulnerabilities.importers import xen
+from vulnerabilities.importers import liferay
 
 IMPORTERS_REGISTRY = [
     nvd.NVDImporter,
@@ -71,6 +72,7 @@ IMPORTERS_REGISTRY = [
     oss_fuzz.OSSFuzzImporter,
     ruby.RubyImporter,
     github_osv.GithubOSVImporter,
+    liferay.LifeRayImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

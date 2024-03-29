@@ -30,6 +30,7 @@ from vulnerabilities.models import Advisory
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import Weakness
+
 from datetime import datetime 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))

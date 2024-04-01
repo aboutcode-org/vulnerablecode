@@ -19,13 +19,13 @@ import urllib.request
 from collections import defaultdict
 from functools import total_ordering
 from hashlib import sha256
+from http import HTTPStatus
 from typing import List
 from typing import Optional
 from typing import Tuple
 from unittest.mock import MagicMock
 from urllib.parse import urljoin
 from uuid import uuid4
-from http import HTTPStatus
 
 import requests
 import saneyaml
@@ -168,17 +168,14 @@ def nearest_patched_package(
     Return a list of Affected Packages for each Patched package.
     """
 
-    vulnerable_packages = sorted(
-        [VersionedPackage(package) for package in vulnerable_packages])
-    resolved_packages = sorted([VersionedPackage(package)
-                               for package in resolved_packages])
+    vulnerable_packages = sorted([VersionedPackage(package) for package in vulnerable_packages])
+    resolved_packages = sorted([VersionedPackage(package) for package in resolved_packages])
 
     resolved_package_count = len(resolved_packages)
     affected_package_with_patched_package_objects = []
 
     for vulnerable_package in vulnerable_packages:
-        patched_package_index = bisect.bisect_right(
-            resolved_packages, vulnerable_package)
+        patched_package_index = bisect.bisect_right(resolved_packages, vulnerable_package)
         patched_package = None
         if patched_package_index < resolved_package_count:
             patched_package = resolved_packages[patched_package_index]
@@ -409,7 +406,7 @@ def base32_custom(btes):
     from_bytes = int.from_bytes
 
     for i in range(0, len(btes), 5):
-        c = from_bytes(btes[i: i + 5], "big")
+        c = from_bytes(btes[i : i + 5], "big")
         encoded += (
             _base32_table[c >> 30]
             + _base32_table[(c >> 20) & 0x3FF]  # bits 1 - 10
@@ -426,8 +423,7 @@ def fetch_response(url):
     response = requests.get(url)
     if response.status_code == HTTPStatus.OK:
         return response
-    raise Exception(
-        f"Failed to fetch data from {url!r} with status code: {response.status_code!r}")
+    raise Exception(f"Failed to fetch data from {url!r} with status code: {response.status_code!r}")
 
 
 # This should be a method on PackageURL

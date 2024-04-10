@@ -11,6 +11,7 @@ import datetime
 import json
 import os
 from collections import OrderedDict
+from datetime import datetime
 from urllib.parse import quote
 
 from django.test import TestCase
@@ -28,12 +29,9 @@ from vulnerabilities.models import ApiUser
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
-from vulnerabilities.models import Advisory
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import Weakness
-
-from datetime import datetime 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")

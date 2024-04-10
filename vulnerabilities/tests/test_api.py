@@ -10,6 +10,7 @@
 import json
 import os
 from collections import OrderedDict
+from datetime import datetime
 from urllib.parse import quote
 
 from django.test import TestCase
@@ -21,17 +22,15 @@ from rest_framework.test import APIClient
 
 from vulnerabilities.api import MinimalPackageSerializer
 from vulnerabilities.api import PackageSerializer
+from vulnerabilities.models import Advisory
 from vulnerabilities.models import Alias
 from vulnerabilities.models import ApiUser
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
-from vulnerabilities.models import Advisory
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import Weakness
-
-from datetime import datetime 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")
@@ -196,7 +195,7 @@ class APITestCaseVulnerability(TransactionTestCase):
                 summary=str(i),
             )
         self.vulnerability = Vulnerability.objects.create(summary="test")
-        self.alias = Alias.objects.create(alias='CORE-2010-0121',vulnerability=self.vulnerability)
+        self.alias = Alias.objects.create(alias="CORE-2010-0121", vulnerability=self.vulnerability)
         self.pkg1 = Package.objects.create(name="flask", type="pypi", version="0.1.2")
         self.pkg2 = Package.objects.create(name="flask", type="deb", version="0.1.2")
         for pkg in [self.pkg1, self.pkg2]:
@@ -204,7 +203,15 @@ class APITestCaseVulnerability(TransactionTestCase):
                 package=pkg, vulnerability=self.vulnerability, fix=True
             )
         self.weaknesses = Weakness.objects.create(cwe_id=119)
-        self.advisory = Advisory.objects.create(unique_content_id='6b7d417a552b19f26a5c2267ba7876c2',aliases=['CORE-2010-0121'],summary='Vulnerabilities with Windows 8.3 filename pseudonyms',affected_packages=[],url= 'https://nginx.org/en/security_advisories.html',date_collected=datetime.now(),created_by='vulnerabilities.importers.nginx.NginxImporter')
+        self.advisory = Advisory.objects.create(
+            unique_content_id="6b7d417a552b19f26a5c2267ba7876c2",
+            aliases=["CORE-2010-0121"],
+            summary="Vulnerabilities with Windows 8.3 filename pseudonyms",
+            affected_packages=[],
+            url="https://nginx.org/en/security_advisories.html",
+            date_collected=datetime.now(),
+            created_by="vulnerabilities.importers.nginx.NginxImporter",
+        )
         self.weaknesses.vulnerabilities.add(self.vulnerability)
         self.invalid_weaknesses = Weakness.objects.create(
             cwe_id=10000
@@ -228,7 +235,7 @@ class APITestCaseVulnerability(TransactionTestCase):
             "url": f"http://testserver/api/vulnerabilities/{self.vulnerability.id}",
             "vulnerability_id": self.vulnerability.vulnerability_id,
             "summary": "test",
-            "aliases": [OrderedDict([('alias', 'CORE-2010-0121')])],
+            "aliases": [OrderedDict([("alias", "CORE-2010-0121")])],
             "resource_url": f"http://testserver/vulnerabilities/{self.vulnerability.vulnerability_id}",
             "fixed_packages": [
                 {
@@ -259,9 +266,9 @@ class APITestCaseVulnerability(TransactionTestCase):
                 {
                     "unique_content_id": "6b7d417a552b19f26a5c2267ba7876c2",
                     "url": "https://nginx.org/en/security_advisories.html",
-                    "summary": "Vulnerabilities with Windows 8.3 filename pseudonyms"
+                    "summary": "Vulnerabilities with Windows 8.3 filename pseudonyms",
                 }
-            ] 
+            ],
         }
 
     def test_api_with_single_vulnerability_with_filters(self):
@@ -272,7 +279,7 @@ class APITestCaseVulnerability(TransactionTestCase):
             "url": f"http://testserver/api/vulnerabilities/{self.vulnerability.id}",
             "vulnerability_id": self.vulnerability.vulnerability_id,
             "summary": "test",
-            "aliases": [OrderedDict([('alias', 'CORE-2010-0121')])],
+            "aliases": [OrderedDict([("alias", "CORE-2010-0121")])],
             "resource_url": f"http://testserver/vulnerabilities/{self.vulnerability.vulnerability_id}",
             "fixed_packages": [
                 {
@@ -296,9 +303,9 @@ class APITestCaseVulnerability(TransactionTestCase):
                 {
                     "unique_content_id": "6b7d417a552b19f26a5c2267ba7876c2",
                     "url": "https://nginx.org/en/security_advisories.html",
-                    "summary": "Vulnerabilities with Windows 8.3 filename pseudonyms"
+                    "summary": "Vulnerabilities with Windows 8.3 filename pseudonyms",
                 }
-            ]
+            ],
         }
 
 

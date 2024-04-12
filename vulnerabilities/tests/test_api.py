@@ -11,7 +11,6 @@ import datetime
 import json
 import os
 from collections import OrderedDict
-from datetime import datetime
 from urllib.parse import quote
 
 from django.test import TestCase

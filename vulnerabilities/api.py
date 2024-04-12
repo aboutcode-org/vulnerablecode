@@ -197,6 +197,7 @@ class VulnerabilitySerializer(BaseResourceSerializer):
                         "created_by": advisory_object.created_by,
                     }
                 )
+                
 
         return data
 

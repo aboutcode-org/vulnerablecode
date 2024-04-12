@@ -7,10 +7,10 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import datetime
 import json
 import os
 from collections import OrderedDict
-from datetime import datetime
 from urllib.parse import quote
 
 from django.test import TestCase
@@ -209,7 +209,7 @@ class APITestCaseVulnerability(TransactionTestCase):
             summary="Vulnerabilities with Windows 8.3 filename pseudonyms",
             affected_packages=[],
             url="https://nginx.org/en/security_advisories.html",
-            date_collected=datetime.now(),
+            date_collected="2024-04-12T00:00:00",
             created_by="vulnerabilities.importers.nginx.NginxImporter",
         )
         self.weaknesses.vulnerabilities.add(self.vulnerability)
@@ -267,6 +267,10 @@ class APITestCaseVulnerability(TransactionTestCase):
                     "unique_content_id": "6b7d417a552b19f26a5c2267ba7876c2",
                     "url": "https://nginx.org/en/security_advisories.html",
                     "summary": "Vulnerabilities with Windows 8.3 filename pseudonyms",
+                    "date_collected": datetime.datetime(
+                        2024, 4, 12, 0, 0, tzinfo=datetime.timezone.utc
+                    ),
+                    "created_by": "vulnerabilities.importers.nginx.NginxImporter",
                 }
             ],
         }
@@ -304,6 +308,10 @@ class APITestCaseVulnerability(TransactionTestCase):
                     "unique_content_id": "6b7d417a552b19f26a5c2267ba7876c2",
                     "url": "https://nginx.org/en/security_advisories.html",
                     "summary": "Vulnerabilities with Windows 8.3 filename pseudonyms",
+                    "date_collected": datetime.datetime(
+                        2024, 4, 12, 0, 0, tzinfo=datetime.timezone.utc
+                    ),
+                    "created_by": "vulnerabilities.importers.nginx.NginxImporter",
                 }
             ],
         }

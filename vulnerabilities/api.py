@@ -187,9 +187,15 @@ class VulnerabilitySerializer(BaseResourceSerializer):
         data["advisory"] = []
         for itr in alias_queryset:
             advisory_objects = Advisory.objects.filter(aliases=[itr.alias])
-            for i in advisory_objects:
+            for advisory_object in advisory_objects:
                 data["advisory"].append(
-                    {"unique_content_id": i.unique_content_id, "url": i.url, "summary": i.summary}
+                    {
+                        "unique_content_id": advisory_object.unique_content_id,
+                        "url": advisory_object.url,
+                        "summary": advisory_object.summary,
+                        "date_collected": advisory_object.date_collected,
+                        "created_by": advisory_object.created_by,
+                    }
                 )
 
         return data

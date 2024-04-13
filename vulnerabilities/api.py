@@ -24,6 +24,7 @@ from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.throttling import UserRateThrottle
 
+from vulnerabilities.models import Advisory
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
@@ -182,6 +183,21 @@ class VulnerabilitySerializer(BaseResourceSerializer):
 
         weaknesses = data.get("weaknesses", [])
         data["weaknesses"] = [weakness for weakness in weaknesses if weakness is not None]
+        alias_queryset = instance.aliases.all()
+        data["advisory"] = []
+        for itr in alias_queryset:
+            advisory_objects = Advisory.objects.filter(aliases=[itr.alias])
+            for advisory_object in advisory_objects:
+                data["advisory"].append(
+                    {
+                        "unique_content_id": advisory_object.unique_content_id,
+                        "url": advisory_object.url,
+                        "summary": advisory_object.summary,
+                        "date_collected": advisory_object.date_collected,
+                        "created_by": advisory_object.created_by,
+                    }
+                )
+                
 
         return data
 

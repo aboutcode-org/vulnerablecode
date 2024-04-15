@@ -264,7 +264,6 @@ class APITestCaseVulnerability(TransactionTestCase):
             ],
             "advisory": [
                 {
-                    "unique_content_id": "6b7d417a552b19f26a5c2267ba7876c2",
                     "url": "https://nginx.org/en/security_advisories.html",
                     "summary": "Vulnerabilities with Windows 8.3 filename pseudonyms",
                     "date_collected": datetime.datetime(
@@ -305,7 +304,6 @@ class APITestCaseVulnerability(TransactionTestCase):
             ],
             "advisory": [
                 {
-                    "unique_content_id": "6b7d417a552b19f26a5c2267ba7876c2",
                     "url": "https://nginx.org/en/security_advisories.html",
                     "summary": "Vulnerabilities with Windows 8.3 filename pseudonyms",
                     "date_collected": datetime.datetime(

@@ -190,7 +190,6 @@ class VulnerabilitySerializer(BaseResourceSerializer):
             for advisory_object in advisory_objects:
                 data["advisory"].append(
                     {
-                        "unique_content_id": advisory_object.unique_content_id,
                         "url": advisory_object.url,
                         "summary": advisory_object.summary,
                         "date_collected": advisory_object.date_collected,

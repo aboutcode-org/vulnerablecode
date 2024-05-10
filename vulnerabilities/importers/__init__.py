@@ -12,6 +12,7 @@ from vulnerabilities.importers import apache_httpd
 from vulnerabilities.importers import apache_kafka
 from vulnerabilities.importers import apache_tomcat
 from vulnerabilities.importers import archlinux
+from vulnerabilities.importers import curl
 from vulnerabilities.importers import debian
 from vulnerabilities.importers import debian_oval
 from vulnerabilities.importers import elixir_security
@@ -71,6 +72,7 @@ IMPORTERS_REGISTRY = [
     oss_fuzz.OSSFuzzImporter,
     ruby.RubyImporter,
     github_osv.GithubOSVImporter,
+    curl.CurlImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

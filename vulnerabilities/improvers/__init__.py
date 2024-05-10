@@ -27,6 +27,7 @@ IMPROVERS_REGISTRY = [
     valid_versions.RubyImprover,
     valid_versions.GithubOSVImprover,
     vulnerability_status.VulnerabilityStatusImprover,
+    valid_versions.CurlImprover,
 ]
 
 IMPROVERS_REGISTRY = {x.qualified_name: x for x in IMPROVERS_REGISTRY}

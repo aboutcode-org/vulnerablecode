@@ -12,10 +12,7 @@ from typing import Iterable
 from typing import List
 
 import requests
-from fetchcode.package_versions import versions
 from packageurl import PackageURL
-from univers.version_range import PypiVersionRange
-from univers.versions import PypiVersion
 
 from vulntotal.validator import DataSource
 from vulntotal.validator import InvalidCVEError
@@ -53,8 +50,7 @@ class SafetydbDataSource(DataSource):
             return []
         advisory = self.fetch_advisory()
         self._raw_dump.append(advisory)
-        self._versions = sorted([PypiVersion(ver.value) for ver in versions(str(purl))])
-        return parse_advisory(advisory, purl, self._versions)
+        return parse_advisory(advisory, purl)
 
     def datasource_advisory_from_cve(self, cve: str) -> Iterable[VendorData]:
         if not cve.upper().startswith("CVE-"):
@@ -65,13 +61,10 @@ class SafetydbDataSource(DataSource):
 
     @classmethod
     def supported_ecosystem(cls):
-        # source - @TODO
         return {"pypi": "PyPI"}
 
 
-def parse_advisory(
-    response, purl: PackageURL, all_versions: List[PypiVersion]
-) -> Iterable[VendorData]:
+def parse_advisory(response, purl: PackageURL) -> Iterable[VendorData]:
     """
     Parse response from safetydb API and yield VendorData
 
@@ -83,14 +76,11 @@ def parse_advisory(
     """
 
     for advisory in response.get(purl.name):
-        vulnerable_version_range_string = "vers:pypi/" + advisory.get("v").replace(",", "|")
-        vulnerable_version_range = PypiVersionRange.from_string(vulnerable_version_range_string)
-
         yield VendorData(
             purl=PackageURL(purl.type, purl.namespace, purl.name),
             aliases=[advisory.get("cve"), advisory.get("id")],
             affected_versions=sorted(advisory.get("specs")),
-            fixed_versions=get_patched_versions(all_versions, vulnerable_version_range),
+            fixed_versions=[],
         )
 
 
@@ -109,81 +99,11 @@ def parse_advisory_for_cve(response, cve: str) -> Iterable[VendorData]:
         if package == "$meta":
             continue
 
-        all_versions = sorted(
-            [PypiVersion(ver.value) for ver in versions(str(PackageURL(type="pypi", name=package)))]
-        )
-
         for advisory in advisories:
             if advisory.get("cve") == cve:
-                vulnerable_version_range_string = "vers:pypi/" + advisory.get("v").replace(",", "|")
-                vulnerable_version_range = PypiVersionRange.from_string(
-                    vulnerable_version_range_string
-                )
-
                 yield VendorData(
                     purl=PackageURL(type="pypi", name=package),
                     aliases=[advisory.get("cve"), advisory.get("id")],
                     affected_versions=sorted(advisory.get("specs")),
-                    fixed_versions=get_patched_versions(all_versions, vulnerable_version_range),
+                    fixed_versions=[],
                 )
-
-
-def get_patched_versions(
-    all_versions: List[PypiVersion],
-    vulnerable_version_range: PypiVersionRange,
-):
-    """
-    Get the first patched version from the list of all versions of a package
-
-    Parameters:
-        all_versions: A list containing PackageVersion of a package
-        vulnerable_version_range: A PypiVersionRange object specifying the vulnerable version range
-
-    Returns:
-        A PackageVersion object containing the first patched version of the package
-    """
-
-    # last_patched = None
-    # for version in reversed(all_versions):
-    #     if version in vulnerable_version_range:
-    #         if last_patched is not None:
-    #             return [str(last_patched.value)]
-    #         return []
-    #     last_patched = version
-    # return []
-
-    patched_version_ranges: List[str] = []
-    current_patched_range_start: PypiVersion = None
-    current_patched_range_latest: PypiVersion = None
-
-    def resolve_patched_range():
-        if current_patched_range_start is not None:
-            if current_patched_range_latest == current_patched_range_start:
-                patched_version_ranges.append(str(current_patched_range_start.value))
-            else:
-                patched_version_ranges.append(
-                    f">={current_patched_range_start.value},<={current_patched_range_latest.value}"
-                )
-
-    for version in all_versions:
-        if version in vulnerable_version_range:
-            resolve_patched_range()
-            current_patched_range_start = None
-            current_patched_range_latest = None
-        else:
-            if current_patched_range_start is None:
-                current_patched_range_start = version
-            current_patched_range_latest = version
-    resolve_patched_range()
-
-    # Remove upper bound from the last fixed range
-    if len(patched_version_ranges) > 0:
-        patched_version_ranges[-1] = patched_version_ranges[-1].split(",")[0]
-
-    # Ensure that >= is only present if there are fragmented fixed ranges
-    # eg. For vulnerable spec  "<2.2.5 >=2.3.0 <2.3.2",,fixed range => "2.2.5, >=2.3.2"
-    # eg. For vulnerable spec "<2.2.5", fixed range => "2.2.5
-    if len(patched_version_ranges) == 1:
-        patched_version_ranges[-1] = patched_version_ranges[-1][2:]
-
-    return patched_version_ranges

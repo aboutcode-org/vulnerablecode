@@ -1,0 +1,50 @@
+{
+  "$meta": {
+    "advisory": "PyUp.io metadata",
+    "base_domain": "https://pyup.io",
+    "timestamp": 1714543250
+  },
+  "flask": [
+      {
+          "advisory": "flask version Before 0.12.3 contains a CWE-20: Improper Input Validation vulnerability in flask that can result in Large amount of memory usage possibly leading to denial of service. This attack appear to be exploitable via Attacker provides JSON data in incorrect encoding. This vulnerability appears to have been fixed in 0.12.3.",
+          "cve": "CVE-2018-1000656",
+          "id": "pyup.io-36388",
+          "more_info_path": "/vulnerabilities/CVE-2018-1000656/36388",
+          "specs": [
+              "<0.12.3"
+          ],
+          "v": "<0.12.3"
+      },
+      {
+          "advisory": "Flask 0.12.3 includes a fix for CVE-2019-1010083: Unexpected memory usage. The impact is denial of service. The attack vector is crafted encoded JSON data. NOTE: this may overlap CVE-2018-1000656.\r\nhttps://github.com/pallets/flask/pull/2695/commits/0e1e9a04aaf29ab78f721cfc79ac2a691f6e3929",
+          "cve": "CVE-2019-1010083",
+          "id": "pyup.io-38654",
+          "more_info_path": "/vulnerabilities/CVE-2019-1010083/38654",
+          "specs": [
+              "<0.12.3"
+          ],
+          "v": "<0.12.3"
+      },
+      {
+          "advisory": "flask 0.6.1 fixes a security problem that allowed clients to download arbitrary files  if the host server was a windows based operating system and the client  uses backslashes to escape the directory the files where exposed from.\r\nhttps://data.safetycli.com/vulnerabilities/PVE-2021-25820/25820/",
+          "cve": "PVE-2021-25820",
+          "id": "pyup.io-25820",
+          "more_info_path": "/vulnerabilities/PVE-2021-25820/25820",
+          "specs": [
+              "<0.6.1"
+          ],
+          "v": "<0.6.1"
+      },
+      {
+          "advisory": "Flask 2.2.5 and 2.3.2 include a fix for CVE-2023-30861: When all of the following conditions are met, a response containing data intended for one client may be cached and subsequently sent by the proxy to other clients. If the proxy also caches 'Set-Cookie' headers, it may send one client's 'session' cookie to other clients. The severity depends on the application's use of the session and the proxy's behavior regarding cookies. The risk depends on all these conditions being met:\r\n1. The application must be hosted behind a caching proxy that does not strip cookies or ignore responses with cookies.\r\n2. The application sets 'session.permanent = True'\r\n3. The application does not access or modify the session at any point during a request.\r\n4. 'SESSION_REFRESH_EACH_REQUEST' enabled (the default).\r\n5. The application does not set a 'Cache-Control' header to indicate that a page is private or should not be cached.\r\nThis happens because vulnerable versions of Flask only set the 'Vary: Cookie' header when the session is accessed or modified, not when it is refreshed (re-sent to update the expiration) without being accessed or modified.\r\nhttps://github.com/pallets/flask/security/advisories/GHSA-m2qf-hxjv-5gpq",
+          "cve": "CVE-2023-30861",
+          "id": "pyup.io-55261",
+          "more_info_path": "/vulnerabilities/CVE-2023-30861/55261",
+          "specs": [
+              "<2.2.5",
+              ">=2.3.0,<2.3.2"
+          ],
+          "v": "<2.2.5,>=2.3.0,<2.3.2"
+      }
+  ]
+}

@@ -75,7 +75,7 @@ def parse_advisory(response, purl: PackageURL) -> Iterable[VendorData]:
         VendorData instance containing the advisory information for the package.
     """
 
-    for advisory in response.get(purl.name):
+    for advisory in response.get(purl.name, []):
         yield VendorData(
             purl=PackageURL(purl.type, purl.namespace, purl.name),
             aliases=[advisory.get("cve"), advisory.get("id")],

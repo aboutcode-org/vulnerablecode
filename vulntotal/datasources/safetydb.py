@@ -46,7 +46,7 @@ class SafetydbDataSource(DataSource):
         return response.json()
 
     def datasource_advisory(self, purl) -> Iterable[VendorData]:
-        if purl.type != "pypi":
+        if purl.type not in self.supported_ecosystem():
             return []
         advisory = self.fetch_advisory()
         self._raw_dump.append(advisory)

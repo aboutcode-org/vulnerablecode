@@ -17,7 +17,7 @@ from vulnerabilities.tests import util_tests
 from vulntotal.datasources import safetydb
 
 
-class TestGithub(testcase.FileBasedTesting):
+class TestSafetydb(testcase.FileBasedTesting):
     test_data_dir = str(Path(__file__).resolve().parent / "test_data" / "safetydb")
 
     def test_parse_advisory(self):

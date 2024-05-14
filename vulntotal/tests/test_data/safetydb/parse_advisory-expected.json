@@ -1,0 +1,26 @@
+[
+  {
+    "purl": "pkg:pypi/flask",
+    "affected_versions": ["<0.12.3"],
+    "fixed_versions": [],
+    "aliases": ["CVE-2018-1000656", "pyup.io-36388"]
+  },
+  {
+    "purl": "pkg:pypi/flask",
+    "affected_versions": ["<0.12.3"],
+    "fixed_versions": [],
+    "aliases": ["CVE-2019-1010083", "pyup.io-38654"]
+  },
+  {
+    "purl": "pkg:pypi/flask",
+    "affected_versions": ["<0.6.1"],
+    "fixed_versions": [],
+    "aliases": ["PVE-2021-25820", "pyup.io-25820"]
+  },
+  {
+    "purl": "pkg:pypi/flask",
+    "affected_versions": ["<2.2.5", ">=2.3.0,<2.3.2"],
+    "fixed_versions": [],
+    "aliases": ["CVE-2023-30861", "pyup.io-55261"]
+  }
+]

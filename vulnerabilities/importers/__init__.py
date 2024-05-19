@@ -15,6 +15,7 @@ from vulnerabilities.importers import archlinux
 from vulnerabilities.importers import debian
 from vulnerabilities.importers import debian_oval
 from vulnerabilities.importers import elixir_security
+from vulnerabilities.importers import epss
 from vulnerabilities.importers import fireeye
 from vulnerabilities.importers import gentoo
 from vulnerabilities.importers import github
@@ -71,6 +72,7 @@ IMPORTERS_REGISTRY = [
     oss_fuzz.OSSFuzzImporter,
     ruby.RubyImporter,
     github_osv.GithubOSVImporter,
+    epss.EPSSImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

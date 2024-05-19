@@ -28,6 +28,7 @@ from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import VulnerabilitySearchForm
 from vulnerabilities.models import VulnerabilityStatusType
+from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import get_severity_range
 from vulnerablecode.settings import env
@@ -137,7 +138,11 @@ class VulnerabilityDetails(DetailView):
         status = self.object.get_status_label
 
         severity_vectors = []
+        severity_values = set()
         for s in self.object.severities:
+            if s.scoring_system == EPSS.identifier:
+                continue
+
             if s.scoring_elements and s.scoring_system in SCORING_SYSTEMS:
                 try:
                     vector_values = SCORING_SYSTEMS[s.scoring_system].get(s.scoring_elements)
@@ -145,14 +150,15 @@ class VulnerabilityDetails(DetailView):
                 except (CVSS2MalformedError, CVSS3MalformedError, NotImplementedError):
                     logging.error(f"CVSSMalformedError for {s.scoring_elements}")
 
+            if s.value:
+                severity_values.add(s.value)
+
         context.update(
             {
                 "vulnerability": self.object,
                 "vulnerability_search_form": VulnerabilitySearchForm(self.request.GET),
                 "severities": list(self.object.severities),
-                "severity_score_range": get_severity_range(
-                    {s.value for s in self.object.severities}
-                ),
+                "severity_score_range": get_severity_range(severity_values),
                 "severity_vectors": severity_vectors,
                 "references": self.object.references.all(),
                 "aliases": self.object.aliases.all(),

@@ -13,7 +13,7 @@ tab.Site {
 }
 
 .container.max-desktop-width {
-    max-width: 960px;
+    max-width: 1152px;
 }
 
 body {
@@ -78,7 +78,7 @@ a.button.paging:visited {
 
 @media screen and (min-width: 1024px) {
     .footer {
-        width: 960px;
+        width: 1152px;
     }
 }
 

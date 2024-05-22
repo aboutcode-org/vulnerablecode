@@ -13,6 +13,7 @@ tab.Site {
 }
 
 .container.max-desktop-width {
+    width: 100%;
     max-width: 100%;
 }
 

@@ -21,7 +21,7 @@
             "url": "https://curl.se/docs/CVE-2023-46218.html", 
             "severities": [
                 {
-                    "system": "generic_textual", 
+                    "system": "cvssv3.1", 
                     "value": "Medium", 
                     "scoring_elements": ""
                 }

@@ -23,7 +23,7 @@
         "url": "https://curl.se/docs/CVE-2024-2379.html",
         "severities": [
             {
-                "system": "generic_textual",
+                "system": "cvssv3.1",
                 "value": "Low",
                 "scoring_elements": ""
               }

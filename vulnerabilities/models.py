@@ -152,6 +152,17 @@ class VulnerabilityQuerySet(BaseQuerySet):
             ),
         )
 
+    def without_cvssv3_severity(self):
+        """
+        Return a queryset of Vulnerabilities that have severity information
+        but lack CVSSv3 or CVSSv3.1 scores.
+        """
+        return (
+            self.annotate(severity_count=models.Count("references__vulnerabilityseverity"))
+            .filter(severity_count__gt=0)
+            .exclude(references__vulnerabilityseverity__scoring_system__in=["cvssv3", "cvssv3.1"])
+        )
+
 
 class VulnerabilityStatusType(models.IntegerChoices):
     """List of vulnerability statuses."""

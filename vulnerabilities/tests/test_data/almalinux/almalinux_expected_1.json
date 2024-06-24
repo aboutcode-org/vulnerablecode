@@ -1,0 +1,15 @@
+{
+  "aliases": ["ALBA-2019: 3336"], 
+  "summary": "nss-altfiles bug fix and enhancement update\nFor detailed information on changes in this release, see the AlmaLinux Release Notes linked from the References section.", "affected_packages": [], 
+  "references": 
+  [
+    {
+      "reference_id": "", 
+      "url": "https: //errata.almalinux.org/8/ALBA-2019-3336.html", 
+      "severities": []
+    }
+  ], 
+      "date_published": "2019-11-05T17:32:18+00:00", 
+      "weaknesses": [], 
+      "url": "https://github.com/AlmaLinux/osv-database/blob/master/advisories/almalinux8/almalinux_test_1.json"
+}

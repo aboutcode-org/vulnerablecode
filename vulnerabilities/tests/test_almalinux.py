@@ -18,15 +18,29 @@ TEST_DATA = os.path.join(BASE_DIR, "test_data/almalinux")
 
 
 class AlmaImporter(TestCase):
-    def test_alma_importer1(self):
-        with open(os.path.join(TEST_DATA, "almalinux_test_1.json")) as f:
+    # def test_almalinux_importer1(self):
+    #     with open(os.path.join(TEST_DATA, "almalinux_test_1.json")) as f:
+    #         mock_response = json.load(f)
+    #     expected_file = os.path.join(TEST_DATA, "almalinux_expected_1.json")
+    #     imported_data = parse_advisory_data(
+    #         mock_response,
+    #         supported_ecosystems=["AlmaLinux:8"],
+    #         advisory_url="https://github.com/AlmaLinux/osv-database"
+    #         "/blob/master/advisories/almalinux8/almalinux_test_1.json",
+    #     )
+    #     result = imported_data.to_dict()
+    #     print(f"The expected result is {result}")
+    #     util_tests.check_results_against_json(result, expected_file)
+
+    def test_almalinux_importer2(self):
+        with open(os.path.join(TEST_DATA, "almalinux_test_2.json")) as f:
             mock_response = json.load(f)
-        expected_file = os.path.join(TEST_DATA, "almalinux_expected_1.json")
+        expected_file = os.path.join(TEST_DATA, "almalinux_expected_2.json")
         imported_data = parse_advisory_data(
             mock_response,
             supported_ecosystems=["AlmaLinux:8"],
             advisory_url="https://github.com/AlmaLinux/osv-database"
-            "/blob/master/advisories/almalinux8/almalinux_test_1.json",
+            "/blob/master/advisories/almalinux8/almalinux_test_2.json",
         )
         result = imported_data.to_dict()
         print(f"The expected result is {result}")

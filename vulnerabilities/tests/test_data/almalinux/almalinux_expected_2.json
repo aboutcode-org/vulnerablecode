@@ -1,0 +1,9 @@
+{
+    "aliases": ["ALEA-2019:3314"], 
+    "summary": "python3-azure-sdk bug fix and enhancement update\nFor detailed information on changes in this release, see the AlmaLinux Release Notes linked from the References section.", 
+    "affected_packages": [], 
+    "references": [], 
+    "date_published": "2019-11-05T17:29:24+00:00", 
+    "weaknesses": [], 
+    "url": "https://github.com/AlmaLinux/osv-database/blob/master/advisories/almalinux8/almalinux_test_2.json"
+}

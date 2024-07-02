@@ -29,7 +29,7 @@ class AlmaImporter(Importer):
     importer_name = "Alma Linux Importer"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
-        supported_ecosystems = ["AlmaLinux:8", "AlmaLinux:9"]
+        supported_ecosystems = ["almalinux:8", "almalinux:9"]
         try:
             self.clone(repo_url=self.BASE_URL)
             base_path = Path(self.vcs_response.dest_dir)

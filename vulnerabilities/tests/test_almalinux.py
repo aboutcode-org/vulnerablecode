@@ -29,7 +29,6 @@ class AlmaImporter(TestCase):
             "/blob/master/advisories/almalinux8/almalinux_test_1.json",
         )
         result = imported_data.to_dict()
-        # print(f"The expected result is {result}")
         util_tests.check_results_against_json(result, expected_file)
 
     def test_almalinux_importer2(self):
@@ -43,7 +42,6 @@ class AlmaImporter(TestCase):
             "/blob/master/advisories/almalinux8/almalinux_test_2.json",
         )
         result = imported_data.to_dict()
-        # print(f"The expected result is {result}")
         util_tests.check_results_against_json(result, expected_file)
 
     def test_github_osv_importer3(self):
@@ -57,7 +55,6 @@ class AlmaImporter(TestCase):
             "/blob/master/advisories/almalinux8/almalinux_test_3.json",
         )
         result = imported_data.to_dict()
-        # print(f"The expected result is {result}")
         util_tests.check_results_against_json(result, expected_file)
 
 

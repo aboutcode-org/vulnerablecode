@@ -59,7 +59,6 @@ addopts = [
     "--ignore=vulnerabilities/importers/retiredotnet.py",
     "--ignore=vulnerabilities/importers/ruby.py",
     "--ignore=vulnerabilities/importers/rust.py",
-    "--ignore=vulnerabilities/importers/safety_db.py",
     "--ignore=vulnerabilities/importers/suse_backports.py",
     "--ignore=vulnerabilities/importers/suse_scores.py",
     "--ignore=vulnerabilities/importers/ubuntu_usn.py",

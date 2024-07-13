@@ -151,7 +151,7 @@ def get_affected_purl(affected_pkg, raw_id):
     ... }
     >>> raw_id = "ALBA-2019:3482"
     >>> get_affected_purl(affected_pkg, raw_id)
-    [PackageURL(type="rpm", namespace="almalinux", name="sblim-wbemcli", version="", qualifiers="", subpath="")]
+    PackageURL(type='rpm', namespace='almalinux', name='sblim-wbemcli', version=None, qualifiers={}, subpath=None)
     """
     package = affected_pkg.get("package") or {}
     purl = package.get("purl")
@@ -176,14 +176,13 @@ def get_fixed_versions(fixed_range) -> List[Version]:
     Return a list of fixed version strings given a ``fixed_range`` mapping of
     OSV data.
 
-    >>> list(extract_fixed_versions(
-    ... {"type": "ECOSYSTEM", "events": [{"introduced": "0"},{"fixed": "1.6.3-15.el8"}]}))
-    [RpmVersion('1.6.3-15.el8')]
+    >>> get_fixed_versions({"type": "ECOSYSTEM", "events": [{"introduced": "0"},{"fixed": "1.6.3-15.el8"}]})
+    [RpmVersion(string='1.6.3-15.el8')]
 
-    >>> list(extract_fixed_versions(
+    >>> get_fixed_versions(
     ... {"type": "ECOSYSTEM","events":[{"introduced": "0"},
-    ... {"fixed": "1.0.6-12.el8"},{"fixed": "2.18.1-12.el8"}]}))
-    [RpmVersion("1.0.6-12.el8"), RpmVersion("2.18.1-12.el8")]
+    ... {"fixed": "1.0.6-12.el8"},{"fixed": "2.18.1-12.el8"}]})
+    [RpmVersion(string='1.0.6-12.el8'), RpmVersion(string='2.18.1-12.el8')]
     """
     fixed_versions = []
     for version in extract_fixed_versions(fixed_range):

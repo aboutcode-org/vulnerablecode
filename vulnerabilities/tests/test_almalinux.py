@@ -10,6 +10,8 @@ import json
 import os
 from unittest import TestCase
 
+from vulnerabilities.importers.almalinux import get_affected_purl
+from vulnerabilities.importers.almalinux import get_fixed_versions
 from vulnerabilities.importers.almalinux import parse_advisory_data
 from vulnerabilities.tests import util_tests
 

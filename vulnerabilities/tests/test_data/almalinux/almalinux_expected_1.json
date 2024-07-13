@@ -3,7 +3,7 @@
   "summary": "nss-altfiles bug fix and enhancement update\nFor detailed information on changes in this release, see the AlmaLinux Release Notes linked from the References section.", 
   "affected_packages": [
     {
-      "package": {"type": "almalinux:8", "namespace": "", "name": "nss-altfiles", "version": "", "qualifiers": "", "subpath": ""}, 
+      "package": {"type": "rpm", "namespace": "almalinux", "name": "nss-altfiles", "version": "", "qualifiers": "", "subpath": ""}, 
     "affected_version_range": null, 
     "fixed_version": "2.18.1-12.el8"
   }

@@ -41,8 +41,6 @@ PURL_TYPE_BY_OSV_ECOSYSTEM = {
     "go": "golang",
     "hex": "hex",
     "cargo": "cargo",
-    "almalinux:8": "almalinux:8",
-    "almalinux:9": "almalinux:9",
 }
 
 

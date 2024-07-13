@@ -10,7 +10,7 @@ import json
 import os
 from unittest import TestCase
 
-from vulnerabilities.importers.osv import parse_advisory_data
+from vulnerabilities.importers.almalinux import parse_advisory_data
 from vulnerabilities.tests import util_tests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -24,7 +24,6 @@ class AlmaImporter(TestCase):
         expected_file = os.path.join(TEST_DATA, "almalinux_expected_1.json")
         imported_data = parse_advisory_data(
             mock_response,
-            supported_ecosystems=["almalinux:8", "almalinux:9"],
             advisory_url="https://github.com/AlmaLinux/osv-database"
             "/blob/master/advisories/almalinux8/almalinux_test_1.json",
         )
@@ -37,7 +36,6 @@ class AlmaImporter(TestCase):
         expected_file = os.path.join(TEST_DATA, "almalinux_expected_2.json")
         imported_data = parse_advisory_data(
             mock_response,
-            supported_ecosystems=["almalinux:8", "almalinux:9"],
             advisory_url="https://github.com/AlmaLinux/osv-database"
             "/blob/master/advisories/almalinux8/almalinux_test_2.json",
         )
@@ -50,7 +48,6 @@ class AlmaImporter(TestCase):
         expected_file = os.path.join(TEST_DATA, "almalinux_expected_3.json")
         imported_data = parse_advisory_data(
             mock_response,
-            supported_ecosystems=["almalinux:8", "almalinux:9"],
             advisory_url="https://github.com/AlmaLinux/osv-database"
             "/blob/master/advisories/almalinux8/almalinux_test_3.json",
         )

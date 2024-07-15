@@ -1,0 +1,21 @@
+{
+  "title": "CISA Catalog of Known Exploited Vulnerabilities",
+  "catalogVersion": "2024.07.09",
+  "dateReleased": "2024-07-09T20:50:24.7925Z",
+  "count": 1,
+  "vulnerabilities": [
+    {
+      "cveID": "CVE-2021-38647",
+      "vendorProject": "Microsoft",
+      "product": "Open Management Infrastructure (OMI)",
+      "vulnerabilityName": "Microsoft Open Management Infrastructure (OMI) Remote Code Execution Vulnerability",
+      "dateAdded": "2021-11-03",
+      "shortDescription": "Microsoft Open Management Infrastructure (OMI) within Azure VM Management Extensions contains an unspecified vulnerability allowing remote code execution.",
+      "requiredAction": "Apply updates per vendor instructions.",
+      "dueDate": "2021-11-17",
+      "knownRansomwareCampaignUse": "Known",
+      "notes": "",
+      "cwes": []
+    }
+  ]
+}

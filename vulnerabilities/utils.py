@@ -19,6 +19,7 @@ import urllib.request
 from collections import defaultdict
 from functools import total_ordering
 from hashlib import sha256
+from http import HTTPStatus
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -420,7 +421,7 @@ def fetch_response(url):
     Fetch and return `response` from the `url`
     """
     response = requests.get(url)
-    if response.status_code == 200:
+    if response.status_code == HTTPStatus.OK:
         return response
     raise Exception(f"Failed to fetch data from {url!r} with status code: {response.status_code!r}")
 

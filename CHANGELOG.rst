@@ -1,6 +1,24 @@
 Release notes
 =============
 
+Version v34.0.0rc4
+-------------------
+
+- Drop migration for removing duplicated changelogs.
+
+
+Version v34.0.0rc3
+-------------------
+
+- Add resource URL to the vulnerability and package details view in the API serializers (#1423)
+- Add support for all osv ecosystems (#926)
+- Add RubyImporter to git_importer test_git_importer_clone (#799)
+- Remove duplicated changelogs (#1400)
+- Fix Encoding Type in Fireeye Importer (#1404)
+- Add license_url for GitHub Importer (#1392)
+- Add support for CVSS vectors display (#1312)
+
+
 Version v34.0.0rc2
 -------------------
 

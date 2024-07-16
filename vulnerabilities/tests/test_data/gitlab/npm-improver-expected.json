@@ -10,28 +10,28 @@
     "affected_purls": [
       {
         "type": "npm",
-        "namespace": null,
+        "namespace": "",
         "name": "apollo-server-express",
         "version": "2.11.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "npm",
-        "namespace": null,
+        "namespace": "",
         "name": "apollo-server-express",
         "version": "2.13.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "npm",
-      "namespace": null,
+      "namespace": "",
       "name": "apollo-server-express",
       "version": "2.14.2",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -50,7 +50,10 @@
         "severities": []
       }
     ],
-    "weaknesses": []
+    "weaknesses": [
+      1035,
+      937
+    ]
   },
   {
     "vulnerability_id": null,
@@ -63,11 +66,11 @@
     "affected_purls": [],
     "fixed_purl": {
       "type": "npm",
-      "namespace": null,
+      "namespace": "",
       "name": "apollo-server-express",
       "version": "2.14.2",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
@@ -86,6 +89,9 @@
         "severities": []
       }
     ],
-    "weaknesses": []
+    "weaknesses": [
+      1035,
+      937
+    ]
   }
 ]

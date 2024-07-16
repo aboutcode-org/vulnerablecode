@@ -76,13 +76,17 @@ class Inference:
         """
         Return a dict representation of this Inference
         """
+        from vulnerabilities.utils import purl_to_dict
+
         return {
             "vulnerability_id": self.vulnerability_id,
-            "aliases": [alias for alias in self.aliases],
+            "aliases": self.aliases,
             "confidence": self.confidence,
             "summary": self.summary,
-            "affected_purls": [affected_purl.to_dict() for affected_purl in self.affected_purls],
-            "fixed_purl": self.fixed_purl.to_dict() if self.fixed_purl else None,
+            "affected_purls": [
+                purl_to_dict(affected_purl) for affected_purl in self.affected_purls
+            ],
+            "fixed_purl": purl_to_dict(self.fixed_purl) if self.fixed_purl else None,
             "references": [ref.to_dict() for ref in self.references],
             "weaknesses": self.weaknesses,
         }
@@ -91,7 +95,7 @@ class Inference:
     def from_advisory_data(cls, advisory_data, confidence, fixed_purl, affected_purls=None):
         """
         Return an Inference object while keeping the same values as of advisory_data
-        for vulnerability_id, summary and references
+        for aliases, summary and references
         """
         return cls(
             aliases=advisory_data.aliases,

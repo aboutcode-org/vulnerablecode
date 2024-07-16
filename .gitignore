@@ -46,8 +46,14 @@ coverage.xml
 *.log
 local_settings.py
 
-# Sphinx documentation
-docs/_build/
+# Sphinx
+docs/_build
+docs/bin
+docs/build
+docs/include
+docs/Lib
+doc/pyvenv.cfg
+pyvenv.cfg
 
 # PyBuilder
 target/
@@ -103,3 +109,13 @@ Pipfile
 *.bak
 /.cache/
 /tmp/
+
+# pyenv
+/.python-version
+/man/
+/.pytest_cache/
+lib64
+tcl
+
+# Ignore Jupyter Notebook related temp files
+.ipynb_checkpoints/

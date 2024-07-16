@@ -17,6 +17,7 @@ from typing import Optional
 
 from django.db.models import Q
 from django.db.models.query import QuerySet
+from fetchcode import package_versions
 from packageurl import PackageURL
 from univers.versions import NginxVersion
 
@@ -31,63 +32,52 @@ from vulnerabilities.importers.debian import DebianImporter
 from vulnerabilities.importers.debian_oval import DebianOvalImporter
 from vulnerabilities.importers.elixir_security import ElixirSecurityImporter
 from vulnerabilities.importers.github import GitHubAPIImporter
+from vulnerabilities.importers.github_osv import GithubOSVImporter
 from vulnerabilities.importers.gitlab import GitLabAPIImporter
 from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.importers.nginx import NginxImporter
 from vulnerabilities.importers.npm import NpmImporter
+from vulnerabilities.importers.oss_fuzz import OSSFuzzImporter
+from vulnerabilities.importers.ruby import RubyImporter
 from vulnerabilities.importers.ubuntu import UbuntuImporter
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
-from vulnerabilities.package_managers import GitHubTagsAPI
-from vulnerabilities.package_managers import GoproxyVersionAPI
-from vulnerabilities.package_managers import PackageVersion
-from vulnerabilities.package_managers import VersionAPI
-from vulnerabilities.package_managers import get_api_package_name
-from vulnerabilities.package_managers import get_version_fetcher
 from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
 from vulnerabilities.utils import clean_nginx_git_tag
-from vulnerabilities.utils import evolve_purl
 from vulnerabilities.utils import get_affected_packages_by_patched_package
 from vulnerabilities.utils import is_vulnerable_nginx_version
 from vulnerabilities.utils import nearest_patched_package
 from vulnerabilities.utils import resolve_version_range
+from vulnerabilities.utils import update_purl_version
 
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass(order=True)
+@dataclasses.dataclass(order=True, init=False)
 class ValidVersionImprover(Improver):
     importer: Importer
     ignorable_versions: List[str] = dataclasses.field(default_factory=list)
 
-    def __init__(self) -> None:
-        self.versions_fetcher_by_purl: Mapping[str, VersionAPI] = {}
-
     @property
     def interesting_advisories(self) -> QuerySet:
-        return Advisory.objects.filter(Q(created_by=self.importer.qualified_name))
+        return Advisory.objects.filter(Q(created_by=self.importer.qualified_name)).paginated()
 
     def get_package_versions(
         self, package_url: PackageURL, until: Optional[datetime] = None
     ) -> List[str]:
         """
-        Return a list of `valid_versions` for the `package_url`
+        Return a list of versions published before `until` for the `package_url`
         """
-        api_name = get_api_package_name(package_url)
-        if not api_name:
-            logger.error(f"Could not get versions for {package_url!r}")
-            return []
-        versions_fetcher = self.versions_fetcher_by_purl.get(package_url)
-        if not versions_fetcher:
-            versions_fetcher = get_version_fetcher(package_url)
-            self.versions_fetcher_by_purl[package_url] = versions_fetcher()
+        versions = package_versions.versions(str(package_url))
+        versions_before_until = []
+        for version in versions or []:
+            if until and version.release_date and version.release_date > until:
+                continue
+            versions_before_until.append(version.value)
 
-        versions_fetcher = self.versions_fetcher_by_purl[package_url]
-
-        self.versions_fetcher_by_purl[package_url] = versions_fetcher
-        return versions_fetcher.get_until(package_name=api_name, until=until).valid_versions
+        return versions_before_until
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         """
@@ -162,15 +152,6 @@ class ValidVersionImprover(Improver):
                         fixed_purl=fixed_purl,
                     )
             else:
-                if purl.type == "golang":
-                    # Problem with the Golang and Go that they provide full path
-                    # FIXME: We need to get the PURL subpath for Go module
-                    versions_fetcher = self.versions_fetcher_by_purl.get(purl)
-                    if not versions_fetcher:
-                        versions_fetcher = GoproxyVersionAPI()
-                        self.versions_fetcher_by_purl[purl] = versions_fetcher
-                    pkg_name = versions_fetcher.module_name_by_package_name.get(pkg_name, pkg_name)
-
                 valid_versions = self.get_package_versions(
                     package_url=purl, until=advisory_data.date_published
                 )
@@ -238,7 +219,7 @@ class NginxBasicImprover(Improver):
 
     @property
     def interesting_advisories(self) -> QuerySet:
-        return Advisory.objects.filter(created_by=NginxImporter.qualified_name)
+        return Advisory.objects.filter(created_by=NginxImporter.qualified_name).paginated()
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         all_versions = list(self.fetch_nginx_version_from_git_tags())
@@ -247,11 +228,10 @@ class NginxBasicImprover(Improver):
         )
 
     def get_inferences_from_versions(
-        self, advisory_data: AdvisoryData, all_versions: List[PackageVersion]
+        self, advisory_data: AdvisoryData, all_versions: List[str]
     ) -> Iterable[Inference]:
         """
-        Yield inferences given an ``advisory_data`` and a ``all_versions`` of
-        PackageVersion.
+        Yield inferences given an ``advisory_data`` and a ``all_versions``.
         """
 
         try:
@@ -267,21 +247,21 @@ class NginxBasicImprover(Improver):
 
         affected_purls = []
         for affected_version_range in affected_version_ranges:
-            for package_version in all_versions:
+            for version in all_versions:
                 # FIXME: we should reference an NginxVersion tbd in univers
-                version = NginxVersion(package_version.value)
+                version = NginxVersion(version)
                 if is_vulnerable_nginx_version(
                     version=version,
                     affected_version_range=affected_version_range,
                     fixed_versions=fixed_versions,
                 ):
-                    new_purl = evolve_purl(purl=purl, version=str(version))
+                    new_purl = update_purl_version(purl=purl, version=str(version))
                     affected_purls.append(new_purl)
 
         # TODO: This also yields with a lower fixed version, maybe we should
         # only yield fixes that are upgrades ?
         for fixed_version in fixed_versions:
-            fixed_purl = evolve_purl(purl=purl, version=str(fixed_version))
+            fixed_purl = update_purl_version(purl=purl, version=str(fixed_version))
 
             yield Inference.from_advisory_data(
                 advisory_data,
@@ -293,12 +273,12 @@ class NginxBasicImprover(Improver):
 
     def fetch_nginx_version_from_git_tags(self):
         """
-        Yield all nginx PackageVersion from its git tags.
+        Yield all nginx version from its git tags.
         """
-        nginx_versions = GitHubTagsAPI().fetch("nginx/nginx")
-        for version in nginx_versions:
+        nginx_versions = package_versions.versions("pkg:github/nginx/nginx")
+        for version in nginx_versions or []:
             cleaned = clean_nginx_git_tag(version.value)
-            yield PackageVersion(value=cleaned, release_date=version.release_date)
+            yield cleaned
 
 
 class ApacheHTTPDImprover(ValidVersionImprover):
@@ -476,4 +456,19 @@ class DebianOvalImprover(ValidVersionImprover):
 
 class UbuntuOvalImprover(ValidVersionImprover):
     importer = UbuntuImporter
+    ignorable_versions = []
+
+
+class OSSFuzzImprover(ValidVersionImprover):
+    importer = OSSFuzzImporter
+    ignorable_versions = []
+
+
+class RubyImprover(ValidVersionImprover):
+    importer = RubyImporter
+    ignorable_versions = []
+
+
+class GithubOSVImprover(ValidVersionImprover):
+    importer = GithubOSVImporter
     ignorable_versions = []

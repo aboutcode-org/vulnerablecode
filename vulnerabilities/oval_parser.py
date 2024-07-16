@@ -25,7 +25,6 @@ from vulnerabilities.lib_oval import OvalTest
 
 class OvalParser:
     def __init__(self, translations: Dict, oval_document: ET.ElementTree):
-
         self.translations = translations
         self.oval_document = OvalDocument(oval_document)
         self.all_definitions = self.oval_document.getDefinitions()
@@ -37,17 +36,14 @@ class OvalParser:
         """
         oval_data = []
         for definition in self.all_definitions:
-
             matching_tests = self.get_tests_of_definition(definition)
             if not matching_tests:
                 continue
             definition_data = {"test_data": []}
             # TODO:this could use some data cleaning
             definition_data["description"] = definition.getMetadata().getDescription() or ""
-
             definition_data["vuln_id"] = self.get_vuln_id_from_definition(definition)
             definition_data["reference_urls"] = self.get_urls_from_definition(definition)
-
             definition_data["severity"] = self.get_severity_from_definition(definition)
 
             for test in matching_tests:
@@ -72,24 +68,30 @@ class OvalParser:
         criteria_refs = []
 
         for child in definition.element.iter():
-
             if "test_ref" in child.attrib:
                 criteria_refs.append(child.get("test_ref"))
 
         matching_tests = []
         for ref in criteria_refs:
             oval_test = self.oval_document.getElementByID(ref)
+            # All matches will be `rpminfo_test` elements inside the `tests` element.
+            # Test for len == 2 because this IDs a pair of nested `object` and `state` elements.
             if len(oval_test.element) == 2:
                 _, state = self.get_object_state_of_test(oval_test)
                 valid_test = True
                 for child in state.element:
                     if child.get("operation") not in self.translations:
                         valid_test = False
-                        break
-                if valid_test:
-                    matching_tests.append(self.oval_document.getElementByID(ref))
+                        continue
+                    elif (
+                        child.get("operation") in self.translations
+                        # "debian_evr_string" is used in both Debian and Ubuntu test XML files; SUSE OVAL uses "evr_string".
+                        # See also https://github.com/OVALProject/Language/blob/master/docs/oval-common-schema.md
+                        and child.get("datatype") in ["evr_string", "debian_evr_string"]
+                    ):
+                        matching_tests.append(self.oval_document.getElementByID(ref))
 
-        return matching_tests
+        return sorted(set(matching_tests))
 
     def get_object_state_of_test(self, test: OvalTest) -> Tuple[OvalObject, OvalState]:
         """
@@ -109,6 +111,7 @@ class OvalParser:
         pkg_list = []
 
         for var in obj.element:
+            # It appears that `var_ref` is used in Ubuntu OVAL but not Debian or SUSE.
             if var.get("var_ref"):
                 var_elem = self.oval_document.getElementByID(var.get("var_ref"))
                 comment = var_elem.element.get("comment")
@@ -178,9 +181,18 @@ class OvalParser:
 
     @staticmethod
     def get_vuln_id_from_definition(definition):
-        # SUSE and Ubuntu OVAL files will get cves via this loop
+        # SUSE and Ubuntu OVAL files will get CVEs via this loop.
+        cve_list = []
         for child in definition.element.iter():
-            if child.get("ref_id"):
-                return child.get("ref_id")
-        # Debian OVAL files will get cves via this
-        return definition.getMetadata().getTitle()
+            if child.get("ref_id") and child.get("source"):
+                if child.get("source") == "CVE":
+                    if not child.get("ref_id").startswith("CVE"):
+                        unwanted_prefix = child.get("ref_id").split("CVE")[0]
+                        cve_list.append(child.get("ref_id").replace(unwanted_prefix, ""))
+                    else:
+                        cve_list.append(child.get("ref_id"))
+        # Debian OVAL files (no "ref_id") will get CVEs via this.
+        if len(cve_list) == 0:
+            cve_list.append(definition.getMetadata().getTitle())
+
+        return cve_list

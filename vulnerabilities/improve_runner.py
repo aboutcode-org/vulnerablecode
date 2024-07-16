@@ -8,23 +8,25 @@
 #
 
 import logging
-from datetime import datetime
-from datetime import timezone
+from traceback import format_exc as traceback_format_exc
 from typing import List
 
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
+from vulnerabilities.importers import IMPORTERS_REGISTRY
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityChangeLog
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
+from vulnerabilities.utils import get_importer_name
 
 logger = logging.getLogger(__name__)
 
@@ -43,40 +45,53 @@ class ImproveRunner:
         improver = self.improver_class()
         logger.info(f"Running improver: {improver.qualified_name}")
         for advisory in improver.interesting_advisories:
-            inferences = improver.get_inferences(advisory_data=advisory.to_advisory_data())
-            process_inferences(
-                inferences=inferences, advisory=advisory, improver_name=improver.qualified_name
-            )
+            logger.info(f"Processing advisory: {advisory!r}")
+            try:
+                inferences = improver.get_inferences(advisory_data=advisory.to_advisory_data())
+                process_inferences(
+                    inferences=inferences,
+                    advisory=advisory,
+                    improver_name=improver.qualified_name,
+                )
+            except Exception as e:
+                logger.info(f"Failed to process advisory: {advisory!r} with error {e!r}")
         logger.info("Finished improving using %s.", self.improver_class.qualified_name)
 
 
 @transaction.atomic
-def process_inferences(inferences: List[Inference], advisory: Advisory, improver_name: str):
+def process_inferences(
+    inferences: List[Inference],
+    advisory: Advisory,
+    improver_name: str,
+):
     """
-    An atomic transaction that updates both the Advisory (e.g. date_improved)
+    Return number of inferences processed.
+    An atomic transaction that updates both the Advisory (e.g. date_imported)
     and processes the given inferences to create or update corresponding
     database fields.
 
     This avoids failing the entire improver when only a single inference is
     erroneous. Also, the atomic transaction for every advisory and its
-    inferences makes sure that date_improved of advisory is consistent.
+    inferences makes sure that date_imported of advisory is consistent.
     """
+    inferences_processed_count = 0
 
     if not inferences:
-        logger.warn(f"Nothing to improve. Source: {improver_name} Advisory id: {advisory.id}")
-        return
+        logger.warning(f"Nothing to improve. Source: {improver_name} Advisory id: {advisory.id}")
+        return inferences_processed_count
 
     logger.info(f"Improving advisory id: {advisory.id}")
 
     for inference in inferences:
         vulnerability = get_or_create_vulnerability_and_aliases(
             vulnerability_id=inference.vulnerability_id,
-            alias_names=inference.aliases,
+            aliases=inference.aliases,
             summary=inference.summary,
+            advisory=advisory,
         )
 
         if not vulnerability:
-            logger.warn(f"Unable to get vulnerability for inference: {inference!r}")
+            logger.warning(f"Unable to get vulnerability for inference: {inference!r}")
             continue
 
         for ref in inference.references:
@@ -115,32 +130,41 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                     )
 
         for affected_purl in inference.affected_purls or []:
-            vulnerable_package = Package.objects.get_or_create_from_purl(purl=affected_purl)
+            vulnerable_package, created = Package.objects.get_or_create_from_purl(
+                purl=affected_purl
+            )
             PackageRelatedVulnerability(
                 vulnerability=vulnerability,
                 package=vulnerable_package,
                 created_by=improver_name,
                 confidence=inference.confidence,
                 fix=False,
-            ).update_or_create()
+            ).update_or_create(
+                advisory=advisory,
+            )
 
         if inference.fixed_purl:
-            fixed_package = Package.objects.get_or_create_from_purl(purl=inference.fixed_purl)
+            fixed_package, created = Package.objects.get_or_create_from_purl(
+                purl=inference.fixed_purl
+            )
             PackageRelatedVulnerability(
                 vulnerability=vulnerability,
                 package=fixed_package,
                 created_by=improver_name,
                 confidence=inference.confidence,
                 fix=True,
-            ).update_or_create()
+            ).update_or_create(
+                advisory=advisory,
+            )
 
         if inference.weaknesses and vulnerability:
             for cwe_id in inference.weaknesses:
                 cwe_obj, created = Weakness.objects.get_or_create(cwe_id=cwe_id)
                 cwe_obj.vulnerabilities.add(vulnerability)
                 cwe_obj.save()
-    advisory.date_improved = datetime.now(timezone.utc)
-    advisory.save()
+
+        inferences_processed_count += 1
+    return inferences_processed_count
 
 
 def create_valid_vulnerability_reference(url, reference_id=None):
@@ -164,69 +188,103 @@ def create_valid_vulnerability_reference(url, reference_id=None):
     return reference
 
 
-def get_or_create_vulnerability_and_aliases(vulnerability_id, alias_names, summary):
+def get_or_create_vulnerability_and_aliases(
+    aliases: List[str], vulnerability_id=None, summary=None, advisory=None
+):
     """
     Get or create vulnerabilitiy and aliases such that all existing and new
     aliases point to the same vulnerability
     """
-    existing_vulns = set()
-    alias_names = set(alias_names)
-    new_alias_names = set()
-    for alias_name in alias_names:
-        try:
-            alias = Alias.objects.get(alias=alias_name)
-            existing_vulns.add(alias.vulnerability)
-        except Alias.DoesNotExist:
-            new_alias_names.add(alias_name)
+    aliases = set(alias.strip() for alias in aliases if alias and alias.strip())
+    new_alias_names, existing_vulns = get_vulns_for_aliases_and_get_new_aliases(aliases)
 
-    # If given set of aliases point to different vulnerabilities in the
-    # database, request is malformed
-    # TODO: It is possible that all those vulnerabilities are actually
-    # the same at data level, figure out a way to merge them
-    if len(existing_vulns) > 1:
-        logger.warn(
-            f"Given aliases {alias_names} already exist and do not point "
-            f"to a single vulnerability. Cannot improve. Skipped."
-        )
-        return
+    # All aliases must point to the same vulnerability
+    vulnerability = None
+    if existing_vulns:
+        if len(existing_vulns) != 1:
+            vcids = ", ".join(v.vulnerability_id for v in existing_vulns)
+            logger.error(
+                f"Cannot create vulnerability. "
+                f"Aliases {aliases} already exist and point "
+                f"to multiple vulnerabilities {vcids}."
+            )
+            return
+        else:
+            vulnerability = existing_vulns.pop()
 
-    existing_alias_vuln = existing_vulns.pop() if existing_vulns else None
+            if vulnerability_id and vulnerability.vulnerability_id != vulnerability_id:
+                logger.error(
+                    f"Cannot create vulnerability. "
+                    f"Aliases {aliases} already exist and point to a different "
+                    f"vulnerability {vulnerability} than the requested "
+                    f"vulnerability {vulnerability_id}."
+                )
+                return
 
-    if (
-        existing_alias_vuln
-        and vulnerability_id
-        and existing_alias_vuln.vulnerability_id != vulnerability_id
-    ):
-        logger.warn(
-            f"Given aliases {alias_names!r} already exist and point to existing"
-            f"vulnerability {existing_alias_vuln}. Unable to create Vulnerability "
-            f"with vulnerability_id {vulnerability_id}. Skipped"
-        )
-        return
-
-    if existing_alias_vuln:
-        vulnerability = existing_alias_vuln
-    elif vulnerability_id:
+    if vulnerability_id and not vulnerability:
         try:
             vulnerability = Vulnerability.objects.get(vulnerability_id=vulnerability_id)
         except Vulnerability.DoesNotExist:
-            logger.warn(
-                f"Given vulnerability_id: {vulnerability_id} does not exist in the database"
+            logger.error(f"Cannot get requested vulnerability {vulnerability_id}.")
+            return
+    if vulnerability:
+        # TODO: We should keep multiple summaries, one for each advisory
+        # if summary and summary != vulnerability.summary:
+        #     logger.warning(
+        #         f"Inconsistent summary for {vulnerability.vulnerability_id}. "
+        #         f"Existing: {vulnerability.summary!r}, provided: {summary!r}"
+        #     )
+        associate_vulnerability_with_aliases(vulnerability=vulnerability, aliases=new_alias_names)
+    else:
+        try:
+            vulnerability = create_vulnerability_and_add_aliases(
+                aliases=new_alias_names, summary=summary
+            )
+            importer_name = get_importer_name(advisory)
+            VulnerabilityChangeLog.log_import(
+                importer=importer_name,
+                source_url=advisory.url,
+                vulnerability=vulnerability,
+            )
+        except Exception as e:
+            logger.error(
+                f"Cannot create vulnerability with summary {summary!r} and {new_alias_names!r} {e!r}.\n{traceback_format_exc()}."
             )
             return
-    else:
-        vulnerability = Vulnerability(summary=summary)
-        vulnerability.save()
 
-    if summary and summary != vulnerability.summary:
-        logger.warn(
-            f"Inconsistent summary for {vulnerability!r}. "
-            f"Existing: {vulnerability.summary}, provided: {summary}"
-        )
+    return vulnerability
 
-    for alias_name in new_alias_names:
+
+def get_vulns_for_aliases_and_get_new_aliases(aliases):
+    """
+    Return ``new_aliases`` that are not in the database and
+    ``existing_vulns`` that point to the given ``aliases``.
+    """
+    new_aliases = set(aliases)
+    existing_vulns = set()
+    for alias in Alias.objects.filter(alias__in=aliases):
+        existing_vulns.add(alias.vulnerability)
+        new_aliases.remove(alias.alias)
+    return new_aliases, existing_vulns
+
+
+@transaction.atomic
+def create_vulnerability_and_add_aliases(aliases, summary):
+    """
+    Return a new ``vulnerability`` created with ``summary``
+    and associate the ``vulnerability`` with ``aliases``.
+    Raise exception if no alias is associated with the ``vulnerability``.
+    """
+    vulnerability = Vulnerability(summary=summary)
+    vulnerability.save()
+    associate_vulnerability_with_aliases(aliases, vulnerability)
+    if not vulnerability.aliases.count():
+        raise Exception(f"Vulnerability {vulnerability.vcid} must have one or more aliases")
+    return vulnerability
+
+
+def associate_vulnerability_with_aliases(aliases, vulnerability):
+    for alias_name in aliases:
         alias = Alias(alias=alias_name, vulnerability=vulnerability)
         alias.save()
         logger.info(f"New alias for {vulnerability!r}: {alias_name}")
-
-    return vulnerability

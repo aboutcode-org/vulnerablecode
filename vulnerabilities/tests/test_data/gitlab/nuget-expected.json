@@ -8,11 +8,11 @@
     {
       "package": {
         "type": "nuget",
-        "namespace": null,
+        "namespace": "",
         "name": "Apache.Avro",
-        "version": null,
-        "qualifiers": null,
-        "subpath": null
+        "version": "",
+        "qualifiers": "",
+        "subpath": ""
       },
       "affected_version_range": "vers:nuget/<1.11.0",
       "fixed_version": "1.11.0"
@@ -31,5 +31,10 @@
     }
   ],
   "date_published": "2022-01-08T00:00:00+00:00",
-  "weaknesses": []
+  "weaknesses": [
+    1035,
+    770,
+    937
+  ],
+  "url": "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/nuget.yaml"
 }

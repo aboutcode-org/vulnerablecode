@@ -3,16 +3,16 @@
     "aliases": [
       "CVE-2018-20301"
     ],
-    "summary": "The Coherence library has \"Mass Assignment\"-like vulnerabilities.\n",
+    "summary": "The Coherence library has \"Mass Assignment\"-like vulnerabilities.",
     "affected_packages": [
       {
         "package": {
           "type": "hex",
-          "namespace": null,
+          "namespace": "",
           "name": "coherence",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:hex/<0.5.2",
         "fixed_version": null
@@ -25,7 +25,8 @@
         "severities": []
       }
     ],
-    "date_published": null,
-    "weaknesses": []
+    "date_published": "2017-08-02T00:00:00",
+    "weaknesses": [],
+    "url": "https://github.com/dependabot/elixir-security-advisories/blob/master/test_file.yml"
   }
 ]

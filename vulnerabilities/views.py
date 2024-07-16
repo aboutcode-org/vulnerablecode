@@ -6,9 +6,11 @@
 # See https://github.com/nexB/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-
+import logging
 from datetime import datetime
 
+from cvss.exceptions import CVSS2MalformedError
+from cvss.exceptions import CVSS3MalformedError
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
@@ -26,6 +28,7 @@ from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import VulnerabilitySearchForm
 from vulnerabilities.models import VulnerabilityStatusType
+from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import get_severity_range
 from vulnerablecode.settings import env
 
@@ -132,6 +135,16 @@ class VulnerabilityDetails(DetailView):
             weakness_object for weakness_object in weaknesses if weakness_object.weakness
         ]
         status = self.object.get_status_label
+
+        severity_vectors = []
+        for s in self.object.severities:
+            if s.scoring_elements and s.scoring_system in SCORING_SYSTEMS:
+                try:
+                    vector_values = SCORING_SYSTEMS[s.scoring_system].get(s.scoring_elements)
+                    severity_vectors.append(vector_values)
+                except (CVSS2MalformedError, CVSS3MalformedError, NotImplementedError):
+                    logging.error(f"CVSSMalformedError for {s.scoring_elements}")
+
         context.update(
             {
                 "vulnerability": self.object,
@@ -140,6 +153,7 @@ class VulnerabilityDetails(DetailView):
                 "severity_score_range": get_severity_range(
                     {s.value for s in self.object.severities}
                 ),
+                "severity_vectors": severity_vectors,
                 "references": self.object.references.all(),
                 "aliases": self.object.aliases.all(),
                 "affected_packages": self.object.affected_packages.all(),

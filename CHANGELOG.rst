@@ -1,6 +1,39 @@
 Release notes
 =============
 
+Version v34.0.0rc4
+-------------------
+
+- Drop migration for removing duplicated changelogs.
+
+
+Version v34.0.0rc3
+-------------------
+
+- Add resource URL to the vulnerability and package details view in the API serializers (#1423)
+- Add support for all osv ecosystems (#926)
+- Add RubyImporter to git_importer test_git_importer_clone (#799)
+- Remove duplicated changelogs (#1400)
+- Fix Encoding Type in Fireeye Importer (#1404)
+- Add license_url for GitHub Importer (#1392)
+- Add support for CVSS vectors display (#1312)
+
+
+Version v34.0.0rc2
+-------------------
+
+- We updated package-url models, WARNING: in next major version of 
+  vulnerablecode i.e v35.0.0 qualifiers will be of type ``string`` and not ``dict``.
+- We added changelog and dates on packages and vulnerabilities.
+- We fixed table borders in Vulnerability details UI #1356 (#1358)
+- We added robots.txt in views.
+- We fixed import runner's process_inferences (#1360)
+- We fixed debian OVAL importer (#1361)
+- We added graph model diagrams #977(#1350)
+- We added endpoint for purl lookup (#1359)
+- We fixed swagger API docs generation (#1366)
+- Fix issues https://github.com/nexB/vulnerablecode/issues/1385, https://github.com/nexB/vulnerablecode/issues/1387
+
 
 Version v34.0.0rc1
 -------------------

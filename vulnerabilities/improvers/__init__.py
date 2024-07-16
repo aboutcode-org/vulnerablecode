@@ -8,6 +8,7 @@
 #
 
 from vulnerabilities.improvers import valid_versions
+from vulnerabilities.improvers import vulnerability_kev
 from vulnerabilities.improvers import vulnerability_status
 
 IMPROVERS_REGISTRY = [
@@ -24,7 +25,10 @@ IMPROVERS_REGISTRY = [
     valid_versions.DebianOvalImprover,
     valid_versions.UbuntuOvalImprover,
     valid_versions.OSSFuzzImprover,
+    valid_versions.RubyImprover,
+    valid_versions.GithubOSVImprover,
     vulnerability_status.VulnerabilityStatusImprover,
+    vulnerability_kev.VulnerabilityKevImprover,
 ]
 
 IMPROVERS_REGISTRY = {x.qualified_name: x for x in IMPROVERS_REGISTRY}

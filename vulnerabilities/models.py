@@ -37,6 +37,8 @@ from packageurl.contrib.django.models import PackageURLQuerySet
 from rest_framework.authtoken.models import Token
 from univers import versions
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
+from univers.version_range import AlpineLinuxVersionRange
+from univers.versions import Version
 
 from vulnerabilities import utils
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
@@ -286,6 +288,18 @@ class Vulnerability(models.Model):
         Return this Vulnerability details absolute URL.
         """
         return reverse("vulnerability_details", args=[self.vulnerability_id])
+
+    def get_details_url(self, request):
+        """
+        Return this Package details URL.
+        """
+        from rest_framework.reverse import reverse
+
+        return reverse(
+            "vulnerability_details",
+            kwargs={"vulnerability_id": self.vulnerability_id},
+            request=request,
+        )
 
     def get_related_cpes(self):
         """
@@ -663,6 +677,14 @@ class Package(PackageURLMixin):
         """
         return reverse("package_details", args=[self.purl])
 
+    def get_details_url(self, request):
+        """
+        Return this Package details URL.
+        """
+        from rest_framework.reverse import reverse
+
+        return reverse("package_details", kwargs={"purl": self.purl}, request=request)
+
     def sort_by_version(self, packages):
         """
         Return a list of `packages` sorted by version.
@@ -677,7 +699,11 @@ class Package(PackageURLMixin):
 
     @property
     def version_class(self):
-        return RANGE_CLASS_BY_SCHEMES[self.type].version_class
+        RANGE_CLASS_BY_SCHEMES["alpine"] = AlpineLinuxVersionRange
+        range_class = RANGE_CLASS_BY_SCHEMES.get(self.type)
+        if not range_class:
+            return Version
+        return range_class.version_class
 
     @property
     def current_version(self):
@@ -1128,7 +1154,6 @@ class ApiUser(UserModel):
 
 
 class ChangeLog(models.Model):
-
     action_time = models.DateTimeField(
         # check if dates are actually UTC
         default=timezone.now,
@@ -1268,7 +1293,6 @@ class PackageHistoryManager(models.Manager):
 
 
 class PackageChangeLog(ChangeLog):
-
     AFFECTED_BY = 1
     FIXING = 2
 
@@ -1316,3 +1340,53 @@ class PackageChangeLog(ChangeLog):
             source_url=source_url,
             related_vulnerability=related_vulnerability,
         )
+
+
+class Kev(models.Model):
+    """
+    Known Exploited Vulnerabilities
+    """
+
+    vulnerability = models.OneToOneField(
+        Vulnerability,
+        on_delete=models.CASCADE,
+        related_name="kev",
+    )
+
+    date_added = models.DateField(
+        help_text="The date the vulnerability was added to the Known Exploited Vulnerabilities"
+        " (KEV) catalog in the format YYYY-MM-DD.",
+        null=True,
+        blank=True,
+    )
+
+    description = models.TextField(
+        help_text="Description of the vulnerability in the Known Exploited Vulnerabilities"
+        " (KEV) catalog, usually a refinement of the original CVE description"
+    )
+
+    required_action = models.TextField(
+        help_text="The required action to address the vulnerability, typically to "
+        "apply vendor updates or apply vendor mitigations or to discontinue use."
+    )
+
+    due_date = models.DateField(
+        help_text="The date the required action is due in the format YYYY-MM-DD,"
+        "which applies to all USA federal civilian executive branch (FCEB) agencies,"
+        "but all organizations are strongly encouraged to execute the required action."
+    )
+
+    resources_and_notes = models.TextField(
+        help_text="Additional notes and resources about the vulnerability,"
+        " often a URL to vendor instructions."
+    )
+
+    known_ransomware_campaign_use = models.BooleanField(
+        default=False,
+        help_text="""Known if this vulnerability is known to have been leveraged as part of a ransomware campaign; 
+        or 'Unknown' if CISA lacks confirmation that the vulnerability has been utilized for ransomware.""",
+    )
+
+    @property
+    def get_known_ransomware_campaign_use_type(self):
+        return "Known" if self.known_ransomware_campaign_use else "Unknown"

@@ -143,7 +143,7 @@ class VulnSerializerRefsAndSummary(BaseResourceSerializer):
         data["aliases"] = aliases
         return data
 
-    fixed_packages = MinimalPackageSerializer(
+    fixed_packages = PurlPackageSerializer(
         many=True, source="filtered_fixed_packages", read_only=True
     )
 
@@ -175,10 +175,10 @@ class WeaknessSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class VulnerabilitySerializer(BaseResourceSerializer):
-    fixed_packages = MinimalPackageSerializer(
+    fixed_packages = PurlPackageSerializer(
         many=True, source="filtered_fixed_packages", read_only=True
     )
-    affected_packages = MinimalPackageSerializer(many=True, read_only=True)
+    affected_packages = PurlPackageSerializer(many=True, read_only=True)
 
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
     aliases = AliasSerializer(many=True, source="alias")

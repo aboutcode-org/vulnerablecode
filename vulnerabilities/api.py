@@ -74,7 +74,16 @@ class BaseResourceSerializer(serializers.HyperlinkedModelSerializer):
         return resource_url
 
 
-class MinimalPackageSerializer(BaseResourceSerializer):
+class PurlPackageSerializer(BaseResourceSerializer):
+
+    purl = serializers.CharField(source="package_url")
+
+    class Meta:
+        model = Package
+        fields = ["url", "purl", "is_vulnerable"]
+
+
+class MinimalPackageSerializer(PurlPackageSerializer):
     """
     Used for nesting inside vulnerability focused APIs.
     """
@@ -97,8 +106,6 @@ class MinimalPackageSerializer(BaseResourceSerializer):
             return affected_vulnerability
 
     affected_by_vulnerabilities = serializers.SerializerMethodField("get_affected_vulnerabilities")
-
-    purl = serializers.CharField(source="package_url")
 
     class Meta:
         model = Package

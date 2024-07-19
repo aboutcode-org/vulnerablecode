@@ -74,8 +74,16 @@ class BaseResourceSerializer(serializers.HyperlinkedModelSerializer):
 
         return resource_url
 
+class PurlPackageSerializer(BaseResourceSerializer):
 
-class MinimalPackageSerializer(BaseResourceSerializer):
+    purl = serializers.CharField(source="package_url")
+
+    class Meta:
+        model = Package
+        fields = ["url", "purl", "is_vulnerable"]
+
+
+class MinimalPackageSerializer(PurlPackageSerializer):
     """
     Used for nesting inside vulnerability focused APIs.
     """
@@ -98,8 +106,6 @@ class MinimalPackageSerializer(BaseResourceSerializer):
             return affected_vulnerability
 
     affected_by_vulnerabilities = serializers.SerializerMethodField("get_affected_vulnerabilities")
-
-    purl = serializers.CharField(source="package_url")
 
     class Meta:
         model = Package
@@ -137,7 +143,7 @@ class VulnSerializerRefsAndSummary(BaseResourceSerializer):
         data["aliases"] = aliases
         return data
 
-    fixed_packages = MinimalPackageSerializer(
+    fixed_packages = PurlPackageSerializer(
         many=True, source="filtered_fixed_packages", read_only=True
     )
 
@@ -175,10 +181,10 @@ class KEVSerializer(serializers.ModelSerializer):
 
 
 class VulnerabilitySerializer(BaseResourceSerializer):
-    fixed_packages = MinimalPackageSerializer(
+    fixed_packages = PurlPackageSerializer(
         many=True, source="filtered_fixed_packages", read_only=True
     )
-    affected_packages = MinimalPackageSerializer(many=True, read_only=True)
+    affected_packages = PurlPackageSerializer(many=True, read_only=True)
 
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
     aliases = AliasSerializer(many=True, source="alias")

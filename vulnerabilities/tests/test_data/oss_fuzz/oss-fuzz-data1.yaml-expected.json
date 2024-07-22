@@ -7,6 +7,7 @@
   "references": [
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=35887",
       "severities": []
     }

@@ -43,6 +43,7 @@
     "references": [
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/sinatra/sinatra/pull/1379",
         "severities": [
           {
@@ -54,6 +55,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/sinatra/sinatra/pull/1379",
         "severities": [
           {
@@ -119,6 +121,7 @@
     "references": [
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/sinatra/sinatra/pull/1379",
         "severities": [
           {
@@ -130,6 +133,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/sinatra/sinatra/pull/1379",
         "severities": [
           {
@@ -154,6 +158,7 @@
     "references": [
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/sinatra/sinatra/pull/1379",
         "severities": [
           {
@@ -165,6 +170,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/sinatra/sinatra/pull/1379",
         "severities": [
           {
@@ -189,6 +195,7 @@
     "references": [
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/sinatra/sinatra/pull/1379",
         "severities": [
           {
@@ -200,6 +207,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/sinatra/sinatra/pull/1379",
         "severities": [
           {

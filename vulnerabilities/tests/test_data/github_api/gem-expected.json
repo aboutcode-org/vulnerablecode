@@ -22,11 +22,13 @@
     "references": [
       {
         "reference_id": "CVE-2009-4492",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-4492",
         "severities": []
       },
       {
         "reference_id": "GHSA-6mq2-37j5-w6r6",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-6mq2-37j5-w6r6",
         "severities": [
           {
@@ -38,46 +40,55 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "http://secunia.com/advisories/37949",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "http://securitytracker.com/id?1023429",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "http://www.redhat.com/support/errata/RHSA-2011-0908.html",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "http://www.redhat.com/support/errata/RHSA-2011-0909.html",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "http://www.ruby-lang.org/en/news/2010/01/10/webrick-escape-sequence-injection",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "http://www.securityfocus.com/archive/1/508830/100/0/threaded",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "http://www.securityfocus.com/bid/37710",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "http://www.ush.it/team/ush/hack_httpd_escape/adv.txt",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "http://www.vupen.com/english/advisories/2010/0089",
         "severities": []
       }
@@ -109,26 +120,31 @@
     "references": [
       {
         "reference_id": "CVE-2022-21831",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI",
         "severities": []
       },
       {
         "reference_id": "CVE-2022-21831",
+        "reference_type": "",
         "url": "https://rubysec.com/advisories/CVE-2022-21831/",
         "severities": []
       },
       {
         "reference_id": "GHSA-w749-p3v6-hccq",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq",
         "severities": [
           {
@@ -166,26 +182,31 @@
     "references": [
       {
         "reference_id": "CVE-2022-21831",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI",
         "severities": []
       },
       {
         "reference_id": "CVE-2022-21831",
+        "reference_type": "",
         "url": "https://rubysec.com/advisories/CVE-2022-21831/",
         "severities": []
       },
       {
         "reference_id": "GHSA-w749-p3v6-hccq",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq",
         "severities": [
           {
@@ -223,26 +244,31 @@
     "references": [
       {
         "reference_id": "CVE-2022-21831",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI",
         "severities": []
       },
       {
         "reference_id": "CVE-2022-21831",
+        "reference_type": "",
         "url": "https://rubysec.com/advisories/CVE-2022-21831/",
         "severities": []
       },
       {
         "reference_id": "GHSA-w749-p3v6-hccq",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq",
         "severities": [
           {
@@ -280,26 +306,31 @@
     "references": [
       {
         "reference_id": "CVE-2022-21831",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI",
         "severities": []
       },
       {
         "reference_id": "CVE-2022-21831",
+        "reference_type": "",
         "url": "https://rubysec.com/advisories/CVE-2022-21831/",
         "severities": []
       },
       {
         "reference_id": "GHSA-w749-p3v6-hccq",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq",
         "severities": [
           {

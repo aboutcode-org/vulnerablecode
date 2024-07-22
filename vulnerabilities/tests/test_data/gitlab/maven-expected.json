@@ -21,26 +21,31 @@
   "references": [
     {
       "reference_id": "CVE-2021-41269",
+      "reference_type": "",
       "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-41269",
       "severities": []
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/jmrozanec/cron-utils/issues/461",
       "severities": []
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/jmrozanec/cron-utils/commit/d6707503ec2f20947f79e38f861dba93b39df9da",
       "severities": []
     },
     {
       "reference_id": "GHSA-p9m8-27x8-rg87",
+      "reference_type": "",
       "url": "https://github.com/jmrozanec/cron-utils/security/advisories/GHSA-p9m8-27x8-rg87",
       "severities": []
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/jmrozanec/cron-utils/commit/cfd2880f80e62ea74b92fa83474c2aabdb9899da",
       "severities": []
     }

@@ -359,6 +359,22 @@ class VulnerabilityReference(models.Model):
         unique=True,
     )
 
+    ADVISORY = "advisory"
+    EXPLOIT = "exploit"
+    MAILING_LIST = "mailing_list"
+    BUG = "bug"
+    OTHER = "other"
+
+    REFERENCE_TYPES = [
+        (ADVISORY, "Advisory"),
+        (EXPLOIT, "Exploit"),
+        (MAILING_LIST, "Mailing List"),
+        (BUG, "Bug"),
+        (OTHER, "Other"),
+    ]
+
+    reference_type = models.CharField(max_length=20, choices=REFERENCE_TYPES, blank=True)
+
     reference_id = models.CharField(
         max_length=200,
         help_text="An optional reference ID, such as DSA-4465-1 when available",
@@ -1121,7 +1137,6 @@ class ApiUser(UserModel):
 
 
 class ChangeLog(models.Model):
-
     action_time = models.DateTimeField(
         # check if dates are actually UTC
         default=timezone.now,
@@ -1261,7 +1276,6 @@ class PackageHistoryManager(models.Manager):
 
 
 class PackageChangeLog(ChangeLog):
-
     AFFECTED_BY = 1
     FIXING = 2
 
@@ -1309,3 +1323,53 @@ class PackageChangeLog(ChangeLog):
             source_url=source_url,
             related_vulnerability=related_vulnerability,
         )
+
+
+class Kev(models.Model):
+    """
+    Known Exploited Vulnerabilities
+    """
+
+    vulnerability = models.OneToOneField(
+        Vulnerability,
+        on_delete=models.CASCADE,
+        related_name="kev",
+    )
+
+    date_added = models.DateField(
+        help_text="The date the vulnerability was added to the Known Exploited Vulnerabilities"
+        " (KEV) catalog in the format YYYY-MM-DD.",
+        null=True,
+        blank=True,
+    )
+
+    description = models.TextField(
+        help_text="Description of the vulnerability in the Known Exploited Vulnerabilities"
+        " (KEV) catalog, usually a refinement of the original CVE description"
+    )
+
+    required_action = models.TextField(
+        help_text="The required action to address the vulnerability, typically to "
+        "apply vendor updates or apply vendor mitigations or to discontinue use."
+    )
+
+    due_date = models.DateField(
+        help_text="The date the required action is due in the format YYYY-MM-DD,"
+        "which applies to all USA federal civilian executive branch (FCEB) agencies,"
+        "but all organizations are strongly encouraged to execute the required action."
+    )
+
+    resources_and_notes = models.TextField(
+        help_text="Additional notes and resources about the vulnerability,"
+        " often a URL to vendor instructions."
+    )
+
+    known_ransomware_campaign_use = models.BooleanField(
+        default=False,
+        help_text="""Known if this vulnerability is known to have been leveraged as part of a ransomware campaign; 
+        or 'Unknown' if CISA lacks confirmation that the vulnerability has been utilized for ransomware.""",
+    )
+
+    @property
+    def get_known_ransomware_campaign_use_type(self):
+        return "Known" if self.known_ransomware_campaign_use else "Unknown"

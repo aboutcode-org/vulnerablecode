@@ -22,6 +22,7 @@
     "references": [
       {
         "reference_id": "GHSA-qcxh-w3j9-58qr",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-qcxh-w3j9-58qr",
         "severities": [
           {
@@ -59,6 +60,7 @@
     "references": [
       {
         "reference_id": "GHSA-qcxh-w3j9-58qr",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-qcxh-w3j9-58qr",
         "severities": [
           {
@@ -96,6 +98,7 @@
     "references": [
       {
         "reference_id": "GHSA-c9hw-wf7x-jp9j",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-c9hw-wf7x-jp9j",
         "severities": [
           {
@@ -133,6 +136,7 @@
     "references": [
       {
         "reference_id": "GHSA-c9hw-wf7x-jp9j",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-c9hw-wf7x-jp9j",
         "severities": [
           {
@@ -170,6 +174,7 @@
     "references": [
       {
         "reference_id": "GHSA-c9hw-wf7x-jp9j",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-c9hw-wf7x-jp9j",
         "severities": [
           {

@@ -25,6 +25,7 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework.throttling import UserRateThrottle
 
 from vulnerabilities.models import Alias
+from vulnerabilities.models import Kev
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
@@ -46,7 +47,7 @@ class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = VulnerabilityReference
-        fields = ["reference_url", "reference_id", "scores", "url"]
+        fields = ["reference_url", "reference_id", "reference_type", "scores", "url"]
 
 
 class BaseResourceSerializer(serializers.HyperlinkedModelSerializer):
@@ -167,6 +168,12 @@ class WeaknessSerializer(serializers.HyperlinkedModelSerializer):
         return representation
 
 
+class KEVSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Kev
+        fields = ["date_added", "description", "required_action", "due_date", "resources_and_notes"]
+
+
 class VulnerabilitySerializer(BaseResourceSerializer):
     fixed_packages = MinimalPackageSerializer(
         many=True, source="filtered_fixed_packages", read_only=True
@@ -175,6 +182,7 @@ class VulnerabilitySerializer(BaseResourceSerializer):
 
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
     aliases = AliasSerializer(many=True, source="alias")
+    kev = KEVSerializer(read_only=True)
     weaknesses = WeaknessSerializer(many=True)
 
     def to_representation(self, instance):
@@ -182,6 +190,10 @@ class VulnerabilitySerializer(BaseResourceSerializer):
 
         weaknesses = data.get("weaknesses", [])
         data["weaknesses"] = [weakness for weakness in weaknesses if weakness is not None]
+
+        kev = data.get("kev", None)
+        if not kev:
+            data.pop("kev")
 
         return data
 
@@ -196,6 +208,7 @@ class VulnerabilitySerializer(BaseResourceSerializer):
             "affected_packages",
             "references",
             "weaknesses",
+            "kev",
         ]
 
 

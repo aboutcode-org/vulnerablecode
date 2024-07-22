@@ -48,7 +48,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "79bf3138f39a61e9f13575aa00c0eba6",
+    "unique_content_id": "35448b5f7b3fba9f72b91c02f114fb54",
     "aliases": [
       "CVE-2002-0655",
       "VC-OPENSSL-20020730-CVE-2002-0655"
@@ -72,19 +72,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2002-0655",
         "severities": [],
-        "reference_id": "CVE-2002-0655"
+        "reference_id": "CVE-2002-0655",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20020730.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2002-07-30T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "da84857266531259b4212ebacc280ec0",
+    "unique_content_id": "829a6d1f23353afa49ace62ba465a58f",
     "aliases": [
       "CVE-2002-0656",
       "VC-OPENSSL-20020730-CVE-2002-0656"
@@ -108,19 +110,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2002-0656",
         "severities": [],
-        "reference_id": "CVE-2002-0656"
+        "reference_id": "CVE-2002-0656",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20020730.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2002-07-30T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "9c51c46fbfee27e5b23099cbcad7fa08",
+    "unique_content_id": "167751346aa8fefc0a6e3b73ccb1f1a0",
     "aliases": [
       "CVE-2002-0657",
       "VC-OPENSSL-20020730-CVE-2002-0657"
@@ -144,19 +148,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2002-0657",
         "severities": [],
-        "reference_id": "CVE-2002-0657"
+        "reference_id": "CVE-2002-0657",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20020730.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2002-07-30T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "1b0c9c2557f5da6cc8099f9460e46b08",
+    "unique_content_id": "cd2aa8fefe14c523b0f404ea639582db",
     "aliases": [
       "CVE-2002-0659",
       "VC-OPENSSL-20020730-CVE-2002-0659"
@@ -180,19 +186,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2002-0659",
         "severities": [],
-        "reference_id": "CVE-2002-0659"
+        "reference_id": "CVE-2002-0659",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20020730.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2002-07-30T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "68292379ebf6bb3c91e0225283ef063b",
+    "unique_content_id": "8544420c83cf74faff35e8829adaa340",
     "aliases": [
       "CVE-2002-1568",
       "VC-OPENSSL-20020808-CVE-2002-1568"
@@ -216,19 +224,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2002-1568",
         "severities": [],
-        "reference_id": "CVE-2002-1568"
+        "reference_id": "CVE-2002-1568",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/517a0e7fa0f5453c860a3aec17b678bd55d5aad7",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2002-08-08T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "2d4525cfef430065e49bd67c4369cccb",
+    "unique_content_id": "61d2edb3343321c505bed6e2c93025b1",
     "aliases": [
       "CVE-2003-0078",
       "VC-OPENSSL-20030219-CVE-2003-0078"
@@ -264,19 +274,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2003-0078",
         "severities": [],
-        "reference_id": "CVE-2003-0078"
+        "reference_id": "CVE-2003-0078",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20030219.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2003-02-19T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "f9aab98ac7481370ce14b941ebd47d1d",
+    "unique_content_id": "a0eeb293e46b8d3bbd5029ccaa8585bd",
     "aliases": [
       "CVE-2003-0131",
       "VC-OPENSSL-20030319-CVE-2003-0131"
@@ -312,19 +324,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2003-0131",
         "severities": [],
-        "reference_id": "CVE-2003-0131"
+        "reference_id": "CVE-2003-0131",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20030319.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2003-03-19T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "fbe21511972c102fbc69b32292539d8b",
+    "unique_content_id": "4fbc2d1aad1223b8ab887ce8d4d07175",
     "aliases": [
       "CVE-2003-0147",
       "VC-OPENSSL-20030314-CVE-2003-0147"
@@ -360,19 +374,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2003-0147",
         "severities": [],
-        "reference_id": "CVE-2003-0147"
+        "reference_id": "CVE-2003-0147",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20030317.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2003-03-14T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "223174d11256ea7c14d15559a2ad317e",
+    "unique_content_id": "525144b2cfc83c2afb4746cbb043f665",
     "aliases": [
       "CVE-2003-0543",
       "VC-OPENSSL-20030930-CVE-2003-0543"
@@ -408,19 +424,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2003-0543",
         "severities": [],
-        "reference_id": "CVE-2003-0543"
+        "reference_id": "CVE-2003-0543",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20030930.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2003-09-30T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "3a617f57ad2634cd4f65fce5509590e6",
+    "unique_content_id": "b20ae6e077855796c5fa2ea663a88269",
     "aliases": [
       "CVE-2003-0544",
       "VC-OPENSSL-20030930-CVE-2003-0544"
@@ -456,19 +474,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2003-0544",
         "severities": [],
-        "reference_id": "CVE-2003-0544"
+        "reference_id": "CVE-2003-0544",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20030930.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2003-09-30T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "bd20471d9e1a709f781fbfc540053de4",
+    "unique_content_id": "23009992dbac485c71608f4cf9811ef2",
     "aliases": [
       "CVE-2003-0545",
       "VC-OPENSSL-20030930-CVE-2003-0545"
@@ -492,19 +512,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2003-0545",
         "severities": [],
-        "reference_id": "CVE-2003-0545"
+        "reference_id": "CVE-2003-0545",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20030930.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2003-09-30T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "3c6edf1c96b532fcf74075758609ad0a",
+    "unique_content_id": "47507506fbd9633ba7a6429dc0db28b5",
     "aliases": [
       "CVE-2003-0851",
       "VC-OPENSSL-20031104-CVE-2003-0851"
@@ -528,19 +550,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2003-0851",
         "severities": [],
-        "reference_id": "CVE-2003-0851"
+        "reference_id": "CVE-2003-0851",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20031104.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2003-11-04T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "0ff6674dbcddb68a8d77cda6a7152882",
+    "unique_content_id": "2c802d89f18645aa477b635d3a5242ad",
     "aliases": [
       "CVE-2004-0079",
       "VC-OPENSSL-20040317-CVE-2004-0079"
@@ -576,19 +600,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2004-0079",
         "severities": [],
-        "reference_id": "CVE-2004-0079"
+        "reference_id": "CVE-2004-0079",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20040317.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2004-03-17T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "bdff7c2985e0c088515afc4e985c8645",
+    "unique_content_id": "6f23a0db775050dc33df47c7cc883b11",
     "aliases": [
       "CVE-2004-0081",
       "VC-OPENSSL-20040317-CVE-2004-0081"
@@ -612,19 +638,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2004-0081",
         "severities": [],
-        "reference_id": "CVE-2004-0081"
+        "reference_id": "CVE-2004-0081",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20030317.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2004-03-17T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "883fdebeeb8af60f7438529e04668634",
+    "unique_content_id": "cb0e8758b89ae43b1ed34bfb3c0b3b56",
     "aliases": [
       "CVE-2004-0112",
       "VC-OPENSSL-20040317-CVE-2004-0112"
@@ -648,19 +676,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2004-0112",
         "severities": [],
-        "reference_id": "CVE-2004-0112"
+        "reference_id": "CVE-2004-0112",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20040317.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2004-03-17T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "580d6b218e0872115110d2ffda28e21e",
+    "unique_content_id": "de61ebaf88fec68edc50b1bbc3c82f15",
     "aliases": [
       "CVE-2004-0975",
       "VC-OPENSSL-20040930-CVE-2004-0975"
@@ -696,19 +726,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2004-0975",
         "severities": [],
-        "reference_id": "CVE-2004-0975"
+        "reference_id": "CVE-2004-0975",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/5fee606442a6738fd06a756d7076be53b7b7734c",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2004-09-30T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "8d4a906b815126aaf023d06600b51543",
+    "unique_content_id": "9cc871a9e62ad5ca419397816ae02f3f",
     "aliases": [
       "CVE-2005-2969",
       "VC-OPENSSL-20051011-CVE-2005-2969"
@@ -756,19 +788,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2005-2969",
         "severities": [],
-        "reference_id": "CVE-2005-2969"
+        "reference_id": "CVE-2005-2969",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20051011.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2005-10-11T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "2b480892ddbeffbb3abd8a26573e8c2d",
+    "unique_content_id": "95ecb527c6494eb3dc0e22337c257b02",
     "aliases": [
       "CVE-2006-2937",
       "VC-OPENSSL-20060928-CVE-2006-2937"
@@ -804,19 +838,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-2937",
         "severities": [],
-        "reference_id": "CVE-2006-2937"
+        "reference_id": "CVE-2006-2937",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20060928.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2006-09-28T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "a1572725338f873f9c8fc3386fce175a",
+    "unique_content_id": "1ed97c8f77a2948144952bbf2df0d15f",
     "aliases": [
       "CVE-2006-2940",
       "VC-OPENSSL-20060928-CVE-2006-2940"
@@ -864,19 +900,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-2940",
         "severities": [],
-        "reference_id": "CVE-2006-2940"
+        "reference_id": "CVE-2006-2940",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20060928.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2006-09-28T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "a3cc2d55626481bf36a2f69a426d6e98",
+    "unique_content_id": "275102d3f86e163b329b3bd7e4032658",
     "aliases": [
       "CVE-2006-3738",
       "VC-OPENSSL-20060928-CVE-2006-3738"
@@ -924,19 +962,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-3738",
         "severities": [],
-        "reference_id": "CVE-2006-3738"
+        "reference_id": "CVE-2006-3738",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20060928.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2006-09-28T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "c2598cd2924674b97f74d90026565177",
+    "unique_content_id": "509415f8d684ef69f274426ff454ee18",
     "aliases": [
       "CVE-2006-4339",
       "VC-OPENSSL-20060905-CVE-2006-4339"
@@ -984,19 +1024,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-4339",
         "severities": [],
-        "reference_id": "CVE-2006-4339"
+        "reference_id": "CVE-2006-4339",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20060905.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2006-09-05T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "4017b7541f75b52e9fbf55a973f78442",
+    "unique_content_id": "65804b3824faa47750e76089a0851d29",
     "aliases": [
       "CVE-2006-4343",
       "VC-OPENSSL-20060928-CVE-2006-4343"
@@ -1044,19 +1086,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2006-4343",
         "severities": [],
-        "reference_id": "CVE-2006-4343"
+        "reference_id": "CVE-2006-4343",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20060928.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2006-09-28T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "c76f337caf4b0dffd97bc2e9555cfc22",
+    "unique_content_id": "df251bb60bdec54891d4de225180f2ee",
     "aliases": [
       "CVE-2007-4995",
       "VC-OPENSSL-20071012-CVE-2007-4995"
@@ -1080,19 +1124,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2007-4995",
         "severities": [],
-        "reference_id": "CVE-2007-4995"
+        "reference_id": "CVE-2007-4995",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20071012.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2007-10-12T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "a22a1f719338b50ef9dfb116636dc78c",
+    "unique_content_id": "987af90a510832e0adfe428cf642f8b3",
     "aliases": [
       "CVE-2007-5135",
       "VC-OPENSSL-20071012-CVE-2007-5135"
@@ -1116,19 +1162,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2007-5135",
         "severities": [],
-        "reference_id": "CVE-2007-5135"
+        "reference_id": "CVE-2007-5135",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20071012.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2007-10-12T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "5b798eeed5ec835d3ba1ec660a39d887",
+    "unique_content_id": "2583bf8ccba8c985bab919b69ccc00e5",
     "aliases": [
       "CVE-2008-0891",
       "VC-OPENSSL-20080528-CVE-2008-0891"
@@ -1152,19 +1200,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2008-0891",
         "severities": [],
-        "reference_id": "CVE-2008-0891"
+        "reference_id": "CVE-2008-0891",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20080528.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2008-05-28T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "dc79018f10533584a67e1ce541211cc9",
+    "unique_content_id": "707840f8f10854ba4abf1409b159f35d",
     "aliases": [
       "CVE-2008-1672",
       "VC-OPENSSL-20080528-CVE-2008-1672"
@@ -1188,19 +1238,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2008-1672",
         "severities": [],
-        "reference_id": "CVE-2008-1672"
+        "reference_id": "CVE-2008-1672",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20080528.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2008-05-28T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "3a8d05ea4c87707f9d105f0c351fb061",
+    "unique_content_id": "a52c691f587165864b42caa4be445576",
     "aliases": [
       "CVE-2008-5077",
       "VC-OPENSSL-20090107-CVE-2008-5077"
@@ -1224,19 +1276,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2008-5077",
         "severities": [],
-        "reference_id": "CVE-2008-5077"
+        "reference_id": "CVE-2008-5077",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20090107.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2009-01-07T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "10acfb43b3b070752c8aff0441c4f205",
+    "unique_content_id": "6ec3760bac617981cc8cd2369115f10e",
     "aliases": [
       "CVE-2009-0590",
       "VC-OPENSSL-20090325-CVE-2009-0590"
@@ -1260,19 +1314,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-0590",
         "severities": [],
-        "reference_id": "CVE-2009-0590"
+        "reference_id": "CVE-2009-0590",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20090325.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2009-03-25T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "4320d28b7bb5bf280f664c2dc257ddd6",
+    "unique_content_id": "2b44645ffc6197aaeb99296cc87b3258",
     "aliases": [
       "CVE-2009-0591",
       "VC-OPENSSL-20090325-CVE-2009-0591"
@@ -1296,19 +1352,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-0591",
         "severities": [],
-        "reference_id": "CVE-2009-0591"
+        "reference_id": "CVE-2009-0591",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20090325.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2009-03-25T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "21507ac88021e97fb92f6527386424f9",
+    "unique_content_id": "4fffdc4369dd44a30fae0836347f91de",
     "aliases": [
       "CVE-2009-0789",
       "VC-OPENSSL-20090325-CVE-2009-0789"
@@ -1332,19 +1390,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-0789",
         "severities": [],
-        "reference_id": "CVE-2009-0789"
+        "reference_id": "CVE-2009-0789",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20090325.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2009-03-25T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "b37bfa75544814c3718bdf72225f5da4",
+    "unique_content_id": "e250eb725e8ae34ba3933779594935f6",
     "aliases": [
       "CVE-2009-1377",
       "VC-OPENSSL-20090512-CVE-2009-1377"
@@ -1368,24 +1428,27 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-1377",
         "severities": [],
-        "reference_id": "CVE-2009-1377"
+        "reference_id": "CVE-2009-1377",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/88b48dc68024dcc437da4296c9fb04419b0ccbe1",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://web.archive.org/web/20120306065500/http://rt.openssl.org/Ticket/Display.html?id=1930&user=guest&pass=guest",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2009-05-12T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "fa6996fb13e76f5f467e03e106ba99e4",
+    "unique_content_id": "868b6df2d8ffc22c9f9d83fd7da54401",
     "aliases": [
       "CVE-2009-1378",
       "VC-OPENSSL-20090512-CVE-2009-1378"
@@ -1409,24 +1472,27 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-1378",
         "severities": [],
-        "reference_id": "CVE-2009-1378"
+        "reference_id": "CVE-2009-1378",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/abda7c114791fa7fe95672ec7a66fc4733c40dbc",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://web.archive.org/web/20101120211136/http://rt.openssl.org/Ticket/Display.html?id=1931&user=guest&pass=guest",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2009-05-12T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "971069002fc023088e4fe600658029e7",
+    "unique_content_id": "9233bcc1b091ea2d0fe8d8a2820191f5",
     "aliases": [
       "CVE-2009-1379",
       "VC-OPENSSL-20090512-CVE-2009-1379"
@@ -1450,24 +1516,27 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-1379",
         "severities": [],
-        "reference_id": "CVE-2009-1379"
+        "reference_id": "CVE-2009-1379",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/561cbe567846a376153bea7f1f2d061e78029c2d",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://web.archive.org/web/20100824233642/http://rt.openssl.org/Ticket/Display.html?id=1923&user=guest&pass=guest",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2009-05-12T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "c1d9d6456628f1f39d9377ba4ca7eb40",
+    "unique_content_id": "0097aaf34c70d34f665917931de0a380",
     "aliases": [
       "CVE-2009-1386",
       "VC-OPENSSL-20090602-CVE-2009-1386"
@@ -1491,19 +1560,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-1386",
         "severities": [],
-        "reference_id": "CVE-2009-1386"
+        "reference_id": "CVE-2009-1386",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/1cbf663a6c89dcf8f7706d30a8bae675e2e0199a",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2009-06-02T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "e0a1d4a7ed4d28911efb7037fdf84b02",
+    "unique_content_id": "e872aef605740cacbb7547101151f4c7",
     "aliases": [
       "CVE-2009-1387",
       "VC-OPENSSL-20090205-CVE-2009-1387"
@@ -1527,19 +1598,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-1387",
         "severities": [],
-        "reference_id": "CVE-2009-1387"
+        "reference_id": "CVE-2009-1387",
+        "reference_type": ""
       },
       {
         "url": "https://web.archive.org/web/20100710092848/https://rt.openssl.org/Ticket/Display.html?id=1838",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2009-02-05T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "0d5c244c9283213b14dc57b842d02867",
+    "unique_content_id": "e4f35efada1573e600eeb3f197a9654e",
     "aliases": [
       "CVE-2009-3245",
       "VC-OPENSSL-20100223-CVE-2009-3245"
@@ -1563,19 +1636,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-3245",
         "severities": [],
-        "reference_id": "CVE-2009-3245"
+        "reference_id": "CVE-2009-3245",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/7e4cae1d2f555cbe9226b377aff4b56c9f7ddd4d",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2010-02-23T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "b6ecd4a23ffd933bf75a45c09f25ba35",
+    "unique_content_id": "3ede4a6de30467e840dadb6b1a2f94fc",
     "aliases": [
       "CVE-2009-3555",
       "VC-OPENSSL-20091105-CVE-2009-3555"
@@ -1599,19 +1674,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-3555",
         "severities": [],
-        "reference_id": "CVE-2009-3555"
+        "reference_id": "CVE-2009-3555",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20091111.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2009-11-05T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "17c39f46b6041d0b93c955ec984cb8ca",
+    "unique_content_id": "91d6f4b44c2f61e0b1d98cbec9e4633d",
     "aliases": [
       "CVE-2009-4355",
       "VC-OPENSSL-20100113-CVE-2009-4355"
@@ -1635,19 +1712,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-4355",
         "severities": [],
-        "reference_id": "CVE-2009-4355"
+        "reference_id": "CVE-2009-4355",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/1b31b5ad560b16e2fe1cad54a755e3e6b5e778a3",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2010-01-13T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "b74166c40b7fe2fccce42ea116b2dfde",
+    "unique_content_id": "f07be07de5fe8173dc2934d11c36c94d",
     "aliases": [
       "CVE-2010-0433",
       "VC-OPENSSL-20100119-CVE-2010-0433"
@@ -1671,19 +1750,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2010-0433",
         "severities": [],
-        "reference_id": "CVE-2010-0433"
+        "reference_id": "CVE-2010-0433",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/cca1cd9a3447dd067503e4a85ebd1679ee78a48e",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2010-01-19T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "ddc3722e4f29770ebcd6adf7bfd4b023",
+    "unique_content_id": "94276d565fb0e1af8800da5df17f96be",
     "aliases": [
       "CVE-2010-0740",
       "VC-OPENSSL-20100324-CVE-2010-0740"
@@ -1707,19 +1788,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2010-0740",
         "severities": [],
-        "reference_id": "CVE-2010-0740"
+        "reference_id": "CVE-2010-0740",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20100324.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2010-03-24T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "427d519c0684ac721e9b47cdd2ec3bc0",
+    "unique_content_id": "fdfe8fe89fb08b0cedb50a64445793f9",
     "aliases": [
       "CVE-2010-0742",
       "VC-OPENSSL-20100601-CVE-2010-0742"
@@ -1755,19 +1838,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2010-0742",
         "severities": [],
-        "reference_id": "CVE-2010-0742"
+        "reference_id": "CVE-2010-0742",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20100601.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2010-06-01T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "f5b98693ac6179f367c59a12c6246e0a",
+    "unique_content_id": "bfee13b4a1f7df094ab9f172cf3556c9",
     "aliases": [
       "CVE-2010-1633",
       "VC-OPENSSL-20100601-CVE-2010-1633"
@@ -1791,19 +1876,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2010-1633",
         "severities": [],
-        "reference_id": "CVE-2010-1633"
+        "reference_id": "CVE-2010-1633",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20100601.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2010-06-01T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "ebf268a9b07013f9086c9f9bbb7df35c",
+    "unique_content_id": "76c3ba83fe766ac2a084b0bd3de847f5",
     "aliases": [
       "CVE-2010-3864",
       "VC-OPENSSL-20101116-CVE-2010-3864"
@@ -1839,19 +1926,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2010-3864",
         "severities": [],
-        "reference_id": "CVE-2010-3864"
+        "reference_id": "CVE-2010-3864",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20101116.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2010-11-16T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "eab4b0b9fbffc6348a025020eb5540db",
+    "unique_content_id": "316f2dc208adb956396af86e8d35c818",
     "aliases": [
       "CVE-2010-4180",
       "VC-OPENSSL-20101202-CVE-2010-4180"
@@ -1887,19 +1976,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2010-4180",
         "severities": [],
-        "reference_id": "CVE-2010-4180"
+        "reference_id": "CVE-2010-4180",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20101202.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2010-12-02T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "3d4df7d3d56d85c34fc1a63542d61c71",
+    "unique_content_id": "a65500a311ab1c4e556fa47df1b487e1",
     "aliases": [
       "CVE-2010-4252",
       "VC-OPENSSL-20101202-CVE-2010-4252"
@@ -1923,19 +2014,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2010-4252",
         "severities": [],
-        "reference_id": "CVE-2010-4252"
+        "reference_id": "CVE-2010-4252",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20101202.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2010-12-02T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "eba35b629966d3a4b0171f872e5b29bb",
+    "unique_content_id": "5c73df85af33b3649d0f8f5cf48465d3",
     "aliases": [
       "CVE-2010-5298",
       "VC-OPENSSL-20140408-CVE-2010-5298"
@@ -1971,19 +2064,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2010-5298",
         "severities": [],
-        "reference_id": "CVE-2010-5298"
+        "reference_id": "CVE-2010-5298",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20140605.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-04-08T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "c6da58221b4e56139a982429225d3cad",
+    "unique_content_id": "4d2690fa788437a1517d397eabb14249",
     "aliases": [
       "CVE-2011-0014",
       "VC-OPENSSL-20110208-CVE-2011-0014"
@@ -2019,19 +2114,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2011-0014",
         "severities": [],
-        "reference_id": "CVE-2011-0014"
+        "reference_id": "CVE-2011-0014",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20110208.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2011-02-08T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "398b8869b146881d2844d3b2063e25c2",
+    "unique_content_id": "220a4682b4ef1cc32a29898f3057b9b3",
     "aliases": [
       "CVE-2011-3207",
       "VC-OPENSSL-20110906-CVE-2011-3207"
@@ -2055,19 +2152,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2011-3207",
         "severities": [],
-        "reference_id": "CVE-2011-3207"
+        "reference_id": "CVE-2011-3207",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20110906.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2011-09-06T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "b2046f01f690c315f1d678df0d429df9",
+    "unique_content_id": "990e85544590d4e2411449cfbc182afd",
     "aliases": [
       "CVE-2011-3210",
       "VC-OPENSSL-20110906-CVE-2011-3210"
@@ -2103,19 +2202,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2011-3210",
         "severities": [],
-        "reference_id": "CVE-2011-3210"
+        "reference_id": "CVE-2011-3210",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20110906.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2011-09-06T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "3a5a4cb22a228df52db9870fed9a08f7",
+    "unique_content_id": "6a353734271d92996f12a08fde03f7bb",
     "aliases": [
       "CVE-2011-4108",
       "VC-OPENSSL-20120104-CVE-2011-4108"
@@ -2151,19 +2252,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2011-4108",
         "severities": [],
-        "reference_id": "CVE-2011-4108"
+        "reference_id": "CVE-2011-4108",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20120104.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2012-01-04T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "6b8b9ff3aed87567ede75367fecc2987",
+    "unique_content_id": "5459b1f4a775b3122cdb0ec3ad815b3d",
     "aliases": [
       "CVE-2011-4109",
       "VC-OPENSSL-20120104-CVE-2011-4109"
@@ -2187,19 +2290,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2011-4109",
         "severities": [],
-        "reference_id": "CVE-2011-4109"
+        "reference_id": "CVE-2011-4109",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20120104.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2012-01-04T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "11d96733d7bb2dea3d7e173ed9858c24",
+    "unique_content_id": "85e39cd316fb40cbdc47d19d1f93fade",
     "aliases": [
       "CVE-2011-4576",
       "VC-OPENSSL-20120104-CVE-2011-4576"
@@ -2235,19 +2340,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2011-4576",
         "severities": [],
-        "reference_id": "CVE-2011-4576"
+        "reference_id": "CVE-2011-4576",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20120104.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2012-01-04T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "2a187a95dbd0a4564058b65eae6c8b3c",
+    "unique_content_id": "578281e8060ac1dc67b9d229e4b003ab",
     "aliases": [
       "CVE-2011-4577",
       "VC-OPENSSL-20120104-CVE-2011-4577"
@@ -2283,19 +2390,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2011-4577",
         "severities": [],
-        "reference_id": "CVE-2011-4577"
+        "reference_id": "CVE-2011-4577",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20120104.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2012-01-04T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "26630622961e36cea65fa88cc8c9cdb5",
+    "unique_content_id": "48361e01b38b28352705c300f7ee407b",
     "aliases": [
       "CVE-2011-4619",
       "VC-OPENSSL-20120104-CVE-2011-4619"
@@ -2331,19 +2440,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2011-4619",
         "severities": [],
-        "reference_id": "CVE-2011-4619"
+        "reference_id": "CVE-2011-4619",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20120104.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2012-01-04T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "cab4c3e0520cc725f31abc4f96aacfe5",
+    "unique_content_id": "9c9b9e8b9a5f1a355656382f71722432",
     "aliases": [
       "CVE-2012-0027",
       "VC-OPENSSL-20120104-CVE-2012-0027"
@@ -2367,19 +2478,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2012-0027",
         "severities": [],
-        "reference_id": "CVE-2012-0027"
+        "reference_id": "CVE-2012-0027",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20120104.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2012-01-04T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "a8172e8dcd93929a685ae7ff5ab57f4e",
+    "unique_content_id": "5af91d2aece046ccf3bc688d3dff09d5",
     "aliases": [
       "CVE-2012-0050",
       "VC-OPENSSL-20120104-CVE-2012-0050"
@@ -2415,19 +2528,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2012-0050",
         "severities": [],
-        "reference_id": "CVE-2012-0050"
+        "reference_id": "CVE-2012-0050",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20120118.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2012-01-04T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "90ab13ea62ea4e792a3cafa5987545eb",
+    "unique_content_id": "6744bf2a3fd6eba6b18d59fb648d443b",
     "aliases": [
       "CVE-2012-0884",
       "VC-OPENSSL-20120312-CVE-2012-0884"
@@ -2463,19 +2578,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2012-0884",
         "severities": [],
-        "reference_id": "CVE-2012-0884"
+        "reference_id": "CVE-2012-0884",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20120312.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2012-03-12T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "b44527bfe6430cc94b60418b7087a3e0",
+    "unique_content_id": "c4e836c345751d38a3bff43c10e5a655",
     "aliases": [
       "CVE-2012-2110",
       "VC-OPENSSL-20120419-CVE-2012-2110"
@@ -2523,19 +2640,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2012-2110",
         "severities": [],
-        "reference_id": "CVE-2012-2110"
+        "reference_id": "CVE-2012-2110",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20120419.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2012-04-19T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "d4c8a48e8098ceca4051bedc7ac30497",
+    "unique_content_id": "7451866670acf0bd4a5f0c9d74bdfb18",
     "aliases": [
       "CVE-2012-2131",
       "VC-OPENSSL-20120424-CVE-2012-2131"
@@ -2559,19 +2678,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2012-2131",
         "severities": [],
-        "reference_id": "CVE-2012-2131"
+        "reference_id": "CVE-2012-2131",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20120424.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2012-04-24T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "b46a4fa1a6ca3d7b4d0c1d900f74f388",
+    "unique_content_id": "9a9efe32bb6fb903c9814b808b7f0206",
     "aliases": [
       "CVE-2012-2333",
       "VC-OPENSSL-20120510-CVE-2012-2333"
@@ -2619,19 +2740,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2012-2333",
         "severities": [],
-        "reference_id": "CVE-2012-2333"
+        "reference_id": "CVE-2012-2333",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20120510.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2012-05-10T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "9162fc2463bf8366cb721d44ea72c518",
+    "unique_content_id": "9c755e2b9ac36e9d77e7aa63ca6b91e5",
     "aliases": [
       "CVE-2012-2686",
       "VC-OPENSSL-20130205-CVE-2012-2686"
@@ -2655,19 +2778,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2012-2686",
         "severities": [],
-        "reference_id": "CVE-2012-2686"
+        "reference_id": "CVE-2012-2686",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20130205.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2013-02-05T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "5cf2e720136906882f48e6dd2864ad66",
+    "unique_content_id": "084bb9ad1da9dafc260f041cfdaf868e",
     "aliases": [
       "CVE-2013-0166",
       "VC-OPENSSL-20130205-CVE-2013-0166"
@@ -2715,19 +2840,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2013-0166",
         "severities": [],
-        "reference_id": "CVE-2013-0166"
+        "reference_id": "CVE-2013-0166",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20130205.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2013-02-05T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "6d078b2d511ab774443b3f7061ce3742",
+    "unique_content_id": "d1003ac6fdcb1a2a4d7bca936e239b42",
     "aliases": [
       "CVE-2013-0169",
       "VC-OPENSSL-20130204-CVE-2013-0169"
@@ -2775,19 +2902,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2013-0169",
         "severities": [],
-        "reference_id": "CVE-2013-0169"
+        "reference_id": "CVE-2013-0169",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20130205.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2013-02-04T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "f88043d929b4e23c08346c6694c73a81",
+    "unique_content_id": "0e3a3a12e8060b9395fe7b48a7276377",
     "aliases": [
       "CVE-2013-4353",
       "VC-OPENSSL-20140106-CVE-2013-4353"
@@ -2811,19 +2940,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2013-4353",
         "severities": [],
-        "reference_id": "CVE-2013-4353"
+        "reference_id": "CVE-2013-4353",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/197e0ea817ad64820789d86711d55ff50d71f631",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-01-06T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "62a489520d6f062897ab224ae02957f2",
+    "unique_content_id": "bd7c16b098a35e13b1659e8c4934253d",
     "aliases": [
       "CVE-2013-6449",
       "VC-OPENSSL-20131214-CVE-2013-6449"
@@ -2847,19 +2978,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2013-6449",
         "severities": [],
-        "reference_id": "CVE-2013-6449"
+        "reference_id": "CVE-2013-6449",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/ca98926",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2013-12-14T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "7c69492ef0437eb2696cbe840c4a6926",
+    "unique_content_id": "cd972700acea991417121019f009bac1",
     "aliases": [
       "CVE-2013-6450",
       "VC-OPENSSL-20131213-CVE-2013-6450"
@@ -2895,19 +3028,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2013-6450",
         "severities": [],
-        "reference_id": "CVE-2013-6450"
+        "reference_id": "CVE-2013-6450",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/3462896",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2013-12-13T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "c5987ad57ea4652dbdbfc1bc9198ca67",
+    "unique_content_id": "5d7762928fe0665ff593f8b93f0f7c2d",
     "aliases": [
       "CVE-2014-0076",
       "VC-OPENSSL-20140214-CVE-2014-0076"
@@ -2955,29 +3090,33 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-0076",
         "severities": [],
-        "reference_id": "CVE-2014-0076"
+        "reference_id": "CVE-2014-0076",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/4b7a4ba29cafa432fc4266fe6e59e60bc1c96332",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/2198be3483259de374f91e57d247d0fc667aef29",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20140605.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-02-14T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "c2c25268fabdc64a8aab4b2b64e97baf",
+    "unique_content_id": "3b9f07c3f3fc9a3177b7cba6994626f2",
     "aliases": [
       "CVE-2014-0160",
       "VC-OPENSSL-20140407-CVE-2014-0160"
@@ -3001,19 +3140,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-0160",
         "severities": [],
-        "reference_id": "CVE-2014-0160"
+        "reference_id": "CVE-2014-0160",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20140407.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-04-07T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "133a07c1a64c0479ba854555365e9183",
+    "unique_content_id": "da21b7edec2a01bd2495586e3e344a2c",
     "aliases": [
       "CVE-2014-0195",
       "VC-OPENSSL-20140605-CVE-2014-0195"
@@ -3061,19 +3202,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-0195",
         "severities": [],
-        "reference_id": "CVE-2014-0195"
+        "reference_id": "CVE-2014-0195",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20140605.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-06-05T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "fd4099ae2f27e49de167f78d15309a10",
+    "unique_content_id": "ee4174c785ef4de123c8f5c8c4fbf9b2",
     "aliases": [
       "CVE-2014-0198",
       "VC-OPENSSL-20140421-CVE-2014-0198"
@@ -3109,19 +3252,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-0198",
         "severities": [],
-        "reference_id": "CVE-2014-0198"
+        "reference_id": "CVE-2014-0198",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20140605.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-04-21T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "7d8640965bc0d360a0e42146842f249d",
+    "unique_content_id": "bc12de8c2221021ccb7c3659b08cd3f5",
     "aliases": [
       "CVE-2014-0221",
       "VC-OPENSSL-20140605-CVE-2014-0221"
@@ -3169,19 +3314,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-0221",
         "severities": [],
-        "reference_id": "CVE-2014-0221"
+        "reference_id": "CVE-2014-0221",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20140605.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-06-05T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "641034cfb0903fb67648e3b75789ae90",
+    "unique_content_id": "a73f61be805e75d9468e11afb3158d45",
     "aliases": [
       "CVE-2014-0224",
       "VC-OPENSSL-20140605-CVE-2014-0224"
@@ -3229,19 +3376,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-0224",
         "severities": [],
-        "reference_id": "CVE-2014-0224"
+        "reference_id": "CVE-2014-0224",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20140605.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-06-05T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "be9c949b015377724cbc6dc3560df807",
+    "unique_content_id": "4e8f724565b6429137ea959defa72090",
     "aliases": [
       "CVE-2014-3470",
       "VC-OPENSSL-20140530-CVE-2014-3470"
@@ -3289,19 +3438,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3470",
         "severities": [],
-        "reference_id": "CVE-2014-3470"
+        "reference_id": "CVE-2014-3470",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20140605.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-05-30T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "82b2a112f49d24a54f3482e6d3c52eb3",
+    "unique_content_id": "913ba8a6e88c02283428f89a6d24952b",
     "aliases": [
       "CVE-2014-3505",
       "VC-OPENSSL-20140806-CVE-2014-3505"
@@ -3349,19 +3500,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3505",
         "severities": [],
-        "reference_id": "CVE-2014-3505"
+        "reference_id": "CVE-2014-3505",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20140806.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-08-06T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "241fa12c3e442dd1be7faa1d58439d8c",
+    "unique_content_id": "27f89a41dfab2654a12a2d701b68ad9c",
     "aliases": [
       "CVE-2014-3506",
       "VC-OPENSSL-20140806-CVE-2014-3506"
@@ -3409,19 +3562,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3506",
         "severities": [],
-        "reference_id": "CVE-2014-3506"
+        "reference_id": "CVE-2014-3506",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20140806.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-08-06T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "fbdc089e2e46fb7068a36488ed755d65",
+    "unique_content_id": "48ecff4dbadf3f99198fcfb4138048d8",
     "aliases": [
       "CVE-2014-3507",
       "VC-OPENSSL-20140806-CVE-2014-3507"
@@ -3469,19 +3624,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3507",
         "severities": [],
-        "reference_id": "CVE-2014-3507"
+        "reference_id": "CVE-2014-3507",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20140806.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-08-06T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "3cd8513b72fb1e6941a2eeab02c9c81c",
+    "unique_content_id": "e1e9269594db16c804a566e20f436cd2",
     "aliases": [
       "CVE-2014-3508",
       "VC-OPENSSL-20140806-CVE-2014-3508"
@@ -3529,19 +3686,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3508",
         "severities": [],
-        "reference_id": "CVE-2014-3508"
+        "reference_id": "CVE-2014-3508",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20140806.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-08-06T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "28ec76db5a2018a883aad0aa539d19de",
+    "unique_content_id": "db4e7a865c812a2f137555357a4ea54a",
     "aliases": [
       "CVE-2014-3509",
       "VC-OPENSSL-20140806-CVE-2014-3509"
@@ -3577,19 +3736,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3509",
         "severities": [],
-        "reference_id": "CVE-2014-3509"
+        "reference_id": "CVE-2014-3509",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20140806.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-08-06T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "54f7e873b29c3cd698903d637bcfdc46",
+    "unique_content_id": "073034548d58e9674b4080cd0c36f8cb",
     "aliases": [
       "CVE-2014-3510",
       "VC-OPENSSL-20140806-CVE-2014-3510"
@@ -3637,19 +3798,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3510",
         "severities": [],
-        "reference_id": "CVE-2014-3510"
+        "reference_id": "CVE-2014-3510",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20140806.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-08-06T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "320e8bb944b4c04580835c47971a2cbc",
+    "unique_content_id": "a5d66943f85ab01f18b1181d5dccceb3",
     "aliases": [
       "CVE-2014-3511",
       "VC-OPENSSL-20140806-CVE-2014-3511"
@@ -3673,19 +3836,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3511",
         "severities": [],
-        "reference_id": "CVE-2014-3511"
+        "reference_id": "CVE-2014-3511",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20140806.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-08-06T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "5681d3bf2460f76eeed6c3af5652d013",
+    "unique_content_id": "4c289b7168ed3ac1dc649dd94e296ee2",
     "aliases": [
       "CVE-2014-3512",
       "VC-OPENSSL-20140806-CVE-2014-3512"
@@ -3709,19 +3874,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3512",
         "severities": [],
-        "reference_id": "CVE-2014-3512"
+        "reference_id": "CVE-2014-3512",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20140806.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-08-06T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "60d6d5067af1950d6d92c96e7ed86409",
+    "unique_content_id": "3dbf91d5443471c2da6cf221eddf9898",
     "aliases": [
       "CVE-2014-3513",
       "VC-OPENSSL-20141015-CVE-2014-3513"
@@ -3745,7 +3912,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3513",
         "severities": [],
-        "reference_id": "CVE-2014-3513"
+        "reference_id": "CVE-2014-3513",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20141015.txt",
@@ -3756,14 +3924,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-10-15T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "c4b615ea3204b33661e440719a14dd32",
+    "unique_content_id": "63bf7bb20dcd1c7a3214c025ea53c1da",
     "aliases": [
       "CVE-2014-3567",
       "VC-OPENSSL-20141015-CVE-2014-3567"
@@ -3811,7 +3980,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3567",
         "severities": [],
-        "reference_id": "CVE-2014-3567"
+        "reference_id": "CVE-2014-3567",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20141015.txt",
@@ -3822,14 +3992,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-10-15T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "2408b29cdfafdbf86dc52e29342117c9",
+    "unique_content_id": "ba13f3aea682e9e1c5fab3672da07088",
     "aliases": [
       "CVE-2014-3568",
       "VC-OPENSSL-20141015-CVE-2014-3568"
@@ -3877,7 +4048,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3568",
         "severities": [],
-        "reference_id": "CVE-2014-3568"
+        "reference_id": "CVE-2014-3568",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20141015.txt",
@@ -3888,14 +4060,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-10-15T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "3b3ff2d764f773a9237a10392567add6",
+    "unique_content_id": "d615f85fc740c95b6b98e150b56d1ae3",
     "aliases": [
       "CVE-2014-3569",
       "VC-OPENSSL-20141021-CVE-2014-3569"
@@ -3943,7 +4116,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3569",
         "severities": [],
-        "reference_id": "CVE-2014-3569"
+        "reference_id": "CVE-2014-3569",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150108.txt",
@@ -3954,14 +4128,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-10-21T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "e5d88253c5c5e062c289222fd52a533d",
+    "unique_content_id": "f2f9de1344eacac2f17f6642b9655651",
     "aliases": [
       "CVE-2014-3570",
       "VC-OPENSSL-20150108-CVE-2014-3570"
@@ -4009,7 +4184,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3570",
         "severities": [],
-        "reference_id": "CVE-2014-3570"
+        "reference_id": "CVE-2014-3570",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150108.txt",
@@ -4020,14 +4196,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-01-08T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "5b2300ac8caeee1f6fa00ba1afddc0a4",
+    "unique_content_id": "b80715d645997362b4be69a335b46cd5",
     "aliases": [
       "CVE-2014-3571",
       "VC-OPENSSL-20150105-CVE-2014-3571"
@@ -4075,7 +4252,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3571",
         "severities": [],
-        "reference_id": "CVE-2014-3571"
+        "reference_id": "CVE-2014-3571",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150108.txt",
@@ -4086,14 +4264,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-01-05T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "df18ab97c7ccaca7629862ab865c7895",
+    "unique_content_id": "16d87492de289b2cbfd7ba3ef7e106fc",
     "aliases": [
       "CVE-2014-3572",
       "VC-OPENSSL-20150105-CVE-2014-3572"
@@ -4141,7 +4320,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3572",
         "severities": [],
-        "reference_id": "CVE-2014-3572"
+        "reference_id": "CVE-2014-3572",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150108.txt",
@@ -4152,14 +4332,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-01-05T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "3a2d8229c19110910ef6111b1b78989a",
+    "unique_content_id": "cca76ec7e4ca1da60dc37bfb7065a74d",
     "aliases": [
       "CVE-2014-5139",
       "VC-OPENSSL-20140806-CVE-2014-5139"
@@ -4183,19 +4364,21 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-5139",
         "severities": [],
-        "reference_id": "CVE-2014-5139"
+        "reference_id": "CVE-2014-5139",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20140806.txt",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2014-08-06T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "7ec7ef1110b6bcbe7830e2bcbb74be32",
+    "unique_content_id": "1d42619f9d572e6c6f831da1d4b5347c",
     "aliases": [
       "CVE-2014-8176",
       "VC-OPENSSL-20150611-CVE-2014-8176"
@@ -4243,7 +4426,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-8176",
         "severities": [],
-        "reference_id": "CVE-2014-8176"
+        "reference_id": "CVE-2014-8176",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150611.txt",
@@ -4254,14 +4438,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-06-11T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "f6ea8a39bd72c482c71e599c1999b99a",
+    "unique_content_id": "3f5c428c988da21fcf75625d7764c31e",
     "aliases": [
       "CVE-2014-8275",
       "VC-OPENSSL-20150105-CVE-2014-8275"
@@ -4309,7 +4494,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-8275",
         "severities": [],
-        "reference_id": "CVE-2014-8275"
+        "reference_id": "CVE-2014-8275",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150108.txt",
@@ -4320,14 +4506,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-01-05T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "09eb5e557ee27d5e9083bf514b51319d",
+    "unique_content_id": "ecbce64df0cdd160db419c6db1cd9dc4",
     "aliases": [
       "CVE-2015-0204",
       "VC-OPENSSL-20150106-CVE-2015-0204"
@@ -4375,7 +4562,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-0204",
         "severities": [],
-        "reference_id": "CVE-2015-0204"
+        "reference_id": "CVE-2015-0204",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150108.txt",
@@ -4386,14 +4574,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-01-06T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "09e909e4defd85a5368ad81b5446b441",
+    "unique_content_id": "14a72a501af8865388558895f94f4719",
     "aliases": [
       "CVE-2015-0205",
       "VC-OPENSSL-20150108-CVE-2015-0205"
@@ -4429,7 +4618,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-0205",
         "severities": [],
-        "reference_id": "CVE-2015-0205"
+        "reference_id": "CVE-2015-0205",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150108.txt",
@@ -4440,14 +4630,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-01-08T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "881b4e919ecbf318a8e99c710e6d2422",
+    "unique_content_id": "ae55e9f4f7210581875a2de83cc058ec",
     "aliases": [
       "CVE-2015-0206",
       "VC-OPENSSL-20150108-CVE-2015-0206"
@@ -4483,7 +4674,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-0206",
         "severities": [],
-        "reference_id": "CVE-2015-0206"
+        "reference_id": "CVE-2015-0206",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150108.txt",
@@ -4494,14 +4686,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-01-08T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "7fe43196f65e52ffa86207c0f56fa1cc",
+    "unique_content_id": "66636a0c48ff0f39676cc43ff2fad975",
     "aliases": [
       "CVE-2015-0207",
       "VC-OPENSSL-20150319-CVE-2015-0207"
@@ -4525,7 +4718,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-0207",
         "severities": [],
-        "reference_id": "CVE-2015-0207"
+        "reference_id": "CVE-2015-0207",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150319.txt",
@@ -4536,14 +4730,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-03-19T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "c52761974b418d2ca56934c90a9311d4",
+    "unique_content_id": "5d5cb3ddc2d7d372e96fc9e7eb0e6172",
     "aliases": [
       "CVE-2015-0208",
       "VC-OPENSSL-20150319-CVE-2015-0208"
@@ -4567,7 +4762,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-0208",
         "severities": [],
-        "reference_id": "CVE-2015-0208"
+        "reference_id": "CVE-2015-0208",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150319.txt",
@@ -4578,14 +4774,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-03-19T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "09fb612685d300235987181459bfc09d",
+    "unique_content_id": "b91a75f67326a148c90e6ad45ba11839",
     "aliases": [
       "CVE-2015-0209",
       "VC-OPENSSL-20150319-CVE-2015-0209"
@@ -4645,7 +4842,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-0209",
         "severities": [],
-        "reference_id": "CVE-2015-0209"
+        "reference_id": "CVE-2015-0209",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150319.txt",
@@ -4656,14 +4854,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-03-19T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "2c9196c97881a039c3b1a82e40a97289",
+    "unique_content_id": "92852e9f71e2d4220063d01c7e871d0f",
     "aliases": [
       "CVE-2015-0285",
       "VC-OPENSSL-20150310-CVE-2015-0285"
@@ -4687,7 +4886,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-0285",
         "severities": [],
-        "reference_id": "CVE-2015-0285"
+        "reference_id": "CVE-2015-0285",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150319.txt",
@@ -4698,14 +4898,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-03-10T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "bcc6378eee8fe449ca2ca66bf974f1bf",
+    "unique_content_id": "d0946aba30cf839fdbc468685b6bd683",
     "aliases": [
       "CVE-2015-0286",
       "VC-OPENSSL-20150319-CVE-2015-0286"
@@ -4765,7 +4966,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-0286",
         "severities": [],
-        "reference_id": "CVE-2015-0286"
+        "reference_id": "CVE-2015-0286",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150319.txt",
@@ -4776,14 +4978,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-03-19T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "208f352a92b92193de2d541570cab937",
+    "unique_content_id": "7f14c539a7b1d7b62b178e81a164ca57",
     "aliases": [
       "CVE-2015-0287",
       "VC-OPENSSL-20150319-CVE-2015-0287"
@@ -4843,7 +5046,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-0287",
         "severities": [],
-        "reference_id": "CVE-2015-0287"
+        "reference_id": "CVE-2015-0287",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150319.txt",
@@ -4854,14 +5058,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-03-19T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "940de7708d5c8e70bce2c1c910602393",
+    "unique_content_id": "fde824bdb24f286066693f15a53a9c11",
     "aliases": [
       "CVE-2015-0288",
       "VC-OPENSSL-20150302-CVE-2015-0288"
@@ -4921,7 +5126,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-0288",
         "severities": [],
-        "reference_id": "CVE-2015-0288"
+        "reference_id": "CVE-2015-0288",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150319.txt",
@@ -4932,14 +5138,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-03-02T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "caffa127f1ad44aa39af7940262c4fe0",
+    "unique_content_id": "a6996bfe711e793b22ceb3d47c975099",
     "aliases": [
       "CVE-2015-0289",
       "VC-OPENSSL-20150319-CVE-2015-0289"
@@ -4999,7 +5206,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-0289",
         "severities": [],
-        "reference_id": "CVE-2015-0289"
+        "reference_id": "CVE-2015-0289",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150319.txt",
@@ -5010,14 +5218,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-03-19T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "3000aa609317019ef795deabebec617f",
+    "unique_content_id": "8c8ab1d205efac4fa9eeb6888a73d02b",
     "aliases": [
       "CVE-2015-0290",
       "VC-OPENSSL-20150319-CVE-2015-0290"
@@ -5041,7 +5250,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-0290",
         "severities": [],
-        "reference_id": "CVE-2015-0290"
+        "reference_id": "CVE-2015-0290",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150319.txt",
@@ -5052,14 +5262,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-03-19T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "bacdf965179a0f36b146c58a2133e0c1",
+    "unique_content_id": "9c790e8e82381b71bd62ae5a2403aa43",
     "aliases": [
       "CVE-2015-0291",
       "VC-OPENSSL-20150319-CVE-2015-0291"
@@ -5083,7 +5294,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-0291",
         "severities": [],
-        "reference_id": "CVE-2015-0291"
+        "reference_id": "CVE-2015-0291",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150319.txt",
@@ -5094,14 +5306,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-03-19T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "eb96cebdf1f6d575fb0d70431e16aef6",
+    "unique_content_id": "037837042ea4921162841a8a572dedb7",
     "aliases": [
       "CVE-2015-0292",
       "VC-OPENSSL-20150319-CVE-2015-0292"
@@ -5149,7 +5362,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-0292",
         "severities": [],
-        "reference_id": "CVE-2015-0292"
+        "reference_id": "CVE-2015-0292",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150319.txt",
@@ -5160,14 +5374,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-03-19T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "d84885840f1931d19ef744aa16ecdc9b",
+    "unique_content_id": "6b326dde327d1535193796cfd337f305",
     "aliases": [
       "CVE-2015-0293",
       "VC-OPENSSL-20150319-CVE-2015-0293"
@@ -5227,7 +5442,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-0293",
         "severities": [],
-        "reference_id": "CVE-2015-0293"
+        "reference_id": "CVE-2015-0293",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150319.txt",
@@ -5238,14 +5454,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-03-19T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "88b918ddfd5c5862901405b99c9706b3",
+    "unique_content_id": "87c491358b43983d41be3e34f577787f",
     "aliases": [
       "CVE-2015-1787",
       "VC-OPENSSL-20150319-CVE-2015-1787"
@@ -5269,7 +5486,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-1787",
         "severities": [],
-        "reference_id": "CVE-2015-1787"
+        "reference_id": "CVE-2015-1787",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150319.txt",
@@ -5280,14 +5498,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-03-19T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "8dd0172e4af828b3036ec29785b051d4",
+    "unique_content_id": "742341fd7596524c221d7ac8aa8025de",
     "aliases": [
       "CVE-2015-1788",
       "VC-OPENSSL-20150611-CVE-2015-1788"
@@ -5347,7 +5566,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-1788",
         "severities": [],
-        "reference_id": "CVE-2015-1788"
+        "reference_id": "CVE-2015-1788",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150611.txt",
@@ -5358,14 +5578,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-06-11T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "d73c50f81fcd412ebe6ece27aa24da74",
+    "unique_content_id": "154f6f04f63ee6fba925180ed9e059c1",
     "aliases": [
       "CVE-2015-1789",
       "VC-OPENSSL-20150611-CVE-2015-1789"
@@ -5425,7 +5646,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-1789",
         "severities": [],
-        "reference_id": "CVE-2015-1789"
+        "reference_id": "CVE-2015-1789",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150611.txt",
@@ -5436,14 +5658,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-06-11T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "f1a65fb0ac1a63775c176698239b3c86",
+    "unique_content_id": "2b988a60b7d38da17ad12c1d84455a70",
     "aliases": [
       "CVE-2015-1790",
       "VC-OPENSSL-20150611-CVE-2015-1790"
@@ -5503,7 +5726,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-1790",
         "severities": [],
-        "reference_id": "CVE-2015-1790"
+        "reference_id": "CVE-2015-1790",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150611.txt",
@@ -5514,14 +5738,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-06-11T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "d44e02a378cceedffbabc1262f0ee0d4",
+    "unique_content_id": "c9cffc6fc71a28da39de00bca06f0ce3",
     "aliases": [
       "CVE-2015-1791",
       "VC-OPENSSL-20150602-CVE-2015-1791"
@@ -5581,7 +5806,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-1791",
         "severities": [],
-        "reference_id": "CVE-2015-1791"
+        "reference_id": "CVE-2015-1791",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150611.txt",
@@ -5592,14 +5818,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-06-02T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "4c15738e035a1ff4f692d86d84d133b6",
+    "unique_content_id": "303206c390cb78e168c8425d3c6d2c91",
     "aliases": [
       "CVE-2015-1792",
       "VC-OPENSSL-20150611-CVE-2015-1792"
@@ -5659,7 +5886,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-1792",
         "severities": [],
-        "reference_id": "CVE-2015-1792"
+        "reference_id": "CVE-2015-1792",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150611.txt",
@@ -5670,14 +5898,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-06-11T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "d338655368729a1de892c47993ea1fa8",
+    "unique_content_id": "78795bf94381c0a1772ed444fb576c91",
     "aliases": [
       "CVE-2015-1793",
       "VC-OPENSSL-20150709-CVE-2015-1793"
@@ -5713,7 +5942,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-1793",
         "severities": [],
-        "reference_id": "CVE-2015-1793"
+        "reference_id": "CVE-2015-1793",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20150709.txt",
@@ -5724,14 +5954,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-07-09T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "f2610743398897d5ad5c14e8467b6450",
+    "unique_content_id": "34e7fc0f12a532fb0e3f133767651b82",
     "aliases": [
       "CVE-2015-1794",
       "VC-OPENSSL-20150811-CVE-2015-1794"
@@ -5755,7 +5986,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-1794",
         "severities": [],
-        "reference_id": "CVE-2015-1794"
+        "reference_id": "CVE-2015-1794",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20151203.txt",
@@ -5766,14 +5998,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-08-11T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "9f1d9131440ab9ed3f58a6e9a5c202f9",
+    "unique_content_id": "c49999301ee8aa01a9ddd428979f0bc4",
     "aliases": [
       "CVE-2015-3193",
       "VC-OPENSSL-20151203-CVE-2015-3193"
@@ -5797,7 +6030,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-3193",
         "severities": [],
-        "reference_id": "CVE-2015-3193"
+        "reference_id": "CVE-2015-3193",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20151203.txt",
@@ -5808,14 +6042,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-12-03T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "78bf93a31b7159d1d22512ff7d7f4483",
+    "unique_content_id": "3c8cc92c8be75ecbbf22aa5caa33bfa9",
     "aliases": [
       "CVE-2015-3194",
       "VC-OPENSSL-20151203-CVE-2015-3194"
@@ -5851,7 +6086,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-3194",
         "severities": [],
-        "reference_id": "CVE-2015-3194"
+        "reference_id": "CVE-2015-3194",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20151203.txt",
@@ -5862,14 +6098,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-12-03T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "f111c637538385722d6a6bb4978bca0f",
+    "unique_content_id": "aa54b531fb7b90075a099e3d74098089",
     "aliases": [
       "CVE-2015-3195",
       "VC-OPENSSL-20151203-CVE-2015-3195"
@@ -5929,7 +6166,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-3195",
         "severities": [],
-        "reference_id": "CVE-2015-3195"
+        "reference_id": "CVE-2015-3195",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20151203.txt",
@@ -5940,14 +6178,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-12-03T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "335ca53f964c287c5f90ef41153fa418",
+    "unique_content_id": "58623263c1b67d72553e0282afd5d03a",
     "aliases": [
       "CVE-2015-3196",
       "VC-OPENSSL-20151203-CVE-2015-3196"
@@ -5995,7 +6234,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-3196",
         "severities": [],
-        "reference_id": "CVE-2015-3196"
+        "reference_id": "CVE-2015-3196",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20151203.txt",
@@ -6006,14 +6246,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2015-12-03T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "6304cca64ffc10b095c719f968296270",
+    "unique_content_id": "a1b7aec7c53c8018f9f0fc9118de71b4",
     "aliases": [
       "CVE-2015-3197",
       "VC-OPENSSL-20160128-CVE-2015-3197"
@@ -6049,7 +6290,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-3197",
         "severities": [],
-        "reference_id": "CVE-2015-3197"
+        "reference_id": "CVE-2015-3197",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160128.txt",
@@ -6060,14 +6302,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-01-28T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "f5ec726b9ae1bfefe5cb07a7d1ced0d8",
+    "unique_content_id": "bb0ba32b691bb5c4273824bad2f457a9",
     "aliases": [
       "CVE-2016-0701",
       "VC-OPENSSL-20160128-CVE-2016-0701"
@@ -6091,7 +6334,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-0701",
         "severities": [],
-        "reference_id": "CVE-2016-0701"
+        "reference_id": "CVE-2016-0701",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160128.txt",
@@ -6102,14 +6346,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-01-28T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "36776ef4fb6df9a705c4e0563781e06a",
+    "unique_content_id": "5115d9fca6da89c0f09b18c66063043e",
     "aliases": [
       "CVE-2016-0702",
       "VC-OPENSSL-20160301-CVE-2016-0702"
@@ -6145,7 +6390,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-0702",
         "severities": [],
-        "reference_id": "CVE-2016-0702"
+        "reference_id": "CVE-2016-0702",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160301.txt",
@@ -6156,14 +6402,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-03-01T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "1522758b35c7551d5b9993970af5af8b",
+    "unique_content_id": "356419ba58928dd92651de3bd8726759",
     "aliases": [
       "CVE-2016-0703",
       "VC-OPENSSL-20160301-CVE-2016-0703"
@@ -6223,7 +6470,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-0703",
         "severities": [],
-        "reference_id": "CVE-2016-0703"
+        "reference_id": "CVE-2016-0703",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160301.txt",
@@ -6234,14 +6482,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-03-01T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "c39130ce22130f7c32d25a4f542bb34e",
+    "unique_content_id": "ca04670f15a036f2d20611d996b2e03d",
     "aliases": [
       "CVE-2016-0704",
       "VC-OPENSSL-20160301-CVE-2016-0704"
@@ -6301,7 +6550,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-0704",
         "severities": [],
-        "reference_id": "CVE-2016-0704"
+        "reference_id": "CVE-2016-0704",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160301.txt",
@@ -6312,14 +6562,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-03-01T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "79acd526acdef4a5bbc6a7979e19062d",
+    "unique_content_id": "1e32ac05e706f05b60d0c367814faf5b",
     "aliases": [
       "CVE-2016-0705",
       "VC-OPENSSL-20160301-CVE-2016-0705"
@@ -6355,7 +6606,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-0705",
         "severities": [],
-        "reference_id": "CVE-2016-0705"
+        "reference_id": "CVE-2016-0705",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160301.txt",
@@ -6366,14 +6618,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-03-01T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "2be7810f3d6fbd3021ab368d4fbba0f8",
+    "unique_content_id": "dcfad5e453c456b47b7dcb85f3bbf948",
     "aliases": [
       "CVE-2016-0797",
       "VC-OPENSSL-20160301-CVE-2016-0797"
@@ -6409,7 +6662,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-0797",
         "severities": [],
-        "reference_id": "CVE-2016-0797"
+        "reference_id": "CVE-2016-0797",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160301.txt",
@@ -6420,14 +6674,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-03-01T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "6641a576bc5b33596ec87504cc3f44cd",
+    "unique_content_id": "56718964514021ad2571d5e9bb4e1ba9",
     "aliases": [
       "CVE-2016-0798",
       "VC-OPENSSL-20160301-CVE-2016-0798"
@@ -6463,7 +6718,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-0798",
         "severities": [],
-        "reference_id": "CVE-2016-0798"
+        "reference_id": "CVE-2016-0798",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160301.txt",
@@ -6474,14 +6730,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-03-01T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "73dd6b700ee316b32eebd88eedfe4e51",
+    "unique_content_id": "65ffc54cdd6e37ee324ff207835500d6",
     "aliases": [
       "CVE-2016-0799",
       "VC-OPENSSL-20160301-CVE-2016-0799"
@@ -6517,7 +6774,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-0799",
         "severities": [],
-        "reference_id": "CVE-2016-0799"
+        "reference_id": "CVE-2016-0799",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160301.txt",
@@ -6528,14 +6786,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-03-01T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "bd0631642f62c7f64804d88ffb29c38d",
+    "unique_content_id": "4f983dc0849c0739895c99ff8042ef0f",
     "aliases": [
       "CVE-2016-0800",
       "VC-OPENSSL-20160301-CVE-2016-0800"
@@ -6571,7 +6830,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-0800",
         "severities": [],
-        "reference_id": "CVE-2016-0800"
+        "reference_id": "CVE-2016-0800",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160301.txt",
@@ -6582,14 +6842,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-03-01T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "56874da14bb5d1f94746148c4f1cff24",
+    "unique_content_id": "80621d002083a0f1c1d9267b2575c2af",
     "aliases": [
       "CVE-2016-2105",
       "VC-OPENSSL-20160503-CVE-2016-2105"
@@ -6625,7 +6886,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-2105",
         "severities": [],
-        "reference_id": "CVE-2016-2105"
+        "reference_id": "CVE-2016-2105",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160503.txt",
@@ -6636,14 +6898,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-05-03T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "ecfb45c3ff3da6e63b5a5fc2234b92cf",
+    "unique_content_id": "6646efbc2c3440a5aaedd5479df16fe0",
     "aliases": [
       "CVE-2016-2106",
       "VC-OPENSSL-20160503-CVE-2016-2106"
@@ -6679,7 +6942,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-2106",
         "severities": [],
-        "reference_id": "CVE-2016-2106"
+        "reference_id": "CVE-2016-2106",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160503.txt",
@@ -6690,14 +6954,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-05-03T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "84f168c294092700821f08705bec9897",
+    "unique_content_id": "eaa2fce419eaf5b4ea668e9106c1fd43",
     "aliases": [
       "CVE-2016-2107",
       "VC-OPENSSL-20160503-CVE-2016-2107"
@@ -6733,12 +6998,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-2107",
         "severities": [],
-        "reference_id": "CVE-2016-2107"
+        "reference_id": "CVE-2016-2107",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/68595c0c2886e7942a14f98c17a55a88afb6c292",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160503.txt",
@@ -6749,14 +7016,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-05-03T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "6e95eb4247679ab45b7c81973b8c7c3c",
+    "unique_content_id": "eadc3ef5343caffdb16fc7a845983d99",
     "aliases": [
       "CVE-2016-2108",
       "VC-OPENSSL-20160503-CVE-2016-2108"
@@ -6792,7 +7060,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-2108",
         "severities": [],
-        "reference_id": "CVE-2016-2108"
+        "reference_id": "CVE-2016-2108",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160503.txt",
@@ -6803,14 +7072,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-05-03T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "bafc08e18162930577bde7c738a22f17",
+    "unique_content_id": "0d33c0311add27a6e1a49d7a3d965c38",
     "aliases": [
       "CVE-2016-2109",
       "VC-OPENSSL-20160503-CVE-2016-2109"
@@ -6846,7 +7116,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-2109",
         "severities": [],
-        "reference_id": "CVE-2016-2109"
+        "reference_id": "CVE-2016-2109",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160503.txt",
@@ -6857,14 +7128,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-05-03T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "ba876b990d815a0af9fcf6dd030f669e",
+    "unique_content_id": "9448f7ccc33194fa36bbdb2f40e749b2",
     "aliases": [
       "CVE-2016-2176",
       "VC-OPENSSL-20160503-CVE-2016-2176"
@@ -6900,7 +7172,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-2176",
         "severities": [],
-        "reference_id": "CVE-2016-2176"
+        "reference_id": "CVE-2016-2176",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160503.txt",
@@ -6911,14 +7184,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-05-03T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "e73b6ed9029734bf609a4048d8efeb48",
+    "unique_content_id": "4c10365eacf49048d2ca1f3d490de4c2",
     "aliases": [
       "CVE-2016-2177",
       "VC-OPENSSL-20160601-CVE-2016-2177"
@@ -6954,7 +7228,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-2177",
         "severities": [],
-        "reference_id": "CVE-2016-2177"
+        "reference_id": "CVE-2016-2177",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160922.txt",
@@ -6965,14 +7240,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-06-01T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "cfa6f845ff3cc7447b92966a9882fdd9",
+    "unique_content_id": "69c98b0d04f2bf1a2d1f044b54108625",
     "aliases": [
       "CVE-2016-2178",
       "VC-OPENSSL-20160607-CVE-2016-2178"
@@ -7008,7 +7284,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-2178",
         "severities": [],
-        "reference_id": "CVE-2016-2178"
+        "reference_id": "CVE-2016-2178",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160922.txt",
@@ -7019,14 +7296,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-06-07T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "96f49ab83ac67aad9b2f853728b46f07",
+    "unique_content_id": "c541cb508cce45e8ffa33b03c44a7706",
     "aliases": [
       "CVE-2016-2179",
       "VC-OPENSSL-20160822-CVE-2016-2179"
@@ -7062,17 +7340,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-2179",
         "severities": [],
-        "reference_id": "CVE-2016-2179"
+        "reference_id": "CVE-2016-2179",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/00a4c1421407b6ac796688871b0a49a179c694d9",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/26f2c5774f117aea588e8f31fad38bcf14e83bec",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160922.txt",
@@ -7083,14 +7364,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-08-22T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "c52932557e16fc7fb203b26fa6b8dffb",
+    "unique_content_id": "c3ef560f8d241b1b75cdef3199faa45c",
     "aliases": [
       "CVE-2016-2180",
       "VC-OPENSSL-20160722-CVE-2016-2180"
@@ -7126,7 +7408,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-2180",
         "severities": [],
-        "reference_id": "CVE-2016-2180"
+        "reference_id": "CVE-2016-2180",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160922.txt",
@@ -7137,14 +7420,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-07-22T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "2b55f52db0cfd1652548de5ebb085bae",
+    "unique_content_id": "bad085048774b51abab2b4e37c3868a0",
     "aliases": [
       "CVE-2016-2181",
       "VC-OPENSSL-20160819-CVE-2016-2181"
@@ -7180,17 +7464,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-2181",
         "severities": [],
-        "reference_id": "CVE-2016-2181"
+        "reference_id": "CVE-2016-2181",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/b77ab018b79a00f789b0fb85596b446b08be4c9d",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/3884b47b7c255c2e94d9b387ee83c7e8bb981258",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160922.txt",
@@ -7201,14 +7488,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-08-19T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "6067926e01274a2424a8d75b51b47f05",
+    "unique_content_id": "e29c5c80d781403086304ecb4fce7a59",
     "aliases": [
       "CVE-2016-2182",
       "VC-OPENSSL-20160816-CVE-2016-2182"
@@ -7244,7 +7532,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-2182",
         "severities": [],
-        "reference_id": "CVE-2016-2182"
+        "reference_id": "CVE-2016-2182",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160922.txt",
@@ -7255,19 +7544,20 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-08-16T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "330826b50accd557bbcffbf9362ee814",
+    "unique_content_id": "659c848c83841e30d1052e8d49e18051",
     "aliases": [
       "CVE-2016-2183",
       "VC-OPENSSL-20160824-CVE-2016-2183"
     ],
-    "summary": "Because DES (and triple-DES) has only a 64-bit block size, birthday attacks are a real concern. For example, with the ability to run Javascript in a browser, it is possible to send enough traffic to cause a collision, and then use that information to recover something like a session Cookie. Triple-DES, which shows up as \u201cDES-CBC3\u201d in an OpenSSL cipher string, is still used on the Web, and major browsers are not yet willing to completely disable it. If you run a server, you should disable triple-DES. This is generally a configuration issue. If you run an old server that doesn\u2019t support any better ciphers than DES or RC4, you should upgrade. For 1.0.2 and 1.0.1, we removed the triple-DES ciphers from the \u201cHIGH\u201d keyword and put them into \u201cMEDIUM.\u201d Note that we did not remove them from the \u201cDEFAULT\u201d keyword. For the 1.1.0 release, we treat triple-DES just like we are treating RC4. It is not compiled by default; you have to use \u201cenable-weak-ssl-ciphers\u201d as a config option. Even when those ciphers are compiled, triple-DES is only in the \u201cMEDIUM\u201d keyword. In addition we also removed it from the \u201cDEFAULT\u201d keyword.",
+    "summary": "Because DES (and triple-DES) has only a 64-bit block size, birthday attacks are a real concern. For example, with the ability to run Javascript in a browser, it is possible to send enough traffic to cause a collision, and then use that information to recover something like a session Cookie. Triple-DES, which shows up as “DES-CBC3” in an OpenSSL cipher string, is still used on the Web, and major browsers are not yet willing to completely disable it. If you run a server, you should disable triple-DES. This is generally a configuration issue. If you run an old server that doesn’t support any better ciphers than DES or RC4, you should upgrade. For 1.0.2 and 1.0.1, we removed the triple-DES ciphers from the “HIGH” keyword and put them into “MEDIUM.” Note that we did not remove them from the “DEFAULT” keyword. For the 1.1.0 release, we treat triple-DES just like we are treating RC4. It is not compiled by default; you have to use “enable-weak-ssl-ciphers” as a config option. Even when those ciphers are compiled, triple-DES is only in the “MEDIUM” keyword. In addition we also removed it from the “DEFAULT” keyword.",
     "affected_packages": [
       {
         "package": {
@@ -7286,7 +7576,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-2183",
         "severities": [],
-        "reference_id": "CVE-2016-2183"
+        "reference_id": "CVE-2016-2183",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/blog/blog/2016/08/24/sweet32/",
@@ -7297,14 +7588,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-08-24T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "7e84c846013b3e1f7174ef2cb11fb1af",
+    "unique_content_id": "cfaace2e186847527636a2195766fc52",
     "aliases": [
       "CVE-2016-6302",
       "VC-OPENSSL-20160823-CVE-2016-6302"
@@ -7340,17 +7632,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-6302",
         "severities": [],
-        "reference_id": "CVE-2016-6302"
+        "reference_id": "CVE-2016-6302",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/1bbe48ab149893a78bf99c8eb8895c928900a16f",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/baaabfd8fdcec04a691695fad9a664bea43202b6",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160922.txt",
@@ -7361,14 +7656,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-08-23T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "9656bdf9c60612cf079e8db8865e72d8",
+    "unique_content_id": "2af63a761bf4ddbbaeb92afa382151cf",
     "aliases": [
       "CVE-2016-6303",
       "VC-OPENSSL-20160824-CVE-2016-6303"
@@ -7404,17 +7700,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-6303",
         "severities": [],
-        "reference_id": "CVE-2016-6303"
+        "reference_id": "CVE-2016-6303",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/2b4029e68fd7002d2307e6c3cde0f3784eef9c83",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/1027ad4f34c30b8585592764b9a670ba36888269",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160922.txt",
@@ -7425,14 +7724,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-08-24T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "1755375427c3d9b3ed1d93ce0438a1fb",
+    "unique_content_id": "3b3ff4143b6859104d216a310d58db58",
     "aliases": [
       "CVE-2016-6304",
       "VC-OPENSSL-20160922-CVE-2016-6304"
@@ -7480,22 +7780,26 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-6304",
         "severities": [],
-        "reference_id": "CVE-2016-6304"
+        "reference_id": "CVE-2016-6304",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/2c0d295e26306e15a92eb23a84a1802005c1c137",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/ea39b16b71e4e72a228a4535bd6d6a02c5edbc1f",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/a59ab1c4dd27a4c7c6e88f3c33747532fd144412",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160922.txt",
@@ -7506,14 +7810,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-09-22T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "d796adb9e8c22ca194e781ebf1eafe6a",
+    "unique_content_id": "ec3000e978936c5dc59eeb71d14f61d0",
     "aliases": [
       "CVE-2016-6305",
       "VC-OPENSSL-20160922-CVE-2016-6305"
@@ -7537,12 +7842,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-6305",
         "severities": [],
-        "reference_id": "CVE-2016-6305"
+        "reference_id": "CVE-2016-6305",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/63658103d4441924f8dbfc517b99bb54758a98b9",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160922.txt",
@@ -7553,14 +7860,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-09-22T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "8e72888ddf8d00592e0dd8ab65eb1771",
+    "unique_content_id": "17585a9b090ed55460ac0cad6c3b5f6e",
     "aliases": [
       "CVE-2016-6306",
       "VC-OPENSSL-20160921-CVE-2016-6306"
@@ -7596,17 +7904,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-6306",
         "severities": [],
-        "reference_id": "CVE-2016-6306"
+        "reference_id": "CVE-2016-6306",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/bb1a4866034255749ac578adb06a76335fc117b1",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/006a788c84e541c8920dd2ad85fb62b52185c519",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160922.txt",
@@ -7617,14 +7928,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-09-21T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "bbd16684edaf2b34828cde62b6d010be",
+    "unique_content_id": "f598dbb4cacf63ed93e588c1db8ff5b8",
     "aliases": [
       "CVE-2016-6307",
       "VC-OPENSSL-20160921-CVE-2016-6307"
@@ -7648,12 +7960,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-6307",
         "severities": [],
-        "reference_id": "CVE-2016-6307"
+        "reference_id": "CVE-2016-6307",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/4b390b6c3f8df925dc92a3dd6b022baa9a2f4650",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160922.txt",
@@ -7664,14 +7978,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-09-21T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "db2b9f58682a8da4b757c1ea10147f00",
+    "unique_content_id": "8ee9b8d2efa51108b44de0e5f0671902",
     "aliases": [
       "CVE-2016-6308",
       "VC-OPENSSL-20160921-CVE-2016-6308"
@@ -7695,12 +8010,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-6308",
         "severities": [],
-        "reference_id": "CVE-2016-6308"
+        "reference_id": "CVE-2016-6308",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/df6b5e29ffea2d5a3e08de92fb765fdb21c7a21e",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160922.txt",
@@ -7711,14 +8028,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-09-21T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "df507b03eae1aa1060b4e3a197b28b9b",
+    "unique_content_id": "ec731ec05e8399f02edc888b078cfcf1",
     "aliases": [
       "CVE-2016-6309",
       "VC-OPENSSL-20160926-CVE-2016-6309"
@@ -7742,12 +8060,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-6309",
         "severities": [],
-        "reference_id": "CVE-2016-6309"
+        "reference_id": "CVE-2016-6309",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/acacbfa7565c78d2273c0b2a2e5e803f44afefeb",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160926.txt",
@@ -7758,14 +8078,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-09-26T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "916bc11ff6a51a556fd6866b090f2670",
+    "unique_content_id": "76efc0216d0391eac89b5097852a6f7e",
     "aliases": [
       "CVE-2016-7052",
       "VC-OPENSSL-20160926-CVE-2016-7052"
@@ -7789,12 +8110,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-7052",
         "severities": [],
-        "reference_id": "CVE-2016-7052"
+        "reference_id": "CVE-2016-7052",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/6e629b5be45face20b4ca71c4fcbfed78b864a2e",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20160926.txt",
@@ -7805,14 +8128,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-09-26T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "9b83aa4df316b8fd10f5c0ce4b879c08",
+    "unique_content_id": "ad064a076d4f4136c4ff5cc9a1c32cb4",
     "aliases": [
       "CVE-2016-7053",
       "VC-OPENSSL-20161110-CVE-2016-7053"
@@ -7836,12 +8160,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-7053",
         "severities": [],
-        "reference_id": "CVE-2016-7053"
+        "reference_id": "CVE-2016-7053",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/610b66267e41a32805ab54cbc580c5a6d5826cb4",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20161110.txt",
@@ -7852,14 +8178,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-11-10T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "62c0d8ea5f5aab6d25aeaa77a1a4acc6",
+    "unique_content_id": "2260cd2fea019c35edd74053d43afbfa",
     "aliases": [
       "CVE-2016-7054",
       "VC-OPENSSL-20161110-CVE-2016-7054"
@@ -7883,12 +8210,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-7054",
         "severities": [],
-        "reference_id": "CVE-2016-7054"
+        "reference_id": "CVE-2016-7054",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/99d97842ddb5fbbbfb5e9820a64ebd19afe569f6",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20161110.txt",
@@ -7899,14 +8228,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-11-10T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "d4441f6cfa25a05ebebc286d44fe75ec",
+    "unique_content_id": "c46f2f9d6517a007f907f8a2e4c84820",
     "aliases": [
       "CVE-2016-7055",
       "VC-OPENSSL-20161110-CVE-2016-7055"
@@ -7942,17 +8272,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-7055",
         "severities": [],
-        "reference_id": "CVE-2016-7055"
+        "reference_id": "CVE-2016-7055",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/2a7dd548a6f5d6f7f84a89c98323b70a2822406e",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/57c4b9f6a2f800b41ce2836986fe33640f6c3f8a",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20161110.txt",
@@ -7963,14 +8296,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2016-11-10T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "6c59602c7e2db277403ec2a23e490c8e",
+    "unique_content_id": "6f703a0f132094abbd39fd883ed6e241",
     "aliases": [
       "CVE-2017-3730",
       "VC-OPENSSL-20170126-CVE-2017-3730"
@@ -7994,12 +8328,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-3730",
         "severities": [],
-        "reference_id": "CVE-2017-3730"
+        "reference_id": "CVE-2017-3730",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/efbe126e3ebb9123ac9d058aa2bb044261342aaa",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20170126.txt",
@@ -8010,14 +8346,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2017-01-26T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "2e236372f4ae5157f4f77b16264d3d7f",
+    "unique_content_id": "c271a33647e7cdefdce8ed38c15e1bb7",
     "aliases": [
       "CVE-2017-3731",
       "VC-OPENSSL-20170126-CVE-2017-3731"
@@ -8053,17 +8390,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-3731",
         "severities": [],
-        "reference_id": "CVE-2017-3731"
+        "reference_id": "CVE-2017-3731",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/00d965474b22b54e4275232bc71ee0c699c5cd21",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/51d009043670a627d6abe66894126851cf3690e9",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20170126.txt",
@@ -8074,14 +8414,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2017-01-26T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "035acf9ccee52f4c4c5e9a974d741cc5",
+    "unique_content_id": "b14fc26f1382b65b58128617820053c3",
     "aliases": [
       "CVE-2017-3732",
       "VC-OPENSSL-20170126-CVE-2017-3732"
@@ -8117,17 +8458,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-3732",
         "severities": [],
-        "reference_id": "CVE-2017-3732"
+        "reference_id": "CVE-2017-3732",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/a59b90bf491410f1f2bc4540cc21f1980fd14c5b",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/760d04342a495ee86bf5adc71a91d126af64397f",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20170126.txt",
@@ -8138,14 +8482,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2017-01-26T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "47a46162aade43eb6d8af2797495b392",
+    "unique_content_id": "e5c015c5ea09f74ca8830fc675109209",
     "aliases": [
       "CVE-2017-3733",
       "VC-OPENSSL-20170216-CVE-2017-3733"
@@ -8169,12 +8514,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-3733",
         "severities": [],
-        "reference_id": "CVE-2017-3733"
+        "reference_id": "CVE-2017-3733",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/4ad93618d26a3ea23d36ad5498ff4f59eff3a4d2",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20170216.txt",
@@ -8185,14 +8532,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2017-02-16T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "db4f3be3236df1b2e291bce7235c6692",
+    "unique_content_id": "3e3d332a535202d4a355d9c6f46f8511",
     "aliases": [
       "CVE-2017-3735",
       "VC-OPENSSL-20170828-CVE-2017-3735"
@@ -8228,17 +8576,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-3735",
         "severities": [],
-        "reference_id": "CVE-2017-3735"
+        "reference_id": "CVE-2017-3735",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/31c8b265591a0aaa462a1f3eb5770661aaac67db",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/068b963bb7afc57f5bdd723de0dd15e7795d5822",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20170828.txt",
@@ -8249,14 +8600,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2017-08-28T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "47b7670c5be21c7c5289011206c0ccff",
+    "unique_content_id": "135805c0fbb3f388567abe5a782e3678",
     "aliases": [
       "CVE-2017-3736",
       "VC-OPENSSL-20171102-CVE-2017-3736"
@@ -8292,17 +8644,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-3736",
         "severities": [],
-        "reference_id": "CVE-2017-3736"
+        "reference_id": "CVE-2017-3736",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/38d600147331d36e74174ebbd4008b63188b321b",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/4443cf7aa0099e5ce615c18cee249fff77fb0871",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20171102.txt",
@@ -8313,14 +8668,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2017-11-02T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "ab43091ab001a2f9cd93ceba44745b9f",
+    "unique_content_id": "37c832cd6a7a445e21de6bcaae2e6aad",
     "aliases": [
       "CVE-2017-3737",
       "VC-OPENSSL-20171207-CVE-2017-3737"
@@ -8344,12 +8700,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-3737",
         "severities": [],
-        "reference_id": "CVE-2017-3737"
+        "reference_id": "CVE-2017-3737",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/898fb884b706aaeb283de4812340bb0bde8476dc",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20171207.txt",
@@ -8360,14 +8718,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2017-12-07T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "5718147b85fbc849ca6bd3a13419a6c7",
+    "unique_content_id": "fe526b02e32f024f79ab16ad59c5cd59",
     "aliases": [
       "CVE-2017-3738",
       "VC-OPENSSL-20171207-CVE-2017-3738"
@@ -8403,17 +8762,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-3738",
         "severities": [],
-        "reference_id": "CVE-2017-3738"
+        "reference_id": "CVE-2017-3738",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/ca51bafc1a88d8b8348f5fd97adc5d6ca93f8e76",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/e502cc86df9dafded1694fceb3228ee34d11c11a",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20171207.txt",
@@ -8424,14 +8786,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2017-12-07T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "a4e3863a49cefa4db8b4d9cd9c403dab",
+    "unique_content_id": "891a444705c4d9e9d6d9514e6152b93d",
     "aliases": [
       "CVE-2018-0732",
       "VC-OPENSSL-20180612-CVE-2018-0732"
@@ -8467,17 +8830,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-0732",
         "severities": [],
-        "reference_id": "CVE-2018-0732"
+        "reference_id": "CVE-2018-0732",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/ea7abeeabf92b7aca160bdd0208636d4da69f4f4",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/3984ef0b72831da8b3ece4745cac4f8575b19098",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20180612.txt",
@@ -8488,14 +8854,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2018-06-12T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "dad327168e2120b62812bdae9d3a7eaf",
+    "unique_content_id": "0add28e4bf2017a49afa086624548363",
     "aliases": [
       "CVE-2018-0733",
       "VC-OPENSSL-20180327-CVE-2018-0733"
@@ -8519,12 +8886,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-0733",
         "severities": [],
-        "reference_id": "CVE-2018-0733"
+        "reference_id": "CVE-2018-0733",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/56d5a4bfcaf37fa420aef2bb881aa55e61cf5f2f",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20180327.txt",
@@ -8535,14 +8904,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2018-03-27T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "06a3cb59793e95cd5b4b2d35dec77d8a",
+    "unique_content_id": "c6585613e6f674c7ea39eefc5057e85d",
     "aliases": [
       "CVE-2018-0734",
       "VC-OPENSSL-20181030-CVE-2018-0734"
@@ -8590,22 +8960,26 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-0734",
         "severities": [],
-        "reference_id": "CVE-2018-0734"
+        "reference_id": "CVE-2018-0734",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/8abfe72e8c1de1b95f50aa0d9134803b4d00070f",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/ef11e19d1365eea2b1851e6f540a0bf365d303e7",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/43e6a58d4991a451daf4891ff05a48735df871ac",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20181030.txt",
@@ -8616,14 +8990,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2018-10-30T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "2b80c4f3d16c6096ebfc310e81a34c99",
+    "unique_content_id": "3193861b88f934ec25c275d622932dc2",
     "aliases": [
       "CVE-2018-0735",
       "VC-OPENSSL-20181029-CVE-2018-0735"
@@ -8659,17 +9034,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-0735",
         "severities": [],
-        "reference_id": "CVE-2018-0735"
+        "reference_id": "CVE-2018-0735",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/56fb454d281a023b3f950d969693553d3f3ceea1",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/b1d6d55ece1c26fa2829e2b819b038d7b6d692b4",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20181029.txt",
@@ -8680,14 +9058,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2018-10-29T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "0f5bc3d9e09f59cfff54502fac350be8",
+    "unique_content_id": "5ce5c73a388c1721baa86dd346bc5cca",
     "aliases": [
       "CVE-2018-0737",
       "VC-OPENSSL-20180416-CVE-2018-0737"
@@ -8723,17 +9102,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-0737",
         "severities": [],
-        "reference_id": "CVE-2018-0737"
+        "reference_id": "CVE-2018-0737",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/6939eab03a6e23d2bd2c3f5e34fe1d48e542e787",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/349a41da1ad88ad87825414752a8ff5fdd6a6c3f",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20180416.txt",
@@ -8744,14 +9126,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2018-04-16T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "c41d3ab832b69a8187516d55faafc4e8",
+    "unique_content_id": "fd56a1d08c404d18a2425bde4a2cc222",
     "aliases": [
       "CVE-2018-0739",
       "VC-OPENSSL-20180327-CVE-2018-0739"
@@ -8787,17 +9170,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-0739",
         "severities": [],
-        "reference_id": "CVE-2018-0739"
+        "reference_id": "CVE-2018-0739",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/2ac4c6f7b2b2af20c0e2b0ba05367e454cd11b33",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/9310d45087ae546e27e61ddf8f6367f29848220d",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20180327.txt",
@@ -8808,14 +9194,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2018-03-27T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "8d422736491adbc8fb773294a7a8a1f1",
+    "unique_content_id": "a86eaada3e2c85065180d5d7eb1d3a31",
     "aliases": [
       "CVE-2018-5407",
       "VC-OPENSSL-20181102-CVE-2018-5407"
@@ -8851,17 +9238,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-5407",
         "severities": [],
-        "reference_id": "CVE-2018-5407"
+        "reference_id": "CVE-2018-5407",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/aab7c770353b1dc4ba045938c8fb446dd1c4531e",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/b18162a7c9bbfb57112459a4d6631fa258fd8c0cq",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20181112.txt",
@@ -8872,14 +9262,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2018-11-02T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "cb66318cb74192742bf3d0d772e68108",
+    "unique_content_id": "939439dfee2c7c3ef79f3f7fa3e5f90b",
     "aliases": [
       "CVE-2019-1543",
       "VC-OPENSSL-20190306-CVE-2019-1543"
@@ -8915,17 +9306,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-1543",
         "severities": [],
-        "reference_id": "CVE-2019-1543"
+        "reference_id": "CVE-2019-1543",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/f426625b6ae9a7831010750490a5f0ad689c5ba3",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/ee22257b1418438ebaf54df98af4e24f494d1809",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20190306.txt",
@@ -8936,14 +9330,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2019-03-06T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "f168c1647cf882fd34bca94046268073",
+    "unique_content_id": "c251f1e3c85429b0daa07cb6ea7d1e67",
     "aliases": [
       "CVE-2019-1547",
       "VC-OPENSSL-20190910-CVE-2019-1547"
@@ -8991,22 +9386,26 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-1547",
         "severities": [],
-        "reference_id": "CVE-2019-1547"
+        "reference_id": "CVE-2019-1547",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/30c22fa8b1d840036b8e203585738df62a03cec8",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/7c1709c2da5414f5b6133d00a03fc8c5bf996c7a",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/21c856b75d81eff61aa63b4f036bb64a85bf6d46",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20190910.txt",
@@ -9017,14 +9416,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2019-09-10T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "41baab1700fd84f9acf96c23c6c42fe4",
+    "unique_content_id": "05226413367dc1d93fc68106f47a330c",
     "aliases": [
       "CVE-2019-1549",
       "VC-OPENSSL-20190910-CVE-2019-1549"
@@ -9048,12 +9448,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-1549",
         "severities": [],
-        "reference_id": "CVE-2019-1549"
+        "reference_id": "CVE-2019-1549",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/1b0fe00e2704b5e20334a16d3c9099d1ba2ef1be",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20190910.txt",
@@ -9064,14 +9466,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2019-09-10T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "fafeb81c5feccc784b6f393f42d33c8b",
+    "unique_content_id": "70a045decd4328c7ff88c8a1d969e8c4",
     "aliases": [
       "CVE-2019-1551",
       "VC-OPENSSL-20191206-CVE-2019-1551"
@@ -9107,17 +9510,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-1551",
         "severities": [],
-        "reference_id": "CVE-2019-1551"
+        "reference_id": "CVE-2019-1551",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/419102400a2811582a7a3d4a4e317d72e5ce0a8f",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/f1c5eea8a817075d31e43f5876993c6710238c98",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20191206.txt",
@@ -9128,14 +9534,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2019-12-06T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "7a7bc3b52f50fb72f067ac6d98d6ed0e",
+    "unique_content_id": "4213f363ba037058475897c693173044",
     "aliases": [
       "CVE-2019-1552",
       "VC-OPENSSL-20190730-CVE-2019-1552"
@@ -9183,27 +9590,32 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-1552",
         "severities": [],
-        "reference_id": "CVE-2019-1552"
+        "reference_id": "CVE-2019-1552",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/54aa9d51b09d67e90db443f682cface795f5af9e",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/e32bc855a81a2d48d215c506bdeb4f598045f7e9",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/b15a19c148384e73338aa7c5b12652138e35ed28",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/d333ebaf9c77332754a9d5e111e2f53e1de54fdd",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20190730.txt",
@@ -9214,14 +9626,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2019-07-30T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "c8bb54ebeba310bfbc9ac147a67bf233",
+    "unique_content_id": "bd17aac4dde8bee4fba0c673c8287082",
     "aliases": [
       "CVE-2019-1559",
       "VC-OPENSSL-20190226-CVE-2019-1559"
@@ -9245,12 +9658,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-1559",
         "severities": [],
-        "reference_id": "CVE-2019-1559"
+        "reference_id": "CVE-2019-1559",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/e9bbefbf0f24c57645e7ad6a5a71ae649d18ac8e",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20190226.txt",
@@ -9261,14 +9676,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2019-02-26T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "1a165334b2838c6cf0630ffbf5f5bf4d",
+    "unique_content_id": "45ac1a1229fc8b49656c3e6fd99221cd",
     "aliases": [
       "CVE-2019-1563",
       "VC-OPENSSL-20190910-CVE-2019-1563"
@@ -9316,22 +9732,26 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-1563",
         "severities": [],
-        "reference_id": "CVE-2019-1563"
+        "reference_id": "CVE-2019-1563",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/08229ad838c50f644d7e928e2eef147b4308ad64",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/631f94db0065c78181ca9ba5546ebc8bb3884b97",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/e21f8cf78a125cd3c8c0d1a1a6c8bb0b901f893f",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20190910.txt",
@@ -9342,14 +9762,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2019-09-10T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "0c93d89c21e0cc886149032439487491",
+    "unique_content_id": "afb9d94adcf86f7b0de8aa4f7ff7c6b4",
     "aliases": [
       "CVE-2020-1967",
       "VC-OPENSSL-20200421-CVE-2020-1967"
@@ -9373,12 +9794,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-1967",
         "severities": [],
-        "reference_id": "CVE-2020-1967"
+        "reference_id": "CVE-2020-1967",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/eb563247aef3e83dda7679c43f9649270462e5b1",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20200421.txt",
@@ -9389,14 +9812,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2020-04-21T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "f5d431bb5c2a0c0e9f12fc10152bb6f1",
+    "unique_content_id": "56010436497977628dcea6e96888d450",
     "aliases": [
       "CVE-2020-1968",
       "VC-OPENSSL-20200909-CVE-2020-1968"
@@ -9420,7 +9844,8 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-1968",
         "severities": [],
-        "reference_id": "CVE-2020-1968"
+        "reference_id": "CVE-2020-1968",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20200909.txt",
@@ -9431,14 +9856,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2020-09-09T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "2cdae28329d31e3281366d2179bfc56d",
+    "unique_content_id": "87b17158b6ad69a4d8043755547f45ad",
     "aliases": [
       "CVE-2020-1971",
       "VC-OPENSSL-20201208-CVE-2020-1971"
@@ -9474,17 +9900,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-1971",
         "severities": [],
-        "reference_id": "CVE-2020-1971"
+        "reference_id": "CVE-2020-1971",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/f960d81215ebf3f65e03d4d5d857fb9b666d6920",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/2154ab83e14ede338d2ede9bbe5cdfce5d5a6c9e",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20201208.txt",
@@ -9495,14 +9924,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2020-12-08T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "1d6ee2a4d37765218cf5f74e48905d69",
+    "unique_content_id": "ebbc5ad78a20128d4894106ef368c8f1",
     "aliases": [
       "CVE-2021-23839",
       "VC-OPENSSL-20210216-CVE-2021-23839"
@@ -9526,12 +9956,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-23839",
         "severities": [],
-        "reference_id": "CVE-2021-23839"
+        "reference_id": "CVE-2021-23839",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/30919ab80a478f2d81f2e9acdcca3fa4740cd547",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20210216.txt",
@@ -9542,14 +9974,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2021-02-16T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "4045e40869465128bb9c3218bf917ed1",
+    "unique_content_id": "62778ba1713cdf9851ef92f4d2f46fa7",
     "aliases": [
       "CVE-2021-23840",
       "VC-OPENSSL-20210216-CVE-2021-23840"
@@ -9585,17 +10018,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-23840",
         "severities": [],
-        "reference_id": "CVE-2021-23840"
+        "reference_id": "CVE-2021-23840",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/6a51b9e1d0cf0bf8515f7201b68fb0a3482b3dc1",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/9b1129239f3ebb1d1c98ce9ed41d5c9476c47cb2",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20210216.txt",
@@ -9606,14 +10042,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2021-02-16T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "5f79231dc01856918e8d538edb22a3e0",
+    "unique_content_id": "510307f6edf17f0620c4a096bb61df0c",
     "aliases": [
       "CVE-2021-23841",
       "VC-OPENSSL-20210216-CVE-2021-23841"
@@ -9649,17 +10086,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-23841",
         "severities": [],
-        "reference_id": "CVE-2021-23841"
+        "reference_id": "CVE-2021-23841",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/122a19ab48091c657f7cb1fb3af9fc07bd557bbf",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/8252ee4d90f3f2004d3d0aeeed003ad49c9a7807",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20210216.txt",
@@ -9670,14 +10110,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2021-02-16T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "3970a5a9fb420959f7a9b945bcb99cb5",
+    "unique_content_id": "b9610772604a38aae37934639b563f2d",
     "aliases": [
       "CVE-2021-3449",
       "VC-OPENSSL-20210325-CVE-2021-3449"
@@ -9701,12 +10142,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-3449",
         "severities": [],
-        "reference_id": "CVE-2021-3449"
+        "reference_id": "CVE-2021-3449",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/fb9fa6b51defd48157eeb207f52181f735d96148",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20210325.txt",
@@ -9717,14 +10160,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2021-03-25T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "73a8f04c53b0dee77f7623a5ff4edbce",
+    "unique_content_id": "8017a45e047c6a8a07ddcef5b019a5a9",
     "aliases": [
       "CVE-2021-3450",
       "VC-OPENSSL-20210325-CVE-2021-3450"
@@ -9748,12 +10192,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-3450",
         "severities": [],
-        "reference_id": "CVE-2021-3450"
+        "reference_id": "CVE-2021-3450",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/2a40b7bc7b94dd7de897a74571e7024f0cf0d63b",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20210325.txt",
@@ -9764,14 +10210,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2021-03-25T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "aa49ee2c8a805ea72926ae3a0edd7c1c",
+    "unique_content_id": "7c59ebbda08fad46ad3628c58c6e1f4f",
     "aliases": [
       "CVE-2021-3711",
       "VC-OPENSSL-20210824-CVE-2021-3711"
@@ -9795,12 +10242,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-3711",
         "severities": [],
-        "reference_id": "CVE-2021-3711"
+        "reference_id": "CVE-2021-3711",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/59f5e75f3bced8fc0e130d72a3f582cf7b480b46",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20210824.txt",
@@ -9811,14 +10260,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2021-08-24T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "8a177a0894cae538775ee4cc350d4447",
+    "unique_content_id": "97ca2e1d473bc9e2e802285c56f85541",
     "aliases": [
       "CVE-2021-3712",
       "VC-OPENSSL-20210824-CVE-2021-3712"
@@ -9854,17 +10304,20 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-3712",
         "severities": [],
-        "reference_id": "CVE-2021-3712"
+        "reference_id": "CVE-2021-3712",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/94d23fcff9b2a7a8368dfe52214d5c2569882c11",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/ccb0a11145ee72b042d10593a64eaf9e8a55ec12",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20210824.txt",
@@ -9875,14 +10328,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2021-08-24T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "0c4e6fb5ba341c18595892307fa8617d",
+    "unique_content_id": "1c5bbe67613cfce3a310b822466ad17e",
     "aliases": [
       "CVE-2021-4044",
       "VC-OPENSSL-20211214-CVE-2021-4044"
@@ -9906,12 +10360,14 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-4044",
         "severities": [],
-        "reference_id": "CVE-2021-4044"
+        "reference_id": "CVE-2021-4044",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/758754966791c537ea95241438454aa86f91f256",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20211214.txt",
@@ -9922,14 +10378,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2021-12-14T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "927484e82be70aea5b667ba1056a4c0f",
+    "unique_content_id": "0039548ab133f97e2138bb298ccc7cae",
     "aliases": [
       "CVE-2021-4160",
       "VC-OPENSSL-20220128-CVE-2021-4160"
@@ -9977,22 +10434,26 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-4160",
         "severities": [],
-        "reference_id": "CVE-2021-4160"
+        "reference_id": "CVE-2021-4160",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/3bf7b73ea7123045b8f972badc67ed6878e6c37f",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/e9e726506cd2a3fd9c0f12daf8cc1fe934c7dddb",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/6fc1aaaf303185aa5e483e06bdfae16daa9193a7",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20220128.txt",
@@ -10003,14 +10464,15 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2022-01-28T00:00:00+00:00",
     "weaknesses": []
   },
   {
-    "unique_content_id": "7a615f8ca4554d92cf3431b00d54c722",
+    "unique_content_id": "caa5eb3135dc715346ce3a32211b024e",
     "aliases": [
       "CVE-2022-0778",
       "VC-OPENSSL-20220315-CVE-2022-0778"
@@ -10058,22 +10520,26 @@
       {
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0778",
         "severities": [],
-        "reference_id": "CVE-2022-0778"
+        "reference_id": "CVE-2022-0778",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/a466912611aa6cbdf550cd10601390e587451246",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/3118eb64934499d93db3230748a452351d1d9a65",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://github.com/openssl/openssl/commit/380085481c64de749a6dd25cdf0bcf4360b30f83",
         "severities": [],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       },
       {
         "url": "https://www.openssl.org/news/secadv/20220315.txt",
@@ -10084,7 +10550,8 @@
             "scoring_elements": ""
           }
         ],
-        "reference_id": ""
+        "reference_id": "",
+        "reference_type": ""
       }
     ],
     "date_published": "2022-03-15T00:00:00+00:00",

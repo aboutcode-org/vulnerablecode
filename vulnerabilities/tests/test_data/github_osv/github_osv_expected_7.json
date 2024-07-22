@@ -81,6 +81,7 @@
   "references": [
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/dotnet/runtime/security/advisories/GHSA-h7jm-g87p-5935",
       "severities": [
         {
@@ -97,6 +98,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-36796",
       "severities": [
         {
@@ -113,6 +115,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/dotnet/runtime",
       "severities": [
         {
@@ -129,6 +132,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-36796",
       "severities": [
         {

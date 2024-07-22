@@ -21,6 +21,7 @@
     "references": [
       {
         "reference_id": "GLSA-201709-09",
+        "reference_type": "",
         "url": "https://security.gentoo.org/glsa/201709-09",
         "severities": []
       }

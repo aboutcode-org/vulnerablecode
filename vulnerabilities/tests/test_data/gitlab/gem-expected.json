@@ -20,6 +20,7 @@
   "references": [
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "http://weblog.rubyonrails.org/2014/9/29/Rails-4-2-0-beta2-has-been-released/",
       "severities": []
     }

@@ -10,7 +10,6 @@
   "references": [
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-1036",
       "severities": [
         {
@@ -27,7 +26,6 @@
     },
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "https://github.com/microweber/microweber/commit/82be4f0b4729be870ccefdae99a04833f134aa6a",
       "severities": [
         {
@@ -44,7 +42,6 @@
     },
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "https://github.com/microweber/microweber",
       "severities": [
         {
@@ -61,7 +58,6 @@
     },
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "https://huntr.dev/bounties/db615581-d5a9-4ca5-a3e9-7a39eceaa424",
       "severities": [
         {

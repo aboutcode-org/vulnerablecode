@@ -76,7 +76,6 @@ class VulnerabilitySeverity:
 @dataclasses.dataclass(order=True)
 class Reference:
     reference_id: str = ""
-    reference_type: str = ""
     url: str = ""
     severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
 
@@ -86,17 +85,11 @@ class Reference:
 
     def normalized(self):
         severities = sorted(self.severities)
-        return Reference(
-            reference_id=self.reference_id,
-            url=self.url,
-            severities=severities,
-            reference_type=self.reference_type,
-        )
+        return Reference(reference_id=self.reference_id, url=self.url, severities=severities)
 
     def to_dict(self):
         return {
             "reference_id": self.reference_id,
-            "reference_type": self.reference_type,
             "url": self.url,
             "severities": [severity.to_dict() for severity in self.severities],
         }
@@ -105,7 +98,6 @@ class Reference:
     def from_dict(cls, ref: dict):
         return cls(
             reference_id=ref["reference_id"],
-            reference_type=ref["reference_type"],
             url=ref["url"],
             severities=[
                 VulnerabilitySeverity.from_dict(severity) for severity in ref["severities"]

@@ -1426,26 +1426,22 @@
             "value": "medium",
             "scoring_elements": ""
           }
-        ],
-        "reference_type": ""
+        ]
       },
       {
         "reference_id": "CVE-2021-23017",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-23017",
-        "severities": [],
-        "reference_type": ""
+        "severities": []
       },
       {
         "reference_id": "",
         "url": "https://nginx.org/download/patch.2021.resolver.txt",
-        "severities": [],
-        "reference_type": ""
+        "severities": []
       },
       {
         "reference_id": "",
         "url": "https://nginx.org/download/patch.2021.resolver.txt.asc",
-        "severities": [],
-        "reference_type": ""
+        "severities": []
       }
     ],
     "weaknesses": []
@@ -2877,26 +2873,22 @@
             "value": "medium",
             "scoring_elements": ""
           }
-        ],
-        "reference_type": ""
+        ]
       },
       {
         "reference_id": "CVE-2021-23017",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-23017",
-        "severities": [],
-        "reference_type": ""
+        "severities": []
       },
       {
         "reference_id": "",
         "url": "https://nginx.org/download/patch.2021.resolver.txt",
-        "severities": [],
-        "reference_type": ""
+        "severities": []
       },
       {
         "reference_id": "",
         "url": "https://nginx.org/download/patch.2021.resolver.txt.asc",
-        "severities": [],
-        "reference_type": ""
+        "severities": []
       }
     ],
     "weaknesses": []
@@ -3448,14 +3440,12 @@
             "value": "medium",
             "scoring_elements": ""
           }
-        ],
-        "reference_type": ""
+        ]
       },
       {
         "reference_id": "CVE-2019-9511",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-9511",
-        "severities": [],
-        "reference_type": ""
+        "severities": []
       }
     ],
     "weaknesses": []
@@ -4007,14 +3997,12 @@
             "value": "medium",
             "scoring_elements": ""
           }
-        ],
-        "reference_type": ""
+        ]
       },
       {
         "reference_id": "CVE-2019-9511",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-9511",
-        "severities": [],
-        "reference_type": ""
+        "severities": []
       }
     ],
     "weaknesses": []

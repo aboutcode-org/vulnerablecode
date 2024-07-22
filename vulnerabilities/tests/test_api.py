@@ -21,7 +21,6 @@ from rest_framework.test import APIClient
 
 from vulnerabilities.api import MinimalPackageSerializer
 from vulnerabilities.api import PackageSerializer
-from vulnerabilities.api import VulnerabilityReferenceSerializer
 from vulnerabilities.models import Alias
 from vulnerabilities.models import ApiUser
 from vulnerabilities.models import Package
@@ -162,9 +161,6 @@ class TestSerializers(TransactionTestCase):
             namespace="ubuntu",
             qualifiers={"distro": "jessie"},
         )
-        self.ref = VulnerabilityReference.objects.create(
-            reference_type="advisory", reference_id="CVE-xxx-xxx", url="https://example.com"
-        )
         self.user = ApiUser.objects.create_api_user(username="e@mail.com")
         self.auth = f"Token {self.user.auth_token.key}"
         self.client = APIClient(enforce_csrf_checks=True)
@@ -184,16 +180,6 @@ class TestSerializers(TransactionTestCase):
 
         purls = {r["purl"] for r in response}
         self.assertIn("pkg:deb/ubuntu/mimetex@1.50-1.1?distro=jessie", purls)
-
-    def test_vulnerability_reference_serializer(self):
-        response = VulnerabilityReferenceSerializer(instance=self.ref).data
-        assert response == {
-            "reference_url": "https://example.com",
-            "reference_id": "CVE-xxx-xxx",
-            "reference_type": "advisory",
-            "scores": [],
-            "url": "https://example.com",
-        }
 
 
 class APITestCaseVulnerability(TransactionTestCase):

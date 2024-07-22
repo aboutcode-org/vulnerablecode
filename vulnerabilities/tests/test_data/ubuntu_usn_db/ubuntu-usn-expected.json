@@ -8,7 +8,6 @@
     "references": [
       {
         "reference_id": "USN-763-1",
-        "reference_type": "",
         "url": "https://usn.ubuntu.com/763-1/",
         "severities": []
       }
@@ -26,7 +25,6 @@
     "references": [
       {
         "reference_id": "USN-763-1",
-        "reference_type": "",
         "url": "https://usn.ubuntu.com/763-1/",
         "severities": []
       }

@@ -21,7 +21,6 @@
     "references": [
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8703.html",
         "severities": [
           {
@@ -33,7 +32,6 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://blogs.gentoo.org/ago/2016/08/08/potrace-multiplesix-heap-based-buffer-overflow-in-bm_readbody_bmp-bitmap_io-c/",
         "severities": [
           {
@@ -45,7 +43,6 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8703",
         "severities": [
           {
@@ -82,7 +79,6 @@
     "references": [
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-8860.html",
         "severities": [
           {
@@ -94,7 +90,6 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "http://www.openwall.com/lists/oss-security/2016/10/18/11",
         "severities": [
           {
@@ -106,7 +101,6 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://blog.torproject.org/blog/tor-0289-released-important-fixes",
         "severities": [
           {
@@ -118,7 +112,6 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-8860",
         "severities": [
           {
@@ -130,7 +123,6 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/torproject/tor/commit/3cea86eb2fbb65949673eb4ba8ebb695c87a57ce",
         "severities": [
           {
@@ -142,7 +134,6 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://trac.torproject.org/projects/tor/ticket/20384",
         "severities": [
           {

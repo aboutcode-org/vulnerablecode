@@ -188,31 +188,26 @@
     "references": [
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://rubysec.com/advisories/CVE-2022-21831/",
         "severities": []
       },
       {
         "reference_id": "GHSA-w749-p3v6-hccq",
-        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq",
         "severities": [
           {
@@ -398,31 +393,26 @@
     "references": [
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://rubysec.com/advisories/CVE-2022-21831/",
         "severities": []
       },
       {
         "reference_id": "GHSA-w749-p3v6-hccq",
-        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq",
         "severities": [
           {
@@ -465,31 +455,26 @@
     "references": [
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://rubysec.com/advisories/CVE-2022-21831/",
         "severities": []
       },
       {
         "reference_id": "GHSA-w749-p3v6-hccq",
-        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq",
         "severities": [
           {

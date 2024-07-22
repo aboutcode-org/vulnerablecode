@@ -8,7 +8,6 @@
     "references": [
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml",
         "severities": [
           {
@@ -37,7 +36,6 @@
     "references": [
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml",
         "severities": [
           {

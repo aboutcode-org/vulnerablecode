@@ -21,7 +21,6 @@
   "references": [
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-40831",
       "severities": [
         {
@@ -33,7 +32,6 @@
     },
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "https://github.com/aws/aws-iot-device-sdk-cpp-v2",
       "severities": [
         {

@@ -33,7 +33,6 @@
     "references": [
       {
         "reference_id": "ISTIO-SECURITY-2019-001",
-        "reference_type": "",
         "url": "https://istio.io/latest/news/security/ISTIO-SECURITY-2019-001/",
         "severities": []
       }

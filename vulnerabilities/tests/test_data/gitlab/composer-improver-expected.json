@@ -18,7 +18,6 @@
     "references": [
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/amphp/http/pull/4",
         "severities": []
       }

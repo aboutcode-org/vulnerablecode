@@ -28,13 +28,11 @@
     "references": [
       {
         "reference_id": "GHSA-x5c7-x7m2-rhmf",
-        "reference_type": "",
         "url": "https://github.com/mozilla/sops/security/advisories/GHSA-x5c7-x7m2-rhmf",
         "severities": []
       },
       {
         "reference_id": "GHSA-x5c7-x7m2-rhmf",
-        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-x5c7-x7m2-rhmf",
         "severities": []
       }
@@ -61,13 +59,11 @@
     "references": [
       {
         "reference_id": "GHSA-x5c7-x7m2-rhmf",
-        "reference_type": "",
         "url": "https://github.com/mozilla/sops/security/advisories/GHSA-x5c7-x7m2-rhmf",
         "severities": []
       },
       {
         "reference_id": "GHSA-x5c7-x7m2-rhmf",
-        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-x5c7-x7m2-rhmf",
         "severities": []
       }

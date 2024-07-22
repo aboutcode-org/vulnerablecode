@@ -43,7 +43,6 @@
     "references": [
       {
         "reference_id": "CVE-2021-44224",
-        "reference_type": "",
         "url": "https://httpd.apache.org/security/json/CVE-2021-44224.json",
         "severities": [
           {
@@ -92,7 +91,6 @@
     "references": [
       {
         "reference_id": "CVE-2021-44224",
-        "reference_type": "",
         "url": "https://httpd.apache.org/security/json/CVE-2021-44224.json",
         "severities": [
           {

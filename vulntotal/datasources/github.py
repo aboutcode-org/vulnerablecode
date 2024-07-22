@@ -11,9 +11,9 @@ import logging
 from typing import Iterable
 
 from dotenv import load_dotenv
+from fetchcode.package_versions import github_response
 from packageurl import PackageURL
 
-from vulnerabilities import utils
 from vulntotal.validator import DataSource
 from vulntotal.validator import InvalidCVEError
 from vulntotal.validator import VendorData
@@ -35,7 +35,7 @@ class GithubDataSource(DataSource):
                 GH_TOKEN="your-github-token"
         """
         load_dotenv()
-        return utils.fetch_github_graphql_query(graphql_query)
+        return github_response(graphql_query)
 
     def datasource_advisory(self, purl) -> Iterable[VendorData]:
         end_cursor = ""

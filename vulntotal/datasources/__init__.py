@@ -12,6 +12,7 @@ from vulntotal.datasources import github
 from vulntotal.datasources import gitlab
 from vulntotal.datasources import oss_index
 from vulntotal.datasources import osv
+from vulntotal.datasources import safetydb
 from vulntotal.datasources import snyk
 from vulntotal.datasources import vulnerablecode
 from vulntotal.validator import DataSource
@@ -19,6 +20,7 @@ from vulntotal.validator import DataSource
 DATASOURCE_REGISTRY = {
     "deps": deps.DepsDataSource,
     "github": github.GithubDataSource,
+    "safetydb": safetydb.SafetydbDataSource,
     "gitlab": gitlab.GitlabDataSource,
     "oss_index": oss_index.OSSDataSource,
     "osv": osv.OSVDataSource,

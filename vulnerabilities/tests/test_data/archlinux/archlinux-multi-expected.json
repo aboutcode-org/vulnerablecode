@@ -21,7 +21,6 @@
     "references": [
       {
         "reference_id": "AVG-2781",
-        "reference_type": "",
         "url": "https://security.archlinux.org/AVG-2781",
         "severities": [
           {
@@ -58,7 +57,6 @@
     "references": [
       {
         "reference_id": "AVG-2780",
-        "reference_type": "",
         "url": "https://security.archlinux.org/AVG-2780",
         "severities": [
           {
@@ -95,7 +93,6 @@
     "references": [
       {
         "reference_id": "AVG-2780",
-        "reference_type": "",
         "url": "https://security.archlinux.org/AVG-2780",
         "severities": [
           {
@@ -132,7 +129,6 @@
     "references": [
       {
         "reference_id": "AVG-2780",
-        "reference_type": "",
         "url": "https://security.archlinux.org/AVG-2780",
         "severities": [
           {
@@ -169,7 +165,6 @@
     "references": [
       {
         "reference_id": "AVG-4",
-        "reference_type": "",
         "url": "https://security.archlinux.org/AVG-4",
         "severities": [
           {
@@ -181,7 +176,6 @@
       },
       {
         "reference_id": "ASA-201702-19",
-        "reference_type": "",
         "url": "https://security.archlinux.org/ASA-201702-19",
         "severities": []
       }

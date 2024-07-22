@@ -57,7 +57,6 @@
   "references": [
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-10688",
       "severities": [
         {
@@ -74,7 +73,6 @@
     },
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "https://github.com/quarkusio/quarkus/issues/7248",
       "severities": [
         {
@@ -91,7 +89,6 @@
     },
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "https://bugzilla.redhat.com/show_bug.cgi?id=1814974",
       "severities": [
         {
@@ -108,7 +105,6 @@
     },
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "https://issues.redhat.com/browse/RESTEASY-2519",
       "severities": [
         {
@@ -125,7 +121,6 @@
     },
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "https://security.netapp.com/advisory/ntap-20210706-0008/",
       "severities": [
         {

@@ -84,19 +84,16 @@
     "references": [
       {
         "reference_id": "CVE-2018-17196",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2018-17196",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2018-17196",
         "severities": []
       },
       {
         "reference_id": "CVE-2018-17196",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-17196",
         "severities": []
       }
@@ -187,19 +184,16 @@
     "references": [
       {
         "reference_id": "CVE-2022-34917",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2022-34917",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2022-34917",
         "severities": []
       },
       {
         "reference_id": "CVE-2022-34917",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-34917",
         "severities": []
       }
@@ -290,19 +284,16 @@
     "references": [
       {
         "reference_id": "CVE-2022-34917",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2022-34917",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2022-34917",
         "severities": []
       },
       {
         "reference_id": "CVE-2022-34917",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-34917",
         "severities": []
       }
@@ -393,19 +384,16 @@
     "references": [
       {
         "reference_id": "CVE-2022-34917",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2022-34917",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2022-34917",
         "severities": []
       },
       {
         "reference_id": "CVE-2022-34917",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-34917",
         "severities": []
       }
@@ -496,19 +484,16 @@
     "references": [
       {
         "reference_id": "CVE-2022-34917",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2022-34917",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2022-34917",
         "severities": []
       },
       {
         "reference_id": "CVE-2022-34917",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-34917",
         "severities": []
       }
@@ -687,19 +672,16 @@
     "references": [
       {
         "reference_id": "CVE-2021-38153",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2021-38153",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2021-38153",
         "severities": []
       },
       {
         "reference_id": "CVE-2021-38153",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-38153",
         "severities": []
       }
@@ -878,19 +860,16 @@
     "references": [
       {
         "reference_id": "CVE-2021-38153",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2021-38153",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2021-38153",
         "severities": []
       },
       {
         "reference_id": "CVE-2021-38153",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-38153",
         "severities": []
       }
@@ -1069,19 +1048,16 @@
     "references": [
       {
         "reference_id": "CVE-2021-38153",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2021-38153",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2021-38153",
         "severities": []
       },
       {
         "reference_id": "CVE-2021-38153",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-38153",
         "severities": []
       }
@@ -1164,19 +1140,16 @@
     "references": [
       {
         "reference_id": "CVE-2019-12399",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2019-12399",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2019-12399",
         "severities": []
       },
       {
         "reference_id": "CVE-2019-12399",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-12399",
         "severities": []
       }
@@ -1204,19 +1177,16 @@
     "references": [
       {
         "reference_id": "CVE-2018-17196",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2018-17196",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2018-17196",
         "severities": []
       },
       {
         "reference_id": "CVE-2018-17196",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-17196",
         "severities": []
       }
@@ -1299,19 +1269,16 @@
     "references": [
       {
         "reference_id": "CVE-2018-1288",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2018-1288",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2018-1288",
         "severities": []
       },
       {
         "reference_id": "CVE-2018-1288",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-1288",
         "severities": []
       }
@@ -1394,19 +1361,16 @@
     "references": [
       {
         "reference_id": "CVE-2018-1288",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2018-1288",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2018-1288",
         "severities": []
       },
       {
         "reference_id": "CVE-2018-1288",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-1288",
         "severities": []
       }
@@ -1489,19 +1453,16 @@
     "references": [
       {
         "reference_id": "CVE-2018-1288",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2018-1288",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2018-1288",
         "severities": []
       },
       {
         "reference_id": "CVE-2018-1288",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-1288",
         "severities": []
       }
@@ -1584,19 +1545,16 @@
     "references": [
       {
         "reference_id": "CVE-2018-1288",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2018-1288",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2018-1288",
         "severities": []
       },
       {
         "reference_id": "CVE-2018-1288",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-1288",
         "severities": []
       }
@@ -1655,19 +1613,16 @@
     "references": [
       {
         "reference_id": "CVE-2017-12610",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2017-12610",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2017-12610",
         "severities": []
       },
       {
         "reference_id": "CVE-2017-12610",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-12610",
         "severities": []
       }
@@ -1726,19 +1681,16 @@
     "references": [
       {
         "reference_id": "CVE-2017-12610",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2017-12610",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2017-12610",
         "severities": []
       },
       {
         "reference_id": "CVE-2017-12610",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-12610",
         "severities": []
       }
@@ -1797,19 +1749,16 @@
     "references": [
       {
         "reference_id": "CVE-2017-12610",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2017-12610",
-        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2017-12610",
         "severities": []
       },
       {
         "reference_id": "CVE-2017-12610",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-12610",
         "severities": []
       }

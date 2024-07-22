@@ -21,19 +21,16 @@
   "references": [
     {
       "reference_id": "GHSA-w42g-7vfc-xf37",
-      "reference_type": "",
       "url": "https://github.com/apollographql/apollo-server/security/advisories/GHSA-w42g-7vfc-xf37",
       "severities": []
     },
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "https://github.com/apollographql/apollo-server/commit/e2e816316f5c28a03de2ee1589edb2b10c358114",
       "severities": []
     },
     {
       "reference_id": "GHSA-w42g-7vfc-xf37",
-      "reference_type": "",
       "url": "https://github.com/advisories/GHSA-w42g-7vfc-xf37",
       "severities": []
     }

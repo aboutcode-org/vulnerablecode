@@ -33,7 +33,6 @@
     "references": [
       {
         "reference_id": "CVE-2020-9484",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9484",
         "severities": [
           {
@@ -45,7 +44,6 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/apache/tomcat/commit/4785433a226a20df6acbea49296e1ce7e23de453",
         "severities": []
       }
@@ -88,7 +86,6 @@
     "references": [
       {
         "reference_id": "CVE-2021-25329",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-25329",
         "severities": [
           {
@@ -100,7 +97,6 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/apache/tomcat/commit/4785433a226a20df6acbea49296e1ce7e23de453",
         "severities": []
       }
@@ -143,7 +139,6 @@
     "references": [
       {
         "reference_id": "CVE-2021-25122",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-25122",
         "severities": [
           {
@@ -155,7 +150,6 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/apache/tomcat/commit/d47c20a776e8919eaca8da9390a32bc8bf8210b1",
         "severities": []
       }
@@ -198,7 +192,6 @@
     "references": [
       {
         "reference_id": "CVE-2020-9484",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9484",
         "severities": [
           {
@@ -210,7 +203,6 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/apache/tomcat/commit/3aa8f28db7efb311cdd1b6fe15a9cd3b167a2222",
         "severities": []
       }
@@ -253,7 +245,6 @@
     "references": [
       {
         "reference_id": "CVE-2018-8014",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-8014",
         "severities": [
           {
@@ -265,7 +256,6 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=1831726",
         "severities": []
       }
@@ -308,7 +298,6 @@
     "references": [
       {
         "reference_id": "CVE-2016-3092",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-3092",
         "severities": [
           {
@@ -320,13 +309,11 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=1743722",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=1743738",
         "severities": []
       }
@@ -369,7 +356,6 @@
     "references": [
       {
         "reference_id": "CVE-2008-5515",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-5515",
         "severities": [
           {
@@ -381,13 +367,11 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=782757",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=783291",
         "severities": []
       }
@@ -430,7 +414,6 @@
     "references": [
       {
         "reference_id": "CVE-2009-0033",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0033",
         "severities": [
           {
@@ -442,7 +425,6 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=781362",
         "severities": []
       }
@@ -485,7 +467,6 @@
     "references": [
       {
         "reference_id": "CVE-2009-0580",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0580",
         "severities": [
           {
@@ -497,7 +478,6 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=781379",
         "severities": []
       }
@@ -540,7 +520,6 @@
     "references": [
       {
         "reference_id": "CVE-2009-0781",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0781",
         "severities": [
           {
@@ -552,7 +531,6 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=750928",
         "severities": []
       }
@@ -595,7 +573,6 @@
     "references": [
       {
         "reference_id": "CVE-2009-0783",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0783",
         "severities": [
           {
@@ -607,13 +584,11 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=681156",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=781542",
         "severities": []
       }
@@ -656,7 +631,6 @@
     "references": [
       {
         "reference_id": "CVE-2005-4836",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2005-4836",
         "severities": [
           {
@@ -705,7 +679,6 @@
     "references": [
       {
         "reference_id": "CVE-2008-4308",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-4308",
         "severities": [
           {
@@ -754,7 +727,6 @@
     "references": [
       {
         "reference_id": "CVE-2002-0935",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-0935",
         "severities": [
           {
@@ -803,7 +775,6 @@
     "references": [
       {
         "reference_id": "CVE-2002-2007",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-2007",
         "severities": [
           {
@@ -852,7 +823,6 @@
     "references": [
       {
         "reference_id": "CVE-2002-2006",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-2006",
         "severities": [
           {
@@ -901,7 +871,6 @@
     "references": [
       {
         "reference_id": "CVE-2000-0760",
-        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2000-0760",
         "severities": [
           {

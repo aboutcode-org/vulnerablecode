@@ -8,13 +8,11 @@
     "references": [
       {
         "reference_id": 2077736,
-        "reference_type": "",
         "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2077736",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2022-24272.json",
         "severities": [
           {
@@ -171,31 +169,26 @@
     "references": [
       {
         "reference_id": 2075788,
-        "reference_type": "",
         "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2075788",
         "severities": []
       },
       {
         "reference_id": "RHSA-2022:1439",
-        "reference_type": "",
         "url": "https://access.redhat.com/errata/RHSA-2022:1439",
         "severities": []
       },
       {
         "reference_id": "RHSA-2022:1437",
-        "reference_type": "",
         "url": "https://access.redhat.com/errata/RHSA-2022:1437",
         "severities": []
       },
       {
         "reference_id": "RHSA-2022:1436",
-        "reference_type": "",
         "url": "https://access.redhat.com/errata/RHSA-2022:1436",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2022-21426.json",
         "severities": [
           {

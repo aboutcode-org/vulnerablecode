@@ -21,7 +21,6 @@
   "references": [
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-8315",
       "severities": [
         {
@@ -38,7 +37,6 @@
     },
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "https://github.com/unshiftio/millisecond/",
       "severities": [
         {
@@ -55,7 +53,6 @@
     },
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "https://support.f5.com/csp/article/K46337613?utm_source=f5support&amp;utm_medium=RSS",
       "severities": [
         {
@@ -72,7 +69,6 @@
     },
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "https://www.npmjs.com/advisories/46",
       "severities": [
         {
@@ -89,7 +85,6 @@
     },
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "http://www.openwall.com/lists/oss-security/2016/04/20/11",
       "severities": [
         {
@@ -106,7 +101,6 @@
     },
     {
       "reference_id": "",
-      "reference_type": "",
       "url": "http://www.securityfocus.com/bid/96389",
       "severities": [
         {

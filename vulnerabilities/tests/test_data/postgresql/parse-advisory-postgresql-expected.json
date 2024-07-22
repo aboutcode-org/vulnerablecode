@@ -57,7 +57,6 @@
     "references": [
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://www.postgresql.org/support/security/CVE-2020-10733/",
         "severities": [
           {
@@ -71,7 +70,6 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://www.postgresql.org/about/news/postgresql-123-118-1013-9618-and-9522-released-2038/",
         "severities": []
       }
@@ -138,7 +136,6 @@
     "references": [
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://www.postgresql.org/support/security/CVE-2020-1720/",
         "severities": [
           {
@@ -152,7 +149,6 @@
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://www.postgresql.org/about/news/postgresql-122-117-1012-9617-9521-and-9426-released-2011/",
         "severities": []
       }

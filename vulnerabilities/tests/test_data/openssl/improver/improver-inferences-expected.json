@@ -36,31 +36,26 @@
     "references": [
       {
         "reference_id": "CVE-2022-0778",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0778",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/a466912611aa6cbdf550cd10601390e587451246",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/3118eb64934499d93db3230748a452351d1d9a65",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/380085481c64de749a6dd25cdf0bcf4360b30f83",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://www.openssl.org/news/secadv/20220315.txt",
         "severities": [
           {
@@ -206,31 +201,26 @@
     "references": [
       {
         "reference_id": "CVE-2022-0778",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0778",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/a466912611aa6cbdf550cd10601390e587451246",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/3118eb64934499d93db3230748a452351d1d9a65",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/380085481c64de749a6dd25cdf0bcf4360b30f83",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://www.openssl.org/news/secadv/20220315.txt",
         "severities": [
           {
@@ -496,31 +486,26 @@
     "references": [
       {
         "reference_id": "CVE-2022-0778",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0778",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/a466912611aa6cbdf550cd10601390e587451246",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/3118eb64934499d93db3230748a452351d1d9a65",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/380085481c64de749a6dd25cdf0bcf4360b30f83",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://www.openssl.org/news/secadv/20220315.txt",
         "severities": [
           {
@@ -562,31 +547,26 @@
     "references": [
       {
         "reference_id": "CVE-2021-4160",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-4160",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/3bf7b73ea7123045b8f972badc67ed6878e6c37f",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/e9e726506cd2a3fd9c0f12daf8cc1fe934c7dddb",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/6fc1aaaf303185aa5e483e06bdfae16daa9193a7",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://www.openssl.org/news/secadv/20220128.txt",
         "severities": [
           {
@@ -724,31 +704,26 @@
     "references": [
       {
         "reference_id": "CVE-2021-4160",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-4160",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/3bf7b73ea7123045b8f972badc67ed6878e6c37f",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/e9e726506cd2a3fd9c0f12daf8cc1fe934c7dddb",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/6fc1aaaf303185aa5e483e06bdfae16daa9193a7",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://www.openssl.org/news/secadv/20220128.txt",
         "severities": [
           {
@@ -1006,31 +981,26 @@
     "references": [
       {
         "reference_id": "CVE-2021-4160",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-4160",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/3bf7b73ea7123045b8f972badc67ed6878e6c37f",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/e9e726506cd2a3fd9c0f12daf8cc1fe934c7dddb",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/6fc1aaaf303185aa5e483e06bdfae16daa9193a7",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://www.openssl.org/news/secadv/20220128.txt",
         "severities": [
           {
@@ -1072,19 +1042,16 @@
     "references": [
       {
         "reference_id": "CVE-2021-4044",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-4044",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/758754966791c537ea95241438454aa86f91f256",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://www.openssl.org/news/secadv/20211214.txt",
         "severities": [
           {
@@ -1190,25 +1157,21 @@
     "references": [
       {
         "reference_id": "CVE-2020-1971",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-1971",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/f960d81215ebf3f65e03d4d5d857fb9b666d6920",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/2154ab83e14ede338d2ede9bbe5cdfce5d5a6c9e",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://www.openssl.org/news/secadv/20201208.txt",
         "severities": [
           {
@@ -1434,25 +1397,21 @@
     "references": [
       {
         "reference_id": "CVE-2020-1971",
-        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-1971",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/f960d81215ebf3f65e03d4d5d857fb9b666d6920",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://github.com/openssl/openssl/commit/2154ab83e14ede338d2ede9bbe5cdfce5d5a6c9e",
         "severities": []
       },
       {
         "reference_id": "",
-        "reference_type": "",
         "url": "https://www.openssl.org/news/secadv/20201208.txt",
         "severities": [
           {

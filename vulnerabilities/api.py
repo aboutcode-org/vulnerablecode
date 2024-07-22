@@ -47,7 +47,7 @@ class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = VulnerabilityReference
-        fields = ["reference_url", "reference_id", "reference_type", "scores", "url"]
+        fields = ["reference_url", "reference_id", "scores", "url"]
 
 
 class BaseResourceSerializer(serializers.HyperlinkedModelSerializer):

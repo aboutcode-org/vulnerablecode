@@ -1,6 +1,12 @@
 Release notes
 =============
 
+Version v34.0.0rc4
+-------------------
+
+- Drop migration for removing duplicated changelogs.
+
+
 Version v34.0.0rc3
 -------------------
 

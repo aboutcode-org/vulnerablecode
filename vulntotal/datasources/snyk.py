@@ -8,6 +8,7 @@
 #
 
 import logging
+import re
 from typing import Iterable
 from urllib.parse import quote
 from urllib.parse import unquote_plus
@@ -22,6 +23,8 @@ from vulntotal.validator import VendorData
 from vulntotal.vulntotal_utils import snyk_constraints_satisfied
 
 logger = logging.getLogger(__name__)
+
+fixed_version_pattern = re.compile(r"\b\d[\w.-]*\b")
 
 
 class SnykDataSource(DataSource):
@@ -272,19 +275,16 @@ def parse_html_advisory(advisory_html, snyk_id, affected, purl) -> VendorData:
     advisory_soup = BeautifulSoup(advisory_html, "html.parser")
     cve_span = advisory_soup.find("span", class_="cve")
     if cve_span:
-        cve_anchor = cve_span.find("a", class_="vue--anchor")
-        if cve_anchor:
+        if cve_anchor := cve_span.find("a", class_="vue--anchor"):
             aliases.append(cve_anchor.get("id"))
 
     how_to_fix = advisory_soup.find(
         "div", class_="vue--block vuln-page__instruction-block vue--block--instruction"
     )
-    if how_to_fix:
-        fixed = how_to_fix.find("p").text.split(" ")
-        if "Upgrade" in fixed:
-            lower = fixed.index("version") if "version" in fixed else fixed.index("versions")
-            upper = fixed.index("or")
-            fixed_versions = "".join(fixed[lower + 1 : upper]).split(",")
+
+    if how_to_fix and (fixed := how_to_fix.find("p").text):
+        fixed_versions = fixed_version_pattern.findall(fixed)
+
     aliases.append(snyk_id)
     return VendorData(
         purl=PackageURL(purl.type, purl.namespace, purl.name),

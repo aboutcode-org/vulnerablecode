@@ -485,7 +485,7 @@ def compare(grouped_by_cve):
                     if normalized_fixed_versions_a == normalized_fixed_versions_b:
                         board[datasource][source] += 0.5
                         board[source][datasource] += 0.5
-                    elif normalized_affected_versions_a == normalized_affected_versions_b:
+                    if normalized_affected_versions_a == normalized_affected_versions_b:
                         board[datasource][source] += 0.5
                         board[source][datasource] += 0.5
 
@@ -535,8 +535,8 @@ def get_texttable(no_group=False, no_compare=False):
     line_factor = terminal_width / 100
 
     column_size = lambda f: math.floor(f * quantum * line_factor)
-    column_7x = column_size(5)
-    column_17x = column_size(10)
+    column_7x = column_size(7)
+    column_17x = column_size(17)
     column_15x = column_size(15)
     column_20x = column_size(20)
 
@@ -558,7 +558,7 @@ def get_texttable(no_group=False, no_compare=False):
         table.header(["CVE", "DATASOURCE", "ALIASES", "AFFECTED", "FIXED"])
         return table
 
-    table.set_cols_dtype(["a", "a", "a", "a", "a", "a"])
+    table.set_cols_dtype(["a", "a", "a", "a", "a", "i"])
     table.set_cols_align(["l", "l", "l", "l", "l", "l"])
     table.set_cols_valign(["t", "t", "t", "a", "t", "t"])
     table.set_cols_width([column_17x, column_15x, column_15x, column_20x, column_20x, column_7x])

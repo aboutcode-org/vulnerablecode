@@ -110,6 +110,7 @@ class SnykDataSource(DataSource):
     @classmethod
     def supported_ecosystem(cls):
         return {
+            "cargo": "cargo",
             "cocoapods": "cocoapods",
             "composer": "composer",
             "golang": "golang",
@@ -118,6 +119,7 @@ class SnykDataSource(DataSource):
             "maven": "maven",
             "npm": "npm",
             "nuget": "nuget",
+            "pub": "pub",
             "pypi": "pip",
             "gem": "rubygems",
             # any purl.type not in supported_ecosystem shall implicitly be treated as unmanaged type

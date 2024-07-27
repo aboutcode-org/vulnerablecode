@@ -8,12 +8,14 @@
 #
 
 import logging
+import re
 from typing import Any
 from typing import Iterable
 from typing import List
 from typing import Mapping
 
 import requests
+from cwe2.database import Database
 from packageurl import PackageURL
 from univers.version_range import DebianVersionRange
 from univers.versions import DebianVersion
@@ -23,6 +25,7 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.utils import dedupe
+from vulnerabilities.utils import get_cwe_id
 from vulnerabilities.utils import get_item
 
 logger = logging.getLogger(__name__)
@@ -93,6 +96,7 @@ class DebianImporter(Importer):
             yield from self.parse(pkg_name, records)
 
     def parse(self, pkg_name: str, records: Mapping[str, Any]) -> Iterable[AdvisoryData]:
+
         for cve_id, record in records.items():
             affected_versions = []
             fixed_versions = []
@@ -150,10 +154,38 @@ class DebianImporter(Importer):
                         fixed_version=DebianVersion(fixed_version),
                     )
                 )
+            weaknesses = get_cwe_from_debian_advisory(record)
+
             yield AdvisoryData(
                 aliases=[cve_id],
                 summary=record.get("description", ""),
                 affected_packages=affected_packages,
                 references=references,
+                weaknesses=weaknesses,
                 url=self.api_url,
             )
+
+
+def get_cwe_from_debian_advisory(record):
+    """
+    Extracts CWE ID strings from the given raw_data and returns a list of CWE IDs.
+
+        >>> get_cwe_from_debian_advisory({"description":"PEAR HTML_QuickForm version 3.2.14 contains an eval injection (CWE-95) vulnerability in HTML_QuickForm's getSubmitValue method, HTML_QuickForm's validate method, HTML_QuickForm_hierselect's _setOptions method, HTML_QuickForm_element's _findValue method, HTML_QuickForm_element's _prepareValue method. that can result in Possible information disclosure, possible impact on data integrity and execution of arbitrary code. This attack appear to be exploitable via A specially crafted query string could be utilised, e.g. http://www.example.com/admin/add_practice_type_id[1]=fubar%27])%20OR%20die(%27OOK!%27);%20//&mode=live. This vulnerability appears to have been fixed in 3.2.15."})
+        [95]
+        >>> get_cwe_from_debian_advisory({"description":"There is no WEAKNESS DATA"})
+        []
+    """
+    description = record.get("description") or ""
+    pattern = r"CWE-\d+"
+    cwe_strings = re.findall(pattern, description)
+    weaknesses = []
+    db = Database()
+    for cwe_string in cwe_strings:
+        if cwe_string:
+            cwe_id = get_cwe_id(cwe_string)
+            try:
+                db.get(cwe_id)
+                weaknesses.append(cwe_id)
+            except Exception:
+                logger.error("Invalid CWE id")
+    return weaknesses

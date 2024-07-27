@@ -8,10 +8,12 @@
 #
 
 import logging
+import re
 import urllib
 
 import requests
 from bs4 import BeautifulSoup
+from cwe2.database import Database
 from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
 from univers.version_range import ApacheVersionRange
@@ -23,6 +25,7 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import APACHE_HTTPD
+from vulnerabilities.utils import get_cwe_id
 from vulnerabilities.utils import get_item
 
 logger = logging.getLogger(__name__)
@@ -102,11 +105,14 @@ class ApacheHTTPDImporter(Importer):
                 )
             )
 
+        weaknesses = get_weaknesses(data)
+
         return AdvisoryData(
             aliases=[alias],
             summary=description or "",
             affected_packages=affected_packages,
             references=[reference],
+            weaknesses=weaknesses,
             url=reference.url,
         )
 
@@ -152,3 +158,70 @@ def fetch_links(url):
             continue
         links.append(urllib.parse.urljoin(url, link))
     return links
+
+
+def get_weaknesses(cve_data):
+    """
+    Extract CWE IDs from CVE data.
+
+    Args:
+        cve_data (dict): The CVE data in a dictionary format.
+
+    Returns:
+        List[int]: A list of unique CWE IDs.
+
+    >>> mock_cve_data = {
+    ... "containers": {
+    ... "cna": {
+    ... "providerMetadata": {
+    ... "orgId": "f0158376-9dc2-43b6-827c-5f631a4d8d09"
+    ...  },
+    ...  "title": "mod_macro buffer over-read",
+    ...  "problemTypes": [
+    ...    {
+    ...      "descriptions": [
+    ...        {
+    ...          "description": "CWE-125 Out-of-bounds Read",
+    ...          "lang": "en",
+    ...          "cweId": "CWE-125",
+    ...          "type": "CWE"
+    ...        }
+    ...      ]
+    ...    }
+    ...  ]
+    ... }
+    ... }
+    ... }
+    >>> get_weaknesses(mock_cve_data)
+    [125]
+    """
+    problem_types = cve_data.get("containers", {}).get("cna", {}).get("problemTypes", [])
+    descriptions = problem_types[0].get("descriptions", []) if len(problem_types) > 0 else []
+    cwe_string = descriptions[0].get("cweId", "") if len(descriptions) > 0 else ""
+    cwe_pattern = r"CWE-\d+"
+    description = descriptions[0].get("description", "") if len(descriptions) > 0 else ""
+    matches = re.findall(cwe_pattern, description)
+    db = Database()
+    weaknesses = []
+    cwe_string_from_description = ""
+    if matches:
+        cwe_string_from_description = matches[0]
+    if cwe_string or cwe_string_from_description:
+        if cwe_string:
+            cwe_id = get_cwe_id(cwe_string)
+            try:
+                db.get(cwe_id)
+                weaknesses.append(cwe_id)
+            except Exception:
+                logger.error("Invalid CWE id")
+        elif cwe_string_from_description:
+            cwe_id = get_cwe_id(cwe_string_from_description)
+            try:
+                db.get(cwe_id)
+                weaknesses.append(cwe_id)
+            except Exception:
+                logger.error("Invalid CWE id")
+
+    seen = set()
+    unique_cwe = [x for x in weaknesses if not (x in seen or seen.add(x))]
+    return unique_cwe

@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from vulnerabilities.improvers import exploitdb
 from vulnerabilities.improvers import valid_versions
 from vulnerabilities.improvers import vulnerability_kev
 from vulnerabilities.improvers import vulnerability_status
@@ -29,6 +30,7 @@ IMPROVERS_REGISTRY = [
     valid_versions.GithubOSVImprover,
     vulnerability_status.VulnerabilityStatusImprover,
     vulnerability_kev.VulnerabilityKevImprover,
+    exploitdb.ExploitDBImprover,
 ]
 
 IMPROVERS_REGISTRY = {x.qualified_name: x for x in IMPROVERS_REGISTRY}

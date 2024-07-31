@@ -2,7 +2,7 @@
   {
     "purl": "pkg:generic/namespace/test",
     "affected_versions": [
-      "<2.7.2"
+      "< 2.7.2"
     ],
     "fixed_versions": [
       "2.7.2"
@@ -15,7 +15,7 @@
   {
     "purl": "pkg:generic/namespace/test",
     "affected_versions": [
-      "<2.11.3"
+      "< 2.11.3"
     ],
     "fixed_versions": [
       "2.11.3"
@@ -28,7 +28,7 @@
   {
     "purl": "pkg:generic/namespace/test",
     "affected_versions": [
-      "<2.8.1"
+      "< 2.8.1"
     ],
     "fixed_versions": [
       "2.8.1"
@@ -41,7 +41,7 @@
   {
     "purl": "pkg:generic/namespace/test",
     "affected_versions": [
-      "<2.10.1"
+      "< 2.10.1"
     ],
     "fixed_versions": [
       "2.10.1"

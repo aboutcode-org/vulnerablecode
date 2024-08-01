@@ -384,7 +384,7 @@ class VulnerabilityReference(models.Model):
     objects = VulnerabilityReferenceQuerySet.as_manager()
 
     class Meta:
-        ordering = ["reference_id", "url"]
+        ordering = ["reference_id", "url", "reference_type"]
 
     def __str__(self):
         reference_id = f" {self.reference_id}" if self.reference_id else ""

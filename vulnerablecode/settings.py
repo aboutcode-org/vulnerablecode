@@ -55,6 +55,8 @@ EMAIL_HOST_USER = env.str("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD", default="")
 FROM_EMAIL = env.str("FROM_EMAIL", default="")
 
+VULNERABLECODE_LOG_LEVEL = env.str("VULNERABLECODE_LOG_LEVEL", "INFO")
+
 # Application definition
 
 INSTALLED_APPS = (
@@ -317,3 +319,37 @@ if DEBUG_TOOLBAR:
     INTERNAL_IPS = [
         "127.0.0.1",
     ]
+
+# Logging
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "null": {
+            "class": "logging.NullHandler",
+        },
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+    },
+    "loggers": {
+        "pipeline": {
+            "handlers": ["console"],
+            "level": VULNERABLECODE_LOG_LEVEL,
+            "propagate": False,
+        },
+        "pipeline": {
+            "handlers": ["console"],
+            "level": VULNERABLECODE_LOG_LEVEL,
+            "propagate": False,
+        },
+    },
+}

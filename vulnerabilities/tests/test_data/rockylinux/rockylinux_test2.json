@@ -1,0 +1,160 @@
+{
+    "type": "TYPE_SECURITY",
+    "shortCode": "RL",
+    "name": "RLSA-2024:1494",
+    "synopsis": "Moderate: thunderbird security update",
+    "severity": "SEVERITY_MODERATE",
+    "topic": "An update is available for thunderbird.\nThis update affects Rocky Linux 8.\nA Common Vulnerability Scoring System (CVSS) base score, which gives a detailed severity rating, is available for each vulnerability from the CVE list",
+    "description": "Mozilla Thunderbird is a standalone mail and newsgroup client.\n\nThis update upgrades Thunderbird to version 115.9.0.\n\nSecurity Fix(es):\n\n* nss: timing attack against RSA decryption (CVE-2023-5388)\n\n* Mozilla: Crash in NSS TLS method (CVE-2024-0743)\n\n* Mozilla: Leaking of encrypted email subjects to other conversations  (CVE-2024-1936)\n\n* Mozilla: JIT code failed to save return registers on Armv7-A (CVE-2024-2607)\n\n* Mozilla: Integer overflow could have led to out of bounds write\n(CVE-2024-2608)\n\n* Mozilla: Improper handling of html and body tags enabled CSP nonce leakage\n(CVE-2024-2610)\n\n* Mozilla: Clickjacking vulnerability could have led to a user accidentally\ngranting permissions (CVE-2024-2611)\n\n* Mozilla: Self referencing object could have potentially led to a\nuse-after-free (CVE-2024-2612)\n\n* Mozilla: Memory safety bugs fixed in Firefox 124, Firefox ESR 115.9, and\nThunderbird 115.9 (CVE-2024-2614)\n\nFor more details about the security issue(s), including the impact, a CVSS\nscore, acknowledgments, and other related information, refer to the CVE page(s) listed in the References section.",
+    "solution": null,
+    "affectedProducts": [
+      "Rocky Linux 8"
+    ],
+    "fixes": [
+      {
+        "ticket": "2243644",
+        "sourceBy": "Red Hat",
+        "sourceLink": "https://bugzilla.redhat.com/show_bug.cgi?id=2243644",
+        "description": ""
+      },
+      {
+        "ticket": "2260012",
+        "sourceBy": "Red Hat",
+        "sourceLink": "https://bugzilla.redhat.com/show_bug.cgi?id=2260012",
+        "description": ""
+      },
+      {
+        "ticket": "2268171",
+        "sourceBy": "Red Hat",
+        "sourceLink": "https://bugzilla.redhat.com/show_bug.cgi?id=2268171",
+        "description": ""
+      },
+      {
+        "ticket": "2270660",
+        "sourceBy": "Red Hat",
+        "sourceLink": "https://bugzilla.redhat.com/show_bug.cgi?id=2270660",
+        "description": ""
+      },
+      {
+        "ticket": "2270661",
+        "sourceBy": "Red Hat",
+        "sourceLink": "https://bugzilla.redhat.com/show_bug.cgi?id=2270661",
+        "description": ""
+      },
+      {
+        "ticket": "2270663",
+        "sourceBy": "Red Hat",
+        "sourceLink": "https://bugzilla.redhat.com/show_bug.cgi?id=2270663",
+        "description": ""
+      },
+      {
+        "ticket": "2270664",
+        "sourceBy": "Red Hat",
+        "sourceLink": "https://bugzilla.redhat.com/show_bug.cgi?id=2270664",
+        "description": ""
+      },
+      {
+        "ticket": "2270665",
+        "sourceBy": "Red Hat",
+        "sourceLink": "https://bugzilla.redhat.com/show_bug.cgi?id=2270665",
+        "description": ""
+      },
+      {
+        "ticket": "2270666",
+        "sourceBy": "Red Hat",
+        "sourceLink": "https://bugzilla.redhat.com/show_bug.cgi?id=2270666",
+        "description": ""
+      }
+    ],
+    "cves": [
+      {
+        "name": "CVE-2023-5388",
+        "sourceBy": "MITRE",
+        "sourceLink": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-5388",
+        "cvss3ScoringVector": "UNKNOWN",
+        "cvss3BaseScore": "UNKNOWN",
+        "cwe": "UNKNOWN"
+      },
+      {
+        "name": "CVE-2024-0743",
+        "sourceBy": "MITRE",
+        "sourceLink": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-0743",
+        "cvss3ScoringVector": "UNKNOWN",
+        "cvss3BaseScore": "UNKNOWN",
+        "cwe": "UNKNOWN"
+      },
+      {
+        "name": "CVE-2024-1936",
+        "sourceBy": "MITRE",
+        "sourceLink": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-1936",
+        "cvss3ScoringVector": "UNKNOWN",
+        "cvss3BaseScore": "UNKNOWN",
+        "cwe": "UNKNOWN"
+      },
+      {
+        "name": "CVE-2024-2607",
+        "sourceBy": "MITRE",
+        "sourceLink": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-2607",
+        "cvss3ScoringVector": "UNKNOWN",
+        "cvss3BaseScore": "UNKNOWN",
+        "cwe": "UNKNOWN"
+      },
+      {
+        "name": "CVE-2024-2608",
+        "sourceBy": "MITRE",
+        "sourceLink": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-2608",
+        "cvss3ScoringVector": "UNKNOWN",
+        "cvss3BaseScore": "UNKNOWN",
+        "cwe": "UNKNOWN"
+      },
+      {
+        "name": "CVE-2024-2610",
+        "sourceBy": "MITRE",
+        "sourceLink": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-2610",
+        "cvss3ScoringVector": "UNKNOWN",
+        "cvss3BaseScore": "UNKNOWN",
+        "cwe": "UNKNOWN"
+      },
+      {
+        "name": "CVE-2024-2611",
+        "sourceBy": "MITRE",
+        "sourceLink": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-2611",
+        "cvss3ScoringVector": "UNKNOWN",
+        "cvss3BaseScore": "UNKNOWN",
+        "cwe": "UNKNOWN"
+      },
+      {
+        "name": "CVE-2024-2612",
+        "sourceBy": "MITRE",
+        "sourceLink": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-2612",
+        "cvss3ScoringVector": "UNKNOWN",
+        "cvss3BaseScore": "UNKNOWN",
+        "cwe": "UNKNOWN"
+      },
+      {
+        "name": "CVE-2024-2614",
+        "sourceBy": "MITRE",
+        "sourceLink": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-2614",
+        "cvss3ScoringVector": "UNKNOWN",
+        "cvss3BaseScore": "UNKNOWN",
+        "cwe": "UNKNOWN"
+      }
+    ],
+    "references": [],
+    "publishedAt": "2024-03-27T04:34:32.999941Z",
+    "rpms": {
+      "Rocky Linux 8": {
+        "nvras": [
+          "thunderbird-0:115.9.0-1.el8_9.aarch64.rpm",
+          "thunderbird-0:115.9.0-1.el8_9.src.rpm",
+          "thunderbird-0:115.9.0-1.el8_9.x86_64.rpm",
+          "thunderbird-debuginfo-0:115.9.0-1.el8_9.aarch64.rpm",
+          "thunderbird-debuginfo-0:115.9.0-1.el8_9.x86_64.rpm",
+          "thunderbird-debugsource-0:115.9.0-1.el8_9.aarch64.rpm",
+          "thunderbird-debugsource-0:115.9.0-1.el8_9.x86_64.rpm"
+        ]
+      }
+    },
+    "rebootSuggested": false,
+    "buildReferences": []
+  }

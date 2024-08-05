@@ -38,6 +38,7 @@ from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.importers.nginx import NginxImporter
 from vulnerabilities.importers.npm import NpmImporter
 from vulnerabilities.importers.oss_fuzz import OSSFuzzImporter
+from vulnerabilities.importers.rockylinux import RockyLinuxImporter
 from vulnerabilities.importers.ruby import RubyImporter
 from vulnerabilities.importers.ubuntu import UbuntuImporter
 from vulnerabilities.improver import MAX_CONFIDENCE
@@ -471,4 +472,9 @@ class RubyImprover(ValidVersionImprover):
 
 class GithubOSVImprover(ValidVersionImprover):
     importer = GithubOSVImporter
+    ignorable_versions = []
+
+
+class RockyLinuxImprover(ValidVersionImprover):
+    importer = RockyLinuxImporter
     ignorable_versions = []

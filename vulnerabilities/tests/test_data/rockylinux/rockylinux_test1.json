@@ -1,0 +1,82 @@
+{
+      "type": "TYPE_SECURITY",
+      "shortCode": "RL",
+      "name": "RLSA-2022:2013",
+      "synopsis": "Moderate: openssh security, bug fix, and enhancement update",
+      "severity": "SEVERITY_MODERATE",
+      "topic": "An update is available for openssh.\nThis update affects Rocky Linux 8.\nA Common Vulnerability Scoring System (CVSS) base score, which gives a detailed severity rating, is available for each vulnerability from the CVE list",
+      "description": "OpenSSH is an SSH protocol implementation supported by a number of Linux, UNIX, and similar operating systems. It includes the core files necessary for both the OpenSSH client and server.\n\nSecurity Fix(es):\n\n* openssh: privilege escalation when AuthorizedKeysCommand or AuthorizedPrincipalsCommand are configured (CVE-2021-41617)\n\nFor more details about the security issue(s), including the impact, a CVSS score, acknowledgments, and other related information, refer to the CVE page(s) listed in the References section.\n\nAdditional Changes:\n\nFor detailed information on changes in this release, see the Rocky Linux 8.6 Release Notes linked from the References section.",
+      "solution": null,
+      "affectedProducts": [
+        "Rocky Linux 8"
+      ],
+      "fixes": [
+        {
+          "ticket": "2008291",
+          "sourceBy": "Red Hat",
+          "sourceLink": "https://bugzilla.redhat.com/show_bug.cgi?id=2008291",
+          "description": ""
+        },
+        {
+          "ticket": "2015828",
+          "sourceBy": "Red Hat",
+          "sourceLink": "https://bugzilla.redhat.com/show_bug.cgi?id=2015828",
+          "description": ""
+        }
+      ],
+      "cves": [
+        {
+          "name": "CVE-2021-41617",
+          "sourceBy": "MITRE",
+          "sourceLink": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-41617",
+          "cvss3ScoringVector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+          "cvss3BaseScore": "7.0",
+          "cwe": "CWE-273, CWE-123, CWE-546"
+        }
+      ],
+      "references": [],
+      "publishedAt": "2022-05-10T06:45:24Z",
+      "rpms": {
+        "Rocky Linux 8": {
+          "nvras": [
+            "openssh-0:8.0p1-13.el8.aarch64.rpm",
+            "openssh-0:8.0p1-13.el8.src.rpm",
+            "openssh-0:8.0p1-13.el8.x86_64.rpm",
+            "openssh-askpass-0:8.0p1-13.el8.aarch64.rpm",
+            "openssh-askpass-0:8.0p1-13.el8.x86_64.rpm",
+            "openssh-askpass-debuginfo-0:8.0p1-13.el8.aarch64.rpm",
+            "openssh-askpass-debuginfo-0:8.0p1-13.el8.x86_64.rpm",
+            "openssh-cavs-0:8.0p1-13.el8.aarch64.rpm",
+            "openssh-cavs-0:8.0p1-13.el8.x86_64.rpm",
+            "openssh-cavs-debuginfo-0:8.0p1-13.el8.aarch64.rpm",
+            "openssh-cavs-debuginfo-0:8.0p1-13.el8.x86_64.rpm",
+            "openssh-clients-0:8.0p1-13.el8.aarch64.rpm",
+            "openssh-clients-0:8.0p1-13.el8.x86_64.rpm",
+            "openssh-clients-debuginfo-0:8.0p1-13.el8.aarch64.rpm",
+            "openssh-clients-debuginfo-0:8.0p1-13.el8.x86_64.rpm",
+            "openssh-debuginfo-0:8.0p1-13.el8.aarch64.rpm",
+            "openssh-debuginfo-0:8.0p1-13.el8.x86_64.rpm",
+            "openssh-debugsource-0:8.0p1-13.el8.aarch64.rpm",
+            "openssh-debugsource-0:8.0p1-13.el8.x86_64.rpm",
+            "openssh-keycat-0:8.0p1-13.el8.aarch64.rpm",
+            "openssh-keycat-0:8.0p1-13.el8.x86_64.rpm",
+            "openssh-keycat-debuginfo-0:8.0p1-13.el8.aarch64.rpm",
+            "openssh-keycat-debuginfo-0:8.0p1-13.el8.x86_64.rpm",
+            "openssh-ldap-0:8.0p1-13.el8.aarch64.rpm",
+            "openssh-ldap-0:8.0p1-13.el8.x86_64.rpm",
+            "openssh-ldap-debuginfo-0:8.0p1-13.el8.aarch64.rpm",
+            "openssh-ldap-debuginfo-0:8.0p1-13.el8.x86_64.rpm",
+            "openssh-server-0:8.0p1-13.el8.aarch64.rpm",
+            "openssh-server-0:8.0p1-13.el8.x86_64.rpm",
+            "openssh-server-debuginfo-0:8.0p1-13.el8.aarch64.rpm",
+            "openssh-server-debuginfo-0:8.0p1-13.el8.x86_64.rpm",
+            "pam_ssh_agent_auth-0:0.10.3-7.13.el8.aarch64.rpm",
+            "pam_ssh_agent_auth-0:0.10.3-7.13.el8.x86_64.rpm",
+            "pam_ssh_agent_auth-debuginfo-0:0.10.3-7.13.el8.aarch64.rpm",
+            "pam_ssh_agent_auth-debuginfo-0:0.10.3-7.13.el8.x86_64.rpm"
+          ]
+        }
+      },
+      "rebootSuggested": false,
+      "buildReferences": []
+}

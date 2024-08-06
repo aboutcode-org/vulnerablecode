@@ -38,7 +38,14 @@ from vulnerabilities.throttling import StaffUserRateThrottle
 class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
     class Meta:
         model = VulnerabilitySeverity
-        fields = ["value", "scoring_system", "scoring_elements"]
+        fields = ["value", "scoring_system", "scoring_elements", "published_at"]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        published_at = data.get("published_at", None)
+        if not published_at:
+            data.pop("published_at")
+        return data
 
 
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):

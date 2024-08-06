@@ -189,6 +189,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                     defaults={
                         "value": str(severity.value),
                         "scoring_elements": str(severity.scoring_elements),
+                        "published_at": str(severity.published_at),
                     },
                 )
                 if updated:

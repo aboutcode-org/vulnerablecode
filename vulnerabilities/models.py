@@ -936,6 +936,10 @@ class VulnerabilitySeverity(models.Model):
         "For example a CVSS vector string as used to compute a CVSS score.",
     )
 
+    published_at = models.DateTimeField(
+        blank=True, null=True, help_text="UTC Date of publication of the vulnerability severity"
+    )
+
     class Meta:
         unique_together = ["reference", "scoring_system", "value"]
         ordering = ["reference", "scoring_system", "value"]

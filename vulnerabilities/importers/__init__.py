@@ -16,6 +16,7 @@ from vulnerabilities.importers import curl
 from vulnerabilities.importers import debian
 from vulnerabilities.importers import debian_oval
 from vulnerabilities.importers import elixir_security
+from vulnerabilities.importers import epss
 from vulnerabilities.importers import fireeye
 from vulnerabilities.importers import gentoo
 from vulnerabilities.importers import github
@@ -73,6 +74,7 @@ IMPORTERS_REGISTRY = [
     ruby.RubyImporter,
     github_osv.GithubOSVImporter,
     curl.CurlImporter,
+    epss.EPSSImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

@@ -98,12 +98,14 @@ def process_inferences(
 
             reference = VulnerabilityReference.objects.get_or_none(
                 reference_id=ref.reference_id,
+                reference_type=ref.reference_type,
                 url=ref.url,
             )
 
             if not reference:
                 reference = create_valid_vulnerability_reference(
                     reference_id=ref.reference_id,
+                    reference_type=ref.reference_type,
                     url=ref.url,
                 )
                 if not reference:
@@ -167,7 +169,7 @@ def process_inferences(
     return inferences_processed_count
 
 
-def create_valid_vulnerability_reference(url, reference_id=None):
+def create_valid_vulnerability_reference(url, reference_type="", reference_id=None):
     """
     Create and return a new validated VulnerabilityReference from a
     ``url`` and ``reference_id``.
@@ -175,6 +177,7 @@ def create_valid_vulnerability_reference(url, reference_id=None):
     """
     reference = VulnerabilityReference(
         reference_id=reference_id,
+        reference_type=reference_type,
         url=url,
     )
 

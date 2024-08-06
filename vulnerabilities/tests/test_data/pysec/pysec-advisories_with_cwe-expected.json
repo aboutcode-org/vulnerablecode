@@ -21,6 +21,7 @@
   "references": [
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/codingjoe/django-s3file/security/advisories/GHSA-4w8f-hjm9-xwgf",
       "severities": [
         {
@@ -37,6 +38,7 @@
     },
     {
       "reference_id": "",
+    "reference_type": "",
       "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-24840",
       "severities": [
         {
@@ -53,6 +55,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/codingjoe/django-s3file/commit/68ccd2c621a40eb66fdd6af2be9d5fcc9c373318",
       "severities": [
         {
@@ -69,6 +72,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/codingjoe/django-s3file",
       "severities": [
         {
@@ -85,6 +89,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/codingjoe/django-s3file/releases/tag/5.5.1",
       "severities": [
         {
@@ -101,6 +106,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/pypa/advisory-database/tree/main/vulns/django-s3file/PYSEC-2022-208.yaml",
       "severities": [
         {

@@ -16,6 +16,7 @@
     "references": [
       {
         "reference_id": "XSA-248",
+        "reference_type": "",
         "url": "https://xenbits.xen.org/xsa/advisory-248.html",
         "severities": []
       }
@@ -39,6 +40,7 @@
     "references": [
       {
         "reference_id": "XSA-248",
+        "reference_type": "",
         "url": "https://xenbits.xen.org/xsa/advisory-248.html",
         "severities": []
       }
@@ -62,6 +64,7 @@
     "references": [
       {
         "reference_id": "XSA-248",
+        "reference_type": "",
         "url": "https://xenbits.xen.org/xsa/advisory-248.html",
         "severities": []
       }
@@ -85,6 +88,7 @@
     "references": [
       {
         "reference_id": "XSA-248",
+        "reference_type": "",
         "url": "https://xenbits.xen.org/xsa/advisory-248.html",
         "severities": []
       }
@@ -108,6 +112,7 @@
     "references": [
       {
         "reference_id": "XSA-248",
+        "reference_type": "",
         "url": "https://xenbits.xen.org/xsa/advisory-248.html",
         "severities": []
       }
@@ -131,6 +136,7 @@
     "references": [
       {
         "reference_id": "XSA-248",
+        "reference_type": "",
         "url": "https://xenbits.xen.org/xsa/advisory-248.html",
         "severities": []
       }
@@ -154,6 +160,7 @@
     "references": [
       {
         "reference_id": "XSA-248",
+        "reference_type": "",
         "url": "https://xenbits.xen.org/xsa/advisory-248.html",
         "severities": []
       }

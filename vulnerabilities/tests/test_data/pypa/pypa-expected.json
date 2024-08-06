@@ -46,21 +46,25 @@
   "references": [
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://docs.djangoproject.com/en/4.0/releases/security/",
       "severities": []
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://groups.google.com/forum/#!forum/django-announce",
       "severities": []
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://www.djangoproject.com/weblog/2022/jan/04/security-releases/",
       "severities": []
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/advisories/GHSA-53qw-q765-4fww",
       "severities": []
     }

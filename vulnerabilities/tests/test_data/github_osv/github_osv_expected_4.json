@@ -33,6 +33,7 @@
   "references": [
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://nvd.nist.gov/vuln/detail/CVE-2011-0447",
       "severities": [
         {
@@ -44,6 +45,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/advisories/GHSA-24fg-p96v-hxh8",
       "severities": [
         {
@@ -55,6 +57,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "http://groups.google.com/group/rubyonrails-security/msg/c22ea1668c0d181c?dmode=source&output=gplain",
       "severities": [
         {
@@ -66,6 +69,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "http://lists.fedoraproject.org/pipermail/package-announce/2011-April/057650.html",
       "severities": [
         {
@@ -77,6 +81,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "http://lists.fedoraproject.org/pipermail/package-announce/2011-March/055074.html",
       "severities": [
         {
@@ -88,6 +93,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "http://lists.fedoraproject.org/pipermail/package-announce/2011-March/055088.html",
       "severities": [
         {
@@ -99,6 +105,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "http://secunia.com/advisories/43274",
       "severities": [
         {
@@ -110,6 +117,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "http://secunia.com/advisories/43666",
       "severities": [
         {
@@ -121,6 +129,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "http://weblog.rubyonrails.org/2011/2/8/csrf-protection-bypass-in-ruby-on-rails",
       "severities": [
         {
@@ -132,6 +141,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "http://www.debian.org/security/2011/dsa-2247",
       "severities": [
         {
@@ -143,6 +153,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "http://www.securityfocus.com/bid/46291",
       "severities": [
         {
@@ -154,6 +165,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "http://www.securitytracker.com/id?1025060",
       "severities": [
         {
@@ -165,6 +177,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "http://www.vupen.com/english/advisories/2011/0587",
       "severities": [
         {
@@ -176,6 +189,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "http://www.vupen.com/english/advisories/2011/0877",
       "severities": [
         {

@@ -359,6 +359,22 @@ class VulnerabilityReference(models.Model):
         unique=True,
     )
 
+    ADVISORY = "advisory"
+    EXPLOIT = "exploit"
+    MAILING_LIST = "mailing_list"
+    BUG = "bug"
+    OTHER = "other"
+
+    REFERENCE_TYPES = [
+        (ADVISORY, "Advisory"),
+        (EXPLOIT, "Exploit"),
+        (MAILING_LIST, "Mailing List"),
+        (BUG, "Bug"),
+        (OTHER, "Other"),
+    ]
+
+    reference_type = models.CharField(max_length=20, choices=REFERENCE_TYPES, blank=True)
+
     reference_id = models.CharField(
         max_length=200,
         help_text="An optional reference ID, such as DSA-4465-1 when available",
@@ -368,7 +384,7 @@ class VulnerabilityReference(models.Model):
     objects = VulnerabilityReferenceQuerySet.as_manager()
 
     class Meta:
-        ordering = ["reference_id", "url"]
+        ordering = ["reference_id", "url", "reference_type"]
 
     def __str__(self):
         reference_id = f" {self.reference_id}" if self.reference_id else ""

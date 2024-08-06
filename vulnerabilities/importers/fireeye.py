@@ -89,9 +89,9 @@ def get_references(references):
     """
     Return a list of Reference from a list of URL reference in md format
     >>> get_references(["- http://1-4a.com/cgi-bin/alienform/af.cgi"])
-    [Reference(reference_id='', url='http://1-4a.com/cgi-bin/alienform/af.cgi', severities=[])]
+    [Reference(reference_id='', reference_type='', url='http://1-4a.com/cgi-bin/alienform/af.cgi', severities=[])]
     >>> get_references(["- [Mitre CVE-2021-42712](https://www.cve.org/CVERecord?id=CVE-2021-42712)"])
-    [Reference(reference_id='', url='https://www.cve.org/CVERecord?id=CVE-2021-42712', severities=[])]
+    [Reference(reference_id='', reference_type='', url='https://www.cve.org/CVERecord?id=CVE-2021-42712', severities=[])]
     """
     urls = []
     for ref in references:

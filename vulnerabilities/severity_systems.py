@@ -157,6 +157,19 @@ APACHE_TOMCAT.choices = [
     "Low",
 ]
 
+
+@dataclasses.dataclass(order=True)
+class EPSSScoringSystem(ScoringSystem):
+    def compute(self, scoring_elements: str):
+        return NotImplementedError
+
+
+EPSS = EPSSScoringSystem(
+    identifier="epss",
+    name="Exploit Prediction Scoring System",
+    url="https://www.first.org/epss/",
+)
+
 SCORING_SYSTEMS = {
     system.identifier: system
     for system in (
@@ -170,5 +183,6 @@ SCORING_SYSTEMS = {
         GENERIC,
         APACHE_HTTPD,
         APACHE_TOMCAT,
+        EPSS,
     )
 }

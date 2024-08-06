@@ -29,7 +29,9 @@ from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
+from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
+from vulnerabilities.severity_systems import EPSS
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")
@@ -213,6 +215,23 @@ class APITestCaseVulnerability(TransactionTestCase):
             PackageRelatedVulnerability.objects.create(
                 package=pkg, vulnerability=self.vulnerability, fix=True
             )
+
+        self.reference1 = VulnerabilityReference.objects.create(
+            reference_id="",
+            url="https://.com",
+        )
+
+        VulnerabilitySeverity.objects.create(
+            reference=self.reference1,
+            scoring_system=EPSS.identifier,
+            scoring_elements=".0016",
+            value="0.526",
+        )
+
+        VulnerabilityRelatedReference.objects.create(
+            reference=self.reference1, vulnerability=self.vulnerability
+        )
+
         self.weaknesses = Weakness.objects.create(cwe_id=119)
         self.weaknesses.vulnerabilities.add(self.vulnerability)
         self.invalid_weaknesses = Weakness.objects.create(
@@ -256,7 +275,21 @@ class APITestCaseVulnerability(TransactionTestCase):
                 },
             ],
             "affected_packages": [],
-            "references": [],
+            "references": [
+                {
+                    "reference_url": "https://.com",
+                    "reference_id": "",
+                    "reference_type": "",
+                    "scores": [
+                        {
+                            "value": "0.526",
+                            "scoring_system": "epss",
+                            "scoring_elements": ".0016",
+                        }
+                    ],
+                    "url": "https://.com",
+                }
+            ],
             "weaknesses": [
                 {
                     "cwe_id": 119,
@@ -286,7 +319,21 @@ class APITestCaseVulnerability(TransactionTestCase):
                 },
             ],
             "affected_packages": [],
-            "references": [],
+            "references": [
+                {
+                    "reference_url": "https://.com",
+                    "reference_id": "",
+                    "reference_type": "",
+                    "scores": [
+                        {
+                            "value": "0.526",
+                            "scoring_system": "epss",
+                            "scoring_elements": ".0016",
+                        }
+                    ],
+                    "url": "https://.com",
+                }
+            ],
             "weaknesses": [
                 {
                     "cwe_id": 119,

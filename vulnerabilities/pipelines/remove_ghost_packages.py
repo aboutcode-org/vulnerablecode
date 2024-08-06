@@ -12,20 +12,12 @@ from fetchcode.package_versions import versions
 from packageurl import PackageURL
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 
-from pipeline import BasePipeline
 from pipeline import LoopProgress
 from vulnerabilities.models import Package
-from vulnerabilities.utils import classproperty
+from vulnerabilities.pipelines import VulnerableCodePipeline
 
 
-class RemoveGhostPackagePipeline(BasePipeline):
-    @classproperty
-    def qualified_name(cls):
-        """
-        Fully qualified name prefixed with the module name of the improver used in logging.
-        """
-        return f"{cls.__module__}.{cls.__qualname__}"
-
+class RemoveGhostPackagePipeline(VulnerableCodePipeline):
     @classmethod
     def steps(cls):
         return (cls.remove_ghost_packages,)

@@ -40,19 +40,19 @@ Run: context (groups, steps), execution, logging, and results
 from pipeline import BasePipeline
 from pipeline import BasePipelineRun
 
-class DoSomething(BasePipeline):
+class DoSomething(BasePipeline, BasePipelineRun):
     @classmethod
     def steps(cls):
         return (cls.step1,)
     def step1(self):
         print("Message from step1")
 
-# 1. From the Pipeline class (preferred)
-run = DoSomething.make_run()
+# 1. Run pipeline
+run = DoSomething()
 run.execute()
 
-# 2. From the Run class
-run = BasePipelineRun(pipeline_class=DoSomething)
+# 2. Run pipeline with selected groups
+run = BasePipelineRun(selected_groups=["group1", "group2"])
 run.execute()
 """
 
@@ -168,10 +168,10 @@ class LoopProgress:
 class BasePipelineRun:
     """Base class for all pipeline run (execution)."""
 
-    def __init__(self, pipeline_class, selected_groups=None, selected_steps=None):
+    def __init__(self, selected_groups=None, selected_steps=None):
         """Load the Pipeline class."""
-        self.pipeline_class = pipeline_class
-        self.pipeline_name = pipeline_class.__name__
+        self.pipeline_class = self.__class__
+        self.pipeline_name = self.pipeline_class.__name__
 
         self.selected_groups = selected_groups
         self.selected_steps = selected_steps or []
@@ -228,7 +228,7 @@ class BasePipelineRun:
             step_start_time = timer()
 
             try:
-                step(self)  # WARNING: self is a Run instance, not a Pipeline instance
+                step(self)
             except Exception as exception:
                 self.log("Pipeline failed")
                 return 1, self.output_from_exception(exception)
@@ -245,9 +245,6 @@ class BasePipelineRun:
 
 class BasePipeline:
     """Base class for all pipeline implementations."""
-
-    # Default PipelineRun class for executing the Pipeline.
-    run_class = BasePipelineRun
 
     # Flag indicating if the Pipeline is an add-on, meaning it cannot be run first.
     is_addon = False
@@ -328,7 +325,3 @@ class BasePipeline:
                 group_name for step in cls.get_steps() for group_name in getattr(step, "groups", [])
             )
         )
-
-    @classmethod
-    def make_run(cls, *args, **kwargs):
-        return cls.run_class(cls, *args, **kwargs)

@@ -52,12 +52,17 @@ class VulnerabilitySeverity:
     system: ScoringSystem
     value: str
     scoring_elements: str = ""
+    published_at: Optional[datetime.datetime] = None
 
     def to_dict(self):
+        published_at_dict = (
+            {"published_at": self.published_at.isoformat()} if self.published_at else {}
+        )
         return {
             "system": self.system.identifier,
             "value": self.value,
             "scoring_elements": self.scoring_elements,
+            **published_at_dict,
         }
 
     @classmethod
@@ -70,6 +75,7 @@ class VulnerabilitySeverity:
             system=SCORING_SYSTEMS[severity["system"]],
             value=severity["value"],
             scoring_elements=severity.get("scoring_elements", ""),
+            published_at=severity.get("published_at"),
         )
 
 

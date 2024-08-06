@@ -180,7 +180,7 @@ def get_casesensitive_slug(path, package_slug):
 
             # If the namespace/subfolder contains multiple packages, then progressive transverse through folders tree
             if package_slug.lower().startswith(slug_flatpath.lower()):
-                return get_gitlab_style_slug(slug_flatpath, package_slug)
+                return get_casesensitive_slug(slug_flatpath, package_slug)
 
         payload[0]["variables"]["nextPageCursor"] = paginated_tree["pageInfo"]["endCursor"]
         has_next = paginated_tree["pageInfo"]["hasNextPage"]

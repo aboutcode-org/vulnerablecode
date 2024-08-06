@@ -42,6 +42,8 @@ class DepsDataSource(DataSource):
             A list of VendorData objects containing the advisory information.
         """
         payload = generate_meta_payload(purl)
+        if not payload:
+            return
         response = self.fetch_json_response(payload)
         if response:
             advisories = parse_advisories_from_meta(response)

@@ -22,6 +22,7 @@
   "references": [
     {
       "reference_id": "",
+"reference_type": "",
       "url": "https://pillow.readthedocs.io/en/stable/releasenotes/9.0.0.html#restrict-builtins-available-to-imagemath-eval",
       "severities": [
         {
@@ -33,6 +34,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://lists.debian.org/debian-lts-announce/2022/01/msg00018.html",
       "severities": [
         {
@@ -44,6 +46,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/advisories/GHSA-8vj2-vxx3-667w",
       "severities": [
         {

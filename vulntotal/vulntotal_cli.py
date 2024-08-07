@@ -11,17 +11,26 @@
 
 import concurrent.futures
 import json
+import math
+import os
 import pydoc
 
 import click
 
 # TODO: use saneyaml
 import yaml
+from fetchcode import package_versions
 from packageurl import PackageURL
 from texttable import Texttable
+from univers.version_range import RANGE_CLASS_BY_SCHEMES
+from univers.version_range import VersionRange
+from univers.version_range import build_range_from_github_advisory_constraint
+from univers.version_range import build_range_from_snyk_advisory_string
+from univers.version_range import from_gitlab_native
 
 from vulntotal.datasources import DATASOURCE_REGISTRY
 from vulntotal.validator import VendorData
+from vulntotal.vulntotal_utils import get_item
 
 
 @click.command()
@@ -42,8 +51,6 @@ from vulntotal.validator import VendorData
     metavar="FILE",
     help="Write output as YAML to FILE. Use '-' to print on screen.",
 )
-
-# hidden debug options
 @click.option(
     "-l",
     "--list",
@@ -53,6 +60,8 @@ from vulntotal.validator import VendorData
     required=False,
     help="List available datasources.",
 )
+
+# hidden debug options
 @click.option(
     "-e",
     "--enable",
@@ -88,7 +97,7 @@ from vulntotal.validator import VendorData
     hidden=True,
     multiple=False,
     required=False,
-    help="Report the raw responses from each datasource. Used for debugging. Used for debugging.",
+    help="Report the raw responses from each datasource. Used for debugging.",
 )
 @click.option(
     "--no-threading",
@@ -118,6 +127,24 @@ from vulntotal.validator import VendorData
     required=False,
     help="Do not group output by vulnerability/CVE. Used for debugging.",
 )
+@click.option(
+    "--vers",
+    "vers",
+    is_flag=True,
+    hidden=True,
+    multiple=False,
+    required=False,
+    help="Show normalized vers. Used for debugging.",
+)
+@click.option(
+    "--no-compare",
+    "no_compare",
+    is_flag=True,
+    hidden=True,
+    multiple=False,
+    required=False,
+    help="Do not compare datasource output. Used for debugging.",
+)
 @click.help_option("-h", "--help")
 def handler(
     purl,
@@ -131,6 +158,8 @@ def handler(
     json_output,
     yaml_output,
     no_group,
+    vers,
+    no_compare,
 ):
     """
     Search all the available vulnerabilities databases for the package-url PURL.
@@ -155,16 +184,18 @@ def handler(
             get_raw_response(purl, active_datasource)
 
     elif json_output:
-        write_json_output(purl, active_datasource, json_output, no_threading)
+        write_json_output(purl, active_datasource, json_output, no_threading, no_group, no_compare)
 
     elif yaml_output:
-        write_yaml_output(purl, active_datasource, yaml_output, no_threading)
+        write_yaml_output(purl, active_datasource, yaml_output, no_threading, no_group, no_compare)
 
     elif no_group:
         prettyprint(purl, active_datasource, pagination, no_threading)
 
     elif purl:
-        prettyprint_group_by_cve(purl, active_datasource, pagination, no_threading)
+        prettyprint_group_by_cve(
+            purl, active_datasource, pagination, no_threading, vers, no_compare
+        )
 
 
 def get_valid_datasources(datasources):
@@ -209,6 +240,9 @@ def list_supported_ecosystem(datasources):
 
 
 def formatted_row(datasource, advisory):
+    if not advisory:
+        return [datasource.upper(), "", "", ""]
+
     aliases = "\n".join(advisory.aliases)
     affected = "  ".join(advisory.affected_versions)
     fixed = "  ".join(advisory.fixed_versions)
@@ -257,12 +291,22 @@ class VendorDataEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, VendorData):
             return obj.to_dict()
+        if isinstance(obj, VersionRange):
+            return str(obj)
         return json.JSONEncoder.default(self, obj)
 
 
-def write_json_output(purl, datasources, json_output, no_threading):
+def write_json_output(purl, datasources, json_output, no_threading, no_group, no_compare):
+    results = {"purl": purl, "datasources": list(datasources.keys())}
+
     vulnerabilities = run_datasources(purl, datasources, no_threading)
-    return json.dump(vulnerabilities, json_output, cls=VendorDataEncoder, indent=2)
+    if no_group:
+        results.update(vulnerabilities)
+    else:
+        grouped_by_cve = group_by_cve(vulnerabilities, PackageURL.from_string(purl), no_compare)
+        results.update(grouped_by_cve)
+
+    return json.dump(results, json_output, cls=VendorDataEncoder, indent=2)
 
 
 def noop(self, *args, **kw):
@@ -272,9 +316,34 @@ def noop(self, *args, **kw):
 yaml.emitter.Emitter.process_tag = noop
 
 
-def write_yaml_output(purl, datasources, yaml_output, no_threading):
+def write_yaml_output(purl, datasources, yaml_output, no_threading, no_group, no_compare):
+    results = {"purl": purl, "datasources": list(datasources.keys())}
+
     vulnerabilities = run_datasources(purl, datasources, no_threading)
-    return yaml.dump(vulnerabilities, yaml_output, default_flow_style=False, indent=2)
+    if no_group:
+        results.update(vulnerabilities)
+    else:
+        grouped_by_cve = group_by_cve(vulnerabilities, PackageURL.from_string(purl), no_compare)
+        serialize_version_range(grouped_by_cve, no_compare)
+        results.update(grouped_by_cve)
+
+    return yaml.dump(results, yaml_output, default_flow_style=False, indent=2, sort_keys=False)
+
+
+def serialize_version_range(grouped_by_cve, no_compare):
+    if no_compare:
+        return
+    for cve, value in grouped_by_cve.items():
+        if cve in ("NOCVE", "NOADVISORY"):
+            continue
+        for _, resources in value.items():
+            for resource in resources:
+                affected_versions = resource.get("normalized_affected_versions")
+                fixed_versions = resource.get("normalized_fixed_versions")
+                if isinstance(affected_versions, VersionRange):
+                    resource["normalized_affected_versions"] = str(affected_versions)
+                if isinstance(fixed_versions, VersionRange):
+                    resource["normalized_fixed_versions"] = str(fixed_versions)
 
 
 def prettyprint(purl, datasources, pagination, no_threading):
@@ -285,11 +354,7 @@ def prettyprint(purl, datasources, pagination, no_threading):
     active_datasources = ", ".join(sorted([x.upper() for x in datasources.keys()]))
     metadata = f"PURL: {purl}\nActive datasources: {active_datasources}\n\n"
 
-    table = Texttable()
-    table.set_cols_dtype(["t", "t", "t", "t"])
-    table.set_cols_align(["c", "l", "l", "l"])
-    table.set_cols_valign(["t", "t", "a", "t"])
-    table.header(["DATASOURCE", "ALIASES", "AFFECTED", "FIXED"])
+    table = get_texttable(no_group=True)
 
     for datasource, advisories in vulnerabilities.items():
         if not advisories:
@@ -302,47 +367,231 @@ def prettyprint(purl, datasources, pagination, no_threading):
     pydoc.pager(metadata + table.draw()) if pagination else click.echo(metadata + table.draw())
 
 
-def group_by_cve(vulnerabilities):
+def group_by_cve(vulnerabilities, purl, no_compare):
     grouped_by_cve = {}
-    no_cve = []
-    no_advisory = []
+    nocve = {}
+    noadvisory = {}
     for datasource, advisories in vulnerabilities.items():
         if not advisories:
-            no_advisory.append([datasource.upper(), "", "", ""])
-
+            if datasource not in noadvisory:
+                noadvisory[datasource] = []
+            noadvisory[datasource].append({"advisory": None})
         for advisory in advisories:
             cve = next((x for x in advisory.aliases if x.startswith("CVE")), None)
             if not cve:
-                no_cve.append(formatted_row(datasource, advisory))
+                if datasource not in nocve:
+                    nocve[datasource] = []
+                nocve[datasource].append({"advisory": advisory})
                 continue
             if cve not in grouped_by_cve:
-                grouped_by_cve[cve] = []
-            grouped_by_cve[cve].append(formatted_row(datasource, advisory))
-    grouped_by_cve["NOCVE"] = no_cve
-    grouped_by_cve["NOADVISORY"] = no_advisory
+                grouped_by_cve[cve] = {}
+
+            if datasource not in grouped_by_cve[cve]:
+                grouped_by_cve[cve][datasource] = []
+            grouped_by_cve[cve][datasource].append({"advisory": advisory})
+    grouped_by_cve["NOCVE"] = nocve
+    grouped_by_cve["NOADVISORY"] = noadvisory
+    if not no_compare:
+        normalize_version_ranges(grouped_by_cve, purl)
+        compare(grouped_by_cve)
     return grouped_by_cve
 
 
-def prettyprint_group_by_cve(purl, datasources, pagination, no_threading):
+def normalize_version_ranges(grouped_by_cve, purl):
+    package_versions = get_all_versions(purl)
+    for cve, value in grouped_by_cve.items():
+        if cve in ("NOCVE", "NOADVISORY"):
+            continue
+        for datasource, resources in value.items():
+            for resource in resources:
+                advisory = resource["advisory"]
+                normalized_affected_versions = []
+                normalized_fixed_versions = []
+                version_range_func = VERSION_RANGE_BY_DATASOURCE.get(datasource)
+                if version_range_func and advisory.affected_versions:
+                    affected = advisory.affected_versions
+                    if len(affected) == 1:
+                        affected = affected[0]
+
+                    try:
+                        vra = version_range_func(purl.type, affected)
+                        normalized_affected_versions = vra.normalize(package_versions)
+                    except Exception as err:
+                        normalized_affected_versions = [err]
+
+                if advisory.fixed_versions:
+                    try:
+                        vrf = get_range_from_discrete_version_string(
+                            purl.type, advisory.fixed_versions
+                        )
+                        normalized_fixed_versions = vrf.normalize(package_versions)
+                    except Exception as err:
+                        normalized_fixed_versions = [err]
+
+                resource["normalized_affected_versions"] = normalized_affected_versions
+                resource["normalized_fixed_versions"] = normalized_fixed_versions
+
+
+def compare(grouped_by_cve):
+    for cve, advisories in grouped_by_cve.items():
+        if cve in ("NOCVE", "NOADVISORY"):
+            continue
+        sources = list(advisories.keys())
+        board = {source: {} for source in sources}
+
+        # For each unique CVE create the scoring board to score
+        # advisory from different datasources.
+        # A typical board after comparison may look like this.
+
+        # board = {
+        #     "github":{
+        #         "snyk": 0,
+        #         "gitlab": 1,
+        #         "deps": 0,
+        #         "vulnerablecode": 1,
+        #         "osv": 1,
+        #         "oss_index": 1,
+        #     },
+        #     "snyk":{
+        #         "github": 0,
+        #         "gitlab": 1,
+        #         "deps": 0,
+        #         "vulnerablecode": 1,
+        #         "osv": 1,
+        #         "oss_index": 1,
+        #     },
+        #     ...
+        # }
+
+        for datasource, resources in advisories.items():
+            normalized_affected_versions_a = get_item(resources, 0, "normalized_affected_versions")
+            normalized_fixed_versions_a = get_item(resources, 0, "normalized_fixed_versions")
+            if normalized_fixed_versions_a and normalized_affected_versions_a:
+                for source in sources:
+                    if (
+                        source == datasource
+                        or source in board[datasource]
+                        or datasource in board[source]
+                    ):
+                        continue
+                    normalized_affected_versions_b = get_item(
+                        advisories, source, 0, "normalized_affected_versions"
+                    )
+                    normalized_fixed_versions_b = get_item(
+                        advisories, source, 0, "normalized_fixed_versions"
+                    )
+                    board[datasource][source] = 0
+                    board[source][datasource] = 0
+                    if normalized_fixed_versions_a == normalized_fixed_versions_b:
+                        board[datasource][source] += 0.5
+                        board[source][datasource] += 0.5
+                    if normalized_affected_versions_a == normalized_affected_versions_b:
+                        board[datasource][source] += 0.5
+                        board[source][datasource] += 0.5
+
+        # Compute the relative score from the score board for each advisory.
+        maximum = max([sum(table.values()) for table in board.values()])
+        datasource_count = len(sources)
+        for datasource, table in board.items():
+            if maximum == 0:
+                # NA if only one advisory and nothing to compare with.
+                # TC (Total Collision) i.e no two advisory agree on common fixed or affected version.
+                advisories[datasource][0]["score"] = "TC" if datasource_count > 1 else "NA"
+                continue
+            datasource_score = (sum(table.values()) / maximum) * 100
+            advisories[datasource][0]["score"] = datasource_score
+
+
+def prettyprint_group_by_cve(purl, datasources, pagination, no_threading, vers, no_compare):
     vulnerabilities = run_datasources(purl, datasources, no_threading)
     if not vulnerabilities:
         return
-    grouped_by_cve = group_by_cve(vulnerabilities)
+    grouped_by_cve = group_by_cve(vulnerabilities, PackageURL.from_string(purl), no_compare)
 
     active_datasource = ", ".join(sorted([x.upper() for x in datasources.keys()]))
     metadata = f"PURL: {purl}\nActive DataSources: {active_datasource}\n\n"
 
-    table = Texttable()
-    table.set_cols_dtype(["a", "a", "a", "a", "a"])
-    table.set_cols_align(["l", "l", "l", "l", "l"])
-    table.set_cols_valign(["t", "t", "t", "a", "t"])
-    table.header(["CVE", "DATASOURCE", "ALIASES", "AFFECTED", "FIXED"])
+    table = get_texttable(no_compare=no_compare)
 
-    for cve, advisories in grouped_by_cve.items():
-        for count, advisory in enumerate(advisories):
-            table.add_row([cve] + advisory)
+    for cve, value in grouped_by_cve.items():
+        for datasource, resources in value.items():
+            row = [cve] + formatted_row(datasource, resources[0].get("advisory"))
+            if not no_compare:
+                row.append(resources[0].get("score", "NA"))
+
+            table.add_row(row)
+
+            if not no_compare and vers and "score" in resources[0]:
+                na_affected = get_item(resources, 0, "normalized_affected_versions")
+                na_fixed = get_item(resources, 0, "normalized_fixed_versions")
+                table.add_row(["", "", "", na_affected, na_fixed, ""])
 
     pydoc.pager(metadata + table.draw()) if pagination else click.echo(metadata + table.draw())
+
+
+def get_texttable(no_group=False, no_compare=False):
+    quantum = 100 / 125
+    terminal_width = os.get_terminal_size().columns
+    line_factor = terminal_width / 100
+
+    column_size = lambda f: math.floor(f * quantum * line_factor)
+    column_7x = column_size(7)
+    column_17x = column_size(17)
+    column_15x = column_size(15)
+    column_20x = column_size(20)
+
+    table = Texttable()
+
+    if no_group:
+        table.set_cols_dtype(["t", "t", "t", "t"])
+        table.set_cols_align(["c", "l", "l", "l"])
+        table.set_cols_valign(["t", "t", "a", "t"])
+        table.set_cols_width([column_20x, column_20x, column_20x, column_20x])
+        table.header(["DATASOURCE", "ALIASES", "AFFECTED", "FIXED"])
+        return table
+
+    if no_compare:
+        table.set_cols_dtype(["a", "a", "a", "a", "a"])
+        table.set_cols_align(["l", "l", "l", "l", "l"])
+        table.set_cols_valign(["t", "t", "t", "a", "t"])
+        table.set_cols_width([column_15x, column_15x, column_20x, column_20x, column_20x])
+        table.header(["CVE", "DATASOURCE", "ALIASES", "AFFECTED", "FIXED"])
+        return table
+
+    table.set_cols_dtype(["a", "a", "a", "a", "a", "i"])
+    table.set_cols_align(["l", "l", "l", "l", "l", "l"])
+    table.set_cols_valign(["t", "t", "t", "a", "t", "t"])
+    table.set_cols_width([column_17x, column_15x, column_15x, column_20x, column_20x, column_7x])
+    table.header(["CVE", "DATASOURCE", "ALIASES", "AFFECTED", "FIXED", "SCORE"])
+
+    return table
+
+
+def get_range_from_discrete_version_string(schema, versions):
+    range_cls = RANGE_CLASS_BY_SCHEMES.get(schema)
+    if isinstance(versions, str):
+        versions = [versions]
+    return range_cls.from_versions(versions)
+
+
+VERSION_RANGE_BY_DATASOURCE = {
+    "deps": get_range_from_discrete_version_string,
+    "github": build_range_from_github_advisory_constraint,
+    "gitlab": from_gitlab_native,
+    "oss_index": None,
+    "osv": get_range_from_discrete_version_string,
+    "snyk": build_range_from_snyk_advisory_string,
+    "safetydb": build_range_from_snyk_advisory_string,
+    "vulnerablecode": get_range_from_discrete_version_string,
+}
+
+
+def get_all_versions(purl: PackageURL):
+    if purl.type not in package_versions.SUPPORTED_ECOSYSTEMS:
+        return
+
+    all_versions = package_versions.versions(str(purl))
+    return [package_version.value for package_version in all_versions]
 
 
 if __name__ == "__main__":
@@ -366,5 +615,7 @@ Options:
   --no-threading                  Run DataSources sequentially.
   -p, --pagination                Enable default pagination.
   --no-group                      Don't group by CVE.
+  --vers                          Show normalized vers.
+  --no-compare                    Do not compare datasource output.
   -h, --help                      Show this message and exit.
 """

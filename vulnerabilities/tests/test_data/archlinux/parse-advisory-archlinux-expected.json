@@ -21,6 +21,7 @@
     "references": [
       {
         "reference_id": "AVG-2781",
+        "reference_type": "",
         "url": "https://security.archlinux.org/AVG-2781",
         "severities": [
           {

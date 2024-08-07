@@ -30,6 +30,7 @@ from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import VulnerabilitySearchForm
 from vulnerabilities.models import VulnerabilityStatusType
+from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import get_severity_range
 from vulnerablecode.settings import env
@@ -151,13 +152,46 @@ class VulnerabilityDetails(DetailView):
         status = self.object.get_status_label
 
         severity_vectors = []
+        severity_values = set()
         for s in self.object.severities:
+            if s.scoring_system == EPSS.identifier:
+                continue
+
             if s.scoring_elements and s.scoring_system in SCORING_SYSTEMS:
                 try:
                     vector_values = SCORING_SYSTEMS[s.scoring_system].get(s.scoring_elements)
                     severity_vectors.append(vector_values)
                 except (CVSS2MalformedError, CVSS3MalformedError, NotImplementedError):
                     logging.error(f"CVSSMalformedError for {s.scoring_elements}")
+            if s.value:
+                severity_values.add(s.value)
+
+        sorted_affected_packages = sorted(self.object.affected_packages.all(), key=purl_sort_key)
+        sorted_fixed_by_packages = sorted(self.object.fixed_by_packages.all(), key=purl_sort_key)
+
+        all_affected_fixed_by_matches = []
+        for sorted_affected_package in sorted_affected_packages:
+            affected_fixed_by_matches = {}
+            affected_fixed_by_matches["affected_package"] = sorted_affected_package
+            matched_fixed_by_packages = []
+            for fixed_by_package in sorted_fixed_by_packages:
+                sorted_affected_version_class = get_purl_version_class(sorted_affected_package)
+                fixed_by_version_class = get_purl_version_class(fixed_by_package)
+                if (
+                    (fixed_by_package.type == sorted_affected_package.type)
+                    and (fixed_by_package.namespace == sorted_affected_package.namespace)
+                    and (fixed_by_package.name == sorted_affected_package.name)
+                    and (fixed_by_package.qualifiers == sorted_affected_package.qualifiers)
+                    and (fixed_by_package.subpath == sorted_affected_package.subpath)
+                    and (fixed_by_version_class(fixed_by_package.version) > sorted_affected_version_class(sorted_affected_package.version))
+                ):
+                    matched_fixed_by_packages.append(fixed_by_package.purl)
+            affected_fixed_by_matches["matched_fixed_by_packages"] = matched_fixed_by_packages
+            all_affected_fixed_by_matches.append(affected_fixed_by_matches)
+
+
+            if s.value:
+                severity_values.add(s.value)
 
         sorted_affected_packages = sorted(self.object.affected_packages.all(), key=purl_sort_key)
         sorted_fixed_by_packages = sorted(self.object.fixed_by_packages.all(), key=purl_sort_key)
@@ -187,9 +221,7 @@ class VulnerabilityDetails(DetailView):
                 "vulnerability": self.object,
                 "vulnerability_search_form": VulnerabilitySearchForm(self.request.GET),
                 "severities": list(self.object.severities),
-                "severity_score_range": get_severity_range(
-                    {s.value for s in self.object.severities}
-                ),
+                "severity_score_range": get_severity_range(severity_values),
                 "severity_vectors": severity_vectors,
                 "references": self.object.references.all(),
                 "aliases": self.object.aliases.all(),

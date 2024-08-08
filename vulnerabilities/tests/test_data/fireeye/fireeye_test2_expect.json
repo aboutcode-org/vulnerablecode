@@ -8,16 +8,19 @@
   "references": [
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-12878",
       "severities": []
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://www.fireeye.com/blog/threat-research/2021/02/solarcity-exploitation-of-x2e-iot-device-part-one.html",
       "severities": []
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://www.fireeye.com/blog/threat-research/2021/02/solarcity-exploitation-of-x2e-iot-device-part-two.html",
       "severities": []
     }

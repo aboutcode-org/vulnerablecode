@@ -21,6 +21,7 @@ from rest_framework.test import APIClient
 
 from vulnerabilities.api import MinimalPackageSerializer
 from vulnerabilities.api import PackageSerializer
+from vulnerabilities.api import VulnerabilityReferenceSerializer
 from vulnerabilities.models import Alias
 from vulnerabilities.models import ApiUser
 from vulnerabilities.models import Package
@@ -28,7 +29,9 @@ from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
+from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
+from vulnerabilities.severity_systems import EPSS
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")
@@ -161,6 +164,9 @@ class TestSerializers(TransactionTestCase):
             namespace="ubuntu",
             qualifiers={"distro": "jessie"},
         )
+        self.ref = VulnerabilityReference.objects.create(
+            reference_type="advisory", reference_id="CVE-xxx-xxx", url="https://example.com"
+        )
         self.user = ApiUser.objects.create_api_user(username="e@mail.com")
         self.auth = f"Token {self.user.auth_token.key}"
         self.client = APIClient(enforce_csrf_checks=True)
@@ -181,6 +187,16 @@ class TestSerializers(TransactionTestCase):
         purls = {r["purl"] for r in response}
         self.assertIn("pkg:deb/ubuntu/mimetex@1.50-1.1?distro=jessie", purls)
 
+    def test_vulnerability_reference_serializer(self):
+        response = VulnerabilityReferenceSerializer(instance=self.ref).data
+        assert response == {
+            "reference_url": "https://example.com",
+            "reference_id": "CVE-xxx-xxx",
+            "reference_type": "advisory",
+            "scores": [],
+            "url": "https://example.com",
+        }
+
 
 class APITestCaseVulnerability(TransactionTestCase):
     def setUp(self):
@@ -199,6 +215,23 @@ class APITestCaseVulnerability(TransactionTestCase):
             PackageRelatedVulnerability.objects.create(
                 package=pkg, vulnerability=self.vulnerability, fix=True
             )
+
+        self.reference1 = VulnerabilityReference.objects.create(
+            reference_id="",
+            url="https://.com",
+        )
+
+        VulnerabilitySeverity.objects.create(
+            reference=self.reference1,
+            scoring_system=EPSS.identifier,
+            scoring_elements=".0016",
+            value="0.526",
+        )
+
+        VulnerabilityRelatedReference.objects.create(
+            reference=self.reference1, vulnerability=self.vulnerability
+        )
+
         self.weaknesses = Weakness.objects.create(cwe_id=119)
         self.weaknesses.vulnerabilities.add(self.vulnerability)
         self.invalid_weaknesses = Weakness.objects.create(
@@ -242,7 +275,21 @@ class APITestCaseVulnerability(TransactionTestCase):
                 },
             ],
             "affected_packages": [],
-            "references": [],
+            "references": [
+                {
+                    "reference_url": "https://.com",
+                    "reference_id": "",
+                    "reference_type": "",
+                    "scores": [
+                        {
+                            "value": "0.526",
+                            "scoring_system": "epss",
+                            "scoring_elements": ".0016",
+                        }
+                    ],
+                    "url": "https://.com",
+                }
+            ],
             "weaknesses": [
                 {
                     "cwe_id": 119,
@@ -272,7 +319,21 @@ class APITestCaseVulnerability(TransactionTestCase):
                 },
             ],
             "affected_packages": [],
-            "references": [],
+            "references": [
+                {
+                    "reference_url": "https://.com",
+                    "reference_id": "",
+                    "reference_type": "",
+                    "scores": [
+                        {
+                            "value": "0.526",
+                            "scoring_system": "epss",
+                            "scoring_elements": ".0016",
+                        }
+                    ],
+                    "url": "https://.com",
+                }
+            ],
             "weaknesses": [
                 {
                     "cwe_id": 119,

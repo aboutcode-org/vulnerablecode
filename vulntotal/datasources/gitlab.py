@@ -47,10 +47,11 @@ class GitlabDataSource(DataSource):
             casesensitive_package_slug = get_casesensitive_slug(path, package_slug)
             directory_files = fetch_directory_contents(casesensitive_package_slug)
 
-        yml_files = [file for file in directory_files if file["name"].endswith(".yml")]
+        if directory_files:
+            yml_files = [file for file in directory_files if file["name"].endswith(".yml")]
 
-        interesting_advisories = parse_interesting_advisories(yml_files, purl)
-        return interesting_advisories
+            interesting_advisories = parse_interesting_advisories(yml_files, purl)
+            return interesting_advisories
 
     @classmethod
     def supported_ecosystem(cls):

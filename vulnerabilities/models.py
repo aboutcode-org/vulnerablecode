@@ -224,6 +224,16 @@ class Vulnerability(models.Model):
         Return a queryset of packages that are affected by this vulnerability.
         """
         return self.packages.affected()
+    
+    def fixed_packages_for_vuln(self, package):
+        """
+        Return a queryset of packages that are fixing this vulnerability.
+        """
+        packages = []
+        for pkg in package.fixed_packages.all():
+            if pkg.vulnerabilities.filter(id=self.id).exists():
+                packages.append(pkg)
+        return packages
 
     # legacy aliases
     vulnerable_packages = affected_packages
@@ -488,9 +498,12 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         ``package``.
         """
 
-        return self.match_purl(
-            purl=package.purl,
-            with_qualifiers_and_subpath=with_qualifiers_and_subpath,
+        return self.filter(
+            name=package.name,
+            namespace=package.namespace,
+            type=package.type,
+            qualifiers=package.qualifiers,
+            subpath=package.subpath,
         ).fixing()
 
     def search(self, query: str = None):
@@ -664,7 +677,31 @@ class Package(PackageURLMixin):
         """
         Return a queryset of vulnerabilities fixed by this package.
         """
-        return self.vulnerabilities.filter(packagerelatedvulnerability__fix=True)
+        return self.vulnerabilities.filter(packagerelatedvulnerability__fix=True).prefetch_related(
+            Prefetch(
+                "references",
+                queryset=VulnerabilityReference.objects.all(),
+            ),
+            "aliases",
+            "weaknesses",
+            Prefetch(
+                "packages",
+                queryset=Package.objects.prefetch_related(
+                    Prefetch(
+                        "vulnerabilities",
+                        queryset=Vulnerability.objects.prefetch_related(
+                            Prefetch(
+                                "references",
+                                queryset=VulnerabilityReference.objects.all(),
+                            ),
+                            "aliases",
+                            "weaknesses",
+                        ),
+                    ),
+                    "packagerelatedvulnerability_set",
+                ).distinct(),
+            )
+        )
 
     # legacy aliases
     resolved_to = fixing
@@ -674,7 +711,20 @@ class Package(PackageURLMixin):
         """
         Return a queryset of packages that are fixed.
         """
-        return Package.objects.fixing_packages(package=self).distinct()
+        return Package.objects.fixing_packages(package=self).prefetch_related(
+        Prefetch(
+            'vulnerabilities',
+            queryset=Vulnerability.objects.prefetch_related(
+                Prefetch(
+                    'references', 
+                    queryset=VulnerabilityReference.objects.all()
+                ),
+                'aliases',
+                'weaknesses',
+            )
+        ),
+        'packagerelatedvulnerability_set',
+    ).distinct()
 
     @property
     def history(self):

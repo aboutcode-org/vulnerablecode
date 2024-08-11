@@ -1,12 +1,3 @@
-#
-# Copyright (c) nexB Inc. and others. All rights reserved.
-# VulnerableCode is a trademark of nexB Inc.
-# SPDX-License-Identifier: Apache-2.0
-# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
-# See https://aboutcode.org for more information about nexB OSS projects.
-#
-
 from urllib.parse import unquote
 
 from django.db.models import Prefetch
@@ -24,14 +15,7 @@ from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.throttling import UserRateThrottle
 
-from vulnerabilities.models import Alias
-from vulnerabilities.models import Kev
-from vulnerabilities.models import Package
-from vulnerabilities.models import Vulnerability
-from vulnerabilities.models import VulnerabilityReference
-from vulnerabilities.models import VulnerabilitySeverity
-from vulnerabilities.models import Weakness
-from vulnerabilities.models import get_purl_query_lookups
+from vulnerabilities.models import Alias, Kev, Package, PackageRelatedVulnerability, Vulnerability, VulnerabilityReference, VulnerabilitySeverity, Weakness, get_purl_query_lookups
 from vulnerabilities.throttling import StaffUserRateThrottle
 
 
@@ -70,9 +54,6 @@ class BaseResourceSerializer(serializers.HyperlinkedModelSerializer):
     def get_resource_url(self, instance):
         """
         Return the instance fully qualified URL including the schema and domain.
-
-        Usage:
-            resource_url = serializers.SerializerMethodField()
         """
         resource_url = instance.get_absolute_url()
 
@@ -155,7 +136,7 @@ class VulnSerializerRefsAndSummary(BaseResourceSerializer):
 
     class Meta:
         model = Vulnerability
-        fields = ["url", "vulnerability_id", "summary", "references", "fixed_packages", "aliases"]
+        fields = ["url", "vulnerability_id", "summary", "fixed_packages", "references", "aliases"]
 
 
 class WeaknessSerializer(serializers.HyperlinkedModelSerializer):
@@ -233,13 +214,15 @@ class PackageSerializer(BaseResourceSerializer):
         return data
 
     next_non_vulnerable_version = serializers.SerializerMethodField("get_next_non_vulnerable")
+    latest_non_vulnerable_version = serializers.SerializerMethodField("get_latest_non_vulnerable")
+    purl = serializers.CharField(source="package_url")
+    affected_by_vulnerabilities = serializers.SerializerMethodField("get_affected_vulnerabilities")
+    fixing_vulnerabilities = serializers.SerializerMethodField("get_fixed_vulnerabilities")
 
     def get_next_non_vulnerable(self, package):
         next_non_vulnerable = package.fixed_package_details.get("next_non_vulnerable", None)
         if next_non_vulnerable:
             return next_non_vulnerable.version
-
-    latest_non_vulnerable_version = serializers.SerializerMethodField("get_latest_non_vulnerable")
 
     def get_latest_non_vulnerable(self, package):
         latest_non_vulnerable = package.fixed_package_details.get("latest_non_vulnerable", None)
@@ -278,20 +261,30 @@ class PackageSerializer(BaseResourceSerializer):
         Return vulnerabilities that affect the `package` if given `fix` flag is False,
         otherwise return vulnerabilities fixed by the `package`.
         """
-        fixed_packages = self.get_fixed_packages(package=package)
-        qs = package.vulnerabilities.filter(packagerelatedvulnerability__fix=fix)
-        qs = qs.prefetch_related(
-            Prefetch(
-                "packages",
-                queryset=fixed_packages,
-                to_attr="filtered_fixed_packages",
-            )
-        )
-        return VulnSerializerRefsAndSummary(
-            instance=qs,
-            many=True,
-            context={"request": self.context["request"]},
-        ).data
+        # Retrieve all related PackageRelatedVulnerability objects for this package
+        related_vulnerabilities = PackageRelatedVulnerability.objects.filter(
+            package_id=package.id,
+            fix=fix
+        ).select_related('vulnerability')
+
+        # Cache the vulnerabilities to avoid duplicated queries
+        vulnerabilities = {
+            prv.vulnerability: prv.vulnerability for prv in related_vulnerabilities
+        }
+
+        # Now, map the vulnerabilities with their fixed packages
+        vulnerabilities_with_fixed_packages = []
+        for vulnerability in vulnerabilities.values():
+            vuln_data = VulnSerializerRefsAndSummary(
+                instance=vulnerability,
+                context={"request": self.context["request"]},
+            ).data
+
+            vuln_data["fixed_packages"] = [pkg.purl for pkg in vulnerability.fixed_packages_for_vuln(package=package)]
+            vulnerabilities_with_fixed_packages.append(vuln_data)
+        
+        return vulnerabilities_with_fixed_packages
+
 
     def get_fixing_vulnerabilities(self, package) -> dict:
         """
@@ -307,15 +300,15 @@ class PackageSerializer(BaseResourceSerializer):
         excluded_purls = []
         package_vulnerabilities = self.get_vulnerabilities_for_a_package(package=package, fix=False)
 
-        for vuln in package_vulnerabilities:
-            for pkg in vuln["fixed_packages"]:
-                real_purl = PackageURL.from_string(pkg["purl"])
-                if package.version_class(real_purl.version) <= package.current_version:
-                    excluded_purls.append(pkg)
+        # for vuln in package_vulnerabilities:
+        #     for pkg in vuln["fixed_packages"]:
+        #         real_purl = PackageURL.from_string(pkg["purl"])
+        #         if package.version_class(real_purl.version) <= package.current_version:
+        #             excluded_purls.append(pkg["purl"])
 
-            vuln["fixed_packages"] = [
-                pkg for pkg in vuln["fixed_packages"] if pkg not in excluded_purls
-            ]
+        #     vuln["fixed_packages"] = [
+        #         pkg for pkg in vuln["fixed_packages"] if pkg["purl"] not in excluded_purls
+        #     ]
 
         return package_vulnerabilities
 
@@ -395,7 +388,21 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     Lookup for vulnerable packages by Package URL.
     """
 
-    queryset = Package.objects.all()
+    queryset = Package.objects.all().prefetch_related(
+        Prefetch(
+            'vulnerabilities',
+            queryset=Vulnerability.objects.prefetch_related(
+                Prefetch(
+                    'references', 
+                    queryset=VulnerabilityReference.objects.all()
+                ),
+                'aliases',
+                'weaknesses',
+            )
+        ),
+        'packagerelatedvulnerability_set',
+    )
+    # queryset = Package.objects.all()
     serializer_class = PackageSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageFilterSet
@@ -458,8 +465,6 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                     PackageSerializer(query, many=True, context={"request": request}).data
                 )
 
-            # using order by and distinct because there will be
-            # many fully qualified purl for a single plain purl
             vulnerable_purls = query.vulnerable().only("plain_package_url")
             vulnerable_purls = [str(package.plain_package_url) for package in vulnerable_purls]
             return Response(data=vulnerable_purls)

@@ -11,7 +11,6 @@ import hashlib
 import json
 import logging
 from contextlib import suppress
-from typing import Any
 
 from cwe2.database import Database
 from django.contrib.auth import get_user_model
@@ -30,12 +29,10 @@ from django.db.models.functions import Length
 from django.db.models.functions import Trim
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin
 from packageurl.contrib.django.models import PackageURLQuerySet
 from rest_framework.authtoken.models import Token
-from univers import versions
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import AlpineLinuxVersionRange
 from univers.versions import Version
@@ -50,6 +47,9 @@ logger = logging.getLogger(__name__)
 
 models.CharField.register_lookup(Length)
 models.CharField.register_lookup(Trim)
+
+# patch univers for missing entry
+RANGE_CLASS_BY_SCHEMES["alpine"] = AlpineLinuxVersionRange
 
 
 class BaseQuerySet(models.QuerySet):
@@ -71,8 +71,8 @@ class BaseQuerySet(models.QuerySet):
         paginator = Paginator(self, per_page=per_page)
         for page_number in paginator.page_range:
             page = paginator.page(page_number)
-            for object in page.object_list:
-                yield object
+            for obj in page.object_list:
+                yield obj
 
 
 class VulnerabilityQuerySet(BaseQuerySet):
@@ -683,7 +683,6 @@ class Package(PackageURLMixin):
 
     @property
     def version_class(self):
-        RANGE_CLASS_BY_SCHEMES["alpine"] = AlpineLinuxVersionRange
         range_class = RANGE_CLASS_BY_SCHEMES.get(self.type)
         if not range_class:
             return Version
@@ -835,6 +834,7 @@ class PackageRelatedVulnerability(models.Model):
         "module name responsible for creating this relation. Eg:"
         "vulnerabilities.importers.nginx.NginxBasicImprover",
     )
+
     from vulnerabilities.improver import MAX_CONFIDENCE
 
     confidence = models.PositiveIntegerField(

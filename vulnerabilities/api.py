@@ -69,7 +69,7 @@ class MinimalPackageSerializer(BaseResourceSerializer):
     """
 
     def get_affected_vulnerabilities(self, package):
-        parent_affected_vulnerabilities = package.fixed_package_details.get("vulnerabilities") or []
+        parent_affected_vulnerabilities = package.get_affecting_vulnerabilities() or []
 
         affected_vulnerabilities = [
             self.get_vulnerability(vuln) for vuln in parent_affected_vulnerabilities
@@ -280,7 +280,7 @@ class PackageSerializer(BaseResourceSerializer):
                 context={"request": self.context["request"]},
             ).data
 
-            vuln_data["fixed_packages"] = [pkg.purl for pkg in vulnerability.fixed_packages_for_vuln(package=package)]
+            vuln_data["fixed_packages"] = [MinimalPackageSerializer(instance=pkg,context={"request": self.context["request"]}).data for pkg in vulnerability.fixed_packages_for_vuln(package=package)]
             vulnerabilities_with_fixed_packages.append(vuln_data)
         
         return vulnerabilities_with_fixed_packages
@@ -300,15 +300,16 @@ class PackageSerializer(BaseResourceSerializer):
         excluded_purls = []
         package_vulnerabilities = self.get_vulnerabilities_for_a_package(package=package, fix=False)
 
-        # for vuln in package_vulnerabilities:
-        #     for pkg in vuln["fixed_packages"]:
-        #         real_purl = PackageURL.from_string(pkg["purl"])
-        #         if package.version_class(real_purl.version) <= package.current_version:
-        #             excluded_purls.append(pkg["purl"])
+        for vuln in package_vulnerabilities:
+            for pkg in vuln["fixed_packages"]:
+                print(pkg)
+                real_purl = PackageURL.from_string(pkg["purl"])
+                if package.version_class(real_purl.version) <= package.current_version:
+                    excluded_purls.append(pkg["purl"])
 
-        #     vuln["fixed_packages"] = [
-        #         pkg for pkg in vuln["fixed_packages"] if pkg["purl"] not in excluded_purls
-        #     ]
+            vuln["fixed_packages"] = [
+                pkg for pkg in vuln["fixed_packages"] if pkg["purl"] not in excluded_purls
+            ]
 
         return package_vulnerabilities
 

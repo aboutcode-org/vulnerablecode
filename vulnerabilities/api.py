@@ -108,6 +108,8 @@ class MinimalPackageSerializer(BaseResourceSerializer):
 
     purl = serializers.CharField(source="package_url")
 
+    is_vulnerable = serializers.BooleanField()
+
     class Meta:
         model = Package
         fields = ["url", "purl", "is_vulnerable", "affected_by_vulnerabilities"]
@@ -248,21 +250,27 @@ class PackageSerializer(BaseResourceSerializer):
 
     affected_by_vulnerabilities = serializers.SerializerMethodField("get_affected_vulnerabilities")
 
-    fixing_vulnerabilities = serializers.SerializerMethodField("get_fixed_vulnerabilities")
+    fixing_vulnerabilities = serializers.SerializerMethodField("get_fixing_vulnerabilities")
+
+    is_vulnerable = serializers.BooleanField()
 
     def get_fixed_packages(self, package):
         """
         Return a queryset of all packages that fix a vulnerability with
         same type, namespace, name, subpath and qualifiers of the `package`
         """
-        return Package.objects.filter(
-            name=package.name,
-            namespace=package.namespace,
-            type=package.type,
-            qualifiers=package.qualifiers,
-            subpath=package.subpath,
-            packagerelatedvulnerability__fix=True,
-        ).distinct()
+        return (
+            Package.objects.filter(
+                name=package.name,
+                namespace=package.namespace,
+                type=package.type,
+                qualifiers=package.qualifiers,
+                subpath=package.subpath,
+                packagerelatedvulnerability__fix=True,
+            )
+            .with_is_vulnerable()
+            .distinct()
+        )
 
     def get_vulnerabilities_for_a_package(self, package, fix) -> dict:
         """
@@ -285,7 +293,7 @@ class PackageSerializer(BaseResourceSerializer):
             context={"request": self.context["request"]},
         ).data
 
-    def get_fixed_vulnerabilities(self, package) -> dict:
+    def get_fixing_vulnerabilities(self, package) -> dict:
         """
         Return a mapping of vulnerabilities fixed in the given `package`.
         """
@@ -322,6 +330,7 @@ class PackageSerializer(BaseResourceSerializer):
             "version",
             "qualifiers",
             "subpath",
+            "is_vulnerable",
             "next_non_vulnerable_version",
             "latest_non_vulnerable_version",
             "affected_by_vulnerabilities",
@@ -389,6 +398,13 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageFilterSet
     throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
+
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .with_is_vulnerable()
+        )
 
     @extend_schema(
         request=PackageBulkSearchRequestSerializer,
@@ -494,11 +510,8 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         validated_data = serializer.validated_data
         purl = validated_data.get("purl")
 
-        return Response(
-            PackageSerializer(
-                Package.objects.for_purls([purl]), many=True, context={"request": request}
-            ).data
-        )
+        qs = self.get_queryset().for_purls([purl])
+        return Response(PackageSerializer(qs, many=True, context={"request": request}).data)
 
     @extend_schema(
         request=PackageurlListSerializer,
@@ -547,33 +560,47 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     Lookup for vulnerabilities affecting packages.
     """
 
+    queryset = Vulnerability.objects.all()
+
     def get_fixed_packages_qs(self):
         """
         Filter the packages that fixes a vulnerability
         on fields like name, namespace and type.
         """
-        package_filter_data = {"packagerelatedvulnerability__fix": True}
+        return self.get_packages_qs().filter(packagerelatedvulnerability__fix=True)
 
+    def get_packages_qs(self):
+        """
+        Filter the packages on type, namespace and name.
+        """
         query_params = self.request.query_params
-        for field_name in ["name", "namespace", "type"]:
-            value = query_params.get(field_name)
-            if value:
+        package_filter_data = {}
+        for field_name in ("type", "namespace", "name"):
+            if value := query_params.get(field_name):
                 package_filter_data[field_name] = value
 
-        return PackageFilterSet(package_filter_data).qs
+        return PackageFilterSet(package_filter_data).qs.with_is_vulnerable()
 
     def get_queryset(self):
         """
         Assign filtered packages queryset from `get_fixed_packages_qs`
         to a custom attribute `filtered_fixed_packages`
         """
-        return Vulnerability.objects.prefetch_related(
-            "weaknesses",
-            Prefetch(
-                "packages",
-                queryset=self.get_fixed_packages_qs(),
-                to_attr="filtered_fixed_packages",
-            ),
+        return (
+            super()
+            .get_queryset()
+            .prefetch_related(
+                Prefetch(
+                    "packages",
+                    queryset=self.get_packages_qs(),
+                ),
+                "weaknesses",
+                Prefetch(
+                    "packages",
+                    queryset=self.get_fixed_packages_qs(),
+                    to_attr="filtered_fixed_packages",
+                ),
+            )
         )
 
     serializer_class = VulnerabilitySerializer

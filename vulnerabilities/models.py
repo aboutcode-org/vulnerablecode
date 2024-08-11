@@ -23,6 +23,8 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.db import transaction
 from django.db.models import Count
+from django.db.models import Exists
+from django.db.models import OuterRef
 from django.db.models import Prefetch
 from django.db.models import Q
 from django.db.models.functions import Length
@@ -539,6 +541,38 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
     def for_purls(self, purls=[]):
         return Package.objects.filter(package_url__in=purls).distinct()
 
+    def with_is_vulnerable(self):
+        """
+        Annotate Package with ``with_is_vulnerable`` boolean attribute.
+        """
+        return self.annotate(
+            is_vulnerable=Exists(
+                PackageRelatedVulnerability.objects.filter(
+                    package=OuterRef("pk"),
+                    fix=False,
+                )
+            )
+        )
+
+    def only_vulnerable(self):
+        return self._vulnerable(True)
+
+    def only_non_vulnerable(self):
+        return self._vulnerable(False)
+
+    def _vulnerable(self, vulnerable=True):
+        """
+        Filter to select only vulnerable or non-vulnearble packages.
+        """
+        return self.filter(
+            Exists(
+                PackageRelatedVulnerability.objects.filter(
+                    package=OuterRef("pk"),
+                    fix=vulnerable,
+                )
+            )
+        )
+
 
 def get_purl_query_lookups(purl):
     """
@@ -645,13 +679,6 @@ class Package(PackageURLMixin):
         return Package.objects.fixing_packages(package=self).distinct()
 
     @property
-    def is_vulnerable(self) -> bool:
-        """
-        Returns True if this package is vulnerable to any vulnerability.
-        """
-        return self.affected_by.exists()
-
-    @property
     def history(self):
         return self.changelog.all()
 
@@ -671,14 +698,16 @@ class Package(PackageURLMixin):
 
     def sort_by_version(self, packages):
         """
-        Return a list of `packages` sorted by version.
+        Return a tuple of `packages` sorted by version.
         """
         if not packages:
-            return []
+            return ()
 
-        return sorted(
-            packages,
-            key=lambda x: self.version_class(x.version),
+        return tuple(
+            sorted(
+                packages,
+                key=lambda x: self.version_class(x.version),
+            )
         )
 
     @property
@@ -714,20 +743,19 @@ class Package(PackageURLMixin):
         Return a tuple of the next and latest non-vulnerable versions as PackageURLs.  Return a tuple of
         (None, None) if there is no non-vulnerable version.
         """
-        package_versions = Package.objects.get_fixed_by_package_versions(self, fix=False)
+        non_vulnerable_versions = Package.objects.get_fixed_by_package_versions(
+            self, fix=False
+        ).only_non_vulnerable()
 
-        non_vulnerable_versions = []
-        for version in package_versions:
-            if not version.is_vulnerable:
-                non_vulnerable_versions.append(version)
+        sorted_versions = self.sort_by_version(non_vulnerable_versions)
 
         later_non_vulnerable_versions = []
-        for non_vuln_ver in non_vulnerable_versions:
+        for non_vuln_ver in sorted_versions:
             if self.version_class(non_vuln_ver.version) > self.current_version:
                 later_non_vulnerable_versions.append(non_vuln_ver)
 
         if later_non_vulnerable_versions:
-            sorted_versions = self.sort_by_version(later_non_vulnerable_versions)
+            sorted_versions = self.sort_by_version(tuple(later_non_vulnerable_versions))
             next_non_vulnerable_version = sorted_versions[0]
             latest_non_vulnerable_version = sorted_versions[-1]
 
@@ -771,7 +799,9 @@ class Package(PackageURLMixin):
 
             sort_fixed_by_packages_by_version = []
             if later_fixed_packages:
-                sort_fixed_by_packages_by_version = self.sort_by_version(later_fixed_packages)
+                sort_fixed_by_packages_by_version = self.sort_by_version(
+                    tuple(later_fixed_packages)
+                )
 
             fixed_by_pkgs = []
 

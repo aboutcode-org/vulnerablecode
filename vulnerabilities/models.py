@@ -11,6 +11,7 @@ import hashlib
 import json
 import logging
 from contextlib import suppress
+from functools import cached_property
 
 from cwe2.database import Database
 from django.contrib.auth import get_user_model
@@ -698,26 +699,18 @@ class Package(PackageURLMixin):
 
     def sort_by_version(self, packages):
         """
-        Return a tuple of `packages` sorted by version.
+        Return a sequence of `packages` sorted by version.
         """
         if not packages:
-            return ()
+            return []
+        return sorted(packages, key=lambda x: self.version_class(x.version))
 
-        return tuple(
-            sorted(
-                packages,
-                key=lambda x: self.version_class(x.version),
-            )
-        )
-
-    @property
+    @cached_property
     def version_class(self):
         range_class = RANGE_CLASS_BY_SCHEMES.get(self.type)
-        if not range_class:
-            return Version
-        return range_class.version_class
+        return range_class.version_class if range_class else Version
 
-    @property
+    @cached_property
     def current_version(self):
         return self.version_class(self.version)
 
@@ -755,7 +748,7 @@ class Package(PackageURLMixin):
                 later_non_vulnerable_versions.append(non_vuln_ver)
 
         if later_non_vulnerable_versions:
-            sorted_versions = self.sort_by_version(tuple(later_non_vulnerable_versions))
+            sorted_versions = self.sort_by_version(later_non_vulnerable_versions)
             next_non_vulnerable_version = sorted_versions[0]
             latest_non_vulnerable_version = sorted_versions[-1]
 
@@ -799,9 +792,7 @@ class Package(PackageURLMixin):
 
             sort_fixed_by_packages_by_version = []
             if later_fixed_packages:
-                sort_fixed_by_packages_by_version = self.sort_by_version(
-                    tuple(later_fixed_packages)
-                )
+                sort_fixed_by_packages_by_version = self.sort_by_version(later_fixed_packages)
 
             fixed_by_pkgs = []
 
@@ -1017,7 +1008,7 @@ class Alias(models.Model):
     def __str__(self):
         return self.alias
 
-    @property
+    @cached_property
     def url(self):
         """
         Create a URL for the alias.

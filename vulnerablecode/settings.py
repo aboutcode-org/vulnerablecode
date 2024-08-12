@@ -320,7 +320,6 @@ if DEBUG_TOOLBAR:
         "127.0.0.1",
     ]
 
-# Logging
 
 LOGGING = {
     "version": 1,
@@ -341,12 +340,7 @@ LOGGING = {
         },
     },
     "loggers": {
-        "aboutcode.pipeline": {
-            "handlers": ["console"],
-            "level": VULNERABLECODE_LOG_LEVEL,
-            "propagate": False,
-        },
-        "aboutcode.pipeline": {
+        "vulnerabilities.pipelines": {
             "handlers": ["console"],
             "level": VULNERABLECODE_LOG_LEVEL,
             "propagate": False,

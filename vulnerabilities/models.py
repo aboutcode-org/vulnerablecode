@@ -11,7 +11,9 @@ import hashlib
 import json
 import logging
 from contextlib import suppress
-from typing import Any
+from functools import cached_property
+from typing import Optional
+from typing import Union
 
 from cwe2.database import Database
 from django.contrib.auth import get_user_model
@@ -24,18 +26,18 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.db import transaction
 from django.db.models import Count
+from django.db.models import Exists
+from django.db.models import OuterRef
 from django.db.models import Prefetch
 from django.db.models import Q
 from django.db.models.functions import Length
 from django.db.models.functions import Trim
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin
 from packageurl.contrib.django.models import PackageURLQuerySet
 from rest_framework.authtoken.models import Token
-from univers import versions
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import AlpineLinuxVersionRange
 from univers.versions import Version
@@ -50,6 +52,9 @@ logger = logging.getLogger(__name__)
 
 models.CharField.register_lookup(Length)
 models.CharField.register_lookup(Trim)
+
+# patch univers for missing entry
+RANGE_CLASS_BY_SCHEMES["alpine"] = AlpineLinuxVersionRange
 
 
 class BaseQuerySet(models.QuerySet):
@@ -71,8 +76,8 @@ class BaseQuerySet(models.QuerySet):
         paginator = Paginator(self, per_page=per_page)
         for page_number in paginator.page_range:
             page = paginator.page(page_number)
-            for object in page.object_list:
-                yield object
+            for obj in page.object_list:
+                yield obj
 
 
 class VulnerabilityQuerySet(BaseQuerySet):
@@ -437,17 +442,19 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
 
         return Package.objects.filter(**filter_dict).distinct()
 
-    def get_or_create_from_purl(self, purl: PackageURL):
+    def get_or_create_from_purl(self, purl: Union[PackageURL, str]):
         """
-        Return an existing or new Package (created if neeed) given a
-        ``purl`` PackageURL.
+        Return a new or existing Package given a ``purl`` PackageURL object or PURL string.
         """
-        if isinstance(purl, str):
-            purl = PackageURL.from_string(purl)
-
         package, is_created = Package.objects.get_or_create(**purl_to_dict(purl=purl))
 
         return package, is_created
+
+    def from_purl(self, purl: Union[PackageURL, str]):
+        """
+        Return a new Package given a ``purl`` PackageURL object or PURL string.
+        """
+        return Package.objects.create(**purl_to_dict(purl=purl))
 
     def affected(self):
         """
@@ -538,6 +545,31 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
 
     def for_purls(self, purls=[]):
         return Package.objects.filter(package_url__in=purls).distinct()
+
+    def with_is_vulnerable(self):
+        """
+        Annotate Package with ``with_is_vulnerable`` boolean attribute.
+        """
+        return self.annotate(
+            is_vulnerable=Exists(
+                PackageRelatedVulnerability.objects.filter(
+                    package=OuterRef("pk"),
+                    fix=False,
+                )
+            )
+        )
+
+    def only_vulnerable(self):
+        return self._vulnerable(True)
+
+    def only_non_vulnerable(self):
+        return self._vulnerable(False)
+
+    def _vulnerable(self, vulnerable=True):
+        """
+        Filter to select only vulnerable or non-vulnearble packages.
+        """
+        return self.with_is_vulnerable().filter(is_vulnerable=vulnerable)
 
 
 def get_purl_query_lookups(purl):
@@ -645,13 +677,6 @@ class Package(PackageURLMixin):
         return Package.objects.fixing_packages(package=self).distinct()
 
     @property
-    def is_vulnerable(self) -> bool:
-        """
-        Returns True if this package is vulnerable to any vulnerability.
-        """
-        return self.affected_by.exists()
-
-    @property
     def history(self):
         return self.changelog.all()
 
@@ -671,25 +696,18 @@ class Package(PackageURLMixin):
 
     def sort_by_version(self, packages):
         """
-        Return a list of `packages` sorted by version.
+        Return a sequence of `packages` sorted by version.
         """
         if not packages:
             return []
+        return sorted(packages, key=lambda x: self.version_class(x.version))
 
-        return sorted(
-            packages,
-            key=lambda x: self.version_class(x.version),
-        )
-
-    @property
+    @cached_property
     def version_class(self):
-        RANGE_CLASS_BY_SCHEMES["alpine"] = AlpineLinuxVersionRange
         range_class = RANGE_CLASS_BY_SCHEMES.get(self.type)
-        if not range_class:
-            return Version
-        return range_class.version_class
+        return range_class.version_class if range_class else Version
 
-    @property
+    @cached_property
     def current_version(self):
         return self.version_class(self.version)
 
@@ -715,15 +733,13 @@ class Package(PackageURLMixin):
         Return a tuple of the next and latest non-vulnerable versions as PackageURLs.  Return a tuple of
         (None, None) if there is no non-vulnerable version.
         """
-        package_versions = Package.objects.get_fixed_by_package_versions(self, fix=False)
-
-        non_vulnerable_versions = []
-        for version in package_versions:
-            if not version.is_vulnerable:
-                non_vulnerable_versions.append(version)
+        non_vulnerable_versions = Package.objects.get_fixed_by_package_versions(
+            self, fix=False
+        ).only_non_vulnerable()
+        sorted_versions = self.sort_by_version(non_vulnerable_versions)
 
         later_non_vulnerable_versions = []
-        for non_vuln_ver in non_vulnerable_versions:
+        for non_vuln_ver in sorted_versions:
             if self.version_class(non_vuln_ver.version) > self.current_version:
                 later_non_vulnerable_versions.append(non_vuln_ver)
 
@@ -835,6 +851,7 @@ class PackageRelatedVulnerability(models.Model):
         "module name responsible for creating this relation. Eg:"
         "vulnerabilities.importers.nginx.NginxBasicImprover",
     )
+
     from vulnerabilities.improver import MAX_CONFIDENCE
 
     confidence = models.PositiveIntegerField(
@@ -987,7 +1004,7 @@ class Alias(models.Model):
     def __str__(self):
         return self.alias
 
-    @property
+    @cached_property
     def url(self):
         """
         Create a URL for the alias.
@@ -1370,7 +1387,7 @@ class Kev(models.Model):
 
     known_ransomware_campaign_use = models.BooleanField(
         default=False,
-        help_text="""Known if this vulnerability is known to have been leveraged as part of a ransomware campaign; 
+        help_text="""Known if this vulnerability is known to have been leveraged as part of a ransomware campaign;
         or 'Unknown' if CISA lacks confirmation that the vulnerability has been utilized for ransomware.""",
     )
 

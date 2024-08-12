@@ -48,8 +48,7 @@ class ThrottleApiTests(APITestCase):
         self.assertEqual(response.status_code, 200)
 
         # A anonymous user can only access /packages endpoint 10 times a day
-        for i in range(0, 10):
-            print(i)
+        for _i in range(0, 10):
             response = self.csrf_client_anon.get("/api/packages")
             self.assertEqual(response.status_code, 200)
 

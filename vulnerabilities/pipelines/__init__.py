@@ -7,12 +7,12 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-from pipeline import BasePipeline
-from pipeline import BasePipelineRun
+from aboutcode.pipeline import BasePipeline
+
 from vulnerabilities.utils import classproperty
 
 
-class VulnerableCodePipeline(BasePipeline, BasePipelineRun):
+class VulnerableCodePipeline(BasePipeline):
     @classproperty
     def qualified_name(cls):
         """

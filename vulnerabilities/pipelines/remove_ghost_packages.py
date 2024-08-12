@@ -7,12 +7,12 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from aboutcode.pipeline import LoopProgress
 from fetchcode.package_versions import SUPPORTED_ECOSYSTEMS
 from fetchcode.package_versions import versions
 from packageurl import PackageURL
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 
-from pipeline import LoopProgress
 from vulnerabilities.models import Package
 from vulnerabilities.pipelines import VulnerableCodePipeline
 

@@ -341,12 +341,12 @@ LOGGING = {
         },
     },
     "loggers": {
-        "pipeline": {
+        "aboutcode.pipeline": {
             "handlers": ["console"],
             "level": VULNERABLECODE_LOG_LEVEL,
             "propagate": False,
         },
-        "pipeline": {
+        "aboutcode.pipeline": {
             "handlers": ["console"],
             "level": VULNERABLECODE_LOG_LEVEL,
             "propagate": False,

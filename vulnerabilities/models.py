@@ -224,7 +224,7 @@ class Vulnerability(models.Model):
         Return a queryset of packages that are affected by this vulnerability.
         """
         return self.packages.affected()
-    
+
     def fixed_packages_for_vuln(self, package):
         """
         Return a queryset of packages that are fixing this vulnerability.
@@ -700,7 +700,7 @@ class Package(PackageURLMixin):
                     ),
                     "packagerelatedvulnerability_set",
                 ).distinct(),
-            )
+            ),
         )
 
     # legacy aliases
@@ -711,20 +711,21 @@ class Package(PackageURLMixin):
         """
         Return a queryset of packages that are fixed.
         """
-        return Package.objects.fixing_packages(package=self).prefetch_related(
-        Prefetch(
-            'vulnerabilities',
-            queryset=Vulnerability.objects.prefetch_related(
+        return (
+            Package.objects.fixing_packages(package=self)
+            .prefetch_related(
                 Prefetch(
-                    'references', 
-                    queryset=VulnerabilityReference.objects.all()
+                    "vulnerabilities",
+                    queryset=Vulnerability.objects.prefetch_related(
+                        Prefetch("references", queryset=VulnerabilityReference.objects.all()),
+                        "aliases",
+                        "weaknesses",
+                    ),
                 ),
-                'aliases',
-                'weaknesses',
+                "packagerelatedvulnerability_set",
             )
-        ),
-        'packagerelatedvulnerability_set',
-    ).distinct()
+            .distinct()
+        )
 
     @property
     def history(self):

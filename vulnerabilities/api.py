@@ -337,6 +337,8 @@ class PackageSerializer(BaseResourceSerializer):
             "fixing_vulnerabilities",
         ]
 
+    is_vulnerable = serializers.BooleanField()
+
 
 class PackageFilterSet(filters.FilterSet):
     purl = filters.CharFilter(method="filter_purl")
@@ -400,11 +402,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
 
     def get_queryset(self):
-        return (
-            super()
-            .get_queryset()
-            .with_is_vulnerable()
-        )
+        return super().get_queryset().with_is_vulnerable()
 
     @extend_schema(
         request=PackageBulkSearchRequestSerializer,
@@ -452,6 +450,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                 Package.objects.filter(plain_package_url__in=plain_purls)
                 .order_by("plain_package_url")
                 .distinct("plain_package_url")
+                .with_is_vulnerable()
             )
 
             if not purl_only:
@@ -465,7 +464,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
             vulnerable_purls = [str(package.plain_package_url) for package in vulnerable_purls]
             return Response(data=vulnerable_purls)
 
-        query = Package.objects.filter(package_url__in=purls).distinct()
+        query = Package.objects.filter(package_url__in=purls).distinct().with_is_vulnerable()
 
         if not purl_only:
             return Response(PackageSerializer(query, many=True, context={"request": request}).data)
@@ -479,7 +478,9 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         """
         Return the Package URLs of all packages known to be vulnerable.
         """
-        vulnerable_packages = Package.objects.vulnerable().only("package_url").distinct()
+        vulnerable_packages = (
+            Package.objects.vulnerable().only("package_url").distinct().with_is_vulnerable()
+        )
         vulnerable_purls = [str(package.package_url) for package in vulnerable_packages]
         return Response(vulnerable_purls)
 
@@ -510,7 +511,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         validated_data = serializer.validated_data
         purl = validated_data.get("purl")
 
-        qs = self.get_queryset().for_purls([purl])
+        qs = self.get_queryset().for_purls([purl]).with_is_vulnerable()
         return Response(PackageSerializer(qs, many=True, context={"request": request}).data)
 
     @extend_schema(
@@ -542,7 +543,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
         return Response(
             PackageSerializer(
-                Package.objects.for_purls(purls),
+                Package.objects.for_purls(purls).with_is_vulnerable(),
                 many=True,
                 context={"request": request},
             ).data

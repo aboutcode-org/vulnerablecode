@@ -12,6 +12,8 @@ import json
 import logging
 from contextlib import suppress
 from functools import cached_property
+from typing import Optional
+from typing import Union
 
 from cwe2.database import Database
 from django.contrib.auth import get_user_model
@@ -440,17 +442,19 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
 
         return Package.objects.filter(**filter_dict).distinct()
 
-    def get_or_create_from_purl(self, purl: PackageURL):
+    def get_or_create_from_purl(self, purl: Union[PackageURL, str]):
         """
-        Return an existing or new Package (created if neeed) given a
-        ``purl`` PackageURL.
+        Return a new or existing Package given a ``purl`` PackageURL object or PURL string.
         """
-        if isinstance(purl, str):
-            purl = PackageURL.from_string(purl)
-
         package, is_created = Package.objects.get_or_create(**purl_to_dict(purl=purl))
 
         return package, is_created
+
+    def from_purl(self, purl: Union[PackageURL, str]):
+        """
+        Return a new Package given a ``purl`` PackageURL object or PURL string.
+        """
+        return Package.objects.create(**purl_to_dict(purl=purl))
 
     def affected(self):
         """
@@ -565,14 +569,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         """
         Filter to select only vulnerable or non-vulnearble packages.
         """
-        return self.filter(
-            Exists(
-                PackageRelatedVulnerability.objects.filter(
-                    package=OuterRef("pk"),
-                    fix=vulnerable,
-                )
-            )
-        )
+        return self.with_is_vulnerable().filter(is_vulnerable=vulnerable)
 
 
 def get_purl_query_lookups(purl):
@@ -739,7 +736,6 @@ class Package(PackageURLMixin):
         non_vulnerable_versions = Package.objects.get_fixed_by_package_versions(
             self, fix=False
         ).only_non_vulnerable()
-
         sorted_versions = self.sort_by_version(non_vulnerable_versions)
 
         later_non_vulnerable_versions = []
@@ -1391,7 +1387,7 @@ class Kev(models.Model):
 
     known_ransomware_campaign_use = models.BooleanField(
         default=False,
-        help_text="""Known if this vulnerability is known to have been leveraged as part of a ransomware campaign; 
+        help_text="""Known if this vulnerability is known to have been leveraged as part of a ransomware campaign;
         or 'Unknown' if CISA lacks confirmation that the vulnerability has been utilized for ransomware.""",
     )
 

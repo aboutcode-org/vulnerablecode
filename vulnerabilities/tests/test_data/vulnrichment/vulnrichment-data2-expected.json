@@ -1,0 +1,233 @@
+{
+  "aliases": [
+    "CVE-2022-26915"
+  ],
+  "summary": "Windows Secure Channel Denial of Service Vulnerability",
+  "affected_packages": [],
+  "references": [
+    {
+      "reference_id": "CVE-2022-26915",
+      "reference_type": "advisory",
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2022-26915",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": 7.5,
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H/E:U/RL:O/RC:C"
+        },
+        {
+          "system": "ssvc",
+          "value": "Track",
+          "scoring_elements": "SSVCv2/E:N/A:Y/T:P/P:M/B:A/M:M/D:T/2024-05-30T18:43:59Z/"
+        }
+      ]
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_1507:10.0.10240.19265:*:*:*:*:*:x64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_1507:10.0.10240.19265:*:*:*:*:*:x64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_1507:10.0.10240.19265:*:*:*:*:*:x86:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_1507:10.0.10240.19265:*:*:*:*:*:x86:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_1607:10.0.14393.5066:*:*:*:*:*:x64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_1607:10.0.14393.5066:*:*:*:*:*:x64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_1607:10.0.14393.5066:*:*:*:*:*:x86:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_1607:10.0.14393.5066:*:*:*:*:*:x86:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_1809:10.0.17763.2803:*:*:*:*:*:arm64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_1809:10.0.17763.2803:*:*:*:*:*:arm64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_1809:10.0.17763.2803:*:*:*:*:*:x64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_1809:10.0.17763.2803:*:*:*:*:*:x64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_1809:10.0.17763.2803:*:*:*:*:*:x86:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_1809:10.0.17763.2803:*:*:*:*:*:x86:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_1809:10.0.18363.2212:*:*:*:*:*:x64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_1809:10.0.18363.2212:*:*:*:*:*:x64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_1909:10.0.18363.2212:*:*:*:*:*:x64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_1909:10.0.18363.2212:*:*:*:*:*:x64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_1909:10.0.18363.2212:*:*:*:*:*:x86:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_1909:10.0.18363.2212:*:*:*:*:*:x86:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_20H2:10.0.19042.1645:*:*:*:*:*:arm64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_20H2:10.0.19042.1645:*:*:*:*:*:arm64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_20H2:10.0.19042.1645:*:*:*:*:*:x86:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_20H2:10.0.19042.1645:*:*:*:*:*:x86:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_21H1:10.0.19043.1645:*:*:*:*:*:arm64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_21H1:10.0.19043.1645:*:*:*:*:*:arm64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_21H1:10.0.19043.1645:*:*:*:*:*:x64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_21H1:10.0.19043.1645:*:*:*:*:*:x64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_21H1:10.0.19043.1645:*:*:*:*:*:x86:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_21H1:10.0.19043.1645:*:*:*:*:*:x86:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_21H2:10.0.19043.1645:*:*:*:*:*:x86:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_21H2:10.0.19043.1645:*:*:*:*:*:x86:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_21H2:10.0.19044.1645:*:*:*:*:*:arm64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_21H2:10.0.19044.1645:*:*:*:*:*:arm64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_10_21H2:10.0.19044.1645:*:*:*:*:*:x64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_10_21H2:10.0.19044.1645:*:*:*:*:*:x64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_11_21H2:10.0.22000.613:*:*:*:*:*:arm64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_11_21H2:10.0.22000.613:*:*:*:*:*:arm64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_11_21H2:10.0.22000.613:*:*:*:*:*:x64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_11_21H2:10.0.22000.613:*:*:*:*:*:x64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_7:6.1.7601.25924:sp1:*:*:*:*:x64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_7:6.1.7601.25924:sp1:*:*:*:*:x64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_7:6.1.7601.25924:sp1:*:*:*:*:x86:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_7:6.1.7601.25924:sp1:*:*:*:*:x86:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_8.1:6.3.9600.20337:*:*:*:*:*:x64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_8.1:6.3.9600.20337:*:*:*:*:*:x64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_8.1:6.3.9600.20337:*:*:*:*:*:x86:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_8.1:6.3.9600.20337:*:*:*:*:*:x86:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_rt_8.1:6.3.9600.20337:*:*:*:*:*:*:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_rt_8.1:6.3.9600.20337:*:*:*:*:*:*:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_server_2008_R2:6.1.7601.25924:*:*:*:*:*:x64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_server_2008_R2:6.1.7601.25924:*:*:*:*:*:x64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_server_2008_sp2:6.0.6003.21446:*:*:*:*:*:x64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_server_2008_sp2:6.0.6003.21446:*:*:*:*:*:x64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_server_2008_sp2:6.0.6003.21446:*:*:*:*:*:x86:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_server_2008_sp2:6.0.6003.21446:*:*:*:*:*:x86:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_server_2012:6.2.9200.23679:*:*:*:*:*:x64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_server_2012:6.2.9200.23679:*:*:*:*:*:x64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_server_2012_R2:6.3.9600.20337:*:*:*:*:*:x64:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_server_2012_R2:6.3.9600.20337:*:*:*:*:*:x64:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_server_2016:10.0.14393.5066:*:*:*:*:*:*:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_server_2016:10.0.14393.5066:*:*:*:*:*:*:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_server_2019:10.0.17763.2803:*:*:*:*:*:*:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_server_2019:10.0.17763.2803:*:*:*:*:*:*:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_server_2022:10.0.20348.643:*:*:*:*:*:*:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_server_2022:10.0.20348.643:*:*:*:*:*:*:*",
+      "severities": []
+    },
+    {
+      "reference_id": "cpe:2.3:o:microsoft:windows_server_20H2:10.0.19042.1645:*:*:*:*:*:*:*",
+      "reference_type": "other",
+      "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows_server_20H2:10.0.19042.1645:*:*:*:*:*:*:*",
+      "severities": []
+    }
+  ],
+  "date_published": "2022-04-15T19:05:52",
+  "weaknesses": [],
+  "url": "http://test.com"
+}

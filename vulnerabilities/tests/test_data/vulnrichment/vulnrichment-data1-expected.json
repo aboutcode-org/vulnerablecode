@@ -1,0 +1,48 @@
+{
+  "aliases": [
+    "CVE-2024-3018"
+  ],
+  "summary": "The Essential Addons for Elementor plugin for WordPress is vulnerable to PHP Object Injection in all versions up to, and including, 5.9.13 via deserialization of untrusted input from the 'error_resetpassword' attribute of the \"Login | Register Form\" widget (disabled by default). This makes it possible for authenticated attackers, with author-level access and above, to inject a PHP Object. If a POP chain is present via an additional plugin or theme installed on the target system, it could allow the attacker to delete arbitrary files, retrieve sensitive data, or execute code.",
+  "affected_packages": [],
+  "references": [
+    {
+      "reference_id": "342049e5-834e-4867-8174-01ca7bb0caa2?source=cve",
+      "reference_type": "other",
+      "url": "https://www.wordfence.com/threat-intel/vulnerabilities/id/342049e5-834e-4867-8174-01ca7bb0caa2?source=cve",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": 8.8,
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+        },
+        {
+          "system": "ssvc",
+          "value": "Track",
+          "scoring_elements": "SSVCv2/E:N/A:N/T:P/P:M/B:A/M:M/D:T/2024-04-01T17:33:59Z/"
+        }
+      ]
+    },
+    {
+      "reference_id": "essential-addons-for-elementor-lite",
+      "reference_type": "other",
+      "url": "https://plugins.trac.wordpress.org/changeset/3060417/essential-addons-for-elementor-lite",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": 8.8,
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+        },
+        {
+          "system": "ssvc",
+          "value": "Track",
+          "scoring_elements": "SSVCv2/E:N/A:N/T:P/P:M/B:A/M:M/D:T/2024-04-01T17:33:59Z/"
+        }
+      ]
+    }
+  ],
+  "date_published": "2024-03-30T11:17:25.675000+00:00",
+  "weaknesses": [
+    502
+  ],
+  "url": "http://test.com"
+}

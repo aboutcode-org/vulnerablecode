@@ -207,7 +207,7 @@ class TestPackageSortTestCase(TestCase):
 
         pkg_package_urls = [obj.package_url for obj in sorted_pkgs_qs_all]
         sorted_purls = os.path.join(TEST_DIR, "sorted_purls.txt")
-        with open(sorted_purls, 'r') as f:
+        with open(sorted_purls, "r") as f:
             expected_content = f.read().splitlines()
             assert pkg_package_urls == expected_content
 
@@ -236,16 +236,40 @@ class TestPackageSortTestCase(TestCase):
 
 
 class TestCustomFilters:
-    @pytest.mark.parametrize("input_value, expected_output", [
-        ("pkg:rpm/redhat/katello-client-bootstrap@1.1.0-2?arch=el6sat", "pkg%3Arpm/redhat/katello-client-bootstrap%401.1.0-2%3Farch%3Del6sat"),
-        ("pkg:alpine/nginx@1.10.3-r1?arch=armhf&distroversion=v3.5&reponame=main", "pkg%3Aalpine/nginx%401.10.3-r1%3Farch%3Darmhf%26distroversion%3Dv3.5%26reponame%3Dmain"),
-        ("pkg:nginx/nginx@0.9.0?os=windows", "pkg%3Anginx/nginx%400.9.0%3Fos%3Dwindows"),
-        ("pkg:deb/ubuntu/nginx@0.6.34-2ubuntu1~intrepid1", "pkg%3Adeb/ubuntu/nginx%400.6.34-2ubuntu1~intrepid1"),
-        ("pkg:rpm/redhat/openssl@1:1.0.2k-16.el7_6?arch=1", "pkg%3Arpm/redhat/openssl%401%3A1.0.2k-16.el7_6%3Farch%3D1"),
-        ("pkg:golang/google.golang.org/genproto#googleapis/api/annotations", "pkg%3Agolang/google.golang.org/genproto%23googleapis/api/annotations"),
-        ("pkg:cocoapods/GoogleUtilities@7.5.2#NSData+zlib", "pkg%3Acocoapods/GoogleUtilities%407.5.2%23NSData%2Bzlib"),
-        ("pkg:conda/absl-py@0.4.1?build=py36h06a4308_0&channel=main&subdir=linux-64&type=tar.bz2", "pkg%3Aconda/absl-py%400.4.1%3Fbuild%3Dpy36h06a4308_0%26channel%3Dmain%26subdir%3Dlinux-64%26type%3Dtar.bz2"),
-    ])
+    @pytest.mark.parametrize(
+        "input_value, expected_output",
+        [
+            (
+                "pkg:rpm/redhat/katello-client-bootstrap@1.1.0-2?arch=el6sat",
+                "pkg%3Arpm/redhat/katello-client-bootstrap%401.1.0-2%3Farch%3Del6sat",
+            ),
+            (
+                "pkg:alpine/nginx@1.10.3-r1?arch=armhf&distroversion=v3.5&reponame=main",
+                "pkg%3Aalpine/nginx%401.10.3-r1%3Farch%3Darmhf%26distroversion%3Dv3.5%26reponame%3Dmain",
+            ),
+            ("pkg:nginx/nginx@0.9.0?os=windows", "pkg%3Anginx/nginx%400.9.0%3Fos%3Dwindows"),
+            (
+                "pkg:deb/ubuntu/nginx@0.6.34-2ubuntu1~intrepid1",
+                "pkg%3Adeb/ubuntu/nginx%400.6.34-2ubuntu1~intrepid1",
+            ),
+            (
+                "pkg:rpm/redhat/openssl@1:1.0.2k-16.el7_6?arch=1",
+                "pkg%3Arpm/redhat/openssl%401%3A1.0.2k-16.el7_6%3Farch%3D1",
+            ),
+            (
+                "pkg:golang/google.golang.org/genproto#googleapis/api/annotations",
+                "pkg%3Agolang/google.golang.org/genproto%23googleapis/api/annotations",
+            ),
+            (
+                "pkg:cocoapods/GoogleUtilities@7.5.2#NSData+zlib",
+                "pkg%3Acocoapods/GoogleUtilities%407.5.2%23NSData%2Bzlib",
+            ),
+            (
+                "pkg:conda/absl-py@0.4.1?build=py36h06a4308_0&channel=main&subdir=linux-64&type=tar.bz2",
+                "pkg%3Aconda/absl-py%400.4.1%3Fbuild%3Dpy36h06a4308_0%26channel%3Dmain%26subdir%3Dlinux-64%26type%3Dtar.bz2",
+            ),
+        ],
+    )
     def test_url_quote_filter(self, input_value, expected_output):
         filtered = url_quote_filter(input_value)
         assert filtered == expected_output

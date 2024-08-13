@@ -51,6 +51,7 @@ def purl_sort_key(purl: models.Package):
         purl_sort_version = purl_version_class(purl.version)
     return (purl.type, purl.namespace, purl.name, purl_sort_version, purl.qualifiers, purl.subpath)
 
+
 def get_purl_version_class(purl: models.Package):
     RANGE_CLASS_BY_SCHEMES["alpine"] = AlpineLinuxVersionRange
     purl_version_class = None
@@ -194,7 +195,10 @@ class VulnerabilityDetails(DetailView):
                     and (fixed_by_package.name == sorted_affected_package.name)
                     and (fixed_by_package.qualifiers == sorted_affected_package.qualifiers)
                     and (fixed_by_package.subpath == sorted_affected_package.subpath)
-                    and (fixed_by_version_class(fixed_by_package.version) > sorted_affected_version_class(sorted_affected_package.version))
+                    and (
+                        fixed_by_version_class(fixed_by_package.version)
+                        > sorted_affected_version_class(sorted_affected_package.version)
+                    )
                 ):
                     matched_fixed_by_packages.append(fixed_by_package.purl)
             affected_fixed_by_matches["matched_fixed_by_packages"] = matched_fixed_by_packages

@@ -88,10 +88,8 @@ class MinimalPackageSerializer(BaseResourceSerializer):
     """
 
     def get_affected_vulnerabilities(self, package):
-        parent_affected_vulnerabilities = package.fixed_package_details.get("vulnerabilities") or []
-
         affected_vulnerabilities = [
-            self.get_vulnerability(vuln) for vuln in parent_affected_vulnerabilities
+            self.get_vulnerability(vuln) for vuln in package.get_affecting_vulnerabilities()
         ]
 
         return affected_vulnerabilities

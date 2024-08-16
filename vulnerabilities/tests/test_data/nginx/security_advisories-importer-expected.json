@@ -318,7 +318,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "8fef80748adc9276c73aec8916182cdd",
+    "unique_content_id": "96c2ffdeacca4901942abd83d54f33f5",
     "aliases": [
       "CVE-2011-4963"
     ],
@@ -351,7 +351,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2012/000086.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2012/000086.html",
         "severities": [
           {
             "value": "medium",
@@ -373,7 +373,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "1b3ebcc9873e1bc72a86efe7be53ad25",
+    "unique_content_id": "ca72fb146fcd014ee284ef66f7fc1c08",
     "aliases": [
       "CVE-2012-1180"
     ],
@@ -406,7 +406,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2012/000076.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2012/000076.html",
         "severities": [],
         "reference_id": "",
         "reference_type": ""
@@ -434,7 +434,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "2440f03249f740ee88cce42fad807a10",
+    "unique_content_id": "901e1dc04473ff40c6e503baec5e9bf6",
     "aliases": [
       "CVE-2012-2089"
     ],
@@ -467,7 +467,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2012/000080.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2012/000080.html",
         "severities": [],
         "reference_id": "",
         "reference_type": ""
@@ -495,7 +495,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "e49dab60f3ebf0ae2ca04b90ae9d473d",
+    "unique_content_id": "e74396e2dc204fb095c802fe54d4d176",
     "aliases": [
       "CVE-2013-2028"
     ],
@@ -528,7 +528,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2013/000112.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2013/000112.html",
         "severities": [],
         "reference_id": "",
         "reference_type": ""
@@ -556,7 +556,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "a78b435767821a42ad40300350817343",
+    "unique_content_id": "13592aaee15657bff9afca8c98edf8bf",
     "aliases": [
       "CVE-2013-2070"
     ],
@@ -601,7 +601,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2013/000114.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2013/000114.html",
         "severities": [
           {
             "value": "medium",
@@ -647,7 +647,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "e3caf987cd87a3d7cd579c5a206d9512",
+    "unique_content_id": "0f21f4e3d88f4af06f0c46d096e90320",
     "aliases": [
       "CVE-2013-4547"
     ],
@@ -680,7 +680,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2013/000125.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2013/000125.html",
         "severities": [
           {
             "value": "medium",
@@ -714,7 +714,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ae636c3c50d081afc1bbd6eee2e96f00",
+    "unique_content_id": "3430956de63de2b1188c3d1e50c3b0cd",
     "aliases": [
       "CVE-2014-0088"
     ],
@@ -735,7 +735,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2014/000132.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2014/000132.html",
         "severities": [],
         "reference_id": "",
         "reference_type": ""
@@ -763,7 +763,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "8132c0fa1ae9aeef40071413ff5633c5",
+    "unique_content_id": "db01da77157a7a773285dc98169416ec",
     "aliases": [
       "CVE-2014-0133"
     ],
@@ -796,7 +796,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2014/000135.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2014/000135.html",
         "severities": [],
         "reference_id": "",
         "reference_type": ""
@@ -824,7 +824,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "209fb59818245e7c0fcf395cff7f0254",
+    "unique_content_id": "83d5fba07f12acd2e4947e68d233fbe5",
     "aliases": [
       "CVE-2014-3556"
     ],
@@ -857,7 +857,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2014/000144.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2014/000144.html",
         "severities": [
           {
             "value": "medium",
@@ -891,7 +891,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "6a382d1724440ac8c24636ade786defc",
+    "unique_content_id": "ce87032bced3f187b1c0fbacc52b8c16",
     "aliases": [
       "CVE-2014-3616"
     ],
@@ -924,7 +924,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2014/000147.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2014/000147.html",
         "severities": [
           {
             "value": "medium",
@@ -946,7 +946,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "b417c94407c32b280b8280a744775603",
+    "unique_content_id": "71c918b8f82b4de8cfa23fc96fa0d7a7",
     "aliases": [
       "CVE-2016-0742"
     ],
@@ -979,7 +979,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2016/000169.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2016/000169.html",
         "severities": [
           {
             "value": "medium",
@@ -1001,7 +1001,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "c9e12a63600902ae1e2892b712c2a616",
+    "unique_content_id": "2ec9de991e2cb7a5a0ba79bed8556a41",
     "aliases": [
       "CVE-2016-0746"
     ],
@@ -1034,7 +1034,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2016/000169.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2016/000169.html",
         "severities": [
           {
             "value": "medium",
@@ -1056,7 +1056,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "20a3433420bc5d55c8562cce6f546ade",
+    "unique_content_id": "925abc90d30273fe8cb404b7f3c8dfd3",
     "aliases": [
       "CVE-2016-0747"
     ],
@@ -1089,7 +1089,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2016/000169.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2016/000169.html",
         "severities": [
           {
             "value": "medium",
@@ -1111,7 +1111,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "4b3d2f57488206608cd2a6ca4bc98a80",
+    "unique_content_id": "04f5bc12ff49a95a29c459222379abe4",
     "aliases": [
       "CVE-2016-4450"
     ],
@@ -1144,7 +1144,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2016/000179.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2016/000179.html",
         "severities": [
           {
             "value": "medium",
@@ -1190,7 +1190,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "c537e37104bd72e217b875f30575f7ed",
+    "unique_content_id": "b3192a372fdac00b2cdf462b562cf73b",
     "aliases": [
       "CVE-2017-7529"
     ],
@@ -1223,7 +1223,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2017/000200.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2017/000200.html",
         "severities": [
           {
             "value": "medium",
@@ -1257,7 +1257,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "faf0114d0b1af4e6774935adfb0d035d",
+    "unique_content_id": "cb70875e6e02b2d41dd8876b4729bf84",
     "aliases": [
       "CVE-2018-16843"
     ],
@@ -1290,7 +1290,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2018/000220.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2018/000220.html",
         "severities": [
           {
             "value": "low",
@@ -1312,7 +1312,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "53423756041338b1125146455a0f95c0",
+    "unique_content_id": "cf47abf58659080601c4cd87a119a769",
     "aliases": [
       "CVE-2018-16844"
     ],
@@ -1345,7 +1345,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2018/000220.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2018/000220.html",
         "severities": [
           {
             "value": "low",
@@ -1367,7 +1367,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "f6060c258e1ef0b8ca8fe187e4b64eeb",
+    "unique_content_id": "33d08a513ea5fef861e924f2601f7ac6",
     "aliases": [
       "CVE-2018-16845"
     ],
@@ -1400,7 +1400,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2018/000221.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2018/000221.html",
         "severities": [
           {
             "value": "medium",
@@ -1434,7 +1434,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ede767e15cc1b8849f27a5f4e2f18916",
+    "unique_content_id": "8ca47577347bd9f2027e09e32bc74866",
     "aliases": [
       "CVE-2019-9511"
     ],
@@ -1467,7 +1467,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2019/000249.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2019/000249.html",
         "severities": [
           {
             "value": "medium",
@@ -1489,7 +1489,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "de2189c7ff2eb37873c56ad378848b68",
+    "unique_content_id": "74ec3c647d544d6e6935492b7dceb572",
     "aliases": [
       "CVE-2019-9513"
     ],
@@ -1522,7 +1522,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2019/000249.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2019/000249.html",
         "severities": [
           {
             "value": "low",
@@ -1544,7 +1544,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "69f562cddb1ea962baefd2cf5d7fbf25",
+    "unique_content_id": "2537fa6a9e8e84a3c06bb122fcbf468d",
     "aliases": [
       "CVE-2019-9516"
     ],
@@ -1577,7 +1577,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2019/000249.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2019/000249.html",
         "severities": [
           {
             "value": "low",
@@ -1599,7 +1599,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "d0164a56e85c1947f8dc4b2795e35eb6",
+    "unique_content_id": "27612bc7cab82114b1549552f5ad48ff",
     "aliases": [
       "CVE-2021-23017"
     ],
@@ -1632,7 +1632,7 @@
     ],
     "references": [
       {
-        "url": "http://mailman.nginx.org/pipermail/nginx-announce/2021/000300.html",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2021/000300.html",
         "severities": [
           {
             "value": "medium",
@@ -1659,6 +1659,434 @@
         "url": "https://nginx.org/download/patch.2021.resolver.txt.asc",
         "severities": [],
         "reference_id": "",
+        "reference_type": ""
+      }
+    ],
+    "date_published": null,
+    "weaknesses": []
+  },
+  {
+    "unique_content_id": "dad2ebc242641f6a276b00769ef57efa",
+    "aliases": [
+      "CVE-2022-41741"
+    ],
+    "summary": "Memory corruption in the ngx_http_mp4_module",
+    "affected_packages": [
+      {
+        "package": {
+          "name": "nginx",
+          "type": "nginx",
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
+        },
+        "fixed_version": "1.23.2",
+        "affected_version_range": "vers:nginx/>=1.0.7|<=1.0.15|>=1.1.3|<=1.23.1"
+      },
+      {
+        "package": {
+          "name": "nginx",
+          "type": "nginx",
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
+        },
+        "fixed_version": "1.22.1",
+        "affected_version_range": "vers:nginx/>=1.0.7|<=1.0.15|>=1.1.3|<=1.23.1"
+      }
+    ],
+    "references": [
+      {
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2022/RBRRON6PYBJJM2XIAPQBFBVLR4Q6IHRA.html",
+        "severities": [
+          {
+            "value": "medium",
+            "system": "generic_textual",
+            "scoring_elements": ""
+          }
+        ],
+        "reference_id": "",
+        "reference_type": ""
+      },
+      {
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41741",
+        "severities": [],
+        "reference_id": "CVE-2022-41741",
+        "reference_type": ""
+      },
+      {
+        "url": "https://nginx.org/download/patch.2022.mp4.txt",
+        "severities": [],
+        "reference_id": "",
+        "reference_type": ""
+      },
+      {
+        "url": "https://nginx.org/download/patch.2022.mp4.txt.asc",
+        "severities": [],
+        "reference_id": "",
+        "reference_type": ""
+      }
+    ],
+    "date_published": null,
+    "weaknesses": []
+  },
+  {
+    "unique_content_id": "e17dde538a78c978602298541bcd29f0",
+    "aliases": [
+      "CVE-2022-41742"
+    ],
+    "summary": "Memory disclosure in the ngx_http_mp4_module",
+    "affected_packages": [
+      {
+        "package": {
+          "name": "nginx",
+          "type": "nginx",
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
+        },
+        "fixed_version": "1.23.2",
+        "affected_version_range": "vers:nginx/>=1.0.7|<=1.0.15|>=1.1.3|<=1.23.1"
+      },
+      {
+        "package": {
+          "name": "nginx",
+          "type": "nginx",
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
+        },
+        "fixed_version": "1.22.1",
+        "affected_version_range": "vers:nginx/>=1.0.7|<=1.0.15|>=1.1.3|<=1.23.1"
+      }
+    ],
+    "references": [
+      {
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2022/RBRRON6PYBJJM2XIAPQBFBVLR4Q6IHRA.html",
+        "severities": [
+          {
+            "value": "medium",
+            "system": "generic_textual",
+            "scoring_elements": ""
+          }
+        ],
+        "reference_id": "",
+        "reference_type": ""
+      },
+      {
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41742",
+        "severities": [],
+        "reference_id": "CVE-2022-41742",
+        "reference_type": ""
+      },
+      {
+        "url": "https://nginx.org/download/patch.2022.mp4.txt",
+        "severities": [],
+        "reference_id": "",
+        "reference_type": ""
+      },
+      {
+        "url": "https://nginx.org/download/patch.2022.mp4.txt.asc",
+        "severities": [],
+        "reference_id": "",
+        "reference_type": ""
+      }
+    ],
+    "date_published": null,
+    "weaknesses": []
+  },
+  {
+    "unique_content_id": "e4c6a0358264fb7523f6ee40f844854f",
+    "aliases": [
+      "CVE-2024-24989"
+    ],
+    "summary": "NULL pointer dereference in HTTP/3",
+    "affected_packages": [
+      {
+        "package": {
+          "name": "nginx",
+          "type": "nginx",
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
+        },
+        "fixed_version": "1.25.4",
+        "affected_version_range": "vers:nginx/1.25.3"
+      }
+    ],
+    "references": [
+      {
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2024/NW6MNW34VZ6HDIHH5YFBIJYZJN7FGNAV.html",
+        "severities": [],
+        "reference_id": "",
+        "reference_type": ""
+      },
+      {
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-24989",
+        "severities": [],
+        "reference_id": "CVE-2024-24989",
+        "reference_type": ""
+      }
+    ],
+    "date_published": null,
+    "weaknesses": []
+  },
+  {
+    "unique_content_id": "f87492771be35866bf4dce017ea54dc8",
+    "aliases": [
+      "CVE-2024-24990"
+    ],
+    "summary": "Use-after-free in HTTP/3",
+    "affected_packages": [
+      {
+        "package": {
+          "name": "nginx",
+          "type": "nginx",
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
+        },
+        "fixed_version": "1.25.4",
+        "affected_version_range": "vers:nginx/>=1.25.0|<=1.25.3"
+      }
+    ],
+    "references": [
+      {
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2024/NW6MNW34VZ6HDIHH5YFBIJYZJN7FGNAV.html",
+        "severities": [],
+        "reference_id": "",
+        "reference_type": ""
+      },
+      {
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-24990",
+        "severities": [],
+        "reference_id": "CVE-2024-24990",
+        "reference_type": ""
+      }
+    ],
+    "date_published": null,
+    "weaknesses": []
+  },
+  {
+    "unique_content_id": "79d9b38e6e89e3f3fc5ca4b2e64d0faa",
+    "aliases": [
+      "CVE-2024-31079"
+    ],
+    "summary": "Stack overflow and use-after-free in HTTP/3",
+    "affected_packages": [
+      {
+        "package": {
+          "name": "nginx",
+          "type": "nginx",
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
+        },
+        "fixed_version": "1.27.0",
+        "affected_version_range": "vers:nginx/>=1.25.0|<=1.25.5|1.26.0"
+      },
+      {
+        "package": {
+          "name": "nginx",
+          "type": "nginx",
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
+        },
+        "fixed_version": "1.26.1",
+        "affected_version_range": "vers:nginx/>=1.25.0|<=1.25.5|1.26.0"
+      }
+    ],
+    "references": [
+      {
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2024/GMY32CSHFH6VFTN76HJNX7WNEX4RLHF6.html",
+        "severities": [
+          {
+            "value": "medium",
+            "system": "generic_textual",
+            "scoring_elements": ""
+          }
+        ],
+        "reference_id": "",
+        "reference_type": ""
+      },
+      {
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-31079",
+        "severities": [],
+        "reference_id": "CVE-2024-31079",
+        "reference_type": ""
+      }
+    ],
+    "date_published": null,
+    "weaknesses": []
+  },
+  {
+    "unique_content_id": "b3d7627b206f561242cdd2eae0e3bbeb",
+    "aliases": [
+      "CVE-2024-32760"
+    ],
+    "summary": "Buffer overwrite in HTTP/3",
+    "affected_packages": [
+      {
+        "package": {
+          "name": "nginx",
+          "type": "nginx",
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
+        },
+        "fixed_version": "1.27.0",
+        "affected_version_range": "vers:nginx/>=1.25.0|<=1.25.5|1.26.0"
+      },
+      {
+        "package": {
+          "name": "nginx",
+          "type": "nginx",
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
+        },
+        "fixed_version": "1.26.1",
+        "affected_version_range": "vers:nginx/>=1.25.0|<=1.25.5|1.26.0"
+      }
+    ],
+    "references": [
+      {
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2024/GMY32CSHFH6VFTN76HJNX7WNEX4RLHF6.html",
+        "severities": [
+          {
+            "value": "medium",
+            "system": "generic_textual",
+            "scoring_elements": ""
+          }
+        ],
+        "reference_id": "",
+        "reference_type": ""
+      },
+      {
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-32760",
+        "severities": [],
+        "reference_id": "CVE-2024-32760",
+        "reference_type": ""
+      }
+    ],
+    "date_published": null,
+    "weaknesses": []
+  },
+  {
+    "unique_content_id": "43c2f41bb851164d3495f3c204a57f20",
+    "aliases": [
+      "CVE-2024-34161"
+    ],
+    "summary": "Memory disclosure in HTTP/3",
+    "affected_packages": [
+      {
+        "package": {
+          "name": "nginx",
+          "type": "nginx",
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
+        },
+        "fixed_version": "1.27.0",
+        "affected_version_range": "vers:nginx/>=1.25.0|<=1.25.5|1.26.0"
+      },
+      {
+        "package": {
+          "name": "nginx",
+          "type": "nginx",
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
+        },
+        "fixed_version": "1.26.1",
+        "affected_version_range": "vers:nginx/>=1.25.0|<=1.25.5|1.26.0"
+      }
+    ],
+    "references": [
+      {
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2024/GMY32CSHFH6VFTN76HJNX7WNEX4RLHF6.html",
+        "severities": [
+          {
+            "value": "medium",
+            "system": "generic_textual",
+            "scoring_elements": ""
+          }
+        ],
+        "reference_id": "",
+        "reference_type": ""
+      },
+      {
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-34161",
+        "severities": [],
+        "reference_id": "CVE-2024-34161",
+        "reference_type": ""
+      }
+    ],
+    "date_published": null,
+    "weaknesses": []
+  },
+  {
+    "unique_content_id": "b72c609cd1be7c77f4432e1bc8c365f3",
+    "aliases": [
+      "CVE-2024-35200"
+    ],
+    "summary": "NULL pointer dereference in HTTP/3",
+    "affected_packages": [
+      {
+        "package": {
+          "name": "nginx",
+          "type": "nginx",
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
+        },
+        "fixed_version": "1.27.0",
+        "affected_version_range": "vers:nginx/>=1.25.0|<=1.25.5|1.26.0"
+      },
+      {
+        "package": {
+          "name": "nginx",
+          "type": "nginx",
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": ""
+        },
+        "fixed_version": "1.26.1",
+        "affected_version_range": "vers:nginx/>=1.25.0|<=1.25.5|1.26.0"
+      }
+    ],
+    "references": [
+      {
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2024/GMY32CSHFH6VFTN76HJNX7WNEX4RLHF6.html",
+        "severities": [
+          {
+            "value": "medium",
+            "system": "generic_textual",
+            "scoring_elements": ""
+          }
+        ],
+        "reference_id": "",
+        "reference_type": ""
+      },
+      {
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-35200",
+        "severities": [],
+        "reference_id": "CVE-2024-35200",
         "reference_type": ""
       }
     ],

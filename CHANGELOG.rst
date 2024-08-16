@@ -1,6 +1,20 @@
 Release notes
 =============
 
+Version v34.0.0rc5
+-------------------
+
+- Add safetydb importer.
+- Add missing width setting for the table in the vulnerability details UI.
+- Add KEV support.
+- Add UI template for API.
+- Use VersionRange.normalize to compare advisory.
+- Use integer column to display score.
+- Add support for CVSSv4 & SSVC and import the data using vulnrichment.
+- Add support for reference_type in the API.
+- Add API improvements for the package endpoint.
+
+
 Version v34.0.0rc4
 -------------------
 

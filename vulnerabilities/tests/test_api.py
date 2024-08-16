@@ -455,59 +455,48 @@ class APIPerformanceTest(TestCase):
 
     def test_api_packages_single_num_queries(self):
         with self.assertNumQueries(10):
-            self.csrf_client.get(
-                f"/api/packages/{self.pkg_2_14_0_rc1.id}", format="json"
-            )
-    
+            self.csrf_client.get(f"/api/packages/{self.pkg_2_14_0_rc1.id}", format="json")
+
     def test_api_packages_single_with_purl_in_query_num_queries(self):
         with self.assertNumQueries(11):
-            self.csrf_client.get(
-                f"/api/packages/?purl={self.pkg_2_14_0_rc1.purl}", format="json"
-            )
-    
+            self.csrf_client.get(f"/api/packages/?purl={self.pkg_2_14_0_rc1.purl}", format="json")
+
     def test_api_packages_single_with_purl_no_version_in_query_num_queries(self):
-        with self.assertNumQueries(98):
+        with self.assertNumQueries(88):
             self.csrf_client.get(
-                f"/api/packages/?purl=pkg:maven/com.fasterxml.jackson.core/jackson-databind", format="json"
+                f"/api/packages/?purl=pkg:maven/com.fasterxml.jackson.core/jackson-databind",
+                format="json",
             )
-    
+
     def test_api_packages_bulk_search(self):
-        with self.assertNumQueries(71):
-            packages = [
-                self.pkg_2_12_6,
-                self.pkg_2_12_6_1,
-                self.pkg_2_13_1
-            ]
+        with self.assertNumQueries(63):
+            packages = [self.pkg_2_12_6, self.pkg_2_12_6_1, self.pkg_2_13_1]
             purls = [p.purl for p in packages]
 
-            data = {'purls': purls, 'purl_only': False, 'plain_purl': True}
+            data = {"purls": purls, "purl_only": False, "plain_purl": True}
 
             resp = self.csrf_client.post(
                 f"/api/packages/bulk_search",
                 data=json.dumps(data),
                 content_type="application/json",
             ).json()
-    
+
     def test_api_packages_with_lookup(self):
-        with self.assertNumQueries(20):
-            data = {'purl': self.pkg_2_12_6.purl}
+        with self.assertNumQueries(18):
+            data = {"purl": self.pkg_2_12_6.purl}
 
             resp = self.csrf_client.post(
                 f"/api/packages/lookup",
                 data=json.dumps(data),
                 content_type="application/json",
             ).json()
-    
+
     def test_api_packages_bulk_lookup(self):
-        with self.assertNumQueries(71):
-            packages = [
-                self.pkg_2_12_6,
-                self.pkg_2_12_6_1,
-                self.pkg_2_13_1
-            ]
+        with self.assertNumQueries(63):
+            packages = [self.pkg_2_12_6, self.pkg_2_12_6_1, self.pkg_2_13_1]
             purls = [p.purl for p in packages]
 
-            data = {'purls': purls}
+            data = {"purls": purls}
 
             resp = self.csrf_client.post(
                 f"/api/packages/bulk_lookup",

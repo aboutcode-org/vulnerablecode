@@ -23,6 +23,7 @@ from http import HTTPStatus
 from typing import List
 from typing import Optional
 from typing import Tuple
+from typing import Union
 from unittest.mock import MagicMock
 from urllib.parse import urljoin
 from uuid import uuid4
@@ -563,7 +564,7 @@ def get_advisory_url(file, base_path, url):
     return advisory_url
 
 
-def purl_to_dict(purl: PackageURL, with_empty: bool = True):
+def purl_to_dict(purl: Union[PackageURL, str], with_empty: bool = True):
     """
     Return a dict of purl components suitable for use in a queryset.
     We need to have specific empty values for using in querysets because of our peculiar model structure.
@@ -585,10 +586,9 @@ def purl_to_dict(purl: PackageURL, with_empty: bool = True):
     return mapping
 
 
-def normalize_purl(purl: str):
+def normalize_purl(purl: Union[PackageURL, str]):
     """
-    Return a normalized purl object from a purl
-    string or purl object.
+    Return a normalized purl object from a purl string or purl object.
     """
     if isinstance(purl, PackageURL):
         purl = str(purl)

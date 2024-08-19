@@ -57,6 +57,7 @@ class TestGitlab(testcase.FileBasedTesting):
             {"name": "CVE-2014-1402.yml", "path": "path/to/CVE-2014-1402.yml"},
             {"name": "CVE-2016-10745.yml", "path": "path/to/CVE-2016-10745.yml"},
             {"name": "CVE-2019-10906.yml", "path": "path/to/CVE-2019-10906.yml"},
+            {"name": "CVE-2019-8341.yml", "path": "path/to/CVE-2019-8341.yml"},
             {"name": "CVE-2020-28493.yml", "path": "path/to/CVE-2020-28493.yml"},
         ]
 

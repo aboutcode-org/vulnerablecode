@@ -11,6 +11,7 @@ from datetime import datetime
 
 from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
+from cvss.exceptions import CVSS4MalformedError
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
@@ -147,7 +148,12 @@ class VulnerabilityDetails(DetailView):
                 try:
                     vector_values = SCORING_SYSTEMS[s.scoring_system].get(s.scoring_elements)
                     severity_vectors.append(vector_values)
-                except (CVSS2MalformedError, CVSS3MalformedError, NotImplementedError):
+                except (
+                    CVSS2MalformedError,
+                    CVSS3MalformedError,
+                    CVSS4MalformedError,
+                    NotImplementedError,
+                ):
                     logging.error(f"CVSSMalformedError for {s.scoring_elements}")
 
             if s.value:

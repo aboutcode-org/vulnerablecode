@@ -289,7 +289,10 @@ if not VULNERABLECODEIO_REQUIRE_AUTHENTICATION:
 if DEBUG_TOOLBAR:
     INSTALLED_APPS += ("debug_toolbar",)
 
-    MIDDLEWARE += ("debug_toolbar.middleware.DebugToolbarMiddleware",)
+    MIDDLEWARE += (
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+        "pyinstrument.middleware.ProfilerMiddleware",
+    )
 
     DEBUG_TOOLBAR_PANELS = (
         "debug_toolbar.panels.history.HistoryPanel",

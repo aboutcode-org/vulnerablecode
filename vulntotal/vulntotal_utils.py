@@ -13,10 +13,9 @@ from typing import Union
 
 class GenericVersion:
     def __init__(self, version):
-        self.value = version.replace(" ", "").lstrip("v")
-
+        self.value = version
         self.decomposed = tuple(
-            [int(com) if com.isnumeric() else com for com in self.value.split(".")]
+            [com for com in self.value.replace(" ", "").lstrip("vV").split(".")]
         )
 
     def __str__(self):
@@ -25,17 +24,28 @@ class GenericVersion:
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
             return NotImplemented
-        return self.value.__eq__(other.value)
+        for i, j in zip(self.decomposed, other.decomposed):
+            if i.isnumeric() and j.isnumeric():
+                i = int(i)
+                j = int(j)
+            if not i.__eq__(j):
+                return False
+        return True
 
     def __lt__(self, other):
         if not isinstance(other, self.__class__):
             return NotImplemented
         for i, j in zip(self.decomposed, other.decomposed):
-            if not isinstance(i, type(j)):
+            if i.isnumeric() and j.isnumeric():
+                i = int(i)
+                j = int(j)
+            if i.__eq__(j):
                 continue
+            if i.__lt__(j):
+                return True
             if i.__gt__(j):
                 return False
-        return True
+        return False
 
     def __le__(self, other):
         if not isinstance(other, self.__class__):
@@ -57,8 +67,8 @@ def compare(version, package_comparator, package_version):
         "(": operator.gt,
         "[": operator.ge,
     }
-    compare = operator_comparator[package_comparator]
-    return compare(version, package_version)
+    compare_v = operator_comparator[package_comparator]
+    return compare_v(version, package_version)
 
 
 def parse_constraint(constraint):

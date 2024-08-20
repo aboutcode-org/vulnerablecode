@@ -69,6 +69,52 @@ class RockyLinuxImporter(Importer):
 
 
 def to_advisory(advisory_data):
+
+    """
+    Convert Rockylinux advisory data into an AdvisoryData object.
+
+    Args:
+        advisory_data (dict): A dictionary containing advisory information.
+
+    Returns:
+        AdvisoryData: An instance of AdvisoryData with processed information.
+
+    Example:
+        >>> advisory_data = {
+        ...     "name": "CVE-2023-1234",
+        ...     "publishedAt": "2023-08-20T12:34:56Z",
+        ...     "description": "A vulnerability in the system.",
+        ...     "affectedProducts": ["product1"],
+        ...     "rpms": {
+        ...         "product1": {
+        ...             "nvras": [
+        ...                 "package-1.0-1.el8.x86_64.rpm",
+        ...                 "package-2.0-1.el8.noarch.rpm"
+        ...             ]
+        ...         }
+        ...     },
+        ...     "fixes": [
+        ...         {"sourceLink": "http://example.com/fix", "ticket": "12345"}
+        ...     ],
+        ...     "cves": [
+        ...         {
+        ...             "name": "CVE-2023-1234",
+        ...             "cvss3BaseScore": "7.5",
+        ...             "cvss3ScoringVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+        ...             "sourceLink": "http://example.com/cve"
+        ...         }
+        ...     ]
+        ... }
+        >>> advisory = to_advisory(advisory_data)
+        >>> advisory.aliases
+        'CVE-2023-1234'
+        >>> advisory.date_published.year
+        2023
+        >>> len(advisory.affected_packages)
+        2
+        >>> len(advisory.references)
+        2
+    """
     aliases = advisory_data.get("name") or ""
     date_published = dateparser.parse(advisory_data.get("publishedAt", ""))
 
@@ -76,7 +122,8 @@ def to_advisory(advisory_data):
     affected_products = advisory_data.get("affectedProducts") or []
     affected_packages = []
     for products in affected_products:
-        packages = advisory_data["rpms"][products]["nvras"]
+        rpms = advisory_data.get("rpms", {})
+        packages = rpms.get(products, {}).get("nvras", [])
         affected_packages.extend(packages)
     processed_affected_packages: List[AffectedPackage] = []
     for rpm in affected_packages:
@@ -97,8 +144,8 @@ def to_advisory(advisory_data):
                         fixed_version=None,
                     )
                 )
-            except Exception as e:
-                logger.error(f"Failed to parse version range {purl.version} for {purl} {e}")
+            except VersionParsingError as e:
+                logger.error(f"Failed to parse version {purl.version} for {purl} {e}")
 
     references = [
         Reference(
@@ -140,6 +187,10 @@ def to_advisory(advisory_data):
         weaknesses=get_cwes_from_rockylinux_advisory(advisory_data),
         url=f"https://errata.rockylinux.org/{aliases}",
     )
+
+
+class VersionParsingError(Exception):
+    pass
 
 
 def get_cwes_from_rockylinux_advisory(advisory_data) -> [int]:
@@ -194,6 +245,6 @@ def get_cwes_from_rockylinux_advisory(advisory_data) -> [int]:
             try:
                 db.get(cwe_id)
                 weaknesses.append(cwe_id)
-            except Exception:
+            except ValueError:
                 logger.error("Invalid CWE id")
     return weaknesses

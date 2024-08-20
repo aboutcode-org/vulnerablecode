@@ -118,7 +118,7 @@ corrected. You can check to see if your corrections are valid by running:
 Once the wheels are collected and the ABOUT files are generated and correct,
 upload them to thirdparty.aboutcode.org/pypi by placing the wheels and ABOUT
 files from the thirdparty directory to the pypi directory at
-https://github.com/nexB/thirdparty-packages
+https://github.com/aboutcode-org/thirdparty-packages
 
 
 Usage after project initialization

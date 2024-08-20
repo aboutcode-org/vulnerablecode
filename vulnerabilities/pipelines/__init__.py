@@ -15,10 +15,10 @@ from typing import Iterable
 from aboutcode.pipeline import BasePipeline
 from aboutcode.pipeline import LoopProgress
 
-from vulnerabilities import import_runner
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.improvers.default import DefaultImporter
-from vulnerabilities.models import Advisory
+from vulnerabilities.improver import MAX_CONFIDENCE
+from vulnerabilities.pipelines.pipes.importer import import_advisory
+from vulnerabilities.pipelines.pipes.importer import insert_advisory
 from vulnerabilities.utils import classproperty
 
 module_logger = logging.getLogger(__name__)
@@ -47,13 +47,14 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
 
     Uses:
         Subclass this Pipeline and implement ``advisories_count`` and ``collect_advisories`` method.
-        Also override the ``steps`` if needed.
+        Also override the ``steps`` and ``advisory_confidence`` as needed.
     """
 
     license_url = None
     spdx_license_expression = None
     repo_url = None
     importer_name = None
+    advisory_confidence = MAX_CONFIDENCE
 
     @classmethod
     def steps(cls):
@@ -86,33 +87,16 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
         collected_advisory_count = 0
         progress = LoopProgress(total_iterations=self.advisories_count(), logger=self.log)
         for advisory in progress.iter(self.collect_advisories()):
-            self.insert_advisory(advisory=advisory)
+            new_advisory = insert_advisory(
+                advisory=advisory,
+                pipeline_name=self.qualified_name,
+                logger=self.log,
+            )
+            if new_advisory:
+                self.new_advisories.append(new_advisory)
             collected_advisory_count += 1
 
         self.log(f"Successfully collected {collected_advisory_count:,d} advisories")
-
-    def insert_advisory(self, advisory: AdvisoryData):
-        try:
-            obj, created = Advisory.objects.get_or_create(
-                aliases=advisory.aliases,
-                summary=advisory.summary,
-                affected_packages=[pkg.to_dict() for pkg in advisory.affected_packages],
-                references=[ref.to_dict() for ref in advisory.references],
-                date_published=advisory.date_published,
-                weaknesses=advisory.weaknesses,
-                defaults={
-                    "created_by": self.qualified_name,
-                    "date_collected": datetime.now(timezone.utc),
-                },
-                url=advisory.url,
-            )
-            if created:
-                self.new_advisories.append(obj)
-        except Exception as e:
-            self.log(
-                f"Error while processing {advisory!r} with aliases {advisory.aliases!r}: {e!r} \n {traceback_format_exc()}",
-                level=logging.ERROR,
-            )
 
     def import_new_advisories(self):
         new_advisories_count = len(self.new_advisories)
@@ -129,14 +113,14 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
         if advisory.date_imported:
             return
         try:
-            advisory_importer = DefaultImporter(advisories=[advisory])
-            inferences = advisory_importer.get_inferences(advisory_data=advisory.to_advisory_data())
-            import_runner.process_inferences(
-                inferences=inferences,
+            import_advisory(
                 advisory=advisory,
-                improver_name=self.qualified_name,
+                pipeline_name=self.qualified_name,
+                confidence=self.advisory_confidence,
+                logger=self.log,
             )
         except Exception as e:
             self.log(
-                f"Failed to process advisory: {advisory!r} with error {e!r}", level=logging.ERROR
+                f"Failed to process advisory: {advisory!r} with error {e!r}",
+                level=logging.ERROR,
             )

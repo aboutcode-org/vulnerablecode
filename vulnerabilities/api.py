@@ -222,19 +222,20 @@ class PackageSerializer(BaseResourceSerializer):
     Lookup software package using Package URLs
     """
 
-    next_non_vulnerable_version = serializers.SerializerMethodField("get_next_non_vulnerable")
+    next_non_vulnerable_version = serializers.CharField(read_only=True)
+    latest_non_vulnerable_version = serializers.CharField(read_only=True)
 
-    def get_next_non_vulnerable(self, package):
-        next_non_vulnerable = package.fixed_package_details.get("next_non_vulnerable", None)
-        if next_non_vulnerable:
-            return next_non_vulnerable.version
+    # def get_next_non_vulnerable(self, package):
+    #     next_non_vulnerable = package.fixed_package_details.get("next_non_vulnerable", None)
+    #     if next_non_vulnerable:
+    #         return next_non_vulnerable.version
 
-    latest_non_vulnerable_version = serializers.SerializerMethodField("get_latest_non_vulnerable")
+    # latest_non_vulnerable_version = serializers.SerializerMethodField("get_latest_non_vulnerable")
 
-    def get_latest_non_vulnerable(self, package):
-        latest_non_vulnerable = package.fixed_package_details.get("latest_non_vulnerable", None)
-        if latest_non_vulnerable:
-            return latest_non_vulnerable.version
+    # def get_latest_non_vulnerable(self, package):
+    #     latest_non_vulnerable = package.fixed_package_details.get("latest_non_vulnerable", None)
+    #     if latest_non_vulnerable:
+    #         return latest_non_vulnerable.version
 
     purl = serializers.CharField(source="package_url")
 

@@ -462,14 +462,14 @@ class APIPerformanceTest(TestCase):
             self.csrf_client.get(f"/api/packages/?purl={self.pkg_2_14_0_rc1.purl}", format="json")
 
     def test_api_packages_single_with_purl_no_version_in_query_num_queries(self):
-        with self.assertNumQueries(68):
+        with self.assertNumQueries(64):
             self.csrf_client.get(
                 f"/api/packages/?purl=pkg:maven/com.fasterxml.jackson.core/jackson-databind",
                 format="json",
             )
 
     def test_api_packages_bulk_search(self):
-        with self.assertNumQueries(49):
+        with self.assertNumQueries(45):
             packages = [self.pkg_2_12_6, self.pkg_2_12_6_1, self.pkg_2_13_1]
             purls = [p.purl for p in packages]
 
@@ -482,7 +482,7 @@ class APIPerformanceTest(TestCase):
             ).json()
 
     def test_api_packages_with_lookup(self):
-        with self.assertNumQueries(16):
+        with self.assertNumQueries(14):
             data = {"purl": self.pkg_2_12_6.purl}
 
             resp = self.csrf_client.post(
@@ -492,7 +492,7 @@ class APIPerformanceTest(TestCase):
             ).json()
 
     def test_api_packages_bulk_lookup(self):
-        with self.assertNumQueries(49):
+        with self.assertNumQueries(45):
             packages = [self.pkg_2_12_6, self.pkg_2_12_6_1, self.pkg_2_13_1]
             purls = [p.purl for p in packages]
 
@@ -555,19 +555,6 @@ class APITestCasePackage(TestCase):
 
         set_as_affected_by(package=self.pkg_2_13_2, vulnerability=self.vul2)
         set_as_fixing(package=self.pkg_2_13_2, vulnerability=self.vul1)
-
-    def test_api_with_package_with_no_vulnerabilities(self):
-        affected_vulnerabilities = []
-        vuln = {
-            "foo": "bar",
-        }
-
-        package_with_no_vulnerabilities = MinimalPackageSerializer.get_vulnerability(
-            self,
-            vuln,
-        )
-
-        assert package_with_no_vulnerabilities is None
 
     def test_api_with_lesser_and_greater_fixed_by_packages(self):
         response = self.csrf_client.get(f"/api/packages/{self.pkg_2_13_1.id}", format="json").data

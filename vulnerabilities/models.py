@@ -868,6 +868,20 @@ class Package(PackageURLMixin):
         """
         return self.vulnerabilities.filter(packagerelatedvulnerability__fix=False)
 
+    @property
+    def affecting_vulns(self):
+        """
+        Return a queryset of Vulnerabilities that affect this `package`.
+        """
+        fixed_by_packages = Package.objects.get_fixed_by_package_versions(self, fix=True)
+        return self.vulnerabilities.affecting_vulnerabilities().prefetch_related(
+            Prefetch(
+                "packages",
+                queryset=fixed_by_packages,
+                to_attr="fixed_packages",
+            )
+        )
+
 
 class PackageRelatedVulnerability(models.Model):
     """

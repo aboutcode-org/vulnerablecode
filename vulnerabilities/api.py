@@ -82,27 +82,23 @@ class BaseResourceSerializer(serializers.HyperlinkedModelSerializer):
         return resource_url
 
 
+class VulnVulnIDSerializer(serializers.Serializer):
+    """
+    Serializer for the series of vulnerability IDs.
+    """
+
+    vulnerability = serializers.CharField(source="vulnerability_id")
+
+    class Meta:
+        fields = ["vulnerability"]
+
+
 class MinimalPackageSerializer(BaseResourceSerializer):
     """
     Used for nesting inside vulnerability focused APIs.
     """
 
-    def get_affected_vulnerabilities(self, package):
-        affected_vulnerabilities = [
-            self.get_vulnerability(vuln) for vuln in package.get_affecting_vulnerabilities()
-        ]
-
-        return affected_vulnerabilities
-
-    def get_vulnerability(self, vuln):
-        affected_vulnerability = {}
-
-        vulnerability = vuln.get("vulnerability")
-        if vulnerability:
-            affected_vulnerability["vulnerability"] = vulnerability.vulnerability_id
-            return affected_vulnerability
-
-    affected_by_vulnerabilities = serializers.SerializerMethodField("get_affected_vulnerabilities")
+    affected_by_vulnerabilities = VulnVulnIDSerializer(source="affecting_vulns", many=True)
 
     purl = serializers.CharField(source="package_url")
 

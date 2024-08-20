@@ -138,18 +138,16 @@ class VulnSerializerRefsAndSummary(BaseResourceSerializer):
     Lookup vulnerabilities references by aliases (such as a CVE).
     """
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        aliases = [alias["alias"] for alias in data["aliases"]]
-        data["aliases"] = aliases
-        return data
-
     fixed_packages = MinimalPackageSerializer(
         many=True, source="filtered_fixed_packages", read_only=True
     )
 
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
-    aliases = AliasSerializer(many=True, source="alias")
+    aliases = serializers.ListField(
+        child=serializers.CharField(),
+        source="aliases.values_list",
+        read_only=True
+    )
 
     class Meta:
         model = Vulnerability
@@ -224,12 +222,6 @@ class PackageSerializer(BaseResourceSerializer):
     Lookup software package using Package URLs
     """
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data["qualifiers"] = normalize_qualifiers(data["qualifiers"], encode=False)
-
-        return data
-
     next_non_vulnerable_version = serializers.SerializerMethodField("get_next_non_vulnerable")
 
     def get_next_non_vulnerable(self, package):
@@ -250,7 +242,12 @@ class PackageSerializer(BaseResourceSerializer):
 
     fixing_vulnerabilities = serializers.SerializerMethodField("get_fixing_vulnerabilities")
 
+    qualifiers = serializers.SerializerMethodField()
+
     is_vulnerable = serializers.BooleanField()
+
+    def get_qualifiers(self, package):
+        return normalize_qualifiers(package.qualifiers, encode=False)
 
     def get_fixed_packages(self, package):
         """
@@ -334,8 +331,6 @@ class PackageSerializer(BaseResourceSerializer):
             "affected_by_vulnerabilities",
             "fixing_vulnerabilities",
         ]
-
-    is_vulnerable = serializers.BooleanField()
 
 
 class PackageFilterSet(filters.FilterSet):

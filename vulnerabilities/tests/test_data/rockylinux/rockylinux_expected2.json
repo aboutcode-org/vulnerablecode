@@ -90,51 +90,61 @@
     "references": [
         {
             "reference_id": "2243644",
+            "reference_type": "",
             "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2243644",
             "severities": []
         },
         {
             "reference_id": "2260012",
+            "reference_type": "",
             "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2260012",
             "severities": []
         },
         {
             "reference_id": "2268171",
+            "reference_type": "",
             "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2268171",
             "severities": []
         },
         {
             "reference_id": "2270660",
+            "reference_type": "",
             "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2270660",
             "severities": []
         },
         {
             "reference_id": "2270661",
+            "reference_type": "",
             "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2270661",
             "severities": []
         },
         {
             "reference_id": "2270663",
+            "reference_type": "",
             "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2270663",
             "severities": []
         },
         {
             "reference_id": "2270664",
+            "reference_type": "",
             "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2270664",
             "severities": []
         },
         {
             "reference_id": "2270665",
+            "reference_type": "",
             "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2270665",
             "severities": []
         },
         {
             "reference_id": "2270666",
+            "reference_type": "",
             "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2270666",
             "severities": []
         },
         {
             "reference_id": "CVE-2023-5388",
+            "reference_type": "",
             "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-5388",
             "severities": [
                 {
@@ -146,6 +156,7 @@
         },
         {
             "reference_id": "CVE-2024-0743",
+            "reference_type": "",
             "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-0743",
             "severities": [
                 {
@@ -157,6 +168,7 @@
         },
         {
             "reference_id": "CVE-2024-1936",
+            "reference_type": "",
             "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-1936",
             "severities": [
                 {
@@ -168,6 +180,7 @@
         },
         {
             "reference_id": "CVE-2024-2607",
+            "reference_type": "",
             "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-2607",
             "severities": [
                 {
@@ -179,6 +192,7 @@
         },
         {
             "reference_id": "CVE-2024-2608",
+            "reference_type": "",
             "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-2608",
             "severities": [
                 {
@@ -190,6 +204,7 @@
         },
         {
             "reference_id": "CVE-2024-2610",
+            "reference_type": "",
             "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-2610",
             "severities": [
                 {
@@ -201,6 +216,7 @@
         },
         {
             "reference_id": "CVE-2024-2611",
+            "reference_type": "",
             "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-2611",
             "severities": [
                 {
@@ -212,6 +228,7 @@
         },
         {
             "reference_id": "CVE-2024-2612",
+            "reference_type": "",
             "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-2612",
             "severities": [
                 {
@@ -223,6 +240,7 @@
         },
         {
             "reference_id": "CVE-2024-2614",
+            "reference_type": "",
             "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-2614",
             "severities": [
                 {

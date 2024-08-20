@@ -426,16 +426,19 @@
     "references": [
         {
             "reference_id": "2008291",
+            "reference_type": "",
             "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2008291",
             "severities": []
         },
         {
             "reference_id": "2015828",
+            "reference_type": "",
             "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2015828",
             "severities": []
         },
         {
             "reference_id": "CVE-2021-41617",
+            "reference_type": "",
             "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-41617",
             "severities": [
                 {

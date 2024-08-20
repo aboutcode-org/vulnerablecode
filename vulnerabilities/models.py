@@ -710,7 +710,7 @@ class Package(PackageURLMixin):
     @cached_property
     def current_version(self):
         return self.version_class(self.version)
-    
+
     @property
     def next_non_vulnerable_version(self):
         """

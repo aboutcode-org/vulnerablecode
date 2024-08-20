@@ -3,9 +3,10 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+
 import logging
 from datetime import datetime
 from datetime import timezone
@@ -17,8 +18,8 @@ from aboutcode.pipeline import LoopProgress
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.improver import MAX_CONFIDENCE
-from vulnerabilities.pipelines.pipes.importer import import_advisory
-from vulnerabilities.pipelines.pipes.importer import insert_advisory
+from vulnerabilities.pipes.importer import import_advisory
+from vulnerabilities.pipes.importer import insert_advisory
 from vulnerabilities.utils import classproperty
 
 module_logger = logging.getLogger(__name__)

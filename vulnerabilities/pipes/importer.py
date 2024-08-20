@@ -3,9 +3,10 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+
 import logging
 from datetime import datetime
 from datetime import timezone
@@ -14,10 +15,8 @@ from typing import Callable
 
 from django.db import transaction
 
-from vulnerabilities import import_runner
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.improver import MAX_CONFIDENCE
-from vulnerabilities.improvers import default
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageRelatedVulnerability
@@ -55,8 +54,8 @@ def insert_advisory(advisory: AdvisoryData, pipeline_name: str, logger: Callable
 def import_advisory(
     advisory: Advisory,
     pipeline_name: str,
-    logger: Callable,
     confidence: int = MAX_CONFIDENCE,
+    logger: Callable = None,
 ):
     """
     Create initial Vulnerability Package relationships for the advisory,
@@ -64,9 +63,12 @@ def import_advisory(
 
     Package relationships are established only for resolved (concrete) versions.
     """
+    from vulnerabilities import import_runner
+    from vulnerabilities.improvers import default
 
     advisory_data: AdvisoryData = advisory.to_advisory_data()
-    logger(f"Importing advisory id: {advisory.id}", level=logging.DEBUG)
+    if logger:
+        logger(f"Importing advisory id: {advisory.id}", level=logging.DEBUG)
 
     affected_purls = []
     fixed_purls = []
@@ -85,7 +87,8 @@ def import_advisory(
     )
 
     if not vulnerability:
-        logger(f"Unable to get vulnerability for advisory: {advisory!r}", level=logging.WARNING)
+        if logger:
+            logger(f"Unable to get vulnerability for advisory: {advisory!r}", level=logging.WARNING)
         return
 
     for ref in advisory_data.references:
@@ -118,16 +121,18 @@ def import_advisory(
                     },
                 )
             except:
-                logger(
-                    f"Failed to create VulnerabilitySeverity for: {severity} with error:\n{traceback_format_exc()}",
-                    level=logging.ERROR,
-                )
+                if logger:
+                    logger(
+                        f"Failed to create VulnerabilitySeverity for: {severity} with error:\n{traceback_format_exc()}",
+                        level=logging.ERROR,
+                    )
             if not created:
-                logger(
-                    f"Severity updated for reference {ref!r} to value: {severity.value!r} "
-                    f"and scoring_elements: {severity.scoring_elements!r}",
-                    level=logging.DEBUG,
-                )
+                if logger:
+                    logger(
+                        f"Severity updated for reference {ref!r} to value: {severity.value!r} "
+                        f"and scoring_elements: {severity.scoring_elements!r}",
+                        level=logging.DEBUG,
+                    )
 
     for affected_purl in affected_purls or []:
         vulnerable_package, _ = Package.objects.get_or_create_from_purl(purl=affected_purl)

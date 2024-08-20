@@ -3,6 +3,52 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+
+from django.utils import timezone
+from packageurl import PackageURL
+from univers.version_range import VersionRange
+
+from vulnerabilities import models
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import Reference
+
+advisory_data1 = AdvisoryData(
+    aliases=["CVE-2020-13371337"],
+    summary="vulnerability description here",
+    affected_packages=[
+        AffectedPackage(
+            package=PackageURL(type="pypi", name="dummy"),
+            affected_version_range=VersionRange.from_string("vers:pypi/>=1.0.0|<=2.0.0"),
+        )
+    ],
+    references=[Reference(url="https://example.com/with/more/info/CVE-2020-13371337")],
+    date_published=timezone.now(),
+    url="https://test.com",
+)
+
+
+advisory1 = models.Advisory(
+    aliases=advisory_data1.aliases,
+    summary=advisory_data1.summary,
+    affected_packages=[pkg.to_dict() for pkg in advisory_data1.affected_packages],
+    references=[ref.to_dict() for ref in advisory_data1.references],
+    url=advisory_data1.url,
+    created_by="tests",
+    date_collected=timezone.now(),
+)
+
+
+def get_all_vulnerability_relationships_objects():
+    return {
+        "vulnerabilities": list(models.Vulnerability.objects.all()),
+        "aliases": list(models.Alias.objects.all()),
+        "references": list(models.VulnerabilityReference.objects.all()),
+        "advisories": list(models.Advisory.objects.all()),
+        "packages": list(models.Package.objects.all()),
+        "references": list(models.VulnerabilityReference.objects.all()),
+        "severity": list(models.VulnerabilitySeverity.objects.all()),
+    }

@@ -52,12 +52,17 @@ class VulnerabilitySeverity:
     system: ScoringSystem
     value: str
     scoring_elements: str = ""
+    published_at: Optional[datetime.datetime] = None
 
     def to_dict(self):
+        published_at_dict = (
+            {"published_at": self.published_at.isoformat()} if self.published_at else {}
+        )
         return {
             "system": self.system.identifier,
             "value": self.value,
             "scoring_elements": self.scoring_elements,
+            **published_at_dict,
         }
 
     @classmethod
@@ -70,12 +75,14 @@ class VulnerabilitySeverity:
             system=SCORING_SYSTEMS[severity["system"]],
             value=severity["value"],
             scoring_elements=severity.get("scoring_elements", ""),
+            published_at=severity.get("published_at"),
         )
 
 
 @dataclasses.dataclass(order=True)
 class Reference:
     reference_id: str = ""
+    reference_type: str = ""
     url: str = ""
     severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
 
@@ -85,11 +92,17 @@ class Reference:
 
     def normalized(self):
         severities = sorted(self.severities)
-        return Reference(reference_id=self.reference_id, url=self.url, severities=severities)
+        return Reference(
+            reference_id=self.reference_id,
+            url=self.url,
+            severities=severities,
+            reference_type=self.reference_type,
+        )
 
     def to_dict(self):
         return {
             "reference_id": self.reference_id,
+            "reference_type": self.reference_type,
             "url": self.url,
             "severities": [severity.to_dict() for severity in self.severities],
         }
@@ -98,6 +111,7 @@ class Reference:
     def from_dict(cls, ref: dict):
         return cls(
             reference_id=ref["reference_id"],
+            reference_type=ref["reference_type"],
             url=ref["url"],
             severities=[
                 VulnerabilitySeverity.from_dict(severity) for severity in ref["severities"]

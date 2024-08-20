@@ -80,6 +80,7 @@
   "references": [
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/aspnet/Announcements/issues/359",
       "severities": []
     }

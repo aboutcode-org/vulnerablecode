@@ -22,36 +22,43 @@
     "references": [
       {
         "reference_id": "CVE-2014-9356",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-9356",
         "severities": []
       },
       {
         "reference_id": "CVE-2014-9356",
+        "reference_type": "",
         "url": "https://access.redhat.com/security/cve/cve-2014-9356",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://bugzilla.redhat.com/show_bug.cgi?id=1172761",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://groups.google.com/forum/#%21msg/docker-user/nFAz-B-n4Bw/0wr3wvLsnUwJ",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2014-9356",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "http://www.securityfocus.com/archive/1/archive/1/534215/100/0/threaded",
         "severities": []
       },
       {
         "reference_id": "GHSA-vj3f-3286-r4pf",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-vj3f-3286-r4pf",
         "severities": [
           {
@@ -89,36 +96,43 @@
     "references": [
       {
         "reference_id": "CVE-2014-9356",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-9356",
         "severities": []
       },
       {
         "reference_id": "CVE-2014-9356",
+        "reference_type": "",
         "url": "https://access.redhat.com/security/cve/cve-2014-9356",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://bugzilla.redhat.com/show_bug.cgi?id=1172761",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://groups.google.com/forum/#%21msg/docker-user/nFAz-B-n4Bw/0wr3wvLsnUwJ",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2014-9356",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "http://www.securityfocus.com/archive/1/archive/1/534215/100/0/threaded",
         "severities": []
       },
       {
         "reference_id": "GHSA-vj3f-3286-r4pf",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-vj3f-3286-r4pf",
         "severities": [
           {
@@ -156,6 +170,7 @@
     "references": [
       {
         "reference_id": "GHSA-2hfj-cxw7-g45p",
+        "reference_type": "",
         "url": "https://github.com/owncast/owncast/security/advisories/GHSA-2hfj-cxw7-g45p",
         "severities": [
           {
@@ -167,11 +182,13 @@
       },
       {
         "reference_id": "CVE-2021-39183",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-39183",
         "severities": []
       },
       {
         "reference_id": "GHSA-2hfj-cxw7-g45p",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-2hfj-cxw7-g45p",
         "severities": [
           {

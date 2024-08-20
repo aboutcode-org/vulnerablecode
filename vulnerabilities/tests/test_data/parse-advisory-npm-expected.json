@@ -21,6 +21,7 @@
     "references": [
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/npm/npm/issues/3635",
         "severities": [
           {
@@ -32,6 +33,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "http://www.openwall.com/lists/oss-security/2013/07/10/17",
         "severities": [
           {
@@ -43,6 +45,7 @@
       },
       {
         "reference_id": 152,
+        "reference_type": "",
         "url": "https://github.com/nodejs/security-wg/blob/main/vuln/npm/152.json",
         "severities": [
           {

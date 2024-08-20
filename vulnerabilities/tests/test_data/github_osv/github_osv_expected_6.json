@@ -20,6 +20,7 @@
   "references": [
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/Consensys/gnark-crypto/security/advisories/GHSA-pffg-92cg-xf5c",
       "severities": [
         {
@@ -31,6 +32,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/Consensys/gnark-crypto/pull/213",
       "severities": [
         {
@@ -42,6 +44,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/Consensys/gnark-crypto/pull/451",
       "severities": [
         {
@@ -53,6 +56,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/Consensys/gnark-crypto/commit/ec6be1a037f7c496d595c541a8a8d31c47bcfa3d",
       "severities": [
         {
@@ -64,6 +68,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://eprint.iacr.org/2015/565",
       "severities": [
         {
@@ -75,6 +80,7 @@
     },
     {
       "reference_id": "",
+      "reference_type": "",
       "url": "https://github.com/Consensys/gnark-crypto",
       "severities": [
         {

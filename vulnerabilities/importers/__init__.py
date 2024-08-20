@@ -16,6 +16,7 @@ from vulnerabilities.importers import archlinux
 from vulnerabilities.importers import debian
 from vulnerabilities.importers import debian_oval
 from vulnerabilities.importers import elixir_security
+from vulnerabilities.importers import epss
 from vulnerabilities.importers import fireeye
 from vulnerabilities.importers import gentoo
 from vulnerabilities.importers import github
@@ -38,6 +39,7 @@ from vulnerabilities.importers import ruby
 from vulnerabilities.importers import suse_scores
 from vulnerabilities.importers import ubuntu
 from vulnerabilities.importers import ubuntu_usn
+from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
 
 IMPORTERS_REGISTRY = [
@@ -73,6 +75,8 @@ IMPORTERS_REGISTRY = [
     ruby.RubyImporter,
     github_osv.GithubOSVImporter,
     almalinux.AlmaImporter,
+    epss.EPSSImporter,
+    vulnrichment.VulnrichImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

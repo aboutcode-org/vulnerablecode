@@ -42,6 +42,7 @@ from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import AlpineLinuxVersionRange
 from univers.versions import Version
 
+from aboutcode import hashid
 from vulnerabilities import utils
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import normalize_purl
@@ -266,9 +267,9 @@ class Vulnerability(models.Model):
         """
         Return this Package details URL.
         """
-        from rest_framework.reverse import reverse
+        from rest_framework.reverse import reverse as reved
 
-        return reverse(
+        return reved(
             "vulnerability_details",
             kwargs={"vulnerability_id": self.vulnerability_id},
             request=request,

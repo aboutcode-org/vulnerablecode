@@ -62,6 +62,18 @@ VulnerableCode Package Details - {{ package.purl }}
                                         {{ fixed_package_details.purl.to_string }}
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td class="two-col-left">
+                                        <span
+                                            class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                            data-tooltip="The package url or purl is a URL string used to identify and locate a software package.">
+                                            status
+                                        </span>
+                                    </td>
+                                    <td class="two-col-right">
+                                        {{ package.get_status_display }}
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

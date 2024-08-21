@@ -591,6 +591,13 @@ class Package(PackageURLMixin):
     # https://github.com/package-url/packageurl-python/pull/35
     # https://github.com/package-url/packageurl-python/pull/67
     # gets merged
+    STATUS_CHOICES = [
+        ("malicious", "Malicious Package"),
+        ("ghost", "Ghost Package"),
+        ("yanked", "Yanked Package"),
+        ("valid", "Valid Package"),
+        ("unknown", "Unknown"),
+    ]
 
     vulnerabilities = models.ManyToManyField(
         to="Vulnerability", through="PackageRelatedVulnerability"
@@ -607,6 +614,14 @@ class Package(PackageURLMixin):
         max_length=1000,
         null=False,
         help_text="The Package URL for this package without qualifiers and subpath.",
+        db_index=True,
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="unknown",
+        help_text="The status of the package, malicious, ghost, yanked, valid or unknown.",
         db_index=True,
     )
 
@@ -1442,7 +1457,7 @@ class Kev(models.Model):
 
     known_ransomware_campaign_use = models.BooleanField(
         default=False,
-        help_text="""Known if this vulnerability is known to have been leveraged as part of a ransomware campaign;
+        help_text="""Known if this vulnerability is known to have been leveraged as part of a ransomware campaign; 
         or 'Unknown' if CISA lacks confirmation that the vulnerability has been utilized for ransomware.""",
     )
 

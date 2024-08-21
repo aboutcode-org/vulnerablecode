@@ -1,0 +1,7 @@
+about_resource: __init__.py
+notes: the base32_custom() function is derived from Python base64.py _b32encode function
+download_url: https://github.com/python/cpython/blob/77133f570dcad599e5b1199c39e999bfac959ae2/Lib/base64.py#L164
+purl: pkg:github.com/python/cpython@77133f570dcad599e5b1199c39e999bfac959ae2#/Lib/base64.py
+license_expression_spdx: Python-2.0
+license_expression: python
+copyright: Copyright (c) The Python Software Foundation

@@ -256,6 +256,7 @@ class APITestCaseVulnerability(TransactionTestCase):
             "url": f"http://testserver/api/vulnerabilities/{self.vulnerability.id}",
             "vulnerability_id": self.vulnerability.vulnerability_id,
             "summary": "test",
+            "severity_range_score": None,
             "aliases": [],
             "resource_url": f"http://testserver/vulnerabilities/{self.vulnerability.vulnerability_id}",
             "fixed_packages": [
@@ -307,6 +308,7 @@ class APITestCaseVulnerability(TransactionTestCase):
             "url": f"http://testserver/api/vulnerabilities/{self.vulnerability.id}",
             "vulnerability_id": self.vulnerability.vulnerability_id,
             "summary": "test",
+            "severity_range_score": None,
             "aliases": [],
             "resource_url": f"http://testserver/vulnerabilities/{self.vulnerability.vulnerability_id}",
             "fixed_packages": [

@@ -62,18 +62,21 @@ VulnerableCode Package Details - {{ package.purl }}
                                         {{ fixed_package_details.purl.to_string }}
                                     </td>
                                 </tr>
+                                {% if package.is_ghost %}
                                 <tr>
                                     <td class="two-col-left">
-                                        <span
-                                            class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                            data-tooltip="The status of the package can be Malicious, Ghost, Yanked, Valid, or Unknown.">
-                                            status
-                                        </span>
+                                        Tags
                                     </td>
                                     <td class="two-col-right">
-                                        {{ package.get_status_display }}
+                                        <span
+                                            class="tag is-warning is-hoverablem has-tooltip-multiline has-tooltip-black"
+                                            data-tooltip="This package does not exist in the upstream package manager or its repository."
+                                            style="margin-right: 8px;">
+                                            Ghost
+                                        </span>
                                     </td>
                                 </tr>
+                                {% endif %}
                             </tbody>
                         </table>
                     </div>

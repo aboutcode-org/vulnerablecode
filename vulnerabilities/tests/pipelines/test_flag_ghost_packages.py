@@ -36,7 +36,7 @@ class FlagGhostPackagePipelineTest(TestCase):
 
         self.assertEqual(0, Package.objects.filter(is_ghost=True).count())
 
-        flagged_package_count = flag_ghost_packages.flag_ghost_package(
+        flagged_package_count = flag_ghost_packages.flag_ghost_packages(
             base_purl=base_purl,
             packages=interesting_packages_qs,
         )

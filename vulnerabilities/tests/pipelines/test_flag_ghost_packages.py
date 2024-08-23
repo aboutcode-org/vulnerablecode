@@ -7,15 +7,17 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import io
+
 from pathlib import Path
 from unittest import mock
 
 from django.test import TestCase
 from fetchcode.package_versions import PackageVersion
+from packageurl import PackageURL
 
 from vulnerabilities.models import Package
 from vulnerabilities.pipelines import flag_ghost_packages
+from vulnerabilities.tests.pipelines import TestLogger
 
 
 class FlagGhostPackagePipelineTest(TestCase):
@@ -30,20 +32,16 @@ class FlagGhostPackagePipelineTest(TestCase):
             PackageVersion(value="2.3.0"),
         ]
         interesting_packages_qs = Package.objects.all()
-        target_package = {
-            "type": "pypi",
-            "namespace": "",
-            "name": "foo",
-        }
+        base_purl = PackageURL(type="pypi", name="foo")
 
-        self.assertEqual(0, Package.objects.filter(status="ghost").count())
+        self.assertEqual(0, Package.objects.filter(is_ghost=True).count())
 
         flagged_package_count = flag_ghost_packages.flag_ghost_package(
-            package_dict=target_package,
-            interesting_packages_qs=interesting_packages_qs,
+            base_purl=base_purl,
+            packages=interesting_packages_qs,
         )
         self.assertEqual(1, flagged_package_count)
-        self.assertEqual(1, Package.objects.filter(status="ghost").count())
+        self.assertEqual(1, Package.objects.filter(is_ghost=True).count())
 
     @mock.patch("vulnerabilities.pipelines.flag_ghost_packages.versions")
     def test_detect_and_flag_ghost_packages(self, mock_fetchcode_versions):
@@ -62,11 +60,12 @@ class FlagGhostPackagePipelineTest(TestCase):
         ]
 
         self.assertEqual(3, Package.objects.count())
-        self.assertEqual(0, Package.objects.filter(status="ghost").count())
+        self.assertEqual(0, Package.objects.filter(is_ghost=True).count())
 
-        buffer = io.StringIO()
-        flag_ghost_packages.detect_and_flag_ghost_packages(logger=buffer.write)
+        logger = TestLogger()
+
+        flag_ghost_packages.detect_and_flag_ghost_packages(logger=logger.write)
         expected = "Successfully flagged 1 ghost Packages"
 
-        self.assertIn(expected, buffer.getvalue())
-        self.assertEqual(1, Package.objects.filter(status="ghost").count())
+        self.assertIn(expected, logger.getvalue())
+        self.assertEqual(1, Package.objects.filter(is_ghost=True).count())

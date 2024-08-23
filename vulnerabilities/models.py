@@ -712,6 +712,47 @@ class Package(PackageURLMixin):
         return self.version_class(self.version)
 
     @property
+    def next_non_vulnerable_version(self):
+        """
+        Return the version string of the next non-vulnerable package version.
+        """
+        next_non_vulnerable, _ = self.get_non_vulnerable_versions()
+        return next_non_vulnerable.version if next_non_vulnerable else None
+
+    @property
+    def latest_non_vulnerable_version(self):
+        """
+        Return the version string of the latest non-vulnerable package version.
+        """
+        _, latest_non_vulnerable = self.get_non_vulnerable_versions()
+        return latest_non_vulnerable.version if latest_non_vulnerable else None
+
+    def get_non_vulnerable_versions(self):
+        """
+        Return a tuple of the next and latest non-vulnerable versions as PackageURL objects.
+        Return a tuple of (None, None) if there is no non-vulnerable version.
+        """
+        non_vulnerable_versions = Package.objects.get_fixed_by_package_versions(
+            self, fix=False
+        ).only_non_vulnerable()
+        sorted_versions = self.sort_by_version(non_vulnerable_versions)
+
+        later_non_vulnerable_versions = [
+            non_vuln_ver
+            for non_vuln_ver in sorted_versions
+            if self.version_class(non_vuln_ver.version) > self.current_version
+        ]
+
+        if later_non_vulnerable_versions:
+            sorted_versions = self.sort_by_version(later_non_vulnerable_versions)
+            next_non_vulnerable_version = sorted_versions[0]
+            latest_non_vulnerable_version = sorted_versions[-1]
+
+            return next_non_vulnerable_version, latest_non_vulnerable_version
+
+        return None, None
+
+    @property
     def fixed_package_details(self):
         """
         Return a mapping of vulnerabilities that affect this package and the next and
@@ -826,6 +867,20 @@ class Package(PackageURLMixin):
         Return a queryset of Vulnerabilities that affect this `package`.
         """
         return self.vulnerabilities.filter(packagerelatedvulnerability__fix=False)
+
+    @property
+    def affecting_vulns(self):
+        """
+        Return a queryset of Vulnerabilities that affect this `package`.
+        """
+        fixed_by_packages = Package.objects.get_fixed_by_package_versions(self, fix=True)
+        return self.vulnerabilities.affecting_vulnerabilities().prefetch_related(
+            Prefetch(
+                "packages",
+                queryset=fixed_by_packages,
+                to_attr="fixed_packages",
+            )
+        )
 
 
 class PackageRelatedVulnerability(models.Model):

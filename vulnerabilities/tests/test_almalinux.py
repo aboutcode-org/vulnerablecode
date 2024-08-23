@@ -10,8 +10,6 @@ import json
 import os
 from unittest import TestCase
 
-from vulnerabilities.importers.almalinux import get_affected_purl
-from vulnerabilities.importers.almalinux import get_fixed_versions
 from vulnerabilities.importers.almalinux import parse_advisory_data
 from vulnerabilities.tests import util_tests
 
@@ -44,7 +42,7 @@ class AlmaImporter(TestCase):
         result = imported_data.to_dict()
         util_tests.check_results_against_json(result, expected_file)
 
-    def test_github_osv_importer3(self):
+    def test_almalinux_importer3(self):
         with open(os.path.join(TEST_DATA, "almalinux_test_3.json")) as f:
             mock_response = json.load(f)
         expected_file = os.path.join(TEST_DATA, "almalinux_expected_3.json")

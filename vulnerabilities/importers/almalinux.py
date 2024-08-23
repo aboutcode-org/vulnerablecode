@@ -65,6 +65,53 @@ class AlmaImporter(Importer):
 
 
 def parse_advisory_data(raw_data, advisory_url) -> Optional[AdvisoryData]:
+    """
+    Parse Alma Linux advisory data and convert it into an AdvisoryData object.
+
+    Args:
+        raw_data (dict): A dictionary containing raw advisory information.
+        advisory_url (str): The URL to the advisory.
+
+    Returns:
+        AdvisoryData: An instance of AdvisoryData with processed information, or
+        None if the data cannot be parsed correctly.
+
+    Example:
+        >>> raw_data = {
+        ...     "id": "ALBA-2020:4512",
+        ...     "summary": "libteam bug fix and enhancement update",
+        ...     "details": "For detailed information on changes in this release, see the AlmaLinux Release Notes linked from the References section.",
+        ...     "published": "2020-11-03T12:11:24Z",
+        ...     "affected": [
+        ...         {
+        ...             "package": {
+        ...                 "ecosystem": "AlmaLinux:8",
+        ...                 "name": "libteam"
+        ...             },
+        ...             "ranges": [
+        ...                 {
+        ...                     "type": "ECOSYSTEM",
+        ...                     "events": [
+        ...                         {"introduced": "0"},
+        ...                         {"fixed": "1.31-2.el8"}
+        ...                     ]
+        ...                 }
+        ...             ]
+        ...         }
+        ...     ],
+        ...     "references": [
+        ...         {
+        ...             "url": "https://errata.almalinux.org/8/ALBA-2020-4512.html",
+        ...             "type": "ADVISORY"
+        ...         }
+        ...     ]
+        ... }
+        >>> advisory_url = "https://github.com/AlmaLinux/osv-database/blob/master/advisories/almalinux/example_advisory.json"
+        >>> advisory = parse_advisory_data(raw_data, advisory_url).to_dict()
+        >>> print(advisory)
+        {'aliases': ['ALBA-2020:4512'], 'summary': 'libteam bug fix and enhancement update\\nFor detailed information on changes in this release, see the AlmaLinux Release Notes linked from the References section.', 'affected_packages': [{'package': {'type': 'rpm', 'namespace': 'almalinux', 'name': 'libteam', 'version': '', 'qualifiers': '', 'subpath': ''}, 'affected_version_range': None, 'fixed_version': '1.31-2.el8'}], 'references': [{'reference_id': '', 'reference_type': '', 'url': 'https://errata.almalinux.org/8/ALBA-2020-4512.html', 'severities': []}], 'date_published': '2020-11-03T12:11:24+00:00', 'weaknesses': [], 'url': 'https://github.com/AlmaLinux/osv-database/blob/master/advisories/almalinux/example_advisory.json'}
+    """
+
     raw_id = raw_data.get("id") or ""
     summary = raw_data.get("summary") or ""
     details = raw_data.get("details") or ""

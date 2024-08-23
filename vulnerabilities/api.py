@@ -9,10 +9,12 @@
 
 from urllib.parse import unquote
 
+from cvss.exceptions import CVSS2MalformedError
+from cvss.exceptions import CVSS3MalformedError
+from cvss.exceptions import CVSS4MalformedError
 from django.db.models import Prefetch
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
-from drf_spectacular.utils import inline_serializer
 from packageurl import PackageURL
 from packageurl import normalize_qualifiers
 from rest_framework import serializers
@@ -32,7 +34,10 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 from vulnerabilities.models import get_purl_query_lookups
+from vulnerabilities.severity_systems import EPSS
+from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.throttling import StaffUserRateThrottle
+from vulnerabilities.utils import get_severity_range
 
 
 class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
@@ -186,6 +191,7 @@ class VulnerabilitySerializer(BaseResourceSerializer):
     aliases = AliasSerializer(many=True, source="alias")
     kev = KEVSerializer(read_only=True)
     weaknesses = WeaknessSerializer(many=True)
+    severity_range_score = serializers.SerializerMethodField()
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -199,6 +205,30 @@ class VulnerabilitySerializer(BaseResourceSerializer):
 
         return data
 
+    def get_severity_range_score(self, instance):
+        severity_vectors = []
+        severity_values = set()
+        for s in instance.severities:
+            if s.scoring_system == EPSS.identifier:
+                continue
+
+            if s.scoring_elements and s.scoring_system in SCORING_SYSTEMS:
+                try:
+                    vector_values = SCORING_SYSTEMS[s.scoring_system].get(s.scoring_elements)
+                    severity_vectors.append(vector_values)
+                except (
+                    CVSS2MalformedError,
+                    CVSS3MalformedError,
+                    CVSS4MalformedError,
+                    NotImplementedError,
+                ):
+                    pass
+
+            if s.value:
+                severity_values.add(s.value)
+        severity_range = get_severity_range(severity_values)
+        return severity_range
+
     class Meta:
         model = Vulnerability
         fields = [
@@ -211,6 +241,7 @@ class VulnerabilitySerializer(BaseResourceSerializer):
             "references",
             "weaknesses",
             "kev",
+            "severity_range_score",
         ]
 
 

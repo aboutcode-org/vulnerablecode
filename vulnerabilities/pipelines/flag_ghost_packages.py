@@ -69,6 +69,7 @@ def flag_ghost_package(base_purl, packages, logger=None):
     """
     Check if `packages` are available upstream.
     If not, update `is_ghost` to `True`.
+    Return the number of packages flagged as ghost.
     """
     if not base_purl.type in RANGE_CLASS_BY_SCHEMES:
         return 0

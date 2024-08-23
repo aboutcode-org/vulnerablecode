@@ -87,29 +87,23 @@ class BaseResourceSerializer(serializers.HyperlinkedModelSerializer):
         return resource_url
 
 
+class VulnVulnIDSerializer(serializers.Serializer):
+    """
+    Serializer for the series of vulnerability IDs.
+    """
+
+    vulnerability = serializers.CharField(source="vulnerability_id")
+
+    class Meta:
+        fields = ["vulnerability"]
+
+
 class MinimalPackageSerializer(BaseResourceSerializer):
     """
     Used for nesting inside vulnerability focused APIs.
     """
 
-    def get_affected_vulnerabilities(self, package):
-        parent_affected_vulnerabilities = package.fixed_package_details.get("vulnerabilities") or []
-
-        affected_vulnerabilities = [
-            self.get_vulnerability(vuln) for vuln in parent_affected_vulnerabilities
-        ]
-
-        return affected_vulnerabilities
-
-    def get_vulnerability(self, vuln):
-        affected_vulnerability = {}
-
-        vulnerability = vuln.get("vulnerability")
-        if vulnerability:
-            affected_vulnerability["vulnerability"] = vulnerability.vulnerability_id
-            return affected_vulnerability
-
-    affected_by_vulnerabilities = serializers.SerializerMethodField("get_affected_vulnerabilities")
+    affected_by_vulnerabilities = VulnVulnIDSerializer(source="affecting_vulns", many=True)
 
     purl = serializers.CharField(source="package_url")
 
@@ -145,18 +139,17 @@ class VulnSerializerRefsAndSummary(BaseResourceSerializer):
     Lookup vulnerabilities references by aliases (such as a CVE).
     """
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        aliases = [alias["alias"] for alias in data["aliases"]]
-        data["aliases"] = aliases
-        return data
-
     fixed_packages = MinimalPackageSerializer(
         many=True, source="filtered_fixed_packages", read_only=True
     )
 
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
-    aliases = AliasSerializer(many=True, source="alias")
+
+    aliases = serializers.SerializerMethodField()
+
+    def get_aliases(self, obj):
+        # Assuming `obj.aliases` is a queryset of `Alias` objects
+        return [alias.alias for alias in obj.aliases.all()]
 
     class Meta:
         model = Vulnerability
@@ -257,25 +250,8 @@ class PackageSerializer(BaseResourceSerializer):
     Lookup software package using Package URLs
     """
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data["qualifiers"] = normalize_qualifiers(data["qualifiers"], encode=False)
-
-        return data
-
-    next_non_vulnerable_version = serializers.SerializerMethodField("get_next_non_vulnerable")
-
-    def get_next_non_vulnerable(self, package):
-        next_non_vulnerable = package.fixed_package_details.get("next_non_vulnerable", None)
-        if next_non_vulnerable:
-            return next_non_vulnerable.version
-
-    latest_non_vulnerable_version = serializers.SerializerMethodField("get_latest_non_vulnerable")
-
-    def get_latest_non_vulnerable(self, package):
-        latest_non_vulnerable = package.fixed_package_details.get("latest_non_vulnerable", None)
-        if latest_non_vulnerable:
-            return latest_non_vulnerable.version
+    next_non_vulnerable_version = serializers.CharField(read_only=True)
+    latest_non_vulnerable_version = serializers.CharField(read_only=True)
 
     purl = serializers.CharField(source="package_url")
 
@@ -283,7 +259,12 @@ class PackageSerializer(BaseResourceSerializer):
 
     fixing_vulnerabilities = serializers.SerializerMethodField("get_fixing_vulnerabilities")
 
+    qualifiers = serializers.SerializerMethodField()
+
     is_vulnerable = serializers.BooleanField()
+
+    def get_qualifiers(self, package):
+        return normalize_qualifiers(package.qualifiers, encode=False)
 
     def get_fixed_packages(self, package):
         """
@@ -367,8 +348,6 @@ class PackageSerializer(BaseResourceSerializer):
             "affected_by_vulnerabilities",
             "fixing_vulnerabilities",
         ]
-
-    is_vulnerable = serializers.BooleanField()
 
 
 class PackageFilterSet(filters.FilterSet):

@@ -287,6 +287,9 @@ if not VULNERABLECODEIO_REQUIRE_AUTHENTICATION:
 
 
 if DEBUG_TOOLBAR:
+    # Uncomment this to get pyinstrument profiles
+    # PYINSTRUMENT_PROFILE_DIR = "profiles"
+
     INSTALLED_APPS += ("debug_toolbar",)
 
     MIDDLEWARE += (

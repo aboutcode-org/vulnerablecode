@@ -1,6 +1,14 @@
 Release notes
 =============
 
+Version v34.0.0
+-------------------
+
+- Improve API performance.
+- Add severity range score in API.
+- Refactor GitlabDataSource to work with browser extension
+
+
 Version v34.0.0rc5
 -------------------
 

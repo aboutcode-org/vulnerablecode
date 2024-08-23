@@ -9,6 +9,9 @@
 
 from urllib.parse import unquote
 
+from cvss.exceptions import CVSS2MalformedError
+from cvss.exceptions import CVSS3MalformedError
+from cvss.exceptions import CVSS4MalformedError
 from django.db.models import Prefetch
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
@@ -31,12 +34,10 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 from vulnerabilities.models import get_purl_query_lookups
-from vulnerabilities.severity_systems import EPSS, SCORING_SYSTEMS
+from vulnerabilities.severity_systems import EPSS
+from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.throttling import StaffUserRateThrottle
 from vulnerabilities.utils import get_severity_range
-from cvss.exceptions import CVSS2MalformedError
-from cvss.exceptions import CVSS3MalformedError
-from cvss.exceptions import CVSS4MalformedError
 
 
 class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
@@ -197,7 +198,7 @@ class VulnerabilitySerializer(BaseResourceSerializer):
     aliases = AliasSerializer(many=True, source="alias")
     kev = KEVSerializer(read_only=True)
     weaknesses = WeaknessSerializer(many=True)
-    severity_range_score = serializers.SerializerMethodField() 
+    severity_range_score = serializers.SerializerMethodField()
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -210,7 +211,7 @@ class VulnerabilitySerializer(BaseResourceSerializer):
             data.pop("kev")
 
         return data
-    
+
     def get_severity_range_score(self, instance):
         severity_vectors = []
         severity_values = set()

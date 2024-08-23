@@ -15,7 +15,6 @@ from aboutcode.pipeline import LoopProgress
 from fetchcode.package_versions import SUPPORTED_ECOSYSTEMS as FETCHCODE_SUPPORTED_ECOSYSTEMS
 from fetchcode.package_versions import versions
 from packageurl import PackageURL
-from univers.version_range import RANGE_CLASS_BY_SCHEMES
 
 from vulnerabilities.models import Package
 from vulnerabilities.pipelines import VulnerableCodePipeline
@@ -55,7 +54,7 @@ def detect_and_flag_ghost_packages(logger=None):
     ghost_package_count = 0
     progress = LoopProgress(total_iterations=distinct_packages_count, logger=logger)
     for type_namespace_name, packages in progress.iter(grouped_packages):
-        ghost_package_count += flag_ghost_package(
+        ghost_package_count += flag_ghost_packages(
             base_purl=PackageURL(*type_namespace_name),
             packages=packages,
             logger=logger,
@@ -65,25 +64,21 @@ def detect_and_flag_ghost_packages(logger=None):
         logger(f"Successfully flagged {ghost_package_count:,d} ghost Packages")
 
 
-def flag_ghost_package(base_purl, packages, logger=None):
+def flag_ghost_packages(base_purl, packages, logger=None):
     """
     Check if `packages` are available upstream.
     If not, update `is_ghost` to `True`.
     Return the number of packages flagged as ghost.
     """
-    if not base_purl.type in RANGE_CLASS_BY_SCHEMES:
-        return 0
-
     known_versions = get_versions(purl=base_purl, logger=logger)
     # Skip if encounter error while fetching known versions
     if known_versions is None:
         return 0
 
     ghost_packages = 0
-    version_class = RANGE_CLASS_BY_SCHEMES[base_purl.type].version_class
     for pkg in packages:
         pkg.is_ghost = False
-        if version_class(pkg.version) not in known_versions:
+        if pkg.version.lstrip("vV") not in known_versions:
             pkg.is_ghost = True
             ghost_packages += 1
 
@@ -96,10 +91,8 @@ def flag_ghost_package(base_purl, packages, logger=None):
 
 def get_versions(purl, logger=None):
     """Return set of known versions for the given purl."""
-    version_class = RANGE_CLASS_BY_SCHEMES[purl.type].version_class
-
     try:
-        return {version_class(v.value) for v in versions(str(purl))}
+        return {v.value.lstrip("vV") for v in versions(str(purl))}
     except Exception as e:
         if logger:
             logger(

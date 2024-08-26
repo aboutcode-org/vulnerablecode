@@ -316,6 +316,10 @@ class Weakness(models.Model):
     db = Database()
 
     @property
+    def cwe(self):
+        return f"CWE-{self.cwe_id}"
+
+    @property
     def weakness(self):
         """
         Return a queryset of Weakness for this vulnerability.

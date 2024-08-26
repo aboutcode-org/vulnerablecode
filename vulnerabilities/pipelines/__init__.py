@@ -10,6 +10,7 @@
 import logging
 from datetime import datetime
 from datetime import timezone
+from traceback import format_exc as traceback_format_exc
 from typing import Iterable
 
 from aboutcode.pipeline import BasePipeline
@@ -124,6 +125,6 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
             )
         except Exception as e:
             self.log(
-                f"Failed to process advisory: {advisory!r} with error {e!r}",
+                f"Failed to import advisory: {advisory!r} with error {e!r}:\n{traceback_format_exc()}",
                 level=logging.ERROR,
             )

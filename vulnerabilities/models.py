@@ -817,16 +817,18 @@ class Package(PackageURLMixin):
     @property
     def fixing_vulnerabilities(self):
         """
-        Return a queryset of Vulnerabilities that are fixed by this `package`.
+        Return a queryset of Vulnerabilities that are fixed by this package.
         """
         return self.vulnerabilities.filter(packagerelatedvulnerability__fix=True)
 
     @property
-    def affecting_vulnerabilities(self):
+    def affected_by_vulnerabilities(self):
         """
-        Return a queryset of Vulnerabilities that affect this `package`.
+        Return a queryset of Vulnerabilities that affect this package.
         """
         return self.vulnerabilities.filter(packagerelatedvulnerability__fix=False)
+
+    affecting_vulnerabilities = affected_by_vulnerabilities
 
 
 class PackageRelatedVulnerability(models.Model):

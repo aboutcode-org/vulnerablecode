@@ -10,6 +10,7 @@
 import hashlib
 import json
 import logging
+import typing
 from contextlib import suppress
 from functools import cached_property
 from typing import Optional
@@ -522,7 +523,13 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         """
         Return a queryset matching the ``purl`` Package URL.
         """
-        return self.filter(**purl_to_dict(purl))
+        return self.filter(package_url=purl)
+
+    def for_purls(self, purls=()):
+        """
+        Return a queryset of Packages matching a list of PURLs.
+        """
+        return self.filter(package_url__in=purls).distinct()
 
     def with_cpes(self):
         """
@@ -532,24 +539,21 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
 
     def for_cpe(self, cpe):
         """
-        Return a queryset of Vulnerability that have the ``cpe`` as an NVD CPE reference.
+        Return a queryset of Packages that have the ``cpe`` as an NVD CPE reference.
         """
         return self.filter(vulnerabilities__vulnerabilityreference__reference_id__exact=cpe)
 
     def with_cves(self):
         """
-        Return a queryset of Vulnerability that have one or more NVD CVE aliases.
+        Return a queryset of Packages that have one or more NVD CVE aliases.
         """
         return self.filter(vulnerabilities__aliases__alias__startswith="CVE")
 
     def for_cve(self, cve):
         """
-        Return a queryset of Vulnerability that have the the NVD CVE ``cve`` as an alias.
+        Return a queryset of Packages that have the NVD CVE ``cve`` as a vulnerability alias.
         """
-        return self.filter(vulnerabilities__vulnerabilityreference__reference_id__exact=cve)
-
-    def for_purls(self, purls=[]):
-        return Package.objects.filter(package_url__in=purls).distinct()
+        return self.filter(vulnerabilities__aliases__alias=cve)
 
     def with_is_vulnerable(self):
         """

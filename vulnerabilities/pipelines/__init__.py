@@ -18,7 +18,8 @@ from aboutcode.pipeline import LoopProgress
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
-from vulnerabilities.pipes import advisory
+from vulnerabilities.pipes.advisory import import_advisory
+from vulnerabilities.pipes.advisory import insert_advisory
 from vulnerabilities.utils import classproperty
 
 module_logger = logging.getLogger(__name__)
@@ -85,7 +86,7 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
         collected_advisory_count = 0
         progress = LoopProgress(total_iterations=self.advisories_count(), logger=self.log)
         for advisory in progress.iter(self.collect_advisories()):
-            if _obj := advisory.insert_advisory(
+            if _obj := insert_advisory(
                 advisory=advisory,
                 pipeline_name=self.qualified_name,
                 logger=self.log,
@@ -115,7 +116,7 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
 
     def import_advisory(self, advisory: Advisory) -> int:
         try:
-            advisory.import_advisory(
+            import_advisory(
                 advisory=advisory,
                 pipeline_name=self.qualified_name,
                 confidence=self.advisory_confidence,

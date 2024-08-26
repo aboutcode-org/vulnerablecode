@@ -31,15 +31,16 @@ advisory_data1 = AdvisoryData(
 )
 
 
-advisory1 = models.Advisory(
-    aliases=advisory_data1.aliases,
-    summary=advisory_data1.summary,
-    affected_packages=[pkg.to_dict() for pkg in advisory_data1.affected_packages],
-    references=[ref.to_dict() for ref in advisory_data1.references],
-    url=advisory_data1.url,
-    created_by="tests",
-    date_collected=timezone.now(),
-)
+def get_advisory1(created_by="test_pipeline"):
+    return models.Advisory.objects.create(
+        aliases=advisory_data1.aliases,
+        summary=advisory_data1.summary,
+        affected_packages=[pkg.to_dict() for pkg in advisory_data1.affected_packages],
+        references=[ref.to_dict() for ref in advisory_data1.references],
+        url=advisory_data1.url,
+        created_by=created_by,
+        date_collected=timezone.now(),
+    )
 
 
 def get_all_vulnerability_relationships_objects():

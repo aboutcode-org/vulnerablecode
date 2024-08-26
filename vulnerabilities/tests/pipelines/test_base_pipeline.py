@@ -13,8 +13,8 @@ from django.test import TestCase
 
 from vulnerabilities import models
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
-from vulnerabilities.tests import advisory1
 from vulnerabilities.tests import advisory_data1
+from vulnerabilities.tests import get_advisory1
 
 
 class TestVulnerableCodeBaseImporterPipeline(TestCase):
@@ -50,7 +50,7 @@ class TestVulnerableCodeBaseImporterPipeline(TestCase):
         self.assertEqual(0, models.Vulnerability.objects.count())
 
         base_pipeline = VulnerableCodeBaseImporterPipeline()
-        base_pipeline.new_advisories = [advisory1]
+        advisory1 = get_advisory1(created_by=base_pipeline.qualified_name)
         base_pipeline.import_new_advisories()
 
         self.assertEqual(1, models.Vulnerability.objects.count())

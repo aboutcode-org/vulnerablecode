@@ -10,7 +10,6 @@
 import logging
 from datetime import datetime
 from datetime import timezone
-from traceback import format_exc as traceback_format_exc
 from typing import Iterable
 
 from aboutcode.pipeline import BasePipeline
@@ -18,8 +17,8 @@ from aboutcode.pipeline import LoopProgress
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.improver import MAX_CONFIDENCE
-from vulnerabilities.pipes.importer import import_advisory
-from vulnerabilities.pipes.importer import insert_advisory
+from vulnerabilities.models import Advisory
+from vulnerabilities.pipes import advisory
 from vulnerabilities.utils import classproperty
 
 module_logger = logging.getLogger(__name__)
@@ -83,38 +82,40 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
         raise NotImplementedError
 
     def collect_and_store_advisories(self):
-        self.new_advisories = []
-
         collected_advisory_count = 0
         progress = LoopProgress(total_iterations=self.advisories_count(), logger=self.log)
         for advisory in progress.iter(self.collect_advisories()):
-            new_advisory = insert_advisory(
+            if _obj := advisory.insert_advisory(
                 advisory=advisory,
                 pipeline_name=self.qualified_name,
                 logger=self.log,
-            )
-            if new_advisory:
-                self.new_advisories.append(new_advisory)
-            collected_advisory_count += 1
+            ):
+                collected_advisory_count += 1
 
         self.log(f"Successfully collected {collected_advisory_count:,d} advisories")
 
     def import_new_advisories(self):
-        new_advisories_count = len(self.new_advisories)
+        new_advisories = Advisory.objects.filter(
+            created_by=self.qualified_name,
+            date_imported__isnull=True,
+        )
+
+        new_advisories_count = new_advisories.count()
+
+        self.log(f"Importing {new_advisories_count:,d} new advisories")
 
         imported_advisory_count = 0
         progress = LoopProgress(total_iterations=new_advisories_count, logger=self.log)
-        for advisory in progress.iter(self.new_advisories):
+        for advisory in progress.iter(new_advisories.paginated()):
             self.import_advisory(advisory=advisory)
-            imported_advisory_count += 1
+            if advisory.date_imported:
+                imported_advisory_count += 1
 
         self.log(f"Successfully imported {imported_advisory_count:,d} new advisories")
 
-    def import_advisory(self, advisory) -> None:
-        if advisory.date_imported:
-            return
+    def import_advisory(self, advisory: Advisory) -> int:
         try:
-            import_advisory(
+            advisory.import_advisory(
                 advisory=advisory,
                 pipeline_name=self.qualified_name,
                 confidence=self.advisory_confidence,

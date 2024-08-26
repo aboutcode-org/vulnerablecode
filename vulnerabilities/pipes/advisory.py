@@ -26,28 +26,30 @@ from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 
 
-def insert_advisory(advisory: AdvisoryData, pipeline_name: str, logger: Callable):
+def insert_advisory(advisory: AdvisoryData, pipeline_name: str, logger: Callable = None):
+    obj = None
     try:
-        obj, created = Advisory.objects.get_or_create(
+        obj, _ = Advisory.objects.get_or_create(
             aliases=advisory.aliases,
             summary=advisory.summary,
             affected_packages=[pkg.to_dict() for pkg in advisory.affected_packages],
             references=[ref.to_dict() for ref in advisory.references],
             date_published=advisory.date_published,
             weaknesses=advisory.weaknesses,
+            url=advisory.url,
             defaults={
                 "created_by": pipeline_name,
                 "date_collected": datetime.now(timezone.utc),
             },
-            url=advisory.url,
         )
-        if created:
-            return obj
     except Exception as e:
-        logger(
-            f"Error while processing {advisory!r} with aliases {advisory.aliases!r}: {e!r} \n {traceback_format_exc()}",
-            level=logging.ERROR,
-        )
+        if logger:
+            logger(
+                f"Error while processing {advisory!r} with aliases {advisory.aliases!r}: {e!r} \n {traceback_format_exc()}",
+                level=logging.ERROR,
+            )
+
+    return obj
 
 
 @transaction.atomic

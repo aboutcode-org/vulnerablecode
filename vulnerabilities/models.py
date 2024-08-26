@@ -610,6 +610,11 @@ class Package(PackageURLMixin):
         db_index=True,
     )
 
+    is_ghost = models.BooleanField(
+        default=False,
+        help_text="True if the package does not exist in the upstream package manager or its repository.",
+    )
+
     objects = PackageQuerySet.as_manager()
 
     def save(self, *args, **kwargs):

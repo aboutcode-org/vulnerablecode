@@ -603,7 +603,7 @@ class APITestCasePackage(TestCase):
             response = self.csrf_client.get(f"/api/packages/all", format="json").data
 
             assert len(response) == 3
-            assert response == [
+            assert list(response) == [
                 "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.12.6.1",
                 "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
                 "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",

@@ -1,13 +1,23 @@
-import os
+#
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
+#
+
 from io import StringIO
 from pathlib import Path
 from unittest import TestCase
 
-import pytest
-import saneyaml
 from django.core.management import call_command
 from django.core.management.base import CommandError
+from pytest import fixture
+from pytest import mark
+from pytest import raises
 
+from aboutcode import hashid
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageRelatedVulnerability
@@ -16,42 +26,42 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
+from vulnerabilities.tests.util_tests import check_results_and_expected_files
+
+TEST_DATA_DIR = Path(__file__).parent / "test_data" / "export_command"
+
+VCID = "VCID-pst6-b358-aaap"
+PURL = "pkg:generic/nginx/test@2"
 
 
-@pytest.fixture
+@fixture
 def package(db):
-    return Package.objects.create(
-        type="generic", namespace="nginx", name="test", version="2", qualifiers={}, subpath=""
-    )
+    return Package.objects.from_purl(PURL)
 
 
-@pytest.fixture
+@fixture
 def vulnerability_reference():
-    return VulnerabilityReference.objects.create(
-        reference_id="fake",
-        url=f"https://..",
-    )
+    return VulnerabilityReference.objects.create(reference_id="fake", url=f"https://..")
 
 
-@pytest.fixture
+@fixture
 def vulnerability_severity(vulnerability_reference):
     return VulnerabilitySeverity.objects.create(
         scoring_system="cvssv3_vector",
-        value="CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        value="7.0",
+        scoring_elements="CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
         reference_id=vulnerability_reference.id,
     )
 
 
-@pytest.fixture
+@fixture
 def vulnerability(db, vulnerability_reference, vulnerability_severity):
-    vulnerability = Vulnerability.objects.create(
-        vulnerability_id="VCID-pst6-b358-aaap",
-        summary="test-vuln",
-    )
+    vulnerability = Vulnerability.objects.create(vulnerability_id=VCID, summary="test-vuln")
     Alias.objects.create(alias=f"CVE-xxx-xxx-xx", vulnerability=vulnerability)
 
     VulnerabilityRelatedReference.objects.create(
-        reference=vulnerability_reference, vulnerability=vulnerability
+        reference=vulnerability_reference,
+        vulnerability=vulnerability,
     )
 
     weakness = Weakness.objects.create(cwe_id=15)
@@ -60,7 +70,7 @@ def vulnerability(db, vulnerability_reference, vulnerability_severity):
     return vulnerability
 
 
-@pytest.fixture
+@fixture
 def package_related_vulnerability(db, package, vulnerability):
     PackageRelatedVulnerability.objects.create(
         package=package,
@@ -72,69 +82,42 @@ def package_related_vulnerability(db, package, vulnerability):
 
 class TestExportCommand(TestCase):
     def test_missing_path(self):
-        with pytest.raises(CommandError) as cm:
+        with raises(CommandError) as cm:
             call_command("export", stdout=StringIO())
 
         err = str(cm)
         assert "Error: the following arguments are required: path" in err
 
+    @mark.django_db
     def test_bad_path_fail_error(self):
-        with pytest.raises(CommandError) as cm:
+        with raises(CommandError) as cm:
             call_command("export", "/bad path", stdout=StringIO())
 
         err = str(cm)
-        assert "Please enter a valid path" in err
+        assert "Enter a valid directory path" in err
 
 
-@pytest.mark.django_db
-def test_export_data(
-    tmp_path, package_related_vulnerability, vulnerability_reference, vulnerability_severity
+@mark.django_db
+def test_run_export_command(
+    tmp_path,
+    package_related_vulnerability,
+    vulnerability_reference,
+    vulnerability_severity,
 ):
-    expected_vul = {
-        "vulnerability_id": "VCID-pst6-b358-aaap",
-        "aliases": ["CVE-xxx-xxx-xx"],
-        "summary": "test-vuln",
-        "severities": [
-            {
-                "id": vulnerability_severity.id,
-                "reference_id": vulnerability_reference.id,
-                "scoring_system": "cvssv3_vector",
-                "value": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
-                "scoring_elements": "",
-                "published_at": "",
-            }
-        ],
-        "references": [
-            {
-                "id": vulnerability_reference.id,
-                "url": "https://..",
-                "reference_type": "",
-                "reference_id": "fake",
-            }
-        ],
-        "weaknesses": ["CWE-15"],
-    }
-    expected_pkg = {
-        "package": "pkg:generic/nginx/test",
-        "versions": [
-            {
-                "purl": "pkg:generic/nginx/test@2",
-                "affected_by_vulnerabilities": ["VCID-pst6-b358-aaap"],
-                "fixing_vulnerabilities": [],
-            },
-        ],
-    }
 
     call_command("export", tmp_path, stdout=StringIO())
 
-    vul_filepath = os.path.join(
-        tmp_path,
-        "./aboutcode-vulnerabilities-ps/b3/VCID-pst6-b358-aaap/VCID-pst6-b358-aaap.yml",
-    )
-    pkg_filepath = os.path.join(
-        tmp_path,
-        "./aboutcode-packages-2cf/generic/nginx/test/versions/vulnerabilities.yml",
-    )
+    vcid_file = hashid.get_vcid_yml_file_path(vcid=VCID)
+    results_vuln = tmp_path / vcid_file
+    expected_vuln = TEST_DATA_DIR / vcid_file
+    check_results_and_expected_files(results_vuln, expected_vuln)
 
-    assert Path(vul_filepath).read_text() == saneyaml.dump(expected_vul)
-    assert Path(pkg_filepath).read_text() == saneyaml.dump(expected_pkg)
+    vulns_file = hashid.get_package_vulnerabilities_yml_file_path(purl=PURL)
+    results_pkgvulns = tmp_path / vulns_file
+    expected_pkgvulns = TEST_DATA_DIR / vulns_file
+    check_results_and_expected_files(results_pkgvulns, expected_pkgvulns)
+
+    purls_file = hashid.get_package_purls_yml_file_path(purl=PURL)
+    results_pkgpurls = tmp_path / purls_file
+    expected_pkgpurls = TEST_DATA_DIR / purls_file
+    check_results_and_expected_files(results_pkgpurls, expected_pkgpurls)

@@ -559,6 +559,9 @@ def get_importer_name(advisory):
 
 
 def get_advisory_url(file, base_path, url):
+    """
+    Return the advisory URL constructed by combining the base URL with the relative file path.
+    """
     relative_path = str(file.relative_to(base_path)).strip("/")
     advisory_url = urljoin(url, relative_path)
     return advisory_url

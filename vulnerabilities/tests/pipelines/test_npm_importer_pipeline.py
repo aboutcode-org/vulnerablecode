@@ -1,15 +1,17 @@
-# Author: Navonil Das (@NavonilDas)
 #
 # Copyright (c) nexB Inc. and others. All rights reserved.
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+# Author: Navonil Das (@NavonilDas)
+
 import json
 import os
+from pathlib import Path
 from unittest.mock import patch
 
 from packageurl import PackageURL
@@ -19,14 +21,13 @@ from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importers.npm import NpmImporter
 from vulnerabilities.improvers.default import DefaultImprover
 from vulnerabilities.improvers.valid_versions import NpmImprover
+from vulnerabilities.pipelines.npm_importer import NpmImporter
 from vulnerabilities.tests import util_tests
 from vulnerabilities.utils import load_json
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "test_data/")
+TEST_DATA = data = Path(__file__).parent.parent / "test_data" / "npm"
 
 
 def test_npm_importer():

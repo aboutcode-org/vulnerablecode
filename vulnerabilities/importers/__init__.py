@@ -25,7 +25,6 @@ from vulnerabilities.importers import gitlab
 from vulnerabilities.importers import istio
 from vulnerabilities.importers import mozilla
 from vulnerabilities.importers import nginx
-from vulnerabilities.importers import npm
 from vulnerabilities.importers import nvd
 from vulnerabilities.importers import openssl
 from vulnerabilities.importers import oss_fuzz
@@ -40,13 +39,14 @@ from vulnerabilities.importers import ubuntu
 from vulnerabilities.importers import ubuntu_usn
 from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
+from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import pypa_importer
 
 IMPORTERS_REGISTRY = [
     nvd.NVDImporter,
     github.GitHubAPIImporter,
     gitlab.GitLabAPIImporter,
-    npm.NpmImporter,
+    npm_importer.NpmImporter,
     nginx.NginxImporter,
     pysec.PyPIImporter,
     alpine_linux.AlpineImporter,

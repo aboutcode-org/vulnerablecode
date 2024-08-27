@@ -7,19 +7,14 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import os
-import sys
-import warnings
-from pathlib import Path
-
-__version__ = "34.0.0"
+import io
 
 
-def command_line():
-    """
-    Command line entry point.
-    """
-    from django.core.management import execute_from_command_line
+class TestLogger:
+    buffer = io.StringIO()
 
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "vulnerablecode.settings")
-    execute_from_command_line(sys.argv)
+    def write(self, msg, level=None):
+        self.buffer.write(msg)
+
+    def getvalue(self):
+        return self.buffer.getvalue()

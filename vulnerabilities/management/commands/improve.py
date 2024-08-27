@@ -14,6 +14,7 @@ from django.core.management.base import CommandError
 
 from vulnerabilities.improve_runner import ImproveRunner
 from vulnerabilities.improvers import IMPROVERS_REGISTRY
+from vulnerabilities.pipelines import VulnerableCodePipeline
 
 
 class Command(BaseCommand):
@@ -56,6 +57,13 @@ class Command(BaseCommand):
 
         for improver in improvers:
             self.stdout.write(f"Improving data using {improver.qualified_name}")
+            if issubclass(improver, VulnerableCodePipeline):
+                status, error = improver().execute()
+                if status != 0:
+                    self.stdout.write(error)
+                    failed_improvers.append(improver.qualified_name)
+                continue
+
             try:
                 ImproveRunner(improver_class=improver).run()
                 self.stdout.write(

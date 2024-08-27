@@ -14,8 +14,8 @@ from univers.versions import SemverVersion
 
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importers.npm import NpmImporter
 from vulnerabilities.models import *
+from vulnerabilities.pipelines.npm_importer import NpmImporter
 
 
 @pytest.mark.django_db

@@ -46,7 +46,6 @@ IMPORTERS_REGISTRY = [
     nvd.NVDImporter,
     github.GitHubAPIImporter,
     gitlab.GitLabAPIImporter,
-    npm_importer.NpmImporter,
     nginx.NginxImporter,
     pysec.PyPIImporter,
     alpine_linux.AlpineImporter,
@@ -77,6 +76,7 @@ IMPORTERS_REGISTRY = [
     epss.EPSSImporter,
     vulnrichment.VulnrichImporter,
     pypa_importer.PyPaImporterPipeline,
+    npm_importer.NpmImporterPipeline,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

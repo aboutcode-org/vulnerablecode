@@ -28,7 +28,6 @@ from vulnerabilities.importers.mozilla import MozillaImporter
 from vulnerabilities.importers.retiredotnet import RetireDotnetImporter
 from vulnerabilities.importers.ruby import RubyImporter
 from vulnerabilities.oval_parser import OvalParser
-from vulnerabilities.pipelines.npm_importer import NpmImporter
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/")
@@ -121,7 +120,6 @@ def test_git_importer(mock_clone):
         GitLabAPIImporter,
         IstioImporter,
         MozillaImporter,
-        NpmImporter,
         RetireDotnetImporter,
         RubyImporter,
         GithubOSVImporter,

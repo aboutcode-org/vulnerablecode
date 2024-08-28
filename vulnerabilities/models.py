@@ -734,7 +734,7 @@ class Package(PackageURLMixin):
 
     def get_non_vulnerable_versions(self):
         """
-        Return a tuple of the next and latest non-vulnerable versions as PackageURL objects.
+        Return a tuple of the next and latest non-vulnerable versions as Package instance.
         Return a tuple of (None, None) if there is no non-vulnerable version.
         """
         non_vulnerable_versions = Package.objects.get_fixed_by_package_versions(
@@ -750,10 +750,9 @@ class Package(PackageURLMixin):
 
         if later_non_vulnerable_versions:
             sorted_versions = self.sort_by_version(later_non_vulnerable_versions)
-            next_non_vulnerable_version = sorted_versions[0]
-            latest_non_vulnerable_version = sorted_versions[-1]
-
-            return next_non_vulnerable_version, latest_non_vulnerable_version
+            next_non_vulnerable = sorted_versions[0]
+            latest_non_vulnerable = sorted_versions[-1]
+            return next_non_vulnerable, latest_non_vulnerable
 
         return None, None
 
@@ -773,33 +772,6 @@ class Package(PackageURLMixin):
         package_details["vulnerabilities"] = self.get_affecting_vulnerabilities()
 
         return package_details
-
-    def get_non_vulnerable_versions(self):
-        """
-        Return a tuple of the next and latest non-vulnerable versions as PackageURLs.  Return a tuple of
-        (None, None) if there is no non-vulnerable version.
-        """
-        non_vulnerable_versions = Package.objects.get_fixed_by_package_versions(
-            self, fix=False
-        ).only_non_vulnerable()
-        sorted_versions = self.sort_by_version(non_vulnerable_versions)
-
-        later_non_vulnerable_versions = []
-        for non_vuln_ver in sorted_versions:
-            if self.version_class(non_vuln_ver.version) > self.current_version:
-                later_non_vulnerable_versions.append(non_vuln_ver)
-
-        if later_non_vulnerable_versions:
-            sorted_versions = self.sort_by_version(later_non_vulnerable_versions)
-            next_non_vulnerable_version = sorted_versions[0]
-            latest_non_vulnerable_version = sorted_versions[-1]
-
-            next_non_vulnerable = PackageURL.from_string(next_non_vulnerable_version.purl)
-            latest_non_vulnerable = PackageURL.from_string(latest_non_vulnerable_version.purl)
-
-            return next_non_vulnerable, latest_non_vulnerable
-
-        return None, None
 
     def get_affecting_vulnerabilities(self):
         """

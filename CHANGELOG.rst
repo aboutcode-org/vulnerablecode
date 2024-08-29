@@ -7,6 +7,7 @@ Version (next)
 - Add Pipeline to flag ghost packages (#1533)
 - Add logging configuration (#1533)
 - Drop support for python 3.8 (#1533)
+- Drop using docker-compose and use the built-in "docker compose" instead
 
 
 Version v34.0.0

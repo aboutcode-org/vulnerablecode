@@ -30,7 +30,7 @@ import saneyaml
 import toml
 import urllib3
 from packageurl import PackageURL
-from packageurl.contrib.django.models import without_empty_values
+from packageurl.contrib.django.utils import without_empty_values
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import NginxVersionRange
 from univers.version_range import VersionRange

@@ -129,9 +129,9 @@ docs:
 
 docker-images:
 	@echo "-> Build Docker services"
-	docker-compose build
+	docker compose build
 	@echo "-> Pull service images"
-	docker-compose pull
+	docker compose pull
 	@echo "-> Save the service images to a compressed tar archive in the dist/ directory"
 	@mkdir -p dist/
 	@docker save postgres vulnerablecode_vulnerablecode nginx | gzip > dist/vulnerablecode-images-`git describe --tags`.tar.gz

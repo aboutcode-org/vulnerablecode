@@ -31,6 +31,7 @@ IMPROVERS_REGISTRY = [
     vulnerability_status.VulnerabilityStatusImprover,
     vulnerability_kev.VulnerabilityKevImprover,
     flag_ghost_packages.FlagGhostPackagePipeline,
+    valid_versions.AmazonLinuxImprover,
 ]
 
 IMPROVERS_REGISTRY = {x.qualified_name: x for x in IMPROVERS_REGISTRY}

@@ -13,35 +13,30 @@ from datetime import datetime
 from typing import Any
 from typing import Iterable
 from typing import List
-from typing import Mapping
 from typing import Optional
-from urllib.parse import urljoin
 
 import pytz
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
-from univers.version_range import RpmVersionRange
+from univers.versions import RpmVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.references import WireSharkReference
-from vulnerabilities.references import XsaReference
-from vulnerabilities.references import ZbxReference
+from vulnerabilities.rpm_utils import rpm_to_purl
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import fetch_response
 from vulnerabilities.utils import is_cve
 
 LOGGER = logging.getLogger(__name__)
 BASE_URL = "https://alas.aws.amazon.com/"
-other_url = "https://explore.alas.aws.amazon.com/{cve_id.json}"  # use this in the url in code to get details for the specific cve.
 
 
 class AmazonLinuxImporter(Importer):
-    spdx_license_expression = "CC BY 4.0"  # check if this is correct
-    license_url = " "  # todo
+    spdx_license_expression = "CC BY 4.0"
+    license_url = " "  # TODO
 
     importer_name = "Amazon Linux Importer"
 
@@ -107,6 +102,18 @@ def fetch_alas_id_and_advisory_links(page_url: str) -> dict[str, str]:
 
 def process_advisory_data(alas_id, alas_advisory_page_content, alas_url) -> Optional[AdvisoryData]:
 
+    """
+    Processes an Amazon Linux Security Advisory HTML page to extract relevant data and return it in a structured format.
+
+    Args:
+        alas_id (str): The unique identifier for the Amazon Linux Security Advisory (e.g., "ALAS-2024-2628").
+        alas_advisory_page_content (str): The HTML content of the advisory page.
+        alas_url (str): The URL of the advisory page.
+
+    Returns:
+        Optional[AdvisoryData]: An object containing the processed advisory data, or None if the necessary data couldn't be extracted.
+    """
+
     soup = BeautifulSoup(alas_advisory_page_content, "html.parser")
     aliases = []
     aliases.append(alas_id)
@@ -131,8 +138,18 @@ def process_advisory_data(alas_id, alas_advisory_page_content, alas_url) -> Opti
     # Extract Issue Overview (all points of issue overviews texts)
     issue_overview = []
     for p in soup.find("div", id="issue_overview").find_all("p"):
-        issue_overview.append(p.text.strip())
-    summary = create_summary(issue_overview)
+        # Replace <br> tags with a newline, then split the text
+        text_parts = p.decode_contents().split("<br/>")
+
+        # Clean and append each part
+        for part in text_parts:
+            clean_text = part.strip()
+            if clean_text:  # Avoid adding empty strings
+                issue_overview.append(clean_text)
+    # Filter out any blank entries from the list
+    issue_overview_filtered = [item for item in issue_overview if item]
+
+    summary = create_summary(issue_overview_filtered)
 
     # Extract Affected Packages (list of strings)
     processed_affected_packages = []
@@ -152,12 +169,33 @@ def process_advisory_data(alas_id, alas_advisory_page_content, alas_url) -> Opti
     else:
         new_packages_list = []
 
-    for package in affected_packages:
-        purl = PackageURL(type="rpm", namespace="alas.aws.amazon", name=package)
-        # fixed_version = get_fixed_versions(new_packages_list)
-        processed_affected_packages.append(
-            AffectedPackage(package=purl, affected_version_range=None, fixed_version=None)
-        )
+    exclude_items = ["i686:", "noarch:", "src:", "x86_64:", "aarch64:"]
+    filtered_new_packages_list = [
+        package for package in new_packages_list if package not in exclude_items
+    ]
+
+    # new packages are the fixed packages
+    for new_package in filtered_new_packages_list:
+        new_package_purl = rpm_to_purl(new_package, "alas.aws.amazon")
+        if new_package_purl:
+            try:
+                processed_affected_packages.append(
+                    AffectedPackage(
+                        package=PackageURL(
+                            type="rpm",
+                            namespace="alas.aws.amazon",
+                            name=new_package_purl.name,
+                            qualifiers=new_package_purl.qualifiers,
+                            subpath=new_package_purl.subpath,
+                        ),
+                        affected_version_range=None,
+                        fixed_version=RpmVersion(new_package_purl.version),
+                    )
+                )
+            except ValueError as e:
+                logging.error(
+                    f"Invalid RPM version '{new_package_purl.version}' for package '{new_package_purl.name}': {e}"
+                )
 
     cve_list = []
     for link in soup.find("div", id="references").find_all("a", href=True):
@@ -166,7 +204,8 @@ def process_advisory_data(alas_id, alas_advisory_page_content, alas_url) -> Opti
 
     references: List[Reference] = []
     for cve_id, cve_url in cve_list:
-        cve_json_url = f"https://explore.alas.aws.amazon.com/{cve_id}"
+        aliases.append(cve_id)
+        cve_json_url = f"https://explore.alas.aws.amazon.com/{cve_id}.json"
         response = fetch_response(cve_json_url)
 
         # Parse the JSON data
@@ -183,6 +222,20 @@ def process_advisory_data(alas_id, alas_advisory_page_content, alas_url) -> Opti
             )
         references.append(Reference(reference_id=cve_id, url=cve_url, severities=severity))
 
+    additional_references = []
+    # Find all <p> tags within the links-container div
+    links_container = soup.find("div", class_="links-container")
+    if links_container:
+        p_tags = links_container.find_all("p")
+        for p_tag in p_tags:
+            a_tag = p_tag.find("a")
+            if a_tag:
+                cve_id = a_tag.get_text(strip=True)  # Extract the CVE ID text
+                url = a_tag["href"]  # Extract the URL from href attribute
+                additional_references.append((cve_id, url))
+    for cve_id, ref_link in additional_references:
+        references.append(Reference(reference_id=cve_id, url=ref_link, severities=[]))
+
     url = alas_url
 
     return AdvisoryData(
@@ -198,8 +251,11 @@ def process_advisory_data(alas_id, alas_advisory_page_content, alas_url) -> Opti
 def get_date_published(release_date_string):
 
     # Parse the date and time
-    date_part = release_date_string[:16]
-    time_zone = release_date_string[17:]
+    if release_date_string:
+        date_part = release_date_string[:16]
+        time_zone = release_date_string[17:]
+    else:
+        return None
 
     # Convert to datetime object (naive)
     naive_date = datetime.strptime(date_part, "%Y-%m-%d %H:%M")
@@ -212,7 +268,6 @@ def get_date_published(release_date_string):
 
 def create_summary(summary_point: List):
     summary = ". ".join(summary_point)
-
     # Add a period at the end if the final sentence doesn't end with one
     if not summary.endswith("."):
         summary += "."

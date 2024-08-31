@@ -25,6 +25,7 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import UnMergeablePackageError
+from vulnerabilities.importers.amazon_linux import AmazonLinuxImporter
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDImporter
 from vulnerabilities.importers.apache_kafka import ApacheKafkaImporter
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatImporter
@@ -471,4 +472,9 @@ class RubyImprover(ValidVersionImprover):
 
 class GithubOSVImprover(ValidVersionImprover):
     importer = GithubOSVImporter
+    ignorable_versions = []
+
+
+class AmazonLinuxImprover(ValidVersionImprover):
+    importer = AmazonLinuxImporter
     ignorable_versions = []

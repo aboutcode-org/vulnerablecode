@@ -22,7 +22,6 @@ from vulnerabilities.importers.elixir_security import ElixirSecurityImporter
 from vulnerabilities.importers.fireeye import FireyeImporter
 from vulnerabilities.importers.gentoo import GentooImporter
 from vulnerabilities.importers.github_osv import GithubOSVImporter
-from vulnerabilities.importers.gitlab import GitLabAPIImporter
 from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.importers.mozilla import MozillaImporter
 from vulnerabilities.importers.retiredotnet import RetireDotnetImporter
@@ -117,7 +116,6 @@ def test_git_importer(mock_clone):
         ElixirSecurityImporter,
         FireyeImporter,
         GentooImporter,
-        GitLabAPIImporter,
         IstioImporter,
         MozillaImporter,
         RetireDotnetImporter,

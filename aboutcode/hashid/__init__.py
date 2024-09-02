@@ -45,17 +45,22 @@ VULNERABILITIES_FILENAME = "vulnerabilities.yml"
 def build_vcid(prefix="VCID"):
     """
     Return a new Vulnerable Code ID (aka. VCID) which is a strongly unique vulnerability
-    identifierstring using the provided ``prefix``. A VCID is composed of a four letter prefix, and
+    identifier string using the provided ``prefix``. A VCID is composed of a four letter prefix, and
     three segments composed of four letters and dihits each separated by a dash.
-
     For example::
     >>> import re
     >>> vcid = build_vcid()
     >>> assert re.match('VCID(-[a-hjkm-z1-9]{4}){3}', vcid), vcid
+
+    We were mistakenly not using enough bits. The symptom was that the last
+    segment of the VCID was always strting with "aaa" This ensure we are now OK:
+    >>> vcids = [build_vcid() for _ in range(50)]
+    >>> assert not any(vid.split("-")[-1].startswith("aaa") for vid in vcids)
     """
-    # we keep only 64 bits (e.g. 8 bytes)
-    uid = sha256(uuid4().bytes).digest()[:8]
-    # we keep only 12 encoded bytes (which corresponds to 60 bits)
+    uid = uuid4().bytes
+    # we keep  three segments of 4 base32-encodee bytes, 3*4=12
+    # which corresponds to 60 bits
+    # becausee each base32 byte can store 5 bits (2**5 = 32)
     uid = base32_custom(uid)[:12].decode("utf-8").lower()
     return f"{prefix}-{uid[:4]}-{uid[4:8]}-{uid[8:12]}"
 

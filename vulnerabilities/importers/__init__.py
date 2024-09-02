@@ -31,7 +31,6 @@ from vulnerabilities.importers import openssl
 from vulnerabilities.importers import oss_fuzz
 from vulnerabilities.importers import postgresql
 from vulnerabilities.importers import project_kb_msr2019
-from vulnerabilities.importers import pypa
 from vulnerabilities.importers import pysec
 from vulnerabilities.importers import redhat
 from vulnerabilities.importers import retiredotnet
@@ -41,13 +40,13 @@ from vulnerabilities.importers import ubuntu
 from vulnerabilities.importers import ubuntu_usn
 from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
+from vulnerabilities.pipelines import pypa_importer
 
 IMPORTERS_REGISTRY = [
     nvd.NVDImporter,
     github.GitHubAPIImporter,
     gitlab.GitLabAPIImporter,
     npm.NpmImporter,
-    pypa.PyPaImporter,
     nginx.NginxImporter,
     pysec.PyPIImporter,
     alpine_linux.AlpineImporter,
@@ -77,6 +76,7 @@ IMPORTERS_REGISTRY = [
     curl.CurlImporter,
     epss.EPSSImporter,
     vulnrichment.VulnrichImporter,
+    pypa_importer.PyPaImporterPipeline,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

@@ -12,7 +12,6 @@ import logging
 from datetime import datetime
 from typing import Iterable
 from typing import List
-from typing import Mapping
 from typing import Optional
 
 from django.db.models import Q
@@ -34,7 +33,6 @@ from vulnerabilities.importers.debian_oval import DebianOvalImporter
 from vulnerabilities.importers.elixir_security import ElixirSecurityImporter
 from vulnerabilities.importers.github import GitHubAPIImporter
 from vulnerabilities.importers.github_osv import GithubOSVImporter
-from vulnerabilities.importers.gitlab import GitLabAPIImporter
 from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.importers.oss_fuzz import OSSFuzzImporter
 from vulnerabilities.importers.ruby import RubyImporter
@@ -44,6 +42,7 @@ from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines.gitlab_importer import GitLabImporterPipeline
 from vulnerabilities.pipelines.nginx_importer import NginxImporterPipeline
 from vulnerabilities.pipelines.npm_importer import NpmImporterPipeline
 from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
@@ -367,7 +366,7 @@ class DebianBasicImprover(ValidVersionImprover):
 
 
 class GitLabBasicImprover(ValidVersionImprover):
-    importer = GitLabAPIImporter
+    importer = GitLabImporterPipeline
     ignorable_versions = []
 
 

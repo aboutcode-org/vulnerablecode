@@ -55,6 +55,8 @@ EMAIL_HOST_USER = env.str("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD", default="")
 FROM_EMAIL = env.str("FROM_EMAIL", default="")
 
+VULNERABLECODE_LOG_LEVEL = env.str("VULNERABLECODE_LOG_LEVEL", "INFO")
+
 # Application definition
 
 INSTALLED_APPS = (
@@ -287,6 +289,9 @@ if not VULNERABLECODEIO_REQUIRE_AUTHENTICATION:
 
 
 if DEBUG_TOOLBAR:
+    # Uncomment this to get pyinstrument profiles
+    # PYINSTRUMENT_PROFILE_DIR = "profiles"
+
     INSTALLED_APPS += ("debug_toolbar",)
 
     MIDDLEWARE += (
@@ -314,3 +319,31 @@ if DEBUG_TOOLBAR:
     INTERNAL_IPS = [
         "127.0.0.1",
     ]
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "null": {
+            "class": "logging.NullHandler",
+        },
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+    },
+    "loggers": {
+        "vulnerabilities.pipelines": {
+            "handlers": ["console"],
+            "level": VULNERABLECODE_LOG_LEVEL,
+            "propagate": False,
+        },
+    },
+}

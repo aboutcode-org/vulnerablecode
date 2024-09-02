@@ -26,7 +26,6 @@ from vulnerabilities.importers.gitlab import GitLabAPIImporter
 from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.importers.mozilla import MozillaImporter
 from vulnerabilities.importers.npm import NpmImporter
-from vulnerabilities.importers.pypa import PyPaImporter
 from vulnerabilities.importers.retiredotnet import RetireDotnetImporter
 from vulnerabilities.importers.ruby import RubyImporter
 from vulnerabilities.oval_parser import OvalParser
@@ -124,7 +123,6 @@ def test_git_importer(mock_clone):
         MozillaImporter,
         NpmImporter,
         RetireDotnetImporter,
-        PyPaImporter,
         RubyImporter,
         GithubOSVImporter,
     ],

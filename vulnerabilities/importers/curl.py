@@ -13,7 +13,6 @@ from datetime import timezone
 from typing import Iterable
 from typing import Mapping
 
-import requests
 from cwe2.database import Database
 from packageurl import PackageURL
 from univers.version_range import GenericVersionRange

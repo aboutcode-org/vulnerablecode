@@ -19,8 +19,6 @@ from univers.version_range import NginxVersionRange
 
 from vulnerabilities import models
 from vulnerabilities import severity_systems
-
-# from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
@@ -153,7 +151,7 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
         util_tests.check_results_against_json(results, expected_file)
 
     @pytest.mark.django_db(transaction=True)
-    def test_NginxImporter(self):
+    def test_NginxImporterPipeline_collect_and_store_advisories(self):
         test_file = self.get_test_loc("security_advisories.html")
         with open(test_file) as tf:
             test_text = tf.read()
@@ -166,14 +164,12 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
         )
 
         test_pipeline.collect_and_store_advisories()
-        test_pipeline.import_new_advisories()
 
         results = list(models.Advisory.objects.all().values(*ADVISORY_FIELDS_TO_TEST))
         util_tests.check_results_against_json(results, expected_file)
 
         # run again as there should be no duplicates
         test_pipeline.collect_and_store_advisories()
-        test_pipeline.import_new_advisories()
 
         results = list(models.Advisory.objects.all().values(*ADVISORY_FIELDS_TO_TEST))
         util_tests.check_results_against_json(results, expected_file)

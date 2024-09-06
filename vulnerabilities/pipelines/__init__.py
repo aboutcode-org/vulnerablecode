@@ -89,7 +89,12 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
 
     def collect_and_store_advisories(self):
         collected_advisory_count = 0
-        progress = LoopProgress(total_iterations=self.advisories_count(), logger=self.log)
+        estimated_advisory_count = self.advisories_count()
+
+        if estimated_advisory_count > 0:
+            self.log(f"Collecting {estimated_advisory_count:,d} advisories")
+
+        progress = LoopProgress(total_iterations=estimated_advisory_count, logger=self.log)
         for advisory in progress.iter(self.collect_advisories()):
             if _obj := insert_advisory(
                 advisory=advisory,

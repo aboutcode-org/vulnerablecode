@@ -31,7 +31,6 @@ from vulnerabilities.importers.curl import CurlImporter
 from vulnerabilities.importers.debian import DebianImporter
 from vulnerabilities.importers.debian_oval import DebianOvalImporter
 from vulnerabilities.importers.elixir_security import ElixirSecurityImporter
-from vulnerabilities.importers.github import GitHubAPIImporter
 from vulnerabilities.importers.github_osv import GithubOSVImporter
 from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.importers.oss_fuzz import OSSFuzzImporter
@@ -42,6 +41,7 @@ from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines.github_importer import GitHubAPIImporterPipeline
 from vulnerabilities.pipelines.gitlab_importer import GitLabImporterPipeline
 from vulnerabilities.pipelines.nginx_importer import NginxImporterPipeline
 from vulnerabilities.pipelines.npm_importer import NpmImporterPipeline
@@ -371,7 +371,7 @@ class GitLabBasicImprover(ValidVersionImprover):
 
 
 class GitHubBasicImprover(ValidVersionImprover):
-    importer = GitHubAPIImporter
+    importer = GitHubAPIImporterPipeline
     ignorable_versions = frozenset(
         [
             "0.1-bulbasaur",

@@ -129,8 +129,8 @@ def vulnerability_yml_path(vcid):
     Git repository.
 
     For example::
-    >> vulnerability_yml_path("VCID-s9bw-m429-aaaf")
-    'VCID-s9bw-m429-aaaf.yml'
+    >>> vulnerability_yml_path("VCID-s9bw-m429-aaaf")
+    's9/VCID-s9bw-m429-aaaf.yml'
     """
     prefix = vcid[5 : 5 + 2]
     return f"{prefix}/{vcid}.yml"

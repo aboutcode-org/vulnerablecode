@@ -1,0 +1,61 @@
+{
+    "schema_version": "1.5.0",
+    "id": "CURL-CVE-2024-2379",
+    "aliases": [
+      "CVE-2024-2379"
+    ],
+    "summary": "QUIC certificate check bypass with wolfSSL",
+    "modified": "2024-03-26T10:36:00.00Z",
+    "database_specific": {
+      "package": "curl",
+      "URL": "https://curl.se/docs/CVE-2024-2379.json",
+      "www": "https://curl.se/docs/CVE-2024-2379.html",
+      "issue": "https://hackerone.com/reports/2410774",
+      "CWE": {
+        "id": "CWE-295",
+        "desc": "Improper Certificate Validation"
+      },
+      "award": {
+        "amount": "540",
+        "currency": "USD"
+      },
+      "last_affected": "8.6.0",
+      "severity": "Low"
+    },
+    "published": "2024-03-27T08:00:00.00Z",
+    "affected": [
+      {
+        "ranges": [
+          {
+             "type": "SEMVER",
+             "events": [
+               {"introduced": "8.6.0"},
+               {"fixed": "8.7.0"}
+             ]
+          },
+          {
+             "type": "GIT",
+             "repo": "https://github.com/curl/curl.git",
+             "events": [
+               {"introduced": "5d044ad9480a9f556f4b6a252d7533b1ba7fe57e"},
+               {"fixed": "aedbbdf18e689a5eee8dc39600914f5eda6c409c"}
+             ]
+          }
+        ],
+        "versions": [
+          "8.6.0"
+        ]
+      }
+    ],
+    "credits": [
+      {
+        "name": "Dexter Gerig",
+        "type": "FINDER"
+      },
+      {
+        "name": "Daniel Stenberg",
+        "type": "REMEDIATION_DEVELOPER"
+      }
+    ],
+    "details": "libcurl skips the certificate verification for a QUIC connection under certain\nconditions, when built to use wolfSSL. If told to use an unknown/bad cipher or\ncurve, the error path accidentally skips the verification and returns OK, thus\nignoring any certificate problems."
+  }

@@ -486,12 +486,15 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=["get"])
     def all(self, request):
         """
-        Return the Package URLs of all packages known to be vulnerable.
+        Return a list of Package URLs of vulnerable packages.
         """
-        vulnerable_packages = (
-            Package.objects.vulnerable().only("package_url").distinct().with_is_vulnerable()
+        vulnerable_purls = (
+            Package.objects.vulnerable()
+            .only("package_url")
+            .order_by("package_url")
+            .distinct()
+            .values_list("package_url", flat=True)
         )
-        vulnerable_purls = [str(package.package_url) for package in vulnerable_packages]
         return Response(vulnerable_purls)
 
     @extend_schema(

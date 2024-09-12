@@ -20,7 +20,7 @@ charset-normalizer==2.0.12
 click==8.1.2
 coreapi==2.3.3
 coreschema==0.0.4
-cryptography==42.0.4
+cryptography==43.0.1
 cwe2==3.0.0
 dateparser==1.1.1
 decorator==5.1.1
@@ -30,8 +30,8 @@ Django==4.2.15
 django-crispy-forms==2.3
 django-environ==0.11.2
 django-filter==24.3
-djangorestframework==3.15.2
 django-widget-tweaks==1.5.0
+djangorestframework==3.15.2
 doc8==0.11.1
 docopt==0.6.2
 docutils==0.17.1

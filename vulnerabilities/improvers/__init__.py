@@ -29,6 +29,7 @@ IMPROVERS_REGISTRY = [
     valid_versions.RubyImprover,
     valid_versions.GithubOSVImprover,
     vulnerability_status.VulnerabilityStatusImprover,
+    valid_versions.CurlImprover,
     vulnerability_kev.VulnerabilityKevImprover,
     flag_ghost_packages.FlagGhostPackagePipeline,
 ]

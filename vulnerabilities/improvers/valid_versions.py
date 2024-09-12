@@ -28,6 +28,7 @@ from vulnerabilities.importer import UnMergeablePackageError
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDImporter
 from vulnerabilities.importers.apache_kafka import ApacheKafkaImporter
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatImporter
+from vulnerabilities.importers.curl import CurlImporter
 from vulnerabilities.importers.debian import DebianImporter
 from vulnerabilities.importers.debian_oval import DebianOvalImporter
 from vulnerabilities.importers.elixir_security import ElixirSecurityImporter
@@ -471,4 +472,9 @@ class RubyImprover(ValidVersionImprover):
 
 class GithubOSVImprover(ValidVersionImprover):
     importer = GithubOSVImporter
+    ignorable_versions = []
+
+
+class CurlImprover(ValidVersionImprover):
+    importer = CurlImporter
     ignorable_versions = []

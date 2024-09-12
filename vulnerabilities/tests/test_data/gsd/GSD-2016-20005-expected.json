@@ -1,0 +1,16 @@
+{
+  "aliases": ["CVE-2016-20005", "GSD-2016-20005"],
+  "summary": "The REST/JSON project 7.x-1.x for Drupal allows user registration bypass, aka SA-CONTRIB-2016-033. NOTE: This project is not covered by Drupal's security advisory policy.",
+  "affected_packages": [],
+  "references": [
+    {
+      "reference_id": "",
+      "reference_type" : "",
+      "url": "https://www.drupal.org/node/2744889",
+      "severities": []
+    }
+  ],
+  "date_published": "2021-01-01T01:15:00+00:00",
+  "weaknesses": [],
+  "url": ""
+}

@@ -22,7 +22,7 @@ cryptography==42.0.4
 decorator==5.1.1
 defusedxml==0.7.1
 distro==1.7.0
-Django==4.2.0
+Django==4.2.15
 django-crispy-forms==1.10.0
 django-environ==0.8.1
 django-filter==21.1

@@ -18,7 +18,6 @@ from django.db import transaction
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
-from vulnerabilities.importers import IMPORTERS_REGISTRY
 from vulnerabilities.improver import Inference
 from vulnerabilities.improvers.default import DefaultImporter
 from vulnerabilities.models import Advisory
@@ -70,17 +69,23 @@ class ImportRunner:
             if advisory.date_imported:
                 continue
             logger.info(f"Processing advisory: {advisory!r}")
+            advisory_data = None
+            inferences = None
             try:
-                inferences = advisory_importer.get_inferences(
-                    advisory_data=advisory.to_advisory_data()
-                )
+                advisory_data = advisory.to_advisory_data()
+                inferences = advisory_importer.get_inferences(advisory_data=advisory_data)
                 process_inferences(
                     inferences=inferences,
                     advisory=advisory,
                     improver_name=importer_name,
                 )
-            except Exception as e:
-                logger.info(f"Failed to process advisory: {advisory!r} with error {e!r}")
+            except Exception:
+                from pprint import pformat
+
+                logger.warning(
+                    f"Failed to process advisory:\n{pformat(advisory_data.to_dict())}\n\n"
+                    f"with error:\n{traceback_format_exc()}\n\n"
+                )
         logger.info("Finished importing using %s.", advisory_importer.__class__.qualified_name)
 
     def process_advisories(
@@ -181,17 +186,23 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                 reference=reference,
                 vulnerability=vulnerability,
             )
-
+            updated = False
             for severity in ref.severities:
-                _vs, updated = VulnerabilitySeverity.objects.update_or_create(
-                    scoring_system=severity.system.identifier,
-                    reference=reference,
-                    defaults={
-                        "value": str(severity.value),
-                        "scoring_elements": str(severity.scoring_elements),
-                        "published_at": str(severity.published_at),
-                    },
-                )
+                try:
+                    published_at = str(severity.published_at) if severity.published_at else None
+                    _vs, updated = VulnerabilitySeverity.objects.update_or_create(
+                        scoring_system=severity.system.identifier,
+                        reference=reference,
+                        defaults={
+                            "value": str(severity.value),
+                            "scoring_elements": str(severity.scoring_elements),
+                            "published_at": published_at,
+                        },
+                    )
+                except:
+                    logger.error(
+                        f"Failed to create VulnerabilitySeverity for: {severity} with error:\n{traceback_format_exc()}"
+                    )
                 if updated:
                     logger.info(
                         f"Severity updated for reference {ref!r} to value: {severity.value!r} "

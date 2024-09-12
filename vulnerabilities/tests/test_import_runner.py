@@ -107,6 +107,66 @@ def test_process_advisories_idempotency_with_different_importer_names():
     assert advisory_datas == ADVISORY_DATAS
 
 
+@pytest.mark.django_db(transaction=True)
+def test_process_advisories_can_import_advisories_with_severities_and_no_date():
+    # was failing with " django.core.exceptions.ValidationError: ['“None” value has an invalid format.
+    # It must be in YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ] format.']"
+
+    advisory = {
+        "aliases": ["CVE-2024-31079"],
+        "summary": "Stack overflow and use-after-free in HTTP/3",
+        "affected_packages": [
+            {
+                "package": {
+                    "type": "nginx",
+                    "namespace": "",
+                    "name": "nginx",
+                    "version": "",
+                    "qualifiers": "",
+                    "subpath": "",
+                },
+                "affected_version_range": "vers:nginx/>=1.25.0|<=1.25.5|1.26.0",
+                "fixed_version": "1.27.0",
+            },
+            {
+                "package": {
+                    "type": "nginx",
+                    "namespace": "",
+                    "name": "nginx",
+                    "version": "",
+                    "qualifiers": "",
+                    "subpath": "",
+                },
+                "affected_version_range": "vers:nginx/>=1.25.0|<=1.25.5|1.26.0",
+                "fixed_version": "1.26.1",
+            },
+        ],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://mailman.nginx.org/pipermail/nginx-announce/2024/GMY32CSHFH6VFTN76HJNX7WNEX4RLHF6.html",
+                "severities": [
+                    {"system": "generic_textual", "value": "medium", "scoring_elements": ""}
+                ],
+            },
+            {
+                "reference_id": "CVE-2024-31079",
+                "reference_type": "",
+                "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-31079",
+                "severities": [],
+            },
+        ],
+        "date_published": None,
+        "weaknesses": [],
+        "url": "https://nginx.org/en/security_advisories.html",
+    }
+    ad = AdvisoryData.from_dict(advisory)
+    ImportRunner(DummyImporter).process_advisories([ad], "test_importer_date")
+    advisory_aliases = list(models.Advisory.objects.all().values("aliases"))
+    assert advisory_aliases == [{"aliases": ["CVE-2024-31079"]}]
+
+
 def test_advisory_summary_clean_up():
     adv = AdvisoryData(
         summary="The X509Extension in pyOpenSSL before 0.13.1 does not properly handle a '\x00' character in a domain name in the Subject Alternative Name field of an X.509 certificate, which allows man-in-the-middle attackers to spoof arbitrary SSL servers via a crafted certificate issued by a legitimate Certification Authority."

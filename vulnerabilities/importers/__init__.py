@@ -39,6 +39,7 @@ from vulnerabilities.importers import ubuntu
 from vulnerabilities.importers import ubuntu_usn
 from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
+from vulnerabliities.importers import openjdk
 from vulnerabilities.pipelines import pypa_importer
 
 IMPORTERS_REGISTRY = [
@@ -75,6 +76,7 @@ IMPORTERS_REGISTRY = [
     epss.EPSSImporter,
     vulnrichment.VulnrichImporter,
     pypa_importer.PyPaImporterPipeline,
+    openjdk.OpenJDKImporter,
 ]
 
 IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}

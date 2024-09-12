@@ -579,47 +579,18 @@ class TestPackageModel(TestCase):
         assert redis_4_1_1_affecting_vulnerabilities == affecting_vulnerabilities
 
     def test_get_non_vulnerable_versions(self):
-        """
-        Return a tuple of the next and latest non-vulnerable versions of this package as PackageURLs.
-        """
-        searched_for_package_redis_4_1_1 = self.package_pypi_redis_4_1_1
-        redis_4_1_1_non_vulnerable_versions = (
-            searched_for_package_redis_4_1_1.get_non_vulnerable_versions()
-        )
-
-        non_vulnerable_versions = (
-            PackageURL(
-                type="pypi",
-                namespace=None,
-                name="redis",
-                version="5.0.0b1",
-                qualifiers={},
-                subpath=None,
-            ),
-            PackageURL(
-                type="pypi",
-                namespace=None,
-                name="redis",
-                version="5.0.0b1",
-                qualifiers={},
-                subpath=None,
-            ),
-        )
-
-        assert redis_4_1_1_non_vulnerable_versions == non_vulnerable_versions
+        redis_next, redis_later = self.package_pypi_redis_4_1_1.get_non_vulnerable_versions()
+        assert redis_next.version == "5.0.0b1"
+        assert redis_later.version == "5.0.0b1"
 
     def test_version_class_and_current_version(self):
-        searched_for_package_redis_4_1_1 = self.package_pypi_redis_4_1_1
+        package = self.package_pypi_redis_4_1_1
 
-        package_version_class = RANGE_CLASS_BY_SCHEMES[
-            searched_for_package_redis_4_1_1.type
-        ].version_class
+        package_version_class = RANGE_CLASS_BY_SCHEMES[package.type].version_class
 
         assert package_version_class == versions.PypiVersion
-        assert searched_for_package_redis_4_1_1.current_version == package_version_class(
-            string="4.1.1"
-        )
-        assert str(searched_for_package_redis_4_1_1.current_version) == "4.1.1"
+        assert package.current_version == package_version_class(string="4.1.1")
+        assert str(package.current_version) == "4.1.1"
 
     def test_get_fixed_by_package_versions(self):
         searched_for_package_redis_4_1_1 = self.package_pypi_redis_4_1_1

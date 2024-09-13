@@ -23,7 +23,7 @@ def test_package_changelog():
     pkg, _ = Package.objects.get_or_create_from_purl("pkg:npm/foo@1.0.0")
     assert PackageChangeLog.objects.filter(package=pkg).count() == 0
     adv = Advisory.objects.create(
-        created_by=NpmImporterPipeline.qualified_name,
+        created_by=NpmImporterPipeline.pipeline_id,
         summary="TEST",
         date_collected=datetime.now(),
         url="https://test.com/source",
@@ -49,7 +49,7 @@ def test_package_changelog():
     pkg1, _ = Package.objects.get_or_create_from_purl("pkg:npm/foo@2.0.0")
     assert PackageChangeLog.objects.filter(package=pkg1).count() == 0
     adv = Advisory.objects.create(
-        created_by=NpmImporterPipeline.qualified_name,
+        created_by=NpmImporterPipeline.pipeline_id,
         summary="TEST-1",
         date_collected=datetime.now(),
         url="https://test.com/source-1",
@@ -79,7 +79,7 @@ def test_package_changelog():
 @pytest.mark.django_db
 def test_vulnerability_changelog():
     adv = Advisory.objects.create(
-        created_by=NpmImporterPipeline.qualified_name,
+        created_by=NpmImporterPipeline.pipeline_id,
         summary="TEST_1",
         date_collected=datetime.now(),
         url="https://test.com/source",

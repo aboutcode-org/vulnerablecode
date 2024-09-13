@@ -32,6 +32,8 @@ from vulnerabilities.utils import load_json
 class NpmImporterPipeline(VulnerableCodeBaseImporterPipeline):
     """Collect advisories from nodejs GitHub repository."""
 
+    pipeline_id = "npm_importer"
+
     spdx_license_expression = "MIT"
     license_url = "https://github.com/nodejs/security-wg/blob/main/LICENSE.md"
     repo_url = "git+https://github.com/nodejs/security-wg"

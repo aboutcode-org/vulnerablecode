@@ -45,20 +45,20 @@ create an environment file, and build the Docker image::
 
     git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
     make envfile
-    docker-compose build
+    docker compose build
 
 .. note::
 
     The image will need to be re-built when the VulnerableCode app source code is
     modified or updated via
-    ``docker-compose build --no-cache vulnerablecode``
+    ``docker compose build --no-cache vulnerablecode``
 
 Run the App
 ^^^^^^^^^^^
 
 **Run your image** as a container::
 
-    docker-compose up
+    docker compose up
 
 
 At this point, the VulnerableCode app should be running at port ``8000`` on your Docker host.
@@ -90,7 +90,7 @@ Execute a Command
 You can execute a one of ``manage.py`` commands through the Docker command line
 interface, for example::
 
-    docker-compose run vulnerablecode ./manage.py import --list
+    docker compose run vulnerablecode ./manage.py import --list
 
 .. note::
     Refer to the :ref:`command_line_interface` section for the full list of commands.
@@ -98,7 +98,7 @@ interface, for example::
 Alternatively, you can connect to the Docker container ``bash`` and run commands
 from there::
 
-    docker-compose run vulnerablecode bash
+    docker compose run vulnerablecode bash
     ./manage.py import --list
 
 

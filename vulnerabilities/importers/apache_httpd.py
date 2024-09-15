@@ -161,67 +161,106 @@ def fetch_links(url):
 
 
 def get_weaknesses(cve_data):
-    """
-    Extract CWE IDs from CVE data.
+    # """
+    # Extract CWE IDs from CVE data.
 
-    Args:
-        cve_data (dict): The CVE data in a dictionary format.
+    # Args:
+    #     cve_data (dict): The CVE data in a dictionary format.
 
-    Returns:
-        List[int]: A list of unique CWE IDs.
+    # Returns:
+    #     List[int]: A list of unique CWE IDs.
 
-    >>> mock_cve_data = {
-    ... "containers": {
-    ... "cna": {
-    ... "providerMetadata": {
-    ... "orgId": "f0158376-9dc2-43b6-827c-5f631a4d8d09"
-    ...  },
-    ...  "title": "mod_macro buffer over-read",
-    ...  "problemTypes": [
-    ...    {
-    ...      "descriptions": [
-    ...        {
-    ...          "description": "CWE-125 Out-of-bounds Read",
-    ...          "lang": "en",
-    ...          "cweId": "CWE-125",
-    ...          "type": "CWE"
-    ...        }
-    ...      ]
-    ...    }
-    ...  ]
-    ... }
-    ... }
-    ... }
-    >>> get_weaknesses(mock_cve_data)
-    [125]
-    """
-    problem_types = cve_data.get("containers", {}).get("cna", {}).get("problemTypes", [])
-    descriptions = problem_types[0].get("descriptions", []) if len(problem_types) > 0 else []
-    cwe_string = descriptions[0].get("cweId", "") if len(descriptions) > 0 else ""
-    cwe_pattern = r"CWE-\d+"
-    description = descriptions[0].get("description", "") if len(descriptions) > 0 else ""
-    matches = re.findall(cwe_pattern, description)
+    # Examples:
+    #     >>> mock_cve_data1 = {
+    #     ...     "containers": {
+    #     ...         "cna": {
+    #     ...             "providerMetadata": {
+    #     ...                 "orgId": "f0158376-9dc2-43b6-827c-5f631a4d8d09"
+    #     ...             },
+    #     ...             "title": "mod_macro buffer over-read",
+    #     ...             "problemTypes": [
+    #     ...                 {
+    #     ...                     "descriptions": [
+    #     ...                         {
+    #     ...                             "description": "CWE-125 Out-of-bounds Read",
+    #     ...                             "lang": "en",
+    #     ...                             "cweId": "CWE-125",
+    #     ...                             "type": "CWE"
+    #     ...                         }
+    #     ...                     ]
+    #     ...                 }
+    #     ...             ]
+    #     ...         }
+    #     ...     }
+    #     ... }
+    #     >>> mock_cve_data2 = {
+    #     ...     "data_type": "CVE",
+    #     ...     "data_format": "MITRE",
+    #     ...     "data_version": "4.0",
+    #     ...     "generator": {
+    #     ...         "engine": "Vulnogram 0.0.9"
+    #     ...     },
+    #     ...     "CVE_data_meta": {
+    #     ...         "ID": "CVE-2022-28614",
+    #     ...         "ASSIGNER": "security@apache.org",
+    #     ...         "TITLE": "read beyond bounds via ap_rwrite() ",
+    #     ...         "STATE": "PUBLIC"
+    #     ...     },
+    #     ...     "problemtype": {
+    #     ...         "problemtype_data": [
+    #     ...             {
+    #     ...                 "description": [
+    #     ...                     {
+    #     ...                         "lang": "eng",
+    #     ...                         "value": "CWE-190 Integer Overflow or Wraparound"
+    #     ...                     }
+    #     ...                 ]
+    #     ...             },
+    #     ...             {
+    #     ...                 "description": [
+    #     ...                     {
+    #     ...                         "lang": "eng",
+    #     ...                         "value": "CWE-200 Exposure of Sensitive Information to an Unauthorized Actor"
+    #     ...                     }
+    #     ...                 ]
+    #     ...             }
+    #     ...         ]
+    #     ...     }
+    #     ... }
+
+    #     >>> get_weaknesses(mock_cve_data1)
+    #     [125]
+
+    #     >>> get_weaknesses(mock_cve_data2)
+    #     [190, 200]
+    # """
+
+    alias = get_item(cve_data, "CVE_data_meta", "ID")
+    cwe_id = []
     db = Database()
-    weaknesses = []
-    cwe_string_from_description = ""
-    if matches:
-        cwe_string_from_description = matches[0]
-    if cwe_string or cwe_string_from_description:
-        if cwe_string:
-            cwe_id = get_cwe_id(cwe_string)
-            try:
-                db.get(cwe_id)
-                weaknesses.append(cwe_id)
-            except Exception:
-                logger.error("Invalid CWE id")
-        elif cwe_string_from_description:
-            cwe_id = get_cwe_id(cwe_string_from_description)
-            try:
-                db.get(cwe_id)
-                weaknesses.append(cwe_id)
-            except Exception:
-                logger.error("Invalid CWE id")
+    if alias:
+        problemtype_data = get_item(cve_data, "problemtype", "problemtype_data") or []
+        for problem in problemtype_data:
+            for desc in problem["description"]:
+                value = desc.get("value", "")
+                cwe_pattern = r"CWE-\d+"
+                cwe_id_string_list = re.findall(cwe_pattern, value)
+                for cwe_id_string in cwe_id_string_list:
+                    cwe_id.append(get_cwe_id(cwe_id_string))
 
-    seen = set()
-    unique_cwe = [x for x in weaknesses if not (x in seen or seen.add(x))]
-    return unique_cwe
+    else:
+        problemTypes = cve_data.get("containers", {}).get("cna", {}).get("problemTypes", [])
+        descriptions = problemTypes[0].get("descriptions", []) if len(problemTypes) > 0 else []
+        for description in descriptions:
+            cwe_id_string = description.get("cweId", "")
+            cwe_id.append(get_cwe_id(cwe_id_string))
+
+    weaknesses = []
+    for cwe in cwe_id:
+        try:
+            db.get(cwe)
+            weaknesses.append(cwe)
+        except Exception:
+            logger.error("Invalid CWE id")
+
+    return weaknesses

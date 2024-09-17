@@ -26,7 +26,7 @@ from rest_framework.serializers import ValidationError
 from rest_framework.throttling import AnonRateThrottle
 
 from vulnerabilities.api import BaseResourceSerializer
-from vulnerabilities.models import Kev
+from vulnerabilities.models import Exploit
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
@@ -105,8 +105,21 @@ class V2WeaknessFullSerializer(ModelSerializer):
 
 class V2ExploitSerializer(ModelSerializer):
     class Meta:
-        model = Kev
-        fields = ("description", "required_action", "date_added", "due_date", "resources_and_notes")
+        model = Exploit
+        fields = [
+            "date_added",
+            "description",
+            "required_action",
+            "due_date",
+            "notes",
+            "known_ransomware_campaign_use",
+            "source_date_published",
+            "exploit_type",
+            "platform",
+            "source_date_updated",
+            "data_source",
+            "source_url",
+        ]
 
 
 class V2VulnerabilitySerializer(ModelSerializer):

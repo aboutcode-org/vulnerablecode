@@ -7,7 +7,7 @@ import pytest
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Exploit
 from vulnerabilities.models import Vulnerability
-from vulnerabilities.pipelines.metasploit import MetasploitImproverPipeline
+from vulnerabilities.pipelines.enhance_with_metasploit import MetasploitImproverPipeline
 from vulnerabilities.utils import load_json
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))

@@ -38,7 +38,7 @@ def reverse_update_created_by(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("vulnerabilities", "0062_package_is_ghost"),
+        ("vulnerabilities", "0063_alter_packagechangelog_software_version_and_more"),
     ]
 
     operations = [

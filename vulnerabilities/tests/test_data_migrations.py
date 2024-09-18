@@ -620,8 +620,8 @@ class TestRemoveDupedPurlsWithSameQualifiers(TestMigrations):
 
 class TestUpdateNpmPypaAdvisoryCreatedByField(TestMigrations):
     app_name = "vulnerabilities"
-    migrate_from = "0062_package_is_ghost"
-    migrate_to = "0063_update_npm_pypa_advisory_created_by"
+    migrate_from = "0063_alter_packagechangelog_software_version_and_more"
+    migrate_to = "0064_update_npm_pypa_advisory_created_by"
 
     advisory_data1 = AdvisoryData(
         aliases=["CVE-2020-13371337"],

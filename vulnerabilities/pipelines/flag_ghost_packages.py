@@ -23,6 +23,8 @@ from vulnerabilities.pipelines import VulnerableCodePipeline
 class FlagGhostPackagePipeline(VulnerableCodePipeline):
     """Detect and flag packages that do not exist upstream."""
 
+    pipeline_id = "flag_ghost_packages"
+
     @classmethod
     def steps(cls):
         return (cls.flag_ghost_packages,)

@@ -14,8 +14,8 @@ from univers.versions import SemverVersion
 
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importers.npm import NpmImporter
 from vulnerabilities.models import *
+from vulnerabilities.pipelines.npm_importer import NpmImporterPipeline
 
 
 @pytest.mark.django_db
@@ -23,7 +23,7 @@ def test_package_changelog():
     pkg, _ = Package.objects.get_or_create_from_purl("pkg:npm/foo@1.0.0")
     assert PackageChangeLog.objects.filter(package=pkg).count() == 0
     adv = Advisory.objects.create(
-        created_by=NpmImporter.qualified_name,
+        created_by=NpmImporterPipeline.pipeline_id,
         summary="TEST",
         date_collected=datetime.now(),
         url="https://test.com/source",
@@ -38,9 +38,9 @@ def test_package_changelog():
         ],
         aliases=["CVE-123"],
     )
-    ImportRunner(NpmImporter).do_import([adv])
+    NpmImporterPipeline().import_advisory(advisory=adv)
     assert PackageChangeLog.objects.filter(package=pkg).count() == 1
-    ImportRunner(NpmImporter).do_import([adv])
+    NpmImporterPipeline().import_advisory(advisory=adv)
     assert PackageChangeLog.objects.filter(package=pkg).count() == 1
     assert (
         PackageChangeLog.objects.filter(action_type=PackageChangeLog.FIXING, package=pkg).count()
@@ -49,7 +49,7 @@ def test_package_changelog():
     pkg1, _ = Package.objects.get_or_create_from_purl("pkg:npm/foo@2.0.0")
     assert PackageChangeLog.objects.filter(package=pkg1).count() == 0
     adv = Advisory.objects.create(
-        created_by=NpmImporter.qualified_name,
+        created_by=NpmImporterPipeline.pipeline_id,
         summary="TEST-1",
         date_collected=datetime.now(),
         url="https://test.com/source-1",
@@ -64,9 +64,9 @@ def test_package_changelog():
         ],
         aliases=["CVE-145"],
     )
-    ImportRunner(NpmImporter).do_import([adv])
+    NpmImporterPipeline().import_advisory(advisory=adv)
     assert PackageChangeLog.objects.filter(package=pkg1).count() == 1
-    ImportRunner(NpmImporter).do_import([adv])
+    NpmImporterPipeline().import_advisory(advisory=adv)
     assert PackageChangeLog.objects.filter(package=pkg1).count() == 1
     assert (
         PackageChangeLog.objects.filter(
@@ -79,7 +79,7 @@ def test_package_changelog():
 @pytest.mark.django_db
 def test_vulnerability_changelog():
     adv = Advisory.objects.create(
-        created_by=NpmImporter.qualified_name,
+        created_by=NpmImporterPipeline.pipeline_id,
         summary="TEST_1",
         date_collected=datetime.now(),
         url="https://test.com/source",
@@ -94,11 +94,11 @@ def test_vulnerability_changelog():
         ],
         aliases=["CVE-TEST-1234"],
     )
-    ImportRunner(NpmImporter).do_import([adv])
+    NpmImporterPipeline().import_advisory(advisory=adv)
     # 1 Changelogs is expected here:
     # 1 for importing vuln details
     assert VulnerabilityChangeLog.objects.count() == 1
-    ImportRunner(NpmImporter).do_import([adv])
+    NpmImporterPipeline().import_advisory(advisory=adv)
     assert VulnerabilityChangeLog.objects.count() == 1
     assert (
         VulnerabilityChangeLog.objects.filter(action_type=VulnerabilityChangeLog.IMPORT).count()

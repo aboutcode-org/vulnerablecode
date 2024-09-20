@@ -56,14 +56,15 @@ class Command(BaseCommand):
         failed_improvers = []
 
         for improver in improvers:
-            self.stdout.write(f"Improving data using {improver.qualified_name}")
             if issubclass(improver, VulnerableCodePipeline):
+                self.stdout.write(f"Improving data using {improver.pipeline_id}")
                 status, error = improver().execute()
                 if status != 0:
                     self.stdout.write(error)
-                    failed_improvers.append(improver.qualified_name)
+                    failed_improvers.append(improver.pipeline_id)
                 continue
 
+            self.stdout.write(f"Improving data using {improver.qualified_name}")
             try:
                 ImproveRunner(improver_class=improver).run()
                 self.stdout.write(

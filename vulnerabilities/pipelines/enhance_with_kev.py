@@ -7,8 +7,6 @@ from vulnerabilities.models import Alias
 from vulnerabilities.models import Exploit
 from vulnerabilities.pipelines import VulnerableCodePipeline
 
-module_logger = logging.getLogger(__name__)
-
 
 class VulnerabilityKevPipeline(VulnerableCodePipeline):
     """

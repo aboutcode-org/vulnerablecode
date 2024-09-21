@@ -16,7 +16,8 @@ class MetasploitImproverPipeline(VulnerableCodePipeline):
     by their associated aliases, and create or update the corresponding Exploit instances.
     """
 
-    license_expression = "BSD-3-clause"
+    pipeline_id = "enhance_with_metasploit"
+    spdx_license_expression = "BSD-3-clause"
 
     @classmethod
     def steps(cls):

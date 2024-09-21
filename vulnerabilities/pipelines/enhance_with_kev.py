@@ -14,6 +14,8 @@ class VulnerabilityKevPipeline(VulnerableCodePipeline):
     by their associated aliases, and create or update the corresponding Exploit instances.
     """
 
+    pipeline_id = "enhance_with_kev"
+
     @classmethod
     def steps(cls):
         return (

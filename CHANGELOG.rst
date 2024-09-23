@@ -1,6 +1,172 @@
 Release notes
 =============
 
+Version v34.0.1
+-------------------
+
+- Add Pipeline to flag ghost packages (#1533)
+- Add logging configuration (#1533)
+- Drop support for python 3.8 (#1533)
+- Drop using docker-compose and use the built-in "docker compose" instead
+- Upgrade core dependencies including Django and Rest Framework
+- Fix typo in KEV improver (#1594)
+
+
+Version v34.0.0
+-------------------
+
+- Improve API performance.
+- Add severity range score in API.
+- Refactor GitlabDataSource to work with browser extension
+
+
+Version v34.0.0rc5
+-------------------
+
+- Add safetydb importer.
+- Add missing width setting for the table in the vulnerability details UI.
+- Add KEV support.
+- Add UI template for API.
+- Use VersionRange.normalize to compare advisory.
+- Use integer column to display score.
+- Add support for CVSSv4 & SSVC and import the data using vulnrichment.
+- Add support for reference_type in the API.
+- Add API improvements for the package endpoint.
+
+
+Version v34.0.0rc4
+-------------------
+
+- Drop migration for removing duplicated changelogs.
+
+
+Version v34.0.0rc3
+-------------------
+
+- Add resource URL to the vulnerability and package details view in the API serializers (#1423)
+- Add support for all osv ecosystems (#926)
+- Add RubyImporter to git_importer test_git_importer_clone (#799)
+- Remove duplicated changelogs (#1400)
+- Fix Encoding Type in Fireeye Importer (#1404)
+- Add license_url for GitHub Importer (#1392)
+- Add support for CVSS vectors display (#1312)
+
+
+Version v34.0.0rc2
+-------------------
+
+- We updated package-url models, WARNING: in next major version of 
+  vulnerablecode i.e v35.0.0 qualifiers will be of type ``string`` and not ``dict``.
+- We added changelog and dates on packages and vulnerabilities.
+- We fixed table borders in Vulnerability details UI #1356 (#1358)
+- We added robots.txt in views.
+- We fixed import runner's process_inferences (#1360)
+- We fixed debian OVAL importer (#1361)
+- We added graph model diagrams #977(#1350)
+- We added endpoint for purl lookup (#1359)
+- We fixed swagger API docs generation (#1366)
+- Fix issues https://github.com/nexB/vulnerablecode/issues/1385, https://github.com/nexB/vulnerablecode/issues/1387
+
+
+Version v34.0.0rc1
+-------------------
+
+- We updated package-url models, WARNING: in next major version of 
+  vulnerablecode i.e v35.0.0 qualifiers will be of type ``string`` and not ``dict``.
+- We added changelog and dates on packages and vulnerabilities.
+- We fixed table borders in Vulnerability details UI #1356 (#1358)
+- We added robots.txt in views.
+- We fixed import runner's process_inferences (#1360)
+- We fixed debian OVAL importer (#1361)
+- We added graph model diagrams #977(#1350)
+- We added endpoint for purl lookup (#1359)
+- We fixed swagger API docs generation (#1366)
+
+
+Version v33.6.5
+-------------------
+
+- We added /var/www/html as volume in nginx Docker compose (#1373).
+
+
+Version v33.6.4
+-------------------
+
+- We added /var/www/html as volume in Docker compose (#1371).
+
+
+Version v33.6.3
+----------------
+
+- We updated RTD build configuration.
+- We added importer for OSS-Fuzz.
+- We removed vulnerabilities with empty aliases.
+- We fixed search encoding issue https://github.com/nexB/vulnerablecode/issues/1336.
+- We added middleware to ban "bytedance" user-agent.
+
+
+Version v33.6.2
+----------------
+
+- We added note about CSRF_TRUSTED_ORIGINS.
+- We added proper acknowledgements for NGI projects.
+- We added throttling for anonymous users.
+
+Version v33.6.1
+----------------
+
+- We added pagination to valid versions improver.
+
+
+Version v33.6.0
+----------------
+
+- We added support to write packages and vulnerabilities at the time of import.
+
+
+Version v33.5.0
+----------------
+
+- We fixed a text-overflow issue in the Essentials tab of the Vulnerability details template.
+- We added clickable links to the Essentials tab of the Vulnerability details template that enable
+  the user to navigate to the Fixed by packages tab and the Affected packages tab.
+- We fixed severity range issue for handling unknown scores.
+
+Version v33.4.0
+----------------
+
+- We added importer specific improvers and removed default improver
+  additionally improve recent advisories first.
+
+
+Version v33.3.0
+----------------
+
+- We filtered out the weakness that are not presented in the
+  cwe2.database before passing them into the vulnerability details view.
+
+
+Version v33.2.0
+-----------------
+
+- We fixed NVD importer to import the latest data by adding weakness
+  in unique content ID for advisories.
+
+
+Version v33.1.0
+-----------------
+
+- We have paginated the default improver and added keyboard interrupt support for import and improve processes.
+- We bumped PyYaml to 6.0.1 and saneyaml to 0.6.0 and dropped docker-compose.
+
+
+Version v33.0.0
+-----------------
+
+- We have dropped ``unresolved_vulnerabilities`` from /api/package endpoint API response.
+- We have added missing quotes for href values in template.
+- We have fixed merge functionality of AffectedPackage.
+
 
 Version v32.0.1
 -----------------
@@ -20,9 +186,9 @@ Version v32.0.0rc4
 -------------------
 
 - We added loading of env for GitHub datasource in vulntotal.
-- We fixed import process in github importer in vulnerablecode reported here 
+- We fixed import process in github importer in vulnerablecode reported here
   https://github.com/nexB/vulnerablecode/issues/1142.
-- We added an improver to get all package versions 
+- We added an improver to get all package versions
   of all ecosystems for a range of affected packages.
 - We added documentation for configuring throttling rate for API endpoints.
 - We fixed kbmsr2019 importer.

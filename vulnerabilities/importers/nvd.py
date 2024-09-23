@@ -59,6 +59,7 @@ class NVDImporter(Importer):
         INFORMATION THEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
         MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
     """
+    importer_name = "NVD Importer"
 
     def advisory_data(self):
         for _year, cve_data in fetch_cve_data_1_1():
@@ -162,6 +163,16 @@ class CveItem:
         """
         severities = []
         impact = self.cve_item.get("impact") or {}
+        base_metric_v4 = impact.get("baseMetricV4") or {}
+        if base_metric_v4:
+            cvss_v4 = base_metric_v4.get("cvssV4") or {}
+            vs = VulnerabilitySeverity(
+                system=severity_systems.CVSSV4,
+                value=str(cvss_v4.get("baseScore") or ""),
+                scoring_elements=str(cvss_v4.get("vectorString") or ""),
+            )
+            severities.append(vs)
+
         base_metric_v3 = impact.get("baseMetricV3") or {}
         if base_metric_v3:
             cvss_v3 = get_item(base_metric_v3, "cvssV3")
@@ -266,6 +277,7 @@ class CveItem:
             references=self.references,
             date_published=dateparser.parse(self.cve_item.get("publishedDate")),
             weaknesses=self.weaknesses,
+            url=f"https://nvd.nist.gov/vuln/detail/{self.cve_id}",
         )
 
 

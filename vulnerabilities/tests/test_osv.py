@@ -13,6 +13,7 @@ from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
 from univers.version_range import PypiVersionRange
 from univers.versions import PypiVersion
+from univers.versions import SemverVersion
 
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
@@ -353,12 +354,18 @@ class TestOSVImporter(TestCase):
         assert results == expected
 
     def test_get_fixed_versions1(self):
-        assert get_fixed_versions(fixed_range={}, raw_id="GHSA-j3f7-7rmc-6wqj") == []
+        assert (
+            get_fixed_versions(
+                fixed_range={}, raw_id="GHSA-j3f7-7rmc-6wqj", supported_ecosystem="pypi"
+            )
+            == []
+        )
 
     def test_get_fixed_versions2(self):
         results = get_fixed_versions(
             fixed_range={"type": "ECOSYSTEM", "events": [{"introduced": "0"}, {"fixed": "1.7.0"}]},
             raw_id="GHSA-j3f7-7rmc-6wqj",
+            supported_ecosystem="pypi",
         )
         assert results == [PypiVersion("1.7.0")]
 
@@ -374,6 +381,19 @@ class TestOSVImporter(TestCase):
                 ],
             },
             raw_id="GHSA-j3f7-7rmc-6wqj",
+            supported_ecosystem="pypi",
         )
 
         assert results == [PypiVersion("9.0.0"), PypiVersion("9.0.1")]
+
+    def test_get_fixed_versions4(self):
+        results = get_fixed_versions(
+            fixed_range={
+                "type": "ECOSYSTEM",
+                "events": [{"introduced": "0"}, {"fixed": "6.5.4"}],
+            },
+            raw_id="GHSA-r9p9-mrjm-926w",
+            supported_ecosystem="npm",
+        )
+
+        assert results == [SemverVersion("6.5.4")]

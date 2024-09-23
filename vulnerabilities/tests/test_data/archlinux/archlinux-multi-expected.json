@@ -10,9 +10,9 @@
           "type": "alpm",
           "namespace": "archlinux",
           "name": "python-pyjwt",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:alpm/2.3.0-1",
         "fixed_version": "2.4.0-1"
@@ -21,6 +21,7 @@
     "references": [
       {
         "reference_id": "AVG-2781",
+        "reference_type": "",
         "url": "https://security.archlinux.org/AVG-2781",
         "severities": [
           {
@@ -32,7 +33,8 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://security.archlinux.org/AVG-2781"
   },
   {
     "aliases": [
@@ -45,9 +47,9 @@
           "type": "alpm",
           "namespace": "archlinux",
           "name": "wpewebkit",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:alpm/2.36.3-1",
         "fixed_version": "2.36.4-1"
@@ -56,6 +58,7 @@
     "references": [
       {
         "reference_id": "AVG-2780",
+        "reference_type": "",
         "url": "https://security.archlinux.org/AVG-2780",
         "severities": [
           {
@@ -67,7 +70,8 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://security.archlinux.org/AVG-2780"
   },
   {
     "aliases": [
@@ -80,9 +84,9 @@
           "type": "alpm",
           "namespace": "archlinux",
           "name": "wpewebkit",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:alpm/2.36.3-1",
         "fixed_version": "2.36.4-1"
@@ -91,6 +95,7 @@
     "references": [
       {
         "reference_id": "AVG-2780",
+        "reference_type": "",
         "url": "https://security.archlinux.org/AVG-2780",
         "severities": [
           {
@@ -102,7 +107,8 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://security.archlinux.org/AVG-2780"
   },
   {
     "aliases": [
@@ -115,9 +121,9 @@
           "type": "alpm",
           "namespace": "archlinux",
           "name": "wpewebkit",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:alpm/2.36.3-1",
         "fixed_version": "2.36.4-1"
@@ -126,6 +132,7 @@
     "references": [
       {
         "reference_id": "AVG-2780",
+        "reference_type": "",
         "url": "https://security.archlinux.org/AVG-2780",
         "severities": [
           {
@@ -137,7 +144,8 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://security.archlinux.org/AVG-2780"
   },
   {
     "aliases": [
@@ -150,9 +158,9 @@
           "type": "alpm",
           "namespace": "archlinux",
           "name": "bzip2",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:alpm/1.0.6-5",
         "fixed_version": "1.0.6-6"
@@ -161,6 +169,7 @@
     "references": [
       {
         "reference_id": "AVG-4",
+        "reference_type": "",
         "url": "https://security.archlinux.org/AVG-4",
         "severities": [
           {
@@ -172,11 +181,13 @@
       },
       {
         "reference_id": "ASA-201702-19",
+        "reference_type": "",
         "url": "https://security.archlinux.org/ASA-201702-19",
         "severities": []
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://security.archlinux.org/AVG-4"
   }
 ]

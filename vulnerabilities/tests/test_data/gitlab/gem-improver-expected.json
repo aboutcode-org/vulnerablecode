@@ -9,24 +9,25 @@
     "affected_purls": [
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activejob",
         "version": "4.2.0.beta1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "gem",
-      "namespace": null,
+      "namespace": "",
       "name": "activejob",
       "version": "4.2.0.beta2",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "http://weblog.rubyonrails.org/2014/9/29/Rails-4-2-0-beta2-has-been-released/",
         "severities": []
       }
@@ -43,24 +44,25 @@
     "affected_purls": [
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activejob",
         "version": "4.2.0.beta1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "gem",
-      "namespace": null,
+      "namespace": "",
       "name": "activejob",
       "version": "4.2.0.beta2",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "http://weblog.rubyonrails.org/2014/9/29/Rails-4-2-0-beta2-has-been-released/",
         "severities": []
       }

@@ -9,40 +9,41 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "httpd",
         "version": "2.4.8",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "httpd",
         "version": "2.4.9",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "httpd",
         "version": "2.4.10",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "httpd",
       "version": "2.4.53",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2021-44224",
+        "reference_type": "",
         "url": "https://httpd.apache.org/security/json/CVE-2021-44224.json",
         "severities": [
           {
@@ -65,32 +66,33 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "httpd",
         "version": "2.4.7",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "httpd",
         "version": "2.4.51",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "httpd",
       "version": "2.4.52",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2021-44224",
+        "reference_type": "",
         "url": "https://httpd.apache.org/security/json/CVE-2021-44224.json",
         "severities": [
           {

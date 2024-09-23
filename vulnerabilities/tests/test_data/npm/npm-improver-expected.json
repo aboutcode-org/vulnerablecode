@@ -1,0 +1,196 @@
+[
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2013-4116"
+    ],
+    "confidence": 100,
+    "summary": "Predictable temp filenames allow overwrite of arbitrary files\nnpm versions before 1.3.3 allows local users to overwrite arbitrary files via a symlink attack on temporary files with predictable names that are created when unpacking archives.",
+    "affected_purls": [
+      {
+        "type": "npm",
+        "namespace": "",
+        "name": "npm",
+        "version": "0.1.0",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      {
+        "type": "npm",
+        "namespace": "",
+        "name": "npm",
+        "version": "0.5.2",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      {
+        "type": "npm",
+        "namespace": "",
+        "name": "npm",
+        "version": "0.5.6",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      {
+        "type": "npm",
+        "namespace": "",
+        "name": "npm",
+        "version": "1.1.1",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      {
+        "type": "npm",
+        "namespace": "",
+        "name": "npm",
+        "version": "1.1.2",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      {
+        "type": "npm",
+        "namespace": "",
+        "name": "npm",
+        "version": "1.1.3",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      {
+        "type": "npm",
+        "namespace": "",
+        "name": "npm",
+        "version": "1.1.4",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      {
+        "type": "npm",
+        "namespace": "",
+        "name": "npm",
+        "version": "1.1.5",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      {
+        "type": "npm",
+        "namespace": "",
+        "name": "npm",
+        "version": "1.1.6",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      {
+        "type": "npm",
+        "namespace": "",
+        "name": "npm",
+        "version": "1.1.7",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      {
+        "type": "npm",
+        "namespace": "",
+        "name": "npm",
+        "version": "1.1.8",
+        "qualifiers": "",
+        "subpath": ""
+      }
+    ],
+    "fixed_purl": null,
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://github.com/npm/npm/issues/3635",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": 3.2,
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "http://www.openwall.com/lists/oss-security/2013/07/10/17",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": 3.2,
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": 152,
+        "reference_type": "",
+        "url": "https://github.com/nodejs/security-wg/blob/main/vuln/npm/152.json",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": 3.2,
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "weaknesses": []
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2013-4116"
+    ],
+    "confidence": 100,
+    "summary": "Predictable temp filenames allow overwrite of arbitrary files\nnpm versions before 1.3.3 allows local users to overwrite arbitrary files via a symlink attack on temporary files with predictable names that are created when unpacking archives.",
+    "affected_purls": [],
+    "fixed_purl": {
+      "type": "npm",
+      "namespace": "",
+      "name": "npm",
+      "version": "1.3.3",
+      "qualifiers": "",
+      "subpath": ""
+    },
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://github.com/npm/npm/issues/3635",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": 3.2,
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "http://www.openwall.com/lists/oss-security/2013/07/10/17",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": 3.2,
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": 152,
+        "reference_type": "",
+        "url": "https://github.com/nodejs/security-wg/blob/main/vuln/npm/152.json",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": 3.2,
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "weaknesses": []
+  }
+]

@@ -1,0 +1,208 @@
+{
+  "aliases": [
+    "CVE-2011-0447",
+    "GHSA-24fg-p96v-hxh8"
+  ],
+  "summary": "Moderate severity vulnerability that affects rails\nRuby on Rails 2.1.x, 2.2.x, and 2.3.x before 2.3.11, and 3.x before 3.0.4, does not properly validate HTTP requests that contain an X-Requested-With header, which makes it easier for remote attackers to conduct cross-site request forgery (CSRF) attacks via forged (1) AJAX or (2) API requests that leverage \"combinations of browser plugins and HTTP redirects,\" a related issue to CVE-2011-0696.",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "gem",
+        "namespace": null,
+        "name": "rails",
+        "version": null,
+        "qualifiers": null,
+        "subpath": null
+      },
+      "affected_version_range": null,
+      "fixed_version": "2.3.11"
+    },
+    {
+      "package": {
+        "type": "gem",
+        "namespace": null,
+        "name": "rails",
+        "version": null,
+        "qualifiers": null,
+        "subpath": null
+      },
+      "affected_version_range": null,
+      "fixed_version": "3.0.4"
+    }
+  ],
+  "references": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2011-0447",
+      "severities": [
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/advisories/GHSA-24fg-p96v-hxh8",
+      "severities": [
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://groups.google.com/group/rubyonrails-security/msg/c22ea1668c0d181c?dmode=source&output=gplain",
+      "severities": [
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://lists.fedoraproject.org/pipermail/package-announce/2011-April/057650.html",
+      "severities": [
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://lists.fedoraproject.org/pipermail/package-announce/2011-March/055074.html",
+      "severities": [
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://lists.fedoraproject.org/pipermail/package-announce/2011-March/055088.html",
+      "severities": [
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://secunia.com/advisories/43274",
+      "severities": [
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://secunia.com/advisories/43666",
+      "severities": [
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://weblog.rubyonrails.org/2011/2/8/csrf-protection-bypass-in-ruby-on-rails",
+      "severities": [
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://www.debian.org/security/2011/dsa-2247",
+      "severities": [
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://www.securityfocus.com/bid/46291",
+      "severities": [
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://www.securitytracker.com/id?1025060",
+      "severities": [
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://www.vupen.com/english/advisories/2011/0587",
+      "severities": [
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://www.vupen.com/english/advisories/2011/0877",
+      "severities": [
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    }
+  ],
+  "date_published": "2017-10-24T18:33:38+00:00",
+  "weaknesses": [
+    352
+  ],
+    "url": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/github_osv_test_4.json"
+}

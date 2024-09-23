@@ -1,0 +1,35 @@
+/* this is the container for the pages */
+.wy-nav-content {
+    max-width: 100%;
+    padding: 0px 40px 0px 0px;
+    margin-top: 0px;
+    background-color: #fcfcfc;
+}
+
+.wy-nav-content-wrap {
+    background-color: #fcfcfc;
+    border-right: solid 1px #e8e8e8;
+}
+
+div.rst-content {
+    max-width: 1300px;
+    background-color: #fcfcfc;
+    border: 0;
+    padding: 0px 80px 10px 80px;
+    margin-left: 50px;
+}
+
+
+@media (max-width: 768px) {
+    div.rst-content {
+            max-width: 1300px;
+            background-color: #fcfcfc;
+            border: 0;
+            padding: 0px 10px 10px 10px;
+            margin-left: 0px;
+        }
+}
+
+.with-shadow {
+    box-shadow: 1px 1px 5px 3px #cccccc;
+}

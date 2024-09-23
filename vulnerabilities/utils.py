@@ -17,21 +17,25 @@ import re
 import urllib.request
 from collections import defaultdict
 from functools import total_ordering
-from hashlib import sha256
+from http import HTTPStatus
 from typing import List
 from typing import Optional
 from typing import Tuple
+from typing import Union
 from unittest.mock import MagicMock
-from uuid import uuid4
+from urllib.parse import urljoin
 
 import requests
 import saneyaml
 import toml
 import urllib3
 from packageurl import PackageURL
+from packageurl.contrib.django.utils import without_empty_values
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import NginxVersionRange
 from univers.version_range import VersionRange
+
+from aboutcode.hashid import build_vcid  # NOQA
 
 logger = logging.getLogger(__name__)
 
@@ -136,28 +140,23 @@ class VersionedPackage:
         return self.version < other.version
 
 
-def evolve_purl(purl, **kwargs):
+def update_purl_version(purl, version):
     """
-    Return a new PackageURL derived from the ``purl`` PackageURL where any of
-    the provided kwarg replaces the corresponding attribute of this PackageURL.
-    Qaulifiers if provided must be a mapping
+    Return a new PackageURL derived from the ``purl`` PackageURL object or string
+    with the new version.
+
     For example::
     >>> purl = PackageURL.from_string("pkg:generic/this@1.2.3")
-    >>> evolved = PackageURL.from_string("pkg:npm/@baz/that@2.2.3?foo=bar")
-    >>> evolve_purl(purl,
-    ...   type="npm", namespace="@baz", name="that",
-    ...   version="2.2.3", qualifiers={"foo": "bar"}
-    ... ) == evolved
+    >>> evolved = PackageURL.from_string("pkg:generic/this@2.2.3")
+    >>> update_purl_version(purl, version="2.2.3") == evolved
     True
-
     """
-    if not kwargs:
-        return PackageURL.from_string(str(purl))
-
-    kwargs = {name: value for name, value in kwargs.items() if hasattr(purl, name)}
+    purl = normalize_purl(purl=purl)
+    if not version:
+        return purl
     merged = purl.to_dict()
-    merged.update(kwargs)
-    return PackageURL(**merged)
+    merged["version"] = version
+    return normalize_purl(PackageURL(**merged))
 
 
 def nearest_patched_package(
@@ -358,77 +357,21 @@ def resolve_version_range(
     return affected_versions, unaffected_versions
 
 
-def build_vcid(prefix="VCID"):
-    """
-    Return a new VulnerableCode VCID unique identifier string using the ``prefix``.
-
-    For example::
-    >>> import re
-    >>> vcid = build_vcid()
-    >>> # VCID-6npv-94wz-hhuq
-    >>> assert re.match('VCID(-[a-z1-9]{4}){3}', vcid), vcid
-    """
-    # we keep only 64 bits (e.g. 8 bytes)
-    uid = sha256(uuid4().bytes).digest()[:8]
-    # we keep only 12 encoded bytes (which corresponds to 60 bits)
-    uid = base32_custom(uid)[:12].decode("utf-8").lower()
-    return f"{prefix}-{uid[:4]}-{uid[4:8]}-{uid[8:12]}"
-
-
-_base32_alphabet = b"ABCDEFGHJKMNPQRSTUVWXYZ123456789"
-_base32_table = None
-
-
-def base32_custom(btes):
-    """
-    Encode the ``btes`` bytes object using a Base32 encoding using a custom
-    alphabet and return a bytes object.
-
-    Code copied and modified from the Python Standard Library:
-    base64.b32encode function
-
-    SPDX-License-Identifier: Python-2.0
-    Copyright (c) The Python Software Foundation
-
-    For example::
-    >>> assert base32_custom(b'abcd') == b'ABTZE25E', base32_custom(b'abcd')
-    >>> assert base32_custom(b'abcde00000xxxxxPPPPP') == b'PFUGG3DFGA2DAPBTSB6HT8D2MBJFAXCT'
-    """
-    global _base32_table
-    # Delay the initialization of the table to not waste memory
-    # if the function is never called
-    if _base32_table is None:
-        b32tab = [bytes((i,)) for i in _base32_alphabet]
-        _base32_table = [a + b for a in b32tab for b in b32tab]
-
-    encoded = bytearray()
-    from_bytes = int.from_bytes
-
-    for i in range(0, len(btes), 5):
-        c = from_bytes(btes[i : i + 5], "big")
-        encoded += (
-            _base32_table[c >> 30]
-            + _base32_table[(c >> 20) & 0x3FF]  # bits 1 - 10
-            + _base32_table[(c >> 10) & 0x3FF]  # bits 11 - 20
-            + _base32_table[c & 0x3FF]  # bits 21 - 30  # bits 31 - 40
-        )
-    return bytes(encoded)
-
-
 def fetch_response(url):
     """
     Fetch and return `response` from the `url`
     """
     response = requests.get(url)
-    if response.status_code == 200:
+    if response.status_code == HTTPStatus.OK:
         return response
     raise Exception(f"Failed to fetch data from {url!r} with status code: {response.status_code!r}")
 
 
 # This should be a method on PackageURL
-def remove_qualifiers_and_subpath(purl):
+def plain_purl(purl):
     """
-    Return a package URL without qualifiers and subpath
+    Return a PackageURL without qualifiers and subpath
+    given a purl string or PackageURL object
     """
     if not isinstance(purl, PackageURL):
         purl = PackageURL.from_string(purl)
@@ -502,3 +445,94 @@ def is_vulnerable_nginx_version(version, affected_version_range, fixed_versions)
                 return False
         return True
     return False
+
+
+def get_severity_range(severity_list):
+    """
+    >>> get_severity_range({'LOW','7.5','5'})
+    '0.1 - 7.5'
+    >>> get_severity_range({'LOW','Medium'})
+    '0.1 - 6.9'
+    >>> get_severity_range({'9.5','critical'})
+    '9.0 - 10.0'
+    >>> get_severity_range({'9.5','critical','unknown'})
+    '9.0 - 10.0'
+    >>> get_severity_range({})
+    """
+    if len(severity_list) < 1:
+        return
+    score_map = {
+        "low": [0.1, 3],
+        "moderate": [4.0, 6.9],
+        "medium": [4.0, 6.9],
+        "high": [7.0, 8.9],
+        "important": [7.0, 8.9],
+        "critical": [9.0, 10.0],
+    }
+
+    score_list = []
+    for score in severity_list:
+        try:
+            score_list.append(float(score))
+        except ValueError:
+            score_range = score_map.get(score.lower()) or []
+            if score_range:
+                score_list.extend(score_range)
+    if not score_list:
+        return
+    return f"{min(score_list)} - {max(score_list)}"
+
+
+def get_importer_name(advisory):
+    """
+    Return the ``importer_name`` of the ``advisory`` that created
+    the ``advisory``
+    """
+    # Importer name can be empty for importers that are being tested
+    importer_name = ""
+    from vulnerabilities.importers import IMPORTERS_REGISTRY
+
+    importer = IMPORTERS_REGISTRY.get(advisory.created_by) or ""
+    if hasattr(importer, "importer_name"):
+        importer_name = importer.importer_name
+    return importer_name
+
+
+def get_advisory_url(file, base_path, url):
+    """
+    Return the advisory URL constructed by combining the base URL with the relative file path.
+    """
+    relative_path = str(file.relative_to(base_path)).strip("/")
+    advisory_url = urljoin(url, relative_path)
+    return advisory_url
+
+
+def purl_to_dict(purl: Union[PackageURL, str], with_empty: bool = True):
+    """
+    Return a dict of purl components suitable for use in a queryset.
+    We need to have specific empty values for using in querysets because of our peculiar model structure.
+
+    For example::
+    >>> purl_to_dict(PackageURL.from_string("pkg:generic/postgres"))
+    {'type': 'generic', 'namespace': '', 'name': 'postgres', 'version': '', 'qualifiers': '', 'subpath': ''}
+    >>> purl_to_dict(PackageURL.from_string("pkg:generic/postgres/postgres@1.2?foo=bar#baz"))
+    {'type': 'generic', 'namespace': 'postgres', 'name': 'postgres', 'version': '1.2', 'qualifiers': 'foo=bar', 'subpath': 'baz'}
+    """
+    if isinstance(purl, str):
+        purl = PackageURL.from_string(purl)
+
+    mapping = purl.to_dict(encode=True, empty="")
+
+    if not with_empty:
+        return without_empty_values(mapping)
+
+    return mapping
+
+
+def normalize_purl(purl: Union[PackageURL, str]):
+    """
+    Return a normalized purl object from a purl string or purl object.
+    """
+    if isinstance(purl, PackageURL):
+        purl = str(purl)
+    return PackageURL.from_string(purl)

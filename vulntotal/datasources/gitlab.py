@@ -31,19 +31,27 @@ class GitlabDataSource(DataSource):
     license_url = "TODO"
 
     def datasource_advisory(self, purl) -> Iterable[VendorData]:
+        """
+        Fetches advisories for a given purl from the GitLab API.
+
+        Parameters:
+            purl: A PackageURL instance representing the package to query.
+
+        Yields:
+            VendorData instance containing the advisory information for the package.
+        """
         package_slug = get_package_slug(purl)
-        location = download_subtree(package_slug, speculative_execution=True)
-        if not location:
-            clear_download(location)
+        directory_files = fetch_directory_contents(package_slug)
+        if not directory_files:
             path = self.supported_ecosystem()[purl.type]
             casesensitive_package_slug = get_casesensitive_slug(path, package_slug)
-            location = download_subtree(casesensitive_package_slug)
-        if location:
-            interesting_advisories = parse_interesting_advisories(
-                location, purl, delete_download=True
-            )
+            directory_files = fetch_directory_contents(casesensitive_package_slug)
+
+        if directory_files:
+            yml_files = [file for file in directory_files if file["name"].endswith(".yml")]
+
+            interesting_advisories = parse_interesting_advisories(yml_files, purl)
             return interesting_advisories
-        clear_download(location)
 
     @classmethod
     def supported_ecosystem(cls):
@@ -59,7 +67,31 @@ class GitlabDataSource(DataSource):
         }
 
 
+def fetch_directory_contents(package_slug):
+    url = f"https://gitlab.com/api/v4/projects/12006272/repository/tree?path={package_slug}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
+
+
+def fetch_yaml(file_path):
+    response = requests.get(
+        f"https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/raw/master/{file_path}"
+    )
+    if response.status_code == 200:
+        return response.text
+
+
 def get_package_slug(purl):
+    """
+    Constructs a package slug from a given purl.
+
+    Parameters:
+        purl: A PackageURL instance representing the package to query.
+
+    Returns:
+        A string representing the package slug, or None if the purl type is not supported by GitLab.
+    """
     supported_ecosystem = GitlabDataSource.supported_ecosystem()
 
     if purl.type not in supported_ecosystem:
@@ -72,27 +104,6 @@ def get_package_slug(purl):
         package_name = f"{purl.namespace}/{purl.name}"
 
     return f"{ecosystem}/{package_name}"
-
-
-def download_subtree(package_slug: str, speculative_execution=False):
-    url = f"https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/archive/master/gemnasium-db-master.tar.gz?path={package_slug}"
-    response = fetch(url)
-    if os.path.getsize(response.location) > 0:
-        extracted_location = Path(response.location).parent.joinpath(
-            "temp_vulntotal_gitlab_datasource"
-        )
-        with tarfile.open(response.location, "r") as file_obj:
-            file_obj.extractall(extracted_location)
-        os.remove(response.location)
-        return extracted_location
-    if not speculative_execution:
-        logger.error(f"{package_slug} doesn't exist")
-    os.remove(response.location)
-
-
-def clear_download(location):
-    if location:
-        shutil.rmtree(location)
 
 
 def get_casesensitive_slug(path, package_slug):
@@ -133,9 +144,9 @@ def get_casesensitive_slug(path, package_slug):
         }
     ]
     url = "https://gitlab.com/api/graphql"
-    hasnext = True
+    has_next = True
 
-    while hasnext:
+    while has_next:
         response = requests.post(url, json=payload).json()
         paginated_tree = response[0]["data"]["project"]["repository"]["paginatedTree"]
 
@@ -146,20 +157,28 @@ def get_casesensitive_slug(path, package_slug):
 
             # If the namespace/subfolder contains multiple packages, then progressive transverse through folders tree
             if package_slug.lower().startswith(slug_flatpath.lower()):
-                return get_gitlab_style_slug(slug_flatpath, package_slug)
+                return get_casesensitive_slug(slug_flatpath, package_slug)
 
         payload[0]["variables"]["nextPageCursor"] = paginated_tree["pageInfo"]["endCursor"]
-        hasnext = paginated_tree["pageInfo"]["hasNextPage"]
+        has_next = paginated_tree["pageInfo"]["hasNextPage"]
 
 
-def parse_interesting_advisories(location, purl, delete_download=False) -> Iterable[VendorData]:
+def parse_interesting_advisories(yml_files, purl) -> Iterable[VendorData]:
+    """
+    Parses advisories from YAML files in a given location that match a given version.
+
+    Parameters:
+        yml_files: An array having the paths of yml files to parse.
+        purl: PURL for the advisory.
+
+    Yields:
+        VendorData instance containing the advisory information for the package.
+    """
     version = purl.version
-    path = Path(location)
-    glob = "**/*.yml"
-    files = (p for p in path.glob(glob) if p.is_file())
-    for file in sorted(files):
-        with open(file) as f:
-            gitlab_advisory = saneyaml.load(f)
+
+    for file in yml_files:
+        yml_data = fetch_yaml(file["path"])
+        gitlab_advisory = saneyaml.load(yml_data)
         affected_range = gitlab_advisory["affected_range"]
         if gitlab_constraints_satisfied(affected_range, version):
             yield VendorData(
@@ -168,5 +187,3 @@ def parse_interesting_advisories(location, purl, delete_download=False) -> Itera
                 affected_versions=[affected_range],
                 fixed_versions=gitlab_advisory["fixed_versions"],
             )
-    if delete_download:
-        clear_download(location)

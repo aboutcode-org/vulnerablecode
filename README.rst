@@ -66,18 +66,18 @@ Getting started
 Run with Docker
 ^^^^^^^^^^^^^^^^
 
-First install docker and docker-compose, then run::
+First install docker, then run::
 
     git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
     make envfile
-    docker-compose build
-    docker-compose up -d
-    docker-compose run vulnerablecode ./manage.py import --list
+    docker compose build
+    docker compose up -d
+    docker compose run vulnerablecode ./manage.py import --list
 
 Then run an importer for nginx advisories (which is small)::
 
-    docker-compose exec vulnerablecode ./manage.py import vulnerabilities.importers.nginx.NginxImporter
-    docker-compose exec vulnerablecode ./manage.py improve --all
+    docker compose exec vulnerablecode ./manage.py import vulnerabilities.importers.nginx.NginxImporter
+    docker compose exec vulnerablecode ./manage.py improve --all
 
 At this point, the VulnerableCode app and API should be up and running with
 some data at http://localhost
@@ -105,6 +105,7 @@ On a Debian system, use this::
     git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
     make dev envfile postgres
     make test
+    source venv/bin/activate
     ./manage.py import vulnerabilities.importers.nginx.NginxImporter
     ./manage.py improve --all
     make run
@@ -145,3 +146,20 @@ See https://creativecommons.org/licenses/by-sa/4.0/legalcode for the license tex
 See https://github.com/nexB/vulnerablecode for support or download. 
 
 See https://aboutcode.org for more information about nexB OSS projects.
+
+Acknowledgements
+^^^^^^^^^^^^^^^^
+
+This project was funded through the NGI0 PET Fund, a fund established by
+NLnet with financial support from the European Commission's Next Generation
+Internet programme, under the aegis of DG Communications Networks, Content
+and Technology under grant agreement No 825310.
+
+https://nlnet.nl/project/VulnerableCode/
+
+This project was funded through the NGI0 Discovery Fund, a fund established
+by NLnet with financial support from the European Commission's Next Generation
+Internet programme, under the aegis of DG Communications Networks, Content
+and Technology under grant agreement No 825322.
+
+https://nlnet.nl/project/vulnerabilitydatabase/

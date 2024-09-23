@@ -8,6 +8,7 @@
     "references": [
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml",
         "severities": [
           {
@@ -24,7 +25,8 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml"
   },
   {
     "aliases": [
@@ -35,6 +37,7 @@
     "references": [
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml",
         "severities": [
           {
@@ -46,6 +49,7 @@
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml"
   }
 ]

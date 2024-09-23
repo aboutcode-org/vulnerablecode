@@ -11,8 +11,14 @@ from django.apps import apps
 from django.db import connection
 from django.db.migrations.executor import MigrationExecutor
 from django.test import TestCase
+from django.utils import timezone
+from packageurl import PackageURL
+from univers.version_range import VersionRange
 
 from vulnerabilities import severity_systems
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import Reference
 
 
 class TestMigrations(TestCase):
@@ -568,3 +574,110 @@ class RemoveCorrupteAdvisories(TestMigrations):
         # using get_model to avoid circular import
         Advisory = self.apps.get_model("vulnerabilities", "Advisory")
         Advisory.objects.all().count() == 0
+
+
+class RemoveVulnerabilitiesWithEmptyAliases(TestMigrations):
+    app_name = "vulnerabilities"
+    migrate_from = "0040_remove_advisory_date_improved_advisory_date_imported"
+    migrate_to = "0041_remove_vulns_with_empty_aliases"
+
+    def setUpBeforeMigration(self, apps):
+        # using get_model to avoid circular import
+        Vulnerability = apps.get_model("vulnerabilities", "Vulnerability")
+        Alias = apps.get_model("vulnerabilities", "Alias")
+
+        vuln = Vulnerability.objects.create(
+            summary="Corrupted vuln",
+        )
+        vuln.save()
+        vuln = Vulnerability.objects.create(
+            summary="vuln",
+        )
+        vuln.save()
+        Alias.objects.create(alias="CVE-123", vulnerability=vuln)
+
+    def test_removal_of_corrupted_vulns(self):
+        # using get_model to avoid circular import
+        Vulnerability = self.apps.get_model("vulnerabilities", "Vulnerability")
+        Vulnerability.objects.all().count() == 1
+
+
+class TestRemoveDupedPurlsWithSameQualifiers(TestMigrations):
+    app_name = "vulnerabilities"
+    migrate_from = "0043_alter_advisory_unique_together_advisory_url_and_more"
+    migrate_to = "0045_remove_duplicated_purls_with_same_qualifiers"
+
+    def setUpBeforeMigration(self, apps):
+        Package = apps.get_model("vulnerabilities", "Package")
+        self.pkg1 = Package.objects.create(type="nginx", name="nginx", qualifiers={"os": "windows"})
+
+        pkg2 = Package.objects.create(type="nginx", name="nginx", qualifiers="os=windows")
+
+    def test_removal_of_duped_purls(self):
+        Package = apps.get_model("vulnerabilities", "Package")
+        assert Package.objects.count() == 1
+
+
+class TestUpdateNpmPypaAdvisoryCreatedByField(TestMigrations):
+    app_name = "vulnerabilities"
+    migrate_from = "0063_alter_packagechangelog_software_version_and_more"
+    migrate_to = "0064_update_npm_pypa_advisory_created_by"
+
+    advisory_data1 = AdvisoryData(
+        aliases=["CVE-2020-13371337"],
+        summary="vulnerability description here",
+        affected_packages=[
+            AffectedPackage(
+                package=PackageURL(type="npm", name="dummy"),
+                affected_version_range=VersionRange.from_string("vers:npm/>=1.0.0|<=2.0.0"),
+            )
+        ],
+        references=[Reference(url="https://example.com/with/more/info/CVE-2020-13371337")],
+        date_published=timezone.now(),
+        url="https://test.com",
+    )
+    advisory_data2 = AdvisoryData(
+        aliases=["CVE-2020-1337"],
+        summary="vulnerability description here",
+        affected_packages=[
+            AffectedPackage(
+                package=PackageURL(type="pypi", name="dummy"),
+                affected_version_range=VersionRange.from_string("vers:pypi/>=1.0.0|<=2.0.0"),
+            )
+        ],
+        references=[Reference(url="https://example.com/with/more/info/CVE-2020-1337")],
+        date_published=timezone.now(),
+        url="https://test2.com",
+    )
+
+    def setUpBeforeMigration(self, apps):
+        Advisory = apps.get_model("vulnerabilities", "Advisory")
+        adv1 = Advisory.objects.create(
+            aliases=self.advisory_data1.aliases,
+            summary=self.advisory_data1.summary,
+            affected_packages=[pkg.to_dict() for pkg in self.advisory_data1.affected_packages],
+            references=[ref.to_dict() for ref in self.advisory_data1.references],
+            url=self.advisory_data1.url,
+            created_by="vulnerabilities.importers.npm.NpmImporter",
+            date_collected=timezone.now(),
+        )
+
+        adv2 = Advisory.objects.create(
+            aliases=self.advisory_data2.aliases,
+            summary=self.advisory_data2.summary,
+            affected_packages=[pkg.to_dict() for pkg in self.advisory_data2.affected_packages],
+            references=[ref.to_dict() for ref in self.advisory_data2.references],
+            url=self.advisory_data2.url,
+            created_by="vulnerabilities.importers.pypa.PyPaImporter",
+            date_collected=timezone.now(),
+        )
+
+    def test_removal_of_duped_purls(self):
+        Advisory = apps.get_model("vulnerabilities", "Advisory")
+        adv = Advisory.objects.all()
+
+        assert adv.filter(created_by="vulnerabilities.importers.pypa.PyPaImporter").count() == 0
+        assert adv.filter(created_by="pypa_importer").count() == 1
+
+        assert adv.filter(created_by="vulnerabilities.importers.npm.NpmImporter").count() == 0
+        assert adv.filter(created_by="npm_importer").count() == 1

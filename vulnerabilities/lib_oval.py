@@ -62,8 +62,8 @@ subclasses for definition, test, state, object, and variable
 
 Available exceptions:
     - None at this time
-    
-    
+
+
 :Usage:
 
 1. Create an OvalDocument:
@@ -80,21 +80,21 @@ Available exceptions:
 
 3. Read an XML file with a single OVAL Definition (error checking omitted for brevity):
 
-    >>> tree = ElementTree()    
+    >>> tree = ElementTree()
     >>> tree.parse('test-definition.xml')
-    >>> root = tree.getroot()    
+    >>> root = tree.getroot()
     >>> definition = lib_oval.OvalDefinition(root)
-    
+
 4. Change information in the definition from #3 and write the changes
 
     >>> meta = definition.getMetadata()
     >>> repo = meta.getOvalRepositoryInformation()
     >>> repo.setMinimumSchemaVersion("5.9")
     >>> tree.write("outfilename.xml", UTF-8", True)
-        
 
 
-  
+
+
 
 TODO:
     - Add exceptions that give more detail about why a value of None is sometimes returned
@@ -253,7 +253,6 @@ class OvalDocument(object):
             return False
 
     def to_string(self):
-
         if not self.tree:
             return None
 
@@ -766,6 +765,12 @@ class OvalElement(object):
 
         self.element.set("version", version)
         return True
+
+    def __lt__(self, other):
+        try:
+            return int(self.element.get("version")) < int(other.element.get("version"))
+        except:
+            return NotImplemented
 
     def incrementVersion(self):
         version = self.getVersion()

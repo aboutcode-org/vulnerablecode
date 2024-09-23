@@ -1,0 +1,234 @@
+{
+  "aliases": [
+    "CVE-2023-2727",
+    "GHSA-qc2g-gmh6-95p4"
+  ],
+  "summary": "kube-apiserver vulnerable to policy bypass\nUsers may be able to launch containers using images that are restricted by ImagePolicyWebhook when using ephemeral containers. Kubernetes clusters are only affected if the ImagePolicyWebhook admission plugin is used together with ephemeral containers.",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "golang",
+        "namespace": "k8s.io",
+        "name": "kubernetes",
+        "version": null,
+        "qualifiers": null,
+        "subpath": null
+      },
+      "affected_version_range": null,
+      "fixed_version": "1.27.3"
+    },
+    {
+      "package": {
+        "type": "golang",
+        "namespace": "k8s.io",
+        "name": "kubernetes",
+        "version": null,
+        "qualifiers": null,
+        "subpath": null
+      },
+      "affected_version_range": null,
+      "fixed_version": "1.26.6"
+    },
+    {
+      "package": {
+        "type": "golang",
+        "namespace": "k8s.io",
+        "name": "kubernetes",
+        "version": null,
+        "qualifiers": null,
+        "subpath": null
+      },
+      "affected_version_range": null,
+      "fixed_version": "1.25.11"
+    },
+    {
+      "package": {
+        "type": "golang",
+        "namespace": "k8s.io",
+        "name": "kubernetes",
+        "version": null,
+        "qualifiers": null,
+        "subpath": null
+      },
+      "affected_version_range": null,
+      "fixed_version": "1.24.15"
+    }
+  ],
+  "references": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-2727",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "6.5",
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:N"
+        },
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/kubernetes/kubernetes/issues/118640",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "6.5",
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:N"
+        },
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/kubernetes/kubernetes/pull/118356",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "6.5",
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:N"
+        },
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/kubernetes/kubernetes/pull/118471",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "6.5",
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:N"
+        },
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/kubernetes/kubernetes/pull/118473",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "6.5",
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:N"
+        },
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/kubernetes/kubernetes/pull/118474",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "6.5",
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:N"
+        },
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/kubernetes/kubernetes/pull/118512",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "6.5",
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:N"
+        },
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/kubernetes/kubernetes",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "6.5",
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:N"
+        },
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://groups.google.com/g/kubernetes-security-announce/c/vPWYJ_L84m8",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "6.5",
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:N"
+        },
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://www.openwall.com/lists/oss-security/2023/07/06/2",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "6.5",
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:N"
+        },
+        {
+          "system": "generic_textual",
+          "value": "MODERATE",
+          "scoring_elements": ""
+        }
+      ]
+    }
+  ],
+  "date_published": "2023-07-03T21:30:57+00:00",
+  "weaknesses": [
+    20
+  ],
+  "url": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/github_osv_test_5.json"
+}

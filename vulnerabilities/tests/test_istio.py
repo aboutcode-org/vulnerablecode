@@ -9,6 +9,7 @@
 
 import json
 import os
+from pathlib import Path
 from unittest import mock
 
 from vulnerabilities.importer import AdvisoryData
@@ -46,7 +47,9 @@ def test_istio_get_data_from_md():
 def test_istio_process_file():
     path = os.path.join(TEST_DIR, "test_file.md")
     expected_file = os.path.join(TEST_DIR, f"istio-expected.json")
-    result = [data.to_dict() for data in list(IstioImporter().process_file(path))]
+    result = [
+        data.to_dict() for data in list(IstioImporter().process_file(Path(path), Path(path).parent))
+    ]
     util_tests.check_results_against_json(result, expected_file)
 
 

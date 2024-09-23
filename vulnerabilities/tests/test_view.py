@@ -67,29 +67,31 @@ class PackageSearchTestCase(TestCase):
     def test_package_view_with_purl_fragment(self):
         qs = PackageSearch().get_queryset(query="nginx@1.0.15")
         pkgs = list(qs)
-        self.assertEqual(len(pkgs), 1)
+        self.assertEqual(len(pkgs), 2)
         self.assertEqual(pkgs[0].purl, "pkg:nginx/nginx@1.0.15")
+        self.assertEqual(pkgs[1].purl, "pkg:nginx/nginx@1.0.15?foo=bar")
 
-    def test_package_view_with_purl_fragment(self):
+    def test_package_view_with_purl_fragment_2(self):
         qs = PackageSearch().get_queryset(query="nginx/nginx")
         pkgs = list(qs)
         pkgs = [p.purl for p in pkgs]
-        assert pkgs == [
+        expected = [
             "pkg:nginx/nginx@0.6.18",
-            "pkg:nginx/nginx@1.20.0",
-            "pkg:nginx/nginx@1.21.0",
-            "pkg:nginx/nginx@1.20.1",
-            "pkg:nginx/nginx@1.9.5",
-            "pkg:nginx/nginx@1.17.2",
-            "pkg:nginx/nginx@1.17.3",
-            "pkg:nginx/nginx@1.16.1",
-            "pkg:nginx/nginx@1.15.5",
-            "pkg:nginx/nginx@1.15.6",
-            "pkg:nginx/nginx@1.14.1",
-            "pkg:nginx/nginx@1.0.7",
             "pkg:nginx/nginx@1.0.15",
             "pkg:nginx/nginx@1.0.15?foo=bar",
+            "pkg:nginx/nginx@1.0.7",
+            "pkg:nginx/nginx@1.14.1",
+            "pkg:nginx/nginx@1.15.5",
+            "pkg:nginx/nginx@1.15.6",
+            "pkg:nginx/nginx@1.16.1",
+            "pkg:nginx/nginx@1.17.2",
+            "pkg:nginx/nginx@1.17.3",
+            "pkg:nginx/nginx@1.20.0",
+            "pkg:nginx/nginx@1.20.1",
+            "pkg:nginx/nginx@1.21.0",
+            "pkg:nginx/nginx@1.9.5",
         ]
+        assert pkgs == expected
 
     def test_package_view_with_valid_purl_without_version(self):
         qs = PackageSearch().get_queryset(query="pkg:nginx/nginx")
@@ -97,19 +99,19 @@ class PackageSearchTestCase(TestCase):
         pkgs = [p.purl for p in pkgs]
         assert pkgs == [
             "pkg:nginx/nginx@0.6.18",
-            "pkg:nginx/nginx@1.20.0",
-            "pkg:nginx/nginx@1.21.0",
-            "pkg:nginx/nginx@1.20.1",
-            "pkg:nginx/nginx@1.9.5",
-            "pkg:nginx/nginx@1.17.2",
-            "pkg:nginx/nginx@1.17.3",
-            "pkg:nginx/nginx@1.16.1",
-            "pkg:nginx/nginx@1.15.5",
-            "pkg:nginx/nginx@1.15.6",
-            "pkg:nginx/nginx@1.14.1",
-            "pkg:nginx/nginx@1.0.7",
             "pkg:nginx/nginx@1.0.15",
             "pkg:nginx/nginx@1.0.15?foo=bar",
+            "pkg:nginx/nginx@1.0.7",
+            "pkg:nginx/nginx@1.14.1",
+            "pkg:nginx/nginx@1.15.5",
+            "pkg:nginx/nginx@1.15.6",
+            "pkg:nginx/nginx@1.16.1",
+            "pkg:nginx/nginx@1.17.2",
+            "pkg:nginx/nginx@1.17.3",
+            "pkg:nginx/nginx@1.20.0",
+            "pkg:nginx/nginx@1.20.1",
+            "pkg:nginx/nginx@1.21.0",
+            "pkg:nginx/nginx@1.9.5",
         ]
 
     def test_package_view_with_valid_purl_and_incomplete_version(self):
@@ -117,19 +119,19 @@ class PackageSearchTestCase(TestCase):
         pkgs = list(qs)
         pkgs = [p.purl for p in pkgs]
         assert pkgs == [
-            "pkg:nginx/nginx@1.20.0",
-            "pkg:nginx/nginx@1.21.0",
-            "pkg:nginx/nginx@1.20.1",
-            "pkg:nginx/nginx@1.9.5",
-            "pkg:nginx/nginx@1.17.2",
-            "pkg:nginx/nginx@1.17.3",
-            "pkg:nginx/nginx@1.16.1",
-            "pkg:nginx/nginx@1.15.5",
-            "pkg:nginx/nginx@1.15.6",
-            "pkg:nginx/nginx@1.14.1",
-            "pkg:nginx/nginx@1.0.7",
             "pkg:nginx/nginx@1.0.15",
             "pkg:nginx/nginx@1.0.15?foo=bar",
+            "pkg:nginx/nginx@1.0.7",
+            "pkg:nginx/nginx@1.14.1",
+            "pkg:nginx/nginx@1.15.5",
+            "pkg:nginx/nginx@1.15.6",
+            "pkg:nginx/nginx@1.16.1",
+            "pkg:nginx/nginx@1.17.2",
+            "pkg:nginx/nginx@1.17.3",
+            "pkg:nginx/nginx@1.20.0",
+            "pkg:nginx/nginx@1.20.1",
+            "pkg:nginx/nginx@1.21.0",
+            "pkg:nginx/nginx@1.9.5",
         ]
 
     def test_package_view_with_purl_type(self):
@@ -166,3 +168,11 @@ class VulnerabilitySearchTestCase(TestCase):
     def test_vulnerabilties_search_view_can_find_alias(self):
         response = self.client.get(f"/vulnerabilities/search?search=TEST-2022")
         self.assertEqual(response.status_code, 200)
+
+
+class CheckRobotsTxtTestCase(TestCase):
+    def test_robots_txt(self):
+        response = self.client.get("/robots.txt")
+        assert response.status_code == 200
+        response = self.client.post("/robots.txt")
+        assert response.status_code == 405

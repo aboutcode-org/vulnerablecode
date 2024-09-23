@@ -9,81 +9,82 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.5",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.6",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.7",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "1.1.8",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": null,
     "references": [
       {
         "reference_id": "CVE-2005-4836",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2005-4836",
         "severities": [
           {
@@ -109,78 +110,79 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.5",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.6",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.7",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "1.1.8",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": null,
     "references": [
       {
         "reference_id": "CVE-2005-4836",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2005-4836",
         "severities": [
           {
@@ -203,32 +205,33 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.0+M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.41",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "9.0.43",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2020-9484",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9484",
         "severities": [
           {
@@ -240,6 +243,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/apache/tomcat/commit/4785433a226a20df6acbea49296e1ce7e23de453",
         "severities": []
       }
@@ -259,16 +263,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.0.M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.41",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -276,12 +280,13 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "9.0.43",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2020-9484",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9484",
         "severities": [
           {
@@ -293,6 +298,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/apache/tomcat/commit/4785433a226a20df6acbea49296e1ce7e23de453",
         "severities": []
       }
@@ -309,32 +315,33 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.0+M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.41",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "9.0.43",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2021-25329",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-25329",
         "severities": [
           {
@@ -346,6 +353,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/apache/tomcat/commit/4785433a226a20df6acbea49296e1ce7e23de453",
         "severities": []
       }
@@ -365,16 +373,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.0.M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.41",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -382,12 +390,13 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "9.0.43",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2021-25329",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-25329",
         "severities": [
           {
@@ -399,6 +408,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/apache/tomcat/commit/4785433a226a20df6acbea49296e1ce7e23de453",
         "severities": []
       }
@@ -415,32 +425,33 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.0+M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.41",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "9.0.43",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2021-25122",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-25122",
         "severities": [
           {
@@ -452,6 +463,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/apache/tomcat/commit/d47c20a776e8919eaca8da9390a32bc8bf8210b1",
         "severities": []
       }
@@ -471,16 +483,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.0.M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.41",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -488,12 +500,13 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "9.0.43",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2021-25122",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-25122",
         "severities": [
           {
@@ -505,6 +518,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/apache/tomcat/commit/d47c20a776e8919eaca8da9390a32bc8bf8210b1",
         "severities": []
       }
@@ -521,32 +535,33 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.0+M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.34",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "9.0.35",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2020-9484",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9484",
         "severities": [
           {
@@ -558,6 +573,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/apache/tomcat/commit/3aa8f28db7efb311cdd1b6fe15a9cd3b167a2222",
         "severities": []
       }
@@ -577,16 +593,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.0.M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.34",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -594,12 +610,13 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "9.0.35",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2020-9484",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9484",
         "severities": [
           {
@@ -611,6 +628,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/apache/tomcat/commit/3aa8f28db7efb311cdd1b6fe15a9cd3b167a2222",
         "severities": []
       }
@@ -627,32 +645,33 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.0+M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "9.0.8",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "9.0.9",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2018-8014",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-8014",
         "severities": [
           {
@@ -664,6 +683,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=1831726",
         "severities": []
       }
@@ -683,16 +703,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.0.M1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "9.0.8",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -700,12 +720,13 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "9.0.9",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2018-8014",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-8014",
         "severities": [
           {
@@ -717,6 +738,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=1831726",
         "severities": []
       }
@@ -733,48 +755,49 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "8.0.0+RC1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "8.0.35",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "8.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "8.5.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "8.0.36",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2016-3092",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-3092",
         "severities": [
           {
@@ -786,11 +809,13 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=1743722",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=1743738",
         "severities": []
       }
@@ -807,48 +832,49 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "8.0.0+RC1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "8.0.35",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "8.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "8.5.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "8.5.3",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2016-3092",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-3092",
         "severities": [
           {
@@ -860,11 +886,13 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=1743722",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=1743738",
         "severities": []
       }
@@ -884,32 +912,32 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "8.0.0.RC1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "8.0.35",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "8.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "8.5.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -917,12 +945,13 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "8.0.36",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2016-3092",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-3092",
         "severities": [
           {
@@ -934,11 +963,13 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=1743722",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=1743738",
         "severities": []
       }
@@ -958,32 +989,32 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "8.0.0.RC1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "8.0.35",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "8.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "8.5.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -991,12 +1022,13 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "8.5.3",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2016-3092",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-3092",
         "severities": [
           {
@@ -1008,11 +1040,13 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=1743722",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=1743738",
         "severities": []
       }
@@ -1029,32 +1063,33 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2008-5515",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-5515",
         "severities": [
           {
@@ -1066,11 +1101,13 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=782757",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=783291",
         "severities": []
       }
@@ -1090,16 +1127,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -1107,12 +1144,13 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2008-5515",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-5515",
         "severities": [
           {
@@ -1124,11 +1162,13 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=782757",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=783291",
         "severities": []
       }
@@ -1145,32 +1185,33 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2009-0033",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0033",
         "severities": [
           {
@@ -1182,6 +1223,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=781362",
         "severities": []
       }
@@ -1201,16 +1243,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -1218,12 +1260,13 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2009-0033",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0033",
         "severities": [
           {
@@ -1235,6 +1278,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=781362",
         "severities": []
       }
@@ -1251,32 +1295,33 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2009-0580",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0580",
         "severities": [
           {
@@ -1288,6 +1333,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=781379",
         "severities": []
       }
@@ -1307,16 +1353,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -1324,12 +1370,13 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2009-0580",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0580",
         "severities": [
           {
@@ -1341,6 +1388,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=781379",
         "severities": []
       }
@@ -1357,32 +1405,33 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2009-0781",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0781",
         "severities": [
           {
@@ -1394,6 +1443,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=750928",
         "severities": []
       }
@@ -1413,16 +1463,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -1430,12 +1480,13 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2009-0781",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0781",
         "severities": [
           {
@@ -1447,6 +1498,7 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=750928",
         "severities": []
       }
@@ -1463,32 +1515,33 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2009-0783",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0783",
         "severities": [
           {
@@ -1500,11 +1553,13 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=681156",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=781542",
         "severities": []
       }
@@ -1524,16 +1579,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "5.5.27",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -1541,12 +1596,13 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "5.5.28",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2009-0783",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0783",
         "severities": [
           {
@@ -1558,11 +1614,13 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=681156",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://svn.apache.org/viewvc?view=rev&rev=781542",
         "severities": []
       }
@@ -1579,25 +1637,26 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.1.0+SVN",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.1.15",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": null,
     "references": [
       {
         "reference_id": "CVE-2005-4836",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2005-4836",
         "severities": [
           {
@@ -1623,22 +1682,23 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.1.SVN",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.1.15",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": null,
     "references": [
       {
         "reference_id": "CVE-2005-4836",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2005-4836",
         "severities": [
           {
@@ -1661,32 +1721,33 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.1.32",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.1.34",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "4.1.35",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2008-4308",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-4308",
         "severities": [
           {
@@ -1712,16 +1773,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.1.32",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.1.34",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -1729,12 +1790,13 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "4.1.35",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2008-4308",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-4308",
         "severities": [
           {
@@ -1757,72 +1819,73 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.0.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.0.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.0.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.0.6",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "4.1.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "4.1.3",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2002-0935",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-0935",
         "severities": [
           {
@@ -1848,56 +1911,56 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.0.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.0.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.0.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.0.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.0.6",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "4.1.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -1905,12 +1968,13 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "4.1.3",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2002-0935",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-0935",
         "severities": [
           {
@@ -1933,32 +1997,33 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.2.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.2.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "3.3.0-a",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2002-2007",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-2007",
         "severities": [
           {
@@ -1984,16 +2049,16 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.2.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.2.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -2001,12 +2066,13 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "3.3a",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2002-2007",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-2007",
         "severities": [
           {
@@ -2029,48 +2095,49 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.2.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.2.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "3.3.0-a",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2002-2006",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-2006",
         "severities": [
           {
@@ -2096,32 +2163,32 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.2.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -2129,12 +2196,13 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "3.3a",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2002-2006",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-2006",
         "severities": [
           {
@@ -2157,48 +2225,49 @@
     "affected_purls": [
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.1.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.2.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "apache",
-        "namespace": null,
+        "namespace": "",
         "name": "tomcat",
         "version": "3.2.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "apache",
-      "namespace": null,
+      "namespace": "",
       "name": "tomcat",
       "version": "3.3.0-a",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2000-0760",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2000-0760",
         "severities": [
           {
@@ -2224,32 +2293,32 @@
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "maven",
         "namespace": "org.apache.tomcat",
         "name": "tomcat",
         "version": "3.2.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
@@ -2257,12 +2326,13 @@
       "namespace": "org.apache.tomcat",
       "name": "tomcat",
       "version": "3.3a",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2000-0760",
+        "reference_type": "",
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2000-0760",
         "severities": [
           {

@@ -26,8 +26,6 @@ def no_rmtree(monkeypatch):
 # Step 3: Migrate all the tests
 collect_ignore = [
     "test_models.py",
-    "test_package_managers.py",
-    "test_ruby.py",
     "test_rust.py",
     "test_suse_backports.py",
     "test_suse.py",

@@ -11,9 +11,9 @@
           "type": "maven",
           "namespace": "org.apache.tomcat.embed",
           "name": "tomcat-embed-core",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:maven/>=8.0.0|<8.5.38",
         "fixed_version": null
@@ -22,6 +22,7 @@
     "references": [
       {
         "reference_id": "GHSA-qcxh-w3j9-58qr",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-qcxh-w3j9-58qr",
         "severities": [
           {
@@ -33,7 +34,8 @@
       }
     ],
     "date_published": "2021-05-24T18:12:20+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-qcxh-w3j9-58qr"
   },
   {
     "aliases": [
@@ -47,9 +49,9 @@
           "type": "maven",
           "namespace": "org.apache.tomcat.embed",
           "name": "tomcat-embed-core",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:maven/>=9.0.0|<9.0.16",
         "fixed_version": null
@@ -58,6 +60,7 @@
     "references": [
       {
         "reference_id": "GHSA-qcxh-w3j9-58qr",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-qcxh-w3j9-58qr",
         "severities": [
           {
@@ -69,7 +72,8 @@
       }
     ],
     "date_published": "2021-05-24T18:12:20+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-qcxh-w3j9-58qr"
   },
   {
     "aliases": [
@@ -83,9 +87,9 @@
           "type": "maven",
           "namespace": "org.apache.tomcat.embed",
           "name": "tomcat-embed-core",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:maven/>=7.0.0|<7.0.100",
         "fixed_version": null
@@ -94,6 +98,7 @@
     "references": [
       {
         "reference_id": "GHSA-c9hw-wf7x-jp9j",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-c9hw-wf7x-jp9j",
         "severities": [
           {
@@ -105,7 +110,8 @@
       }
     ],
     "date_published": "2021-05-24T18:12:20+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-c9hw-wf7x-jp9j"
   },
   {
     "aliases": [
@@ -119,9 +125,9 @@
           "type": "maven",
           "namespace": "org.apache.tomcat.embed",
           "name": "tomcat-embed-core",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:maven/>=8.0.0|<8.5.51",
         "fixed_version": null
@@ -130,6 +136,7 @@
     "references": [
       {
         "reference_id": "GHSA-c9hw-wf7x-jp9j",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-c9hw-wf7x-jp9j",
         "severities": [
           {
@@ -141,7 +148,8 @@
       }
     ],
     "date_published": "2021-05-24T18:12:20+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-c9hw-wf7x-jp9j"
   },
   {
     "aliases": [
@@ -155,9 +163,9 @@
           "type": "maven",
           "namespace": "org.apache.tomcat.embed",
           "name": "tomcat-embed-core",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:maven/>=9.0.0|<9.0.31",
         "fixed_version": "9.0.1"
@@ -166,6 +174,7 @@
     "references": [
       {
         "reference_id": "GHSA-c9hw-wf7x-jp9j",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-c9hw-wf7x-jp9j",
         "severities": [
           {
@@ -177,6 +186,7 @@
       }
     ],
     "date_published": "2021-05-24T18:12:20+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-c9hw-wf7x-jp9j"
   }
 ]

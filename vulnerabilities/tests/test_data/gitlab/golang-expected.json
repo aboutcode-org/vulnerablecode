@@ -21,15 +21,17 @@
   "references": [
     {
       "reference_id": "GHSA-x5c7-x7m2-rhmf",
+      "reference_type": "",
       "url": "https://github.com/mozilla/sops/security/advisories/GHSA-x5c7-x7m2-rhmf",
       "severities": []
     },
     {
       "reference_id": "GHSA-x5c7-x7m2-rhmf",
+      "reference_type": "",
       "url": "https://github.com/advisories/GHSA-x5c7-x7m2-rhmf",
       "severities": []
     }
   ],
   "date_published": "2021-05-20T00:00:00+00:00",
-  "weaknesses": []
+  "weaknesses": [1035,937]
 }

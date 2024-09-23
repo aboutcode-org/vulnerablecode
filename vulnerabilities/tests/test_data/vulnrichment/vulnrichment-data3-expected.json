@@ -1,0 +1,48 @@
+{
+  "aliases": [
+    "CVE-2024-4901"
+  ],
+  "summary": "An issue was discovered in GitLab CE/EE affecting all versions starting from 16.9 prior to 16.11.5, starting from 17.0 prior to 17.0.3, and starting from 17.1 prior to 17.1.1, where a stored XSS vulnerability could be imported from a project with malicious commit notes.",
+  "affected_packages": [],
+  "references": [
+    {
+      "reference_id": "461773",
+      "reference_type": "bug",
+      "url": "https://gitlab.com/gitlab-org/gitlab/-/issues/461773",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": 8.7,
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:N"
+        },
+        {
+          "system": "ssvc",
+          "value": "Track",
+          "scoring_elements": "SSVCv2/E:N/A:N/T:T/P:M/B:A/M:M/D:T/2024-06-28T03:55:15Z/"
+        }
+      ]
+    },
+    {
+      "reference_id": "2500163",
+      "reference_type": "exploit",
+      "url": "https://hackerone.com/reports/2500163",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": 8.7,
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:N"
+        },
+        {
+          "system": "ssvc",
+          "value": "Track",
+          "scoring_elements": "SSVCv2/E:N/A:N/T:T/P:M/B:A/M:M/D:T/2024-06-28T03:55:15Z/"
+        }
+      ]
+    }
+  ],
+  "date_published": "2024-06-26T23:31:05.422000+00:00",
+  "weaknesses": [
+    79
+  ],
+  "url": "http://test.com"
+}

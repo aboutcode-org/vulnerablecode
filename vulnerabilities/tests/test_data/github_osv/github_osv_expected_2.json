@@ -1,0 +1,83 @@
+{
+  "aliases": [
+    "CVE-2022-1036",
+    "GHSA-3qr6-qrqm-8v86"
+  ],
+  "summary": "Integer Overflow or Wraparound in Microweber\nIn Microweber prior to 1.2.12, a user can create an account with a password thousands of characters in length, leading to memory corruption/integer overflow. Version 1.2.2 sets maximum password length at 500 characters.",
+  "affected_packages": [
+
+  ],
+  "references": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-1036",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "7.5",
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        },
+        {
+          "system": "generic_textual",
+          "value": "HIGH",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/microweber/microweber/commit/82be4f0b4729be870ccefdae99a04833f134aa6a",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "7.5",
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        },
+        {
+          "system": "generic_textual",
+          "value": "HIGH",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/microweber/microweber",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "7.5",
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        },
+        {
+          "system": "generic_textual",
+          "value": "HIGH",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://huntr.dev/bounties/db615581-d5a9-4ca5-a3e9-7a39eceaa424",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "7.5",
+          "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        },
+        {
+          "system": "generic_textual",
+          "value": "HIGH",
+          "scoring_elements": ""
+        }
+      ]
+    }
+  ],
+  "date_published": "2022-03-23T00:00:23+00:00",
+  "weaknesses": [190],
+  "url": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/github_osv_test_2.json"
+}

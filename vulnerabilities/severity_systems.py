@@ -8,9 +8,11 @@
 #
 
 import dataclasses
+from datetime import datetime
 
 from cvss import CVSS2
 from cvss import CVSS3
+from cvss import CVSS4
 
 """
 Vulnerability scoring systems define scales, values and approach to score a
@@ -37,6 +39,9 @@ class ScoringSystem:
         """
         return NotImplementedError
 
+    def get(self, scoring_elements: str):
+        return NotImplementedError
+
 
 @dataclasses.dataclass(order=True)
 class Cvssv2ScoringSystem(ScoringSystem):
@@ -48,6 +53,10 @@ class Cvssv2ScoringSystem(ScoringSystem):
         '5.0'
         """
         return str(CVSS2(vector=scoring_elements).base_score)
+
+    def get(self, scoring_elements: str) -> dict:
+        scoring_elements = scoring_elements.strip()
+        return CVSS2(vector=scoring_elements).as_json()
 
 
 CVSSV2 = Cvssv2ScoringSystem(
@@ -71,6 +80,26 @@ class Cvssv3ScoringSystem(ScoringSystem):
         """
         return str(CVSS3(vector=scoring_elements).base_score)
 
+    def get(self, scoring_elements: str) -> dict:
+        scoring_elements = scoring_elements.strip()
+        return CVSS3(vector=scoring_elements).as_json()
+
+
+@dataclasses.dataclass(order=True)
+class Cvssv4ScoringSystem(ScoringSystem):
+    def compute(self, scoring_elements: str) -> str:
+        """
+        Return a CVSSv4 base score
+
+        >>> CVSSV4.compute('CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:N')
+        '9.9'
+        """
+        return str(CVSS4(vector=scoring_elements).base_score)
+
+    def get(self, scoring_elements: str) -> dict:
+        scoring_elements = scoring_elements.strip()
+        return CVSS4(vector=scoring_elements).as_json()
+
 
 CVSSV3 = Cvssv3ScoringSystem(
     identifier="cvssv3",
@@ -84,6 +113,13 @@ CVSSV31 = Cvssv3ScoringSystem(
     name="CVSSv3.1 Base Score",
     url="https://www.first.org/cvss/v3-1/",
     notes="CVSSv3.1 base score and vector",
+)
+
+CVSSV4 = Cvssv4ScoringSystem(
+    identifier="cvssv4",
+    name="CVSSv4 Base Score",
+    url="https://www.first.org/cvss/v4-0/",
+    notes="CVSSv4 base score and vector",
 )
 
 REDHAT_BUGZILLA = ScoringSystem(
@@ -146,12 +182,39 @@ APACHE_TOMCAT.choices = [
     "Low",
 ]
 
+
+@dataclasses.dataclass(order=True)
+class EPSSScoringSystem(ScoringSystem):
+    def compute(self, scoring_elements: str):
+        return NotImplementedError
+
+
+EPSS = EPSSScoringSystem(
+    identifier="epss",
+    name="Exploit Prediction Scoring System",
+    url="https://www.first.org/epss/",
+)
+
+
+@dataclasses.dataclass(order=True)
+class SSVCScoringSystem(ScoringSystem):
+    def get(self, scoring_elements: str):
+        return {"version": "ssvc", "vectorString": scoring_elements}
+
+
+SSVC = SSVCScoringSystem(
+    identifier="ssvc",
+    name="Stakeholder-Specific Vulnerability Categorization",
+    url="https://www.cisa.gov/stakeholder-specific-vulnerability-categorization-ssvc",
+)
+
 SCORING_SYSTEMS = {
     system.identifier: system
     for system in (
         CVSSV2,
         CVSSV3,
         CVSSV31,
+        CVSSV4,
         REDHAT_BUGZILLA,
         REDHAT_AGGREGATE,
         ARCHLINUX,
@@ -159,5 +222,7 @@ SCORING_SYSTEMS = {
         GENERIC,
         APACHE_HTTPD,
         APACHE_TOMCAT,
+        EPSS,
+        SSVC,
     )
 }

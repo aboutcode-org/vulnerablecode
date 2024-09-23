@@ -62,16 +62,19 @@ class UbuntuUSNImporter(Importer):
     
     Thanks
     """
+    importer_name = "Ubuntu USN Importer"
 
     def advisory_data(self):
         usn_db = fetch(self.db_url)
         yield from self.to_advisories(usn_db=usn_db)
 
-    @staticmethod
-    def to_advisories(usn_db):
+    def to_advisories(self, usn_db):
         for usn in usn_db:
             usn_data = usn_db[usn]
-            references = get_usn_references(usn_data.get("id"))
+            usn_reference = get_usn_reference(usn_data.get("id"))
+            usn_references = []
+            if usn_reference:
+                usn_references = [usn_reference]
             for cve in usn_data.get("cves", []):
                 # The db sometimes contains entries like
                 # {'cves': ['python-pgsql vulnerabilities', 'CVE-2006-2313', 'CVE-2006-2314']}
@@ -82,14 +85,15 @@ class UbuntuUSNImporter(Importer):
                 yield AdvisoryData(
                     aliases=[cve],
                     summary="",
-                    references=references,
+                    references=usn_references,
+                    url=usn_reference.url or self.db_url,
                 )
 
 
-def get_usn_references(usn_id):
+def get_usn_reference(usn_id):
     if not usn_id:
-        return []
-    return [Reference(reference_id=f"USN-{usn_id}", url=f"https://usn.ubuntu.com/{usn_id}/")]
+        return None
+    return Reference(reference_id=f"USN-{usn_id}", url=f"https://usn.ubuntu.com/{usn_id}/")
 
 
 def fetch(url):

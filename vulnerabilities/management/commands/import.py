@@ -13,6 +13,7 @@ from django.core.management.base import CommandError
 
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.importers import IMPORTERS_REGISTRY
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 
 
 class Command(BaseCommand):
@@ -29,19 +30,20 @@ class Command(BaseCommand):
         parser.add_argument("sources", nargs="*", help="Fully qualified importer name to run")
 
     def handle(self, *args, **options):
-        if options["list"]:
-            self.list_sources()
-            return
-
-        if options["all"]:
-            self.import_data(importers=IMPORTERS_REGISTRY.values())
-            return
-
-        sources = options["sources"]
-        if not sources:
-            raise CommandError('Please provide at least one importer to run or use "--all".')
-
-        self.import_data(validate_importers(sources))
+        try:
+            if options["list"]:
+                self.list_sources()
+            elif options["all"]:
+                self.import_data(importers=IMPORTERS_REGISTRY.values())
+            else:
+                sources = options["sources"]
+                if not sources:
+                    raise CommandError(
+                        'Please provide at least one importer to run or use "--all".'
+                    )
+                self.import_data(validate_importers(sources))
+        except KeyboardInterrupt:
+            raise CommandError("Keyboard interrupt received. Stopping...")
 
     def list_sources(self):
         self.stdout.write("Vulnerability data can be imported from the following importers:")
@@ -55,6 +57,14 @@ class Command(BaseCommand):
         failed_importers = []
 
         for importer in importers:
+            if issubclass(importer, VulnerableCodeBaseImporterPipeline):
+                self.stdout.write(f"Importing data using {importer.pipeline_id}")
+                status, error = importer().execute()
+                if status != 0:
+                    self.stdout.write(error)
+                    failed_importers.append(importer.pipeline_id)
+                continue
+
             self.stdout.write(f"Importing data using {importer.qualified_name}")
             try:
                 ImportRunner(importer).run()

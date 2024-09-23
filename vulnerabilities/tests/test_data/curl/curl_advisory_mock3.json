@@ -1,0 +1,71 @@
+{
+    "schema_version": "1.5.0",
+    "id": "CURL-CVE-2023-46218",
+    "aliases": [
+      "CVE-2023-46218"
+    ],
+    "summary": "cookie mixed case PSL bypass",
+    "modified": "2024-01-12T23:40:27.00Z",
+    "database_specific": {
+      "package": "curl",
+      "URL": "https://curl.se/docs/CVE-2023-46218.json",
+      "www": "https://curl.se/docs/CVE-2023-46218.html",
+      "issue": "https://hackerone.com/reports/2212193",
+      "CWE": {
+        "id": "CWE-201",
+        "desc": "Information Exposure Through Sent Data"
+      },
+      "award": {
+        "amount": "2540",
+        "currency": "USD"
+      },
+      "last_affected": "8.4.0",
+      "severity": "Medium"
+    },
+    "published": "2023-12-06T08:00:00.00Z",
+    "affected": [
+      {
+        "ranges": [
+          {
+             "type": "SEMVER",
+             "events": [
+               {"introduced": "7.46.0"},
+               {"fixed": "8.5.0"}
+             ]
+          },
+          {
+             "type": "GIT",
+             "repo": "https://github.com/curl/curl.git",
+             "events": [
+               {"introduced": "e77b5b7453c1e8ccd7ec0816890d98e2f392e465"},
+               {"fixed": "2b0994c29a721c91c572cff7808c572a24d251eb"}
+             ]
+          }
+        ],
+        "versions": [
+          "8.4.0", "8.3.0", "8.2.1", "8.2.0", "8.1.2", "8.1.1", "8.1.0", 
+          "8.0.1", "8.0.0", "7.88.1", "7.88.0", "7.87.0", "7.86.0", "7.85.0", 
+          "7.84.0", "7.83.1", "7.83.0", "7.82.0", "7.81.0", "7.80.0", "7.79.1", 
+          "7.79.0", "7.78.0", "7.77.0", "7.76.1", "7.76.0", "7.75.0", "7.74.0", 
+          "7.73.0", "7.72.0", "7.71.1", "7.71.0", "7.70.0", "7.69.1", "7.69.0", 
+          "7.68.0", "7.67.0", "7.66.0", "7.65.3", "7.65.2", "7.65.1", "7.65.0", 
+          "7.64.1", "7.64.0", "7.63.0", "7.62.0", "7.61.1", "7.61.0", "7.60.0", 
+          "7.59.0", "7.58.0", "7.57.0", "7.56.1", "7.56.0", "7.55.1", "7.55.0", 
+          "7.54.1", "7.54.0", "7.53.1", "7.53.0", "7.52.1", "7.52.0", "7.51.0", 
+          "7.50.3", "7.50.2", "7.50.1", "7.50.0", "7.49.1", "7.49.0", "7.48.0", 
+          "7.47.1", "7.47.0", "7.46.0"
+        ]
+      }
+    ],
+    "credits": [
+      {
+        "name": "Harry Sintonen",
+        "type": "FINDER"
+      },
+      {
+        "name": "Daniel Stenberg",
+        "type": "REMEDIATION_DEVELOPER"
+      }
+    ],
+    "details": "This flaw allows a malicious HTTP server to set \"super cookies\" in curl that\nare then passed back to more origins than what is otherwise allowed or\npossible. This allows a site to set cookies that then would get sent to\ndifferent and unrelated sites and domains.\n\nIt could do this by exploiting a mixed case flaw in curl's function that\nverifies a given cookie domain against the Public Suffix List (PSL). For\nexample a cookie could be set with `domain=co.UK` when the URL used a\nlowercase hostname `curl.co.uk`, even though `co.uk` is listed as a PSL\ndomain."
+  }

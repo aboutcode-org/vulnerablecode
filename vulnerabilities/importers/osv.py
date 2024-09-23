@@ -13,10 +13,10 @@ from typing import List
 from typing import Optional
 
 import dateparser
+from cvss.exceptions import CVSS3MalformedError
 from packageurl import PackageURL
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.versions import InvalidVersion
-from univers.versions import PypiVersion
 from univers.versions import SemverVersion
 from univers.versions import Version
 
@@ -27,11 +27,26 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import build_description
 from vulnerabilities.utils import dedupe
+from vulnerabilities.utils import get_cwe_id
 
 logger = logging.getLogger(__name__)
 
+PURL_TYPE_BY_OSV_ECOSYSTEM = {
+    "npm": "npm",
+    "pypi": "pypi",
+    "maven": "maven",
+    "nuget": "nuget",
+    "packagist": "composer",
+    "rubygems": "gem",
+    "go": "golang",
+    "hex": "hex",
+    "cargo": "cargo",
+}
 
-def parse_advisory_data(raw_data: dict, supported_ecosystem) -> Optional[AdvisoryData]:
+
+def parse_advisory_data(
+    raw_data: dict, supported_ecosystems, advisory_url: str
+) -> Optional[AdvisoryData]:
     """
     Return an AdvisoryData build from a ``raw_data`` mapping of OSV advisory and
     a ``supported_ecosystem`` string.
@@ -53,18 +68,21 @@ def parse_advisory_data(raw_data: dict, supported_ecosystem) -> Optional[Advisor
 
     for affected_pkg in raw_data.get("affected") or []:
         purl = get_affected_purl(affected_pkg=affected_pkg, raw_id=raw_id)
-        if purl.type != supported_ecosystem:
-            logger.error(f"Unsupported package type: {purl!r} in OSV: {raw_id!r}")
+
+        if not purl or purl.type not in supported_ecosystems:
+            logger.error(f"Unsupported package type: {affected_pkg!r} in OSV: {raw_id!r}")
             continue
 
         affected_version_range = get_affected_version_range(
             affected_pkg=affected_pkg,
             raw_id=raw_id,
-            supported_ecosystem=supported_ecosystem,
+            supported_ecosystem=purl.type,
         )
 
         for fixed_range in affected_pkg.get("ranges") or []:
-            fixed_version = get_fixed_versions(fixed_range=fixed_range, raw_id=raw_id)
+            fixed_version = get_fixed_versions(
+                fixed_range=fixed_range, raw_id=raw_id, supported_ecosystem=purl.type
+            )
 
             for version in fixed_version:
                 affected_packages.append(
@@ -74,6 +92,9 @@ def parse_advisory_data(raw_data: dict, supported_ecosystem) -> Optional[Advisor
                         fixed_version=version,
                     )
                 )
+    database_specific = raw_data.get("database_specific") or {}
+    cwe_ids = database_specific.get("cwe_ids") or []
+    weaknesses = list(map(get_cwe_id, cwe_ids))
 
     return AdvisoryData(
         aliases=aliases,
@@ -81,6 +102,8 @@ def parse_advisory_data(raw_data: dict, supported_ecosystem) -> Optional[Advisor
         references=references,
         affected_packages=affected_packages,
         date_published=date_published,
+        weaknesses=weaknesses,
+        url=advisory_url,
     )
 
 
@@ -113,14 +136,22 @@ def get_severities(raw_data) -> Iterable[VulnerabilitySeverity]:
     """
     Yield VulnerabilitySeverity extracted from a mapping of OSV ``raw_data``
     """
-    for severity in raw_data.get("severity") or []:
-        if severity.get("type") == "CVSS_V3":
-            vector = severity["score"]
-            system = SCORING_SYSTEMS["cvssv3.1"]
-            score = system.compute(vector)
-            yield VulnerabilitySeverity(system=system, value=score, scoring_elements=vector)
-        else:
-            logger.error(f"Unsupported severity type: {severity!r} for OSV id: {raw_data['id']!r}")
+    try:
+        for severity in raw_data.get("severity") or []:
+            if severity.get("type") == "CVSS_V3":
+                vector = severity.get("score")
+                # remove the / from the end of the vector if / exist
+                valid_vector = vector[:-1] if vector and vector[-1] == "/" else vector
+                system = SCORING_SYSTEMS["cvssv3.1"]
+                score = system.compute(valid_vector)
+                yield VulnerabilitySeverity(system=system, value=score, scoring_elements=vector)
+
+            else:
+                logger.error(
+                    f"Unsupported severity type: {severity!r} for OSV id: {raw_data['id']!r}"
+                )
+    except CVSS3MalformedError as e:
+        logger.error(f"Invalid severity {e}")
 
     ecosystem_specific = raw_data.get("ecosystem_specific") or {}
     severity = ecosystem_specific.get("severity")
@@ -148,7 +179,6 @@ def get_references(raw_data, severities) -> List[Reference]:
     for ref in raw_data.get("references") or []:
         if not ref:
             continue
-
         url = ref["url"]
         if not url:
             logger.error(f"Reference without URL : {ref!r} for OSV id: {raw_data['id']!r}")
@@ -166,21 +196,31 @@ def get_affected_purl(affected_pkg, raw_id):
     purl = package.get("purl")
     if purl:
         try:
-            return PackageURL.from_string(purl)
+            purl = PackageURL.from_string(purl)
         except ValueError:
             logger.error(
                 f"Invalid PackageURL: {purl!r} for OSV "
                 f"affected_pkg {affected_pkg} and id: {raw_id}"
             )
+    else:
+        ecosys = package.get("ecosystem")
+        name = package.get("name")
+        if ecosys and name:
+            ecosys = ecosys.lower()
+            purl_type = PURL_TYPE_BY_OSV_ECOSYSTEM.get(ecosys)
+            if not purl_type:
+                return
+            namespace = ""
+            if purl_type == "maven":
+                namespace, _, name = name.partition(":")
 
-    ecosys = package.get("ecosystem")
-    name = package.get("name")
-    if ecosys and name:
-        return PackageURL(type=ecosys, name=name)
-
-    logger.error(
-        f"No PackageURL possible: {purl!r} for affected_pkg {affected_pkg} for OSV id: {raw_id}"
-    )
+            purl = PackageURL(type=purl_type, namespace=namespace, name=name)
+        else:
+            logger.error(
+                f"No PackageURL possible: {purl!r} for affected_pkg {affected_pkg} for OSV id: {raw_id}"
+            )
+            return
+    return PackageURL.from_string(str(purl))
 
 
 def get_affected_version_range(affected_pkg, raw_id, supported_ecosystem):
@@ -199,18 +239,17 @@ def get_affected_version_range(affected_pkg, raw_id, supported_ecosystem):
             )
 
 
-def get_fixed_versions(fixed_range, raw_id) -> List[Version]:
+def get_fixed_versions(fixed_range, raw_id, supported_ecosystem) -> List[Version]:
     """
     Return a list of unique fixed univers Versions given a ``fixed_range``
     univers VersionRange and a ``raw_id``.
-
     For example::
-
-    >>> get_fixed_versions(fixed_range={}, raw_id="GHSA-j3f7-7rmc-6wqj")
+    >>> get_fixed_versions(fixed_range={}, raw_id="GHSA-j3f7-7rmc-6wqj", supported_ecosystem="pypi",)
     []
     >>> get_fixed_versions(
-    ...   fixed_range={"type": "ECOSYSTEM", "events": [{"fixed": "1.7.0"}]},
-    ...   raw_id="GHSA-j3f7-7rmc-6wqj"
+    ...   fixed_range={"type": "ECOSYSTEM", "events": [{"fixed": "1.7.0"}], },
+    ...   raw_id="GHSA-j3f7-7rmc-6wqj",
+    ...   supported_ecosystem="pypi",
     ... )
     [PypiVersion(string='1.7.0')]
     """
@@ -221,21 +260,27 @@ def get_fixed_versions(fixed_range, raw_id) -> List[Version]:
 
     fixed_range_type = fixed_range["type"]
 
-    for version in extract_fixed_versions(fixed_range):
+    version_range_class = RANGE_CLASS_BY_SCHEMES.get(supported_ecosystem)
+    version_class = version_range_class.version_class if version_range_class else None
 
-        # FIXME: ECOSYSTEM does not imply PyPI!!!!
+    for version in extract_fixed_versions(fixed_range):
         if fixed_range_type == "ECOSYSTEM":
             try:
-                fixed_versions.append(PypiVersion(version))
+                if not version_class:
+                    raise InvalidVersion(
+                        f"Unsupported version for ecosystem: {supported_ecosystem}"
+                    )
+                fixed_versions.append(version_class(version))
             except InvalidVersion:
-                logger.error(f"Invalid PypiVersion: {version!r} for OSV id: {raw_id!r}")
+                logger.error(
+                    f"Invalid version class: {version_class} - {version!r} for OSV id: {raw_id!r}"
+                )
 
         elif fixed_range_type == "SEMVER":
             try:
                 fixed_versions.append(SemverVersion(version))
             except InvalidVersion:
                 logger.error(f"Invalid SemverVersion: {version!r} for OSV id: {raw_id!r}")
-
         else:
             logger.error(f"Unsupported fixed version type: {version!r} for OSV id: {raw_id!r}")
 

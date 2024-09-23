@@ -45,20 +45,20 @@ create an environment file, and build the Docker image::
 
     git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
     make envfile
-    docker-compose build
+    docker compose build
 
 .. note::
 
     The image will need to be re-built when the VulnerableCode app source code is
     modified or updated via
-    ``docker-compose build --no-cache vulnerablecode``
+    ``docker compose build --no-cache vulnerablecode``
 
 Run the App
 ^^^^^^^^^^^
 
 **Run your image** as a container::
 
-    docker-compose up
+    docker compose up
 
 
 At this point, the VulnerableCode app should be running at port ``8000`` on your Docker host.
@@ -69,11 +69,13 @@ to run on a different port than 8000.
 .. note::
 
     To access a dockerized VulnerableCode app from a remote location, the ``ALLOWED_HOSTS``
-    setting need to be provided in your ``docker.env`` file::
+    and ``CSRF_TRUSTED_ORIGINS`` setting need to be provided in your ``docker.env`` file::
 
         ALLOWED_HOSTS=.domain.com,127.0.0.1
+        CSRF_TRUSTED_ORIGINS=https://*.domain.com,http://127.0.0.1
 
-    Refer to `Django ALLOWED_HOSTS settings <https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts>`_
+    Refer to Django `ALLOWED_HOSTS settings <https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts>`_
+    and `CSRF_TRUSTED_ORIGINS settings <https://docs.djangoproject.com/en/dev/ref/settings/#std-setting-CSRF_TRUSTED_ORIGINS>`_
     for more details.
 
 .. warning::
@@ -88,7 +90,7 @@ Execute a Command
 You can execute a one of ``manage.py`` commands through the Docker command line
 interface, for example::
 
-    docker-compose run vulnerablecode ./manage.py import --list
+    docker compose run vulnerablecode ./manage.py import --list
 
 .. note::
     Refer to the :ref:`command_line_interface` section for the full list of commands.
@@ -96,7 +98,7 @@ interface, for example::
 Alternatively, you can connect to the Docker container ``bash`` and run commands
 from there::
 
-    docker-compose run vulnerablecode bash
+    docker compose run vulnerablecode bash
     ./manage.py import --list
 
 

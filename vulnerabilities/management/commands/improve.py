@@ -14,6 +14,7 @@ from django.core.management.base import CommandError
 
 from vulnerabilities.improve_runner import ImproveRunner
 from vulnerabilities.improvers import IMPROVERS_REGISTRY
+from vulnerabilities.pipelines import VulnerableCodePipeline
 
 
 class Command(BaseCommand):
@@ -31,19 +32,20 @@ class Command(BaseCommand):
         parser.add_argument("sources", nargs="*", help="Fully qualified improver name to run")
 
     def handle(self, *args, **options):
-        if options["list"]:
-            self.list_sources()
-            return
-
-        if options["all"]:
-            self.improve_data(IMPROVERS_REGISTRY.values())
-            return
-
-        sources = options["sources"]
-        if not sources:
-            raise CommandError('Please provide at least one improver to run or use "--all".')
-
-        self.improve_data(validate_improvers(sources))
+        try:
+            if options["list"]:
+                self.list_sources()
+            elif options["all"]:
+                self.improve_data(IMPROVERS_REGISTRY.values())
+            else:
+                sources = options["sources"]
+                if not sources:
+                    raise CommandError(
+                        'Please provide at least one improver to run or use "--all".'
+                    )
+                self.improve_data(validate_improvers(sources))
+        except KeyboardInterrupt:
+            raise CommandError("Keyboard interrupt received. Stopping...")
 
     def list_sources(self):
         improvers = list(IMPROVERS_REGISTRY)
@@ -54,9 +56,17 @@ class Command(BaseCommand):
         failed_improvers = []
 
         for improver in improvers:
+            if issubclass(improver, VulnerableCodePipeline):
+                self.stdout.write(f"Improving data using {improver.pipeline_id}")
+                status, error = improver().execute()
+                if status != 0:
+                    self.stdout.write(error)
+                    failed_improvers.append(improver.pipeline_id)
+                continue
+
             self.stdout.write(f"Improving data using {improver.qualified_name}")
             try:
-                ImproveRunner(improver).run()
+                ImproveRunner(improver_class=improver).run()
                 self.stdout.write(
                     self.style.SUCCESS(
                         f"Successfully improved data using {improver.qualified_name}"

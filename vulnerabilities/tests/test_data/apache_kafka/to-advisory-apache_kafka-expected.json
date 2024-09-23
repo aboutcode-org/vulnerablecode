@@ -8,11 +8,11 @@
       {
         "package": {
           "type": "apache",
-          "namespace": null,
+          "namespace": "",
           "name": "kafka",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:apache/>=2.8.0|<=2.8.1|!=2.8.2|>=3.0.0|<=3.0.1|!=3.0.2|>=3.1.0|<=3.1.1|!=3.1.2|>=3.2.0|<=3.2.1|!=3.2.3",
         "fixed_version": null
@@ -21,22 +21,26 @@
     "references": [
       {
         "reference_id": "CVE-2022-34917",
+        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2022-34917",
+        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2022-34917",
         "severities": []
       },
       {
         "reference_id": "CVE-2022-34917",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-34917",
         "severities": []
       }
     ],
     "date_published": "2022-09-19T00:00:00+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://kafka.apache.org/cve-list#CVE-2022-34917"
   },
   {
     "aliases": [
@@ -47,11 +51,11 @@
       {
         "package": {
           "type": "apache",
-          "namespace": null,
+          "namespace": "",
           "name": "kafka",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:apache/2.0.0|2.0.1|2.1.0|2.1.1|2.2.0|2.2.1|2.2.2|2.3.0|2.3.1|2.4.0|2.4.1|2.5.0|2.5.1|2.6.0|2.6.1|2.6.2|!=2.6.3|2.7.0|2.7.1|!=2.7.2|2.8.0.|!=2.8.1|<3.0.0",
         "fixed_version": null
@@ -60,22 +64,26 @@
     "references": [
       {
         "reference_id": "CVE-2021-38153",
+        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2021-38153",
+        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2021-38153",
         "severities": []
       },
       {
         "reference_id": "CVE-2021-38153",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-38153",
         "severities": []
       }
     ],
     "date_published": "2021-09-21T00:00:00+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://kafka.apache.org/cve-list#CVE-2021-38153"
   },
   {
     "aliases": [
@@ -86,11 +94,11 @@
       {
         "package": {
           "type": "apache",
-          "namespace": null,
+          "namespace": "",
           "name": "kafka",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:apache/2.0.0|2.0.1|2.1.0|2.1.1|2.2.0|2.2.1|!=2.2.2|2.3.0|<2.3.1",
         "fixed_version": null
@@ -99,22 +107,26 @@
     "references": [
       {
         "reference_id": "CVE-2019-12399",
+        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2019-12399",
+        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2019-12399",
         "severities": []
       },
       {
         "reference_id": "CVE-2019-12399",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-12399",
         "severities": []
       }
     ],
     "date_published": "2020-01-13T00:00:00+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://kafka.apache.org/cve-list#CVE-2019-12399"
   },
   {
     "aliases": [
@@ -125,11 +137,11 @@
       {
         "package": {
           "type": "apache",
-          "namespace": null,
+          "namespace": "",
           "name": "kafka",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:apache/>=0.11.0.0|<2.1.1",
         "fixed_version": null
@@ -138,22 +150,26 @@
     "references": [
       {
         "reference_id": "CVE-2018-17196",
+        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2018-17196",
+        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2018-17196",
         "severities": []
       },
       {
         "reference_id": "CVE-2018-17196",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-17196",
         "severities": []
       }
     ],
     "date_published": "2019-07-10T00:00:00+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://kafka.apache.org/cve-list#CVE-2018-17196"
   },
   {
     "aliases": [
@@ -164,11 +180,11 @@
       {
         "package": {
           "type": "apache",
-          "namespace": null,
+          "namespace": "",
           "name": "kafka",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:apache/>=0.9.0.0|<=0.9.0.1|>=0.10.0.0|<=0.10.2.1|!=0.10.2.2|>=0.11.0.0|<=0.11.0.2|!=0.11.0.3|1.0.0|!=1.0.1|!=1.1.0",
         "fixed_version": null
@@ -177,22 +193,26 @@
     "references": [
       {
         "reference_id": "CVE-2018-1288",
+        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2018-1288",
+        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2018-1288",
         "severities": []
       },
       {
         "reference_id": "CVE-2018-1288",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-1288",
         "severities": []
       }
     ],
     "date_published": "2018-07-26T00:00:00+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://kafka.apache.org/cve-list#CVE-2018-1288"
   },
   {
     "aliases": [
@@ -203,11 +223,11 @@
       {
         "package": {
           "type": "apache",
-          "namespace": null,
+          "namespace": "",
           "name": "kafka",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:apache/>=0.10.0.0|<=0.10.2.1|!=0.10.2.2|>=0.11.0.0|<=0.11.0.1|!=0.11.0.2|!=1.0.0",
         "fixed_version": null
@@ -216,21 +236,25 @@
     "references": [
       {
         "reference_id": "CVE-2017-12610",
+        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list",
         "severities": []
       },
       {
         "reference_id": "CVE-2017-12610",
+        "reference_type": "",
         "url": "https://kafka.apache.org/cve-list#CVE-2017-12610",
         "severities": []
       },
       {
         "reference_id": "CVE-2017-12610",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-12610",
         "severities": []
       }
     ],
     "date_published": "2018-07-26T00:00:00+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://kafka.apache.org/cve-list#CVE-2017-12610"
   }
 ]

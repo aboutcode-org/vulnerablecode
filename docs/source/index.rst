@@ -36,6 +36,7 @@ In this documentation you will find information on:
     reference_importer_overview
     reference_improver_overview
     reference_framework_overview
+    reference_model_overview
     command-line-interface
     importers_link
 

@@ -12,16 +12,20 @@
       "namespace": "amphp",
       "name": "http",
       "version": "1.0.1",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/amphp/http/pull/4",
         "severities": []
       }
     ],
-    "weaknesses": []
+    "weaknesses": [
+      1035,
+      937
+    ]
   }
 ]

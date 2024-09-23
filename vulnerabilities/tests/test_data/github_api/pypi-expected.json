@@ -8,11 +8,11 @@
       {
         "package": {
           "type": "pypi",
-          "namespace": null,
+          "namespace": "",
           "name": "pillow",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:pypi/<9.0.0",
         "fixed_version": "9.0.0"
@@ -21,16 +21,19 @@
     "references": [
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/python-pillow/Pillow/commit/baae9ec4b67c68e3adaf1208cf54e8de5e38a6fd",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://pillow.readthedocs.io/en/stable/releasenotes/9.0.0.html#ensure-jpegimageplugin-stops-at-the-end-of-a-truncated-file",
         "severities": []
       },
       {
         "reference_id": "GHSA-4fx9-vc88-q2xc",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-4fx9-vc88-q2xc",
         "severities": [
           {
@@ -42,7 +45,8 @@
       }
     ],
     "date_published": "2022-03-11T23:39:27+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-4fx9-vc88-q2xc"
   },
   {
     "aliases": [
@@ -54,11 +58,11 @@
       {
         "package": {
           "type": "pypi",
-          "namespace": null,
+          "namespace": "",
           "name": "pillow",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:pypi/<9.0.1",
         "fixed_version": null
@@ -67,36 +71,43 @@
     "references": [
       {
         "reference_id": "CVE-2022-22817",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-22817",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://pillow.readthedocs.io/en/stable/releasenotes/9.0.0.html#restrict-builtins-available-to-imagemath-eval",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://lists.debian.org/debian-lts-announce/2022/01/msg00018.html",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://www.debian.org/security/2022/dsa-5053",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/python-pillow/Pillow/commit/8531b01d6cdf0b70f256f93092caa2a5d91afc11",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://pillow.readthedocs.io/en/stable/releasenotes/9.0.1.html#security",
         "severities": []
       },
       {
         "reference_id": "GHSA-8vj2-vxx3-667w",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-8vj2-vxx3-667w",
         "severities": [
           {
@@ -108,7 +119,8 @@
       }
     ],
     "date_published": "2022-01-12T20:07:33+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-8vj2-vxx3-667w"
   },
   {
     "aliases": [
@@ -120,11 +132,11 @@
       {
         "package": {
           "type": "pypi",
-          "namespace": null,
+          "namespace": "",
           "name": "pillow",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:pypi/<9.0.1",
         "fixed_version": null
@@ -133,21 +145,25 @@
     "references": [
       {
         "reference_id": "CVE-2022-24303",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-24303",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/python-pillow/Pillow/commit/427221ef5f19157001bf8b1ad7cfe0b905ca8c26",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://pillow.readthedocs.io/en/stable/releasenotes/9.0.1.html#security",
         "severities": []
       },
       {
         "reference_id": "GHSA-9j59-75qj-795w",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-9j59-75qj-795w",
         "severities": [
           {
@@ -159,7 +175,8 @@
       }
     ],
     "date_published": "2022-03-11T23:10:32+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-9j59-75qj-795w"
   },
   {
     "aliases": [
@@ -171,11 +188,11 @@
       {
         "package": {
           "type": "pypi",
-          "namespace": null,
+          "namespace": "",
           "name": "tensorflow",
-          "version": null,
-          "qualifiers": null,
-          "subpath": null
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
         },
         "affected_version_range": "vers:pypi/<2.5.3",
         "fixed_version": null
@@ -184,6 +201,7 @@
     "references": [
       {
         "reference_id": "GHSA-8r7c-3cm2-3h8f",
+        "reference_type": "",
         "url": "https://github.com/tensorflow/tensorflow/security/advisories/GHSA-8r7c-3cm2-3h8f",
         "severities": [
           {
@@ -195,21 +213,25 @@
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/tensorflow/tensorflow/commit/c79ccba517dbb1a0ccb9b01ee3bd2a63748b60dd",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/tensorflow/tensorflow/blob/a1320ec1eac186da1d03f033109191f715b2b130/tensorflow/core/common_runtime/immutable_executor_state.cc#L84-L262",
         "severities": []
       },
       {
         "reference_id": "CVE-2022-23578",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-23578",
         "severities": []
       },
       {
         "reference_id": "GHSA-8r7c-3cm2-3h8f",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-8r7c-3cm2-3h8f",
         "severities": [
           {
@@ -221,6 +243,7 @@
       }
     ],
     "date_published": "2022-02-10T00:33:13+00:00",
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://github.com/advisories/GHSA-8r7c-3cm2-3h8f"
   }
 ]

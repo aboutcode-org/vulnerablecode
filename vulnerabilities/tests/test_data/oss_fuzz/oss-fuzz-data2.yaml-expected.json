@@ -1,0 +1,18 @@
+{
+  "aliases": [
+    "OSV-2022-145"
+  ],
+  "summary": "Heap-buffer-overflow in print_mac\nOSS-Fuzz report: https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=44581\n\n```\nCrash type: Heap-buffer-overflow WRITE 4\nCrash state:\nprint_mac\nlog_packet\ndhcp_reply\n```",
+  "affected_packages": [],
+  "references": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=44581",
+      "severities": []
+    }
+  ],
+  "date_published": "2022-02-13T00:01:27.883603+00:00",
+  "weaknesses": [],
+  "url": "http://test.com"
+}

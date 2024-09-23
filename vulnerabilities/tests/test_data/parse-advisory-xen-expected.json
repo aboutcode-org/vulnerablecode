@@ -8,11 +8,13 @@
     "references": [
       {
         "reference_id": "XSA-26",
+        "reference_type": "",
         "url": "https://xenbits.xen.org/xsa/advisory-26.html",
         "severities": []
       }
     ],
     "date_published": null,
-    "weaknesses": []
+    "weaknesses": [],
+    "url": "https://xenbits.xen.org/xsa/advisory-26.html"
   }
 ]

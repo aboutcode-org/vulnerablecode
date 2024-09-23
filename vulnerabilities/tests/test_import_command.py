@@ -20,12 +20,15 @@ from vulnerabilities.importer import Importer
 
 class DummyImporter(Importer):
     spdx_license_expression = "dummy license"
+    importer_name = "Dummy Importer 1"
 
     def advisory_data(self):
         return []
 
 
 class UnLicensedImporter(Importer):
+    importer_name = "UnLicensed Importer"
+
     def advisory_data(self):
         return []
 

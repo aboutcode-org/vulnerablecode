@@ -10,204 +10,209 @@
     "affected_purls": [
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.0",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.1.rc1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.1.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.2.rc1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.2.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.3.rc1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.4.rc1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.4.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.4.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.4.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.4.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.4.5",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.4.6",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.5",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.6",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.6.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "5.2.6.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "gem",
-      "namespace": null,
+      "namespace": "",
       "name": "activestorage",
       "version": "5.2.6.3",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://rubysec.com/advisories/CVE-2022-21831/",
         "severities": []
       },
       {
         "reference_id": "GHSA-w749-p3v6-hccq",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq",
         "severities": [
           {
@@ -231,188 +236,260 @@
     "affected_purls": [
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.2.rc1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.2.rc2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.2.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.2.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.3.rc1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.3.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.3.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.3.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.3.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.3.5",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.3.6",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.3.7",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.4",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.4.1",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.4.2",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "gem",
-        "namespace": null,
+        "namespace": "",
         "name": "activestorage",
         "version": "6.0.4.3",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "gem",
-      "namespace": null,
+      "namespace": "",
       "name": "activestorage",
       "version": "6.0.4.4",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://rubysec.com/advisories/CVE-2022-21831/",
         "severities": []
       },
       {
         "reference_id": "GHSA-w749-p3v6-hccq",
+        "reference_type": "",
+        "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq",
+        "severities": [
+          {
+            "system": "cvssv3.1_qr",
+            "value": "HIGH",
+            "scoring_elements": ""
+          }
+        ]
+      }
+    ],
+    "weaknesses": []
+  },
+  {
+    "vulnerability_id": null,
+    "aliases": [
+      "CVE-2022-21831",
+      "GHSA-w749-p3v6-hccq"
+    ],
+    "confidence": 100,
+    "summary": "Possible code injection vulnerability in Rails / Active Storage",
+    "affected_purls": [
+      {
+        "type": "gem",
+        "namespace": "",
+        "name": "activestorage",
+        "version": "10.2.1",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      {
+        "type": "gem",
+        "namespace": "",
+        "name": "activestorage",
+        "version": "10.2.8",
+        "qualifiers": "",
+        "subpath": ""
+      }
+    ],
+    "fixed_purl": null,
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-21831",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://github.com/rails/rails/commit/0a72f7d670e9aa77a0bb8584cb1411ddabb7546e",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://groups.google.com/g/rubyonrails-security/c/n-p-W1yxatI",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://rubysec.com/advisories/CVE-2022-21831/",
+        "severities": []
+      },
+      {
+        "reference_id": "GHSA-w749-p3v6-hccq",
+        "reference_type": "",
         "url": "https://github.com/advisories/GHSA-w749-p3v6-hccq",
         "severities": [
           {

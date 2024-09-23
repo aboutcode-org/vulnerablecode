@@ -1,0 +1,3128 @@
+{
+  "data": {
+    "securityVulnerabilities": {
+      "edges": [
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-xvc9-xwgj-4cq9" },
+                { "type": "CVE", "value": "CVE-2019-25008" }
+              ],
+              "summary": "Duplicate Advisory: Integer Overflow in HeaderMap::reserve() can cause Denial of Service",
+              "references": [
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-25008" },
+                { "url": "https://github.com/hyperium/http/issues/352" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2019-0033.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-xvc9-xwgj-4cq9" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [{ "cweId": "CWE-190" }] },
+              "publishedAt": "2022-06-16T23:08:02Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.1.20" },
+            "package": { "name": "http" },
+            "vulnerableVersionRange": "< 0.1.20"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-76w9-p8mg-j927" },
+                { "type": "CVE", "value": "CVE-2021-45707" }
+              ],
+              "summary": "Out-of-bounds Write in nix",
+              "references": [
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-45707" },
+                {
+                  "url": "https://raw.githubusercontent.com/rustsec/advisory-db/main/crates/nix/RUSTSEC-2021-0119.md"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2021-0119.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-wgrg-5h56-jg27" },
+                { "url": "https://github.com/nix-rust/nix/issues/1541" },
+                { "url": "https://github.com/advisories/GHSA-76w9-p8mg-j927" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-787" }] },
+              "publishedAt": "2022-01-06T22:07:14Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.22.2" },
+            "package": { "name": "nix" },
+            "vulnerableVersionRange": ">= 0.22.0, < 0.22.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-76w9-p8mg-j927" },
+                { "type": "CVE", "value": "CVE-2021-45707" }
+              ],
+              "summary": "Out-of-bounds Write in nix",
+              "references": [
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-45707" },
+                {
+                  "url": "https://raw.githubusercontent.com/rustsec/advisory-db/main/crates/nix/RUSTSEC-2021-0119.md"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2021-0119.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-wgrg-5h56-jg27" },
+                { "url": "https://github.com/nix-rust/nix/issues/1541" },
+                { "url": "https://github.com/advisories/GHSA-76w9-p8mg-j927" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-787" }] },
+              "publishedAt": "2022-01-06T22:07:14Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.20.2" },
+            "package": { "name": "nix" },
+            "vulnerableVersionRange": ">= 0.16.0, < 0.20.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-76w9-p8mg-j927" },
+                { "type": "CVE", "value": "CVE-2021-45707" }
+              ],
+              "summary": "Out-of-bounds Write in nix",
+              "references": [
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-45707" },
+                {
+                  "url": "https://raw.githubusercontent.com/rustsec/advisory-db/main/crates/nix/RUSTSEC-2021-0119.md"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2021-0119.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-wgrg-5h56-jg27" },
+                { "url": "https://github.com/nix-rust/nix/issues/1541" },
+                { "url": "https://github.com/advisories/GHSA-76w9-p8mg-j927" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-787" }] },
+              "publishedAt": "2022-01-06T22:07:14Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.21.2" },
+            "package": { "name": "nix" },
+            "vulnerableVersionRange": ">= 0.21.0, < 0.21.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-q3gg-m8hr-h4x4" }
+              ],
+              "summary": "Externally Controlled Format String in Scripting Functions",
+              "references": [
+                {
+                  "url": "https://github.com/surrealdb/surrealdb/security/advisories/GHSA-q3gg-m8hr-h4x4"
+                },
+                { "url": "https://github.com/surrealdb/surrealdb/issues/3327" },
+                { "url": "https://github.com/surrealdb/surrealdb/pull/3332" },
+                { "url": "https://github.com/advisories/GHSA-q3gg-m8hr-h4x4" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-21T00:04:05Z"
+            },
+            "firstPatchedVersion": { "identifier": "1.1.1" },
+            "package": { "name": "surrealdb" },
+            "vulnerableVersionRange": "< 1.1.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-6wr5-jmpr-mjcx" }
+              ],
+              "summary": "Uncaught Exception in Macro Expecting Native Function to Exist",
+              "references": [
+                {
+                  "url": "https://github.com/surrealdb/surrealdb/security/advisories/GHSA-6wr5-jmpr-mjcx"
+                },
+                { "url": "https://github.com/surrealdb/surrealdb/pull/3454" },
+                {
+                  "url": "https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=65755"
+                },
+                { "url": "https://github.com/advisories/GHSA-6wr5-jmpr-mjcx" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-248" }] },
+              "publishedAt": "2024-02-21T00:03:06Z"
+            },
+            "firstPatchedVersion": { "identifier": "1.2.0" },
+            "package": { "name": "surrealdb" },
+            "vulnerableVersionRange": "<= 1.1.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-8xff-473h-f863" }
+              ],
+              "summary": "Uncaught Exception Handling Parsing Errors on Line Terminators",
+              "references": [
+                {
+                  "url": "https://github.com/surrealdb/surrealdb/security/advisories/GHSA-8xff-473h-f863"
+                },
+                {
+                  "url": "https://github.com/StarlaneStudios/Surrealist/issues/177"
+                },
+                { "url": "https://github.com/advisories/GHSA-8xff-473h-f863" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-248" }] },
+              "publishedAt": "2024-02-21T00:00:54Z"
+            },
+            "firstPatchedVersion": { "identifier": "1.2.1" },
+            "package": { "name": "surrealdb" },
+            "vulnerableVersionRange": "<= 1.2.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-g98v-hv3f-hcfr" }
+              ],
+              "summary": "atty potential unaligned read",
+              "references": [
+                { "url": "https://github.com/softprops/atty/issues/50" },
+                { "url": "https://github.com/softprops/atty/pull/51" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2021-0145.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-g98v-hv3f-hcfr" }
+              ],
+              "severity": "LOW",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2023-06-30T20:21:59Z"
+            },
+            "firstPatchedVersion": null,
+            "package": { "name": "atty" },
+            "vulnerableVersionRange": "<= 0.2.14"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-747x-5m58-mq97" },
+                { "type": "CVE", "value": "CVE-2024-21491" }
+              ],
+              "summary": "svix vulnerable to Authentication Bypass",
+              "references": [
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-21491" },
+                { "url": "https://github.com/svix/svix-webhooks/pull/1190" },
+                {
+                  "url": "https://github.com/svix/svix-webhooks/commit/958821bd3b956d1436af65f70a0964d4ffb7daf6"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0010.html"
+                },
+                {
+                  "url": "https://security.snyk.io/vuln/SNYK-RUST-SVIX-6230729"
+                },
+                { "url": "https://github.com/advisories/GHSA-747x-5m58-mq97" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-288" }] },
+              "publishedAt": "2024-02-13T06:30:28Z"
+            },
+            "firstPatchedVersion": { "identifier": "1.17.0" },
+            "package": { "name": "svix" },
+            "vulnerableVersionRange": "< 1.17.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-458v-4hrf-g3m4" },
+                { "type": "CVE", "value": "CVE-2020-35920" }
+              ],
+              "summary": "socket2 invalidly assumes the memory layout of std::net::SocketAddr",
+              "references": [
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-35920" },
+                { "url": "https://github.com/rust-lang/socket2-rs/issues/119" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2020-0079.html"
+                },
+                { "url": "https://github.com/deprecrated/net2-rs/issues/105" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2020-0078.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-458v-4hrf-g3m4" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-188" }] },
+              "publishedAt": "2021-08-25T20:50:37Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.2.36" },
+            "package": { "name": "net2" },
+            "vulnerableVersionRange": "< 0.2.36"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-458v-4hrf-g3m4" },
+                { "type": "CVE", "value": "CVE-2020-35920" }
+              ],
+              "summary": "socket2 invalidly assumes the memory layout of std::net::SocketAddr",
+              "references": [
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-35920" },
+                { "url": "https://github.com/rust-lang/socket2-rs/issues/119" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2020-0079.html"
+                },
+                { "url": "https://github.com/deprecrated/net2-rs/issues/105" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2020-0078.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-458v-4hrf-g3m4" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-188" }] },
+              "publishedAt": "2021-08-25T20:50:37Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.3.16" },
+            "package": { "name": "socket2" },
+            "vulnerableVersionRange": "< 0.3.16"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-6gvc-4jvj-pwq4" },
+                { "type": "CVE", "value": "CVE-2018-25001" }
+              ],
+              "summary": "Use after free in libpulse-binding",
+              "references": [
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-25001" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2018-0020.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-6gvc-4jvj-pwq4" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-416" }] },
+              "publishedAt": "2021-08-30T16:22:34Z"
+            },
+            "firstPatchedVersion": { "identifier": "2.5.0" },
+            "package": { "name": "libpulse-binding" },
+            "vulnerableVersionRange": ">= 1.0.5, < 2.5.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-22q8-ghmq-63vf" }
+              ],
+              "summary": "libgit2-sys affected by memory corruption, denial of service, and arbitrary code execution in libgit2",
+              "references": [
+                { "url": "https://github.com/rust-lang/git2-rs/pull/1017" },
+                {
+                  "url": "https://github.com/rust-lang/git2-rs/commit/9e57876be78924c1e5f3f268bb599e3981fe58bb"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0013.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-22q8-ghmq-63vf" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-12T15:42:14Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.16.2" },
+            "package": { "name": "libgit2-sys" },
+            "vulnerableVersionRange": "< 0.16.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-x5j2-g63m-f8g4" }
+              ],
+              "summary": "pqc_kyber KyberSlash: division timings depending on secrets",
+              "references": [
+                {
+                  "url": "https://github.com/Argyle-Software/kyber/issues/108"
+                },
+                {
+                  "url": "https://github.com/bwesterb/argyle-kyber/commit/b5c6ad13f4eece80e59c6ebeafd787ba1519f5f6"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0079.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-x5j2-g63m-f8g4" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-09T16:19:53Z"
+            },
+            "firstPatchedVersion": null,
+            "package": { "name": "pqc_kyber" },
+            "vulnerableVersionRange": "<= 0.7.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-rr69-rxr6-8qwf" }
+              ],
+              "summary": "serde-json-wasm stack overflow during recursive JSON parsing",
+              "references": [
+                {
+                  "url": "https://github.com/CosmWasm/serde-json-wasm/commit/a9a9b9bf243862bd2afbf6853fca97f30dc4f620"
+                },
+                {
+                  "url": "https://github.com/CosmWasm/serde-json-wasm/commit/e78f9e28b3a2151d3175ee88ab2a001bf9515429"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0012.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-rr69-rxr6-8qwf" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-09T16:03:32Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.5.2" },
+            "package": { "name": "serde-json-wasm" },
+            "vulnerableVersionRange": "< 0.5.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-rr69-rxr6-8qwf" }
+              ],
+              "summary": "serde-json-wasm stack overflow during recursive JSON parsing",
+              "references": [
+                {
+                  "url": "https://github.com/CosmWasm/serde-json-wasm/commit/a9a9b9bf243862bd2afbf6853fca97f30dc4f620"
+                },
+                {
+                  "url": "https://github.com/CosmWasm/serde-json-wasm/commit/e78f9e28b3a2151d3175ee88ab2a001bf9515429"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0012.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-rr69-rxr6-8qwf" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-09T16:03:32Z"
+            },
+            "firstPatchedVersion": { "identifier": "1.0.1" },
+            "package": { "name": "serde-json-wasm" },
+            "vulnerableVersionRange": "= 1.0.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-3qx3-6hxr-j2ch" }
+              ],
+              "summary": "eza Potential Heap Overflow Vulnerability for AArch64",
+              "references": [
+                {
+                  "url": "https://github.com/eza-community/eza/security/advisories/GHSA-3qx3-6hxr-j2ch"
+                },
+                {
+                  "url": "https://github.com/eza-community/eza/commit/47c9b90368c49117ba42760bd58acafa3362cbd4"
+                },
+                { "url": "https://github.com/advisories/GHSA-3qx3-6hxr-j2ch" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-08T18:47:28Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.18.2" },
+            "package": { "name": "eza" },
+            "vulnerableVersionRange": "< 0.18.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-w277-wpqf-rcfv" }
+              ],
+              "summary": "Svix vulnerable to improper comparison of different-length signatures",
+              "references": [
+                { "url": "https://github.com/svix/svix-webhooks/pull/1190" },
+                {
+                  "url": "https://github.com/svix/svix-webhooks/commit/958821bd3b956d1436af65f70a0964d4ffb7daf6"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0010.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-w277-wpqf-rcfv" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-06T20:30:14Z"
+            },
+            "firstPatchedVersion": { "identifier": "1.17.0" },
+            "package": { "name": "svix" },
+            "vulnerableVersionRange": "< 1.17.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-4f63-89w9-3jjv" },
+                { "type": "CVE", "value": "CVE-2022-3358" }
+              ],
+              "summary": "Using a Custom Cipher with `NID_undef` may lead to NULL encryption",
+              "references": [
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-3358" },
+                {
+                  "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=5485c56679d7c49b96e8fc8ca708b0b7e7c03c4b"
+                },
+                { "url": "https://www.openssl.org/news/secadv/20221011.txt" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2022-0059.html"
+                },
+                {
+                  "url": "https://security.netapp.com/advisory/ntap-20221028-0014/"
+                },
+                {
+                  "url": "https://psirt.global.sonicwall.com/vuln-detail/SNWLID-2022-0023"
+                },
+                { "url": "https://security.gentoo.org/glsa/202402-08" },
+                { "url": "https://github.com/advisories/GHSA-4f63-89w9-3jjv" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [{ "cweId": "CWE-476" }] },
+              "publishedAt": "2022-10-11T19:00:29Z"
+            },
+            "firstPatchedVersion": { "identifier": "300.0.10" },
+            "package": { "name": "openssl-src" },
+            "vulnerableVersionRange": ">= 300.0.0, < 300.0.10"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-29c2-65rj-h343" }
+              ],
+              "summary": "Nervos CKB Permit load cell data from memory",
+              "references": [
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/security/advisories/GHSA-29c2-65rj-h343"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/277061867eb7d2766fa6737c8bf00684fc2462a6"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/37d60d581c6713d3aca1a57018eaea45447ae0b2"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/8f115b387f8f60f938bce4591f26cd78430b8771"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/91efb7b6b4329d70d60eee91d5239a2de9b0d99f"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/97647408ee9dbf525f6c678796e770887c9f8738"
+                },
+                { "url": "https://github.com/advisories/GHSA-29c2-65rj-h343" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-03T00:29:06Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.38.2" },
+            "package": { "name": "ckb" },
+            "vulnerableVersionRange": ">= 0.38.0-rc1, < 0.38.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-29c2-65rj-h343" }
+              ],
+              "summary": "Nervos CKB Permit load cell data from memory",
+              "references": [
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/security/advisories/GHSA-29c2-65rj-h343"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/277061867eb7d2766fa6737c8bf00684fc2462a6"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/37d60d581c6713d3aca1a57018eaea45447ae0b2"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/8f115b387f8f60f938bce4591f26cd78430b8771"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/91efb7b6b4329d70d60eee91d5239a2de9b0d99f"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/97647408ee9dbf525f6c678796e770887c9f8738"
+                },
+                { "url": "https://github.com/advisories/GHSA-29c2-65rj-h343" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-03T00:29:06Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.37.1" },
+            "package": { "name": "ckb" },
+            "vulnerableVersionRange": ">= 0.37.0-rc1, < 0.37.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-29c2-65rj-h343" }
+              ],
+              "summary": "Nervos CKB Permit load cell data from memory",
+              "references": [
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/security/advisories/GHSA-29c2-65rj-h343"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/277061867eb7d2766fa6737c8bf00684fc2462a6"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/37d60d581c6713d3aca1a57018eaea45447ae0b2"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/8f115b387f8f60f938bce4591f26cd78430b8771"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/91efb7b6b4329d70d60eee91d5239a2de9b0d99f"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/97647408ee9dbf525f6c678796e770887c9f8738"
+                },
+                { "url": "https://github.com/advisories/GHSA-29c2-65rj-h343" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-03T00:29:06Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.36.1" },
+            "package": { "name": "ckb" },
+            "vulnerableVersionRange": ">= 0.36.0-rc1, < 0.36.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-29c2-65rj-h343" }
+              ],
+              "summary": "Nervos CKB Permit load cell data from memory",
+              "references": [
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/security/advisories/GHSA-29c2-65rj-h343"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/277061867eb7d2766fa6737c8bf00684fc2462a6"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/37d60d581c6713d3aca1a57018eaea45447ae0b2"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/8f115b387f8f60f938bce4591f26cd78430b8771"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/91efb7b6b4329d70d60eee91d5239a2de9b0d99f"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/97647408ee9dbf525f6c678796e770887c9f8738"
+                },
+                { "url": "https://github.com/advisories/GHSA-29c2-65rj-h343" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-03T00:29:06Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.35.2" },
+            "package": { "name": "ckb" },
+            "vulnerableVersionRange": ">= 0.35.0-rc1, < 0.35.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-29c2-65rj-h343" }
+              ],
+              "summary": "Nervos CKB Permit load cell data from memory",
+              "references": [
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/security/advisories/GHSA-29c2-65rj-h343"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/277061867eb7d2766fa6737c8bf00684fc2462a6"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/37d60d581c6713d3aca1a57018eaea45447ae0b2"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/8f115b387f8f60f938bce4591f26cd78430b8771"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/91efb7b6b4329d70d60eee91d5239a2de9b0d99f"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/97647408ee9dbf525f6c678796e770887c9f8738"
+                },
+                { "url": "https://github.com/advisories/GHSA-29c2-65rj-h343" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-03T00:29:06Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.39.0" },
+            "package": { "name": "ckb" },
+            "vulnerableVersionRange": ">= 0.39.0-rc1, < 0.39.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-h4c3-5275-vrmg" }
+              ],
+              "summary": "Nervos CKB Pool does not remove the conflicting transactions from the statistics ",
+              "references": [
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/security/advisories/GHSA-h4c3-5275-vrmg"
+                },
+                { "url": "https://github.com/advisories/GHSA-h4c3-5275-vrmg" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-03T00:29:02Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.39.2" },
+            "package": { "name": "ckb" },
+            "vulnerableVersionRange": "< 0.39.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-f56g-chqp-22m9" }
+              ],
+              "summary": "Use after free in libpulse-binding",
+              "references": [
+                {
+                  "url": "https://github.com/jnqnfe/pulse-binding-rust/security/advisories/GHSA-f56g-chqp-22m9"
+                },
+                {
+                  "url": "https://github.com/jnqnfe/pulse-binding-rust/commit/9e31c82d71749619387cb9d0c9698134d05b28c9"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2018-0020.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-f56g-chqp-22m9" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [{ "cweId": "CWE-416" }] },
+              "publishedAt": "2024-02-03T00:28:45Z"
+            },
+            "firstPatchedVersion": { "identifier": "2.5.0" },
+            "package": { "name": "libpulse-binding" },
+            "vulnerableVersionRange": ">= 1.0.5, < 2.5.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-q73f-w3h7-7wcc" }
+              ],
+              "summary": "Nervos CKB Transaction which calls syscall load_cell_data_hash has nondeterministic result",
+              "references": [
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/security/advisories/GHSA-q73f-w3h7-7wcc"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/01eb5b2ecadf7e421b117d6c013e182978746e2f"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/fe83220905599e72c97878295f4769e91348d738"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/ff88b48779358e038209f3ac1bc1061e6f4deb13"
+                },
+                { "url": "https://github.com/advisories/GHSA-q73f-w3h7-7wcc" }
+              ],
+              "severity": "CRITICAL",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-03T00:18:13Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.34.2" },
+            "package": { "name": "ckb" },
+            "vulnerableVersionRange": "<= 0.34.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-3gjh-29fv-8hr6" }
+              ],
+              "summary": "Nervos CKB Snappy decompress length can be very large and causes out of memory error ",
+              "references": [
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/security/advisories/GHSA-3gjh-29fv-8hr6"
+                },
+                { "url": "https://github.com/advisories/GHSA-3gjh-29fv-8hr6" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-03T00:18:10Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.34.2" },
+            "package": { "name": "ckb" },
+            "vulnerableVersionRange": "<= 0.34.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-wjxc-pjx9-4wvm" }
+              ],
+              "summary": "Nervos CKB Panic on malformed input",
+              "references": [
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/security/advisories/GHSA-wjxc-pjx9-4wvm"
+                },
+                { "url": "https://github.com/advisories/GHSA-wjxc-pjx9-4wvm" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-03T00:18:06Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.34.2" },
+            "package": { "name": "ckb" },
+            "vulnerableVersionRange": "<= 0.34.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-hjqq-29pw-96wj" }
+              ],
+              "summary": "Nervos CKB node panics when processing a block which parent timestamp is too new",
+              "references": [
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/security/advisories/GHSA-hjqq-29pw-96wj"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/ae3c791068f2f76c67cd5483501f09de3fd8cc0b"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/c6725bb0659b6639f384d699f815117d76107388"
+                },
+                { "url": "https://github.com/advisories/GHSA-hjqq-29pw-96wj" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-02T22:23:11Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.34.1" },
+            "package": { "name": "ckb" },
+            "vulnerableVersionRange": ">= 0.34.0, < 0.34.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-hjqq-29pw-96wj" }
+              ],
+              "summary": "Nervos CKB node panics when processing a block which parent timestamp is too new",
+              "references": [
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/security/advisories/GHSA-hjqq-29pw-96wj"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/ae3c791068f2f76c67cd5483501f09de3fd8cc0b"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/c6725bb0659b6639f384d699f815117d76107388"
+                },
+                { "url": "https://github.com/advisories/GHSA-hjqq-29pw-96wj" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-02T22:23:11Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.33.2" },
+            "package": { "name": "ckb" },
+            "vulnerableVersionRange": ">= 0.33.0, < 0.33.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-r9rv-9mh8-pxf4" }
+              ],
+              "summary": "Nervos CKB BlockTimeTooNew should not be considered as invalid block",
+              "references": [
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/security/advisories/GHSA-r9rv-9mh8-pxf4"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/760d447c8b600df0539debe80b1625836fc72819"
+                },
+                { "url": "https://github.com/advisories/GHSA-r9rv-9mh8-pxf4" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-02T22:23:07Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.33.1" },
+            "package": { "name": "ckb" },
+            "vulnerableVersionRange": "<= 0.33.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-pr39-8257-fxc2" }
+              ],
+              "summary": "Nervos CKB DoS: Process exists when p2p discovery protocol receives unsupported peer IP",
+              "references": [
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/security/advisories/GHSA-pr39-8257-fxc2"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/d909cdebacc4747e972de4a7e5f19c8f79480361"
+                },
+                { "url": "https://github.com/advisories/GHSA-pr39-8257-fxc2" }
+              ],
+              "severity": "LOW",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-02T22:22:42Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.34.0" },
+            "package": { "name": "ckb" },
+            "vulnerableVersionRange": "< 0.34.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-84x2-2qv6-qg56" }
+              ],
+              "summary": "Nervos CKB P2P DoS Attacks",
+              "references": [
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/security/advisories/GHSA-84x2-2qv6-qg56"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/c5eb5478b635cea2ccef8676cf97692cd38293c3"
+                },
+                { "url": "https://github.com/advisories/GHSA-84x2-2qv6-qg56" }
+              ],
+              "severity": "CRITICAL",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-02T22:21:27Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.34.0" },
+            "package": { "name": "ckb" },
+            "vulnerableVersionRange": "< 0.34.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-q669-2vfg-cxcg" }
+              ],
+              "summary": "Nervos CKB Unaligned Pointer Dereference",
+              "references": [
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/security/advisories/GHSA-q669-2vfg-cxcg"
+                },
+                {
+                  "url": "https://github.com/nervosnetwork/ckb/commit/adf8f0d08bc058383a0df658ea2c2ef6e7950335"
+                },
+                { "url": "https://github.com/advisories/GHSA-q669-2vfg-cxcg" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-02-02T20:59:17Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.31.1" },
+            "package": { "name": "ckb" },
+            "vulnerableVersionRange": "<= 0.31.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-p75g-gcv5-42qg" },
+                { "type": "CVE", "value": "CVE-2020-15899" }
+              ],
+              "summary": "Grin insufficient data validation",
+              "references": [
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-15899" },
+                {
+                  "url": "https://github.com/mimblewimble/grin-security/blob/master/CVEs/CVE-2020-15899.md"
+                },
+                {
+                  "url": "https://github.com/mimblewimble/grin/compare/v3.1.1...v4.0.0"
+                },
+                { "url": "https://github.com/advisories/GHSA-p75g-gcv5-42qg" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [{ "cweId": "CWE-345" }] },
+              "publishedAt": "2022-05-24T17:24:33Z"
+            },
+            "firstPatchedVersion": { "identifier": "4.0.0" },
+            "package": { "name": "grin" },
+            "vulnerableVersionRange": ">= 3.0.0, < 4.0.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-6x52-88cq-55q5" },
+                { "type": "CVE", "value": "CVE-2020-12439" }
+              ],
+              "summary": "Grin allows attackers to adversely affect availability of data on a Mimblewimble blockchain",
+              "references": [
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-12439" },
+                { "url": "https://github.com/mimblewimble/grin/issues/3235" },
+                { "url": "https://github.com/mimblewimble/grin/pull/3236" },
+                {
+                  "url": "https://github.com/mimblewimble/grin-security/blob/master/CVEs/CVE-2020-12439.md"
+                },
+                { "url": "https://github.com/advisories/GHSA-6x52-88cq-55q5" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2022-05-24T17:17:13Z"
+            },
+            "firstPatchedVersion": { "identifier": "3.1.0" },
+            "package": { "name": "grin" },
+            "vulnerableVersionRange": "< 3.1.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-7w6p-rwhg-7h3g" },
+                { "type": "CVE", "value": "CVE-2020-6638" }
+              ],
+              "summary": "Grin Insufficient Validation",
+              "references": [
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-6638" },
+                {
+                  "url": "https://github.com/mimblewimble/grin-security/blob/master/CVEs/CVE-2020-6638.md"
+                },
+                {
+                  "url": "https://github.com/mimblewimble/grin/compare/v2.1.1...v3.0.0"
+                },
+                { "url": "https://github.com/advisories/GHSA-7w6p-rwhg-7h3g" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [{ "cweId": "CWE-20" }] },
+              "publishedAt": "2022-05-24T17:07:02Z"
+            },
+            "firstPatchedVersion": { "identifier": "3.0.0" },
+            "package": { "name": "grin" },
+            "vulnerableVersionRange": "< 3.0.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-h84q-m8rr-3v9q" },
+                { "type": "CVE", "value": "CVE-2022-39394" }
+              ],
+              "summary": "wasmtime_trap_code C API function has out of bounds write vulnerability",
+              "references": [
+                {
+                  "url": "https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-h84q-m8rr-3v9q"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39394" },
+                {
+                  "url": "https://github.com/bytecodealliance/wasmtime/commit/087d9d7becf7422b3f872a3bcd5d97bb7ce7ff36"
+                },
+                {
+                  "url": "https://github.com/bytecodealliance/wasmtime/commit/5b6d5e78de106503b3b9add218bb3d2b1d63c493"
+                },
+                {
+                  "url": "https://groups.google.com/a/bytecodealliance.org/g/sec-announce/c/c1HBDDJwNPA"
+                },
+                { "url": "https://github.com/advisories/GHSA-h84q-m8rr-3v9q" }
+              ],
+              "severity": "LOW",
+              "cwes": { "nodes": [{ "cweId": "CWE-787" }] },
+              "publishedAt": "2024-02-01T00:15:47Z"
+            },
+            "firstPatchedVersion": { "identifier": "1.0.2" },
+            "package": { "name": "wasmtime" },
+            "vulnerableVersionRange": "< 1.0.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-h84q-m8rr-3v9q" },
+                { "type": "CVE", "value": "CVE-2022-39394" }
+              ],
+              "summary": "wasmtime_trap_code C API function has out of bounds write vulnerability",
+              "references": [
+                {
+                  "url": "https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-h84q-m8rr-3v9q"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-39394" },
+                {
+                  "url": "https://github.com/bytecodealliance/wasmtime/commit/087d9d7becf7422b3f872a3bcd5d97bb7ce7ff36"
+                },
+                {
+                  "url": "https://github.com/bytecodealliance/wasmtime/commit/5b6d5e78de106503b3b9add218bb3d2b1d63c493"
+                },
+                {
+                  "url": "https://groups.google.com/a/bytecodealliance.org/g/sec-announce/c/c1HBDDJwNPA"
+                },
+                { "url": "https://github.com/advisories/GHSA-h84q-m8rr-3v9q" }
+              ],
+              "severity": "LOW",
+              "cwes": { "nodes": [{ "cweId": "CWE-787" }] },
+              "publishedAt": "2024-02-01T00:15:47Z"
+            },
+            "firstPatchedVersion": { "identifier": "2.0.2" },
+            "package": { "name": "wasmtime" },
+            "vulnerableVersionRange": ">= 2.0.0, < 2.0.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-4jwq-572w-4388" },
+                { "type": "CVE", "value": "CVE-2021-29511" }
+              ],
+              "summary": "Memory over-allocation in evm crate",
+              "references": [
+                {
+                  "url": "https://github.com/rust-blockchain/evm/security/advisories/GHSA-4jwq-572w-4388"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-29511" },
+                {
+                  "url": "https://github.com/rust-blockchain/evm/commit/19ade858c430ab13eb562764a870ac9f8506f8dd"
+                },
+                { "url": "https://github.com/advisories/GHSA-4jwq-572w-4388" }
+              ],
+              "severity": "MODERATE",
+              "cwes": {
+                "nodes": [{ "cweId": "CWE-770" }, { "cweId": "CWE-787" }]
+              },
+              "publishedAt": "2024-01-30T23:55:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.26.1" },
+            "package": { "name": "evm-core" },
+            "vulnerableVersionRange": "= 0.26.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-4jwq-572w-4388" },
+                { "type": "CVE", "value": "CVE-2021-29511" }
+              ],
+              "summary": "Memory over-allocation in evm crate",
+              "references": [
+                {
+                  "url": "https://github.com/rust-blockchain/evm/security/advisories/GHSA-4jwq-572w-4388"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-29511" },
+                {
+                  "url": "https://github.com/rust-blockchain/evm/commit/19ade858c430ab13eb562764a870ac9f8506f8dd"
+                },
+                { "url": "https://github.com/advisories/GHSA-4jwq-572w-4388" }
+              ],
+              "severity": "MODERATE",
+              "cwes": {
+                "nodes": [{ "cweId": "CWE-770" }, { "cweId": "CWE-787" }]
+              },
+              "publishedAt": "2024-01-30T23:55:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.25.1" },
+            "package": { "name": "evm-core" },
+            "vulnerableVersionRange": "= 0.25.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-4jwq-572w-4388" },
+                { "type": "CVE", "value": "CVE-2021-29511" }
+              ],
+              "summary": "Memory over-allocation in evm crate",
+              "references": [
+                {
+                  "url": "https://github.com/rust-blockchain/evm/security/advisories/GHSA-4jwq-572w-4388"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-29511" },
+                {
+                  "url": "https://github.com/rust-blockchain/evm/commit/19ade858c430ab13eb562764a870ac9f8506f8dd"
+                },
+                { "url": "https://github.com/advisories/GHSA-4jwq-572w-4388" }
+              ],
+              "severity": "MODERATE",
+              "cwes": {
+                "nodes": [{ "cweId": "CWE-770" }, { "cweId": "CWE-787" }]
+              },
+              "publishedAt": "2024-01-30T23:55:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.24.1" },
+            "package": { "name": "evm-core" },
+            "vulnerableVersionRange": "= 0.24.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-4jwq-572w-4388" },
+                { "type": "CVE", "value": "CVE-2021-29511" }
+              ],
+              "summary": "Memory over-allocation in evm crate",
+              "references": [
+                {
+                  "url": "https://github.com/rust-blockchain/evm/security/advisories/GHSA-4jwq-572w-4388"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-29511" },
+                {
+                  "url": "https://github.com/rust-blockchain/evm/commit/19ade858c430ab13eb562764a870ac9f8506f8dd"
+                },
+                { "url": "https://github.com/advisories/GHSA-4jwq-572w-4388" }
+              ],
+              "severity": "MODERATE",
+              "cwes": {
+                "nodes": [{ "cweId": "CWE-770" }, { "cweId": "CWE-787" }]
+              },
+              "publishedAt": "2024-01-30T23:55:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.23.1" },
+            "package": { "name": "evm-core" },
+            "vulnerableVersionRange": "= 0.23.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-4jwq-572w-4388" },
+                { "type": "CVE", "value": "CVE-2021-29511" }
+              ],
+              "summary": "Memory over-allocation in evm crate",
+              "references": [
+                {
+                  "url": "https://github.com/rust-blockchain/evm/security/advisories/GHSA-4jwq-572w-4388"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-29511" },
+                {
+                  "url": "https://github.com/rust-blockchain/evm/commit/19ade858c430ab13eb562764a870ac9f8506f8dd"
+                },
+                { "url": "https://github.com/advisories/GHSA-4jwq-572w-4388" }
+              ],
+              "severity": "MODERATE",
+              "cwes": {
+                "nodes": [{ "cweId": "CWE-770" }, { "cweId": "CWE-787" }]
+              },
+              "publishedAt": "2024-01-30T23:55:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.22.1" },
+            "package": { "name": "evm-core" },
+            "vulnerableVersionRange": "= 0.22.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-4jwq-572w-4388" },
+                { "type": "CVE", "value": "CVE-2021-29511" }
+              ],
+              "summary": "Memory over-allocation in evm crate",
+              "references": [
+                {
+                  "url": "https://github.com/rust-blockchain/evm/security/advisories/GHSA-4jwq-572w-4388"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-29511" },
+                {
+                  "url": "https://github.com/rust-blockchain/evm/commit/19ade858c430ab13eb562764a870ac9f8506f8dd"
+                },
+                { "url": "https://github.com/advisories/GHSA-4jwq-572w-4388" }
+              ],
+              "severity": "MODERATE",
+              "cwes": {
+                "nodes": [{ "cweId": "CWE-770" }, { "cweId": "CWE-787" }]
+              },
+              "publishedAt": "2024-01-30T23:55:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.26.1" },
+            "package": { "name": "evm" },
+            "vulnerableVersionRange": "= 0.26.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-4jwq-572w-4388" },
+                { "type": "CVE", "value": "CVE-2021-29511" }
+              ],
+              "summary": "Memory over-allocation in evm crate",
+              "references": [
+                {
+                  "url": "https://github.com/rust-blockchain/evm/security/advisories/GHSA-4jwq-572w-4388"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-29511" },
+                {
+                  "url": "https://github.com/rust-blockchain/evm/commit/19ade858c430ab13eb562764a870ac9f8506f8dd"
+                },
+                { "url": "https://github.com/advisories/GHSA-4jwq-572w-4388" }
+              ],
+              "severity": "MODERATE",
+              "cwes": {
+                "nodes": [{ "cweId": "CWE-770" }, { "cweId": "CWE-787" }]
+              },
+              "publishedAt": "2024-01-30T23:55:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.25.1" },
+            "package": { "name": "evm" },
+            "vulnerableVersionRange": "= 0.25.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-4jwq-572w-4388" },
+                { "type": "CVE", "value": "CVE-2021-29511" }
+              ],
+              "summary": "Memory over-allocation in evm crate",
+              "references": [
+                {
+                  "url": "https://github.com/rust-blockchain/evm/security/advisories/GHSA-4jwq-572w-4388"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-29511" },
+                {
+                  "url": "https://github.com/rust-blockchain/evm/commit/19ade858c430ab13eb562764a870ac9f8506f8dd"
+                },
+                { "url": "https://github.com/advisories/GHSA-4jwq-572w-4388" }
+              ],
+              "severity": "MODERATE",
+              "cwes": {
+                "nodes": [{ "cweId": "CWE-770" }, { "cweId": "CWE-787" }]
+              },
+              "publishedAt": "2024-01-30T23:55:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.24.1" },
+            "package": { "name": "evm" },
+            "vulnerableVersionRange": "= 0.24.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-4jwq-572w-4388" },
+                { "type": "CVE", "value": "CVE-2021-29511" }
+              ],
+              "summary": "Memory over-allocation in evm crate",
+              "references": [
+                {
+                  "url": "https://github.com/rust-blockchain/evm/security/advisories/GHSA-4jwq-572w-4388"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-29511" },
+                {
+                  "url": "https://github.com/rust-blockchain/evm/commit/19ade858c430ab13eb562764a870ac9f8506f8dd"
+                },
+                { "url": "https://github.com/advisories/GHSA-4jwq-572w-4388" }
+              ],
+              "severity": "MODERATE",
+              "cwes": {
+                "nodes": [{ "cweId": "CWE-770" }, { "cweId": "CWE-787" }]
+              },
+              "publishedAt": "2024-01-30T23:55:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.23.1" },
+            "package": { "name": "evm" },
+            "vulnerableVersionRange": "= 0.23.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-4jwq-572w-4388" },
+                { "type": "CVE", "value": "CVE-2021-29511" }
+              ],
+              "summary": "Memory over-allocation in evm crate",
+              "references": [
+                {
+                  "url": "https://github.com/rust-blockchain/evm/security/advisories/GHSA-4jwq-572w-4388"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-29511" },
+                {
+                  "url": "https://github.com/rust-blockchain/evm/commit/19ade858c430ab13eb562764a870ac9f8506f8dd"
+                },
+                { "url": "https://github.com/advisories/GHSA-4jwq-572w-4388" }
+              ],
+              "severity": "MODERATE",
+              "cwes": {
+                "nodes": [{ "cweId": "CWE-770" }, { "cweId": "CWE-787" }]
+              },
+              "publishedAt": "2024-01-30T23:55:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.22.1" },
+            "package": { "name": "evm" },
+            "vulnerableVersionRange": "= 0.22.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-4jwq-572w-4388" },
+                { "type": "CVE", "value": "CVE-2021-29511" }
+              ],
+              "summary": "Memory over-allocation in evm crate",
+              "references": [
+                {
+                  "url": "https://github.com/rust-blockchain/evm/security/advisories/GHSA-4jwq-572w-4388"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-29511" },
+                {
+                  "url": "https://github.com/rust-blockchain/evm/commit/19ade858c430ab13eb562764a870ac9f8506f8dd"
+                },
+                { "url": "https://github.com/advisories/GHSA-4jwq-572w-4388" }
+              ],
+              "severity": "MODERATE",
+              "cwes": {
+                "nodes": [{ "cweId": "CWE-770" }, { "cweId": "CWE-787" }]
+              },
+              "publishedAt": "2024-01-30T23:55:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.21.1" },
+            "package": { "name": "evm-core" },
+            "vulnerableVersionRange": "<= 0.21.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-4jwq-572w-4388" },
+                { "type": "CVE", "value": "CVE-2021-29511" }
+              ],
+              "summary": "Memory over-allocation in evm crate",
+              "references": [
+                {
+                  "url": "https://github.com/rust-blockchain/evm/security/advisories/GHSA-4jwq-572w-4388"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-29511" },
+                {
+                  "url": "https://github.com/rust-blockchain/evm/commit/19ade858c430ab13eb562764a870ac9f8506f8dd"
+                },
+                { "url": "https://github.com/advisories/GHSA-4jwq-572w-4388" }
+              ],
+              "severity": "MODERATE",
+              "cwes": {
+                "nodes": [{ "cweId": "CWE-770" }, { "cweId": "CWE-787" }]
+              },
+              "publishedAt": "2024-01-30T23:55:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.21.1" },
+            "package": { "name": "evm" },
+            "vulnerableVersionRange": "<= 0.21.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-r64r-5h43-26qv" },
+                { "type": "CVE", "value": "CVE-2024-23649" }
+              ],
+              "summary": "Any authenticated user may obtain private message details from other users on the same instance",
+              "references": [
+                {
+                  "url": "https://github.com/LemmyNet/lemmy/security/advisories/GHSA-r64r-5h43-26qv"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-23649" },
+                {
+                  "url": "https://github.com/LemmyNet/lemmy/commit/bc32b408b523b9b64aa57b8e47748f96cce0dae5"
+                },
+                { "url": "https://github.com/advisories/GHSA-r64r-5h43-26qv" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [{ "cweId": "CWE-200" }] },
+              "publishedAt": "2024-01-24T21:13:39Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.19.1" },
+            "package": { "name": "lemmy_server" },
+            "vulnerableVersionRange": ">= 0.17.0, < 0.19.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-7g9j-g5jg-3vv3" }
+              ],
+              "summary": "Unauthenticated Nonce Increment in snow",
+              "references": [
+                {
+                  "url": "https://github.com/mcginty/snow/security/advisories/GHSA-7g9j-g5jg-3vv3"
+                },
+                {
+                  "url": "https://github.com/mcginty/snow/commit/12e8ae55547ae297d5f70599e5c884ea891303eb"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0011.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-7g9j-g5jg-3vv3" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-440" }] },
+              "publishedAt": "2024-01-24T20:53:48Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.9.5" },
+            "package": { "name": "snow" },
+            "vulnerableVersionRange": "< 0.9.5"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-9f9p-cp3c-72jf" },
+                { "type": "CVE", "value": "CVE-2024-23644" }
+              ],
+              "summary": "Improper Neutralization of CRLF Sequences in HTTP Headers ('HTTP Request/Response Splitting') in trillium-http and trillium-client",
+              "references": [
+                {
+                  "url": "https://github.com/trillium-rs/trillium/security/advisories/GHSA-9f9p-cp3c-72jf"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0008.html"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0009.html"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-23644" },
+                {
+                  "url": "https://github.com/trillium-rs/trillium/commit/16a42b3f8378a3fa4e61ece3e3e37e6a530df51d"
+                },
+                {
+                  "url": "https://github.com/trillium-rs/trillium/commit/8d468f85e27b8d0943d6f43ce9f8c7397141a999"
+                },
+                { "url": "https://github.com/advisories/GHSA-9f9p-cp3c-72jf" }
+              ],
+              "severity": "MODERATE",
+              "cwes": {
+                "nodes": [{ "cweId": "CWE-113" }, { "cweId": "CWE-436" }]
+              },
+              "publishedAt": "2024-01-24T20:20:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.5.4" },
+            "package": { "name": "trillium-client" },
+            "vulnerableVersionRange": "< 0.5.4"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-9f9p-cp3c-72jf" },
+                { "type": "CVE", "value": "CVE-2024-23644" }
+              ],
+              "summary": "Improper Neutralization of CRLF Sequences in HTTP Headers ('HTTP Request/Response Splitting') in trillium-http and trillium-client",
+              "references": [
+                {
+                  "url": "https://github.com/trillium-rs/trillium/security/advisories/GHSA-9f9p-cp3c-72jf"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0008.html"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0009.html"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-23644" },
+                {
+                  "url": "https://github.com/trillium-rs/trillium/commit/16a42b3f8378a3fa4e61ece3e3e37e6a530df51d"
+                },
+                {
+                  "url": "https://github.com/trillium-rs/trillium/commit/8d468f85e27b8d0943d6f43ce9f8c7397141a999"
+                },
+                { "url": "https://github.com/advisories/GHSA-9f9p-cp3c-72jf" }
+              ],
+              "severity": "MODERATE",
+              "cwes": {
+                "nodes": [{ "cweId": "CWE-113" }, { "cweId": "CWE-436" }]
+              },
+              "publishedAt": "2024-01-24T20:20:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.3.12" },
+            "package": { "name": "trillium-http" },
+            "vulnerableVersionRange": "< 0.3.12"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-c8v3-jhv9-4ppc" }
+              ],
+              "summary": "Use-after-free when setting the locale",
+              "references": [
+                {
+                  "url": "https://github.com/longbridgeapp/rust-i18n/issues/71"
+                },
+                {
+                  "url": "https://github.com/longbridgeapp/rust-i18n/commit/22e0609591a2c08930f52a0e6bc860f02a0e88c0"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0007.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-c8v3-jhv9-4ppc" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-416" }] },
+              "publishedAt": "2024-01-23T20:10:48Z"
+            },
+            "firstPatchedVersion": { "identifier": "3.0.1" },
+            "package": { "name": "rust-i18n-support" },
+            "vulnerableVersionRange": ">= 3.0.0, < 3.0.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-w59h-378f-2frm" }
+              ],
+              "summary": "Unsound sending of non-Send types across threads in threadalone",
+              "references": [
+                { "url": "https://github.com/cr0sh/threadalone/issues/1" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0005.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-w59h-378f-2frm" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-01-23T14:43:35Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.2.1" },
+            "package": { "name": "threadalone" },
+            "vulnerableVersionRange": "< 0.2.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-r7qv-8r2h-pg27" }
+              ],
+              "summary": "Multiple issues involving quote API in shlex",
+              "references": [
+                {
+                  "url": "https://github.com/comex/rust-shlex/security/advisories/GHSA-r7qv-8r2h-pg27"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0006.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-r7qv-8r2h-pg27" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-01-22T21:21:30Z"
+            },
+            "firstPatchedVersion": { "identifier": "1.3.0" },
+            "package": { "name": "shlex" },
+            "vulnerableVersionRange": "< 1.3.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-58j9-j2fj-v8f4" }
+              ],
+              "summary": "SurrealDB vulnerable to Uncontrolled CPU Consumption via WebSocket Interface",
+              "references": [
+                {
+                  "url": "https://github.com/surrealdb/surrealdb/security/advisories/GHSA-58j9-j2fj-v8f4"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-43669" },
+                {
+                  "url": "https://github.com/snapview/tungstenite-rs/issues/376"
+                },
+                { "url": "https://github.com/surrealdb/surrealdb/pull/2807" },
+                {
+                  "url": "https://github.com/surrealdb/surrealdb/commit/87859158d3750b03564613de70b5ec4ae090549d"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0065.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-58j9-j2fj-v8f4" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-01-19T20:31:21Z"
+            },
+            "firstPatchedVersion": { "identifier": "1.1.0" },
+            "package": { "name": "surrealdb" },
+            "vulnerableVersionRange": "< 1.1.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-8r5v-vm4m-4g25" }
+              ],
+              "summary": "Resource exhaustion vulnerability in h2 may lead to Denial of Service (DoS)",
+              "references": [
+                { "url": "https://github.com/hyperium/h2/pull/737" },
+                {
+                  "url": "https://github.com/hyperium/h2/commit/59570e11ccddbec85f67a0c7aa353f7730c68854"
+                },
+                {
+                  "url": "https://github.com/hyperium/h2/commit/d919cd6fd8e0f4f5d1f6282fab0b38a1b4bf999c"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0003.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-8r5v-vm4m-4g25" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-01-19T15:24:56Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.4.2" },
+            "package": { "name": "h2" },
+            "vulnerableVersionRange": ">= 0.4.0, < 0.4.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-8r5v-vm4m-4g25" }
+              ],
+              "summary": "Resource exhaustion vulnerability in h2 may lead to Denial of Service (DoS)",
+              "references": [
+                { "url": "https://github.com/hyperium/h2/pull/737" },
+                {
+                  "url": "https://github.com/hyperium/h2/commit/59570e11ccddbec85f67a0c7aa353f7730c68854"
+                },
+                {
+                  "url": "https://github.com/hyperium/h2/commit/d919cd6fd8e0f4f5d1f6282fab0b38a1b4bf999c"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0003.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-8r5v-vm4m-4g25" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-01-19T15:24:56Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.3.24" },
+            "package": { "name": "h2" },
+            "vulnerableVersionRange": "< 0.3.24"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-6r8p-hpg7-825g" }
+              ],
+              "summary": "Uncontrolled Recursion in SurrealQL Parsing",
+              "references": [
+                {
+                  "url": "https://github.com/surrealdb/surrealdb/security/advisories/GHSA-6r8p-hpg7-825g"
+                },
+                { "url": "https://github.com/surrealdb/surrealdb/pull/3232" },
+                {
+                  "url": "https://github.com/surrealdb/surrealdb/commit/f838da248e3854e4250e5187a3a67507cb7efaaa"
+                },
+                {
+                  "url": "https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=62410"
+                },
+                {
+                  "url": "https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=62652"
+                },
+                {
+                  "url": "https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=63797"
+                },
+                {
+                  "url": "https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=64445"
+                },
+                {
+                  "url": "https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=64731"
+                },
+                {
+                  "url": "https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=65277"
+                },
+                { "url": "https://github.com/advisories/GHSA-6r8p-hpg7-825g" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-674" }] },
+              "publishedAt": "2024-01-18T15:55:18Z"
+            },
+            "firstPatchedVersion": { "identifier": "1.1.0" },
+            "package": { "name": "surrealdb" },
+            "vulnerableVersionRange": "< 1.1.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-m24x-r6q3-2vp9" }
+              ],
+              "summary": "Uncaught Exception processing HTTP Headers in SurrealDB",
+              "references": [
+                {
+                  "url": "https://github.com/surrealdb/surrealdb/security/advisories/GHSA-m24x-r6q3-2vp9"
+                },
+                { "url": "https://github.com/surrealdb/surrealdb/pull/2985" },
+                {
+                  "url": "https://github.com/surrealdb/surrealdb/commit/a70ddb2e2aed2453730b81781e426486247609cb"
+                },
+                { "url": "https://github.com/advisories/GHSA-m24x-r6q3-2vp9" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-01-18T15:48:48Z"
+            },
+            "firstPatchedVersion": { "identifier": "1.1.0" },
+            "package": { "name": "surrealdb" },
+            "vulnerableVersionRange": "< 1.1.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-jm4v-58r5-66hj" }
+              ],
+              "summary": "Uncaught Exception in surrealdb",
+              "references": [
+                {
+                  "url": "https://github.com/surrealdb/surrealdb/security/advisories/GHSA-jm4v-58r5-66hj"
+                },
+                {
+                  "url": "https://github.com/surrealdb/surrealdb/commit/618a4d1b422df0d12772532bb2c195f830b40399"
+                },
+                { "url": "https://github.com/advisories/GHSA-jm4v-58r5-66hj" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-248" }] },
+              "publishedAt": "2024-01-18T15:44:51Z"
+            },
+            "firstPatchedVersion": { "identifier": "1.1.1" },
+            "package": { "name": "surrealdb" },
+            "vulnerableVersionRange": "< 1.1.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-8f24-6m29-wm2r" }
+              ],
+              "summary": "use-after-free in tracing ",
+              "references": [
+                { "url": "https://github.com/tokio-rs/tracing/pull/2765" },
+                {
+                  "url": "https://github.com/tokio-rs/tracing/commit/20a1762b3fd5f1fafead198fd18e469c68683721"
+                },
+                {
+                  "url": "https://github.com/tokio-rs/tracing/releases/tag/tracing-0.1.40"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0078.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-8f24-6m29-wm2r" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-416" }] },
+              "publishedAt": "2024-01-17T20:32:35Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.1.40" },
+            "package": { "name": "tracing" },
+            "vulnerableVersionRange": ">= 0.1.38, < 0.1.40"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-v363-rrf2-5fmj" }
+              ],
+              "summary": "ferris-says has undefined behavior when not using UTF-8",
+              "references": [
+                { "url": "https://github.com/rust-lang/ferris-says/pull/21" },
+                {
+                  "url": "https://github.com/rust-lang/ferris-says/commit/bb661f29e0d88968c495a4ea4dc63ff0e2c2c11a"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0001.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-v363-rrf2-5fmj" }
+              ],
+              "severity": "LOW",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-01-17T20:31:11Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.3.1" },
+            "package": { "name": "ferris-says" },
+            "vulnerableVersionRange": ">= 0.3.0, < 0.3.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-v363-rrf2-5fmj" }
+              ],
+              "summary": "ferris-says has undefined behavior when not using UTF-8",
+              "references": [
+                { "url": "https://github.com/rust-lang/ferris-says/pull/21" },
+                {
+                  "url": "https://github.com/rust-lang/ferris-says/commit/bb661f29e0d88968c495a4ea4dc63ff0e2c2c11a"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0001.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-v363-rrf2-5fmj" }
+              ],
+              "severity": "LOW",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-01-17T20:31:11Z"
+            },
+            "firstPatchedVersion": null,
+            "package": { "name": "ferris-says" },
+            "vulnerableVersionRange": ">= 0.1.2, <= 0.2.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-r78f-4q2q-hvv4" },
+                { "type": "CVE", "value": "CVE-2024-21670" }
+              ],
+              "summary": "CL-Signatures Revocation Scheme in Ursa has flaws that allow a holder to demonstrate non-revocation of a revoked credential",
+              "references": [
+                {
+                  "url": "https://github.com/hyperledger-archives/ursa/security/advisories/GHSA-r78f-4q2q-hvv4"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-21670" },
+                { "url": "https://github.com/advisories/GHSA-r78f-4q2q-hvv4" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-327" }] },
+              "publishedAt": "2024-01-16T21:13:43Z"
+            },
+            "firstPatchedVersion": null,
+            "package": { "name": "anoncreds-clsignatures" },
+            "vulnerableVersionRange": "< 0.1.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-r78f-4q2q-hvv4" },
+                { "type": "CVE", "value": "CVE-2024-21670" }
+              ],
+              "summary": "CL-Signatures Revocation Scheme in Ursa has flaws that allow a holder to demonstrate non-revocation of a revoked credential",
+              "references": [
+                {
+                  "url": "https://github.com/hyperledger-archives/ursa/security/advisories/GHSA-r78f-4q2q-hvv4"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-21670" },
+                { "url": "https://github.com/advisories/GHSA-r78f-4q2q-hvv4" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-327" }] },
+              "publishedAt": "2024-01-16T21:13:43Z"
+            },
+            "firstPatchedVersion": null,
+            "package": { "name": "ursa" },
+            "vulnerableVersionRange": "<= 0.3.7"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-6698-mhxx-r84g" },
+                { "type": "CVE", "value": "CVE-2024-22192" }
+              ],
+              "summary": "Ursa CL-Signatures Revocation allows verifiers to generate unique identifiers for holders",
+              "references": [
+                {
+                  "url": "https://github.com/hyperledger-archives/ursa/security/advisories/GHSA-6698-mhxx-r84g"
+                },
+                {
+                  "url": "https://github.com/hyperledger/anoncreds-clsignatures-rs/commit/1e55780c890b027fa51e361e188a7743a0bf473f"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-22192" },
+                { "url": "https://github.com/advisories/GHSA-6698-mhxx-r84g" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-327" }] },
+              "publishedAt": "2024-01-16T21:13:40Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.1.0" },
+            "package": { "name": "anoncreds-clsignatures" },
+            "vulnerableVersionRange": "< 0.1.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-6698-mhxx-r84g" },
+                { "type": "CVE", "value": "CVE-2024-22192" }
+              ],
+              "summary": "Ursa CL-Signatures Revocation allows verifiers to generate unique identifiers for holders",
+              "references": [
+                {
+                  "url": "https://github.com/hyperledger-archives/ursa/security/advisories/GHSA-6698-mhxx-r84g"
+                },
+                {
+                  "url": "https://github.com/hyperledger/anoncreds-clsignatures-rs/commit/1e55780c890b027fa51e361e188a7743a0bf473f"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-22192" },
+                { "url": "https://github.com/advisories/GHSA-6698-mhxx-r84g" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-327" }] },
+              "publishedAt": "2024-01-16T21:13:40Z"
+            },
+            "firstPatchedVersion": null,
+            "package": { "name": "ursa" },
+            "vulnerableVersionRange": "<= 0.3.7"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-2q6j-gqc4-4gw3" },
+                { "type": "CVE", "value": "CVE-2022-31021" }
+              ],
+              "summary": "Breaking unlinkability in Identity Mixer using malicious keys",
+              "references": [
+                {
+                  "url": "https://github.com/hyperledger-archives/ursa/security/advisories/GHSA-2q6j-gqc4-4gw3"
+                },
+                {
+                  "url": "https://github.com/hyperledger/ursa/security/advisories/GHSA-2q6j-gqc4-4gw3"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-31021" },
+                { "url": "https://www.brics.dk/RS/98/29/BRICS-RS-98-29.pdf" },
+                { "url": "https://github.com/advisories/GHSA-2q6j-gqc4-4gw3" }
+              ],
+              "severity": "LOW",
+              "cwes": { "nodes": [{ "cweId": "CWE-829" }] },
+              "publishedAt": "2024-01-16T21:13:36Z"
+            },
+            "firstPatchedVersion": null,
+            "package": { "name": "ursa" },
+            "vulnerableVersionRange": "<= 0.3.7"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-2q6j-gqc4-4gw3" },
+                { "type": "CVE", "value": "CVE-2022-31021" }
+              ],
+              "summary": "Breaking unlinkability in Identity Mixer using malicious keys",
+              "references": [
+                {
+                  "url": "https://github.com/hyperledger-archives/ursa/security/advisories/GHSA-2q6j-gqc4-4gw3"
+                },
+                {
+                  "url": "https://github.com/hyperledger/ursa/security/advisories/GHSA-2q6j-gqc4-4gw3"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-31021" },
+                { "url": "https://www.brics.dk/RS/98/29/BRICS-RS-98-29.pdf" },
+                { "url": "https://github.com/advisories/GHSA-2q6j-gqc4-4gw3" }
+              ],
+              "severity": "LOW",
+              "cwes": { "nodes": [{ "cweId": "CWE-829" }] },
+              "publishedAt": "2024-01-16T21:13:36Z"
+            },
+            "firstPatchedVersion": null,
+            "package": { "name": "anoncreds-clsignatures" },
+            "vulnerableVersionRange": "< 0.3"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-27wg-99g8-2v4v" },
+                { "type": "CVE", "value": "CVE-2024-21629" }
+              ],
+              "summary": "Rust EVM erroneousle handles `record_external_operation` error return",
+              "references": [
+                {
+                  "url": "https://github.com/rust-ethereum/evm/security/advisories/GHSA-27wg-99g8-2v4v"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-21629" },
+                { "url": "https://github.com/rust-ethereum/evm/pull/264" },
+                {
+                  "url": "https://github.com/rust-ethereum/evm/commit/d8991ec727ad0fb64fe9957a3cd307387a6701e4"
+                },
+                {
+                  "url": "https://github.com/rust-ethereum/evm/blob/release-v041/src/executor/stack/executor.rs#L1012C25-L1012C69"
+                },
+                { "url": "https://github.com/advisories/GHSA-27wg-99g8-2v4v" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-703" }] },
+              "publishedAt": "2024-01-03T21:48:34Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.41.1" },
+            "package": { "name": "evm" },
+            "vulnerableVersionRange": "<= 0.41.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-p4v8-jgcv-9g75" }
+              ],
+              "summary": "safe_pqc_kyber leaks parts of secret keys",
+              "references": [
+                {
+                  "url": "https://github.com/bwesterb/argyle-kyber/security/advisories/GHSA-p4v8-jgcv-9g75"
+                },
+                {
+                  "url": "https://github.com/bwesterb/argyle-kyber/commit/b5c6ad13f4eece80e59c6ebeafd787ba1519f5f6"
+                },
+                { "url": "https://kyberslash.cr.yp.to/" },
+                { "url": "https://github.com/advisories/GHSA-p4v8-jgcv-9g75" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2024-01-03T21:40:45Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.6.2" },
+            "package": { "name": "safe_pqc_kyber" },
+            "vulnerableVersionRange": "< 0.6.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-875g-mfp6-g7f9" },
+                { "type": "CVE", "value": "CVE-2023-50711" }
+              ],
+              "summary": "`serde` deserialization for `FamStructWrapper` lacks bound checks that could potentially lead to out-of-bounds memory access",
+              "references": [
+                {
+                  "url": "https://github.com/rust-vmm/vmm-sys-util/security/advisories/GHSA-875g-mfp6-g7f9"
+                },
+                {
+                  "url": "https://github.com/rust-vmm/vmm-sys-util/commit/30172fca2a8e0a38667d934ee56682247e13f167"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-50711" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2024-0002.html"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/W5XMCLV2P3ANS3XN4NXZTV4PUNTLWUNJ/"
+                },
+                { "url": "https://github.com/advisories/GHSA-875g-mfp6-g7f9" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-787" }] },
+              "publishedAt": "2024-01-02T16:28:08Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.12.0" },
+            "package": { "name": "vmm-sys-util" },
+            "vulnerableVersionRange": ">= 0.5.0, < 0.12.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-2rcp-jvr4-r259" },
+                { "type": "CVE", "value": "CVE-2023-46115" }
+              ],
+              "summary": "Tauri's Updater Private Keys Possibly Leaked via Vite Environment Variables",
+              "references": [
+                {
+                  "url": "https://github.com/tauri-apps/tauri/security/advisories/GHSA-2rcp-jvr4-r259"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-46115" },
+                {
+                  "url": "https://github.com/tauri-apps/tauri/commit/8b166e9bf82e69ddb3200a3a825614980bd8d433"
+                },
+                {
+                  "url": "https://discord.com/channels/616186924390023171/1164260301655523409"
+                },
+                {
+                  "url": "https://tauri.app/v1/guides/getting-started/setup/vite/"
+                },
+                { "url": "https://github.com/advisories/GHSA-2rcp-jvr4-r259" }
+              ],
+              "severity": "HIGH",
+              "cwes": {
+                "nodes": [{ "cweId": "CWE-200" }, { "cweId": "CWE-522" }]
+              },
+              "publishedAt": "2023-10-20T15:18:52Z"
+            },
+            "firstPatchedVersion": { "identifier": "1.5.6" },
+            "package": { "name": "tauri-cli" },
+            "vulnerableVersionRange": ">= 1.0.0, < 1.5.6"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-2rcp-jvr4-r259" },
+                { "type": "CVE", "value": "CVE-2023-46115" }
+              ],
+              "summary": "Tauri's Updater Private Keys Possibly Leaked via Vite Environment Variables",
+              "references": [
+                {
+                  "url": "https://github.com/tauri-apps/tauri/security/advisories/GHSA-2rcp-jvr4-r259"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-46115" },
+                {
+                  "url": "https://github.com/tauri-apps/tauri/commit/8b166e9bf82e69ddb3200a3a825614980bd8d433"
+                },
+                {
+                  "url": "https://discord.com/channels/616186924390023171/1164260301655523409"
+                },
+                {
+                  "url": "https://tauri.app/v1/guides/getting-started/setup/vite/"
+                },
+                { "url": "https://github.com/advisories/GHSA-2rcp-jvr4-r259" }
+              ],
+              "severity": "HIGH",
+              "cwes": {
+                "nodes": [{ "cweId": "CWE-200" }, { "cweId": "CWE-522" }]
+              },
+              "publishedAt": "2023-10-20T15:18:52Z"
+            },
+            "firstPatchedVersion": { "identifier": "2.0.0-alpha.16" },
+            "package": { "name": "tauri-cli" },
+            "vulnerableVersionRange": ">= 2.0.0-alpha.0, < 2.0.0-alpha.16"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-6ggr-cwv4-g7qg" }
+              ],
+              "summary": "Remotely exploitable denial of service in Rosenpass",
+              "references": [
+                {
+                  "url": "https://github.com/rosenpass/rosenpass/commit/93439858d1c44294a7b377f775c4fc897a370bb2"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0077.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-6ggr-cwv4-g7qg" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2023-12-21T23:15:57Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.2.1" },
+            "package": { "name": "rosenpass" },
+            "vulnerableVersionRange": "< 0.2.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-r24f-hg58-vfrw" }
+              ],
+              "summary": "unsafe-libyaml unaligned write of u64 on 32-bit and 16-bit platforms",
+              "references": [
+                {
+                  "url": "https://github.com/dtolnay/unsafe-libyaml/issues/21"
+                },
+                {
+                  "url": "https://github.com/dtolnay/unsafe-libyaml/commit/7755559145c9cf5573639bfecc557893d4a46b0d"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0075.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-r24f-hg58-vfrw" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2023-12-21T18:14:34Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.2.10" },
+            "package": { "name": "unsafe-libyaml" },
+            "vulnerableVersionRange": "< 0.2.10"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-x96g-95fq-4xv4" },
+                { "type": "CVE", "value": "CVE-2022-47085" }
+              ],
+              "summary": "libostree vulnerable to denial of service attack",
+              "references": [
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-47085" },
+                { "url": "https://github.com/ostreedev/ostree/issues/2775" },
+                { "url": "https://doc.rust-lang.org/std/macro.eprintln.html" },
+                {
+                  "url": "https://github.com/ostreedev/ostree/commit/d9bb160a7c1e7f0a2308a7282622b91bc27d448c"
+                },
+                { "url": "https://github.com/advisories/GHSA-x96g-95fq-4xv4" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2023-07-18T15:30:36Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.17.1" },
+            "package": { "name": "ostree" },
+            "vulnerableVersionRange": "< 0.17.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-45x7-px36-x8w8" },
+                { "type": "CVE", "value": "CVE-2023-48795" }
+              ],
+              "summary": "Prefix Truncation Attack against ChaCha20-Poly1305 and Encrypt-then-MAC aka Terrapin",
+              "references": [
+                {
+                  "url": "https://github.com/warp-tech/russh/security/advisories/GHSA-45x7-px36-x8w8"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-48795" },
+                { "url": "https://github.com/paramiko/paramiko/issues/2337" },
+                {
+                  "url": "https://github.com/TeraTermProject/teraterm/commit/7279fbd6ef4d0c8bdd6a90af4ada2899d786eec0"
+                },
+                {
+                  "url": "https://github.com/golang/crypto/commit/9d2ee975ef9fe627bf0a6f01c1f69e8ef1d4f05d"
+                },
+                {
+                  "url": "https://github.com/warp-tech/russh/commit/1aa340a7df1d5be1c0f4a9e247aade76dfdd2951"
+                },
+                {
+                  "url": "https://github.com/erlang/otp/blob/d1b43dc0f1361d2ad67601169e90a7fc50bb0369/lib/ssh/doc/src/notes.xml#L39-L42"
+                },
+                {
+                  "url": "https://github.com/mkj/dropbear/blob/17657c36cce6df7716d5ff151ec09a665382d5dd/CHANGES#L25"
+                },
+                {
+                  "url": "https://github.com/openssh/openssh-portable/commits/master"
+                },
+                {
+                  "url": "https://github.com/ronf/asyncssh/blob/develop/docs/changes.rst"
+                },
+                { "url": "https://github.com/ronf/asyncssh/tags" },
+                {
+                  "url": "https://github.com/warp-tech/russh/releases/tag/v0.40.2"
+                },
+                { "url": "https://gitlab.com/libssh/libssh-mirror/-/tags" },
+                {
+                  "url": "https://groups.google.com/g/golang-announce/c/-n5WqVC18LQ"
+                },
+                {
+                  "url": "https://groups.google.com/g/golang-announce/c/qA3XtxvMUyg"
+                },
+                {
+                  "url": "https://jadaptive.com/important-java-ssh-security-update-new-ssh-vulnerability-discovered-cve-2023-48795/"
+                },
+                { "url": "https://matt.ucc.asn.au/dropbear/CHANGES" },
+                { "url": "https://news.ycombinator.com/item?id=38684904" },
+                { "url": "https://news.ycombinator.com/item?id=38685286" },
+                {
+                  "url": "https://thorntech.com/cve-2023-48795-and-sftp-gateway/"
+                },
+                {
+                  "url": "https://twitter.com/TrueSkrillor/status/1736774389725565005"
+                },
+                { "url": "https://www.bitvise.com/ssh-server-version-history" },
+                {
+                  "url": "https://www.chiark.greenend.org.uk/~sgtatham/putty/changes.html"
+                },
+                { "url": "https://www.openssh.com/openbsd.html" },
+                { "url": "https://www.openssh.com/txt/release-9.6" },
+                {
+                  "url": "https://www.openwall.com/lists/oss-security/2023/12/18/2"
+                },
+                {
+                  "url": "https://www.reddit.com/r/sysadmin/comments/18idv52/cve202348795_why_is_this_cve_still_undisclosed/"
+                },
+                { "url": "https://www.terrapin-attack.com" },
+                {
+                  "url": "http://www.openwall.com/lists/oss-security/2023/12/18/3"
+                },
+                { "url": "https://github.com/mwiede/jsch/issues/457" },
+                { "url": "https://github.com/mwiede/jsch/pull/461" },
+                {
+                  "url": "https://access.redhat.com/security/cve/cve-2023-48795"
+                },
+                { "url": "https://bugs.gentoo.org/920280" },
+                {
+                  "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2254210"
+                },
+                { "url": "https://bugzilla.suse.com/show_bug.cgi?id=1217950" },
+                {
+                  "url": "https://git.libssh.org/projects/libssh.git/commit/?h=stable-0.10&id=10e09e273f69e149389b3e0e5d44b8c221c2e7f6"
+                },
+                { "url": "https://github.com/advisories/GHSA-45x7-px36-x8w8" },
+                {
+                  "url": "https://github.com/drakkan/sftpgo/releases/tag/v2.5.6"
+                },
+                {
+                  "url": "https://github.com/erlang/otp/releases/tag/OTP-26.2.1"
+                },
+                { "url": "https://go.dev/cl/550715" },
+                { "url": "https://go.dev/issue/64784" },
+                {
+                  "url": "https://security-tracker.debian.org/tracker/CVE-2023-48795"
+                },
+                {
+                  "url": "https://security-tracker.debian.org/tracker/source-package/libssh2"
+                },
+                {
+                  "url": "https://security-tracker.debian.org/tracker/source-package/proftpd-dfsg"
+                },
+                { "url": "https://ubuntu.com/security/CVE-2023-48795" },
+                {
+                  "url": "https://www.suse.com/c/suse-addresses-the-ssh-v2-protocol-terrapin-attack-aka-cve-2023-48795/"
+                },
+                { "url": "https://github.com/libssh2/libssh2/pull/1291" },
+                {
+                  "url": "https://github.com/jtesta/ssh-audit/commit/8e972c5e94b460379fe0c7d20209c16df81538a5"
+                },
+                {
+                  "url": "https://forum.netgate.com/topic/184941/terrapin-ssh-attack"
+                },
+                { "url": "https://github.com/rapier1/hpn-ssh/releases" },
+                { "url": "https://github.com/proftpd/proftpd/issues/456" },
+                { "url": "https://github.com/NixOS/nixpkgs/pull/275249" },
+                {
+                  "url": "https://github.com/connectbot/sshlib/commit/5c8b534f6e97db7ac0e0e579331213aa25c173ab"
+                },
+                {
+                  "url": "https://github.com/mscdex/ssh2/commit/97b223f8891b96d6fc054df5ab1d5a1a545da2a3"
+                },
+                { "url": "https://crates.io/crates/thrussh/versions" },
+                {
+                  "url": "https://github.com/TeraTermProject/teraterm/releases/tag/v5.1"
+                },
+                {
+                  "url": "https://github.com/connectbot/sshlib/compare/2.2.21...2.2.22"
+                },
+                {
+                  "url": "https://github.com/mwiede/jsch/compare/jsch-0.2.14...jsch-0.2.15"
+                },
+                {
+                  "url": "https://github.com/proftpd/proftpd/blob/master/RELEASE_NOTES"
+                },
+                {
+                  "url": "https://nest.pijul.com/pijul/thrussh/changes/D6H7OWTTMHHX6BTB3B6MNBOBX2L66CBL4LGSEUSAI2MCRCJDQFRQC"
+                },
+                { "url": "https://oryx-embedded.com/download/#changelog" },
+                {
+                  "url": "https://www.crushftp.com/crush10wiki/Wiki.jsp?page=Update"
+                },
+                {
+                  "url": "https://www.netsarang.com/en/xshell-update-history/"
+                },
+                { "url": "https://www.paramiko.org/changelog.html" },
+                {
+                  "url": "https://arstechnica.com/security/2023/12/hackers-can-break-ssh-channel-integrity-using-novel-data-corruption-attack/"
+                },
+                {
+                  "url": "https://www.freebsd.org/security/advisories/FreeBSD-SA-23:19.openssh.asc"
+                },
+                {
+                  "url": "http://www.openwall.com/lists/oss-security/2023/12/19/5"
+                },
+                {
+                  "url": "http://www.openwall.com/lists/oss-security/2023/12/20/3"
+                },
+                { "url": "https://github.com/apache/mina-sshd/issues/445" },
+                { "url": "https://github.com/hierynomus/sshj/issues/916" },
+                { "url": "https://github.com/janmojzis/tinyssh/issues/81" },
+                {
+                  "url": "https://github.com/net-ssh/net-ssh/blob/2e65064a52d73396bfc3806c9196fc8108f33cd8/CHANGES.txt#L14-L16"
+                },
+                {
+                  "url": "https://github.com/proftpd/proftpd/blob/0a7ea9b0ba9fcdf368374a226370d08f10397d99/RELEASE_NOTES"
+                },
+                {
+                  "url": "https://github.com/proftpd/proftpd/blob/d21e7a2e47e9b38f709bec58e3fa711f759ad0e1/RELEASE_NOTES"
+                },
+                {
+                  "url": "https://security-tracker.debian.org/tracker/source-package/trilead-ssh2"
+                },
+                {
+                  "url": "https://www.openwall.com/lists/oss-security/2023/12/20/3"
+                },
+                {
+                  "url": "http://packetstormsecurity.com/files/176280/Terrapin-SSH-Connection-Weakening.html"
+                },
+                {
+                  "url": "https://github.com/PowerShell/Win32-OpenSSH/issues/2189"
+                },
+                { "url": "https://github.com/cyd01/KiTTY/issues/520" },
+                { "url": "https://github.com/ssh-mitm/ssh-mitm/issues/165" },
+                { "url": "https://filezilla-project.org/versions.php" },
+                {
+                  "url": "https://github.com/PowerShell/Win32-OpenSSH/releases/tag/v9.5.0.0p1-Beta"
+                },
+                { "url": "https://help.panic.com/releasenotes/transmit5/" },
+                {
+                  "url": "https://lists.debian.org/debian-lts-announce/2023/12/msg00017.html"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/3CAYYW35MUTNO65RVAELICTNZZFMT2XS/"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/3YQLUQWLIHDB5QCXQEX7HXHAWMOKPP5O/"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/APYIXIQOVDCRWLHTGB4VYMAUIAQLKYJ3/"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/F7EYCFQCTSGJXWO3ZZ44MGKFC5HA7G3Y/"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/KMZCVGUGJZZVDPCVDA7TEB22VUCNEXDD/"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/LZQVUHWVWRH73YBXUQJOD6CKHDQBU3DM/"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/MKQRBF3DWMWPH36LBCOBUTSIZRTPEZXB/"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/QI3EHAHABFQK7OABNCSF5GMYP6TONTI7/"
+                },
+                { "url": "https://news.ycombinator.com/item?id=38732005" },
+                { "url": "https://nova.app/releases/#v11.8" },
+                { "url": "https://roumenpetrov.info/secsh/#news20231220" },
+                { "url": "https://security.gentoo.org/glsa/202312-16" },
+                { "url": "https://security.gentoo.org/glsa/202312-17" },
+                {
+                  "url": "https://security.netapp.com/advisory/ntap-20240105-0004/"
+                },
+                { "url": "https://winscp.net/eng/docs/history#6.2.2" },
+                {
+                  "url": "https://www.bitvise.com/ssh-client-version-history#933"
+                },
+                { "url": "https://www.debian.org/security/2023/dsa-5586" },
+                { "url": "https://www.debian.org/security/2023/dsa-5588" },
+                {
+                  "url": "https://www.lancom-systems.de/service-support/allgemeine-sicherheitshinweise#c243508"
+                },
+                {
+                  "url": "https://www.theregister.com/2023/12/20/terrapin_attack_ssh"
+                },
+                {
+                  "url": "https://www.vandyke.com/products/securecrt/history.txt"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/33XHJUB6ROFUOH2OQNENFROTVH6MHSHA/"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/BL5KTLOSLH2KHRN4HCXJPK3JUVLDGEL6/"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/C3AFMZ6MH2UHHOPIWT5YLSFV3D2VB3AC/"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/6Y74KVCPEPT4MVU3LHDWCNNOXOE5ZLUR/"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/CHHITS4PUOZAKFIUBQAQZC7JWXMOYE4B/"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/HYEDEXIKFKTUJIN43RG4B7T5ZS6MHUSP/"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/I724O3LSRCPO4WNVIXTZCT4VVRMXMMSG/"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/KEOTKBUPZXHE3F352JBYNTSNRXYLWD6P/"
+                },
+                {
+                  "url": "https://psirt.global.sonicwall.com/vuln-detail/SNWLID-2024-0002"
+                },
+                {
+                  "url": "https://lists.debian.org/debian-lts-announce/2024/01/msg00013.html"
+                },
+                {
+                  "url": "https://lists.debian.org/debian-lts-announce/2024/01/msg00014.html"
+                },
+                {
+                  "url": "https://github.com/paramiko/paramiko/issues/2337#issuecomment-1887642773"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/3JIMLVBDWOP4FUPXPTB4PGHHIOMGFLQE/"
+                },
+                {
+                  "url": "https://lists.fedoraproject.org/archives/list/package-announce%40lists.fedoraproject.org/message/L5Y6MNNVAPIJSXJERQ6PKZVCIUXSNJK7/"
+                }
+              ],
+              "severity": "MODERATE",
+              "cwes": {
+                "nodes": [{ "cweId": "CWE-345" }, { "cweId": "CWE-354" }]
+              },
+              "publishedAt": "2023-12-18T19:22:09Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.40.2" },
+            "package": { "name": "russh" },
+            "vulnerableVersionRange": "< 0.40.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-rjhf-4mh8-9xjq" }
+              ],
+              "summary": "Zerocopy: Some Ref methods are unsound with some type parameters",
+              "references": [
+                { "url": "https://github.com/google/zerocopy/issues/679" },
+                { "url": "https://github.com/google/zerocopy/issues/71" },
+                { "url": "https://github.com/google/zerocopy/issues/716" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0074.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-rjhf-4mh8-9xjq" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2023-12-18T19:18:46Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.7.31" },
+            "package": { "name": "zerocopy" },
+            "vulnerableVersionRange": ">= 0.7.0, < 0.7.31"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-rjhf-4mh8-9xjq" }
+              ],
+              "summary": "Zerocopy: Some Ref methods are unsound with some type parameters",
+              "references": [
+                { "url": "https://github.com/google/zerocopy/issues/679" },
+                { "url": "https://github.com/google/zerocopy/issues/71" },
+                { "url": "https://github.com/google/zerocopy/issues/716" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0074.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-rjhf-4mh8-9xjq" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2023-12-18T19:18:46Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.6.6" },
+            "package": { "name": "zerocopy" },
+            "vulnerableVersionRange": ">= 0.6.0, < 0.6.6"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-rjhf-4mh8-9xjq" }
+              ],
+              "summary": "Zerocopy: Some Ref methods are unsound with some type parameters",
+              "references": [
+                { "url": "https://github.com/google/zerocopy/issues/679" },
+                { "url": "https://github.com/google/zerocopy/issues/71" },
+                { "url": "https://github.com/google/zerocopy/issues/716" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0074.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-rjhf-4mh8-9xjq" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2023-12-18T19:18:46Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.5.2" },
+            "package": { "name": "zerocopy" },
+            "vulnerableVersionRange": ">= 0.5.0, < 0.5.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-rjhf-4mh8-9xjq" }
+              ],
+              "summary": "Zerocopy: Some Ref methods are unsound with some type parameters",
+              "references": [
+                { "url": "https://github.com/google/zerocopy/issues/679" },
+                { "url": "https://github.com/google/zerocopy/issues/71" },
+                { "url": "https://github.com/google/zerocopy/issues/716" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0074.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-rjhf-4mh8-9xjq" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2023-12-18T19:18:46Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.4.1" },
+            "package": { "name": "zerocopy" },
+            "vulnerableVersionRange": ">= 0.4.0, < 0.4.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-rjhf-4mh8-9xjq" }
+              ],
+              "summary": "Zerocopy: Some Ref methods are unsound with some type parameters",
+              "references": [
+                { "url": "https://github.com/google/zerocopy/issues/679" },
+                { "url": "https://github.com/google/zerocopy/issues/71" },
+                { "url": "https://github.com/google/zerocopy/issues/716" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0074.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-rjhf-4mh8-9xjq" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2023-12-18T19:18:46Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.3.2" },
+            "package": { "name": "zerocopy" },
+            "vulnerableVersionRange": ">= 0.3.0, < 0.3.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-rjhf-4mh8-9xjq" }
+              ],
+              "summary": "Zerocopy: Some Ref methods are unsound with some type parameters",
+              "references": [
+                { "url": "https://github.com/google/zerocopy/issues/679" },
+                { "url": "https://github.com/google/zerocopy/issues/71" },
+                { "url": "https://github.com/google/zerocopy/issues/716" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0074.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-rjhf-4mh8-9xjq" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2023-12-18T19:18:46Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.2.9" },
+            "package": { "name": "zerocopy" },
+            "vulnerableVersionRange": ">= 0.2.2, < 0.2.9"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-3mv5-343c-w2qg" }
+              ],
+              "summary": "Ref methods into_ref, into_mut, into_slice, and into_slice_mut are unsound when used with cell::Ref or cell::RefMut",
+              "references": [
+                {
+                  "url": "https://github.com/google/zerocopy/security/advisories/GHSA-3mv5-343c-w2qg"
+                },
+                { "url": "https://github.com/google/zerocopy/issues/679" },
+                { "url": "https://github.com/google/zerocopy/issues/716" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0074.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-3mv5-343c-w2qg" }
+              ],
+              "severity": "LOW",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2023-12-15T03:48:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.7.31" },
+            "package": { "name": "zerocopy" },
+            "vulnerableVersionRange": ">= 0.7.0, < 0.7.31"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-3mv5-343c-w2qg" }
+              ],
+              "summary": "Ref methods into_ref, into_mut, into_slice, and into_slice_mut are unsound when used with cell::Ref or cell::RefMut",
+              "references": [
+                {
+                  "url": "https://github.com/google/zerocopy/security/advisories/GHSA-3mv5-343c-w2qg"
+                },
+                { "url": "https://github.com/google/zerocopy/issues/679" },
+                { "url": "https://github.com/google/zerocopy/issues/716" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0074.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-3mv5-343c-w2qg" }
+              ],
+              "severity": "LOW",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2023-12-15T03:48:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.6.6" },
+            "package": { "name": "zerocopy" },
+            "vulnerableVersionRange": ">= 0.6.0, < 0.6.6"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-3mv5-343c-w2qg" }
+              ],
+              "summary": "Ref methods into_ref, into_mut, into_slice, and into_slice_mut are unsound when used with cell::Ref or cell::RefMut",
+              "references": [
+                {
+                  "url": "https://github.com/google/zerocopy/security/advisories/GHSA-3mv5-343c-w2qg"
+                },
+                { "url": "https://github.com/google/zerocopy/issues/679" },
+                { "url": "https://github.com/google/zerocopy/issues/716" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0074.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-3mv5-343c-w2qg" }
+              ],
+              "severity": "LOW",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2023-12-15T03:48:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.5.2" },
+            "package": { "name": "zerocopy" },
+            "vulnerableVersionRange": ">= 0.5.0, < 0.5.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-3mv5-343c-w2qg" }
+              ],
+              "summary": "Ref methods into_ref, into_mut, into_slice, and into_slice_mut are unsound when used with cell::Ref or cell::RefMut",
+              "references": [
+                {
+                  "url": "https://github.com/google/zerocopy/security/advisories/GHSA-3mv5-343c-w2qg"
+                },
+                { "url": "https://github.com/google/zerocopy/issues/679" },
+                { "url": "https://github.com/google/zerocopy/issues/716" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0074.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-3mv5-343c-w2qg" }
+              ],
+              "severity": "LOW",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2023-12-15T03:48:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.4.1" },
+            "package": { "name": "zerocopy" },
+            "vulnerableVersionRange": "= 0.4.0"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-3mv5-343c-w2qg" }
+              ],
+              "summary": "Ref methods into_ref, into_mut, into_slice, and into_slice_mut are unsound when used with cell::Ref or cell::RefMut",
+              "references": [
+                {
+                  "url": "https://github.com/google/zerocopy/security/advisories/GHSA-3mv5-343c-w2qg"
+                },
+                { "url": "https://github.com/google/zerocopy/issues/679" },
+                { "url": "https://github.com/google/zerocopy/issues/716" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0074.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-3mv5-343c-w2qg" }
+              ],
+              "severity": "LOW",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2023-12-15T03:48:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.3.2" },
+            "package": { "name": "zerocopy" },
+            "vulnerableVersionRange": ">= 0.3.0, < 0.3.2"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-3mv5-343c-w2qg" }
+              ],
+              "summary": "Ref methods into_ref, into_mut, into_slice, and into_slice_mut are unsound when used with cell::Ref or cell::RefMut",
+              "references": [
+                {
+                  "url": "https://github.com/google/zerocopy/security/advisories/GHSA-3mv5-343c-w2qg"
+                },
+                { "url": "https://github.com/google/zerocopy/issues/679" },
+                { "url": "https://github.com/google/zerocopy/issues/716" },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0074.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-3mv5-343c-w2qg" }
+              ],
+              "severity": "LOW",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2023-12-15T03:48:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.2.9" },
+            "package": { "name": "zerocopy" },
+            "vulnerableVersionRange": ">= 0.2.2, < 0.2.9"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-x5fr-7hhj-34j3" }
+              ],
+              "summary": "Full Table Permissions by Default",
+              "references": [
+                {
+                  "url": "https://github.com/surrealdb/surrealdb/security/advisories/GHSA-x5fr-7hhj-34j3"
+                },
+                { "url": "https://github.com/advisories/GHSA-x5fr-7hhj-34j3" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [] },
+              "publishedAt": "2023-12-15T03:46:36Z"
+            },
+            "firstPatchedVersion": { "identifier": "1.0.1" },
+            "package": { "name": "surrealdb" },
+            "vulnerableVersionRange": "< 1.0.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-w3vp-jw9m-f9pm" },
+                { "type": "CVE", "value": "CVE-2023-6193" }
+              ],
+              "summary": "Unbounded queuing of path validation messages in cloudflare-quiche",
+              "references": [
+                {
+                  "url": "https://github.com/cloudflare/quiche/security/advisories/GHSA-w3vp-jw9m-f9pm"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-6193" },
+                {
+                  "url": "https://github.com/cloudflare/quiche/commit/ea7ecf39ae28ab24cf1785c1674dc2e8a076f9ca"
+                },
+                {
+                  "url": "https://datatracker.ietf.org/doc/html/rfc9000#section-8.2"
+                },
+                { "url": "https://github.com/advisories/GHSA-w3vp-jw9m-f9pm" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-400" }] },
+              "publishedAt": "2023-12-13T13:34:55Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.19.1" },
+            "package": { "name": "quiche" },
+            "vulnerableVersionRange": ">= 0.15.0, < 0.19.1"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-4mq4-7rw3-vm5j" },
+                { "type": "CVE", "value": "CVE-2023-51661" }
+              ],
+              "summary": "Wasmer filesystem sandbox not enforced",
+              "references": [
+                {
+                  "url": "https://github.com/wasmerio/wasmer/security/advisories/GHSA-4mq4-7rw3-vm5j"
+                },
+                { "url": "https://github.com/wasmerio/wasmer/issues/4267" },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-51661" },
+                {
+                  "url": "https://github.com/wasmerio/wasmer/commit/4d63febf9d8b257b0531963b85df48d45d0dbf3c"
+                },
+                {
+                  "url": "https://github.com/wasmerio/wasmer/commit/e3923612c23123025c26f982d390e34df7df030f"
+                },
+                { "url": "https://github.com/advisories/GHSA-4mq4-7rw3-vm5j" }
+              ],
+              "severity": "HIGH",
+              "cwes": { "nodes": [{ "cweId": "CWE-284" }] },
+              "publishedAt": "2023-12-13T13:32:38Z"
+            },
+            "firstPatchedVersion": { "identifier": "4.2.4" },
+            "package": { "name": "wasmer-cli" },
+            "vulnerableVersionRange": ">= 3.0.0, < 4.2.4"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-7787-p7x6-fq3j" },
+                { "type": "CVE", "value": "CVE-2023-6245" }
+              ],
+              "summary": "Candid infinite decoding loop through specially crafted payload",
+              "references": [
+                {
+                  "url": "https://github.com/dfinity/candid/security/advisories/GHSA-7787-p7x6-fq3j"
+                },
+                { "url": "https://github.com/dfinity/candid/pull/478" },
+                {
+                  "url": "https://github.com/dfinity/candid/commit/b233dbc2d2bcc79c9fc574dd5968269df680b073"
+                },
+                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-6245" },
+                {
+                  "url": "https://github.com/dfinity/candid/blob/master/spec/Candid.md"
+                },
+                {
+                  "url": "https://internetcomputer.org/docs/current/references/candid-ref"
+                },
+                {
+                  "url": "https://internetcomputer.org/docs/current/references/ic-interface-spec"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0073.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-7787-p7x6-fq3j" }
+              ],
+              "severity": "HIGH",
+              "cwes": {
+                "nodes": [
+                  { "cweId": "CWE-400" },
+                  { "cweId": "CWE-835" },
+                  { "cweId": "CWE-1288" }
+                ]
+              },
+              "publishedAt": "2023-12-08T15:23:22Z"
+            },
+            "firstPatchedVersion": { "identifier": "0.9.10" },
+            "package": { "name": "candid" },
+            "vulnerableVersionRange": ">= 0.9.0, < 0.9.10"
+          }
+        },
+        {
+          "node": {
+            "advisory": {
+              "identifiers": [
+                { "type": "GHSA", "value": "GHSA-4grx-2x9w-596c" }
+              ],
+              "summary": "Marvin Attack: potential key recovery through timing sidechannels",
+              "references": [
+                {
+                  "url": "https://github.com/RustCrypto/RSA/security/advisories/GHSA-c38w-74pg-36hr"
+                },
+                {
+                  "url": "https://github.com/RustCrypto/RSA/issues/19#issuecomment-1822995643"
+                },
+                {
+                  "url": "https://rustsec.org/advisories/RUSTSEC-2023-0071.html"
+                },
+                { "url": "https://github.com/advisories/GHSA-4grx-2x9w-596c" }
+              ],
+              "severity": "MODERATE",
+              "cwes": { "nodes": [{ "cweId": "CWE-385" }] },
+              "publishedAt": "2023-11-28T23:28:25Z"
+            },
+            "firstPatchedVersion": null,
+            "package": { "name": "rsa" },
+            "vulnerableVersionRange": "<= 0.9.6"
+          }
+        }
+      ],
+      "pageInfo": {
+        "hasNextPage": true,
+        "endCursor": "Y3Vyc29yOnYyOpK5MjAyMy0xMi0wN1QwMDoyMDo1MiswNTozMM2-_Q=="
+      }
+    }
+  }
+}

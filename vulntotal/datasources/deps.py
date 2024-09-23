@@ -26,13 +26,24 @@ class DepsDataSource(DataSource):
 
     def fetch_json_response(self, url):
         response = requests.get(url)
-        if not response.status_code == 200 or response.text == "Not Found":
+        if response.status_code != 200 or response.text == "Not Found":
             logger.error(f"Error while fetching {url}")
             return
         return response.json()
 
     def datasource_advisory(self, purl) -> Iterable[VendorData]:
+        """
+        Fetch and parse advisories from a given purl.
+
+        Parameters:
+            purl: A string representing the package URL.
+
+        Returns:
+            A list of VendorData objects containing the advisory information.
+        """
         payload = generate_meta_payload(purl)
+        if not payload:
+            return
         response = self.fetch_json_response(payload)
         if response:
             advisories = parse_advisories_from_meta(response)
@@ -58,6 +69,16 @@ class DepsDataSource(DataSource):
 
 
 def parse_advisory(advisory, purl) -> Iterable[VendorData]:
+    """
+    Parse an advisory into a VendorData object.
+
+    Parameters:
+        advisory: A dictionary representing the advisory data.
+        purl: PURL for the advisory.
+
+    Yields:
+        VendorData instance containing purl, aliases, affected_versions and fixed_versions.
+    """
     package = advisory["packages"][0]
     affected_versions = [event["version"] for event in package["versionsAffected"]]
     fixed_versions = [event["version"] for event in package["versionsUnaffected"]]
@@ -70,6 +91,15 @@ def parse_advisory(advisory, purl) -> Iterable[VendorData]:
 
 
 def parse_advisories_from_meta(advisories_metadata):
+    """
+    Parse advisories from a given metadata.
+
+    Parameters:
+        advisories_metadata: A dictionary representing the metadata of the advisories.
+
+    Returns:
+        A list of dictionaries, each representing an advisory.
+    """
     advisories = []
     dependencies = advisories_metadata.get("dependencies") or []
     for dependency in dependencies:
@@ -84,6 +114,15 @@ def generate_advisory_payload(advisory_meta):
 
 
 def generate_meta_payload(purl):
+    """
+    Generate a payload for fetching advisories metadata from a given purl.
+
+    Parameters:
+        purl: A PackageURL object representing the package URL.
+
+    Returns:
+        A string representing the payload for fetching advisories metadata. It should be a valid URL that contains the ecosystem, package name and package version of the dependency.
+    """
     url_advisories_meta = "https://deps.dev/_/s/{ecosystem}/p/{package}/v/{version}/dependencies"
     supported_ecosystem = DepsDataSource.supported_ecosystem()
     if purl.type in supported_ecosystem:

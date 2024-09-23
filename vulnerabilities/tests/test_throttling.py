@@ -29,10 +29,11 @@ class ThrottleApiTests(APITestCase):
         self.staff_csrf_client = APIClient(enforce_csrf_checks=True)
         self.staff_csrf_client.credentials(HTTP_AUTHORIZATION=self.staff_auth)
 
-    def test_packages_endpoint_throttling(self):
+        self.csrf_client_anon = APIClient(enforce_csrf_checks=True)
+        self.csrf_client_anon_1 = APIClient(enforce_csrf_checks=True)
 
-        # A basic user can only access /packages endpoint 10 times a day
-        for i in range(0, 10):
+    def test_package_endpoint_throttling(self):
+        for i in range(0, 20):
             response = self.csrf_client.get("/api/packages")
             self.assertEqual(response.status_code, 200)
             response = self.staff_csrf_client.get("/api/packages")
@@ -46,122 +47,35 @@ class ThrottleApiTests(APITestCase):
         # 200 - staff user can access API unlimited times
         self.assertEqual(response.status_code, 200)
 
-    def test_cpes_endpoint_throttling(self):
-
-        # A basic user can only access /cpes endpoint 4 times a day
-        for i in range(0, 4):
-            response = self.csrf_client.get("/api/cpes")
-            self.assertEqual(response.status_code, 200)
-            response = self.staff_csrf_client.get("/api/cpes")
+        # A anonymous user can only access /packages endpoint 10 times a day
+        for _i in range(0, 10):
+            response = self.csrf_client_anon.get("/api/packages")
             self.assertEqual(response.status_code, 200)
 
-        response = self.csrf_client.get("/api/cpes")
-        # 429 - too many requests for basic user
+        response = self.csrf_client_anon.get("/api/packages")
+        # 429 - too many requests for anon user
         self.assertEqual(response.status_code, 429)
+        self.assertEqual(
+            response.data.get("message"),
+            "Your request has been throttled. Please contact support@nexb.com",
+        )
 
-        response = self.staff_csrf_client.get("/api/cpes", format="json")
-        # 200 - staff user can access API unlimited times
-        self.assertEqual(response.status_code, 200)
-
-    def test_all_vulnerable_packages_endpoint_throttling(self):
-
-        # A basic user can only access /packages/all 1 time a day
-        for i in range(0, 1):
-            response = self.csrf_client.get("/api/packages/all")
-            self.assertEqual(response.status_code, 200)
-            response = self.staff_csrf_client.get("/api/packages/all")
-            self.assertEqual(response.status_code, 200)
-
-        response = self.csrf_client.get("/api/packages/all")
-        # 429 - too many requests for basic user
+        response = self.csrf_client_anon.get("/api/vulnerabilities")
+        # 429 - too many requests for anon user
         self.assertEqual(response.status_code, 429)
+        self.assertEqual(
+            response.data.get("message"),
+            "Your request has been throttled. Please contact support@nexb.com",
+        )
 
-        response = self.staff_csrf_client.get("/api/packages/all", format="json")
-        # 200 - staff user can access API unlimited times
-        self.assertEqual(response.status_code, 200)
-
-    def test_vulnerabilities_endpoint_throttling(self):
-
-        # A basic user can only access /vulnerabilities 8 times a day
-        for i in range(0, 8):
-            response = self.csrf_client.get("/api/vulnerabilities")
-            self.assertEqual(response.status_code, 200)
-            response = self.staff_csrf_client.get("/api/vulnerabilities")
-            self.assertEqual(response.status_code, 200)
-
-        response = self.csrf_client.get("/api/vulnerabilities")
-        # 429 - too many requests for basic user
-        self.assertEqual(response.status_code, 429)
-
-        response = self.staff_csrf_client.get("/api/vulnerabilities", format="json")
-        # 200 - staff user can access API unlimited times
-        self.assertEqual(response.status_code, 200)
-
-    def test_aliases_endpoint_throttling(self):
-
-        # A basic user can only access /alias 2 times a day
-        for i in range(0, 2):
-            response = self.csrf_client.get("/api/aliases")
-            self.assertEqual(response.status_code, 200)
-            response = self.staff_csrf_client.get("/api/aliases")
-            self.assertEqual(response.status_code, 200)
-
-        response = self.csrf_client.get("/api/aliases")
-        # 429 - too many requests for basic user
-        self.assertEqual(response.status_code, 429)
-
-        response = self.staff_csrf_client.get("/api/aliases", format="json")
-        # 200 - staff user can access API unlimited times
-        self.assertEqual(response.status_code, 200)
-
-    def test_bulk_search_packages_endpoint_throttling(self):
         data = json.dumps({"purls": ["pkg:foo/bar"]})
 
-        # A basic user can only access /packages/bulk_search 6 times a day
-        for i in range(0, 6):
-            response = self.csrf_client.post(
-                "/api/packages/bulk_search", data=data, content_type="application/json"
-            )
-            self.assertEqual(response.status_code, 200)
-            response = self.staff_csrf_client.post(
-                "/api/packages/bulk_search", data=data, content_type="application/json"
-            )
-            self.assertEqual(response.status_code, 200)
-
-        response = self.csrf_client.post(
+        response = self.csrf_client_anon.post(
             "/api/packages/bulk_search", data=data, content_type="application/json"
         )
-        # 429 - too many requests for basic user
+        # 429 - too many requests for anon user
         self.assertEqual(response.status_code, 429)
-
-        response = self.staff_csrf_client.post(
-            "/api/packages/bulk_search", data=data, content_type="application/json"
+        self.assertEqual(
+            response.data.get("message"),
+            "Your request has been throttled. Please contact support@nexb.com",
         )
-        # 200 - staff user can access API unlimited times
-        self.assertEqual(response.status_code, 200)
-
-    def test_bulk_search_cpes_endpoint_throttling(self):
-        data = json.dumps({"cpes": ["cpe:foo/bar"]})
-
-        # A basic user can only access /cpes/bulk_search 5 times a day
-        for i in range(0, 5):
-            response = self.csrf_client.post(
-                "/api/cpes/bulk_search", data=data, content_type="application/json"
-            )
-            self.assertEqual(response.status_code, 200)
-            response = self.staff_csrf_client.post(
-                "/api/cpes/bulk_search", data=data, content_type="application/json"
-            )
-            self.assertEqual(response.status_code, 200)
-
-        response = self.csrf_client.post(
-            "/api/cpes/bulk_search", data=data, content_type="application/json"
-        )
-        # 429 - too many requests for basic user
-        self.assertEqual(response.status_code, 429)
-
-        response = self.staff_csrf_client.post(
-            "/api/cpes/bulk_search", data=data, content_type="application/json"
-        )
-        # 200 - staff user can access API unlimited times
-        self.assertEqual(response.status_code, 200)

@@ -9,42 +9,47 @@
     "affected_purls": [
       {
         "type": "pypi",
-        "namespace": null,
+        "namespace": "",
         "name": "flask",
         "version": "0.8",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       },
       {
         "type": "pypi",
-        "namespace": null,
+        "namespace": "",
         "name": "flask",
         "version": "0.9",
-        "qualifiers": null,
-        "subpath": null
+        "qualifiers": "",
+        "subpath": ""
       }
     ],
     "fixed_purl": {
       "type": "pypi",
-      "namespace": null,
+      "namespace": "",
       "name": "flask",
       "version": "1.0",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2019-1010083",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-1010083",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://www.palletsprojects.com/blog/flask-1-0-released/",
         "severities": []
       }
     ],
-    "weaknesses": []
+    "weaknesses": [
+      1035,
+      937
+    ]
   },
   {
     "vulnerability_id": null,
@@ -56,24 +61,29 @@
     "affected_purls": [],
     "fixed_purl": {
       "type": "pypi",
-      "namespace": null,
+      "namespace": "",
       "name": "flask",
       "version": "1.0",
-      "qualifiers": null,
-      "subpath": null
+      "qualifiers": "",
+      "subpath": ""
     },
     "references": [
       {
         "reference_id": "CVE-2019-1010083",
+        "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-1010083",
         "severities": []
       },
       {
         "reference_id": "",
+        "reference_type": "",
         "url": "https://www.palletsprojects.com/blog/flask-1-0-released/",
         "severities": []
       }
     ],
-    "weaknesses": []
+    "weaknesses": [
+      1035,
+      937
+    ]
   }
 ]

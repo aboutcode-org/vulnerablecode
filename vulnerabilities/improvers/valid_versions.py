@@ -220,7 +220,7 @@ class NginxBasicImprover(Improver):
 
     @property
     def interesting_advisories(self) -> QuerySet:
-        return Advisory.objects.filter(created_by=NginxImporterPipeline.qualified_name).paginated()
+        return Advisory.objects.filter(created_by=NginxImporterPipeline.pipeline_id).paginated()
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         all_versions = list(self.fetch_nginx_version_from_git_tags())

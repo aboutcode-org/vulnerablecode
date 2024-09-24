@@ -75,7 +75,7 @@ def add_vulnerability_exploit(record, logger):
             continue
 
     if not vulnerabilities:
-        logger(f"No vulnerability found for aliases {references}")
+        logger(f"No vulnerability found for aliases {interesting_references}")
         return 0
 
     description = record.get("description", "")

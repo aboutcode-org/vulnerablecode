@@ -18,7 +18,6 @@ from django.db import transaction
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
-from vulnerabilities.importers import IMPORTERS_REGISTRY
 from vulnerabilities.improver import Inference
 from vulnerabilities.improvers.default import DefaultImporter
 from vulnerabilities.models import Advisory

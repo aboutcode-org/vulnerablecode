@@ -28,6 +28,7 @@ from vulnerabilities.importer import UnMergeablePackageError
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDImporter
 from vulnerabilities.importers.apache_kafka import ApacheKafkaImporter
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatImporter
+from vulnerabilities.importers.curl import CurlImporter
 from vulnerabilities.importers.debian import DebianImporter
 from vulnerabilities.importers.debian_oval import DebianOvalImporter
 from vulnerabilities.importers.elixir_security import ElixirSecurityImporter
@@ -36,7 +37,6 @@ from vulnerabilities.importers.github_osv import GithubOSVImporter
 from vulnerabilities.importers.gitlab import GitLabAPIImporter
 from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.importers.nginx import NginxImporter
-from vulnerabilities.importers.npm import NpmImporter
 from vulnerabilities.importers.oss_fuzz import OSSFuzzImporter
 from vulnerabilities.importers.ruby import RubyImporter
 from vulnerabilities.importers.ubuntu import UbuntuImporter
@@ -44,6 +44,7 @@ from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
+from vulnerabilities.pipelines.npm_importer import NpmImporterPipeline
 from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
 from vulnerabilities.utils import clean_nginx_git_tag
 from vulnerabilities.utils import get_affected_packages_by_patched_package
@@ -435,7 +436,7 @@ class GitHubBasicImprover(ValidVersionImprover):
 
 
 class NpmImprover(ValidVersionImprover):
-    importer = NpmImporter
+    importer = NpmImporterPipeline
     ignorable_versions = []
 
 
@@ -471,4 +472,9 @@ class RubyImprover(ValidVersionImprover):
 
 class GithubOSVImprover(ValidVersionImprover):
     importer = GithubOSVImporter
+    ignorable_versions = []
+
+
+class CurlImprover(ValidVersionImprover):
+    importer = CurlImporter
     ignorable_versions = []

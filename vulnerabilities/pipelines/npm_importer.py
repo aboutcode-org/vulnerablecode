@@ -11,44 +11,58 @@
 
 from pathlib import Path
 from typing import Iterable
-from typing import List
 
 import pytz
 from dateutil.parser import parse
+from fetchcode.vcs import fetch_via_vcs
 from packageurl import PackageURL
 from univers.version_range import NpmVersionRange
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.severity_systems import CVSSV2
 from vulnerabilities.severity_systems import CVSSV3
 from vulnerabilities.utils import build_description
 from vulnerabilities.utils import load_json
 
 
-class NpmImporter(Importer):
+class NpmImporterPipeline(VulnerableCodeBaseImporterPipeline):
+    """Collect advisories from nodejs GitHub repository."""
+
+    pipeline_id = "npm_importer"
+
     spdx_license_expression = "MIT"
     license_url = "https://github.com/nodejs/security-wg/blob/main/LICENSE.md"
     repo_url = "git+https://github.com/nodejs/security-wg"
     importer_name = "Npm Importer"
 
-    def advisory_data(self) -> Iterable[AdvisoryData]:
-        try:
-            self.clone(self.repo_url)
-            path = Path(self.vcs_response.dest_dir)
+    @classmethod
+    def steps(cls):
+        return (
+            cls.clone,
+            cls.collect_and_store_advisories,
+            cls.import_new_advisories,
+            cls.clean_downloads,
+        )
 
-            vuln = path / "vuln"
-            npm_vulns = vuln / "npm"
-            for file in npm_vulns.glob("*.json"):
-                yield from self.to_advisory_data(file)
-        finally:
-            if self.vcs_response:
-                self.vcs_response.delete()
+    def clone(self):
+        self.log(f"Cloning `{self.repo_url}`")
+        self.vcs_response = fetch_via_vcs(self.repo_url)
 
-    def to_advisory_data(self, file: Path) -> List[AdvisoryData]:
+    def advisories_count(self):
+        vuln_directory = Path(self.vcs_response.dest_dir) / "vuln" / "npm"
+        return sum(1 for _ in vuln_directory.glob("*.json"))
+
+    def collect_advisories(self) -> Iterable[AdvisoryData]:
+        vuln_directory = Path(self.vcs_response.dest_dir) / "vuln" / "npm"
+
+        for advisory in vuln_directory.glob("*.json"):
+            yield from self.to_advisory_data(advisory)
+
+    def to_advisory_data(self, file: Path) -> Iterable[AdvisoryData]:
         data = load_json(file)
         id = data.get("id")
         description = data.get("overview") or ""
@@ -144,3 +158,8 @@ class NpmImporter(Importer):
             affected_version_range=affected_version_range,
             fixed_version=fixed_version,
         )
+
+    def clean_downloads(self):
+        if self.vcs_response:
+            self.log(f"Removing cloned repository")
+            self.vcs_response.delete()

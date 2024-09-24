@@ -9,10 +9,12 @@
 
 from urllib.parse import unquote
 
+from cvss.exceptions import CVSS2MalformedError
+from cvss.exceptions import CVSS3MalformedError
+from cvss.exceptions import CVSS4MalformedError
 from django.db.models import Prefetch
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
-from drf_spectacular.utils import inline_serializer
 from packageurl import PackageURL
 from packageurl import normalize_qualifiers
 from rest_framework import serializers
@@ -32,7 +34,10 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 from vulnerabilities.models import get_purl_query_lookups
+from vulnerabilities.severity_systems import EPSS
+from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.throttling import StaffUserRateThrottle
+from vulnerabilities.utils import get_severity_range
 
 
 class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
@@ -82,29 +87,23 @@ class BaseResourceSerializer(serializers.HyperlinkedModelSerializer):
         return resource_url
 
 
+class VulnVulnIDSerializer(serializers.Serializer):
+    """
+    Serializer for the series of vulnerability IDs.
+    """
+
+    vulnerability = serializers.CharField(source="vulnerability_id")
+
+    class Meta:
+        fields = ["vulnerability"]
+
+
 class MinimalPackageSerializer(BaseResourceSerializer):
     """
     Used for nesting inside vulnerability focused APIs.
     """
 
-    def get_affected_vulnerabilities(self, package):
-        parent_affected_vulnerabilities = package.fixed_package_details.get("vulnerabilities") or []
-
-        affected_vulnerabilities = [
-            self.get_vulnerability(vuln) for vuln in parent_affected_vulnerabilities
-        ]
-
-        return affected_vulnerabilities
-
-    def get_vulnerability(self, vuln):
-        affected_vulnerability = {}
-
-        vulnerability = vuln.get("vulnerability")
-        if vulnerability:
-            affected_vulnerability["vulnerability"] = vulnerability.vulnerability_id
-            return affected_vulnerability
-
-    affected_by_vulnerabilities = serializers.SerializerMethodField("get_affected_vulnerabilities")
+    affected_by_vulnerabilities = VulnVulnIDSerializer(source="affecting_vulns", many=True)
 
     purl = serializers.CharField(source="package_url")
 
@@ -140,18 +139,17 @@ class VulnSerializerRefsAndSummary(BaseResourceSerializer):
     Lookup vulnerabilities references by aliases (such as a CVE).
     """
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        aliases = [alias["alias"] for alias in data["aliases"]]
-        data["aliases"] = aliases
-        return data
-
     fixed_packages = MinimalPackageSerializer(
         many=True, source="filtered_fixed_packages", read_only=True
     )
 
     references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
-    aliases = AliasSerializer(many=True, source="alias")
+
+    aliases = serializers.SerializerMethodField()
+
+    def get_aliases(self, obj):
+        # Assuming `obj.aliases` is a queryset of `Alias` objects
+        return [alias.alias for alias in obj.aliases.all()]
 
     class Meta:
         model = Vulnerability
@@ -193,6 +191,7 @@ class VulnerabilitySerializer(BaseResourceSerializer):
     aliases = AliasSerializer(many=True, source="alias")
     kev = KEVSerializer(read_only=True)
     weaknesses = WeaknessSerializer(many=True)
+    severity_range_score = serializers.SerializerMethodField()
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -206,6 +205,30 @@ class VulnerabilitySerializer(BaseResourceSerializer):
 
         return data
 
+    def get_severity_range_score(self, instance):
+        severity_vectors = []
+        severity_values = set()
+        for s in instance.severities:
+            if s.scoring_system == EPSS.identifier:
+                continue
+
+            if s.scoring_elements and s.scoring_system in SCORING_SYSTEMS:
+                try:
+                    vector_values = SCORING_SYSTEMS[s.scoring_system].get(s.scoring_elements)
+                    severity_vectors.append(vector_values)
+                except (
+                    CVSS2MalformedError,
+                    CVSS3MalformedError,
+                    CVSS4MalformedError,
+                    NotImplementedError,
+                ):
+                    pass
+
+            if s.value:
+                severity_values.add(s.value)
+        severity_range = get_severity_range(severity_values)
+        return severity_range
+
     class Meta:
         model = Vulnerability
         fields = [
@@ -218,6 +241,7 @@ class VulnerabilitySerializer(BaseResourceSerializer):
             "references",
             "weaknesses",
             "kev",
+            "severity_range_score",
         ]
 
 
@@ -226,25 +250,8 @@ class PackageSerializer(BaseResourceSerializer):
     Lookup software package using Package URLs
     """
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data["qualifiers"] = normalize_qualifiers(data["qualifiers"], encode=False)
-
-        return data
-
-    next_non_vulnerable_version = serializers.SerializerMethodField("get_next_non_vulnerable")
-
-    def get_next_non_vulnerable(self, package):
-        next_non_vulnerable = package.fixed_package_details.get("next_non_vulnerable", None)
-        if next_non_vulnerable:
-            return next_non_vulnerable.version
-
-    latest_non_vulnerable_version = serializers.SerializerMethodField("get_latest_non_vulnerable")
-
-    def get_latest_non_vulnerable(self, package):
-        latest_non_vulnerable = package.fixed_package_details.get("latest_non_vulnerable", None)
-        if latest_non_vulnerable:
-            return latest_non_vulnerable.version
+    next_non_vulnerable_version = serializers.CharField(read_only=True)
+    latest_non_vulnerable_version = serializers.CharField(read_only=True)
 
     purl = serializers.CharField(source="package_url")
 
@@ -252,7 +259,12 @@ class PackageSerializer(BaseResourceSerializer):
 
     fixing_vulnerabilities = serializers.SerializerMethodField("get_fixing_vulnerabilities")
 
+    qualifiers = serializers.SerializerMethodField()
+
     is_vulnerable = serializers.BooleanField()
+
+    def get_qualifiers(self, package):
+        return normalize_qualifiers(package.qualifiers, encode=False)
 
     def get_fixed_packages(self, package):
         """
@@ -336,8 +348,6 @@ class PackageSerializer(BaseResourceSerializer):
             "affected_by_vulnerabilities",
             "fixing_vulnerabilities",
         ]
-
-    is_vulnerable = serializers.BooleanField()
 
 
 class PackageFilterSet(filters.FilterSet):
@@ -476,12 +486,15 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=["get"])
     def all(self, request):
         """
-        Return the Package URLs of all packages known to be vulnerable.
+        Return a list of Package URLs of vulnerable packages.
         """
-        vulnerable_packages = (
-            Package.objects.vulnerable().only("package_url").distinct().with_is_vulnerable()
+        vulnerable_purls = (
+            Package.objects.vulnerable()
+            .only("package_url")
+            .order_by("package_url")
+            .distinct()
+            .values_list("package_url", flat=True)
         )
-        vulnerable_purls = [str(package.package_url) for package in vulnerable_packages]
         return Response(vulnerable_purls)
 
     @extend_schema(

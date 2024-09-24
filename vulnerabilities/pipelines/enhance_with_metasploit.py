@@ -59,11 +59,15 @@ class MetasploitImproverPipeline(VulnerableCodePipeline):
 def add_vulnerability_exploit(record, logger):
     vulnerabilities = set()
     references = record.get("references", [])
-    for ref in references:
-        if ref.startswith("OSVDB") or ref.startswith("URL-"):
-            # ignore OSV-DB and reference exploit for metasploit
-            continue
 
+    interesting_references = [
+        ref for ref in references if not ref.startswith("OSVDB") and not ref.startswith("URL-")
+    ]
+
+    if not interesting_references:
+        return 0
+
+    for ref in interesting_references:
         try:
             if alias := Alias.objects.get(alias=ref):
                 vulnerabilities.add(alias.vulnerability)

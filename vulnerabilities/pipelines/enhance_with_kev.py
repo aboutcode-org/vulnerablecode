@@ -61,6 +61,9 @@ class VulnerabilityKevPipeline(VulnerableCodePipeline):
 def add_vulnerability_exploit(kev_vul, logger):
     cve_id = kev_vul.get("cveID")
 
+    if not cve_id:
+        return 0
+
     vulnerability = None
     try:
         if alias := Alias.objects.get(alias=cve_id):

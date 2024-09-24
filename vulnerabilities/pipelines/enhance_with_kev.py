@@ -1,4 +1,5 @@
 import logging
+from traceback import format_exc as traceback_format_exc
 
 import requests
 from aboutcode.pipeline import LoopProgress
@@ -15,6 +16,7 @@ class VulnerabilityKevPipeline(VulnerableCodePipeline):
     """
 
     pipeline_id = "enhance_with_kev"
+    license_expression = None
 
     @classmethod
     def steps(cls):
@@ -27,12 +29,14 @@ class VulnerabilityKevPipeline(VulnerableCodePipeline):
         kev_url = (
             "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
         )
+        self.log(f"Fetching {kev_url}")
+
         try:
             response = requests.get(kev_url)
             response.raise_for_status()
         except requests.exceptions.HTTPError as http_err:
             self.log(
-                f"Failed to fetch the KEV Exploits: {kev_url} - {http_err}",
+                f"Failed to fetch the KEV Exploits: {kev_url} with error {http_err!r}:\n{traceback_format_exc()}",
                 level=logging.ERROR,
             )
             raise

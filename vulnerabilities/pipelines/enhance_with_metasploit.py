@@ -1,4 +1,5 @@
 import logging
+from traceback import format_exc as traceback_format_exc
 
 import requests
 import saneyaml
@@ -34,7 +35,8 @@ class MetasploitImproverPipeline(VulnerableCodePipeline):
             response.raise_for_status()
         except requests.exceptions.HTTPError as http_err:
             self.log(
-                f"Failed to fetch the Metasploit Exploits: {url} - {http_err}", level=logging.ERROR
+                f"Failed to fetch the Metasploit Exploits: {url} with error {http_err!r}:\n{traceback_format_exc()}",
+                level=logging.ERROR,
             )
             raise
 
@@ -55,7 +57,7 @@ class MetasploitImproverPipeline(VulnerableCodePipeline):
 
 
 def add_vulnerability_exploit(record, logger):
-    vulnerability = None
+    vulnerabilities = set()
     references = record.get("references", [])
     for ref in references:
         if ref.startswith("OSVDB") or ref.startswith("URL-"):
@@ -64,12 +66,11 @@ def add_vulnerability_exploit(record, logger):
 
         try:
             if alias := Alias.objects.get(alias=ref):
-                vulnerability = alias.vulnerability
-                break
+                vulnerabilities.add(alias.vulnerability)
         except Alias.DoesNotExist:
             continue
 
-    if not vulnerability:
+    if not vulnerabilities:
         logger(f"No vulnerability found for aliases {references}")
         return 0
 
@@ -85,18 +86,22 @@ def add_vulnerability_exploit(record, logger):
     if disclosure_date := record.get("disclosure_date"):
         try:
             source_date_published = dateparser.parse(disclosure_date).date()
-        except ValueError:
-            logger(f"Error while parsing date {disclosure_date}", level=logging.ERROR)
+        except ValueError as e:
+            logger(
+                f"Error while parsing date {disclosure_date} with error {e!r}:\n{traceback_format_exc()}",
+                level=logging.ERROR,
+            )
 
-    Exploit.objects.update_or_create(
-        vulnerability=vulnerability,
-        data_source="Metasploit",
-        defaults={
-            "description": description,
-            "notes": saneyaml.dump(notes),
-            "source_date_published": source_date_published,
-            "platform": platform,
-            "source_url": source_url,
-        },
-    )
+    for vulnerability in vulnerabilities:
+        Exploit.objects.update_or_create(
+            vulnerability=vulnerability,
+            data_source="Metasploit",
+            defaults={
+                "description": description,
+                "notes": saneyaml.dump(notes),
+                "source_date_published": source_date_published,
+                "platform": platform,
+                "source_url": source_url,
+            },
+        )
     return 1

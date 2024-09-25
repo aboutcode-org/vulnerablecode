@@ -43,6 +43,7 @@ from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.pipelines.nginx_importer import NginxImporterPipeline
 from vulnerabilities.pipelines.npm_importer import NpmImporterPipeline
 from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
@@ -63,6 +64,8 @@ class ValidVersionImprover(Improver):
 
     @property
     def interesting_advisories(self) -> QuerySet:
+        if issubclass(self.importer, VulnerableCodeBaseImporterPipeline):
+            return Advisory.objects.filter(Q(created_by=self.importer.pipeline_id)).paginated()
         return Advisory.objects.filter(Q(created_by=self.importer.qualified_name)).paginated()
 
     def get_package_versions(

@@ -11,6 +11,7 @@ import logging
 import os
 import shutil
 import tempfile
+import textwrap
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlparse
@@ -20,11 +21,18 @@ from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
 from git import Repo
 
+from vulnerablecode.settings import ALLOWED_HOSTS
+from vulnerablecode.settings import VULNERABLECODE_VERSION
+
 logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = """Commit the exported vulnerability and package in backing git repository"""
+    help = """Commit the exported vulnerability data in the backing GitHub repository.
+
+    This command takes the path to the exported vulnerability data and creates a pull
+    request in the backing GitHub repository with the changes.
+    """
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -37,49 +45,74 @@ class Command(BaseCommand):
             base_path = Path(path)
 
         if not path or not base_path.is_dir():
-            raise CommandError("Enter a valid directory path")
+            raise CommandError("Enter a valid directory path to the exported data.")
 
-        export_repo_url = os.environ.get("VULNERABLECODE_EXPORT_REPO_URL", None)
-        github_service_token = os.environ.get("GITHUB_SERVICE_TOKEN", None)
-        github_service_name = os.environ.get("GITHUB_SERVICE_NAME", None)
-        github_service_email = os.environ.get("GITHUB_SERVICE_EMAIL", None)
+        vcio_export_repo_url = os.environ.get("VULNERABLECODE_EXPORT_REPO_URL")
+        vcio_github_service_token = os.environ.get("VULNERABLECODE_GITHUB_SERVICE_TOKEN")
+        vcio_github_service_name = os.environ.get("VULNERABLECODE_GITHUB_SERVICE_NAME")
+        vcio_github_service_email = os.environ.get("VULNERABLECODE_GITHUB_SERVICE_EMAIL")
+
+        # Check for missing environment variables
+        missing_vars = []
+        if not vcio_export_repo_url:
+            missing_vars.append("VULNERABLECODE_EXPORT_REPO_URL")
+        if not vcio_github_service_token:
+            missing_vars.append("VULNERABLECODE_GITHUB_SERVICE_TOKEN")
+        if not vcio_github_service_name:
+            missing_vars.append("VULNERABLECODE_GITHUB_SERVICE_NAME")
+        if not vcio_github_service_email:
+            missing_vars.append("VULNERABLECODE_GITHUB_SERVICE_EMAIL")
+
+        if missing_vars:
+            raise CommandError(f'Missing environment variables: {", ".join(missing_vars)}')
 
         local_dir = tempfile.mkdtemp()
         current_date = datetime.now().strftime("%Y-%m-%d")
 
         branch_name = f"export-update-{current_date}"
-        commit_message = f"Update package and vulnerability data\nSigned-off-by: {github_service_name} <{github_service_email}>"
-        pr_title = "Update package and vulnerability"
-        pr_body = ""
+        pr_title = "Update package vulnerabilities from VulnerableCode"
+        pr_body = f"""\
+        Tool: pkg:github/aboutcode-org/vulnerablecode@v{VULNERABLECODE_VERSION}
+        Reference: https://{ALLOWED_HOSTS[0]}/
+        """
+        commit_message = f"""\
+        Update package vulnerabilities from VulnerableCode
 
-        self.stdout.write("Committing vulnerablecode Package and Vulnerability data.")
+        Tool: pkg:github/aboutcode-org/vulnerablecode@v{VULNERABLECODE_VERSION}
+        Reference: https://{ALLOWED_HOSTS[0]}/
+
+        Signed-off-by: {vcio_github_service_name} <{vcio_github_service_email}>
+        """
+
+        self.stdout.write("Committing VulnerableCode package and vulnerability data.")
         repo = self.clone_repository(
-            repo_url=export_repo_url,
+            repo_url=vcio_export_repo_url,
             local_path=local_dir,
-            token=github_service_token,
+            token=vcio_github_service_token,
         )
 
-        repo.config_writer().set_value("user", "name", github_service_name).release()
-        repo.config_writer().set_value("user", "email", github_service_email).release()
+        repo.config_writer().set_value("user", "name", vcio_github_service_name).release()
+        repo.config_writer().set_value("user", "email", vcio_github_service_email).release()
 
         self.add_changes(repo=repo, content_path=path)
 
         if self.commit_and_push_changes(
             repo=repo,
             branch=branch_name,
-            commit_message=commit_message,
+            commit_message=textwrap.dedent(commit_message),
         ):
             self.create_pull_request(
-                repo_url=export_repo_url,
+                repo_url=vcio_export_repo_url,
                 branch=branch_name,
                 title=pr_title,
-                body=pr_body,
-                token=github_service_token,
+                body=textwrap.dedent(pr_body),
+                token=vcio_github_service_token,
             )
         shutil.rmtree(local_dir)
 
     def clone_repository(self, repo_url, local_path, token):
         """Clone repository to local_path."""
+
         if os.path.exists(local_path):
             shutil.rmtree(local_path)
 

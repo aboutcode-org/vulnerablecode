@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -15,16 +15,16 @@ import pytest
 from bs4 import BeautifulSoup
 from commoncode import testcase
 from django.db.models.query import QuerySet
+from univers.version_range import NginxVersionRange
 
 from vulnerabilities import models
 from vulnerabilities import severity_systems
-from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.importers import nginx
 from vulnerabilities.improvers.valid_versions import NginxBasicImprover
 from vulnerabilities.models import Advisory
+from vulnerabilities.pipelines import nginx_importer
 from vulnerabilities.tests import util_tests
 from vulnerabilities.utils import is_vulnerable_nginx_version
 
@@ -40,14 +40,14 @@ ADVISORY_FIELDS_TO_TEST = (
 
 
 class TestNginxImporterAndImprover(testcase.FileBasedTesting):
-    test_data_dir = str(Path(__file__).resolve().parent / "test_data" / "nginx")
+    test_data_dir = Path(__file__).parent.parent / "test_data" / "nginx"
 
     def test_is_vulnerable(self):
         # Not vulnerable: 1.17.3+, 1.16.1+
         # Vulnerable: 1.9.5-1.17.2
 
-        vcls = nginx.NginxVersionRange.version_class
-        affected_version_range = nginx.NginxVersionRange.from_native("1.9.5-1.17.2")
+        vcls = NginxVersionRange.version_class
+        affected_version_range = NginxVersionRange.from_native("1.9.5-1.17.2")
         fixed_versions = [vcls("1.17.3"), vcls("1.16.1")]
 
         version = vcls("1.9.4")
@@ -133,10 +133,10 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
             ],
         }
 
-        result = nginx.parse_advisory_data_from_paragraph(vuln_info)
+        result = nginx_importer.parse_advisory_data_from_paragraph(vuln_info)
         assert result.to_dict() == expected
 
-    def test_advisory_data_from_text(self):
+    def test_collect_advisories(self):
         test_file = self.get_test_loc("security_advisories.html")
         with open(test_file) as tf:
             test_text = tf.read()
@@ -145,52 +145,49 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
             "security_advisories-advisory_data-expected.json", must_exist=False
         )
 
-        results = [na.to_dict() for na in nginx.advisory_data_from_text(test_text)]
+        test_pipeline = nginx_importer.NginxImporterPipeline()
+        test_pipeline.advisory_data = test_text
+        results = [na.to_dict() for na in test_pipeline.collect_advisories()]
         util_tests.check_results_against_json(results, expected_file)
 
     @pytest.mark.django_db(transaction=True)
-    def test_NginxImporter(self):
+    def test_NginxImporterPipeline_collect_and_store_advisories(self):
+        test_file = self.get_test_loc("security_advisories.html")
+        with open(test_file) as tf:
+            test_text = tf.read()
+
+        test_pipeline = nginx_importer.NginxImporterPipeline()
+        test_pipeline.advisory_data = test_text
 
         expected_file = self.get_test_loc(
             "security_advisories-importer-expected.json", must_exist=False
         )
 
-        results, _cls = self.run_import()
+        test_pipeline.collect_and_store_advisories()
+
+        results = list(models.Advisory.objects.all().values(*ADVISORY_FIELDS_TO_TEST))
         util_tests.check_results_against_json(results, expected_file)
 
         # run again as there should be no duplicates
-        results, _cls = self.run_import()
+        test_pipeline.collect_and_store_advisories()
+
+        results = list(models.Advisory.objects.all().values(*ADVISORY_FIELDS_TO_TEST))
         util_tests.check_results_against_json(results, expected_file)
-
-    def run_import(self):
-        """
-        Return a list of imported Advisory model objects and the MockImporter
-        used.
-        """
-
-        class MockImporter(nginx.NginxImporter):
-            """
-            A mocked NginxImporter that loads content from a file rather than
-            making a network call.
-            """
-
-            def fetch(self):
-                with open(test_file) as tf:
-                    return tf.read()
-
-        test_file = self.get_test_loc("security_advisories.html")
-
-        ImportRunner(MockImporter).run()
-        return list(models.Advisory.objects.all().values(*ADVISORY_FIELDS_TO_TEST)), MockImporter
 
     @pytest.mark.django_db(transaction=True)
     def test_NginxBasicImprover__interesting_advisories(self):
-        advisories, importer_class = self.run_import()
+        test_file = self.get_test_loc("security_advisories.html")
+        with open(test_file) as tf:
+            test_text = tf.read()
+
+        test_pipeline = nginx_importer.NginxImporterPipeline()
+        test_pipeline.advisory_data = test_text
+        advisories = list(models.Advisory.objects.all().values(*ADVISORY_FIELDS_TO_TEST))
 
         class MockNginxBasicImprover(NginxBasicImprover):
             @property
             def interesting_advisories(self) -> QuerySet:
-                return Advisory.objects.filter(created_by=importer_class.qualified_name)
+                return Advisory.objects.filter(created_by=test_pipeline.pipeline_id)
 
         improver = MockNginxBasicImprover()
         interesting_advisories = list(

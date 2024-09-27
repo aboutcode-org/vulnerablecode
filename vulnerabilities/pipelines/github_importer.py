@@ -37,6 +37,8 @@ from vulnerabilities.utils import get_item
 class GitHubAPIImporterPipeline(VulnerableCodeBaseImporterPipeline):
     """Collect GitHub advisories."""
 
+    pipeline_id = "github_importer"
+
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://github.com/github/advisory-database/blob/main/LICENSE.md"
     importer_name = "GHSA Importer"

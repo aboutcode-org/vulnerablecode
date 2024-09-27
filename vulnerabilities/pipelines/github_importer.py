@@ -14,8 +14,6 @@ from typing import Iterable
 from typing import List
 from typing import Optional
 
-import requests
-from bs4 import BeautifulSoup
 from cwe2.database import Database
 from dateutil import parser as dateparser
 from packageurl import PackageURL
@@ -61,36 +59,19 @@ class GitHubAPIImporterPipeline(VulnerableCodeBaseImporterPipeline):
         # "GO": "golang",
     }
 
-    github_ecosystem_by_package_type = {
-        value: key for (key, value) in package_type_by_github_ecosystem.items()
-    }
-
     def advisories_count(self):
-        normalized_github_ecosystems = [
-            k.lower() for k in self.package_type_by_github_ecosystem.keys()
-        ]
-
-        try:
-            response = requests.get("https://github.com/advisories")
-            response.raise_for_status()
-        except requests.HTTPError as http_err:
-            self.log(
-                f"HTTP error occurred: {http_err} \n {traceback_format_exc()}",
-                level=logging.ERROR,
-            )
-            return 0
-
-        soup = BeautifulSoup(response.text, "html.parser")
+        advisory_query = """
+        query{
+            securityVulnerabilities(first: 0, ecosystem: %s) {
+                totalCount
+            }
+        }
+        """
         advisory_counts = 0
-        for li in soup.select("ul.filter-list li") or []:
-            if link := li.find("a", class_="filter-item"):
-                ecosystem, _, _ = link.text.strip().rpartition(" ")
-                if count_span := li.find("span", class_="count"):
-                    count = int(count_span.text.strip().replace(",", ""))
-                    ecosystem = ecosystem.strip().lower()
-                    if ecosystem in normalized_github_ecosystems:
-                        advisory_counts += count
-
+        for ecosystem in self.package_type_by_github_ecosystem.keys():
+            graphql_query = {"query": advisory_query % (ecosystem)}
+            response = utils.fetch_github_graphql_query(graphql_query)
+            advisory_counts += get_item(response, "data", "securityVulnerabilities", "totalCount")
         return advisory_counts
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:

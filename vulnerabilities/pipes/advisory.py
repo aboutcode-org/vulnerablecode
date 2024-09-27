@@ -90,7 +90,7 @@ def import_advisory(
 
     if not vulnerability:
         if logger:
-            logger(f"Unable to get vulnerability for advisory: {advisory!r}", level=logging.WARNING)
+            logger(f"Unable to get vulnerability for advisory: {advisory!r}", level=logging.ERROR)
         return
 
     for ref in advisory_data.references:

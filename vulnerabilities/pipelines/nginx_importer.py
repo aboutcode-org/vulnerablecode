@@ -3,58 +3,62 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import logging
 from typing import Iterable
-from typing import List
 from typing import NamedTuple
 
 import requests
 from bs4 import BeautifulSoup
-from django.db.models.query import QuerySet
 from packageurl import PackageURL
 from univers.version_range import NginxVersionRange
 from univers.versions import NginxVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.severity_systems import GENERIC
 
-logger = logging.getLogger(__name__)
 
+class NginxImporterPipeline(VulnerableCodeBaseImporterPipeline):
+    """Collect Nginx security advisories."""
 
-class NginxImporter(Importer):
-
-    url = "https://nginx.org/en/security_advisories.html"
+    pipeline_id = "nginx_importer"
 
     spdx_license_expression = "BSD-2-Clause"
     license_url = "https://nginx.org/LICENSE"
+    url = "https://nginx.org/en/security_advisories.html"
     importer_name = "Nginx Importer"
 
-    def advisory_data(self) -> Iterable[AdvisoryData]:
-        text = self.fetch()
-        yield from advisory_data_from_text(text)
+    @classmethod
+    def steps(cls):
+        return (
+            cls.fetch,
+            cls.collect_and_store_advisories,
+            cls.import_new_advisories,
+        )
 
     def fetch(self):
-        return requests.get(self.url).content
+        self.log(f"Fetch `{self.url}`")
+        self.advisory_data = requests.get(self.url).text
 
+    def advisories_count(self):
+        return self.advisory_data.count("<li><p>")
 
-def advisory_data_from_text(text):
-    """
-    Yield AdvisoryData from the ``text`` of the nginx security advisories HTML
-    web page.
-    """
-    soup = BeautifulSoup(text, features="lxml")
-    vuln_list = soup.select("li p")
-    for vuln_info in vuln_list:
-        ngnix_adv = parse_advisory_data_from_paragraph(vuln_info)
-        yield to_advisory_data(ngnix_adv)
+    def collect_advisories(self) -> Iterable[AdvisoryData]:
+        """
+        Yield AdvisoryData from nginx security advisories HTML
+        web page.
+        """
+        soup = BeautifulSoup(self.advisory_data, features="lxml")
+        vulnerability_list = soup.select("li p")
+        for vulnerability_info in vulnerability_list:
+            ngnix_advisory = parse_advisory_data_from_paragraph(vulnerability_info)
+            yield to_advisory_data(ngnix_advisory)
 
 
 class NginxAdvisory(NamedTuple):
@@ -69,7 +73,7 @@ class NginxAdvisory(NamedTuple):
         return self._asdict()
 
 
-def to_advisory_data(ngnx_adv: NginxAdvisory) -> AdvisoryData:
+def to_advisory_data(nginx_adv: NginxAdvisory) -> AdvisoryData:
     """
     Return AdvisoryData from an NginxAdvisory tuple.
     """
@@ -77,7 +81,7 @@ def to_advisory_data(ngnx_adv: NginxAdvisory) -> AdvisoryData:
     package_type = "nginx"
     qualifiers = {}
 
-    _, _, affected_version_range = ngnx_adv.vulnerable.partition(":")
+    _, _, affected_version_range = nginx_adv.vulnerable.partition(":")
     if "nginx/Windows" in affected_version_range:
         qualifiers["os"] = "windows"
         affected_version_range = affected_version_range.replace("nginx/Windows", "")
@@ -87,7 +91,7 @@ def to_advisory_data(ngnx_adv: NginxAdvisory) -> AdvisoryData:
     affected_version_range = NginxVersionRange.from_native(affected_version_range)
 
     affected_packages = []
-    _, _, fixed_versions = ngnx_adv.not_vulnerable.partition(":")
+    _, _, fixed_versions = nginx_adv.not_vulnerable.partition(":")
 
     for fixed_version in fixed_versions.split(","):
         fixed_version = fixed_version.rstrip("+")
@@ -112,17 +116,17 @@ def to_advisory_data(ngnx_adv: NginxAdvisory) -> AdvisoryData:
         )
 
     return AdvisoryData(
-        aliases=ngnx_adv.aliases,
-        summary=ngnx_adv.summary,
+        aliases=nginx_adv.aliases,
+        summary=nginx_adv.summary,
         affected_packages=affected_packages,
-        references=ngnx_adv.references,
+        references=nginx_adv.references,
         url="https://nginx.org/en/security_advisories.html",
     )
 
 
-def parse_advisory_data_from_paragraph(vuln_info):
+def parse_advisory_data_from_paragraph(vulnerability_info):
     """
-    Return an NginxAdvisory from a ``vuln_info`` bs4 paragraph.
+    Return an NginxAdvisory from a ``vulnerability_info`` bs4 paragraph.
 
     An advisory paragraph, without html markup, looks like this:
 
@@ -145,7 +149,7 @@ def parse_advisory_data_from_paragraph(vuln_info):
 
     # we iterate on the children to accumulate values in variables
     # FIXME: using an explicit xpath-like query could be simpler
-    for child in vuln_info.children:
+    for child in vulnerability_info.children:
         if is_first:
             summary = child
             is_first = False

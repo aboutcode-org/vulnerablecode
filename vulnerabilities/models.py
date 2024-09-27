@@ -1103,7 +1103,7 @@ class Advisory(models.Model):
         max_length=100,
         help_text="Fully qualified name of the importer prefixed with the"
         "module name importing the advisory. Eg:"
-        "vulnerabilities.importers.nginx.NginxImporter",
+        "vulnerabilities.pipeline.nginx_importer.NginxImporterPipeline",
     )
     url = models.URLField(
         blank=True,

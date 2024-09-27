@@ -17,8 +17,6 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.utils import get_advisory_url
 
-module_logger = logging.getLogger(__name__)
-
 
 class PyPaImporterPipeline(VulnerableCodeBaseImporterPipeline):
     """Collect advisories from PyPA GitHub repository."""

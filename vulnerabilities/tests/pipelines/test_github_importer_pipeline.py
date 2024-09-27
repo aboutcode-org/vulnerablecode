@@ -10,6 +10,7 @@
 import json
 import os
 from datetime import datetime
+from pathlib import Path
 from unittest import mock
 
 import pytest
@@ -23,23 +24,22 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.importers.github import GitHubAPIImporter
-from vulnerabilities.importers.github import get_cwes_from_github_advisory
-from vulnerabilities.importers.github import process_response
 from vulnerabilities.improvers.valid_versions import GitHubBasicImprover
+from vulnerabilities.pipelines.github_importer import GitHubAPIImporterPipeline
+from vulnerabilities.pipelines.github_importer import get_cwes_from_github_advisory
+from vulnerabilities.pipelines.github_importer import process_response
+from vulnerabilities.tests.pipelines import TestLogger
 from vulnerabilities.tests.util_tests import VULNERABLECODE_REGEN_TEST_FIXTURES as REGEN
-from vulnerabilities.utils import GitHubTokenError
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "test_data", "github_api")
+TEST_DATA = Path(__file__).parent.parent / "test_data" / "github_api"
 
 
 @pytest.mark.parametrize(
     "pkg_type", ["maven", "nuget", "gem", "golang", "composer", "pypi", "npm", "cargo"]
 )
 def test_process_response_github_importer(pkg_type, regen=REGEN):
-    response_file = os.path.join(TEST_DATA, f"{pkg_type}.json")
-    expected_file = os.path.join(TEST_DATA, f"{pkg_type}-expected.json")
+    response_file = TEST_DATA / f"{pkg_type}.json"
+    expected_file = TEST_DATA / f"{pkg_type}-expected.json"
     with open(response_file) as f:
         response = json.load(f)
 
@@ -56,34 +56,49 @@ def test_process_response_github_importer(pkg_type, regen=REGEN):
     assert result == expected
 
 
-def test_process_response_with_empty_vulnaribilities(caplog):
-    list(process_response({"data": {"securityVulnerabilities": {"edges": []}}}, "maven"))
-    assert "No vulnerabilities found for package_type: 'maven'" in caplog.text
-
-
-def test_process_response_with_empty_vulnaribilities_2(caplog):
+def test_process_response_with_empty_vulnaribilities():
+    logger = TestLogger()
     list(
         process_response(
-            {"data": {"securityVulnerabilities": {"edges": [{"node": {}}, None]}}}, "maven"
+            {"data": {"securityVulnerabilities": {"edges": []}}},
+            "maven",
+            logger=logger.write,
         )
     )
-    assert "No node found" in caplog.text
+    assert "No vulnerabilities found for package_type: 'maven'" in logger.getvalue()
+
+
+def test_process_response_with_empty_vulnaribilities_2():
+    logger = TestLogger()
+    list(
+        process_response(
+            {"data": {"securityVulnerabilities": {"edges": [{"node": {}}, None]}}},
+            "maven",
+            logger=logger.write,
+        )
+    )
+    assert "No node found" in logger.getvalue()
 
 
 def test_github_importer_with_missing_credentials():
-    with pytest.raises(GitHubTokenError) as e:
-        with mock.patch.dict(os.environ, {}, clear=True):
-            importer = GitHubAPIImporter()
-            list(importer.advisory_data())
+    with mock.patch.dict(os.environ, {}, clear=True):
+        github_pipeline = GitHubAPIImporterPipeline()
+        status, error = github_pipeline.execute()
+        assert 1 == status
+        assert (
+            "Cannot call GitHub API without a token set in the GH_TOKEN environment variable."
+            in error
+        )
 
 
 @mock.patch("vulnerabilities.utils._get_gh_response")
 def test_github_importer_with_missing_credentials_2(mock_response):
     mock_response.return_value = {"message": "Bad credentials"}
-    with pytest.raises(GitHubTokenError) as e:
-        with mock.patch.dict(os.environ, {"GH_TOKEN": "FOOD"}, clear=True):
-            importer = GitHubAPIImporter()
-            list(importer.advisory_data())
+    with mock.patch.dict(os.environ, {"GH_TOKEN": "FOOD"}, clear=True):
+        github_pipeline = GitHubAPIImporterPipeline()
+        status, error = github_pipeline.execute()
+        assert 1 == status
+        assert "Invalid GitHub token: Bad credentials" in error
 
 
 def valid_versions():
@@ -283,7 +298,7 @@ def test_github_improver(mock_response, regen=REGEN):
 
 @mock.patch("fetchcode.package_versions.get_response")
 def test_get_package_versions(mock_response):
-    with open(os.path.join(BASE_DIR, "test_data", "package_manager_data", "pypi.json"), "r") as f:
+    with open(TEST_DATA.parent / "package_manager_data" / "pypi.json", "r") as f:
         mock_response.return_value = json.load(f)
 
     improver = GitHubBasicImprover()

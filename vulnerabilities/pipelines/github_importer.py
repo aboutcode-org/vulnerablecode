@@ -8,7 +8,10 @@
 #
 
 import logging
+from traceback import format_exc as traceback_format_exc
+from typing import Callable
 from typing import Iterable
+from typing import List
 from typing import Optional
 
 from cwe2.database import Database
@@ -21,85 +24,105 @@ from vulnerabilities import severity_systems
 from vulnerabilities import utils
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.utils import dedupe
 from vulnerabilities.utils import get_cwe_id
 from vulnerabilities.utils import get_item
 
-logger = logging.getLogger(__name__)
 
-PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM = {
-    "MAVEN": "maven",
-    "NUGET": "nuget",
-    "COMPOSER": "composer",
-    "PIP": "pypi",
-    "RUBYGEMS": "gem",
-    "NPM": "npm",
-    "RUST": "cargo",
-    # "GO": "golang",
-}
+class GitHubAPIImporterPipeline(VulnerableCodeBaseImporterPipeline):
+    """Collect GitHub advisories."""
 
-GITHUB_ECOSYSTEM_BY_PACKAGE_TYPE = {
-    value: key for (key, value) in PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM.items()
-}
+    pipeline_id = "github_importer"
 
-# TODO: We will try to gather more info from GH API
-# Check https://github.com/nexB/vulnerablecode/issues/1039#issuecomment-1366458885
-# Check https://github.com/nexB/vulnerablecode/issues/645
-# set of all possible values of first '%s' = {'MAVEN','COMPOSER', 'NUGET', 'RUBYGEMS', 'PYPI', 'NPM', 'RUST'}
-# second '%s' is interesting, it will have the value '' for the first request,
-GRAPHQL_QUERY_TEMPLATE = """
-query{
-    securityVulnerabilities(first: 100, ecosystem: %s, %s) {
-        edges {
-            node {
-                advisory {
-                    identifiers {
-                        type
-                        value
-                    }
-                    summary
-                    references {
-                        url
-                    }
-                    severity
-                    cwes(first: 10){ 
-                        nodes {
-                            cweId       
-                        }
-                    }
-                    publishedAt
-                }
-                firstPatchedVersion{
-                    identifier
-                }
-                package {
-                    name
-                }
-                vulnerableVersionRange
+    spdx_license_expression = "CC-BY-4.0"
+    license_url = "https://github.com/github/advisory-database/blob/main/LICENSE.md"
+    importer_name = "GHSA Importer"
+
+    @classmethod
+    def steps(cls):
+        return (
+            cls.collect_and_store_advisories,
+            cls.import_new_advisories,
+        )
+
+    package_type_by_github_ecosystem = {
+        "MAVEN": "maven",
+        "NUGET": "nuget",
+        "COMPOSER": "composer",
+        "PIP": "pypi",
+        "RUBYGEMS": "gem",
+        "NPM": "npm",
+        "RUST": "cargo",
+        # "GO": "golang",
+    }
+
+    def advisories_count(self):
+        advisory_query = """
+        query{
+            securityVulnerabilities(first: 0, ecosystem: %s) {
+                totalCount
             }
         }
-        pageInfo {
-            hasNextPage
-            endCursor
+        """
+        advisory_counts = 0
+        for ecosystem in self.package_type_by_github_ecosystem.keys():
+            graphql_query = {"query": advisory_query % (ecosystem)}
+            response = utils.fetch_github_graphql_query(graphql_query)
+            advisory_counts += get_item(response, "data", "securityVulnerabilities", "totalCount")
+        return advisory_counts
+
+    def collect_advisories(self) -> Iterable[AdvisoryData]:
+
+        # TODO: We will try to gather more info from GH API
+        # Check https://github.com/nexB/vulnerablecode/issues/1039#issuecomment-1366458885
+        # Check https://github.com/nexB/vulnerablecode/issues/645
+        # set of all possible values of first '%s' = {'MAVEN','COMPOSER', 'NUGET', 'RUBYGEMS', 'PYPI', 'NPM', 'RUST'}
+        # second '%s' is interesting, it will have the value '' for the first request,
+        advisory_query = """
+        query{
+            securityVulnerabilities(first: 100, ecosystem: %s, %s) {
+                edges {
+                    node {
+                        advisory {
+                            identifiers {
+                                type
+                                value
+                            }
+                            summary
+                            references {
+                                url
+                            }
+                            severity
+                            cwes(first: 10){
+                                nodes {
+                                    cweId
+                                }
+                            }
+                            publishedAt
+                        }
+                        firstPatchedVersion{
+                            identifier
+                        }
+                        package {
+                            name
+                        }
+                        vulnerableVersionRange
+                    }
+                }
+                pageInfo {
+                    hasNextPage
+                    endCursor
+                }
+            }
         }
-    }
-}
-"""
-
-
-class GitHubAPIImporter(Importer):
-    spdx_license_expression = "CC-BY-4.0"
-    importer_name = "GHSA Importer"
-    license_url = "https://github.com/github/advisory-database/blob/main/LICENSE.md"
-
-    def advisory_data(self) -> Iterable[AdvisoryData]:
-        for ecosystem, package_type in PACKAGE_TYPE_BY_GITHUB_ECOSYSTEM.items():
+        """
+        for ecosystem, package_type in self.package_type_by_github_ecosystem.items():
             end_cursor_exp = ""
             while True:
-                graphql_query = {"query": GRAPHQL_QUERY_TEMPLATE % (ecosystem, end_cursor_exp)}
+                graphql_query = {"query": advisory_query % (ecosystem, end_cursor_exp)}
                 response = utils.fetch_github_graphql_query(graphql_query)
 
                 page_info = get_item(response, "data", "securityVulnerabilities", "pageInfo")
@@ -114,7 +137,7 @@ class GitHubAPIImporter(Importer):
                     break
 
 
-def get_purl(pkg_type: str, github_name: str) -> Optional[PackageURL]:
+def get_purl(pkg_type: str, github_name: str, logger: Callable = None) -> Optional[PackageURL]:
     """
     Return a PackageURL by splitting the `github_name` using the `pkg_type`
     convention. Return None and log an error if we can not split or it is an
@@ -129,7 +152,8 @@ def get_purl(pkg_type: str, github_name: str) -> Optional[PackageURL]:
     """
     if pkg_type == "maven":
         if ":" not in github_name:
-            logger.error(f"get_purl: Invalid maven package name {github_name}")
+            if logger:
+                logger(f"get_purl: Invalid maven package name {github_name}", level=logging.ERROR)
             return
         ns, _, name = github_name.partition(":")
         return PackageURL(type=pkg_type, namespace=ns, name=name)
@@ -143,18 +167,23 @@ def get_purl(pkg_type: str, github_name: str) -> Optional[PackageURL]:
     if pkg_type in ("nuget", "pypi", "gem", "golang", "npm", "cargo"):
         return PackageURL(type=pkg_type, name=github_name)
 
-    logger.error(f"get_purl: Unknown package type {pkg_type}")
+    if logger:
+        logger(f"get_purl: Unknown package type {pkg_type}", level=logging.ERROR)
 
 
-def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
+def process_response(
+    resp: dict, package_type: str, logger: Callable = None
+) -> Iterable[AdvisoryData]:
     """
     Yield `AdvisoryData` by taking `resp` and `ecosystem` as input
     """
     vulnerabilities = get_item(resp, "data", "securityVulnerabilities", "edges") or []
     if not vulnerabilities:
-        logger.error(
-            f"No vulnerabilities found for package_type: {package_type!r} in response: {resp!r}"
-        )
+        if logger:
+            logger(
+                f"No vulnerabilities found for package_type: {package_type!r} in response: {resp!r}",
+                level=logging.ERROR,
+            )
         return
 
     for vulnerability in vulnerabilities:
@@ -162,12 +191,14 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
         affected_packages = []
         github_advisory = get_item(vulnerability, "node")
         if not github_advisory:
-            logger.error(f"No node found in {vulnerability!r}")
+            if logger:
+                logger(f"No node found in {vulnerability!r}", level=logging.ERROR)
             continue
 
         advisory = get_item(github_advisory, "advisory")
         if not advisory:
-            logger.error(f"No advisory found in {github_advisory!r}")
+            if logger:
+                logger(f"No advisory found in {github_advisory!r}", level=logging.ERROR)
             continue
 
         summary = get_item(advisory, "summary") or ""
@@ -183,7 +214,7 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
 
         name = get_item(github_advisory, "package", "name")
         if name:
-            purl = get_purl(pkg_type=package_type, github_name=name)
+            purl = get_purl(pkg_type=package_type, github_name=name, logger=logger)
         if purl:
             affected_range = get_item(github_advisory, "vulnerableVersionRange")
             fixed_version = get_item(github_advisory, "firstPatchedVersion", "identifier")
@@ -193,7 +224,11 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
                         package_type, affected_range
                     )
                 except Exception as e:
-                    logger.error(f"Could not parse affected range {affected_range!r} {e!r}")
+                    if logger:
+                        logger(
+                            f"Could not parse affected range {affected_range!r} {e!r} \n {traceback_format_exc()}",
+                            level=logging.ERROR,
+                        )
                     affected_range = None
             if fixed_version:
                 try:
@@ -201,7 +236,11 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
                         fixed_version
                     )
                 except Exception as e:
-                    logger.error(f"Invalid fixed version {fixed_version!r} {e!r}")
+                    if logger:
+                        logger(
+                            f"Invalid fixed version {fixed_version!r} {e!r} \n {traceback_format_exc()}",
+                            level=logging.ERROR,
+                        )
                     fixed_version = None
             if affected_range or fixed_version:
                 affected_packages.append(
@@ -236,9 +275,13 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
             elif identifier_type == "CVE":
                 pass
             else:
-                logger.error(f"Unknown identifier type {identifier_type!r} and value {value!r}")
+                if logger:
+                    logger(
+                        f"Unknown identifier type {identifier_type!r} and value {value!r}",
+                        level=logging.ERROR,
+                    )
 
-        weaknesses = get_cwes_from_github_advisory(advisory)
+        weaknesses = get_cwes_from_github_advisory(advisory, logger)
 
         yield AdvisoryData(
             aliases=sorted(dedupe(aliases)),
@@ -251,7 +294,7 @@ def process_response(resp: dict, package_type: str) -> Iterable[AdvisoryData]:
         )
 
 
-def get_cwes_from_github_advisory(advisory) -> [int]:
+def get_cwes_from_github_advisory(advisory, logger=None) -> List[int]:
     """
     Return the cwe-id list from advisory ex: [ 522 ]
     by extracting the cwe_list from advisory ex: [{'cweId': 'CWE-522'}]
@@ -267,6 +310,7 @@ def get_cwes_from_github_advisory(advisory) -> [int]:
             try:
                 db.get(cwe_id)
                 weaknesses.append(cwe_id)
-            except Exception:
-                logger.error("Invalid CWE id")
+            except Exception as e:
+                if logger:
+                    logger(f"Invalid CWE id {e!r} \n {traceback_format_exc()}", level=logging.ERROR)
     return weaknesses

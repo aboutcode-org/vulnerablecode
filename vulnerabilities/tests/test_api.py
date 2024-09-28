@@ -15,11 +15,9 @@ from urllib.parse import quote
 from django.test import TestCase
 from django.test import TransactionTestCase
 from django.test.client import RequestFactory
-from packageurl import PackageURL
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from vulnerabilities.api import MinimalPackageSerializer
 from vulnerabilities.api import PackageSerializer
 from vulnerabilities.api import VulnerabilityReferenceSerializer
 from vulnerabilities.models import Alias
@@ -295,7 +293,7 @@ class APITestCaseVulnerability(TransactionTestCase):
                 {
                     "cwe_id": 119,
                     "name": "Improper Restriction of Operations within the Bounds of a Memory Buffer",
-                    "description": "The software performs operations on a memory buffer, but it can read from or write to a memory location that is outside of the intended boundary of the buffer.",
+                    "description": "The product performs operations on a memory buffer, but it can read from or write to a memory location that is outside of the intended boundary of the buffer.",
                 },
             ],
         }
@@ -340,7 +338,7 @@ class APITestCaseVulnerability(TransactionTestCase):
                 {
                     "cwe_id": 119,
                     "name": "Improper Restriction of Operations within the Bounds of a Memory Buffer",
-                    "description": "The software performs operations on a memory buffer, but it can read from or write to a memory location that is outside of the intended boundary of the buffer.",
+                    "description": "The product performs operations on a memory buffer, but it can read from or write to a memory location that is outside of the intended boundary of the buffer.",
                 },
             ],
         }
@@ -449,7 +447,7 @@ class APIPerformanceTest(TestCase):
             response = self.csrf_client.get(f"/api/packages/all", format="json").data
 
             assert len(response) == 3
-            assert response == [
+            assert list(response) == [
                 "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.12.6.1",
                 "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
                 "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
@@ -711,7 +709,7 @@ class APITestCasePackage(TestCase):
             response = self.csrf_client.get(f"/api/packages/all", format="json").data
 
             assert len(response) == 3
-            assert response == [
+            assert list(response) == [
                 "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.12.6.1",
                 "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
                 "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",

@@ -19,14 +19,9 @@ from vulnerabilities.importers import elixir_security
 from vulnerabilities.importers import epss
 from vulnerabilities.importers import fireeye
 from vulnerabilities.importers import gentoo
-from vulnerabilities.importers import github
 from vulnerabilities.importers import github_osv
-from vulnerabilities.importers import gitlab
 from vulnerabilities.importers import istio
 from vulnerabilities.importers import mozilla
-from vulnerabilities.importers import nginx
-from vulnerabilities.importers import npm
-from vulnerabilities.importers import nvd
 from vulnerabilities.importers import openssl
 from vulnerabilities.importers import oss_fuzz
 from vulnerabilities.importers import postgresql
@@ -40,14 +35,15 @@ from vulnerabilities.importers import ubuntu
 from vulnerabilities.importers import ubuntu_usn
 from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines import github_importer
+from vulnerabilities.pipelines import gitlab_importer
+from vulnerabilities.pipelines import nginx_importer
+from vulnerabilities.pipelines import npm_importer
+from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.pipelines import pypa_importer
 
 IMPORTERS_REGISTRY = [
-    nvd.NVDImporter,
-    github.GitHubAPIImporter,
-    gitlab.GitLabAPIImporter,
-    npm.NpmImporter,
-    nginx.NginxImporter,
     pysec.PyPIImporter,
     alpine_linux.AlpineImporter,
     openssl.OpensslImporter,
@@ -77,6 +73,14 @@ IMPORTERS_REGISTRY = [
     epss.EPSSImporter,
     vulnrichment.VulnrichImporter,
     pypa_importer.PyPaImporterPipeline,
+    npm_importer.NpmImporterPipeline,
+    nginx_importer.NginxImporterPipeline,
+    gitlab_importer.GitLabImporterPipeline,
+    github_importer.GitHubAPIImporterPipeline,
+    nvd_importer.NVDImporterPipeline,
 ]
 
-IMPORTERS_REGISTRY = {x.qualified_name: x for x in IMPORTERS_REGISTRY}
+IMPORTERS_REGISTRY = {
+    x.pipeline_id if issubclass(x, VulnerableCodeBaseImporterPipeline) else x.qualified_name: x
+    for x in IMPORTERS_REGISTRY
+}

@@ -62,6 +62,8 @@ class TestVulnerableCodeBaseImporterPipeline(TestCase):
         self.assertEqual(0, models.Advisory.objects.count())
 
         base_pipeline = VulnerableCodeBaseImporterPipeline()
+        base_pipeline.pipeline_id = "test_pipeline"
+
         base_pipeline.collect_and_store_advisories()
 
         mock_advisories_count.assert_called_once()
@@ -74,13 +76,14 @@ class TestVulnerableCodeBaseImporterPipeline(TestCase):
         expected_aliases = advisory_data1.aliases
 
         self.assertEqual(expected_aliases, result_aliases)
-        self.assertEqual(base_pipeline.qualified_name, collected_advisory.created_by)
+        self.assertEqual(base_pipeline.pipeline_id, collected_advisory.created_by)
 
     def test_import_new_advisories(self):
         self.assertEqual(0, models.Vulnerability.objects.count())
 
         base_pipeline = VulnerableCodeBaseImporterPipeline()
-        advisory1 = get_advisory1(created_by=base_pipeline.qualified_name)
+        base_pipeline.pipeline_id = "test_pipeline"
+        advisory1 = get_advisory1()
         base_pipeline.import_new_advisories()
 
         self.assertEqual(1, models.Vulnerability.objects.count())

@@ -10,6 +10,7 @@
 from vulnerabilities.improvers import valid_versions
 from vulnerabilities.improvers import vulnerability_kev
 from vulnerabilities.improvers import vulnerability_status
+from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.pipelines import flag_ghost_packages
 
 IMPROVERS_REGISTRY = [
@@ -34,4 +35,7 @@ IMPROVERS_REGISTRY = [
     flag_ghost_packages.FlagGhostPackagePipeline,
 ]
 
-IMPROVERS_REGISTRY = {x.qualified_name: x for x in IMPROVERS_REGISTRY}
+IMPROVERS_REGISTRY = {
+    x.pipeline_id if issubclass(x, VulnerableCodePipeline) else x.qualified_name: x
+    for x in IMPROVERS_REGISTRY
+}

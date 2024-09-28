@@ -26,7 +26,7 @@ from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 
 
-def insert_advisory(advisory: AdvisoryData, pipeline_name: str, logger: Callable = None):
+def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable = None):
     obj = None
     try:
         obj, _ = Advisory.objects.get_or_create(
@@ -38,7 +38,7 @@ def insert_advisory(advisory: AdvisoryData, pipeline_name: str, logger: Callable
             weaknesses=advisory.weaknesses,
             url=advisory.url,
             defaults={
-                "created_by": pipeline_name,
+                "created_by": pipeline_id,
                 "date_collected": datetime.now(timezone.utc),
             },
         )
@@ -55,7 +55,7 @@ def insert_advisory(advisory: AdvisoryData, pipeline_name: str, logger: Callable
 @transaction.atomic
 def import_advisory(
     advisory: Advisory,
-    pipeline_name: str,
+    pipeline_id: str,
     confidence: int = MAX_CONFIDENCE,
     logger: Callable = None,
 ):
@@ -90,7 +90,7 @@ def import_advisory(
 
     if not vulnerability:
         if logger:
-            logger(f"Unable to get vulnerability for advisory: {advisory!r}", level=logging.WARNING)
+            logger(f"Unable to get vulnerability for advisory: {advisory!r}", level=logging.ERROR)
         return
 
     for ref in advisory_data.references:
@@ -141,7 +141,7 @@ def import_advisory(
         PackageRelatedVulnerability(
             vulnerability=vulnerability,
             package=vulnerable_package,
-            created_by=pipeline_name,
+            created_by=pipeline_id,
             confidence=confidence,
             fix=False,
         ).update_or_create(advisory=advisory)
@@ -151,7 +151,7 @@ def import_advisory(
         PackageRelatedVulnerability(
             vulnerability=vulnerability,
             package=fixed_package,
-            created_by=pipeline_name,
+            created_by=pipeline_id,
             confidence=confidence,
             fix=True,
         ).update_or_create(advisory=advisory)

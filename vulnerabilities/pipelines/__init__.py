@@ -27,6 +27,8 @@ module_logger = logging.getLogger(__name__)
 
 
 class VulnerableCodePipeline(BasePipeline):
+    pipeline_id = None  # Unique Pipeline ID
+
     def log(self, message, level=logging.INFO):
         """Log the given `message` to the current module logger and execution_log."""
         now_local = datetime.now(timezone.utc).astimezone()
@@ -36,11 +38,12 @@ class VulnerableCodePipeline(BasePipeline):
         self.append_to_log(message)
 
     @classproperty
-    def qualified_name(cls):
-        """
-        Fully qualified name prefixed with the module name of the pipeline used in logging.
-        """
-        return f"{cls.__module__}.{cls.__qualname__}"
+    def pipeline_id(cls):
+        """Return unique pipeline_id set in cls.pipeline_id"""
+
+        if cls.pipeline_id is None or cls.pipeline_id == "":
+            raise NotImplementedError("pipeline_id is not defined or is empty")
+        return cls.pipeline_id
 
 
 class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
@@ -52,6 +55,7 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
         Also override the ``steps`` and ``advisory_confidence`` as needed.
     """
 
+    pipeline_id = None  # Unique Pipeline ID, this should be the name of pipeline module.
     license_url = None
     spdx_license_expression = None
     repo_url = None
@@ -85,11 +89,16 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
 
     def collect_and_store_advisories(self):
         collected_advisory_count = 0
-        progress = LoopProgress(total_iterations=self.advisories_count(), logger=self.log)
+        estimated_advisory_count = self.advisories_count()
+
+        if estimated_advisory_count > 0:
+            self.log(f"Collecting {estimated_advisory_count:,d} advisories")
+
+        progress = LoopProgress(total_iterations=estimated_advisory_count, logger=self.log)
         for advisory in progress.iter(self.collect_advisories()):
             if _obj := insert_advisory(
                 advisory=advisory,
-                pipeline_name=self.qualified_name,
+                pipeline_id=self.pipeline_id,
                 logger=self.log,
             ):
                 collected_advisory_count += 1
@@ -98,7 +107,7 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
 
     def import_new_advisories(self):
         new_advisories = Advisory.objects.filter(
-            created_by=self.qualified_name,
+            created_by=self.pipeline_id,
             date_imported__isnull=True,
         )
 
@@ -119,7 +128,7 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
         try:
             import_advisory(
                 advisory=advisory,
-                pipeline_name=self.qualified_name,
+                pipeline_id=self.pipeline_id,
                 confidence=self.advisory_confidence,
                 logger=self.log,
             )

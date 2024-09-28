@@ -1,0 +1,4 @@
+- purl: pkg:generic/nginx/test@2
+  affected_by_vulnerabilities:
+    - VCID-pst6-b358-aaap
+  fixing_vulnerabilities: []

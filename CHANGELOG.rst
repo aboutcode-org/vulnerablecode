@@ -1,6 +1,13 @@
 Release notes
 =============
 
+
+Version (next)
+-------------------
+
+- Add management command to commit exported vulnerability data (#1600)
+
+
 Version v34.0.1
 -------------------
 

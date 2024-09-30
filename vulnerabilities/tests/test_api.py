@@ -296,6 +296,7 @@ class APITestCaseVulnerability(TransactionTestCase):
                     "description": "The product performs operations on a memory buffer, but it can read from or write to a memory location that is outside of the intended boundary of the buffer.",
                 },
             ],
+            "exploits": [],
         }
 
     def test_api_with_single_vulnerability_with_filters(self):
@@ -341,6 +342,7 @@ class APITestCaseVulnerability(TransactionTestCase):
                     "description": "The product performs operations on a memory buffer, but it can read from or write to a memory location that is outside of the intended boundary of the buffer.",
                 },
             ],
+            "exploits": [],
         }
 
 

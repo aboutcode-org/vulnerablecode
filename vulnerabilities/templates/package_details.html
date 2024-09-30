@@ -2,6 +2,7 @@
 {% load humanize %}
 {% load widget_tweaks %}
 {% load static %}
+{% load url_filters %}
 
 {% block title %}
 VulnerableCode Package Details - {{ package.purl }}
@@ -91,7 +92,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                     </td>
                                     <td class="two-col-right">
                                         {% if fixed_package_details.next_non_vulnerable.version %}
-                                        <a href="/packages/{{ fixed_package_details.next_non_vulnerable }}?search={{ fixed_package_details.next_non_vulnerable }}"
+                                        <a href="/packages/{{ fixed_package_details.next_non_vulnerable|url_quote }}?search={{ fixed_package_details.next_non_vulnerable }}"
                                             target="_self">{{ fixed_package_details.next_non_vulnerable.version }}</a>
                                         {% else %}
                                         <span class="emphasis-vulnerable">None.</span>
@@ -104,7 +105,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                     </td>
                                     <td class="two-col-right">
                                         {% if fixed_package_details.latest_non_vulnerable.version %}
-                                        <a href="/packages/{{ fixed_package_details.latest_non_vulnerable }}?search={{ fixed_package_details.latest_non_vulnerable }}"
+                                        <a href="/packages/{{ fixed_package_details.latest_non_vulnerable|url_quote }}?search={{ fixed_package_details.latest_non_vulnerable }}"
                                             target="_self">{{ fixed_package_details.latest_non_vulnerable.version }}</a>
                                         {% else %}
                                         <span class="emphasis-vulnerable">None.</span>
@@ -119,7 +120,7 @@ VulnerableCode Package Details - {{ package.purl }}
 
                     <div class="content ml-3 mr-3 pb-1">
                         <div class="has-text-weight-bold ml-1 mb-0 pb-0">
-                            <span class="affected-fixed">Vulnerabilities affecting</span> this package ({{ affected_by_vulnerabilities|length }})
+                            Vulnerabilities affecting this package ({{ affected_by_vulnerabilities|length }})
                         </div>
 
                         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
@@ -127,7 +128,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                 <tr>
                                     <th style="width: 200px;">Vulnerability</th>
                                     <th>Summary</th>
-                                    <th style="width: 310px;"><span class="affected-fixed">Fixed by</span></th>
+                                    <th style="width: 310px;">Fixed by</th>
                                 </tr>
                             </thead>
 
@@ -160,32 +161,28 @@ VulnerableCode Package Details - {{ package.purl }}
                                         {% for vuln in value %}
                                         {% if vuln.vulnerability.vulnerability_id == vulnerability.vulnerability_id %}
                                         {% if vuln.fixed_by_package_details is None %}
-                                        <span class="emphasis-vulnerable">There are no reported <span
-                                                class="affected-fixed">fixed by</span> versions.</span>
+                                        <span class="emphasis-vulnerable">There are no reported fixed by versions.</span>
                                         {% else %}
                                         {% for fixed_pkg in vuln.fixed_by_package_details %}
                                             <section>
                                                 {% if fixed_pkg.fixed_by_purl_vulnerabilities|length == 0 %}
-                                                <a href="/packages/{{ fixed_pkg.fixed_by_purl }}?search={{ fixed_pkg.fixed_by_purl }}"
+                                                <a href="/packages/{{ fixed_pkg.fixed_by_purl|url_quote }}?search={{ fixed_pkg.fixed_by_purl }}"
                                                     target="_self">{{ fixed_pkg.fixed_by_purl.version }}</a>
                                                 <br />
-                                                <span class="emphasis-not-vulnerable"><span class="affected-fixed">Affected
-                                                        by</span> 0 other vulnerabilities.</span>
+                                                <span class="emphasis-not-vulnerable">Affected by 0 other vulnerabilities.</span>
                                                 {% else %}
-                                                <a href="/packages/{{ fixed_pkg.fixed_by_purl }}?search={{ fixed_pkg.fixed_by_purl }}"
+                                                <a href="/packages/{{ fixed_pkg.fixed_by_purl|url_quote }}?search={{ fixed_pkg.fixed_by_purl }}"
                                                     target="_self">{{ fixed_pkg.fixed_by_purl.version }}</a>
                                                 {% if fixed_pkg.fixed_by_purl_vulnerabilities|length != 1 %}
                                                 <br />
-                                                <span class="emphasis-vulnerable"><span class="affected-fixed">Affected
-                                                        by</span> {{ fixed_pkg.fixed_by_purl_vulnerabilities|length }} other
+                                                <span class="emphasis-vulnerable">Affected by {{ fixed_pkg.fixed_by_purl_vulnerabilities|length }} other
                                                     vulnerabilities.</span>
                                                 {% else %}
                                                 <br />
-                                                <span class="emphasis-vulnerable"><span class="affected-fixed">Affected
-                                                        by</span> {{ fixed_pkg.fixed_by_purl_vulnerabilities|length }} other
+                                                <span class="emphasis-vulnerable">Affected by {{ fixed_pkg.fixed_by_purl_vulnerabilities|length }} other
                                                     vulnerability.</span>
                                                 {% endif %}
-    
+
                                                 <div class="dropdown is-hoverable has-text-weight-normal is-right">
                                                     <div class="dropdown-trigger">
                                                         <i
@@ -196,8 +193,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                                         <div class="dropdown-content dropdown-instructions-box-shadow">
                                                             <div class="dropdown-item">
                                                                 <div style="max-height: 200px; overflow-y: auto;">
-                                                                    This version is <span class="affected-fixed">affected
-                                                                        by</span> these other vulnerabilities:
+                                                                    This version is affected by these other vulnerabilities:
                                                                     <div style="padding-top: 5px;">
                                                                         {% for fixed_by_vuln in fixed_pkg.fixed_by_purl_vulnerabilities %}
                                                                         <div>
@@ -226,8 +222,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                 {% empty %}
                                 <tr>
                                     <td colspan="3">
-                                        <span class="emphasis-not-vulnerable">This package is not known to be <span
-                                                class="affected-fixed">affected by</span> vulnerabilities.</span>
+                                        <span class="emphasis-not-vulnerable">This package is not known to be affected by vulnerabilities.</span>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -237,7 +232,7 @@ VulnerableCode Package Details - {{ package.purl }}
 
                     <div class="content ml-3 mr-3 pb-0 mb-0">
                         <div class="has-text-weight-bold ml-1 mb-0 pb-0">
-                            <span class="affected-fixed">Vulnerabilities fixed by</span> this package ({{ fixing_vulnerabilities|length }})
+                            Vulnerabilities fixed by this package ({{ fixing_vulnerabilities|length }})
                         </div>
 
                         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
@@ -273,8 +268,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                 {% empty %}
                                 <tr>
                                     <td colspan="3">
-                                        This package is not known to <span class="affected-fixed">fix</span>
-                                        vulnerabilities.
+                                        This package is not known to fix vulnerabilities.
                                     </td>
                                 </tr>
                                 {% endfor %}

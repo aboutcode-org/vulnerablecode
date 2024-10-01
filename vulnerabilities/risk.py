@@ -97,13 +97,13 @@ def calculate_vulnerability_risk(vulnerability: Vulnerability):
 
     Risk = min(weighted severity * exploitability, 10)
     """
-    references = vulnerability.references.select_related("url", "reference_type")
+    references = vulnerability.references
     severities = vulnerability.severities.select_related("reference")
     exploits = Exploit.objects.filter(vulnerability=vulnerability)
-
-    weighted_severity = get_weighted_severity(severities)
-    exploitability = get_exploitability_level(exploits, references, severities)
-    return min(weighted_severity * exploitability, 10)
+    if references.exists() or severities.exists() or exploits.exists():
+        weighted_severity = get_weighted_severity(severities)
+        exploitability = get_exploitability_level(exploits, references, severities)
+        return min(weighted_severity * exploitability, 10)
 
 
 def calculate_pkg_risk(package: Package):
@@ -118,6 +118,8 @@ def calculate_pkg_risk(package: Package):
     ).prefetch_related("vulnerability"):
         if pkg_related_vul:
             risk = calculate_vulnerability_risk(pkg_related_vul.vulnerability)
+            if not risk:
+                continue
             result.append(risk)
 
     if not result:

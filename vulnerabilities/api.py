@@ -685,14 +685,10 @@ class AliasFilterSet(filters.FilterSet):
         return self.queryset.filter(aliases__alias__icontains=alias)
 
 
-class AliasViewSet(viewsets.ReadOnlyModelViewSet):
+class AliasViewSet(VulnerabilityViewSet):
     """
     Lookup for vulnerabilities by vulnerability aliases such as a CVE
     (https://nvd.nist.gov/general/cve-process).
     """
 
-    queryset = Vulnerability.objects.all()
-    serializer_class = VulnerabilitySerializer
-    filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AliasFilterSet
-    throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]

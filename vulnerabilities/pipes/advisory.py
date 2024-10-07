@@ -19,11 +19,12 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import Package
-from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
+from vulnerabilities.models import AffectedByPackageRelatedVulnerability
+from vulnerabilities.models import FixingPackageRelatedVulnerability
 
 
 def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable = None):
@@ -138,22 +139,20 @@ def import_advisory(
 
     for affected_purl in affected_purls or []:
         vulnerable_package, _ = Package.objects.get_or_create_from_purl(purl=affected_purl)
-        PackageRelatedVulnerability(
+        AffectedByPackageRelatedVulnerability(
             vulnerability=vulnerability,
             package=vulnerable_package,
             created_by=pipeline_id,
             confidence=confidence,
-            fix=False,
         ).update_or_create(advisory=advisory)
 
     for fixed_purl in fixed_purls:
         fixed_package, _ = Package.objects.get_or_create_from_purl(purl=fixed_purl)
-        PackageRelatedVulnerability(
+        FixingPackageRelatedVulnerability(
             vulnerability=vulnerability,
             package=fixed_package,
             created_by=pipeline_id,
             confidence=confidence,
-            fix=True,
         ).update_or_create(advisory=advisory)
 
     if advisory_data.weaknesses and vulnerability:

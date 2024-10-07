@@ -152,10 +152,10 @@ class VulnerabilityQuerySet(BaseQuerySet):
     def with_package_counts(self):
         return self.annotate(
             vulnerable_package_count=Count(
-                "packages", filter=Q(packagerelatedvulnerability__fix=False), distinct=True
+                "affecting_packages", distinct=True
             ),
             patched_package_count=Count(
-                "packages", filter=Q(packagerelatedvulnerability__fix=True), distinct=True
+                "fixed_by_packages", distinct=True
             ),
         )
 
@@ -191,9 +191,21 @@ class Vulnerability(models.Model):
         to="VulnerabilityReference", through="VulnerabilityRelatedReference"
     )
 
-    packages = models.ManyToManyField(
+    # packages = models.ManyToManyField(
+    #     to="Package",
+    #     through="PackageRelatedVulnerability",
+    #     related_name="all_vulnerabilities",
+    # )
+
+    affecting_packages = models.ManyToManyField(
         to="Package",
-        through="PackageRelatedVulnerability",
+        through="AffectedByPackageRelatedVulnerability",
+    )
+
+    fixed_by_packages = models.ManyToManyField(
+        to="Package",
+        through="FixingPackageRelatedVulnerability",
+        related_name="fixing_vulnerabilities",  # Unique related_name
     )
 
     status = models.IntegerField(
@@ -225,20 +237,20 @@ class Vulnerability(models.Model):
         """
         Return a queryset of packages that are affected by this vulnerability.
         """
-        return self.packages.affected()
+        return self.affecting_packages
+
+    @property
+    def packages_fixing(self):
+        """
+        Return a queryset of packages that are fixing this vulnerability.
+        """
+        return self.fixed_by_packages
 
     # legacy aliases
     vulnerable_packages = affected_packages
 
-    @property
-    def fixed_by_packages(self):
-        """
-        Return a queryset of packages that are fixing this vulnerability.
-        """
-        return self.packages.fixing()
-
     # legacy alias
-    patched_packages = fixed_by_packages
+    patched_packages = packages_fixing
 
     @property
     def get_aliases(self):
@@ -479,12 +491,10 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
     def with_vulnerability_counts(self):
         return self.annotate(
             vulnerability_count=Count(
-                "vulnerabilities",
-                filter=Q(packagerelatedvulnerability__fix=False),
+                "affected_by_vulnerabilities",
             ),
             patched_vulnerability_count=Count(
-                "vulnerabilities",
-                filter=Q(packagerelatedvulnerability__fix=True),
+                "fixing_vulnerabilities",
             ),
         )
 
@@ -561,9 +571,8 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         """
         return self.annotate(
             is_vulnerable=Exists(
-                PackageRelatedVulnerability.objects.filter(
+                AffectedByPackageRelatedVulnerability.objects.filter(
                     package=OuterRef("pk"),
-                    fix=False,
                 )
             )
         )
@@ -601,8 +610,21 @@ class Package(PackageURLMixin):
     # https://github.com/package-url/packageurl-python/pull/67
     # gets merged
 
-    vulnerabilities = models.ManyToManyField(
-        to="Vulnerability", through="PackageRelatedVulnerability"
+    # vulnerabilities = models.ManyToManyField(
+    #     to="Vulnerability",
+    #     through="PackageRelatedVulnerability",
+    #     related_name="all_packages",
+    # )
+
+    affected_by_vulnerabilities = models.ManyToManyField(
+        to="Vulnerability",
+        through="AffectedByPackageRelatedVulnerability",
+    )
+
+    fixing_vulnerabilities = models.ManyToManyField(
+        to="Vulnerability",
+        through="FixingPackageRelatedVulnerability",
+        related_name="fixed_by_packages",  # Unique related_name
     )
 
     package_url = models.CharField(
@@ -667,7 +689,7 @@ class Package(PackageURLMixin):
         """
         Return a queryset of vulnerabilities affecting this package.
         """
-        return self.vulnerabilities.filter(packagerelatedvulnerability__fix=False)
+        return self.affected_by_vulnerabilities.all()
 
     # legacy aliases
     vulnerable_to = affected_by
@@ -678,7 +700,7 @@ class Package(PackageURLMixin):
         """
         Return a queryset of vulnerabilities fixed by this package.
         """
-        return self.vulnerabilities.filter(packagerelatedvulnerability__fix=True)
+        return self.fixing_vulnerabilities.all()
 
     # legacy aliases
     resolved_to = fixing
@@ -791,9 +813,9 @@ class Package(PackageURLMixin):
 
         fixed_by_packages = Package.objects.get_fixed_by_package_versions(self, fix=True)
 
-        package_vulnerabilities = self.vulnerabilities.affecting_vulnerabilities().prefetch_related(
+        package_vulnerabilities = self.affected_by_vulnerabilities.prefetch_related(
             Prefetch(
-                "packages",
+                "fixed_by_packages",
                 queryset=fixed_by_packages,
                 to_attr="fixed_packages",
             )
@@ -845,16 +867,7 @@ class Package(PackageURLMixin):
         """
         Return a queryset of Vulnerabilities that are fixed by this package.
         """
-        return self.vulnerabilities.filter(packagerelatedvulnerability__fix=True)
-
-    @property
-    def affected_by_vulnerabilities(self):
-        """
-        Return a queryset of Vulnerabilities that affect this package.
-        """
-        return self.vulnerabilities.filter(packagerelatedvulnerability__fix=False)
-
-    affecting_vulnerabilities = affected_by_vulnerabilities
+        return self.fixed_by_vulnerabilities.all()
 
     @property
     def affecting_vulns(self):
@@ -862,9 +875,9 @@ class Package(PackageURLMixin):
         Return a queryset of Vulnerabilities that affect this `package`.
         """
         fixed_by_packages = Package.objects.get_fixed_by_package_versions(self, fix=True)
-        return self.vulnerabilities.affecting_vulnerabilities().prefetch_related(
+        return self.affected_by_vulnerabilities.all().prefetch_related(
             Prefetch(
-                "packages",
+                "fixed_by_packages",
                 queryset=fixed_by_packages,
                 to_attr="fixed_packages",
             )
@@ -970,6 +983,107 @@ class PackageRelatedVulnerability(models.Model):
             source_url=advisory.url or None,
             related_vulnerability=str(self.vulnerability),
         )
+
+class PackageRelatedVulnerabilityBase(models.Model):
+    """
+    Abstract base class for package-vulnerability relations.
+    """
+
+    package = models.ForeignKey(
+        Package,
+        on_delete=models.CASCADE,
+        # related_name="%(class)s_set",  # Unique related_name per subclass
+    )
+
+    vulnerability = models.ForeignKey(
+        Vulnerability,
+        on_delete=models.CASCADE,
+        # related_name="%(class)s_set",  # Unique related_name per subclass
+    )
+
+    created_by = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text=(
+            "Fully qualified name of the improver prefixed with the module name "
+            "responsible for creating this relation. Eg: vulnerabilities.importers.nginx.NginxBasicImprover"
+        ),
+    )
+
+    from vulnerabilities.improver import MAX_CONFIDENCE
+
+    confidence = models.PositiveIntegerField(
+        default=MAX_CONFIDENCE,
+        validators=[MinValueValidator(0), MaxValueValidator(MAX_CONFIDENCE)],
+        help_text="Confidence score for this relation",
+    )
+
+    class Meta:
+        abstract = True
+        unique_together = ["package", "vulnerability"]
+        ordering = ["package", "vulnerability"]
+
+    def __str__(self):
+        relation = "fixes" if isinstance(self, FixingPackageRelatedVulnerability) else "affected by"
+        return f"{self.package.package_url} {relation} {self.vulnerability.vulnerability_id}"
+
+    def update_or_create(self, advisory):
+        """
+        Update if supplied record has more confidence than existing record.
+        Create if it doesn't exist.
+        """
+        model_class = self.__class__
+        try:
+            existing = model_class.objects.get(
+                vulnerability=self.vulnerability, package=self.package
+            )
+            if self.confidence > existing.confidence:
+                existing.created_by = self.created_by
+                existing.confidence = self.confidence
+                existing.save()
+                logger.info(
+                    f"Confidence improved for {self.package} R {self.vulnerability}, "
+                    f"new confidence: {self.confidence}"
+                )
+            self.add_package_vulnerability_changelog(advisory=advisory)
+        except model_class.DoesNotExist:
+            model_class.objects.create(
+                vulnerability=self.vulnerability,
+                created_by=self.created_by,
+                package=self.package,
+                confidence=self.confidence,
+            )
+
+            logger.info(
+                f"New relationship {self.package} R {self.vulnerability}, "
+                f"confidence: {self.confidence}"
+            )
+
+            self.add_package_vulnerability_changelog(advisory=advisory)
+
+    @transaction.atomic
+    def add_package_vulnerability_changelog(self, advisory):
+        from vulnerabilities.utils import get_importer_name
+
+        importer_name = get_importer_name(advisory)
+        if isinstance(self, FixingPackageRelatedVulnerability):
+            change_logger = PackageChangeLog.log_fixing
+        else:
+            change_logger = PackageChangeLog.log_affected_by
+        change_logger(
+            package=self.package,
+            importer=importer_name,
+            source_url=advisory.url or None,
+            related_vulnerability=str(self.vulnerability),
+        )
+
+class FixingPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
+    class Meta(PackageRelatedVulnerabilityBase.Meta):
+        verbose_name_plural = "Fixing Package Related Vulnerabilities"
+
+class AffectedByPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
+    class Meta(PackageRelatedVulnerabilityBase.Meta):
+        verbose_name_plural = "Affected By Package Related Vulnerabilities"
 
 
 class VulnerabilitySeverity(models.Model):

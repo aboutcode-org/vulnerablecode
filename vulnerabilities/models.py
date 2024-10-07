@@ -151,12 +151,8 @@ class VulnerabilityQuerySet(BaseQuerySet):
 
     def with_package_counts(self):
         return self.annotate(
-            vulnerable_package_count=Count(
-                "affecting_packages", distinct=True
-            ),
-            patched_package_count=Count(
-                "fixed_by_packages", distinct=True
-            ),
+            vulnerable_package_count=Count("affecting_packages", distinct=True),
+            patched_package_count=Count("fixed_by_packages", distinct=True),
         )
 
 
@@ -237,7 +233,7 @@ class Vulnerability(models.Model):
         """
         Return a queryset of packages that are affected by this vulnerability.
         """
-        return self.affecting_packages
+        return self.affecting_packages.with_is_vulnerable()
 
     @property
     def packages_fixing(self):
@@ -984,6 +980,7 @@ class PackageRelatedVulnerability(models.Model):
             related_vulnerability=str(self.vulnerability),
         )
 
+
 class PackageRelatedVulnerabilityBase(models.Model):
     """
     Abstract base class for package-vulnerability relations.
@@ -1077,9 +1074,11 @@ class PackageRelatedVulnerabilityBase(models.Model):
             related_vulnerability=str(self.vulnerability),
         )
 
+
 class FixingPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
     class Meta(PackageRelatedVulnerabilityBase.Meta):
         verbose_name_plural = "Fixing Package Related Vulnerabilities"
+
 
 class AffectedByPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
     class Meta(PackageRelatedVulnerabilityBase.Meta):

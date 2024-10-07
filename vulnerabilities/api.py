@@ -592,7 +592,11 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
         Filter the packages that fixes a vulnerability
         on fields like name, namespace and type.
         """
-        return self.get_packages_qs().filter(fixingpackagerelatedvulnerability__isnull=False).with_is_vulnerable()
+        return (
+            self.get_packages_qs()
+            .filter(fixingpackagerelatedvulnerability__isnull=False)
+            .with_is_vulnerable()
+        )
 
     def get_packages_qs(self):
         """
@@ -620,11 +624,11 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
                 #     queryset=self.get_packages_qs(),
                 # ),
                 "weaknesses",
-                # Prefetch(
-                #     "fixed_by_packages",
-                #     queryset=self.get_fixed_packages_qs(),
-                #     to_attr="filtered_fixed_packages",
-                # ),
+                Prefetch(
+                    "fixed_by_packages",
+                    queryset=self.get_fixed_packages_qs(),
+                    to_attr="filtered_fixed_packages",
+                ),
             )
         )
 

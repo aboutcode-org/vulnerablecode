@@ -18,13 +18,13 @@ from django.db import transaction
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
+from vulnerabilities.models import AffectedByPackageRelatedVulnerability
+from vulnerabilities.models import FixingPackageRelatedVulnerability
 from vulnerabilities.models import Package
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
-from vulnerabilities.models import AffectedByPackageRelatedVulnerability
-from vulnerabilities.models import FixingPackageRelatedVulnerability
 
 
 def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable = None):

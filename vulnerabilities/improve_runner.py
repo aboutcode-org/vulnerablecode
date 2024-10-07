@@ -135,12 +135,11 @@ def process_inferences(
             vulnerable_package, created = Package.objects.get_or_create_from_purl(
                 purl=affected_purl
             )
-            PackageRelatedVulnerability(
+            AffectedByPackageRelatedVulnerability(
                 vulnerability=vulnerability,
                 package=vulnerable_package,
                 created_by=improver_name,
                 confidence=inference.confidence,
-                fix=False,
             ).update_or_create(
                 advisory=advisory,
             )

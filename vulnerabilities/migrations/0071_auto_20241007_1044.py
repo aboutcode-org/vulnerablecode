@@ -54,5 +54,111 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AlterField(
+            model_name="advisory",
+            name="created_by",
+            field=models.CharField(
+                help_text="Fully qualified name of the importer prefixed with themodule name importing the advisory. Eg:vulnerabilities.pipeline.nginx_importer.NginxImporterPipeline",
+                max_length=100,
+            ),
+        ),
+        migrations.CreateModel(
+            name="FixingPackageRelatedVulnerability",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "created_by",
+                    models.CharField(
+                        blank=True,
+                        help_text="Fully qualified name of the improver prefixed with the module name responsible for creating this relation. Eg: vulnerabilities.importers.nginx.NginxBasicImprover",
+                        max_length=100,
+                    ),
+                ),
+                (
+                    "confidence",
+                    models.PositiveIntegerField(
+                        default=100,
+                        help_text="Confidence score for this relation",
+                        validators=[
+                            django.core.validators.MinValueValidator(0),
+                            django.core.validators.MaxValueValidator(100),
+                        ],
+                    ),
+                ),
+                (
+                    "package",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="vulnerabilities.package"
+                    ),
+                ),
+                (
+                    "vulnerability",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="vulnerabilities.vulnerability",
+                    ),
+                ),
+            ],
+            options={
+                "verbose_name_plural": "Fixing Package Related Vulnerabilities",
+                "ordering": ["package", "vulnerability"],
+                "abstract": False,
+                "unique_together": {("package", "vulnerability")},
+            },
+        ),
+        migrations.CreateModel(
+            name="AffectedByPackageRelatedVulnerability",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "created_by",
+                    models.CharField(
+                        blank=True,
+                        help_text="Fully qualified name of the improver prefixed with the module name responsible for creating this relation. Eg: vulnerabilities.importers.nginx.NginxBasicImprover",
+                        max_length=100,
+                    ),
+                ),
+                (
+                    "confidence",
+                    models.PositiveIntegerField(
+                        default=100,
+                        help_text="Confidence score for this relation",
+                        validators=[
+                            django.core.validators.MinValueValidator(0),
+                            django.core.validators.MaxValueValidator(100),
+                        ],
+                    ),
+                ),
+                (
+                    "package",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="vulnerabilities.package"
+                    ),
+                ),
+                (
+                    "vulnerability",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="vulnerabilities.vulnerability",
+                    ),
+                ),
+            ],
+            options={
+                "verbose_name_plural": "Affected By Package Related Vulnerabilities",
+                "ordering": ["package", "vulnerability"],
+                "abstract": False,
+                "unique_together": {("package", "vulnerability")},
+            },
+        ),
         migrations.RunPython(split_packagerelatedvulnerability, reverse_migration),
     ]

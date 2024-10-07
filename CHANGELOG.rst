@@ -1,6 +1,17 @@
 Release notes
 =============
 
+Version (next)
+-------------------
+
+
+Version v34.0.2
+-------------------
+
+- Add management command to commit exported vulnerability data (#1600)
+- Fix API 500 error (#1603)
+
+
 Version v34.0.1
 -------------------
 

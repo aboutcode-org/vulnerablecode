@@ -8,9 +8,11 @@
 #
 
 from vulnerabilities.improvers import valid_versions
-from vulnerabilities.improvers import vulnerability_kev
 from vulnerabilities.improvers import vulnerability_status
 from vulnerabilities.pipelines import VulnerableCodePipeline
+from vulnerabilities.pipelines import enhance_with_exploitdb
+from vulnerabilities.pipelines import enhance_with_kev
+from vulnerabilities.pipelines import enhance_with_metasploit
 from vulnerabilities.pipelines import flag_ghost_packages
 
 IMPROVERS_REGISTRY = [
@@ -31,8 +33,10 @@ IMPROVERS_REGISTRY = [
     valid_versions.GithubOSVImprover,
     vulnerability_status.VulnerabilityStatusImprover,
     valid_versions.CurlImprover,
-    vulnerability_kev.VulnerabilityKevImprover,
     flag_ghost_packages.FlagGhostPackagePipeline,
+    enhance_with_kev.VulnerabilityKevPipeline,
+    enhance_with_metasploit.MetasploitImproverPipeline,
+    enhance_with_exploitdb.ExploitDBImproverPipeline,
 ]
 
 IMPROVERS_REGISTRY = {

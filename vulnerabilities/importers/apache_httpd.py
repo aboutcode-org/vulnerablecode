@@ -161,79 +161,79 @@ def fetch_links(url):
 
 
 def get_weaknesses(cve_data):
-    # """
-    # Extract CWE IDs from CVE data.
+    """
+    Extract CWE IDs from CVE data.
 
-    # Args:
-    #     cve_data (dict): The CVE data in a dictionary format.
+    Args:
+        cve_data (dict): The CVE data in a dictionary format.
 
-    # Returns:
-    #     List[int]: A list of unique CWE IDs.
+    Returns:
+        List[int]: A list of unique CWE IDs.
 
-    # Examples:
-    #     >>> mock_cve_data1 = {
-    #     ...     "containers": {
-    #     ...         "cna": {
-    #     ...             "providerMetadata": {
-    #     ...                 "orgId": "f0158376-9dc2-43b6-827c-5f631a4d8d09"
-    #     ...             },
-    #     ...             "title": "mod_macro buffer over-read",
-    #     ...             "problemTypes": [
-    #     ...                 {
-    #     ...                     "descriptions": [
-    #     ...                         {
-    #     ...                             "description": "CWE-125 Out-of-bounds Read",
-    #     ...                             "lang": "en",
-    #     ...                             "cweId": "CWE-125",
-    #     ...                             "type": "CWE"
-    #     ...                         }
-    #     ...                     ]
-    #     ...                 }
-    #     ...             ]
-    #     ...         }
-    #     ...     }
-    #     ... }
-    #     >>> mock_cve_data2 = {
-    #     ...     "data_type": "CVE",
-    #     ...     "data_format": "MITRE",
-    #     ...     "data_version": "4.0",
-    #     ...     "generator": {
-    #     ...         "engine": "Vulnogram 0.0.9"
-    #     ...     },
-    #     ...     "CVE_data_meta": {
-    #     ...         "ID": "CVE-2022-28614",
-    #     ...         "ASSIGNER": "security@apache.org",
-    #     ...         "TITLE": "read beyond bounds via ap_rwrite() ",
-    #     ...         "STATE": "PUBLIC"
-    #     ...     },
-    #     ...     "problemtype": {
-    #     ...         "problemtype_data": [
-    #     ...             {
-    #     ...                 "description": [
-    #     ...                     {
-    #     ...                         "lang": "eng",
-    #     ...                         "value": "CWE-190 Integer Overflow or Wraparound"
-    #     ...                     }
-    #     ...                 ]
-    #     ...             },
-    #     ...             {
-    #     ...                 "description": [
-    #     ...                     {
-    #     ...                         "lang": "eng",
-    #     ...                         "value": "CWE-200 Exposure of Sensitive Information to an Unauthorized Actor"
-    #     ...                     }
-    #     ...                 ]
-    #     ...             }
-    #     ...         ]
-    #     ...     }
-    #     ... }
+    Examples:
+        >>> mock_cve_data1 = {
+        ...     "containers": {
+        ...         "cna": {
+        ...             "providerMetadata": {
+        ...                 "orgId": "f0158376-9dc2-43b6-827c-5f631a4d8d09"
+        ...             },
+        ...             "title": "mod_macro buffer over-read",
+        ...             "problemTypes": [
+        ...                 {
+        ...                     "descriptions": [
+        ...                         {
+        ...                             "description": "CWE-125 Out-of-bounds Read",
+        ...                             "lang": "en",
+        ...                             "cweId": "CWE-125",
+        ...                             "type": "CWE"
+        ...                         }
+        ...                     ]
+        ...                 }
+        ...             ]
+        ...         }
+        ...     }
+        ... }
+        >>> mock_cve_data2 = {
+        ...     "data_type": "CVE",
+        ...     "data_format": "MITRE",
+        ...     "data_version": "4.0",
+        ...     "generator": {
+        ...         "engine": "Vulnogram 0.0.9"
+        ...     },
+        ...     "CVE_data_meta": {
+        ...         "ID": "CVE-2022-28614",
+        ...         "ASSIGNER": "security@apache.org",
+        ...         "TITLE": "read beyond bounds via ap_rwrite() ",
+        ...         "STATE": "PUBLIC"
+        ...     },
+        ...     "problemtype": {
+        ...         "problemtype_data": [
+        ...             {
+        ...                 "description": [
+        ...                     {
+        ...                         "lang": "eng",
+        ...                         "value": "CWE-190 Integer Overflow or Wraparound"
+        ...                     }
+        ...                 ]
+        ...             },
+        ...             {
+        ...                 "description": [
+        ...                     {
+        ...                         "lang": "eng",
+        ...                         "value": "CWE-200 Exposure of Sensitive Information to an Unauthorized Actor"
+        ...                     }
+        ...                 ]
+        ...             }
+        ...         ]
+        ...     }
+        ... }
 
-    #     >>> get_weaknesses(mock_cve_data1)
-    #     [125]
+        >>> get_weaknesses(mock_cve_data1)
+        [125]
 
-    #     >>> get_weaknesses(mock_cve_data2)
-    #     [190, 200]
-    # """
+        >>> get_weaknesses(mock_cve_data2)
+        [190, 200]
+    """
 
     alias = get_item(cve_data, "CVE_data_meta", "ID")
     cwe_id = []

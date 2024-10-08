@@ -151,10 +151,12 @@ def md_list_to_dict(md_list):
 def get_weaknesses(cwe_data):
     """
     Return the list of CWE IDs as integers from a list of weakness summaries, e.g., [379].
-    Extract the CWE strings from a list of weakness descriptions,
-    e.g., ["CWE-379: Creation of Temporary File in Directory with Insecure Permissions"], to obtain CWE IDs like CWE-379.
-    Remove the "CWE-" prefix from each CWE string and convert it to an integer (e.g., 379).
-    Then, check if the CWE ID exists in the CWE database.
+
+        >>> get_weaknesses([
+        ... "CWE-379: Creation of Temporary File in Directory with Insecure Permissions",
+        ... "CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition')"
+        ... ])
+        [379, 362]
     """
     cwe_list = []
     for line in cwe_data:

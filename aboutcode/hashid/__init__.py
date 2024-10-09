@@ -140,9 +140,12 @@ def get_package_base_dir(purl: Union[PackageURL, str]):
     """
     Return the base path to a Package directory (ignoring version) for a purl
     """
+    if isinstance(purl, str):
+        purl = PackageURL.from_string(purl)
+
     path_elements = package_path_elements(purl)
     phash, core_path, _pversion, _extra_path = path_elements
-    return Path(f"{PACKAGE_REPOS_NAME_PREFIX}-{phash}") / core_path
+    return Path(f"{PACKAGE_REPOS_NAME_PREFIX}-{purl.type}-{phash}") / core_path
 
 
 def get_package_purls_yml_file_path(purl: Union[PackageURL, str]):
@@ -208,15 +211,15 @@ def package_path_elements(purl: Union[PackageURL, str]):
     We keep the same prefix for different versions::
 
     >>> package_path_elements("pkg:pypi/license_expression@30.3.1")
-    ('1050', 'pypi/license-expression', '30.3.1', '')
+    ('50', 'pypi/license-expression', '30.3.1', '')
     >>> package_path_elements("pkg:pypi/license_expression@10.3.1")
-    ('1050', 'pypi/license-expression', '10.3.1', '')
+    ('50', 'pypi/license-expression', '10.3.1', '')
 
     We encode with quotes, avoid double encoding of already quoted parts to make subpaths easier
     for filesystems::
 
     >>> package_path_elements("pkg:pypi/license_expression@30.3.1?foo=bar&baz=bar#sub/path")
-    ('1050', 'pypi/license-expression', '30.3.1', 'baz%3Dbar%26foo%3Dbar%23sub%2Fpath')
+    ('50', 'pypi/license-expression', '30.3.1', 'baz%3Dbar%26foo%3Dbar%23sub%2Fpath')
 
     >>> purl = PackageURL(
     ...     type="pypi",
@@ -225,7 +228,7 @@ def package_path_elements(purl: Union[PackageURL, str]):
     ...     qualifiers=dict(foo="bar"),
     ...     subpath="a/b/c")
     >>> package_path_elements(purl)
-    ('1050', 'pypi/license-expression', 'b%23ar%2F%3F30.3.2%21', 'foo%3Dbar%23a%2Fb%2Fc')
+    ('50', 'pypi/license-expression', 'b%23ar%2F%3F30.3.2%21', 'foo%3Dbar%23a%2Fb%2Fc')
     """
     if isinstance(purl, str):
         purl = PackageURL.from_string(purl)
@@ -287,7 +290,27 @@ def get_core_purl(purl: Union[PackageURL, str]):
     return PackageURL(**purld)
 
 
-def get_purl_hash(purl: Union[PackageURL, str], _bit_count: int = 13) -> str:
+# See https://github.com/aboutcode-org/federatedcode/issues/3#issuecomment-2388371726
+BIT_COUNT_BY_ECOSYSTEM = {
+    # Super large ecosystem 1024 repos.
+    "npm": 10,
+    # Large ecosystem 128 repos.
+    "pypi": 7,
+    "maven": 7,
+    "golang": 7,
+    "perl": 7,
+    "ruby": 7,
+    "nuget": 7,
+    "php": 7,
+    # Medium ecosystem 32 repos.
+    "rpm": 5,
+    "deb": 5,
+    # Small ecosystem 1 repo.
+    "github": 0,
+}
+
+
+def get_purl_hash(purl: Union[PackageURL, str], _bit_count: int = 0) -> str:
     """
     Return a short lower cased hash string from a ``purl`` string or object. The PURL is normalized
     and we drop its version, qualifiers and subpath.
@@ -320,30 +343,35 @@ def get_purl_hash(purl: Union[PackageURL, str], _bit_count: int = 13) -> str:
 
     The hash does not change with version or qualifiers::
     >>> get_purl_hash("pkg:pypi/univers@30.12.0")
-    '1289'
+    '09'
     >>> get_purl_hash("pkg:pypi/univers@10.12.0")
-    '1289'
+    '09'
     >>> get_purl_hash("pkg:pypi/univers@30.12.0?foo=bar#sub/path")
-    '1289'
+    '09'
 
     The hash is left padded with zero if it::
     >>> get_purl_hash("pkg:pypi/expressionss")
-    '0057'
+    '57'
 
     We normalize the PURL. Here pypi normalization always uses dash for underscore ::
 
     >>> get_purl_hash("pkg:pypi/license_expression")
-    '1050'
+    '50'
     >>> get_purl_hash("pkg:pypi/license-expression")
-    '1050'
+    '50'
 
     Originally from:
     https://github.com/nexB/purldb/pull/235/files#diff-a1fd023bd42d73f56019d540f38be711255403547add15108540d70f9948dd40R154
     """
 
-    core_purl = get_core_purl(purl).to_string()
+    core_purl = get_core_purl(purl)
+
+    if core_purl.type in BIT_COUNT_BY_ECOSYSTEM:
+        _bit_count = BIT_COUNT_BY_ECOSYSTEM[core_purl.type]
+
+    core_purl_str = core_purl.to_string()
     # compute the hash from a UTF-8 encoded string
-    purl_bytes = core_purl.encode("utf-8")
+    purl_bytes = core_purl_str.encode("utf-8")
     hash_bytes = sha256(purl_bytes).digest()
     # ... converted to integer so we can truncate with modulo. Note that we use big endian.
     hash_int = int.from_bytes(hash_bytes, "big")
